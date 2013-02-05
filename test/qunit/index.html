@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Backbone Boilerplate QUnit Test Suite</title>
+
+  <!-- QUnit styles -->
+  <link rel="stylesheet" href="vendor/qunit.css">
+</head>
+
+<body>
+  <!-- QUnit stucture -->
+  <div class="dataset-test">
+    <h1 id="qunit-header">Backbone Boilerplate QUnit Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+  </div>
+
+  <!-- Testing libs -->
+  <script src="vendor/qunit.js"></script>
+
+  <!-- Application libs -->
+  <script src="../../assets/js/libs/jquery.js"></script>
+  <script src="../../assets/js/libs/lodash.js"></script>
+  <script src="../../assets/js/libs/backbone.js"></script>
+  
+  <!-- Load application -->
+  <script data-main="../../app/config"
+    src="../../assets/js/libs/require.js"></script>
+
+  <!-- Declare your test files to be run here -->
+  <script>
+    // Ensure you point to where your tests are, base directory is app/, which
+    // is why ../test is necessary
+    require({ paths: { tests: "../test/qunit/tests" } }, [
+
+      // Load the example tests, replace this and add your own tests
+      "tests/example"
+
+    ]);
+  </script>
+</body>
+</html>

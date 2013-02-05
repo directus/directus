@@ -1,0 +1,8 @@
+<tr>
+  <th class="status"></th>
+  {{#if sortable}}<th class="sort" data-id="sort"><span class="glyphicon-random"></span></th>{{/if}}
+  {{#if selectable}}<th class="check"><input type="checkbox"></th>{{/if}}
+  {{#columns}}
+    <th data-id="{{name}}">{{{capitalize name}}} {{#if orderBy}}{{#if desc}}▼{{else}}▲{{/if}}{{/if}}</th>
+  {{/columns}}
+</tr>

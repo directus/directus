@@ -1,0 +1,44 @@
+
+<div class="btn-group btn-group-action active" id="set-visibility">
+  {{#if actionButtons}}
+  <button class="btn btn-small" data-value="1" rel="tooltip" data-placement="bottom" title="Active"><span class="glyphicon-eye-open"></span></button>
+  <button class="btn btn-small" data-value="2" rel="tooltip" data-placement="bottom" title="Inactive"><span class="glyphicon-eye-close"></span></button>
+  <button class="btn btn-small" data-value="0" rel="tooltip" data-placement="bottom" title="Delete"><span class="glyphicon-trash"></span></button>
+  {{/if}}
+  {{#if deleteOnly}}
+    <button class="btn btn-small" data-value="0" rel="tooltip" data-placement="bottom" title="Delete"><span class="glyphicon-trash"></span></button>
+  {{/if}}
+</div>
+
+<div class="btn-group" id="visibility">
+  XXX
+  {{#visibility}}
+  {{#if this.active}}
+    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+      Viewing {{text}}
+      <span class="caret"></span>
+    </a>
+  {{/if}}
+  {{/visibility}}
+
+  <ul class="dropdown-menu">
+    {{#visibility}}
+      {{#unless active}}<li><a data-value="{{value}}">View {{text}}</a></li>{{/unless}}
+    {{/visibility}}
+  </ul>
+</div>
+
+{{#if paginator}}
+<div class="btn-group">
+  <a class="btn btn-small {{#unless pagePrev}}disabled{{/unless}} pag-prev"><span class="glyphicon-arrow-left"></span></a>
+  <a class="btn btn-small {{#unless pageNext}}disabled{{/unless}} pag-next"><span class="glyphicon-arrow-right"></span></a>
+</div>
+{{/if}}
+<div class="pagination-number">{{#if uBound}} {{lBound}}–{{uBound}} of {{totalCount}}{{/if}}</div>
+
+
+{{#if filter}}
+<div class="filter pull-right">
+  <input type="text" id="table-filter" placeholder="Filter" value="{{filterText}}">
+</div>
+{{/if}}

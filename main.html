@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1.0">
+  <title>directus</title>
+  <!-- Application styles. -->
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="stylesheet" href="/directus/assets/css/index.css">
+</head>
+
+<body>
+<!-- Main container. -->
+
+<div id="wrap">
+  <div id="main">
+    <div id="navbar"></div>
+    <div class="head">
+      <div id="tabs" class="container-fluid"></div>
+    </div>
+    <div id="content" class="container-fluid">
+      <!--<div id="alert">
+      <span class="glyphicon-repeat"></span>
+      Signing in
+      </div>-->
+    </div>
+    <div id="modal-container"></div>
+  </div>
+  <div id="push"></div>
+</div>
+
+<div id="footer">
+	<div class="container-fluid">
+		Powered by <a href="http://www.getdirectus.com" target="get_directus">Directus (v5.1.b)</a>
+	</div>
+</div>
+
+<div id="messages"></div>
+
+
+<script>
+window.directusData = %s;
+</script>
+
+<!-- Application source. -->
+<script data-main="/directus/app/config" src="/directus/assets/js/libs/require.js"></script>
+</body>
+</html>

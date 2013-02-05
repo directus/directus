@@ -1,0 +1,8 @@
+{{#each rows}}
+	<tr data-id="{{this.id}}" data-cid="{{this.cid}}" class="{{{active this}}}">
+		<td class="status"></td>
+		{{#if ../sortable}}<td class="sort"><span class="glyphicon-show-lines"></span></td>{{/if}}
+		{{#if ../selectable}}<td class="check"><input type="checkbox" value="{{this.id}}"></td>{{/if}}
+		{{#each ../columns}}<td>{{ui ../this this}}</td>{{/each}}
+	</tr>
+{{/each}}

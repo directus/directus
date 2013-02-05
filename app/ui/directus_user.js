@@ -1,0 +1,40 @@
+//  Directus User List View component
+//  Directus 6.0
+
+//  (c) RANGER
+//  Directus may be freely distributed under the GNU license.
+//  For all details and documentation:
+//  http://www.getdirectus.com
+
+define(['app','backbone'], function(app, Backbone) {
+
+  var Module = {};
+
+  Module.id = 'directus_user';
+  Module.system = true;
+  Module.sortBy = ['first_name','last_name'];
+
+  Module.list = function(options) {
+    var user = app.router.entries.directus_users.get(options.value);
+    if (user) {
+      if (options.settings && options.settings.get('compact') !== undefined) {
+        return user.get('first_name');
+      }
+      return '<img src="' + user.get('avatar') + '" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name');
+    } else {
+      return '';
+    }
+  };
+
+  Module.Input = Backbone.Layout.extend({
+    tagName: 'fieldset',
+    initialize: function(options) {
+      var user = app.router.entries.directus_users.get(options.value);
+      this.$el.html('<label>'+app.capitalize(this.options.name)+'</test>');
+      this.$el.append('<img src="' + app.RESOURCES_URL + 'users/default.png" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));
+    }
+  });
+
+  return Module;
+
+});

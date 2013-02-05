@@ -1,0 +1,679 @@
+//  directus.less
+//  Directus 6.0
+
+//  (c) RANGER
+//  Directus may be freely distributed under the GNU license.
+//  For all details and documentation:
+//  http://www.getdirectus.com
+
+html,
+body {
+	height: 100%;
+}
+
+::selection {background-color: lighten(@directusPrimary, 30%);}
+
+label { font-weight: bold; }
+input[type=file] { margin-bottom: 8px;}
+
+//Give a's without href's a pointer
+a {cursor:pointer;}
+
+// STRUCTURE
+// ----------------
+#tabs { margin-top: 20px; }
+
+// Why am I adding 3 to the navbar height here?
+.head {overflow:auto; background-image:url(../img/noise.gif); padding-top:@navbarHeight + 3; }
+
+
+#content {padding-top:20px; padding-bottom:40px;overflow:hidden;}
+
+.breadcrumb-divider {font-weight: normal; font-size:14px; color:@gray; margin:0 10px; }
+.container-fluid { padding-right:40px; padding-left:40px;}
+
+#directus_activity .col-change_made {width:150px;}
+#directus_activity .col-user {width:250px;}
+
+.dragover {
+	border: 3px dashed @gray;
+	.border-radius(2px);
+}
+
+.margin-left {margin-left:10px;}
+
+// FOOTER
+// ----------------
+
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	/* Negative indent footer by it's height */
+	margin: 0 auto -40px;
+}
+#push,
+#footer {
+	height: 40px;
+}
+#footer {
+	background-image:url(../img/noise.gif);
+	line-height:40px;
+}
+
+// DEFAULT PAGE HEADER
+// -------------------
+// This is the default page header. Contains a headline and sometimes a button
+header {
+	.clearfix();
+	h2 { float: left; }
+	button {float: right; }
+}
+
+// TYPE
+// -------------------------
+h2 {margin-bottom:20px;}
+
+
+// BOOTSTRAP
+// varius bootstrap overrides
+// -------------------------
+.avatar {
+	.border-radius(@baseBorderRadius);
+}
+
+label { text-shadow: @textShadowWhite; }
+
+.label {
+	padding: 3px 6px 2px 6px;
+	background-color: @white;
+	color:@black;
+	font-size: 12px;
+	text-shadow: none;
+	font-weight: 600;
+	.border-radius(2px);
+	position:relative;
+}
+
+.tooltip {
+	font-family:@sansFontFamily;
+	//font-weight:600;
+	//font-size:11px;
+	font-weight:bold;
+	font-size:13px;
+	.tooltip-inner {
+		padding:6px 12px;
+	}
+}
+
+.speech-bubble:after {
+	content: "";
+	position: absolute;
+	top: 5px;
+	right: -4px;
+	border-width: 4px 0 4px 5px;
+	border-style:solid;
+	border-color: transparent @directusPrimary;
+	display: block;
+	width: 0;
+	z-index: 1;
+}
+
+.modal {
+	.modal-body {
+		padding:0;
+		background-color:@grayLight;
+	}
+	.modal-footer {
+		background-color: @white;
+		text-align: left;
+	}
+	.directus-form {
+		border:0;
+	}
+	&.stretch {
+		position: fixed;
+		margin-top: 0;
+		top: 50px;
+		bottom: 50px;
+		width:760px;
+		margin-left:-360px;
+		.modal-footer {position:absolute; bottom:0px; left:0px; right:0px;}
+		.modal-body {position:absolute; bottom:56px; top:49px; left:0px; right:0px; max-height: none;}
+	 }
+}
+.well {
+	border: 0;
+	color: @white;
+	min-height:150px;
+}
+.well-small {
+  padding: 12px 20px 20px 20px;
+  .border-radius(@baseBorderRadius);
+}
+
+.dropdown-menu {
+	padding: 3px 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	margin: -2px 0 0;
+	.border-radius(@baseBorderRadius);
+	li {
+		padding: 3px 0 3px 0;
+		margin: 0;
+		border: none;
+		cursor: pointer;
+	}
+}
+.dropdown-menu-primary {
+	border-color: #8bc53f;
+}
+
+
+
+// BUTTONS
+// ----------------------
+.btn {
+	padding: 10px 20px;
+	font-size: 14px;
+	border:0;
+	.border-radius(@baseBorderRadius);
+	&:hover {
+		background-color: darken(@btnBackground, 3%);
+		background-position: 0px -50px;
+		.transition(none);
+	}
+}
+
+.btn-group > .btn-primary {
+	font-size:14px;
+}
+
+.btn-link,
+.btn-link:hover {
+	color: @linkColor;
+}
+
+.btn.active,
+.btn:active,
+.btn-group.open .btn.dropdown-toggle,
+.btn-group.open .dropdown-toggle {
+	box-shadow:none !important;
+	//background-color: darken(@btnBackground, 6%);
+}
+
+.btn.active {background-color:@directusPrimary; color:#FFF; border-color:darken(@directusPrimary,3%); text-shadow:@textShadow;}
+
+.btn-link:hover {background-color:inherit;}
+
+.btn-primary:hover {background-color: darken(@btnPrimaryBackground, 4%); background-position: 0px -50px; .transition(none);}
+.btn-primary:active {background-color: darken(@btnPrimaryBackground, 8%);}
+.btn-delete {
+	color:@red;
+	span {margin-right:5px;}
+	&:hover {color:@red; text-decoration: none;}
+	text-shadow: @textShadowWhite;
+}
+
+.btn-top {
+	margin-bottom:20px;
+}
+
+.btn-small {
+	&.btn-primary { border: 0;}
+	height:30px;
+	padding:0 14px;
+	line-height:30px;
+	font-size:12px;
+	font-weight:400;
+	border:1px solid @gray;
+	//text-shadow: @textShadowWhite;
+	.border-radius(@baseBorderRadius);
+	.caret {margin-top:14px; border-top:4px solid @textColor;}
+}
+
+.btn-row {
+	button {margin-right:10px;}
+}
+
+.cancel {
+	display:inline-block; padding-top:8px; padding-bottom:8px; padding-left:5px;
+}
+
+//This should be for well only please fix
+a:hover {text-decoration:none;}
+
+
+// TABS
+// overrides navs.less
+// -------------------------
+.nav-tabs {
+	margin:0 auto;
+	border:0;
+	overflow:hidden;
+	li {
+		margin-bottom: 0px;
+	}
+	li > a {
+		height:19px;
+		line-height:19px;
+		.border-radius(2px 2px 0 0);
+		text-shadow: @textShadow;
+		font-weight: 400;
+		font-size: 14px;
+		background-color:@directusPrimary;
+		color:@white;
+		border:0;
+		padding: 10px 20px;
+		margin-right:4px;
+		&:hover {
+			background-color: darken(@directusPrimary, 5%);
+		}
+		.label { margin-left: 5px; color: @directusPrimary; }
+	}
+	li.active > a,
+	li.active > a:hover {
+		background-color:@white;
+		color:@textColor;
+		border:0;
+		text-shadow:none;
+		.label {border: 1px solid @directusPrimary; padding: 2px 5px 1px 5px;}
+	}
+}
+// NAVBAR
+// overrides navbars.less
+// ----------------------------
+
+
+// NAVBAR
+// -------------------------
+.navbar-fixed-top .navbar-inner, .navbar-static-top .navbar-inner {
+	border:0px;
+}
+
+.navbar {
+	//-webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 2px 2px 0px;
+	.brand {
+		padding-left:40px;
+		font-size: 22px;
+		margin-left:0px;
+		font-family: @serifFontFamily;
+		span {
+			font-size: 14px;
+			color: #353535;
+			.transition(~"color linear .1s")
+		}
+		&:hover span { color: @directusPrimary;}
+	}
+	.user {
+		cursor: pointer;
+		height:28px;
+		//width:24px;
+		padding: 11px 40px;
+		vertical-align:middle;
+		font-size:14px;
+		.avatar { margin-left: 10px; height:28px; width:28px;}
+		.label { background-color: @directusPrimary; color:#FFF; }
+		.user-firstname {margin-left:10px;}
+	}
+
+	.dropdown-menu {
+		margin-top:-5px;
+		border:0;
+		background-color: @navbarBackground;
+		a { color:#FFFFFF; padding: 8px 20px;}
+		.divider {
+			background-color: #191516;
+			border-bottom: 1px solid #302A2D;
+		}
+	}
+}
+
+// DIRECTUS TABLE
+// ----------------------------
+
+.nothing-here {
+	padding-top:70px;
+	background-color:#FFF;
+	height:130px;
+	color:@gray;
+	h1 {font-family:@serifFontFamily; font-size:26px; }
+	text-align:center;
+}
+
+.table-striped,
+.directus-table {
+	margin-bottom:0;
+	position:relative;
+	//table-layout:fixed;
+	width:100%;
+	td, th {
+		padding: 10px 0px 10px 20px;
+		//max-height: 18px;
+		height:18px;
+		overflow:hidden;
+		//white-space: nowrap;
+		word-wrap: break-word;
+		&.active-items { width:100px; }
+		&.check { width:12px!important;}
+		.img.portrait { height: 50px; }
+		.img.landscape { width: 50px; }
+		&:last-child {padding-right:20px;}
+	}
+	th {
+		background-color:@grayLight;
+		font-style:italic;
+		text-shadow: @textShadowWhite;
+		text-align: left;
+		//clean up when merging with bootstrap
+		border-top: 1px solid @gray!important;
+		cursor:pointer;
+	}
+	td {
+		cursor: pointer;
+		vertical-align:middle;
+	}
+	td.status, th.status {
+		padding:0; width:5px;
+	}
+	th.sort {width: 15px;}
+
+	tbody tr {height:18px; max-height:18px;}
+
+	tbody tr.deleted td.status { background-color:@red; }
+	tbody tr.inactive td.status { background-color:@gray; }
+
+	tbody tr.inactive td,
+	tbody tr.deleted td {
+		color: rgba(0,0,0,0.2);
+		img {opacity: 0.3;}
+	}
+	tbody tr:hover td,
+	tbody tr.selected td {
+		background-color: @highlightColor;
+	}
+	tbody tr:last-child {
+		border-bottom: 1px solid @gray!important;
+	}
+}
+
+//These styles apply to a 'related' table
+.related-table .directus-table  {
+ th {background-color:@silver; color:@white; text-shadow:@textShadow;}
+}
+.related-table {
+	margin-bottom:13px;
+}
+
+
+#directus_media .col-item {width: 70px;}
+#directus_media .media-thumb {width:50px; text-align:center;}
+#directus_media tbody td { height:50px; vertical-align: middle; padding-top:5px; padding-bottom:5px;}
+
+#directus_columns {
+	.alias {font-style: italic; color:@directusPrimary;}
+	td {cursor: default; height:37px; vertical-align:middle;}
+	th.field-field {width:120px;}
+	th.field-input_type {width: 210px;}
+	th.field-hidden,
+	th.field-required,
+	th.field-master {width: 50px;}
+	select {width: 150px; margin:0;}
+}
+
+#directus_tables .description { width: 250px;}
+#directus_tables .active { width: 60px;}
+#directus_tables .modified { width: 130px;}
+
+#header-settings {
+	overflow: visible;
+	position: absolute;
+	left:0px;
+	right:0px;
+	top:0px;
+	height:38px;
+	text-align:right;
+	&.open .dropdown-toggle,
+	&:hover .dropdown-toggle { display: inline-block; }
+	.dropdown-toggle { display: none; }
+	.dropdown-menu {
+		font-style: normal;
+		right:0;
+		left:auto;
+	}
+}
+
+.directus-toolbar > div {
+	max-width: 100%;
+	border-top: 1px solid @gray;
+	padding: 10px 0px;
+	height: 30px;
+	background-color:#FFF;
+	.pagination-number {
+		margin-left: 5px;
+		vertical-align: middle;
+		display: inline-block;
+		line-height:30px;
+	}
+	.button-group {
+		display:inline-block;
+	}
+	div.filter {
+		input {
+			background-image: url('../img/magnifying-glass.png');
+			background-repeat:no-repeat;
+			background-position: 140px 8px;
+			width:150px;
+			.box-shadow(none);
+			border:1px solid @gray;
+			height: 22px;
+			padding:8 10px;
+			margin:0;
+		}
+	}
+	.btn-group-action { display: none; }
+	.btn-group-action.active { display: inline-block;}
+}
+
+// FORMS
+// ----------------------------
+
+.directus-form {
+	margin-bottom:0px!important;
+	.border-radius(@baseBorderRadius);
+	background-color: @grayLight;
+	border: 1px solid @gray;
+	fieldset {
+		border-bottom: 1px solid @gray;
+		border-top: 1px solid @white;
+		padding: 12px 20px;
+	}
+	fieldset:first-child {border-top:0;}
+	& > fieldset:last-child {border-bottom:0;}
+	input[type="text"],
+	input[type="text"].large,
+	textarea {
+		width: 82%;
+	}
+	input[type="text"].small {
+		width: 60px;
+	}
+	input[type="text"].medium {
+		width: 45%;
+	}
+
+	.char-count {
+		color: @white;
+		margin-left:10px;
+		background-color: @directusPrimary;
+	}
+	.tag {
+		color: @white;
+		margin-right:10px;
+		margin-top:10px;
+		background-color: @silver;
+		&:hover {
+			background-color: @red;
+			cursor: pointer;
+		}
+	}
+	.no-items {
+		background-color:#FFF; padding: 10px 20px; margin-bottom: 16px; border-top: 1px solid @gray; border-bottom: 1px solid @gray;
+	}
+}
+
+.directus-settings {
+	border: 1px solid #DCDCDC;
+	padding: 16px;
+	margin: 0;
+	fieldset {
+		margin-bottom: 20px;
+		&:last-child {margin:0;}
+	}
+	label.radio {font-weight: normal;}
+	input:last-child {margin-bottom:0px;}
+}
+
+// ALERTS
+// ----------------------------
+
+#alert {
+	span {display:block; margin-bottom:30px; font-size:30px; }
+	.border-radius(@baseBorderRadius);
+	text-align:center; width:140px;
+	font-size:26px;
+	font-family:@serifFontFamily;
+	background-color:rgba(28,28,28,0.7);
+	padding:30px 30px;
+	color:#FFF;
+	position:absolute;
+	top:30%;
+	left:50%;
+	margin-left:-130px;
+}
+
+// DIRECTUS MODULE
+// ----------------------------
+.directus-module {
+	text-shadow: @textShadowWhite;
+	div:first-child {border-top: 0;}
+	div:last-child {border-bottom: 0;}
+	.border-radius(@baseBorderRadius);
+	background-color: @grayLight;
+	border: 1px solid @gray;
+	.directus-module-header,
+	.directus-module-section {
+		padding: 12px 20px;
+	}
+	.directus-module-header {
+		text-shadow: @white 1px 1px 0px;
+		border-bottom: 1px solid @gray;
+		font-weight: bold;
+	}
+	.directus-module-section {
+		border-top: 1px solid @white;
+		border-bottom: 1px solid @gray;
+	}
+	margin-bottom: 10px;
+	&:last-child { margin-bottom: 0; }
+}
+
+// UPLOADS/DROPZONE!
+// ----------------------------
+.dropzone {
+	position: absolute;
+	opacity: 0.2;
+	z-index: 1029;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	&.dragover {
+		background-color:#555;
+	}
+}
+.upload-item {
+	padding: 8px 16px;
+	background-color: #F4F4F4;
+	border-bottom: 1px solid #DCDCDC;
+	border-top: 1px solid @white;
+	&:first-child {border-top:0;}
+	&:last-child {border-bottom:0;}
+	.progress {
+		margin-bottom:10px;
+	}
+}
+
+//FIX THIS, SHOULD BE A CLASS
+#media-list {
+	position:relative;
+}
+
+// RESPONSIVNESS
+// ------------------------------
+
+@media (max-width: 979px) {
+  // Unfix the navbars
+	.directus-table tbody td:nth-child(n+8),
+	.directus-table th:nth-child(n+8) {
+		display: none;
+	}
+}
+
+@media (max-width: 767px) {
+
+  .navbar-fixed-top,
+  .navbar-fixed-bottom {
+    position: static;
+  }
+
+	.head {
+		padding-top:0;
+	}
+
+
+
+	#footer {
+		margin-left: -20px;
+		margin-right: -20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	.head {
+		margin-left:-20px;
+		margin-right:-20px;
+		padding-left:20px;
+		padding-right:20px;
+	}
+	.nav-tabs {
+		li > a {
+			padding: 10px 10px;
+			//margin-right:4px;
+		}
+	}
+	.container-fluid {
+		padding-right: 20px;
+		padding-left: 20px;
+	}
+	.directus-table tbody td:nth-child(n+7),
+	.directus-table th:nth-child(n+7) {
+		display: none;
+	}
+}
+
+@media (max-width: 480px) {
+	.directus-table tbody td:nth-child(n+5),
+	.directus-table th:nth-child(n+5) {
+		display: none;
+	}
+
+	.btn-top {
+		width:100%;
+	}
+	.nav-tabs li:last-child {display:none;}
+	.go-to-site {display:none;}
+	.user-firstname {display:none;}
+	.brand {font-size:16px!important;}
+}
+
+
+

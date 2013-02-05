@@ -1,0 +1,65 @@
+define([
+  "app",
+  "backbone"
+],
+
+function(app, Backbone) {
+  var Modal = Backbone.Layout.extend({
+
+    template: 'modal',
+
+    attributes: {
+      'id': 'modal',
+      'class': 'modal'
+    },
+
+    serialize: function() {
+      return {title: this.options.title || 'Dialog', buttonText: this.options.buttonText};
+    },
+
+    events: {
+      'click button[name=save]': function(e) { e.preventDefault(); this.save(); },
+      'click button[name=close]': 'close',
+      'click button.close': 'close'
+    },
+
+    close: function() {
+      $('body').removeClass('modal-open');
+      this.$backdrop.remove();
+      this.remove();
+    },
+
+    save: function() {
+
+    },
+
+    afterRender: function() {
+      this.setView('.modal-body', this.options.view);
+    },
+
+    constructor: function (options) {
+
+      // Add events from child
+      if (this.events) {
+        this.events = _.defaults(this.events, Modal.prototype.events);
+      }
+
+      Backbone.Layout.__super__.constructor.call(this, options);
+
+      $('body').addClass('modal-open');
+      this.$backdrop = $('<div class="modal-backdrop"/>').appendTo(document.body).on('click', $.proxy(this.close, this));
+
+      if (this.options.stretch) {
+        this.$el.addClass('stretch');
+      } else {
+        this.$el.removeClass('stretch');
+      }
+
+      this.options.buttonText = this.options.buttonText || 'Save changes';
+
+      this.view = this.options.view;
+
+    }
+  });
+  return Modal;
+});

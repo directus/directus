@@ -1,0 +1,17 @@
+[
+	{
+    "id":"allowed_thumbnails",
+    "type":"varchar",
+    "ui":"textinput"
+  },
+	{
+    "id":"media_folder",
+    "type":"varchar",
+    "ui":"textinput"
+  },
+	{
+    "id":"media_naming",
+    "type":"varchar",
+    "ui":"textinput"
+  },
+]
