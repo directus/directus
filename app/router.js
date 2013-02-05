@@ -11,7 +11,7 @@ define([
   "core/directus",
   "core/tabs",
   "ui/ui",
-  "modules/dashboard",
+  "modules/activity",
   "modules/table",
   "modules/settings",
   "modules/media",
@@ -22,7 +22,7 @@ define([
   "core/collection.upload"
 ],
 
-function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia) {
+function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia) {
 
   var Router = Backbone.Router.extend({
 
@@ -37,7 +37,7 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
       "users/:id":              "users",
       "settings":               "settings",
       "settings/:name":         "settings",
-      "settings/:name/:table":  "settings",
+      "settings/tables/:table": "settingsTable",
       "messages":               "messages"
     },
 
@@ -79,26 +79,25 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
     tables: function() {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.Tables({collection: this.tables}));
+      this.v.main.setView('#content', new Table.Views.Tables({collection: app.tables}));
       this.v.main.render();
     },
 
     entries: function(tableName) {
       this.setTitle('Tables');
-      if (this.entries[tableName].table.get('single')) {
+      if (app.entries[tableName].table.get('single')) {
         this.entry(tableName, 1);
         return;
       }
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.List({collection: this.entries[tableName]}));
+      this.v.main.setView('#content', new Table.Views.List({collection: app.entries[tableName]}));
       this.v.main.render();
     },
 
-    //UGLY AS HELL NEED MAJOR REFACTORING
     entry: function(tableName, id) {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      var collection = this.entries[tableName];
+      var collection = app.entries[tableName];
       var model;
 
       if (id === "new") {
@@ -119,14 +118,14 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
     activity: function() {
       this.setTitle('Activity');
       this.tabs.setActive('activity');
-      this.v.main.setView('#content', new Dashboard.Views.List({collection: this.activity}));
+      this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
       this.v.main.render();
     },
 
     media: function() {
       this.setTitle('Media');
       this.tabs.setActive('media');
-      this.v.main.setView('#content', new Media.Views.List({collection: this.media}));
+      this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
       this.v.main.render();
     },
 
@@ -134,48 +133,53 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
       this.setTitle('Users');
       this.tabs.setActive('users');
       if (id !== undefined) {
-        this.v.main.setView('#content', new Users.Views.Edit({model: this.users.get(id)}));
+        this.v.main.setView('#content', new Users.Views.Edit({model: app.users.get(id)}));
       } else {
-        this.v.main.setView('#content', new Users.Views.List({collection: this.users}));
+        this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       }
       this.v.main.render();
     },
 
-    //Use sub router?
+    settings: function(name) {
 
-    settings: function(name, tableName) {
       this.setTitle('Settings');
       this.tabs.setActive('settings');
-      if (name === 'global') {
-        var globalStructure = new Directus.CollectionColumns([
-          {id: 'site_name', ui: 'textinput', char_length: 255},
-          {id: 'site_url', ui: 'textinput', char_length: 255},
-          {id: 'cms_color', ui: 'select', options: { options: [{title: 'Green', value: 'green'}]}},
-          {id: 'cms_user_auto_sign_out', ui: 'numeric', char_length: 255, options: {size: 'small'}}
-        ], {parse: true});
-        this.v.main.setView('#content', new Settings.Views.Global({model: this.settings.get('global'), structure: globalStructure}));
-      } else if (name === 'tables') {
-        if (tableName) {
-          this.v.main.setView('#content', new Settings.Views.Table({collection: this.columns[tableName]}));
-        } else {
-          this.v.main.setView('#content', new Settings.Views.Tables({collection: this.tables}));
-        }
-      } else if (name === 'media') {
-        var mediaStructure = new Directus.CollectionColumns([
-          {id: 'media_naming', ui: 'select', char_length: 255, options:{ options: [{title: 'Original', value: 'original'}, {title: 'Unique', value: 'unique'}] }},
-          {id: 'allowed_thumbnails', ui: 'textinput', char_length: 255},
-          {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small'}}
-        ], {parse: true});
-        this.v.main.setView('#content', new Settings.Views.Global({model: this.settings.get('media'), structure: mediaStructure}));
-      } else if (name === 'permissions') {
-        this.v.main.setView('#content', new Settings.Views.Permissions());
-      } else if (name === 'system') {
-        this.v.main.setView('#content', new Settings.Views.System());
-      } else if (name === 'about') {
-        this.v.main.setView('#content', new Settings.Views.About());
-      } else {
-        this.v.main.setView('#content', new Settings.Views.Main({tables: this.tables}));
+
+
+      switch(name) {
+        case 'tables':
+          this.v.main.setView('#content', new Settings.Tables({collection: app.tables}));
+          break;
+        case 'global':
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), structure: Settings.MediaStructure}));
+          break;
+        case 'media':
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), structure: Settings.MediaStructure}));
+          break;
+        case 'permissions':
+          this.v.main.setView('#content', new Settings.Permissions());
+          break;
+        case 'system':
+          this.v.main.setView('#content', new Settings.System());
+          break;
+        case 'about':
+          this.v.main.setView('#content', new Settings.About());
+          break;
+        default:
+          this.v.main.setView('#content', new Settings.Main({tables: app.tables}));
+          break;
       }
+
+      this.v.main.render();
+    },
+
+    settingsTable: function(tableName) {
+
+      this.setTitle('Settings');
+      this.tabs.setActive('settings');
+
+      this.v.main.setView('#content', new Settings.Table({collection: app.columns[tableName]}));
+
       this.v.main.render();
     },
 
@@ -185,77 +189,15 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
 
     initialize: function(options) {
 
-      // All this should probably move up a level to 'main'.
-      this.columns = {};
-      this.entries = {};
-      this.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','count','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
-      this.preferences = {};
-
-      this.settings = new CollectionSettings(options.data.settings, {parse: true});
-      this.settings.url = app.API_URL + 'settings';
-
-      //Cache UI settings
-      this.uiSettings = UI.settings();
-
-      // Always bootstrap schema and table info.
-      _.each(options.data.tables,function(options) {
-
-        var tableName = options.schema.id;
-
-        this.columns[tableName] = new Directus.CollectionColumns(options.columns, {parse: true});
-        this.columns[tableName].url = app.API_URL + 'tables/' + tableName + '/columns';
-
-        // Set user preferences
-        this.preferences[tableName] = new Backbone.Model(options.preferences);
-        this.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
-
-        // Set tables schema
-        options.schema.url = app.API_URL + 'tables/' + tableName;
-        this.tables.add(new Backbone.Model(options.schema));
-
-        // Temporary quick fix
-        this.columns[tableName].table = this.tables.get(tableName);
-
-      }, this);
-
-      // Instantiate entries
-      this.tables.each(function(table) {
-        if (table.id === 'directus_media') {
-          table.title = "Media";
-          this.media = new CollectionMedia([], {structure: this.columns.directus_media, table: table, preferences: this.preferences.directus_media});
-          this.media.url = app.API_URL + 'media';
-          return;
-        }
-        this.entries[table.id] = new Directus.Entries.Collection([], {
-          structure: this.columns[table.id],
-          table: table,
-          preferences: this.preferences[table.id]
-        });
-      }, this);
-
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      this.users = this.entries.directus_users;
-      this.users.reset(options.data.users, {parse: true});
-      this.users.table.title = "Users";
-      this.uid = 1;
-
-      this.messages = this.entries.directus_messages;
-
-      this.activity = this.entries.directus_activity;
-      this.activity.table.title = "Activity";
-
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
       this.tabs = new Tabs.Collection([
-        {title: "Activity", id: "activity", count: this.tables.get('directus_activity').get('count')},
-        {title: "Tables", id: "tables", count: this.tables.length},
-        {title: "Media", id: "media", count: this.tables.get('directus_media').get('count')},
-        {title: "Users", id: "users", count: this.tables.get('directus_users').get('count')},
+        {title: "Activity", id: "activity", count: app.tables.get('directus_activity').get('count')},
+        {title: "Tables", id: "tables", count: app.tables.length},
+        {title: "Media", id: "media", count: app.tables.get('directus_media').get('count')},
+        {title: "Users", id: "users", count: app.tables.get('directus_users').get('count')},
         {title: "Settings", id: "settings"}
       ]);
 
-      var user = this.users.get(1);
+      var user = app.users.get(1);
 
       //Top
       var Navbar = Backbone.Layout.extend(
@@ -280,7 +222,7 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
         el: "#main",
         //template: "main",
         views: {
-          '#navbar': new Navbar({model: this.settings.get('global')}),
+          '#navbar': new Navbar({model: app.settings.get('global')}),
           '#tabs': new Tabs.View({collection: this.tabs})
         }
       });
@@ -290,7 +232,7 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
       });
 
       // Update media counter
-      this.media.on('all', function() {
+      app.media.on('all', function() {
         var media = this.tabs.get('media');
         media.set({count: this.media.length});
       }, this);

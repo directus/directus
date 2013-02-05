@@ -102,9 +102,9 @@ function(app, Backbone, BaseCollection) {
         if (type === 'ONETOMANY' || type === 'MANYTOMANY') {
 
           options = {
-            table: app.router.tables.get(column.get('table_related')),
-            structure: app.router.columns[column.get('table_related')],
-            preferences: app.router.preferences[column.get('table_related')],
+            table: app. tables.get(column.get('table_related')),
+            structure: app.columns[column.get('table_related')],
+            preferences: app.preferences[column.get('table_related')],
             parse:true
           };
 

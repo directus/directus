@@ -14,9 +14,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR', 'DATE', 'TIME'];
 
   Module.variables = [
-    {id: 'test', ui: 'textinput', 'char_length': 10}
+    {id: 'test', ui: 'textinput', 'char_length': 10},
+    {id: 'input', ui: 'textinput', 'char_length': 20}
   ];
-
 
   var template = '<label>{{{capitalize name}}}</label>'+
                  '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}"/>'+
@@ -52,6 +52,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     }
 
   });
+
+  Module.validate = function(value) {
+    return true;
+  };
 
   Module.list = function(options) {
     return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';

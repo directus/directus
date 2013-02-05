@@ -1,4 +1,4 @@
-//  settings.js
+//  tables.js
 //  Directus 6.0
 
 //  (c) RANGER
@@ -44,7 +44,7 @@ function(app, Backbone, ui, Directus) {
         .map(function(ui) { return {id: ui.id, datatype: ui.dataTypes[0]}; })
         .value();*/
 
-      var tables = app.router.tables;
+      var tables = app.tables;
       var options = {data: this.model.toJSON()}
       var dataType = this.model.get('data_type');
       var tableRelated = this.model.get('table_related');
@@ -56,18 +56,18 @@ function(app, Backbone, ui, Directus) {
         }
       }
       if (tableRelated !== undefined) {
-        options.columns = app.router.columns[tableRelated].map(function(model) {
+        options.columns = app.columns[tableRelated].map(function(model) {
           return {column_name: model.id};
         }, this);
       }
       if (dataType === 'MANYTOMANY') {
-        options.junctionTables = app.router.tables.chain()
+        options.junctionTables = app.tables.chain()
           .filter(function(model) { return model.get('is_junction_table') })
           .map(function(model) { return {id: model.id, selected: (model.id === this.model.get('junction_table'))} }, this)
           .value();
       }
 
-      options.tables = app.router.tables.map(function(model) {
+      options.tables = app.tables.map(function(model) {
         return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table') ,selected: (model.id === this.model.get('table_related'))};
       },this);
 
@@ -165,7 +165,7 @@ function(app, Backbone, ui, Directus) {
     },
 
     serialize: function() {
-      var ui = app.router.uiSettings;
+      var ui = app.uiSettings;
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables');

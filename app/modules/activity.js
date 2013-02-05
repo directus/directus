@@ -2,7 +2,7 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'modules/activity.chart'
+  'modules/activity/chart'
 ],
 
 function(app, Backbone, Directus, Chart) {

@@ -12,93 +12,40 @@ define([
   'backbone',
   'ui/ui',
   'core/directus',
-  'modules/settings.tables',
-  'modules/settings.global'
+  'modules/settings/tables',
+  'modules/settings/global',
+  'modules/settings/about',
+  'modules/settings/permissions',
+  'modules/settings/system'
 ],
 
-function(app, Backbone, ui, Directus, SettingsTables, SettingsGlobal) {
+function(app, Backbone, ui, Directus, Tables, Global, About, Permissions, System) {
 
   var Settings = app.module();
 
-  Settings.Model = Backbone.Model.extend({});
-  Settings.Collection = Backbone.Collection.extend({});
-  Settings.Views = {};
+  Settings.GlobalStructure = new Directus.CollectionColumns([
+    {id: 'site_name', ui: 'textinput', char_length: 255},
+    {id: 'site_url', ui: 'textinput', char_length: 255},
+    {id: 'cms_color', ui: 'select', options: { options: [{title: 'Green', value: 'green'}]}},
+    {id: 'cms_user_auto_sign_out', ui: 'numeric', char_length: 255, options: {size: 'small'}}
+  ], {parse: true});
 
-  Settings.Views.UISettings = Backbone.Layout.extend({
-  template: 'settings_ui',
+  Settings.MediaStructure = new Directus.CollectionColumns([
+    {id: 'media_naming', ui: 'select', char_length: 255, options:{ options: [{title: 'Original', value: 'original'}, {title: 'Unique', value: 'unique'}] }},
+    {id: 'allowed_thumbnails', ui: 'textinput', char_length: 255},
+    {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small'}}
+  ], {parse: true});
 
-  serialize: function() {
-      var options = _.map(ui.get(this.model.id).options, function(obj) {
-        obj[obj.type] = true;
-        obj.value = this.model.get(obj.name);
-        return obj;
-      },this);
-      return {options: options, id: this.model.id};
-    }
-  });
+  Settings.Global = Global;
+  Settings.System = System;
 
-  Settings.Views.TableRow = Backbone.Layout.extend({
-    tagName: 'tr',
-    template: 'settings_tables_field',
-    events: {
-      'click #open-settings-modal': 'openModal'
-    },
+  Settings.Table = Tables.Views.Table;
+  Settings.Tables = Tables.Views.List;
 
-    openModal: function() {
-      var ui = $('select option:selected', this.context).text();
-      var model = this.model.options.get(ui) || this.model.options.add({id:ui}).get(ui);
-      var title = model.collection.parent.collection.tableName + ' / ' + model.collection.parent.get('title') + ' / ' + ui;
-      this.modal = new Directus.Modal({
-        title: title,
-        stretch: false,
-        view: new Settings.Views.UISettings({model: model})
-      });
+  Settings.Permissions = Permissions;
+  Settings.About = About;
 
-    },
-    serialize: function() {
-      var types = _.pluck(ui.perType(this.model.get('type')),'id');
-      return {types: types, model: this.model.toJSON(), tableId: this.model.collection.tableName};
-    },
-    beforeRender: function() {
-      this.$el.attr('id', this.id);
-    },
-    initialize: function() {
-      this.id = this.model.collection.tableName + '-' + this.model.id;
-      this.context = '#'+this.id;
-    }
-  });
-
-  Settings.Views.Table = SettingsTables.Views.Table;
-
-  Settings.Views.Tables = SettingsTables.Views.List;
-
-  Settings.Views.Global = SettingsGlobal;
-
-  Settings.Views.System = Backbone.Layout.extend({
-    template: 'page',
-    serialize: {
-      title: 'System',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
-    }
-  });
-
-  Settings.Views.Permissions = Backbone.Layout.extend({
-    template: 'page',
-    serialize: {
-      title: 'Permissions',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
-    }
-  });
-
-  Settings.Views.About = Backbone.Layout.extend({
-    template: 'page',
-    serialize: {
-      title: 'About',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
-    }
-  });
-
-  Settings.Views.Main = Backbone.Layout.extend({
+  Settings.Main = Backbone.Layout.extend({
     template: 'settings'
   });
 

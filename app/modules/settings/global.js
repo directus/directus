@@ -1,11 +1,10 @@
-//  settings.js
+//  global.js
 //  Directus 6.0
 
 //  (c) RANGER
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
-
 
 define([
   'app',
@@ -18,7 +17,7 @@ function(app, Backbone, ui, Directus) {
 
   var SettingsGlobal = app.module();
 
-  var Layout = Backbone.Layout.extend({
+  var Global = Backbone.Layout.extend({
 
     template: 'page',
 
@@ -54,6 +53,6 @@ function(app, Backbone, ui, Directus) {
 
   });
 
-  return Layout;
+  return Global;
 
 });
