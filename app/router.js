@@ -6,7 +6,6 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-
 define([
   "app",
   "core/directus",
