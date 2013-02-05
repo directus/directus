@@ -45,7 +45,7 @@ function(app, Backbone, ui, Directus) {
         .value();*/
 
       var tables = app.tables;
-      var options = {data: this.model.toJSON()}
+      var options = {data: this.model.toJSON()};
       var dataType = this.model.get('data_type');
       var tableRelated = this.model.get('table_related');
 
@@ -62,8 +62,8 @@ function(app, Backbone, ui, Directus) {
       }
       if (dataType === 'MANYTOMANY') {
         options.junctionTables = app.tables.chain()
-          .filter(function(model) { return model.get('is_junction_table') })
-          .map(function(model) { return {id: model.id, selected: (model.id === this.model.get('junction_table'))} }, this)
+          .filter(function(model) { return model.get('is_junction_table'); })
+          .map(function(model) { return {id: model.id, selected: (model.id === this.model.get('junction_table'))}; }, this)
           .value();
       }
 
@@ -228,7 +228,7 @@ function(app, Backbone, ui, Directus) {
       options.columns = ['column_name','ui','hidden_input','required','master','sort','comment'];
       options.success = function() {
         app.router.go(['settings','tables']);
-      }
+      };
       this.collection.save(undefined, options);
     },
 /*

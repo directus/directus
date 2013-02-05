@@ -32,7 +32,7 @@ function(app, Backbone, Directus) {
         var cid = $(e.target).closest('tr').attr('data-cid');
         var model = this.collection.get(cid);
         this.addEditMedia(model, 'Editing Media');
-      },
+      }
     },
 
     addEditMedia: function(model, title) {
@@ -53,7 +53,7 @@ function(app, Backbone, Directus) {
           }
           modal.close();
         }});
-      }
+      };
     },
 
     serialize: function() {

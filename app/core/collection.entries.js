@@ -189,7 +189,7 @@ function(app, Backbone, BaseCollection) {
     parse: function(response) {
       this.total = response.total;
       return response.rows;
-    },
+    }
 
   });
 

@@ -27,7 +27,7 @@ define(['app','backbone'], function(app, Backbone) {
     serialize: function() {
       //Filter out empty tags
       this.tags = _.filter(this.tags, function(tag) { return(tag !== ''); });
-      return {value: this.tags.join(','), name: this.options.name, tags: this.tags}
+      return {value: this.tags.join(','), name: this.options.name, tags: this.tags};
     },
 
     events: {

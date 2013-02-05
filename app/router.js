@@ -141,10 +141,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     settings: function(name) {
-
       this.setTitle('Settings');
       this.tabs.setActive('settings');
-
 
       switch(name) {
         case 'tables':

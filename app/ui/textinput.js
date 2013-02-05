@@ -48,7 +48,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         name: this.options.name,
         maxLength: length,
         characters: length - value.length
-      }
+      };
     }
 
   });

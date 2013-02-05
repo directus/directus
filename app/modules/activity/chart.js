@@ -22,26 +22,27 @@ function(app, Backbone, Directus) {
       //////////////////////////////////////////////////////////////////////////////
 
       var animationTime = 1000;
-      var totals = new Array();
       var me = this;
-      totals['all'] = 0;
-      totals['media'] = 0;
-      totals['system'] = 0;
-      totals['deleted'] = 0;
-      totals['edited'] = 0;
-      totals['added'] = 0;
+      var totals = {
+        'all': 0,
+        'media': 0,
+        'system': 0,
+        'deleted': 0,
+        'edited': 0,
+        'added': 0
+      };
 
       $(".bar").each(function(index){
         var barTotal = $(this).attr("data-total");
         var barType = $(this).attr("data-type");
         $(this).animate({ height: barTotal }, animationTime, "swing");
 
-        totals[barType] += parseInt(barTotal);
+        totals[barType] += parseInt(barTotal, 10);
 
       });
 
       // Get total activity (could/should be total active items)
-      totals['all'] = totals['media'] + totals['system'] + totals['deleted'] + totals['edited'] + totals['added'];
+      totals.all = totals.media + totals.system + totals.deleted + totals.edited + totals.added;
 
       //////////////////////////////////////////////////////////////////////////////
 
