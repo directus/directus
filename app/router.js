@@ -41,10 +41,6 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
       "messages":               "messages"
     },
 
-    index: function() {
-
-    },
-
     go: function() {
       var array = _.isArray(arguments[0]) ? arguments[0] : _.toArray(arguments);
       return this.navigate(array.join("/"), true);
