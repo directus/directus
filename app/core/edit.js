@@ -16,7 +16,6 @@ function(app, Backbone) {
     },
 
     beforeRender: function() {
-      console.log('re-n-der', this.cid, this.model);
       var structure = this.options.structure || this.model.collection.structure;
       var UI = ui.initialize({model: this.model, structure: structure});
       structure.each(function(column) {
@@ -32,17 +31,11 @@ function(app, Backbone) {
       this.$el.attr('id','directus-form');
     },
 
-    //Fix broken images
+    //Focus first input
     afterRender: function() {
-      $('img').error(function(){
-        $(this).attr('src', 'assets/img/missing-image.png').removeClass();
-      });
-      //console.log($('.directus-form:input:visible:first'));
       var $first = this.$el.find(':input:first:visible');
-
       $first.focus();
       $first.val($first.val());
-      //$('.directus-form:input:visible:first').focus();
     },
 
     save: function(data, success, error) {
@@ -62,9 +55,7 @@ function(app, Backbone) {
     },
 
     initialize: function() {
-      console.log(this.model);
       this.model.on('sync', function(e) {
-        console.log('CYN');
         this.render();
       }, this);
     }

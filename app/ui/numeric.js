@@ -38,7 +38,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       }
     },
     initialize: function(options) {
-      var size = this.options.settings.get('size') || 'large';
+      var size = (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large';
       this.$input = $('<input type="text" value="'+(this.options.value || '')+'" name="'+this.options.name+'" id="'+this.options.name+'" class="'+size+'"/>');
       this.$el.append('<label>'+app.capitalize(this.options.name)+'</test>');
       this.$el.append(this.$input);

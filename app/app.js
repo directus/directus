@@ -118,9 +118,21 @@ function(Handlebars) {
       var done = this.async();
 
       // Seek out the template asynchronously.
-      $.get(app.root + path, function(contents) {
-        done(JST[path] = Handlebars.compile(contents));
+      // ASYNC is causing render-order trouble, use sync now since it will be compiled anyway
+
+      //$.get(app.root + path, function(contents) {
+      //  done(JST[path] = Handlebars.compile(contents));
+      //});
+
+      $.ajax({
+        url: app.root + path,
+        async: false,
+        success: function(contents) {
+          done(JST[path] = Handlebars.compile(contents));
+        }
       });
+
+
     }
   });
 

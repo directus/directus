@@ -108,7 +108,7 @@ function(app, Backbone) {
       var success = options.success;
 
       options.success = function(model, resp, xhr) {
-        collection.reset(model,{parse: true});
+        collection.reset(resp ,{parse: true});
         if (success !== undefined) {
           success();
         }

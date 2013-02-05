@@ -38,6 +38,8 @@ function(app, Backbone, Directus) {
     addEditMedia: function(model, title) {
       var view = new Directus.EditView({model: model});
       var modal = app.router.openModal(view, {stretch: true, title: title});
+      var isNew = model.isNew();
+      var collection = this.collection;
       view.render();
       modal.save = function() {
         var file = $('input[name=file]')[0].files[0];
@@ -46,6 +48,9 @@ function(app, Backbone, Directus) {
           data = _.extend(data, {file: file});
         }
         model.save(data, {success:function() {
+          if (isNew) {
+            collection.add(model);
+          }
           modal.close();
         }});
       }

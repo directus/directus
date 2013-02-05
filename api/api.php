@@ -4,15 +4,7 @@ require 'core/db.php';
 require 'core/media.php';
 require 'core/functions.php';
 
-define('RESOURCES_PATH', '/Users/olov/Google Drive/Working Folder/resources/');
-define('THUMBNAILS_PATH', '/Users/olov/Google Drive/Working Folder/resources/thumbnail');
-
-
-
 $db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
-//$media = new Media('http://www.youtube.com/watch?v=pkWWWKKA8jY');
-
-//  print_r($media->data());
 
 $http_method = $_SERVER['REQUEST_METHOD'];
 $collection =  isset($_GET['api_collection']) ? $_GET['api_collection'] : null;
@@ -29,9 +21,6 @@ if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER["CONTENT_TYPE"], 'multipa
     $data['file'] = $_FILES['file'];
   }
 }
-
-//w00t?
-//if (isset($data) && array_key_exists('0', $data)) unset($data['0']);
 
 /**
  * Request an api-method with parameters, return php data object
@@ -205,10 +194,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   //////////////////////////////////////////////////////////////////////////////
   // MEDIA
 
-
   if ( $collection == "media" ) {
-
-    mail('olov@rngr.org', 'datta', print_r($data, true));
 
     // Save the file
     if (isset($data['file']) && $data['file'] !== "") {
@@ -221,6 +207,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
       $data['size'] = $file_data['size'];
       $data['width'] = $file_data['width'];
       $data['height'] = $file_data['height'];
+      $data['active'] = 1;
 
       if (isset($file_data['embed_id'])) {
         $data['embed_id'] = $file_data['embed_id'];
@@ -237,7 +224,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
         break;
       case "PUT":
         if (!isset($id)) {
-          $db->set_entries($tbl_name, $data);
+          $db->set_entries('directus_media', $data);
           mail('olov@rngr.org', 'DAJTA', print_r($data, true));
           break;
         }
@@ -250,15 +237,11 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
 
 }
 
-
-
-
 //header('Access-Control-Allow-Origin: *');
 //header("Access-Control-Allow-Methods: GET, POST, DELETE, PUT");
 //header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 //header('Access-Control-Allow-Credentials: true');
 //header("Content-Type: application/json; charset=utf-8");
-
 
 // This is an api call
 if (isset($collection)) {

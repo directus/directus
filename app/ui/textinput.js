@@ -13,6 +13,11 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.id = 'textinput';
   Module.dataTypes = ['VARCHAR', 'DATE', 'TIME'];
 
+  Module.variables = [
+    {id: 'test', ui: 'textinput', 'char_length': 10}
+  ];
+
+
   var template = '<label>{{{capitalize name}}}</label>'+
                  '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}"/>'+
                  '<span class="label char-count hide">{{characters}}</span>';
@@ -38,7 +43,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
       return {
-        size: this.options.settings.get('size') || 'large',
+        size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
         value: value,
         name: this.options.name,
         maxLength: length,
@@ -49,8 +54,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
-    var val = (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-    return val;
+    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
   };
 
   return Module;
