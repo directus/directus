@@ -14,11 +14,11 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
-    {id: 'related_table', ui: 'textinput', char_length: 255},
-    {id: 'visible_column', ui: 'textinput', char_length: 255}
+    {id: 'related_table', ui: 'textinput', char_length: 64},
+    {id: 'visible_column', ui: 'textinput', char_length: 64}
   ];
 
-  var template = "<label>{{capitalize name}}</label><select></select>";
+  var template = '<label>{{capitalize name}}</label><select>{{#data}}<option id="{{id}}">{{name}}</option>{{/data}}</select>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -27,8 +27,19 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     serialize: function() {
-      return {name: this.options.name};
+      var data = this.collection.map(function(model) {
+        return {id: model.id, name: model.get(this.column)};
+      }, this);
+      return {name: this.options.name, data: data};
     },
+
+    initialize: function(options) {
+      var relatedTable = options.settings.get('related_table');
+      this.column = options.settings.get('visible_column');
+      this.collection = app.entries[relatedTable];
+      this.collection.fetch();
+      this.collection.on('reset', this.render, this);
+    }
 
   });
 

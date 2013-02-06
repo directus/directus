@@ -158,8 +158,8 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
       case "PUT":
         //This data should not be hardcoded.
         $id = $data['id'];
-        $tbl_name = 'directus_preferences';
-        $db->insert_entry($tbl_name, $data, $id);
+        $db->set_entry('directus_preferences', $data);
+        //$db->insert_entry($tbl_name, $data, $id);
         break;
 
       case "POST":

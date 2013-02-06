@@ -22,6 +22,18 @@ function(app, Backbone) {
       return _.map(models, function(model) { return _.pick(model.toJSON(), cols); });
     },
 
+    getFilters: function() {
+      return this.filters;
+    },
+
+    getFilter: function(key) {
+      return this.filters && this.filters[key];
+    },
+
+    setFilter: function(key, value) {
+      this.filters[key] = value;
+    },
+
     // Proxies underscore's sortBy to reverse order
 
     sortBy: function() {
@@ -31,11 +43,11 @@ function(app, Backbone) {
     },
 
     comparator: function(row) {
-      var column = this.filters ? this.filters.orderBy : 'id';
+      var column = this.getFilter('orderBy') || 'id';
       var value = row.get(column);
       var options, ui, type;
 
-      //There is no valu
+      //There is no value
       if (!row.has(column)) {
         if (this.structure) {
           schema = this.structure.get(column);
@@ -63,11 +75,11 @@ function(app, Backbone) {
       if (!this.filters) return;
 
       if (column === undefined) {
-        this.filters.orderBy = 'id';
-        this.filters.orderDirection = 'ASC';
+        this.setFilter('orderBy','id');
+        this.setFilter('orderDirection', 'ASC');
       } else {
-        this.filters.orderBy = column;
-        this.filters.orderDirection = orderDirection;
+        this.setFilter('orderBy', column);
+        this.setFilter('orderDirection', orderDirection);
       }
 
       if (this.filters.perPage < this.total) {
@@ -79,29 +91,18 @@ function(app, Backbone) {
 
     getOrder: function() {
       var order = {};
-      if (this.filters) {
-        order.orderBy = this.filters.orderBy;
-        order.orderDirection = this.filters.orderDirection;
-      }
+      order.orderBy = this.getFilter('orderBy');
+      order.orderDirection = this.getFilter('orderDirection');
       return order;
     },
 
-    filterMulti: function(filters) {
+   filterMulti: function(filters) {
       return this.filter(function(model) {
         // Every filter has to pass the test!
         return _.every(filters, function(value, key) { return (model.has(key) && model.get(key) === value); });
       });
     },
 
-
-/*
-    toJSON: function(options) {
-      return this.map(function(model){
-        console.log(model.toJSON(options));
-        return model.toJSON(options);
-      });
-    },
-*/
     save: function(options) {
       options = options || {};
       var collection = this;
@@ -126,7 +127,8 @@ function(app, Backbone) {
 
       this.trigger('fetch', this);
 
-      _.extend(options.data, this.filters);
+      _.extend(options.data, this.getFilters());
+
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
 

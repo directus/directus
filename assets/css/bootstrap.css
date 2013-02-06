@@ -2090,6 +2090,9 @@ table th[class*="span"],
 .glyphicon-justify:before {
   content: "\e114";
 }
+.glyphicon-cogwheel:before {
+  content: "\e137";
+}
 /*
 .glyphicon-glass:before                   { content: "\e001"; }
 .glyphicon-music:before                   { content: "\e002"; }
@@ -6280,6 +6283,12 @@ a:hover {
 .table-striped tbody tr:last-child,
 .directus-table tbody tr:last-child {
   border-bottom: 1px solid #ededed !important;
+}
+#set-visible-columns {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  font-size: 16px;
 }
 .related-table .directus-table th {
   background-color: #cccccc;

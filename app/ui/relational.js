@@ -14,9 +14,7 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
   Module.dataTypes = ['ONETOMANY', 'MANYTOMANY'];
 
   Module.variables = [
-    {id: 'happy', ui: 'textinput', char_length: 255},
-    {id: 'hacking', ui: 'textinput', char_length: 255},
-    {id: 'keyboard', ui: 'textinput', char_length: 255}
+    {id: 'visible_columns', ui: 'textinput', char_length: 255}
   ];
 
   var template = '<label>{{{capitalize title}}}</label>' +

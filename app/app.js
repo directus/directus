@@ -17,7 +17,15 @@ function(Handlebars) {
     root: '/directus/',
 
     capitalize: function(string) {
-      return string && _.map(string.split('_'), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
+      var idIndex;
+
+      if (!string) return '';
+
+      idIndex = string.lastIndexOf("_id");
+      if (string, string.length - idIndex === 3) {
+        string = string.substring(0, idIndex);
+      }
+      return _.map(string.split('_'), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
     },
 
     bytesToSize: function(bytes, precision) {

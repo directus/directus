@@ -159,7 +159,7 @@ function(app, Backbone) {
 
     serialize: function() {
       return {
-        columns: this.options.columns,
+        columns: this.collection.getColumns(),
         rows: this.collection.models,
         sortable: this.options.sortable,
         selectable: this.options.selectable
@@ -175,7 +175,7 @@ function(app, Backbone) {
     },
 
     initialize: function() {
-      this.collection.on('sort change', this.render, this);
+      this.collection.on('sort', this.render, this);
       //Setup jquery UI sortable
       if (this.options.structure && this.options.structure.get('sort')) {
         this.collection.setOrder('sort','ASC',{silent: true});
@@ -214,12 +214,37 @@ function(app, Backbone) {
         } else {
           this.collection.setOrder(column, 'ASC');
         }
+      },
+      'click #set-visible-columns': function() {
+        var structure = this.options.collection.structure;
+        var preferences = this.collection.preferences;
+        var visibleColumns = preferences.get('columns_visible').split(',');
+        var data = {};
+        var view, modal;
+
+        data.columns = structure.chain()
+          .filter(function(model) { return !model.get('system') && !model.get('hidden_list') })
+          .map(function(model) { return {name: model.id, visible: (visibleColumns.indexOf(model.id) > -1)}; })
+          .value();
+
+        view = new Backbone.Layout({template: 'table-set-columns', serialize: data});
+        modal = app.router.openModal(view, {title: 'Set visible columns'});
+
+        modal.save = function() {
+          var data = this.$el.find('form').serializeObject();
+          var string = _.isArray(data.columns_visible) ? data.columns_visible.join(',') : data.columns_visible;
+          preferences.save({'columns_visible': string},{
+            success: function() { modal.close(); }
+          });
+        }
+
+        view.render();
       }
     },
 
     serialize: function() {
       var order = this.collection.getOrder();
-      var columns = _.map(this.options.columns, function(column) {
+      var columns = _.map(this.collection.getColumns(), function(column) {
         return {name: column, orderBy: column === order.orderBy, desc: order.orderDirection === 'DESC'};
       });
       return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns};
@@ -276,12 +301,11 @@ function(app, Backbone) {
           deleteOnly: this.options.deleteOnly
         }));
       }
-      this.insertView('table', new TableHead({collection: this.collection, columns: this.columns, selectable: this.options.selectable, sortable: this.options.sortable}));
+      this.insertView('table', new TableHead({collection: this.collection, selectable: this.options.selectable, sortable: this.options.sortable}));
 
       if (this.collection.length > 0) {
         this.insertView('table', new TableBody({
           collection: this.collection,
-          columns: this.columns,
           selectable: this.options.selectable,
           filter: this.options.filter,
           TableRow: this.options.tableRow,
@@ -304,17 +328,11 @@ function(app, Backbone) {
 
     initialize: function() {
 
-      this.columns = this.options.columns ||
-                     (this.collection.preferences && this.collection.preferences.get('columns_visible').split(',')) ||
-                     (this.collection.structure && this.collection.structure.pluck('id')) ||
-                     this.collection.length && _.keys(this.collection.at(0).toJSON()) ||
-                     [];
-
       this.collection.on('fetch',  function() {
         app.router.showAlert();
       }, this);
 
-      this.collection.on('reset nocontent add remove', function() {
+      this.collection.on('reset nocontent add remove change', function() {
         app.router.hideAlert();
         this.render();
       }, this);

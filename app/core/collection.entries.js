@@ -73,6 +73,7 @@ function(app, Backbone, BaseCollection) {
       this.structure = options.structure;
       this.table = options.table;
       this.preferences = options.preferences;
+      this.filters = options.filters;
       this.nestedCollection = new Entries.Collection({}, options);
       this.nestedCollection.on('change', function() {
         this.trigger('change');
@@ -94,18 +95,24 @@ function(app, Backbone, BaseCollection) {
       var value;
       var id;
       var options;
+      var ui;
+      var columns;
 
       structure.each(function(column) {
         type = column.get('type');
         id = column.id;
+        ui = structure.get(column).options;
 
         if (type === 'ONETOMANY' || type === 'MANYTOMANY') {
+
+          columns = ui.get('visible_columns') || '';
 
           options = {
             table: app. tables.get(column.get('table_related')),
             structure: app.columns[column.get('table_related')],
             preferences: app.preferences[column.get('table_related')],
-            parse:true
+            parse:true,
+            filters: {columns: columns.split(',')}
           };
 
           value = attributes[id] || [];
@@ -150,10 +157,6 @@ function(app, Backbone, BaseCollection) {
       return attributes;
     },
 
-    //save: function(attributes, options) {
-    //  this.constructor.__super__.save.apply(this, [attributes, options]);
-    //},
-
     //This should probably override the regular save function.
     saveRelational: function(attributes, options) {
 
@@ -178,12 +181,20 @@ function(app, Backbone, BaseCollection) {
 
     model: Entries.Model,
 
+    getColumns: function() {
+      return _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+    },
+
     initialize: function(models, options) {
+
       this.structure = options.structure;
       this.table = options.table;
       this.url = this.table.get('url') + '/rows';
       this.filters = options.filters || { currentPage: 0, perPage: 500, orderDirection: 'ASC', orderBy: 'id', active: '1,2' };
-      if (options.preferences) this.preferences = options.preferences;
+      this.preferences = options.preferences;
+
+      this.preferences.on('change', function() { this.trigger('change') }, this);
+
     },
 
     parse: function(response) {
