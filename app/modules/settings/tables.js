@@ -34,6 +34,7 @@ function(app, Backbone, ui, Directus) {
         var data = this.$el.serializeObject();
         this.model.clear({silent: true});
         this.model.set(data);
+        console.log(this.model);
       }
     },
 

@@ -13,11 +13,9 @@ function(app, Backbone, Entries) {
 
     uploader: true,
 
-    parse: function(response) {
-      return response;
-    },
-
     sync: function(method, model, options) {
+
+      console.log(model);
 
       var methodMap = {
         'create': 'POST',

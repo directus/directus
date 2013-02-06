@@ -17,7 +17,7 @@ function(Handlebars) {
     root: '/directus/',
 
     capitalize: function(string) {
-      return _.map(string.split('_'), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
+      return string && _.map(string.split('_'), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
     },
 
     bytesToSize: function(bytes, precision) {
@@ -68,6 +68,12 @@ function(Handlebars) {
         return 'inactive';
     }
   });
+
+  // Agnus Croll:
+  // http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
+  Object.toType = function(obj) {
+    return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
+  }
 
 
   //give forms the ability to serialize to objects

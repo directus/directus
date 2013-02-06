@@ -73,7 +73,7 @@ function(app, Backbone, BaseCollection) {
       this.structure = options.structure;
       this.table = options.table;
       this.preferences = options.preferences;
-      this.nestedCollection = new Collection({}, options);
+      this.nestedCollection = new Entries.Collection({}, options);
       this.nestedCollection.on('change', function() {
         this.trigger('change');
       }, this);

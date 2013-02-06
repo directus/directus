@@ -41,7 +41,7 @@ function(app, Backbone) {
           schema = this.structure.get(column);
           ui = schema.get('ui');
 
-          options = app.router.uiSettings[ui];
+          options = app.uiSettings[ui];
           if (options.sortBy !== undefined) {
 
             //Merge the column values, eg first_name, last_name

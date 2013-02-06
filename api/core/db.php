@@ -193,7 +193,8 @@ class DB {
       ifnull(hidden_input,0) as hidden_input,
       table_related,
       junction_table,
-      junction_column,
+      junction_key_left,
+      junction_key_right,
       ifnull(D.required,0) as required
     FROM
       INFORMATION_SCHEMA.COLUMNS C
@@ -217,7 +218,8 @@ class DB {
       hidden_input,
       table_related,
       junction_table,
-      junction_column,
+      junction_key_left,
+      junction_key_right,
       DC.required
     FROM
       `directus_columns` DC
@@ -408,11 +410,11 @@ class DB {
    * @param $column_equals
    * @param $include_columns
    */
-  function get_many_many($table_name, $foreign_table, $junction_table, $column_equals) {
+  function get_many_many($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals) {
 
     $data_set = array();
 
-    $sth = $this->dbh->prepare("SELECT JT.id, FT.* FROM $junction_table JT LEFT JOIN $foreign_table FT ON (JT.$foreign_table = FT.id) WHERE JT.$table_name = $column_equals");
+    $sth = $this->dbh->prepare("SELECT JT.id, FT.* FROM $junction_table JT LEFT JOIN $foreign_table FT ON (JT.$junction_key_right = FT.id) WHERE JT.$junction_key_left = $column_equals");
     $sth->execute();
 
     while($row = $sth->fetch(PDO::FETCH_NUM)){
@@ -462,7 +464,8 @@ class DB {
           data_type,
           NULL as table_related,
           NULL as junction_table,
-          NULL as junction_column
+          NULL as junction_key_left,
+          NULL as junction_key_right
         FROM
           information_schema.columns
         WHERE
@@ -473,7 +476,8 @@ class DB {
           data_type,
           table_related,
           junction_table,
-          junction_column
+          junction_key_left,
+          junction_key_right
         FROM
           `directus_columns`
         WHERE
@@ -576,10 +580,10 @@ class DB {
 
     for ($i = $relational_start_index; $i < $schema_size; $i++) {
       if ($schema[$i]['data_type'] == 'MANYTOMANY') {
-        $result[$schema[$i]['column_name']] = $this->get_many_many($tbl_name, $schema[$i]['table_related'], $schema[$i]['junction_table'], (int)$id);
+        $result[$schema[$i]['column_name']] = $this->get_many_many($tbl_name, $schema[$i]['table_related'], $schema[$i]['junction_table'], $schema[$i]['junction_key_left'], $schema[$i]['junction_key_right'], (int)$id);
       }
       if ($schema[$i]['data_type'] == 'ONETOMANY') {
-        $result[$schema[$i]['column_name']] = $this->get_one_many($schema[$i]['table_related'], $schema[$i]['junction_column'], (int)$id);
+        $result[$schema[$i]['column_name']] = $this->get_one_many($schema[$i]['table_related'], $schema[$i]['junction_key_right'], (int)$id);
       }
     }
 

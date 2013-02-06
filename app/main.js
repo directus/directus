@@ -16,6 +16,7 @@ require([
 
 function(app, Router, Backbone, Directus, UI) {
 
+    // Bootstrap global data
     var data = window.directusData;
 
     app.columns = {};
