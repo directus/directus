@@ -158,13 +158,11 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
       case "PUT":
         //This data should not be hardcoded.
         $id = $data['id'];
-        mail('olov@rngr.org','DATZ',print_r($data,true));
         $db->set_entry('directus_preferences', $data);
         //$db->insert_entry($tbl_name, $data, $id);
         break;
 
       case "POST":
-        mail('olov@rngr.org','post preferences', 'nada');
         // This should not be hardcoded, needs to be corrected
         $data['user'] = 1;
         $id = $db->insert_entry($tbl_name, $data);
@@ -226,7 +224,6 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
       case "PUT":
         if (!isset($id)) {
           $db->set_entries('directus_media', $data);
-          mail('olov@rngr.org', 'DAJTA', print_r($data, true));
           break;
         }
         $db->set_entry('directus_media', $data);
