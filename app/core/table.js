@@ -74,6 +74,7 @@ function(app, Backbone) {
 
       options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
 
+
       if (this.active) {
         options.visibility = _.map([{text:'All', value: '1,2'}, {text:'Active', value: '1'}, {text:'Inactive', value: '2'}, {text:'Trash', value: '0'}], function(obj) {
           if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
@@ -178,12 +179,13 @@ function(app, Backbone) {
       'click th:not(.check)': function(e) {
         var column = $(e.target).attr('data-id');
         var order = this.collection.getOrder();
+
         //Flip direction if the same column is clicked twice.
-        if (order.orderBy === column) {
-          if (order.orderDirection === 'ASC') {
+        if (order.sort === column) {
+          if (order.sort_order === 'ASC') {
             this.collection.setOrder(column, 'DESC');
           }
-          if (order.orderDirection === 'DESC') {
+          else if (order.sort_order === 'DESC') {
             this.collection.setOrder();
           }
         } else {
@@ -220,7 +222,7 @@ function(app, Backbone) {
     serialize: function() {
       var order = this.collection.getOrder();
       var columns = _.map(this.collection.getColumns(), function(column) {
-        return {name: column, orderBy: column === order.orderBy, desc: order.orderDirection === 'DESC'};
+        return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
       return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns};
     },
@@ -308,6 +310,7 @@ function(app, Backbone) {
       }, this);
 
       this.collection.on('reset nocontent add remove change', function() {
+        console.log('!');
         app.router.hideAlert();
         this.render();
       }, this);

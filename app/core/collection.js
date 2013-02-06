@@ -31,19 +31,26 @@ function(app, Backbone) {
     },
 
     setFilter: function(key, value) {
-      this.filters[key] = value;
+      if (key == null || typeof key === 'object') {
+        attrs = key;
+      } else {
+        (attrs = {})[key] = value;
+      }
+      _.each(attrs, function(value, key) {
+        this.filters[key] = value;
+      }, this);
     },
 
     // Proxies underscore's sortBy to reverse order
 
     sortBy: function() {
       var models = _.sortBy(this.models, this.comparator, this);
-      if (this.filters && this.filters.orderDirection === 'DESC') models.reverse();
+      if (this.getFilter('sort_order') === 'DESC') models.reverse();
       return models;
     },
 
     comparator: function(row) {
-      var column = this.getFilter('orderBy') || 'id';
+      var column = this.getFilter('sort') || 'id';
       var value = row.get(column);
       var options, ui, type;
 
@@ -70,16 +77,14 @@ function(app, Backbone) {
       return value;
     },
 
-    setOrder: function(column, orderDirection, options) {
+    setOrder: function(column, sortOrder, options) {
       //useless without filters...
       if (!this.filters) return;
 
       if (column === undefined) {
-        this.setFilter('orderBy','id');
-        this.setFilter('orderDirection', 'ASC');
+        this.setFilter({sort:'id', sort_order: 'ASC'});
       } else {
-        this.setFilter('orderBy', column);
-        this.setFilter('orderDirection', orderDirection);
+        this.setFilter({sort: column, sort_order: sortOrder});
       }
 
       if (this.filters.perPage < this.total) {
@@ -91,8 +96,8 @@ function(app, Backbone) {
 
     getOrder: function() {
       var order = {};
-      order.orderBy = this.getFilter('orderBy');
-      order.orderDirection = this.getFilter('orderDirection');
+      order.sort = this.getFilter('sort');
+      order.sort_order = this.getFilter('sort_order');
       return order;
     },
 

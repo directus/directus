@@ -158,6 +158,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
       case "PUT":
         //This data should not be hardcoded.
         $id = $data['id'];
+        mail('olov@rngr.org','DATZ',print_r($data,true));
         $db->set_entry('directus_preferences', $data);
         //$db->insert_entry($tbl_name, $data, $id);
         break;

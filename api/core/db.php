@@ -362,7 +362,7 @@ class DB {
         'table_name' => $tbl_name,
         'sort' => 'id',
         'sort_order' => 'asc',
-        'status' => '2,1'
+        'active' => '1,2'
       );
 
       // Insert to DB
@@ -756,6 +756,8 @@ class DB {
 
     // Prepare SQL
     $sql = "INSERT INTO $tbl_name ($col_str) VALUES $values ON DUPLICATE KEY UPDATE $update_str";
+
+    mail('olov@rngr.org','SEKUAL',$sql);
 
     $sth = $this->dbh->prepare($sql);
 

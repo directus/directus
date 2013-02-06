@@ -185,12 +185,37 @@ function(app, Backbone, BaseCollection) {
       return _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
     },
 
+    getFilter: function(key) {
+      return this.preferences.has(key) ? this.preferences.get(key) : this.filters[key];
+    },
+
+    getFilters: function() {
+      return _.extend(this.filters, _.pick(this.preferences.toJSON(),'columns_visible','sort','sort_order','active'));
+    },
+
+    setFilter: function(key, value, options) {
+      var attrs;
+      if (key == null || typeof key === 'object') {
+        attrs = key;
+      } else {
+        (attrs = {})[key] = value;
+      }
+      _.each(attrs, function(value, key) {
+        if (this.preferences.has(key)) {
+          this.preferences.set(key, value, {silent: true});
+        } else {
+          this.filters[key] = value;
+        }
+      },this);
+      this.preferences.save();
+    },
+
     initialize: function(models, options) {
 
       this.structure = options.structure;
       this.table = options.table;
       this.url = this.table.get('url') + '/rows';
-      this.filters = options.filters || { currentPage: 0, perPage: 500, orderDirection: 'ASC', orderBy: 'id', active: '1,2' };
+      this.filters = options.filters || { currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' };
       this.preferences = options.preferences;
 
       this.preferences.on('change', function() { this.trigger('change') }, this);
