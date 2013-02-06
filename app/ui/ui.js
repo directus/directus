@@ -14,10 +14,27 @@ define([
   'ui/blob',
   'ui/alias',
   'ui/select',
-  'ui/tags'
+  'ui/tags',
+  'ui/many_to_one'
 ],
 
-function(directus_media, checkbox, numeric, textinput, textarea, relational, directus_user, email, directus_activity, datetime, directus_user_activity, directus_media_size, blob, alias, select, tags) {
+function(
+  directus_media,
+  checkbox, numeric,
+  textinput, textarea,
+  relational,
+  directus_user,
+  email,
+  directus_activity,
+  datetime,
+  directus_user_activity,
+  directus_media_size,
+  blob,
+  alias,
+  select,
+  tags,
+  many_to_one
+) {
 
   ui = {};
 
