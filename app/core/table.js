@@ -24,8 +24,7 @@ function(app, Backbone) {
 
       'click #visibility .dropdown-menu li > a': function(e) {
         var value = $(e.target).attr('data-value');
-        this.collection.setFilter('currentPage', 0);
-        this.collection.setFilter('active', value);
+        this.collection.setFilter({currentPage: 0, active: value});
         this.collection.fetch();
         //this.options.preferences.save({status: value});
       },
@@ -310,7 +309,6 @@ function(app, Backbone) {
       }, this);
 
       this.collection.on('reset nocontent add remove change', function() {
-        console.log('!');
         app.router.hideAlert();
         this.render();
       }, this);
