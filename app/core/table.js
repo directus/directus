@@ -11,31 +11,6 @@ function(app, Backbone) {
     template: 'table-toolbar',
 
     events: {
-/*      'click #set-visibility > button': function(e) {
-        var value = $(e.target).attr('data-value'),
-            collection = this.collection,
-            visibility = this.collection.filters.active;
-
-          var counter = $('td.check > input:checked').length;
-
-        if (visibility === value) return;
-
-        $('td.check > input:checked').each(function() {
-          var id = this.value;
-          var success = function() {
-            if (visibility !== "1,2" || value === "0") {
-              collection.remove(id, {silent: true});
-            }
-            counter--;
-            //only trigger event when everything is done
-            if (counter === 0) collection.trigger('remove');
-          };
-          var error = function() { console.log('Error Saving!', arguments); };
-          collection.get(this.value).save({active: value}, {silent: true, success: _.bind(success, this), error: error});
-
-        });
-        e.preventDefault();
-      },*/
 
       'click #set-visibility > button': function(e) {
         var value = $(e.target).attr('data-value');
@@ -49,34 +24,34 @@ function(app, Backbone) {
 
       'click #visibility .dropdown-menu li > a': function(e) {
         var value = $(e.target).attr('data-value');
-        this.collection.filters.currentPage = 0;
-        this.collection.filters.active = value;
+        this.collection.setFilter('currentPage', 0);
+        this.collection.setFilter('active', value);
         this.collection.fetch();
         //this.options.preferences.save({status: value});
       },
       'keypress #table-filter': function(e) {
         if (e.which == 13) {
           var text = $('#table-filter').val();
-          this.collection.filters.search = text;
+          this.collection.setFilter('search', text);
           this.collection.fetch();
         }
         //this.collection.trigger('search', text);
       },
       'click a.pag-next:not(.disabled)': function() {
-        this.collection.filters.currentPage = this.collection.filters.currentPage + 1;
+        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') + 1);
         this.collection.fetch();
       },
       'click a.pag-prev:not(.disabled)': function() {
-        this.collection.filters.currentPage = this.collection.filters.currentPage - 1;
+        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
         this.collection.fetch();
       },
       'keydown': function(e) {
-        if (e.keyCode === 39 && (this.collection.filters.currentPage + 1 < (this.collection.total / this.collection.filters.perPage))) {
+        if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
           this.collection.filters.currentPage = this.collection.filters.currentPage + 1;
           this.collection.fetch();
         }
-        if (e.keyCode === 37 && this.collection.filters.currentPage > 0) {
-          this.collection.filters.currentPage = this.collection.filters.currentPage - 1;
+        if (e.keyCode === 37 && this.collection.getFilter('currentPage') > 0) {
+          this.collection.getFilter('currentPage') = this.collection.getFilter('currentPage') - 1;
           this.collection.fetch();
         }
       }
@@ -92,21 +67,21 @@ function(app, Backbone) {
 
 
       options.totalCount = this.options.collection.total;
-      options.lBound = Math.min(this.collection.filters.currentPage * this.collection.filters.perPage + 1, options.totalCount);
-      options.uBound = Math.min(options.totalCount, options.lBound + this.collection.filters.perPage - 1);
-      options.pageNext = (this.collection.filters.currentPage + 1 < (options.totalCount / this.collection.filters.perPage) );
-      options.pagePrev = (this.collection.filters.currentPage !== 0);
+      options.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, options.totalCount);
+      options.uBound = Math.min(options.totalCount, options.lBound + this.collection.getFilter('perPage') - 1);
+      options.pageNext = (this.collection.getFilter('currentPage') + 1 < (options.totalCount / this.collection.getFilter('perPage') ) );
+      options.pagePrev = (this.collection.getFilter('currentPage') !== 0);
 
       options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
 
       if (this.active) {
         options.visibility = _.map([{text:'All', value: '1,2'}, {text:'Active', value: '1'}, {text:'Inactive', value: '2'}, {text:'Trash', value: '0'}], function(obj) {
-          if (this.collection.filters.active == obj.value) { obj.active = true; }
+          if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
           return obj;
         }, this);
       }
 
-      options.filterText = this.collection.filters.search;
+      options.filterText = this.collection.getFilter('search');
       options.filter = true;
       options.paginator = (options.pageNext || options.pagePrev);
 
