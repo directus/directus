@@ -386,7 +386,6 @@ class DB {
     $sth = $this->dbh->prepare("SELECT * FROM $tbl_name WHERE $column_name = $column_equals");
     $sth->execute();
 
-
     $data_set = array();
 
     while($row = $sth->fetch(PDO::FETCH_ASSOC)){

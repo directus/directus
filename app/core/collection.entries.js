@@ -191,7 +191,7 @@ function(app, Backbone, BaseCollection) {
     },
 
     getFilter: function(key) {
-      return this.preferences.has(key) ? this.preferences.get(key) : this.filters[key];
+      return (this.preferences && this.preferences.has(key)) ? this.preferences.get(key) : this.filters[key];
     },
 
     getFilters: function() {
