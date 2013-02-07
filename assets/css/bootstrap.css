@@ -6384,7 +6384,7 @@ a:hover {
 .directus-toolbar > div div.filter input {
   background-image: url('../img/magnifying-glass.png');
   background-repeat: no-repeat;
-  background-position: 140px 8px;
+  background-position: 142px 6px;
   width: 150px;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -6392,6 +6392,8 @@ a:hover {
   border: 1px solid #ededed;
   height: 22px;
   padding: 8 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   margin: 0;
 }
 .directus-toolbar > div .btn-group-action {
