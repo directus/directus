@@ -832,7 +832,7 @@ class DB {
       //This is a 'virtual column'. Write to directus schema instead of MYSQL
       $data['table_name'] = $tbl_name;
       $data['sort'] = 9999;
-      $data['ui'] = ($data_type == 'ALIAS') ? 'ALIAS' : 'RELATIONAL';
+      $data['ui'] = ($data_type == 'ALIAS') ? 'alias' : 'relational';
       $data = array_intersect_key($data, array_flip($alias_columns));
 
       //Wrap data in an array so the multi collection can be used.

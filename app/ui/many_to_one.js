@@ -37,6 +37,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var relatedTable = options.settings.get('related_table');
       this.column = options.settings.get('visible_column');
       this.collection = app.entries[relatedTable];
+      console.log(relatedTable);
       this.collection.fetch();
       this.collection.on('reset', this.render, this);
     }
