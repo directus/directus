@@ -76,7 +76,7 @@
 <label>Junction Column</label>
 <select name="junction_key_right">
 	{{#columns}}
-	<option>{{column_name}}</option>
+	<option {{#if selected}}selected{{/if}}>{{column_name}}</option>
 	{{/columns}}
 </select>
 </fieldset>

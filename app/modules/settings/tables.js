@@ -34,7 +34,6 @@ function(app, Backbone, ui, Directus) {
         var data = this.$el.serializeObject();
         this.model.clear({silent: true});
         this.model.set(data);
-        console.log(this.model);
       }
     },
 
@@ -58,7 +57,7 @@ function(app, Backbone, ui, Directus) {
       }
       if (tableRelated !== undefined) {
         options.columns = app.columns[tableRelated].map(function(model) {
-          return {column_name: model.id};
+          return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
         }, this);
       }
       if (dataType === 'MANYTOMANY') {
