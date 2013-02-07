@@ -22,7 +22,7 @@ function(Handlebars) {
       if (!string) return '';
 
       idIndex = string.lastIndexOf("_id");
-      if (string, string.length - idIndex === 3) {
+      if (string.length - idIndex === 3) {
         string = string.substring(0, idIndex);
       }
       return _.map(string.split('_'), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
@@ -81,7 +81,7 @@ function(Handlebars) {
   // http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
   Object.toType = function(obj) {
     return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
-  }
+  };
 
 
   //give forms the ability to serialize to objects

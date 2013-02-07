@@ -31,7 +31,7 @@ function(app, Backbone) {
     },
 
     setFilter: function(key, value) {
-      if (key == null || typeof key === 'object') {
+      if (key === null || typeof key === 'object') {
         attrs = key;
       } else {
         (attrs = {})[key] = value;

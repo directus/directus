@@ -46,11 +46,11 @@ function(app, Backbone) {
       },
       'keydown': function(e) {
         if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
-          this.collection.filters.currentPage = this.collection.filters.currentPage + 1;
+          this.collection.setFilter('currentPage', this.collection.filters.currentPage + 1);
           this.collection.fetch();
         }
         if (e.keyCode === 37 && this.collection.getFilter('currentPage') > 0) {
-          this.collection.getFilter('currentPage') = this.collection.getFilter('currentPage') - 1;
+          this.collection.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
           this.collection.fetch();
         }
       }
@@ -199,7 +199,7 @@ function(app, Backbone) {
         var view, modal;
 
         data.columns = structure.chain()
-          .filter(function(model) { return !model.get('system') && !model.get('hidden_list') })
+          .filter(function(model) { return !model.get('system') && !model.get('hidden_list'); } )
           .map(function(model) { return {name: model.id, visible: (visibleColumns.indexOf(model.id) > -1)}; })
           .value();
 
@@ -212,7 +212,7 @@ function(app, Backbone) {
           preferences.save({'columns_visible': string},{
             success: function() { modal.close(); }
           });
-        }
+        };
 
         view.render();
       }

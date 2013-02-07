@@ -195,7 +195,7 @@ function(app, Backbone, BaseCollection) {
 
     setFilter: function(key, value, options) {
       var attrs;
-      if (key == null || typeof key === 'object') {
+      if (key === null || typeof key === 'object') {
         attrs = key;
       } else {
         (attrs = {})[key] = value;
@@ -218,7 +218,7 @@ function(app, Backbone, BaseCollection) {
       this.filters = options.filters || { currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' };
       this.preferences = options.preferences;
 
-      this.preferences.on('change', function() { this.trigger('change') }, this);
+      this.preferences.on('change', function() { this.trigger('change'); }, this);
 
     },
 
