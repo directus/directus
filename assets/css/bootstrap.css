@@ -6284,11 +6284,22 @@ a:hover {
 .directus-table tbody tr:last-child {
   border-bottom: 1px solid #ededed !important;
 }
+.directus-table thead:hover #set-visible-columns {
+  display: block;
+}
+.related-table .directus-table thead:hover #set-visible-columns {
+  display: none;
+}
 #set-visible-columns {
   position: absolute;
   top: 12px;
   right: 20px;
   font-size: 16px;
+  display: none;
+  color: #8f8f8f;
+}
+#set-visible-columns:hover {
+  color: #8bc53f;
 }
 .related-table .directus-table th {
   background-color: #cccccc;

@@ -65,6 +65,10 @@ function(app, Backbone, BaseCollection) {
       return models;
     },
 
+    getColumns: function() {
+      return this.nestedCollection.getColumns();
+    },
+
     parse: function(response) {
       return response.rows;
     },
@@ -110,7 +114,7 @@ function(app, Backbone, BaseCollection) {
           options = {
             table: app. tables.get(column.get('table_related')),
             structure: app.columns[column.get('table_related')],
-            preferences: app.preferences[column.get('table_related')],
+            //preferences: app.preferences[column.get('table_related')],
             parse:true,
             filters: {columns: columns.split(',')}
           };
@@ -119,7 +123,7 @@ function(app, Backbone, BaseCollection) {
 
           switch (type) {
             case 'ONETOMANY':
-              attributes[id] = new Collection(value, options);
+              attributes[id] = new Entries.Collection(value, options);
               break;
             case 'MANYTOMANY':
               attributes[id] = new NestedCollection(value, options);
@@ -182,7 +186,8 @@ function(app, Backbone, BaseCollection) {
     model: Entries.Model,
 
     getColumns: function() {
-      return _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      //console.log('KAH',this.preferences);
+      return this.preferences ? _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(',')) : this.filters.columns;
     },
 
     getFilter: function(key) {
@@ -211,14 +216,15 @@ function(app, Backbone, BaseCollection) {
     },
 
     initialize: function(models, options) {
-
       this.structure = options.structure;
       this.table = options.table;
       this.url = this.table.get('url') + '/rows';
       this.filters = options.filters || { currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' };
-      this.preferences = options.preferences;
 
-      this.preferences.on('change', function() { this.trigger('change'); }, this);
+      if (options.preferences) {
+        this.preferences = options.preferences;
+        this.preferences.on('change', function() { this.trigger('change'); }, this);
+      }
 
     },
 

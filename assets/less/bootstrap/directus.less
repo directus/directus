@@ -396,8 +396,22 @@ a:hover {text-decoration:none;}
 	}
 }
 
+.directus-table thead:hover #set-visible-columns { display: block; }
+.related-table .directus-table thead:hover #set-visible-columns { display: none; }
+
+
 // Little cog in table header
-#set-visible-columns { position: absolute; top: 12px; right: 20px; font-size:16px;}
+#set-visible-columns {
+	position: absolute;
+	top: 12px;
+	right: 20px;
+	font-size:16px;
+	display: none;
+	color:@textColor;
+	&:hover {color: @directusPrimary; }
+}
+
+
 
 //These styles apply to a 'related' table
 .related-table .directus-table  {
@@ -478,6 +492,7 @@ a:hover {text-decoration:none;}
 	.btn-group-action { display: none; }
 	.btn-group-action.active { display: inline-block;}
 }
+
 
 // FORMS
 // ----------------------------

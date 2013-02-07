@@ -223,6 +223,7 @@ function(app, Backbone) {
       var columns = _.map(this.collection.getColumns(), function(column) {
         return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
+
       return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns};
     },
 
