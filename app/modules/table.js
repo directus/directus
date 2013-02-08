@@ -91,8 +91,6 @@ function(app, Backbone, Directus) {
       var collection = this.model.collection;
       var success;
 
-      console.log(this.model.toJSON());
-
       if (action === 'save-form-stay') {
         success = function() {
           console.log('save', arguments);

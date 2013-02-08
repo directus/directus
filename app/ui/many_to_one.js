@@ -28,7 +28,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var data = this.collection.map(function(model) {
-        return {id: model.id, name: model.get(this.column), selected: (model.id === this.options.value)};
+        return {id: model.id, name: model.get(this.column), selected: (model.id === this.options.value[0])};
       }, this);
       return {name: this.options.name, data: data};
     },
@@ -37,7 +37,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       var relatedTable = options.settings.get('related_table');
       this.column = options.settings.get('visible_column');
       this.collection = app.entries[relatedTable];
-      console.log(this, relatedTable);
       this.collection.fetch();
       this.collection.on('reset', this.render, this);
     }
@@ -45,7 +44,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
-    return options.value;
+    return options.value[1];
   };
 
   return Module;

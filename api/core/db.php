@@ -456,14 +456,28 @@ class DB {
     $active = isset($params['active']) ? $params['active'] : null;
 
     $alias_schema = array();
+    $sub_selects = "";
 
     $schema = $this->get_table($tbl_name);
 
+    // Check what's up in the schema
     foreach($schema as $i => $col) {
       $column_type = $col['type'];
+      $column_ui = $col['ui'];
+      $column_name  = $col['column_name'];
       if ($column_type == 'ALIAS' || $column_type == 'ONETOMANY' || $column_type == "MANYTOMANY") {
         unset($schema[$i]);
         array_push($alias_schema, $col);
+      }
+      if ($column_ui == 'many_to_one') {
+        $related_table = $col['options']['related_table'];
+        $visbile_column = $col['options']['visible_column'];
+
+        // This one needs to check for conflicts
+        $alias_name = '__'.$column_name.'_'.$related_table."_".$visbile_column;
+        $schema[$i]['options']['alias_name'] = $alias_name;
+
+        $sub_selects .= ",(SELECT $visbile_column FROM $related_table WHERE $related_table.id = T.$column_name) AS $alias_name";
       }
     }
 
@@ -501,7 +515,7 @@ class DB {
     // Get main data
 
     $sql = "SELECT
-          SQL_CALC_FOUND_ROWS T.*
+          SQL_CALC_FOUND_ROWS T.* $sub_selects
         FROM
           $tbl_name T
         JOIN
@@ -526,17 +540,21 @@ class DB {
     // Cast the data
     while($row = $sth->fetch(PDO::FETCH_ASSOC)){
       $item = array();
+
       foreach ($schema as $col) {
+
         $column_name = $col['column_name'];
         $column_type = $col['type'];
+        $column_ui = $col['ui'];
+
+        if ($column_ui == 'many_to_one') {
+          $label_column = $col['options']['alias_name'];
+          $item[$column_name] = [intval($row[$column_name]), $row[$label_column]];
+          continue;
+        }
+
         $item[$column_name] = parse_mysql_type($row[$column_name], $column_type);
       }
-      /*foreach ($row as $i => $value) {
-
-        print_r($row);
-        print_r($schema[$i]);
-        $item[$schema[$i]['column_name']] = parse_mysql_type($value, $schema[$i]['type']);
-      }*/
       array_push($result, $item);
     }
 

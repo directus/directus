@@ -49,6 +49,8 @@ define(['app', 'backbone'], function(app, Backbone) {
       data.userName = app.entries.directus_users.get(userId).get('first_name');
       data.url = app.RESOURCES_URL;
 
+      console.log(data);
+
       return data;
     },
 
