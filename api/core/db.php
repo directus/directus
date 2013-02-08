@@ -455,41 +455,17 @@ class DB {
     $search = isset($params['search']) ? $this->dbh->quote('%'.strtolower($params['search']).'%') : null;
     $active = isset($params['active']) ? $params['active'] : null;
 
-    // Get schema
-    // Include 'aliases' (fake directus-columns used to hold one-many and many-many relationships)
+    $alias_schema = array();
 
-    $sql = "SELECT
-          column_name,
-          data_type,
-          NULL as table_related,
-          NULL as junction_table,
-          NULL as junction_key_left,
-          NULL as junction_key_right
-        FROM
-          information_schema.columns
-        WHERE
-          `table_name` = :table_name AND `table_schema` = :schema
+    $schema = $this->get_table($tbl_name);
 
-        UNION SELECT
-          column_name,
-          data_type,
-          table_related,
-          junction_table,
-          junction_key_left,
-          junction_key_right
-        FROM
-          `directus_columns`
-        WHERE
-          `data_type` IS NOT NULL AND `table_name` = :table_name AND (`data_type` = 'MANYTOMANY' OR `data_type` = 'ONETOMANY')
-        GROUP BY
-          `column_name`";
-
-    $sth = $this->dbh->prepare($sql);
-    $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
-    $sth->bindValue(':schema', $this->db_name, PDO::PARAM_STR);
-    $sth->execute();
-
-    $schema = $sth->fetchAll(PDO::FETCH_ASSOC);
+    foreach($schema as $i => $col) {
+      $column_type = $col['type'];
+      if ($column_type == 'ALIAS' || $column_type == 'ONETOMANY' || $column_type == "MANYTOMANY") {
+        unset($schema[$i]);
+        array_push($alias_schema, $col);
+      }
+    }
 
     // This holds a search filter
     $search_sql = "";
@@ -497,7 +473,7 @@ class DB {
     if (isset($search)) {
       $search_sql = "(";
       foreach ($schema as $col) {
-        if ($col['data_type'] == 'varchar' || $col['data_type'] == 'int') {
+        if ($col['type'] == 'varchar' || $col['type'] == 'int') {
           $search_sql .= "LOWER(" . $col['column_name'] . ") LIKE $search OR ";
         }
       }
@@ -548,11 +524,19 @@ class DB {
     $sth->execute();
 
     // Cast the data
-    while($row = $sth->fetch(PDO::FETCH_NUM)){
+    while($row = $sth->fetch(PDO::FETCH_ASSOC)){
       $item = array();
-      foreach ($row as $i => $value) {
-        $item[$schema[$i]['column_name']] = parse_mysql_type($value, $schema[$i]['data_type']);
+      foreach ($schema as $col) {
+        $column_name = $col['column_name'];
+        $column_type = $col['type'];
+        $item[$column_name] = parse_mysql_type($row[$column_name], $column_type);
       }
+      /*foreach ($row as $i => $value) {
+
+        print_r($row);
+        print_r($schema[$i]);
+        $item[$schema[$i]['column_name']] = parse_mysql_type($value, $schema[$i]['type']);
+      }*/
       array_push($result, $item);
     }
 
@@ -573,18 +557,16 @@ class DB {
 
     // This is a singular item, include the relationships...
     $result = $result[0];
-    $result_size = sizeof($result);
-    $schema_size = sizeof($schema);
-    $relational_start_index = $schema_size + ($result_size - $schema_size);
 
-    for ($i = $relational_start_index; $i < $schema_size; $i++) {
-      if ($schema[$i]['data_type'] == 'MANYTOMANY') {
-        $result[$schema[$i]['column_name']] = $this->get_many_many($tbl_name, $schema[$i]['table_related'], $schema[$i]['junction_table'], $schema[$i]['junction_key_left'], $schema[$i]['junction_key_right'], (int)$id);
+    foreach ($alias_schema as $schema) {
+      if ($schema['type'] == 'MANYTOMANY') {
+        $result[$schema['column_name']] = $this->get_many_many($tbl_name, $schema['table_related'], $schema['junction_table'], $schema['junction_key_left'], $schema['junction_key_right'], (int)$id);
       }
-      if ($schema[$i]['data_type'] == 'ONETOMANY') {
-        $result[$schema[$i]['column_name']] = $this->get_one_many($schema[$i]['table_related'], $schema[$i]['junction_key_right'], (int)$id);
+      if ($schema['type'] == 'ONETOMANY') {
+        $result[$schema['column_name']] = $this->get_one_many($schema['table_related'], $schema['junction_key_right'], (int)$id);
       }
     }
+
 
     return $result;
   }
