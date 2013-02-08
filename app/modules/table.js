@@ -36,16 +36,18 @@ function(app, Backbone, Directus) {
     template: 'module-save',
     attributes: {'class': 'directus-module'},
     serialize: function() {
-      return {
+      var data = {
         isActive: (this.model.get('active') === 1),
         isInactive: (this.model.get('active') === 2 || !this.model.has('id')),
         isDeleted: (this.model.get('active') === 0),
         showDelete: !this.options.single && (this.model.get('active') !== 0) && (this.model.id !== undefined),
-        showActive: !this.options.single && this.model.has('active'),
+        showActive: !this.options.single && this.model.collection.structure.get('active') !== undefined,
         showDropdown: !this.options.single
       };
+      return data;
     },
     initialize: function() {
+      console.log('meh');
       this.model.on('sync', this.render, this);
     }
   });
@@ -88,8 +90,6 @@ function(app, Backbone, Directus) {
       var model = this.model;
       var collection = this.model.collection;
       var success;
-
-      console.log('SAV', data);
 
       if (action === 'save-form-stay') {
         success = function() {

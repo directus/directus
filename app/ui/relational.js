@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collection.entries'], function(app, Backbone, Modal, Edit, Table) {
+define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collection.entries'], function(app, Backbone, Modal, Edit, Table, Entries) {
 
   var Module = {};
 
@@ -130,11 +130,28 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
     },
 
     initialize: function() {
-      this.collection = this.options.value;
-      this.manyToMany = (this.options.schema.get('type') === 'MANYTOMANY');
-      this.oneToMany = (this.options.schema.get('type') === 'ONETOMANY');
-    }
+      var schema = this.options.schema;
 
+      this.collection = this.options.value;
+      this.manyToMany = (schema.get('type') === 'MANYTOMANY');
+      this.oneToMany = (schema.get('type') === 'ONETOMANY');
+
+      console.log(this);
+
+      if (!this.collection) {
+        var options = {
+          table: app.tables.get(schema.get('table_related')),
+          structure: app.columns[schema.get('table_related')],
+          parse:true,
+          filters: {columns: this.options.settings.get('visible_columns').split(',')}
+        };
+        this.collection = (this.oneToMany) ? new Entries.Collection([],options) : new Entries.NestedCollection([],options);
+
+        // Create a pointer to the model attribute
+        // Maybe not such good practice
+        this.options.model.set(this.options.name, this.collection);
+      }
+    }
   });
 
   // List view

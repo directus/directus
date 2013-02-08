@@ -677,39 +677,55 @@ class DB {
     // Is this really that good?
     if (!isset($id)) { $id = $this->dbh->lastInsertId(); }
 
+
+    ////////////////////////////////////
+
+
     // Relations time!
-    $sql = "SELECT column_name, data_type, table_related, junction_table, junction_column FROM directus_columns WHERE table_name = '$tbl_name' AND (data_type = 'ONETOMANY' OR data_type = 'MANYTOMANY')";
+    $sql = "SELECT column_name, data_type, table_related, junction_table, junction_key_left, junction_key_right FROM directus_columns WHERE table_name = '$tbl_name' AND (data_type = 'ONETOMANY' OR data_type = 'MANYTOMANY')";
     $sth = $this->dbh->query($sql);
     $relations = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-    //print_r($data);
-
     foreach ($relations as $row) {
+
+      if (!isset($data[$row['column_name']])) continue;
+
       $foreign_data = $data[$row['column_name']];
 
       if ($row['data_type'] == 'MANYTOMANY') {
         foreach ($foreign_data as $junction_table_row) {
-          $junction_id = isset($junction_table_row['id']) ? $junction_table_row['id'] : null;
+
+          //$junction_id = isset($junction_table_row['id']) ? $junction_table_row['id'] : null;
           $foreign_data = $junction_table_row['data'];
 
-          //Insert/Update in foreign table
-          $foreign_id = $this->insert_entry($row['table_related'], $foreign_data);
+          // Insert/Update in foreign table
+          //$foreign_id = $this->insert_entry($row['table_related'], $foreign_data);
+          $foreign_id = $this->set_entry($row['table_related'], $foreign_data);
 
-          //Insert/Update junction table
-          $ipa = $this->insert_entry($row['junction_table'], array(
+          // Insert/Update junction table
+          /*$ipa = $this->insert_entry($row['junction_table'], array(
             'id' => $junction_id,
-            $tbl_name => $id,
-            $row['table_related'] => $foreign_id
+            $row['junction_key_left'] => $id,
+            $row['junction_key_right'] => $foreign_id
+          ));*/
+
+          $ipa = $this->set_entry($row['junction_table'], array(
+            'id' => $foreign_id,
+            $row['junction_key_left'] => $id,
+            $row['junction_key_right'] => $foreign_id
           ));
+
+
         }
       }
 
       if ($row['data_type'] == 'ONETOMANY') {
         foreach ($foreign_data as $foreign_table_row) {
           //Make sure that the junction-column always contains this id.
-          $foreign_table_row[$row['junction_column']] = $id;
+          $foreign_table_row[$row['junction_key_right']] = $id;
           //Insert/Update data
-          $this->insert_entry($row['table_related'], $foreign_table_row);
+          //$this->insert_entry($row['table_related'], $foreign_table_row);
+          $this->set_entry($row['table_related'], $foreign_table_row);
         }
       }
     }
@@ -723,7 +739,7 @@ class DB {
    */
   function set_entry($tbl_name, $data) {
     $this->set_entries($tbl_name, array($data));
-    return $this->dbh->lastInsertId();
+    return (isset($data['id'])) ? $data['id'] : $this->dbh->lastInsertId();
   }
 
   /**
@@ -732,15 +748,32 @@ class DB {
    */
   function set_entries($tbl_name, $data) {
 
+    // These columns are aliases and doesn't have corresponding
+    // columns in the DB, for example 'alias' and 'relational'
+    $alias_types = array('ONETOMANY','MANYTOMANY','ALIAS');
+    $alias_columns = array();
+
+    // Gram schema so we can see what's possible
+    $schema = $this->get_table($tbl_name);
+
+    foreach($schema as $column) {
+      if (in_array($column['type'], $alias_types)) array_push($alias_columns, $column['column_name']);
+    }
+
     $cols = array_keys(reset($data));
 
-    $col_str = implode(",",$cols);
+    // Make sure that none of the columns are aliases
+    foreach($cols as $i => $col) { if (in_array($col, $alias_columns)) unset($cols[$i]); }
 
     // Build values string.
     $values = "";
     foreach ($data as $i => $row) {
       $values .= "(";
-      foreach ($row as $key => $field) $values .= ":$key$i,";
+      foreach ($row as $key => $field) {
+        //Exclude aliases
+        if (in_array($key, $alias_columns)) continue;
+        $values .= ":$key$i,";
+      }
       $values = rtrim($values, ",");
       $values .= "),";
     }
@@ -749,14 +782,14 @@ class DB {
     // Build UPDATE string.
     $update_str = "";
     foreach ($cols as $col) {
+      //Exclude aliases
       $update_str .= "`$col` = VALUES(`$col`),";
     }
     $update_str = rtrim($update_str, ",");
 
     // Prepare SQL
+    $col_str = implode(",",$cols);
     $sql = "INSERT INTO $tbl_name ($col_str) VALUES $values ON DUPLICATE KEY UPDATE $update_str";
-
-    mail('olov@rngr.org','SEKUAL',$sql);
 
     $sth = $this->dbh->prepare($sql);
 
@@ -764,6 +797,8 @@ class DB {
     $cp = "";
     foreach ($data as $i => $row) {
       foreach ($row as $key => $value) {
+        //Exclude aliases
+        if (in_array($key, $alias_columns)) continue;
         $param = ":$key$i";
         $sth->bindValue($param, $value);
         $cp .= "bindValue($param, $value)";

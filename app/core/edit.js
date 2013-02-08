@@ -42,8 +42,6 @@ function(app, Backbone) {
       formData = this.$el.serializeObject();
       _.extend(formData, data);
 
-      console.log(this.model.toJSON());
-
       this.model.save(formData, {
         success: success,
         error: error

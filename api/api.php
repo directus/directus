@@ -84,7 +84,6 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
 
       case "PUT":
         if (!isset($id)) {
-          mail('olov@rngr.org', 'DATTA', print_r($data,true));
           $db->set_entries($tbl_name, $data);
           break;
         }
@@ -248,8 +247,10 @@ if (isset($collection)) {
     echo format_json(json_encode( request( $collection, $http_method, $params, $data, $file ) ) );
   } catch (Exception $e) {
     header("HTTP/1.1 500 Internal Server Error");
-    echo $e->getCode();
-    echo $e->getMessage();
+    //echo format_json(json_encode($e));
+    echo print_r($e, true);
+    //echo $e->getCode();
+    //echo $e->getMessage();
   }
 }
 

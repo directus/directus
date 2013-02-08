@@ -8,7 +8,7 @@ function(app, Backbone, BaseCollection) {
 
   var Entries = {};
 
-  var NestedCollection = BaseCollection.extend({
+  Entries.NestedCollection = BaseCollection.extend({
 
     isNested: true,
 
@@ -126,7 +126,7 @@ function(app, Backbone, BaseCollection) {
               attributes[id] = new Entries.Collection(value, options);
               break;
             case 'MANYTOMANY':
-              attributes[id] = new NestedCollection(value, options);
+              attributes[id] = new Entries.NestedCollection(value, options);
               break;
           }
         }
@@ -162,7 +162,7 @@ function(app, Backbone, BaseCollection) {
     },
 
     //This should probably override the regular save function.
-    saveRelational: function(attributes, options) {
+/*    saveRelational: function(attributes, options) {
 
       var references = [];
 
@@ -175,7 +175,7 @@ function(app, Backbone, BaseCollection) {
       }
 
       this.save(attributes, options);
-    }
+    }*/
 
   });
 

@@ -18,7 +18,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'visible_column', ui: 'textinput', char_length: 64}
   ];
 
-  var template = '<label>{{capitalize name}}</label><select>{{#data}}<option id="{{id}}">{{name}}</option>{{/data}}</select>';
+  var template = '<label>{{capitalize name}}</label><select name="{{name}}">{{#data}}<option id="{{id}}">{{name}}</option>{{/data}}</select>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -37,7 +37,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var relatedTable = options.settings.get('related_table');
       this.column = options.settings.get('visible_column');
       this.collection = app.entries[relatedTable];
-      console.log(relatedTable);
+      console.log(this, relatedTable);
       this.collection.fetch();
       this.collection.on('reset', this.render, this);
     }

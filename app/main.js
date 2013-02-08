@@ -115,7 +115,7 @@ function(app, Router, Backbone, Directus, UI) {
 
     Backbone.sync = function(method, model, options) {
       options.error = function(xhr, status, thrown) {
-        alert(status.responseText);
+        console.log(status.responseText);
       };
       sync(method, model, options);
     };
