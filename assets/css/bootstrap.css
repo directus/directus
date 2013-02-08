@@ -2059,7 +2059,6 @@ table th[class*="span"],
 }
 .glyphicon-remove:before {
   content: "\e208";
-  color: #eb2a49;
 }
 .glyphicon-settings:before {
   content: "\e281";
@@ -5937,7 +5936,7 @@ label {
   top: 50px;
   bottom: 50px;
   width: 760px;
-  margin-left: -360px;
+  margin-left: -380px;
 }
 .modal.stretch .modal-footer {
   position: absolute;
@@ -6230,6 +6229,12 @@ a:hover {
 .table-striped th.delete,
 .directus-table th.delete {
   width: 20px;
+}
+.table-striped td.delete:hover,
+.directus-table td.delete:hover,
+.table-striped th.delete:hover,
+.directus-table th.delete:hover {
+  color: #eb2a49;
 }
 .table-striped th,
 .directus-table th {
@@ -6607,6 +6612,13 @@ a:hover {
   .directus-table tbody td:nth-child(n+7),
   .directus-table th:nth-child(n+7) {
     display: none;
+  }
+  .modal,
+  .modal.stretch {
+    margin-left: 0px;
+    left: 0px;
+    right: 0px;
+    width: auto;
   }
 }
 @media (max-width: 480px) {

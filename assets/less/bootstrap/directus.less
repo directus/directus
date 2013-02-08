@@ -137,7 +137,7 @@ label { text-shadow: @textShadowWhite; }
 		top: 50px;
 		bottom: 50px;
 		width:760px;
-		margin-left:-360px;
+		margin-left:-380px;
 		.modal-footer {position:absolute; bottom:0px; left:0px; right:0px;}
 		.modal-body {position:absolute; bottom:56px; top:49px; left:0px; right:0px; max-height: none;}
 	 }
@@ -358,7 +358,10 @@ a:hover {text-decoration:none;}
 		.img.portrait { height: 50px; }
 		.img.landscape { width: 50px; }
 		&:last-child {padding-right:20px;}
-		&.delete {width:20px;}
+		&.delete {
+			width:20px;
+			&:hover {color:@red}
+		}
 	}
 	th {
 		background-color:@grayLight;
@@ -679,6 +682,7 @@ a:hover {text-decoration:none;}
 	.directus-table th:nth-child(n+7) {
 		display: none;
 	}
+	.modal, .modal.stretch { margin-left:0px; left: 0px; right:0px; width:auto;}
 }
 
 @media (max-width: 480px) {
