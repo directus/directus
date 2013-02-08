@@ -4,5 +4,6 @@
 		{{#if ../sortable}}<td class="sort"><span class="glyphicon-show-lines"></span></td>{{/if}}
 		{{#if ../selectable}}<td class="check"><input type="checkbox" value="{{this.id}}"></td>{{/if}}
 		{{#each ../columns}}<td>{{ui ../this this}}</td>{{/each}}
+		{{#if ../deleteColumn}}<td class="delete"><span class="glyphicon-remove"></span></td>{{/if}}
 	</tr>
 {{/each}}

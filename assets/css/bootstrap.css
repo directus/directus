@@ -2059,6 +2059,7 @@ table th[class*="span"],
 }
 .glyphicon-remove:before {
   content: "\e208";
+  color: #eb2a49;
 }
 .glyphicon-settings:before {
   content: "\e281";
@@ -6223,6 +6224,12 @@ a:hover {
 .table-striped th:last-child,
 .directus-table th:last-child {
   padding-right: 20px;
+}
+.table-striped td.delete,
+.directus-table td.delete,
+.table-striped th.delete,
+.directus-table th.delete {
+  width: 20px;
 }
 .table-striped th,
 .directus-table th {

@@ -87,11 +87,11 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
           $db->set_entries($tbl_name, $data);
           break;
         }
-        $db->insert_entry($tbl_name, $data, $id);
+        $db->set_entry_relational($tbl_name, $data);
         break;
 
       case "POST":
-        $id = $db->insert_entry($tbl_name, $data);
+        $id = $db->set_entry_relational($tbl_name, $data);
         $params['id'] = $id;
         break;
     }
@@ -218,7 +218,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
     switch ($http_method) {
       case "POST":
         $data['date_uploaded'] = date('Y-m-d H:i:s');
-        $params['id'] = $db->insert_entry('directus_media', $data);
+        $params['id'] = $db->set_entry('directus_media', $data);
         break;
       case "PUT":
         if (!isset($id)) {

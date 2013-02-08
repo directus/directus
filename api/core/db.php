@@ -366,7 +366,7 @@ class DB {
       );
 
       // Insert to DB
-      $id = $this->insert_entry('directus_preferences', $data);
+      $id = $this->set_entry('directus_preferences', $data);
 
       return $data;
 
@@ -677,7 +677,6 @@ class DB {
     // Is this really that good?
     if (!isset($id)) { $id = $this->dbh->lastInsertId(); }
 
-
     ////////////////////////////////////
 
 
@@ -700,7 +699,7 @@ class DB {
 
           // Insert/Update in foreign table
           //$foreign_id = $this->insert_entry($row['table_related'], $foreign_data);
-          $foreign_id = $this->set_entry($row['table_related'], $foreign_data);
+          $foreign_id = $this->set_entry_relational($row['table_related'], $foreign_data);
 
           // Insert/Update junction table
           /*$ipa = $this->insert_entry($row['junction_table'], array(
@@ -709,7 +708,7 @@ class DB {
             $row['junction_key_right'] => $foreign_id
           ));*/
 
-          $ipa = $this->set_entry($row['junction_table'], array(
+          $ipa = $this->set_entry_relational($row['junction_table'], array(
             'id' => $foreign_id,
             $row['junction_key_left'] => $id,
             $row['junction_key_right'] => $foreign_id
@@ -725,13 +724,91 @@ class DB {
           $foreign_table_row[$row['junction_key_right']] = $id;
           //Insert/Update data
           //$this->insert_entry($row['table_related'], $foreign_table_row);
-          $this->set_entry($row['table_related'], $foreign_table_row);
+          $this->set_entry_relational($row['table_related'], $foreign_table_row);
         }
       }
     }
     return $id;
   }
 
+
+  function set_entry_relational($tbl_name, $data) {
+    // These columns are aliases and doesn't have corresponding
+    // columns in the DB, for example 'alias' and 'relational'
+    $alias_types = array('ONETOMANY','MANYTOMANY','ALIAS');
+    $alias_columns = array();
+    $alias_meta = array();
+    $alias_data = array();
+
+     // Gram the schema so we can see what's possible
+    $schema = $this->get_table($tbl_name);
+
+    // Grab relational columns
+    foreach($schema as $column) {
+      if (in_array($column['type'], $alias_types)) {
+        array_push($alias_columns, $column['column_name']);
+        $alias_meta[$column['column_name']] = $column;
+      }
+    }
+
+    // Seperate relational data
+    foreach($data as $column_name => $value) {
+      if (in_array($column_name, $alias_columns)) {
+        $alias_data[$column_name] = $value;
+        unset($data[$column_name]);
+      }
+    }
+
+    // Update local (non-relational) data
+    $id = $this->set_entry($tbl_name, $data);
+
+    //print_r($alias_data);
+
+    // Update the related columns
+    foreach($alias_meta as $column_name => $item) {
+
+      if (!isset($alias_data[$column_name])) continue;
+
+      $data = $alias_data[$column_name];
+      $table_related = $item['table_related'];
+      $junction_key_right = $item['junction_key_right'];
+
+      switch($item['type']) {
+        case 'ONETOMANY':
+          foreach ($data as $foreign_table_row) {
+            $foreign_table_row[$junction_key_right] = $id;
+            $this->set_entry_relational($table_related, $foreign_table_row);
+          }
+          break;
+
+        case 'MANYTOMANY':
+          $junction_table = $item['junction_table'];
+          $junction_key_left = $item['junction_key_left'];
+          foreach($data as $junction_table_row) {
+
+            // Delete?
+            if (isset($junction_table_row['active']) && ($junction_table_row['active'] == '0')) {
+              $id = intval($junction_table_row['id']);
+              $this->dbh->exec("DELETE FROM $junction_table WHERE id=$id");
+              continue;
+            }
+
+            // Update foreign table
+            $foreign_id = $this->set_entry_relational($table_related, $junction_table_row['data']);
+
+            // Update junction table
+            $this->set_entry_relational($junction_table, array(
+              'id' => $foreign_id,
+              $junction_key_left => $id,
+              $junction_key_right => $foreign_id
+            ));
+          }
+          break;
+      }
+    }
+
+    return $id;
+  }
 
   /**
    * Wrap entrys in array and calls set_entries
@@ -748,30 +825,13 @@ class DB {
    */
   function set_entries($tbl_name, $data) {
 
-    // These columns are aliases and doesn't have corresponding
-    // columns in the DB, for example 'alias' and 'relational'
-    $alias_types = array('ONETOMANY','MANYTOMANY','ALIAS');
-    $alias_columns = array();
-
-    // Gram schema so we can see what's possible
-    $schema = $this->get_table($tbl_name);
-
-    foreach($schema as $column) {
-      if (in_array($column['type'], $alias_types)) array_push($alias_columns, $column['column_name']);
-    }
-
     $cols = array_keys(reset($data));
-
-    // Make sure that none of the columns are aliases
-    foreach($cols as $i => $col) { if (in_array($col, $alias_columns)) unset($cols[$i]); }
 
     // Build values string.
     $values = "";
     foreach ($data as $i => $row) {
       $values .= "(";
       foreach ($row as $key => $field) {
-        //Exclude aliases
-        if (in_array($key, $alias_columns)) continue;
         $values .= ":$key$i,";
       }
       $values = rtrim($values, ",");
@@ -797,8 +857,6 @@ class DB {
     $cp = "";
     foreach ($data as $i => $row) {
       foreach ($row as $key => $value) {
-        //Exclude aliases
-        if (in_array($key, $alias_columns)) continue;
         $param = ":$key$i";
         $sth->bindValue($param, $value);
         $cp .= "bindValue($param, $value)";

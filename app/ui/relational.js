@@ -31,8 +31,18 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
 
     events: {
       'click button[data-action=add]': 'addRow',
-      'click div.related-table > div td': 'editRow',
-      'click button[data-action=insert]': 'insertRow'
+      'click div.related-table > div td:not(.delete)': 'editRow',
+      'click button[data-action=insert]': 'insertRow',
+      'click td.delete': 'deleteRow'
+    },
+
+    deleteRow: function(e) {
+      var cid = $(e.target).closest('tr').attr('data-cid');
+      var model = this.collection.get(cid);
+
+      if (model.isNew()) return this.collection.remove(model);
+
+      model.set({active: 0});
     },
 
     addRow: function(e) {
@@ -120,7 +130,7 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
 
     afterRender: function() {
       var view;
-      var options = {collection: this.collection, toolbar:false, selectable: false, sortable: false};
+      var options = {collection: this.collection, toolbar:false, selectable: false, sortable: false, deleteColumn: this.manyToMany};
 
       view = new Table(options);
 
@@ -136,8 +146,6 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
       this.manyToMany = (schema.get('type') === 'MANYTOMANY');
       this.oneToMany = (schema.get('type') === 'ONETOMANY');
 
-      console.log(this);
-
       if (!this.collection) {
         var options = {
           table: app.tables.get(schema.get('table_related')),
@@ -151,6 +159,10 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
         // Maybe not such good practice
         this.options.model.set(this.options.name, this.collection);
       }
+
+      this.collection.on('all', function() {
+        console.log(this.collection);
+      }, this);
     }
   });
 

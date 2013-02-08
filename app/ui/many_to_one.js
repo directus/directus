@@ -18,7 +18,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'visible_column', ui: 'textinput', char_length: 64}
   ];
 
-  var template = '<label>{{capitalize name}}</label><select name="{{name}}">{{#data}}<option id="{{id}}">{{name}}</option>{{/data}}</select>';
+  var template = '<label>{{capitalize name}}</label><select name="{{name}}">{{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}}</select>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -28,7 +28,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var data = this.collection.map(function(model) {
-        return {id: model.id, name: model.get(this.column)};
+        return {id: model.id, name: model.get(this.column), selected: (model.id === this.options.value)};
       }, this);
       return {name: this.options.name, data: data};
     },

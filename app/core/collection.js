@@ -22,6 +22,10 @@ function(app, Backbone) {
       return _.map(models, function(model) { return _.pick(model.toJSON(), cols); });
     },
 
+    getModels: function() {
+      return this.models;
+    },
+
     getFilters: function() {
       return this.filters;
     },

@@ -135,9 +135,10 @@ function(app, Backbone) {
     serialize: function() {
       return {
         columns: this.collection.getColumns(),
-        rows: this.collection.models,
+        rows: this.collection.getModels(),
         sortable: this.options.sortable,
-        selectable: this.options.selectable
+        selectable: this.options.selectable,
+        deleteColumn: this.options.deleteColumn
       };
     },
 
@@ -224,7 +225,7 @@ function(app, Backbone) {
         return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
 
-      return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns};
+      return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns, deleteColumn: this.options.deleteColumn};
     },
 
     initialize: function() {
@@ -246,9 +247,9 @@ function(app, Backbone) {
 
     events: {
       'click td:not(.check):not(.status):not(.sort)' : function(e) {
-        this.collection.off(null, null, this);
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
+          this.collection.off(null, null, this);
           this.navigate(id);
         }
       }
@@ -278,7 +279,7 @@ function(app, Backbone) {
           deleteOnly: this.options.deleteOnly
         }));
       }
-      this.insertView('table', new TableHead({collection: this.collection, selectable: this.options.selectable, sortable: this.options.sortable}));
+      this.insertView('table', new TableHead({collection: this.collection, selectable: this.options.selectable, sortable: this.options.sortable, deleteColumn: this.options.deleteColumn}));
 
       if (this.collection.length > 0) {
         this.insertView('table', new TableBody({
@@ -288,7 +289,8 @@ function(app, Backbone) {
           TableRow: this.options.tableRow,
           preferences: this.options.preferences || this.collection.preferences,
           structure: this.options.structure || this.collection.structure,
-          sortable: this.options.sortable
+          sortable: this.options.sortable,
+          deleteColumn: this.options.deleteColumn
         }));
       }
     },
@@ -313,6 +315,10 @@ function(app, Backbone) {
         app.router.hideAlert();
         this.render();
       }, this);
+
+      this.collection.on('add', function() {
+        console.log(arguments);
+      });
 
       if (this.options.sortable === undefined) {
         this.options.sortable = (this.collection.structure && this.collection.structure.get('sort')) || false;

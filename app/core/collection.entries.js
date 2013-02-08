@@ -17,6 +17,7 @@ function(app, Backbone, BaseCollection) {
       isNested: true,
 
       parse: function(result) {
+        console.log(result);
         result.data = new Backbone.Model(result.data);
         this.collection.nestedCollection.add(result.data);
         return result;
@@ -24,8 +25,7 @@ function(app, Backbone, BaseCollection) {
 
       //DRY this up please and move it to BB's protoype
       toJSON: function(options) {
-        attributes = {};
-        attributes.id = this.id;
+        attributes = _.clone(this.attributes);
         attributes.data = this.get('data').toJSON();
         return attributes;
       }
@@ -40,6 +40,9 @@ function(app, Backbone, BaseCollection) {
       }
       this.constructor.__super__.remove.apply(this, arguments);
     },
+
+
+    /*
 
     getNew: function(toJSON) {
       var models = this.filter(function(model) { return model.isNew(); });
@@ -63,6 +66,14 @@ function(app, Backbone, BaseCollection) {
         models = _.map(models, function(model) { return model.toJSON(); });
       }
       return models;
+    },
+
+    */
+
+    getModels: function() {
+      return this.filter(function(model) {
+        return !(model.has('active') && model.get('active') === 0);
+      });
     },
 
     getColumns: function() {
