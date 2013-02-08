@@ -271,7 +271,7 @@ class DB {
         if ($row["type"] == "TEXT" || $row["type"] == "LONGTEXT") { $row["ui"] = "textarea"; }
         if ($row["type"] == "VARCHAR") { $row["ui"] = "textinput"; }
         if ($row["type"] == "DATE" || $row["type"] == "DATETIME" || $row["type"] == "TIME")  { $row["ui"] = "datetime"; }
-        if ($row["type"] == "YEAR" || $row["type"] == "INT" || $row["type"] == "SMALLINT" || $row["type"] == "mediumint" || $row["type"] == "float" || $row["type"] == "double" || $row["type"] == "decimal") { $row["ui"] = "numeric"; }
+        if ($row["type"] == "YEAR" || $row["type"] == "INT" || $row["type"] == "SMALLINT" || $row["type"] == "MEDIUMINT" || $row["type"] == "FLOAT" || $row["type"] == "DOUBLE" || $row["type"] == "DECIMAL") { $row["ui"] = "numeric"; }
       }
 
       // Defualts as system columns
