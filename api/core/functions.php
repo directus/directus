@@ -166,3 +166,21 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 	return $url;
 }
+
+/**
+ * Renders a single line. Looks for {{ var }}
+ *
+ * @param string $string
+ * @param array $parameters
+ *
+ * @return string
+ */
+function template($string, array $parameters)
+{
+    $replacer = function ($match) use ($parameters)
+    {
+        return isset($parameters[$match[1]]) ? $parameters[$match[1]] : $match[0];
+    };
+
+    return preg_replace_callback('/{{\s*(.+?)\s*}}/', $replacer, $string);
+}
