@@ -195,6 +195,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         {title: "Settings", id: "settings"}
       ]);
 
+      var tabs = this.tabs;
+
       var user = app.users.get(1);
 
       //Top
@@ -216,6 +218,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.v = {};
       this.v.content = undefined;
 
+      var test = new Tabs.View({collection: this.tabs});
+
       this.v.main = new Backbone.Layout({
         el: "#main",
         //template: "main",
@@ -230,9 +234,9 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       });
 
       // Update media counter
-      app.media.on('all', function() {
+      app.media.on('sync', function() {
         var media = this.tabs.get('media');
-        media.set({count: this.media.length});
+        media.set({count: app.media.total});
       }, this);
 
       this.v.main.render();
