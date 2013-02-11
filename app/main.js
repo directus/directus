@@ -19,6 +19,10 @@ function(app, Router, Backbone, Directus, UI) {
     // Bootstrap global data
     var data = window.directusData;
 
+    app.root = data.path;
+    app.API_URL = data.path + 'api/1/';
+    app.RESOURCES_URL = '/resources/',
+
     app.columns = {};
     app.entries = {};
     app.preferences = {};

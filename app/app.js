@@ -10,12 +10,6 @@ function(Handlebars) {
   // Provide a global location to place configuration settings and module
   // creation.
   var app = {
-    API_URL: '/directus/api/1/',
-
-    RESOURCES_URL: '/resources/',
-
-    root: '/directus/',
-
     capitalize: function(string) {
       var idIndex;
 

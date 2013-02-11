@@ -7,12 +7,11 @@
   <title>directus</title>
   <!-- Application styles. -->
   <link rel="shortcut icon" href="favicon.ico">
-  <link rel="stylesheet" href="/directus/assets/css/index.css">
+  <link rel="stylesheet" href="{{path}}assets/css/index.css">
 </head>
 
 <body>
 <!-- Main container. -->
-
 <div id="wrap">
   <div id="main">
     <div id="navbar"></div>
@@ -40,10 +39,10 @@
 
 
 <script>
-window.directusData = %s;
+window.directusData = {{data}};
 </script>
 
 <!-- Application source. -->
-<script data-main="/directus/app/config" src="/directus/assets/js/libs/require.js"></script>
+<script data-main="{{path}}app/config" src="{{path}}assets/js/libs/require.js"></script>
 </body>
 </html>

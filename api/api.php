@@ -1,8 +1,9 @@
 <?php
-require 'config.php';
-require 'core/db.php';
-require 'core/media.php';
-require 'core/functions.php';
+require dirname(__FILE__) . '/config.php';
+require dirname(__FILE__) . '/core/db.php';
+require dirname(__FILE__) . '/core/media.php';
+require dirname(__FILE__) . '/core/functions.php';
+
 
 $db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 
