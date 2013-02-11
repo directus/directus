@@ -15,7 +15,8 @@ define([
   'ui/alias',
   'ui/select',
   'ui/tags',
-  'ui/many_to_one'
+  'ui/many_to_one',
+  'ui/radiobuttons'
 ],
 
 function(
@@ -33,7 +34,8 @@ function(
   alias,
   select,
   tags,
-  many_to_one
+  many_to_one,
+  radiobuttons
 ) {
 
   ui = {};
