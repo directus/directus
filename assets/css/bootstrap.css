@@ -4182,9 +4182,9 @@ input[type="submit"].btn.btn-mini {
   *border: 1px solid #999;
   /* IE6-7 */
 
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
   -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
@@ -4209,6 +4209,7 @@ input[type="submit"].btn.btn-mini {
 }
 .modal-header .close {
   margin-top: 2px;
+  font-size: 20px;
 }
 .modal-header h3 {
   margin: 0;
@@ -5810,6 +5811,25 @@ input[type=file] {
 a {
   cursor: pointer;
 }
+.purple {
+  color: #7e4295;
+}
+.blue {
+  color: #31aade;
+}
+.green {
+  color: #8cc349;
+}
+.red {
+  color: #eb2a49;
+}
+.gray-dark {
+  color: #8f8f8f !important;
+}
+.inactive {
+  opacity: 0.3;
+  cursor: default!important;
+}
 #tabs {
   margin-top: 20px;
 }
@@ -6499,6 +6519,20 @@ a:hover {
 }
 .directus-settings input:last-child {
   margin-bottom: 0px;
+}
+.media-actions {
+  margin-top: 8px;
+  list-style: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+.media-actions li {
+  display: inline-block;
+  margin-right: 14px;
+  cursor: pointer;
+}
+.media-actions span {
+  margin-right: 4px;
 }
 #alert {
   -webkit-border-radius: 2px;

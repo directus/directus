@@ -32,7 +32,7 @@
   border: 1px solid #999;
   border: 1px solid rgba(0,0,0,.3);
   *border: 1px solid #999; /* IE6-7 */
-  .border-radius(6px);
+  .border-radius(@baseBorderRadius);
   .box-shadow(0 3px 7px rgba(0,0,0,0.3));
   .background-clip(padding-box);
   // Remove focus outline from opened modal
@@ -48,7 +48,7 @@
   padding: 9px 15px;
   border-bottom: 1px solid #eee;
   // Close icon
-  .close { margin-top: 2px; }
+  .close { margin-top: 2px; font-size: 20px; }
   // Heading
   h3 {
     margin: 0;

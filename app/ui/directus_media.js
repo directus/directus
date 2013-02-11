@@ -15,14 +15,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var template = '{{#unless isNew}}' +
                  '<fieldset>'+
-                 '<div style="width: 82%;">' +
-                 '<div style="float:right; text-align:right;"><span class="glyphicon-crop"></span>Crop <span class="glyphicon-repeat"></span>Rotate <span class="glyphicon-random"></span>Swap <span class="glyphicon-remove"></span>Delete</div>' +
-                 '<div style="margin-right:10px;float:left;height:50px;width:50px; "><img src="{{url}}thumbnail/{{name}}"></div>'+
-                 '<strong><a href="{{url}}/{{name}}" target="_blank">{{name}}</a><br>'+
-                 'Uploaded by <a href="#users/{{user}}">{{userName}}</a> {{{contextualDate date_uploaded}}}</strong><br> <em>{{width}} x {{height}} - {{{bytesToSize size}}}</em><br>' +
-                 '<a href="#" data-action="swap">Swap</a>' +
-                 '</fieldset>'+
-                 '</div>' +
+                 '<div style="margin-right:10px;float:left;height:50px;width:50px;margin-bottom:30px "><img src="{{url}}thumbnail/{{name}}"></div>'+
+                 '<div style="line-height:20px"><strong><a href="{{url}}/{{name}}" target="_blank">{{name}}</a><br>Uploaded by <a href="#users/{{user}}">{{userName}}</a> {{{contextualDate date_uploaded}}}</strong><br> <em>{{width}} x {{height}} - {{{bytesToSize size}}}</em><br></div>' +
+                 '<ul class="media-actions"><li class="purple inactive"><span class="glyphicon-crop"></span>Crop</li><li class="blue inactive"><span class="glyphicon-repeat"></span>Rotate</li><li class="green" data-action="swap"><span class="glyphicon-random"></span>Swap</li><li class="red"><span class="glyphicon-remove"></span>Delete</li></ul>' +
+                 '</fieldset>' +
                  '{{/unless}}' +
                  '<fieldset {{#unless isNew}}class="hide"{{/unless}} id="swap-file">' +
                  '<label>File</label>' +
@@ -63,7 +59,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       'click a[data-action=toggle-form]': function() {
         $('.upload-form').toggleClass('hide');
       },
-      'click a[data-action=swap]': function() {
+      'click li[data-action=swap]': function() {
         this.$el.find('#swap-file').toggleClass('hide');
       }
     },
