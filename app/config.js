@@ -47,6 +47,7 @@ require.config({
     // LayoutManager and Paginator depends on Backbone.
     "plugins/jquery.timeago": ["jquery"],
     "plugins/backbone.layoutmanager": ["backbone"],
-    "plugins/bootstrap-dropdown": ["jquery"]
+    "plugins/bootstrap-dropdown": ["jquery"],
+    "plugins/bootstrap-typeahead": ["jquery"]
   }
 });
