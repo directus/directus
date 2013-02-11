@@ -2093,6 +2093,12 @@ table th[class*="span"],
 .glyphicon-cogwheel:before {
   content: "\e137";
 }
+.glyphicon-repeat:before {
+  content: "\e086";
+}
+.glyphicon-crop:before {
+  content: "\e094";
+}
 /*
 .glyphicon-glass:before                   { content: "\e001"; }
 .glyphicon-music:before                   { content: "\e002"; }
