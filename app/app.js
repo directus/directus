@@ -2,6 +2,7 @@ define([
   "handlebars",
   "plugins/backbone.layoutmanager",
   "plugins/bootstrap-dropdown",          //load anonomosly
+  "plugins/bootstrap-typeahead",          //load anonomosly
   "plugins/jquery.timeago"               //load anonomosly
 ],
 
