@@ -68,7 +68,9 @@ function(app, Backbone, Directus) {
     },
 
     initialize: function() {
-      this.collection.on('reset', this.render, this);
+      this.collection.on('reset', function() {
+        if (this.collection.total) this.render();
+      }, this);
     }
 
   });
