@@ -46,14 +46,14 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
       table: new Backbone.Model(users.table),
       structure: new Directus.CollectionColumns(users.structure, {parse: true}),
       preferences: new Backbone.Model(users.preferences),
-      url: app.API_URL + 'tables/directus_users/'
+      url: app.API_URL + 'tables/directus_users/rows'
     });
 
     app.activity = new Directus.Entries.Collection([], {
       table: new Backbone.Model(activity.table),
       structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
       preferences: new Backbone.Model(activity.preferences),
-      url: app.API_URL + 'tables/directus_activity/'
+      url: app.API_URL + 'tables/directus_activity/rows'
     });
 
     app.groups =
