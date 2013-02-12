@@ -17,7 +17,8 @@ define([
   'ui/tags',
   'ui/many_to_one',
   'ui/radiobuttons',
-  'ui/itunes_song_selector'
+  'ui/itunes_song_selector',
+  'ui/password'
 ],
 
 function(
@@ -37,7 +38,8 @@ function(
   tags,
   many_to_one,
   radiobuttons,
-  itunes_song_selector
+  itunes_song_selector,
+  password
 ) {
 
   ui = {};

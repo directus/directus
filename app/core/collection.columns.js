@@ -59,7 +59,7 @@ function(app, Backbone) {
 
       $result = Backbone.sync('update', this, options);
       return $result;
-    }
+    },
 
   });
   return Structure;

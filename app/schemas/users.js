@@ -10,7 +10,7 @@ define([], function() {
     "inactive_by_default":"0",
     "is_junction_table":false,
     "count":0,
-    "url": "http://10.0.1.16/directus/api/1/tables/directus_users/"
+    "url": "api/1/tables/directus_users/"
   };
 
   users.structure = [
@@ -30,6 +30,7 @@ define([], function() {
       "id":"name",
       "column_name":"name",
       "type":"ALIAS",
+      "sort":0,
       "is_nullable":"NO",
       "ui":"directus_user",
       "system":false,
@@ -101,6 +102,37 @@ define([], function() {
       "ui":"textinput"
     },
     {
+      "id":"email",
+      "column_name":"email",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":5,
+      "ui":"email",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false
+    },
+    {
+      "id":"email_messages",
+      "column_name":"email_messages",
+      "type":"TINYINT",
+      "is_nullable":"NO",
+      "default_value":"1",
+      "comment":"",
+      "sort":6,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"checkbox"
+    },
+    {
       "id":"password",
       "column_name":"password",
       "type":"VARCHAR",
@@ -108,13 +140,13 @@ define([], function() {
       "is_nullable":"NO",
       "default_value":"",
       "comment":"",
-      "sort":5,
+      "sort":7,
       "system":true,
       "master":false,
-      "hidden_list":false,
-      "hidden_input":true,
+      "hidden_list":true,
+      "hidden_input":false,
       "required":false,
-      "ui":"textinput"
+      "ui":"password"
     },
     {
       "id":"token",
@@ -124,7 +156,7 @@ define([], function() {
       "is_nullable":"NO",
       "default_value":"",
       "comment":"",
-      "sort":6,
+      "sort":8,
       "system":true,
       "master":false,
       "hidden_list":false,
@@ -140,7 +172,7 @@ define([], function() {
       "is_nullable":"NO",
       "default_value":"",
       "comment":"",
-      "sort":7,
+      "sort":9,
       "system":true,
       "master":false,
       "hidden_list":false,
@@ -154,7 +186,7 @@ define([], function() {
       "type":"DATETIME",
       "is_nullable":"NO",
       "comment":"",
-      "sort":8,
+      "sort":10,
       "system":true,
       "master":false,
       "hidden_list":false,
@@ -163,42 +195,11 @@ define([], function() {
       "ui":"datetime"
     },
     {
-      "id":"email",
-      "column_name":"email",
-      "type":"VARCHAR",
-      "char_length":"255",
-      "is_nullable":"NO",
-      "default_value":"",
-      "comment":"",
-      "sort":9,
-      "ui":"email",
-      "system":false,
-      "master":false,
-      "hidden_list":false,
-      "hidden_input":false,
-      "required":false
-    },
-    {
       "id":"description",
       "column_name":"description",
       "type":"TEXT",
       "char_length":"65535",
       "is_nullable":"NO",
-      "comment":"",
-      "sort":10,
-      "system":false,
-      "master":false,
-      "hidden_list":false,
-      "hidden_input":false,
-      "required":false,
-      "ui":"textarea"
-    },
-    {
-      "id":"email_messages",
-      "column_name":"email_messages",
-      "type":"TINYINT",
-      "is_nullable":"NO",
-      "default_value":"1",
       "comment":"",
       "sort":11,
       "system":false,
@@ -206,7 +207,7 @@ define([], function() {
       "hidden_list":false,
       "hidden_input":false,
       "required":false,
-      "ui":"checkbox"
+      "ui":"textarea"
     },
     {
       "id":"last_login",

@@ -6471,6 +6471,7 @@ a:hover {
   border-bottom: 0;
 }
 .directus-form input[type="text"],
+.directus-form input[type="password"],
 .directus-form input[type="text"].large,
 .directus-form textarea {
   width: 82%;

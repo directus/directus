@@ -37,30 +37,35 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
     app.media = new Directus.Media([], {
       table: new Backbone.Model(media.table),
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
-      preferences: new Backbone.Model(media.preferences)
+      preferences: new Backbone.Model(media.preferences),
+      url: app.API_URL + 'media'
     });
-    app.media.url = app.API_URL + 'media';
 
     app.users = new Directus.Entries.Collection(data.users, {
       parse: true,
       table: new Backbone.Model(users.table),
       structure: new Directus.CollectionColumns(users.structure, {parse: true}),
-      preferences: new Backbone.Model(users.preferences)
+      preferences: new Backbone.Model(users.preferences),
+      url: app.API_URL + 'tables/directus_users/'
     });
 
     app.activity = new Directus.Entries.Collection([], {
       table: new Backbone.Model(activity.table),
       structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
-      preferences: new Backbone.Model(activity.preferences)
+      preferences: new Backbone.Model(activity.preferences),
+      url: app.API_URL + 'tables/directus_activity/'
     });
 
     app.groups =
     app.entries['directus_groups'] = new Directus.Entries.Collection(data.groups['rows'], {
-      url: 'http://10.0.1.16/directus/api/1/groups',
+      table: new Backbone.Model(groups.table),
       preferences: new Backbone.Model(groups.preferences),
       structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
+      url: app.API_URL + 'groups/',
       parse: true
     });
+
+
 
 
     /*
