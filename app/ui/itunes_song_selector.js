@@ -9,7 +9,7 @@ define(['app', 'backbone'], function (app, Backbone) {
     var Module = {};
 
     Module.id = 'itunes_song_selector';
-    Module.dataTypes = ['VARCHAR', 'NUMERIC'];
+    Module.dataTypes = ['VARCHAR', 'INT'];
 
     Module.variables = [];
 
