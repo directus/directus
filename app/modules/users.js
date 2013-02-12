@@ -43,13 +43,16 @@ function(app, Backbone, Directus) {
     },
 
     serialize: function() {
-      console.log(this.model);
+      var breadcrumbs = [{ title: 'Users', anchor: '#users'}];
+      var title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : 'New User';
+
       return {
-        breadcrumbs: [{title: 'Users', anchor: '#users'}],
-        sidebar: true,
-        title: this.model.get('first_name') + ' ' + this.model.get('last_name')
+        breadcrumbs: breadcrumbs,
+        title: title,
+        sidebar: true
       };
     },
+
 
     beforeRender: function() {
       this.setView('#page-content', new Directus.EditView({model: this.model}));
@@ -74,9 +77,7 @@ function(app, Backbone, Directus) {
 
     events: {
       'click #btn-top': function() {
-        var model = new this.collection.model();
-        model.collection = this.collection;
-        app.router.setPage(Users.Views.Edit, {model: model});
+        app.router.go('#users','new');
       }
     },
 

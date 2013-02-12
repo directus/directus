@@ -34,7 +34,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "activity":               "activity",
       "media":                  "media",
       "users":                  "users",
-      "users/:id":              "users",
+      "users/:id":              "user",
       "settings":               "settings",
       "settings/:name":         "settings",
       "settings/tables/:table": "settingsTable",
@@ -112,7 +112,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       this.v.main.setView('#content', new Table.Views.Edit({model: model}));
       this.v.main.render();
-
     },
 
     activity: function() {
@@ -129,14 +128,24 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.v.main.render();
     },
 
-    users: function(id) {
+    users: function() {
       this.setTitle('Users');
       this.tabs.setActive('users');
-      if (id !== undefined) {
-        this.v.main.setView('#content', new Users.Views.Edit({model: app.users.get(id)}));
+      this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
+      this.v.main.render();
+    },
+
+    user: function(id) {
+      var model;
+      this.setTitle('Users');
+      this.tabs.setActive('users');
+
+      if (id === "new") {
+        model = new app.users.model({}, {collection: app.users});
       } else {
-        this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
+        model = app.users.get(id);;
       }
+      this.v.main.setView('#content', new Users.Views.Edit({model: model}));
       this.v.main.render();
     },
 
@@ -186,7 +195,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     initialize: function(options) {
-
       this.tabs = new Tabs.Collection([
         {title: "Activity", id: "activity", count: app.activity.total},
         {title: "Tables", id: "tables", count: app.tables.length},
@@ -196,7 +204,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       ]);
 
       var tabs = this.tabs;
-
       var user = app.users.get(1);
 
       //Top
