@@ -1,0 +1,145 @@
+define([], function() {
+
+  var activity = {};
+
+  activity.table = {
+    "id":"directus_activity",
+    "table_name":"directus_activity",
+    "hidden":true,
+    "single":false,
+    "inactive_by_default":"0",
+    "is_junction_table":false,
+    "count":0,
+    "url": "http://localhost/directus/api/1/tables/directus_activity/"
+  };
+
+  activity.structure = [
+    {
+      "id":"activity",
+      "column_name":"activity",
+      "type":"ALIAS",
+      "is_nullable":"NO",
+      "ui":"directus_activity",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false
+    },
+    {
+      "id":"id",
+      "column_name":"id",
+      "type":"INT",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":1,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"numeric",
+      "hidden":true
+    },
+    {
+      "id":"table",
+      "column_name":"table",
+      "type":"VARCHAR",
+      "char_length":"100",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":2,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"row",
+      "column_name":"row",
+      "type":"INT",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":3,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"numeric"
+    },
+    {
+      "id":"type",
+      "column_name":"type",
+      "type":"VARCHAR",
+      "char_length":"100",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":4,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"change_made",
+      "column_name":"change_made",
+      "type":"DATETIME",
+      "is_nullable":"NO",
+      "default_value":"0000-00-00 00:00:00",
+      "comment":"",
+      "sort":5,
+      "ui":"datetime",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false
+    },
+    {
+      "id":"user",
+      "column_name":"user",
+      "type":"INT",
+      "is_nullable":"NO",
+      "default_value":"0",
+      "comment":"",
+      "sort":6,
+      "ui":"directus_user",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false
+    },
+    {
+      "id":"sql",
+      "column_name":"sql",
+      "type":"LONGTEXT",
+      "char_length":"4294967295",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":7,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textarea"
+    }
+  ];
+
+  activity.preferences = {
+    "columns_visible":"change_made,user,activity",
+    "sort":"change_made",
+    "sort_order":"ASC",
+    "active":"1"
+  };
+
+  return activity;
+});

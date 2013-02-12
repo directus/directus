@@ -45,7 +45,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         if (this.model.get('type') === 'embed/youtube') data.youtube = this.model.get('embed_id');
       }
 
-      data.userName = app.entries.directus_users.get(userId).get('first_name');
+      data.userName = app.users.get(userId).get('first_name');
       data.url = app.RESOURCES_URL;
 
       console.log(data);

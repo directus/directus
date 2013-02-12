@@ -11,10 +11,13 @@ require([
   "router",
   "backbone",
   "core/directus",
-  "ui/ui"
+  "ui/ui",
+  "schemas/media",
+  "schemas/users",
+  "schemas/activity"
 ],
 
-function(app, Router, Backbone, Directus, UI) {
+function(app, Router, Backbone, Directus, UI, media, users, activity) {
 
     // Bootstrap global data
     var data = window.directusData;
@@ -30,11 +33,53 @@ function(app, Router, Backbone, Directus, UI) {
     app.settings = new Directus.Settings(data.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
 
+    app.media = new Directus.Media([], {
+      table: new Backbone.Model(media.table),
+      structure: new Directus.CollectionColumns(media.structure, {parse: true}),
+      preferences: new Backbone.Model(media.preferences)
+    });
+    app.media.url = app.API_URL + 'media';
+
+    app.users = new Directus.Entries.Collection(data.users, {
+      parse: true,
+      table: new Backbone.Model(users.table),
+      structure: new Directus.CollectionColumns(users.structure, {parse: true}),
+      preferences: new Backbone.Model(users.preferences)
+    });
+
+    app.activity = new Directus.Entries.Collection([], {
+      table: new Backbone.Model(activity.table),
+      structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
+      preferences: new Backbone.Model(activity.preferences)
+    });
+
+    /*
+    if (table.id === 'directus_media') {
+      table.title = "Media";
+      app.media = new Directus.Media([], {structure: app.columns.directus_media, table: table, preferences: app.preferences.directus_media});
+      app.media.url = app.API_URL + 'media';
+      return;
+    }
+    */
+
+    /*
+    app.users = app.entries.directus_users;
+    app.users.reset(data.users, {parse: true});
+    app.users.table.title = "Users";
+    app.uid = 1;
+
+    app.messages = app.entries.directus_messages;
+
+    app.activity = app.entries.directus_activity;
+    app.activity.table.title = "Activity";
+    */
 
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {
 
       var tableName = options.schema.id;
+
+      if (tableName.substring(0,9) === 'directus_') return;
 
       app.columns[tableName] = new Directus.CollectionColumns(options.columns, {parse: true});
       app.columns[tableName].url = app.API_URL + 'tables/' + tableName + '/columns';
@@ -54,28 +99,12 @@ function(app, Router, Backbone, Directus, UI) {
 
     // Instantiate entries
     app.tables.each(function(table) {
-      if (table.id === 'directus_media') {
-        table.title = "Media";
-        app.media = new Directus.Media([], {structure: app.columns.directus_media, table: table, preferences: app.preferences.directus_media});
-        app.media.url = app.API_URL + 'media';
-        return;
-      }
       app.entries[table.id] = new Directus.Entries.Collection([], {
         structure: app.columns[table.id],
         table: table,
         preferences: app.preferences[table.id]
       });
     }, this);
-
-    app.users = app.entries.directus_users;
-    app.users.reset(data.users, {parse: true});
-    app.users.table.title = "Users";
-    app.uid = 1;
-
-    app.messages = app.entries.directus_messages;
-
-    app.activity = app.entries.directus_activity;
-    app.activity.table.title = "Activity";
 
     app.uiSettings = UI.settings();
 

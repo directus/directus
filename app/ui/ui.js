@@ -16,7 +16,8 @@ define([
   'ui/select',
   'ui/tags',
   'ui/many_to_one',
-  'ui/radiobuttons'
+  'ui/radiobuttons',
+  'ui/itunes_song_selector'
 ],
 
 function(
@@ -35,7 +36,8 @@ function(
   select,
   tags,
   many_to_one,
-  radiobuttons
+  radiobuttons,
+  itunes_song_selector
 ) {
 
   ui = {};

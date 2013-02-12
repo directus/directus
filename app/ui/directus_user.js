@@ -15,7 +15,7 @@ define(['app','backbone'], function(app, Backbone) {
   Module.sortBy = ['first_name','last_name'];
 
   Module.list = function(options) {
-    var user = app.entries.directus_users.get(options.value);
+    var user = app.users.get(options.value);
     if (user) {
       if (options.settings && options.settings.get('compact') !== undefined) {
         return user.get('first_name');
@@ -29,12 +29,11 @@ define(['app','backbone'], function(app, Backbone) {
   Module.Input = Backbone.Layout.extend({
     tagName: 'fieldset',
     initialize: function(options) {
-      var user = app.entries.directus_users.get(options.value);
+      var user = app.users.get(options.value);
       this.$el.html('<label>'+app.capitalize(this.options.name)+'</test>');
       this.$el.append('<img src="' + app.RESOURCES_URL + 'users/default.png" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));
     }
   });
 
   return Module;
-
 });

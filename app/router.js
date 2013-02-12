@@ -188,10 +188,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     initialize: function(options) {
 
       this.tabs = new Tabs.Collection([
-        {title: "Activity", id: "activity", count: app.tables.get('directus_activity').get('count')},
+        {title: "Activity", id: "activity", count: app.activity.total},
         {title: "Tables", id: "tables", count: app.tables.length},
-        {title: "Media", id: "media", count: app.tables.get('directus_media').get('count')},
-        {title: "Users", id: "users", count: app.tables.get('directus_users').get('count')},
+        {title: "Media", id: "media", count: app.media.total},
+        {title: "Users", id: "users", count: app.users.total},
         {title: "Settings", id: "settings"}
       ]);
 
