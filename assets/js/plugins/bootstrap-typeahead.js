@@ -40,6 +40,7 @@
     constructor: Typeahead
 
   , select: function () {
+    console.log("in select");
       var val = JSON.parse(this.$menu.find('.active').attr('data-value'))
         , text
 
