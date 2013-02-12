@@ -14,7 +14,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
-    {id: 'options', ui: 'textinput', 'char_length': 100},
+    {id: 'options', ui: 'textinput', 'char_length': 100}
   ];
 
   var template = '<label>{{{capitalize name}}}</label>{{#options}}<input type="radio" name="{{../name}}" value="{{value}}" {{#if selected}}checked{{/if}}>{{value}}{{/options}}';

@@ -11,7 +11,7 @@ define([], function() {
     "is_junction_table":false,
     "count":0,
     "url": "api/1/media"
-  }
+  };
 
   media.structure = [
     {
@@ -273,7 +273,7 @@ define([], function() {
     "sort":"id",
     "sort_order":"ASC",
     "active":"1"
-  }
+  };
 
   return media;
 });
