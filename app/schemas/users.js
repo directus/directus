@@ -1,6 +1,6 @@
 define([], function() {
 
-  var users = {}
+  var users = {};
 
   users.table = {
     "id":"directus_users",
@@ -284,7 +284,7 @@ define([], function() {
     "sort":"id",
     "sort_order":"asc",
     "active":"1"
-  }
+  };
 
   return users;
 });

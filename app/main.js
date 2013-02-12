@@ -25,7 +25,7 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
 
     app.root = data.path;
     app.API_URL = data.path + 'api/1/';
-    app.RESOURCES_URL = '/resources/',
+    app.RESOURCES_URL = '/resources/';
 
     app.columns = {};
     app.entries = {};
@@ -57,7 +57,7 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
     });
 
     app.groups =
-    app.entries['directus_groups'] = new Directus.Entries.Collection(data.groups['rows'], {
+    app.entries.directus_groups = new Directus.Entries.Collection(data.groups.rows, {
       table: new Backbone.Model(groups.table),
       preferences: new Backbone.Model(groups.preferences),
       structure: new Directus.CollectionColumns(groups.structure, {parse: true}),

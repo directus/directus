@@ -170,7 +170,7 @@ function(app, Backbone, BaseCollection) {
       }
 
       return attributes;
-    },
+    }
 
     //This should probably override the regular save function.
 /*    saveRelational: function(attributes, options) {
