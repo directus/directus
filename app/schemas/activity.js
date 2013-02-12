@@ -10,7 +10,7 @@ define([], function() {
     "inactive_by_default":"0",
     "is_junction_table":false,
     "count":0,
-    "url": "http://localhost/directus/api/1/tables/directus_activity/"
+    "url": "http://10.0.1.16/directus/api/1/tables/directus_activity"
   };
 
   activity.structure = [

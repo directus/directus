@@ -98,7 +98,7 @@ class DB {
           S.TABLE_NAME = "directus_media" OR
           S.TABLE_NAME = "directus_messages" OR
           S.TABLE_NAME = "directus_users") AND
-          (DP.id IS NOT NULL OR DU.group = -1)
+          (DP.id IS NOT NULL OR DU.group = 0)
         GROUP BY
           S.TABLE_NAME
         ORDER BY

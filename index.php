@@ -4,6 +4,7 @@ require 'api/api.php';
 $data = array();
 $data['tables'] = request('tables', 'GET');
 $data['users'] = request('users', 'GET');
+$data['groups'] = request('groups', 'GET');
 $data['settings'] = request('settings', 'GET');
 $data['page'] = '#tables';
 $data['path'] = DIRECTUS_PATH;

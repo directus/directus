@@ -14,10 +14,11 @@ require([
   "ui/ui",
   "schemas/media",
   "schemas/users",
-  "schemas/activity"
+  "schemas/activity",
+  "schemas/groups"
 ],
 
-function(app, Router, Backbone, Directus, UI, media, users, activity) {
+function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
 
     // Bootstrap global data
     var data = window.directusData;
@@ -53,6 +54,15 @@ function(app, Router, Backbone, Directus, UI, media, users, activity) {
       preferences: new Backbone.Model(activity.preferences)
     });
 
+    app.groups =
+    app.entries['directus_groups'] = new Directus.Entries.Collection(data.groups['rows'], {
+      url: 'http://10.0.1.16/directus/api/1/groups',
+      preferences: new Backbone.Model(groups.preferences),
+      structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
+      parse: true
+    });
+
+
     /*
     if (table.id === 'directus_media') {
       table.title = "Media";
@@ -73,6 +83,7 @@ function(app, Router, Backbone, Directus, UI, media, users, activity) {
     app.activity = app.entries.directus_activity;
     app.activity.table.title = "Activity";
     */
+
 
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {
@@ -107,6 +118,7 @@ function(app, Router, Backbone, Directus, UI, media, users, activity) {
     }, this);
 
     app.uiSettings = UI.settings();
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

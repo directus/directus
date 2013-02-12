@@ -229,7 +229,7 @@ function(app, Backbone, BaseCollection) {
     initialize: function(models, options) {
       this.structure = options.structure;
       this.table = options.table;
-      this.url = this.table.get('url') + '/rows';
+      this.url = options.url || this.table.get('url') + '/rows';
       this.filters = options.filters || { currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' };
 
       if (options.preferences) {

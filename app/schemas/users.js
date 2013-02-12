@@ -10,7 +10,7 @@ define([], function() {
     "inactive_by_default":"0",
     "is_junction_table":false,
     "count":0,
-    "url": "http://localhost/directus/api/1/tables/directus_users/"
+    "url": "http://10.0.1.16/directus/api/1/tables/directus_users/"
   };
 
   users.structure = [
@@ -267,7 +267,11 @@ define([], function() {
       "hidden_list":false,
       "hidden_input":false,
       "required":false,
-      "ui":"numeric"
+      "ui":"many_to_one",
+      "options": {
+        "related_table": "directus_groups",
+        "visible_column": "name"
+      }
     }
   ];
 
