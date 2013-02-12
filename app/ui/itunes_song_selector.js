@@ -14,7 +14,8 @@ define(['app', 'backbone'], function (app, Backbone) {
     Module.variables = [];
 
     var template = '<label>{{{capitalize name}}}</label>' +
-        '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}"/>';
+        '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" />' +
+        '<input type="text" value="{{value}}" class="{{size}} for_display_only"/>';
 
     Module.Input = Backbone.Layout.extend({
 
@@ -32,7 +33,8 @@ define(['app', 'backbone'], function (app, Backbone) {
         },
 
         afterRender: function () {
-            this.$("input").typeahead({
+            var that = this;
+            this.$(".for_display_only").typeahead({
                 minLength: 2,
                 items: 5,
                 source: function (typeahead, query) {
@@ -51,7 +53,7 @@ define(['app', 'backbone'], function (app, Backbone) {
                             url: 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch?' + $.param(urlParams)
                         },
                         success: function (data) {
-                            $.each(data['contents']['results'], function (i, track) {
+                            $.each(data.contents.results, function (i, track) {
                                 tracks.push(JSON.stringify(track));
                             });
                             typeahead.process(tracks);
@@ -63,18 +65,19 @@ define(['app', 'backbone'], function (app, Backbone) {
                 },
                 highlighter: function (item) {
                     var item = JSON.parse(item);
-                    return '<img src="' + item['artworkUrl100'] + '" /> ' + item['artistName'] + ' - ' + item['trackName'];
+                    return '<img src="' + item.artworkUrl100 + '" /> ' + item.artistName + ' - ' + item.trackName;
                 },
                 matcher: function (item) {
                     return true;
                 },
                 updater: function (item) {
                     var item = JSON.parse(item);
-                    return item['artistName'] + ' - ' + item['trackName'];
+                    return item.artistName + ' - ' + item.trackName;
                 },
                 onselect: function (obj) {
                   var item = JSON.parse(obj);
-                  this.$element.val(item['artistName'] + ' - ' + item['trackName']);
+                  this.$element.val(item.artistName + ' - ' + item.trackName);
+                  this.$element.siblings('#' + that.options.name).val(item.trackId);
                 }
             });
         },
