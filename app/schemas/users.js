@@ -207,7 +207,10 @@ define([], function() {
       "hidden_list":false,
       "hidden_input":false,
       "required":false,
-      "ui":"textarea"
+      "ui":"textarea",
+      "options": {
+        "rows": "4"
+      }
     },
     {
       "id":"last_login",

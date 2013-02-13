@@ -53,7 +53,6 @@ function(app, Backbone, Directus) {
       };
     },
 
-
     beforeRender: function() {
       this.setView('#page-content', new Directus.EditView({model: this.model}));
       this.setView('#sidebar', new SaveModule({model: this.model}));
