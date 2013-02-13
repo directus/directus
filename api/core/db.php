@@ -42,6 +42,7 @@ class DB {
   var $db_host;
   var $dbh;
   var $user_token = 'lcjREKokJYNLkIjY7LUqnCs0wnWSvStvb2PTgw4HWu0=';
+  var $user_id;
 
   /**
    * Constructus
@@ -438,7 +439,7 @@ class DB {
    * @param $params
    * @param $id
    */
-  function get_entries( $tbl_name, $params=null, $id=null ) {
+  function get_entries( $tbl_name, $params=null, $id=null ) {    // <----- $id does nothing
 
     //$result = $this->get_table_info($tbl_name);
     $result = array();
@@ -549,7 +550,7 @@ class DB {
 
         if ($column_ui == 'many_to_one') {
           $label_column = $col['options']['alias_name'];
-          $item[$column_name] = [intval($row[$column_name]), $row[$label_column]];
+          $item[$column_name] = array(intval($row[$column_name]), $row[$label_column]);
           continue;
         }
 
@@ -822,6 +823,17 @@ class DB {
 
     $sql = "INSERT INTO directus_ui (`table_name`, `column_name`, `ui_name`, `name`, `value`) VALUES $values ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)";
     $sth = $this->dbh->query($sql);
+  }
+
+  /**
+   *  Log activity
+   *
+   *  @param  $tbl_name
+   *  @param  $action
+   *  @param  $datatype_name
+   */
+  function log_activity($tbl_name, $row_id, $type) {
+
   }
 
   /**
