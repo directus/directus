@@ -63,7 +63,7 @@ class DBTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0,sizeof($data));
     }
 
-    public function testSetEntrie()
+    public function testSetEntries()
     {
         // Insert a bunch of items
         $data = array(
@@ -86,6 +86,32 @@ class DBTest extends PHPUnit_Framework_TestCase
         foreach($entries['rows'] as $i => $row) {
             $this->assertEquals($data[$i]['title'], $row['title']);
         }
+    }
+
+    public function testSetSettings() {
+        $data = array(
+           "media_folder" => "resources",
+           "media_naming" => "unique",
+           "allowed_thumbnails" => "test test test",
+           "zxczxczxc" => "zxczxc",
+           "thumbnail_quality" => "90",
+           "id" => "unit_test"
+        );
+
+        $this->db->set_settings($data);
+        $settings = $this->db->get_settings();
+        $this->assertEquals(sizeof($settings['unit_test']), sizeof($data)-1);
+
+        //CLEAN UP
+        $this->db->dbh->exec("DELETE FROM `directus_settings` WHERE collection='unit_test'");
+    }
+
+    public function testLogActivity() {
+        //Create, read, update and delete
+        $this->db->log_activity('demo_table', 'CREATE',5, 'jag e ny', array('a'=>'b'));
+
+        //CLEAN UP
+        //$this->db->dbh->exec("DELETE FROM `directus_settings` WHERE collection='unit_test'");
     }
 }
 ?>
