@@ -58,6 +58,8 @@ function(Handlebars) {
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
+    date = new Date(date);
+    date = new Date(date.toUTCString());
     return jQuery.timeago(date);
   });
 
