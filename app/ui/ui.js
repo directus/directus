@@ -54,6 +54,7 @@ function(
 
   _.extend(Component.prototype, {
 
+
     getList: function(attr) {
       var schema = this.structure.get(attr);
       var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
