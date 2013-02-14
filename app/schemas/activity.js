@@ -10,7 +10,8 @@ define([], function() {
     "inactive_by_default":"0",
     "is_junction_table":false,
     "count":0,
-    "url": "api/1/activity"
+    "url": "api/1/activity",
+    "title": "Activity"
   };
 
   activity.structure = [

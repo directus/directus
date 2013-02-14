@@ -5853,11 +5853,11 @@ a {
   padding-right: 40px;
   padding-left: 40px;
 }
-#directus_activity .col-change_made {
+#directus_activity .col-datetime {
   width: 150px;
 }
 #directus_activity .col-user {
-  width: 250px;
+  width: 180px;
 }
 .dragover {
   border: 3px dashed #ededed;

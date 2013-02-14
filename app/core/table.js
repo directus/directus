@@ -242,7 +242,7 @@ function(app, Backbone) {
 
     serialize: function() {
       var id = (this.collection.table) ? this.collection.table.id : undefined;
-      return {columns: this.columns, id: id, selectable: this.options.selectable, sortable: this.options.sortable, hasData: this.collection.length };
+      return {columns: this.collection.getColumns(), id: id, selectable: this.options.selectable, sortable: this.options.sortable, hasData: this.collection.length };
     },
 
     events: {
@@ -279,7 +279,15 @@ function(app, Backbone) {
           deleteOnly: this.options.deleteOnly
         }));
       }
-      this.insertView('table', new TableHead({collection: this.collection, selectable: this.options.selectable, sortable: this.options.sortable, deleteColumn: this.options.deleteColumn}));
+
+      if (this.tableHead) {
+        this.insertView('table', new TableHead({
+          collection: this.collection,
+          selectable: this.options.selectable,
+          sortable: this.options.sortable,
+          deleteColumn: this.options.deleteColumn
+        }));
+      }
 
       if (this.collection.length > 0) {
         this.insertView('table', new TableBody({
@@ -306,6 +314,8 @@ function(app, Backbone) {
     },
 
     initialize: function() {
+
+      if (this.options.tableHead !== false) this.tableHead = true;
 
       this.collection.on('fetch',  function() {
         app.router.showAlert();

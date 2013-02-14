@@ -5,6 +5,7 @@ define([], function() {
   users.table = {
     "id":"directus_users",
     "table_name":"directus_users",
+    "title":"Users",
     "hidden":true,
     "single":false,
     "inactive_by_default":"0",

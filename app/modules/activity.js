@@ -15,7 +15,7 @@ function(app, Backbone, Directus, Chart) {
     template: 'page',
 
     serialize: function() {
-      return {title: this.collection.table.title};
+      return {title: this.collection.table.get('title')};
     },
 
     afterRender: function() {
@@ -26,7 +26,7 @@ function(app, Backbone, Directus, Chart) {
 
     initialize: function() {
       this.chart = new Chart({collection: this.collection});
-      this.table = new ListView({collection: this.collection});
+      this.table = new ListView({collection: this.collection, tableHead: false});
     }
 
   });

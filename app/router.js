@@ -158,7 +158,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           this.v.main.setView('#content', new Settings.Tables({collection: app.tables}));
           break;
         case 'global':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), structure: Settings.MediaStructure}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), structure: Settings.GlobalStructure}));
           break;
         case 'media':
           this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), structure: Settings.MediaStructure}));
