@@ -57,7 +57,7 @@ function(app, Backbone, Directus) {
     },
 
     serialize: function() {
-      return {title: this.collection.table.title, upload: true, buttonTitle: 'Add New Media'};
+      return {title: this.collection.table.get('title'), upload: true, buttonTitle: 'Add New Media'};
     },
 
     afterRender: function() {

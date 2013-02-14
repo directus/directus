@@ -184,3 +184,20 @@ function template($string, array $parameters)
 
     return preg_replace_callback('/{{\s*(.+?)\s*}}/', $replacer, $string);
 }
+
+
+function to_name_value($array, $keys=null) {
+	$data = array();
+	foreach($array as $name => $value) {
+		$row = array('name'=>$name,'value'=>$value);
+		if (isset($keys)) $row = array_merge($row, $keys);
+		array_push($data, $row);
+	}
+	return $data;
+}
+
+function find($array, $key, $value) {
+	foreach ($array as $item) {
+		if (isset($item[$key]) && ($item[$key] == $value)) return $item;
+	}
+}

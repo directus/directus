@@ -53,7 +53,7 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
       table: new Backbone.Model(activity.table),
       structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
       preferences: new Backbone.Model(activity.preferences),
-      url: app.API_URL + 'tables/directus_activity/rows'
+      url: app.API_URL + 'activity/'
     });
 
     app.groups =

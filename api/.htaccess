@@ -36,6 +36,9 @@ RewriteRule ^1/tables/directus_users/rows/([^/]+)/*$ api.php?api_collection=user
 # ------
 RewriteRule ^1/groups/*$ api.php?api_collection=groups&%{QUERY_STRING} [L]
 
+# Activity
+# --------
+RewriteRule ^1/activity/*$ api.php?api_collection=activity&%{QUERY_STRING} [L]
 
 # ============
 

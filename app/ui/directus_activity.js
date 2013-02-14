@@ -14,7 +14,41 @@ define(['app','backbone'], function(app, Backbone) {
   Module.system = true;
 
   Module.list = function(options) {
-    return '<a href="#tables/' + options.model.get('table') + '/' + options.model.get('row') + '">Item ' + options.model.get('row') + ' </a> has been ' + options.model.get('type') + ' ' + {added: 'to', deleted:'from', edited:'within', activated:'within'}[options.model.get('type')] + ' <a href="#tables/' + options.model.get('table') + '">' + options.model.get('table') + '</a>';
+    var model = options.model;
+    var action = model.get('action');
+    var table = model.get('table_name');
+    var type = model.get('type');
+    var returnStr;
+    var actionMap = {
+      'ADD': 'added',
+      'DELETE': 'deleted',
+      'UPDATE': 'updated'
+    }
+    var prepositionMap = {
+      'ADD': 'to',
+      'DELETE': 'from',
+      'UPDATE': 'within'
+    }
+
+    switch (type) {
+      case 'MEDIA':
+        returnStr = '<a href="#">' + model.get('identifier') + '</a> has been added to <a href="#media">Media</a>';
+        break;
+      case 'SETTINGS':
+        returnStr = 'The settings have been updated';
+        break;
+      case 'UI':
+        returnStr = 'A UI has been updated';
+        break;
+      default:
+        returnStr =
+            '<a href="#tables/' + table + '/' + model.get('row_id') + '">' + model.get('identifier') + ' </a>'+
+              ' has been ' + actionMap[action] + ' ' + prepositionMap[action] +
+            ' <a href="#tables/' + table + '">' + app.capitalize(table) + '</a>';
+        break;
+    }
+
+      return returnStr;
   };
 
   return Module;
