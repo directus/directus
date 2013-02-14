@@ -11,7 +11,9 @@ define(['app', 'backbone'], function (app, Backbone) {
     Module.id = 'itunes_song_selector';
     Module.dataTypes = ['VARCHAR', 'INT'];
 
-    Module.variables = [];
+    Module.variables = [
+        {id: 'field_mappings', ui: 'textarea', options: {rows: 4} }
+    ];
 
     var template = '<label>{{{capitalize name}}}</label>' +
         '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" />' +
@@ -30,6 +32,15 @@ define(['app', 'backbone'], function (app, Backbone) {
             'blur input': function () {
                 this.$el.find('.label').hide();
             }
+        },
+        initialize: function() {
+            this.options.settings.set({
+                field_mappings_obj: JSON.parse(
+                    this.options.settings.get('field_mappings')
+                ) 
+            });
+
+            console.log("initialize", this.options.settings.get('field_mappings_obj'));
         },
 
         afterRender: function () {
@@ -54,6 +65,7 @@ define(['app', 'backbone'], function (app, Backbone) {
                         },
                         success: function (data) {
                             $.each(data.contents.results, function (i, track) {
+                                console.log(track);
                                 tracks.push(JSON.stringify(track));
                             });
                             typeahead.process(tracks);
@@ -78,6 +90,10 @@ define(['app', 'backbone'], function (app, Backbone) {
                   var item = JSON.parse(obj);
                   this.$element.val(item.artistName + ' - ' + item.trackName);
                   this.$element.siblings('#' + that.options.name).val(item.trackId);
+                  var fieldMappings = that.options.settings.get('field_mappings_obj');
+                  for (fieldName in fieldMappings) {
+                    this.$element.parents('#directus-form').find('#' + fieldMappings[fieldName]).val(item[fieldName]);
+                  }
                 }
             });
         },
