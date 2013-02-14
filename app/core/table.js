@@ -133,12 +133,17 @@ function(app, Backbone) {
     },
 
     serialize: function() {
+      var rowIdentifiers = this.options.rowIdentifiers;
+      var rows = _.map(this.collection.getModels(), function(model) {
+        var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
+        return {model: model, classes: classes};
+      });
       return {
         columns: this.collection.getColumns(),
-        rows: this.collection.getModels(),
+        rows: rows,
         sortable: this.options.sortable,
         selectable: this.options.selectable,
-        deleteColumn: this.options.deleteColumn
+        deleteColumn: this.options.deleteColumn,
       };
     },
 
@@ -298,7 +303,8 @@ function(app, Backbone) {
           preferences: this.options.preferences || this.collection.preferences,
           structure: this.options.structure || this.collection.structure,
           sortable: this.options.sortable,
-          deleteColumn: this.options.deleteColumn
+          deleteColumn: this.options.deleteColumn,
+          rowIdentifiers: this.options.rowIdentifiers
         }));
       }
     },

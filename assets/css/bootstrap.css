@@ -5859,6 +5859,19 @@ a {
 #directus_activity .col-user {
   width: 180px;
 }
+#directus_activity tr.row-action-UPDATE td.status {
+  background-color: #31aade;
+}
+#directus_activity tr.row-action-ADD td.status {
+  background-color: #8cc349;
+}
+#directus_activity tr.row-action-ADD.row-type-MEDIA td.status {
+  background-color: #7e4295;
+}
+#directus_activity tr.row-type-SETTINGS td.status,
+#directus_activity tr.row-type-UI td.status {
+  background-color: #fdc030;
+}
 .dragover {
   border: 3px dashed #ededed;
   -webkit-border-radius: 2px;

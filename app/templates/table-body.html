@@ -1,9 +1,9 @@
 {{#each rows}}
-	<tr data-id="{{this.id}}" data-cid="{{this.cid}}" class="{{{active this}}}">
+	<tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="{{{active model}}} {{#classes}}{{this}} {{/classes}}">
 		<td class="status"></td>
 		{{#if ../sortable}}<td class="sort"><span class="glyphicon-show-lines"></span></td>{{/if}}
-		{{#if ../selectable}}<td class="check"><input type="checkbox" value="{{this.id}}"></td>{{/if}}
-		{{#each ../columns}}<td>{{ui ../this this}}</td>{{/each}}
+		{{#if ../selectable}}<td class="check"><input type="checkbox" value="{{model.id}}"></td>{{/if}}
+		{{#each ../columns}}<td>{{ui ../model this}}</td>{{/each}}
 		{{#if ../deleteColumn}}<td class="delete"><span class="glyphicon-remove"></span></td>{{/if}}
 	</tr>
 {{/each}}

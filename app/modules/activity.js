@@ -26,7 +26,7 @@ function(app, Backbone, Directus, Chart) {
 
     initialize: function() {
       this.chart = new Chart({collection: this.collection});
-      this.table = new ListView({collection: this.collection, tableHead: false});
+      this.table = new ListView({collection: this.collection, tableHead: false, rowIdentifiers: ['type','action']});
     }
 
   });

@@ -40,8 +40,15 @@ a {cursor:pointer;}
 .breadcrumb-divider {font-weight: normal; font-size:14px; color:@gray; margin:0 10px; }
 .container-fluid { padding-right:40px; padding-left:40px;}
 
-#directus_activity .col-datetime {width:150px;}
-#directus_activity .col-user {width:180px;}
+#directus_activity {
+	.col-datetime {width:150px;}
+	.col-user {width:180px;}
+	tr.row-action-UPDATE td.status {background-color:@blue;}
+	tr.row-action-ADD td.status {background-color:@green;}
+	tr.row-action-ADD.row-type-MEDIA td.status {background-color:@purple;}
+	tr.row-type-SETTINGS td.status,
+	tr.row-type-UI td.status {background-color:@yellow;}
+}
 
 .dragover {
 	border: 3px dashed @gray;
