@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.5.25)
 # Database: directus
-# Generation Time: 2013-02-06 16:59:55 +0000
+# Generation Time: 2013-02-14 19:42:38 +0000
 # ************************************************************
 
 
@@ -40,7 +40,7 @@ LOCK TABLES `about` WRITE;
 
 INSERT INTO `about` (`id`, `active`, `title`, `description`, `banner_image`, `button_link`)
 VALUES
-	(1,1,'i am active to','',0,'');
+	(1,1,'i am active to','test test',0,'');
 
 /*!40000 ALTER TABLE `about` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -109,6 +109,15 @@ CREATE TABLE `bookmarks` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `bookmarks` WRITE;
+/*!40000 ALTER TABLE `bookmarks` DISABLE KEYS */;
+
+INSERT INTO `bookmarks` (`id`, `user_id`, `class_id`)
+VALUES
+	(0,1,17);
+
+/*!40000 ALTER TABLE `bookmarks` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table class_types
@@ -125,6 +134,15 @@ CREATE TABLE `class_types` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `class_types` WRITE;
+/*!40000 ALTER TABLE `class_types` DISABLE KEYS */;
+
+INSERT INTO `class_types` (`id`, `active`, `title`, `description`, `banner_image`)
+VALUES
+	(1,2,'Classixx','',0);
+
+/*!40000 ALTER TABLE `class_types` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table classes
@@ -142,6 +160,17 @@ CREATE TABLE `classes` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `classes` WRITE;
+/*!40000 ALTER TABLE `classes` DISABLE KEYS */;
+
+INSERT INTO `classes` (`id`, `room_id`, `instructor_id`, `class_type_id`, `datetime`, `note`)
+VALUES
+	(19,1,2,1,'0000-00-00 00:00:00',''),
+	(18,1,2,1,'0000-00-00 00:00:00',''),
+	(17,3,2,1,'0000-00-00 00:00:00','TEST');
+
+/*!40000 ALTER TABLE `classes` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table community
@@ -172,6 +201,16 @@ CREATE TABLE `community_categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Test';
 
+LOCK TABLES `community_categories` WRITE;
+/*!40000 ALTER TABLE `community_categories` DISABLE KEYS */;
+
+INSERT INTO `community_categories` (`id`, `title`)
+VALUES
+	(1,'Category 1'),
+	(2,'Category 2');
+
+/*!40000 ALTER TABLE `community_categories` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table community_comments
@@ -185,6 +224,21 @@ CREATE TABLE `community_comments` (
   `user_id` int(11) NOT NULL,
   `comment` text NOT NULL,
   `datetime` datetime NOT NULL,
+  `community_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table demo_table
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `demo_table`;
+
+CREATE TABLE `demo_table` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) DEFAULT NULL,
+  `number` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -197,15 +251,44 @@ DROP TABLE IF EXISTS `directus_activity`;
 
 CREATE TABLE `directus_activity` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `table` varchar(100) NOT NULL DEFAULT '',
-  `row` int(10) NOT NULL,
-  `type` varchar(100) NOT NULL DEFAULT '',
-  `change_made` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `type` varchar(100) DEFAULT NULL,
+  `action` varchar(100) NOT NULL,
+  `identifier` varchar(100) DEFAULT NULL,
+  `table_name` varchar(100) NOT NULL DEFAULT '',
+  `row_id` int(10) DEFAULT NULL,
   `user` int(10) NOT NULL DEFAULT '0',
-  `sql` longtext NOT NULL,
+  `data` text,
+  `parent_id` int(11) DEFAULT NULL,
+  `datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Contains history of revisions';
 
+LOCK TABLES `directus_activity` WRITE;
+/*!40000 ALTER TABLE `directus_activity` DISABLE KEYS */;
+
+INSERT INTO `directus_activity` (`id`, `type`, `action`, `identifier`, `table_name`, `row_id`, `user`, `data`, `parent_id`, `datetime`)
+VALUES
+	(122,'ENTRY','UPDATE','Union Square','studios',1,1,'{\"id\":1,\"title\":\"Union Square\",\"region_id\":0,\"address\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"country\":\"\",\"phone_number\":0,\"email\":\"\",\"banner_image\":0,\"slideshow_images\":\"\",\"amenities\":\"\"}',121,'2013-02-13 21:58:23'),
+	(121,'ENTRY','UPDATE','TEST','users',5,1,'{\"id\":5,\"active\":\"1\",\"first_name\":\"TEST\",\"last_name\":\"USER\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-13 21:58:23'),
+	(123,'ENTRY','UPDATE',NULL,'favorite_studios',1,1,'{\"user_id\":5,\"studio_id\":1,\"id\":\"1\"}',121,'2013-02-13 21:58:23'),
+	(124,'ENTRY','UPDATE','Olov','users',2,1,'{\"id\":2,\"active\":\"1\",\"first_name\":\"Olov\",\"last_name\":\"Sundstrom\",\"email\":\"olov@rngr.org\",\"gender\":\"M\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-13 22:39:16'),
+	(125,'ENTRY','UPDATE','Brian','users',4,1,'{\"id\":4,\"active\":\"1\",\"first_name\":\"Brian\",\"last_name\":\"Eno\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-13 22:48:58'),
+	(126,'UI','UPDATE','about,title,textinput','directus_ui',0,1,'{\"input\":\"T3ST\",\"test\":\"T3ST\"}',NULL,'2013-02-13 22:50:07'),
+	(127,'ENTRY','ADD','Lasha','users',6,1,'{\"first_name\":\"Lasha\",\"last_name\":\"Krikheli\",\"email\":\"lasha@rngr.org\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"1\"}',NULL,'2013-02-13 22:52:41'),
+	(130,'SETTINGS','UPDATE','media','directus_settings',NULL,1,'{\"media_folder\":\"resources\",\"media_naming\":\"original\",\"allowed_thumbnails\":\"abc 123\",\"zxczxczxc\":\"zxczxc\",\"thumbnail_quality\":\"80\"}',NULL,'2013-02-13 23:23:22'),
+	(131,'SETTINGS','UPDATE','unit_test','directus_settings',NULL,1,'{\"media_folder\":\"resources\",\"media_naming\":\"unique\",\"allowed_thumbnails\":\"test test test\",\"zxczxczxc\":\"zxczxc\",\"thumbnail_quality\":\"90\"}',NULL,'2013-02-13 23:41:17'),
+	(132,'ENTRY','UPDATE','TEST','classes',17,1,'{\"id\":17,\"room_id\":\"3\",\"instructor_id\":\"2\",\"class_type_id\":\"1\",\"datetime\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"note\":\"TEST\"}',NULL,'2013-02-13 23:41:18'),
+	(133,'ENTRY','UPDATE','tengu','users',1,1,'{\"id\":1,\"active\":1,\"first_name\":\"tengu\",\"last_name\":\"Sundstr\\u00c3\\u00b6m\",\"email\":\"olov@rngr.org\",\"gender\":\"\",\"password\":\"\",\"region\":1,\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":0,\"authorize_id\":0,\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":0,\"bike_bar_height\":0,\"bike_seat_height\":0,\"service_water\":0,\"service_shoes\":0}',132,'2013-02-13 23:41:18'),
+	(134,'ENTRY','ADD',NULL,'bookmarks',0,1,'{\"class_id\":17,\"user_id\":1}',132,'2013-02-13 23:41:18'),
+	(135,'SETTINGS','UPDATE','unit_test','directus_settings',NULL,1,'{\"media_folder\":\"resources\",\"media_naming\":\"unique\",\"allowed_thumbnails\":\"test test test\",\"zxczxczxc\":\"zxczxc\",\"thumbnail_quality\":\"90\"}',NULL,'2013-02-13 23:41:36'),
+	(136,'ENTRY','UPDATE','TEST','classes',17,1,'{\"id\":17,\"room_id\":\"3\",\"instructor_id\":\"2\",\"class_type_id\":\"1\",\"datetime\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"note\":\"TEST\"}',NULL,'2013-02-13 23:41:36'),
+	(137,'ENTRY','UPDATE','tengu','users',1,1,'{\"id\":1,\"active\":1,\"first_name\":\"tengu\",\"last_name\":\"Sundstr\\u00c3\\u00b6m\",\"email\":\"olov@rngr.org\",\"gender\":\"\",\"password\":\"\",\"region\":1,\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":0,\"authorize_id\":0,\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":0,\"bike_bar_height\":0,\"bike_seat_height\":0,\"service_water\":0,\"service_shoes\":0}',136,'2013-02-13 23:41:36'),
+	(138,'ENTRY','ADD',NULL,'bookmarks',0,1,'{\"class_id\":17,\"user_id\":1}',136,'2013-02-13 23:41:36'),
+	(139,'MEDIA','ADD','felixhead.gif','directus_media',27,1,'{\"date_uploaded\":\"2013-02-13 18:59:19\",\"size\":4201,\"name\":\"felixhead-3.gif\",\"title\":\"felixhead.gif\",\"type\":\"image\\/gif\",\"user\":\"1\",\"active\":1,\"width\":323,\"height\":335}',NULL,'2013-02-13 23:59:19'),
+	(140,'SETTINGS','UPDATE','media','directus_settings',NULL,1,'{\"media_folder\":\"resources\",\"media_naming\":\"original\",\"allowed_thumbnails\":\"abc 123\",\"zxczxczxc\":\"zxczxc\",\"thumbnail_quality\":\"80\"}',NULL,'2013-02-14 00:08:08');
+
+/*!40000 ALTER TABLE `directus_activity` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table directus_columns
@@ -263,39 +346,192 @@ VALUES
 	(40,'directus_media','type',NULL,NULL,0,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
 	(42,'directus_media','user',NULL,'directus_user',0,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
 	(43,'directus_media','date_uploaded',NULL,NULL,0,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
-	(275,'users','service_shoes',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,27,''),
-	(274,'users','service_water',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,26,''),
-	(273,'users','bike_seat_height',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,25,''),
-	(272,'users','bike_bar_height',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,24,''),
-	(271,'users','shoe_size',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,23,''),
-	(270,'users','last_login',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,22,''),
-	(269,'users','joined',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,21,''),
-	(268,'users','authorize_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,20,''),
-	(267,'users','billing_zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,19,''),
-	(266,'users','billing_state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,18,''),
-	(265,'users','billing_city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,17,''),
-	(264,'users','billing_address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,16,''),
-	(263,'users','billing_address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,15,''),
-	(262,'users','zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,14,''),
-	(261,'users','state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,13,''),
-	(260,'users','city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,12,''),
-	(259,'users','address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,11,''),
-	(258,'users','address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,10,''),
-	(257,'users','phone_number',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,9,''),
-	(256,'users','region',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,8,''),
-	(255,'users','password',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,7,''),
-	(254,'users','gender',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
-	(253,'users','last_name',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
-	(252,'users','first_name',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
-	(248,'users','favourite_studios','MANYTOMANY','relational',0,0,0,0,0,'studios','favorite_studios','user_id','studio_id',9999,''),
-	(249,'users','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
-	(250,'users','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
-	(251,'users','email',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
-	(247,'users','favourite_products','MANYTOMANY','relational',0,0,0,0,0,'products','favorite_products','user_id','product_id',9999,''),
+	(275,'users','service_shoes',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,26,''),
+	(274,'users','service_water',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,25,''),
+	(273,'users','bike_seat_height',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,24,''),
+	(272,'users','bike_bar_height',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,23,''),
+	(271,'users','shoe_size',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,22,''),
+	(270,'users','last_login',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,21,''),
+	(269,'users','joined',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,20,''),
+	(268,'users','authorize_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,19,''),
+	(267,'users','billing_zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,18,''),
+	(266,'users','billing_state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,17,''),
+	(265,'users','billing_city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,16,''),
+	(264,'users','billing_address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,15,''),
+	(263,'users','billing_address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,14,''),
+	(262,'users','zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,13,''),
+	(261,'users','state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,12,''),
+	(260,'users','city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,11,''),
+	(259,'users','address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,10,''),
+	(258,'users','address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,9,''),
+	(257,'users','phone_number',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,8,''),
+	(256,'users','region',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,7,''),
+	(255,'users','password',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(254,'users','gender',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(253,'users','last_name',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(252,'users','first_name',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(248,'users','favourite_studios','manytomany','relational',0,0,0,1,0,'studios','favorite_studios','user_id','studio_id',30,''),
+	(249,'users','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,0,''),
+	(250,'users','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(251,'users','email',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(247,'users','favourite_products','manytomany','relational',0,0,0,1,0,'products','favorite_products','user_id','product_id',29,''),
 	(238,'directus_media','tags','','tags',0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
 	(239,'directus_media','embed_id',NULL,NULL,0,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
-	(246,'users','favourite_instructors','MANYTOMANY','relational',0,0,0,0,0,'instructors','favorite_instructors','user_id','instructor_id',9999,''),
-	(245,'users','classes','MANYTOMANY','relational',0,0,0,0,0,'classes','bookmarks','user_id','class_id',9999,'');
+	(246,'users','favourite_instructors','manytomany','relational',0,0,0,1,0,'instructors','favorite_instructors','user_id','instructor_id',28,''),
+	(245,'users','classes','manytomany','relational',0,0,0,1,0,'classes','bookmarks','user_id','class_id',27,''),
+	(276,'classes','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(277,'classes','room_id','','many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(278,'classes','instructor_id',NULL,'many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(279,'classes','class_type_id',NULL,'many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(280,'classes','datetime',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(281,'classes','note',NULL,'textarea',0,1,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(283,'community','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(284,'community','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(285,'community','category',NULL,'many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(286,'community','description',NULL,'textarea',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(287,'community','media',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(288,'community','datetime',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(289,'community_comments','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(290,'community_comments','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(291,'community_comments','user_id',NULL,'many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(292,'community_comments','comment',NULL,'textarea',0,1,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(293,'community_comments','datetime',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(294,'community','Comment','onetomany','relational',0,0,0,0,0,'community_comments',NULL,NULL,NULL,9999,''),
+	(295,'waitlist','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(296,'waitlist','user_id',NULL,'many_to_one',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(297,'waitlist','class_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(298,'waitlist','priority',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(299,'classes','users','manytomany','relational',0,0,0,0,0,'users','bookmarks','class_id','user_id',9999,''),
+	(300,'classes','waitlist','onetomany','relational',0,0,0,0,0,'waitlist',NULL,NULL,'class_id',9999,''),
+	(301,'rooms','bikes','onetomany','relational',0,0,0,0,0,'bikes',NULL,NULL,'room_id',9999,''),
+	(302,'rooms','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(303,'rooms','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(304,'rooms','studio_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(305,'rooms','seats','onetomany','relational',0,0,0,0,0,'seats',NULL,NULL,'room_id',4,''),
+	(306,'bikes','Tickets','onetomany','relational',0,0,0,0,0,'bike_tickets',NULL,NULL,NULL,9999,''),
+	(307,'bikes','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(308,'bikes','room_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(309,'bikes','bike_number',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(310,'bikes','position',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,4,'x,y'),
+	(311,'bike_tickets','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(312,'bike_tickets','bike_id',NULL,'numeric',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(313,'bike_tickets','studio_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(314,'bike_tickets','position',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(315,'bike_tickets','complaint',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(316,'bike_tickets','comment',NULL,'textarea',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(317,'bike_tickets','date_created',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,7,''),
+	(318,'bike_tickets','adjusted',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,8,''),
+	(319,'bike_tickets','parts_used',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,9,'Custom UI that asks which location the part is from and reduces inventory.'),
+	(320,'studios','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(321,'studios','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(322,'studios','region_id',NULL,'many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(323,'studios','address',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(324,'studios','city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(325,'studios','state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(326,'studios','zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,7,''),
+	(327,'studios','country',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,8,''),
+	(328,'studios','phone_number',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,9,''),
+	(329,'studios','email',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,10,''),
+	(330,'studios','banner_image',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,11,''),
+	(331,'studios','slideshow_images',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,12,''),
+	(332,'studios','amenities',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,13,'parking, lockers, showers, changing rooms'),
+	(333,'instructors','studios','manytomany','relational',0,0,0,0,0,'studios','instructor_studios',NULL,NULL,9999,''),
+	(334,'instructors','music','onetomany','relational',0,0,0,0,0,'instructor_music',NULL,NULL,NULL,9999,''),
+	(335,'instructors','classes','onetomany','relational',0,0,0,0,0,'classes',NULL,NULL,'instructor_id',9999,''),
+	(336,'instructors','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(337,'instructors','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(338,'instructors','first_name',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(339,'instructors','last_name',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(340,'instructors','nickname',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(341,'instructors','image',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(342,'instructors','password',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,7,''),
+	(343,'instructors','email',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,8,''),
+	(344,'instructors','phone',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,9,''),
+	(345,'instructors','address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,10,''),
+	(346,'instructors','address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,11,''),
+	(347,'instructors','city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,12,''),
+	(348,'instructors','state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,13,''),
+	(349,'instructors','zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,14,''),
+	(350,'instructors','bio',NULL,'textarea',0,0,0,0,0,NULL,NULL,NULL,NULL,15,'Needs <!--read more--> or two fields'),
+	(351,'instructors','facebook',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,16,''),
+	(352,'instructors','twitter',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,17,''),
+	(353,'instructors','tumblr',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,18,''),
+	(354,'studios','Rooms','onetomany','relational',0,0,0,0,0,'rooms',NULL,NULL,'studio_id',9999,''),
+	(355,'instructor_music','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,0,''),
+	(356,'instructor_music','instructor_id',NULL,'many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(357,'instructor_music','datetime',NULL,'datetime',0,0,1,0,0,NULL,NULL,NULL,NULL,6,''),
+	(358,'instructor_music','track_id',NULL,'itunes_song_selector',0,0,0,0,0,NULL,NULL,NULL,NULL,2,'Custom UI: Prefills the other fields upon track selection'),
+	(359,'instructor_music','artist',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(360,'instructor_music','track',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(361,'instructor_music','album_art_url',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(362,'instructor_music','track_name',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(363,'community_comments','community_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(364,'demo_table','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(365,'demo_table','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(366,'demo_table','number',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(367,'about','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(368,'about','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(369,'about','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(370,'about','description',NULL,'textarea',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(371,'about','banner_image',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(372,'about','button_link',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,6,'ie: BOOKMARK CLASSES'),
+	(373,'bike_parts','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(374,'bike_parts','name',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(375,'bike_parts','serial_number',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(376,'bike_parts','price',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(377,'bike_parts','part_allocation',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,'This should probably be a field for each LOCATION with the QUANTITY of this part... and use a custom UI to move items between'),
+	(378,'class_types','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(379,'class_types','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(380,'class_types','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(381,'class_types','description',NULL,'textarea',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(382,'class_types','banner_image',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(383,'community_categories','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(384,'community_categories','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(385,'faq','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(386,'faq','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(387,'faq','order',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(388,'faq','category',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(389,'faq','question',NULL,'textarea',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(390,'faq','answer',NULL,'textarea',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(391,'gift_cards','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(392,'gift_cards','code',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(393,'gift_cards','value',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(394,'gift_cards','balance',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(395,'gift_cards','date_created',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(396,'seats','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(397,'seats','seat_number',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,'# or i'),
+	(398,'seats','position',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,3,'x,y'),
+	(399,'seats','instructor',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(400,'seats','room_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(401,'reservations','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(402,'reservations','class_id',NULL,'numeric',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(403,'reservations','user_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(404,'reservations','guest_name',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(405,'reservations','time_reserved',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(406,'regions','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(407,'regions','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(408,'products','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(409,'products','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(410,'products','category',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(411,'products','description',NULL,'textarea',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(412,'products','sizes',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(413,'products','styles',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(414,'products','price',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,7,''),
+	(415,'product_styles','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(416,'product_styles','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(417,'product_sizes','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(418,'product_sizes','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(419,'product_features','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(420,'product_features','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(421,'product_features','sort',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(422,'product_features','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(423,'product_features','product_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(424,'product_features','image',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(425,'product_categories','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(426,'product_categories','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(427,'product_brands','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(428,'product_brands','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(429,'product_brands','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,3,'');
 
 /*!40000 ALTER TABLE `directus_columns` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -308,11 +544,20 @@ DROP TABLE IF EXISTS `directus_groups`;
 
 CREATE TABLE `directus_groups` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` int(11) DEFAULT NULL,
-  `description` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `directus_groups` WRITE;
+/*!40000 ALTER TABLE `directus_groups` DISABLE KEYS */;
+
+INSERT INTO `directus_groups` (`id`, `name`, `description`)
+VALUES
+	(0,'Administrator',NULL);
+
+/*!40000 ALTER TABLE `directus_groups` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table directus_media
@@ -344,6 +589,7 @@ LOCK TABLES `directus_media` WRITE;
 
 INSERT INTO `directus_media` (`id`, `active`, `name`, `title`, `location`, `type`, `charset`, `caption`, `tags`, `width`, `height`, `size`, `embed_id`, `user`, `date_uploaded`)
 VALUES
+	(27,1,'felixhead-3.gif','felixhead.gif',NULL,'image/gif','',NULL,'',323,335,4201,NULL,1,'2013-02-13 18:59:19'),
 	(26,1,'garfield-1.jpeg','garfield.jpeg',NULL,'image/jpeg',NULL,NULL,NULL,600,362,38665,NULL,1,'2013-02-05 18:14:57'),
 	(25,1,'sans-soleil-2.jpeg','sans-soleil.jpeg',NULL,'image/jpeg',NULL,NULL,NULL,350,245,32026,NULL,1,'2013-02-05 14:49:51'),
 	(24,1,'pkWWWKKA8jY.jpg','Pincess Mononoke','','embed/youtube',NULL,'','trailer',480,360,11303,'pkWWWKKA8jY',1,'2013-02-05 14:08:07'),
@@ -479,53 +725,54 @@ CREATE TABLE `directus_preferences` (
   `columns_visible` varchar(300) DEFAULT NULL,
   `sort` varchar(64) DEFAULT 'id',
   `sort_order` varchar(5) DEFAULT 'asc',
-  `status` varchar(5) DEFAULT '3',
+  `active` varchar(5) DEFAULT '3',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `directus_preferences` WRITE;
 /*!40000 ALTER TABLE `directus_preferences` DISABLE KEYS */;
 
-INSERT INTO `directus_preferences` (`id`, `user`, `table_name`, `columns_visible`, `sort`, `sort_order`, `status`)
+INSERT INTO `directus_preferences` (`id`, `user`, `table_name`, `columns_visible`, `sort`, `sort_order`, `active`)
 VALUES
-	(1,1,'directus_users','name,activity,email,description','id','asc','2,1'),
-	(4,1,'directus_preferences','text_field','id','asc','2,1'),
-	(5,1,'directus_activity','activity,user,change_made','id','asc','2,1'),
-	(9,1,'directus_media','item,title,type,size,user,date_uploaded','id','asc','2,1'),
+	(1,1,'directus_users','name,activity,email,description','id','asc','1'),
+	(4,1,'directus_preferences','text_field','id','asc','1'),
+	(5,1,'directus_activity','change_made,user,activity','change_made','ASC','1'),
+	(9,1,'directus_media','item,title,type,size,user,date_uploaded','id','ASC','1'),
 	(10,1,'directus_messages','subject,message,datetime,reply,from,to,viewed,archived,table,row','id','asc','2'),
-	(21,1,'directus_preferences','user,table_name,columns_visible,sort_order,status','id','asc','2,1'),
-	(37,1,'about','title,description,banner_image,button_link','id','asc','2,1'),
-	(38,1,'bikes','room_id,bike_number,position','id','asc','2,1'),
-	(39,1,'bike_parts','name,serial_number,price,part_allocation','id','asc','2,1'),
-	(40,1,'bike_tickets','bike_id,studio_id,position,complaint,comment,date_created,adjusted,parts_used','id','asc','2,1'),
-	(41,1,'bookmarks','user_id,class_id','id','asc','2,1'),
-	(42,1,'classes','room_id,instructor_id,class_type_id,datetime,note','id','asc','2,1'),
-	(43,1,'class_types','title,description,banner_image','id','asc','2,1'),
-	(44,1,'community','title,category,description,media,datetime','id','asc','2,1'),
-	(45,1,'community_categories','title','id','asc','2,1'),
-	(46,1,'community_comments','user_id,comment,datetime','id','asc','2,1'),
-	(47,1,'faq','order,category,question,answer','id','asc','2,1'),
-	(48,1,'favorite_instructors','user_id,instructor_id','id','asc','2,1'),
-	(49,1,'favorite_products','user_id,product_id','id','asc','2,1'),
-	(50,1,'favorite_studios','user_id,studio_id','id','asc','2,1'),
-	(51,1,'gift_cards','code,value,balance,date_created','id','asc','2,1'),
-	(52,1,'instructors','first_name,last_name,nickname,image,password,email,phone,address_1,address_2,city,state,zip,bio,facebook,twitter,tumblr','id','asc','2,1'),
-	(53,1,'instructor_music','instructor_id,datetime,track_id,artist,track,album_art_url','id','asc','2,1'),
-	(54,1,'instructor_studios','instructor_id,studio_id','id','asc','2,1'),
-	(55,1,'products','title,category,description,sizes,styles,price','id','asc','2,1'),
-	(56,1,'product_brands','title','id','asc','2,1'),
-	(57,1,'product_categories','title','id','asc','2,1'),
-	(58,1,'product_features','title,product_id,image','id','asc','2,1'),
-	(59,1,'product_sizes','title','id','asc','2,1'),
-	(60,1,'product_styles','title','id','asc','2,1'),
-	(61,1,'regions','title','id','asc','2,1'),
-	(62,1,'reservations','class_id,user_id,guest_name,time_reserved','id','asc','2,1'),
-	(63,1,'rooms','title,studio_id,seats','id','asc','2,1'),
-	(64,1,'seats','seat_number,position,instructor','id','asc','2,1'),
-	(65,1,'social_cache','type,datetime,content','id','asc','2,1'),
-	(66,1,'studios','title,region_id,address,city,state,zip,country,phone_number,email,banner_image,slideshow_images,amenities','id','asc','2,1'),
-	(67,1,'users','email,first_name,last_name,gender,password,region,phone_number,address_1,address_2,city,state,zip,billing_address_1,billing_address_2,billing_city,billing_state,billing_zip,authorize_id,joined,last_login,shoe_size,bike_bar_height,bike_seat_height,service_water,service_shoes','id','asc','2,1'),
-	(68,1,'waitlist','user_id,class_id,priority','id','asc','2,1');
+	(21,1,'directus_preferences','user,table_name,columns_visible,sort_order,status','id','asc','1'),
+	(37,1,'about','title,description,banner_image,button_link','id','asc','1'),
+	(38,1,'bikes','room_id,bike_number,position','id','asc','1'),
+	(39,1,'bike_parts','name','id','asc','1'),
+	(40,1,'bike_tickets','bike_id,studio_id,date_created','id','asc','1'),
+	(41,1,'bookmarks','user_id,class_id','id','asc','1'),
+	(42,1,'classes','room_id,instructor_id,class_type_id,datetime','id','asc','1'),
+	(43,1,'class_types','title,description','id','asc','1,2'),
+	(44,1,'community','title,datetime','id','asc','1'),
+	(45,1,'community_categories','title','id','asc','1'),
+	(46,1,'community_comments','user_id,comment,datetime','id','asc','1'),
+	(47,1,'faq','order,category,question','id','asc','1'),
+	(48,1,'favorite_instructors','user_id,instructor_id','id','asc','1'),
+	(49,1,'favorite_products','user_id,product_id','id','asc','1'),
+	(50,1,'favorite_studios','user_id,studio_id','id','asc','1'),
+	(51,1,'gift_cards','code,value,balance,date_created','id','asc','1'),
+	(52,1,'instructors','first_name,last_name,nickname,address_2,state,zip','first_name','ASC','1,2'),
+	(53,1,'instructor_music','instructor_id,track_id,artist,track,album_art_url','id','asc','1'),
+	(54,1,'instructor_studios','instructor_id,studio_id','id','asc','1'),
+	(55,1,'products','title,category,description,sizes,styles,price','title','ASC','1'),
+	(56,1,'product_brands','title','id','asc','1'),
+	(57,1,'product_categories','title','id','asc','1'),
+	(58,1,'product_features','title,product_id','id','asc','1'),
+	(59,1,'product_sizes','title','id','asc','1'),
+	(60,1,'product_styles','title','id','asc','1'),
+	(61,1,'regions','title','id','asc','1'),
+	(62,1,'reservations','class_id,user_id,guest_name,time_reserved','id','asc','1'),
+	(63,1,'rooms','title,studio_id,seats','id','asc','1'),
+	(64,1,'seats','seat_number,position,instructor','id','asc','1'),
+	(65,1,'social_cache','type,datetime,content','id','asc','1'),
+	(66,1,'studios','title,region_id,city','id','ASC','1'),
+	(67,1,'users','first_name,last_name,email,gender,password,region,billing_address_2','email','ASC','1,2'),
+	(68,1,'waitlist','user_id,class_id,priority','id','asc','1'),
+	(69,1,'demo_table','title,number','id','asc','1,2');
 
 /*!40000 ALTER TABLE `directus_preferences` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -593,11 +840,11 @@ VALUES
 	(2,'global','site_url','http://www.rngr.org'),
 	(3,'global','cms_color','green'),
 	(4,'media','media_folder','resources'),
-	(5,'media','media_naming','unique'),
-	(6,'media','allowed_thumbnails','test test test'),
+	(5,'media','media_naming','original'),
+	(6,'media','allowed_thumbnails','abc 123'),
 	(8,'media','zxczxczxc','zxczxc'),
 	(26,'global','cms_user_auto_sign_out','10'),
-	(178,'media','thumbnail_quality','90');
+	(178,'media','thumbnail_quality','80');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -627,12 +874,13 @@ VALUES
 	(5,'directus_media',1,0,0,0),
 	(6,'directus_activity',1,0,0,0),
 	(11,'directus_users',1,0,0,0),
-	(12,'about',1,1,0,0),
+	(12,'about',0,1,0,0),
 	(13,'bookmarks',1,0,0,1),
 	(14,'favorite_instructors',1,0,0,1),
 	(15,'favorite_products',1,0,0,1),
 	(16,'favorite_studios',1,0,0,1),
-	(17,'instructor_studios',1,0,0,1);
+	(17,'instructor_studios',1,0,0,1),
+	(18,'social_cache',1,0,0,0);
 
 /*!40000 ALTER TABLE `directus_tables` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -674,7 +922,59 @@ VALUES
 	(25,'demo_table','text','textarea','rows','1'),
 	(26,'demo_table','table','textarea','rows','2'),
 	(28,'directus_media','caption','textarea','rows','4'),
-	(29,'about','title','textinput','test','TEST');
+	(29,'about','title','textinput','test','T3ST'),
+	(30,'classes','room_id','many_to_one','related_table','rooms'),
+	(31,'classes','room_id','many_to_one','visible_column','title'),
+	(32,'classes','instructor_id','many_to_one','related_table','instructors'),
+	(33,'classes','instructor_id','many_to_one','visible_column','nickname'),
+	(36,'users','favourite_instructors','relational','visible_columns','first_name,last_name'),
+	(37,'users','favourite_products','relational','visible_columns','title'),
+	(38,'users','favourite_studios','relational','visible_columns','title'),
+	(39,'community','category','numeric','related_table','community_categories'),
+	(40,'community','category','numeric','visible_column','title'),
+	(41,'community','category','many_to_one','related_table','community_categories'),
+	(42,'community','category','many_to_one','visible_column','title'),
+	(45,'community_comments','user_id','numeric','related_table','users'),
+	(46,'community_comments','user_id','numeric','visible_column','first_name'),
+	(47,'waitlist','user_id','numeric','related_table','users'),
+	(48,'waitlist','user_id','numeric','visible_column','first_name'),
+	(49,'waitlist','class_id','numeric','related_table','classes'),
+	(50,'waitlist','class_id','numeric','visible_column','class_type'),
+	(51,'classes','class_type_id','numeric','related_table','class_types'),
+	(52,'classes','class_type_id','numeric','visible_column','title'),
+	(53,'bike_tickets','bike_id','numeric','related_table','bikes'),
+	(54,'bike_tickets','bike_id','numeric','visible_column','bike_number'),
+	(55,'studios','region_id','numeric','related_table','regions'),
+	(56,'studios','region_id','numeric','visible_column','title'),
+	(57,'studios','region_id','many_to_one','related_table','regions'),
+	(58,'studios','region_id','many_to_one','visible_column','title'),
+	(59,'rooms','seats','relational','visible_columns','seat_number,position'),
+	(60,'rooms','bikes','relational','visible_columns','bike_number,position'),
+	(63,'classes','class_type_id','many_to_one','related_table','class_types'),
+	(64,'classes','class_type_id','many_to_one','visible_column','title'),
+	(65,'classes','Users','relational','visible_columns','first_name'),
+	(66,'classes','waitlist','relational','visible_columns','user_id'),
+	(67,'users','classes','relational','visible_columns','room_id,instructor_id'),
+	(68,'users','first_name','textinput','test',''),
+	(69,'users','first_name','textinput','input',''),
+	(70,'users','first_name','textinput','another_input','I CAN STORE STUFF'),
+	(71,'users','first_name','textinput','rows','20'),
+	(75,'users','first_name','textarea','rows','20'),
+	(76,'users','first_name','textarea','options','option1,option2,option3'),
+	(80,'users','first_name','radiobuttons','options','olov,lasha,ben,tengu,max'),
+	(83,'instructor_music','instructor_id','numeric','related_table','instructors'),
+	(84,'instructor_music','instructor_id','numeric','visible_column','nickname'),
+	(85,'instructor_music','instructor_id','many_to_one','related_table','instructors'),
+	(86,'instructor_music','instructor_id','many_to_one','visible_column','nickname'),
+	(87,'community_comments','user_id','many_to_one','related_table','users'),
+	(88,'community_comments','user_id','many_to_one','visible_column','first_name'),
+	(89,'waitlist','user_id','many_to_one','related_table','users'),
+	(90,'waitlist','user_id','many_to_one','visible_column','first_name'),
+	(91,'demo_table','title','textinput','test','test 11'),
+	(92,'demo_table','title','textinput','input','test 21'),
+	(105,'about','title','textinput','input','T3ST'),
+	(109,'about','button_link','textinput','test','ttt'),
+	(110,'about','button_link','textinput','input','ttt');
 
 /*!40000 ALTER TABLE `directus_ui` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -690,11 +990,11 @@ CREATE TABLE `directus_users` (
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL DEFAULT '',
+  `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '',
   `token` varchar(255) NOT NULL DEFAULT '',
   `reset_token` varchar(255) NOT NULL DEFAULT '',
   `reset_expiration` datetime NOT NULL,
-  `email` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `email_messages` tinyint(1) NOT NULL DEFAULT '1',
   `last_login` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -707,19 +1007,19 @@ CREATE TABLE `directus_users` (
 LOCK TABLES `directus_users` WRITE;
 /*!40000 ALTER TABLE `directus_users` DISABLE KEYS */;
 
-INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `password`, `token`, `reset_token`, `reset_expiration`, `email`, `description`, `email_messages`, `last_login`, `last_page`, `ip`, `group`)
+INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `token`, `reset_token`, `reset_expiration`, `description`, `email_messages`, `last_login`, `last_page`, `ip`, `group`)
 VALUES
-	(1,1,'Ben','Haynes','$P$BQlO4Pi2xzGulWlbqVgq.H0ky699FS.','lcjREKokJYNLkIjY7LUqnCs0wnWSvStvb2PTgw4HWu0=','yTGAt9Z2PHFrDQ9NWncUYzXlG8SUw9RkzkrW1JTdzvQ=','2012-03-18 10:57:47','ben@rngr.org','Directus Developer',1,'2012-08-03 19:13:40','messages.php','24.103.115.138',-1),
-	(2,1,'Rob','Giampietro','','','','0000-00-00 00:00:00','rob@projectprojects.com','Designer',0,'2011-05-24 03:35:37','dashboard.php','67.243.190.142',2),
-	(3,1,'Chris','McCaddon','$P$BDyGLnpd1BsKXpf8qkC9fcc0D2HpvU/','','','0000-00-00 00:00:00','mcm@rngr.org','Directus Designer',0,'2012-03-19 15:24:27','edit.php?table=demo_table&item=1','24.103.115.138',1),
-	(4,1,'Meagan','Campol','$P$BFmfJ/gtXziEF.Zl2WPU79A7uDkTKr/','','','0000-00-00 00:00:00','meagan.campol@gmail.com','Beta Tester',0,'2012-03-18 18:03:00','dashboard.php','98.14.119.188',NULL),
-	(6,1,'Milena','Sadee','','','','0000-00-00 00:00:00','milena@2x4.org','CMS Review',0,'2011-05-03 18:54:51','dashboard.php','69.193.173.98',NULL),
-	(11,1,'Aaron','Gemmill','','','','0000-00-00 00:00:00','gemmill@gmail.com','CMS Review',0,'2011-05-22 22:38:14','messages.php','67.243.190.142',NULL),
-	(17,1,'Chris','Cannon','','','','0000-00-00 00:00:00','chrisc@projectprojects.com','CMS Review',0,'2011-07-05 15:47:06','messages.php?m=inbox','50.74.192.138',NULL),
-	(22,1,'John','Smith','','','','0000-00-00 00:00:00','john@example.com','Dummy',1,'2011-07-05 15:47:06','','',NULL),
-	(20,1,'Will','Scarbrough','','','','0000-00-00 00:00:00','wscarbrough@sasaki.com','CMS Review',0,'2011-07-21 13:52:54','edit.php?table=blog&item=1','68.171.130.190',NULL),
-	(21,1,'Chris','Kristofferson','','','','0000-00-00 00:00:00','c@avec.us','CMS Review',0,'2011-12-12 16:46:00','media.php','24.39.127.154',NULL),
-	(23,1,'Olov','Sundstrom','kaka','dinn','','0000-00-00 00:00:01','olov@rngr.org','RANGER',0,'2012-08-03 19:13:44','settings.php','24.103.115.138',-1);
+	(1,1,'Ben','Haynes','ben@rngr.org','$P$BQlO4Pi2xzGulWlbqVgq.H0ky699FS.','lcjREKokJYNLkIjY7LUqnCs0wnWSvStvb2PTgw4HWu0=','yTGAt9Z2PHFrDQ9NWncUYzXlG8SUw9RkzkrW1JTdzvQ=','2012-03-18 10:57:47','Directus Developer',1,'2012-08-03 19:13:40','messages.php','24.103.115.138',0),
+	(2,1,'Rob','Giampietro','rob@projectprojects.com','','','','0000-00-00 00:00:00','Designer',0,'2011-05-24 03:35:37','dashboard.php','67.243.190.142',0),
+	(3,1,'Chris','McCaddon','mcm@rngr.org','$P$BDyGLnpd1BsKXpf8qkC9fcc0D2HpvU/','','','0000-00-00 00:00:00','Directus Designer',0,'2012-03-19 15:24:27','edit.php?table=demo_table&item=1','24.103.115.138',0),
+	(4,1,'Meagan','Campol','meagan.campol@gmail.com','$P$BFmfJ/gtXziEF.Zl2WPU79A7uDkTKr/','','','0000-00-00 00:00:00','Beta Tester',0,'2012-03-18 18:03:00','dashboard.php','98.14.119.188',0),
+	(6,1,'Milena','Sadee','milena@2x4.org','','','','0000-00-00 00:00:00','CMS Review',0,'2011-05-03 18:54:51','dashboard.php','69.193.173.98',0),
+	(11,1,'Aaron','Gemmill','gemmill@gmail.com','','','','0000-00-00 00:00:00','CMS Review',0,'2011-05-22 22:38:14','messages.php','67.243.190.142',0),
+	(17,1,'Chris','Cannon','chrisc@projectprojects.com','','','','0000-00-00 00:00:00','CMS Review',0,'2011-07-05 15:47:06','messages.php?m=inbox','50.74.192.138',0),
+	(22,1,'John','Smith','john@example.com','','','','0000-00-00 00:00:00','Dummy',1,'2011-07-05 15:47:06','','',0),
+	(20,1,'Will','Scarbrough','wscarbrough@sasaki.com','','','','0000-00-00 00:00:00','CMS Review',0,'2011-07-21 13:52:54','edit.php?table=blog&item=1','68.171.130.190',0),
+	(21,1,'Chris','Kristofferson','c@avec.us','','','','0000-00-00 00:00:00','CMS Review',0,'2011-12-12 16:46:00','media.php','24.39.127.154',0),
+	(23,1,'Olov','Sundstrom','olov@rngr.org','kaka','dinn','','0000-00-00 00:00:01','RANGER',0,'2012-08-03 19:13:44','settings.php','24.103.115.138',0);
 
 /*!40000 ALTER TABLE `directus_users` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -754,6 +1054,15 @@ CREATE TABLE `favorite_instructors` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `favorite_instructors` WRITE;
+/*!40000 ALTER TABLE `favorite_instructors` DISABLE KEYS */;
+
+INSERT INTO `favorite_instructors` (`id`, `user_id`, `instructor_id`)
+VALUES
+	(1,1,1);
+
+/*!40000 ALTER TABLE `favorite_instructors` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table favorite_products
@@ -765,9 +1074,19 @@ CREATE TABLE `favorite_products` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
+  `order` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `favorite_products` WRITE;
+/*!40000 ALTER TABLE `favorite_products` DISABLE KEYS */;
+
+INSERT INTO `favorite_products` (`id`, `user_id`, `product_id`, `order`)
+VALUES
+	(1,3,1,0);
+
+/*!40000 ALTER TABLE `favorite_products` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table favorite_studios
@@ -782,6 +1101,15 @@ CREATE TABLE `favorite_studios` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `favorite_studios` WRITE;
+/*!40000 ALTER TABLE `favorite_studios` DISABLE KEYS */;
+
+INSERT INTO `favorite_studios` (`id`, `user_id`, `studio_id`)
+VALUES
+	(1,5,1);
+
+/*!40000 ALTER TABLE `favorite_studios` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table gift_cards
@@ -811,7 +1139,7 @@ CREATE TABLE `instructor_music` (
   `datetime` datetime NOT NULL,
   `track_id` int(11) NOT NULL COMMENT 'Custom UI: Prefills the other fields upon track selection',
   `artist` varchar(255) NOT NULL DEFAULT '',
-  `track` varchar(255) NOT NULL DEFAULT '',
+  `track_name` varchar(255) NOT NULL DEFAULT '',
   `album_art_url` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -859,6 +1187,17 @@ CREATE TABLE `instructors` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `instructors` WRITE;
+/*!40000 ALTER TABLE `instructors` DISABLE KEYS */;
+
+INSERT INTO `instructors` (`id`, `active`, `first_name`, `last_name`, `nickname`, `image`, `password`, `email`, `phone`, `address_1`, `address_2`, `city`, `state`, `zip`, `bio`, `facebook`, `twitter`, `tumblr`)
+VALUES
+	(1,1,'Olov','Sundstrom','Olov',0,'','',0,'','','','',0,'','','',''),
+	(2,1,'Benjamin ','Haynes','Ben',0,'','',0,'','','','',0,'','','',''),
+	(3,1,'Max','Glantzman','Max',0,'','',0,'','','','',0,'','','','');
+
+/*!40000 ALTER TABLE `instructors` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table product_brands
@@ -947,6 +1286,20 @@ CREATE TABLE `products` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All products in the shop';
 
+LOCK TABLES `products` WRITE;
+/*!40000 ALTER TABLE `products` DISABLE KEYS */;
+
+INSERT INTO `products` (`id`, `title`, `category`, `description`, `sizes`, `styles`, `price`)
+VALUES
+	(1,'Coca Cola',0,'',0,0,2),
+	(2,'French Fries',0,'',0,0,2),
+	(3,'Tacos',0,'',0,0,0),
+	(4,'Hamburger',0,'',0,0,0),
+	(5,'Starburst',0,'',0,0,0),
+	(6,'Icecream',0,'',0,0,0);
+
+/*!40000 ALTER TABLE `products` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table regions
@@ -987,10 +1340,20 @@ CREATE TABLE `rooms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '',
   `studio_id` int(11) NOT NULL,
-  `seats` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `rooms` WRITE;
+/*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
+
+INSERT INTO `rooms` (`id`, `title`, `studio_id`)
+VALUES
+	(1,'Red Room',0),
+	(2,'Blue Room',0),
+	(3,'Green Room',0);
+
+/*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table seats
@@ -1003,6 +1366,7 @@ CREATE TABLE `seats` (
   `seat_number` varchar(11) NOT NULL COMMENT '# or i',
   `position` varchar(5) NOT NULL COMMENT 'x,y',
   `instructor` int(11) NOT NULL,
+  `room_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1045,6 +1409,15 @@ CREATE TABLE `studios` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `studios` WRITE;
+/*!40000 ALTER TABLE `studios` DISABLE KEYS */;
+
+INSERT INTO `studios` (`id`, `title`, `region_id`, `address`, `city`, `state`, `zip`, `country`, `phone_number`, `email`, `banner_image`, `slideshow_images`, `amenities`)
+VALUES
+	(1,'Union Square',0,'','','',0,'',0,'',0,'','');
+
+/*!40000 ALTER TABLE `studios` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table users
@@ -1054,7 +1427,7 @@ DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   `email` varchar(255) NOT NULL DEFAULT '',
   `first_name` varchar(255) NOT NULL DEFAULT '',
   `last_name` varchar(255) NOT NULL DEFAULT '',
@@ -1088,7 +1461,12 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `active`, `email`, `first_name`, `last_name`, `gender`, `password`, `region`, `phone_number`, `address_1`, `address_2`, `city`, `state`, `zip`, `billing_address_1`, `billing_address_2`, `billing_city`, `billing_state`, `billing_zip`, `authorize_id`, `joined`, `last_login`, `shoe_size`, `bike_bar_height`, `bike_seat_height`, `service_water`, `service_shoes`)
 VALUES
-	(1,1,'','olov','sundstrom','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0);
+	(1,1,'olov@rngr.org','tengu','SundstrÃ¶m','','',1,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(2,1,'olov@rngr.org','Olov','Sundstrom','M','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(3,1,'r@kelly.com','R','Kelly','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(4,1,'','Brian','Eno','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(5,2,'','TEST','USER','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(6,1,'lasha@rngr.org','Lasha','Krikheli','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
