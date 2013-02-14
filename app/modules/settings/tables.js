@@ -153,6 +153,7 @@ function(app, Backbone, ui, Directus) {
       var model = this.collection.get(id);
       var schema = app.uiSettings[model.get('ui')].schema;
       var options = model.options;
+      console.log(schema);
       var view = new Directus.EditView({model: options, structure: schema});
       var modal = app.router.openModal(view, {title: 'UI Settings'});
       modal.save = function() {

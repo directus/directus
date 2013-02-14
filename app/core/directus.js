@@ -19,6 +19,7 @@ function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSi
   app.Directus.Collection = Collection;
   app.Directus.Entries = Entries;
   app.Directus.CollectionColumns = Structure.Columns;
+  app.Directus.ModelColumn = Structure.Column;
   app.Directus.EditView = Edit;
   app.Directus.Table = Table;
   app.Directus.Modal = Modal;

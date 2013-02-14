@@ -111,7 +111,7 @@ function(
   ui.settings = function() {
     var settings = {};
     _.each(ui.core, function(ui) {
-      ui.schema = new Backbone.Collection(ui.variables);
+      //ui.schema = new Backbone.Collection(ui.variables);
       settings[ui.id] = ui;
     });
     return settings;

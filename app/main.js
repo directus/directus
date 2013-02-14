@@ -122,7 +122,17 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
       });
     }, this);
 
+
     app.uiSettings = UI.settings();
+
+    _.each(app.uiSettings, function(value, key) {
+      if (value.variables === undefined) return;
+      //Cheating way to peform a deep-clone
+      var deepClone = JSON.parse(JSON.stringify(value.variables));
+      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
+    });
+
+    console.log(app.uiSettings);
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
