@@ -42,7 +42,7 @@ class DB extends MySQL {
   var $user_id = 1;
 
 
-  function set_entry_relational($tbl_name, $data) {
+  function set_entry_relational($tbl_name, $data, $parent_activity_id=null) {
     // These columns are aliases and doesn't have corresponding
     // columns in the DB, for example 'alias' and 'relational'
     $alias_types = array('ONETOMANY','MANYTOMANY','ALIAS');
@@ -71,7 +71,12 @@ class DB extends MySQL {
 
     // Update local (non-relational) data
     $id = $this->set_entry($tbl_name, $data);
-    $this->log_activity($tbl_name, 'UPDATE', $id, 'TEST');
+
+    // Log it
+    $action = isset($data['id']) ? 'UPDATE' : 'ADD';
+    $master_item = find($schema,'master',true);
+    $identifier = isset($master_item) ? $data[$master_item['column_name']] : null;
+    $activity_id = $this->log_activity('ENTRY',$tbl_name, $action, $id, $identifier, $data, $parent_activity_id);
 
     // Update the related columns
     foreach($alias_meta as $column_name => $item) {
@@ -86,7 +91,7 @@ class DB extends MySQL {
         case 'ONETOMANY':
           foreach ($data as $foreign_table_row) {
             $foreign_table_row[$junction_key_right] = $id;
-            $this->set_entry_relational($table_related, $foreign_table_row);
+            $this->set_entry_relational('ENTRY',$table_related, $foreign_table_row, $activity_id);
           }
           break;
 
@@ -97,37 +102,43 @@ class DB extends MySQL {
 
             // Delete?
             if (isset($junction_table_row['active']) && ($junction_table_row['active'] == '0')) {
-              $id = intval($junction_table_row['id']);
-              $this->dbh->exec("DELETE FROM $junction_table WHERE id=$id");
+              $junction_table_id = intval($junction_table_row['id']);
+              $this->dbh->exec("DELETE FROM $junction_table WHERE id=$junction_table_id");
+              $this->log_activity($junction_table, 'DELETE', $junction_table_id, 'TEST', null, $activity_id);
               continue;
             }
 
             // Update foreign table
-            $foreign_id = $this->set_entry_relational($table_related, $junction_table_row['data']);
+            $foreign_id = $this->set_entry_relational($table_related, $junction_table_row['data'], $activity_id);
 
-            // Update junction table
-            $this->set_entry_relational($junction_table, array(
-              'id' => $foreign_id,
+            $junction_table_data = array(
               $junction_key_left => $id,
               $junction_key_right => $foreign_id
-            ));
+            );
+
+            if (isset($junction_table_row['id'])) $junction_table_data['id'] = $junction_table_row['id'];
+
+            // Update junction table
+            $this->set_entry_relational($junction_table, $junction_table_data, $activity_id);
           }
           break;
       }
     }
-
     return $id;
   }
 
-  function set_entry($tbl_name, $data) {
-    $this->set_entries($tbl_name, array($data));
-    return (isset($data['id'])) ? $data['id'] : $this->dbh->lastInsertId();
+  function set_media($data) {
+    $id = $this->set_entry('directus_media', $data);
+    $this->log_activity('MEDIA', 'directus_media', 'ADD', $id, $data['title'], $data);
+    return $id;
   }
 
   function set_settings($data) {
-    $keys = array('collection' => $data['id']);
+    $collection = $data['id'];
+    $keys = array('collection' => $collection);
     unset($data['id']);
     $this->set_entries('directus_settings', to_name_value($data, $keys));
+    $this->log_activity('SETTINGS','directus_settings', 'UPDATE', null, $collection, $data);
   }
 
   function set_ui_options($data, $tbl_name, $column_name, $ui_name) {
@@ -135,17 +146,20 @@ class DB extends MySQL {
     unset($data['id']);
     $keys = array('table_name' => $tbl_name, 'column_name' => $column_name, 'ui_name' => $ui_name);
     $this->set_entries('directus_ui', to_name_value($data, $keys));
-    $this->log_activity('directus_ui', 'UPDATE', $id, $tbl_name .','. $column_name . ',' . $ui_name, $data);
+    $this->log_activity('UI','directus_ui', 'UPDATE', $id, $tbl_name .','. $column_name . ',' . $ui_name, $data);
   }
 
-  function log_activity($tbl_name, $action, $row_id, $identifier, $data) {
-    $this->set_entry('directus_activity', array(
+  function log_activity($type, $tbl_name, $action, $row_id, $identifier, $data, $parent_id=null) {
+    return $this->set_entry('directus_activity', array(
+      'type' => $type,
       'identifier' => $identifier,
       'table_name' => $tbl_name,
       'action' => $action,
       'row_id' => $row_id,
-      'user' => 0,
-      'data' => json_encode($data)
+      'user' => 1,
+      'data' => json_encode($data),
+      'parent_id' => $parent_id,
+      'datetime' => gmdate('Y-m-d H:i:s')
     ));
   }
 };

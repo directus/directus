@@ -106,12 +106,9 @@ class DBTest extends PHPUnit_Framework_TestCase
         $this->db->dbh->exec("DELETE FROM `directus_settings` WHERE collection='unit_test'");
     }
 
-    public function testLogActivity() {
-        //Create, read, update and delete
-        $this->db->log_activity('demo_table', 'CREATE',5, 'jag e ny', array('a'=>'b'));
-
-        //CLEAN UP
-        //$this->db->dbh->exec("DELETE FROM `directus_settings` WHERE collection='unit_test'");
+    public function testSetEntriesRelational() {
+        $data = json_decode('{"id":17,"room_id":"3","instructor_id":"2","class_type_id":"1","datetime":"Wed, 30 Nov -001 00:00:00 -0500","note":"TEST","users":[{"data":{"id":1,"active":1,"first_name":"tengu","last_name":"SundstrÃ¶m","email":"olov@rngr.org","gender":"","password":"","region":1,"phone_number":"","address_1":"","address_2":"","city":"","state":"","zip":0,"billing_address_1":"","billing_address_2":"","billing_city":"","billing_state":"","billing_zip":0,"authorize_id":0,"joined":"Wed, 30 Nov -001 00:00:00 -0500","last_login":"Wed, 30 Nov -001 00:00:00 -0500","shoe_size":0,"bike_bar_height":0,"bike_seat_height":0,"service_water":0,"service_shoes":0,"classes":[],"favourite_instructors":[],"favourite_products":[],"favourite_studios":[]}}],"waitlist":[]}',true);
+        $this->db->set_entry_relational('classes',$data);
     }
 }
 ?>

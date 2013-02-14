@@ -77,6 +77,10 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   }
 
   //////////////////////////////////////////////////////////////////////////////
+  if ( $collection == "activity" ) {
+    return $db->get_activity();
+  }
+  //////////////////////////////////////////////////////////////////////////////
   // GROUPS
 
 
@@ -229,7 +233,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
     switch ($http_method) {
       case "POST":
         $data['date_uploaded'] = date('Y-m-d H:i:s');
-        $params['id'] = $db->set_entry('directus_media', $data);
+        $params['id'] = $db->set_media($data);
         break;
       case "PUT":
         if (!isset($id)) {

@@ -195,3 +195,9 @@ function to_name_value($array, $keys=null) {
 	}
 	return $data;
 }
+
+function find($array, $key, $value) {
+	foreach ($array as $item) {
+		if (isset($item[$key]) && ($item[$key] == $value)) return $item;
+	}
+}

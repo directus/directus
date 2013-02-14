@@ -554,6 +554,11 @@ class MySQL {
     return $result;
   }
 
+  function set_entry($tbl_name, $data) {
+    $this->set_entries($tbl_name, array($data));
+    return (isset($data['id'])) ? $data['id'] : $this->dbh->lastInsertId();
+  }
+
   /**
    * Set entries
    * This could potentially merge with 'set_settings', 'set_ui_options' and 'insert_entry'
@@ -614,6 +619,13 @@ class MySQL {
     }
     return $result;
   }
+
+	function get_activity() {
+    $sql = "SELECT id,identifier,action,table_name,row_id,user,datetime,type FROM directus_activity WHERE parent_id IS NULL ORDER BY id ASC";
+    $sth = $this->dbh->prepare($sql);
+    $sth->execute();
+    return array('rows' => $sth->fetchAll(PDO::FETCH_ASSOC));
+	}
 
   function add_column($tbl_name, $data) {
     $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
