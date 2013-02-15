@@ -14,9 +14,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR', 'DATE', 'TIME'];
 
   Module.variables = [
-    {id: 'test', ui: 'textinput', 'char_length': 10},
-    {id: 'input', ui: 'textinput', 'char_length': 20},
-    {id: 'test_textarea', ui: 'textarea', options: {'rows': 15}}
+    {id: 'readonly', ui: 'checkbox'}
   ];
 
   var template = '<label>{{{capitalize name}}}</label>'+
@@ -38,6 +36,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     updateMaxLength: function(e) {
       var length = this.options.schema.get('char_length') - e.target.value.length;
       this.$el.find('.label').html(length);
+    },
+
+    afterRender: function() {
+      if (this.options.settings.get("readonly") === "on") this.$("input").prop("readonly",true);
     },
 
     serialize: function() {
