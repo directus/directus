@@ -6341,6 +6341,10 @@ a:hover {
 .related-table .directus-table thead:hover #set-visible-columns {
   display: none;
 }
+.container-sidebar .directus-table td:not(.status) {
+  padding: 5px 6px;
+  font-size: 11px;
+}
 #set-visible-columns {
   position: absolute;
   top: 12px;
@@ -6630,6 +6634,20 @@ a:hover {
 #media-list {
   position: relative;
 }
+.container-fixed-sidebar {
+  position: relative;
+}
+.container-main {
+  margin-left: 0px;
+  float: none;
+  margin-right: 300px;
+}
+.container-sidebar {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 280px;
+}
 @media (max-width: 979px) {
   .directus-table tbody td:nth-child(n+8),
   .directus-table th:nth-child(n+8) {
@@ -6673,6 +6691,14 @@ a:hover {
     left: 0px;
     right: 0px;
     width: auto;
+  }
+  .container-sidebar {
+    position: relative;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .container-main {
+    width: 100%;
   }
 }
 @media (max-width: 480px) {

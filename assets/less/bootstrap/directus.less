@@ -417,8 +417,7 @@ a:hover {text-decoration:none;}
 
 .directus-table thead:hover #set-visible-columns { display: block; }
 .related-table .directus-table thead:hover #set-visible-columns { display: none; }
-
-
+.container-sidebar .directus-table td:not(.status) { padding:5px 6px; font-size:11px; }
 // Little cog in table header
 #set-visible-columns {
 	position: absolute;
@@ -652,10 +651,17 @@ a:hover {text-decoration:none;}
 	}
 }
 
-//FIX THIS, SHOULD BE A CLASS
+// FIX THIS, SHOULD BE A CLASS
 #media-list {
 	position:relative;
 }
+
+
+// FIXED SIDEBAR
+.container-fixed-sidebar {position: relative;}
+.container-main { margin-left:0px; float:none; margin-right:300px;}
+.container-sidebar { position: absolute; right:0px; top:0px; width:280px;}
+
 
 // RESPONSIVNESS
 // ------------------------------
@@ -678,8 +684,6 @@ a:hover {text-decoration:none;}
 	.head {
 		padding-top:0;
 	}
-
-
 
 	#footer {
 		margin-left: -20px;
@@ -708,6 +712,9 @@ a:hover {text-decoration:none;}
 		display: none;
 	}
 	.modal, .modal.stretch { margin-left:0px; left: 0px; right:0px; width:auto;}
+
+	.container-sidebar { position: relative; margin-top:20px; width:100%; }
+	.container-main { width:100%; }
 }
 
 @media (max-width: 480px) {
