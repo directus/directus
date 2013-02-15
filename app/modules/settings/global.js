@@ -26,7 +26,7 @@ function(app, Backbone, ui, Directus) {
         breadcrumbs: [
           { title: 'Settings', anchor: '#settings'}
         ],
-        title: 'Global',
+        title: this.options.title,
         sidebar: true
       };
     },
