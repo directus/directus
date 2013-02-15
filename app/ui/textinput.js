@@ -17,7 +17,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'readonly', ui: 'checkbox'}
   ];
 
-  var template = '<label>{{{capitalize name}}}</label>'+
+  var template = '<label>{{capitalize name}} <span class="note">{{note}}</span></label>'+
                  '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}"/>'+
                  '<span class="label char-count hide">{{characters}}</span>';
 
@@ -50,7 +50,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         value: value,
         name: this.options.name,
         maxLength: length,
-        characters: length - value.length
+        characters: length - value.length,
+        note: this.options.schema.get('comment')
       };
     }
 

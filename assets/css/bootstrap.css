@@ -5798,6 +5798,7 @@ a.badge:hover {
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
 }
 ::selection {
   background-color: #d2e8b5;
@@ -6481,6 +6482,11 @@ a:hover {
   border-top: 1px solid #ffffff;
   padding: 12px 20px;
 }
+.directus-form fieldset label .note {
+  font-weight: normal;
+  font-style: italic;
+  margin-left: 10px;
+}
 .directus-form fieldset:first-child {
   border-top: 0;
 }
@@ -6720,6 +6726,12 @@ a:hover {
   }
   .brand {
     font-size: 16px!important;
+  }
+  .directus-form input[type="text"],
+  .directus-form input[type="password"],
+  .directus-form input[type="text"].large,
+  .directus-form textarea {
+    width: 72%;
   }
 }
 .activity-module {

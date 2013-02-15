@@ -9,6 +9,7 @@
 html,
 body {
 	height: 100%;
+	overflow-x: hidden;
 }
 
 ::selection {background-color: lighten(@directusPrimary, 30%);}
@@ -524,6 +525,7 @@ a:hover {text-decoration:none;}
 		border-bottom: 1px solid @gray;
 		border-top: 1px solid @white;
 		padding: 12px 20px;
+		label .note { font-weight:normal; font-style: italic; margin-left:10px; }
 	}
 	fieldset:first-child {border-top:0;}
 	& > fieldset:last-child {border-bottom:0;}
@@ -730,6 +732,17 @@ a:hover {text-decoration:none;}
 	.go-to-site {display:none;}
 	.user-firstname {display:none;}
 	.brand {font-size:16px!important;}
+
+
+	.directus-form {
+		input[type="text"],
+		input[type="password"],
+		input[type="text"].large,
+		textarea {
+			width: 72%;
+		}
+	}
+
 }
 
 
