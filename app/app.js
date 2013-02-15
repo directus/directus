@@ -36,9 +36,8 @@ function(Handlebars) {
     },
 
     contextualDate: function(value) {
-      date = new Date(value);
-      date = new Date(date.toUTCString())
-      return jQuery.timeago(date);
+      console.log(value);
+      return jQuery.timeago(value+'Z');
     },
 
     actionMap: {

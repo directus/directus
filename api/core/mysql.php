@@ -662,7 +662,7 @@ class MySQL {
   }
 
 	function get_activity() {
-    $sql = "SELECT id,identifier,action,table_name,row_id,user,datetime,type FROM directus_activity WHERE parent_id IS NULL ORDER BY id ASC";
+    $sql = "SELECT id,identifier,action,table_name,row_id,user,datetime,type FROM directus_activity WHERE parent_id IS NULL ORDER BY id DESC";
     $sth = $this->dbh->prepare($sql);
     $sth->execute();
     return array('rows' => $sth->fetchAll(PDO::FETCH_ASSOC));

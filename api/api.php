@@ -239,7 +239,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
 
     switch ($http_method) {
       case "POST":
-        $data['date_uploaded'] = date('Y-m-d H:i:s');
+        $data['date_uploaded'] = gmdate('Y-m-d H:i:s');
         $params['id'] = $db->set_media($data);
         break;
       case "PUT":

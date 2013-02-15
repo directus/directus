@@ -44,8 +44,6 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
 
       app.tables.add(new Backbone.Model(options.schema));
 
-      console.log(tableName, options.schema.active);
-
       if (tableName.substring(0,9) === 'directus_') return;
 
       app.columns[tableName] = new Directus.CollectionColumns(options.columns, {parse: true});
@@ -57,13 +55,9 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
 
       // Temporary quick fix
       app.columns[tableName].table = app.tables.get(tableName);
-
     });
 
-    console.log(app.tables.get('directus_activity'));
-
     // Setup core data collections.
-
     app.media = new Directus.Media(data.active_media, {
       table: app.tables.get('directus_media'),
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
