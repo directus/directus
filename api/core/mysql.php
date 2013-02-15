@@ -608,9 +608,6 @@ class MySQL {
 
   }
 
-  /**
-   *  Get settings
-   */
   function get_settings() {
     $sth = $this->dbh->query("SELECT `collection`,`name`,`value` FROM directus_settings ORDER BY `collection");
     $result = array();
@@ -626,6 +623,15 @@ class MySQL {
     $sth->execute();
     return array('rows' => $sth->fetchAll(PDO::FETCH_ASSOC));
 	}
+
+  function get_revisions($params) {
+    $row_id = $params['id'];
+    $table_name = $params['table_name'];
+    $sql = "SELECT id,action,user,datetime FROM directus_activity WHERE row_id=$row_id AND table_name='$table_name' ORDER BY id DESC";
+    $sth = $this->dbh->prepare($sql);
+    $sth->execute();
+    return $sth->fetchAll(PDO::FETCH_ASSOC);
+  }
 
   function add_column($tbl_name, $data) {
     $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');

@@ -33,6 +33,24 @@ function(Handlebars) {
           bytes = bytes / 1024;
       }
       return bytes.toFixed(precision) + " " + sizes[posttxt];
+    },
+
+    contextualDate: function(value) {
+      date = new Date(value);
+      date = new Date(date.toUTCString())
+      return jQuery.timeago(date);
+    },
+
+    actionMap: {
+      'ADD': 'added',
+      'DELETE': 'deleted',
+      'UPDATE': 'updated'
+    },
+
+    prepositionMap: {
+      'ADD': 'to',
+      'DELETE': 'from',
+      'UPDATE': 'within'
     }
   };
 
@@ -58,11 +76,13 @@ function(Handlebars) {
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    date = new Date(date);
-    console.log(date);
-    date = new Date(date.toUTCString());
-    console.log(date);
+    //date = new Date(date);
+    //date = new Date(date.toUTCString());
     return jQuery.timeago(date);
+  });
+
+  Handlebars.registerHelper('avatarSmall', function(userId) {
+    return '<img src="' + app.users.get(userId).get('avatar') + '" style="margin-right:10px;" class="avatar">' + app.users.get(userId).get('first_name');
   });
 
   Handlebars.registerHelper('active', function(model) {

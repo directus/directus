@@ -132,9 +132,6 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
       app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
     });
 
-    console.log(app.uiSettings);
-
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     app.router = new Router({data: window.directusData});

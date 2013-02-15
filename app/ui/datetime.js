@@ -22,7 +22,7 @@ define(['app','backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
-    return '<div title="'+options.value+'">' + jQuery.timeago(options.value) + '</div>';
+    return '<div title="'+options.value+'">' + app.contextualDate(options.value) + '</div>';
   };
 
 

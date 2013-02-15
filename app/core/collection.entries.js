@@ -17,7 +17,6 @@ function(app, Backbone, BaseCollection) {
       isNested: true,
 
       parse: function(result) {
-        console.log(result);
         result.data = new Backbone.Model(result.data);
         this.collection.nestedCollection.add(result.data);
         return result;

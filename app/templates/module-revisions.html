@@ -1,1 +1,12 @@
 <div class="directus-module-header">Item Revisions</div>
+<div class="directus-module-section">
+<table class="table table-striped directus-table" id="directus_activity">
+{{#items}}
+	<tr class="row-type-{{type}} row-action-{{action}}">
+		<td class="status"></td>
+		<td>{{capitalize pastTense}} {{contextualDate datetime}}</td>
+		<td>{{{avatarSmall user}}}</td>
+	</tr>
+{{/items}}
+</table>
+</div>

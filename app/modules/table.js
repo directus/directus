@@ -47,9 +47,32 @@ function(app, Backbone, Directus) {
       return data;
     },
     initialize: function() {
-      console.log('meh');
       this.model.on('sync', this.render, this);
     }
+  });
+
+  var RevisionsModule = Backbone.Layout.extend({
+
+    template: 'module-revisions',
+
+    attributes: {'class': 'directus-module'},
+
+    serialize: function() {
+      var items = this.collection.map(function(model) {
+        var data = model.toJSON();
+        data.pastTense = app.actionMap[data.action];
+        return data;
+      });
+      return {items: items};
+    },
+
+    initialize: function(options) {
+      this.collection = new Backbone.Collection();
+      this.collection.url = options.baseURL+'/revisions';
+      this.collection.fetch();
+      this.collection.on('reset', this.render, this);
+    }
+
   });
 
   Table.Views.Edit = Backbone.Layout.extend({
@@ -146,11 +169,6 @@ function(app, Backbone, Directus) {
 
     beforeRender: function() {
       this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single}));
-
-      if (this.model.id !== undefined) {
-        this.insertView('#sidebar', new Backbone.Layout({template: 'module-revisions', attributes: {'class': 'directus-module'}}));
-        this.insertView('#sidebar', new Backbone.Layout({template: 'module-messages', attributes: {'class': 'directus-module'}}));
-      }
     },
 
     afterRender: function() {
@@ -160,6 +178,11 @@ function(app, Backbone, Directus) {
         this.model.fetch();
       } else {
         this.editView.render();
+      }
+
+      if (this.model.id !== undefined) {
+        this.insertView('#sidebar', new RevisionsModule({baseURL: this.model.url()}));
+        this.insertView('#sidebar', new Backbone.Layout({template: 'module-messages', attributes: {'class': 'directus-module'}}));
       }
     },
 

@@ -77,12 +77,19 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   }
 
   //////////////////////////////////////////////////////////////////////////////
+  // ACTIVITY
+
   if ( $collection == "activity" ) {
     return $db->get_activity();
   }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // REVISIONS
+  if ( $collection == "revisions" ) {
+    return $db->get_revisions($params);
+  }
   //////////////////////////////////////////////////////////////////////////////
   // GROUPS
-
 
   if ( $collection == "groups" ) {
     $groups = $db->get_entries("directus_groups");

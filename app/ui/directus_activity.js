@@ -19,16 +19,6 @@ define(['app','backbone'], function(app, Backbone) {
     var table = model.get('table_name');
     var type = model.get('type');
     var returnStr;
-    var actionMap = {
-      'ADD': 'added',
-      'DELETE': 'deleted',
-      'UPDATE': 'updated'
-    }
-    var prepositionMap = {
-      'ADD': 'to',
-      'DELETE': 'from',
-      'UPDATE': 'within'
-    }
 
     switch (type) {
       case 'MEDIA':
@@ -43,7 +33,7 @@ define(['app','backbone'], function(app, Backbone) {
       default:
         returnStr =
             '<a href="#tables/' + table + '/' + model.get('row_id') + '">' + model.get('identifier') + ' </a>'+
-              ' has been ' + actionMap[action] + ' ' + prepositionMap[action] +
+              ' has been ' + app.actionMap[action] + ' ' + app.prepositionMap[action] +
             ' <a href="#tables/' + table + '">' + app.capitalize(table) + '</a>';
         break;
     }

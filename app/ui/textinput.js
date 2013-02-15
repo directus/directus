@@ -16,7 +16,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
     {id: 'test', ui: 'textinput', 'char_length': 10},
     {id: 'input', ui: 'textinput', 'char_length': 20},
-    {id: 'test_textarea', ui: 'textarea', options: {'rows': 5}},
+    {id: 'test_textarea', ui: 'textarea', options: {'rows': 15}}
   ];
 
   var template = '<label>{{{capitalize name}}}</label>'+
