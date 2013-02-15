@@ -26,74 +26,25 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
     app.root = data.path;
     app.API_URL = data.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
-
+    app.uiSettings = UI.settings();
     app.columns = {};
     app.entries = {};
     app.preferences = {};
-    app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','count','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
+    app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','active','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
     app.settings = new Directus.Settings(data.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
-
-    app.media = new Directus.Media([], {
-      table: new Backbone.Model(media.table),
-      structure: new Directus.CollectionColumns(media.structure, {parse: true}),
-      preferences: new Backbone.Model(media.preferences),
-      url: app.API_URL + 'media'
-    });
-
-    app.users = new Directus.Entries.Collection(data.users, {
-      parse: true,
-      table: new Backbone.Model(users.table),
-      structure: new Directus.CollectionColumns(users.structure, {parse: true}),
-      preferences: new Backbone.Model(users.preferences),
-      url: app.API_URL + 'tables/directus_users/rows'
-    });
-
-    app.activity = new Directus.Entries.Collection([], {
-      table: new Backbone.Model(activity.table),
-      structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
-      preferences: new Backbone.Model(activity.preferences),
-      url: app.API_URL + 'activity/'
-    });
-
-    app.groups =
-    app.entries.directus_groups = new Directus.Entries.Collection(data.groups.rows, {
-      table: new Backbone.Model(groups.table),
-      preferences: new Backbone.Model(groups.preferences),
-      structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
-      url: app.API_URL + 'groups/',
-      parse: true
-    });
-
-
-
-
-    /*
-    if (table.id === 'directus_media') {
-      table.title = "Media";
-      app.media = new Directus.Media([], {structure: app.columns.directus_media, table: table, preferences: app.preferences.directus_media});
-      app.media.url = app.API_URL + 'media';
-      return;
-    }
-    */
-
-    /*
-    app.users = app.entries.directus_users;
-    app.users.reset(data.users, {parse: true});
-    app.users.table.title = "Users";
-    app.uid = 1;
-
-    app.messages = app.entries.directus_messages;
-
-    app.activity = app.entries.directus_activity;
-    app.activity.table.title = "Activity";
-    */
-
 
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {
 
       var tableName = options.schema.id;
+
+      // Set tables schema
+      options.schema.url = app.API_URL + 'tables/' + tableName;
+
+      app.tables.add(new Backbone.Model(options.schema));
+
+      console.log(tableName, options.schema.active);
 
       if (tableName.substring(0,9) === 'directus_') return;
 
@@ -104,26 +55,56 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
       app.preferences[tableName] = new Backbone.Model(options.preferences);
       app.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
 
-      // Set tables schema
-      options.schema.url = app.API_URL + 'tables/' + tableName;
-      app.tables.add(new Backbone.Model(options.schema));
-
       // Temporary quick fix
       app.columns[tableName].table = app.tables.get(tableName);
 
     });
 
+    console.log(app.tables.get('directus_activity'));
+
+    // Setup core data collections.
+
+    app.media = new Directus.Media(data.active_media, {
+      table: app.tables.get('directus_media'),
+      structure: new Directus.CollectionColumns(media.structure, {parse: true}),
+      preferences: new Backbone.Model(media.preferences),
+      url: app.API_URL + 'media',
+      parse: true
+    });
+
+    app.users = new Directus.Entries.Collection(data.users, {
+      parse: true,
+      table: app.tables.get('directus_users'),
+      structure: new Directus.CollectionColumns(users.structure, {parse: true}),
+      preferences: new Backbone.Model(users.preferences),
+      url: app.API_URL + 'tables/directus_users/rows'
+    });
+
+    app.activity = new Directus.Entries.Collection({}, {
+      table: app.tables.get('directus_activity'),
+      structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
+      preferences: new Backbone.Model(activity.preferences),
+      url: app.API_URL + 'activity/'
+    });
+
+    app.groups =
+    app.entries.directus_groups = new Directus.Entries.Collection(data.groups.rows, {
+      table: app.tables.get('directus_groups'),
+      preferences: new Backbone.Model(groups.preferences),
+      structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
+      url: app.API_URL + 'groups/',
+      parse: true
+    });
+
     // Instantiate entries
     app.tables.each(function(table) {
+      if (table.id.substring(0,9) === 'directus_') return;
       app.entries[table.id] = new Directus.Entries.Collection([], {
         structure: app.columns[table.id],
         table: table,
         preferences: app.preferences[table.id]
       });
     }, this);
-
-
-    app.uiSettings = UI.settings();
 
     _.each(app.uiSettings, function(value, key) {
       if (value.variables === undefined) return;

@@ -75,9 +75,13 @@ function(app, Backbone) {
 
 
       if (this.active) {
-        options.visibility = _.map([{text:'All', value: '1,2'}, {text:'Active', value: '1'}, {text:'Inactive', value: '2'}, {text:'Trash', value: '0'}], function(obj) {
-          if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
-          return obj;
+        options.visibility = _.map([
+          {text:'All', value: '1,2', count: this.collection.total},
+          {text:'Active', value: '1', count: this.collection.active},
+          {text:'Inactive', value: '2', count: this.collection.inactive},
+          {text:'Trash', value: '0', count: this.collection.trash}], function(obj) {
+            if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
+            return obj;
         }, this);
       }
 

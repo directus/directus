@@ -10,7 +10,7 @@
   {{#rows}}
     <tr data-id="{{table_name}}">
       <td>{{{capitalize table_name}}}</td>
-      <td>{{#if single}}<span class="glyphicon-pencil"></span>{{else}}{{count}}{{/if}}</td>
+      <td>{{#if single}}<span class="glyphicon-pencil"></span>{{else}}{{active}}{{/if}}</td>
       <!--<td>{{contextualDate date_modified}}</td>-->
     </tr>
   {{/rows}}

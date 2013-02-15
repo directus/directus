@@ -62,6 +62,7 @@ class MySQL {
           S.TABLE_NAME = "directus_activity" OR
           S.TABLE_NAME = "directus_media" OR
           S.TABLE_NAME = "directus_messages" OR
+          S.TABLE_NAME = "directus_groups" OR
           S.TABLE_NAME = "directus_users") AND
           (DP.id IS NOT NULL OR DU.group = 0)
         GROUP BY
@@ -125,6 +126,8 @@ class MySQL {
       $info['single'] = (boolean)$info['single'];
       $info['is_junction_table'] = (boolean)$info['is_junction_table'];
     }
+
+    $info = array_merge($info, $this->count_active($tbl_name));
 
     return $info;
   }
@@ -338,6 +341,42 @@ class MySQL {
     }
   }
 
+  function count_active($tbl_name, $no_active=false) {
+    $result = array('active'=>0);
+
+    if ($no_active) {
+      $sql = "SELECT COUNT(*) as count, 'active' as active FROM $tbl_name";
+    } else {
+      $sql = "SELECT
+          CASE active
+            WHEN 0 THEN 'trash'
+            WHEN 1 THEN 'active'
+            WHEN 2 THEN 'inactive'
+          END AS active,
+          COUNT(*) as count
+        FROM
+          $tbl_name
+        GROUP BY
+          active";
+    }
+
+    $sth = $this->dbh->prepare($sql);
+
+    // Test if there is an active column!
+    try {
+      $sth->execute();
+    } catch(Exception $e) {
+      if ($e->getCode() == "42S22" && strpos(strtolower($e->getMessage()),"unknown column")) {
+        return $this->count_active($tbl_name, true);
+      } else {
+        throw $e;
+      }
+    }
+    while($row = $sth->fetch(PDO::FETCH_ASSOC)) $result[$row['active']] = (int)$row['count'];
+
+    return $result;
+  }
+
   /**
    * Get related rows
    * This is used for fetching the related id's in one-many relationships and many-many relationships
@@ -459,19 +498,21 @@ class MySQL {
       $search_sql = 'AND ' . rtrim($search_sql, 'OR ') . ")";
     }
 
+
+
+    $has_active = false;
+
+    foreach ($schema as $col) {
+      if ($col['column_name'] == 'active') {
+        $has_active = true;
+        break;
+      }
+    }
+
     // This holds a "active" filter
     $active_sql = "";
-
     if (isset($active)) {
       // Check if table has an active column
-      $has_active = false;
-      foreach ($schema as $col) {
-        if ($col['column_name'] == 'active') {
-          $has_active = true;
-          break;
-        }
-      }
-
       if ($has_active) {
         $active_sql = "AND active IN ($active)";
       }
@@ -531,6 +572,9 @@ class MySQL {
         'total'=> (int)$row[0][0],
         'rows'=> $result
         );
+
+      $set = array_merge($this->count_active($tbl_name, !$has_active), $set);
+
       return $set;
     }
 

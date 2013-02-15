@@ -205,6 +205,7 @@ function(app, Backbone, BaseCollection) {
     },
 
     getFilters: function() {
+      console.log(this);
       return _.extend(this.filters, _.pick(this.preferences.toJSON(),'columns_visible','sort','sort_order','active'));
     },
 
@@ -228,6 +229,7 @@ function(app, Backbone, BaseCollection) {
     initialize: function(models, options) {
       this.structure = options.structure;
       this.table = options.table;
+      this.active = this.table.get('active');
       this.url = options.url || this.table.get('url') + '/rows';
       this.filters = options.filters || { currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' };
 
@@ -240,6 +242,13 @@ function(app, Backbone, BaseCollection) {
 
     parse: function(response) {
       this.total = response.total;
+      this.active = response.active;
+      this.inactive = response.inactive;
+      this.trash = response.trash;
+      this.table.set('total', this.total, {silent: true});
+      this.table.set('active', this.active, {silent: true});
+      this.table.set('inactive', this.inactive, {silent: true});
+      this.table.set('trash', this.trash, {silent: true});
       return response.rows;
     }
 

@@ -85,7 +85,7 @@ function(Handlebars) {
     return '<img src="' + app.users.get(userId).get('avatar') + '" style="margin-right:7px;" class="avatar">' + app.users.get(userId).get('first_name');
   });
 
-  Handlebars.registerHelper('active', function(model) {
+  Handlebars.registerHelper('activeMap', function(model) {
     switch (model.get('active')) {
       case 0:
         return 'deleted';

@@ -143,7 +143,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       if (id === "new") {
         model = new app.users.model({}, {collection: app.users});
       } else {
-        model = app.users.get(id);;
+        model = app.users.get(id);
       }
       this.v.main.setView('#content', new Users.Views.Edit({model: model}));
       this.v.main.render();
@@ -195,11 +195,12 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     initialize: function(options) {
+
       this.tabs = new Tabs.Collection([
-        {title: "Activity", id: "activity", count: app.activity.total},
+        {title: "Activity", id: "activity", count: app.activity.table.get('active')},
         {title: "Tables", id: "tables", count: app.tables.length},
-        {title: "Media", id: "media", count: app.media.total},
-        {title: "Users", id: "users", count: app.users.total},
+        {title: "Media", id: "media", count: app.media.table.get('active')},
+        {title: "Users", id: "users", count: app.users.table.get('active')},
         {title: "Settings", id: "settings"}
       ]);
 

@@ -8,6 +8,9 @@ $data['groups'] = request('groups', 'GET');
 $data['settings'] = request('settings', 'GET');
 $data['page'] = '#tables';
 $data['path'] = DIRECTUS_PATH;
+$data['active_media'] = $db->count_active('directus_media');
+//$data['active_activity'] = $db->count_active('directus_media');
+//$data['active_activity'] = $db->count_active('directus_activity');
 
 if ($data == 401) {
   header( 'location: login.html' ) ;
