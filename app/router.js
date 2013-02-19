@@ -19,10 +19,11 @@ define([
   "modules/messages",
   "core/modal",
   "core/collection.settings",
-  "core/collection.upload"
+  "core/collection.upload",
+  "extensions/cashregister/cashregister"
 ],
 
-function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia) {
+function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia, CashRegister) {
 
   var Router = Backbone.Router.extend({
 
@@ -38,7 +39,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "settings":               "settings",
       "settings/:name":         "settings",
       "settings/tables/:table": "settingsTable",
-      "messages":               "messages"
+      "messages":               "messages",
+      "cashregister":            "cashregister"
     },
 
     go: function() {
@@ -164,7 +166,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), structure: Settings.MediaStructure, title: 'Media'}));
           break;
         case 'permissions':
-          this.v.main.setView('#content', new Settings.Permissions());
+          this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));
           break;
         case 'system':
           this.v.main.setView('#content', new Settings.System());
@@ -192,6 +194,11 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
     messages: function(name) {
       this.setPage(Messages.Views.List, {collection: this.messages});
+    },
+
+    cashregister: function() {
+      this.v.main.setView('#content', new CashRegister());
+      this.v.main.render();
     },
 
     initialize: function(options) {

@@ -82,7 +82,7 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
     });
 
     app.groups =
-    app.entries.directus_groups = new Directus.Entries.Collection(data.groups.rows, {
+    app.entries.directus_groups = new Directus.Entries.Collection(data.groups, {
       table: app.tables.get('directus_groups'),
       preferences: new Backbone.Model(groups.preferences),
       structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
@@ -110,6 +110,8 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     app.router = new Router({data: window.directusData});
+
+    console.log(app);
 
 
     // Trigger the initial route and enable HTML5 History API support, set the
