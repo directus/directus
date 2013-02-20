@@ -206,32 +206,14 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         {title: "Settings", id: "settings"}
       ]);
 
-      // Add extensions to router
+      this.extensions = {};
+
       _.each(Extensions, function(item) {
-        var title = app.capitalize(item.id);
-        var route = item.id.replace("_","-");
-
-
-        this.tabs.push({title: title, id: route, extension: true});
-
-        this.route(route, route, function() {
-          this.setTitle(title);
-          this.tabs.setActive(route);
-          this.v.main.setView('#content', new item.View());
-          this.v.main.render();
-        });
-
-        // Define subroutes
-        _.each(item.routes, function(callback, key) {
-          var subRoute = route + "/" + key;
-          this.route(subRoute, subRoute, function(arguments) {
-            this.setTitle(title);
-            this.tabs.setActive(route);
-            callback(arguments);
-          });
-        },this);
-
-
+        this.extensions[item.id] = new item.Router(item.id);
+        this.extensions[item.id].on('route', function() {
+          this.trigger('subroute',item.id);
+        }, this);
+        this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true})
       }, this);
 
       var tabs = this.tabs;
@@ -247,7 +229,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
               avatar: user.get('avatar'),
               siteName: this.model.get('site_name'),
               siteUrl: this.model.get('site_url')
-              //settings: this.settings.get('global').toJSON()
             };
           }
       });
@@ -278,6 +259,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       }, this);
 
       this.v.main.render();
+
+      this.on('subroute', function(id) {
+        this.tabs.setActive(id);
+      })
       //this.navigate('#tables', {trigger: true});
     }
   });

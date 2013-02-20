@@ -33,6 +33,10 @@ function(app, Backbone) {
 
     serialize: function() {
       return {tabs: this.collection.toJSON()};
+    },
+
+    initialize: function() {
+      this.collection.on('change', this.render, this);
     }
 
   });

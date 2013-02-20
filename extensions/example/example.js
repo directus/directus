@@ -6,26 +6,27 @@ define([
 
 function(app, Backbone, Directus) {
 
-  var iAmPrivate = 9999999;
+  var Extension = {
+    id: 'example'
+  };
 
-  // Private view
-  var TestView = Backbone.Layout.extend({
-
-    prefix: 'extensions/example/templates/',
-
-    template: 'example'
-
+  Extension.Collection = Backbone.Collection.extend({
+    initialize: function() {
+      this.url = app.API_URL + 'extensions/' + Extension.id;
+    }
   });
 
-  var Sidebar = Backbone.Layout.extend({
+  //var products = app.entries['products'];
+
+  var MainView = Backbone.Layout.extend({
 
     prefix: 'extensions/example/templates/',
 
-    template: 'sidebar',
-
     serialize: function() {
-      return {rows: this.collection.toJSON()};
+      return {symbols: this.collection.toJSON()};
     },
+
+    template: 'example',
 
     initialize: function() {
       this.collection.on('reset', this.render, this);
@@ -33,54 +34,48 @@ function(app, Backbone, Directus) {
 
   });
 
-  var Extension = {
+  var View = Backbone.Layout.extend({
 
-    id: 'example',
+    template: 'page',
 
-    routes: {
-      ':id': function(id) {
-      }
+    el: '#content',
+
+    serialize: function() {
+      return {title: 'Example Module', sidebar: false};
     },
 
-    View: Backbone.Layout.extend({
+    afterRender: function() {
+      this.setView('#page-content', new MainView({collection: this.collection}));
+      this.collection.fetch();
+    },
 
-      template: 'page',
+    initialize: function() {
 
-      serialize: function() {
-        return {title: 'Example Module', sidebar: true};
-      },
+    }
 
-      beforeRender: function() {
-        this.setView('#page-content', new TestView());
-      },
+  });
 
-      afterRender: function() {
-        this.insertView('#sidebar', new Sidebar({collection: this.collection}));
-        this.collection.fetch();
-      },
+  Extension.Router = Directus.SubRoute.extend({
+    routes: {
+      "":         "index",
+      "add":      "add"
+    },
 
-      initialize: function() {
-        var url = app.API_URL + 'extensions/' + Extension.id;
+    index: function() {
+      this.main = new View({collection: new Extension.Collection()});
+      this.main.render();
+    },
 
-        var customCollection = Backbone.Collection.extend({
-          url: url
-        });
+    add: function() {
+      console.log('add');
+    },
 
-        var c = new customCollection();
+    initialize: function() {
 
-        c.on('reset', function() {
-          console.log(c.toJSON());
-        });
+    }
 
-        c.fetch();
+  });
 
-
-
-        this.collection = app.entries['products'];
-      }
-
-    })
-  };
 
   return Extension;
 });

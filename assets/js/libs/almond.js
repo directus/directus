@@ -1,5 +1,5 @@
 /**
- * almond 0.1.3 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
+ * almond 0.2.3 Copyright (c) 2011-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/almond for details
  */
@@ -10,12 +10,17 @@
 
 var requirejs, require, define;
 (function (undef) {
-    var main, req,
+    var main, req, makeMap, handlers,
         defined = {},
         waiting = {},
         config = {},
         defining = {},
+        hasOwn = Object.prototype.hasOwnProperty,
         aps = [].slice;
+
+    function hasProp(obj, prop) {
+        return hasOwn.call(obj, prop);
+    }
 
     /**
      * Given a relative module name, like ./something, normalize it to
@@ -61,7 +66,7 @@ var requirejs, require, define;
                             //no path mapping for a path starting with '..'.
                             //This can still fail, but catches the most reasonable
                             //uses of ..
-                            return true;
+                            break;
                         } else if (i > 0) {
                             name.splice(i - 1, 2);
                             i -= 2;
@@ -71,6 +76,10 @@ var requirejs, require, define;
                 //end trimDots
 
                 name = name.join("/");
+            } else if (name.indexOf('./') === 0) {
+                // No baseName, so this is ID is resolved relative
+                // to baseUrl, pull off the leading dot.
+                name = name.substring(2);
             }
         }
 
@@ -150,17 +159,30 @@ var requirejs, require, define;
     }
 
     function callDep(name) {
-        if (waiting.hasOwnProperty(name)) {
+        if (hasProp(waiting, name)) {
             var args = waiting[name];
             delete waiting[name];
             defining[name] = true;
             main.apply(undef, args);
         }
 
-        if (!defined.hasOwnProperty(name)) {
+        if (!hasProp(defined, name) && !hasProp(defining, name)) {
             throw new Error('No ' + name);
         }
         return defined[name];
+    }
+
+    //Turns a plugin!resource to [plugin, resource]
+    //with the plugin being undefined if the name
+    //did not have a plugin prefix.
+    function splitPrefix(name) {
+        var prefix,
+            index = name ? name.indexOf('!') : -1;
+        if (index > -1) {
+            prefix = name.substring(0, index);
+            name = name.substring(index + 1, name.length);
+        }
+        return [prefix, name];
     }
 
     /**
@@ -168,16 +190,20 @@ var requirejs, require, define;
      * for normalization if necessary. Grabs a ref to plugin
      * too, as an optimization.
      */
-    function makeMap(name, relName) {
-        var prefix, plugin,
-            index = name.indexOf('!');
+    makeMap = function (name, relName) {
+        var plugin,
+            parts = splitPrefix(name),
+            prefix = parts[0];
 
-        if (index !== -1) {
-            prefix = normalize(name.slice(0, index), relName);
-            name = name.slice(index + 1);
+        name = parts[1];
+
+        if (prefix) {
+            prefix = normalize(prefix, relName);
             plugin = callDep(prefix);
+        }
 
-            //Normalize according
+        //Normalize according
+        if (prefix) {
             if (plugin && plugin.normalize) {
                 name = plugin.normalize(name, makeNormalize(relName));
             } else {
@@ -185,21 +211,50 @@ var requirejs, require, define;
             }
         } else {
             name = normalize(name, relName);
+            parts = splitPrefix(name);
+            prefix = parts[0];
+            name = parts[1];
+            if (prefix) {
+                plugin = callDep(prefix);
+            }
         }
 
         //Using ridiculous property names for space reasons
         return {
             f: prefix ? prefix + '!' + name : name, //fullName
             n: name,
+            pr: prefix,
             p: plugin
         };
-    }
+    };
 
     function makeConfig(name) {
         return function () {
             return (config && config.config && config.config[name]) || {};
         };
     }
+
+    handlers = {
+        require: function (name) {
+            return makeRequire(name);
+        },
+        exports: function (name) {
+            var e = defined[name];
+            if (typeof e !== 'undefined') {
+                return e;
+            } else {
+                return (defined[name] = {});
+            }
+        },
+        module: function (name) {
+            return {
+                id: name,
+                uri: '',
+                exports: defined[name],
+                config: makeConfig(name)
+            };
+        }
+    };
 
     main = function (name, deps, callback, relName) {
         var cjsModule, depName, ret, map, i,
@@ -222,25 +277,22 @@ var requirejs, require, define;
 
                 //Fast path CommonJS standard dependencies.
                 if (depName === "require") {
-                    args[i] = makeRequire(name);
+                    args[i] = handlers.require(name);
                 } else if (depName === "exports") {
                     //CommonJS module spec 1.1
-                    args[i] = defined[name] = {};
+                    args[i] = handlers.exports(name);
                     usingExports = true;
                 } else if (depName === "module") {
                     //CommonJS module spec 1.1
-                    cjsModule = args[i] = {
-                        id: name,
-                        uri: '',
-                        exports: defined[name],
-                        config: makeConfig(name)
-                    };
-                } else if (defined.hasOwnProperty(depName) || waiting.hasOwnProperty(depName)) {
+                    cjsModule = args[i] = handlers.module(name);
+                } else if (hasProp(defined, depName) ||
+                           hasProp(waiting, depName) ||
+                           hasProp(defining, depName)) {
                     args[i] = callDep(depName);
                 } else if (map.p) {
                     map.p.load(map.n, makeRequire(relName, true), makeLoad(depName), {});
                     args[i] = defined[depName];
-                } else if (!defining[depName]) {
+                } else {
                     throw new Error(name + ' missing ' + depName);
                 }
             }
@@ -268,6 +320,10 @@ var requirejs, require, define;
 
     requirejs = require = req = function (deps, callback, relName, forceSync, alt) {
         if (typeof deps === "string") {
+            if (handlers[deps]) {
+                //callback in this case is really relName
+                return handlers[deps](callback);
+            }
             //Just return the module wanted. In this scenario, the
             //deps arg is the module name, and second arg (if passed)
             //is just the relName.
@@ -329,7 +385,9 @@ var requirejs, require, define;
             deps = [];
         }
 
-        waiting[name] = [name, deps, callback];
+        if (!hasProp(defined, name) && !hasProp(waiting, name)) {
+            waiting[name] = [name, deps, callback];
+        }
     };
 
     define.amd = {
