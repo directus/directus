@@ -65,7 +65,6 @@ define(['app', 'backbone'], function (app, Backbone) {
                         },
                         success: function (data) {
                             $.each(data.contents.results, function (i, track) {
-                                console.log(track);
                                 tracks.push(JSON.stringify(track));
                             });
                             typeahead.process(tracks);

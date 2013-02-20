@@ -1,5 +1,5 @@
 /**
- * almond 0.1.3 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
+ * almond 0.2.3 Copyright (c) 2011-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/almond for details
  */
@@ -10,12 +10,17 @@
 
 var requirejs, require, define;
 (function (undef) {
-    var main, req,
+    var main, req, makeMap, handlers,
         defined = {},
         waiting = {},
         config = {},
         defining = {},
+        hasOwn = Object.prototype.hasOwnProperty,
         aps = [].slice;
+
+    function hasProp(obj, prop) {
+        return hasOwn.call(obj, prop);
+    }
 
     /**
      * Given a relative module name, like ./something, normalize it to
@@ -61,7 +66,7 @@ var requirejs, require, define;
                             //no path mapping for a path starting with '..'.
                             //This can still fail, but catches the most reasonable
                             //uses of ..
-                            return true;
+                            break;
                         } else if (i > 0) {
                             name.splice(i - 1, 2);
                             i -= 2;
@@ -71,6 +76,10 @@ var requirejs, require, define;
                 //end trimDots
 
                 name = name.join("/");
+            } else if (name.indexOf('./') === 0) {
+                // No baseName, so this is ID is resolved relative
+                // to baseUrl, pull off the leading dot.
+                name = name.substring(2);
             }
         }
 
@@ -150,17 +159,30 @@ var requirejs, require, define;
     }
 
     function callDep(name) {
-        if (waiting.hasOwnProperty(name)) {
+        if (hasProp(waiting, name)) {
             var args = waiting[name];
             delete waiting[name];
             defining[name] = true;
             main.apply(undef, args);
         }
 
-        if (!defined.hasOwnProperty(name)) {
+        if (!hasProp(defined, name) && !hasProp(defining, name)) {
             throw new Error('No ' + name);
         }
         return defined[name];
+    }
+
+    //Turns a plugin!resource to [plugin, resource]
+    //with the plugin being undefined if the name
+    //did not have a plugin prefix.
+    function splitPrefix(name) {
+        var prefix,
+            index = name ? name.indexOf('!') : -1;
+        if (index > -1) {
+            prefix = name.substring(0, index);
+            name = name.substring(index + 1, name.length);
+        }
+        return [prefix, name];
     }
 
     /**
@@ -168,16 +190,20 @@ var requirejs, require, define;
      * for normalization if necessary. Grabs a ref to plugin
      * too, as an optimization.
      */
-    function makeMap(name, relName) {
-        var prefix, plugin,
-            index = name.indexOf('!');
+    makeMap = function (name, relName) {
+        var plugin,
+            parts = splitPrefix(name),
+            prefix = parts[0];
 
-        if (index !== -1) {
-            prefix = normalize(name.slice(0, index), relName);
-            name = name.slice(index + 1);
+        name = parts[1];
+
+        if (prefix) {
+            prefix = normalize(prefix, relName);
             plugin = callDep(prefix);
+        }
 
-            //Normalize according
+        //Normalize according
+        if (prefix) {
             if (plugin && plugin.normalize) {
                 name = plugin.normalize(name, makeNormalize(relName));
             } else {
@@ -185,21 +211,50 @@ var requirejs, require, define;
             }
         } else {
             name = normalize(name, relName);
+            parts = splitPrefix(name);
+            prefix = parts[0];
+            name = parts[1];
+            if (prefix) {
+                plugin = callDep(prefix);
+            }
         }
 
         //Using ridiculous property names for space reasons
         return {
             f: prefix ? prefix + '!' + name : name, //fullName
             n: name,
+            pr: prefix,
             p: plugin
         };
-    }
+    };
 
     function makeConfig(name) {
         return function () {
             return (config && config.config && config.config[name]) || {};
         };
     }
+
+    handlers = {
+        require: function (name) {
+            return makeRequire(name);
+        },
+        exports: function (name) {
+            var e = defined[name];
+            if (typeof e !== 'undefined') {
+                return e;
+            } else {
+                return (defined[name] = {});
+            }
+        },
+        module: function (name) {
+            return {
+                id: name,
+                uri: '',
+                exports: defined[name],
+                config: makeConfig(name)
+            };
+        }
+    };
 
     main = function (name, deps, callback, relName) {
         var cjsModule, depName, ret, map, i,
@@ -222,25 +277,22 @@ var requirejs, require, define;
 
                 //Fast path CommonJS standard dependencies.
                 if (depName === "require") {
-                    args[i] = makeRequire(name);
+                    args[i] = handlers.require(name);
                 } else if (depName === "exports") {
                     //CommonJS module spec 1.1
-                    args[i] = defined[name] = {};
+                    args[i] = handlers.exports(name);
                     usingExports = true;
                 } else if (depName === "module") {
                     //CommonJS module spec 1.1
-                    cjsModule = args[i] = {
-                        id: name,
-                        uri: '',
-                        exports: defined[name],
-                        config: makeConfig(name)
-                    };
-                } else if (defined.hasOwnProperty(depName) || waiting.hasOwnProperty(depName)) {
+                    cjsModule = args[i] = handlers.module(name);
+                } else if (hasProp(defined, depName) ||
+                           hasProp(waiting, depName) ||
+                           hasProp(defining, depName)) {
                     args[i] = callDep(depName);
                 } else if (map.p) {
                     map.p.load(map.n, makeRequire(relName, true), makeLoad(depName), {});
                     args[i] = defined[depName];
-                } else if (!defining[depName]) {
+                } else {
                     throw new Error(name + ' missing ' + depName);
                 }
             }
@@ -268,6 +320,10 @@ var requirejs, require, define;
 
     requirejs = require = req = function (deps, callback, relName, forceSync, alt) {
         if (typeof deps === "string") {
+            if (handlers[deps]) {
+                //callback in this case is really relName
+                return handlers[deps](callback);
+            }
             //Just return the module wanted. In this scenario, the
             //deps arg is the module name, and second arg (if passed)
             //is just the relName.
@@ -329,19 +385,28 @@ var requirejs, require, define;
             deps = [];
         }
 
-        waiting[name] = [name, deps, callback];
+        if (!hasProp(defined, name) && !hasProp(waiting, name)) {
+            waiting[name] = [name, deps, callback];
+        }
     };
 
     define.amd = {
         jQuery: true
     };
-}());
-;this['JST'] = this['JST'] || {};
+}());;this['JST'] = this['JST'] || {};
+
+this['JST']['app/templates/activity-chart.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="activity-chart">\n  <div class="chart-key">180</div>\n  <table class="bars">\n    <tr>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="6"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="33"></div>\n        <div class="bar bggreen" data-type="added" data-total="44"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="8"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="0"></div>\n        <div class="bar bggreen" data-type="added" data-total="26"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="9"></div>\n        <div class="bar bgblue" data-type="edited" data-total="48"></div>\n        <div class="bar bggreen" data-type="added" data-total="49"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="6"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="10"></div>\n        <div class="bar bgblue" data-type="edited" data-total="64"></div>\n        <div class="bar bggreen" data-type="added" data-total="15"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="9"></div>\n        <div class="bar bgblue" data-type="edited" data-total="78"></div>\n        <div class="bar bggreen" data-type="added" data-total="25"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="62"></div>\n        <div class="bar bggreen" data-type="added" data-total="13"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="6"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="28"></div>\n        <div class="bar bggreen" data-type="added" data-total="9"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="10"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="6"></div>\n        <div class="bar bgblue" data-type="edited" data-total="9"></div>\n        <div class="bar bggreen" data-type="added" data-total="16"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="4"></div>\n        <div class="bar bgblue" data-type="edited" data-total="57"></div>\n        <div class="bar bggreen" data-type="added" data-total="46"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="0"></div>\n        <div class="bar bggreen" data-type="added" data-total="9"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="12"></div>\n        <div class="bar bgblue" data-type="edited" data-total="14"></div>\n        <div class="bar bggreen" data-type="added" data-total="29"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="5"></div>\n        <div class="bar bgred" data-type="deleted" data-total="8"></div>\n        <div class="bar bgblue" data-type="edited" data-total="31"></div>\n        <div class="bar bggreen" data-type="added" data-total="27"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="9"></div>\n        <div class="bar bgyellow" data-type="system" data-total="5"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="0"></div>\n        <div class="bar bggreen" data-type="added" data-total="0"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="4"></div>\n        <div class="bar bgyellow" data-type="system" data-total="8"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="0"></div>\n        <div class="bar bggreen" data-type="added" data-total="4"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="6"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="11"></div>\n        <div class="bar bggreen" data-type="added" data-total="48"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="35"></div>\n        <div class="bar bggreen" data-type="added" data-total="32"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="27"></div>\n        <div class="bar bggreen" data-type="added" data-total="10"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="7"></div>\n        <div class="bar bgyellow" data-type="system" data-total="4"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="30"></div>\n        <div class="bar bggreen" data-type="added" data-total="0"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="13"></div>\n        <div class="bar bgblue" data-type="edited" data-total="71"></div>\n        <div class="bar bggreen" data-type="added" data-total="19"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="28"></div>\n        <div class="bar bggreen" data-type="added" data-total="28"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="4"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="9"></div>\n        <div class="bar bgblue" data-type="edited" data-total="77"></div>\n        <div class="bar bggreen" data-type="added" data-total="14"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="4"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="13"></div>\n        <div class="bar bgblue" data-type="edited" data-total="70"></div>\n        <div class="bar bggreen" data-type="added" data-total="36"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="9"></div>\n        <div class="bar bgblue" data-type="edited" data-total="54"></div>\n        <div class="bar bggreen" data-type="added" data-total="43"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="10"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="5"></div>\n        <div class="bar bgblue" data-type="edited" data-total="78"></div>\n        <div class="bar bggreen" data-type="added" data-total="49"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="5"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="39"></div>\n        <div class="bar bggreen" data-type="added" data-total="19"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="5"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="13"></div>\n        <div class="bar bgblue" data-type="edited" data-total="0"></div>\n        <div class="bar bggreen" data-type="added" data-total="50"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="0"></div>\n        <div class="bar bgblue" data-type="edited" data-total="5"></div>\n        <div class="bar bggreen" data-type="added" data-total="30"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="4"></div>\n        <div class="bar bgred" data-type="deleted" data-total="11"></div>\n        <div class="bar bgblue" data-type="edited" data-total="12"></div>\n        <div class="bar bggreen" data-type="added" data-total="29"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="0"></div>\n        <div class="bar bgyellow" data-type="system" data-total="4"></div>\n        <div class="bar bgred" data-type="deleted" data-total="15"></div>\n        <div class="bar bgblue" data-type="edited" data-total="9"></div>\n        <div class="bar bggreen" data-type="added" data-total="18"></div>\n      </td>\n      <td>\n        <div class="bar bgpurple" data-type="media" data-total="7"></div>\n        <div class="bar bgyellow" data-type="system" data-total="0"></div>\n        <div class="bar bgred" data-type="deleted" data-total="13"></div>\n        <div class="bar bgblue" data-type="edited" data-total="20"></div>\n        <div class="bar bggreen" data-type="added" data-total="0"></div>\n      </td>\n    </tr>\n  </table>\n  <table class="date-range">\n    <tr>\n      <td>\n        Feb 1\n      </td>\n      <td class="align-center">\n        Feb 14\n      </td>\n      <td class="align-right">\n        Today\n      </td>\n    </tr>\n  </table>\n</div>\n<div class="activity-totals">\n  <div class="center">\n    <div class="activity-total">\n      <h2 class="black" data-type="all">0</h2>\n      <span>total activity</span>\n    </div>\n    <div class="activity-total">\n      <h2 class="green" data-type="added">0</h2>\n      <span>items added</span>\n    </div>\n    <div class="activity-total">\n      <h2 class="blue" data-type="edited">0</h2>\n      <span>items edited</span>\n    </div>\n    <div class="activity-total">\n      <h2 class="red" data-type="deleted">0</h2>\n      <span>items deleted</span>\n    </div>\n    <div class="activity-total">\n      <h2 class="yellow" data-type="system">0</h2>\n      <span>system events</span>\n    </div>\n    <div class="activity-total">\n      <h2 class="purple" data-type="media">0</h2>\n      <span>media files</span>\n    </div>\n  </div>\n</div>\n';
+}
+return __p;
+};
 
 this['JST']['app/templates/alert.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div id="alert">\n<span class="glyphicon-repeat"></span>\nLoading\n</div>';
+__p+='<div id="alert">\n{{#if message}}\n<span class="glyphicon-warning-sign"></span>\nError\n{{message}}\n{{else}}\n<span class="glyphicon-roundabout"></span>\nLoading\n{{/if}}\n</div>';
 }
 return __p;
 };
@@ -357,7 +422,7 @@ return __p;
 this['JST']['app/templates/modal.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="modal-header">\n<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>\n<h3 id="myModalLabel">{{title}}</h3>\n</div>\n\n<div class="modal-body">\n</div>\n\n<div class="modal-footer">\n\t<button class="btn btn-primary" name="save">{{buttonText}}</button>\n\t<button class="btn btn-link" name="close">Close</button>\n</div>';
+__p+='<div class="modal-header">\n<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon-remove"></span></button>\n<h3 id="myModalLabel">{{title}}</h3>\n</div>\n\n<div class="modal-body">\n</div>\n\n<div class="modal-footer">\n\t<button class="btn btn-primary" name="save">{{buttonText}}</button>\n\t<button class="btn btn-link gray-dark" name="close">Cancel</button>\n</div>';
 }
 return __p;
 };
@@ -373,7 +438,7 @@ return __p;
 this['JST']['app/templates/module-revisions.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="directus-module-header">Item Revisions</div>\n';
+__p+='<div class="directus-module-header">Item Revisions</div>\n<div class="directus-module-section">\n<table class="table table-striped directus-table" id="directus_activity">\n{{#items}}\n\t<tr class="row-type-{{type}} row-action-{{action}}">\n\t\t<td class="status"></td>\n\t\t<td>{{capitalize pastTense}} {{contextualDate datetime}}</td>\n\t\t<td>{{{avatarSmall user}}}</td>\n\t</tr>\n{{/items}}\n</table>\n</div>';
 }
 return __p;
 };
@@ -389,7 +454,7 @@ return __p;
 this['JST']['app/templates/navbar.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="navbar navbar-fixed-top">\n\t<div class="navbar-inner">\n\t\t\t<a href="{{siteUrl}}" target="_blank" class="brand">{{siteName}}  <span class="glyphicon-share-alt"></span></a>\n\t\t\t<div class="pull-right dropdown">\n\t\t\t\t\t<div data-toggle="dropdown" class="user">\n\t\t\t\t\t<span class="label speech-bubble">5</span>\n\t\t\t\t\t<span class="user-firstname">{{user}}</span>\n\t\t\t\t\t<img src="{{avatar}}" class="avatar">\n\t\t\t\t\t</div>\n\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li><a href="#users/1">User Settings</a></li>\n\t\t\t\t\t\t<li><a href="#messages">Messages</a></li>\n\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t<li><a href="#">Sign Out</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t</div>\n</div>';
+__p+='<div class="navbar navbar-fixed-top">\n\t<div class="navbar-inner">\n\t\t\t<a href="{{siteUrl}}" target="_blank" class="brand">{{siteName}}  <span class="glyphicon-share-alt"></span></a>\n\t\t\t<div class="pull-right dropdown">\n\t\t\t\t\t<div data-toggle="dropdown" class="user">\n\t\t\t\t\t<span class="label speech-bubble">5</span>\n\t\t\t\t\t<span class="user-firstname">{{user}}</span>\n\t\t\t\t\t<img src="{{avatar}}" class="avatar">\n\t\t\t\t\t</div>\n\t\t\t\t<ul class="dropdown-menu" style="margin-right: 20px">\n\t\t\t\t\t\t<li><a href="#users/1">User Settings</a></li>\n\t\t\t\t\t\t<li><a href="#messages">Messages</a></li>\n\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t<li><a href="#">Sign Out</a></li>\n\t\t\t\t\t</ul>\n\t\t\t</div>\n\t</div>\n</div>';
 }
 return __p;
 };
@@ -397,7 +462,15 @@ return __p;
 this['JST']['app/templates/page.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<header>\n\t<h2>{{#each breadcrumbs}}<a href="{{anchor}}">{{{capitalize title}}}</a> <span class="glyphicon-chevron-right breadcrumb-divider"></span> {{/each}} {{{capitalize title}}}</h2>\n\t{{#if buttonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}\n</header>\n\n{{#if sidebar}}\n<div class="row-fluid">\n<div class="span8" id="page-content"></div>\n<div class="span4" id="sidebar"></div>\n</div>\n{{else}}\n<div id="page-content"></div>\n{{/if}}\n\n\n{{#if upload}}\n<input id="fileupload" type="file" name="files[]" data-url="http://localhost/directus6/server/api/1/media" multiple style="display:none;">\n{{/if}}';
+__p+='<header>\n\t<h2>{{#each breadcrumbs}}<a href="{{anchor}}">{{{capitalize title}}}</a> <span class="glyphicon-chevron-right breadcrumb-divider"></span> {{/each}} {{{capitalize title}}}</h2>\n\t{{#if buttonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}\n</header>\n\n{{#if sidebar}}\n<div class="container-fixed-sidebar">\n<div class="container-main" id="page-content"></div>\n<div class="container-sidebar" id="sidebar"></div>\n</div>\n{{else}}\n<div id="page-content"></div>\n{{/if}}\n\n\n{{#if upload}}\n<input id="fileupload" type="file" name="files[]" data-url="http://localhost/directus6/server/api/1/media" multiple style="display:none;">\n{{/if}}';
+}
+return __p;
+};
+
+this['JST']['app/templates/settings-columns-add.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<fieldset>\n\t<label>Column Name</label>\n\t<input type="text" name="column_name" value="{{data.column_name}}"/>\n</fieldset>\n\n<!--\n<fieldset>\n\t<label>Type</label>\n\t<select>\n\t\t{{#types}}\n\t\t<option>{{id}}</option>\n\t\t{{/types}}\n\t</select>\n</fieldset>\n-->\n\n\n<fieldset>\n\t<label>Data Type</label>\n\t<select id="datatype" name="data_type">\n\t  <optgroup label="Directus">\n\t    <option>ALIAS</option>\n\t    <option value="ONETOMANY" {{#if ONETOMANY}}selected{{/if}}>ONETOMANY</option>\n\t    <option value="MANYTOMANY" {{#if MANYTOMANY}}selected{{/if}}>MANYTOMANY</option>\n\t  </optgroup>\n\t  <optgroup label="Numeric">\n\t    <option {{#if TINYINT}}selected{{/if}}>TINYINT</option>\n\t    <option {{#if SMALLINT}}selected{{/if}}>SMALLINT</option>\n\t    <option {{#if MEDIUMINT}}selected{{/if}}>MEDIUMINT</option>\n\t    <option {{#if INT}}selected{{/if}}>INT</option>\n\t    <option {{#if BIGINT}}selected{{/if}}>BIGINT</option>\n\t    <option {{#if DECIMAL}}selected{{/if}}>DECIMAL</option>\n\t    <option {{#if FLOAT}}selected{{/if}}>FLOAT</option>\n\t    <option {{#if DOUBLE}}selected{{/if}}>DOUBLE</option>\n\t  </optgroup>\n\t  <optgroup label="Date and Time">\n\t    <option {{#if DATE}}selected{{/if}}>DATE</option>\n\t    <option {{#if DATETIME}}selected{{/if}}>DATETIME</option>\n\t    <option {{#if TIMESTAMP}}selected{{/if}}>TIMESTAMP</option>\n\t    <option {{#if TIME}}selected{{/if}}>TIME</option>\n\t    <option {{#if YEAR}}selected{{/if}}>YEAR</option>\n\t  </optgroup>\n\t  <optgroup label="String">\n\t  \t<option {{#if CHAR}}selected{{/if}}>CHAR</option>\n\t  \t<option {{#if VARCHAR}}selected{{/if}}>VARCHAR</option>\n\t  \t<option {{#if TINYTEXT}}selected{{/if}}>TINYTEXT</option>\n\t  \t<option {{#if TEXT}}selected{{/if}}>TEXT</option>\n\t  \t<option {{#if MEDIUMTEXT}}selected{{/if}}>MEDIUMTEXT</option>\n\t  \t<option {{#if LONGTEXT}}selected{{/if}}>LONGTEXT</option>\n\t  \t<option {{#if TINYBLOB}}selected{{/if}}>TINYBLOB</option>\n\t  \t<option {{#if BLOB}}selected{{/if}}>BLOB</option>\n\t  \t<option {{#if MEDIUMBLOB}}selected{{/if}}>MEDIUMBLOB</option>\n\t  \t<option {{#if LONGBLOB}}selected{{/if}}>LONGBLOB</option>\n\t  \t<option {{#if BINARY}}selected{{/if}}>BINARY</option>\n\t  \t<option {{#if VARBINARY}}selected{{/if}}>VARBINARY</option>\n\t  \t<option {{#if ENUM}}selected{{/if}}>ENUM</option>\n\t  \t<option {{#if SET}}selected{{/if}}>SET</option>\n\t  </optgroup>\n\t</select>\n</fieldset>\n\n{{#if ALIAS}}\n{{/if}}\n\n{{#if ONETOMANY}}\n<fieldset>\n<label>Related Table</label>\n<select name="table_related" id="table_related">\n\t{{#tables}}\n\t<option {{#if selected}}selected{{/if}}>{{this.id}}</option>\n\t{{/tables}}\n</select>\n</fieldset>\n\n<fieldset>\n<label>Junction Column</label>\n<select name="junction_key_right">\n\t{{#columns}}\n\t<option {{#if selected}}selected{{/if}}>{{column_name}}</option>\n\t{{/columns}}\n</select>\n</fieldset>\n{{/if}}\n\n{{#if MANYTOMANY}}\n<fieldset>\n<label>Related Table</label>\n<select name="table_related">\n\t{{#tables}}\n\t<option {{#if selected}}selected{{/if}}>{{this.id}}</option>\n\t{{/tables}}\n</select>\n</fieldset>\n\n<fieldset>\n<label>Junction Table</label>\n<select name="junction_table">\n\t{{#junctionTables}}\n\t<option {{#if selected}}selected{{/if}}>{{this.id}}</option>\n\t{{/junctionTables}}\n</select>\n</fieldset>\n\n<fieldset>\n<label>Left Column</label>\n<input type="text" name="junction_key_left"/>\n</fieldset>\n\n<fieldset>\n<label>Right Column</label>\n<input type="text" name="junction_key_right"/>\n</fieldset>\n{{/if}}\n\n{{#if CHAR}}\n<fieldset>\n<label>Length</label>\n<input type="text" value="" name="char_length">\n</fieldset>\n{{/if}}\n\n{{#if VARCHAR}}\n<fieldset>\n<label>Length</label>\n<input type="text" value="" name="char_length">\n</fieldset>\n{{/if}}\n\n{{#unless directusType}}\n<fieldset>\n<label class="checkbox"><input type="checkbox" name="allow_null"> Allow Null</label>\n</fieldset>\n\n<fieldset>\n<label>Default</label>\n<input type="text" value="" name="column_default">\n</fieldset>\n{{/unless}}\n\n<fieldset>\n<label>Note</label>\n<input type="text" value="" name="comment">\n</fieldset>';
 }
 return __p;
 };
@@ -405,7 +478,23 @@ return __p;
 this['JST']['app/templates/settings-columns.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<table class="table table-striped directus-table" id="directus_columns">\n<thead>\n<tr>\n    <th><span class="glyphicon-random"></span></th>\n    <th>Field</th>\n    <th>Input Type</th>\n    <th>Required</th>\n    <th>Hidden</th>\n    <th>Primary</th>\n</tr>\n</thead>\n<tbody>\n  {{#rows}}\n  <tr class="{{#if alias}}alias{{/if}}" data-id="{{id}}">\n    <td>&nbsp;</td>\n    <td title="{{this.type}}">{{{capitalize id}}}</td>\n    {{#if system}}\n    <td colspan="4"></td>\n    {{else}}\n    <td>\n      <select>\n        {{#types}}\n        <option {{#if active}}selected{{/if}}>{{{capitalize id}}}</option>\n        {{/types}}\n      </select>\n      {{#if uiHasVariables}}<button class="glyphicon-settings btn btn-link" data-action="ui" data-id="{{id}}"></button>{{/if}}\n    </td>\n    <td>\n      <div class="btn-group" data-toggle="buttons-checkbox">\n        <button type="button" class="btn btn-small"><span class="glyphicon-justify"></span></button>\n        <button type="button" class="btn btn-small active"><span class="glyphicon-pencil"></span></button>\n      </div>\n    </td>\n    <td><input type="checkbox"></td>\n    <td><input type="radio"></td>\n    {{/if}}\n\n\n  </tr>\n  {{/rows}}\n</tbody>\n</table>';
+__p+='<table class="table table-striped directus-table" id="directus_columns">\n<thead>\n<tr>\n    <th class="sort"><span class="glyphicon-random"></span></th>\n    <th class="field-field">Field</th>\n    <th class="field-input_type">Input Type</th>\n    <th class="field-hidden">Hidden</th>\n    <th class="field-required">Required</th>\n    <th class="field-master">Primary</th>\n    <th class="field-note">Note</th>\n</tr>\n</thead>\n<tbody>\n  {{#rows}}\n  <tr class="{{#if alias}}alias{{/if}}{{#if system}}inactive system{{/if}}" data-id="{{id}}">\n    <td class="sort">{{#unless system}}<span class="glyphicon-show-lines"></span>{{/unless}}</td>\n    <td title="{{this.type}}">{{{capitalize id}}}</td>\n    {{#if system}}\n    <td colspan="5"><em>This is a system field</em></td>\n    {{else}}\n    <td>\n      <select name="ui" id="ui" data-id="{{id}}">\n        {{#types}}\n        <option {{#if isActive}}selected{{/if}} value="{{id}}">{{{capitalize id}}}</option>\n        {{/types}}\n      </select>\n      {{#if uiHasVariables}}<button class="glyphicon-settings btn btn-link" type="button" data-action="ui" data-id="{{id}}"></button>{{/if}}\n    </td>\n    <td>\n        <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}">\n    </td>\n    <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}"></td>\n    <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}"></td>\n    <td><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input"></td>\n    {{/if}}\n  </tr>\n  {{/rows}}\n</tbody>\n</table>\n\n<button class="btn btn-link" type="button" data-action="new-field">Add new field</button>';
+}
+return __p;
+};
+
+this['JST']['app/templates/settings-groups.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<table class="table table-striped directus-table">\n<thead><tr><th>Group</th></tr></thead>\n<tbody>\n  {{#rows}}\n  <tr><td data-id="{{id}}">{{name}}</td></tr>\n  {{/rows}}\n</tbody>\n</table>';
+}
+return __p;
+};
+
+this['JST']['app/templates/settings-tables.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<table class="table table-striped directus-table">\n<thead><tr><th>Table</th></tr></thead>\n<tbody>\n  {{#rows}}\n  <tr><td data-id="{{table_name}}">{{{capitalize table_name}}}</td></tr>\n  {{/rows}}\n</tbody>\n</table>';
 }
 return __p;
 };
@@ -421,7 +510,7 @@ return __p;
 this['JST']['app/templates/table-body.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='{{#each rows}}\n\t<tr data-id="{{this.id}}" data-cid="{{this.cid}}" class="{{{active this}}}">\n\t\t<td class="status"></td>\n\t\t{{#if ../sortable}}<td class="sort"><span class="glyphicon-show-lines"></span></td>{{/if}}\n\t\t{{#if ../selectable}}<td class="check"><input type="checkbox" value="{{this.id}}"></td>{{/if}}\n\t\t{{#each ../columns}}<td>{{ui ../this this}}</td>{{/each}}\n\t</tr>\n{{/each}}';
+__p+='{{#each rows}}\n\t<tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="{{{activeMap model}}} {{#classes}}{{this}} {{/classes}}">\n\t\t<td class="status"></td>\n\t\t{{#if ../sortable}}<td class="sort"><span class="glyphicon-show-lines"></span></td>{{/if}}\n\t\t{{#if ../selectable}}<td class="check"><input type="checkbox" value="{{model.id}}"></td>{{/if}}\n\t\t{{#each ../columns}}<td>{{ui ../model this}}</td>{{/each}}\n\t\t{{#if ../deleteColumn}}<td class="delete"><span class="glyphicon-remove"></span></td>{{/if}}\n\t</tr>\n{{/each}}';
 }
 return __p;
 };
@@ -429,7 +518,15 @@ return __p;
 this['JST']['app/templates/table-head.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<tr>\n  <th class="status"></th>\n  {{#if sortable}}<th class="sort" data-id="sort"><span class="glyphicon-random"></span></th>{{/if}}\n  {{#if selectable}}<th class="check"><input type="checkbox"></th>{{/if}}\n  {{#columns}}\n    <th data-id="{{name}}">{{{capitalize name}}} {{#if orderBy}}{{#if desc}}▼{{else}}▲{{/if}}{{/if}}</th>\n  {{/columns}}\n</tr>';
+__p+='<tr>\n  <th class="status"><a href="#" id="set-visible-columns"><span class="glyphicon-cogwheel"></span></a></th>\n  {{#if sortable}}<th class="sort" data-id="sort"><span class="glyphicon-random"></span></th>{{/if}}\n  {{#if selectable}}<th class="check"><input type="checkbox"></th>{{/if}}\n  {{#columns}}\n    <th data-id="{{name}}">{{{capitalize name}}} {{#if orderBy}}{{#if desc}}▼{{else}}▲{{/if}}{{/if}}</th>\n  {{/columns}}\n  {{#if deleteColumn}}<th class="delete"></th>{{/if}}\n</tr>';
+}
+return __p;
+};
+
+this['JST']['app/templates/table-set-columns.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<form class="directus-form">\n<fieldset>\n{{#columns}}\n\t<label class="checkbox"><input name="columns_visible" type="checkbox" value="{{name}}" {{#if visible}}checked{{/if}}>{{capitalize name}}</label>\n{{/columns}}\n</fieldset>\n</form>';
 }
 return __p;
 };
@@ -437,7 +534,7 @@ return __p;
 this['JST']['app/templates/table-toolbar.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='{{#if actionButtons}}\n<div class="btn-group btn-group-action active" id="set-visibility">\n  <button class="btn btn-small" data-value="1" rel="tooltip" data-placement="bottom" title="Active"><span class="glyphicon-eye-open"></span></button>\n  <button class="btn btn-small" data-value="2" rel="tooltip" data-placement="bottom" title="Inactive"><span class="glyphicon-eye-close"></span></button>\n  <button class="btn btn-small" data-value="0" rel="tooltip" data-placement="bottom" title="Delete"><span class="glyphicon-trash"></span></button>\n</div>\n{{/if}}\n\n\n<div class="btn-group" id="visibility">\n  XXX\n  {{#visibility}}\n  {{#if this.active}}\n    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown">\n      Viewing {{text}}\n      <span class="caret"></span>\n    </a>\n  {{/if}}\n  {{/visibility}}\n\n  <ul class="dropdown-menu">\n    {{#visibility}}\n      {{#unless active}}<li><a data-value="{{value}}">View {{text}}</a></li>{{/unless}}\n    {{/visibility}}\n  </ul>\n</div>\n\n{{#if paginator}}\n<div class="btn-group">\n  <a class="btn btn-small {{#unless pagePrev}}disabled{{/unless}} pag-prev"><span class="glyphicon-arrow-left"></span></a>\n  <a class="btn btn-small {{#unless pageNext}}disabled{{/unless}} pag-next"><span class="glyphicon-arrow-right"></span></a>\n</div>\n{{/if}}\n<div class="pagination-number">{{#if uBound}} {{lBound}}–{{uBound}} of {{totalCount}}{{/if}}</div>\n\n\n{{#if filter}}\n<div class="filter pull-right">\n  <input type="text" id="table-filter" placeholder="Filter" value="{{filterText}}">\n</div>\n{{/if}}';
+__p+='\n<div class="btn-group btn-group-action active" id="set-visibility">\n  {{#if actionButtons}}\n  <button class="btn btn-small" data-value="1" rel="tooltip" data-placement="bottom" title="Active"><span class="glyphicon-eye-open"></span></button>\n  <button class="btn btn-small" data-value="2" rel="tooltip" data-placement="bottom" title="Inactive"><span class="glyphicon-eye-close"></span></button>\n  <button class="btn btn-small" data-value="0" rel="tooltip" data-placement="bottom" title="Delete"><span class="glyphicon-trash"></span></button>\n  {{/if}}\n  {{#if deleteOnly}}\n    <button class="btn btn-small" data-value="0" rel="tooltip" data-placement="bottom" title="Delete"><span class="glyphicon-trash"></span></button>\n  {{/if}}\n</div>\n\n<div class="btn-group" id="visibility">\n  {{#visibility}}\n  {{#if this.active}}\n    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown">\n      Viewing {{text}}\n      <span class="caret"></span>\n    </a>\n  {{/if}}\n  {{/visibility}}\n\n  <ul class="dropdown-menu">\n    {{#visibility}}\n      {{#unless active}}<li><a data-value="{{value}}">View {{text}} ({{count}})</a></li>{{/unless}}\n    {{/visibility}}\n  </ul>\n</div>\n\n{{#if paginator}}\n<div class="btn-group">\n  <a class="btn btn-small {{#unless pagePrev}}disabled{{/unless}} pag-prev"><span class="glyphicon-arrow-left"></span></a>\n  <a class="btn btn-small {{#unless pageNext}}disabled{{/unless}} pag-next"><span class="glyphicon-arrow-right"></span></a>\n</div>\n{{/if}}\n<div class="pagination-number">{{#if uBound}} {{lBound}}–{{uBound}} of {{totalCount}}{{/if}}</div>\n\n\n{{#if filter}}\n<div class="filter pull-right">\n  <input type="text" id="table-filter" placeholder="Filter" value="{{filterText}}">\n</div>\n{{/if}}';
 }
 return __p;
 };
@@ -453,7 +550,7 @@ return __p;
 this['JST']['app/templates/tables.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<table class="table table-striped directus-table" id="directus_tables">\n<thead>\n<tr>\n    <th class="table_name">Table Name</th>\n    <th class="active">Active</th>\n    <th class="modified">Modified</th>\n</tr>\n</thead>\n<tbody>\n  {{#rows}}\n    <tr data-id="{{table_name}}">\n      <td>{{{capitalize table_name}}}</td>\n      <td>{{#if single}}<span class="glyphicon-pencil"></span>{{else}}{{count}}{{/if}}</td>\n      <td>{{contextualDate date_modified}}</td>\n    </tr>\n  {{/rows}}\n</tbody>\n</table>';
+__p+='<table class="table table-striped directus-table" id="directus_tables">\n<thead>\n<tr>\n    <th class="table_name">Table Name</th>\n    <th class="active">Active</th>\n    <!--<th class="modified">Modified</th>-->\n</tr>\n</thead>\n<tbody>\n  {{#rows}}\n    <tr data-id="{{table_name}}">\n      <td>{{{capitalize table_name}}}</td>\n      <td>{{#if single}}<span class="glyphicon-pencil"></span>{{else}}{{active}}{{/if}}</td>\n      <!--<td>{{contextualDate date_modified}}</td>-->\n    </tr>\n  {{/rows}}\n</tbody>\n</table>';
 }
 return __p;
 };
@@ -461,7 +558,7 @@ return __p;
 this['JST']['app/templates/tabs.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<ul class="nav nav-tabs">\n{{#tabs}}\n  <li {{#if active}}class="active"{{/if}}>\n  \t<a href="#{{id}}">{{title}} {{#if count}}<div class="label hidden-phone">{{{number count}}}</div>{{/if}}</a>\n  </li>\n{{/tabs}}\n</ul>';
+__p+='<ul class="nav nav-tabs">\n{{#tabs}}\n  <li class="{{#if active}}active{{/if}} {{#if extension}}extension{{/if}}">\n  \t<a href="#{{id}}{{#if extension}}/{{/if}}">{{title}} {{#if count}}<div class="label hidden-phone">{{{number count}}}</div>{{/if}}</a>\n  </li>\n{{/tabs}}\n</ul>';
 }
 return __p;
 };;
@@ -2392,9 +2489,9 @@ define("handlebars", (function (global) {
     }
 }(this)));
 
-//     Underscore.js 1.4.2
+//     Underscore.js 1.4.4
 //     http://underscorejs.org
-//     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
+//     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore may be freely distributed under the MIT license.
 
 (function() {
@@ -2418,7 +2515,6 @@ define("handlebars", (function (global) {
   var push             = ArrayProto.push,
       slice            = ArrayProto.slice,
       concat           = ArrayProto.concat,
-      unshift          = ArrayProto.unshift,
       toString         = ObjProto.toString,
       hasOwnProperty   = ObjProto.hasOwnProperty;
 
@@ -2455,11 +2551,11 @@ define("handlebars", (function (global) {
     }
     exports._ = _;
   } else {
-    root['_'] = _;
+    root._ = _;
   }
 
   // Current version.
-  _.VERSION = '1.4.2';
+  _.VERSION = '1.4.4';
 
   // Collection Functions
   // --------------------
@@ -2496,6 +2592,8 @@ define("handlebars", (function (global) {
     return results;
   };
 
+  var reduceError = 'Reduce of empty array with no initial value';
+
   // **Reduce** builds up a single result from a list of values, aka `inject`,
   // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
   _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
@@ -2513,7 +2611,7 @@ define("handlebars", (function (global) {
         memo = iterator.call(context, memo, value, index, list);
       }
     });
-    if (!initial) throw new TypeError('Reduce of empty array with no initial value');
+    if (!initial) throw new TypeError(reduceError);
     return memo;
   };
 
@@ -2524,7 +2622,7 @@ define("handlebars", (function (global) {
     if (obj == null) obj = [];
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
       if (context) iterator = _.bind(iterator, context);
-      return arguments.length > 2 ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
+      return initial ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
     }
     var length = obj.length;
     if (length !== +length) {
@@ -2540,7 +2638,7 @@ define("handlebars", (function (global) {
         memo = iterator.call(context, memo, obj[index], index, list);
       }
     });
-    if (!initial) throw new TypeError('Reduce of empty array with no initial value');
+    if (!initial) throw new TypeError(reduceError);
     return memo;
   };
 
@@ -2571,12 +2669,9 @@ define("handlebars", (function (global) {
 
   // Return all the elements for which a truth test fails.
   _.reject = function(obj, iterator, context) {
-    var results = [];
-    if (obj == null) return results;
-    each(obj, function(value, index, list) {
-      if (!iterator.call(context, value, index, list)) results[results.length] = value;
-    });
-    return results;
+    return _.filter(obj, function(value, index, list) {
+      return !iterator.call(context, value, index, list);
+    }, context);
   };
 
   // Determine whether all of the elements match a truth test.
@@ -2610,20 +2705,19 @@ define("handlebars", (function (global) {
   // Determine if the array or object contains a given value (using `===`).
   // Aliased as `include`.
   _.contains = _.include = function(obj, target) {
-    var found = false;
-    if (obj == null) return found;
+    if (obj == null) return false;
     if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;
-    found = any(obj, function(value) {
+    return any(obj, function(value) {
       return value === target;
     });
-    return found;
   };
 
   // Invoke a method (with arguments) on every item in a collection.
   _.invoke = function(obj, method) {
     var args = slice.call(arguments, 2);
+    var isFunc = _.isFunction(method);
     return _.map(obj, function(value) {
-      return (_.isFunction(method) ? method : value[method]).apply(value, args);
+      return (isFunc ? method : value[method]).apply(value, args);
     });
   };
 
@@ -2633,15 +2727,21 @@ define("handlebars", (function (global) {
   };
 
   // Convenience version of a common use case of `filter`: selecting only objects
-  // with specific `key:value` pairs.
-  _.where = function(obj, attrs) {
-    if (_.isEmpty(attrs)) return [];
-    return _.filter(obj, function(value) {
+  // containing specific `key:value` pairs.
+  _.where = function(obj, attrs, first) {
+    if (_.isEmpty(attrs)) return first ? void 0 : [];
+    return _[first ? 'find' : 'filter'](obj, function(value) {
       for (var key in attrs) {
         if (attrs[key] !== value[key]) return false;
       }
       return true;
     });
+  };
+
+  // Convenience version of a common use case of `find`: getting the first object
+  // containing specific `key:value` pairs.
+  _.findWhere = function(obj, attrs) {
+    return _.where(obj, attrs, true);
   };
 
   // Return the maximum element or (element-based computation).
@@ -2652,7 +2752,7 @@ define("handlebars", (function (global) {
       return Math.max.apply(Math, obj);
     }
     if (!iterator && _.isEmpty(obj)) return -Infinity;
-    var result = {computed : -Infinity};
+    var result = {computed : -Infinity, value: -Infinity};
     each(obj, function(value, index, list) {
       var computed = iterator ? iterator.call(context, value, index, list) : value;
       computed >= result.computed && (result = {value : value, computed : computed});
@@ -2666,7 +2766,7 @@ define("handlebars", (function (global) {
       return Math.min.apply(Math, obj);
     }
     if (!iterator && _.isEmpty(obj)) return Infinity;
-    var result = {computed : Infinity};
+    var result = {computed : Infinity, value: Infinity};
     each(obj, function(value, index, list) {
       var computed = iterator ? iterator.call(context, value, index, list) : value;
       computed < result.computed && (result = {value : value, computed : computed});
@@ -2715,7 +2815,7 @@ define("handlebars", (function (global) {
   // An internal function used for aggregate "group by" operations.
   var group = function(obj, value, context, behavior) {
     var result = {};
-    var iterator = lookupIterator(value);
+    var iterator = lookupIterator(value || _.identity);
     each(obj, function(value, index) {
       var key = iterator.call(context, value, index, obj);
       behavior(result, key, value);
@@ -2735,7 +2835,7 @@ define("handlebars", (function (global) {
   // either a string attribute to count by, or a function that returns the
   // criterion.
   _.countBy = function(obj, value, context) {
-    return group(obj, value, context, function(result, key, value) {
+    return group(obj, value, context, function(result, key) {
       if (!_.has(result, key)) result[key] = 0;
       result[key]++;
     });
@@ -2757,12 +2857,14 @@ define("handlebars", (function (global) {
   // Safely convert anything iterable into a real, live array.
   _.toArray = function(obj) {
     if (!obj) return [];
-    if (obj.length === +obj.length) return slice.call(obj);
+    if (_.isArray(obj)) return slice.call(obj);
+    if (obj.length === +obj.length) return _.map(obj, _.identity);
     return _.values(obj);
   };
 
   // Return the number of elements in an object.
   _.size = function(obj) {
+    if (obj == null) return 0;
     return (obj.length === +obj.length) ? obj.length : _.keys(obj).length;
   };
 
@@ -2773,6 +2875,7 @@ define("handlebars", (function (global) {
   // values in the array. Aliased as `head` and `take`. The **guard** check
   // allows it to work with `_.map`.
   _.first = _.head = _.take = function(array, n, guard) {
+    if (array == null) return void 0;
     return (n != null) && !guard ? slice.call(array, 0, n) : array[0];
   };
 
@@ -2787,6 +2890,7 @@ define("handlebars", (function (global) {
   // Get the last element of an array. Passing **n** will return the last N
   // values in the array. The **guard** check allows it to work with `_.map`.
   _.last = function(array, n, guard) {
+    if (array == null) return void 0;
     if ((n != null) && !guard) {
       return slice.call(array, Math.max(array.length - n, 0));
     } else {
@@ -2804,7 +2908,7 @@ define("handlebars", (function (global) {
 
   // Trim out all falsy values from an array.
   _.compact = function(array) {
-    return _.filter(array, function(value){ return !!value; });
+    return _.filter(array, _.identity);
   };
 
   // Internal implementation of a recursive `flatten` function.
@@ -2833,6 +2937,11 @@ define("handlebars", (function (global) {
   // been sorted, you have the option of using a faster algorithm.
   // Aliased as `unique`.
   _.uniq = _.unique = function(array, isSorted, iterator, context) {
+    if (_.isFunction(isSorted)) {
+      context = iterator;
+      iterator = isSorted;
+      isSorted = false;
+    }
     var initial = iterator ? _.map(array, iterator, context) : array;
     var results = [];
     var seen = [];
@@ -2885,6 +2994,7 @@ define("handlebars", (function (global) {
   // pairs, or two parallel arrays of the same length -- one of keys, and one of
   // the corresponding values.
   _.object = function(list, values) {
+    if (list == null) return {};
     var result = {};
     for (var i = 0, l = list.length; i < l; i++) {
       if (values) {
@@ -2955,25 +3065,23 @@ define("handlebars", (function (global) {
   // Function (ahem) Functions
   // ------------------
 
-  // Reusable constructor function for prototype setting.
-  var ctor = function(){};
-
   // Create a function bound to a given object (assigning `this`, and arguments,
-  // optionally). Binding with arguments is also known as `curry`.
-  // Delegates to **ECMAScript 5**'s native `Function.bind` if available.
-  // We check for `func.bind` first, to fail fast when `func` is undefined.
-  _.bind = function bind(func, context) {
-    var bound, args;
+  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
+  // available.
+  _.bind = function(func, context) {
     if (func.bind === nativeBind && nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
-    if (!_.isFunction(func)) throw new TypeError;
-    args = slice.call(arguments, 2);
-    return bound = function() {
-      if (!(this instanceof bound)) return func.apply(context, args.concat(slice.call(arguments)));
-      ctor.prototype = func.prototype;
-      var self = new ctor;
-      var result = func.apply(self, args.concat(slice.call(arguments)));
-      if (Object(result) === result) return result;
-      return self;
+    var args = slice.call(arguments, 2);
+    return function() {
+      return func.apply(context, args.concat(slice.call(arguments)));
+    };
+  };
+
+  // Partially apply a function by creating a version that has had some of its
+  // arguments pre-filled, without changing its dynamic `this` context.
+  _.partial = function(func) {
+    var args = slice.call(arguments, 1);
+    return function() {
+      return func.apply(this, args.concat(slice.call(arguments)));
     };
   };
 
@@ -2981,7 +3089,7 @@ define("handlebars", (function (global) {
   // all callbacks defined on an object belong to it.
   _.bindAll = function(obj) {
     var funcs = slice.call(arguments, 1);
-    if (funcs.length == 0) funcs = _.functions(obj);
+    if (funcs.length === 0) throw new Error("bindAll must be passed function names");
     each(funcs, function(f) { obj[f] = _.bind(obj[f], obj); });
     return obj;
   };
@@ -3012,25 +3120,26 @@ define("handlebars", (function (global) {
   // Returns a function, that, when invoked, will only be triggered at most once
   // during a given window of time.
   _.throttle = function(func, wait) {
-    var context, args, timeout, throttling, more, result;
-    var whenDone = _.debounce(function(){ more = throttling = false; }, wait);
+    var context, args, timeout, result;
+    var previous = 0;
+    var later = function() {
+      previous = new Date;
+      timeout = null;
+      result = func.apply(context, args);
+    };
     return function() {
-      context = this; args = arguments;
-      var later = function() {
+      var now = new Date;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0) {
+        clearTimeout(timeout);
         timeout = null;
-        if (more) {
-          result = func.apply(context, args);
-        }
-        whenDone();
-      };
-      if (!timeout) timeout = setTimeout(later, wait);
-      if (throttling) {
-        more = true;
-      } else {
-        throttling = true;
+        previous = now;
         result = func.apply(context, args);
+      } else if (!timeout) {
+        timeout = setTimeout(later, remaining);
       }
-      whenDone();
       return result;
     };
   };
@@ -3148,8 +3257,10 @@ define("handlebars", (function (global) {
   // Extend a given object with all the properties in passed-in object(s).
   _.extend = function(obj) {
     each(slice.call(arguments, 1), function(source) {
-      for (var prop in source) {
-        obj[prop] = source[prop];
+      if (source) {
+        for (var prop in source) {
+          obj[prop] = source[prop];
+        }
       }
     });
     return obj;
@@ -3178,8 +3289,10 @@ define("handlebars", (function (global) {
   // Fill in a given object with default properties.
   _.defaults = function(obj) {
     each(slice.call(arguments, 1), function(source) {
-      for (var prop in source) {
-        if (obj[prop] == null) obj[prop] = source[prop];
+      if (source) {
+        for (var prop in source) {
+          if (obj[prop] == null) obj[prop] = source[prop];
+        }
       }
     });
     return obj;
@@ -3344,7 +3457,7 @@ define("handlebars", (function (global) {
 
   // Is a given object a finite number?
   _.isFinite = function(obj) {
-    return _.isNumber(obj) && isFinite(obj);
+    return isFinite(obj) && !isNaN(parseFloat(obj));
   };
 
   // Is the given value `NaN`? (NaN is the only number which does not equal itself).
@@ -3390,7 +3503,9 @@ define("handlebars", (function (global) {
 
   // Run a function **n** times.
   _.times = function(n, iterator, context) {
-    for (var i = 0; i < n; i++) iterator.call(context, i);
+    var accum = Array(n);
+    for (var i = 0; i < n; i++) accum[i] = iterator.call(context, i);
+    return accum;
   };
 
   // Return a random integer between min and max (inclusive).
@@ -3399,7 +3514,7 @@ define("handlebars", (function (global) {
       max = min;
       min = 0;
     }
-    return min + (0 | Math.random() * (max - min + 1));
+    return min + Math.floor(Math.random() * (max - min + 1));
   };
 
   // List of HTML entities for escaping.
@@ -3434,7 +3549,7 @@ define("handlebars", (function (global) {
   // If the value of the named property is a function then invoke it;
   // otherwise, return it.
   _.result = function(object, property) {
-    if (object == null) return null;
+    if (object == null) return void 0;
     var value = object[property];
     return _.isFunction(value) ? value.call(object) : value;
   };
@@ -3455,7 +3570,7 @@ define("handlebars", (function (global) {
   // Useful for temporary DOM ids.
   var idCounter = 0;
   _.uniqueId = function(prefix) {
-    var id = idCounter++;
+    var id = ++idCounter + '';
     return prefix ? prefix + id : id;
   };
 
@@ -3490,6 +3605,7 @@ define("handlebars", (function (global) {
   // Underscore templating handles arbitrary delimiters, preserves whitespace,
   // and correctly escapes quotes within interpolated code.
   _.template = function(text, data, settings) {
+    var render;
     settings = _.defaults({}, settings, _.templateSettings);
 
     // Combine delimiters into one regular expression via alternation.
@@ -3505,11 +3621,18 @@ define("handlebars", (function (global) {
     text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
       source += text.slice(index, offset)
         .replace(escaper, function(match) { return '\\' + escapes[match]; });
-      source +=
-        escape ? "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'" :
-        interpolate ? "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'" :
-        evaluate ? "';\n" + evaluate + "\n__p+='" : '';
+
+      if (escape) {
+        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+      }
+      if (interpolate) {
+        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+      }
+      if (evaluate) {
+        source += "';\n" + evaluate + "\n__p+='";
+      }
       index = offset + match.length;
+      return match;
     });
     source += "';\n";
 
@@ -3521,7 +3644,7 @@ define("handlebars", (function (global) {
       source + "return __p;\n";
 
     try {
-      var render = new Function(settings.variable || 'obj', '_', source);
+      render = new Function(settings.variable || 'obj', '_', source);
     } catch (e) {
       e.source = source;
       throw e;
@@ -12826,9 +12949,9 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 
-//     Backbone.js 0.9.9
+//     Backbone.js 0.9.10
 
-//     (c) 2010-2012 Jeremy Ashkenas, DocumentCloud Inc.
+//     (c) 2010-2013 Jeremy Ashkenas, DocumentCloud Inc.
 //     Backbone may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://backbonejs.org
@@ -12862,7 +12985,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
   }
 
   // Current version of the library. Keep in sync with `package.json`.
-  Backbone.VERSION = '0.9.9';
+  Backbone.VERSION = '0.9.10';
 
   // Require Underscore, if we're on the server, and it's not already present.
   var _ = root._;
@@ -12916,16 +13039,16 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
   // Optimized internal dispatch function for triggering events. Tries to
   // keep the usual cases speedy (most Backbone events have 3 arguments).
-  var triggerEvents = function(obj, events, args) {
-    var ev, i = -1, l = events.length;
+  var triggerEvents = function(events, args) {
+    var ev, i = -1, l = events.length, a1 = args[0], a2 = args[1], a3 = args[2];
     switch (args.length) {
     case 0: while (++i < l) (ev = events[i]).callback.call(ev.ctx);
     return;
-    case 1: while (++i < l) (ev = events[i]).callback.call(ev.ctx, args[0]);
+    case 1: while (++i < l) (ev = events[i]).callback.call(ev.ctx, a1);
     return;
-    case 2: while (++i < l) (ev = events[i]).callback.call(ev.ctx, args[0], args[1]);
+    case 2: while (++i < l) (ev = events[i]).callback.call(ev.ctx, a1, a2);
     return;
-    case 3: while (++i < l) (ev = events[i]).callback.call(ev.ctx, args[0], args[1], args[2]);
+    case 3: while (++i < l) (ev = events[i]).callback.call(ev.ctx, a1, a2, a3);
     return;
     default: while (++i < l) (ev = events[i]).callback.apply(ev.ctx, args);
     }
@@ -12947,33 +13070,32 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     // to a `callback` function. Passing `"all"` will bind the callback to
     // all events fired.
     on: function(name, callback, context) {
-      if (!(eventsApi(this, 'on', name, [callback, context]) && callback)) return this;
+      if (!eventsApi(this, 'on', name, [callback, context]) || !callback) return this;
       this._events || (this._events = {});
-      var list = this._events[name] || (this._events[name] = []);
-      list.push({callback: callback, context: context, ctx: context || this});
+      var events = this._events[name] || (this._events[name] = []);
+      events.push({callback: callback, context: context, ctx: context || this});
       return this;
     },
 
     // Bind events to only be triggered a single time. After the first time
     // the callback is invoked, it will be removed.
     once: function(name, callback, context) {
-      if (!(eventsApi(this, 'once', name, [callback, context]) && callback)) return this;
+      if (!eventsApi(this, 'once', name, [callback, context]) || !callback) return this;
       var self = this;
       var once = _.once(function() {
         self.off(name, once);
         callback.apply(this, arguments);
       });
       once._callback = callback;
-      this.on(name, once, context);
-      return this;
+      return this.on(name, once, context);
     },
 
     // Remove one or many callbacks. If `context` is null, removes all
     // callbacks with that function. If `callback` is null, removes all
-    // callbacks for the event. If `events` is null, removes all bound
+    // callbacks for the event. If `name` is null, removes all bound
     // callbacks for all events.
     off: function(name, callback, context) {
-      var list, ev, events, names, i, l, j, k;
+      var retain, ev, events, names, i, l, j, k;
       if (!this._events || !eventsApi(this, 'off', name, [callback, context])) return this;
       if (!name && !callback && !context) {
         this._events = {};
@@ -12983,18 +13105,19 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       names = name ? [name] : _.keys(this._events);
       for (i = 0, l = names.length; i < l; i++) {
         name = names[i];
-        if (list = this._events[name]) {
-          events = [];
+        if (events = this._events[name]) {
+          this._events[name] = retain = [];
           if (callback || context) {
-            for (j = 0, k = list.length; j < k; j++) {
-              ev = list[j];
-              if ((callback && callback !== (ev.callback._callback || ev.callback)) ||
+            for (j = 0, k = events.length; j < k; j++) {
+              ev = events[j];
+              if ((callback && callback !== ev.callback &&
+                               callback !== ev.callback._callback) ||
                   (context && context !== ev.context)) {
-                events.push(ev);
+                retain.push(ev);
               }
             }
           }
-          this._events[name] = events;
+          if (!retain.length) delete this._events[name];
         }
       }
 
@@ -13011,38 +13134,43 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       if (!eventsApi(this, 'trigger', name, args)) return this;
       var events = this._events[name];
       var allEvents = this._events.all;
-      if (events) triggerEvents(this, events, args);
-      if (allEvents) triggerEvents(this, allEvents, arguments);
-      return this;
-    },
-
-    // An inversion-of-control version of `on`. Tell *this* object to listen to
-    // an event in another object ... keeping track of what it's listening to.
-    listenTo: function(object, events, callback) {
-      var listeners = this._listeners || (this._listeners = {});
-      var id = object._listenerId || (object._listenerId = _.uniqueId('l'));
-      listeners[id] = object;
-      object.on(events, callback || this, this);
+      if (events) triggerEvents(events, args);
+      if (allEvents) triggerEvents(allEvents, arguments);
       return this;
     },
 
     // Tell this object to stop listening to either specific events ... or
     // to every object it's currently listening to.
-    stopListening: function(object, events, callback) {
+    stopListening: function(obj, name, callback) {
       var listeners = this._listeners;
-      if (!listeners) return;
-      if (object) {
-        object.off(events, callback, this);
-        if (!events && !callback) delete listeners[object._listenerId];
+      if (!listeners) return this;
+      if (obj) {
+        obj.off(name, typeof name === 'object' ? this : callback, this);
+        if (!name && !callback) delete listeners[obj._listenerId];
       } else {
+        if (typeof name === 'object') callback = this;
         for (var id in listeners) {
-          listeners[id].off(null, null, this);
+          listeners[id].off(name, callback, this);
         }
         this._listeners = {};
       }
       return this;
     }
   };
+
+  var listenMethods = {listenTo: 'on', listenToOnce: 'once'};
+
+  // An inversion-of-control versions of `on` and `once`. Tell *this* object to listen to
+  // an event in another object ... keeping track of what it's listening to.
+  _.each(listenMethods, function(implementation, method) {
+    Events[method] = function(obj, name, callback) {
+      var listeners = this._listeners || (this._listeners = {});
+      var id = obj._listenerId || (obj._listenerId = _.uniqueId('l'));
+      listeners[id] = obj;
+      obj[implementation](name, typeof name === 'object' ? this : callback, this);
+      return this;
+    };
+  });
 
   // Aliases for backwards compatibility.
   Events.bind   = Events.on;
@@ -13061,15 +13189,14 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     var defaults;
     var attrs = attributes || {};
     this.cid = _.uniqueId('c');
-    this.changed = {};
     this.attributes = {};
-    this._changes = [];
     if (options && options.collection) this.collection = options.collection;
-    if (options && options.parse) attrs = this.parse(attrs);
-    if (defaults = _.result(this, 'defaults')) _.defaults(attrs, defaults);
-    this.set(attrs, {silent: true});
-    this._currentAttributes = _.clone(this.attributes);
-    this._previousAttributes = _.clone(this.attributes);
+    if (options && options.parse) attrs = this.parse(attrs, options) || {};
+    if (defaults = _.result(this, 'defaults')) {
+      attrs = _.defaults({}, attrs, defaults);
+    }
+    this.set(attrs, options);
+    this.changed = {};
     this.initialize.apply(this, arguments);
   };
 
@@ -13078,6 +13205,9 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
     // A hash of attributes whose current and previous value differ.
     changed: null,
+
+    // The value returned during the last failed validation.
+    validationError: null,
 
     // The default name for the JSON `id` attribute is `"id"`. MongoDB and
     // CouchDB users may want to set this to `"_id"`.
@@ -13113,47 +13243,72 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       return this.get(attr) != null;
     },
 
+    // ----------------------------------------------------------------------
+
     // Set a hash of model attributes on the object, firing `"change"` unless
     // you choose to silence it.
     set: function(key, val, options) {
-      var attr, attrs;
+      var attr, attrs, unset, changes, silent, changing, prev, current;
       if (key == null) return this;
 
       // Handle both `"key", value` and `{key: value}` -style arguments.
-      if (_.isObject(key)) {
+      if (typeof key === 'object') {
         attrs = key;
         options = val;
       } else {
         (attrs = {})[key] = val;
       }
 
-      // Extract attributes and options.
-      var silent = options && options.silent;
-      var unset = options && options.unset;
+      options || (options = {});
 
       // Run validation.
       if (!this._validate(attrs, options)) return false;
 
+      // Extract attributes and options.
+      unset           = options.unset;
+      silent          = options.silent;
+      changes         = [];
+      changing        = this._changing;
+      this._changing  = true;
+
+      if (!changing) {
+        this._previousAttributes = _.clone(this.attributes);
+        this.changed = {};
+      }
+      current = this.attributes, prev = this._previousAttributes;
+
       // Check for changes of `id`.
       if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
 
-      var now = this.attributes;
-
-      // For each `set` attribute...
+      // For each `set` attribute, update or delete the current value.
       for (attr in attrs) {
         val = attrs[attr];
-
-        // Update or delete the current value, and track the change.
-        unset ? delete now[attr] : now[attr] = val;
-        this._changes.push(attr, val);
+        if (!_.isEqual(current[attr], val)) changes.push(attr);
+        if (!_.isEqual(prev[attr], val)) {
+          this.changed[attr] = val;
+        } else {
+          delete this.changed[attr];
+        }
+        unset ? delete current[attr] : current[attr] = val;
       }
 
-      // Signal that the model's state has potentially changed, and we need
-      // to recompute the actual changes.
-      this._hasComputed = false;
+      // Trigger all relevant attribute changes.
+      if (!silent) {
+        if (changes.length) this._pending = true;
+        for (var i = 0, l = changes.length; i < l; i++) {
+          this.trigger('change:' + changes[i], this, current[changes[i]], options);
+        }
+      }
 
-      // Fire the `"change"` events.
-      if (!silent) this.change(options);
+      if (changing) return this;
+      if (!silent) {
+        while (this._pending) {
+          this._pending = false;
+          this.trigger('change', this, options);
+        }
+      }
+      this._pending = false;
+      this._changing = false;
       return this;
     },
 
@@ -13171,16 +13326,54 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       return this.set(attrs, _.extend({}, options, {unset: true}));
     },
 
+    // Determine if the model has changed since the last `"change"` event.
+    // If you specify an attribute name, determine if that attribute has changed.
+    hasChanged: function(attr) {
+      if (attr == null) return !_.isEmpty(this.changed);
+      return _.has(this.changed, attr);
+    },
+
+    // Return an object containing all the attributes that have changed, or
+    // false if there are no changed attributes. Useful for determining what
+    // parts of a view need to be updated and/or what attributes need to be
+    // persisted to the server. Unset attributes will be set to undefined.
+    // You can also pass an attributes object to diff against the model,
+    // determining if there *would be* a change.
+    changedAttributes: function(diff) {
+      if (!diff) return this.hasChanged() ? _.clone(this.changed) : false;
+      var val, changed = false;
+      var old = this._changing ? this._previousAttributes : this.attributes;
+      for (var attr in diff) {
+        if (_.isEqual(old[attr], (val = diff[attr]))) continue;
+        (changed || (changed = {}))[attr] = val;
+      }
+      return changed;
+    },
+
+    // Get the previous value of an attribute, recorded at the time the last
+    // `"change"` event was fired.
+    previous: function(attr) {
+      if (attr == null || !this._previousAttributes) return null;
+      return this._previousAttributes[attr];
+    },
+
+    // Get all of the attributes of the model at the time of the previous
+    // `"change"` event.
+    previousAttributes: function() {
+      return _.clone(this._previousAttributes);
+    },
+
+    // ---------------------------------------------------------------------
+
     // Fetch the model from the server. If the server's representation of the
     // model differs from its current attributes, they will be overriden,
     // triggering a `"change"` event.
     fetch: function(options) {
       options = options ? _.clone(options) : {};
       if (options.parse === void 0) options.parse = true;
-      var model = this;
       var success = options.success;
-      options.success = function(resp, status, xhr) {
-        if (!model.set(model.parse(resp), options)) return false;
+      options.success = function(model, resp, options) {
+        if (!model.set(model.parse(resp, options), options)) return false;
         if (success) success(model, resp, options);
       };
       return this.sync('read', this, options);
@@ -13190,55 +13383,51 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     // If the server returns an attributes hash that differs, the model's
     // state will be `set` again.
     save: function(key, val, options) {
-      var attrs, current, done;
+      var attrs, success, method, xhr, attributes = this.attributes;
 
       // Handle both `"key", value` and `{key: value}` -style arguments.
-      if (key == null || _.isObject(key)) {
+      if (key == null || typeof key === 'object') {
         attrs = key;
         options = val;
-      } else if (key != null) {
+      } else {
         (attrs = {})[key] = val;
       }
-      options = options ? _.clone(options) : {};
 
-      // If we're "wait"-ing to set changed attributes, validate early.
-      if (options.wait) {
-        if (attrs && !this._validate(attrs, options)) return false;
-        current = _.clone(this.attributes);
-      }
+      // If we're not waiting and attributes exist, save acts as `set(attr).save(null, opts)`.
+      if (attrs && (!options || !options.wait) && !this.set(attrs, options)) return false;
 
-      // Regular saves `set` attributes before persisting to the server.
-      var silentOptions = _.extend({}, options, {silent: true});
-      if (attrs && !this.set(attrs, options.wait ? silentOptions : options)) {
-        return false;
-      }
+      options = _.extend({validate: true}, options);
 
       // Do not persist invalid models.
-      if (!attrs && !this._validate(null, options)) return false;
+      if (!this._validate(attrs, options)) return false;
+
+      // Set temporary attributes if `{wait: true}`.
+      if (attrs && options.wait) {
+        this.attributes = _.extend({}, attributes, attrs);
+      }
 
       // After a successful server-side save, the client is (optionally)
       // updated with the server-side state.
-      var model = this;
-      var success = options.success;
-      options.success = function(resp, status, xhr) {
-        done = true;
-        var serverAttrs = model.parse(resp);
+      if (options.parse === void 0) options.parse = true;
+      success = options.success;
+      options.success = function(model, resp, options) {
+        // Ensure attributes are restored during synchronous saves.
+        model.attributes = attributes;
+        var serverAttrs = model.parse(resp, options);
         if (options.wait) serverAttrs = _.extend(attrs || {}, serverAttrs);
-        if (!model.set(serverAttrs, options)) return false;
+        if (_.isObject(serverAttrs) && !model.set(serverAttrs, options)) {
+          return false;
+        }
         if (success) success(model, resp, options);
       };
 
       // Finish configuring and sending the Ajax request.
-      var method = this.isNew() ? 'create' : (options.patch ? 'patch' : 'update');
-      if (method == 'patch') options.attrs = attrs;
-      var xhr = this.sync(method, this, options);
+      method = this.isNew() ? 'create' : (options.patch ? 'patch' : 'update');
+      if (method === 'patch') options.attrs = attrs;
+      xhr = this.sync(method, this, options);
 
-      // When using `wait`, reset attributes to original values unless
-      // `success` has been called already.
-      if (!done && options.wait) {
-        this.clear(silentOptions);
-        this.set(current, silentOptions);
-      }
+      // Restore attributes.
+      if (attrs && options.wait) this.attributes = attributes;
 
       return xhr;
     },
@@ -13255,13 +13444,13 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
         model.trigger('destroy', model, model.collection, options);
       };
 
-      options.success = function(resp) {
+      options.success = function(model, resp, options) {
         if (options.wait || model.isNew()) destroy();
         if (success) success(model, resp, options);
       };
 
       if (this.isNew()) {
-        options.success();
+        options.success(this, null, options);
         return false;
       }
 
@@ -13281,7 +13470,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
     // **parse** converts a response into the hash of attributes to be `set` on
     // the model. The default implementation is just to pass the response along.
-    parse: function(resp) {
+    parse: function(resp, options) {
       return resp;
     },
 
@@ -13295,115 +13484,20 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       return this.id == null;
     },
 
-    // Call this method to manually fire a `"change"` event for this model and
-    // a `"change:attribute"` event for each changed attribute.
-    // Calling this will cause all objects observing the model to update.
-    change: function(options) {
-      var changing = this._changing;
-      this._changing = true;
-
-      // Generate the changes to be triggered on the model.
-      var triggers = this._computeChanges(true);
-
-      this._pending = !!triggers.length;
-
-      for (var i = triggers.length - 2; i >= 0; i -= 2) {
-        this.trigger('change:' + triggers[i], this, triggers[i + 1], options);
-      }
-
-      if (changing) return this;
-
-      // Trigger a `change` while there have been changes.
-      while (this._pending) {
-        this._pending = false;
-        this.trigger('change', this, options);
-        this._previousAttributes = _.clone(this.attributes);
-      }
-
-      this._changing = false;
-      return this;
-    },
-
-    // Determine if the model has changed since the last `"change"` event.
-    // If you specify an attribute name, determine if that attribute has changed.
-    hasChanged: function(attr) {
-      if (!this._hasComputed) this._computeChanges();
-      if (attr == null) return !_.isEmpty(this.changed);
-      return _.has(this.changed, attr);
-    },
-
-    // Return an object containing all the attributes that have changed, or
-    // false if there are no changed attributes. Useful for determining what
-    // parts of a view need to be updated and/or what attributes need to be
-    // persisted to the server. Unset attributes will be set to undefined.
-    // You can also pass an attributes object to diff against the model,
-    // determining if there *would be* a change.
-    changedAttributes: function(diff) {
-      if (!diff) return this.hasChanged() ? _.clone(this.changed) : false;
-      var val, changed = false, old = this._previousAttributes;
-      for (var attr in diff) {
-        if (_.isEqual(old[attr], (val = diff[attr]))) continue;
-        (changed || (changed = {}))[attr] = val;
-      }
-      return changed;
-    },
-
-    // Looking at the built up list of `set` attribute changes, compute how
-    // many of the attributes have actually changed. If `loud`, return a
-    // boiled-down list of only the real changes.
-    _computeChanges: function(loud) {
-      this.changed = {};
-      var already = {};
-      var triggers = [];
-      var current = this._currentAttributes;
-      var changes = this._changes;
-
-      // Loop through the current queue of potential model changes.
-      for (var i = changes.length - 2; i >= 0; i -= 2) {
-        var key = changes[i], val = changes[i + 1];
-        if (already[key]) continue;
-        already[key] = true;
-
-        // Check if the attribute has been modified since the last change,
-        // and update `this.changed` accordingly. If we're inside of a `change`
-        // call, also add a trigger to the list.
-        if (!_.isEqual(current[key], val)) {
-          this.changed[key] = val;
-          if (!loud) continue;
-          triggers.push(key, val);
-          current[key] = val;
-        }
-      }
-      if (loud) this._changes = [];
-
-      // Signals `this.changed` is current to prevent duplicate calls from `this.hasChanged`.
-      this._hasComputed = true;
-      return triggers;
-    },
-
-    // Get the previous value of an attribute, recorded at the time the last
-    // `"change"` event was fired.
-    previous: function(attr) {
-      if (attr == null || !this._previousAttributes) return null;
-      return this._previousAttributes[attr];
-    },
-
-    // Get all of the attributes of the model at the time of the previous
-    // `"change"` event.
-    previousAttributes: function() {
-      return _.clone(this._previousAttributes);
+    // Check if the model is currently in a valid state.
+    isValid: function(options) {
+      return !this.validate || !this.validate(this.attributes, options);
     },
 
     // Run validation against the next complete set of model attributes,
-    // returning `true` if all is well. If a specific `error` callback has
-    // been passed, call that instead of firing the general `"error"` event.
+    // returning `true` if all is well. Otherwise, fire an
+    // `"invalid"` event and call the invalid callback, if specified.
     _validate: function(attrs, options) {
-      if (!this.validate) return true;
+      if (!options.validate || !this.validate) return true;
       attrs = _.extend({}, this.attributes, attrs);
-      var error = this.validate(attrs, options);
+      var error = this.validationError = this.validate(attrs, options) || null;
       if (!error) return true;
-      if (options && options.error) options.error(this, error, options);
-      this.trigger('error', this, error, options);
+      this.trigger('invalid', this, error, options || {});
       return false;
     }
 
@@ -13446,74 +13540,81 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       return Backbone.sync.apply(this, arguments);
     },
 
-    // Add a model, or list of models to the set. Pass **silent** to avoid
-    // firing the `add` event for every new model.
+    // Add a model, or list of models to the set.
     add: function(models, options) {
-      var i, args, length, model, existing, needsSort;
-      var at = options && options.at;
-      var sort = ((options && options.sort) == null ? true : options.sort);
       models = _.isArray(models) ? models.slice() : [models];
+      options || (options = {});
+      var i, l, model, attrs, existing, doSort, add, at, sort, sortAttr;
+      add = [];
+      at = options.at;
+      sort = this.comparator && (at == null) && options.sort !== false;
+      sortAttr = _.isString(this.comparator) ? this.comparator : null;
 
       // Turn bare objects into model references, and prevent invalid models
       // from being added.
-      for (i = models.length - 1; i >= 0; i--) {
-        if(!(model = this._prepareModel(models[i], options))) {
-          this.trigger("error", this, models[i], options);
-          models.splice(i, 1);
+      for (i = 0, l = models.length; i < l; i++) {
+        if (!(model = this._prepareModel(attrs = models[i], options))) {
+          this.trigger('invalid', this, attrs, options);
           continue;
         }
-        models[i] = model;
 
-        existing = model.id != null && this._byId[model.id];
         // If a duplicate is found, prevent it from being added and
         // optionally merge it into the existing model.
-        if (existing || this._byCid[model.cid]) {
-          if (options && options.merge && existing) {
-            existing.set(model.attributes, options);
-            needsSort = sort;
+        if (existing = this.get(model)) {
+          if (options.merge) {
+            existing.set(attrs === model ? model.attributes : attrs, options);
+            if (sort && !doSort && existing.hasChanged(sortAttr)) doSort = true;
           }
-          models.splice(i, 1);
           continue;
         }
+
+        // This is a new model, push it to the `add` list.
+        add.push(model);
 
         // Listen to added models' events, and index models for lookup by
         // `id` and by `cid`.
         model.on('all', this._onModelEvent, this);
-        this._byCid[model.cid] = model;
+        this._byId[model.cid] = model;
         if (model.id != null) this._byId[model.id] = model;
       }
 
       // See if sorting is needed, update `length` and splice in new models.
-      if (models.length) needsSort = sort;
-      this.length += models.length;
-      args = [at != null ? at : this.models.length, 0];
-      push.apply(args, models);
-      splice.apply(this.models, args);
+      if (add.length) {
+        if (sort) doSort = true;
+        this.length += add.length;
+        if (at != null) {
+          splice.apply(this.models, [at, 0].concat(add));
+        } else {
+          push.apply(this.models, add);
+        }
+      }
 
-      // Sort the collection if appropriate.
-      if (needsSort && this.comparator && at == null) this.sort({silent: true});
+      // Silently sort the collection if appropriate.
+      if (doSort) this.sort({silent: true});
 
-      if (options && options.silent) return this;
+      if (options.silent) return this;
 
       // Trigger `add` events.
-      while (model = models.shift()) {
-        model.trigger('add', model, this, options);
+      for (i = 0, l = add.length; i < l; i++) {
+        (model = add[i]).trigger('add', model, this, options);
       }
+
+      // Trigger `sort` if the collection was sorted.
+      if (doSort) this.trigger('sort', this, options);
 
       return this;
     },
 
-    // Remove a model, or a list of models from the set. Pass silent to avoid
-    // firing the `remove` event for every model removed.
+    // Remove a model, or a list of models from the set.
     remove: function(models, options) {
-      var i, l, index, model;
-      options || (options = {});
       models = _.isArray(models) ? models.slice() : [models];
+      options || (options = {});
+      var i, l, index, model;
       for (i = 0, l = models.length; i < l; i++) {
         model = this.get(models[i]);
         if (!model) continue;
         delete this._byId[model.id];
-        delete this._byCid[model.cid];
+        delete this._byId[model.cid];
         index = this.indexOf(model);
         this.models.splice(index, 1);
         this.length--;
@@ -13562,7 +13663,8 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     // Get a model from the set by id.
     get: function(obj) {
       if (obj == null) return void 0;
-      return this._byId[obj.id != null ? obj.id : obj] || this._byCid[obj.cid || obj];
+      this._idAttr || (this._idAttr = this.model.prototype.idAttribute);
+      return this._byId[obj.id || obj.cid || obj[this._idAttr] || obj];
     },
 
     // Get the model at the given index.
@@ -13570,15 +13672,22 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       return this.models[index];
     },
 
-    // Return models with matching attributes. Useful for simple cases of `filter`.
-    where: function(attrs) {
-      if (_.isEmpty(attrs)) return [];
-      return this.filter(function(model) {
+    // Return models with matching attributes. Useful for simple cases of
+    // `filter`.
+    where: function(attrs, first) {
+      if (_.isEmpty(attrs)) return first ? void 0 : [];
+      return this[first ? 'find' : 'filter'](function(model) {
         for (var key in attrs) {
           if (attrs[key] !== model.get(key)) return false;
         }
         return true;
       });
+    },
+
+    // Return the first model with matching attributes. Useful for simple cases
+    // of `find`.
+    findWhere: function(attrs) {
+      return this.where(attrs, true);
     },
 
     // Force the collection to re-sort itself. You don't need to call this under
@@ -13588,14 +13697,16 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       if (!this.comparator) {
         throw new Error('Cannot sort a set without a comparator');
       }
+      options || (options = {});
 
+      // Run sort based on type of `comparator`.
       if (_.isString(this.comparator) || this.comparator.length === 1) {
         this.models = this.sortBy(this.comparator, this);
       } else {
         this.models.sort(_.bind(this.comparator, this));
       }
 
-      if (!options || !options.silent) this.trigger('sort', this, options);
+      if (!options.silent) this.trigger('sort', this, options);
       return this;
     },
 
@@ -13607,11 +13718,10 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     // Smartly update a collection with a change set of models, adding,
     // removing, and merging as necessary.
     update: function(models, options) {
+      options = _.extend({add: true, merge: true, remove: true}, options);
+      if (options.parse) models = this.parse(models, options);
       var model, i, l, existing;
       var add = [], remove = [], modelMap = {};
-      var idAttr = this.model.prototype.idAttribute;
-      options = _.extend({add: true, merge: true, remove: true}, options);
-      if (options.parse) models = this.parse(models);
 
       // Allow a single model (or no argument) to be passed.
       if (!_.isArray(models)) models = models ? [models] : [];
@@ -13622,7 +13732,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       // Determine which models to add and merge, and which to remove.
       for (i = 0, l = models.length; i < l; i++) {
         model = models[i];
-        existing = this.get(model.id || model.cid || model[idAttr]);
+        existing = this.get(model);
         if (options.remove && existing) modelMap[existing.cid] = true;
         if ((options.add && !existing) || (options.merge && existing)) {
           add.push(model);
@@ -13646,7 +13756,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     // any `add` or `remove` events. Fires `reset` when finished.
     reset: function(models, options) {
       options || (options = {});
-      if (options.parse) models = this.parse(models);
+      if (options.parse) models = this.parse(models, options);
       for (var i = 0, l = this.models.length; i < l; i++) {
         this._removeReference(this.models[i]);
       }
@@ -13658,14 +13768,13 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     },
 
     // Fetch the default set of models for this collection, resetting the
-    // collection when they arrive. If `add: true` is passed, appends the
-    // models to the collection instead of resetting.
+    // collection when they arrive. If `update: true` is passed, the response
+    // data will be passed through the `update` method instead of `reset`.
     fetch: function(options) {
       options = options ? _.clone(options) : {};
       if (options.parse === void 0) options.parse = true;
-      var collection = this;
       var success = options.success;
-      options.success = function(resp, status, xhr) {
+      options.success = function(collection, resp, options) {
         var method = options.update ? 'update' : 'reset';
         collection[method](resp, options);
         if (success) success(collection, resp, options);
@@ -13677,11 +13786,10 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     // collection immediately, unless `wait: true` is passed, in which case we
     // wait for the server to agree.
     create: function(model, options) {
-      var collection = this;
       options = options ? _.clone(options) : {};
-      model = this._prepareModel(model, options);
-      if (!model) return false;
-      if (!options.wait) collection.add(model, options);
+      if (!(model = this._prepareModel(model, options))) return false;
+      if (!options.wait) this.add(model, options);
+      var collection = this;
       var success = options.success;
       options.success = function(model, resp, options) {
         if (options.wait) collection.add(model, options);
@@ -13693,7 +13801,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
     // **parse** converts a response into a list of models to be added to the
     // collection. The default implementation is just to pass it through.
-    parse: function(resp) {
+    parse: function(resp, options) {
       return resp;
     },
 
@@ -13702,19 +13810,11 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       return new this.constructor(this.models);
     },
 
-    // Proxy to _'s chain. Can't be proxied the same way the rest of the
-    // underscore methods are proxied because it relies on the underscore
-    // constructor.
-    chain: function() {
-      return _(this.models).chain();
-    },
-
     // Reset all internal state. Called when the collection is reset.
     _reset: function() {
       this.length = 0;
       this.models = [];
       this._byId  = {};
-      this._byCid = {};
     },
 
     // Prepare a model or hash of attributes to be added to this collection.
@@ -13748,6 +13848,14 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
         if (model.id != null) this._byId[model.id] = model;
       }
       this.trigger.apply(this, arguments);
+    },
+
+    sortedIndex: function (model, value, context) {
+      value || (value = this.comparator);
+      var iterator = _.isFunction(value) ? value : function(model) {
+        return model.get(value);
+      };
+      return _.sortedIndex(this.models, model, iterator, context);
     }
 
   });
@@ -13756,9 +13864,9 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
   var methods = ['forEach', 'each', 'map', 'collect', 'reduce', 'foldl',
     'inject', 'reduceRight', 'foldr', 'find', 'detect', 'filter', 'select',
     'reject', 'every', 'all', 'some', 'any', 'include', 'contains', 'invoke',
-    'max', 'min', 'sortedIndex', 'toArray', 'size', 'first', 'head', 'take',
-    'initial', 'rest', 'tail', 'last', 'without', 'indexOf', 'shuffle',
-    'lastIndexOf', 'isEmpty'];
+    'max', 'min', 'toArray', 'size', 'first', 'head', 'take', 'initial', 'rest',
+    'tail', 'drop', 'last', 'without', 'indexOf', 'shuffle', 'lastIndexOf',
+    'isEmpty', 'chain'];
 
   // Mix in each Underscore method as a proxy to `Collection#models`.
   _.each(methods, function(method) {
@@ -13797,7 +13905,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
   // Cached regular expressions for matching named param parts and splatted
   // parts of route strings.
   var optionalParam = /\((.*?)\)/g;
-  var namedParam    = /:\w+/g;
+  var namedParam    = /(\(\?)?:\w+/g;
   var splatParam    = /\*\w+/g;
   var escapeRegExp  = /[\-{}\[\]+?.,\\\^$|#\s]/g;
 
@@ -13821,6 +13929,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
         var args = this._extractParameters(route, fragment);
         callback && callback.apply(this, args);
         this.trigger.apply(this, ['route:' + name].concat(args));
+        this.trigger('route', name, args);
         Backbone.history.trigger('route', this, name, args);
       }, this));
       return this;
@@ -13848,7 +13957,9 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     _routeToRegExp: function(route) {
       route = route.replace(escapeRegExp, '\\$&')
                    .replace(optionalParam, '(?:$1)?')
-                   .replace(namedParam, '([^\/]+)')
+                   .replace(namedParam, function(match, optional){
+                     return optional ? match : '([^\/]+)';
+                   })
                    .replace(splatParam, '(.*?)');
       return new RegExp('^' + route + '$');
     },
@@ -13949,9 +14060,9 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       // Depending on whether we're using pushState or hashes, and whether
       // 'onhashchange' is supported, determine how we check the URL state.
       if (this._hasPushState) {
-        Backbone.$(window).bind('popstate', this.checkUrl);
+        Backbone.$(window).on('popstate', this.checkUrl);
       } else if (this._wantsHashChange && ('onhashchange' in window) && !oldIE) {
-        Backbone.$(window).bind('hashchange', this.checkUrl);
+        Backbone.$(window).on('hashchange', this.checkUrl);
       } else if (this._wantsHashChange) {
         this._checkUrlInterval = setInterval(this.checkUrl, this.interval);
       }
@@ -13983,7 +14094,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     // Disable Backbone.history, perhaps temporarily. Not useful in a real app,
     // but possibly useful for unit testing Routers.
     stop: function() {
-      Backbone.$(window).unbind('popstate', this.checkUrl).unbind('hashchange', this.checkUrl);
+      Backbone.$(window).off('popstate', this.checkUrl).off('hashchange', this.checkUrl);
       clearInterval(this._checkUrlInterval);
       History.started = false;
     },
@@ -14126,18 +14237,6 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       return this;
     },
 
-    // For small amounts of DOM Elements, where a full-blown template isn't
-    // needed, use **make** to manufacture elements, one at a time.
-    //
-    //     var el = this.make('li', {'class': 'row'}, this.model.escape('title'));
-    //
-    make: function(tagName, attributes, content) {
-      var el = document.createElement(tagName);
-      if (attributes) Backbone.$(el).attr(attributes);
-      if (content != null) Backbone.$(el).html(content);
-      return el;
-    },
-
     // Change the view's element (`this.el` property), including event
     // re-delegation.
     setElement: function(element, delegate) {
@@ -14164,7 +14263,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     // This only works for delegate-able events: not `focus`, `blur`, and
     // not `change`, `submit`, and `reset` in Internet Explorer.
     delegateEvents: function(events) {
-      if (!(events || (events = _.result(this, 'events')))) return;
+      if (!(events || (events = _.result(this, 'events')))) return this;
       this.undelegateEvents();
       for (var key in events) {
         var method = events[key];
@@ -14175,18 +14274,20 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
         method = _.bind(method, this);
         eventName += '.delegateEvents' + this.cid;
         if (selector === '') {
-          this.$el.bind(eventName, method);
+          this.$el.on(eventName, method);
         } else {
-          this.$el.delegate(selector, eventName, method);
+          this.$el.on(eventName, selector, method);
         }
       }
+      return this;
     },
 
     // Clears all callbacks previously bound to the view with `delegateEvents`.
     // You usually don't need to use this, but may wish to if you have multiple
     // Backbone views attached to the same DOM element.
     undelegateEvents: function() {
-      this.$el.unbind('.delegateEvents' + this.cid);
+      this.$el.off('.delegateEvents' + this.cid);
+      return this;
     },
 
     // Performs the initial configuration of a View with a set of options.
@@ -14207,7 +14308,8 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
         var attrs = _.extend({}, _.result(this, 'attributes'));
         if (this.id) attrs.id = _.result(this, 'id');
         if (this.className) attrs['class'] = _.result(this, 'className');
-        this.setElement(this.make(_.result(this, 'tagName'), attrs), false);
+        var $el = Backbone.$('<' + _.result(this, 'tagName') + '>').attr(attrs);
+        this.setElement($el, false);
       } else {
         this.setElement(_.result(this, 'el'), false);
       }
@@ -14289,19 +14391,19 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     }
 
     var success = options.success;
-    options.success = function(resp, status, xhr) {
-      if (success) success(resp, status, xhr);
+    options.success = function(resp) {
+      if (success) success(model, resp, options);
       model.trigger('sync', model, resp, options);
     };
 
     var error = options.error;
-    options.error = function(xhr, status, thrown) {
+    options.error = function(xhr) {
       if (error) error(model, xhr, options);
       model.trigger('error', model, xhr, options);
     };
 
     // Make the request, allowing the user to override any Ajax options.
-    var xhr = Backbone.ajax(_.extend(params, options));
+    var xhr = options.xhr = Backbone.ajax(_.extend(params, options));
     model.trigger('request', model, xhr, options);
     return xhr;
   };
@@ -14327,7 +14429,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     if (protoProps && _.has(protoProps, 'constructor')) {
       child = protoProps.constructor;
     } else {
-      child = function(){ parent.apply(this, arguments); };
+      child = function(){ return parent.apply(this, arguments); };
     }
 
     // Add static properties to the constructor function, if supplied.
@@ -14366,7 +14468,7 @@ define("backbone", ["underscore","jquery"], (function (global) {
 }(this)));
 
 /*!
- * backbone.layoutmanager.js v0.7.5
+ * backbone.layoutmanager.js v0.8.2
  * Copyright 2012, Tim Branyen (@tbranyen)
  * backbone.layoutmanager.js may be freely distributed under the MIT license.
  */
@@ -14408,7 +14510,7 @@ var LayoutManager = Backbone.View.extend({
     Backbone.View.call(this, options);
   },
 
-  // Shorthand to `setView` function with the `append` flag set.
+  // Shorthand to `setView` function with the `insert` flag set.
   insertView: function(selector, view) {
     // If the `view` argument exists, then a selector was passed in.  This code
     // path will forward the selector on to `setView`.
@@ -14422,12 +14524,12 @@ var LayoutManager = Backbone.View.extend({
   },
 
   // Iterate over an object and ensure every value is wrapped in an array to
-  // ensure they will be appended, then pass that object to `setViews`.
+  // ensure they will be inserted, then pass that object to `setViews`.
   insertViews: function(views) {
     // If an array of views was passed it should be inserted into the
-    // root view. Much like calling insertView without a selector
+    // root view. Much like calling insertView without a selector.
     if (_.isArray(views)) {
-      return this.setViews({'': views});
+      return this.setViews({ "": views });
     }
 
     _.each(views, function(view, selector) {
@@ -14439,11 +14541,19 @@ var LayoutManager = Backbone.View.extend({
 
   // Returns the View that matches the `getViews` filter function.
   getView: function(fn) {
+    // If `getView` is invoked with undefined as the first argument, then the
+    // second argument will be used instead.  This is to allow
+    // `getViews(undefined, fn)` to work as `getViews(fn)`.  Useful for when
+    // you are allowing an optional selector.
+    if (typeof fn !== "function" && typeof fn !== "string") {
+      fn = arguments[1];
+    }
+
     return this.getViews(fn).first().value();
   },
 
   // Provide a filter function to get a flattened array of all the subviews.
-  // If the filter function is omitted it will return all subviews.  If a 
+  // If the filter function is omitted it will return all subviews.  If a
   // String is passed instead, it will return the Views for that selector.
   getViews: function(fn) {
     // Generate an array of all top level (no deeply nested) Views flattened.
@@ -14457,9 +14567,24 @@ var LayoutManager = Backbone.View.extend({
       return _.chain([this.views[fn]]).flatten();
     }
 
+    // If the argument passed is an Object, then pass it to `_.where`.
+    if (typeof fn === "object") {
+      return _.chain([_.where(views, fn)]).flatten();
+    }
+
     // If a filter function is provided, run it on all Views and return a
     // wrapped chain. Otherwise, simply return a wrapped chain of all Views.
     return _.chain(typeof fn === "function" ? _.filter(views, fn) : views);
+  },
+
+  // Use this to remove Views, internally uses `getViews` so you can pass the
+  // same argument here as you would to that method.
+  removeView: function(fn) {
+    // Allow an optional selector or function to find the right model and
+    // remove nested Views based off the results of the selector or filter.
+    return this.getViews(fn).each(function(nestedView) {
+      nestedView.remove();
+    });
   },
 
   // This takes in a partial name and view instance and assigns them to
@@ -14469,14 +14594,14 @@ var LayoutManager = Backbone.View.extend({
   //
   // Must definitely wrap any render method passed in or defaults to a
   // typical render function `return layout(this).render()`.
-  setView: function(name, view, append) {
+  setView: function(name, view, insert) {
     var manager, existing, options;
     // Parent view, the one you are setting a View on.
     var root = this;
 
     // If no name was passed, use an empty string and shift all arguments.
     if (typeof name !== "string") {
-      append = view;
+      insert = view;
       view = name;
       name = "";
     }
@@ -14498,7 +14623,7 @@ var LayoutManager = Backbone.View.extend({
     }
 
     // Assign options.
-    options = view._options();
+    options = view.getAllOptions();
 
     // Add reference to the parentView.
     manager.parent = root;
@@ -14506,13 +14631,22 @@ var LayoutManager = Backbone.View.extend({
     // Add reference to the placement selector used.
     manager.selector = name;
 
-    // Code path is less complex for Views that are not being appended.  Simply
+    // Set up event bubbling, inspired by Backbone.ViewMaster.  Do not bubble
+    // internal events that are triggered.
+    view.on("all", function(name) {
+      if (name !== "beforeRender" && name !== "afterRender") {
+        root.trigger.apply(root, arguments);
+      }
+    }, view);
+
+    // Code path is less complex for Views that are not being inserted.  Simply
     // remove existing Views and bail out with the assignment.
-    if (!append) {
+    if (!insert) {
       // If the View we are adding has already been rendered, simply inject it
       // into the parent.
       if (manager.hasRendered) {
-        options.partial(root.el, manager.selector, view.el, manager.append); 
+        // Apply the partial.
+        options.partial(root.$el, view.$el, root.__manager__, manager);
       }
 
       // Ensure remove is called when swapping View's.
@@ -14530,8 +14664,8 @@ var LayoutManager = Backbone.View.extend({
     // Ensure this.views[name] is an array and push this View to the end.
     this.views[name] = aConcat.call([], existing || [], view);
 
-    // Put the view into `append` mode.
-    manager.append = true;
+    // Put the view into `insert` mode.
+    manager.insert = true;
 
     return view;
   },
@@ -14563,7 +14697,7 @@ var LayoutManager = Backbone.View.extend({
   // once all subviews and main view have been rendered into the view.el.
   render: function() {
     var root = this;
-    var options = root._options();
+    var options = root.getAllOptions();
     var manager = root.__manager__;
     var parent = manager.parent;
     var rentManager = parent && parent.__manager__;
@@ -14576,8 +14710,8 @@ var LayoutManager = Backbone.View.extend({
       // If there is a parent, attach.
       if (parent) {
         if (!options.contains(parent.el, root.el)) {
-          options.partial(parent.el, manager.selector, root.el,
-            manager.append);
+          // Apply the partial.
+          options.partial(parent.$el, root.$el, rentManager, manager);
         }
       }
 
@@ -14586,9 +14720,6 @@ var LayoutManager = Backbone.View.extend({
 
       // Set this View as successfully rendered.
       manager.hasRendered = true;
-
-      // Resolve the deferred.
-      def.resolveWith(root, [root]);
 
       // Only process the queue if it exists.
       if (next = manager.queue.shift()) {
@@ -14621,30 +14752,24 @@ var LayoutManager = Backbone.View.extend({
         // Wait until the parent View has finished rendering, which could be
         // asynchronous, and trigger afterRender on this View once it has
         // compeleted.
-        afterRender = function() {
-          // Wish we had `once` for this...
-          parent.off("afterRender", afterRender, this);
-
-          // Trigger the afterRender and set hasRendered.
-          completeRender();
-        };
-
-        return parent.on("afterRender", afterRender, root);
+        parent.once("afterRender", completeRender);
+      } else {
+        // This View and its parent have both rendered.
+        completeRender();
       }
 
-      // This View and its parent have both rendered.
-      completeRender();
+      return def.resolveWith(root, [root]);
     }
 
     // Actually facilitate a render.
     function actuallyRender() {
-      var options = root._options();
+      var options = root.getAllOptions();
       var manager = root.__manager__;
       var parent = manager.parent;
       var rentManager = parent && parent.__manager__;
 
       // The `_viewRender` method is broken out to abstract away from having
-      // too much code in `processRender`.
+      // too much code in `actuallyRender`.
       root._render(LayoutManager._viewRender, options).done(function() {
         // If there are no children to worry about, complete the render
         // instantly.
@@ -14654,44 +14779,39 @@ var LayoutManager = Backbone.View.extend({
 
         // Create a list of promises to wait on until rendering is done.
         // Since this method will run on all children as well, its sufficient
-        // for a full hierarchical. 
+        // for a full hierarchical.
         var promises = _.map(root.views, function(view) {
-          var append = _.isArray(view);
+          var insert = _.isArray(view);
 
           // If items are being inserted, they will be in a non-zero length
           // Array.
-          if (append && view.length) {
-            // Only need to wait for the first View to complete, the rest
-            // will be synchronous, by virtue of having the template cached.
-            return view[0].render().pipe(function() {
-              // Map over all the View's to be inserted and call render on
-              // them all.  Once they have all resolved, resolve the other
-              // deferred.
-              return options.when(_.map(view.slice(1), function(insertView) {
-                return insertView.render();
-              }));
-            });
+          if (insert && view.length) {
+            // Schedule each view to be rendered in order and return a promise
+            // representing the result of the final rendering.
+            return _.reduce(view.slice(1), function(prevRender, view) {
+              return prevRender.then(function() {
+                return view.render();
+              });
+            // The first view should be rendered immediately, and the resulting
+            // promise used to initialize the reduction.
+            }, view[0].render());
           }
 
           // Only return the fetch deferred, resolve the main deferred after
           // the element has been attached to it's parent.
-          return !append ? view.render() : view;
+          return !insert ? view.render() : view;
         });
 
         // Once all nested Views have been rendered, resolve this View's
         // deferred.
-        options.when(promises).done(function() {
-          resolve();
-        });
+        options.when(promises).done(resolve);
       });
     }
 
     // Another render is currently happening if there is an existing queue, so
     // push a closure to render later into the queue.
     if (manager.queue) {
-      aPush.call(manager.queue, function() {
-        actuallyRender();
-      });
+      aPush.call(manager.queue, actuallyRender);
     } else {
       manager.queue = [];
 
@@ -14703,7 +14823,7 @@ var LayoutManager = Backbone.View.extend({
     // Add the View to the deferred so that `view.render().view.el` is
     // possible.
     def.view = root;
-    
+
     // This is the promise that determines if the `render` function has
     // completed or not.
     return def;
@@ -14719,8 +14839,9 @@ var LayoutManager = Backbone.View.extend({
   },
 
   // Merge instance and global options.
-  _options: function() {
-    return LayoutManager.augment({}, this, LayoutManager.prototype.options, this.options);
+  getAllOptions: function() {
+    // Instance overrides take precedence, fallback to prototype options.
+    return _.extend({}, this, LayoutManager.prototype.options, this.options);
   }
 },
 {
@@ -14752,7 +14873,11 @@ var LayoutManager = Backbone.View.extend({
     function applyTemplate(rendered) {
       // Actually put the rendered contents into the element.
       if (rendered) {
-        options.html(root.$el, rendered);
+        if (manager.noel) {
+          root.setElement(rendered, false);
+        } else {
+          options.html(root.$el, rendered);
+        }
       }
 
       // Resolve only after fetch and render have succeeded.
@@ -14789,9 +14914,7 @@ var LayoutManager = Backbone.View.extend({
       // when `manage(this).render` is called.  Returns a promise that can be
       // used to know when the element has been rendered into its parent.
       render: function() {
-        var serialize = root.serialize || options.serialize;
-        var data = root.data || options.data;
-        var context = serialize || data;
+        var context = root.serialize || options.serialize;
         var template = root.template || options.template;
 
         // If data is a function, immediately call it.
@@ -14820,7 +14943,10 @@ var LayoutManager = Backbone.View.extend({
         // Fetch layout and template contents.
         if (typeof template === "string") {
           contents = options.fetch.call(fetchAsync, options.prefix + template);
-        // If its not a string just pass the object/function/whatever.
+        // If the template is already a function, simply call it.
+        } else if (typeof template === "function") {
+          contents = template;
+        // If its not a string and not undefined, pass the value to `fetch`.
         } else if (template != null) {
           contents = options.fetch.call(fetchAsync, template);
         }
@@ -14837,6 +14963,8 @@ var LayoutManager = Backbone.View.extend({
 
   // Remove all nested Views.
   _removeViews: function(root, force) {
+    var views;
+
     // Shift arguments around.
     if (typeof root === "boolean") {
       force = root;
@@ -14864,14 +14992,14 @@ var LayoutManager = Backbone.View.extend({
     var keep = typeof view.keep === "boolean" ? view.keep : view.options.keep;
 
     // Only remove views that do not have `keep` attribute set, unless the
-    // View is in `append` mode and the force flag is set.
-    if (!keep && (manager.append === true || force)) {
+    // View is in `insert` mode and the force flag is set.
+    if (!keep && (manager.insert === true || force)) {
       // Clean out the events.
       LayoutManager.cleanViews(view);
 
       // Since we are removing this view, force subviews to remove
-      view._removeViews(true);  
-           
+      view._removeViews(true);
+
       // Remove the View completely.
       view.$el.remove();
 
@@ -14898,6 +15026,19 @@ var LayoutManager = Backbone.View.extend({
     }
   },
 
+  // Cache templates into LayoutManager._cache.
+  cache: function(path, contents) {
+    // If template path is found in the cache, return the contents.
+    if (path in this._cache && contents == null) {
+      return this._cache[path];
+    // Ensure path and contents aren't undefined.
+    } else if (path != null && contents != null) {
+      return this._cache[path] = contents;
+    }
+
+    // If the template is not in the cache, return undefined.
+  },
+
   // Accept either a single view or an array of views to clean of all DOM
   // events internal model and collection references and all Backbone.Events.
   cleanViews: function(views) {
@@ -14916,178 +15057,180 @@ var LayoutManager = Backbone.View.extend({
         view.collection.off(null, null, view);
       }
 
+      // Automatically unbind events bound to this View.
+      view.stopListening();
+
       // If a custom cleanup method was provided on the view, call it after
       // the initial cleanup is done
-      if (view.cleanup) {
-        view.cleanup.call(view);
-      }
+      _.result(view, "cleanup");
     });
   },
 
-  // Cache templates into LayoutManager._cache.
-  cache: function(path, contents) {
-    // If template path is found in the cache, return the contents.
-    if (path in this._cache) {
-      return this._cache[path];
-    // Ensure path and contents aren't undefined.
-    } else if (path != null && contents != null) {
-      return this._cache[path] = contents;
-    }
-
-    // If the template is not in the cache, return undefined.
-  },
-
   // This static method allows for global configuration of LayoutManager.
-  configure: function(opts) {
-    this.augment(LayoutManager.prototype.options, opts);
+  configure: function(options) {
+    _.extend(LayoutManager.prototype.options, options);
 
     // Allow LayoutManager to manage Backbone.View.prototype.
-    if (opts.manage) {
+    if (options.manage) {
       Backbone.View.prototype.manage = true;
     }
+
+    // Disable the element globally.
+    if (options.el === false) {
+      Backbone.View.prototype.el = false;
+    }
   },
-  
-  augment: !_.forIn ? _.extend : function(destination) {
-    return _.reduce(Array.prototype.slice.call(arguments, 1), function(destination, source) {
-      _.forIn(source, function(value, key) { destination[key] = value; });
-      return destination;
-    }, destination);
-  },
-  
+
   // Configure a View to work with the LayoutManager plugin.
-  setupView: function(view, options) {
-    // If the View has already been setup, no need to do it again.
-    if (view.__manager__) {
-      return;
-    }
-
-    var views, declaredViews, viewOptions;
-    var proto = Backbone.LayoutManager.prototype;
-    var viewOverrides = _.pick(view, keys);
-
-    // Ensure necessary properties are set.
-    _.defaults(view, {
-      // Ensure a view always has a views object.
-      views: {},
-
-      // Internal state object used to store whether or not a View has been
-      // taken over by layout manager and if it has been rendered into the DOM.
-      __manager__: {},
-
-      // Add the ability to remove all Views.
-      _removeViews: LayoutManager._removeViews,
-
-      // Add the ability to remove itself.
-      _removeView: LayoutManager._removeView
-
-    // Mix in all LayoutManager prototype properties as well.
-    }, LayoutManager.prototype);
-
-    // Extend the options with the prototype and passed options.
-    options = view.options = _.defaults(options || {}, view.options,
-      proto.options);
-
-    // Ensure view events are properly copied over.
-    viewOptions = _.pick(options, aConcat.call(["events"],
-      _.values(options.events)));
-
-    // Merge the View options into the View.
-    LayoutManager.augment(view, viewOptions);
-
-    // If the View still has the Backbone.View#render method, remove it.  Don't
-    // want it accidentally overriding the LM render.
-    if (viewOverrides.render === LayoutManager.prototype.render ||
-      viewOverrides.render === Backbone.View.prototype.render) {
-      delete viewOverrides.render;
-    }
-
-    // Pick out the specific properties that can be dynamically added at
-    // runtime and ensure they are available on the view object.
-    LayoutManager.augment(options, viewOverrides);
-
-    // By default the original Remove function is the Backbone.View one.
-    view._remove = Backbone.View.prototype.remove;
-
-    // Always use this render function when using LayoutManager.
-    view._render = function(manage, options) {
-      // Keep the view consistent between callbacks and deferreds.
-      var view = this;
-      // Shorthand the manager.
-      var manager = view.__manager__;
-      // Cache these properties.
-      var beforeRender = options.beforeRender;
-
-      // Ensure all nested Views are properly scrubbed if re-rendering.
-      if (manager.hasRendered) {
-        this._removeViews();
+  setupView: function(views, options) {
+    // Set up all Views passed.
+    _.each(aConcat.call([], views), function(view) {
+      // If the View has already been setup, no need to do it again.
+      if (view.__manager__) {
+        return;
       }
 
-      // If a beforeRender function is defined, call it.
-      if (beforeRender) {
-        beforeRender.call(this, this);
+      var views, declaredViews, viewOptions;
+      var proto = LayoutManager.prototype;
+      var viewOverrides = _.pick(view, keys);
+
+      // Ensure necessary properties are set.
+      _.defaults(view, {
+        // Ensure a view always has a views object.
+        views: {},
+
+        // Internal state object used to store whether or not a View has been
+        // taken over by layout manager and if it has been rendered into the DOM.
+        __manager__: {},
+
+        // Add the ability to remove all Views.
+        _removeViews: LayoutManager._removeViews,
+
+        // Add the ability to remove itself.
+        _removeView: LayoutManager._removeView
+
+      // Mix in all LayoutManager prototype properties as well.
+      }, LayoutManager.prototype);
+
+      // Extend the options with the prototype and passed options.
+      options = view.options = _.defaults(options || {}, view.options,
+        proto.options);
+
+      // Ensure view events are properly copied over.
+      viewOptions = _.pick(options, aConcat.call(["events"],
+        _.values(options.events)));
+
+      // Merge the View options into the View.
+      _.extend(view, viewOptions);
+
+      // If the View still has the Backbone.View#render method, remove it.  Don't
+      // want it accidentally overriding the LM render.
+      if (viewOverrides.render === LayoutManager.prototype.render ||
+        viewOverrides.render === Backbone.View.prototype.render) {
+        delete viewOverrides.render;
       }
 
-      // Always emit a beforeRender event.
-      this.trigger("beforeRender", this);
+      // Pick out the specific properties that can be dynamically added at
+      // runtime and ensure they are available on the view object.
+      _.extend(options, viewOverrides);
 
-      // Render!
-      return manage(this, options).render();
-    };
+      // By default the original Remove function is the Backbone.View one.
+      view._remove = Backbone.View.prototype.remove;
 
-    // Ensure the render is always set correctly.
-    view.render = LayoutManager.prototype.render;
+      // Always use this render function when using LayoutManager.
+      view._render = function(manage, options) {
+        // Keep the view consistent between callbacks and deferreds.
+        var view = this;
+        // Shorthand the manager.
+        var manager = view.__manager__;
+        // Cache these properties.
+        var beforeRender = options.beforeRender;
 
-    // If the user provided their own remove override, use that instead of the
-    // default.
-    if (view.remove !== proto.remove) {
-      view._remove = view.remove;
-      view.remove = proto.remove;
-    }
-    
-    // Normalize views to exist on either instance or options, default to
-    // options.
-    views = options.views || view.views;
+        // Ensure all nested Views are properly scrubbed if re-rendering.
+        if (manager.hasRendered) {
+          this._removeViews();
+        }
 
-    // Set the internal views, only if selectors have been provided.
-    if (_.keys(views).length) {
-      // Keep original object declared containing Views.
-      declaredViews = views;
+        // If a beforeRender function is defined, call it.
+        if (beforeRender) {
+          beforeRender.call(this, this);
+        }
 
-      // Reset the property to avoid duplication or overwritting.
-      view.views = {};
+        // Always emit a beforeRender event.
+        this.trigger("beforeRender", this);
 
-      // Set the declared Views.
-      view.setViews(declaredViews);
-    }
+        // Render!
+        return manage(this, options).render();
+      };
 
-    // If a template is passed use that instead.
-    if (view.options.template) {
-      view.options.template = options.template;
-    // Ensure the template is mapped over.
-    } else if (view.template) {
-      options.template = view.template;
+      // Ensure the render is always set correctly.
+      view.render = LayoutManager.prototype.render;
 
-      // Remove it from the instance.
-      delete view.template;
-    }
+      // If the user provided their own remove override, use that instead of the
+      // default.
+      if (view.remove !== proto.remove) {
+        view._remove = view.remove;
+        view.remove = proto.remove;
+      }
+
+      // Normalize views to exist on either instance or options, default to
+      // options.
+      views = options.views || view.views;
+
+      // Set the internal views, only if selectors have been provided.
+      if (_.keys(views).length) {
+        // Keep original object declared containing Views.
+        declaredViews = views;
+
+        // Reset the property to avoid duplication or overwritting.
+        view.views = {};
+
+        // Set the declared Views.
+        view.setViews(declaredViews);
+      }
+
+      // If a template is passed use that instead.
+      if (view.options.template) {
+        view.options.template = options.template;
+      // Ensure the template is mapped over.
+      } else if (view.template) {
+        options.template = view.template;
+
+        // Remove it from the instance.
+        delete view.template;
+      }
+    });
   }
 });
 
 // Convenience assignment to make creating Layout's slightly shorter.
-Backbone.Layout = Backbone.LayoutView = Backbone.LayoutManager = LayoutManager;
+Backbone.Layout = LayoutManager;
 // Tack on the version.
-LayoutManager.VERSION = "0.7.5";
+LayoutManager.VERSION = "0.8.2";
 
 // Override _configure to provide extra functionality that is necessary in
 // order for the render function reference to be bound during initialize.
-Backbone.View.prototype._configure = function() {
+Backbone.View.prototype._configure = function(options) {
+  var noel, retVal;
+
+  // Remove the container element provided by Backbone.
+  if ("el" in options ? options.el === false : this.el === false) {
+    noel = true;
+  }
+
   // Run the original _configure.
-  var retVal = _configure.apply(this, arguments);
+  retVal = _configure.apply(this, arguments);
 
   // If manage is set, do it!
-  if (this.manage) {
+  if (options.manage || this.manage) {
     // Set up this View.
     LayoutManager.setupView(this);
+  }
+
+  // Assign the `noel` property once we're sure the View we're working with is
+  // mangaed by LayoutManager.
+  if (this.__manager__) {
+    this.__manager__.noel = noel;
   }
 
   // Act like nothing happened.
@@ -15112,23 +15255,34 @@ LayoutManager.prototype.options = {
 
   // This is the most common way you will want to partially apply a view into
   // a layout.
-  partial: function(root, name, el, append) {
-    // If no selector is specified, assume the parent should be added to.
-    var $root = name ? $(root).find(name) : $(root);
+  partial: function($root, $el, rentManager, manager) {
+    // If selector is specified, attempt to find it.
+    if (manager.selector) {
+      if (rentManager.noel) {
+        var $filtered = $root.filter(manager.selector);
+        $root = $filtered.length ? $filtered : $root.find(manager.selector);
+      } else {
+        $root = $root.find(manager.selector);
+      }
+    }
 
-    // Use the append method if append argument is true.
-    this[append ? "append" : "html"]($root, el);
+    // Use the insert method if insert argument is true.
+    if (manager.insert) {
+      this.insert($root, $el);
+    } else {
+      this.html($root, $el);
+    }
   },
 
-  // Override this with a custom HTML method, passed a root element and an
-  // element to replace the innerHTML with.
-  html: function($root, el) {
-    $root.html(el);
+  // Override this with a custom HTML method, passed a root element and content
+  // (a jQuery collection or a string) to replace the innerHTML with.
+  html: function($root, content) {
+    $root.html(content);
   },
 
-  // Very similar to HTML except this one will appendChild.
-  append: function($root, el) {
-    $root.append(el);
+  // Very similar to HTML except this one will appendChild by default.
+  insert: function($root, $el) {
+    $root.append($el);
   },
 
   // Return a deferred for when all promises resolve/reject.
@@ -15150,7 +15304,7 @@ LayoutManager.prototype.options = {
 // Maintain a list of the keys at define time.
 keys = _.keys(LayoutManager.prototype.options);
 
-})(this);
+})(typeof global === "object" ? global : this);
 define("plugins/backbone.layoutmanager", function(){});
 
 /* ============================================================
@@ -15316,6 +15470,328 @@ define("plugins/backbone.layoutmanager", function(){});
 }(window.jQuery);
 define("plugins/bootstrap-dropdown", function(){});
 
+/* =============================================================
+ * bootstrap-typeahead.js v2.0.0
+ * http://twitter.github.com/bootstrap/javascript.html#typeahead
+ * =============================================================
+ * Copyright 2012 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============================================================ */
+
+!function( $ ){
+
+  "use strict"
+
+  var Typeahead = function ( element, options ) {
+    this.$element = $(element)
+    this.options = $.extend({}, $.fn.typeahead.defaults, options)
+    this.matcher = this.options.matcher || this.matcher
+    this.sorter = this.options.sorter || this.sorter
+    this.highlighter = this.options.highlighter || this.highlighter
+    this.$menu = $(this.options.menu).appendTo('body')
+    this.source = this.options.source
+    this.onselect = this.options.onselect
+    this.strings = true
+    this.shown = false
+    this.listen()
+  }
+
+  Typeahead.prototype = {
+
+    constructor: Typeahead
+
+  , select: function () {
+      var val = JSON.parse(this.$menu.find('.active').attr('data-value'))
+        , text
+
+      if (!this.strings) text = val[this.options.property]
+      else text = val
+
+      this.$element.val(text)
+
+      if (typeof this.onselect == "function")
+          this.onselect(val)
+
+      return this.hide()
+    }
+
+  , show: function () {
+      var pos = $.extend({}, this.$element.offset(), {
+        height: this.$element[0].offsetHeight
+      })
+
+      this.$menu.css({
+        top: pos.top + pos.height
+      , left: pos.left
+      })
+
+      this.$menu.show()
+      this.shown = true
+      return this
+    }
+
+  , hide: function () {
+      this.$menu.hide()
+      this.shown = false
+      return this
+    }
+
+  , lookup: function (event) {
+      var that = this
+        , items
+        , q
+        , value
+
+      this.query = this.$element.val()
+
+      if (typeof this.source == "function") {
+        value = this.source(this, this.query)
+        if (value) this.process(value)
+      } else {
+        this.process(this.source)
+      }
+    }
+
+  , process: function (results) {
+      var that = this
+        , items
+        , q
+
+      if (results.length && typeof results[0] != "string")
+          this.strings = false
+
+      this.query = this.$element.val()
+
+      if (!this.query) {
+        return this.shown ? this.hide() : this
+      }
+
+      items = $.grep(results, function (item) {
+        if (!that.strings)
+          item = item[that.options.property]
+        if (that.matcher(item)) return item
+      })
+
+      items = this.sorter(items)
+
+      if (!items.length) {
+        return this.shown ? this.hide() : this
+      }
+
+      return this.render(items.slice(0, this.options.items)).show()
+    }
+
+  , matcher: function (item) {
+      return ~item.toLowerCase().indexOf(this.query.toLowerCase())
+    }
+
+  , sorter: function (items) {
+      var beginswith = []
+        , caseSensitive = []
+        , caseInsensitive = []
+        , item
+        , sortby
+
+      while (item = items.shift()) {
+        if (this.strings) sortby = item
+        else sortby = item[this.options.property]
+
+        if (!sortby.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
+        else if (~sortby.indexOf(this.query)) caseSensitive.push(item)
+        else caseInsensitive.push(item)
+      }
+
+      return beginswith.concat(caseSensitive, caseInsensitive)
+    }
+
+  , highlighter: function (item) {
+      return item.replace(new RegExp('(' + this.query + ')', 'ig'), function ($1, match) {
+        return '<strong>' + match + '</strong>'
+      })
+    }
+
+  , render: function (items) {
+      var that = this
+
+      items = $(items).map(function (i, item) {
+        i = $(that.options.item).attr('data-value', JSON.stringify(item))
+        if (!that.strings)
+            item = item[that.options.property]
+        i.find('a').html(that.highlighter(item))
+        return i[0]
+      })
+
+      items.first().addClass('active')
+      this.$menu.html(items)
+      return this
+    }
+
+  , next: function (event) {
+      var active = this.$menu.find('.active').removeClass('active')
+        , next = active.next()
+
+      if (!next.length) {
+        next = $(this.$menu.find('li')[0])
+      }
+
+      next.addClass('active')
+    }
+
+  , prev: function (event) {
+      var active = this.$menu.find('.active').removeClass('active')
+        , prev = active.prev()
+
+      if (!prev.length) {
+        prev = this.$menu.find('li').last()
+      }
+
+      prev.addClass('active')
+    }
+
+  , listen: function () {
+      this.$element
+        .on('blur',     $.proxy(this.blur, this))
+        .on('keypress', $.proxy(this.keypress, this))
+        .on('keyup',    $.proxy(this.keyup, this))
+
+      if ($.browser.webkit || $.browser.msie) {
+        this.$element.on('keydown', $.proxy(this.keypress, this))
+      }
+
+      this.$menu
+        .on('click', $.proxy(this.click, this))
+        .on('mouseenter', 'li', $.proxy(this.mouseenter, this))
+    }
+
+  , keyup: function (e) {
+      e.stopPropagation()
+      e.preventDefault()
+
+      switch(e.keyCode) {
+        case 40: // down arrow
+        case 38: // up arrow
+          break
+
+        case 9: // tab
+        case 13: // enter
+          if (!this.shown) return
+          this.select()
+          break
+
+        case 27: // escape
+          this.hide()
+          break
+
+        default:
+          if($(this.$element).val().length >=this.options.minLength) {
+            this.lookup();
+          } else {
+            this.hide()
+          }
+      }
+
+  }
+
+  , keypress: function (e) {
+      e.stopPropagation()
+      if (!this.shown) return
+
+      switch(e.keyCode) {
+        case 9: // tab
+        case 13: // enter
+        case 27: // escape
+          e.preventDefault()
+          break
+
+        case 38: // up arrow
+          e.preventDefault()
+          this.prev()
+          break
+
+        case 40: // down arrow
+          e.preventDefault()
+          this.next()
+          break
+      }
+    }
+
+  , blur: function (e) {
+      var that = this
+      e.stopPropagation()
+      e.preventDefault()
+      setTimeout(function () {
+        if (!that.$menu.is(':hover')) {
+          that.hide();
+        }
+      }, 150)
+    }
+
+  , click: function (e) {
+      e.stopPropagation()
+      e.preventDefault()
+      this.select()
+    }
+
+  , mouseenter: function (e) {
+      this.$menu.find('.active').removeClass('active')
+      $(e.currentTarget).addClass('active')
+    }
+
+  }
+
+
+  /* TYPEAHEAD PLUGIN DEFINITION
+   * =========================== */
+
+  $.fn.typeahead = function ( option ) {
+    return this.each(function () {
+      var $this = $(this)
+        , data = $this.data('typeahead')
+        , options = typeof option == 'object' && option
+      if (!data) $this.data('typeahead', (data = new Typeahead(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  $.fn.typeahead.defaults = {
+    source: []
+  , items: 8
+  , menu: '<ul class="typeahead dropdown-menu"></ul>'
+  , item: '<li><a href="#"></a></li>'
+  , onselect: null
+  , property: 'value'
+  , minLength: 2
+  }
+
+  $.fn.typeahead.Constructor = Typeahead
+
+
+ /* TYPEAHEAD DATA-API
+  * ================== */
+
+  $(function () {
+    $('body').on('focus.typeahead.data-api', '[data-provide="typeahead"]', function (e) {
+      var $this = $(this)
+      if ($this.data('typeahead')) return
+      e.preventDefault()
+      $this.typeahead($this.data())
+    })
+  })
+
+}( window.jQuery );
+define("plugins/bootstrap-typeahead", function(){});
+
 /**
  * Timeago is a jQuery plugin that makes it easy to support automatically
  * updating fuzzy timestamps (e.g. "4 minutes ago" or "about 1 day ago").
@@ -15476,6 +15952,7 @@ define('app',[
   "handlebars",
   "plugins/backbone.layoutmanager",
   "plugins/bootstrap-dropdown",          //load anonomosly
+  "plugins/bootstrap-typeahead",          //load anonomosly
   "plugins/jquery.timeago"               //load anonomosly
 ],
 
@@ -15484,13 +15961,15 @@ function(Handlebars) {
   // Provide a global location to place configuration settings and module
   // creation.
   var app = {
-    API_URL: '/directus/api/1/',
-
-    RESOURCES_URL: '/resources/',
-
-    root: '/directus/',
-
     capitalize: function(string) {
+      var idIndex;
+
+      if (!string) return '';
+
+      idIndex = string.lastIndexOf("_id");
+      if (string.length - idIndex === 3) {
+        string = string.substring(0, idIndex);
+      }
       return _.map(string.split('_'), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
     },
 
@@ -15504,6 +15983,22 @@ function(Handlebars) {
           bytes = bytes / 1024;
       }
       return bytes.toFixed(precision) + " " + sizes[posttxt];
+    },
+
+    contextualDate: function(value) {
+      return jQuery.timeago(value+'Z');
+    },
+
+    actionMap: {
+      'ADD': 'added',
+      'DELETE': 'deleted',
+      'UPDATE': 'updated'
+    },
+
+    prepositionMap: {
+      'ADD': 'to',
+      'DELETE': 'from',
+      'UPDATE': 'within'
     }
   };
 
@@ -15529,10 +16024,16 @@ function(Handlebars) {
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
+    //date = new Date(date);
+    //date = new Date(date.toUTCString());
     return jQuery.timeago(date);
   });
 
-  Handlebars.registerHelper('active', function(model) {
+  Handlebars.registerHelper('avatarSmall', function(userId) {
+    return '<img src="' + app.users.get(userId).get('avatar') + '" style="margin-right:7px;" class="avatar">' + app.users.get(userId).get('first_name');
+  });
+
+  Handlebars.registerHelper('activeMap', function(model) {
     switch (model.get('active')) {
       case 0:
         return 'deleted';
@@ -15543,27 +16044,29 @@ function(Handlebars) {
     }
   });
 
-  //Directus is not entirelly restful yet
-  //Backbone.emulateHTTP = true;
+  // Agnus Croll:
+  // http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
+  Object.toType = function(obj) {
+    return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
+  };
+
 
   //give forms the ability to serialize to objects
+
   $.fn.serializeObject = function() {
-      var o = {};
-      var a = this.serializeArray();
-      $.each(a, function() {
-          if (o[this.name]) {
-              //Use CSV
-              o[this.name] = o[this.name] + ',' + this.value;
-              //Pushes to array
-              /*if (!o[this.name].push) {
-                  o[this.name] = [o[this.name]];
-              }
-              o[this.name].push(this.value || '');*/
-          } else {
-              o[this.name] = this.value || '';
-          }
-      });
-      return o;
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
   };
 
   // Localize or create a new JavaScript Template object.
@@ -15571,7 +16074,7 @@ function(Handlebars) {
 
 
   // Configure LayoutManager with Backbone Boilerplate defaults.
-  Backbone.LayoutManager.configure({
+  Backbone.Layout.configure({
     // Allow LayoutManager to augment Backbone.View.prototype.
     manage: true,
 
@@ -15596,9 +16099,21 @@ function(Handlebars) {
       var done = this.async();
 
       // Seek out the template asynchronously.
-      $.get(app.root + path, function(contents) {
-        done(JST[path] = Handlebars.compile(contents));
+      // ASYNC is causing render-order trouble, use sync now since it will be compiled anyway
+
+      //$.get(app.root + path, function(contents) {
+      //  done(JST[path] = Handlebars.compile(contents));
+      //});
+
+      $.ajax({
+        url: app.root + path,
+        async: false,
+        success: function(contents) {
+          done(JST[path] = Handlebars.compile(contents));
+        }
       });
+
+
     }
   });
 
@@ -15646,26 +16161,49 @@ function(app, Backbone) {
       return _.map(models, function(model) { return _.pick(model.toJSON(), cols); });
     },
 
+    getModels: function() {
+      return this.models;
+    },
+
+    getFilters: function() {
+      return this.filters;
+    },
+
+    getFilter: function(key) {
+      return this.filters && this.filters[key];
+    },
+
+    setFilter: function(key, value) {
+      if (key === null || typeof key === 'object') {
+        attrs = key;
+      } else {
+        (attrs = {})[key] = value;
+      }
+      _.each(attrs, function(value, key) {
+        this.filters[key] = value;
+      }, this);
+    },
+
     // Proxies underscore's sortBy to reverse order
 
     sortBy: function() {
       var models = _.sortBy(this.models, this.comparator, this);
-      if (this.filters && this.filters.orderDirection === 'DESC') models.reverse();
+      if (this.getFilter('sort_order') === 'DESC') models.reverse();
       return models;
     },
 
     comparator: function(row) {
-      var column = this.filters ? this.filters.orderBy : 'id';
+      var column = this.getFilter('sort') || 'id';
       var value = row.get(column);
       var options, ui, type;
 
-      //There is no valu
+      //There is no value
       if (!row.has(column)) {
         if (this.structure) {
           schema = this.structure.get(column);
           ui = schema.get('ui');
 
-          options = app.router.uiSettings[ui];
+          options = app.uiSettings[ui];
           if (options.sortBy !== undefined) {
 
             //Merge the column values, eg first_name, last_name
@@ -15682,39 +16220,64 @@ function(app, Backbone) {
       return value;
     },
 
-    setOrder: function(column, orderDirection) {
+    setOrder: function(column, sortOrder, options) {
       //useless without filters...
       if (!this.filters) return;
 
       if (column === undefined) {
-        this.filters.orderBy = 'id';
-        this.filters.orderDirection = 'ASC';
+        this.setFilter({sort:'id', sort_order: 'ASC'});
       } else {
-        this.filters.orderBy = column;
-        this.filters.orderDirection = orderDirection;
+        this.setFilter({sort: column, sort_order: sortOrder});
       }
 
       if (this.filters.perPage < this.total) {
         this.fetch();
       } else {
-        this.sort();
+        this.sort(options);
       }
     },
 
     getOrder: function() {
       var order = {};
-      if (this.filters) {
-        order.orderBy = this.filters.orderBy;
-        order.orderDirection = this.filters.orderDirection;
-      }
+      order.sort = this.getFilter('sort');
+      order.sort_order = this.getFilter('sort_order');
       return order;
     },
 
-    filterMulti: function(filters) {
+   filterMulti: function(filters) {
       return this.filter(function(model) {
         // Every filter has to pass the test!
         return _.every(filters, function(value, key) { return (model.has(key) && model.get(key) === value); });
       });
+    },
+
+    save: function(options) {
+      options = options || {};
+      var collection = this;
+      var success = options.success;
+
+      options.success = function(model, resp, xhr) {
+        collection.reset(resp ,{parse: true});
+        if (success !== undefined) {
+          success();
+        }
+      };
+
+      // would be awesome if this is always how it werkz...
+      options.url = this.url + '?' + $.param(this.filters);
+
+      return Backbone.sync('update', this, options);
+    },
+
+    fetch: function(options) {
+      options = options || {};
+      options.data = options.data || {};
+
+      this.trigger('fetch', this);
+
+      _.extend(options.data, this.getFilters());
+
+      return Backbone.Collection.prototype.fetch.call(this, options);
     }
 
   });
@@ -15729,7 +16292,9 @@ define('core/collection.entries',[
 
 function(app, Backbone, BaseCollection) {
 
-  var NestedCollection = BaseCollection.extend({
+  var Entries = {};
+
+  Entries.NestedCollection = BaseCollection.extend({
 
     isNested: true,
 
@@ -15745,8 +16310,7 @@ function(app, Backbone, BaseCollection) {
 
       //DRY this up please and move it to BB's protoype
       toJSON: function(options) {
-        attributes = {};
-        attributes.id = this.id;
+        attributes = _.clone(this.attributes);
         attributes.data = this.get('data').toJSON();
         return attributes;
       }
@@ -15761,6 +16325,9 @@ function(app, Backbone, BaseCollection) {
       }
       this.constructor.__super__.remove.apply(this, arguments);
     },
+
+
+    /*
 
     getNew: function(toJSON) {
       var models = this.filter(function(model) { return model.isNew(); });
@@ -15786,6 +16353,18 @@ function(app, Backbone, BaseCollection) {
       return models;
     },
 
+    */
+
+    getModels: function() {
+      return this.filter(function(model) {
+        return !(model.has('active') && model.get('active') === 0);
+      });
+    },
+
+    getColumns: function() {
+      return this.nestedCollection.getColumns();
+    },
+
     parse: function(response) {
       return response.rows;
     },
@@ -15793,7 +16372,9 @@ function(app, Backbone, BaseCollection) {
     initialize: function(models, options) {
       this.structure = options.structure;
       this.table = options.table;
-      this.nestedCollection = new Collection({}, options);
+      this.preferences = options.preferences;
+      this.filters = options.filters;
+      this.nestedCollection = new Entries.Collection({}, options);
       this.nestedCollection.on('change', function() {
         this.trigger('change');
       }, this);
@@ -15802,7 +16383,7 @@ function(app, Backbone, BaseCollection) {
   });
 
   //The equivalent of a MySQL row.
-  var Row =  Backbone.Model.extend({
+  Entries.Model =  Backbone.Model.extend({
 
     parse: function(result) {
       return this.parseRelational(result);
@@ -15814,27 +16395,34 @@ function(app, Backbone, BaseCollection) {
       var value;
       var id;
       var options;
+      var ui;
+      var columns;
 
       structure.each(function(column) {
         type = column.get('type');
         id = column.id;
+        ui = structure.get(column).options;
 
-        if (type === 'one-many' || type === 'many-many') {
+        if (type === 'ONETOMANY' || type === 'MANYTOMANY') {
+
+          columns = ui.get('visible_columns') || '';
 
           options = {
-            table: app.router.tables.get(column.get('table_related')),
-            structure: app.router.columns[column.get('table_related')],
-            parse:true
+            table: app. tables.get(column.get('table_related')),
+            structure: app.columns[column.get('table_related')],
+            //preferences: app.preferences[column.get('table_related')],
+            parse:true,
+            filters: {columns: columns.split(',')}
           };
 
           value = attributes[id] || [];
 
           switch (type) {
-            case 'one-many':
-              attributes[id] = new Collection(value, options);
+            case 'ONETOMANY':
+              attributes[id] = new Entries.Collection(value, options);
               break;
-            case 'many-many':
-              attributes[id] = new NestedCollection(value, options);
+            case 'MANYTOMANY':
+              attributes[id] = new Entries.NestedCollection(value, options);
               break;
           }
         }
@@ -15853,19 +16441,24 @@ function(app, Backbone, BaseCollection) {
 
       _.each(attributes, function(value, key) {
         if (_.isObject(value)) {
-          attributes[key] = value.toJSON();
+          if (typeof value.toJSON === 'function') {
+            attributes[key] = value.toJSON();
+          } else {
+            delete attributes[key];
+          }
         }
       });
 
-      return attributes;
-    },
+      // Pick selected columns, useful for collection "save"
+      if (options && options.columns) {
+        attributes = _.pick(this.attributes, options.columns);
+      }
 
-    save: function(attributes, options) {
-      this.constructor.__super__.save.apply(this, [attributes, options]);
-    },
+      return attributes;
+    }
 
     //This should probably override the regular save function.
-    saveRelational: function(attributes, options) {
+/*    saveRelational: function(attributes, options) {
 
       var references = [];
 
@@ -15877,64 +16470,137 @@ function(app, Backbone, BaseCollection) {
         attributes.__references = references;
       }
 
-      console.log(attributes);
-
       this.save(attributes, options);
-    }
+    }*/
 
   });
 
   // This is a super mega core directus collection. Deals with everything from the DB.
   //
-  var Collection = BaseCollection.extend({
+  Entries.Collection = BaseCollection.extend({
 
-    //Some of these should probably be private, make better use of the options variable plzz.
+    model: Entries.Model,
 
-    model: Row,
+    getColumns: function() {
+      //console.log('KAH',this.preferences);
+      return this.preferences ? _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(',')) : this.filters.columns;
+    },
 
-    // Overloaded get function that also suports arrays
-    get: function(id) {
-      var model;
-      // Support arrays
-      if (_.isArray(id)) {
-        return _.map(id, function(val) { return this.get(val); }, this);
+    getFilter: function(key) {
+      return (this.preferences && this.preferences.has(key)) ? this.preferences.get(key) : this.filters[key];
+    },
+
+    getFilters: function() {
+      return _.extend(this.filters, _.pick(this.preferences.toJSON(),'columns_visible','sort','sort_order','active'));
+    },
+
+    setFilter: function(key, value, options) {
+      var attrs;
+      if (key === null || typeof key === 'object') {
+        attrs = key;
+      } else {
+        (attrs = {})[key] = value;
       }
-      return Backbone.Collection.prototype.get.call(this, id);
+      _.each(attrs, function(value, key) {
+        if (this.preferences.has(key)) {
+          this.preferences.set(key, value, {silent: true});
+        } else {
+          this.filters[key] = value;
+        }
+      },this);
+      this.preferences.save();
     },
 
     initialize: function(models, options) {
       this.structure = options.structure;
       this.table = options.table;
-      this.url = this.table.get('url') + '/rows';
-      this.filters = options.filters || { currentPage: 0, perPage: 500, orderDirection: 'ASC', orderBy: 'id', active: '1,2' };
-      if (options.preferences) this.preferences = options.preferences;
+      this.active = this.table.get('active');
+      this.url = options.url || this.table.get('url') + '/rows';
+      this.filters = options.filters || { currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' };
+
+      if (options.preferences) {
+        this.preferences = options.preferences;
+        this.preferences.on('change', function() { this.trigger('change'); }, this);
+      }
+
     },
 
     parse: function(response) {
       this.total = response.total;
+      this.active = response.active;
+      this.inactive = response.inactive;
+      this.trash = response.trash;
+      this.table.set('total', this.total, {silent: true});
+      this.table.set('active', this.active, {silent: true});
+      this.table.set('inactive', this.inactive, {silent: true});
+      this.table.set('trash', this.trash, {silent: true});
       return response.rows;
-    },
-
-    fetch: function(options) {
-      options = options || {};
-      options.data = options.data || {};
-
-      this.trigger('fetch', this);
-
-      _.extend(options.data, this.filters);
-
-      this.constructor.__super__.fetch.apply(this, [options]);
     }
 
   });
 
-  return Collection;
+  return Entries;
 });
 
 
 
 
 
+define('core/collection.upload',[
+  "app",
+  "backbone",
+  "core/collection.entries"
+],
+
+function(app, Backbone, Entries) {
+
+
+  // OK! This is great. We only need to override models. Collections are kinda simplistic.
+
+  var Model = Entries.Model.extend({
+
+    uploader: true,
+
+    sync: function(method, model, options) {
+
+      console.log(model);
+
+      var methodMap = {
+        'create': 'POST',
+        'update': 'PUT',
+        'patch':  'PATCH',
+        'delete': 'DELETE',
+        'read':   'GET'
+      };
+
+      var type = methodMap[method];
+
+      var data = new FormData();
+      _.each(this.attributes, function(value, key) {
+        data.append(key, value);
+      });
+
+      options.data = data;
+      options.cache = false;
+      options.contentType = false;
+      options.processData = false;
+      options.type = 'POST';
+
+      options.beforeSend = function(xhr) {
+        xhr.setRequestHeader('X-HTTP-Method-Override', type);
+      };
+
+      return Backbone.sync.apply(this, [method, model, options]);
+    }
+
+  });
+
+  var Collection = Entries.Collection.extend({
+    model: Model
+  });
+
+  return Collection;
+});
 define('core/collection.columns',[
   "app",
   "backbone"
@@ -15942,32 +16608,62 @@ define('core/collection.columns',[
 
 function(app, Backbone) {
 
-  var UI = Backbone.Model.extend({
+  var Structure = {};
+
+  Structure.UI = Backbone.Model.extend({
     url: function() {
       return this.parent.url() + '/' + this.id;
     }
   });
 
-  var Column = Backbone.Model.extend({
+  Structure.Column = Backbone.Model.extend({
       parse: function(result) {
+        //console.log(result, result.id);
         var options = result.options || {};
         options.id = result.ui;
-        this.options = new UI(options);
+        this.options = new Structure.UI(options);
         this.options.parent = this;
         if (result.master) result.header = true;
         result.header = (result.header === "true" || result.header === true || result.header === 1 || result.header === "1") ? true : false;
         delete result.options;
         return result;
       },
-
       getOptions: function() {
         return this.options.get(this.attributes.ui);
+      },
+      toJSON: function(options) {
+        if (options && options.columns) {
+          return _.pick(this.attributes, options.columns);
+        }
+        return _.clone(this.attributes);
       }
   });
 
   //The equivalent of a MySQL columns Schema
-  var Structure = Backbone.Collection.extend({model: Column});
+  Structure.Columns = Backbone.Collection.extend({
 
+    model: Structure.Column,
+
+    comparator: function(row) {
+      return row.get('sort');
+    },
+
+    save: function(attributes, options) {
+      options = options || {};
+      var collection = this;
+      var success = options.success;
+
+      options.success = function(model, resp, xhr) {
+        collection.reset(model);
+        if (success !== undefined) {
+          success();
+        }
+      };
+
+      $result = Backbone.sync('update', this, options);
+      return $result;
+    }
+  });
   return Structure;
 });
 define('core/edit',[
@@ -15988,7 +16684,6 @@ function(app, Backbone) {
     },
 
     beforeRender: function() {
-      console.log('re-n-der', this.cid, this.model);
       var structure = this.options.structure || this.model.collection.structure;
       var UI = ui.initialize({model: this.model, structure: structure});
       structure.each(function(column) {
@@ -16004,24 +16699,16 @@ function(app, Backbone) {
       this.$el.attr('id','directus-form');
     },
 
-    //Fix broken images
+    //Focus first input
     afterRender: function() {
-      $('img').error(function(){
-        $(this).attr('src', 'assets/img/missing-image.png').removeClass();
-      });
-      //console.log($('.directus-form:input:visible:first'));
       var $first = this.$el.find(':input:first:visible');
-
       $first.focus();
       $first.val($first.val());
-      //$('.directus-form:input:visible:first').focus();
     },
 
     save: function(data, success, error) {
       formData = this.$el.serializeObject();
       _.extend(formData, data);
-
-      console.log(this.model.toJSON());
 
       this.model.save(formData, {
         success: success,
@@ -16035,7 +16722,6 @@ function(app, Backbone) {
 
     initialize: function() {
       this.model.on('sync', function(e) {
-        console.log('CYN');
         this.render();
       }, this);
     }
@@ -30973,67 +31659,52 @@ function(app, Backbone) {
     template: 'table-toolbar',
 
     events: {
+
       'click #set-visibility > button': function(e) {
-        var value = $(e.target).attr('data-value'),
-            collection = this.collection,
-            visibility = this.collection.filters.active;
-
-          var counter = $('td.check > input:checked').length;
-
-        if (visibility === value) return;
-
+        var value = $(e.target).attr('data-value');
+        var collection = this.collection;
         $('td.check > input:checked').each(function() {
           var id = this.value;
-          var success = function() {
-            if (visibility !== "1,2" || value === "0") {
-              collection.remove(id, {silent: true});
-            }
-            counter--;
-            //only trigger event when everything is done
-            if (counter === 0) collection.trigger('remove');
-          };
-          var error = function() { console.log('Error Saving!', arguments); };
-          collection.get(this.value).save({active: value}, {silent: true, success: _.bind(success, this), error: error});
-
+          collection.get(id).set({active: value}, {silent: true});
         });
-        e.preventDefault();
+        collection.save({columns: ['id','active']});
       },
+
       'click #visibility .dropdown-menu li > a': function(e) {
         var value = $(e.target).attr('data-value');
-        this.collection.filters.currentPage = 0;
-        this.collection.filters.active = value;
+        this.collection.setFilter({currentPage: 0, active: value});
         this.collection.fetch();
         //this.options.preferences.save({status: value});
       },
       'keypress #table-filter': function(e) {
         if (e.which == 13) {
           var text = $('#table-filter').val();
-          this.collection.filters.search = text;
+          this.collection.setFilter('search', text);
           this.collection.fetch();
         }
         //this.collection.trigger('search', text);
       },
       'click a.pag-next:not(.disabled)': function() {
-        this.collection.filters.currentPage = this.collection.filters.currentPage + 1;
+        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') + 1);
         this.collection.fetch();
       },
       'click a.pag-prev:not(.disabled)': function() {
-        this.collection.filters.currentPage = this.collection.filters.currentPage - 1;
+        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
         this.collection.fetch();
       },
       'keydown': function(e) {
-        if (e.keyCode === 39 && (this.collection.filters.currentPage + 1 < (this.collection.total / this.collection.filters.perPage))) {
-          this.collection.filters.currentPage = this.collection.filters.currentPage + 1;
+        if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
+          this.collection.setFilter('currentPage', this.collection.filters.currentPage + 1);
           this.collection.fetch();
         }
-        if (e.keyCode === 37 && this.collection.filters.currentPage > 0) {
-          this.collection.filters.currentPage = this.collection.filters.currentPage - 1;
+        if (e.keyCode === 37 && this.collection.getFilter('currentPage') > 0) {
+          this.collection.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
           this.collection.fetch();
         }
       }
     },
 
-    data: function() {
+    serialize: function() {
 
       var options = {};
 
@@ -31041,28 +31712,32 @@ function(app, Backbone) {
       options.lBound = Math.min(1, options.totalCount);
       options.uBound = options.totalCount;
 
-      if (this.options.table) {
-        options.totalCount = this.options.collection.total;
-        options.lBound = Math.min(this.collection.filters.currentPage * this.collection.filters.perPage + 1, options.totalCount);
-        options.uBound = Math.min(options.totalCount, options.lBound + this.collection.filters.perPage - 1);
-        options.pageNext = (this.collection.filters.currentPage + 1 < (options.totalCount / this.collection.filters.perPage) );
-        options.pagePrev = (this.collection.filters.currentPage !== 0);
-      }
+
+      options.totalCount = this.options.collection.total;
+      options.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, options.totalCount);
+      options.uBound = Math.min(options.totalCount, options.lBound + this.collection.getFilter('perPage') - 1);
+      options.pageNext = (this.collection.getFilter('currentPage') + 1 < (options.totalCount / this.collection.getFilter('perPage') ) );
+      options.pagePrev = (this.collection.getFilter('currentPage') !== 0);
 
       options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
 
-      if (this.active && this.collection.hasOwnProperty('preferences')) {
-        options.visibility = _.map([{text:'All', value: '1,2'}, {text:'Active', value: '1'}, {text:'Inactive', value: '2'}, {text:'Trash', value: '0'}], function(obj) {
-          if (this.collection.filters.active == obj.value) { obj.active = true; }
-          return obj;
+
+      if (this.active) {
+        options.visibility = _.map([
+          {text:'All', value: '1,2', count: this.collection.total},
+          {text:'Active', value: '1', count: this.collection.active},
+          {text:'Inactive', value: '2', count: this.collection.inactive},
+          {text:'Trash', value: '0', count: this.collection.trash}], function(obj) {
+            if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
+            return obj;
         }, this);
       }
 
-      options.filterText = this.collection.filters.search;
-
+      options.filterText = this.collection.getFilter('search');
       options.filter = true;
-
       options.paginator = (options.pageNext || options.pagePrev);
+
+      options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 
       return options;
     },
@@ -31077,7 +31752,7 @@ function(app, Backbone) {
 
     initialize: function() {
       //Does the table have the active column?
-      this.active = this.options.structure && this.options.structure.get('active');
+      this.active = this.options.structure && this.options.structure.get('active') && !this.options.deleteOnly;
       //Show action buttons if there are selected models
       this.collection.on('select', function() {
         this.actionButtons = Boolean($('td.check > input:checked').length);
@@ -31109,27 +31784,34 @@ function(app, Backbone) {
       }
     },
 
-    data: function() {
+    serialize: function() {
+      var rowIdentifiers = this.options.rowIdentifiers;
+      var rows = _.map(this.collection.getModels(), function(model) {
+        var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
+        return {model: model, classes: classes};
+      });
       return {
-        columns: this.options.columns,
-        rows: this.collection.models,
+        columns: this.collection.getColumns(),
+        rows: rows,
         sortable: this.options.sortable,
-        selectable: this.options.selectable
+        selectable: this.options.selectable,
+        deleteColumn: this.options.deleteColumn
       };
     },
 
     drop: function() {
       var collection = this.collection;
       this.$('tr').each(function(i) {
-        collection.get($(this).attr('data-id')).save({sort: i});
+        collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
       });
-      this.collection.setOrder('sort', 'ASC');
+      collection.save({columns:['id','sort']});
     },
 
     initialize: function() {
-      this.collection.on('sort change', this.render, this);
+      this.collection.on('sort', this.render, this);
       //Setup jquery UI sortable
       if (this.options.structure && this.options.structure.get('sort')) {
+        this.collection.setOrder('sort','ASC',{silent: true});
         this.$el.sortable({
           stop: _.bind(this.drop, this),
           axis: "y",
@@ -31154,26 +31836,53 @@ function(app, Backbone) {
       'click th:not(.check)': function(e) {
         var column = $(e.target).attr('data-id');
         var order = this.collection.getOrder();
+
         //Flip direction if the same column is clicked twice.
-        if (order.orderBy === column) {
-          if (order.orderDirection === 'ASC') {
+        if (order.sort === column) {
+          if (order.sort_order === 'ASC') {
             this.collection.setOrder(column, 'DESC');
           }
-          if (order.orderDirection === 'DESC') {
+          else if (order.sort_order === 'DESC') {
             this.collection.setOrder();
           }
         } else {
           this.collection.setOrder(column, 'ASC');
         }
+      },
+      'click #set-visible-columns': function() {
+        var structure = this.options.collection.structure;
+        var preferences = this.collection.preferences;
+        var visibleColumns = preferences.get('columns_visible').split(',');
+        var data = {};
+        var view, modal;
+
+        data.columns = structure.chain()
+          .filter(function(model) { return !model.get('system') && !model.get('hidden_list'); } )
+          .map(function(model) { return {name: model.id, visible: (visibleColumns.indexOf(model.id) > -1)}; })
+          .value();
+
+        view = new Backbone.Layout({template: 'table-set-columns', serialize: data});
+        modal = app.router.openModal(view, {title: 'Set visible columns'});
+
+        modal.save = function() {
+          var data = this.$el.find('form').serializeObject();
+          var string = _.isArray(data.columns_visible) ? data.columns_visible.join(',') : data.columns_visible;
+          preferences.save({'columns_visible': string},{
+            success: function() { modal.close(); }
+          });
+        };
+
+        view.render();
       }
     },
 
-    data: function() {
+    serialize: function() {
       var order = this.collection.getOrder();
-      var columns = _.map(this.options.columns, function(column) {
-        return {name: column, orderBy: column === order.orderBy, desc: order.orderDirection === 'DESC'};
+      var columns = _.map(this.collection.getColumns(), function(column) {
+        return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
-      return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns};
+
+      return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns, deleteColumn: this.options.deleteColumn};
     },
 
     initialize: function() {
@@ -31188,16 +31897,16 @@ function(app, Backbone) {
 
     template: 'table',
 
-    data: function() {
+    serialize: function() {
       var id = (this.collection.table) ? this.collection.table.id : undefined;
-      return {columns: this.columns, id: id, selectable: this.options.selectable, sortable: this.options.sortable, hasData: this.collection.length };
+      return {columns: this.collection.getColumns(), id: id, selectable: this.options.selectable, sortable: this.options.sortable, hasData: this.collection.length };
     },
 
     events: {
       'click td:not(.check):not(.status):not(.sort)' : function(e) {
-        this.collection.off(null, null, this);
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
+          this.collection.off(null, null, this);
           this.navigate(id);
         }
       }
@@ -31217,26 +31926,37 @@ function(app, Backbone) {
 
     beforeRender: function() {
       this.startRenderTime = new Date().getTime();
+
       if (this.options.toolbar) {
         this.setView('.directus-toolbar', new Toolbar({
           collection: this.collection,
           structure: this.options.structure || this.collection.structure,
           table: this.options.table || this.collection.table,
-          preferences: this.options.preferences || this.collection.preferences
+          preferences: this.options.preferences || this.collection.preferences,
+          deleteOnly: this.options.deleteOnly
         }));
       }
-      this.insertView('table', new TableHead({collection: this.collection, columns: this.columns, selectable: this.options.selectable, sortable: this.options.sortable}));
+
+      if (this.tableHead) {
+        this.insertView('table', new TableHead({
+          collection: this.collection,
+          selectable: this.options.selectable,
+          sortable: this.options.sortable,
+          deleteColumn: this.options.deleteColumn
+        }));
+      }
 
       if (this.collection.length > 0) {
         this.insertView('table', new TableBody({
           collection: this.collection,
-          columns: this.columns,
           selectable: this.options.selectable,
           filter: this.options.filter,
           TableRow: this.options.tableRow,
           preferences: this.options.preferences || this.collection.preferences,
           structure: this.options.structure || this.collection.structure,
-          sortable: this.options.sortable
+          sortable: this.options.sortable,
+          deleteColumn: this.options.deleteColumn,
+          rowIdentifiers: this.options.rowIdentifiers
         }));
       }
     },
@@ -31253,18 +31973,20 @@ function(app, Backbone) {
 
     initialize: function() {
 
-      this.columns = this.options.columns ||
-                     (this.collection.preferences && this.collection.preferences.get('columns_visible').split(',')) ||
-                     (this.collection.structure && this.collection.structure.pluck('id')) ||
-                     this.collection.length && _.keys(this.collection.at(0).toJSON()) ||
-                     [];
+      if (this.options.tableHead !== false) this.tableHead = true;
 
       this.collection.on('fetch',  function() {
         app.router.showAlert();
       }, this);
 
-      this.collection.on('reset nocontent add remove', this.render, this);
+      this.collection.on('reset nocontent add remove change', function() {
+        app.router.hideAlert();
+        this.render();
+      }, this);
 
+      this.collection.on('add', function() {
+        console.log(arguments);
+      });
 
       if (this.options.sortable === undefined) {
         this.options.sortable = (this.collection.structure && this.collection.structure.get('sort')) || false;
@@ -31274,7 +31996,43 @@ function(app, Backbone) {
         this.options.selectable = (this.collection.structure && this.collection.structure.get('active')) || false;
       }
 
+      if (this.options.droppable) {
+        //Cache a reference to the this.$el
+        var $el = this.$el;
+
+        // If collection supports dnd
+        // Since dragenter sux, this is how we do...
+        $el.on('dragover', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          $el.addClass('dragover');
+        });
+
+        $el.on('dragleave', function(e) {
+          $el.removeClass('dragover');
+        });
+
+        // Since data transfer is not supported by jquery...
+        // XHR2, FormData
+        this.el.ondrop = _.bind(function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+
+          var files = e.dataTransfer.files;
+          var formData = new FormData();
+
+          _.each(files, function(file) {
+            this.collection.create({file: file, date_uploaded: Date.now(), size: file.size, name: file.name, title: file.name, type: file.type, user: 1, active: 1});
+            console.log(this.collection);
+          }, this);
+
+          $el.removeClass('dragover');
+        }, this);
+      }
+
     },
+
+
 
     constructor: function (options) {
 
@@ -31307,19 +32065,19 @@ function(app, Backbone) {
       'class': 'modal'
     },
 
-    data: function() {
+    serialize: function() {
       return {title: this.options.title || 'Dialog', buttonText: this.options.buttonText};
     },
 
     events: {
       'click button[name=save]': function(e) { e.preventDefault(); this.save(); },
-      'click button[name=close]': 'close'
+      'click button[name=close]': 'close',
+      'click button.close': 'close'
     },
 
     close: function() {
       $('body').removeClass('modal-open');
       this.$backdrop.remove();
-      this.trigger('closing');
       this.remove();
     },
 
@@ -31375,16 +32133,8 @@ function(app, Backbone) {
       }
     },
 
-    data: function() {
+    serialize: function() {
       return {rows: this.collection.getRows(), columns: this.collection.getColumns()};
-    },
-
-    beforeRender: function() {
-
-    },
-
-    initialize: function() {
-
     }
 
   });
@@ -31392,30 +32142,93 @@ function(app, Backbone) {
   return TableSimple;
 
 });
+define('core/collection.settings',[
+  "app",
+  "backbone",
+  "core/collection"
+],
+
+function(app, Backbone, Collection) {
+
+	var Settings = Collection.extend({
+
+		//Convert from nested object to Collection
+		parse: function(result) {
+			return _.map(result, function(value, key) { value.id = key; return value; });
+		}
+
+	});
+
+	return Settings;
+
+});
+
 define('core/directus',[
   "app",
+  "core/collection.upload",
   "core/collection.entries",
   "core/collection.columns",
   "core/collection",
   "core/edit",
   "core/table",
   "core/modal",
-  "core/tableSimple"
+  "core/tableSimple",
+  "core/collection.settings"
 ],
 
-function(app, CollectionEntries, CollectionColumns, Collection, Edit, Table, Modal, TableSimple) {
+function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSimple, Settings) {
 
-  app.Directus = {};
+  var Directus = {};
 
-  app.Directus.Collection = Collection;
-  app.Directus.CollectionEntries = CollectionEntries;
-  app.Directus.CollectionColumns = CollectionColumns;
-  app.Directus.EditView = Edit;
-  app.Directus.Table = Table;
-  app.Directus.Modal = Modal;
-  app.Directus.TableSimple = TableSimple;
+  Directus.Media = Media;
+  Directus.Collection = Collection;
+  Directus.Entries = Entries;
+  Directus.CollectionColumns = Structure.Columns;
+  Directus.ModelColumn = Structure.Column;
+  Directus.EditView = Edit;
+  Directus.Table = Table;
+  Directus.Modal = Modal;
+  Directus.TableSimple = TableSimple;
+  Directus.Structure = Structure;
+  Directus.Settings = Settings;
 
-  return app.Directus;
+  Directus.SubRoute = Backbone.Router.extend({
+    constructor: function(prefix) {
+      var routes = {};
+
+      // Prefix is optional, set to empty string if not passed
+      prefix = prefix || "";
+
+      // Allow for optionally omitting trailing /.  Since base routes do not
+      // trigger with a trailing / this is actually kind of important =)
+      if (prefix[prefix.length-1] == "/") {
+        prefix = prefix.slice(0, prefix.length-1);
+
+      // If a prefix exists, add a trailing /
+      } else if (prefix) {
+        prefix += "/";
+      }
+
+      // Every route needs to be prefixed
+      _.each(this.routes, function(callback, path) {
+        if (path) {
+          return routes[prefix + path] = callback;
+        }
+
+        // If the path is "" just set to prefix, this is to comply
+        // with how Backbone expects base paths to look gallery vs gallery/
+        routes[prefix] = callback;
+      });
+
+      // Must override with prefixed routes
+      this.routes = routes;
+
+      // Required to have Backbone set up routes
+      Backbone.Router.prototype.constructor.call(this);
+    }
+  });
+
+  return Directus;
 });
 //  tabs.js
 //  Directus 6.0
@@ -31450,2448 +32263,40 @@ function(app, Backbone) {
   Tabs.View = Backbone.Layout.extend({
     template: "tabs",
 
-    data: function() {
+    serialize: function() {
       return {tabs: this.collection.toJSON()};
+    },
+
+    initialize: function() {
+      this.collection.on('change', this.render, this);
     }
 
   });
 
   return Tabs;
 });
-/*
- * jQuery UI Widget 1.9.1+amd
- * https://github.com/blueimp/jQuery-File-Upload
- *
- * Copyright 2012 jQuery Foundation and other contributors
- * Released under the MIT license.
- * http://jquery.org/license
- *
- * http://api.jqueryui.com/jQuery.widget/
- */
-
-(function (factory) {
-    if (typeof define === "function" && define.amd) {
-        // Register as an anonymous AMD module:
-        define('jquery.ui.widget',["jquery"], factory);
-    } else {
-        // Browser globals:
-        factory(jQuery);
-    }
-}(function( $, undefined ) {
-
-var uuid = 0,
-	slice = Array.prototype.slice,
-	_cleanData = $.cleanData;
-$.cleanData = function( elems ) {
-	for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
-		try {
-			$( elem ).triggerHandler( "remove" );
-		// http://bugs.jquery.com/ticket/8235
-		} catch( e ) {}
-	}
-	_cleanData( elems );
-};
-
-$.widget = function( name, base, prototype ) {
-	var fullName, existingConstructor, constructor, basePrototype,
-		namespace = name.split( "." )[ 0 ];
-
-	name = name.split( "." )[ 1 ];
-	fullName = namespace + "-" + name;
-
-	if ( !prototype ) {
-		prototype = base;
-		base = $.Widget;
-	}
-
-	// create selector for plugin
-	$.expr[ ":" ][ fullName.toLowerCase() ] = function( elem ) {
-		return !!$.data( elem, fullName );
-	};
-
-	$[ namespace ] = $[ namespace ] || {};
-	existingConstructor = $[ namespace ][ name ];
-	constructor = $[ namespace ][ name ] = function( options, element ) {
-		// allow instantiation without "new" keyword
-		if ( !this._createWidget ) {
-			return new constructor( options, element );
-		}
-
-		// allow instantiation without initializing for simple inheritance
-		// must use "new" keyword (the code above always passes args)
-		if ( arguments.length ) {
-			this._createWidget( options, element );
-		}
-	};
-	// extend with the existing constructor to carry over any static properties
-	$.extend( constructor, existingConstructor, {
-		version: prototype.version,
-		// copy the object used to create the prototype in case we need to
-		// redefine the widget later
-		_proto: $.extend( {}, prototype ),
-		// track widgets that inherit from this widget in case this widget is
-		// redefined after a widget inherits from it
-		_childConstructors: []
-	});
-
-	basePrototype = new base();
-	// we need to make the options hash a property directly on the new instance
-	// otherwise we'll modify the options hash on the prototype that we're
-	// inheriting from
-	basePrototype.options = $.widget.extend( {}, basePrototype.options );
-	$.each( prototype, function( prop, value ) {
-		if ( $.isFunction( value ) ) {
-			prototype[ prop ] = (function() {
-				var _super = function() {
-						return base.prototype[ prop ].apply( this, arguments );
-					},
-					_superApply = function( args ) {
-						return base.prototype[ prop ].apply( this, args );
-					};
-				return function() {
-					var __super = this._super,
-						__superApply = this._superApply,
-						returnValue;
-
-					this._super = _super;
-					this._superApply = _superApply;
-
-					returnValue = value.apply( this, arguments );
-
-					this._super = __super;
-					this._superApply = __superApply;
-
-					return returnValue;
-				};
-			})();
-		}
-	});
-	constructor.prototype = $.widget.extend( basePrototype, {
-		// TODO: remove support for widgetEventPrefix
-		// always use the name + a colon as the prefix, e.g., draggable:start
-		// don't prefix for widgets that aren't DOM-based
-		widgetEventPrefix: basePrototype.widgetEventPrefix || name
-	}, prototype, {
-		constructor: constructor,
-		namespace: namespace,
-		widgetName: name,
-		// TODO remove widgetBaseClass, see #8155
-		widgetBaseClass: fullName,
-		widgetFullName: fullName
-	});
-
-	// If this widget is being redefined then we need to find all widgets that
-	// are inheriting from it and redefine all of them so that they inherit from
-	// the new version of this widget. We're essentially trying to replace one
-	// level in the prototype chain.
-	if ( existingConstructor ) {
-		$.each( existingConstructor._childConstructors, function( i, child ) {
-			var childPrototype = child.prototype;
-
-			// redefine the child widget using the same prototype that was
-			// originally used, but inherit from the new version of the base
-			$.widget( childPrototype.namespace + "." + childPrototype.widgetName, constructor, child._proto );
-		});
-		// remove the list of existing child constructors from the old constructor
-		// so the old child constructors can be garbage collected
-		delete existingConstructor._childConstructors;
-	} else {
-		base._childConstructors.push( constructor );
-	}
-
-	$.widget.bridge( name, constructor );
-};
-
-$.widget.extend = function( target ) {
-	var input = slice.call( arguments, 1 ),
-		inputIndex = 0,
-		inputLength = input.length,
-		key,
-		value;
-	for ( ; inputIndex < inputLength; inputIndex++ ) {
-		for ( key in input[ inputIndex ] ) {
-			value = input[ inputIndex ][ key ];
-			if ( input[ inputIndex ].hasOwnProperty( key ) && value !== undefined ) {
-				// Clone objects
-				if ( $.isPlainObject( value ) ) {
-					target[ key ] = $.isPlainObject( target[ key ] ) ?
-						$.widget.extend( {}, target[ key ], value ) :
-						// Don't extend strings, arrays, etc. with objects
-						$.widget.extend( {}, value );
-				// Copy everything else by reference
-				} else {
-					target[ key ] = value;
-				}
-			}
-		}
-	}
-	return target;
-};
-
-$.widget.bridge = function( name, object ) {
-	var fullName = object.prototype.widgetFullName;
-	$.fn[ name ] = function( options ) {
-		var isMethodCall = typeof options === "string",
-			args = slice.call( arguments, 1 ),
-			returnValue = this;
-
-		// allow multiple hashes to be passed on init
-		options = !isMethodCall && args.length ?
-			$.widget.extend.apply( null, [ options ].concat(args) ) :
-			options;
-
-		if ( isMethodCall ) {
-			this.each(function() {
-				var methodValue,
-					instance = $.data( this, fullName );
-				if ( !instance ) {
-					return $.error( "cannot call methods on " + name + " prior to initialization; " +
-						"attempted to call method '" + options + "'" );
-				}
-				if ( !$.isFunction( instance[options] ) || options.charAt( 0 ) === "_" ) {
-					return $.error( "no such method '" + options + "' for " + name + " widget instance" );
-				}
-				methodValue = instance[ options ].apply( instance, args );
-				if ( methodValue !== instance && methodValue !== undefined ) {
-					returnValue = methodValue && methodValue.jquery ?
-						returnValue.pushStack( methodValue.get() ) :
-						methodValue;
-					return false;
-				}
-			});
-		} else {
-			this.each(function() {
-				var instance = $.data( this, fullName );
-				if ( instance ) {
-					instance.option( options || {} )._init();
-				} else {
-					new object( options, this );
-				}
-			});
-		}
-
-		return returnValue;
-	};
-};
-
-$.Widget = function( /* options, element */ ) {};
-$.Widget._childConstructors = [];
-
-$.Widget.prototype = {
-	widgetName: "widget",
-	widgetEventPrefix: "",
-	defaultElement: "<div>",
-	options: {
-		disabled: false,
-
-		// callbacks
-		create: null
-	},
-	_createWidget: function( options, element ) {
-		element = $( element || this.defaultElement || this )[ 0 ];
-		this.element = $( element );
-		this.uuid = uuid++;
-		this.eventNamespace = "." + this.widgetName + this.uuid;
-		this.options = $.widget.extend( {},
-			this.options,
-			this._getCreateOptions(),
-			options );
-
-		this.bindings = $();
-		this.hoverable = $();
-		this.focusable = $();
-
-		if ( element !== this ) {
-			// 1.9 BC for #7810
-			// TODO remove dual storage
-			$.data( element, this.widgetName, this );
-			$.data( element, this.widgetFullName, this );
-			this._on( this.element, {
-				remove: function( event ) {
-					if ( event.target === element ) {
-						this.destroy();
-					}
-				}
-			});
-			this.document = $( element.style ?
-				// element within the document
-				element.ownerDocument :
-				// element is window or document
-				element.document || element );
-			this.window = $( this.document[0].defaultView || this.document[0].parentWindow );
-		}
-
-		this._create();
-		this._trigger( "create", null, this._getCreateEventData() );
-		this._init();
-	},
-	_getCreateOptions: $.noop,
-	_getCreateEventData: $.noop,
-	_create: $.noop,
-	_init: $.noop,
-
-	destroy: function() {
-		this._destroy();
-		// we can probably remove the unbind calls in 2.0
-		// all event bindings should go through this._on()
-		this.element
-			.unbind( this.eventNamespace )
-			// 1.9 BC for #7810
-			// TODO remove dual storage
-			.removeData( this.widgetName )
-			.removeData( this.widgetFullName )
-			// support: jquery <1.6.3
-			// http://bugs.jquery.com/ticket/9413
-			.removeData( $.camelCase( this.widgetFullName ) );
-		this.widget()
-			.unbind( this.eventNamespace )
-			.removeAttr( "aria-disabled" )
-			.removeClass(
-				this.widgetFullName + "-disabled " +
-				"ui-state-disabled" );
-
-		// clean up events and states
-		this.bindings.unbind( this.eventNamespace );
-		this.hoverable.removeClass( "ui-state-hover" );
-		this.focusable.removeClass( "ui-state-focus" );
-	},
-	_destroy: $.noop,
-
-	widget: function() {
-		return this.element;
-	},
-
-	option: function( key, value ) {
-		var options = key,
-			parts,
-			curOption,
-			i;
-
-		if ( arguments.length === 0 ) {
-			// don't return a reference to the internal hash
-			return $.widget.extend( {}, this.options );
-		}
-
-		if ( typeof key === "string" ) {
-			// handle nested keys, e.g., "foo.bar" => { foo: { bar: ___ } }
-			options = {};
-			parts = key.split( "." );
-			key = parts.shift();
-			if ( parts.length ) {
-				curOption = options[ key ] = $.widget.extend( {}, this.options[ key ] );
-				for ( i = 0; i < parts.length - 1; i++ ) {
-					curOption[ parts[ i ] ] = curOption[ parts[ i ] ] || {};
-					curOption = curOption[ parts[ i ] ];
-				}
-				key = parts.pop();
-				if ( value === undefined ) {
-					return curOption[ key ] === undefined ? null : curOption[ key ];
-				}
-				curOption[ key ] = value;
-			} else {
-				if ( value === undefined ) {
-					return this.options[ key ] === undefined ? null : this.options[ key ];
-				}
-				options[ key ] = value;
-			}
-		}
-
-		this._setOptions( options );
-
-		return this;
-	},
-	_setOptions: function( options ) {
-		var key;
-
-		for ( key in options ) {
-			this._setOption( key, options[ key ] );
-		}
-
-		return this;
-	},
-	_setOption: function( key, value ) {
-		this.options[ key ] = value;
-
-		if ( key === "disabled" ) {
-			this.widget()
-				.toggleClass( this.widgetFullName + "-disabled ui-state-disabled", !!value )
-				.attr( "aria-disabled", value );
-			this.hoverable.removeClass( "ui-state-hover" );
-			this.focusable.removeClass( "ui-state-focus" );
-		}
-
-		return this;
-	},
-
-	enable: function() {
-		return this._setOption( "disabled", false );
-	},
-	disable: function() {
-		return this._setOption( "disabled", true );
-	},
-
-	_on: function( element, handlers ) {
-		var delegateElement,
-			instance = this;
-		// no element argument, shuffle and use this.element
-		if ( !handlers ) {
-			handlers = element;
-			element = this.element;
-			delegateElement = this.widget();
-		} else {
-			// accept selectors, DOM elements
-			element = delegateElement = $( element );
-			this.bindings = this.bindings.add( element );
-		}
-
-		$.each( handlers, function( event, handler ) {
-			function handlerProxy() {
-				// allow widgets to customize the disabled handling
-				// - disabled as an array instead of boolean
-				// - disabled class as method for disabling individual parts
-				if ( instance.options.disabled === true ||
-						$( this ).hasClass( "ui-state-disabled" ) ) {
-					return;
-				}
-				return ( typeof handler === "string" ? instance[ handler ] : handler )
-					.apply( instance, arguments );
-			}
-
-			// copy the guid so direct unbinding works
-			if ( typeof handler !== "string" ) {
-				handlerProxy.guid = handler.guid =
-					handler.guid || handlerProxy.guid || $.guid++;
-			}
-
-			var match = event.match( /^(\w+)\s*(.*)$/ ),
-				eventName = match[1] + instance.eventNamespace,
-				selector = match[2];
-			if ( selector ) {
-				delegateElement.delegate( selector, eventName, handlerProxy );
-			} else {
-				element.bind( eventName, handlerProxy );
-			}
-		});
-	},
-
-	_off: function( element, eventName ) {
-		eventName = (eventName || "").split( " " ).join( this.eventNamespace + " " ) + this.eventNamespace;
-		element.unbind( eventName ).undelegate( eventName );
-	},
-
-	_delay: function( handler, delay ) {
-		function handlerProxy() {
-			return ( typeof handler === "string" ? instance[ handler ] : handler )
-				.apply( instance, arguments );
-		}
-		var instance = this;
-		return setTimeout( handlerProxy, delay || 0 );
-	},
-
-	_hoverable: function( element ) {
-		this.hoverable = this.hoverable.add( element );
-		this._on( element, {
-			mouseenter: function( event ) {
-				$( event.currentTarget ).addClass( "ui-state-hover" );
-			},
-			mouseleave: function( event ) {
-				$( event.currentTarget ).removeClass( "ui-state-hover" );
-			}
-		});
-	},
-
-	_focusable: function( element ) {
-		this.focusable = this.focusable.add( element );
-		this._on( element, {
-			focusin: function( event ) {
-				$( event.currentTarget ).addClass( "ui-state-focus" );
-			},
-			focusout: function( event ) {
-				$( event.currentTarget ).removeClass( "ui-state-focus" );
-			}
-		});
-	},
-
-	_trigger: function( type, event, data ) {
-		var prop, orig,
-			callback = this.options[ type ];
-
-		data = data || {};
-		event = $.Event( event );
-		event.type = ( type === this.widgetEventPrefix ?
-			type :
-			this.widgetEventPrefix + type ).toLowerCase();
-		// the original event may come from any element
-		// so we need to reset the target on the new event
-		event.target = this.element[ 0 ];
-
-		// copy original event properties over to the new event
-		orig = event.originalEvent;
-		if ( orig ) {
-			for ( prop in orig ) {
-				if ( !( prop in event ) ) {
-					event[ prop ] = orig[ prop ];
-				}
-			}
-		}
-
-		this.element.trigger( event, data );
-		return !( $.isFunction( callback ) &&
-			callback.apply( this.element[0], [ event ].concat( data ) ) === false ||
-			event.isDefaultPrevented() );
-	}
-};
-
-$.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
-	$.Widget.prototype[ "_" + method ] = function( element, options, callback ) {
-		if ( typeof options === "string" ) {
-			options = { effect: options };
-		}
-		var hasOptions,
-			effectName = !options ?
-				method :
-				options === true || typeof options === "number" ?
-					defaultEffect :
-					options.effect || defaultEffect;
-		options = options || {};
-		if ( typeof options === "number" ) {
-			options = { duration: options };
-		}
-		hasOptions = !$.isEmptyObject( options );
-		options.complete = callback;
-		if ( options.delay ) {
-			element.delay( options.delay );
-		}
-		if ( hasOptions && $.effects && ( $.effects.effect[ effectName ] || $.uiBackCompat !== false && $.effects[ effectName ] ) ) {
-			element[ method ]( options );
-		} else if ( effectName !== method && element[ effectName ] ) {
-			element[ effectName ]( options.duration, options.easing, callback );
-		} else {
-			element.queue(function( next ) {
-				$( this )[ method ]();
-				if ( callback ) {
-					callback.call( element[ 0 ] );
-				}
-				next();
-			});
-		}
-	};
-});
-
-// DEPRECATED
-if ( $.uiBackCompat !== false ) {
-	$.Widget.prototype._getCreateOptions = function() {
-		return $.metadata && $.metadata.get( this.element[0] )[ this.widgetName ];
-	};
-}
-
-}));
-
-/*
- * jQuery Iframe Transport Plugin 1.5
- * https://github.com/blueimp/jQuery-File-Upload
- *
- * Copyright 2011, Sebastian Tschan
- * https://blueimp.net
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
- */
-
-/*jslint unparam: true, nomen: true */
-/*global define, window, document */
-
-(function (factory) {
-    
-    if (typeof define === 'function' && define.amd) {
-        // Register as an anonymous AMD module:
-        define('jquery.iframe.transport',['jquery'], factory);
-    } else {
-        // Browser globals:
-        factory(window.jQuery);
-    }
-}(function ($) {
-    
-
-    // Helper variable to create unique names for the transport iframes:
-    var counter = 0;
-
-    // The iframe transport accepts three additional options:
-    // options.fileInput: a jQuery collection of file input fields
-    // options.paramName: the parameter name for the file form data,
-    //  overrides the name property of the file input field(s),
-    //  can be a string or an array of strings.
-    // options.formData: an array of objects with name and value properties,
-    //  equivalent to the return data of .serializeArray(), e.g.:
-    //  [{name: 'a', value: 1}, {name: 'b', value: 2}]
-    $.ajaxTransport('iframe', function (options) {
-        if (options.async && (options.type === 'POST' || options.type === 'GET')) {
-            var form,
-                iframe;
-            return {
-                send: function (_, completeCallback) {
-                    form = $('<form style="display:none;"></form>');
-                    form.attr('accept-charset', options.formAcceptCharset);
-                    // javascript:false as initial iframe src
-                    // prevents warning popups on HTTPS in IE6.
-                    // IE versions below IE8 cannot set the name property of
-                    // elements that have already been added to the DOM,
-                    // so we set the name along with the iframe HTML markup:
-                    iframe = $(
-                        '<iframe src="javascript:false;" name="iframe-transport-' +
-                            (counter += 1) + '"></iframe>'
-                    ).bind('load', function () {
-                        var fileInputClones,
-                            paramNames = $.isArray(options.paramName) ?
-                                    options.paramName : [options.paramName];
-                        iframe
-                            .unbind('load')
-                            .bind('load', function () {
-                                var response;
-                                // Wrap in a try/catch block to catch exceptions thrown
-                                // when trying to access cross-domain iframe contents:
-                                try {
-                                    response = iframe.contents();
-                                    // Google Chrome and Firefox do not throw an
-                                    // exception when calling iframe.contents() on
-                                    // cross-domain requests, so we unify the response:
-                                    if (!response.length || !response[0].firstChild) {
-                                        throw new Error();
-                                    }
-                                } catch (e) {
-                                    response = undefined;
-                                }
-                                // The complete callback returns the
-                                // iframe content document as response object:
-                                completeCallback(
-                                    200,
-                                    'success',
-                                    {'iframe': response}
-                                );
-                                // Fix for IE endless progress bar activity bug
-                                // (happens on form submits to iframe targets):
-                                $('<iframe src="javascript:false;"></iframe>')
-                                    .appendTo(form);
-                                form.remove();
-                            });
-                        form
-                            .prop('target', iframe.prop('name'))
-                            .prop('action', options.url)
-                            .prop('method', options.type);
-                        if (options.formData) {
-                            $.each(options.formData, function (index, field) {
-                                $('<input type="hidden"/>')
-                                    .prop('name', field.name)
-                                    .val(field.value)
-                                    .appendTo(form);
-                            });
-                        }
-                        if (options.fileInput && options.fileInput.length &&
-                                options.type === 'POST') {
-                            fileInputClones = options.fileInput.clone();
-                            // Insert a clone for each file input field:
-                            options.fileInput.after(function (index) {
-                                return fileInputClones[index];
-                            });
-                            if (options.paramName) {
-                                options.fileInput.each(function (index) {
-                                    $(this).prop(
-                                        'name',
-                                        paramNames[index] || options.paramName
-                                    );
-                                });
-                            }
-                            // Appending the file input fields to the hidden form
-                            // removes them from their original location:
-                            form
-                                .append(options.fileInput)
-                                .prop('enctype', 'multipart/form-data')
-                                // enctype must be set as encoding for IE:
-                                .prop('encoding', 'multipart/form-data');
-                        }
-                        form.submit();
-                        // Insert the file input fields at their original location
-                        // by replacing the clones with the originals:
-                        if (fileInputClones && fileInputClones.length) {
-                            options.fileInput.each(function (index, input) {
-                                var clone = $(fileInputClones[index]);
-                                $(input).prop('name', clone.prop('name'));
-                                clone.replaceWith(input);
-                            });
-                        }
-                    });
-                    form.append(iframe).appendTo(document.body);
-                },
-                abort: function () {
-                    if (iframe) {
-                        // javascript:false as iframe src aborts the request
-                        // and prevents warning popups on HTTPS in IE6.
-                        // concat is used to avoid the "Script URL" JSLint error:
-                        iframe
-                            .unbind('load')
-                            .prop('src', 'javascript'.concat(':false;'));
-                    }
-                    if (form) {
-                        form.remove();
-                    }
-                }
-            };
-        }
-    });
-
-    // The iframe transport returns the iframe content document as response.
-    // The following adds converters from iframe to text, json, html, and script:
-    $.ajaxSetup({
-        converters: {
-            'iframe text': function (iframe) {
-                return $(iframe[0].body).text();
-            },
-            'iframe json': function (iframe) {
-                return $.parseJSON($(iframe[0].body).text());
-            },
-            'iframe html': function (iframe) {
-                return $(iframe[0].body).html();
-            },
-            'iframe script': function (iframe) {
-                return $.globalEval($(iframe[0].body).text());
-            }
-        }
-    });
-
-}));
-
-/*
- * jQuery File Upload Plugin 5.19.4
- * https://github.com/blueimp/jQuery-File-Upload
- *
- * Copyright 2010, Sebastian Tschan
- * https://blueimp.net
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
- */
-
-/*jslint nomen: true, unparam: true, regexp: true */
-/*global define, window, document, File, Blob, FormData, location */
-
-(function (factory) {
-    
-    if (typeof define === 'function' && define.amd) {
-        // Register as an anonymous AMD module:
-        define('plugins/jquery.fileupload',[
-            'jquery',
-            'jquery.ui.widget'
-        ], factory);
-    } else {
-        // Browser globals:
-        factory(window.jQuery);
-    }
-}(function ($) {
-    
-
-    // The FileReader API is not actually used, but works as feature detection,
-    // as e.g. Safari supports XHR file uploads via the FormData API,
-    // but not non-multipart XHR file uploads:
-    $.support.xhrFileUpload = !!(window.XMLHttpRequestUpload && window.FileReader);
-    $.support.xhrFormDataFileUpload = !!window.FormData;
-
-    // The fileupload widget listens for change events on file input fields defined
-    // via fileInput setting and paste or drop events of the given dropZone.
-    // In addition to the default jQuery Widget methods, the fileupload widget
-    // exposes the "add" and "send" methods, to add or directly send files using
-    // the fileupload API.
-    // By default, files added via file input selection, paste, drag & drop or
-    // "add" method are uploaded immediately, but it is possible to override
-    // the "add" callback option to queue file uploads.
-    $.widget('blueimp.fileupload', {
-
-        options: {
-            // The drop target element(s), by the default the complete document.
-            // Set to null to disable drag & drop support:
-            dropZone: $(document),
-            // The paste target element(s), by the default the complete document.
-            // Set to null to disable paste support:
-            pasteZone: $(document),
-            // The file input field(s), that are listened to for change events.
-            // If undefined, it is set to the file input fields inside
-            // of the widget element on plugin initialization.
-            // Set to null to disable the change listener.
-            fileInput: undefined,
-            // By default, the file input field is replaced with a clone after
-            // each input field change event. This is required for iframe transport
-            // queues and allows change events to be fired for the same file
-            // selection, but can be disabled by setting the following option to false:
-            replaceFileInput: true,
-            // The parameter name for the file form data (the request argument name).
-            // If undefined or empty, the name property of the file input field is
-            // used, or "files[]" if the file input name property is also empty,
-            // can be a string or an array of strings:
-            paramName: undefined,
-            // By default, each file of a selection is uploaded using an individual
-            // request for XHR type uploads. Set to false to upload file
-            // selections in one request each:
-            singleFileUploads: true,
-            // To limit the number of files uploaded with one XHR request,
-            // set the following option to an integer greater than 0:
-            limitMultiFileUploads: undefined,
-            // Set the following option to true to issue all file upload requests
-            // in a sequential order:
-            sequentialUploads: false,
-            // To limit the number of concurrent uploads,
-            // set the following option to an integer greater than 0:
-            limitConcurrentUploads: undefined,
-            // Set the following option to true to force iframe transport uploads:
-            forceIframeTransport: false,
-            // Set the following option to the location of a redirect url on the
-            // origin server, for cross-domain iframe transport uploads:
-            redirect: undefined,
-            // The parameter name for the redirect url, sent as part of the form
-            // data and set to 'redirect' if this option is empty:
-            redirectParamName: undefined,
-            // Set the following option to the location of a postMessage window,
-            // to enable postMessage transport uploads:
-            postMessage: undefined,
-            // By default, XHR file uploads are sent as multipart/form-data.
-            // The iframe transport is always using multipart/form-data.
-            // Set to false to enable non-multipart XHR uploads:
-            multipart: true,
-            // To upload large files in smaller chunks, set the following option
-            // to a preferred maximum chunk size. If set to 0, null or undefined,
-            // or the browser does not support the required Blob API, files will
-            // be uploaded as a whole.
-            maxChunkSize: undefined,
-            // When a non-multipart upload or a chunked multipart upload has been
-            // aborted, this option can be used to resume the upload by setting
-            // it to the size of the already uploaded bytes. This option is most
-            // useful when modifying the options object inside of the "add" or
-            // "send" callbacks, as the options are cloned for each file upload.
-            uploadedBytes: undefined,
-            // By default, failed (abort or error) file uploads are removed from the
-            // global progress calculation. Set the following option to false to
-            // prevent recalculating the global progress data:
-            recalculateProgress: true,
-            // Interval in milliseconds to calculate and trigger progress events:
-            progressInterval: 100,
-            // Interval in milliseconds to calculate progress bitrate:
-            bitrateInterval: 500,
-
-            // Additional form data to be sent along with the file uploads can be set
-            // using this option, which accepts an array of objects with name and
-            // value properties, a function returning such an array, a FormData
-            // object (for XHR file uploads), or a simple object.
-            // The form of the first fileInput is given as parameter to the function:
-            formData: function (form) {
-                return form.serializeArray();
-            },
-
-            // The add callback is invoked as soon as files are added to the fileupload
-            // widget (via file input selection, drag & drop, paste or add API call).
-            // If the singleFileUploads option is enabled, this callback will be
-            // called once for each file in the selection for XHR file uplaods, else
-            // once for each file selection.
-            // The upload starts when the submit method is invoked on the data parameter.
-            // The data object contains a files property holding the added files
-            // and allows to override plugin options as well as define ajax settings.
-            // Listeners for this callback can also be bound the following way:
-            // .bind('fileuploadadd', func);
-            // data.submit() returns a Promise object and allows to attach additional
-            // handlers using jQuery's Deferred callbacks:
-            // data.submit().done(func).fail(func).always(func);
-            add: function (e, data) {
-                data.submit();
-            },
-
-            // Other callbacks:
-            // Callback for the submit event of each file upload:
-            // submit: function (e, data) {}, // .bind('fileuploadsubmit', func);
-            // Callback for the start of each file upload request:
-            // send: function (e, data) {}, // .bind('fileuploadsend', func);
-            // Callback for successful uploads:
-            // done: function (e, data) {}, // .bind('fileuploaddone', func);
-            // Callback for failed (abort or error) uploads:
-            // fail: function (e, data) {}, // .bind('fileuploadfail', func);
-            // Callback for completed (success, abort or error) requests:
-            // always: function (e, data) {}, // .bind('fileuploadalways', func);
-            // Callback for upload progress events:
-            // progress: function (e, data) {}, // .bind('fileuploadprogress', func);
-            // Callback for global upload progress events:
-            // progressall: function (e, data) {}, // .bind('fileuploadprogressall', func);
-            // Callback for uploads start, equivalent to the global ajaxStart event:
-            // start: function (e) {}, // .bind('fileuploadstart', func);
-            // Callback for uploads stop, equivalent to the global ajaxStop event:
-            // stop: function (e) {}, // .bind('fileuploadstop', func);
-            // Callback for change events of the fileInput(s):
-            // change: function (e, data) {}, // .bind('fileuploadchange', func);
-            // Callback for paste events to the pasteZone(s):
-            // paste: function (e, data) {}, // .bind('fileuploadpaste', func);
-            // Callback for drop events of the dropZone(s):
-            // drop: function (e, data) {}, // .bind('fileuploaddrop', func);
-            // Callback for dragover events of the dropZone(s):
-            // dragover: function (e) {}, // .bind('fileuploaddragover', func);
-
-            // The plugin options are used as settings object for the ajax calls.
-            // The following are jQuery ajax settings required for the file uploads:
-            processData: false,
-            contentType: false,
-            cache: false
-        },
-
-        // A list of options that require a refresh after assigning a new value:
-        _refreshOptionsList: [
-            'fileInput',
-            'dropZone',
-            'pasteZone',
-            'multipart',
-            'forceIframeTransport'
-        ],
-
-        _BitrateTimer: function () {
-            this.timestamp = +(new Date());
-            this.loaded = 0;
-            this.bitrate = 0;
-            this.getBitrate = function (now, loaded, interval) {
-                var timeDiff = now - this.timestamp;
-                if (!this.bitrate || !interval || timeDiff > interval) {
-                    this.bitrate = (loaded - this.loaded) * (1000 / timeDiff) * 8;
-                    this.loaded = loaded;
-                    this.timestamp = now;
-                }
-                return this.bitrate;
-            };
-        },
-
-        _isXHRUpload: function (options) {
-            return !options.forceIframeTransport &&
-                ((!options.multipart && $.support.xhrFileUpload) ||
-                $.support.xhrFormDataFileUpload);
-        },
-
-        _getFormData: function (options) {
-            var formData;
-            if (typeof options.formData === 'function') {
-                return options.formData(options.form);
-            }
-            if ($.isArray(options.formData)) {
-                return options.formData;
-            }
-            if (options.formData) {
-                formData = [];
-                $.each(options.formData, function (name, value) {
-                    formData.push({name: name, value: value});
-                });
-                return formData;
-            }
-            return [];
-        },
-
-        _getTotal: function (files) {
-            var total = 0;
-            $.each(files, function (index, file) {
-                total += file.size || 1;
-            });
-            return total;
-        },
-
-        _onProgress: function (e, data) {
-            if (e.lengthComputable) {
-                var now = +(new Date()),
-                    total,
-                    loaded;
-                if (data._time && data.progressInterval &&
-                        (now - data._time < data.progressInterval) &&
-                        e.loaded !== e.total) {
-                    return;
-                }
-                data._time = now;
-                total = data.total || this._getTotal(data.files);
-                loaded = parseInt(
-                    e.loaded / e.total * (data.chunkSize || total),
-                    10
-                ) + (data.uploadedBytes || 0);
-                this._loaded += loaded - (data.loaded || data.uploadedBytes || 0);
-                data.lengthComputable = true;
-                data.loaded = loaded;
-                data.total = total;
-                data.bitrate = data._bitrateTimer.getBitrate(
-                    now,
-                    loaded,
-                    data.bitrateInterval
-                );
-                // Trigger a custom progress event with a total data property set
-                // to the file size(s) of the current upload and a loaded data
-                // property calculated accordingly:
-                this._trigger('progress', e, data);
-                // Trigger a global progress event for all current file uploads,
-                // including ajax calls queued for sequential file uploads:
-                this._trigger('progressall', e, {
-                    lengthComputable: true,
-                    loaded: this._loaded,
-                    total: this._total,
-                    bitrate: this._bitrateTimer.getBitrate(
-                        now,
-                        this._loaded,
-                        data.bitrateInterval
-                    )
-                });
-            }
-        },
-
-        _initProgressListener: function (options) {
-            var that = this,
-                xhr = options.xhr ? options.xhr() : $.ajaxSettings.xhr();
-            // Accesss to the native XHR object is required to add event listeners
-            // for the upload progress event:
-            if (xhr.upload) {
-                $(xhr.upload).bind('progress', function (e) {
-                    var oe = e.originalEvent;
-                    // Make sure the progress event properties get copied over:
-                    e.lengthComputable = oe.lengthComputable;
-                    e.loaded = oe.loaded;
-                    e.total = oe.total;
-                    that._onProgress(e, options);
-                });
-                options.xhr = function () {
-                    return xhr;
-                };
-            }
-        },
-
-        _initXHRData: function (options) {
-            var formData,
-                file = options.files[0],
-                // Ignore non-multipart setting if not supported:
-                multipart = options.multipart || !$.support.xhrFileUpload,
-                paramName = options.paramName[0];
-            options.headers = options.headers || {};
-            if (options.contentRange) {
-                options.headers['Content-Range'] = options.contentRange;
-            }
-            if (!multipart) {
-                options.headers['Content-Disposition'] = 'attachment; filename="' +
-                    encodeURI(file.name) + '"';
-                options.contentType = file.type;
-                options.data = options.blob || file;
-            } else if ($.support.xhrFormDataFileUpload) {
-                if (options.postMessage) {
-                    // window.postMessage does not allow sending FormData
-                    // objects, so we just add the File/Blob objects to
-                    // the formData array and let the postMessage window
-                    // create the FormData object out of this array:
-                    formData = this._getFormData(options);
-                    if (options.blob) {
-                        formData.push({
-                            name: paramName,
-                            value: options.blob
-                        });
-                    } else {
-                        $.each(options.files, function (index, file) {
-                            formData.push({
-                                name: options.paramName[index] || paramName,
-                                value: file
-                            });
-                        });
-                    }
-                } else {
-                    if (options.formData instanceof FormData) {
-                        formData = options.formData;
-                    } else {
-                        formData = new FormData();
-                        $.each(this._getFormData(options), function (index, field) {
-                            formData.append(field.name, field.value);
-                        });
-                    }
-                    if (options.blob) {
-                        options.headers['Content-Disposition'] = 'attachment; filename="' +
-                            encodeURI(file.name) + '"';
-                        options.headers['Content-Description'] = encodeURI(file.type);
-                        formData.append(paramName, options.blob, file.name);
-                    } else {
-                        $.each(options.files, function (index, file) {
-                            // Files are also Blob instances, but some browsers
-                            // (Firefox 3.6) support the File API but not Blobs.
-                            // This check allows the tests to run with
-                            // dummy objects:
-                            if ((window.Blob && file instanceof Blob) ||
-                                    (window.File && file instanceof File)) {
-                                formData.append(
-                                    options.paramName[index] || paramName,
-                                    file,
-                                    file.name
-                                );
-                            }
-                        });
-                    }
-                }
-                options.data = formData;
-            }
-            // Blob reference is not needed anymore, free memory:
-            options.blob = null;
-        },
-
-        _initIframeSettings: function (options) {
-            // Setting the dataType to iframe enables the iframe transport:
-            options.dataType = 'iframe ' + (options.dataType || '');
-            // The iframe transport accepts a serialized array as form data:
-            options.formData = this._getFormData(options);
-            // Add redirect url to form data on cross-domain uploads:
-            if (options.redirect && $('<a></a>').prop('href', options.url)
-                    .prop('host') !== location.host) {
-                options.formData.push({
-                    name: options.redirectParamName || 'redirect',
-                    value: options.redirect
-                });
-            }
-        },
-
-        _initDataSettings: function (options) {
-            if (this._isXHRUpload(options)) {
-                if (!this._chunkedUpload(options, true)) {
-                    if (!options.data) {
-                        this._initXHRData(options);
-                    }
-                    this._initProgressListener(options);
-                }
-                if (options.postMessage) {
-                    // Setting the dataType to postmessage enables the
-                    // postMessage transport:
-                    options.dataType = 'postmessage ' + (options.dataType || '');
-                }
-            } else {
-                this._initIframeSettings(options, 'iframe');
-            }
-        },
-
-        _getParamName: function (options) {
-            var fileInput = $(options.fileInput),
-                paramName = options.paramName;
-            if (!paramName) {
-                paramName = [];
-                fileInput.each(function () {
-                    var input = $(this),
-                        name = input.prop('name') || 'files[]',
-                        i = (input.prop('files') || [1]).length;
-                    while (i) {
-                        paramName.push(name);
-                        i -= 1;
-                    }
-                });
-                if (!paramName.length) {
-                    paramName = [fileInput.prop('name') || 'files[]'];
-                }
-            } else if (!$.isArray(paramName)) {
-                paramName = [paramName];
-            }
-            return paramName;
-        },
-
-        _initFormSettings: function (options) {
-            // Retrieve missing options from the input field and the
-            // associated form, if available:
-            if (!options.form || !options.form.length) {
-                options.form = $(options.fileInput.prop('form'));
-                // If the given file input doesn't have an associated form,
-                // use the default widget file input's form:
-                if (!options.form.length) {
-                    options.form = $(this.options.fileInput.prop('form'));
-                }
-            }
-            options.paramName = this._getParamName(options);
-            if (!options.url) {
-                options.url = options.form.prop('action') || location.href;
-            }
-            // The HTTP request method must be "POST" or "PUT":
-            options.type = (options.type || options.form.prop('method') || '')
-                .toUpperCase();
-            if (options.type !== 'POST' && options.type !== 'PUT') {
-                options.type = 'POST';
-            }
-            if (!options.formAcceptCharset) {
-                options.formAcceptCharset = options.form.attr('accept-charset');
-            }
-        },
-
-        _getAJAXSettings: function (data) {
-            var options = $.extend({}, this.options, data);
-            this._initFormSettings(options);
-            this._initDataSettings(options);
-            return options;
-        },
-
-        // Maps jqXHR callbacks to the equivalent
-        // methods of the given Promise object:
-        _enhancePromise: function (promise) {
-            promise.success = promise.done;
-            promise.error = promise.fail;
-            promise.complete = promise.always;
-            return promise;
-        },
-
-        // Creates and returns a Promise object enhanced with
-        // the jqXHR methods abort, success, error and complete:
-        _getXHRPromise: function (resolveOrReject, context, args) {
-            var dfd = $.Deferred(),
-                promise = dfd.promise();
-            context = context || this.options.context || promise;
-            if (resolveOrReject === true) {
-                dfd.resolveWith(context, args);
-            } else if (resolveOrReject === false) {
-                dfd.rejectWith(context, args);
-            }
-            promise.abort = dfd.promise;
-            return this._enhancePromise(promise);
-        },
-
-        // Parses the Range header from the server response
-        // and returns the uploaded bytes:
-        _getUploadedBytes: function (jqXHR) {
-            var range = jqXHR.getResponseHeader('Range'),
-                parts = range && range.split('-'),
-                upperBytesPos = parts && parts.length > 1 &&
-                    parseInt(parts[1], 10);
-            return upperBytesPos && upperBytesPos + 1;
-        },
-
-        // Uploads a file in multiple, sequential requests
-        // by splitting the file up in multiple blob chunks.
-        // If the second parameter is true, only tests if the file
-        // should be uploaded in chunks, but does not invoke any
-        // upload requests:
-        _chunkedUpload: function (options, testOnly) {
-            var that = this,
-                file = options.files[0],
-                fs = file.size,
-                ub = options.uploadedBytes = options.uploadedBytes || 0,
-                mcs = options.maxChunkSize || fs,
-                slice = file.slice || file.webkitSlice || file.mozSlice,
-                dfd = $.Deferred(),
-                promise = dfd.promise(),
-                jqXHR,
-                upload;
-            if (!(this._isXHRUpload(options) && slice && (ub || mcs < fs)) ||
-                    options.data) {
-                return false;
-            }
-            if (testOnly) {
-                return true;
-            }
-            if (ub >= fs) {
-                file.error = 'Uploaded bytes exceed file size';
-                return this._getXHRPromise(
-                    false,
-                    options.context,
-                    [null, 'error', file.error]
-                );
-            }
-            // The chunk upload method:
-            upload = function (i) {
-                // Clone the options object for each chunk upload:
-                var o = $.extend({}, options);
-                o.blob = slice.call(
-                    file,
-                    ub,
-                    ub + mcs
-                );
-                // Store the current chunk size, as the blob itself
-                // will be dereferenced after data processing:
-                o.chunkSize = o.blob.size;
-                // Expose the chunk bytes position range:
-                o.contentRange = 'bytes ' + ub + '-' +
-                    (ub + o.chunkSize - 1) + '/' + fs;
-                // Process the upload data (the blob and potential form data):
-                that._initXHRData(o);
-                // Add progress listeners for this chunk upload:
-                that._initProgressListener(o);
-                jqXHR = ($.ajax(o) || that._getXHRPromise(false, o.context))
-                    .done(function (result, textStatus, jqXHR) {
-                        ub = that._getUploadedBytes(jqXHR) ||
-                            (ub + o.chunkSize);
-                        // Create a progress event if upload is done and
-                        // no progress event has been invoked for this chunk:
-                        if (!o.loaded) {
-                            that._onProgress($.Event('progress', {
-                                lengthComputable: true,
-                                loaded: ub - o.uploadedBytes,
-                                total: ub - o.uploadedBytes
-                            }), o);
-                        }
-                        options.uploadedBytes = o.uploadedBytes = ub;
-                        if (ub < fs) {
-                            // File upload not yet complete,
-                            // continue with the next chunk:
-                            upload();
-                        } else {
-                            dfd.resolveWith(
-                                o.context,
-                                [result, textStatus, jqXHR]
-                            );
-                        }
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        dfd.rejectWith(
-                            o.context,
-                            [jqXHR, textStatus, errorThrown]
-                        );
-                    });
-            };
-            this._enhancePromise(promise);
-            promise.abort = function () {
-                return jqXHR.abort();
-            };
-            upload();
-            return promise;
-        },
-
-        _beforeSend: function (e, data) {
-            if (this._active === 0) {
-                // the start callback is triggered when an upload starts
-                // and no other uploads are currently running,
-                // equivalent to the global ajaxStart event:
-                this._trigger('start');
-                // Set timer for global bitrate progress calculation:
-                this._bitrateTimer = new this._BitrateTimer();
-            }
-            this._active += 1;
-            // Initialize the global progress values:
-            this._loaded += data.uploadedBytes || 0;
-            this._total += this._getTotal(data.files);
-        },
-
-        _onDone: function (result, textStatus, jqXHR, options) {
-            if (!this._isXHRUpload(options)) {
-                // Create a progress event for each iframe load:
-                this._onProgress($.Event('progress', {
-                    lengthComputable: true,
-                    loaded: 1,
-                    total: 1
-                }), options);
-            }
-            options.result = result;
-            options.textStatus = textStatus;
-            options.jqXHR = jqXHR;
-            this._trigger('done', null, options);
-        },
-
-        _onFail: function (jqXHR, textStatus, errorThrown, options) {
-            options.jqXHR = jqXHR;
-            options.textStatus = textStatus;
-            options.errorThrown = errorThrown;
-            this._trigger('fail', null, options);
-            if (options.recalculateProgress) {
-                // Remove the failed (error or abort) file upload from
-                // the global progress calculation:
-                this._loaded -= options.loaded || options.uploadedBytes || 0;
-                this._total -= options.total || this._getTotal(options.files);
-            }
-        },
-
-        _onAlways: function (jqXHRorResult, textStatus, jqXHRorError, options) {
-            this._active -= 1;
-            options.textStatus = textStatus;
-            if (jqXHRorError && jqXHRorError.always) {
-                options.jqXHR = jqXHRorError;
-                options.result = jqXHRorResult;
-            } else {
-                options.jqXHR = jqXHRorResult;
-                options.errorThrown = jqXHRorError;
-            }
-            this._trigger('always', null, options);
-            if (this._active === 0) {
-                // The stop callback is triggered when all uploads have
-                // been completed, equivalent to the global ajaxStop event:
-                this._trigger('stop');
-                // Reset the global progress values:
-                this._loaded = this._total = 0;
-                this._bitrateTimer = null;
-            }
-        },
-
-        _onSend: function (e, data) {
-            var that = this,
-                jqXHR,
-                aborted,
-                slot,
-                pipe,
-                options = that._getAJAXSettings(data),
-                send = function () {
-                    that._sending += 1;
-                    // Set timer for bitrate progress calculation:
-                    options._bitrateTimer = new that._BitrateTimer();
-                    jqXHR = jqXHR || (
-                        ((aborted || that._trigger('send', e, options) === false) &&
-                        that._getXHRPromise(false, options.context, aborted)) ||
-                        that._chunkedUpload(options) || $.ajax(options)
-                    ).done(function (result, textStatus, jqXHR) {
-                        that._onDone(result, textStatus, jqXHR, options);
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        that._onFail(jqXHR, textStatus, errorThrown, options);
-                    }).always(function (jqXHRorResult, textStatus, jqXHRorError) {
-                        that._sending -= 1;
-                        that._onAlways(
-                            jqXHRorResult,
-                            textStatus,
-                            jqXHRorError,
-                            options
-                        );
-                        if (options.limitConcurrentUploads &&
-                                options.limitConcurrentUploads > that._sending) {
-                            // Start the next queued upload,
-                            // that has not been aborted:
-                            var nextSlot = that._slots.shift(),
-                                isPending;
-                            while (nextSlot) {
-                                // jQuery 1.6 doesn't provide .state(),
-                                // while jQuery 1.8+ removed .isRejected():
-                                isPending = nextSlot.state ?
-                                        nextSlot.state() === 'pending' :
-                                        !nextSlot.isRejected();
-                                if (isPending) {
-                                    nextSlot.resolve();
-                                    break;
-                                }
-                                nextSlot = that._slots.shift();
-                            }
-                        }
-                    });
-                    return jqXHR;
-                };
-            this._beforeSend(e, options);
-            if (this.options.sequentialUploads ||
-                    (this.options.limitConcurrentUploads &&
-                    this.options.limitConcurrentUploads <= this._sending)) {
-                if (this.options.limitConcurrentUploads > 1) {
-                    slot = $.Deferred();
-                    this._slots.push(slot);
-                    pipe = slot.pipe(send);
-                } else {
-                    pipe = (this._sequence = this._sequence.pipe(send, send));
-                }
-                // Return the piped Promise object, enhanced with an abort method,
-                // which is delegated to the jqXHR object of the current upload,
-                // and jqXHR callbacks mapped to the equivalent Promise methods:
-                pipe.abort = function () {
-                    aborted = [undefined, 'abort', 'abort'];
-                    if (!jqXHR) {
-                        if (slot) {
-                            slot.rejectWith(options.context, aborted);
-                        }
-                        return send();
-                    }
-                    return jqXHR.abort();
-                };
-                return this._enhancePromise(pipe);
-            }
-            return send();
-        },
-
-        _onAdd: function (e, data) {
-            var that = this,
-                result = true,
-                options = $.extend({}, this.options, data),
-                limit = options.limitMultiFileUploads,
-                paramName = this._getParamName(options),
-                paramNameSet,
-                paramNameSlice,
-                fileSet,
-                i;
-            if (!(options.singleFileUploads || limit) ||
-                    !this._isXHRUpload(options)) {
-                fileSet = [data.files];
-                paramNameSet = [paramName];
-            } else if (!options.singleFileUploads && limit) {
-                fileSet = [];
-                paramNameSet = [];
-                for (i = 0; i < data.files.length; i += limit) {
-                    fileSet.push(data.files.slice(i, i + limit));
-                    paramNameSlice = paramName.slice(i, i + limit);
-                    if (!paramNameSlice.length) {
-                        paramNameSlice = paramName;
-                    }
-                    paramNameSet.push(paramNameSlice);
-                }
-            } else {
-                paramNameSet = paramName;
-            }
-            data.originalFiles = data.files;
-            $.each(fileSet || data.files, function (index, element) {
-                var newData = $.extend({}, data);
-                newData.files = fileSet ? element : [element];
-                newData.paramName = paramNameSet[index];
-                newData.submit = function () {
-                    newData.jqXHR = this.jqXHR =
-                        (that._trigger('submit', e, this) !== false) &&
-                        that._onSend(e, this);
-                    return this.jqXHR;
-                };
-                result = that._trigger('add', e, newData);
-                return result;
-            });
-            return result;
-        },
-
-        _replaceFileInput: function (input) {
-            var inputClone = input.clone(true);
-            $('<form></form>').append(inputClone)[0].reset();
-            // Detaching allows to insert the fileInput on another form
-            // without loosing the file input value:
-            input.after(inputClone).detach();
-            // Avoid memory leaks with the detached file input:
-            $.cleanData(input.unbind('remove'));
-            // Replace the original file input element in the fileInput
-            // elements set with the clone, which has been copied including
-            // event handlers:
-            this.options.fileInput = this.options.fileInput.map(function (i, el) {
-                if (el === input[0]) {
-                    return inputClone[0];
-                }
-                return el;
-            });
-            // If the widget has been initialized on the file input itself,
-            // override this.element with the file input clone:
-            if (input[0] === this.element[0]) {
-                this.element = inputClone;
-            }
-        },
-
-        _handleFileTreeEntry: function (entry, path) {
-            var that = this,
-                dfd = $.Deferred(),
-                errorHandler = function (e) {
-                    if (e && !e.entry) {
-                        e.entry = entry;
-                    }
-                    // Since $.when returns immediately if one
-                    // Deferred is rejected, we use resolve instead.
-                    // This allows valid files and invalid items
-                    // to be returned together in one set:
-                    dfd.resolve([e]);
-                },
-                dirReader;
-            path = path || '';
-            if (entry.isFile) {
-                if (entry._file) {
-                    // Workaround for Chrome bug #149735
-                    entry._file.relativePath = path;
-                    dfd.resolve(entry._file);
-                } else {
-                    entry.file(function (file) {
-                        file.relativePath = path;
-                        dfd.resolve(file);
-                    }, errorHandler);
-                }
-            } else if (entry.isDirectory) {
-                dirReader = entry.createReader();
-                dirReader.readEntries(function (entries) {
-                    that._handleFileTreeEntries(
-                        entries,
-                        path + entry.name + '/'
-                    ).done(function (files) {
-                        dfd.resolve(files);
-                    }).fail(errorHandler);
-                }, errorHandler);
-            } else {
-                // Return an empy list for file system items
-                // other than files or directories:
-                dfd.resolve([]);
-            }
-            return dfd.promise();
-        },
-
-        _handleFileTreeEntries: function (entries, path) {
-            var that = this;
-            return $.when.apply(
-                $,
-                $.map(entries, function (entry) {
-                    return that._handleFileTreeEntry(entry, path);
-                })
-            ).pipe(function () {
-                return Array.prototype.concat.apply(
-                    [],
-                    arguments
-                );
-            });
-        },
-
-        _getDroppedFiles: function (dataTransfer) {
-            dataTransfer = dataTransfer || {};
-            var items = dataTransfer.items;
-            if (items && items.length && (items[0].webkitGetAsEntry ||
-                    items[0].getAsEntry)) {
-                return this._handleFileTreeEntries(
-                    $.map(items, function (item) {
-                        var entry;
-                        if (item.webkitGetAsEntry) {
-                            entry = item.webkitGetAsEntry();
-                            if (entry) {
-                                // Workaround for Chrome bug #149735:
-                                entry._file = item.getAsFile();
-                            }
-                            return entry;
-                        }
-                        return item.getAsEntry();
-                    })
-                );
-            }
-            return $.Deferred().resolve(
-                $.makeArray(dataTransfer.files)
-            ).promise();
-        },
-
-        _getSingleFileInputFiles: function (fileInput) {
-            fileInput = $(fileInput);
-            var entries = fileInput.prop('webkitEntries') ||
-                    fileInput.prop('entries'),
-                files,
-                value;
-            if (entries && entries.length) {
-                return this._handleFileTreeEntries(entries);
-            }
-            files = $.makeArray(fileInput.prop('files'));
-            if (!files.length) {
-                value = fileInput.prop('value');
-                if (!value) {
-                    return $.Deferred().resolve([]).promise();
-                }
-                // If the files property is not available, the browser does not
-                // support the File API and we add a pseudo File object with
-                // the input value as name with path information removed:
-                files = [{name: value.replace(/^.*\\/, '')}];
-            } else if (files[0].name === undefined && files[0].fileName) {
-                // File normalization for Safari 4 and Firefox 3:
-                $.each(files, function (index, file) {
-                    file.name = file.fileName;
-                    file.size = file.fileSize;
-                });
-            }
-            return $.Deferred().resolve(files).promise();
-        },
-
-        _getFileInputFiles: function (fileInput) {
-            if (!(fileInput instanceof $) || fileInput.length === 1) {
-                return this._getSingleFileInputFiles(fileInput);
-            }
-            return $.when.apply(
-                $,
-                $.map(fileInput, this._getSingleFileInputFiles)
-            ).pipe(function () {
-                return Array.prototype.concat.apply(
-                    [],
-                    arguments
-                );
-            });
-        },
-
-        _onChange: function (e) {
-            var that = this,
-                data = {
-                    fileInput: $(e.target),
-                    form: $(e.target.form)
-                };
-            this._getFileInputFiles(data.fileInput).always(function (files) {
-                data.files = files;
-                if (that.options.replaceFileInput) {
-                    that._replaceFileInput(data.fileInput);
-                }
-                if (that._trigger('change', e, data) !== false) {
-                    that._onAdd(e, data);
-                }
-            });
-        },
-
-        _onPaste: function (e) {
-            var cbd = e.originalEvent.clipboardData,
-                items = (cbd && cbd.items) || [],
-                data = {files: []};
-            $.each(items, function (index, item) {
-                var file = item.getAsFile && item.getAsFile();
-                if (file) {
-                    data.files.push(file);
-                }
-            });
-            if (this._trigger('paste', e, data) === false ||
-                    this._onAdd(e, data) === false) {
-                return false;
-            }
-        },
-
-        _onDrop: function (e) {
-            e.preventDefault();
-            var that = this,
-                dataTransfer = e.dataTransfer = e.originalEvent.dataTransfer,
-                data = {};
-            this._getDroppedFiles(dataTransfer).always(function (files) {
-                data.files = files;
-                if (that._trigger('drop', e, data) !== false) {
-                    that._onAdd(e, data);
-                }
-            });
-        },
-
-        _onDragOver: function (e) {
-            var dataTransfer = e.dataTransfer = e.originalEvent.dataTransfer;
-            if (this._trigger('dragover', e) === false) {
-                return false;
-            }
-            if (dataTransfer) {
-                dataTransfer.dropEffect = 'copy';
-            }
-            e.preventDefault();
-        },
-
-        _initEventHandlers: function () {
-            if (this._isXHRUpload(this.options)) {
-                this._on(this.options.dropZone, {
-                    dragover: this._onDragOver,
-                    drop: this._onDrop
-                });
-                this._on(this.options.pasteZone, {
-                    paste: this._onPaste
-                });
-            }
-            this._on(this.options.fileInput, {
-                change: this._onChange
-            });
-        },
-
-        _destroyEventHandlers: function () {
-            this._off(this.options.dropZone, 'dragover drop');
-            this._off(this.options.pasteZone, 'paste');
-            this._off(this.options.fileInput, 'change');
-        },
-
-        _setOption: function (key, value) {
-            var refresh = $.inArray(key, this._refreshOptionsList) !== -1;
-            if (refresh) {
-                this._destroyEventHandlers();
-            }
-            this._super(key, value);
-            if (refresh) {
-                this._initSpecialOptions();
-                this._initEventHandlers();
-            }
-        },
-
-        _initSpecialOptions: function () {
-            var options = this.options;
-            if (options.fileInput === undefined) {
-                options.fileInput = this.element.is('input[type="file"]') ?
-                        this.element : this.element.find('input[type="file"]');
-            } else if (!(options.fileInput instanceof $)) {
-                options.fileInput = $(options.fileInput);
-            }
-            if (!(options.dropZone instanceof $)) {
-                options.dropZone = $(options.dropZone);
-            }
-            if (!(options.pasteZone instanceof $)) {
-                options.pasteZone = $(options.pasteZone);
-            }
-        },
-
-        _create: function () {
-            var options = this.options;
-            // Initialize options set via HTML5 data-attributes:
-            $.extend(options, $(this.element[0].cloneNode(false)).data());
-            this._initSpecialOptions();
-            this._slots = [];
-            this._sequence = this._getXHRPromise(true);
-            this._sending = this._active = this._loaded = this._total = 0;
-            this._initEventHandlers();
-        },
-
-        _destroy: function () {
-            this._destroyEventHandlers();
-        },
-
-        // This method is exposed to the widget API and allows adding files
-        // using the fileupload API. The data parameter accepts an object which
-        // must have a files property and can contain additional options:
-        // .fileupload('add', {files: filesList});
-        add: function (data) {
-            var that = this;
-            if (!data || this.options.disabled) {
-                return;
-            }
-            if (data.fileInput && !data.files) {
-                this._getFileInputFiles(data.fileInput).always(function (files) {
-                    data.files = files;
-                    that._onAdd(null, data);
-                });
-            } else {
-                data.files = $.makeArray(data.files);
-                this._onAdd(null, data);
-            }
-        },
-
-        // This method is exposed to the widget API and allows sending files
-        // using the fileupload API. The data parameter accepts an object which
-        // must have a files or fileInput property and can contain additional options:
-        // .fileupload('send', {files: filesList});
-        // The method returns a Promise object for the file upload call.
-        send: function (data) {
-            if (data && !this.options.disabled) {
-                if (data.fileInput && !data.files) {
-                    var that = this,
-                        dfd = $.Deferred(),
-                        promise = dfd.promise(),
-                        jqXHR,
-                        aborted;
-                    promise.abort = function () {
-                        aborted = true;
-                        if (jqXHR) {
-                            return jqXHR.abort();
-                        }
-                        dfd.reject(null, 'abort', 'abort');
-                        return promise;
-                    };
-                    this._getFileInputFiles(data.fileInput).always(
-                        function (files) {
-                            if (aborted) {
-                                return;
-                            }
-                            data.files = files;
-                            jqXHR = that._onSend(null, data).then(
-                                function (result, textStatus, jqXHR) {
-                                    dfd.resolve(result, textStatus, jqXHR);
-                                },
-                                function (jqXHR, textStatus, errorThrown) {
-                                    dfd.reject(jqXHR, textStatus, errorThrown);
-                                }
-                            );
-                        }
-                    );
-                    return this._enhancePromise(promise);
-                }
-                data.files = $.makeArray(data.files);
-                if (data.files.length) {
-                    return this._onSend(null, data);
-                }
-            }
-            return this._getXHRPromise(false, data && data.context);
-        }
-
-    });
-
-}));
-
-//  Media Core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/directus_media',['app', 'backbone', 'plugins/jquery.fileupload'], function(app, Backbone) {
-
-  var Module = {};
-
-  Module.id = 'directus_media';
-  Module.system = true;
-
-  var template = '<img src="{{url}}/thumbnail/{{name}}" style="float:left; margin-right:10px"><strong><a href="{{url}}/{{name}}" target="_blank">{{name}}</a><br> Uploaded by <a href="#users/{{user}}">{{userName}}</a> {{{contextualDate date_uploaded}}}</strong><br> {{width}} x {{height}} - {{{bytesToSize size}}}';
-
-  Module.Input = Backbone.Layout.extend({
-
-    template: Handlebars.compile(template),
-
-    data: function() {
-      var data = this.model.toJSON();
-      data.userName = app.router.entries.directus_users.get(this.model.get('user')).get('first_name');
-      data.url = app.RESOURCES_URL;
-      return data;
-    },
-/*
-    tagName: 'div',
-
-    template: 'template',
-
-    events: {
-      'click #media-swap': function(e) {
-        e.preventDefault();
-        this.swap = true;
-        this.render();
-      },
-      'click [data-action]': function(e) {
-        e.preventDefault();
-        this.showFile = $(e.target).attr('data-action') === 'file' ? true : false;
-        this.render();
-      }
-    },
-    data: function() {
-      console.log(this.options.value);
-      return {data: this.item, swap: this.swap, file: this.showFile, src: 'thumbnail/'+this.options.value};
-    },
-    initialize: function() {
-      this.showFile = (this.options.value === undefined || this.options.value === '');
-      this.render();
-    },
-    afterRender: function() {
-      if (this.swap && this.showFile) { $('#modal-file').fileupload({dataType: 'json'}); }
-    }
-    */
-
-    initialize: function() {
-      this.$el.html('HEX');
-
-    }
-  });
-
-  Module.list = function(options) {
-      var val = '';
-      if (options.model.get('type').indexOf('image') === 0) {
-        var orientation = (parseInt(options.model.get('width'),10) > parseInt(options.model.get('height'),10)) ? 'landscape' : 'portrait';
-
-        var $img = $('<img src="' + app.RESOURCES_URL + 'thumbnail/' + options.model.get('name') +'" class="img ' + orientation + '">');
-
-        $img.error(function(){
-          $(this).attr('src', 'assets/img/missing-image.png').removeClass();
-        });
-
-        $val = $('<div class="media-thumb"></div>');
-        $val.append($img);
-      }
-
-      return $val.html();
-  };
-
-  return Module;
-});
-//  Checkbox core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/checkbox',['app','backbone'], function(app, Backbone) {
-
-  var Module = {};
-
-  Module.id = 'checkbox';
-  Module.dataTypes = ['tinyint'];
-
-  Module.Input = Backbone.Layout.extend({
-    beforeRender: function() {
-      this.$el.html('<label>'+ app.capitalize(this.options.schema.id) +'</test>');
-      this.$el.append('<input type="checkbox" name="'+this.options.name+'" id="'+this.options.name+'"/>');
-    },
-    initialize: function() {
-      this.render();
-    }
-  });
-
-  Module.list = function(options) {
-    var val = (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
-    //var val = options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100);
-    return val;//val;
-  };
-
-
-  return Module;
-});
-//  Numeric core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/numeric',['app', 'backbone'], function(app, Backbone) {
-
-  var Module = {};
-
-  Module.id = 'numeric';
-  Module.dataTypes = ['tinyint', 'int', 'numeric', 'float', 'year'];
-
-
-  Module.options = {
-    options: []
-  };
-
-  Module.Input = Backbone.Layout.extend({
-    events: {
-      'keydown input': function(e) {
-        if (!(e.which < 58 || (this.hasDecimals && e.which === 190))) {
-          e.preventDefault();
-        }
-      },
-      'blur input': function(e) {
-        var val;
-        if (!this.$input.val()) return;
-        if (this.hasDecimals) {
-          val = parseFloat(this.$input.val(), 10);
-        } else {
-          val = parseInt(this.$input.val(), 10);
-        }
-        this.$input.val(val);
-      }
-    },
-    initialize: function(options) {
-      this.$input = $('<input type="text" value="'+(this.options.value || '')+'" name="'+this.options.name+'" id="'+this.options.name+'"/>');
-      this.$el.append('<label>'+app.capitalize(this.options.name)+'</test>');
-      this.$el.append(this.$input);
-      this.hasDecimals = (['float', 'decimal', 'numeric'].indexOf(this.options.schema.get('type')) > -1);
-    }
-  });
-
-  Module.list = function(options) {
-    var val = options.value;
-    return val;
-  };
-
-  return Module;
-});
-//  Text Input Core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/textinput',['app', 'backbone'], function(app, Backbone) {
-
-  var Module = {};
-
-  Module.id = 'textinput';
-  Module.dataTypes = ['varchar', 'date', 'time'];
-
-
-  Module.options = {};
-
-  Module.Input = Backbone.Layout.extend({
-    events: {
-      'focus input': function() { this.$label.show(); },
-      'blur input': function()  { this.$label.hide(); this.validate(this.$input.val()); },
-      'keyup input': function() { this.$label.html(this.options.schema.get('char_length')-this.$input.val().length); }
-    },
-
-    validate: function() {
-        if (this.options.schema.get('ui_validation')) {
-          var re = new RegExp(this.meta.ui_validation);
-        if (re.test(this.$input.val())) {
-          this.$el.removeClass('error');
-        } else {
-          this.$el.addClass('error');
-        }
-      }
-    },
-
-    initialize: function() {
-      this.$input = $('<input type="text" value="'+(this.options.value || '')+'" name="'+this.options.name+'" id="'+this.options.name+'" maxlength="'+this.options.schema.get('char_length')+'"/>');
-      this.$label = $('<span class="label char-count"></span>').html(this.options.schema.get('char_length')-this.$input.val().length).hide();
-      this.$el.append('<label>'+ app.capitalize(this.options.schema.id) +'</label>');
-      this.$el.append(this.$input);
-      this.$el.append(this.$label);
-      this.validate();
-    }
-  });
-
-  Module.list = function(options) {
-    var val = (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-    return val;
-  };
-
-  return Module;
-
-});
-//  Textarea Core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/textarea',['app', 'backbone'],function(app, Backbone) {
-
-  var Module = {};
-
-  var template = '<label>{{{capitalize name}}}</label><textarea rows="{{rows}}" name="{{name}}" id="{{name}}">{{value}}</textarea>';
-
-  Module.id = 'textarea';
-  Module.dataTypes = ['text', 'varchar'];
-
-  Module.variables = [
-    {id: 'rows', ui: 'numeric', char_length: 3}
-  ];
-
-
-  Module.options = {
-    options: []
-  };
-
-  Module.Input = Backbone.Layout.extend({
-
-    template: Handlebars.compile(template),
-
-    data: function() {
-      return {value: this.options.value, name: this.options.name, rows: this.options.settings.get('rows')};
-    }
-
-  });
-
-  Module.list = function(options) {
-    var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-    return val;
-  };
-
-  return Module;
-});
-//  Relational core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/relational',['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collection.entries'], function(app, Backbone, Modal, Edit, Table) {
-
-  var Module = {};
-
-  Module.id = 'relational';
-  Module.dataTypes = ['one-many', 'many-many'];
-
-  Module.variables = [
-    {id: 'happy', ui: 'textinput', char_length: 255},
-    {id: 'hacking', ui: 'textinput', char_length: 255},
-    {id: 'keyboard', ui: 'textinput', char_length: 255}
-  ];
-
-  //Loading the template externally is causing trouble. Why?
-/*  var template =  '<div class="modal-container"></div>' +
-                  '<label>{{{capitalize title}}}</label>' +
-                  '{{#if data}}' +
-                  '<table class="table table-striped">' +
-                  '<tbody>' +
-                  '{{#data}}' +
-                  '<tr data-id="{{id}}" data-junction-id="{{junctionId}}" data-cid="{{cid}}">' +
-                  ' <td class="title" data-action="edit">{{data}}</td>' +
-                  ' <td style="width:20px;" class="remove" data-action="remove"><span class="glyphicon-remove"></span></td>'+
-                  '</tr>' +
-                  '{{/data}}' +
-                  '</tbody>' +
-                  '</table>' +
-                  '{{else}}' +
-                  '<div class="no-items">No {{tableTitle}} items</div>' +
-                  '{{/if}}' +
-                  '<button class="btn btn-small" data-action="add">Add new</button>' +
-                  '<button class="btn btn-small" data-action="insert">Insert {{tableTitle}} items</button>';*/
-
-    var template = '<label>{{{capitalize title}}}</label>' +
-                   '<div class="related-table"></div>' +
-                   '<div class="btn-row"><button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>' +
-                   '{{#if manyToMany}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>';
-
-
-    // Input view
-    Module.Input = Backbone.Layout.extend({
-
-      template: Handlebars.compile(template),
-
-
-      events: {
-        'click button[data-action=add]': 'addRow',
-        'click div.related-table > div td': 'editRow',
-        'click button[data-action=insert]': 'insertRow'
-      },
-
-      addRow: function(e) {
-        var model;
-        var modal;
-        var collection = this.collection;
-
-        if (collection.isNested) {
-          model = new collection.nestedCollection.model({}, {collection: collection.nestedCollection, parse: true});
-        } else {
-          model = new collection.model({}, {collection: collection, parse: true});
-        }
-
-        console.log('new model', model);
-
-        var view = new Edit({model: model});
-
-        modal = app.router.openModal(view, {stretch: true, title: 'Add'});
-
-        modal.save = function() {
-          model.set(view.data());
-
-          if (collection.isNested) {
-            collection.add({data: model});
-          } else {
-            collection.add(model);
-          }
-
-          this.close();
-        };
-
-        view.render();
-
-      },
-
-      editRow: function(e) {
-        var cid = $(e.target).closest('tr').attr('data-cid');
-        var model = this.collection.get(cid);
-        var view;
-        var modal;
-
-        if (this.collection.isNested) {
-          model = model.get('data');
-        }
-
-        view = new Edit({model: model});
-
-        modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
-
-        //please proxy this instead
-        var me = this;
-
-        modal.save = function() {
-          view.save({}, function(send, response) {
-            modal.close();
-          });
-        };
-
-        view.render();
-      },
-
-      insertRow: function() {
-        var collection = app.router.entries[this.collection.table.id];
-        var view = new Table({collection: collection, selectable: true});
-        var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
-
-        //please proxy this instead
-        var me = this;
-
-        modal.save = function() {
-          _.each(view.selection(), function(id) {
-            var data = collection.get(id).toJSON();
-            me.collection.add({data: data}, {parse: true, silent: true});
-          }, this);
-          me.collection.trigger('add');
-          modal.close();
-        };
-
-        collection.fetch();
-      },
-
-      data: function() {
-        return {title: this.options.name, manyToMany: this.manyToMany, tableTitle: this.options.schema.get('table_related')};
-      },
-
-      afterRender: function() {
-        var view;
-        var options = {collection: this.collection, toolbar:false, selectable: false, sortable: false};
-
-        view = new Table(options);
-
-        this.setView('.related-table', view).render();
-
-        view.render();
-      },
-
-      initialize: function() {
-        this.collection = this.options.value;
-        this.manyToMany = (this.options.schema.get('type') === 'many-many');
-        this.oneToMany = (this.options.schema.get('type') === 'one-many');
-      }
-
-    });
-
-    // List view
-    Module.list = function() {
-      return 'x';
-    };
-
-    return Module;
-
-});
-//  Directus User List View component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/directus_user',['app','backbone'], function(app, Backbone) {
-
-  var Module = {};
-
-  Module.id = 'directus_user';
-  Module.system = true;
-  Module.sortBy = ['first_name','last_name'];
-
-  Module.list = function(options) {
-    var user = app.router.entries.directus_users.get(options.value);
-    if (user) {
-      if (options.settings && options.settings.get('compact') !== undefined) {
-        return user.get('first_name');
-      }
-      return '<img src="' + user.get('avatar') + '" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name');
-    } else {
-      return '';
-    }
-  };
-
-  Module.Input = Backbone.Layout.extend({
-    initialize: function(options) {
-      var user = app.router.entries.directus_users.get(options.value);
-      this.$el.html('<label>'+app.capitalize(this.options.name)+'</test>');
-      this.$el.append('<img src="' + app.RESOURCES_URL + 'users/default.png" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));
-    }
-  });
-
-  return Module;
-
-});
-//  Directus Email Component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/email',['app','backbone'], function(app, Backbone) {
-
-  var Module = {};
-
-  Module.id = 'email';
-  Module.dataTypes = ['varchar'];
-
-  Module.options = {};
-
-  Module.Input = Backbone.Layout.extend({
-    initialize: function() {
-      this.$input = $('<input type="text" value="'+(this.options.value || '')+'" name="'+this.options.name+'" id="'+this.options.name+'" maxlength="'+this.options.schema.get('char_length')+'"/>');
-      this.$label = $('<span class="label char-count"></span>').html(this.options.schema.get('char_length')-this.$input.val().length).hide();
-      this.$el.append('<label>'+app.capitalize(this.options.name)+'</label>');
-      this.$el.append(this.$input);
-      this.$el.append(this.$label);
-    }
-  });
-
-  Module.list = function(options) {
-    return '<a href="mailto:' + options.value + '">'+options.value+'</a>';
-  };
-
-  return Module;
-});
-//  Directus User List View component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/directus_activity',['app','backbone'], function(app, Backbone) {
-
-  var Module = {};
-
-  Module.id = 'directus_activity';
-  Module.system = true;
-
-  Module.list = function(options) {
-    return '<a href="#tables/' + options.model.get('table') + '/' + options.model.get('row') + '">Item ' + options.model.get('row') + ' </a> has been ' + options.model.get('type') + ' ' + {added: 'to', deleted:'from', edited:'within', activated:'within'}[options.model.get('type')] + ' <a href="#tables/' + options.model.get('table') + '">' + options.model.get('table') + '</a>';
-  };
-
-  return Module;
-});
-//  Datetime core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/datetime',['app','backbone'], function(app, Backbone) {
-
-  var Module = {};
-
-  Module.id = 'datetime';
-  Module.dataTypes = ['datetime'];
-
-  Module.Input = Backbone.Layout.extend({
-    initialize: function() {
-      this.$el.append('<label>'+ app.capitalize(this.options.schema.id) +'</label>');
-      this.$el.append('<input type="text" value="'+(this.options.value || '')+'" name="'+this.options.name+'" id="'+this.options.name+'" maxlength="'+this.options.schema.get('char_length')+'"/>');
-    }
-  });
-
-  Module.list = function(options) {
-    return '<div title="'+options.value+'">' + jQuery.timeago(options.value) + '</div>';
-  };
-
-
-  return Module;
-});
-//  Directus User Activity List View component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/directus_user_activity',['app','backbone'], function(app, Backbone) {
-
-  var Module = {};
-  Module.id = 'directus_user_activity';
-  Module.system = true;
-  Module.sortBy = 'last_login';
-
-  Module.list = function(options) {
-    //return '<a href="#activity">Activity page ' + app.contextualDate(options.model.get('last_login')) + '</a>';
-    return '<a href="#activity" title="'+options.model.get('last_login')+'">Activity page ' + jQuery.timeago(options.model.get('last_login')) + '</a>';
-  };
-
-  return Module;
-});
-//  Directus User List View component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define('ui/directus_media_size',['app','backbone'], function(app, Backbone) {
-
-	var Module = {};
-
-  Module.id = 'directus_media_size';
-  Module.system = true;
-
-  Module.options = {};
-
-  Module.list = function(options) {
-    return app.bytesToSize(options.value);
-  };
-
-  return Module;
-
-});
-define('ui/ui',[
-  "ui/directus_media",
-  "ui/checkbox",
-  "ui/numeric",
-  "ui/textinput",
-  "ui/textarea",
-  "ui/relational",
-  'ui/directus_user',
-  'ui/email',
-  'ui/directus_activity',
-  'ui/datetime',
-  'ui/directus_user_activity',
-  'ui/directus_media_size'
-],
-
-function(directus_media, checkbox, numeric, textinput, textarea, relational, directus_user, email, directus_activity, datetime, directus_user_activity, directus_media_size) {
+define('core/ui',[
+  "core-ui/directus_media",
+  "core-ui/checkbox",
+  "core-ui/numeric",
+  "core-ui/textinput",
+  "core-ui/textarea",
+  "core-ui/relational",
+  'core-ui/directus_user',
+  'core-ui/email',
+  'core-ui/directus_activity',
+  'core-ui/datetime',
+  'core-ui/directus_user_activity',
+  'core-ui/directus_media_size',
+  'core-ui/blob',
+  'core-ui/alias',
+  'core-ui/select',
+  'core-ui/tags',
+  'core-ui/many_to_one',
+  'core-ui/radiobuttons',
+  'core-ui/password'].
+  concat(window.directusData.ui),
+function() {
 
   ui = {};
 
@@ -33905,20 +32310,6 @@ function(directus_media, checkbox, numeric, textinput, textarea, relational, dir
 
   _.extend(Component.prototype, {
 
-    getList: function(attr) {
-      var schema = this.structure.get(attr);
-      var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
-      var view = View.list({
-        model: this.model,
-        collection: this.collection,
-        settings: schema.options,
-        schema: schema,
-        value: this.model.has(attr) ? this.model.get(attr) : this.model.id,
-        tagName: 'td'
-      });
-      return view;
-    },
-
     getInput: function(attr) {
       var schema = this.structure.get(attr);
       var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
@@ -33928,8 +32319,7 @@ function(directus_media, checkbox, numeric, textinput, textarea, relational, dir
         settings: schema.options,
         schema: schema,
         name: attr,
-        value: this.model.get(attr),
-        tagName: 'fieldset'
+        value: this.model.get(attr)
       });
       return view;
     }
@@ -33962,9 +32352,8 @@ function(directus_media, checkbox, numeric, textinput, textarea, relational, dir
   ui.settings = function() {
     var settings = {};
     _.each(ui.core, function(ui) {
-      ui.schema = new Backbone.Collection(ui.variables);
+      //ui.schema = new Backbone.Collection(ui.variables);
       settings[ui.id] = ui;
-      console.log(ui);
     });
     return settings;
   };
@@ -33976,18 +32365,99 @@ function(directus_media, checkbox, numeric, textinput, textarea, relational, dir
   //Handlebars helper!
   Handlebars.registerHelper("ui", function(model, attr, options) {
     if (model.isNested) model = model.get('data');
-    return new Handlebars.SafeString(ui.getList(model, attr));
+    var html = ui.getList(model, attr) || '';
+    return new Handlebars.SafeString(html);
   });
 
   return ui;
 });
-define('modules/dashboard',[
+define('modules/activity/chart',[
   'app',
   'backbone',
   'core/directus'
 ],
 
 function(app, Backbone, Directus) {
+
+  var view = Backbone.Layout.extend({
+
+    tagName: 'div',
+
+    template: 'activity-chart',
+
+    attributes: {'class':'activity-module'},
+
+    numberWithCommas: function(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+
+    afterRender: function() {
+      //////////////////////////////////////////////////////////////////////////////
+
+      var animationTime = 1000;
+      var me = this;
+      var totals = {
+        'all': 0,
+        'media': 0,
+        'system': 0,
+        'deleted': 0,
+        'edited': 0,
+        'added': 0
+      };
+
+      $(".bar").each(function(index){
+        var barTotal = $(this).attr("data-total");
+        var barType = $(this).attr("data-type");
+        $(this).animate({ height: barTotal }, animationTime, "swing");
+
+        totals[barType] += parseInt(barTotal, 10);
+
+      });
+
+      // Get total activity (could/should be total active items)
+      totals.all = totals.media + totals.system + totals.deleted + totals.edited + totals.added;
+
+      //////////////////////////////////////////////////////////////////////////////
+
+      $(".activity-total h2").each(function(index){
+
+        var el = $(this);
+        var type = el.attr("data-type");
+        var total = totals[type];
+
+
+        // Animate the element's value
+        $({someValue: 0}).animate({someValue: total}, {
+          duration: animationTime,
+          easing:'swing',
+          step: function() {
+            el.text( me.numberWithCommas(Math.ceil(this.someValue)) );
+          },
+          complete: function() {
+            el.text( me.numberWithCommas(this.someValue) );
+          }
+        });
+      });
+    },
+
+    initialize: function() {
+      this.collection.on('reset', function() {
+        if (this.collection.total) this.render();
+      }, this);
+    }
+
+  });
+
+  return view;
+});
+define('modules/activity',[
+  'app',
+  'backbone',
+  'core/directus',
+  'modules/activity/chart'
+],
+
+function(app, Backbone, Directus, Chart) {
 
   var Dashboard = app.module();
   var ListView = Directus.Table.extend({});
@@ -33996,13 +32466,19 @@ function(app, Backbone, Directus) {
 
     template: 'page',
 
-    data: function() {
-      return {title: this.collection.table.title};
+    serialize: function() {
+      return {title: this.collection.table.get('title')};
     },
 
     afterRender: function() {
-      this.setView('#page-content', new ListView({collection:this.collection}));
+      this.insertView('#page-content', this.chart);
+      this.insertView('#page-content', this.table);
       this.collection.fetch();
+    },
+
+    initialize: function() {
+      this.chart = new Chart({collection: this.collection});
+      this.table = new ListView({collection: this.collection, tableHead: false, rowIdentifiers: ['type','action']});
     }
 
   });
@@ -34034,10 +32510,10 @@ function(app, Backbone, Directus) {
 
     template: "page",
 
-    data: { title: 'Tables' },
+    serialize: { title: 'Tables' },
 
     beforeRender: function() {
-      this.setView('#page-content', new Directus.TableSimple({collection: this.options.list, template: 'tables'}));
+      this.setView('#page-content', new Directus.TableSimple({collection: this.collection, template: 'tables'}));
       //this.setView('#page-content', new Directus.Table({collection: this.options.list, columns: ['title'], filter: {hidden: false, is_junction_table: false}, navigate: true, toolbar: false}));
     }
 
@@ -34046,19 +32522,44 @@ function(app, Backbone, Directus) {
   var SaveModule = Backbone.Layout.extend({
     template: 'module-save',
     attributes: {'class': 'directus-module'},
-    data: function() {
-      return {
+    serialize: function() {
+      var data = {
         isActive: (this.model.get('active') === 1),
         isInactive: (this.model.get('active') === 2 || !this.model.has('id')),
         isDeleted: (this.model.get('active') === 0),
         showDelete: !this.options.single && (this.model.get('active') !== 0) && (this.model.id !== undefined),
-        showActive: !this.options.single && this.model.has('active'),
+        showActive: !this.options.single && this.model.collection.structure.get('active') !== undefined,
         showDropdown: !this.options.single
       };
+      return data;
     },
     initialize: function() {
       this.model.on('sync', this.render, this);
     }
+  });
+
+  var RevisionsModule = Backbone.Layout.extend({
+
+    template: 'module-revisions',
+
+    attributes: {'class': 'directus-module'},
+
+    serialize: function() {
+      var items = this.collection.map(function(model) {
+        var data = model.toJSON();
+        data.pastTense = app.actionMap[data.action];
+        return data;
+      });
+      return {items: items};
+    },
+
+    initialize: function(options) {
+      this.collection = new Backbone.Collection();
+      this.collection.url = options.baseURL+'/revisions';
+      this.collection.fetch();
+      this.collection.on('reset', this.render, this);
+    }
+
   });
 
   Table.Views.Edit = Backbone.Layout.extend({
@@ -34137,7 +32638,7 @@ function(app, Backbone, Directus) {
       });
     },
 
-    data: function() {
+    serialize: function() {
       var breadcrumbs = [{ title: 'Tables', anchor: '#tables'}];
       var title = (this.model.id) ? 'Editing Item' : 'Creating New Item';
 
@@ -34155,11 +32656,6 @@ function(app, Backbone, Directus) {
 
     beforeRender: function() {
       this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single}));
-
-      if (this.model.id !== undefined) {
-        this.insertView('#sidebar', new Backbone.Layout({template: 'module-revisions', attributes: {'class': 'directus-module'}}));
-        this.insertView('#sidebar', new Backbone.Layout({template: 'module-messages', attributes: {'class': 'directus-module'}}));
-      }
     },
 
     afterRender: function() {
@@ -34169,6 +32665,11 @@ function(app, Backbone, Directus) {
         this.model.fetch();
       } else {
         this.editView.render();
+      }
+
+      if (this.model.id !== undefined) {
+        this.insertView('#sidebar', new RevisionsModule({baseURL: this.model.url()}));
+        this.insertView('#sidebar', new Backbone.Layout({template: 'module-messages', attributes: {'class': 'directus-module'}}));
       }
     },
 
@@ -34183,7 +32684,7 @@ function(app, Backbone, Directus) {
 
     template: 'page',
 
-    data: function() {
+    serialize: function() {
       var data = {
         title: this.collection.table.id,
         breadcrumbs: [{title: 'Tables', anchor: '#tables'}],
@@ -34212,7 +32713,7 @@ function(app, Backbone, Directus) {
 
   return Table;
 });
-//  settings.js
+//  tables.js
 //  Directus 6.0
 
 //  (c) RANGER
@@ -34221,31 +32722,155 @@ function(app, Backbone, Directus) {
 //  http://www.getdirectus.com
 
 
-define('modules/settings.tables',[
+define('modules/settings/tables',[
   'app',
   'backbone',
-  'ui/ui',
-  'core/directus'
+  'core/ui',
+  'core/directus',
+  'jquery-ui'
 ],
 
 function(app, Backbone, ui, Directus) {
 
   var SettingsTables = app.module();
 
-  var Table = Backbone.Layout.extend({
+  // Handles new columns and aliases.
+  // Rendered inside modal
+  var NewColumn = Backbone.Layout.extend({
+
+    tagName: 'form',
+
+    template: 'settings-columns-add',
+
+    attributes: {'class':'directus-form'},
 
     events: {
-      'click button[data-action=ui]': 'editUI'
+      'change select': function(e) {
+        var data = this.$el.serializeObject();
+        this.model.clear({silent: true});
+        this.model.set(data);
+      }
+    },
+
+    serialize: function() {
+/*      options = {};
+      options.types = _.chain(app.router.uiSettings)
+        .filter(function(ui) { return (!ui.system); })
+        .map(function(ui) { return {id: ui.id, datatype: ui.dataTypes[0]}; })
+        .value();*/
+
+      var tables = app.tables;
+      var options = {data: this.model.toJSON()};
+      var dataType = this.model.get('data_type');
+      var tableRelated = this.model.get('table_related');
+
+      if (dataType !== undefined) {
+        options[dataType] = true;
+        if (['ONETOMANY','MANYTOMANY','ALIAS'].indexOf(dataType) > -1) {
+          options.directusType = true;
+        }
+      }
+      if (tableRelated !== undefined) {
+        options.columns = app.columns[tableRelated].map(function(model) {
+          return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
+        }, this);
+      }
+      if (dataType === 'MANYTOMANY') {
+        options.junctionTables = app.tables.chain()
+          .filter(function(model) { return model.get('is_junction_table'); })
+          .map(function(model) { return {id: model.id, selected: (model.id === this.model.get('junction_table'))}; }, this)
+          .value();
+      }
+
+      options.tables = app.tables.map(function(model) {
+        return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table') ,selected: (model.id === this.model.get('table_related'))};
+      },this);
+
+      return options;
+    },
+
+    initialize: function() {
+      this.model.on('change', this.render, this);
+    }
+
+  });
+
+  //
+  var Columns = Backbone.Layout.extend({
+
+    tagName: 'form',
+
+    template: 'settings-columns',
+
+    events: {
+      'click button[data-action=ui]': 'editUI',
+      'change select,input': 'bindForm',
+      'click button[data-action=new-field]': 'newField'
+    },
+
+    newField: function(e) {
+      var collection = this.collection;
+      var model = new Directus.Structure.Column({'data_type':'ALIAS','ui':{}}, {collection: this.collection});
+      var view = new NewColumn({model: model});
+      var modal = app.router.openModal(view, {title: 'Add new column', stretch: true});
+      view.render();
+      modal.save = function() {
+        var data = view.$el.serializeObject();
+        model.clear({silent: true});
+        model.save(data,{success: function() {
+          modal.close();
+          collection.add(model);
+          collection.trigger('change');
+        }});
+      };
+    },
+
+    // Updates the models when user interacts with the form.
+    bindForm: function(e) {
+      var id = e.target.getAttribute('data-id');
+      var attr = e.target.name;
+      var value = e.target.value;
+      var model = this.collection.get(id);
+      var data = {};
+
+      if (e.target.type === 'checkbox' || e.target.type === 'radio') {
+        value = $(e.target).is(':checked') ? 1 : 0;
+      }
+
+      //Unset previous master
+      if (attr === 'master') {
+        var master = this.collection.where({master: true});
+        if (master.length) {
+          master[0].set({master: false}, {silent: true});
+        }
+      }
+
+      data[attr] = value;
+
+      model.set(data);
+
+      console.log(model);
+    },
+
+    sort: function() {
+      var collection = this.collection;
+      this.$el.find('tbody > tr').each(function(i) {
+        var model = collection.get(this.getAttribute('data-id'));
+        model.set({sort: i}, {silent: true});
+        //console.log(model.id, {sort: i});
+      });
+      //collection.trigger('change');
+      collection.sort();
     },
 
     editUI: function(e) {
       var id = e.target.getAttribute('data-id');
       var model = this.collection.get(id);
-      var schema = app.router.uiSettings[model.get('ui')].schema;
+      var schema = app.uiSettings[model.get('ui')].schema;
       var options = model.options;
+      console.log(schema);
       var view = new Directus.EditView({model: options, structure: schema});
-      console.log(options.url());
-      modal = app.router.openModal(view, {stretch: true, title: 'UI Settings'});
+      var modal = app.router.openModal(view, {title: 'UI Settings'});
       modal.save = function() {
         options.save(view.data(), {success: function() {
           console.log('HEPP');
@@ -34255,23 +32880,17 @@ function(app, Backbone, ui, Directus) {
       options.fetch();
     },
 
-    data: function() {
-      var ui = app.router.uiSettings;
+    serialize: function() {
+      var ui = app.uiSettings;
       var rows = this.collection.map(function(model) {
-        var row = {};
-
-        row.type = model.get('type');
-        row.uiType = model.get('ui');
-        row.uiHasVariables = ui[row.uiType].hasOwnProperty('variables');
-        row.id = model.id;
+        var row = model.toJSON();
+        row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables');
+        row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
-        row.system = model.get('system') || ['sort', 'id', 'active'].indexOf(row.id) > -1;
-        row.alias = ['alias','one-many','many-many'].indexOf(row.type) > -1;
-
         // Gather a list of UI alternatives
         _.each(ui, function(ui) {
           if (!ui.system && ui.dataTypes.indexOf(row.type) > -1) {
-            row.types.push({id: ui.id, active: (ui.id === row.ui)});
+            row.types.push({id: ui.id, isActive: (ui.id === row.ui)});
           }
         });
         return row;
@@ -34279,8 +32898,36 @@ function(app, Backbone, ui, Directus) {
       return {rows: rows};
     },
 
+    afterRender: function() {
+      this.$el.find('tbody').sortable({
+        stop: _.bind(this.sort, this),
+        axis: "y",
+        handle: '.sort'
+      });
 
-    template: 'settings-columns'
+    },
+
+    initialize: function() {
+      this.collection.on('change reset sort', this.render, this);
+    }
+
+  });
+
+  var Tables = Backbone.Layout.extend({
+
+    template: 'settings-tables',
+
+    events: {
+      'click td': function(e) {
+        var tableName = e.target.getAttribute('data-id');
+        console.log(tableName);
+        app.router.go(['settings','tables',tableName]);
+      }
+    },
+
+    serialize: function() {
+      return {rows: this.collection.getRows()};
+    }
 
   });
 
@@ -34288,7 +32935,40 @@ function(app, Backbone, ui, Directus) {
 
     template: 'page',
 
-    data: function() {
+    events: {
+      'click #save-form': 'saveColumns'
+    },
+
+    saveColumns: function(e) {
+      var options = {};
+      options.columns = ['column_name','ui','hidden_input','required','master','sort','comment'];
+      options.success = function() {
+        app.router.go(['settings','tables']);
+      };
+      this.collection.save(undefined, options);
+    },
+/*
+    serializeTableForm: function($form) {
+      var form = [];
+      $form.find('tbody > tr').each(function() {
+        var item = {id: this.getAttribute('data-id')};
+        $(this).find("input,select,textarea").each(function() {
+          var value = this.value;
+          var $this = $(this);
+
+          if ($this.attr('type') === 'checkbox' || $this.attr('type') === 'radio') {
+            value = $this.is(':checked');
+          }
+
+          item[this.name] = value;
+        });
+        form.push(item);
+      });
+      console.log(form);
+      return form;
+    },
+*/
+    serialize: function() {
       var data = {
         title: this.collection.table.id,
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables', anchor: '#settings/tables'}],
@@ -34297,27 +32977,26 @@ function(app, Backbone, ui, Directus) {
       return data;
     },
 
-    navigate: function(id) {
-      //console.log(id);
+    beforeRender: function() {
+      this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false}}));
     },
 
-    beforeRender: function() {
-      this.setView('#page-content', new Table({collection: this.collection}));
-      this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, data: {showActive: false, showDropdown: false, showDelete: false}}));
+    afterRender: function() {
+      this.setView('#page-content', this.columns);
+      this.collection.fetch();
     },
 
     initialize: function() {
-
-      //this.table = new Directus.Table({collection: this.collection, toolbar: false, columns: ['id', 'ui', 'required', 'hidden', 'primary'], navigate: this.navigate, structure: structure});
+      this.columns = new Columns({collection: this.collection});
+      //this.collection.on('change', this.render, this);
     }
-
   });
 
   SettingsTables.Views.List = Backbone.Layout.extend({
 
     template: 'page',
 
-    data: function() {
+    serialize: function() {
       return {
         title: 'Tables',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
@@ -34325,17 +33004,14 @@ function(app, Backbone, ui, Directus) {
     },
 
     beforeRender: function() {
-      //this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {class: 'directus-module'}, data: {showActive: false, showDropdown: false, showDelete: false}}));
-      //this.setView('#page-content', new Directus.Table({collection: this.collection, columns: ['title'], filter: {hidden: "0"}}));
-      //this.collection.fetchSync();
+      this.setView('#page-content', new Tables({collection: this.collection}));
     }
-
   });
 
   return SettingsTables;
 
 });
-//  settings.js
+//  global.js
 //  Directus 6.0
 
 //  (c) RANGER
@@ -34343,11 +33019,10 @@ function(app, Backbone, ui, Directus) {
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-
-define('modules/settings.global',[
+define('modules/settings/global',[
   'app',
   'backbone',
-  'ui/ui',
+  'core/ui',
   'core/directus'
 ],
 
@@ -34355,16 +33030,16 @@ function(app, Backbone, ui, Directus) {
 
   var SettingsGlobal = app.module();
 
-  var Layout = Backbone.Layout.extend({
+  var Global = Backbone.Layout.extend({
 
     template: 'page',
 
-    data: function() {
+    serialize: function() {
       return {
         breadcrumbs: [
           { title: 'Settings', anchor: '#settings'}
         ],
-        title: 'Global',
+        title: this.options.title,
         sidebar: true
       };
     },
@@ -34382,7 +33057,7 @@ function(app, Backbone, ui, Directus) {
 
     beforeRender: function() {
       this.setView('#page-content', this.editView);
-      this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, data: {showActive: false, showDropdown: false, showDelete: false}}));
+      this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false}}));
     },
 
     initialize: function(options) {
@@ -34391,8 +33066,106 @@ function(app, Backbone, ui, Directus) {
 
   });
 
-  return Layout;
+  return Global;
 
+});
+//  about.js
+//  Directus 6.0
+
+//  (c) RANGER
+//  Directus may be freely distributed under the GNU license.
+//  For all details and documentation:
+//  http://www.getdirectus.com
+
+define('modules/settings/about',[
+  'app',
+  'backbone',
+  'core/directus'
+],
+
+function(app, Directus) {
+
+  var About = Backbone.Layout.extend({
+    template: 'page',
+    serialize: {
+      title: 'About',
+      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+    }
+  });
+
+  return About;
+});
+//  permissions.js
+//  Directus 6.0
+
+//  (c) RANGER
+//  Directus may be freely distributed under the GNU license.
+//  For all details and documentation:
+//  http://www.getdirectus.com
+
+define('modules/settings/permissions',[
+  'app',
+  'backbone',
+  'core/directus'
+],
+
+function(app, Directus) {
+
+  var Groups = Backbone.Layout.extend({
+
+    template: 'settings-groups',
+
+    events: {
+      'click td': function(e) {
+        var groupName = e.target.getAttribute('data-id');
+        app.router.go(['settings' ,'permissions', groupName]);
+      }
+    },
+
+    serialize: function() {
+      return {rows: this.collection.toJSON()};
+    }
+
+  });
+
+  var Permissions = Backbone.Layout.extend({
+    template: 'page',
+    serialize: {
+      title: 'Permissions',
+      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+    },
+    beforeRender: function() {
+      this.setView('#page-content', new Groups({collection: this.collection}));
+    }
+  });
+
+  return Permissions;
+});
+//  system.js
+//  Directus 6.0
+
+//  (c) RANGER
+//  Directus may be freely distributed under the GNU license.
+//  For all details and documentation:
+//  http://www.getdirectus.com
+
+define('modules/settings/system',[
+  'app',
+  'backbone',
+  'core/directus'
+],
+
+function(app, Directus) {
+
+  var System = Backbone.Layout.extend({
+    template: 'page',
+    serialize: {
+      title: 'System',
+      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+    }
+  });
+
+  return System;
 });
 //  settings.js
 //  Directus 6.0
@@ -34406,95 +33179,42 @@ function(app, Backbone, ui, Directus) {
 define('modules/settings',[
   'app',
   'backbone',
-  'ui/ui',
+  'core/ui',
   'core/directus',
-  'modules/settings.tables',
-  'modules/settings.global'
+  'modules/settings/tables',
+  'modules/settings/global',
+  'modules/settings/about',
+  'modules/settings/permissions',
+  'modules/settings/system'
 ],
 
-function(app, Backbone, ui, Directus, SettingsTables, SettingsGlobal) {
+function(app, Backbone, ui, Directus, Tables, Global, About, Permissions, System) {
 
   var Settings = app.module();
 
-  Settings.Model = Backbone.Model.extend({});
-  Settings.Collection = Backbone.Collection.extend({});
-  Settings.Views = {};
+  Settings.GlobalStructure = new Directus.CollectionColumns([
+    {id: 'site_name', ui: 'textinput', char_length: 255},
+    {id: 'site_url', ui: 'textinput', char_length: 255},
+    {id: 'cms_color', ui: 'select', options: { options: [{title: 'Green', value: 'green'}]}},
+    {id: 'cms_user_auto_sign_out', ui: 'numeric', char_length: 255, options: {size: 'small'}}
+  ], {parse: true});
 
-  Settings.Views.UISettings = Backbone.Layout.extend({
-  template: 'settings_ui',
+  Settings.MediaStructure = new Directus.CollectionColumns([
+    {id: 'media_naming', ui: 'select', char_length: 255, options:{ options: [{title: 'Original', value: 'original'}, {title: 'Unique', value: 'unique'}] }},
+    {id: 'allowed_thumbnails', ui: 'textinput', char_length: 255},
+    {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small'}}
+  ], {parse: true});
 
-    data: function() {
-      var options = _.map(ui.get(this.model.id).options, function(obj) {
-        obj[obj.type] = true;
-        obj.value = this.model.get(obj.name);
-        return obj;
-      },this);
-      return {options: options, id: this.model.id};
-    }
-  });
+  Settings.Global = Global;
+  Settings.System = System;
 
-  Settings.Views.TableRow = Backbone.Layout.extend({
-    tagName: 'tr',
-    template: 'settings_tables_field',
-    events: {
-      'click #open-settings-modal': 'openModal'
-    },
+  Settings.Table = Tables.Views.Table;
+  Settings.Tables = Tables.Views.List;
 
-    openModal: function() {
-      var ui = $('select option:selected', this.context).text();
-      var model = this.model.options.get(ui) || this.model.options.add({id:ui}).get(ui);
-      var title = model.collection.parent.collection.tableName + ' / ' + model.collection.parent.get('title') + ' / ' + ui;
-      this.modal = new Directus.Modal({
-        title: title,
-        stretch: false,
-        view: new Settings.Views.UISettings({model: model})
-      });
+  Settings.Permissions = Permissions;
+  Settings.About = About;
 
-    },
-    data: function() {
-      var types = _.pluck(ui.perType(this.model.get('type')),'id');
-      return {types: types, model: this.model.toJSON(), tableId: this.model.collection.tableName};
-    },
-    beforeRender: function() {
-      this.$el.attr('id', this.id);
-    },
-    initialize: function() {
-      this.id = this.model.collection.tableName + '-' + this.model.id;
-      this.context = '#'+this.id;
-    }
-  });
-
-  Settings.Views.Table = SettingsTables.Views.Table;
-
-  Settings.Views.Tables = SettingsTables.Views.List;
-
-  Settings.Views.Global = SettingsGlobal;
-
-  Settings.Views.System = Backbone.Layout.extend({
-    template: 'page',
-    data: {
-      title: 'System',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
-    }
-  });
-
-  Settings.Views.Permissions = Backbone.Layout.extend({
-    template: 'page',
-    data: {
-      title: 'Permissions',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
-    }
-  });
-
-  Settings.Views.About = Backbone.Layout.extend({
-    template: 'page',
-    data: {
-      title: 'About',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
-    }
-  });
-
-  Settings.Views.Main = Backbone.Layout.extend({
+  Settings.Main = Backbone.Layout.extend({
     template: 'settings'
   });
 
@@ -34503,63 +33223,22 @@ function(app, Backbone, ui, Directus, SettingsTables, SettingsGlobal) {
 define('modules/media',[
   'app',
   'backbone',
-  'core/directus',
-  'plugins/jquery.fileupload'
+  'core/directus'
 ],
 
 function(app, Backbone, Directus) {
 
   var Media = app.module();
 
-  var Modal = Directus.Modal.extend({
-    events: {
-      'fileuploadadd #modal-file': function(e, data) {
-        data.url = this.model.url();
-        data.submit();
-      },
-      'fileuploadsubmit #modal-file': function(e, data) {
-        this.fileData = data;
-        return false;
-      },
-      'fileuploaddone #fileupload': function(e, data) {
-        this.done();
-      }
-    },
-    save: function() {
-      var formData = $('#directus-form').serializeObject();
-      if (this.fileData) {
-        this.fileData.formData = formData;
-        this.fileData.formData.src = '';
-        $('#fileupload').fileupload('send', this.fileData);
-      } else {
-        console.log(formData);
-        $.ajax({
-          type: 'POST',
-          url: this.model.url(),
-          data: formData,
-          success: function(data) {
-            this.done();
-          },
-          context: this
-        });
-      }
-    },
-    done: function() {
-      this.model.collection.fetch();
-      this.close();
-    },
-    beforeRender: function() {
-      this.setView('.modal-body', new Directus.EditView({model:this.model}));
-    }
-  });
 
   Media.Views.List = Backbone.Layout.extend({
 
     template: 'page',
 
     events: {
-      'click #add-new-media': function() {
-        var modal = new Directus.Modal({title:'Add New Media', stretch: true, view: new Directus.EditView({collection: this.collection})});
+      'click #btn-top': function() {
+        var model = new this.collection.model({},{collection: this.collection});
+        this.addEditMedia(model, 'Add New Media');
       },
       'fileuploadprogress #fileupload': function(e, data) {
         console.log('progress...', data);
@@ -34572,26 +33251,40 @@ function(app, Backbone, Directus) {
         console.log('faiiilll!!!', e, data);
       },
       'click td:not(.check)': function(e) {
-        var id = parseInt($(e.target).closest('tr').attr('data-id'), 10);
-        var model = this.collection.get(id);
-        var view = new Directus.EditView({model: model});
-        var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
-        view.render();
+        var cid = $(e.target).closest('tr').attr('data-cid');
+        var model = this.collection.get(cid);
+        this.addEditMedia(model, 'Editing Media');
       }
     },
 
-    data: function() {
-      return {title: this.collection.table.title, upload: true, buttonTitle: 'Add New Media'};
+    addEditMedia: function(model, title) {
+      var view = new Directus.EditView({model: model});
+      var modal = app.router.openModal(view, {stretch: true, title: title});
+      var isNew = model.isNew();
+      var collection = this.collection;
+      view.render();
+      modal.save = function() {
+        var file = $('input[name=file]')[0].files[0];
+        var data = view.data();
+        if (file !== undefined) {
+          data = _.extend(data, {file: file});
+        }
+        model.save(data, {success:function() {
+          if (isNew) {
+            collection.add(model);
+          }
+          modal.close();
+        }});
+      };
+    },
+
+    serialize: function() {
+      return {title: this.collection.table.get('title'), upload: true, buttonTitle: 'Add New Media'};
     },
 
     afterRender: function() {
-      this.setView('#page-content', new Directus.Table({collection:this.collection, selectable: true}));
+      this.setView('#page-content', new Directus.Table({collection:this.collection, selectable: true, droppable: true, deleteOnly: true}));
       this.collection.fetch();
-      $('#fileupload').fileupload({
-        dataType: 'json',
-        upload: true,
-        done: this.doneUpload
-      });
     }
   });
 
@@ -34610,7 +33303,7 @@ function(app, Backbone, Directus) {
   var SaveModule = Backbone.Layout.extend({
     template: 'module-save',
     attributes: {'class': 'directus-module'},
-    data: function() {
+    serialize: function() {
       return {
         isNew: (this.model.id === undefined),
         hasActive: this.model.has('active'),
@@ -34641,12 +33334,14 @@ function(app, Backbone, Directus) {
       }
     },
 
-    data: function() {
-      console.log(this.model);
+    serialize: function() {
+      var breadcrumbs = [{ title: 'Users', anchor: '#users'}];
+      var title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : 'New User';
+
       return {
-        breadcrumbs: [{title: 'Users', anchor: '#users'}],
-        sidebar: true,
-        title: this.model.get('first_name') + ' ' + this.model.get('last_name')
+        breadcrumbs: breadcrumbs,
+        title: title,
+        sidebar: true
       };
     },
 
@@ -34667,15 +33362,13 @@ function(app, Backbone, Directus) {
 
     template: 'page',
 
-    data: function() {
-      return {title: this.collection.table.title, buttonTitle: 'Add new user'};
+    serialize: function() {
+      return {title: this.collection.table.get('title'), buttonTitle: 'Add new user'};
     },
 
     events: {
       'click #btn-top': function() {
-        var model = new this.collection.model();
-        model.collection = this.collection;
-        app.router.setPage(Users.Views.Edit, {model: model});
+        app.router.go('#users','new');
       }
     },
 
@@ -34714,7 +33407,7 @@ function(app, Backbone, Directus) {
 
     template: 'page',
 
-    data: function() {
+    serialize: function() {
       return {title: 'Messages'};
     },
 
@@ -34728,26 +33421,8 @@ function(app, Backbone, Directus) {
   return Messages;
 
 });
-define('core/collection.settings',[
-  "app",
-  "backbone",
-  "core/collection"
-],
-
-function(app, Backbone, Collection) {
-
-	var Settings = Collection.extend({
-
-		//Convert from nested object to Collection
-		parse: function(result) {
-			return _.map(result, function(value, key) { value.id = key; return value; });
-		}
-
-	});
-
-	return Settings;
-
-});
+define(window.directusData.extensions, function() { return arguments; });
+define("core/extensions", function(){});
 
 //  router.js
 //  Directus 6.0
@@ -34757,23 +33432,24 @@ function(app, Backbone, Collection) {
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-
 define('router',[
   "app",
   "core/directus",
   "core/tabs",
-  "ui/ui",
-  "modules/dashboard",
+  "core/ui",
+  "modules/activity",
   "modules/table",
   "modules/settings",
   "modules/media",
   "modules/users",
   "modules/messages",
   "core/modal",
-  "core/collection.settings"
+  "core/collection.settings",
+  "core/collection.upload",
+  "core/extensions"
 ],
 
-function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Messages, Modal, CollectionSettings) {
+function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia, Extensions) {
 
   var Router = Backbone.Router.extend({
 
@@ -34785,15 +33461,12 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
       "activity":               "activity",
       "media":                  "media",
       "users":                  "users",
-      "users/:id":              "users",
+      "users/:id":              "user",
       "settings":               "settings",
       "settings/:name":         "settings",
-      "settings/:name/:table":  "settings",
-      "messages":               "messages"
-    },
-
-    index: function() {
-
+      "settings/tables/:table": "settingsTable",
+      "messages":               "messages",
+      "cashregister":            "cashregister"
     },
 
     go: function() {
@@ -34805,9 +33478,9 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
       document.title = title;
     },
 
-    showAlert: function() {
+    showAlert: function(message) {
       if (!this.alert) {
-        this.alert = new Backbone.Layout({template: 'alert'});
+        this.alert = new Backbone.Layout({template: 'alert', serialize: {message: message}});
         this.v.messages.insertView(this.alert).render();
       }
     },
@@ -34834,30 +33507,29 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
     tables: function() {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.Tables({list: this.tables}));
+      this.v.main.setView('#content', new Table.Views.Tables({collection: app.tables}));
       this.v.main.render();
     },
 
     entries: function(tableName) {
       this.setTitle('Tables');
-      if (this.entries[tableName].table.get('single')) {
+      if (app.entries[tableName].table.get('single')) {
         this.entry(tableName, 1);
         return;
       }
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.List({collection: this.entries[tableName]}));
+      this.v.main.setView('#content', new Table.Views.List({collection: app.entries[tableName]}));
       this.v.main.render();
     },
 
-    //UGLY AS HELL NEED MAJOR REFACTORING
     entry: function(tableName, id) {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      var collection = this.entries[tableName];
+      var collection = app.entries[tableName];
       var model;
 
       if (id === "new") {
-        model = collection.create();
+        model = new collection.model({},{collection: collection});
 
       } else {
         model = collection.get(id);
@@ -34868,70 +33540,81 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
 
       this.v.main.setView('#content', new Table.Views.Edit({model: model}));
       this.v.main.render();
-
     },
 
     activity: function() {
       this.setTitle('Activity');
       this.tabs.setActive('activity');
-      this.v.main.setView('#content', new Dashboard.Views.List({collection: this.activity}));
+      this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
       this.v.main.render();
     },
 
     media: function() {
       this.setTitle('Media');
       this.tabs.setActive('media');
-      this.v.main.setView('#content', new Media.Views.List({collection: this.media}));
+      this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
       this.v.main.render();
     },
 
-    users: function(id) {
+    users: function() {
       this.setTitle('Users');
       this.tabs.setActive('users');
-      if (id !== undefined) {
-        this.v.main.setView('#content', new Users.Views.Edit({model: this.users.get(id)}));
-      } else {
-        this.v.main.setView('#content', new Users.Views.List({collection: this.users}));
-      }
+      this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
     },
 
-    //Use sub router?
+    user: function(id) {
+      var model;
+      this.setTitle('Users');
+      this.tabs.setActive('users');
 
-    settings: function(name, tableName) {
+      if (id === "new") {
+        model = new app.users.model({}, {collection: app.users});
+      } else {
+        model = app.users.get(id);
+      }
+      this.v.main.setView('#content', new Users.Views.Edit({model: model}));
+      this.v.main.render();
+    },
+
+    settings: function(name) {
       this.setTitle('Settings');
       this.tabs.setActive('settings');
-      if (name === 'global') {
-        var globalStructure = new Backbone.Collection([
-          {id: 'site_name', ui: 'textinput', char_length: 255},
-          {id: 'site_url', ui: 'textinput', char_length: 255},
-          {id: 'cms_color', ui: 'checkbox'},
-          {id: 'cms_user_auto_sign_out', ui: 'textinput', char_length: 255}
-        ]);
-        this.v.main.setView('#content', new Settings.Views.Global({model: this.settings.get('global'), structure: globalStructure}));
-      } else if (name === 'tables') {
-        if (tableName) {
-          this.v.main.setView('#content', new Settings.Views.Table({collection: this.columns[tableName]}));
-        } else {
-          this.v.main.setView('#content', new Settings.Views.Tables({collection: this.tables}));
-        }
-      } else if (name === 'media') {
-        var mediaStructure = new Backbone.Collection([
-          {id: 'media_folder', ui: 'textinput', char_length: 255},
-          {id: 'media_naming', ui: 'textinput', char_length: 255},
-          {id: 'allowed_thumbnails', ui: 'textinput', char_length: 255},
-          {id: 'thumbnail_quality', ui: 'textinput', char_length: 255}
-        ]);
-        this.v.main.setView('#content', new Settings.Views.Global({model: this.settings.get('media'), structure: mediaStructure}));
-      } else if (name === 'permissions') {
-        this.v.main.setView('#content', new Settings.Views.Permissions());
-      } else if (name === 'system') {
-        this.v.main.setView('#content', new Settings.Views.System());
-      } else if (name === 'about') {
-        this.v.main.setView('#content', new Settings.Views.About());
-      } else {
-        this.v.main.setView('#content', new Settings.Views.Main({tables: this.tables}));
+
+      switch(name) {
+        case 'tables':
+          this.v.main.setView('#content', new Settings.Tables({collection: app.tables}));
+          break;
+        case 'global':
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), structure: Settings.GlobalStructure, title: 'Global'}));
+          break;
+        case 'media':
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), structure: Settings.MediaStructure, title: 'Media'}));
+          break;
+        case 'permissions':
+          this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));
+          break;
+        case 'system':
+          this.v.main.setView('#content', new Settings.System());
+          break;
+        case 'about':
+          this.v.main.setView('#content', new Settings.About());
+          break;
+        default:
+          this.v.main.setView('#content', new Settings.Main({tables: app.tables}));
+          break;
       }
+
+      this.v.main.render();
+    },
+
+    settingsTable: function(tableName) {
+
+      this.setTitle('Settings');
+      this.tabs.setActive('settings');
+
+      this.v.main.setView('#content', new Settings.Table({collection: app.columns[tableName]}));
+
       this.v.main.render();
     },
 
@@ -34941,87 +33624,37 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
 
     initialize: function(options) {
 
-      // All this should probably move up a level to 'main'.
-      this.columns = {};
-      this.entries = {};
-      this.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','count','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
-      this.preferences = {};
-
-      this.settings = new CollectionSettings(options.data.settings, {parse: true});
-      this.settings.url = app.API_URL + 'settings';
-
-      //Cache UI settings
-      this.uiSettings = UI.settings();
-
-      // Always bootstrap schema and table info.
-      _.each(options.data.tables,function(options) {
-
-        var tableName = options.schema.id;
-
-        this.columns[tableName] = new Directus.CollectionColumns(options.columns, {parse: true});
-        this.columns[tableName].url = app.API_URL + 'tables/' + tableName + '/columns';
-
-        // Set user preferences
-        this.preferences[tableName] = new Backbone.Model(options.preferences);
-        this.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
-
-        // Set tables schema
-        options.schema.url = app.API_URL + 'tables/' + tableName;
-        this.tables.add(new Backbone.Model(options.schema));
-
-        // Temporary quick fix
-        this.columns[tableName].table = this.tables.get(tableName);
-
-      }, this);
-
-      // Instantiate entries
-      this.tables.each(function(table) {
-        this.entries[table.id] = new Directus.CollectionEntries([], {
-          structure: this.columns[table.id],
-          table: table,
-          preferences: this.preferences[table.id]
-        });
-      }, this);
-
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      this.media = this.entries.directus_media;
-      this.media.table.title = "Media";
-      this.media.url = app.API_URL + 'media';
-
-      this.users = this.entries.directus_users;
-      this.users.reset(options.data.users, {parse: true});
-      this.users.table.title = "Users";
-      this.uid = 1;
-
-      this.messages = this.entries.directus_messages;
-
-      this.activity = this.entries.directus_activity;
-      this.activity.table.title = "Activity";
-
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
       this.tabs = new Tabs.Collection([
-        {title: "Activity", id: "activity", count: this.tables.get('directus_activity').get('count')},
-        {title: "Tables", id: "tables", count: this.tables.length},
-        {title: "Media", id: "media", count: this.tables.get('directus_media').get('count')},
-        {title: "Users", id: "users", count: this.tables.get('directus_media').get('count')},
+        {title: "Activity", id: "activity", count: app.activity.table.get('active')},
+        {title: "Tables", id: "tables", count: app.tables.length},
+        {title: "Media", id: "media", count: app.media.table.get('active')},
+        {title: "Users", id: "users", count: app.users.table.get('active')},
         {title: "Settings", id: "settings"}
       ]);
 
-      var user = this.users.get(1);
+      this.extensions = {};
+
+      _.each(Extensions, function(item) {
+        this.extensions[item.id] = new item.Router(item.id);
+        this.extensions[item.id].on('route', function() {
+          this.trigger('subroute',item.id);
+        }, this);
+        this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
+      }, this);
+
+      var tabs = this.tabs;
+      var user = app.users.get(1);
 
       //Top
       var Navbar = Backbone.Layout.extend(
         {
           template: "navbar",
-          data: function() {
+          serialize: function() {
             return {
               user: user.get('first_name'),
               avatar: user.get('avatar'),
               siteName: this.model.get('site_name'),
               siteUrl: this.model.get('site_url')
-              //settings: this.settings.get('global').toJSON()
             };
           }
       });
@@ -35030,11 +33663,13 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
       this.v = {};
       this.v.content = undefined;
 
+      var test = new Tabs.View({collection: this.tabs});
+
       this.v.main = new Backbone.Layout({
         el: "#main",
         //template: "main",
         views: {
-          '#navbar': new Navbar({model: this.settings.get('global')}),
+          '#navbar': new Navbar({model: app.settings.get('global')}),
           '#tabs': new Tabs.View({collection: this.tabs})
         }
       });
@@ -35044,17 +33679,822 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
       });
 
       // Update media counter
-      this.media.on('all', function() {
+      app.media.on('sync', function() {
         var media = this.tabs.get('media');
-        media.set({count: this.media.length});
+        media.set({count: app.media.total});
       }, this);
 
       this.v.main.render();
+
+      this.on('subroute', function(id) {
+        this.tabs.setActive(id);
+      });
       //this.navigate('#tables', {trigger: true});
     }
   });
 
   return Router;
+
+});
+define('schemas/media',[], function() {
+
+  var media = {};
+
+  media.table = {
+    "id":"directus_media",
+    "table_name":"directus_media",
+    "hidden":true,
+    "single":false,
+    "inactive_by_default":"0",
+    "is_junction_table":false,
+    "count":0,
+    "url": "api/1/media",
+    "title":"Media"
+  };
+
+  media.structure = [
+    {
+      "id":"item",
+      "column_name":"item",
+      "type":"ALIAS",
+      "is_nullable":"NO",
+      "sort":-1,
+      "ui":"directus_media",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false
+    },
+    {
+      "id":"id",
+      "column_name":"id",
+      "type":"INT",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":1,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"numeric",
+      "hidden":true
+    },
+    {
+      "id":"active",
+      "column_name":"active",
+      "type":"TINYINT",
+      "is_nullable":"YES",
+      "default_value":"1",
+      "comment":"",
+      "sort":2,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"checkbox",
+      "hidden":true
+    },
+    {
+      "id":"name",
+      "column_name":"name",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":3,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"title",
+      "column_name":"title",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"YES",
+      "default_value":"",
+      "comment":"",
+      "sort":4,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"location",
+      "column_name":"location",
+      "type":"VARCHAR",
+      "char_length":"200",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":5,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"type",
+      "column_name":"type",
+      "type":"VARCHAR",
+      "char_length":"50",
+      "is_nullable":"YES",
+      "default_value":"",
+      "comment":"",
+      "sort":6,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"charset",
+      "column_name":"charset",
+      "type":"VARCHAR",
+      "char_length":"50",
+      "is_nullable":"YES",
+      "default_value":"",
+      "comment":"",
+      "sort":7,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"caption",
+      "column_name":"caption",
+      "type":"TEXT",
+      "char_length":"65535",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":8,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textarea",
+      "options":{
+        "id":"textarea",
+        "rows":"4"
+      }
+    },
+    {
+      "id":"tags",
+      "column_name":"tags",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"YES",
+      "default_value":"",
+      "comment":"",
+      "sort":9,
+      "ui":"tags",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false
+    },
+    {
+      "id":"width",
+      "column_name":"width",
+      "type":"INT",
+      "is_nullable":"YES",
+      "default_value":"0",
+      "comment":"",
+      "sort":10,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"numeric"
+    },
+    {
+      "id":"height",
+      "column_name":"height",
+      "type":"INT",
+      "is_nullable":"YES",
+      "default_value":"0",
+      "comment":"",
+      "sort":11,
+      "ui":"",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false
+    },
+    {
+      "id":"size",
+      "column_name":"size",
+      "type":"INT",
+      "is_nullable":"YES",
+      "default_value":"0",
+      "comment":"",
+      "sort":12,
+      "ui":"directus_media_size",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false
+    },
+    {
+      "id":"embed_id",
+      "column_name":"embed_id",
+      "type":"VARCHAR",
+      "char_length":"200",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":13,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"user",
+      "column_name":"user",
+      "type":"INT",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":14,
+      "ui":"directus_user",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "options":{
+        "id":"directus_user",
+        "compact":"true"
+      }
+    },
+    {
+      "id":"date_uploaded",
+      "column_name":"date_uploaded",
+      "type":"DATETIME",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":15,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"datetime"
+    }
+  ];
+
+  media.preferences = {
+    "id":"9",
+    "user":"1",
+    "table_name":"directus_media",
+    "columns_visible":"item,title,type,size,user,date_uploaded",
+    "sort":"id",
+    "sort_order":"ASC",
+    "active":"1"
+  };
+
+  return media;
+});
+define('schemas/users',[], function() {
+
+  var users = {};
+
+  users.table = {
+    "id":"directus_users",
+    "table_name":"directus_users",
+    "title":"Users",
+    "hidden":true,
+    "single":false,
+    "inactive_by_default":"0",
+    "is_junction_table":false,
+    "count":0,
+    "url": "api/1/tables/directus_users/"
+  };
+
+  users.structure = [
+    {
+      "id":"activity",
+      "column_name":"activity",
+      "type":"ALIAS",
+      "is_nullable":"NO",
+      "ui":"directus_user_activity",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false
+    },
+    {
+      "id":"name",
+      "column_name":"name",
+      "type":"ALIAS",
+      "sort":0,
+      "is_nullable":"NO",
+      "ui":"directus_user",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false
+    },
+    {
+      "id":"id",
+      "column_name":"id",
+      "type":"TINYINT",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":1,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"checkbox",
+      "hidden":true
+    },
+    {
+      "id":"active",
+      "column_name":"active",
+      "type":"TINYINT",
+      "is_nullable":"NO",
+      "default_value":"1",
+      "comment":"",
+      "sort":2,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"checkbox",
+      "hidden":true
+    },
+    {
+      "id":"first_name",
+      "column_name":"first_name",
+      "type":"VARCHAR",
+      "char_length":"50",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":3,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"last_name",
+      "column_name":"last_name",
+      "type":"VARCHAR",
+      "char_length":"50",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":4,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"email",
+      "column_name":"email",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":5,
+      "ui":"email",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false
+    },
+    {
+      "id":"email_messages",
+      "column_name":"email_messages",
+      "type":"TINYINT",
+      "is_nullable":"NO",
+      "default_value":"1",
+      "comment":"",
+      "sort":6,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"checkbox"
+    },
+    {
+      "id":"password",
+      "column_name":"password",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":7,
+      "system":true,
+      "master":false,
+      "hidden_list":true,
+      "hidden_input":false,
+      "required":false,
+      "ui":"password"
+    },
+    {
+      "id":"token",
+      "column_name":"token",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":8,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"reset_token",
+      "column_name":"reset_token",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":9,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"reset_expiration",
+      "column_name":"reset_expiration",
+      "type":"DATETIME",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":10,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"datetime"
+    },
+    {
+      "id":"description",
+      "column_name":"description",
+      "type":"TEXT",
+      "char_length":"65535",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":11,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"textarea",
+      "options": {
+        "rows": "4"
+      }
+    },
+    {
+      "id":"last_login",
+      "column_name":"last_login",
+      "type":"DATETIME",
+      "is_nullable":"NO",
+      "default_value":"0000-00-00 00:00:00",
+      "comment":"",
+      "sort":12,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"datetime"
+    },
+    {
+      "id":"last_page",
+      "column_name":"last_page",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":13,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"ip",
+      "column_name":"ip",
+      "type":"VARCHAR",
+      "char_length":"50",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":14,
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "ui":"textinput"
+    },
+    {
+      "id":"group",
+      "column_name":"group",
+      "type":"INT",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":15,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"many_to_one",
+      "options": {
+        "related_table": "directus_groups",
+        "visible_column": "name"
+      }
+    }
+  ];
+
+  users.preferences = {
+    "id":"1",
+    "user":"1",
+    "table_name":"directus_users",
+    "columns_visible":"name,activity,email,description",
+    "sort":"id",
+    "sort_order":"asc",
+    "active":"1"
+  };
+
+  return users;
+});
+define('schemas/activity',[], function() {
+
+  var activity = {};
+
+  activity.table = {
+    "id":"directus_activity",
+    "table_name":"directus_activity",
+    "hidden":true,
+    "single":false,
+    "inactive_by_default":"0",
+    "is_junction_table":false,
+    "count":0,
+    "url": "api/1/activity",
+    "title": "Activity"
+  };
+
+  activity.structure = [
+  {
+    "id":"activity",
+    "column_name":"activity",
+    "sort":0,
+    "type":"ALIAS",
+    "is_nullable":"NO",
+    "ui":"directus_activity",
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false
+  },
+  {
+    "id":"id",
+    "column_name":"id",
+    "type":"INT",
+    "is_nullable":"NO",
+    "comment":"",
+    "sort":1,
+    "system":true,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false,
+    "ui":"numeric",
+    "hidden":true
+  },
+  {
+    "id":"identifier",
+    "column_name":"identifier",
+    "type":"VARCHAR",
+    "char_length":"100",
+    "is_nullable":"YES",
+    "comment":"",
+    "sort":2,
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false,
+    "ui":"textinput"
+  },
+  {
+    "id":"action",
+    "column_name":"action",
+    "type":"VARCHAR",
+    "char_length":"100",
+    "is_nullable":"NO",
+    "default_value":"",
+    "comment":"",
+    "sort":3,
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false,
+    "ui":"textinput"
+  },
+  {
+    "id":"table_name",
+    "column_name":"table_name",
+    "type":"VARCHAR",
+    "char_length":"100",
+    "is_nullable":"NO",
+    "default_value":"",
+    "comment":"",
+    "sort":4,
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false,
+    "ui":"textinput"
+  },
+  {
+    "id":"row_id",
+    "column_name":"row_id",
+    "type":"INT",
+    "is_nullable":"NO",
+    "comment":"",
+    "sort":5,
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false,
+    "ui":"numeric"
+  },
+  {
+    "id":"user",
+    "column_name":"user",
+    "type":"INT",
+    "is_nullable":"NO",
+    "default_value":"0",
+    "comment":"",
+    "sort":6,
+    "ui":"directus_user",
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false
+  },
+  {
+    "id":"data",
+    "column_name":"data",
+    "type":"TEXT",
+    "char_length":"65535",
+    "is_nullable":"YES",
+    "comment":"",
+    "sort":7,
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false,
+    "ui":"textarea"
+  },
+  {
+    "id":"parent_id",
+    "column_name":"parent_id",
+    "type":"INT",
+    "is_nullable":"YES",
+    "comment":"",
+    "sort":8,
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false,
+    "ui":"numeric"
+  },
+  {
+    "id":"datetime",
+    "column_name":"datetime",
+    "type":"DATETIME",
+    "is_nullable":"YES",
+    "comment":"",
+    "sort":9,
+    "system":false,
+    "master":false,
+    "hidden_list":false,
+    "hidden_input":false,
+    "required":false,
+    "ui":"datetime"
+  }
+  ];
+
+  activity.preferences = {
+    "columns_visible":"activity,datetime,user",
+    "sort":"id",
+    "sort_order":"DESC",
+    "active":"1"
+  };
+
+  return activity;
+});
+define('schemas/groups',[], function() {
+
+  var groups = {};
+
+  groups.table = {
+    "id":"directus_groups",
+    "table_name":"directus_groups",
+    "hidden":true,
+    "single":false,
+    "inactive_by_default": "0",
+    "url": "api/1/groups"
+  };
+
+  groups.structure = [
+    {
+      "id":"id",
+      "column_name":"id",
+      "ui":"numeric",
+      "type":"INT",
+      "system":true,
+      "hidden_list":true,
+      "hidden_input":true
+    },
+    {
+      "id":"name",
+      "column_name":"name",
+      "ui":"numeric",
+      "type":"VARCHAR",
+      "system":true,
+      "hidden_list":true,
+      "hidden_input":true
+    },
+    {
+      "id":"description",
+      "column_name":"description",
+      "ui":"textinput",
+      "type":"VARCHAR",
+      "system":false,
+      "hidden_list":true,
+      "hidden_input":true
+    }
+  ];
+
+  groups.preferences = {
+    "columns_visible": "name,description",
+    "sort": "id",
+    "sort_order": "ASC"
+  };
+
+  return groups;
 
 });
 //  main.js
@@ -35068,28 +34508,119 @@ function(app, Directus, Tabs, UI, Dashboard, Table, Settings, Media, Users, Mess
 require([
   "app",
   "router",
-  "backbone"
+  "backbone",
+  "core/directus",
+  "core/ui",
+  "schemas/media",
+  "schemas/users",
+  "schemas/activity",
+  "schemas/groups"
 ],
 
-function(app, Router, Backbone) {
+function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
 
-    // Define your master router on the application namespace and trigger all
-    // navigation from this instance.
-    app.router = new Router({data: window.directusData});
+    // Bootstrap global data
+    var data = window.directusData;
+
+    console.log(data.ui);
+
+    app.root = data.path;
+    app.API_URL = data.path + 'api/1/';
+    app.RESOURCES_URL = '/resources/';
+    app.uiSettings = UI.settings();
+    app.columns = {};
+    app.entries = {};
+    app.preferences = {};
+    app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','active','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
+    app.settings = new Directus.Settings(data.settings, {parse: true});
+    app.settings.url = app.API_URL + 'settings';
+
+    // Always bootstrap schema and table info.
+    _.each(data.tables, function(options) {
+
+      var tableName = options.schema.id;
+
+      // Set tables schema
+      options.schema.url = app.API_URL + 'tables/' + tableName;
+
+      app.tables.add(new Backbone.Model(options.schema));
+
+      if (tableName.substring(0,9) === 'directus_') return;
+
+      app.columns[tableName] = new Directus.CollectionColumns(options.columns, {parse: true});
+      app.columns[tableName].url = app.API_URL + 'tables/' + tableName + '/columns';
+
+      // Set user preferences
+      app.preferences[tableName] = new Backbone.Model(options.preferences);
+      app.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
+
+      // Temporary quick fix
+      app.columns[tableName].table = app.tables.get(tableName);
+    });
+
+    // Setup core data collections.
+    app.media = new Directus.Media(data.active_media, {
+      table: app.tables.get('directus_media'),
+      structure: new Directus.CollectionColumns(media.structure, {parse: true}),
+      preferences: new Backbone.Model(media.preferences),
+      url: app.API_URL + 'media',
+      parse: true
+    });
+
+    app.users = new Directus.Entries.Collection(data.users, {
+      parse: true,
+      table: app.tables.get('directus_users'),
+      structure: new Directus.CollectionColumns(users.structure, {parse: true}),
+      preferences: new Backbone.Model(users.preferences),
+      url: app.API_URL + 'tables/directus_users/rows'
+    });
+
+    app.activity = new Directus.Entries.Collection({}, {
+      table: app.tables.get('directus_activity'),
+      structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
+      preferences: new Backbone.Model(activity.preferences),
+      url: app.API_URL + 'activity/'
+    });
+
+    app.groups =
+    app.entries.directus_groups = new Directus.Entries.Collection(data.groups, {
+      table: app.tables.get('directus_groups'),
+      preferences: new Backbone.Model(groups.preferences),
+      structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
+      url: app.API_URL + 'groups/',
+      parse: true
+    });
+
+    app.permissions = new Backbone.Model();
+
+    //data.groups.each(function(model) {
+      //app.permissions.add(model.id
+    //});
+
+    // Instantiate entries
+    app.tables.each(function(table) {
+      if (table.id.substring(0,9) === 'directus_') return;
+      app.entries[table.id] = new Directus.Entries.Collection([], {
+        structure: app.columns[table.id],
+        table: table,
+        preferences: app.preferences[table.id]
+      });
+    }, this);
+
+    _.each(app.uiSettings, function(value, key) {
+      if (value.variables === undefined) return;
+      //Cheating way to peform a deep-clone
+      var deepClone = JSON.parse(JSON.stringify(value.variables));
+      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
+    });
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    app.router = new Router();
 
     // Trigger the initial route and enable HTML5 History API support, set the
     // root folder to '/' by default.  Change in app.js.
     Backbone.history.start({ pushState: true, root: app.root });
-
-
-
-    //COMMAND + S;
-    $(window).keydown(_.bind(function(e) {
-      if (e.keyCode === 83 && e.metaKey) {
-        e.preventDefault();
-        //this.$el.trigger('save');
-      }
-    }, this));
 
     // All navigation that is relative should be passed through the navigate
     // method, to be processed by the router. If the link has a `data-bypass`
@@ -35117,6 +34648,27 @@ function(app, Router, Backbone) {
       }
     });
 
+    //Override backbone sync for custom error handling
+    var sync = Backbone.sync;
+
+    Backbone.sync = function(method, model, options) {
+      options.error = function(xhr, status, thrown) {
+        console.log(status.responseText);
+      };
+      sync(method, model, options);
+    };
+
+    //Cancel default file drop
+    $(document).on('drop dragover', function(e) {
+      e.preventDefault();
+    });
+
+    //Cancel default CMD + S;
+    $(window).keydown(_.bind(function(e) {
+      if (e.keyCode === 83 && e.metaKey) {
+        e.preventDefault();
+      }
+    }, this));
 });
 
 define("main", function(){});
@@ -35147,10 +34699,12 @@ require.config({
     backbone: "../assets/js/libs/backbone",
     handlebars: "../assets/js/libs/handlebars",
 
+    // Extensions
+    extensions: '../extensions',
+    ui: '../ui',
+
     //both of these should obviously not be included:
-    "jquery-ui": "../assets/js/libs/jquery-ui",
-    "jquery.ui.widget": "../assets/js/plugins/jquery.ui.widget",
-    "jquery.iframe.transport": "../assets/js/plugins/jquery.iframe-transport"
+    "jquery-ui": "../assets/js/libs/jquery-ui"
   },
 
   shim: {
@@ -35173,7 +34727,7 @@ require.config({
     "plugins/jquery.timeago": ["jquery"],
     "plugins/backbone.layoutmanager": ["backbone"],
     "plugins/bootstrap-dropdown": ["jquery"],
-    "plugins/jquery.fileupload": ["jquery", "jquery.ui.widget", "jquery.iframe.transport"]
+    "plugins/bootstrap-typeahead": ["jquery"]
   }
 });
 

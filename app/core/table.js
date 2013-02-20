@@ -147,7 +147,7 @@ function(app, Backbone) {
         rows: rows,
         sortable: this.options.sortable,
         selectable: this.options.selectable,
-        deleteColumn: this.options.deleteColumn,
+        deleteColumn: this.options.deleteColumn
       };
     },
 

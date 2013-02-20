@@ -26,6 +26,7 @@ require.config({
 
     // Extensions
     extensions: '../extensions',
+    ui: '../ui',
 
     //both of these should obviously not be included:
     "jquery-ui": "../assets/js/libs/jquery-ui"

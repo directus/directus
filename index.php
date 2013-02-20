@@ -10,9 +10,9 @@ $data['page'] = '#tables';
 $data['path'] = DIRECTUS_PATH;
 $data['active_media'] = $db->count_active('directus_media');
 $data['extensions'] = array();
-//$data['active_activity'] = $db->count_active('directus_media');
-//$data['active_activity'] = $db->count_active('directus_activity');
+$data['ui'] = array();
 
+// No access, forward to login page
 if ($data == 401) {
   header( 'location: login.html' ) ;
   die();
@@ -23,8 +23,14 @@ foreach (new DirectoryIterator('./extensions') as $file) {
 	if($file->isDot()) continue;
 	if(is_dir('./extensions/'.$file->getFilename()))
 	{
-	  array_push($data['extensions'], 'extensions/'.$file->getFilename().'/'.$file->getFilename());
+	  array_push($data['extensions'], 'extensions/'.$file->getFilename().'/main');
 	}
+}
+
+// Scan for UI
+foreach (new DirectoryIterator('./ui') as $file) {
+	if($file->isDot()) continue;
+	array_push($data['ui'], 'ui/'.basename($file->getFilename(),'.js'));
 }
 
 echo template(file_get_contents('main.html'), array(

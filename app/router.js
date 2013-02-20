@@ -213,7 +213,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         this.extensions[item.id].on('route', function() {
           this.trigger('subroute',item.id);
         }, this);
-        this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true})
+        this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
 
       var tabs = this.tabs;
@@ -262,7 +262,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       this.on('subroute', function(id) {
         this.tabs.setActive(id);
-      })
+      });
       //this.navigate('#tables', {trigger: true});
     }
   });

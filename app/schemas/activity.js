@@ -161,7 +161,7 @@ define([], function() {
     "hidden_input":false,
     "required":false,
     "ui":"datetime"
-  },
+  }
   ];
 
   activity.preferences = {
