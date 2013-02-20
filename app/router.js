@@ -10,7 +10,7 @@ define([
   "app",
   "core/directus",
   "core/tabs",
-  "ui/ui",
+  "core/ui",
   "modules/activity",
   "modules/table",
   "modules/settings",
@@ -20,10 +20,10 @@ define([
   "core/modal",
   "core/collection.settings",
   "core/collection.upload",
-  "extensions/cashregister/cashregister"
+  "core/extensions"
 ],
 
-function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia, CashRegister) {
+function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia, Extensions) {
 
   var Router = Backbone.Router.extend({
 
@@ -196,11 +196,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.setPage(Messages.Views.List, {collection: this.messages});
     },
 
-    cashregister: function() {
-      this.v.main.setView('#content', new CashRegister());
-      this.v.main.render();
-    },
-
     initialize: function(options) {
 
       this.tabs = new Tabs.Collection([
@@ -210,6 +205,34 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         {title: "Users", id: "users", count: app.users.table.get('active')},
         {title: "Settings", id: "settings"}
       ]);
+
+      // Add extensions to router
+      _.each(Extensions, function(item) {
+        var title = app.capitalize(item.id);
+        var route = item.id.replace("_","-");
+
+
+        this.tabs.push({title: title, id: route, extension: true});
+
+        this.route(route, route, function() {
+          this.setTitle(title);
+          this.tabs.setActive(route);
+          this.v.main.setView('#content', new item.View());
+          this.v.main.render();
+        });
+
+        // Define subroutes
+        _.each(item.routes, function(callback, key) {
+          var subRoute = route + "/" + key;
+          this.route(subRoute, subRoute, function(arguments) {
+            this.setTitle(title);
+            this.tabs.setActive(route);
+            callback(arguments);
+          });
+        },this);
+
+
+      }, this);
 
       var tabs = this.tabs;
       var user = app.users.get(1);

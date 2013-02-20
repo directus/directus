@@ -6143,6 +6143,8 @@ a:hover {
   margin-left: 5px;
   color: #8bc53f;
 }
+.nav-tabs li.extension.active > a,
+.nav-tabs li.extension.active > a:hover,
 .nav-tabs li.active > a,
 .nav-tabs li.active > a:hover {
   background-color: #ffffff;
@@ -6150,10 +6152,18 @@ a:hover {
   border: 0;
   text-shadow: none;
 }
+.nav-tabs li.extension.active > a .label,
+.nav-tabs li.extension.active > a:hover .label,
 .nav-tabs li.active > a .label,
 .nav-tabs li.active > a:hover .label {
   border: 1px solid #8bc53f;
   padding: 2px 5px 1px 5px;
+}
+.nav-tabs li.extension > a {
+  background-color: #8f8f8f;
+}
+.nav-tabs li.extension > a:hover {
+  background-color: #828282;
 }
 .navbar-fixed-top .navbar-inner,
 .navbar-static-top .navbar-inner {

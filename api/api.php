@@ -92,9 +92,12 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   // GROUPS
 
   if ( $collection == "groups" ) {
-    $groups = $db->get_entries("directus_groups");
 
-    return $groups;
+    if (isset($id)) {
+      return $db->get_group(1);
+    }
+
+    return $db->get_entries("directus_groups");
   }
 
   //////////////////////////////////////////////////////////////////////////////

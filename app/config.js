@@ -24,6 +24,9 @@ require.config({
     backbone: "../assets/js/libs/backbone",
     handlebars: "../assets/js/libs/handlebars",
 
+    // Extensions
+    extensions: '../extensions',
+
     //both of these should obviously not be included:
     "jquery-ui": "../assets/js/libs/jquery-ui"
   },

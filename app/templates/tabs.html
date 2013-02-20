@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
 {{#tabs}}
-  <li {{#if active}}class="active"{{/if}}>
+  <li class="{{#if active}}active{{/if}} {{#if extension}}extension{{/if}}">
   	<a href="#{{id}}">{{title}} {{#if count}}<div class="label hidden-phone">{{{number count}}}</div>{{/if}}</a>
   </li>
 {{/tabs}}

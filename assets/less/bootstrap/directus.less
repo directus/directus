@@ -286,6 +286,8 @@ a:hover {text-decoration:none;}
 		}
 		.label { margin-left: 5px; color: @directusPrimary; }
 	}
+	li.extension.active > a,
+	li.extension.active > a:hover,
 	li.active > a,
 	li.active > a:hover {
 		background-color:@white;
@@ -293,6 +295,12 @@ a:hover {text-decoration:none;}
 		border:0;
 		text-shadow:none;
 		.label {border: 1px solid @directusPrimary; padding: 2px 5px 1px 5px;}
+	}
+	li.extension > a {
+		background-color:@grayDark;
+		&:hover {
+			background-color: darken(@grayDark, 5%);
+		}
 	}
 }
 // NAVBAR

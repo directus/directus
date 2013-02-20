@@ -36,7 +36,6 @@ function(Handlebars) {
     },
 
     contextualDate: function(value) {
-      console.log(value);
       return jQuery.timeago(value+'Z');
     },
 

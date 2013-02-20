@@ -205,7 +205,6 @@ function(app, Backbone, BaseCollection) {
     },
 
     getFilters: function() {
-      console.log(this);
       return _.extend(this.filters, _.pick(this.preferences.toJSON(),'columns_visible','sort','sort_order','active'));
     },
 

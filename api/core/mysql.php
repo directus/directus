@@ -677,6 +677,13 @@ class MySQL {
     return $sth->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  function get_group($id) {
+    $sql = "SELECT table_name, type FROM directus_privileges WHERE group_id = $id";
+    $sth = $this->dbh->prepare($sql);
+    $sth->execute();
+    return $sth->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   function add_column($tbl_name, $data) {
     $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
     $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_column', 'sort', 'ui', 'comment');

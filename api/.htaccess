@@ -10,6 +10,12 @@ RewriteEngine On
 
 
 #API CALLS
+
+# Extensions
+# ----------
+RewriteRule ^1/extensions/([^/]+)	../extensions/$1/api.php [L]
+
+
 RewriteRule ^1/tables/*$ api.php?api_collection=tables&api_response_type=json&%{QUERY_STRING} [L]
 RewriteRule ^1/([^/]+)\.([^/]+)*$ api.php?api_collection=$1&api_response_type=$2&%{QUERY_STRING} [L]
 
@@ -36,6 +42,7 @@ RewriteRule ^1/tables/directus_users/rows/([^/]+)/*$ api.php?api_collection=user
 # Groups
 # ------
 RewriteRule ^1/groups/*$ api.php?api_collection=groups&%{QUERY_STRING} [L]
+RewriteRule ^1/groups/([^/]+)/*$ api.php?api_collection=groups&id=$1%{QUERY_STRING} [L]
 
 # Activity
 # --------

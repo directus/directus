@@ -9,7 +9,7 @@
 define([
   'app',
   'backbone',
-  'ui/ui',
+  'core/ui',
   'core/directus'
 ],
 

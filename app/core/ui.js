@@ -21,26 +21,7 @@ define([
   'ui/password'
 ],
 
-function(
-  directus_media,
-  checkbox, numeric,
-  textinput, textarea,
-  relational,
-  directus_user,
-  email,
-  directus_activity,
-  datetime,
-  directus_user_activity,
-  directus_media_size,
-  blob,
-  alias,
-  select,
-  tags,
-  many_to_one,
-  radiobuttons,
-  itunes_song_selector,
-  password
-) {
+function() {
 
   ui = {};
 
@@ -53,21 +34,6 @@ function(
   };
 
   _.extend(Component.prototype, {
-
-
-    getList: function(attr) {
-      var schema = this.structure.get(attr);
-      var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
-      var view = View.list({
-        model: this.model,
-        collection: this.collection,
-        settings: schema.options,
-        schema: schema,
-        value: this.model.has(attr) ? this.model.get(attr) : this.model.id,
-        tagName: 'td'
-      });
-      return view;
-    },
 
     getInput: function(attr) {
       var schema = this.structure.get(attr);

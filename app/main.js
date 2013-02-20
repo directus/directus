@@ -11,7 +11,7 @@ require([
   "router",
   "backbone",
   "core/directus",
-  "ui/ui",
+  "core/ui",
   "schemas/media",
   "schemas/users",
   "schemas/activity",
@@ -90,6 +90,12 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
       parse: true
     });
 
+    app.permissions = new Backbone.Model();
+
+    //data.groups.each(function(model) {
+      //app.permissions.add(model.id
+    //});
+
     // Instantiate entries
     app.tables.each(function(table) {
       if (table.id.substring(0,9) === 'directus_') return;
@@ -109,10 +115,7 @@ function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    app.router = new Router({data: window.directusData});
-
-    console.log(app);
-
+    app.router = new Router();
 
     // Trigger the initial route and enable HTML5 History API support, set the
     // root folder to '/' by default.  Change in app.js.
