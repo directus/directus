@@ -493,14 +493,12 @@ class MySQL {
     if (isset($search)) {
       $search_sql = "(";
       foreach ($schema as $col) {
-        if ($col['type'] == 'varchar' || $col['type'] == 'int') {
+        if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
           $search_sql .= "LOWER(" . $col['column_name'] . ") LIKE $search OR ";
         }
       }
       $search_sql = 'AND ' . rtrim($search_sql, 'OR ') . ")";
     }
-
-
 
     $has_active = false;
 

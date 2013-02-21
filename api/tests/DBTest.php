@@ -8,7 +8,8 @@ class DBTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
+
+        $this->db = new DB('db130425', 'Alligat0r$', 'directus', 'localhost');
         $this->tables = $this->db->get_tables();
 
         // Truncate the demo table!
@@ -114,7 +115,5 @@ class DBTest extends PHPUnit_Framework_TestCase
     public function testCountActive() {
         print_r($this->db->count_active('directus_activity'));
     }
-
-
 }
 ?>
