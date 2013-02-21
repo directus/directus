@@ -1,0 +1,14 @@
+<table class="table table-striped directus-table">
+	<thead>
+		<tr>
+			<th>Product</th><th>Price</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#rows}}
+		<tr data-id="{{id}}"><td>{{name}}</td><td>{{price}}</td></tr>
+		{{else}}
+		<tr><td>Test</td></tr>
+		{{/rows}}
+	</tbody>
+</table>
