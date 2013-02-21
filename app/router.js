@@ -23,7 +23,7 @@ define([
   "core/extensions"
 ],
 
-function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia, Extensions) {
+function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia, extensions) {
 
   var Router = Backbone.Router.extend({
 
@@ -208,7 +208,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       this.extensions = {};
 
-      _.each(Extensions, function(item) {
+      _.each(extensions, function(item) {
         this.extensions[item.id] = new item.Router(item.id);
         this.extensions[item.id].on('route', function() {
           this.trigger('subroute',item.id);

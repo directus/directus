@@ -101,6 +101,7 @@ class MySQL {
           ifnull(single,0) as single,
           inactive_by_default,
           is_junction_table,
+          footer,
           UNIX_TIMESTAMP(UPDATE_TIME) as timestamp,
           TABLE_ROWS AS count,
           UPDATE_TIME AS date_modified
@@ -124,6 +125,7 @@ class MySQL {
     if ($info) {
       $info['hidden'] = (boolean)$info['hidden'];
       $info['single'] = (boolean)$info['single'];
+      $info['footer'] = (boolean)$info['footer'];
       $info['is_junction_table'] = (boolean)$info['is_junction_table'];
     }
 

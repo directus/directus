@@ -73,7 +73,6 @@ function(app, Backbone) {
 
       options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
 
-
       if (this.active) {
         options.visibility = _.map([
           {text:'All', value: '1,2', count: this.collection.total},
@@ -88,7 +87,6 @@ function(app, Backbone) {
       options.filterText = this.collection.getFilter('search');
       options.filter = true;
       options.paginator = (options.pageNext || options.pagePrev);
-
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 
       return options;
@@ -243,6 +241,51 @@ function(app, Backbone) {
 
   });
 
+  var TableFooter = Backbone.Layout.extend({
+    tagName: 'tfoot',
+    template: 'table-foot',
+
+    events: {
+      'change select': function(e) {
+        var $target = $(e.target);
+        var operation = $target.find(":selected").val().toLowerCase();
+        var column = $(e.target).attr('data-id');
+        var set = this.collection.pluck(column);
+
+        var value = this.calculate(set, operation);
+
+        $target.next('p').html(value);
+        console.log(set, value);
+      }
+    },
+
+    calculate: function(set, operation) {
+      var sum = _.reduce(set, function(memo, num){ return memo + num; }, 0);
+      switch(operation) {
+        case 'max':
+          return _.max(set);
+        case 'min':
+          return _.min(set);
+        case 'average':
+          return Math.round(10000 * sum / set.length) / 10000;
+        case 'sum':
+          return sum;
+      }
+    },
+
+    serialize: function() {
+      var columns = _.map(this.collection.getColumns(), function(value) {
+        var col = {
+          title: value,
+          isNumeric: (["FLOAT", "INT", "SMALLINT", "DECIMAL", "DOUBLE"].indexOf(this.collection.structure.get(value).get('type')) > -1),
+        }
+        if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), 'sum');
+        return col;
+      }, this);
+      return {columns: columns, selectable: this.options.selectable, sortable: this.options.sortable,};
+    }
+  });
+
   var Table = Backbone.Layout.extend({
 
     tagname: 'div',
@@ -309,6 +352,14 @@ function(app, Backbone) {
           sortable: this.options.sortable,
           deleteColumn: this.options.deleteColumn,
           rowIdentifiers: this.options.rowIdentifiers
+        }));
+      }
+
+      if (this.collection.length > 0 && this.collection.table.get('footer')) {
+        this.insertView('table', new TableFooter({
+          collection: this.collection,
+          sortable: this.options.sortable,
+          selectable: this.options.selectable
         }));
       }
     },
@@ -381,10 +432,7 @@ function(app, Backbone) {
           $el.removeClass('dragover');
         }, this);
       }
-
     },
-
-
 
     constructor: function (options) {
 

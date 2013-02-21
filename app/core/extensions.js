@@ -1,1 +1,3 @@
-define(window.directusData.extensions, function() { return arguments; });
+define(window.directusData.extensions, function() {
+	return arguments;
+});

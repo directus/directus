@@ -1,0 +1,18 @@
+<tr>
+<td></td>
+{{#if sortable}}<td></td>{{/if}}
+{{#if selectable}}<td></td>{{/if}}
+{{#columns}}
+<td>
+	{{#if isNumeric}}
+	<select style="width:80px; margin-top:12px" data-id="{{title}}">
+	<option>Sum</option>
+	<option>Average</option>
+	<option>Max</option>
+	<option>Min</option>
+	</select>
+	<p style="margin-top:10px; font-weight:bold;">{{value}}</p>
+	{{/if}}
+</td>
+{{/columns}}
+</tr>

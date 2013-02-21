@@ -7,6 +7,7 @@
 //  http://www.getdirectus.com
 
 require([
+  "module",
   "app",
   "router",
   "backbone",
@@ -18,12 +19,10 @@ require([
   "schemas/groups"
 ],
 
-function(app, Router, Backbone, Directus, UI, media, users, activity, groups) {
+function(module, app, Router, Backbone, Directus, UI, media, users, activity, groups) {
 
     // Bootstrap global data
     var data = window.directusData;
-
-    console.log(data.ui);
 
     app.root = data.path;
     app.API_URL = data.path + 'api/1/';

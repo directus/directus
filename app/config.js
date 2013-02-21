@@ -11,6 +11,7 @@ require.config({
 
   // Initialize the application with the main application file.
   deps: ["main"],
+
   //urlArgs: "bust=" + (new Date()).getTime(),    //FOR CACHE BUSTING DURING DEV
   paths: {
     // JavaScript folders.
