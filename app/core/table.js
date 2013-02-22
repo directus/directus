@@ -251,11 +251,8 @@ function(app, Backbone) {
         var operation = $target.find(":selected").val().toLowerCase();
         var column = $(e.target).attr('data-id');
         var set = this.collection.pluck(column);
-
         var value = this.calculate(set, operation);
-
         $target.next('p').html(value);
-        console.log(set, value);
       }
     },
 
@@ -355,7 +352,7 @@ function(app, Backbone) {
         }));
       }
 
-      if (this.collection.length > 0 && this.collection.table.get('footer')) {
+      if (this.collection.length > 0 && this.collection.table.get('footer') && this.options.footer !== false) {
         this.insertView('table', new TableFooter({
           collection: this.collection,
           sortable: this.options.sortable,

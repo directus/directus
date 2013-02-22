@@ -17,6 +17,8 @@ define([
   'core-ui/tags',
   'core-ui/many_to_one',
   'core-ui/radiobuttons',
+  'core-ui/manytomany',
+  'core-ui/onetomany',
   'core-ui/password'].concat(window.directusData.ui),
 function() {
 

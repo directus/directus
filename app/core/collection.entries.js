@@ -40,6 +40,20 @@ function(app, Backbone, BaseCollection) {
       this.constructor.__super__.remove.apply(this, arguments);
     },
 
+    //If getNested is set to true, the this will point to the nested element
+    get: function(id, getNested) {
+      var model = Entries.NestedCollection.__super__.get.call(this, id);
+      if (getNested) model = model.get('data');
+      return model;
+    },
+
+    add: function(models, options) {
+      console.log(options);
+      if (options && options.nest) {
+       _.map(models, function(model) { return {data: model}; });
+      }
+      Entries.NestedCollection.__super__.add.apply(this, [models, options])
+    },
 
     /*
 
