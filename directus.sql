@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.5.25)
 # Database: directus
-# Generation Time: 2013-02-21 20:30:40 +0000
+# Generation Time: 2013-02-23 00:33:57 +0000
 # ************************************************************
 
 
@@ -80,6 +80,15 @@ CREATE TABLE `bike_tickets` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `bike_tickets` WRITE;
+/*!40000 ALTER TABLE `bike_tickets` DISABLE KEYS */;
+
+INSERT INTO `bike_tickets` (`id`, `bike_id`, `studio_id`, `position`, `complaint`, `comment`, `date_created`, `adjusted`, `parts_used`)
+VALUES
+	(1,0,0,0,'','','0000-00-00',0,'');
+
+/*!40000 ALTER TABLE `bike_tickets` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table bikes
@@ -244,6 +253,15 @@ CREATE TABLE `demo_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+LOCK TABLES `demo_table` WRITE;
+/*!40000 ALTER TABLE `demo_table` DISABLE KEYS */;
+
+INSERT INTO `demo_table` (`id`, `title`, `number`)
+VALUES
+	(1,'Test2',0);
+
+/*!40000 ALTER TABLE `demo_table` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table directus_activity
@@ -410,7 +428,92 @@ VALUES
 	(290,'ENTRY','UPDATE','Hamburger','products',2,1,'{\"id\":2,\"title\":\"Hamburger\",\"category\":\"\",\"description\":\"German sandwich\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-21 19:27:11'),
 	(291,'ENTRY','UPDATE','French fries','products',4,1,'{\"id\":4,\"title\":\"French fries\",\"category\":\"\",\"description\":\"Belgian potatoes\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"7\"}',NULL,'2013-02-21 19:28:40'),
 	(292,'ENTRY','UPDATE','Starburst','products',5,1,'{\"id\":5,\"title\":\"Starburst\",\"category\":\"\",\"description\":\"Cuboid-shaped, fruit-flavoured soft candy\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"14\"}',NULL,'2013-02-21 19:29:34'),
-	(293,'ENTRY','UPDATE','Ice cream','products',6,1,'{\"id\":6,\"title\":\"Ice cream\",\"category\":\"\",\"description\":\"Frozen dessert\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"6\"}',NULL,'2013-02-21 19:30:05');
+	(293,'ENTRY','UPDATE','Ice cream','products',6,1,'{\"id\":6,\"title\":\"Ice cream\",\"category\":\"\",\"description\":\"Frozen dessert\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"6\"}',NULL,'2013-02-21 19:30:05'),
+	(294,'ENTRY','UPDATE','tengu','users',1,1,'{\"id\":1,\"active\":\"1\",\"first_name\":\"tengu\",\"last_name\":\"Sundstrom\",\"email\":\"olov@rngr.org\",\"gender\":\"\",\"password\":\"\",\"region\":\"1\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-21 22:39:08'),
+	(295,'ENTRY','UPDATE','TEST','classes',17,1,'{\"id\":17,\"room_id\":3,\"instructor_id\":2,\"class_type_id\":1,\"datetime\":\"0000-00-00 00:00:00\",\"note\":\"TEST\"}',294,'2013-02-21 22:39:08'),
+	(296,'ENTRY','UPDATE',NULL,'bookmarks',0,1,'{\"user_id\":1,\"class_id\":17,\"id\":\"0\"}',294,'2013-02-21 22:39:08'),
+	(297,'ENTRY','UPDATE','Olov','instructors',1,1,'{\"id\":1,\"active\":1,\"first_name\":\"Olov\",\"last_name\":\"Sundstrom\",\"nickname\":\"Olov\",\"image\":0,\"password\":\"\",\"email\":\"\",\"phone\":0,\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"bio\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"tumblr\":\"\"}',294,'2013-02-21 22:39:08'),
+	(298,'ENTRY','UPDATE',NULL,'favorite_instructors',1,1,'{\"user_id\":1,\"instructor_id\":1,\"id\":\"1\"}',294,'2013-02-21 22:39:08'),
+	(299,'ENTRY','UPDATE','tengu','users',1,1,'{\"id\":1,\"active\":\"1\",\"first_name\":\"tengu\",\"last_name\":\"Sundstrom\",\"email\":\"tengu@rngr.org\",\"gender\":\"\",\"password\":\"\",\"region\":\"1\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-21 22:39:28'),
+	(300,'ENTRY','UPDATE','TEST','classes',17,1,'{\"id\":17,\"room_id\":3,\"instructor_id\":2,\"class_type_id\":1,\"datetime\":\"0000-00-00 00:00:00\",\"note\":\"TEST\"}',299,'2013-02-21 22:39:28'),
+	(301,'ENTRY','UPDATE',NULL,'bookmarks',0,1,'{\"user_id\":1,\"class_id\":17,\"id\":\"0\"}',299,'2013-02-21 22:39:28'),
+	(302,'ENTRY','UPDATE','Olov','instructors',1,1,'{\"id\":1,\"active\":1,\"first_name\":\"Olov\",\"last_name\":\"Sundstrom\",\"nickname\":\"Olov\",\"image\":0,\"password\":\"\",\"email\":\"\",\"phone\":0,\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"bio\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"tumblr\":\"\"}',299,'2013-02-21 22:39:28'),
+	(303,'ENTRY','UPDATE',NULL,'favorite_instructors',1,1,'{\"user_id\":1,\"instructor_id\":1,\"id\":\"1\"}',299,'2013-02-21 22:39:28'),
+	(304,'ENTRY','UPDATE','tengu','users',1,1,'{\"id\":1,\"active\":\"1\",\"first_name\":\"tengu\",\"last_name\":\"Sundstrom\",\"email\":\"tengu@rngr.org\",\"gender\":\"\",\"password\":\"\",\"region\":\"1\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-21 22:40:11'),
+	(305,'ENTRY','UPDATE','TEST','classes',17,1,'{\"id\":17,\"room_id\":3,\"instructor_id\":2,\"class_type_id\":1,\"datetime\":\"0000-00-00 00:00:00\",\"note\":\"TEST\"}',304,'2013-02-21 22:40:11'),
+	(306,'ENTRY','UPDATE',NULL,'bookmarks',0,1,'{\"user_id\":1,\"class_id\":17,\"id\":\"0\"}',304,'2013-02-21 22:40:11'),
+	(307,'ENTRY','UPDATE','Olov','instructors',1,1,'{\"id\":1,\"active\":1,\"first_name\":\"Olov\",\"last_name\":\"Sundstrom\",\"nickname\":\"Olov\",\"image\":0,\"password\":\"\",\"email\":\"\",\"phone\":0,\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"bio\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"tumblr\":\"\"}',304,'2013-02-21 22:40:11'),
+	(308,'ENTRY','UPDATE',NULL,'favorite_instructors',1,1,'{\"user_id\":1,\"instructor_id\":1,\"id\":\"1\"}',304,'2013-02-21 22:40:11'),
+	(309,'ENTRY','UPDATE','Max','instructors',3,1,'{\"id\":3,\"active\":1,\"first_name\":\"Max\",\"last_name\":\"Glantzman\",\"nickname\":\"Max\",\"image\":0,\"password\":\"\",\"email\":\"\",\"phone\":0,\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"bio\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"tumblr\":\"\"}',304,'2013-02-21 22:40:11'),
+	(310,'ENTRY','ADD',NULL,'favorite_instructors',0,1,'{\"user_id\":1,\"instructor_id\":3}',304,'2013-02-21 22:40:11'),
+	(311,'ENTRY','UPDATE','Coca Cola','products',1,1,'{\"id\":1,\"title\":\"Coca Cola\",\"category\":0,\"description\":\"American beverage\",\"sizes\":0,\"styles\":0,\"price\":2}',304,'2013-02-21 22:40:11'),
+	(312,'ENTRY','ADD',NULL,'favorite_products',0,1,'{\"user_id\":1,\"product_id\":1}',304,'2013-02-21 22:40:11'),
+	(313,'ENTRY','UPDATE','Union Square','studios',1,1,'{\"id\":1,\"title\":\"Union Square\",\"address\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"country\":\"\",\"phone_number\":0,\"email\":\"\",\"banner_image\":0,\"slideshow_images\":\"\",\"amenities\":\"\"}',304,'2013-02-21 22:40:12'),
+	(314,'ENTRY','ADD',NULL,'favorite_studios',0,1,'{\"user_id\":1,\"studio_id\":1}',304,'2013-02-21 22:40:12'),
+	(315,'UI','UPDATE','users,favourite_instructors,manytomany','directus_ui',0,1,'{\"visible_columns\":\"first_name\"}',NULL,'2013-02-21 23:31:30'),
+	(316,'UI','UPDATE','users,classes,manytomany','directus_ui',0,1,'{\"visible_columns\":\"note\"}',NULL,'2013-02-21 23:45:20'),
+	(317,'UI','UPDATE','users,favourite_products,manytomany','directus_ui',0,1,'{\"visible_columns\":\"title\"}',NULL,'2013-02-21 23:45:36'),
+	(318,'UI','UPDATE','users,favourite_studios,manytomany','directus_ui',0,1,'{\"visible_columns\":\"title\"}',NULL,'2013-02-21 23:45:50'),
+	(319,'ENTRY','UPDATE','Coca Cola','products',1,1,'{\"id\":1,\"title\":\"Coca Cola\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-21 23:59:31'),
+	(320,'ENTRY','UPDATE','Pepsi Cola','products',1,1,'{\"id\":1,\"title\":\"Pepsi Cola\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 00:00:04'),
+	(321,'ENTRY','UPDATE','Coca Cola','products',1,1,'{\"id\":1,\"title\":\"Coca Cola\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 00:00:15'),
+	(322,'ENTRY','UPDATE','i am active to','about',1,1,'{\"id\":1,\"active\":1,\"title\":\"i am active to\",\"description\":\"test test\",\"banner_image\":\"\",\"button_link\":\"\"}',NULL,'2013-02-22 16:49:03'),
+	(323,'ENTRY','UPDATE','i am active to','about',1,1,'{\"id\":1,\"active\":1,\"title\":\"i am active to\",\"description\":\"test test\",\"banner_image\":\"\",\"button_link\":\"\"}',NULL,'2013-02-22 16:49:19'),
+	(324,'ENTRY','UPDATE','i am active to','about',1,1,'{\"id\":1,\"active\":1,\"title\":\"i am active to\",\"description\":\"test test\",\"banner_image\":\"\",\"button_link\":\"\"}',NULL,'2013-02-22 16:56:22'),
+	(325,'ENTRY','UPDATE','i am active to','about',1,1,'{\"id\":1,\"active\":1,\"title\":\"i am active to\",\"description\":\"test test\",\"banner_image\":\"\",\"button_link\":\"\"}',NULL,'2013-02-22 19:04:39'),
+	(326,'SETTINGS','UPDATE','global','directus_settings',NULL,1,'{\"site_name\":\"SoulCycle\",\"site_url\":\"http:\\/\\/www.rngr.org\",\"cms_color\":\"green\",\"cms_user_auto_sign_out\":\"10\"}',NULL,'2013-02-22 19:20:03'),
+	(327,'ENTRY','ADD','Hot Sauce','products',7,1,'{\"title\":\"Hot Sauce\",\"category\":\"\",\"description\":\"Spicy!\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"3\"}',NULL,'2013-02-22 19:29:23'),
+	(328,'ENTRY','UPDATE','Hot Sauce','products',7,1,'{\"title\":\"Hot Sauce\",\"category\":\"\",\"description\":\"Spicy!\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"3\",\"id\":7}',NULL,'2013-02-22 19:29:30'),
+	(329,'ENTRY','ADD','Water','products',8,1,'{\"title\":\"Water\",\"category\":\"\",\"description\":\"Healthy\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"5\"}',NULL,'2013-02-22 19:31:07'),
+	(330,'ENTRY','ADD','','products',9,1,'{\"title\":\"\",\"category\":\"\",\"description\":\"\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"\"}',NULL,'2013-02-22 19:31:14'),
+	(331,'ENTRY','UPDATE','','products',9,1,'{\"title\":\"\",\"category\":\"\",\"description\":\"\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"\",\"id\":9}',NULL,'2013-02-22 19:31:16'),
+	(332,'ENTRY','UPDATE','','products',9,1,'{\"title\":\"\",\"category\":\"\",\"description\":\"\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"\",\"id\":9}',NULL,'2013-02-22 19:31:17'),
+	(333,'ENTRY','UPDATE','Juice','products',9,1,'{\"title\":\"Juice\",\"category\":\"\",\"description\":\"Tasty\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"7\",\"id\":9}',NULL,'2013-02-22 19:31:26'),
+	(334,'ENTRY','UPDATE','Juice','products',9,1,'{\"title\":\"Juice\",\"category\":\"\",\"description\":\"Tasty\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"7\",\"id\":9}',NULL,'2013-02-22 19:31:38'),
+	(335,'ENTRY','ADD','Coffee','products',10,1,'{\"title\":\"Coffee\",\"category\":\"\",\"description\":\"Energy\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"9\"}',NULL,'2013-02-22 19:39:59'),
+	(336,'ENTRY','ADD','Carrots','products',11,1,'{\"title\":\"Carrots\",\"category\":\"\",\"description\":\"Orange\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"1\"}',NULL,'2013-02-22 19:40:34'),
+	(337,'ENTRY','ADD','Beer','products',12,1,'{\"title\":\"Beer\",\"category\":\"\",\"description\":\"Drunky\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"6\"}',NULL,'2013-02-22 19:43:08'),
+	(338,'ENTRY','ADD','','bike_tickets',1,1,'{\"bike_id\":\"\",\"studio_id\":\"\",\"position\":\"\",\"complaint\":\"\",\"comment\":\"\",\"date_created\":\"\",\"parts_used\":\"\"}',NULL,'2013-02-22 19:50:08'),
+	(339,'ENTRY','UPDATE','','bike_tickets',1,1,'{\"id\":1,\"bike_id\":\"\",\"studio_id\":\"\",\"position\":\"\",\"complaint\":\"\",\"comment\":\"\",\"date_created\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"adjusted\":0,\"parts_used\":\"\"}',NULL,'2013-02-22 19:53:10'),
+	(340,'ENTRY','UPDATE','','bike_tickets',1,1,'{\"id\":1,\"bike_id\":\"\",\"studio_id\":\"\",\"position\":\"\",\"complaint\":\"\",\"comment\":\"\",\"date_created\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"adjusted\":0,\"parts_used\":\"\"}',NULL,'2013-02-22 19:53:27'),
+	(341,'ENTRY','UPDATE','','bike_tickets',1,1,'{\"id\":1,\"bike_id\":\"\",\"studio_id\":\"\",\"position\":\"\",\"complaint\":\"\",\"comment\":\"\",\"date_created\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"adjusted\":0,\"parts_used\":\"\"}',NULL,'2013-02-22 19:53:29'),
+	(342,'ENTRY','ADD','Bugs','products',13,1,'{\"title\":\"Bugs\",\"category\":\"\",\"description\":\"Gross\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"8\"}',NULL,'2013-02-22 19:53:50'),
+	(343,'ENTRY','UPDATE','Brian','users',4,1,'{\"id\":4,\"active\":\"1\",\"first_name\":\"Brian\",\"last_name\":\"Eno\",\"email\":\"brian@eno.com\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 19:54:14'),
+	(344,'ENTRY','ADD','Brian','users',7,1,'{\"active\":\"1\",\"first_name\":\"Brian\",\"last_name\":\"Eno\",\"email\":\"brian@eno.com\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 19:54:24'),
+	(345,'ENTRY','UPDATE','Brian','users',7,1,'{\"id\":7,\"active\":\"1\",\"first_name\":\"Brian\",\"last_name\":\"Eno\",\"email\":\"brian@eno.com\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 19:54:32'),
+	(346,'ENTRY','ADD','Horse','products',14,1,'{\"title\":\"Horse\",\"category\":\"\",\"description\":\"Neh\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"1000\"}',NULL,'2013-02-22 19:54:53'),
+	(347,'ENTRY','UPDATE','Brian','users',7,1,'{\"id\":7,\"active\":\"1\",\"first_name\":\"Brian\",\"last_name\":\"Eno\",\"email\":\"brian@eno.com\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 19:55:34'),
+	(348,'ENTRY','ADD','Us','users',8,1,'{\"first_name\":\"Us\",\"last_name\":\"Er\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 19:56:06'),
+	(349,'ENTRY','ADD','Er','users',9,1,'{\"first_name\":\"Er\",\"last_name\":\"Us\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 19:56:58'),
+	(350,'ENTRY','ADD','Aisling','users',10,1,'{\"first_name\":\"Aisling\",\"last_name\":\"\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:06:09'),
+	(351,'ENTRY','ADD','tttt','users',11,1,'{\"first_name\":\"tttt\",\"last_name\":\"ssss\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:12:34'),
+	(352,'ENTRY','ADD','ccc','users',12,1,'{\"first_name\":\"ccc\",\"last_name\":\"ccc\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:13:12'),
+	(353,'ENTRY','ADD','david','users',13,1,'{\"first_name\":\"david\",\"last_name\":\"bowie\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:13:32'),
+	(354,'ENTRY','ADD','Marc','users',14,1,'{\"first_name\":\"Marc\",\"last_name\":\"Bolan\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:14:16'),
+	(355,'ENTRY','ADD','Marylin','users',15,1,'{\"first_name\":\"Marylin\",\"last_name\":\"Monroe\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:14:48'),
+	(356,'ENTRY','ADD','Brian','users',16,1,'{\"first_name\":\"Brian\",\"last_name\":\"Wilson\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:15:37'),
+	(357,'ENTRY','ADD','Lou','users',17,1,'{\"first_name\":\"Lou\",\"last_name\":\"Reed\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:16:16'),
+	(358,'ENTRY','UPDATE','Pablo','users',8,1,'{\"id\":8,\"active\":\"2\",\"first_name\":\"Pablo\",\"last_name\":\"Picasso\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 20:17:16'),
+	(359,'ENTRY','UPDATE','Don','users',9,1,'{\"id\":9,\"active\":\"2\",\"first_name\":\"Don\",\"last_name\":\"Cherry\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 20:17:40'),
+	(360,'ENTRY','UPDATE','Aisling','users',10,1,'{\"id\":10,\"active\":\"2\",\"first_name\":\"Aisling\",\"last_name\":\"Hamrogue\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 20:17:47'),
+	(361,'ENTRY','UPDATE','Bill','users',11,1,'{\"id\":11,\"active\":\"2\",\"first_name\":\"Bill\",\"last_name\":\"Cosby\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 20:17:58'),
+	(362,'ENTRY','UPDATE','Richard','users',12,1,'{\"id\":12,\"active\":\"2\",\"first_name\":\"Richard\",\"last_name\":\"Stallman\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 20:18:22'),
+	(363,'ENTRY','UPDATE','David','users',13,1,'{\"id\":13,\"active\":\"2\",\"first_name\":\"David\",\"last_name\":\"Bowie\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-22 20:18:32'),
+	(364,'ENTRY','ADD','Ada','users',18,1,'{\"first_name\":\"Ada\",\"last_name\":\"Lovelace\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"\",\"last_login\":\"\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"active\":\"2\"}',NULL,'2013-02-22 20:24:20'),
+	(365,'ENTRY','ADD','Phone','products',15,1,'{\"title\":\"Phone\",\"category\":\"\",\"description\":\"Communicate\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"250\"}',NULL,'2013-02-22 20:25:20'),
+	(366,'ENTRY','UPDATE','Coca Cola','products',1,1,'{\"id\":1,\"title\":\"Coca Cola\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 20:30:24'),
+	(367,'ENTRY','UPDATE','Coca Cola2','products',1,1,'{\"id\":1,\"title\":\"Coca Cola2\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 20:30:28'),
+	(368,'ENTRY','UPDATE','Coca Cola','products',1,1,'{\"id\":1,\"title\":\"Coca Cola\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 20:30:33'),
+	(369,'ENTRY','UPDATE','Coca Cola','products',1,1,'{\"id\":1,\"title\":\"Coca Cola\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 20:30:52'),
+	(370,'ENTRY','UPDATE','Coca Cola4','products',1,1,'{\"id\":1,\"title\":\"Coca Cola4\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 20:30:58'),
+	(371,'ENTRY','UPDATE','Coca Cola4','products',1,1,'{\"id\":1,\"title\":\"Coca Cola4\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 21:06:48'),
+	(372,'ENTRY','UPDATE','Coffee','products',10,1,'{\"id\":10,\"title\":\"Coffee\",\"category\":\"\",\"description\":\"Energy\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"9\"}',NULL,'2013-02-22 21:07:19'),
+	(373,'MEDIA','ADD','Screen Shot 2013-02-22 at 3.52.41 PM.png','directus_media',32,1,'{\"date_uploaded\":\"2013-02-22 22:27:20\",\"size\":20117,\"name\":\"Screen_Shot_2013-02-22_at_3.52.41_PM.png\",\"title\":\"Screen Shot 2013-02-22 at 3.52.41 PM.png\",\"type\":\"image\\/png\",\"user\":\"1\",\"active\":1,\"width\":631,\"height\":438}',NULL,'2013-02-22 22:27:20'),
+	(374,'ENTRY','UPDATE','Coca Cola','products',1,1,'{\"id\":1,\"title\":\"Coca Cola\",\"category\":\"\",\"description\":\"American beverage\",\"sizes\":\"\",\"styles\":\"\",\"price\":\"2\"}',NULL,'2013-02-22 22:55:41'),
+	(375,'MEDIA','ADD','','directus_media',33,1,'{\"title\":\"\",\"location\":\"\",\"caption\":\"\",\"tags\":\"\",\"name\":\"the-depths.gif\",\"type\":\"image\\/gif\",\"size\":24248,\"width\":790,\"height\":570,\"active\":1,\"date_uploaded\":\"2013-02-22 22:56:32\"}',NULL,'2013-02-22 22:56:32'),
+	(376,'MEDIA','ADD','Screen Shot 2013-02-22 at 3.52.41 PM.png','directus_media',34,1,'{\"date_uploaded\":\"2013-02-22 23:05:39\",\"size\":20117,\"name\":\"Screen_Shot_2013-02-22_at_3.52.41_PM.png\",\"title\":\"Screen Shot 2013-02-22 at 3.52.41 PM.png\",\"type\":\"image\\/png\",\"user\":\"1\",\"active\":1,\"width\":631,\"height\":438}',NULL,'2013-02-22 23:05:39'),
+	(377,'ENTRY','ADD','Test','demo_table',1,1,'{\"title\":\"Test\",\"number\":\"\"}',NULL,'2013-02-22 23:44:01'),
+	(378,'ENTRY','UPDATE','Test2','demo_table',1,1,'{\"id\":1,\"title\":\"Test2\",\"number\":\"\"}',NULL,'2013-02-22 23:44:36');
 
 /*!40000 ALTER TABLE `directus_activity` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -532,7 +635,7 @@ VALUES
 	(302,'rooms','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
 	(303,'rooms','title',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
 	(304,'rooms','studio_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
-	(305,'rooms','seats','onetomany','relational',0,0,0,0,0,'seats',NULL,NULL,'room_id',4,''),
+	(305,'rooms','seats','onetomany','onetomany',0,0,0,0,0,'seats',NULL,NULL,'room_id',4,''),
 	(306,'bikes','Tickets','onetomany','relational',0,0,0,0,0,'bike_tickets',NULL,NULL,NULL,9999,''),
 	(307,'bikes','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
 	(308,'bikes','room_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
@@ -624,9 +727,9 @@ VALUES
 	(394,'gift_cards','balance',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
 	(395,'gift_cards','date_created',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
 	(396,'seats','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
-	(397,'seats','seat_number',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,'# or i'),
-	(398,'seats','position',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,3,'x,y'),
-	(399,'seats','instructor',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(397,'seats','seat_number',NULL,'itunes_song_selector',0,0,0,0,0,NULL,NULL,NULL,NULL,2,'# or i'),
+	(398,'seats','position',NULL,'radiobuttons',0,0,0,0,0,NULL,NULL,NULL,NULL,3,'x,y'),
+	(399,'seats','instructor',NULL,'numeric',0,1,0,0,0,NULL,NULL,NULL,NULL,4,''),
 	(400,'seats','room_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
 	(401,'reservations','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
 	(402,'reservations','class_id',NULL,'numeric',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
@@ -722,7 +825,8 @@ VALUES
 	(23,0,'logo.png','Backbone','','image/png','','','',50,50,5964,'',1,'0000-00-00 00:00:00'),
 	(28,1,'sans-soleil-3.jpeg','sans-soleil.jpeg',NULL,'image/jpeg','',NULL,'',350,245,32026,NULL,1,'2013-02-15 14:59:33'),
 	(29,1,'a593iSwvR5w.jpg','','','embed/youtube','','','',480,360,20629,'a593iSwvR5w',1,'2013-02-15 15:00:18'),
-	(30,1,'DM.Tie_grande-1.jpg','DM.Tie_grande.jpg',NULL,'image/jpeg','',NULL,'',600,600,123963,NULL,1,'2013-02-15 18:13:14');
+	(30,1,'DM.Tie_grande-1.jpg','DM.Tie_grande.jpg',NULL,'image/jpeg','',NULL,'',600,600,123963,NULL,1,'2013-02-15 18:13:14'),
+	(34,1,'Screen_Shot_2013-02-22_at_3.52.41_PM.png','Screen Shot 2013-02-22 at 3.52.41 PM.png',NULL,'image/png','',NULL,'',631,438,20117,NULL,1,'2013-02-22 23:05:39');
 
 /*!40000 ALTER TABLE `directus_media` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -965,7 +1069,7 @@ LOCK TABLES `directus_settings` WRITE;
 
 INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
 VALUES
-	(1,'global','site_name','soulcycle'),
+	(1,'global','site_name','SoulCycle'),
 	(2,'global','site_url','http://www.rngr.org'),
 	(3,'global','cms_color','green'),
 	(4,'media','media_folder','resources'),
@@ -989,34 +1093,34 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `directus_tables`;
 
 CREATE TABLE `directus_tables` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `table_name` varchar(64) NOT NULL DEFAULT '',
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `single` tinyint(1) NOT NULL DEFAULT '0',
   `inactive_by_default` tinyint(1) NOT NULL DEFAULT '0',
   `is_junction_table` tinyint(1) NOT NULL DEFAULT '0',
   `footer` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`table_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `directus_tables` WRITE;
 /*!40000 ALTER TABLE `directus_tables` DISABLE KEYS */;
 
-INSERT INTO `directus_tables` (`id`, `table_name`, `hidden`, `single`, `inactive_by_default`, `is_junction_table`, `footer`)
+INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `inactive_by_default`, `is_junction_table`, `footer`)
 VALUES
-	(4,'directus_messages',1,0,0,0,0),
-	(6,'directus_activity',1,0,0,0,0),
-	(11,'directus_users',1,0,0,0,0),
-	(12,'about',0,1,0,0,0),
-	(13,'bookmarks',1,0,0,1,0),
-	(14,'favorite_instructors',1,0,0,1,0),
-	(15,'favorite_products',1,0,0,1,0),
-	(16,'favorite_studios',1,0,0,1,0),
-	(17,'instructor_studios',1,0,0,1,0),
-	(18,'social_cache',1,0,0,0,0),
-	(19,'directus_groups',1,0,0,0,0),
-	(20,'directus_media',1,0,0,0,0),
-	(21,'products',0,0,0,0,1);
+	('about',0,1,0,0,0),
+	('bookmarks',1,0,0,1,0),
+	('directus_activity',1,0,0,0,0),
+	('directus_groups',1,0,0,0,0),
+	('directus_media',1,0,0,0,0),
+	('directus_messages',1,0,0,0,0),
+	('directus_users',1,0,0,0,0),
+	('favorite_instructors',1,0,0,1,0),
+	('favorite_products',1,0,0,1,0),
+	('favorite_studios',1,0,0,1,0),
+	('instructor_studios',1,0,0,1,0),
+	('products',0,0,0,0,1),
+	('seats',0,1,0,0,0),
+	('social_cache',1,0,0,0,0);
 
 /*!40000 ALTER TABLE `directus_tables` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1114,7 +1218,11 @@ VALUES
 	(113,'instructor_music','track_id','itunes_song_selector','field_mappings','{\"artistName\":\"artist\",\"trackName\":\"track_name\",\"artworkUrl100\":\"album_art_url\"}'),
 	(114,'instructor_music','artist','textinput','readonly','on'),
 	(115,'instructor_music','track_name','textinput','readonly','on'),
-	(116,'instructor_music','album_art_url','textinput','readonly','on');
+	(116,'instructor_music','album_art_url','textinput','readonly','on'),
+	(117,'users','favourite_instructors','manytomany','visible_columns','first_name'),
+	(118,'users','classes','manytomany','visible_columns','note'),
+	(119,'users','favourite_products','manytomany','visible_columns','title'),
+	(120,'users','favourite_studios','manytomany','visible_columns','title');
 
 /*!40000 ALTER TABLE `directus_ui` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1150,15 +1258,15 @@ LOCK TABLES `directus_users` WRITE;
 INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `token`, `reset_token`, `reset_expiration`, `description`, `email_messages`, `last_login`, `last_page`, `ip`, `group`)
 VALUES
 	(1,1,'Ben','Haynes','ben@rngr.org','$P$BQlO4Pi2xzGulWlbqVgq.H0ky699FS.','lcjREKokJYNLkIjY7LUqnCs0wnWSvStvb2PTgw4HWu0=','yTGAt9Z2PHFrDQ9NWncUYzXlG8SUw9RkzkrW1JTdzvQ=','2012-03-18 10:57:47','Directus Developer',1,'2012-08-03 19:13:40','messages.php','24.103.115.138',0),
-	(2,1,'Rob','Giampietro','rob@projectprojects.com','','','','0000-00-00 00:00:00','Designer',0,'2011-05-24 03:35:37','dashboard.php','67.243.190.142',0),
+	(2,1,'Ben','Affleck','ben.affleck@gmail.com','','','','0000-00-00 00:00:00','Designer',0,'2011-05-24 03:35:37','dashboard.php','67.243.190.142',0),
 	(3,1,'Chris','McCaddon','mcm@rngr.org','$P$BDyGLnpd1BsKXpf8qkC9fcc0D2HpvU/','','','0000-00-00 00:00:00','Directus Designer',0,'2012-03-19 15:24:27','edit.php?table=demo_table&item=1','24.103.115.138',0),
 	(4,1,'Meagan','Campol','meagan.campol@gmail.com','$P$BFmfJ/gtXziEF.Zl2WPU79A7uDkTKr/','','','0000-00-00 00:00:00','Beta Tester',0,'2012-03-18 18:03:00','dashboard.php','98.14.119.188',0),
 	(6,1,'Milena','Sadee','milena@2x4.org','','','','0000-00-00 00:00:00','CMS Review',0,'2011-05-03 18:54:51','dashboard.php','69.193.173.98',0),
 	(11,1,'Aaron','Gemmill','gemmill@gmail.com','','','','0000-00-00 00:00:00','CMS Review',0,'2011-05-22 22:38:14','messages.php','67.243.190.142',0),
 	(17,1,'Chris','Cannon','chrisc@projectprojects.com','','','','0000-00-00 00:00:00','CMS Review',0,'2011-07-05 15:47:06','messages.php?m=inbox','50.74.192.138',0),
-	(22,1,'John','Smith','john@example.com','','','','0000-00-00 00:00:00','Dummy',1,'2011-07-05 15:47:06','','',0),
-	(20,1,'Will','Scarbrough','wscarbrough@sasaki.com','','','','0000-00-00 00:00:00','CMS Review',0,'2011-07-21 13:52:54','edit.php?table=blog&item=1','68.171.130.190',0),
-	(21,0,'Chris','Kristofferson','c@avec.us','','','','0000-00-00 00:00:00','CMS Review',0,'2011-12-12 16:46:00','media.php','24.39.127.154',0),
+	(22,1,'John','Legend','john@example.com','','','','0000-00-00 00:00:00','Dummy',1,'2011-07-05 15:47:06','','',0),
+	(20,1,'John','Lennon','john.lennon@gmail.com','','','','0000-00-00 00:00:00','CMS Review',0,'2011-07-21 13:52:54','edit.php?table=blog&item=1','68.171.130.190',0),
+	(21,1,'Chris','Kristofferson','c@avec.us','','','','0000-00-00 00:00:00','CMS Review',0,'2011-12-12 16:46:00','media.php','24.39.127.154',0),
 	(23,1,'Olov','Sundstrom','olov@rngr.org','kaka','dinn','','0000-00-00 00:00:01','RANGER',0,'2012-08-03 19:13:44','settings.php','24.103.115.138',0);
 
 /*!40000 ALTER TABLE `directus_users` ENABLE KEYS */;
@@ -1199,6 +1307,7 @@ LOCK TABLES `favorite_instructors` WRITE;
 
 INSERT INTO `favorite_instructors` (`id`, `user_id`, `instructor_id`)
 VALUES
+	(0,1,3),
 	(1,1,1);
 
 /*!40000 ALTER TABLE `favorite_instructors` ENABLE KEYS */;
@@ -1224,7 +1333,7 @@ LOCK TABLES `favorite_products` WRITE;
 INSERT INTO `favorite_products` (`id`, `user_id`, `product_id`, `order`)
 VALUES
 	(1,3,1,0),
-	(0,2,6,0);
+	(0,1,1,0);
 
 /*!40000 ALTER TABLE `favorite_products` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1247,7 +1356,8 @@ LOCK TABLES `favorite_studios` WRITE;
 
 INSERT INTO `favorite_studios` (`id`, `user_id`, `studio_id`)
 VALUES
-	(1,5,1);
+	(1,5,1),
+	(0,1,1);
 
 /*!40000 ALTER TABLE `favorite_studios` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1437,7 +1547,16 @@ VALUES
 	(3,'Taco',0,'Mexican sandwich',0,0,10),
 	(4,'French fries',0,'Belgian potatoes',0,0,7),
 	(5,'Starburst',0,'Cuboid-shaped, fruit-flavoured soft candy',0,0,14),
-	(6,'Ice cream',0,'Frozen dessert',0,0,6);
+	(6,'Ice cream',0,'Frozen dessert',0,0,6),
+	(7,'Hot Sauce',0,'Spicy!',0,0,3),
+	(8,'Water',0,'Healthy',0,0,5),
+	(9,'Juice',0,'Tasty',0,0,7),
+	(10,'Coffee',0,'Energy',0,0,9),
+	(11,'Carrots',0,'Orange',0,0,1),
+	(12,'Beer',0,'Drunky',0,0,6),
+	(13,'Bugs',0,'Gross',0,0,8),
+	(14,'Horse',0,'Neh',0,0,1000),
+	(15,'Phone',0,'Communicate',0,0,250);
 
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1602,12 +1721,24 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `active`, `email`, `first_name`, `last_name`, `gender`, `password`, `region`, `phone_number`, `address_1`, `address_2`, `city`, `state`, `zip`, `billing_address_1`, `billing_address_2`, `billing_city`, `billing_state`, `billing_zip`, `authorize_id`, `joined`, `last_login`, `shoe_size`, `bike_bar_height`, `bike_seat_height`, `service_water`, `service_shoes`)
 VALUES
-	(1,1,'olov@rngr.org','tengu','SundstrÃ¶m','','',1,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(1,1,'tengu@rngr.org','tengu','Sundstrom','','',1,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
 	(2,1,'olov@rngr.org','Olov','Sundstrom','M','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
 	(3,0,'r@kelly.com','R','Kelly','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
-	(4,1,'','Brian','Eno','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
-	(5,2,'','TEST','USER','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
-	(6,1,'lasha@rngr.org','Lasha','Krikheli','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0);
+	(4,1,'brian@eno.com','Brian','Eno','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(5,1,'','TEST','USER','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(6,1,'lasha@rngr.org','Lasha','Krikheli','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(7,1,'brian@eno.com','Brian','Eno','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(8,1,'','Pablo','Picasso','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(9,1,'','Don','Cherry','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(10,1,'','Aisling','Hamrogue','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(11,1,'','Bill','Cosby','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(12,1,'','Richard','Stallman','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(13,1,'','David','Bowie','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(14,1,'','Marc','Bolan','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(15,1,'','Marylin','Monroe','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(16,1,'','Brian','Wilson','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(17,1,'','Lou','Reed','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
+	(18,1,'','Ada','Lovelace','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
