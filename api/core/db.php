@@ -141,6 +141,38 @@ class DB extends MySQL {
     $this->log_activity('SETTINGS','directus_settings', 'UPDATE', null, $collection, $data);
   }
 
+  function set_table_settings($data) {
+
+    $table_settings = array(
+      'table_name' => $data['table_name'],
+      'hidden' => (int)$data['hidden'],
+      'single' => (int)$data['single'],
+      'inactive_by_default' => (int)$data['inactive_by_default'],
+      'is_junction_table' => (int)$data['is_junction_table'],
+      'footer' => (int)$data['footer']
+    );
+
+    $this->set_entry('directus_tables', $table_settings);
+
+    $column_settings = array();
+
+    foreach ($data['columns'] as $col) {
+      array_push($column_settings, array(
+        'table_name' => $table_settings['table_name'],
+        'column_name'=>$col['column_name'],
+        'ui'=>$col['ui'],
+        'hidden_input'=>$col['hidden_input'],
+        'required'=>$col['required'],
+        'master'=>$col['master'],
+        'sort'=>$col['sort'],
+        'comment'=>$col['comment']
+      ));
+    }
+
+    $this->set_entries('directus_columns', $column_settings);
+
+  }
+
   function set_ui_options($data, $tbl_name, $column_name, $ui_name) {
     $id = $data['id'];
     unset($data['id']);

@@ -247,7 +247,7 @@ define([], function() {
       "required":false,
       "options":{
         "id":"directus_user",
-        "compact":"true"
+        "format":"short"
       }
     },
     {

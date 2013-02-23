@@ -198,22 +198,27 @@ function(app, Backbone, ui, Directus) {
 
   });
 
-  var Tables = Backbone.Layout.extend({
-
-    template: 'settings-tables',
-
-    events: {
-      'click td': function(e) {
-        var tableName = e.target.getAttribute('data-id');
-        console.log(tableName);
-        app.router.go(['settings','tables',tableName]);
-      }
-    },
-
+  var TableModule = Backbone.Layout.extend({
+    template: 'module-table-settings',
+    attributes: {'class': 'directus-module'},
     serialize: function() {
-      return {rows: this.collection.getRows()};
-    }
 
+      console.log({
+        hidden: this.model.get('hidden'),
+        single: this.model.get('single'),
+        inactive_by_default: this.model.get('inactive_by_default'),
+        is_junction_table: this.model.get('is_junction_table'),
+        footer: this.model.get('footer'),
+      });
+
+      return {
+        hidden: this.model.get('hidden'),
+        single: this.model.get('single'),
+        inactive_by_default: this.model.get('inactive_by_default'),
+        is_junction_table: this.model.get('is_junction_table'),
+        footer: this.model.get('footer'),
+      }
+    }
   });
 
   SettingsTables.Views.Table = Backbone.Layout.extend({
@@ -225,37 +230,15 @@ function(app, Backbone, ui, Directus) {
     },
 
     saveColumns: function(e) {
-      var options = {};
-      options.columns = ['column_name','ui','hidden_input','required','master','sort','comment'];
-      options.success = function() {
-        app.router.go(['settings','tables']);
-      };
-      this.collection.save(undefined, options);
+      console.log($('#table-settings').serializeObject());
+      this.model.save($('#table-settings').serializeObject(), {success: function(){
+        console.log("HJA");
+      }});
     },
-/*
-    serializeTableForm: function($form) {
-      var form = [];
-      $form.find('tbody > tr').each(function() {
-        var item = {id: this.getAttribute('data-id')};
-        $(this).find("input,select,textarea").each(function() {
-          var value = this.value;
-          var $this = $(this);
 
-          if ($this.attr('type') === 'checkbox' || $this.attr('type') === 'radio') {
-            value = $this.is(':checked');
-          }
-
-          item[this.name] = value;
-        });
-        form.push(item);
-      });
-      console.log(form);
-      return form;
-    },
-*/
     serialize: function() {
       var data = {
-        title: this.collection.table.id,
+        title: this.model.id,
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables', anchor: '#settings/tables'}],
         sidebar: true
       };
@@ -263,7 +246,8 @@ function(app, Backbone, ui, Directus) {
     },
 
     beforeRender: function() {
-      this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false}}));
+      this.insertView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false}}));
+      this.insertView('#sidebar', new TableModule({model: this.model}));
     },
 
     afterRender: function() {
@@ -272,9 +256,28 @@ function(app, Backbone, ui, Directus) {
     },
 
     initialize: function() {
+      this.collection = this.model.get('columns');
+      console.log(this.collection.toJSON());
       this.columns = new Columns({collection: this.collection});
       //this.collection.on('change', this.render, this);
     }
+  });
+
+  var Tables = Backbone.Layout.extend({
+
+    template: 'settings-tables',
+
+    events: {
+      'click td': function(e) {
+        var tableName = e.target.getAttribute('data-id');
+        app.router.go(['settings','tables',tableName]);
+      }
+    },
+
+    serialize: function() {
+      return {rows: this.collection.getRows()};
+    }
+
   });
 
   SettingsTables.Views.List = Backbone.Layout.extend({

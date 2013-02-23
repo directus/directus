@@ -42,7 +42,7 @@ a {cursor:pointer;}
 .container-fluid { padding-right:40px; padding-left:40px;}
 
 #directus_activity {
-	.col-datetime {width:150px;}
+	.col-datetime {width:160px;}
 	.col-user {width:180px;}
 	tr.row-action-UPDATE td.status {background-color:@blue;}
 	tr.row-action-ADD td.status {background-color:@green;}
@@ -96,6 +96,7 @@ h2 {margin-bottom:20px;}
 // -------------------------
 .avatar {
 	.border-radius(@baseBorderRadius);
+	margin-right:10px;
 }
 
 label { text-shadow: @textShadowWhite; }
@@ -182,9 +183,10 @@ label { text-shadow: @textShadowWhite; }
 }
 .dropdown-menu-primary {
 	border-color: #8bc53f;
+	li:hover {
+		text-shadow:@textShadow;
+	}
 }
-
-
 
 // BUTTONS
 // ----------------------
@@ -335,22 +337,38 @@ a:hover {text-decoration:none;}
 		padding: 11px 40px;
 		vertical-align:middle;
 		font-size:14px;
-		.avatar { margin-left: 10px; height:28px; width:28px;}
+		.avatar { margin-left: 10px; height:28px; width:28px; margin-right: 0px;}
 		.label { background-color: @directusPrimary; color:#FFF; }
 		.user-firstname {margin-left:10px;}
 	}
 
+	.navbar-inner {
+		background-color:@grayDarker;
+		background-image:none;
+	}
+
 	.dropdown-menu {
-		margin-top:-5px;
+		.box-shadow(none);
+		font-style: normal;
+		right:0;
+		left:auto;
+		margin-top:-3px;
 		border:0;
-		background-color: @navbarBackground;
+		background-color: @grayDarker;
 		a { color:#FFFFFF; padding: 8px 20px;}
 		.divider {
 			background-color: #191516;
 			border-bottom: 1px solid #302A2D;
+			padding:0px;
 		}
+	 li {position: relative;}
+	 li .label { position:absolute; right:0px; top:10px; right:20px; background-color:@directusPrimary; color:#FFF; }
+	 li:hover .label { position:absolute; right:0px; top:10px; right:20px; color:@directusPrimary; background-color:#FFF; }
 	}
+
 }
+
+
 
 // DIRECTUS TABLE
 // ----------------------------
@@ -464,9 +482,9 @@ a:hover {text-decoration:none;}
 	select {width: 150px; margin:0;}
 }
 
-#directus_tables .description { width: 250px;}
-#directus_tables .active { width: 60px;}
-#directus_tables .modified { width: 130px;}
+#directus_tables .description { width: 250px; }
+#directus_tables .active { width: 60px; }
+#directus_tables .modified { width: 130px; }
 
 #header-settings {
 	overflow: visible;
@@ -479,13 +497,7 @@ a:hover {text-decoration:none;}
 	&.open .dropdown-toggle,
 	&:hover .dropdown-toggle { display: inline-block; }
 	.dropdown-toggle { display: none; }
-	.dropdown-menu {
-		font-style: normal;
-		right:0;
-		left:auto;
-	}
 }
-
 .directus-toolbar > div {
 	max-width: 100%;
 	border-top: 1px solid @gray;
@@ -532,7 +544,7 @@ a:hover {text-decoration:none;}
 	fieldset {
 		border-bottom: 1px solid @gray;
 		border-top: 1px solid @white;
-		padding: 12px 20px;
+		padding: 12px 20px 14px 20px;
 		label .note { font-weight:normal; font-style: italic; margin-left:10px; }
 	}
 	fieldset:first-child {border-top:0;}

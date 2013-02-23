@@ -34,9 +34,9 @@
 
 
 class Media {
-  private $resources_path = '/Users/olov/Google Drive/Working Folder/resources/';
-  private $thumbnails_path = '/Users/olov/Google Drive/Working Folder/resources/thumbnail/';
-  private $temp_path = '/Users/olov/Google Drive/Working Folder/resources/temp/';
+  private $resources_path = '/Users/olov/MAMP/resources/';
+  private $thumbnails_path = '/Users/olov/MAMP/resources/thumbnail/';
+  private $temp_path = '/Users/olov/MAMP/resources/temp/';
   private $formats = array('image/jpeg','image/gif', 'image/png');
   private $tmp_name;
   private $name;

@@ -75,7 +75,6 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       };
 
       view.render();
-
     },
 
     serialize: function() {

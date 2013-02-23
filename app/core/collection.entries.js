@@ -48,7 +48,6 @@ function(app, Backbone, BaseCollection) {
     },
 
     add: function(models, options) {
-      console.log(options);
       if (options && options.nest) {
        _.map(models, function(model) { return {data: model}; });
       }
@@ -114,7 +113,11 @@ function(app, Backbone, BaseCollection) {
   Entries.Model =  Backbone.Model.extend({
 
     parse: function(result) {
-      return this.parseRelational(result);
+      // THIS IS VERY TEMPORARY! OBS OBS OBS
+      if (this.structure) {
+        return this.parseRelational(result);
+      }
+      return result;
     },
 
     parseRelational: function(attributes) {
@@ -166,11 +169,10 @@ function(app, Backbone, BaseCollection) {
 
     toJSON: function(options) {
       var attributes = _.clone(this.attributes);
-
       _.each(attributes, function(value, key) {
         if (_.isObject(value)) {
           if (typeof value.toJSON === 'function') {
-            attributes[key] = value.toJSON();
+            attributes[key] = value.toJSON(options);
           } else {
             delete attributes[key];
           }

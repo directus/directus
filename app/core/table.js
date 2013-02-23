@@ -259,10 +259,8 @@ function(app, Backbone) {
     calculate: function(set, operation) {
       var sum = _.reduce(set, function(memo, num){ return memo + num; }, 0);
       switch(operation) {
-        case 'max':
-          return _.max(set);
-        case 'min':
-          return _.min(set);
+        case 'min/max':
+          return _.min(set) + "/" + _.max(set);
         case 'average':
           return Math.round(10000 * sum / set.length) / 10000;
         case 'sum':

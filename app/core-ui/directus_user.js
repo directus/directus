@@ -15,15 +15,18 @@ define(['app','backbone'], function(app, Backbone) {
   Module.sortBy = ['first_name','last_name'];
 
   Module.list = function(options) {
-    var user = app.users.get(options.value);
-    if (user) {
-      if (options.settings && options.settings.get('compact') !== undefined) {
-        return user.get('first_name');
-      }
-      return '<img src="' + user.get('avatar') + '" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name');
-    } else {
-      return '';
+    var html;
+    console.log(options.settings.get("format"));
+    switch(options.settings.get("format")) {
+      case 'full':
+        html = '{{userFull user}}';
+        break;
+      case 'short':
+        html = '{{userShort user}}';
+        break;
     }
+    var template = Handlebars.compile(html);
+    return template({user: parseInt(options.value,10)});
   };
 
   Module.Input = Backbone.Layout.extend({

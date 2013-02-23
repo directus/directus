@@ -127,6 +127,7 @@ class MySQL {
       $info['single'] = (boolean)$info['single'];
       $info['footer'] = (boolean)$info['footer'];
       $info['is_junction_table'] = (boolean)$info['is_junction_table'];
+      $info['inactive_by_default'] = (boolean)$info['inactive_by_default'];
     }
 
     $info = array_merge($info, $this->count_active($tbl_name));

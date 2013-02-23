@@ -156,6 +156,11 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   // TABLE
 
   if ( $collection == "table" ) {
+    switch ($http_method) {
+      case "PUT":
+        $db->set_table_settings($data);
+        break;
+    }
     return $db->get_table_info($tbl_name, $params);
   }
 

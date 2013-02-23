@@ -38,7 +38,10 @@ define([], function() {
       "master":false,
       "hidden_list":false,
       "hidden_input":true,
-      "required":false
+      "required":false,
+      "options": {
+        "format": "full"
+      }
     },
     {
       "id":"id",

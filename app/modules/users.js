@@ -71,7 +71,7 @@ function(app, Backbone, Directus) {
     template: 'page',
 
     serialize: function() {
-      return {title: this.collection.table.get('title'), buttonTitle: 'Add new user'};
+      return {title: this.collection.table.get('title'), buttonTitle: 'Add New User'};
     },
 
     events: {

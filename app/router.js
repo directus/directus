@@ -187,7 +187,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.setTitle('Settings');
       this.tabs.setActive('settings');
 
-      this.v.main.setView('#content', new Settings.Table({collection: app.columns[tableName]}));
+      this.v.main.setView('#content', new Settings.Table({model: app.tables.get(tableName)}));
 
       this.v.main.render();
     },

@@ -117,7 +117,10 @@ define([], function() {
     "master":false,
     "hidden_list":false,
     "hidden_input":false,
-    "required":false
+    "required":false,
+    "options": {
+        "format": "short"
+    }
   },
   {
     "id":"data",

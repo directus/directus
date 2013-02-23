@@ -11,8 +11,12 @@ function(Handlebars) {
   // Provide a global location to place configuration settings and module
   // creation.
   var app = {
-    capitalize: function(string) {
+    capitalize: function(string, seperator) {
       var idIndex;
+
+      if (seperator === undefined) {
+        seperator = "_";
+      }
 
       if (!string) return '';
 
@@ -20,7 +24,7 @@ function(Handlebars) {
       if (string.length - idIndex === 3) {
         string = string.substring(0, idIndex);
       }
-      return _.map(string.split('_'), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
+      return _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
     },
 
     bytesToSize: function(bytes, precision) {
@@ -74,9 +78,7 @@ function(Handlebars) {
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    //date = new Date(date);
-    //date = new Date(date.toUTCString());
-    return jQuery.timeago(date);
+    return new Handlebars.SafeString('<div title="'+ new Date(date+'Z') +'">'+app.contextualDate(date)+'</div>');
   });
 
   Handlebars.registerHelper('avatarSmall', function(userId) {
@@ -92,6 +94,32 @@ function(Handlebars) {
       case 2:
         return 'inactive';
     }
+  });
+
+  Handlebars.registerHelper('userShort', function(userId) {
+    var user = app.users.get(userId);
+    var firstName = user.get('first_name').toLowerCase();
+    var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
+    var nickName = firstName;
+    var hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.id !== userId; });
+    if (hit !== undefined) {
+      nickName = firstName + ' ' + lastNameFirstCharacter + '.';
+      var hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id !== userId; });
+      if (hit !== undefined) {
+        nickName = firstName + ' ' + user.get('last_name');
+      }
+    }
+    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>' + app.capitalize(nickName," "));
+  });
+
+  Handlebars.registerHelper('userAvatar', function(userId) {
+    var user = app.users.get(userId);
+    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>');
+  });
+
+  Handlebars.registerHelper('userFull', function(userId) {
+    var user = app.users.get(userId);
+    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'"  class="avatar"/>'+user.get('first_name')+' '+user.get('last_name'));
   });
 
   // Agnus Croll:
@@ -116,6 +144,14 @@ function(Handlebars) {
             o[this.name] = this.value || '';
         }
     });
+
+    //Take care of the checkboxes
+    this.find('input[type=checkbox]:not(:checked)').each(function(){
+      o[this.name] = 0;
+    }).get();
+
+    console.log(o);
+
     return o;
   };
 

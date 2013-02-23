@@ -26,6 +26,7 @@ function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSi
   Directus.TableSimple = TableSimple;
   Directus.Structure = Structure;
   Directus.Settings = Settings;
+  Directus.Model = Entries.Model;
 
   Directus.SubRoute = Backbone.Router.extend({
     constructor: function(prefix) {

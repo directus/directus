@@ -22,7 +22,8 @@ define(['app','backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
-    return '<div title="'+options.value+'">' + app.contextualDate(options.value) + '</div>';
+    var template = Handlebars.compile('{{contextualDate date}}');
+    return template({date: options.value});
   };
 
 

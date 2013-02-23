@@ -42,7 +42,8 @@ function(app, Backbone, Directus) {
         isDeleted: (this.model.get('active') === 0),
         showDelete: !this.options.single && (this.model.get('active') !== 0) && (this.model.id !== undefined),
         showActive: !this.options.single && this.model.collection.structure.get('active') !== undefined,
-        showDropdown: !this.options.single
+        showDropdown: !this.options.single,
+        showSaveAsCopy: !this.model.isNew()
       };
       return data;
     },
@@ -111,19 +112,27 @@ function(app, Backbone, Directus) {
       var active = $('input[name=active]:checked').val();
       var data = this.editView.data();
       var model = this.model;
+      var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
 
+
+
       if (action === 'save-form-stay') {
-        success = function() {
-          console.log('save', arguments);
+        success = function(model, response, options) {
+          var route = Backbone.history.fragment.split('/');
+          route.pop();
+          route.push(model.get('id'));
+          app.router.go(route);
         };
       } else {
-        success = function() {
+        success = function(model, response, options) {
           console.log('save', arguments);
           var route = Backbone.history.fragment.split('/');
           route.pop();
           if (action === 'save-form-add') {
+            // Trick the router to refresh this page when we are dealing with new items
+            if (isNew) app.router.navigate("#", {trigger: false, replace: true});
             route.push('new');
           }
           app.router.go(route);
@@ -201,7 +210,7 @@ function(app, Backbone, Directus) {
       var data = {
         title: this.collection.table.id,
         breadcrumbs: [{title: 'Tables', anchor: '#tables'}],
-        buttonTitle: 'Add new item'
+        buttonTitle: 'Add New Item'
       };
       return data;
     },

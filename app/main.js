@@ -40,22 +40,27 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
 
       var tableName = options.schema.id;
 
-      // Set tables schema
+      //Directus tables have static schemas and no preferences
+      if (tableName.substring(0,9) !== 'directus_') {
+
+        app.columns[tableName] = new Directus.CollectionColumns(options.columns, {parse: true});
+        app.columns[tableName].url = app.API_URL + 'tables/' + tableName + '/columns';
+
+        // Set user preferences
+        app.preferences[tableName] = new Backbone.Model(options.preferences);
+        app.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
+      }
+
+      // Set table schema
       options.schema.url = app.API_URL + 'tables/' + tableName;
 
-      app.tables.add(new Backbone.Model(options.schema));
+      // Add a pointer to the columns schema.
+      // This is very useful when we serialize the settings page
+      options.schema.columns = app.columns[tableName];
+      var model = new Directus.Model(options.schema)
+      model.url = options.schema.url;
+      app.tables.add(model);
 
-      if (tableName.substring(0,9) === 'directus_') return;
-
-      app.columns[tableName] = new Directus.CollectionColumns(options.columns, {parse: true});
-      app.columns[tableName].url = app.API_URL + 'tables/' + tableName + '/columns';
-
-      // Set user preferences
-      app.preferences[tableName] = new Backbone.Model(options.preferences);
-      app.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
-
-      // Temporary quick fix
-      app.columns[tableName].table = app.tables.get(tableName);
     });
 
     // Setup core data collections.
