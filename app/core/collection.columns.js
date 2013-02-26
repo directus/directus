@@ -15,7 +15,6 @@ function(app, Backbone) {
 
   Structure.Column = Backbone.Model.extend({
       parse: function(result) {
-        //console.log(result, result.id);
         var options = result.options || {};
         options.id = result.ui;
         this.options = new Structure.UI(options);

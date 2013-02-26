@@ -77,7 +77,7 @@ class MySQL {
 
     while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
       $tbl["schema"] = $this->get_table_info($row['id']);
-      $tbl["columns"] = $this->get_table($row['id']);
+      //$tbl["columns"] = $this->get_table($row['id']);
       $tbl["preferences"] = $this->get_table_preferences($row['id']);
       array_push($return, $tbl);
     };
@@ -102,9 +102,7 @@ class MySQL {
           inactive_by_default,
           is_junction_table,
           footer,
-          UNIX_TIMESTAMP(UPDATE_TIME) as timestamp,
-          TABLE_ROWS AS count,
-          UPDATE_TIME AS date_modified
+          TABLE_ROWS AS count
         FROM
           INFORMATION_SCHEMA.TABLES T
         LEFT JOIN
@@ -116,7 +114,6 @@ class MySQL {
     $sth = $this->dbh->prepare($sql);
 
     $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
-    //$sth->bindValue(':user', $this->user_token, PDO::PARAM_STR);
     $sth->bindValue(':schema', $this->db_name, PDO::PARAM_STR);
     $sth->execute();
 
@@ -131,6 +128,8 @@ class MySQL {
     }
 
     $info = array_merge($info, $this->count_active($tbl_name));
+
+    $info['columns'] = $this->get_table($tbl_name);
 
     return $info;
   }
@@ -633,7 +632,8 @@ class MySQL {
     $update_str = rtrim($update_str, ",");
 
     // Prepare SQL
-    $col_str = implode(",",$cols);
+    $col_str = "`".implode("`,`",$cols)."`";
+
     $sql = "INSERT INTO $tbl_name ($col_str) VALUES $values ON DUPLICATE KEY UPDATE $update_str";
 
     $sth = $this->dbh->prepare($sql);
@@ -651,6 +651,15 @@ class MySQL {
     // Go to town
     $sth->execute();
 
+  }
+
+  function get_users() {
+    $sth = $this->dbh->query("SELECT DU.*,DG.name AS group_name FROM directus_users DU LEFT JOIN directus_groups DG ON (DU.group = DG.id)");
+    $result = array();
+    while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+      print_r($row);
+
+    }
   }
 
   function get_settings() {

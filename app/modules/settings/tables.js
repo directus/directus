@@ -202,15 +202,6 @@ function(app, Backbone, ui, Directus) {
     template: 'module-table-settings',
     attributes: {'class': 'directus-module'},
     serialize: function() {
-
-      console.log({
-        hidden: this.model.get('hidden'),
-        single: this.model.get('single'),
-        inactive_by_default: this.model.get('inactive_by_default'),
-        is_junction_table: this.model.get('is_junction_table'),
-        footer: this.model.get('footer'),
-      });
-
       return {
         hidden: this.model.get('hidden'),
         single: this.model.get('single'),
@@ -230,9 +221,19 @@ function(app, Backbone, ui, Directus) {
     },
 
     saveColumns: function(e) {
-      console.log($('#table-settings').serializeObject());
-      this.model.save($('#table-settings').serializeObject(), {success: function(){
-        console.log("HJA");
+      var data = {};
+      
+      //Take care of the checkboxes
+      $('#table-settings').find('input[type=checkbox]:not(:checked)').each(function(){
+        data[this.name] = 0;
+      }).get();
+
+      data = _.extend(data, $('#table-settings').serializeObject());
+
+      console.log(data);
+
+      this.model.save(data, {success: function(){
+        app.router.go('settings','tables');
       }});
     },
 
@@ -256,8 +257,7 @@ function(app, Backbone, ui, Directus) {
     },
 
     initialize: function() {
-      this.collection = this.model.get('columns');
-      console.log(this.collection.toJSON());
+      this.collection = this.model.columns;
       this.columns = new Columns({collection: this.collection});
       //this.collection.on('change', this.render, this);
     }

@@ -633,11 +633,15 @@ a:hover {text-decoration:none;}
 	.directus-module-header,
 	.directus-module-section {
 		padding: 12px 20px;
+		&.collapsed {display:none;}
 	}
 	.directus-module-header {
 		text-shadow: @white 1px 1px 0px;
 		border-bottom: 1px solid @gray;
 		font-weight: bold;
+		position:relative;
+		&.toggle {cursor: pointer;}
+		.label {position:absolute; right:20px; top:11px; background-color:@silver; color:#FFF;}
 	}
 	.directus-module-section {
 		border-top: 1px solid @white;
@@ -681,7 +685,7 @@ a:hover {text-decoration:none;}
 
 // FIXED SIDEBAR
 .container-fixed-sidebar {position: relative;}
-.container-main { margin-left:0px; float:none; margin-right:300px;}
+.container-main { margin-left:0px; float:none; margin-right:300px; min-height:400px;}
 .container-sidebar { position: absolute; right:0px; top:0px; width:280px;}
 
 

@@ -146,6 +146,7 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
       this.manyToMany = (schema.get('type') === 'MANYTOMANY');
       this.oneToMany = (schema.get('type') === 'ONETOMANY');
 
+
       if (!this.collection) {
         var options = {
           table: app.tables.get(schema.get('table_related')),
@@ -159,6 +160,8 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
         // Maybe not such good practice
         this.options.model.set(this.options.name, this.collection);
       }
+
+      console.log(this.collection);
 
       this.collection.on('all', function() {
         console.log(this.collection);

@@ -16,7 +16,6 @@ define(['app','backbone'], function(app, Backbone) {
 
   Module.list = function(options) {
     var html;
-    console.log(options.settings.get("format"));
     switch(options.settings.get("format")) {
       case 'full':
         html = '{{userFull user}}';

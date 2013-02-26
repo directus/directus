@@ -14,10 +14,9 @@ function(app, Backbone, Directus) {
     serialize: function() {
       return {
         isNew: (this.model.id === undefined),
-        hasActive: this.model.has('active'),
+        showActive: true,
         isActive: (this.model.get('active') === 1),
-        isInactive: (this.model.get('active') === 2 || !this.model.has('id')),
-        isDeleted: (this.model.get('active') === 0)
+        isInactive: (this.model.get('active') === 2),
       };
     },
     initialize: function() {
@@ -33,10 +32,9 @@ function(app, Backbone, Directus) {
     events: {
       'click .btn-primary': function(e) {
         var data = $('form').serializeObject();
-        data.active = 1;
-        console.log(data);
+        data.active = $('input[name=active]:checked').val();
         this.model.save(data, {
-          success: function() { console.log('success',arguments); },
+          success: function() { app.router.go('#users'); },
           error: function() { console.log('error',arguments); }
         });
       }

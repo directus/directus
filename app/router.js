@@ -34,6 +34,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "tables/:name/:id":       "entry",
       "activity":               "activity",
       "media":                  "media",
+      "media/:id":              "mediaItem",
       "users":                  "users",
       "users/:id":              "user",
       "settings":               "settings",
@@ -128,6 +129,20 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.tabs.setActive('media');
       this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
       this.v.main.render();
+    },
+
+    mediaItem: function(id) {
+      var mediaView = new Media.Views.List({collection: app.media});
+
+      app.media.on('reset', function() {
+        mediaView.addEditMedia(app.media.get(id), 'Editing media');
+      })
+
+      this.setTitle('Media');
+      this.tabs.setActive('media');
+      this.v.main.setView('#content', mediaView);
+      this.v.main.render();
+      
     },
 
     users: function() {

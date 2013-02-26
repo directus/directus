@@ -113,11 +113,7 @@ function(app, Backbone, BaseCollection) {
   Entries.Model =  Backbone.Model.extend({
 
     parse: function(result) {
-      // THIS IS VERY TEMPORARY! OBS OBS OBS
-      if (this.structure) {
-        return this.parseRelational(result);
-      }
-      return result;
+      return this.parseRelational(result);
     },
 
     parseRelational: function(attributes) {
@@ -212,8 +208,7 @@ function(app, Backbone, BaseCollection) {
     model: Entries.Model,
 
     getColumns: function() {
-      //console.log('KAH',this.preferences);
-      return this.preferences ? _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(',')) : this.filters.columns;
+      return (this.filters.columns !== undefined) ? this.filters.columns : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
     },
 
     getFilter: function(key) {
@@ -246,8 +241,7 @@ function(app, Backbone, BaseCollection) {
       this.table = options.table;
       this.active = this.table.get('active');
       this.url = options.url || this.table.get('url') + '/rows';
-      this.filters = options.filters || { currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' };
-
+      this.filters = _.extend({ currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' }, options.filters);
       if (options.preferences) {
         this.preferences = options.preferences;
         this.preferences.on('change', function() { this.trigger('change'); }, this);

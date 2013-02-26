@@ -24,6 +24,7 @@ function(app, Backbone) {
     },
 
     close: function() {
+      this.trigger('close');
       $('body').removeClass('modal-open');
       this.$backdrop.remove();
       this.remove();

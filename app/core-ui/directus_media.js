@@ -48,8 +48,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       data.userName = app.users.get(userId).get('first_name');
       data.url = app.RESOURCES_URL;
 
-      console.log(data);
-
       return data;
     },
 

@@ -40,34 +40,26 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
 
       var tableName = options.schema.id;
 
-      //Directus tables have static schemas and no preferences
-      if (tableName.substring(0,9) !== 'directus_') {
-
-        app.columns[tableName] = new Directus.CollectionColumns(options.columns, {parse: true});
-        app.columns[tableName].url = app.API_URL + 'tables/' + tableName + '/columns';
-
-        // Set user preferences
-        app.preferences[tableName] = new Backbone.Model(options.preferences);
-        app.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
-      }
-
       // Set table schema
       options.schema.url = app.API_URL + 'tables/' + tableName;
 
-      // Add a pointer to the columns schema.
-      // This is very useful when we serialize the settings page
-      options.schema.columns = app.columns[tableName];
-      var model = new Directus.Model(options.schema)
-      model.url = options.schema.url;
+      var model = new Directus.TableModel(options.schema, {parse: true});
+      model.url = app.API_URL + 'tables/' + tableName;
+      model.columns.url = app.API_URL + 'tables/' + tableName + '/columns';
+
+      app.columns[tableName] = model.columns;
       app.tables.add(model);
 
+      // Set user preferences
+      app.preferences[tableName] = new Backbone.Model(options.preferences);
+      app.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
     });
 
     // Setup core data collections.
     app.media = new Directus.Media(data.active_media, {
       table: app.tables.get('directus_media'),
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
-      preferences: new Backbone.Model(media.preferences),
+      preferences: app.preferences['directus_media'],
       url: app.API_URL + 'media',
       parse: true
     });
@@ -76,8 +68,9 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
       parse: true,
       table: app.tables.get('directus_users'),
       structure: new Directus.CollectionColumns(users.structure, {parse: true}),
-      preferences: new Backbone.Model(users.preferences),
-      url: app.API_URL + 'tables/directus_users/rows'
+      preferences: app.preferences['directus_users'],
+      url: app.API_URL + 'tables/directus_users/rows',
+      filters: {columns: ['name', 'group', 'activity', 'email', 'description']}
     });
 
     app.activity = new Directus.Entries.Collection({}, {

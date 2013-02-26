@@ -58,13 +58,18 @@ function(app, Backbone, Directus) {
 
     attributes: {'class': 'directus-module'},
 
+    events: {
+      'click .directus-module-header': function() { this.$el.find('.directus-module-section').toggleClass('collapsed'); }
+
+    },
+
     serialize: function() {
       var items = this.collection.map(function(model) {
         var data = model.toJSON();
         data.pastTense = app.actionMap[data.action];
         return data;
       });
-      return {items: items};
+      return {items: items, length: this.collection.length};
     },
 
     initialize: function(options) {
@@ -99,6 +104,11 @@ function(app, Backbone, Directus) {
     },
 
     deleteItem: function(e) {
+      if (!this.model.has('active')){
+        this.model.destroy();
+        return;
+      }
+
       var success = function() {
         var route = Backbone.history.fragment.split('/');
         route.pop();
@@ -115,8 +125,6 @@ function(app, Backbone, Directus) {
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
-
-
 
       if (action === 'save-form-stay') {
         success = function(model, response, options) {

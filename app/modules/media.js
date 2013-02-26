@@ -39,6 +39,12 @@ function(app, Backbone, Directus) {
       var view = new Directus.EditView({model: model});
       var modal = app.router.openModal(view, {stretch: true, title: title});
       var isNew = model.isNew();
+      if (!isNew) {
+        app.router.navigate('#media/'+model.id);
+        modal.on('close', function() {
+          app.router.navigate('#media');
+        });
+      }
       var collection = this.collection;
       view.render();
       modal.save = function() {

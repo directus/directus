@@ -27,7 +27,7 @@ foreach (new DirectoryIterator('./extensions') as $file) {
 	}
 }
 
-// Scan for UI
+// Scan for UI's
 foreach (new DirectoryIterator('./ui') as $file) {
 	if($file->isDot()) continue;
 	array_push($data['ui'], 'ui/'.basename($file->getFilename(),'.js'));

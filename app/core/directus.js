@@ -8,10 +8,11 @@ define([
   "core/table",
   "core/modal",
   "core/tableSimple",
-  "core/collection.settings"
+  "core/collection.settings",
+  "core/model.table"
 ],
 
-function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSimple, Settings) {
+function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSimple, Settings, TableModel) {
 
   var Directus = {};
 
@@ -27,6 +28,7 @@ function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSi
   Directus.Structure = Structure;
   Directus.Settings = Settings;
   Directus.Model = Entries.Model;
+  Directus.TableModel = TableModel;
 
   Directus.SubRoute = Backbone.Router.extend({
     constructor: function(prefix) {

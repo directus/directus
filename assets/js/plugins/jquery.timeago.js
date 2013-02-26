@@ -36,7 +36,7 @@
         prefixFromNow: null,
         suffixAgo: "ago",
         suffixFromNow: "from now",
-        seconds: "seconds",
+        seconds: "%d seconds",
         minute: "a minute",
         minutes: "%d minutes",
         hour: "an hour",

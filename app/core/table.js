@@ -26,7 +26,7 @@ function(app, Backbone) {
         var value = $(e.target).attr('data-value');
         this.collection.setFilter({currentPage: 0, active: value});
         this.collection.fetch();
-        //this.options.preferences.save({status: value});
+        this.options.preferences.save({status: value});
       },
       'keypress #table-filter': function(e) {
         if (e.which == 13) {
@@ -34,7 +34,7 @@ function(app, Backbone) {
           this.collection.setFilter('search', text);
           this.collection.fetch();
         }
-        //this.collection.trigger('search', text);
+        this.collection.trigger('search', text);
       },
       'click a.pag-next:not(.disabled)': function() {
         this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') + 1);
@@ -381,10 +381,6 @@ function(app, Backbone) {
         app.router.hideAlert();
         this.render();
       }, this);
-
-      this.collection.on('add', function() {
-        console.log(arguments);
-      });
 
       if (this.options.sortable === undefined) {
         this.options.sortable = (this.collection.structure && this.collection.structure.get('sort')) || false;

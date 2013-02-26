@@ -145,13 +145,6 @@ function(Handlebars) {
         }
     });
 
-    //Take care of the checkboxes
-    this.find('input[type=checkbox]:not(:checked)').each(function(){
-      o[this.name] = 0;
-    }).get();
-
-    console.log(o);
-
     return o;
   };
 

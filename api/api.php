@@ -62,7 +62,13 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   // USERS
 
   if ( $collection == "users" ) {
-    $users = $db->get_entries("directus_users", $params, $id);
+    $users = $db->get_users();
+    //$users = $db->get_entries("directus_users", $params, $id);
+
+    switch ($http_method) {
+      case "PUT":
+        $db->set_entry('directus_users', $data);
+    }
 
     //This is a collection of users...
     if (isset($users['rows'])) {
@@ -227,7 +233,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
     // Save the file
     if (isset($data['file']) && $data['file'] !== "") {
 
-      $media = new Media($data['file']);
+      $media = new Media($data['file'], RESOURCES_PATH);
       $file_data = $media->data();
 
       $data['name'] = $file_data['name'];
@@ -236,6 +242,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
       $data['width'] = $file_data['width'];
       $data['height'] = $file_data['height'];
       $data['active'] = 1;
+      $data['user'] = 1;
 
       if (isset($file_data['embed_id'])) {
         $data['embed_id'] = $file_data['embed_id'];
