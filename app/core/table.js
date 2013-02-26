@@ -245,6 +245,8 @@ function(app, Backbone) {
     tagName: 'tfoot',
     template: 'table-foot',
 
+    functions: {},
+
     events: {
       'change select': function(e) {
         var $target = $(e.target);
@@ -253,17 +255,29 @@ function(app, Backbone) {
         var set = this.collection.pluck(column);
         var value = this.calculate(set, operation);
         $target.next('p').html(value);
+      },
+      'mouseover .footer-function': function(e) {
+        $(e.target).closest('.footer-function').find('ul').removeClass('collapse');
+      },
+      'mouseout .footer-function': function(e) {
+        $(e.target).closest('.footer-function').find('ul').addClass('collapse');
+      },
+      'click .footer-function li': function(e) {
+        this.functions[$(e.target).closest('.footer-function').attr('data-column')] = $(e.target).text();
+        this.render();
       }
     },
 
     calculate: function(set, operation) {
       var sum = _.reduce(set, function(memo, num){ return memo + num; }, 0);
       switch(operation) {
-        case 'min/max':
-          return _.min(set) + "/" + _.max(set);
-        case 'average':
-          return Math.round(10000 * sum / set.length) / 10000;
-        case 'sum':
+        case 'MIN':
+          return _.min(set);
+        case 'MAX':
+          return _.max(set);
+        case 'AVG':
+          return Math.round(100 * sum / set.length) / 100;
+        case 'SUM':
           return sum;
       }
     },
@@ -273,17 +287,19 @@ function(app, Backbone) {
         var col = {
           title: value,
           isNumeric: (["FLOAT", "INT", "SMALLINT", "DECIMAL", "DOUBLE"].indexOf(this.collection.structure.get(value).get('type')) > -1),
+          selectedFunction: this.functions.hasOwnProperty(value) ? this.functions[value] : 'SUM'
         }
-        if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), 'sum');
+        if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), col.selectedFunction);
         return col;
       }, this);
-      return {columns: columns, selectable: this.options.selectable, sortable: this.options.sortable,};
+      return {columns: columns, selectable: this.options.selectable, sortable: this.options.sortable};
     }
   });
 
   var Table = Backbone.Layout.extend({
 
     tagname: 'div',
+    attributes: {'class':'directus-table-container'},
 
     template: 'table',
 
@@ -293,7 +309,7 @@ function(app, Backbone) {
     },
 
     events: {
-      'click td:not(.check):not(.status):not(.sort)' : function(e) {
+      'click tbody td:not(.check):not(.status):not(.sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
           this.collection.off(null, null, this);
@@ -394,16 +410,27 @@ function(app, Backbone) {
         //Cache a reference to the this.$el
         var $el = this.$el;
 
+        // This timer prevent's the overlay to flicker when dragleave leaves for
+        // a child item that triggers dragenter again.
+        var timer;
+
         // If collection supports dnd
         // Since dragenter sux, this is how we do...
         $el.on('dragover', function(e) {
+          clearInterval(timer);
           e.stopPropagation();
           e.preventDefault();
           $el.addClass('dragover');
         });
 
         $el.on('dragleave', function(e) {
-          $el.removeClass('dragover');
+            clearInterval(timer);
+            timer = setInterval(function(){
+              $el.removeClass('dragover');
+              console.log('leave');
+              clearInterval(timer);
+            },50);
+
         });
 
         // Since data transfer is not supported by jquery...

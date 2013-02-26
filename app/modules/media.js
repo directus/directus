@@ -9,6 +9,38 @@ function(app, Backbone, Directus) {
   var Media = app.module();
 
 
+
+  Media.Views.Edit = Directus.Modal.extend({
+
+    afterRender: function() {
+      this.setView('.modal-body', this.editView);
+      this.editView.render();
+    },
+
+    save: function() {
+      var me = this;
+      var file = $('input[name=file]')[0].files[0];
+      var data = this.editView.data();
+      var isNew = this.model.isNew();
+
+      if (file !== undefined) {
+        data = _.extend(data, {file: file});
+      }
+
+      this.model.save(data, {success:function() {
+        if (isNew) me.collection.add(this.model);
+        me.close();
+      }
+      });
+    },
+
+    initialize: function() {
+      this.editView = new Directus.EditView({model: this.model});
+      this.collection = app.media;
+      this.options.title = this.options.title || 'Editing Media';
+    }
+  });
+
   Media.Views.List = Backbone.Layout.extend({
 
     template: 'page',
@@ -36,6 +68,16 @@ function(app, Backbone, Directus) {
     },
 
     addEditMedia: function(model, title) {
+      var modal = new Media.Views.Edit({model: model, stretch: true, title: title});
+      app.router.v.messages.insertView(modal).render();
+      if (!model.isNew()) {
+        app.router.navigate('#media/'+model.id);
+        modal.on('close', function() {
+          app.router.navigate('#media');
+        });
+      }
+
+      /*
       var view = new Directus.EditView({model: model});
       var modal = app.router.openModal(view, {stretch: true, title: title});
       var isNew = model.isNew();
@@ -60,6 +102,7 @@ function(app, Backbone, Directus) {
           modal.close();
         }});
       };
+      */
     },
 
     serialize: function() {

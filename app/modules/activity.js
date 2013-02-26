@@ -2,10 +2,11 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'modules/activity/chart'
+  'modules/activity/chart',
+  "modules/media",
 ],
 
-function(app, Backbone, Directus, Chart) {
+function(app, Backbone, Directus, Chart, Media) {
 
   var Dashboard = app.module();
   var ListView = Directus.Table.extend({});
@@ -13,6 +14,22 @@ function(app, Backbone, Directus, Chart) {
   Dashboard.Views.List = Backbone.Layout.extend({
 
     template: 'page',
+
+    events: {
+      'click a[data-action=media]': function(e) {
+        var id = parseInt($(e.target).attr('data-id'),10);
+        var model = new app.media.model({id: id}, {collection: app.media});
+        model.fetch();
+        model.on('sync', function() {
+          var modal = new Media.Views.Edit({model: model, stretch: true});
+          app.router.v.messages.insertView(modal).render();
+          app.router.navigate('#media/'+model.id);
+          modal.on('close', function() {
+            app.router.navigate('#activity');
+          });
+        });
+      }
+    },
 
     serialize: function() {
       return {title: this.collection.table.get('title')};

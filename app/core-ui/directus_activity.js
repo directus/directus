@@ -22,7 +22,7 @@ define(['app','backbone'], function(app, Backbone) {
 
     switch (type) {
       case 'MEDIA':
-        returnStr = '<a href="#">' + model.get('identifier') + '</a> has been added to <a href="#media">Media</a>';
+        returnStr = '<a href="#" data-action="media" data-id="'+model.get('row_id')+'">' + model.get('identifier') + '</a> has been added to <a href="#media">Media</a>';
         break;
       case 'SETTINGS':
         returnStr = 'The settings have been updated';

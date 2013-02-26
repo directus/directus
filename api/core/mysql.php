@@ -726,6 +726,11 @@ class MySQL {
     return $column_name;
   }
 
+  function delete($tbl_name, $id) {
+    $sth = $this->dbh->query("DELETE FROM $tbl_name WHERE id = $id");
+    return $sth->execute(); 
+  }
+
   /**
    *  Get ui options
    *

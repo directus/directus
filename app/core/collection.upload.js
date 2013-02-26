@@ -15,8 +15,6 @@ function(app, Backbone, Entries) {
 
     sync: function(method, model, options) {
 
-      console.log(model);
-
       var methodMap = {
         'create': 'POST',
         'update': 'PUT',

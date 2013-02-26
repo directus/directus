@@ -5879,12 +5879,6 @@ a {
 #directus_activity tr.row-type-UI td.status {
   background-color: #fdc030;
 }
-.dragover {
-  border: 3px dashed #ededed;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-}
 .margin-left {
   margin-left: 10px;
 }
@@ -6270,6 +6264,28 @@ a:hover {
   font-family: Arvo, "Times New Roman", Times, serif;
   font-size: 26px;
 }
+.directus-table-container {
+  position: relative;
+  overflow: auto;
+}
+.directus-table-container .overlay {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  color: #FFF;
+  text-align: center;
+}
+.directus-table-container .overlay h3 {
+  margin-top: 60px;
+}
+.directus-table-container.dragover .overlay {
+  display: block;
+}
 .table-striped,
 .directus-table {
   margin-bottom: 0;
@@ -6341,6 +6357,10 @@ a:hover {
   cursor: pointer;
   vertical-align: middle;
 }
+.table-striped tfoot td,
+.directus-table tfoot td {
+  cursor: default;
+}
 .table-striped td.status,
 .directus-table td.status,
 .table-striped th.status,
@@ -6386,6 +6406,47 @@ a:hover {
 .table-striped tbody tr:last-child,
 .directus-table tbody tr:last-child {
   border-bottom: 1px solid #ededed !important;
+}
+.table-striped .footer-function,
+.directus-table .footer-function {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  color: #FFF;
+  background-color: #8bc53f;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  width: 52px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 5px;
+  position: relative;
+}
+.table-striped .footer-function span.value,
+.directus-table .footer-function span.value {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+.table-striped .footer-function li,
+.directus-table .footer-function li {
+  opacity: 0.5;
+}
+.table-striped .footer-function li:hover,
+.directus-table .footer-function li:hover {
+  opacity: 1;
+}
+.table-striped .footer-function:after,
+.directus-table .footer-function:after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 26px;
+  border-style: solid;
+  border-width: 0 5px 5px;
+  border-color: #8bc53f transparent;
+  display: block;
+  width: 0;
+  z-index: 1;
 }
 .directus-table thead:hover #set-visible-columns {
   display: block;

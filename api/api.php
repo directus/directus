@@ -94,6 +94,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   if ( $collection == "revisions" ) {
     return $db->get_revisions($params);
   }
+  
   //////////////////////////////////////////////////////////////////////////////
   // GROUPS
 
@@ -125,6 +126,10 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
         $id = $db->set_entry_relational($tbl_name, $data);
         $params['id'] = $id;
         break;
+
+      case "DELETE":
+        echo $db->delete($tbl_name, $id);
+        return;
     }
 
     //Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
