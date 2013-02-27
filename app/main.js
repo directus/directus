@@ -21,6 +21,36 @@ require([
 
 function(module, app, Router, Backbone, Directus, UI, media, users, activity, groups) {
 
+    //Override backbone sync for custom error handling
+    var sync = Backbone.sync;
+
+    Backbone.sync = function(method, model, options) {
+      options.error = function(xhr, status, thrown) {
+        if (status.status === 404) {
+          app.router.showAlert('Not found!');
+        } else {
+          console.log('EROR',status);
+          var win = new Backbone.Layout();
+          win.$el.html(status.responseText);
+          win.render();
+          app.router.openModal(win, {title: 'Server Error!', stretch: true, buttonText:'OK'});
+        }
+      };
+      sync(method, model, options);
+    };
+
+    //Cancel default file drop
+    $(document).on('drop dragover', function(e) {
+      e.preventDefault();
+    });
+
+    //Cancel default CMD + S;
+    $(window).keydown(_.bind(function(e) {
+      if (e.keyCode === 83 && e.metaKey) {
+        e.preventDefault();
+      }
+    }, this));
+
     // Bootstrap global data
     var data = window.directusData;
 
@@ -145,26 +175,4 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
         Backbone.history.navigate(href.attr, true);
       }
     });
-
-    //Override backbone sync for custom error handling
-    var sync = Backbone.sync;
-
-    Backbone.sync = function(method, model, options) {
-      options.error = function(xhr, status, thrown) {
-        console.log(status.responseText);
-      };
-      sync(method, model, options);
-    };
-
-    //Cancel default file drop
-    $(document).on('drop dragover', function(e) {
-      e.preventDefault();
-    });
-
-    //Cancel default CMD + S;
-    $(window).keydown(_.bind(function(e) {
-      if (e.keyCode === 83 && e.metaKey) {
-        e.preventDefault();
-      }
-    }, this));
 });

@@ -17,6 +17,7 @@ function(app, Backbone, BaseCollection) {
       isNested: true,
 
       parse: function(result) {
+        console.log(result);
         result.data = new Backbone.Model(result.data);
         this.collection.nestedCollection.add(result.data);
         return result;
@@ -24,6 +25,7 @@ function(app, Backbone, BaseCollection) {
 
       //DRY this up please and move it to BB's protoype
       toJSON: function(options) {
+        console.log('ping');
         attributes = _.clone(this.attributes);
         attributes.data = this.get('data').toJSON();
         return attributes;
@@ -49,8 +51,10 @@ function(app, Backbone, BaseCollection) {
 
     add: function(models, options) {
       if (options && options.nest) {
-       _.map(models, function(model) { return {data: model}; });
+        if (!_.isArray(models)) { models = [models]; }
+        models = _.map(models, function(model) { return {data: model}; });
       }
+      console.log(models);
       Entries.NestedCollection.__super__.add.apply(this, [models, options])
     },
 
@@ -93,7 +97,7 @@ function(app, Backbone, BaseCollection) {
     },
 
     parse: function(response) {
-      return response.rows;
+      return (response.rows === undefined) ? response : response.rows;
     },
 
     initialize: function(models, options) {

@@ -208,7 +208,7 @@ class Media {
   }
 
   private function save_image($img) {
-    $path = $this->thumbnails_path . '/' . $this->name;
+    $path = $this->thumbnails_path . '/' . basename($this->unique_name());
     switch($this->format) {
       case 'jpg':
       case 'jpeg':

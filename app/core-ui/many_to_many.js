@@ -6,11 +6,11 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core-ui/onetomany', 'core/directus'], function(app, Backbone, Onetomany, Directus) {
+define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app, Backbone, Onetomany, Directus) {
 
   var Module = {};
 
-  Module.id = 'manytomany';
+  Module.id = 'many_to_many';
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
@@ -18,6 +18,12 @@ define(['app', 'backbone', 'core-ui/onetomany', 'core/directus'], function(app, 
   ];
 
   Module.Input = Onetomany.Input.extend({
+
+    events: {
+      'click div.related-table > div td:not(.delete)': 'editRow',
+      'click button[data-action=add]': 'addRow',
+      'click button[data-action=insert]': 'insertRow'
+    },
 
     template: Handlebars.compile(
       '<label>{{{capitalize title}}}</label>' +
@@ -40,9 +46,12 @@ define(['app', 'backbone', 'core-ui/onetomany', 'core/directus'], function(app, 
       modal.save = function() {
         _.each(view.selection(), function(id) {
           var data = collection.get(id).toJSON();
-          me.collection.add(data, {parse: true, silent: true, nest: true});
+          me.related.entries.add(data, {parse: true, silent: true, nest: true});
+          console.log(me.related.entries);
+          return;
+          console.log(me.related.entries.toJSON());
         }, this);
-        me.collection.trigger('add');
+        me.related.entries.trigger('add');
         modal.close();
       };
 

@@ -53,9 +53,9 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       document.title = title;
     },
 
-    showAlert: function(message) {
+    showAlert: function(message, type) {
       if (!this.alert) {
-        this.alert = new Backbone.Layout({template: 'alert', serialize: {message: message}});
+        this.alert = new Backbone.Layout({template: 'alert', serialize: {message: message, type: type}});
         this.v.messages.insertView(this.alert).render();
       }
     },
@@ -268,7 +268,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       });
 
       // Update media counter
-      app.media.on('sync', function() {
+      app.media.on('sync add', function() {
         var media = this.tabs.get('media');
         media.set({count: app.media.total});
       }, this);

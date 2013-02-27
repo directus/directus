@@ -34,7 +34,7 @@
  * @since   6.0.0
  */
 
-require dirname(__FILE__) . '/mysql.php';
+require dirname(__FILE__) . '/mysql.php'; 
 
 class DB extends MySQL {
 
@@ -91,7 +91,7 @@ class DB extends MySQL {
         case 'ONETOMANY':
           foreach ($data as $foreign_table_row) {
             $foreign_table_row[$junction_key_right] = $id;
-            $this->set_entry_relational('ENTRY',$table_related, $foreign_table_row, $activity_id);
+            $this->set_entry_relational($table_related, $foreign_table_row, $activity_id);
           }
           break;
 
@@ -118,7 +118,6 @@ class DB extends MySQL {
 
             if (isset($junction_table_row['id'])) $junction_table_data['id'] = $junction_table_row['id'];
 
-            // Update junction table
             $this->set_entry_relational($junction_table, $junction_table_data, $activity_id);
           }
           break;

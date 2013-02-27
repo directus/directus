@@ -287,6 +287,13 @@ if (isset($collection)) {
   try {
     header("Content-Type: application/json; charset=utf-8");
     echo format_json(json_encode( request( $collection, $http_method, $params, $data, $file ) ) );
+  } catch (DirectusException $e){ 
+    switch ($e->getCode()) {
+      case 404:
+        header("HTTP/1.0 404 Not Found");
+        echo json_encode($e->getMessage());
+        break;
+    }
   } catch (Exception $e) {
     header("HTTP/1.1 500 Internal Server Error");
     //echo format_json(json_encode($e));

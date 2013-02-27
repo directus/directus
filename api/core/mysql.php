@@ -1,5 +1,11 @@
 <?PHP
 
+class DirectusException extends Exception { 
+   public function __construct($message, $code=null){ 
+      parent::__construct($message, $code); 
+   } 
+}
+
 class MySQL {
 
   var $db_user;
@@ -579,7 +585,7 @@ class MySQL {
     }
 
     if (sizeof($result) == 0) {
-      return array();
+      throw new DirectusException('Item not found!',404);
     }
 
     // This is a singular item, include the relationships...
@@ -649,8 +655,7 @@ class MySQL {
     }
 
     // Go to town
-    $sth->execute();
-
+    $result = $sth->execute();
   }
 
   function get_users() {
@@ -697,7 +702,7 @@ class MySQL {
 
   function add_column($tbl_name, $data) {
     $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
-    $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_column', 'sort', 'ui', 'comment');
+    $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment');
     $column_name = $data['column_name'];
     $data_type = $data['data_type'];
     $comment = $data['comment'];

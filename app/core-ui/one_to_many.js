@@ -10,7 +10,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
   var Module = {};
 
-  Module.id = 'onetomany';
+  Module.id = 'one_to_many';
   Module.dataTypes = ['ONETOMANY'];
 
   Module.variables = [
@@ -30,8 +30,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
-      'click button[data-action=add]': 'addRow',
-      'click button[data-action=insert]': 'insertRow'
+      'click button[data-action=add]': 'addRow'
     },
 
     editRow: function(e) {
@@ -94,7 +93,6 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       this.related.schema = app.columns[options.schema.get('table_related')];
       this.related.entries = options.value;
       this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false};
-
       Backbone.Layout.__super__.constructor.call(this, options);
     }
 
