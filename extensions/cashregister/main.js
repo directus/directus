@@ -22,7 +22,14 @@ function(app, Backbone, Directus) {
   var vars = vars || {};
 
   var Product = Backbone.Model.extend({
-
+    initialize: function() {
+      this.on('change:quantity', this.calculateSubtotal);
+    },
+    calculateSubtotal: function() {
+      var newSubTotal = this.get('quantity')*this.get('price');
+      this.set({'subtotal': newSubTotal});
+    }
+    
   });
 
   var Customer = Backbone.Model.extend({
@@ -83,6 +90,7 @@ function(app, Backbone, Directus) {
   });
 
   var ActiveProductsListView = Backbone.Layout.extend({
+
     prefix: 'extensions/cashregister/templates/',
 
     template: 'active-products-table',
