@@ -21,6 +21,13 @@ function(app, Backbone, Directus) {
   
   var vars = vars || {};
 
+  var ActiveProductCollectionInternalModel = Backbone.Model.extend({
+    initialize: function() {
+
+    }
+  });
+
+
   var Product = Backbone.Model.extend({
     initialize: function() {
       this.on('change:quantity', this.calculateSubtotal);
@@ -44,6 +51,8 @@ function(app, Backbone, Directus) {
     model: Product,
     initialize: function() {
       this.on('cartAdd', this.cartAdd, this);
+      this.on('change remove cartAdd', this.recalculate, this);
+      this.activeProductCollectionInternalModel = new ActiveProductCollectionInternalModel();
     },
     cartAdd: function(item, collection) {
       var itemCurrentIndex = collection.indexOf(item);
@@ -54,6 +63,14 @@ function(app, Backbone, Directus) {
         var currentQuantity = collection.at(itemCurrentIndex).get('quantity');
         collection.at(itemCurrentIndex).set({quantity: currentQuantity+1});
       }
+    },
+    recalculate: function() {
+      var runningTotal = 0;
+      this.each(function(product) {
+        runningTotal += product.get('subtotal');
+      }, this);
+      this.activeProductCollectionInternalModel.set({runningTotal: runningTotal});
+      console.log("recalculated");
     }
   });
 
@@ -100,7 +117,8 @@ function(app, Backbone, Directus) {
     },
 
     initialize: function() {
-      this.collection.on('add remove change', this.render, this);
+      this.collection.on('remove', this.render, this);
+      this.collection.activeProductCollectionInternalModel.on('change:runningTotal', this.render, this);
     },
 
     remove_item: function(e) {
@@ -110,7 +128,7 @@ function(app, Backbone, Directus) {
     },
 
     serialize: function() {
-      return { rows: this.collection.toJSON() };
+      return { rows: this.collection.toJSON(), runningTotal: this.collection.activeProductCollectionInternalModel.get('runningTotal') };
     }
   });
 
