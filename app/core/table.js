@@ -140,6 +140,7 @@ function(app, Backbone) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         return {model: model, classes: classes};
       });
+
       return {
         columns: this.collection.getColumns(),
         rows: rows,
@@ -300,12 +301,17 @@ function(app, Backbone) {
 
     tagname: 'div',
     attributes: {'class':'directus-table-container'},
-
+    saveAfterDrop: true,
     template: 'table',
 
     serialize: function() {
-      var id = (this.collection.table) ? this.collection.table.id : undefined;
-      return {columns: this.collection.getColumns(), id: id, selectable: this.options.selectable, sortable: this.options.sortable, hasData: this.collection.length };
+      return {
+        columns: this.collection.getColumns(), 
+        id: this.collection.table.id, 
+        selectable: this.options.selectable, 
+        sortable: this.options.sortable, 
+        hasData: this.collection.length 
+      };
     },
 
     events: {
@@ -344,12 +350,7 @@ function(app, Backbone) {
       }
 
       if (this.tableHead) {
-        this.insertView('table', new TableHead({
-          collection: this.collection,
-          selectable: this.options.selectable,
-          sortable: this.options.sortable,
-          deleteColumn: this.options.deleteColumn
-        }));
+        this.insertView('table', new TableHead(this.options));
       }
 
       if (this.collection.length > 0) {
@@ -367,17 +368,13 @@ function(app, Backbone) {
       }
 
       if (this.collection.length > 0 && this.collection.table.get('footer') && this.options.footer !== false) {
-        this.insertView('table', new TableFooter({
-          collection: this.collection,
-          sortable: this.options.sortable,
-          selectable: this.options.selectable
-        }));
+        this.insertView('table', new TableFooter(this.options));
       }
     },
 
     afterRender: function() {
       var now = new Date().getTime();
-      console.log('rendered table in '+ (now-this.startRenderTime)+' ms');
+      console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
       app.router.hideAlert();
     },
 
@@ -385,82 +382,98 @@ function(app, Backbone) {
       app.router.hideAlert();
     },
 
+    initializeDrop: function(saveAfterDrop) {
+      //Cache a reference to the this.$el
+      var $el = this.$el;
+
+      // This timer prevent's the overlay to flicker when dragleave leaves for
+      // a child item that triggers dragenter again.
+      var timer;
+
+      // If collection supports dnd
+      // Since dragenter sux, this is how we do...
+      $el.on('dragover', function(e) {
+        clearInterval(timer);
+        e.stopPropagation();
+        e.preventDefault();
+        $el.addClass('dragover');
+      });
+
+      $el.on('dragleave', function(e) {
+          clearInterval(timer);
+          timer = setInterval(function(){
+            $el.removeClass('dragover');
+            console.log('leave');
+            clearInterval(timer);
+          },50);
+      });
+
+      // Since data transfer is not supported by jquery...
+      // XHR2, FormData
+      this.el.ondrop = _.bind(function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var files = e.dataTransfer.files;
+        var formData = new FormData();
+
+        _.each(files, function(file) {
+          var data = {
+            file: file, 
+            date_uploaded: Date.now(), 
+            size: file.size, 
+            name: file.name, 
+            title: file.name, 
+            type: file.type, 
+            user: 1, 
+            active: 1
+          };
+          if (this.saveAfterDrop) {
+            this.collection.create(data);
+          } else {
+            this.collection.add(data, {nest: true, parse: true});
+          }
+        }, this);
+
+        $el.removeClass('dragover');
+      }, this);
+    },
+
     initialize: function() {
+      var collection = this.collection;
 
-      if (this.options.tableHead !== false) this.tableHead = true;
-
-      this.collection.on('fetch',  function() {
+      collection.on('fetch',  function() {
         app.router.showAlert();
       }, this);
 
-      this.collection.on('reset nocontent add remove change', function() {
+      collection.on('reset nocontent add remove change', function() {
         app.router.hideAlert();
         this.render();
       }, this);
 
+      // Default values      
+      if (this.options.toolbar === undefined) { 
+        this.options.toolbar = true;
+      }
+      if (this.options.tableHead !== false) {
+        this.tableHead = true;
+      }
       if (this.options.sortable === undefined) {
-        this.options.sortable = (this.collection.structure && this.collection.structure.get('sort')) || false;
+        this.options.sortable = (collection.structure.get('sort')) || false;
       }
-
       if (this.options.selectable === undefined) {
-        this.options.selectable = (this.collection.structure && this.collection.structure.get('active')) || false;
+        this.options.selectable = (collection.structure.get('active')) || false;
       }
-
-      if (this.options.droppable) {
-        //Cache a reference to the this.$el
-        var $el = this.$el;
-
-        // This timer prevent's the overlay to flicker when dragleave leaves for
-        // a child item that triggers dragenter again.
-        var timer;
-
-        // If collection supports dnd
-        // Since dragenter sux, this is how we do...
-        $el.on('dragover', function(e) {
-          clearInterval(timer);
-          e.stopPropagation();
-          e.preventDefault();
-          $el.addClass('dragover');
-        });
-
-        $el.on('dragleave', function(e) {
-            clearInterval(timer);
-            timer = setInterval(function(){
-              $el.removeClass('dragover');
-              console.log('leave');
-              clearInterval(timer);
-            },50);
-
-        });
-
-        // Since data transfer is not supported by jquery...
-        // XHR2, FormData
-        this.el.ondrop = _.bind(function(e) {
-          e.stopPropagation();
-          e.preventDefault();
-
-          var files = e.dataTransfer.files;
-          var formData = new FormData();
-
-          _.each(files, function(file) {
-            this.collection.create({file: file, date_uploaded: Date.now(), size: file.size, name: file.name, title: file.name, type: file.type, user: 1, active: 1});
-            console.log(this.collection);
-          }, this);
-
-          $el.removeClass('dragover');
-        }, this);
+      if (this.options.droppable || collection.droppable) {
+        this.initializeDrop();
       }
     },
 
     constructor: function (options) {
-
       // Add events from child
       if (this.events) {
         this.events = _.defaults(this.events, Table.prototype.events);
       }
-
-      if (options.toolbar === undefined) { options.toolbar = true; }
-
       Backbone.Layout.__super__.constructor.call(this, options);
     }
   });

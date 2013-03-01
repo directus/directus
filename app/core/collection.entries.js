@@ -17,23 +17,24 @@ function(app, Backbone, BaseCollection) {
       isNested: true,
 
       parse: function(result) {
-        console.log(result);
-        result.data = new Backbone.Model(result.data);
+        result.data = new this.collection.nestedCollection.model(result.data, {collection: this.collection.nestedCollection});
         this.collection.nestedCollection.add(result.data);
         return result;
       },
 
       //DRY this up please and move it to BB's protoype
       toJSON: function(options) {
-        console.log('ping');
         attributes = _.clone(this.attributes);
         attributes.data = this.get('data').toJSON();
         return attributes;
       }
-
     }),
 
     trash: [],
+
+    create: function(arguments) {
+      return this.nestedCollection.create(arguments);
+    },
 
     remove: function(model, options) {
       if (!model.isNew()) {
@@ -50,11 +51,14 @@ function(app, Backbone, BaseCollection) {
     },
 
     add: function(models, options) {
-      if (options && options.nest) {
+      if (options && options.nest) {        
         if (!_.isArray(models)) { models = [models]; }
-        models = _.map(models, function(model) { return {data: model}; });
+        models = _.map(models, function(model) { 
+          var obj = {};
+          obj.data = model;
+          return obj; 
+        });
       }
-      console.log(models);
       Entries.NestedCollection.__super__.add.apply(this, [models, options])
     },
 
@@ -105,7 +109,13 @@ function(app, Backbone, BaseCollection) {
       this.table = options.table;
       this.preferences = options.preferences;
       this.filters = options.filters;
-      this.nestedCollection = new Entries.Collection({}, options);
+      if (this.table.id === 'directus_media') {
+        this.droppable = true;
+        options.url = app.API_URL + 'media';
+        this.nestedCollection = new Entries.MediaCollection({}, options);
+      } else {
+        this.nestedCollection = new Entries.Collection({}, options);
+      }
       this.nestedCollection.on('change', function() {
         this.trigger('change');
       }, this);
@@ -265,6 +275,47 @@ function(app, Backbone, BaseCollection) {
       return response.rows;
     }
 
+  });
+
+  Entries.MediaModel = Entries.Model.extend({
+
+    uploader: true,
+
+    sync: function(method, model, options) {
+
+      var methodMap = {
+        'create': 'POST',
+        'update': 'PUT',
+        'patch':  'PATCH',
+        'delete': 'DELETE',
+        'read':   'GET'
+      };
+
+      var type = methodMap[method];
+
+      var data = new FormData();
+      _.each(this.attributes, function(value, key) {
+        data.append(key, value);
+      });
+
+      options.data = data;
+      options.cache = false;
+      options.contentType = false;
+      options.processData = false;
+      options.type = 'POST';
+
+      options.beforeSend = function(xhr) {
+        xhr.setRequestHeader('X-HTTP-Method-Override', type);
+      };
+
+      return Backbone.sync.apply(this, [method, model, options]);
+    }
+
+  });
+
+  Entries.MediaCollection = Entries.Collection.extend({
+    droppable: true,
+    model: Entries.MediaModel,
   });
 
   return Entries;

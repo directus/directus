@@ -22,7 +22,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click button[data-action=add]': 'addRow',
-      'click button[data-action=insert]': 'insertRow'
+      'click button[data-action=insert]': 'insertRow',
+      'click td.delete': 'deleteRow',
     },
 
     template: Handlebars.compile(
@@ -35,9 +36,18 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
       this.addModel(new this.related.entries.nestedCollection.model({}, {collection: this.related.entries.nestedCollection, parse: true}));
     },
 
+    deleteRow: function(e) {
+      var cid = $(e.target).closest('tr').attr('data-cid');
+      var model = this.related.entries.get(cid);
+
+      if (model.isNew()) return this.related.entries.remove(model);
+
+      model.set({active: 0});
+    },   
+
     insertRow: function() {
       var collection = app.entries[this.related.table.id];
-      var view = new Directus.Table({collection: collection, selectable: true, footer: false});
+      var view = new this.modalTable({collection: collection, selectable: true, footer: false});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
 
       //please proxy this instead
@@ -57,6 +67,19 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
 
       collection.fetch();
     },
+
+    initialize: function(options) {
+      Module.Input.__super__.initialize.call(this, options);
+      this.related.tableOptions.deleteColumn = true;
+      this.modalTable = Directus.Table.extend({
+        events: {
+          'click tbody td': function(e) {
+            var $checkbox = $(e.target).closest('tr').find('td.check > input');
+            $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
+          }
+        }
+      });
+    }
 
   });
 

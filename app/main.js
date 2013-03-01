@@ -86,7 +86,8 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
     });
 
     // Setup core data collections.
-    app.media = new Directus.Media(data.active_media, {
+    app.media =
+    app.entries.directus_media = new Directus.Media(data.active_media, {
       table: app.tables.get('directus_media'),
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
       preferences: app.preferences['directus_media'],

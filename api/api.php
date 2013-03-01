@@ -252,7 +252,6 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
       if (isset($file_data['embed_id'])) {
         $data['embed_id'] = $file_data['embed_id'];
       }
-
     }
 
     unset($data['file']);

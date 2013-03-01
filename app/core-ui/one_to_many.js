@@ -81,19 +81,18 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     },
 
     afterRender: function() {
-      var view = new Directus.Table(this.related.tableOptions);
+      var view = new this.table(this.related.tableOptions);
       this.setView('.related-table', view).render();
       //view.render();
     },
 
-    constructor: function (options) {
+    initialize: function (options) {
       this.related = {};
-
       this.related.table = app.tables.get(options.schema.get('table_related'));
       this.related.schema = app.columns[options.schema.get('table_related')];
       this.related.entries = options.value;
       this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false};
-      Backbone.Layout.__super__.constructor.call(this, options);
+      this.table = Directus.Table.extend({});
     }
 
   });

@@ -54,10 +54,12 @@ function() {
   // It's total overkill to instanciate an object before
   // It's also AB-FAB for templates!
   ui.getList = function(model, attr) {
+
     var collection = model.collection;
     var structure = model.collection.structure;
     var schema = structure.get(attr);
     var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
+
     return View.list({
         model: model,
         collection: collection,

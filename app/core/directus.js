@@ -16,7 +16,7 @@ function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSi
 
   var Directus = {};
 
-  Directus.Media = Media;
+  Directus.Media = Entries.MediaCollection;
   Directus.Collection = Collection;
   Directus.Entries = Entries;
   Directus.CollectionColumns = Structure.Columns;
@@ -29,6 +29,7 @@ function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSi
   Directus.Settings = Settings;
   Directus.Model = Entries.Model;
   Directus.TableModel = TableModel;
+  //Directus.MediaCollection = Structure.MediaCollection;
 
   Directus.SubRoute = Backbone.Router.extend({
     constructor: function(prefix) {
