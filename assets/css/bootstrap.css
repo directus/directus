@@ -6401,7 +6401,7 @@ a:hover {
 .directus-table tbody tr:hover td,
 .table-striped tbody tr.selected td,
 .directus-table tbody tr.selected td {
-  background-color: #ffffec;
+  background-color: #fffcd0;
 }
 .table-striped tbody tr:last-child,
 .directus-table tbody tr:last-child {
