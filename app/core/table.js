@@ -414,9 +414,11 @@ function(app, Backbone) {
         e.stopPropagation();
         e.preventDefault();
 
-        var files = e.dataTransfer.files;
-        var formData = new FormData();
+        app.sendFiles(e.dataTransfer.files, function(data) {
+          console.log(data);
+        });
 
+        /*
         _.each(files, function(file) {
           var data = {
             file: file, 
@@ -433,8 +435,9 @@ function(app, Backbone) {
           } else {
             this.collection.add(data, {nest: true, parse: true});
           }
-        }, this);
 
+        }, this);
+          */
         $el.removeClass('dragover');
       }, this);
     },
@@ -465,6 +468,7 @@ function(app, Backbone) {
         this.options.selectable = (collection.structure.get('active')) || false;
       }
       if (this.options.droppable || collection.droppable) {
+        console.log(this.options, collection);
         this.initializeDrop();
       }
     },

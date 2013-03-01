@@ -260,7 +260,6 @@ function(app, Backbone, BaseCollection) {
         this.preferences = options.preferences;
         this.preferences.on('change', function() { this.trigger('change'); }, this);
       }
-
     },
 
     parse: function(response) {

@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.5.29)
 # Database: directus
-# Generation Time: 2013-02-27 22:23:04 +0000
+# Generation Time: 2013-03-01 21:06:14 +0000
 # ************************************************************
 
 
@@ -1079,7 +1079,62 @@ VALUES
 	(936,'UI','UPDATE','instructor_music,track_preview_url,textinput','directus_ui',0,1,'{\"readonly\":\"on\"}',NULL,'2013-02-27 22:03:37'),
 	(937,'ENTRY','UPDATE','Red Room','rooms',1,1,'{\"id\":1,\"title\":\"Red Room\",\"studio_id\":\"\"}',NULL,'2013-02-27 22:21:55'),
 	(938,'ENTRY','UPDATE',NULL,'seats',2,1,'{\"id\":2,\"seat_number\":1,\"position\":1,\"instructor\":1,\"room_id\":1}',937,'2013-02-27 22:21:55'),
-	(939,'ENTRY','UPDATE',NULL,'bikes',1,1,'{\"id\":1,\"room_id\":1,\"bike_number\":1,\"position\":\"1,2\"}',937,'2013-02-27 22:21:55');
+	(939,'ENTRY','UPDATE',NULL,'bikes',1,1,'{\"id\":1,\"room_id\":1,\"bike_number\":1,\"position\":\"1,2\"}',937,'2013-02-27 22:21:55'),
+	(940,'UI','UPDATE','studios,slideshow,many_to_many','directus_ui',0,1,'{\"visible_columns\":\"name\"}',NULL,'2013-02-27 22:40:11'),
+	(941,'UI','UPDATE','studios,slideshow,many_to_many','directus_ui',0,1,'{\"visible_columns\":\"item,name\"}',NULL,'2013-02-27 22:41:15'),
+	(942,'UI','UPDATE','studios,slideshow,many_to_many','directus_ui',0,1,'{\"visible_columns\":\"item,title\"}',NULL,'2013-02-27 22:45:53'),
+	(943,'ENTRY','UPDATE','Union Square','studios',1,1,'{\"id\":1,\"title\":\"Union Square\",\"address\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"country\":\"\",\"phone_number\":\"\",\"email\":\"\",\"banner_image\":\"\",\"amenities\":\"\"}',NULL,'2013-02-27 22:47:21'),
+	(944,'ENTRY','UPDATE',NULL,'directus_media',52,1,'{\"id\":52,\"active\":1,\"name\":\"Woods7.jpeg\",\"title\":\"Woods\",\"location\":\"\",\"type\":\"image\\/jpeg\",\"charset\":\"\",\"caption\":\"\",\"tags\":\"\",\"width\":1600,\"height\":642,\"size\":389350,\"embed_id\":\"\",\"user\":1,\"date_uploaded\":\"Wed, 30 Nov -001 00:00:00 -0500\"}',943,'2013-02-27 22:47:21'),
+	(945,'ENTRY','ADD',NULL,'studio_slideshow',1,1,'{\"studio_id\":1,\"directus_media_id\":52}',943,'2013-02-27 22:47:21'),
+	(946,'ENTRY','UPDATE',NULL,'directus_media',43,1,'{\"id\":43,\"active\":1,\"name\":\"a-winding-road-curves-through-autumn-trees-in-new-england-651x435.jpg\",\"title\":\"Winding road\",\"location\":\"\",\"type\":\"image\\/jpeg\",\"charset\":\"\",\"caption\":\"\",\"tags\":\"\",\"width\":651,\"height\":435,\"size\":146344,\"embed_id\":\"\",\"user\":1,\"date_uploaded\":\"Wed, 30 Nov -001 00:00:00 -0500\"}',943,'2013-02-27 22:47:21'),
+	(947,'ENTRY','ADD',NULL,'studio_slideshow',2,1,'{\"studio_id\":1,\"directus_media_id\":43}',943,'2013-02-27 22:47:21'),
+	(948,'MEDIA','ADD','space-06.jpg','directus_media',54,1,'{\"date_uploaded\":\"2013-02-27 22:57:51\",\"size\":42001,\"name\":\"space-06.jpg\",\"title\":\"space-06.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":600,\"height\":450}',NULL,'2013-02-27 22:57:52'),
+	(949,'MEDIA','ADD','space-10.jpg','directus_media',55,1,'{\"date_uploaded\":\"2013-02-27 23:02:11\",\"size\":23632,\"name\":\"space-10.jpg\",\"title\":\"space-10.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":600,\"height\":450}',NULL,'2013-02-27 23:02:11'),
+	(950,'MEDIA','ADD','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg','directus_media',56,1,'{\"date_uploaded\":\"2013-02-27 23:10:08\",\"size\":238178,\"name\":\"tumblr_meucm8PYfN1rkwf2ro1_1280.jpg\",\"title\":\"tumblr_meucm8PYfN1rkwf2ro1_1280.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":683,\"height\":1024}',NULL,'2013-02-27 23:10:08'),
+	(951,'MEDIA','ADD','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg','directus_media',57,1,'{\"date_uploaded\":\"2013-02-27 23:16:35\",\"size\":238178,\"name\":\"tumblr_meucm8PYfN1rkwf2ro1_1280-1.jpg\",\"title\":\"tumblr_meucm8PYfN1rkwf2ro1_1280.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":683,\"height\":1024}',NULL,'2013-02-27 23:16:35'),
+	(952,'MEDIA','ADD','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg','directus_media',58,1,'{\"date_uploaded\":\"2013-02-27 23:17:56\",\"size\":238178,\"name\":\"tumblr_meucm8PYfN1rkwf2ro1_1280-2.jpg\",\"title\":\"tumblr_meucm8PYfN1rkwf2ro1_1280.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":683,\"height\":1024}',NULL,'2013-02-27 23:17:56'),
+	(953,'MEDIA','ADD','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg','directus_media',59,1,'{\"date_uploaded\":\"2013-02-27 23:18:17\",\"size\":238178,\"name\":\"tumblr_meucm8PYfN1rkwf2ro1_1280-3.jpg\",\"title\":\"tumblr_meucm8PYfN1rkwf2ro1_1280.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":683,\"height\":1024}',NULL,'2013-02-27 23:18:17'),
+	(954,'ENTRY','UPDATE','Don','users',9,1,'{\"id\":9,\"active\":\"1\",\"first_name\":\"Don\",\"last_name\":\"Cherry\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-28 17:40:54'),
+	(955,'ENTRY','UPDATE','Coca Cola','products',1,1,'{\"id\":1,\"title\":\"Coca Cola\",\"category\":0,\"description\":\"American beverage\",\"sizes\":0,\"styles\":0,\"price\":2}',954,'2013-02-28 17:40:54'),
+	(956,'ENTRY','ADD',NULL,'favorite_products',5,1,'{\"user_id\":9,\"product_id\":1}',954,'2013-02-28 17:40:54'),
+	(957,'ENTRY','UPDATE','Hamburger','products',2,1,'{\"id\":2,\"title\":\"Hamburger\",\"category\":0,\"description\":\"German sandwich\",\"sizes\":0,\"styles\":0,\"price\":2}',954,'2013-02-28 17:40:54'),
+	(958,'ENTRY','ADD',NULL,'favorite_products',6,1,'{\"user_id\":9,\"product_id\":2}',954,'2013-02-28 17:40:54'),
+	(959,'ENTRY','UPDATE','Taco','products',3,1,'{\"id\":3,\"title\":\"Taco\",\"category\":0,\"description\":\"Mexican sandwich\",\"sizes\":0,\"styles\":0,\"price\":10}',954,'2013-02-28 17:40:54'),
+	(960,'ENTRY','ADD',NULL,'favorite_products',7,1,'{\"user_id\":9,\"product_id\":3}',954,'2013-02-28 17:40:54'),
+	(961,'ENTRY','UPDATE','French fries','products',4,1,'{\"id\":4,\"title\":\"French fries\",\"category\":0,\"description\":\"Belgian potatoes\",\"sizes\":0,\"styles\":0,\"price\":7}',954,'2013-02-28 17:40:54'),
+	(962,'ENTRY','ADD',NULL,'favorite_products',8,1,'{\"user_id\":9,\"product_id\":4}',954,'2013-02-28 17:40:54'),
+	(963,'ENTRY','UPDATE','Starburst','products',5,1,'{\"id\":5,\"title\":\"Starburst\",\"category\":0,\"description\":\"Cuboid-shaped, fruit-flavoured soft candy\",\"sizes\":0,\"styles\":0,\"price\":14}',954,'2013-02-28 17:40:54'),
+	(964,'ENTRY','ADD',NULL,'favorite_products',9,1,'{\"user_id\":9,\"product_id\":5}',954,'2013-02-28 17:40:54'),
+	(965,'ENTRY','UPDATE','Water','products',8,1,'{\"id\":8,\"title\":\"Water\",\"category\":0,\"description\":\"Healthy\",\"sizes\":0,\"styles\":0,\"price\":5}',954,'2013-02-28 17:40:54'),
+	(966,'ENTRY','ADD',NULL,'favorite_products',10,1,'{\"user_id\":9,\"product_id\":8}',954,'2013-02-28 17:40:54'),
+	(967,'ENTRY','UPDATE','Juice','products',9,1,'{\"id\":9,\"title\":\"Juice\",\"category\":0,\"description\":\"Tasty\",\"sizes\":0,\"styles\":0,\"price\":7}',954,'2013-02-28 17:40:54'),
+	(968,'ENTRY','ADD',NULL,'favorite_products',11,1,'{\"user_id\":9,\"product_id\":9}',954,'2013-02-28 17:40:54'),
+	(969,'ENTRY','UPDATE','Carrots','products',11,1,'{\"id\":11,\"title\":\"Carrots\",\"category\":0,\"description\":\"Orange\",\"sizes\":0,\"styles\":0,\"price\":1}',954,'2013-02-28 17:40:54'),
+	(970,'ENTRY','ADD',NULL,'favorite_products',12,1,'{\"user_id\":9,\"product_id\":11}',954,'2013-02-28 17:40:54'),
+	(971,'ENTRY','UPDATE','Beer','products',12,1,'{\"id\":12,\"title\":\"Beer\",\"category\":0,\"description\":\"Drunky\",\"sizes\":0,\"styles\":0,\"price\":6}',954,'2013-02-28 17:40:54'),
+	(972,'ENTRY','ADD',NULL,'favorite_products',13,1,'{\"user_id\":9,\"product_id\":12}',954,'2013-02-28 17:40:54'),
+	(973,'ENTRY','UPDATE','Phone','products',15,1,'{\"id\":15,\"title\":\"Phone\",\"category\":0,\"description\":\"Communicate\",\"sizes\":0,\"styles\":0,\"price\":250}',954,'2013-02-28 17:40:54'),
+	(974,'ENTRY','ADD',NULL,'favorite_products',14,1,'{\"user_id\":9,\"product_id\":15}',954,'2013-02-28 17:40:54'),
+	(975,'ENTRY','UPDATE','Ricardo','users',19,1,'{\"id\":19,\"active\":\"1\",\"first_name\":\"Ricardo\",\"last_name\":\"Villalobos\",\"email\":\"\",\"gender\":\"\",\"password\":\"\",\"region\":\"\",\"phone_number\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"billing_address_1\":\"\",\"billing_address_2\":\"\",\"billing_city\":\"\",\"billing_state\":\"\",\"billing_zip\":\"\",\"authorize_id\":\"\",\"joined\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"last_login\":\"Wed, 30 Nov -001 00:00:00 -0500\",\"shoe_size\":\"\",\"bike_bar_height\":\"\",\"bike_seat_height\":\"\",\"service_water\":0,\"service_shoes\":0}',NULL,'2013-02-28 17:41:02'),
+	(976,'ENTRY','UPDATE','TEST','classes',22,1,'{\"id\":22,\"room_id\":1,\"instructor_id\":1,\"class_type_id\":1,\"datetime\":\"0000-00-00 00:00:00\",\"note\":\"TEST\"}',975,'2013-02-28 17:41:02'),
+	(977,'ENTRY','UPDATE',NULL,'bookmarks',0,1,'{\"user_id\":19,\"class_id\":22,\"id\":\"0\"}',975,'2013-02-28 17:41:02'),
+	(978,'ENTRY','UPDATE','Benjamin ','instructors',2,1,'{\"id\":2,\"active\":1,\"first_name\":\"Benjamin \",\"last_name\":\"Haynes\",\"nickname\":\"Ben\",\"image\":0,\"password\":\"\",\"email\":\"\",\"phone\":0,\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"bio\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"tumblr\":\"\"}',975,'2013-02-28 17:41:02'),
+	(979,'ENTRY','UPDATE',NULL,'favorite_instructors',11,1,'{\"user_id\":19,\"instructor_id\":2,\"id\":\"11\"}',975,'2013-02-28 17:41:02'),
+	(980,'ENTRY','UPDATE','Max','instructors',3,1,'{\"id\":3,\"active\":1,\"first_name\":\"Max\",\"last_name\":\"Glantzman\",\"nickname\":\"Max\",\"image\":0,\"password\":\"\",\"email\":\"\",\"phone\":0,\"address_1\":\"\",\"address_2\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"bio\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"tumblr\":\"\"}',975,'2013-02-28 17:41:02'),
+	(981,'ENTRY','UPDATE',NULL,'favorite_instructors',12,1,'{\"user_id\":19,\"instructor_id\":3,\"id\":\"12\"}',975,'2013-02-28 17:41:02'),
+	(982,'favorite_instructors','13',NULL,'DELETE',0,1,'\"975\"',NULL,'2013-02-28 17:41:02'),
+	(983,'ENTRY','UPDATE','Ice cream','products',6,1,'{\"id\":6,\"title\":\"Ice cream\",\"category\":0,\"description\":\"Frozen dessert\",\"sizes\":0,\"styles\":0,\"price\":6}',975,'2013-02-28 17:41:02'),
+	(984,'ENTRY','UPDATE',NULL,'favorite_products',2,1,'{\"user_id\":19,\"product_id\":6,\"id\":\"2\"}',975,'2013-02-28 17:41:02'),
+	(985,'ENTRY','UPDATE','Hot Sauce','products',7,1,'{\"id\":7,\"title\":\"Hot Sauce\",\"category\":0,\"description\":\"Spicy!\",\"sizes\":0,\"styles\":0,\"price\":3}',975,'2013-02-28 17:41:02'),
+	(986,'ENTRY','UPDATE',NULL,'favorite_products',3,1,'{\"user_id\":19,\"product_id\":7,\"id\":\"3\"}',975,'2013-02-28 17:41:02'),
+	(987,'ENTRY','UPDATE','Coffee','products',10,1,'{\"id\":10,\"title\":\"Coffee\",\"category\":0,\"description\":\"Energy\",\"sizes\":0,\"styles\":0,\"price\":9}',975,'2013-02-28 17:41:02'),
+	(988,'ENTRY','UPDATE',NULL,'favorite_products',4,1,'{\"user_id\":19,\"product_id\":10,\"id\":\"4\"}',975,'2013-02-28 17:41:02'),
+	(989,'ENTRY','UPDATE','Union Square','studios',1,1,'{\"id\":1,\"title\":\"Union Square\",\"region_id\":0,\"address\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":0,\"country\":\"\",\"phone_number\":0,\"email\":\"\",\"banner_image\":0,\"amenities\":\"\"}',975,'2013-02-28 17:41:02'),
+	(990,'ENTRY','UPDATE',NULL,'favorite_studios',3,1,'{\"user_id\":19,\"studio_id\":1,\"id\":\"3\"}',975,'2013-02-28 17:41:02'),
+	(991,'MEDIA','ADD','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg','directus_media',60,1,'{\"date_uploaded\":\"2013-02-28 19:41:24\",\"size\":238178,\"name\":\"tumblr_meucm8PYfN1rkwf2ro1_1280-4.jpg\",\"title\":\"tumblr_meucm8PYfN1rkwf2ro1_1280.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":683,\"height\":1024}',NULL,'2013-02-28 19:41:24'),
+	(992,'MEDIA','ADD','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg','directus_media',61,1,'{\"date_uploaded\":\"2013-02-28 19:46:32\",\"size\":238178,\"name\":\"tumblr_meucm8PYfN1rkwf2ro1_1280-5.jpg\",\"title\":\"tumblr_meucm8PYfN1rkwf2ro1_1280.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":683,\"height\":1024}',NULL,'2013-02-28 19:46:32'),
+	(993,'MEDIA','ADD','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg','directus_media',62,1,'{\"date_uploaded\":\"2013-02-28 19:48:42\",\"size\":238178,\"name\":\"tumblr_meucm8PYfN1rkwf2ro1_1280-6.jpg\",\"title\":\"tumblr_meucm8PYfN1rkwf2ro1_1280.jpg\",\"type\":\"image\\/jpeg\",\"user\":1,\"active\":1,\"width\":683,\"height\":1024}',NULL,'2013-02-28 19:48:42'),
+	(994,'UI','UPDATE','riders,classes,many_to_many','directus_ui',0,1,'{\"visible_columns\":\"room_id,instructor_id\"}',NULL,'2013-02-28 20:42:32');
 
 /*!40000 ALTER TABLE `directus_activity` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1140,39 +1195,39 @@ VALUES
 	(40,'directus_media','type',NULL,NULL,0,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
 	(42,'directus_media','user',NULL,'directus_user',0,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
 	(43,'directus_media','date_uploaded',NULL,NULL,0,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
-	(275,'users','service_shoes',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,26,''),
-	(274,'users','service_water',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,25,''),
-	(273,'users','bike_seat_height',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,24,''),
-	(272,'users','bike_bar_height',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,23,''),
-	(271,'users','shoe_size',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,22,''),
-	(270,'users','last_login',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,21,''),
-	(269,'users','joined',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,20,''),
-	(268,'users','authorize_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,19,''),
-	(267,'users','billing_zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,18,''),
-	(266,'users','billing_state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,17,''),
-	(265,'users','billing_city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,16,''),
-	(264,'users','billing_address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,15,''),
-	(263,'users','billing_address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,14,''),
-	(262,'users','zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,13,''),
-	(261,'users','state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,12,''),
-	(260,'users','city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,11,''),
-	(259,'users','address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,10,''),
-	(258,'users','address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,9,''),
-	(257,'users','phone_number',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,8,''),
-	(256,'users','region',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,7,''),
-	(255,'users','password',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
-	(254,'users','gender',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
-	(253,'users','last_name',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
-	(252,'users','first_name',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
-	(248,'users','favourite_studios','manytomany','many_to_many',0,0,0,1,0,'studios','favorite_studios','user_id','studio_id',30,''),
-	(249,'users','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,0,''),
-	(250,'users','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
-	(251,'users','email',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
-	(247,'users','favourite_products','manytomany','many_to_many',0,0,0,1,0,'products','favorite_products','user_id','product_id',29,''),
+	(275,'riders','service_shoes',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,26,''),
+	(274,'riders','service_water',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,25,''),
+	(273,'riders','bike_seat_height',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,24,''),
+	(272,'riders','bike_bar_height',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,23,''),
+	(271,'riders','shoe_size',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,22,''),
+	(270,'riders','last_login',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,21,''),
+	(269,'riders','joined',NULL,'datetime',0,0,0,0,0,NULL,NULL,NULL,NULL,20,''),
+	(268,'riders','authorize_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,19,''),
+	(267,'riders','billing_zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,18,''),
+	(266,'riders','billing_state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,17,''),
+	(265,'riders','billing_city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,16,''),
+	(264,'riders','billing_address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,15,''),
+	(263,'riders','billing_address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,14,''),
+	(262,'riders','zip',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,13,''),
+	(261,'riders','state',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,12,''),
+	(260,'riders','city',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,11,''),
+	(259,'riders','address_2',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,10,''),
+	(258,'riders','address_1',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,9,''),
+	(257,'riders','phone_number',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,8,''),
+	(256,'riders','region',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,7,''),
+	(255,'riders','password',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,6,''),
+	(254,'riders','gender',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,5,''),
+	(253,'riders','last_name',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
+	(252,'riders','first_name',NULL,'textinput',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
+	(248,'riders','favourite_studios','manytomany','many_to_many',0,0,0,1,0,'studios','favorite_studios','user_id','studio_id',30,''),
+	(249,'riders','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,0,''),
+	(250,'riders','active',NULL,'checkbox',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
+	(251,'riders','email',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
+	(247,'riders','favourite_products','manytomany','many_to_many',0,0,0,1,0,'products','favorite_products','user_id','product_id',29,''),
 	(238,'directus_media','tags','','tags',0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
 	(239,'directus_media','embed_id',NULL,NULL,0,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL),
-	(246,'users','favourite_instructors','manytomany','many_to_many',0,0,0,1,0,'instructors','favorite_instructors','user_id','instructor_id',28,''),
-	(245,'users','classes','manytomany','many_to_many',0,0,0,1,0,'classes','bookmarks','user_id','class_id',27,''),
+	(246,'riders','favourite_instructors','manytomany','many_to_many',0,0,0,1,0,'instructors','favorite_instructors','user_id','instructor_id',28,''),
+	(245,'riders','classes','manytomany','many_to_many',0,0,0,1,0,'classes','bookmarks','user_id','class_id',27,''),
 	(276,'classes','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
 	(277,'classes','room_id','','many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,2,''),
 	(278,'classes','instructor_id',NULL,'many_to_one',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
@@ -1195,7 +1250,7 @@ VALUES
 	(296,'waitlist','user_id',NULL,'many_to_one',0,1,0,0,0,NULL,NULL,NULL,NULL,2,''),
 	(297,'waitlist','class_id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,3,''),
 	(298,'waitlist','priority',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,4,''),
-	(299,'classes','users','manytomany','relational',0,0,0,0,0,'users','bookmarks','class_id','user_id',9999,''),
+	(299,'classes','users','manytomany','relational',0,0,0,0,0,'riders','bookmarks','class_id','user_id',9999,''),
 	(300,'classes','waitlist','onetomany','relational',0,0,0,0,0,'waitlist',NULL,NULL,'class_id',9999,''),
 	(301,'rooms','bikes','onetomany','one_to_many',0,0,0,0,0,'bikes',NULL,NULL,'room_id',9999,''),
 	(302,'rooms','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
@@ -1229,6 +1284,7 @@ VALUES
 	(330,'studios','banner_image',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,11,''),
 	(331,'studios','slideshow_images',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,12,''),
 	(332,'studios','amenities',NULL,'textinput',0,0,0,0,0,NULL,NULL,NULL,NULL,13,'parking, lockers, showers, changing rooms'),
+	(433,'studios','slideshow','MANYTOMANY','many_to_many',0,0,0,0,0,'directus_media','studio_slideshow','studio_id','directus_media_id',9999,''),
 	(430,'instructors','recent_music','ONETOMANY','relational',0,0,0,0,0,'instructor_music',NULL,NULL,'instructor_id',9999,''),
 	(335,'instructors','classes','onetomany','relational',0,0,0,0,0,'classes',NULL,NULL,'instructor_id',9999,''),
 	(336,'instructors','id',NULL,'numeric',0,0,0,0,0,NULL,NULL,NULL,NULL,1,''),
@@ -1383,13 +1439,18 @@ LOCK TABLES `directus_media` WRITE;
 
 INSERT INTO `directus_media` (`id`, `active`, `name`, `title`, `location`, `type`, `charset`, `caption`, `tags`, `width`, `height`, `size`, `embed_id`, `user`, `date_uploaded`)
 VALUES
+	(55,1,'space-10.jpg','space-10.jpg',NULL,'image/jpeg','',NULL,'',600,450,23632,NULL,1,'2013-02-27 23:02:11'),
+	(62,1,'tumblr_meucm8PYfN1rkwf2ro1_1280-6.jpg','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg',NULL,'image/jpeg','',NULL,'',683,1024,238178,NULL,1,'2013-02-28 19:48:42'),
+	(54,1,'space-06.jpg','Space','','image/jpeg','','','',600,450,42001,'',1,'0000-00-00 00:00:00'),
 	(46,1,'fireplace-main_full.jpg','Fire','','image/jpeg','','','',600,337,50024,'',1,'0000-00-00 00:00:00'),
 	(45,1,'darkstar-news-from-nowhere-warp-records-2.17.20143-1.jpg','Darkstar','','image/jpeg','','','',312,312,53629,'',1,'0000-00-00 00:00:00'),
 	(53,1,'yulelog-fire_lg.jpg','Fire','','image/jpeg','','','',800,699,104374,'',1,'0000-00-00 00:00:00'),
 	(43,1,'a-winding-road-curves-through-autumn-trees-in-new-england-651x435.jpg','Winding road','','image/jpeg','','','',651,435,146344,'',1,'0000-00-00 00:00:00'),
 	(41,1,'pinkpinkdesert.jpg','Pink Desert','','image/jpeg','','','',1024,768,830771,'',1,'0000-00-00 00:00:00'),
 	(44,1,'carly-waito-1.jpeg','Gems','','image/jpeg','','','',660,488,58819,'',1,'0000-00-00 00:00:00'),
-	(52,1,'Woods7.jpeg','Woods','','image/jpeg','','','',1600,642,389350,'',1,'0000-00-00 00:00:00');
+	(52,1,'Woods7.jpeg','Woods','','image/jpeg','','','',1600,642,389350,'',1,'0000-00-00 00:00:00'),
+	(61,1,'tumblr_meucm8PYfN1rkwf2ro1_1280-5.jpg','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg',NULL,'image/jpeg','',NULL,'',683,1024,238178,NULL,1,'2013-02-28 19:46:32'),
+	(60,1,'tumblr_meucm8PYfN1rkwf2ro1_1280-4.jpg','tumblr_meucm8PYfN1rkwf2ro1_1280.jpg',NULL,'image/jpeg','',NULL,'',683,1024,238178,NULL,1,'2013-02-28 19:41:24');
 
 /*!40000 ALTER TABLE `directus_media` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1532,7 +1593,7 @@ VALUES
 	(1,1,'directus_users','name,activity,email,description','description','DESC','1,2'),
 	(4,1,'directus_preferences','text_field','id','asc','1'),
 	(5,1,'directus_activity','change_made,user,activity','change_made','ASC','1'),
-	(9,1,'directus_media','item,title,type,size,user,date_uploaded','title','DESC','1'),
+	(9,1,'directus_media','item,title,type,size,user,date_uploaded','title','DESC','1,2'),
 	(10,1,'directus_messages','subject,message,datetime,reply,from,to,viewed,archived,table,row','id','asc','2'),
 	(21,1,'directus_preferences','user,table_name,columns_visible,sort_order,status','id','asc','1'),
 	(37,1,'about','title,description,banner_image,button_link','id','asc','1'),
@@ -1541,7 +1602,7 @@ VALUES
 	(40,1,'bike_tickets','bike_id,studio_id,date_created','id','asc','1'),
 	(41,1,'bookmarks','user_id,class_id','id','asc','1'),
 	(42,1,'classes','room_id,instructor_id,class_type_id','room_id','ASC','1'),
-	(43,1,'class_types','title,description','id','asc','1,2'),
+	(43,1,'class_types','title,description','title','ASC','1,2'),
 	(44,1,'community','title,datetime','id','asc','1'),
 	(45,1,'community_categories','title','title','ASC','1'),
 	(46,1,'community_comments','user_id,comment,datetime','id','asc','1'),
@@ -1564,11 +1625,13 @@ VALUES
 	(63,1,'rooms','title,studio_id,seats','id','asc','1'),
 	(64,1,'seats','seat_number,position,instructor','id','asc','1'),
 	(65,1,'social_cache','type,datetime,content','id','asc','1'),
-	(66,1,'studios','title,region_id,city','title','ASC','1'),
-	(67,1,'users','first_name,last_name,email,gender,password,region,billing_address_2','email','ASC','1,2'),
+	(66,1,'studios','title,region_id,city','id','ASC','1'),
+	(67,1,'riders','first_name,last_name,email,gender,password,region,billing_address_2','email','ASC','1,2'),
 	(68,1,'waitlist','user_id,class_id,priority','id','asc','1'),
 	(69,1,'demo_table','title,number','id','asc','1,2'),
-	(70,1,'directus_groups','name,description','id','asc','1,2');
+	(70,1,'directus_groups','name,description','id','asc','1,2'),
+	(71,1,'studio_slideshow','studio_id,directus_media_id','id','asc','1,2'),
+	(72,1,'riders','email,first_name,last_name,gender,password,region,phone_number,address_1,address_2,city,state,zip,billing_address_1,billing_address_2,billing_city,billing_state,billing_zip,authorize_id,joined,last_login,shoe_size,bike_bar_height,bike_seat_height,service_water,service_shoes','id','asc','1,2');
 
 /*!40000 ALTER TABLE `directus_preferences` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1688,10 +1751,12 @@ VALUES
 	('instructor_studios',1,0,0,1,0),
 	('products',0,0,0,0,1),
 	('regions',0,0,0,0,0),
+	('riders',0,0,0,0,0),
 	('rooms',0,0,0,0,0),
 	('seats',0,1,0,0,0),
 	('social_cache',1,0,0,0,0),
-	('users',0,0,0,0,0);
+	('studios',0,0,0,0,0),
+	('studio_slideshow',0,0,0,1,0);
 
 /*!40000 ALTER TABLE `directus_tables` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1738,9 +1803,9 @@ VALUES
 	(31,'classes','room_id','many_to_one','visible_column','title'),
 	(32,'classes','instructor_id','many_to_one','related_table','instructors'),
 	(33,'classes','instructor_id','many_to_one','visible_column','nickname'),
-	(36,'users','favourite_instructors','relational','visible_columns','first_name,last_name'),
-	(37,'users','favourite_products','relational','visible_columns','title'),
-	(38,'users','favourite_studios','relational','visible_columns','title'),
+	(36,'riders','favourite_instructors','relational','visible_columns','first_name,last_name'),
+	(37,'riders','favourite_products','relational','visible_columns','title'),
+	(38,'riders','favourite_studios','relational','visible_columns','title'),
 	(39,'community','category','numeric','related_table','community_categories'),
 	(40,'community','category','numeric','visible_column','title'),
 	(41,'community','category','many_to_one','related_table','community_categories'),
@@ -1765,14 +1830,14 @@ VALUES
 	(64,'classes','class_type_id','many_to_one','visible_column','title'),
 	(65,'classes','Users','relational','visible_columns','first_name'),
 	(66,'classes','waitlist','relational','visible_columns','user_id'),
-	(67,'users','classes','relational','visible_columns','room_id,instructor_id'),
-	(68,'users','first_name','textinput','test',''),
-	(69,'users','first_name','textinput','input',''),
-	(70,'users','first_name','textinput','another_input','I CAN STORE STUFF'),
-	(71,'users','first_name','textinput','rows','20'),
-	(75,'users','first_name','textarea','rows','20'),
-	(76,'users','first_name','textarea','options','option1,option2,option3'),
-	(80,'users','first_name','radiobuttons','options','olov,lasha,ben,tengu,max'),
+	(67,'riders','classes','relational','visible_columns','room_id,instructor_id'),
+	(68,'riders','first_name','textinput','test',''),
+	(69,'riders','first_name','textinput','input',''),
+	(70,'riders','first_name','textinput','another_input','I CAN STORE STUFF'),
+	(71,'riders','first_name','textinput','rows','20'),
+	(75,'riders','first_name','textarea','rows','20'),
+	(76,'riders','first_name','textarea','options','option1,option2,option3'),
+	(80,'riders','first_name','radiobuttons','options','olov,lasha,ben,tengu,max'),
 	(83,'instructor_music','instructor_id','numeric','related_table','instructors'),
 	(84,'instructor_music','instructor_id','numeric','visible_column','nickname'),
 	(85,'instructor_music','instructor_id','many_to_one','related_table','instructors'),
@@ -1790,20 +1855,21 @@ VALUES
 	(114,'instructor_music','artist','textinput','readonly','on'),
 	(115,'instructor_music','track_name','textinput','readonly','on'),
 	(116,'instructor_music','album_art_url','textinput','readonly','on'),
-	(117,'users','favourite_instructors','manytomany','visible_columns','first_name'),
-	(118,'users','classes','manytomany','visible_columns','note'),
-	(119,'users','favourite_products','manytomany','visible_columns','title'),
-	(120,'users','favourite_studios','manytomany','visible_columns','title'),
-	(121,'users','classes','many_to_many','visible_columns','instructor_id'),
-	(122,'users','favourite_instructors','many_to_many','visible_columns','first_name'),
-	(123,'users','favourite_products','many_to_many','visible_columns','title'),
-	(124,'users','favourite_studios','many_to_many','visible_columns','title'),
+	(117,'riders','favourite_instructors','manytomany','visible_columns','first_name'),
+	(118,'riders','classes','manytomany','visible_columns','note'),
+	(119,'riders','favourite_products','manytomany','visible_columns','title'),
+	(120,'riders','favourite_studios','manytomany','visible_columns','title'),
+	(121,'riders','classes','many_to_many','visible_columns','room_id,instructor_id'),
+	(122,'riders','favourite_instructors','many_to_many','visible_columns','first_name'),
+	(123,'riders','favourite_products','many_to_many','visible_columns','title'),
+	(124,'riders','favourite_studios','many_to_many','visible_columns','title'),
 	(125,'rooms','seats','one_to_many','visible_columns','seat_number'),
 	(126,'rooms','bikes','one_to_many','visible_columns','bike_number'),
 	(127,'seats','instructor','numeric','related_table','instructors'),
 	(128,'seats','instructor','numeric','visible_column','nickname'),
 	(129,'instructor_music','track_preview_url','textinput','readonly','on'),
-	(130,NULL,NULL,NULL,NULL,NULL);
+	(130,NULL,NULL,NULL,NULL,NULL),
+	(131,'studios','slideshow','many_to_many','visible_columns','item,title');
 
 /*!40000 ALTER TABLE `directus_ui` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1889,7 +1955,6 @@ LOCK TABLES `favorite_instructors` WRITE;
 
 INSERT INTO `favorite_instructors` (`id`, `user_id`, `instructor_id`)
 VALUES
-	(13,19,1),
 	(12,19,3),
 	(11,19,2);
 
@@ -1918,7 +1983,17 @@ VALUES
 	(1,3,1,0),
 	(2,19,6,0),
 	(3,19,7,0),
-	(4,19,10,0);
+	(4,19,10,0),
+	(5,9,1,0),
+	(6,9,2,0),
+	(7,9,3,0),
+	(8,9,4,0),
+	(9,9,5,0),
+	(10,9,8,0),
+	(11,9,9,0),
+	(12,9,11,0),
+	(13,9,12,0),
+	(14,9,15,0);
 
 /*!40000 ALTER TABLE `favorite_products` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -2244,6 +2319,30 @@ CREATE TABLE `social_cache` (
 
 
 
+# Dump of table studio_slideshow
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `studio_slideshow`;
+
+CREATE TABLE `studio_slideshow` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `studio_id` int(11) DEFAULT NULL,
+  `directus_media_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+LOCK TABLES `studio_slideshow` WRITE;
+/*!40000 ALTER TABLE `studio_slideshow` DISABLE KEYS */;
+
+INSERT INTO `studio_slideshow` (`id`, `studio_id`, `directus_media_id`)
+VALUES
+	(1,1,52),
+	(2,1,43);
+
+/*!40000 ALTER TABLE `studio_slideshow` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 # Dump of table studios
 # ------------------------------------------------------------
 
@@ -2261,7 +2360,6 @@ CREATE TABLE `studios` (
   `phone_number` int(10) NOT NULL,
   `email` varchar(255) NOT NULL DEFAULT '',
   `banner_image` int(11) NOT NULL,
-  `slideshow_images` varchar(255) NOT NULL,
   `amenities` varchar(255) NOT NULL DEFAULT '' COMMENT 'parking, lockers, showers, changing rooms',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -2269,20 +2367,20 @@ CREATE TABLE `studios` (
 LOCK TABLES `studios` WRITE;
 /*!40000 ALTER TABLE `studios` DISABLE KEYS */;
 
-INSERT INTO `studios` (`id`, `title`, `region_id`, `address`, `city`, `state`, `zip`, `country`, `phone_number`, `email`, `banner_image`, `slideshow_images`, `amenities`)
+INSERT INTO `studios` (`id`, `title`, `region_id`, `address`, `city`, `state`, `zip`, `country`, `phone_number`, `email`, `banner_image`, `amenities`)
 VALUES
-	(1,'Union Square',0,'','','',0,'',0,'',0,'','');
+	(1,'Union Square',0,'','','',0,'',0,'',0,'');
 
 /*!40000 ALTER TABLE `studios` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Dump of table users
+# Dump of table riders
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `riders`;
 
-CREATE TABLE `users` (
+CREATE TABLE `riders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `email` varchar(255) NOT NULL DEFAULT '',
@@ -2313,10 +2411,10 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+LOCK TABLES `riders` WRITE;
+/*!40000 ALTER TABLE `riders` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `active`, `email`, `first_name`, `last_name`, `gender`, `password`, `region`, `phone_number`, `address_1`, `address_2`, `city`, `state`, `zip`, `billing_address_1`, `billing_address_2`, `billing_city`, `billing_state`, `billing_zip`, `authorize_id`, `joined`, `last_login`, `shoe_size`, `bike_bar_height`, `bike_seat_height`, `service_water`, `service_shoes`)
+INSERT INTO `riders` (`id`, `active`, `email`, `first_name`, `last_name`, `gender`, `password`, `region`, `phone_number`, `address_1`, `address_2`, `city`, `state`, `zip`, `billing_address_1`, `billing_address_2`, `billing_city`, `billing_state`, `billing_zip`, `authorize_id`, `joined`, `last_login`, `shoe_size`, `bike_bar_height`, `bike_seat_height`, `service_water`, `service_shoes`)
 VALUES
 	(1,1,'tengu@rngr.org','tengu','Sundstrom','','',1,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
 	(2,1,'olov@rngr.org','Olov','Sundstrom','M','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
@@ -2338,7 +2436,7 @@ VALUES
 	(18,1,'','Ada','Lovelace','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0),
 	(19,1,'','Ricardo','Villalobos','','',0,'','','','','',0,'','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,0,0,0,0);
 
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+/*!40000 ALTER TABLE `riders` ENABLE KEYS */;
 UNLOCK TABLES;
 
 

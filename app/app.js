@@ -56,6 +56,27 @@ function(Handlebars) {
     }
   };
 
+  app.sendFiles = function(files, callback) {
+    var formData = new FormData();
+
+    if (files instanceof File) files = [files];
+
+    _.each(files, function(file, i) {
+      console.log(i);
+      formData.append('file'+i, file);
+    });
+    
+    $.ajax({
+      url: '/directus/api/server.php',
+      type: 'POST',
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: callback
+    });
+  }
+
   //Raw handlebars data, helpful with data types
   Handlebars.registerHelper('raw', function(data) {
     return data && new Handlebars.SafeString(data);
