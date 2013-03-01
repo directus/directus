@@ -62,7 +62,6 @@ function(Handlebars) {
     if (files instanceof File) files = [files];
 
     _.each(files, function(file, i) {
-      console.log(i);
       formData.append('file'+i, file);
     });
     

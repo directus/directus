@@ -1,9 +1,7 @@
 <?php
 require dirname(__FILE__) . '/config.php';
 require dirname(__FILE__) . '/core/db.php';
-require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
-
 
 $db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 
@@ -11,17 +9,6 @@ $http_method = $_SERVER['REQUEST_METHOD'];
 $collection =  isset($_GET['api_collection']) ? $_GET['api_collection'] : null;
 $params = $_GET;
 $data = json_decode(file_get_contents('php://input'), true);
-$file = null;
-
-//File upload!
-if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER["CONTENT_TYPE"], 'multipart/form-data') !== false) {
-  $http_method = isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) ? $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] : 'POST';
-  $data = $_POST;
-  //Only one file per model!
-  if (isset($_FILES['file'])) {
-    $data['file'] = $_FILES['file'];
-  }
-}
 
 /**
  * Request an api-method with parameters, return php data object
@@ -235,39 +222,19 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
 
   if ( $collection == "media" ) {
 
-    // Save the file
-    if (isset($data['file']) && $data['file'] !== "") {
-
-      $media = new Media($data['file'], RESOURCES_PATH);
-      $file_data = $media->data();
-
-      $data['name'] = $file_data['name'];
-      $data['type'] = $file_data['type'];
-      $data['size'] = $file_data['size'];
-      $data['width'] = $file_data['width'];
-      $data['height'] = $file_data['height'];
-      $data['active'] = 1;
-      $data['user'] = 1;
-
-      if (isset($file_data['embed_id'])) {
-        $data['embed_id'] = $file_data['embed_id'];
-      }
-    }
-
-    unset($data['file']);
-
     switch ($http_method) {
       case "POST":
         $data['date_uploaded'] = gmdate('Y-m-d H:i:s');
-        $params['id'] = $db->set_media($data);
+        $params['id'] = $db->set_media('directus_media', $data);
         break;
       case "PUT":
         if (!isset($id)) {
           $db->set_entries('directus_media', $data);
           break;
         }
-        $db->set_entry('directus_media', $data);
+        $db->set_media('directus_media', $data);
     }
+
     $result = $db->get_entries('directus_media', $params);
 
     return $result;
@@ -285,7 +252,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
 if (isset($collection)) {
   try {
     header("Content-Type: application/json; charset=utf-8");
-    echo format_json(json_encode( request( $collection, $http_method, $params, $data, $file ) ) );
+    echo format_json(json_encode( request( $collection, $http_method, $params, $data ) ) );
   } catch (DirectusException $e){ 
     switch ($e->getCode()) {
       case 404:

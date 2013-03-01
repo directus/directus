@@ -385,7 +385,8 @@ function(app, Backbone) {
     initializeDrop: function(saveAfterDrop) {
       //Cache a reference to the this.$el
       var $el = this.$el;
-
+      var collection = this.collection;
+      var saveAfterDrop = this.safeAfterDrop;
       // This timer prevent's the overlay to flicker when dragleave leaves for
       // a child item that triggers dragenter again.
       var timer;
@@ -415,34 +416,25 @@ function(app, Backbone) {
         e.preventDefault();
 
         app.sendFiles(e.dataTransfer.files, function(data) {
-          console.log(data);
+          _.each(data, function(item) {
+            item.user = 1;
+            item.active = 1;
+            item.title = item.name;
+
+            if (saveAfterDrop) {
+              console.log('CREATE');
+              collection.create(item);
+            } else {
+              console.log('ADD');
+              collection.add(item, {nest: true, parse: true});
+            }
+          });
         });
-
-        /*
-        _.each(files, function(file) {
-          var data = {
-            file: file, 
-            date_uploaded: Date.now(), 
-            size: file.size, 
-            name: file.name, 
-            title: file.name, 
-            type: file.type, 
-            user: 1, 
-            active: 1
-          };
-          if (this.saveAfterDrop) {
-            this.collection.create(data);
-          } else {
-            this.collection.add(data, {nest: true, parse: true});
-          }
-
-        }, this);
-          */
         $el.removeClass('dragover');
       }, this);
     },
 
-    initialize: function() {
+    initialize: function(options) {
       var collection = this.collection;
 
       collection.on('fetch',  function() {
@@ -468,9 +460,11 @@ function(app, Backbone) {
         this.options.selectable = (collection.structure.get('active')) || false;
       }
       if (this.options.droppable || collection.droppable) {
-        console.log(this.options, collection);
         this.initializeDrop();
       }
+      this.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
+
+      console.log(this.saveAfterDrop);
     },
 
     constructor: function (options) {

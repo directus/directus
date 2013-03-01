@@ -71,9 +71,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.list = function(options) {
 
       //The file is not uploaded yet...
-      if (options.model.isNew()) {
-        return '...';
-      }
+      //if (options.model.isNew()) {
+      //  return '...';
+      //}
 
       var orientation = (parseInt(options.model.get('width'),10) > parseInt(options.model.get('height'),10)) ? 'landscape' : 'portrait';
       var img = '<div class="media-thumb"><img src="' + app.RESOURCES_URL + 'thumbnail/' + options.model.get('name') +'" class="img ' + orientation + '"></div>';

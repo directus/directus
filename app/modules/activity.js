@@ -32,7 +32,7 @@ function(app, Backbone, Directus, Chart, Media) {
     },
 
     serialize: function() {
-      return {title: this.collection.table.get('title')};
+      return {title: 'Activity'};
     },
 
     afterRender: function() {
