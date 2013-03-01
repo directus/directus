@@ -6,10 +6,10 @@
 	</thead>
 	<tbody>
 		{{#rows}}
-		<tr><td>[ <a href="javascript:;" class="remove_item" data-id="{{id}}">x</a> ] {{name}}</td><td>{{price}}</td><td>{{quantity}}</td><td>{{subtotal}}</td></tr>
+		<tr><td>[ <a href="javascript:;" class="remove_item" data-id="{{id}}">x</a> ] {{name}}</td><td>{{price}}</td><td>{{quantity}}</td><td>{{moneyFormat subtotal}}</td></tr>
 		{{else}}
 		<tr><td colspan="4">You need to add stuff.</td></tr>
 		{{/rows}}
-		<tr><td colspan="3"></td><td>{{runningTotal}}</td></tr>
+		<tr><td colspan="3"></td><td>{{moneyFormat runningTotal}}</td></tr>
 	</tbody>
 </table>

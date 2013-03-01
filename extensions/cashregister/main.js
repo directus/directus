@@ -2,9 +2,15 @@ define([
   'app',
   'backbone',
   'core/directus',
+
+  '../../extensions/cashregister/accounting.min'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, Directus, Accounting) {
+
+  Handlebars.registerHelper('moneyFormat', function(number) {
+    return Accounting.formatMoney(number);
+  });;
 
   var products = [
     {
@@ -70,7 +76,6 @@ function(app, Backbone, Directus) {
         runningTotal += product.get('subtotal');
       }, this);
       this.activeProductCollectionInternalModel.set({runningTotal: runningTotal});
-      console.log("recalculated");
     }
   });
 
