@@ -8,6 +8,12 @@ define([
 
 function(app, Backbone, Directus, Accounting) {
 
+ var Extension = {
+
+    id: 'cash_register'
+
+  };
+
   Handlebars.registerHelper('moneyFormat', function(number) {
     return Accounting.formatMoney(number);
   });;
@@ -50,7 +56,11 @@ function(app, Backbone, Directus, Accounting) {
   });
 
   var QuickPicksCollection = Backbone.Collection.extend({
-    model: Product
+    model: Product,
+    initialize: function() {
+      this.url = '/directus/api/1/extensions/cashregister/products';
+    }
+    
   });
 
   var ActiveProductsCollection = Backbone.Collection.extend({
@@ -83,7 +93,7 @@ function(app, Backbone, Directus, Accounting) {
     model: Customer
   });
 
-  vars.quickPicksCollection = new QuickPicksCollection(products);
+  vars.quickPicksCollection = new QuickPicksCollection();
   vars.customerCollection = new CustomerCollection();
   vars.activeProductsCollection = new ActiveProductsCollection();
 
@@ -97,7 +107,10 @@ function(app, Backbone, Directus, Accounting) {
     },
 
     initialize:function() {
-
+      this.collection.on('reset', this.render, this);
+      /*this.collection.listenTo({
+        'reset':this.render
+      });*/
     },
 
     addProduct:function(e) {
@@ -173,11 +186,7 @@ function(app, Backbone, Directus, Accounting) {
 
   });
 
-  var Extension = {
-
-    id: 'cash_register',
-
-  };
+ 
 
 Extension.Router = Directus.SubRoute.extend({
     routes: {
@@ -187,6 +196,7 @@ Extension.Router = Directus.SubRoute.extend({
     index: function() {
       this.main = new View();
       this.main.render();
+      vars.quickPicksCollection.fetch();
     },
 
     initialize: function() {
