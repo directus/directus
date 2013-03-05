@@ -1,12 +1,21 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'core/directus',
 
-  '../../extensions/cashregister/accounting.min'
+  '../../extensions/cashregister/accounting.min',
+
+  // modules
+  '../../extensions/cashregister/product',
+  '../../extensions/cashregister/user'
+
 ],
 
-function(app, Backbone, Directus, Accounting) {
+function(app, Backbone, _, Directus, Accounting, Product, User) {
+
+var testCol = new Product.Collection();
+console.log("testCol", testCol);
 
  var Extension = {
 
@@ -17,19 +26,6 @@ function(app, Backbone, Directus, Accounting) {
   Handlebars.registerHelper('moneyFormat', function(number) {
     return Accounting.formatMoney(number);
   });;
-
-  var products = [
-    {
-      'name':'Shoes and Water',
-      'price':5.00,
-      'id':1
-    },
-    {
-      'name':'Shoes and Big Water',
-      'price':6.00,
-      'id':2
-    }
-  ];
   
   var vars = vars || {};
 
@@ -186,21 +182,26 @@ function(app, Backbone, Directus, Accounting) {
 
   });
 
- 
-
 Extension.Router = Directus.SubRoute.extend({
     routes: {
       "":         "index"
     },
 
     index: function() {
+
       this.main = new View();
       this.main.render();
       vars.quickPicksCollection.fetch();
     },
 
     initialize: function() {
+      console.log(Product);
+        var collections = {
+          products: new Product.Collection(),
+          users: new User.Collection()
+        };
 
+      _.extend(this, collections);
     }
 
   });

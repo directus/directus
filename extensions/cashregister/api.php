@@ -1,4 +1,6 @@
 <?PHP
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 require dirname(__FILE__) . '/../../api/api.php';
 header("Content-Type: application/json; charset=utf-8");
 
@@ -14,8 +16,8 @@ class cashRegister {
       $this->db = $arg1;
    	}
 
-	function products($searchVal) {
-		if ($searchVal) {
+	function products($searchVal = "") {
+		if ($searchVal != "") {
 			$query = "SELECT * FROM PRODUCTS WHERE title LIKE '%$searchVal%'";
 		} else {
 			$query = "SELECT * FROM PRODUCTS";
@@ -25,8 +27,13 @@ class cashRegister {
 		return $results;
 	}
 
-	function customers() {
-		$stmt = $this->db->dbh->query('SELECT * FROM users');
+	function customers($searchVal = "") {
+		if ($searchVal != "") {
+			$query="SELECT  *, MATCH (`first_name`,`last_name`,`email`) AGAINST ('".$searchVal."*' IN BOOLEAN MODE) AS Relevance FROM users WHERE 1 AND MATCH (`first_name`,`last_name`,`email`) AGAINST ('".$searchVal."*' IN BOOLEAN MODE)  ORDER BY Relevance DESC";
+		} else {
+			$query = "SELECT * FROM users";
+		}
+		$stmt = $this->db->dbh->query($query);
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $results;
 	}
