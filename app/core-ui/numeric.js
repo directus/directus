@@ -18,6 +18,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     options: []
   };
 
+  Module.variables = [
+    {id: 'size', ui: 'textinput'}
+  ];
+
   Module.Input = Backbone.Layout.extend({
     tagName: 'fieldset',
     events: {
