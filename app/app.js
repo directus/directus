@@ -64,7 +64,7 @@ function(Handlebars) {
     _.each(files, function(file, i) {
       formData.append('file'+i, file);
     });
-    
+
     $.ajax({
       url: '/directus/api/server.php',
       type: 'POST',
@@ -72,7 +72,8 @@ function(Handlebars) {
       cache: false,
       contentType: false,
       processData: false,
-      success: callback
+      success: callback,
+      error: function() { console.log('ERRRRRROOOORRR!!'); }
     });
   }
 
@@ -118,6 +119,7 @@ function(Handlebars) {
 
   Handlebars.registerHelper('userShort', function(userId) {
     var user = app.users.get(userId);
+    //if (user === undefined) return undefined;
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
