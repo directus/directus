@@ -56,7 +56,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
       case "PUT":
         $db->set_entry('directus_users', $data);
         break;
-      case "PUSH":
+      case "POST":
         $id = $db->set_entry('directus_users', $data);
         break;
     }
