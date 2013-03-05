@@ -1,9 +1,10 @@
 <?php
 require 'core/media.php';
+require 'config.php';
 $result = array();
 
 foreach ($_FILES as $file) {
-  $media = new Media($file, '/Users/olov/RNGR/resources/');
+  $media = new Media($file, RESOURCES_PATH);
   array_push($result, $media->data());
 }
 

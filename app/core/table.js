@@ -416,6 +416,7 @@ function(app, Backbone) {
         e.preventDefault();
 
         app.sendFiles(e.dataTransfer.files, function(data) {
+          console.log(data);
           _.each(data, function(item) {
             item.user = 1;
             item.active = 1;
@@ -446,8 +447,8 @@ function(app, Backbone) {
         this.render();
       }, this);
 
-      // Default values      
-      if (this.options.toolbar === undefined) { 
+      // Default values
+      if (this.options.toolbar === undefined) {
         this.options.toolbar = true;
       }
       if (this.options.tableHead !== false) {

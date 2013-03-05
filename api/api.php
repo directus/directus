@@ -81,7 +81,7 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   if ( $collection == "revisions" ) {
     return $db->get_revisions($params);
   }
-  
+
   //////////////////////////////////////////////////////////////////////////////
   // GROUPS
 
