@@ -15,7 +15,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
-    {id: 'size', ui: 'textinput'}
+    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }}
   ];
 
   var template = '<label>{{capitalize name}} <span class="note">{{note}}</span></label>'+
@@ -55,7 +55,6 @@ define(['app', 'backbone'], function(app, Backbone) {
         note: this.options.schema.get('comment')
       };
     }
-
   });
 
   Module.validate = function(value) {

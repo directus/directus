@@ -11,7 +11,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   var Module = {};
 
   Module.id = 'numeric';
-  Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR'];
+  Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR','DOUBLE'];
 
 
   Module.options = {
@@ -19,7 +19,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   Module.variables = [
-    {id: 'size', ui: 'textinput'}
+    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }}
   ];
 
   Module.Input = Backbone.Layout.extend({

@@ -91,7 +91,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       this.related.table = app.tables.get(options.schema.get('table_related'));
       this.related.schema = app.columns[options.schema.get('table_related')];
       this.related.entries = options.value;
-      this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false};
+      this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false, saveAfterDrop: false};
       this.table = Directus.Table.extend({});
     }
 

@@ -127,7 +127,7 @@ class DB extends MySQL {
   }
 
   function set_media($data) {
-      if (isset($data['id'])) unset($data['date_uploaded']);
+    if (isset($data['id'])) unset($data['date_uploaded']);
     $id = $this->set_entry('directus_media', $data);
     $this->log_activity('MEDIA', 'directus_media', 'ADD', $id, $data['title'], $data);
     return $id;

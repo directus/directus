@@ -301,7 +301,6 @@ function(app, Backbone) {
 
     tagname: 'div',
     attributes: {'class':'directus-table-container'},
-    saveAfterDrop: true,
     template: 'table',
 
     serialize: function() {
@@ -382,7 +381,7 @@ function(app, Backbone) {
       app.router.hideAlert();
     },
 
-    initializeDrop: function(saveAfterDrop) {
+    initializeDrop: function() {
       //Cache a reference to the this.$el
       var $el = this.$el;
       var collection = this.collection;
@@ -421,6 +420,8 @@ function(app, Backbone) {
             item.user = 1;
             item.active = 1;
             item.title = item.name;
+
+            console.log(saveAfterDrop);
 
             if (saveAfterDrop) {
               console.log('CREATE');
@@ -463,9 +464,8 @@ function(app, Backbone) {
       if (this.options.droppable || collection.droppable) {
         this.initializeDrop();
       }
-      this.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
 
-      console.log(this.saveAfterDrop);
+      this.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
     },
 
     constructor: function (options) {
