@@ -14,7 +14,8 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR', 'DATE', 'TIME'];
 
   Module.variables = [
-    {id: 'readonly', ui: 'checkbox'}
+    {id: 'readonly', ui: 'checkbox'},
+    {id: 'size', ui: 'textinput'}
   ];
 
   var template = '<label>{{capitalize name}} <span class="note">{{note}}</span></label>'+
