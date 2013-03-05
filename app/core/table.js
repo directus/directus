@@ -386,7 +386,7 @@ function(app, Backbone) {
       //Cache a reference to the this.$el
       var $el = this.$el;
       var collection = this.collection;
-      var saveAfterDrop = this.safeAfterDrop;
+      var saveAfterDrop = this.saveAfterDrop;
       // This timer prevent's the overlay to flicker when dragleave leaves for
       // a child item that triggers dragenter again.
       var timer;

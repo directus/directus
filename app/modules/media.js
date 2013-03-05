@@ -14,18 +14,13 @@ function(app, Backbone, Directus) {
 
     afterRender: function() {
       this.setView('.modal-body', this.editView);
-      this.editView.render();
+      this.model.fetch();
     },
 
     save: function() {
       var me = this;
-      var file = $('input[name=file]')[0].files[0];
       var data = this.editView.data();
       var isNew = this.model.isNew();
-
-      if (file !== undefined) {
-        data = _.extend(data, {file: file});
-      }
 
       this.model.save(data, {success:function() {
         if (isNew) me.collection.add(this.model);
@@ -38,6 +33,11 @@ function(app, Backbone, Directus) {
       this.editView = new Directus.EditView({model: this.model});
       this.collection = app.media;
       this.options.title = this.options.title || 'Editing Media';
+      this.on('close', function() {
+        if (this.model.hasChanged()) {
+          this.model.rollBack();
+        }
+      }, this);
     }
   });
 

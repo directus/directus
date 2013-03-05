@@ -22,8 +22,9 @@ define(['app', 'backbone'], function(app, Backbone) {
                  '{{/unless}}' +
                  '<fieldset {{#unless isNew}}class="hide"{{/unless}} id="swap-file">' +
                  '<label>File</label>' +
-                 '<div id="upload_file" class="upload-form"><input type="file" name="file" class="large"><p><a href="#" data-action="toggle-form">Use a URL instead</a></p></div>' +
-                 '<div id="upload_url" class="upload-form hide"><input type="text" name="file" class="large"><p><a href="#" data-action="toggle-form">Upload a file from the computer</a></p></div>' +
+                 '<div id="upload_file" class="upload-form"><input type="file" class="large">' +
+                 '<p><a href="#" data-action="toggle-form">Use a URL instead</a></p></div>' +
+                 '<div id="upload_url" class="upload-form hide"><input type="text" class="large"><p><a href="#" data-action="toggle-form">Upload a file from the computer</a></p></div>' +
                  '</fieldset>' +
                  '{{#if youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/pkWWWKKA8jY" frameborder="0" allowfullscreen></iframe></fieldset>{{/if}}';
 
@@ -47,6 +48,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       data.userName = app.users.get(userId).get('first_name');
       data.url = app.RESOURCES_URL;
+      data.name = this.model.get('name');
 
       return data;
     },
@@ -59,12 +61,18 @@ define(['app', 'backbone'], function(app, Backbone) {
       },
       'click li[data-action=swap]': function() {
         this.$el.find('#swap-file').toggleClass('hide');
+      },
+      'change input[type=file]': function(e) {
+        var file = $(e.target)[0].files[0];
+        var model = this.model;
+        app.sendFiles(file, function(data) {
+          model.set(data[0]);
+        });
       }
     },
 
     initialize: function() {
-      this.$el.html('HEX');
-
+      this.model.on('change', this.render, this);
     }
   });
 

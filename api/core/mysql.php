@@ -605,7 +605,7 @@ class MySQL {
   }
 
   function set_entry($tbl_name, $data) {
-    $this->set_entries($tbl_name, array($data));
+    $this->set_entries($tbl_name, $data);
     return (isset($data['id'])) ? $data['id'] : $this->dbh->lastInsertId();
   }
 
@@ -614,6 +614,8 @@ class MySQL {
    * This could potentially merge with 'set_settings', 'set_ui_options' and 'insert_entry'
    */
   function set_entries($tbl_name, $data) {
+
+    if (!is_numeric_array($data)) $data = array($data);
 
     $cols = array_keys(reset($data));
 

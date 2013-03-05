@@ -225,14 +225,16 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
     switch ($http_method) {
       case "POST":
         $data['date_uploaded'] = gmdate('Y-m-d H:i:s');
-        $params['id'] = $db->set_media('directus_media', $data);
+        $params['id'] = $db->set_media($data);
         break;
+      case "PATCH":
+        $data['id'] = $id;
       case "PUT":
         if (!isset($id)) {
           $db->set_entries('directus_media', $data);
           break;
         }
-        $db->set_media('directus_media', $data);
+        $db->set_media($data);
     }
 
     $result = $db->get_entries('directus_media', $params);

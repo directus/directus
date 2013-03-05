@@ -201,3 +201,9 @@ function find($array, $key, $value) {
 		if (isset($item[$key]) && ($item[$key] == $value)) return $item;
 	}
 }
+
+
+// http://stackoverflow.com/questions/902857/php-getting-array-type
+function is_numeric_array($array) {
+	return ($array == array_values($array));
+}
