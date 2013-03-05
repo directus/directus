@@ -49,8 +49,6 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   // USERS
 
   if ( $collection == "users" ) {
-    $users = $db->get_users();
-    //$users = $db->get_entries("directus_users", $params, $id);
 
     switch ($http_method) {
       case "PUT":
@@ -60,6 +58,8 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
         $id = $db->set_entry('directus_users', $data);
         break;
     }
+
+    $users = $db->get_users();
 
     //This is a collection of users...
     if (isset($users['rows'])) {
