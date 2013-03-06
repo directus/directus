@@ -269,6 +269,7 @@ function(app, Backbone, BaseCollection) {
     },
 
     parse: function(response) {
+      if (_.isEmpty(response)) return;
       this.total = response.total;
       this.active = response.active;
       this.inactive = response.inactive;
