@@ -19,6 +19,7 @@ define([
   'core-ui/radiobuttons',
   'core-ui/many_to_many',
   'core-ui/one_to_many',
+  'core-ui/wysiwyg',
   'core-ui/password'].concat(window.directusData.ui),
 function() {
 

@@ -244,6 +244,13 @@ label { text-shadow: @textShadowWhite; }
   .caret {margin-top:14px; border-top:4px solid @textColor;}
 }
 
+.btn-silver {
+  background-color: @silver;
+  color: @white;
+  text-shadow: @textShadow;
+  &:hover {background-color: darken(@silver, 4%); color: @white;}
+}
+
 .btn-row {
   button {margin-right:10px;}
 }
@@ -593,7 +600,8 @@ a:hover {text-decoration:none;}
   input[type="text"],
   input[type="password"],
   input[type="text"].large,
-  textarea {
+  textarea,
+  .force-editable {
     width: 82%;
   }
   input[type="text"].small {
@@ -803,7 +811,8 @@ a:hover {text-decoration:none;}
     input[type="text"],
     input[type="password"],
     input[type="text"].large,
-    textarea {
+    textarea,
+    .force-editable {
       width: 72%;
     }
   }
