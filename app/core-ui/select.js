@@ -10,10 +10,13 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label>{{{capitalize name}}}</label><select name="{{name}}">{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{title}}</option>{{/options}}</select>';
+  var template = '<label>{{{capitalize name}}}</label><select name="{{name}}">{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
 
   Module.id = 'select';
   Module.dataTypes = ['VARCHAR', 'INT'];
+  Module.variables = [
+    {id: 'options', ui: 'textarea', options:{'rows': 25}  }
+  ];
 
   Module.Input = Backbone.Layout.extend({
 
@@ -22,12 +25,21 @@ define(['app', 'backbone'],function(app, Backbone) {
     tagName: 'fieldset',
 
     serialize: function() {
-      var value = this.options.value;
-      var options = _.map(this.options.settings.get('options'), function(item) {
-        if (item.value === value) item.selected = true;
+      var selectedValue = this.options.value;
+      var options = this.options.settings.get('options');
+
+      if (_.isString(options)) {
+        options = jQuery.parseJSON(options);
+      }
+
+      options = _.map(options, function(value, key) {
+        var item = {};
+        item.value = value;
+        item.key = key;
+        if (item.key === selectedValue) item.selected = true;
         return item;
       });
-      console.log(value);
+
       return {options: options, name: this.options.name};
     }
 

@@ -15,7 +15,7 @@ function(app, Backbone, Directus) {
       return {
         isNew: (this.model.id === undefined),
         showActive: true,
-        isActive: (this.model.get('active') === 1),
+        isActive: this.model.isNew() || (this.model.get('active') === 1),
         isInactive: (this.model.get('active') === 2),
       };
     },
@@ -69,7 +69,7 @@ function(app, Backbone, Directus) {
     template: 'page',
 
     serialize: function() {
-      return {title: this.collection.table.get('title'), buttonTitle: 'Add New User'};
+      return {title: 'Users', buttonTitle: 'Add New User'};
     },
 
     events: {

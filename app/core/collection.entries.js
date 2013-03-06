@@ -127,7 +127,13 @@ function(app, Backbone, BaseCollection) {
   Entries.Model =  Backbone.Model.extend({
 
     parse: function(result) {
+      this._lastFetchedResult = result;
       return this.parseRelational(result);
+    },
+
+    rollBack: function() {
+      var data = this.parse(this._lastFetchedResult);
+      return this.set(data);
     },
 
     parseRelational: function(attributes) {
@@ -263,6 +269,7 @@ function(app, Backbone, BaseCollection) {
     },
 
     parse: function(response) {
+      if (_.isEmpty(response)) return;
       this.total = response.total;
       this.active = response.active;
       this.inactive = response.inactive;

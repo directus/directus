@@ -10,17 +10,23 @@ define(['app','backbone'], function(app, Backbone) {
 
   var Module = {};
 
+  var template = '<label>{{{capitalize name}}}</label><input type="checkbox" {{#if selected}}checked{{/if}}/><input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
+
   Module.id = 'checkbox';
   Module.dataTypes = ['TINYINT'];
 
   Module.Input = Backbone.Layout.extend({
     tagName: 'fieldset',
-    beforeRender: function() {
-      this.$el.html('<label>'+ app.capitalize(this.options.schema.id) +'</test>');
-      this.$el.append('<input type="checkbox" name="'+this.options.name+'" id="'+this.options.name+'"/>');
+    template: Handlebars.compile(template),
+    events: {
+      'change input[type=checkbox]': function(e) {
+        var val = (this.$el.find('input[type=checkbox]:checked').val() === undefined) ? 0 : 1;
+        this.$el.find('input[type=hidden]').val(val);
+      }
     },
-    initialize: function() {
-      this.render();
+    serialize: function() {
+      var selected = (parseInt(this.options.value,10) === 1) ? true : false;
+      return {name: this.options.name, selected: selected};
     }
   });
 

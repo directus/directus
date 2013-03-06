@@ -7,7 +7,7 @@ define([
 function(app, Backbone, Directus) {
 
   var Extension = {
-    id: 'example'
+    id: 'reporting'
   };
 
   Extension.Collection = Backbone.Collection.extend({

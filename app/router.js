@@ -133,10 +133,13 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
     mediaItem: function(id) {
       var mediaView = new Media.Views.List({collection: app.media});
+      var model = app.media.get(id);
+      
+      if (model === undefined) {
+        model = new app.media.model({id: id}, {collection: app.media});
+      }
 
-      app.media.on('reset', function() {
-        mediaView.addEditMedia(app.media.get(id), 'Editing media');
-      })
+      mediaView.addEditMedia(model, 'Editing media');
 
       this.setTitle('Media');
       this.tabs.setActive('media');

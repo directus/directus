@@ -26,7 +26,7 @@ function(app, Backbone) {
         var value = $(e.target).attr('data-value');
         this.collection.setFilter({currentPage: 0, active: value});
         this.collection.fetch();
-        this.options.preferences.save({status: value});
+        this.options.preferences.save({active: value});
       },
       'keypress #table-filter': function(e) {
         if (e.which == 13) {
@@ -301,7 +301,6 @@ function(app, Backbone) {
 
     tagname: 'div',
     attributes: {'class':'directus-table-container'},
-    saveAfterDrop: true,
     template: 'table',
 
     serialize: function() {
@@ -382,9 +381,11 @@ function(app, Backbone) {
       app.router.hideAlert();
     },
 
-    initializeDrop: function(saveAfterDrop) {
+    initializeDrop: function() {
       //Cache a reference to the this.$el
       var $el = this.$el;
+      var collection = this.collection;
+      var saveAfterDrop = this.saveAfterDrop;
 
       // This timer prevent's the overlay to flicker when dragleave leaves for
       // a child item that triggers dragenter again.
@@ -416,33 +417,25 @@ function(app, Backbone) {
 
         app.sendFiles(e.dataTransfer.files, function(data) {
           console.log(data);
+          _.each(data, function(item) {
+            item.user = 1;
+            item.active = 1;
+            item.title = item.name;
+
+            if (saveAfterDrop) {
+              console.log('CREATE');
+              collection.create(item);
+            } else {
+              console.log('ADD');
+              collection.add(item, {nest: true, parse: true});
+            }
+          });
         });
-
-        /*
-        _.each(files, function(file) {
-          var data = {
-            file: file, 
-            date_uploaded: Date.now(), 
-            size: file.size, 
-            name: file.name, 
-            title: file.name, 
-            type: file.type, 
-            user: 1, 
-            active: 1
-          };
-          if (this.saveAfterDrop) {
-            this.collection.create(data);
-          } else {
-            this.collection.add(data, {nest: true, parse: true});
-          }
-
-        }, this);
-          */
         $el.removeClass('dragover');
       }, this);
     },
 
-    initialize: function() {
+    initialize: function(options) {
       var collection = this.collection;
 
       collection.on('fetch',  function() {
@@ -454,8 +447,8 @@ function(app, Backbone) {
         this.render();
       }, this);
 
-      // Default values      
-      if (this.options.toolbar === undefined) { 
+      // Default values
+      if (this.options.toolbar === undefined) {
         this.options.toolbar = true;
       }
       if (this.options.tableHead !== false) {
@@ -467,10 +460,13 @@ function(app, Backbone) {
       if (this.options.selectable === undefined) {
         this.options.selectable = (collection.structure.get('active')) || false;
       }
+
+      this.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
+
       if (this.options.droppable || collection.droppable) {
-        console.log(this.options, collection);
         this.initializeDrop();
       }
+
     },
 
     constructor: function (options) {

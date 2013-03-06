@@ -71,6 +71,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
     initialize: function(options) {
       Module.Input.__super__.initialize.call(this, options);
       this.related.tableOptions.deleteColumn = true;
+      this.related.tableOptions.saveAfterDrop = false;
       this.modalTable = Directus.Table.extend({
         events: {
           'click tbody td': function(e) {

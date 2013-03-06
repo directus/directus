@@ -155,7 +155,7 @@ function(app, Backbone, ui, Directus) {
       var options = model.options;
       console.log(schema);
       var view = new Directus.EditView({model: options, structure: schema});
-      var modal = app.router.openModal(view, {title: 'UI Settings'});
+      var modal = app.router.openModal(view, {title: 'UI Settings', stretch: true});
       modal.save = function() {
         options.save(view.data(), {success: function() {
           console.log('HEPP');

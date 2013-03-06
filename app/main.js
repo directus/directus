@@ -91,7 +91,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
       table: app.tables.get('directus_media'),
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
       preferences: app.preferences['directus_media'],
-      url: app.API_URL + 'tables/directus_media/rows',
+      url: app.API_URL + 'media',
       parse: true
     });
 
