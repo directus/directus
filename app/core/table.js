@@ -26,7 +26,7 @@ function(app, Backbone) {
         var value = $(e.target).attr('data-value');
         this.collection.setFilter({currentPage: 0, active: value});
         this.collection.fetch();
-        this.options.preferences.save({status: value});
+        this.options.preferences.save({active: value});
       },
       'keypress #table-filter': function(e) {
         if (e.which == 13) {
