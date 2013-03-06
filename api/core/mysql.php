@@ -51,17 +51,9 @@ class MySQL {
     $name = $this->db_name;
 
     $sql = 'SELECT
-          S.TABLE_NAME as id,
-          CASE DU.group
-            WHEN -1 THEN "ADMIN"
-            ELSE GROUP_CONCAT(DISTINCT DP.type)
-          END AS permissions
+          S.TABLE_NAME as id
         FROM
           INFORMATION_SCHEMA.TABLES S
-        LEFT JOIN
-          directus_users DU ON (DU.token = :user)
-        LEFT JOIN
-          directus_privileges DP ON (DP.group_id = DU.group) AND (DP.table_name = S.TABLE_NAME OR DP.table_name = "*")
         WHERE
           S.TABLE_SCHEMA = :schema AND
           (S.TABLE_NAME NOT LIKE "directus\_%" OR
@@ -69,15 +61,13 @@ class MySQL {
           S.TABLE_NAME = "directus_media" OR
           S.TABLE_NAME = "directus_messages" OR
           S.TABLE_NAME = "directus_groups" OR
-          S.TABLE_NAME = "directus_users") AND
-          (DP.id IS NOT NULL OR DU.group = 0)
+          S.TABLE_NAME = "directus_users")
         GROUP BY
           S.TABLE_NAME
         ORDER BY
-          S.TABLE_NAME, DP.type';
+          S.TABLE_NAME';
 
     $sth = $this->dbh->prepare($sql);
-    $sth->bindValue(':user', $this->user_token, PDO::PARAM_STR);
     $sth->bindValue(':schema', $this->db_name, PDO::PARAM_STR);
     $sth->execute();
 
