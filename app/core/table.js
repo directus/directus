@@ -386,6 +386,7 @@ function(app, Backbone) {
       var $el = this.$el;
       var collection = this.collection;
       var saveAfterDrop = this.saveAfterDrop;
+
       // This timer prevent's the overlay to flicker when dragleave leaves for
       // a child item that triggers dragenter again.
       var timer;
@@ -420,8 +421,6 @@ function(app, Backbone) {
             item.user = 1;
             item.active = 1;
             item.title = item.name;
-
-            console.log(saveAfterDrop);
 
             if (saveAfterDrop) {
               console.log('CREATE');
@@ -461,11 +460,13 @@ function(app, Backbone) {
       if (this.options.selectable === undefined) {
         this.options.selectable = (collection.structure.get('active')) || false;
       }
+
+      this.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
+
       if (this.options.droppable || collection.droppable) {
         this.initializeDrop();
       }
 
-      this.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
     },
 
     constructor: function (options) {
