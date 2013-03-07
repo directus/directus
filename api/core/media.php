@@ -98,7 +98,22 @@ class Media {
   public function data() {
     //Store new name in data object
     $this->info['name'] = basename($this->target_file);
+    $this->info['date_uploaded'] = gmdate('Y-m-d H:i:s');
+    if (!isset($this->info['title'])) {
+      $this->info['title'] = $this->make_title($this->info['name']);
+    }
     return $this->info;
+  }
+
+  private function make_title($name) {
+    $info = pathinfo($name);
+    $ext = $info['extension'];
+    $name = basename($name,'.'.$ext);
+    $name = strtolower($name);
+    $name = str_replace('_',' ',$name);
+    $name = str_replace('-',' ',$name);
+    $name = ucwords($name);
+    return $name; 
   }
 
   private function unique_name($attempt=0) {
