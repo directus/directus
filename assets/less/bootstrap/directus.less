@@ -255,6 +255,17 @@ label { text-shadow: @textShadowWhite; }
   button {margin-right:10px;}
 }
 
+.btn-group-attached button {
+  border-bottom: none;
+  -webkit-border-bottom-left-radius: 0 !important;
+  -webkit-border-bottom-right-radius: 0 !important;
+  -moz-border-bottom-left-radius: 0 !important;
+  -moz-border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+
+}
+
 .cancel {
   display:inline-block; padding-top:8px; padding-bottom:8px; padding-left:5px;
 }
@@ -609,6 +620,9 @@ a:hover {text-decoration:none;}
   }
   input[type="text"].medium {
     width: 45%;
+  }
+  .force-editable hr {
+    border-top: @silver 1px solid;
   }
 
   .char-count {
