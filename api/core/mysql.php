@@ -655,6 +655,8 @@ class MySQL {
     $result = array();
     while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
       $row['group'] = array((int)$row['group'],$row['group_name']);
+      unset($row['group_name']);
+      $row['active'] = (int)$row['active'];
       array_push($result, $row);
     }
     return array('rows'=>$result);
