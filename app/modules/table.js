@@ -74,7 +74,7 @@ function(app, Backbone, Directus) {
 
     initialize: function(options) {
       this.collection = new Backbone.Collection();
-      this.collection.url = options.baseURL+'/revisions';
+      this.collection.url = options.baseURL + '/revisions';
       this.collection.fetch();
       this.collection.on('reset', this.render, this);
     }

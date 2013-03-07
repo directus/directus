@@ -37,7 +37,9 @@ define(['app', 'backbone'], function(app, Backbone) {
       var data = {};
       var userId;
 
-      if (this.model.isNew()) {
+      console.log(this.model);
+
+      if (!this.model.has('name')) {
         userId = 1;
         data.isNew = true;
       } else {

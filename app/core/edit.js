@@ -53,7 +53,6 @@ function(app, Backbone) {
     },
 
     initialize: function() {
-      console.log(this);
       this.model.on('sync', function(e) {
         this.render();
       }, this);

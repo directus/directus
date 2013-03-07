@@ -24,7 +24,7 @@ function(app, Backbone, BaseCollection) {
 
       //DRY this up please and move it to BB's protoype
       toJSON: function(options) {
-        attributes = _.clone(this.attributes);
+        var attributes = _.clone(this.attributes);
         attributes.data = this.get('data').toJSON();
         return attributes;
       }
@@ -183,22 +183,22 @@ function(app, Backbone, BaseCollection) {
       return attributes;
     },
 
-    toJSON: function(options) {
-      var attributes = _.clone(this.attributes);
-      _.each(attributes, function(value, key) {
-        if (_.isObject(value)) {
-          if (typeof value.toJSON === 'function') {
-            attributes[key] = value.toJSON(options);
-          } else {
-            delete attributes[key];
-          }
-        }
-      });
+    toJSON: function(options, noNest) {
+      var attributes = {};
 
+      // clone all attributes. expand relations
+      _.each(this.attributes, function(value, key) {
+        if (_.isObject(value) && (typeof value.toJSON === 'function')) {
+          value = value.toJSON();  
+        }
+        attributes[key] = value;
+      }, this);
+      
       // Pick selected columns, useful for collection "save"
       if (options && options.columns) {
         attributes = _.pick(this.attributes, options.columns);
       }
+      
 
       return attributes;
     }
@@ -270,14 +270,27 @@ function(app, Backbone, BaseCollection) {
 
     parse: function(response) {
       if (_.isEmpty(response)) return;
-      this.total = response.total;
-      this.active = response.active;
-      this.inactive = response.inactive;
-      this.trash = response.trash;
-      this.table.set('total', this.total, {silent: true});
-      this.table.set('active', this.active, {silent: true});
-      this.table.set('inactive', this.inactive, {silent: true});
-      this.table.set('trash', this.trash, {silent: true});
+      
+      if (response.total) {
+        this.total = response.total;
+        this.table.set('total', this.total, {silent: true});
+      }
+
+      if (response.active) {
+        this.active = response.active;
+        this.table.set('active', this.active, {silent: true});
+      }
+
+      if (response.inactive) {
+        this.inactive = response.inactive;
+        this.table.set('inactive', this.inactive, {silent: true});
+      }
+
+      if (response.trash) {
+        this.trash = response.trash;
+        this.table.set('trash', this.trash, {silent: true});
+      }
+
       return response.rows;
     }
 
@@ -286,7 +299,7 @@ function(app, Backbone, BaseCollection) {
   Entries.MediaModel = Entries.Model.extend({
 
     uploader: true,
-
+/*
     sync: function(method, model, options) {
 
       var methodMap = {
@@ -316,7 +329,7 @@ function(app, Backbone, BaseCollection) {
 
       return Backbone.sync.apply(this, [method, model, options]);
     }
-
+*/
   });
 
   Entries.MediaCollection = Entries.Collection.extend({
