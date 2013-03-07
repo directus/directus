@@ -6645,6 +6645,7 @@ a:hover {
   font-weight: normal;
   font-style: italic;
   margin-left: 10px;
+  color: #cccccc;
 }
 .directus-form fieldset:first-child {
   border-top: 0;
@@ -6667,6 +6668,9 @@ a:hover {
 }
 .directus-form .force-editable hr {
   border-top: #cccccc 1px solid;
+}
+.directus-form label.checkbox {
+  margin-bottom: 0px;
 }
 .directus-form .char-count {
   color: #ffffff;

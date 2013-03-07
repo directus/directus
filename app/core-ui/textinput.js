@@ -19,7 +19,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   ];
 
   var template = '<label>{{capitalize name}} <span class="note">{{note}}</span></label>'+
-                 '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}"/>'+
+                 '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>'+
                  '<span class="label char-count hide">{{characters}}</span>';
 
   Module.Input = Backbone.Layout.extend({
@@ -52,7 +52,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         name: this.options.name,
         maxLength: length,
         characters: length - value.length,
-        note: this.options.schema.get('comment')
+        note: this.options.schema.get('comment'),
+        readonly: this.options.settings.get('readonly')
       };
     }
   });
