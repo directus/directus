@@ -63,7 +63,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           value = prompt("Please enter your link", "http://example.com");
           this.restoreSelection();
 
-          if(value == ''){
+          if(value === ''){
             return false;
           }
         }

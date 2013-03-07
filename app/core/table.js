@@ -33,8 +33,8 @@ function(app, Backbone) {
           var text = $('#table-filter').val();
           this.collection.setFilter('search', text);
           this.collection.fetch();
+          this.collection.trigger('search', text);
         }
-        this.collection.trigger('search', text);
       },
       'click a.pag-next:not(.disabled)': function() {
         this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') + 1);
@@ -289,7 +289,7 @@ function(app, Backbone) {
           title: value,
           isNumeric: (["FLOAT", "INT", "SMALLINT", "DECIMAL", "DOUBLE"].indexOf(this.collection.structure.get(value).get('type')) > -1),
           selectedFunction: this.functions.hasOwnProperty(value) ? this.functions[value] : 'SUM'
-        }
+        };
         if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), col.selectedFunction);
         return col;
       }, this);

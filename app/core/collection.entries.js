@@ -32,7 +32,7 @@ function(app, Backbone, BaseCollection) {
 
     trash: [],
 
-    create: function(arguments) {
+    create: function() {
       return this.nestedCollection.create(arguments);
     },
 
@@ -59,7 +59,7 @@ function(app, Backbone, BaseCollection) {
           return obj; 
         });
       }
-      Entries.NestedCollection.__super__.add.apply(this, [models, options])
+      Entries.NestedCollection.__super__.add.apply(this, [models, options]);
     },
 
     /*
@@ -298,7 +298,7 @@ function(app, Backbone, BaseCollection) {
 
   Entries.MediaModel = Entries.Model.extend({
 
-    uploader: true,
+    uploader: true
 /*
     sync: function(method, model, options) {
 
@@ -334,7 +334,7 @@ function(app, Backbone, BaseCollection) {
 
   Entries.MediaCollection = Entries.Collection.extend({
     droppable: true,
-    model: Entries.MediaModel,
+    model: Entries.MediaModel
   });
 
   return Entries;

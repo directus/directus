@@ -11,7 +11,7 @@ function(app, Backbone, Entries) {
 
   var Model = Entries.Model.extend({
 
-    uploader: true,
+    uploader: true
 /*
     sync: function(method, model, options) {
 

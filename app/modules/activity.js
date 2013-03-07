@@ -3,7 +3,7 @@ define([
   'backbone',
   'core/directus',
   'modules/activity/chart',
-  "modules/media",
+  "modules/media"
 ],
 
 function(app, Backbone, Directus, Chart, Media) {
