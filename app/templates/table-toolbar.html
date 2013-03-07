@@ -1,4 +1,4 @@
-
+{{#if visibilityButtons}}
 <div class="btn-group btn-group-action active" id="set-visibility">
   {{#if actionButtons}}
   <button class="btn btn-small" data-value="1" rel="tooltip" data-placement="bottom" title="Active"><span class="glyphicon-eye-open"></span></button>
@@ -9,6 +9,7 @@
     <button class="btn btn-small" data-value="0" rel="tooltip" data-placement="bottom" title="Delete"><span class="glyphicon-trash"></span></button>
   {{/if}}
 </div>
+{{/if}}
 
 <div class="btn-group" id="visibility">
   {{#visibility}}
