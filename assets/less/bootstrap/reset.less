@@ -100,7 +100,8 @@ img {
 button,
 input,
 select,
-textarea {
+textarea,
+.force-editable {
   margin: 0;
   font-size: 100%;
   vertical-align: middle;
@@ -132,7 +133,8 @@ input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none; // Inner-padding issues in Chrome OSX, Safari 5
 }
-textarea {
+textarea,
+.force-editable {
   overflow: auto; // Remove vertical scrollbar in IE6-9
   vertical-align: top; // Readability and alignment cross-browser
 }

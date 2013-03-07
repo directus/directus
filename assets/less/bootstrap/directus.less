@@ -244,8 +244,26 @@ label { text-shadow: @textShadowWhite; }
   .caret {margin-top:14px; border-top:4px solid @textColor;}
 }
 
+.btn-silver {
+  background-color: @silver;
+  color: @white;
+  text-shadow: @textShadow;
+  &:hover {background-color: darken(@silver, 4%); color: @white;}
+}
+
 .btn-row {
   button {margin-right:10px;}
+}
+
+.btn-group-attached button {
+  border-bottom: none;
+  -webkit-border-bottom-left-radius: 0 !important;
+  -webkit-border-bottom-right-radius: 0 !important;
+  -moz-border-bottom-left-radius: 0 !important;
+  -moz-border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+
 }
 
 .cancel {
@@ -593,7 +611,8 @@ a:hover {text-decoration:none;}
   input[type="text"],
   input[type="password"],
   input[type="text"].large,
-  textarea {
+  textarea,
+  .force-editable {
     width: 82%;
   }
   input[type="text"].small {
@@ -601,6 +620,9 @@ a:hover {text-decoration:none;}
   }
   input[type="text"].medium {
     width: 45%;
+  }
+  .force-editable hr {
+    border-top: @silver 1px solid;
   }
 
   .char-count {
@@ -803,7 +825,8 @@ a:hover {text-decoration:none;}
     input[type="text"],
     input[type="password"],
     input[type="text"].large,
-    textarea {
+    textarea,
+    .force-editable {
       width: 72%;
     }
   }

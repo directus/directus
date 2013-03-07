@@ -63,6 +63,7 @@ label {
 // Shared size and type resets
 select,
 textarea,
+.force-editable,
 input[type="text"],
 input[type="password"],
 input[type="datetime"],
@@ -95,6 +96,7 @@ input[type="color"],
 // Declare width for legacy (can't be on input[type=*] selectors or it's too specific)
 input,
 textarea,
+.force-editable,
 .uneditable-input {
   width: 206px; // plus 12px padding and 2px border
 }
@@ -104,6 +106,7 @@ textarea {
 }
 // Everything else
 textarea,
+.force-editable,
 input[type="text"],
 input[type="password"],
 input[type="datetime"],
@@ -579,6 +582,7 @@ input.search-query {
 .form-horizontal {
   input,
   textarea,
+  .force-editable,
   select,
   .help-inline,
   .uneditable-input,
