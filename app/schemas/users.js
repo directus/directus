@@ -87,7 +87,10 @@ define([], function() {
       "hidden_list":false,
       "hidden_input":false,
       "required":false,
-      "ui":"textinput"
+      "ui":"textinput",
+      "options": {
+        "size": "medium"
+      }
     },
     {
       "id":"last_name",
@@ -103,7 +106,10 @@ define([], function() {
       "hidden_list":false,
       "hidden_input":false,
       "required":false,
-      "ui":"textinput"
+      "ui":"textinput",
+      "options": {
+        "size": "medium"
+      }
     },
     {
       "id":"email",
@@ -114,12 +120,15 @@ define([], function() {
       "default_value":"",
       "comment":"",
       "sort":5,
-      "ui":"email",
+      "ui":"textinput",
       "system":false,
       "master":false,
       "hidden_list":false,
       "hidden_input":false,
-      "required":false
+      "required":false,
+      "options": {
+        "size": "medium"
+      }
     },
     {
       "id":"email_messages",
