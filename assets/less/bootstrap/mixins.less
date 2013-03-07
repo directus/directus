@@ -173,12 +173,14 @@
   .radio,
   input,
   select,
-  textarea {
+  textarea,
+  .force-editable {
     color: @textColor;
   }
   input,
   select,
-  textarea {
+  textarea,
+  .force-editable {
     border-color: @borderColor;
     .box-shadow(inset 0 1px 1px rgba(0,0,0,.075)); // Redeclare so transitions work
     &:focus {
@@ -658,7 +660,7 @@
   .input(@gridColumnWidth, @gridGutterWidth) {
 
     .spanX (@index) when (@index > 0) {
-      (~"input.span@{index}, textarea.span@{index}, .uneditable-input.span@{index}") { .span(@index); }
+      (~"input.span@{index}, textarea.span@{index}, .force-editable.span@{index}, .uneditable-input.span@{index}") { .span(@index); }
       .spanX(@index - 1);
     }
     .spanX (0) {}
@@ -669,6 +671,7 @@
 
     input,
     textarea,
+    .force-editable,
     .uneditable-input {
       margin-left: 0; // override margin-left from core grid system
     }
