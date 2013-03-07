@@ -1,6 +1,5 @@
 define([
   "app",
-  "core/collection.upload",
   "core/collection.entries",
   "core/collection.columns",
   "core/collection",
@@ -12,7 +11,7 @@ define([
   "core/model.table"
 ],
 
-function(app, Media, Entries, Structure, Collection, Edit, Table, Modal, TableSimple, Settings, TableModel) {
+function(app, Entries, Structure, Collection, Edit, Table, Modal, TableSimple, Settings, TableModel) {
 
   var Directus = {};
 
