@@ -20,6 +20,12 @@ function(Handlebars) {
         seperator = "_";
       }
 
+      directusIndex = string.indexOf("directus_");
+
+      if (directusIndex === 0) {
+        string = string.substring(9);
+      }
+
       idIndex = string.lastIndexOf("_id");
 
       if (string.length > 2 && string.length - idIndex === 3) {
