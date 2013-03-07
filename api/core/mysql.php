@@ -372,6 +372,8 @@ class MySQL {
     }
     while($row = $sth->fetch(PDO::FETCH_ASSOC)) $result[$row['active']] = (int)$row['count'];
 
+    $total = 0;
+
     return $result;
   }
 
