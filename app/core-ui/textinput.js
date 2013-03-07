@@ -53,7 +53,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         maxLength: length,
         characters: length - value.length,
         note: this.options.schema.get('comment'),
-        readonly: this.options.settings.get('readonly')
+        readonly: this.options.settings.get('readonly') === "1"
       };
     }
   });
