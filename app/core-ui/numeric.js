@@ -26,7 +26,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     tagName: 'fieldset',
     events: {
       'keydown input': function(e) {
-        if (!(e.which < 58 || (this.hasDecimals && e.which === 190))) {
+        if (!e.metaKey && !(e.which < 58 || (this.hasDecimals && e.which === 190))) {
           e.preventDefault();
         }
       },
