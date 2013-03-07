@@ -207,8 +207,8 @@ function(app, Backbone, ui, Directus) {
         single: this.model.get('single'),
         inactive_by_default: this.model.get('inactive_by_default'),
         is_junction_table: this.model.get('is_junction_table'),
-        footer: this.model.get('footer'),
-      }
+        footer: this.model.get('footer')
+      };
     }
   });
 

@@ -102,7 +102,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
   Module.list = function() {
     return 'x';
-  }
+  };
 
   return Module;
 });

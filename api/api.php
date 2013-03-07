@@ -1,6 +1,7 @@
 <?php
 require dirname(__FILE__) . '/config.php';
 require dirname(__FILE__) . '/core/db.php';
+require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
 
 $db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
@@ -27,6 +28,21 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
   $tbl_name = (array_key_exists('table_name', $params)) ? $params["table_name"] : null;
   $column_name = (array_key_exists('column_name', $params)) ? $params['column_name'] : null;
 
+
+  //////////////////////////////////////////////////////////////////////////////
+  // UPLOAD
+
+  if ( $collection == "upload" ) {
+    switch ( $http_method ) {
+      case "POST":
+        $result = array();
+        foreach ($_FILES as $file) {
+          $media = new Media($file, RESOURCES_PATH);
+          array_push($result, $media->data());
+        }
+        return $result;
+    }
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   // TABLES
