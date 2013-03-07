@@ -230,8 +230,6 @@ function(app, Backbone, ui, Directus) {
 
       data = _.extend(data, $('#table-settings').serializeObject());
 
-      console.log(data);
-
       this.model.save(data, {success: function(){
         app.router.go('settings','tables');
       }});
