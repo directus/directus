@@ -124,14 +124,17 @@ function(Handlebars) {
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
-    var hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.id !== userId; });
+    var hit = app.users.find(function(model) { 
+      return model.get('first_name').toLowerCase() === firstName && model.id != userId; 
+    });
     if (hit !== undefined) {
       nickName = firstName + ' ' + lastNameFirstCharacter + '.';
-      var hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id !== userId; });
+      var hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id != userId; });
       if (hit !== undefined) {
         nickName = firstName + ' ' + user.get('last_name');
       }
     }
+    console.log(nickName);
     return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>' + app.capitalize(nickName," "));
   });
 

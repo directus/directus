@@ -135,7 +135,6 @@ function(app, Backbone, Directus) {
         };
       } else {
         success = function(model, response, options) {
-          console.log('save', arguments);
           var route = Backbone.history.fragment.split('/');
           route.pop();
           if (action === 'save-form-add') {
