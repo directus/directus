@@ -10,7 +10,7 @@ define(['app','backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label>{{{capitalize name}}}</label><input type="checkbox" {{#if selected}}checked{{/if}}/><input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
+  var template = '<label class="checkbox"><input type="checkbox" {{#if selected}}checked{{/if}}/>{{{capitalize name}}}</label><input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
 
   Module.id = 'checkbox';
   Module.dataTypes = ['TINYINT'];
