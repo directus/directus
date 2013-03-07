@@ -207,3 +207,21 @@ function find($array, $key, $value) {
 function is_numeric_array($array) {
 	return ($array == array_values($array));
 }
+
+function debug($data, $title=null) {
+	echo '<div style="padding:10px;">';
+	echo "<b>$title</b>";
+	echo '<pre>';
+	print_r($data);
+	echo '</pre>';
+	echo '</div>';
+}
+
+
+
+
+
+
+
+
+
