@@ -6603,6 +6603,10 @@ a:hover {
 .directus-toolbar > div .button-group {
   display: inline-block;
 }
+.directus-toolbar > div .btn-group {
+  margin-left: 0;
+  margin-right: 5px;
+}
 .directus-toolbar > div div.filter input {
   background-image: url('../img/magnifying-glass.png');
   background-repeat: no-repeat;
