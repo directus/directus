@@ -127,9 +127,10 @@ class DB extends MySQL {
   }
 
   function set_media($data) {
-    if (isset($data['id'])) unset($data['date_uploaded']);
+    $isExisting = isset($data['id']);
+    if ($isExisting) unset($data['date_uploaded']);
     $id = $this->set_entry('directus_media', $data);
-    $this->log_activity('MEDIA', 'directus_media', 'ADD', $id, $data['title'], $data);
+    $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data);
     return $id;
   }
 
@@ -182,6 +183,10 @@ class DB extends MySQL {
   }
 
   function log_activity($type, $tbl_name, $action, $row_id, $identifier, $data, $parent_id=null) {
+    if ($tbl_name == 'directus_media') { 
+      $type = 'MEDIA';
+      $identifier = $data['title'];
+    }
     return $this->set_entry('directus_activity', array(
       'type' => $type,
       'identifier' => $identifier,
