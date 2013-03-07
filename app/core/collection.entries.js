@@ -196,9 +196,8 @@ function(app, Backbone, BaseCollection) {
       
       // Pick selected columns, useful for collection "save"
       if (options && options.columns) {
-        attributes = _.pick(this.attributes, options.columns);
+        attributes = _.pick(attributes, options.columns);
       }
-      
 
       return attributes;
     }
