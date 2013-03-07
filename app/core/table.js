@@ -89,6 +89,8 @@ function(app, Backbone) {
       options.paginator = (options.pageNext || options.pagePrev);
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 
+      options.visibilityButtons = options.actionButtons || options.deleteOnly;
+
       return options;
     },
 
@@ -135,6 +137,7 @@ function(app, Backbone) {
     },
 
     serialize: function() {
+
       var rowIdentifiers = this.options.rowIdentifiers;
       var rows = _.map(this.collection.getModels(), function(model) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
@@ -460,6 +463,7 @@ function(app, Backbone) {
       }
       if (this.options.sortable === undefined) {
         this.options.sortable = (collection.structure.get('sort')) || false;
+        console.log(this.options.sortable);
       }
       if (this.options.selectable === undefined) {
         this.options.selectable = (collection.structure.get('active')) || false;
