@@ -13,7 +13,7 @@ function(app, Backbone) {
     events: {
 
       'click #set-visibility > button': function(e) {
-        var value = $(e.target).attr('data-value');
+        var value = $(e.target).closest('button').attr('data-value');
         var collection = this.collection;
         $('td.check > input:checked').each(function() {
           var id = this.value;
@@ -77,7 +77,7 @@ function(app, Backbone) {
         options.visibility = _.map([
           {text:'All', value: '1,2', count: this.collection.total},
           {text:'Active', value: '1', count: this.collection.active},
-          {text:'Inactive', value: '2', count: this.collection.inactive},
+          {text:'Inactive', value: '2', count: this.collection.total - this.collection.active},
           {text:'Trash', value: '0', count: this.collection.trash}], function(obj) {
             if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
             return obj;
