@@ -19,11 +19,10 @@ define([
   "modules/messages",
   "core/modal",
   "core/collection.settings",
-  "core/collection.upload",
   "core/extensions"
 ],
 
-function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, CollectionMedia, extensions) {
+function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, extensions) {
 
   var Router = Backbone.Router.extend({
 
