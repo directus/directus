@@ -271,8 +271,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       // Update media counter
       app.media.on('sync add', function() {
-        var media = this.tabs.get('media');
-        media.set({count: app.media.total});
+        this.tabs.get('media').set({count: app.media.total});
       }, this);
 
       this.v.main.render();
