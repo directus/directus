@@ -28,7 +28,6 @@ define(['app', 'backbone'], function(app, Backbone) {
                  '</fieldset>' +
                  '{{#if youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/pkWWWKKA8jY" frameborder="0" allowfullscreen></iframe></fieldset>{{/if}}';
 
-
   Module.Input = Backbone.Layout.extend({
 
     template: Handlebars.compile(template),
@@ -36,8 +35,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var data = {};
       var userId;
-
-      console.log(this.model);
 
       if (!this.model.has('name')) {
         userId = 1;
@@ -68,7 +65,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         var file = $(e.target)[0].files[0];
         var model = this.model;
         app.sendFiles(file, function(data) {
-          model.set(data[0]);
+          model.set(_.extend({user: 1},data[0]));
         });
       }
     },
@@ -79,12 +76,6 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
-
-      //The file is not uploaded yet...
-      //if (options.model.isNew()) {
-      //  return '...';
-      //}
-
       var orientation = (parseInt(options.model.get('width'),10) > parseInt(options.model.get('height'),10)) ? 'landscape' : 'portrait';
       var img = '<div class="media-thumb"><img src="' + app.RESOURCES_URL + 'thumbnail/' + options.model.get('name') +'" class="img ' + orientation + '"></div>';
       return img;
