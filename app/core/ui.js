@@ -6,7 +6,6 @@ define([
   "core-ui/textarea",
   "core-ui/relational",
   'core-ui/directus_user',
-  'core-ui/email',
   'core-ui/directus_activity',
   'core-ui/datetime',
   'core-ui/directus_user_activity',

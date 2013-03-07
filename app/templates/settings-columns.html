@@ -12,7 +12,7 @@
 </thead>
 <tbody>
   {{#rows}}
-  <tr class="{{#if alias}}alias{{/if}}{{#if system}}inactive system{{/if}}" data-id="{{id}}">
+  <tr class="{{#if alias}}alias{{/if}}{{#if system}}system{{/if}}" data-id="{{id}}">
     <td class="sort">{{#unless system}}<span class="glyphicon-show-lines"></span>{{/unless}}</td>
     <td title="{{this.type}}">{{{capitalize id}}}</td>
     {{#if system}}

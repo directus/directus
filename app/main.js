@@ -90,7 +90,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
     app.entries.directus_media = new Directus.Entries.Collection(data.active_media, {
       table: app.tables.get('directus_media'),
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
-      preferences: app.preferences['directus_media'],
+      preferences: app.preferences.directus_media,
       url: app.API_URL + 'media',
       parse: true
     });
@@ -99,7 +99,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
       parse: true,
       table: app.tables.get('directus_users'),
       structure: new Directus.CollectionColumns(users.structure, {parse: true}),
-      preferences: app.preferences['directus_users'],
+      preferences: app.preferences.directus_users,
       url: app.API_URL + 'tables/directus_users/rows',
       filters: {columns: ['name', 'group', 'activity', 'email', 'description']}
     });

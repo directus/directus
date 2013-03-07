@@ -13,7 +13,7 @@ function(app, Backbone) {
     events: {
 
       'click #set-visibility > button': function(e) {
-        var value = $(e.target).attr('data-value');
+        var value = $(e.target).closest('button').attr('data-value');
         var collection = this.collection;
         $('td.check > input:checked').each(function() {
           var id = this.value;
@@ -33,8 +33,8 @@ function(app, Backbone) {
           var text = $('#table-filter').val();
           this.collection.setFilter('search', text);
           this.collection.fetch();
+          this.collection.trigger('search', text);
         }
-        this.collection.trigger('search', text);
       },
       'click a.pag-next:not(.disabled)': function() {
         this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') + 1);
@@ -77,7 +77,7 @@ function(app, Backbone) {
         options.visibility = _.map([
           {text:'All', value: '1,2', count: this.collection.total},
           {text:'Active', value: '1', count: this.collection.active},
-          {text:'Inactive', value: '2', count: this.collection.inactive},
+          {text:'Inactive', value: '2', count: this.collection.total - this.collection.active},
           {text:'Trash', value: '0', count: this.collection.trash}], function(obj) {
             if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
             return obj;
@@ -88,6 +88,8 @@ function(app, Backbone) {
       options.filter = true;
       options.paginator = (options.pageNext || options.pagePrev);
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
+
+      options.visibilityButtons = options.actionButtons || options.deleteOnly;
 
       return options;
     },
@@ -135,6 +137,7 @@ function(app, Backbone) {
     },
 
     serialize: function() {
+
       var rowIdentifiers = this.options.rowIdentifiers;
       var rows = _.map(this.collection.getModels(), function(model) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
@@ -289,7 +292,7 @@ function(app, Backbone) {
           title: value,
           isNumeric: (["FLOAT", "INT", "SMALLINT", "DECIMAL", "DOUBLE"].indexOf(this.collection.structure.get(value).get('type')) > -1),
           selectedFunction: this.functions.hasOwnProperty(value) ? this.functions[value] : 'SUM'
-        }
+        };
         if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), col.selectedFunction);
         return col;
       }, this);
@@ -460,6 +463,7 @@ function(app, Backbone) {
       }
       if (this.options.sortable === undefined) {
         this.options.sortable = (collection.structure.get('sort')) || false;
+        console.log(this.options.sortable);
       }
       if (this.options.selectable === undefined) {
         this.options.selectable = (collection.structure.get('active')) || false;
