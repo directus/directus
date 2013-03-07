@@ -14,11 +14,11 @@ function(Handlebars) {
     capitalize: function(string, seperator) {
       var idIndex;
 
+      if (!string) return '';
+
       if (seperator === undefined) {
         seperator = "_";
       }
-
-      if (!string) return '';
 
       idIndex = string.lastIndexOf("_id");
 
@@ -67,7 +67,7 @@ function(Handlebars) {
     });
 
     $.ajax({
-      url: '/directus/api/server.php',
+      url: app.API_URL + 'upload',
       type: 'POST',
       data: formData,
       cache: false,
