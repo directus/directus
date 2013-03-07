@@ -75,7 +75,7 @@ function(Handlebars) {
       success: callback,
       error: function() { console.log('ERRRRRROOOORRR!!'); }
     });
-  }
+  };
 
   //Raw handlebars data, helpful with data types
   Handlebars.registerHelper('raw', function(data) {
@@ -129,12 +129,11 @@ function(Handlebars) {
     });
     if (hit !== undefined) {
       nickName = firstName + ' ' + lastNameFirstCharacter + '.';
-      var hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id != userId; });
+      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id != userId; });
       if (hit !== undefined) {
         nickName = firstName + ' ' + user.get('last_name');
       }
     }
-    console.log(nickName);
     return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>' + app.capitalize(nickName," "));
   });
 

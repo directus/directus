@@ -16,7 +16,7 @@ function(app, Backbone, Directus) {
         isNew: (this.model.id === undefined),
         showActive: true,
         isActive: this.model.isNew() || (this.model.get('active') === 1),
-        isInactive: (this.model.get('active') === 2),
+        isInactive: (this.model.get('active') === 2)
       };
     },
     initialize: function() {

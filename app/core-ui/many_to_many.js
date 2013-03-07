@@ -23,7 +23,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click button[data-action=add]': 'addRow',
       'click button[data-action=insert]': 'insertRow',
-      'click td.delete': 'deleteRow',
+      'click td.delete': 'deleteRow'
     },
 
     template: Handlebars.compile(
@@ -57,9 +57,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
         _.each(view.selection(), function(id) {
           var data = collection.get(id).toJSON();
           me.related.entries.add(data, {parse: true, silent: true, nest: true});
-          console.log(me.related.entries);
-          return;
-          console.log(me.related.entries.toJSON());
         }, this);
         me.related.entries.trigger('add');
         modal.close();
@@ -85,8 +82,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
   });
 
   Module.list = function() {
-  	return 'x';
-  }
+    return 'x';
+  };
 
   return Module;
 });
