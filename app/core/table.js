@@ -420,11 +420,11 @@ function(app, Backbone) {
           _.each(data, function(item) {
             item.user = 1;
             item.active = 1;
-            item.title = item.name;
+            //item.title = app.capitalize(item.name);
 
             if (saveAfterDrop) {
               console.log('CREATE');
-              collection.create(item);
+              collection.create(item, {silent: true});
             } else {
               console.log('ADD');
               collection.add(item, {nest: true, parse: true});
@@ -442,10 +442,14 @@ function(app, Backbone) {
         app.router.showAlert();
       }, this);
 
-      collection.on('reset nocontent add remove change', function() {
+      collection.on('add remove change sync', function() {
         app.router.hideAlert();
         this.render();
       }, this);
+
+      collection.on('all', function() {
+        //console.log(arguments);
+      });
 
       // Default values
       if (this.options.toolbar === undefined) {

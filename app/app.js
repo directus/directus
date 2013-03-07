@@ -118,6 +118,7 @@ function(Handlebars) {
   });
 
   Handlebars.registerHelper('userShort', function(userId) {
+    if (!_.isNumber(userId) || _.isNaN(userId)) return;
     var user = app.users.get(userId);
     //if (user === undefined) return undefined;
     var firstName = user.get('first_name').toLowerCase();

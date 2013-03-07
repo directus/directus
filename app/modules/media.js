@@ -14,7 +14,11 @@ function(app, Backbone, Directus) {
 
     afterRender: function() {
       this.setView('.modal-body', this.editView);
-      this.model.fetch();
+      if (!this.model.isNew()) {
+        this.model.fetch();        
+      } else {
+        this.editView.render();
+      }
     },
 
     save: function() {
@@ -23,7 +27,7 @@ function(app, Backbone, Directus) {
       var isNew = this.model.isNew();
 
       this.model.save(data, {success:function() {
-        if (isNew) me.collection.add(this.model);
+        if (isNew) me.collection.add(me.model);
         me.close();
       }
       });
