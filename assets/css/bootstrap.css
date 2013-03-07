@@ -6460,8 +6460,7 @@ a:hover {
   color: #FFF;
   background-color: #8bc53f;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-  width: 52px;
-  margin: 0 auto;
+  width: 72px;
   text-align: center;
   padding: 5px;
   position: relative;
@@ -6485,7 +6484,7 @@ a:hover {
   content: "";
   position: absolute;
   top: -5px;
-  left: 26px;
+  left: 10px;
   border-style: solid;
   border-width: 0 5px 5px;
   border-color: #8bc53f transparent;
