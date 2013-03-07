@@ -30,7 +30,11 @@ define(['app', 'backbone'],function(app, Backbone) {
     template: Handlebars.compile(template),
 
     serialize: function() {
-      return {value: this.options.value, name: this.options.name, rows: this.options.settings.get('rows')};
+      return {
+        value: this.options.value,
+        name: this.options.name,
+        rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '5'
+      };
     }
 
   });
