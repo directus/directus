@@ -36,7 +36,6 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     editRow: function(e) {
       var cid = $(e.target).closest('tr').attr('data-cid');
       var model = this.related.entries.get(cid, true);
-      console.log(model);
       this.editModel(model);
     },
 
@@ -49,12 +48,16 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
 
       modal.save = function() {
-        view.save({}, function(send, response) {
-          modal.close();
-        });
+        model.set(view.data());
+        modal.close();
       };
 
-      view.render();
+      // Fetch first time to get the nested tables
+      if (!model.hasChanged() && !model.isNew()) {
+        model.fetch();
+      } else {
+        view.render();
+      }
     },
 
     addModel: function(model) {

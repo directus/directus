@@ -161,8 +161,6 @@ define(['app', 'backbone', 'core/modal', 'core/edit', 'core/table', 'core/collec
         this.options.model.set(this.options.name, this.collection);
       }
 
-      console.log(this.collection);
-
       this.collection.on('all', function() {
         console.log(this.collection);
       }, this);

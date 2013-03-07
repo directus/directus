@@ -12,7 +12,7 @@ function(app, Backbone, Entries) {
   var Model = Entries.Model.extend({
 
     uploader: true,
-
+/*
     sync: function(method, model, options) {
 
       var methodMap = {
@@ -42,7 +42,7 @@ function(app, Backbone, Entries) {
 
       return Backbone.sync.apply(this, [method, model, options]);
     }
-
+*/
   });
 
   var Collection = Entries.Collection.extend({
