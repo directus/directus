@@ -21,7 +21,8 @@ function(Handlebars) {
       if (!string) return '';
 
       idIndex = string.lastIndexOf("_id");
-      if (string.length - idIndex === 3) {
+
+      if (string.length > 2 && string.length - idIndex === 3) {
         string = string.substring(0, idIndex);
       }
       return _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
