@@ -159,13 +159,13 @@ function(app, Backbone) {
         collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
       });
       collection.save({columns:['id','sort']});
+      this.collection.setOrder('sort','ASC',{silent: true});
     },
 
     initialize: function() {
       this.collection.on('sort', this.render, this);
       //Setup jquery UI sortable
       if (this.options.structure && this.options.structure.get('sort')) {
-        this.collection.setOrder('sort','ASC',{silent: true});
         this.$el.sortable({
           stop: _.bind(this.drop, this),
           axis: "y",
