@@ -18,9 +18,9 @@ class cashRegister {
 
 	function products($searchVal = "") {
 		if ($searchVal != "") {
-			$query = "SELECT * FROM PRODUCTS WHERE title LIKE '%$searchVal%'";
+			$query = "SELECT * FROM products WHERE title LIKE '%$searchVal%'";
 		} else {
-			$query = "SELECT * FROM PRODUCTS";
+			$query = "SELECT * FROM products";
 		}
 		$stmt = $this->db->dbh->query($query);
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
