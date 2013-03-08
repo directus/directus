@@ -54,7 +54,6 @@ function() {
   // It's total overkill to instanciate an object before
   // It's also AB-FAB for templates!
   ui.getList = function(model, attr) {
-
     var collection = model.collection;
     var structure = model.collection.structure;
     var schema = structure.get(attr);
@@ -68,6 +67,23 @@ function() {
         value: model.has(attr) ? model.get(attr) : model.id,
         tagName: 'td'
     });
+  };
+
+  ui.validate = function(model, attr, value) {
+    var collection = model.collection;
+    var structure = model.collection.structure;
+    var schema = structure.get(attr);
+    var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
+
+    if (View.hasOwnProperty('validate')) {
+      return View.validate(value, {
+        model: model,
+        collection: collection,
+        settings: schema.options,
+        schema: schema,
+        tagName: 'td'
+      });
+    }
   };
 
   ui.initialize = function(model, options) {

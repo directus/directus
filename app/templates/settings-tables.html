@@ -1,8 +1,24 @@
 <table class="table table-striped directus-table">
-<thead><tr><th>Table</th></tr></thead>
+<thead>
+	<tr>
+		<th>Table</th>
+		<th style="width:120px">Hidden</th>
+		<th style="width:120px">Single</th>
+		<th style="width:120px">Inactive By Default</th>
+		<th style="width:120px">Is Junction Table</th>
+		<th style="width:120px">Footer</th>
+	</tr>
+</thead>
 <tbody>
   {{#rows}}
-  <tr><td data-id="{{table_name}}">{{{capitalize table_name}}}</td></tr>
+  <tr>
+  	<td data-id="{{table_name}}">{{{capitalize table_name}}}</td>
+	<td>{{#if hidden}}✔{{/if}}</td>
+	<td>{{#if single}}✔{{/if}}</td>
+	<td>{{#if inactive_by_default}}✔{{/if}}</td>
+	<td>{{#if is_junction_table}}✔{{/if}}</td>
+	<td>{{#if footer}}✔{{/if}}</td>
+  </tr>
   {{/rows}}
 </tbody>
 </table>

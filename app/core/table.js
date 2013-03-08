@@ -463,7 +463,6 @@ function(app, Backbone) {
       }
       if (this.options.sortable === undefined) {
         this.options.sortable = (collection.structure.get('sort')) || false;
-        console.log(this.options.sortable);
       }
       if (this.options.selectable === undefined) {
         this.options.selectable = (collection.structure.get('active')) || false;

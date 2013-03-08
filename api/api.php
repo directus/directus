@@ -242,6 +242,24 @@ function request ( $collection, $http_method, $params=array(), $data=array(), $f
 
   if ( $collection == "media" ) {
 
+    // A URL is specified. Upload the file
+    if (isset($data['url']) && $data['url'] != "") {
+      $media = new Media($data['url'], RESOURCES_PATH);
+      $media_data = $media->data();
+      $data['type'] = $media_data['type'];
+      $data['charset'] = $media_data['charset'];
+      $data['size'] = $media_data['size'];
+      $data['width'] = $media_data['width'];
+      $data['height'] = $media_data['height'];
+      $data['name'] = $media_data['name'];
+      $data['date_uploaded'] = $media_data['date_uploaded'];
+      if (isset($media_data['embed_id'])) {
+        $data['embed_id'] = $media_data['embed_id'];
+      }
+    }
+
+    if (isset($data['url'])) unset($data['url']);
+
     switch ($http_method) {
       case "POST":
         $data['date_uploaded'] = gmdate('Y-m-d H:i:s');
