@@ -131,6 +131,17 @@ function(app, Backbone, BaseCollection) {
       return this.parseRelational(result);
     },
 
+    validate: function(attributes, options) {
+      var errors = [];
+      _.each(attributes, function(value, key, list) {
+        var mess = ui.validate(this, key, value);
+        if (mess !== undefined) {
+          errors.push({attr: key, message: ui.validate(this, key, value)});  
+        }
+      }, this);
+      if (errors.length > 0) return errors;
+    },
+
     rollBack: function() {
       var data = this.parse(this._lastFetchedResult);
       return this.set(data);

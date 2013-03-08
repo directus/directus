@@ -273,7 +273,11 @@ function(app, Backbone, ui, Directus) {
     },
 
     serialize: function() {
-      return {rows: this.collection.getRows()};
+      var rows = this.collection.filter(function(model) {
+        return (model.id.substring(0,9) !== 'directus_');
+      });
+      rows = _.map(rows, function(model) { return model.toJSON(); });
+      return {rows: rows};
     }
 
   });

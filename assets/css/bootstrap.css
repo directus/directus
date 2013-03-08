@@ -2130,6 +2130,9 @@ table th[class*="span"],
 .glyphicon-circle-ok:before {
   content: "\e194";
 }
+.glyphicon-check:before {
+  content: "\e069";
+}
 /*
 .glyphicon-glass:before                   { content: "\e001"; }
 .glyphicon-music:before                   { content: "\e002"; }
@@ -6692,6 +6695,13 @@ a:hover {
   margin-bottom: 16px;
   border-top: 1px solid #ededed;
   border-bottom: 1px solid #ededed;
+}
+.directus-form .error {
+  color: #eb2a49;
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  font-weight: bold;
 }
 .directus-settings {
   border: 1px solid #DCDCDC;

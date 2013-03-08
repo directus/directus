@@ -15,7 +15,9 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
-    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }}
+    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+    {id: 'validation_regex', ui: 'textinput', char_length:200},
+    {id: 'validation_message', ui: 'textinput', char_length:200}
   ];
 
   var template = '<label>{{capitalize name}} <span class="note">{{note}}</span></label>'+
@@ -58,8 +60,14 @@ define(['app', 'backbone'], function(app, Backbone) {
     }
   });
 
-  Module.validate = function(value) {
-    return true;
+  Module.validate = function(value, options) {
+    if (options.settings.has('validation_regex')) {
+      var regex = new RegExp(options.settings.get('validation_regex'));
+      if (!regex.test(value)) {
+        return options.settings.get('validation_message');
+      }
+    }
+    //return 'HELL NO';
   };
 
   Module.list = function(options) {
