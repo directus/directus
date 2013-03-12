@@ -15,87 +15,68 @@ define([
 function(app, Backbone, _, Directus, Accounting, Product, User) {
 
  var Extension = {
-
     id: 'cash_register'
-
   };
 
   Handlebars.registerHelper('moneyFormat', function(number) {
     return Accounting.formatMoney(number);
   });;
   
-  var vars = vars || {};
-
-  var Customer = Backbone.Model.extend({
-
-  });
-
-  var CustomerCollection = Backbone.Collection.extend({
-    model: Customer
-  });
-
-  vars.quickPicksCollection = new Product.QuickPicksCollection();
-  vars.customerCollection = new CustomerCollection();
-  vars.activeProductsCollection = new Product.ActiveProductsCollection();
-
-  
-
-  var CustomerListView = Backbone.Layout.extend({
-
-  });
-
-  // Private view
-  var MainView = Backbone.Layout.extend({
-
-    prefix: 'extensions/cashregister/templates/',
-
-    template: 'register-main',
-
-    beforeRender: function() {
-      this.setView('.quick_picks_table', new Product.QuickPicksListView({collection: vars.quickPicksCollection, activeProductsCollection: vars.activeProductsCollection}));
-      this.setView('.active_products_table', new Product.ActiveProductsListView({collection: vars.activeProductsCollection}));
-    }
-
-  });
-
-  var View = Backbone.Layout.extend({
-
-    template: 'page',
-
-    el: '#content',
-
-    serialize: function() {
-      return {title: 'Cash Register'};
-    },
-
-    afterRender: function() {
-      var mainView = new MainView();
-      this.setView('#page-content', mainView);
-      mainView.render();
-    }
-
-  });
-
 Extension.Router = Directus.SubRoute.extend({
     routes: {
       "":         "index"
     },
 
     index: function() {
-
-      this.main = new View();
-      this.main.render();
-      vars.quickPicksCollection.fetch();
+      this.v.main.render();
     },
 
     initialize: function() {
-      console.log(Product);
-        var collections = {
-          products: new Product.Collection(),
-          users: new User.Collection()
+
+      var collections = {
+          quickPicksCollection: new Product.QuickPicksCollection(),
+          customerCollection: new User.Collection(),
+          activeProductsCollection: new Product.ActiveProductsCollection()
         };
 
       _.extend(this, collections);
+
+      this.v = {};
+
+      this.v.subMain = new Backbone.Layout({
+          prefix: 'extensions/cashregister/templates/',
+          template: 'register-main',
+          views: {
+              '.quick_picks_table': new Product.QuickPicksListView({collection: this.quickPicksCollection, activeProductsCollection: this.activeProductsCollection}),
+              '.active_products_table': new Product.ActiveProductsListView({collection: this.activeProductsCollection}),
+              '.customers_table': new User.ListView({collection: this.customerCollection })
+          },
+          beforeRender: function() {
+            //console.log('beforeRender called in this.v.subMain');
+          }
+        });
+
+
+      this.v.main = new Backbone.Layout({
+          template: 'page',
+          el: '#content',
+          views: {
+              '#page-content': this.v.subMain
+          },
+          serialize: function() {
+            return {title: 'Cash Register'};
+          },
+          beforeRender: function() {
+            //console.log('beforeRender called in this.v.main');
+          },
+          afterRender: function() {
+           
+          }
+      });
+
+      this.quickPicksCollection.fetch();
+      this.customerCollection.fetch();
+
     }
 
   });
