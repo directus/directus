@@ -29,9 +29,9 @@ class cashRegister {
 
 	function customers($searchVal = "") {
 		if ($searchVal != "") {
-			$query="SELECT  *, MATCH (`first_name`,`last_name`,`email`) AGAINST ('".$searchVal."*' IN BOOLEAN MODE) AS Relevance FROM users WHERE 1 AND MATCH (`first_name`,`last_name`,`email`) AGAINST ('".$searchVal."*' IN BOOLEAN MODE)  ORDER BY Relevance DESC";
+			$query="SELECT  *, MATCH (`first_name`,`last_name`,`email`) AGAINST ('".$searchVal."*' IN BOOLEAN MODE) AS Relevance FROM riders WHERE 1 AND MATCH (`first_name`,`last_name`,`email`) AGAINST ('".$searchVal."*' IN BOOLEAN MODE)  ORDER BY Relevance DESC";
 		} else {
-			$query = "SELECT * FROM users";
+			$query = "SELECT * FROM riders";
 		}
 		$stmt = $this->db->dbh->query($query);
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);

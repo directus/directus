@@ -27,13 +27,6 @@ function(app, User) {
     
   });
 
-  Product.Collection = Backbone.Collection.extend({
-    model: Product.Model,
-  	initialize: function() {
-  		
-  	}
-  });
-
   Product.QuickPicksCollection = Backbone.Collection.extend({
     model: Product.Model,
     initialize: function() {
