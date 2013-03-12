@@ -2,14 +2,14 @@
 <table class="table table-striped directus-table">
 	<thead>
 		<tr>
-			<th>Product</th><th>Price</th>
+			<th>Name</th><th>E-Mail</th>
 		</tr>
 	</thead>
 	<tbody>
 		{{#rows}}
-		<tr data-id="{{id}}"><td>{{title}}</td><td>{{moneyFormat price}}</td></tr>
+		<tr data-id="{{id}}"><td>{{last_name}}, {{first_name}}</td><td>{{email}}</td></tr>
 		{{else}}
-		<tr><td>Test</td></tr>
+		<tr><td colspan="2">No customers!</td></tr>
 		{{/rows}}
 	</tbody>
 </table>

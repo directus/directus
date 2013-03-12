@@ -80,16 +80,19 @@ Product.QuickPicksListView = Backbone.Layout.extend({
 
     initialize:function(options) {
       console.log("options", options);
-      this.collection.on('reset', this.render, this);
       this.activeProductsCollection = options.activeProductsCollection;
-      /*this.collection.listenTo({
-        'reset':this.render
-      });*/
+      this.listenTo(this.collection, {
+        "reset": this.render,
+
+        "fetch": function() {
+          this.$('.status').text("Loading...");
+        }
+      });
     },
 
     addProduct:function(e) {
       var productToAdd = this.collection.get($(e.currentTarget).data('id'));
-      this.activeProductsCollection.trigger('cartAdd', productToAdd, this.activeProductsCollection);
+      this.activeProductsCollection.trigger('cartAdd', productToAdd, this.activeProductsCollection );
     },
 
     serialize: function() {
@@ -109,8 +112,13 @@ Product.QuickPicksListView = Backbone.Layout.extend({
     },
 
     initialize: function() {
-      this.collection.on('remove', this.render, this);
-      this.collection.activeProductCollectionInternalModel.on('change:runningTotal', this.render, this);
+      this.listenTo(this.collection, {
+        "remove": this.render
+      });
+
+      this.listenTo(this.collection.activeProductCollectionInternalModel, {
+        "change:runningTotal": this.render
+      });
     },
 
     remove_item: function(e) {
