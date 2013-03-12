@@ -8,7 +8,7 @@ define([
 
 function(app, Product) {
 
-  var User = app.module();
+  var User = app.module(), searchVal = "";
 
   User.Collection = Backbone.Collection.extend({
   	initialize: function() {
@@ -30,10 +30,11 @@ function(app, Product) {
   				this.$('.status').text("Loading...");
   			}
   		});
+
   	},
 
     serialize: function() {
-      return { rows: this.collection.toJSON() };
+      return { rows: this.collection.toJSON(), searchVal: searchVal };
     }
   });
 
