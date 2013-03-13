@@ -3,6 +3,7 @@ define([
   "core-ui/checkbox",
   "core-ui/numeric",
   "core-ui/textinput",
+  "core-ui/slug",
   "core-ui/textarea",
   "core-ui/relational",
   'core-ui/directus_user',

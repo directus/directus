@@ -72,10 +72,8 @@ define(['app', 'backbone'], function(app, Backbone) {
       },
       'blur div.force-editable' : function(e) {
         var innerHtml = $(e.target).html();
-        //console.log('before',innerHtml);
         //innerHtml = String(innerHtml).replace(/"/g, '&quot;');
         this.$el.find('input').val(innerHtml);
-        console.log('after',innerHtml);
       }
     },
 
@@ -91,7 +89,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
-      console.log("testset", Module.variables.def);
       return {
         height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '100',
         bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold') : true,
