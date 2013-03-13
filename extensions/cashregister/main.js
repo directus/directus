@@ -76,9 +76,9 @@ Extension.Router = Directus.SubRoute.extend({
 
           update_products_table: _.debounce(function(e) {
 
-            console.log('this doesnt work yet');
+            routerProxy.quickPicksCollection.trigger('change:searchVal', {searchVal: e.currentTarget.value})
 
-          }, 800)
+          }, 500)
       });
 
 
