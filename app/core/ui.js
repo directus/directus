@@ -8,6 +8,8 @@ define([
   'core-ui/directus_user',
   'core-ui/directus_activity',
   'core-ui/datetime',
+  'core-ui/date',
+  'core-ui/time',
   'core-ui/directus_user_activity',
   'core-ui/directus_media_size',
   'core-ui/blob',

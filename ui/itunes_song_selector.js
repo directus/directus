@@ -15,7 +15,7 @@ define(['app', 'backbone'], function (app, Backbone) {
         {id: 'field_mappings', ui: 'textarea', options: {rows: 4} }
     ];
 
-    var template = '<label>{{{capitalize name}}}</label>' +
+    var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label>' +
         '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" />' +
         '<input type="text" value="{{value}}" class="{{size}} for_display_only"/>';
 
@@ -37,7 +37,7 @@ define(['app', 'backbone'], function (app, Backbone) {
             this.options.settings.set({
                 field_mappings_obj: JSON.parse(
                     this.options.settings.get('field_mappings')
-                ) 
+                )
             });
 
             console.log("initialize", this.options.settings.get('field_mappings_obj'));
@@ -105,13 +105,14 @@ define(['app', 'backbone'], function (app, Backbone) {
                 value: value,
                 name: this.options.name,
                 maxLength: length,
-                characters: length - value.length
+                characters: length - value.length,
+                comment: this.options.schema.get('comment')
             };
         }
     });
 
     Module.validate = function (value) {
-        return true;
+        //return true;
     };
 
     Module.list = function (options) {

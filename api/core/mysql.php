@@ -236,7 +236,9 @@ class MySQL {
         if ($row["type"] == "MEDIUMBLOB" || $row["type"] == "BLOB") { $row["ui"] = "blob"; }
         if ($row["type"] == "TEXT" || $row["type"] == "LONGTEXT") { $row["ui"] = "textarea"; }
         if ($row["type"] == "VARCHAR") { $row["ui"] = "textinput"; }
-        if ($row["type"] == "DATE" || $row["type"] == "DATETIME" || $row["type"] == "TIME")  { $row["ui"] = "datetime"; }
+        if ($row["type"] == "DATETIME")  { $row["ui"] = "datetime"; }
+        if ($row["type"] == "DATE")  { $row["ui"] = "date"; }
+        if ($row["type"] == "TIME")  { $row["ui"] = "time"; }
         if ($row["type"] == "YEAR" || $row["type"] == "INT" || $row["type"] == "SMALLINT" || $row["type"] == "MEDIUMINT" || $row["type"] == "FLOAT" || $row["type"] == "DOUBLE" || $row["type"] == "DECIMAL") { $row["ui"] = "numeric"; }
       }
 

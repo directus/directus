@@ -31,7 +31,23 @@ function(Handlebars) {
       if (string.length > 2 && string.length - idIndex === 3) {
         string = string.substring(0, idIndex);
       }
-      return _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
+
+      var output = _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
+
+      // var output2 = output;
+      // output.toLowerCase();
+      // output = (output + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
+      //   return $1.toUpperCase();
+      // });
+      // output.trim();
+      // output = output.replace(new RegExp("!\s+!", "g")," ");
+
+      // Swap out case of words in caseMap
+      _.each(app.caseMap, function(correct, incorrect) {
+        output = output.replace(new RegExp("\\b"+incorrect+"\\b", "g"), correct);
+      });
+
+      return output;
     },
 
     bytesToSize: function(bytes, precision) {
@@ -50,6 +66,31 @@ function(Handlebars) {
       return jQuery.timeago(value+'Z');
     },
 
+    caseMap: {
+      'Faq': 'FAQ',
+      'Iphone': 'iPhone',
+      'Ipad': 'iPad',
+      'Ipod': 'iPod',
+      'Ios': 'iOS',
+      'Pdf': 'PDF',
+      'Pdfs': 'PDFs',
+      'Url': 'URL',
+      'Ip': 'IP',
+      'Ui': 'UI',
+      'Ftp': 'FTP',
+      'Db': 'DB',
+      'Wysiwyg': 'WYSIWYG',
+      'Cv': 'CV',
+      'Id': 'ID',
+      'Ph': 'pH',
+      'Php': 'PHP',
+      'Html': 'HTML',
+      'Js': 'JS',
+      'Css': 'CSS',
+      'Rngr': 'RNGR',
+      'Soulcycle': 'SoulCycle'
+    },
+
     actionMap: {
       'ADD': 'added',
       'DELETE': 'deleted',
@@ -61,6 +102,7 @@ function(Handlebars) {
       'DELETE': 'from',
       'UPDATE': 'within'
     }
+
   };
 
   app.sendFiles = function(files, callback) {
@@ -131,8 +173,8 @@ function(Handlebars) {
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
-    var hit = app.users.find(function(model) { 
-      return model.get('first_name').toLowerCase() === firstName && model.id != userId; 
+    var hit = app.users.find(function(model) {
+      return model.get('first_name').toLowerCase() === firstName && model.id != userId;
     });
     if (hit !== undefined) {
       nickName = firstName + ' ' + lastNameFirstCharacter + '.';

@@ -1,4 +1,4 @@
-//  Datetime core UI component
+//  Time core UI component
 //  Directus 6.0
 
 //  (c) RANGER
@@ -19,23 +19,16 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  Module.id = 'datetime';
-  Module.dataTypes = ['DATETIME']; // 'DATE', 'TIME'
+  Module.id = 'time';
+  Module.dataTypes = ['TIME'];
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
     {id: 'include_seconds', ui: 'checkbox'}
   ];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label> \
+  var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
                   <style type="text/css"> \
-                  input.date { \
-                    display: inline; \
-                    display: -webkit-inline-flex; \
-                    width: 110px; \
-                    padding-right: 4px; \
-                    margin-right: 5px; \
-                  } \
                   input.time { \
                     display: inline; \
                     display: -webkit-inline-flex; \
@@ -50,10 +43,8 @@ define(['app', 'backbone'], function(app, Backbone) {
                     \
                   } \
                   </style> \
-                  {{#if includeDate}}<input type="date" class="date" value="{{valueDate}}"">{{/if}} \
-                  {{#if includeTime}}<input type="time" class="time{{#if includeSeconds}} seconds{{/if}}" value="{{valueTime}}">{{/if}} \
-                  <a class="now">Now</a> \
-                  <input class="merged" type="hidden" value="{{value}}" name="{{name}}" id="{{name}}">';
+                  <input type="time" class="time{{#if includeSeconds}} seconds{{/if}}" value="{{value}}" name="{{name}}" id="{{name}}"> \
+                  <a class="now">Now</a>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -62,25 +53,14 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'change input': 'updateValue',
       'click .now': 'makeNow'
-    },
-
-    updateValue: function(e) {
-      var value = this.$el.find('input.date').val() + ' ' + this.$el.find('input.time').val();
-      var now = new Date(value);
-      var gmtValue = new Date(value).toISOString();
-
-      this.$el.find('input.merged').val(gmtValue);
     },
 
     makeNow: function(e) {
       var now = this.getCurrentTime();
       var include_seconds = (this.options.settings && this.options.settings.has('include_seconds') && this.options.settings.get('include_seconds') == '1')? true : false;
       var timeFormat = (include_seconds) ? now.thh+':'+now.tmm+':'+now.tss : now.thh+':'+now.tmm;
-      this.$el.find('input.date').val(now.yyyy+'-'+now.mm+'-'+now.dd);
       this.$el.find('input.time').val(timeFormat);
-
       this.updateValue();
     },
 
@@ -96,45 +76,34 @@ define(['app', 'backbone'], function(app, Backbone) {
       if(!include_seconds){now.tss='00'}
 
       return {
-        value: now.gmtValue,
-        valueDate: now.yyyy+'-'+now.mm+'-'+now.dd,
-        valueTime: (include_seconds) ? now.thh+':'+now.tmm+':'+now.tss : now.thh+':'+now.tmm,
-        includeDate: (this.options.schema.get('type') == 'DATETIME' || this.options.schema.get('type') == 'DATE') ? true : false,
-        includeTime: (this.options.schema.get('type') == 'DATETIME' || this.options.schema.get('type') == 'TIME') ? true : false,
+        value: (include_seconds) ? now.thh+':'+now.tmm+':'+now.tss : now.thh+':'+now.tmm,
         name: this.options.name,
-        note: this.options.schema.get('comment'),
+        comment: this.options.schema.get('comment'),
         includeSeconds: include_seconds
       };
     },
 
     getCurrentTime: function(value) {
-      var thisDate = (value)? new Date(value+'Z') : new Date();
+      var thisDate = new Date();
 
-      // Could be handled more elegantly
-      try{
-        var gmtValue = new Date(thisDate).toISOString();
-      } catch(err){
-        thisDate = new Date();
+      if(value){
+        var time = value.split(":");
+
+        thisDate.setHours( parseInt(time[0]) + (time[2] ? 12 : 0) );
+        thisDate.setMinutes( parseInt(time[1]) || 0 );
+        thisDate.setSeconds( parseInt(time[2]) || 0 );
       }
 
-      var dd = thisDate.getDate();
-      var mm = thisDate.getMonth()+1; // January is 0!
-      var yyyy = thisDate.getFullYear();
       var thh = thisDate.getHours();
       var tmm = thisDate.getMinutes();
       var tss = thisDate.getSeconds();
 
-      if(dd<10){dd='0'+dd}
-      if(mm<10){mm='0'+mm}
       if(thh<10){thh='0'+thh}
       if(tmm<10){tmm='0'+tmm}
       if(tss<10){tss='0'+tss}
 
       return {
-        'gmtValue': gmtValue,
-        'dd': dd,
-        'mm': mm,
-        'yyyy': yyyy,
+        'value': value,
         'thh': thh,
         'tmm': tmm,
         'tss': tss
@@ -152,8 +121,23 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   Module.list = function(options) {
-    var template = Handlebars.compile('{{contextualDate date}}');
-    return template({date: options.value});
+    var include_seconds = (options.settings && options.settings.has('include_seconds') && options.settings.get('include_seconds') == '1')? true : false;
+
+    var d = new Date();
+    var time = options.value.split(":");
+    d.setHours( parseInt(time[0]) + (time[2] ? 12 : 0) );
+    d.setMinutes( parseInt(time[1]) || 0 );
+    d.setSeconds( parseInt(time[2]) || 0 );
+    var hours = d.getHours();
+    var minutes = d.getMinutes();
+    var seconds = (d.getSeconds() == '' || d.getSeconds() == '0')? '00' : d.getSeconds();
+    var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
+
+    suffix = (hours >= 12)? 'pm' : 'am';
+    hours = (hours > 12)? hours -12 : hours;
+    hours = (hours == '00')? 12 : hours;
+
+    return (options.value) ? hours+':'+minutes+secondsFormat+' '+suffix : '';
   };
 
   return Module;
