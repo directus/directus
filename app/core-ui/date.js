@@ -1,4 +1,4 @@
-//  Datetime core UI component
+//  Date core UI component
 //  Directus 6.0
 
 //  (c) RANGER
@@ -19,12 +19,11 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  Module.id = 'datetime';
-  Module.dataTypes = ['DATETIME']; // 'DATE', 'TIME'
+  Module.id = 'date';
+  Module.dataTypes = ['DATE'];
 
   Module.variables = [
-    {id: 'readonly', ui: 'checkbox'},
-    {id: 'include_seconds', ui: 'checkbox'}
+    {id: 'readonly', ui: 'checkbox'}
   ];
 
   var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label> \
@@ -36,24 +35,12 @@ define(['app', 'backbone'], function(app, Backbone) {
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
-                  input.time { \
-                    display: inline; \
-                    display: -webkit-inline-flex; \
-                    width: 80px; \
-                    padding-right: 4px; \
-                    margin-right: 5px; \
-                  } \
-                  input.seconds { \
-                    width: 100px !important; \
-                  } \
                   a.now { \
                     \
                   } \
                   </style> \
-                  {{#if includeDate}}<input type="date" class="date" value="{{valueDate}}"">{{/if}} \
-                  {{#if includeTime}}<input type="time" class="time{{#if includeSeconds}} seconds{{/if}}" value="{{valueTime}}">{{/if}} \
-                  <a class="now">Now</a> \
-                  <input class="merged" type="hidden" value="{{value}}" name="{{name}}" id="{{name}}">';
+                  <input type="date" class="date" name="{{name}}" id="{{name}}" value="{{valueDate}}"> \
+                  <a class="now">Now</a>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -62,25 +49,12 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'change input': 'updateValue',
       'click .now': 'makeNow'
-    },
-
-    updateValue: function(e) {
-      var value = this.$el.find('input.date').val() + ' ' + this.$el.find('input.time').val();
-      var now = new Date(value);
-      var gmtValue = new Date(value).toISOString();
-
-      this.$el.find('input.merged').val(gmtValue);
     },
 
     makeNow: function(e) {
       var now = this.getCurrentTime();
-      var include_seconds = (this.options.settings && this.options.settings.has('include_seconds') && this.options.settings.get('include_seconds') == '1')? true : false;
-      var timeFormat = (include_seconds) ? now.thh+':'+now.tmm+':'+now.tss : now.thh+':'+now.tmm;
       this.$el.find('input.date').val(now.yyyy+'-'+now.mm+'-'+now.dd);
-      this.$el.find('input.time').val(timeFormat);
-
       this.updateValue();
     },
 
@@ -91,19 +65,12 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var value = this.options.value || '';
       var now = this.getCurrentTime(value);
-      var include_seconds = (this.options.settings && this.options.settings.has('include_seconds') && this.options.settings.get('include_seconds') == '1')? true : false;
-
-      if(!include_seconds){now.tss='00'}
 
       return {
         value: now.gmtValue,
         valueDate: now.yyyy+'-'+now.mm+'-'+now.dd,
-        valueTime: (include_seconds) ? now.thh+':'+now.tmm+':'+now.tss : now.thh+':'+now.tmm,
-        includeDate: (this.options.schema.get('type') == 'DATETIME' || this.options.schema.get('type') == 'DATE') ? true : false,
-        includeTime: (this.options.schema.get('type') == 'DATETIME' || this.options.schema.get('type') == 'TIME') ? true : false,
         name: this.options.name,
-        note: this.options.schema.get('comment'),
-        includeSeconds: include_seconds
+        note: this.options.schema.get('comment')
       };
     },
 
@@ -120,24 +87,15 @@ define(['app', 'backbone'], function(app, Backbone) {
       var dd = thisDate.getDate();
       var mm = thisDate.getMonth()+1; // January is 0!
       var yyyy = thisDate.getFullYear();
-      var thh = thisDate.getHours();
-      var tmm = thisDate.getMinutes();
-      var tss = thisDate.getSeconds();
 
       if(dd<10){dd='0'+dd}
       if(mm<10){mm='0'+mm}
-      if(thh<10){thh='0'+thh}
-      if(tmm<10){tmm='0'+tmm}
-      if(tss<10){tss='0'+tss}
 
       return {
         'gmtValue': gmtValue,
         'dd': dd,
         'mm': mm,
-        'yyyy': yyyy,
-        'thh': thh,
-        'tmm': tmm,
-        'tss': tss
+        'yyyy': yyyy
       };
     },
 

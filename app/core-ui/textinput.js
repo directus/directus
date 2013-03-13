@@ -20,7 +20,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'validation_message', ui: 'textinput', char_length:200}
   ];
 
-  var template = '<label>{{capitalize name}} <span class="note">{{note}}</span></label>'+
+  var template = '<label>{{capitalize name}} <span class="note">{{comment}}</span></label>'+
                  '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>'+
                  '<span class="label char-count hide">{{characters}}</span>';
 
@@ -54,7 +54,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         name: this.options.name,
         maxLength: length,
         characters: length - value.length,
-        note: this.options.schema.get('comment'),
+        comment: this.options.schema.get('comment'),
         readonly: this.options.settings.get('readonly') === "1"
       };
     }

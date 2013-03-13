@@ -16,16 +16,16 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
     {id: 'height', ui: 'numeric'},
-    {id: 'bold', ui: 'checkbox'},
-    {id: 'italic', ui: 'checkbox'},
-    {id: 'underline', ui: 'checkbox'},
-    {id: 'strikethrough', ui: 'checkbox'},
-    {id: 'rule', ui: 'checkbox'},
-    {id: 'createlink', ui: 'checkbox'},
-    {id: 'insertimage', ui: 'checkbox'}
+    {id: 'bold', ui: 'checkbox', def: '1'},
+    {id: 'italic', ui: 'checkbox', def: '1'},
+    {id: 'underline', ui: 'checkbox', def: '1'},
+    {id: 'strikethrough', ui: 'checkbox', def: '1'},
+    {id: 'rule', ui: 'checkbox', def: '1'},
+    {id: 'createlink', ui: 'checkbox', def: '1'},
+    {id: 'insertimage', ui: 'checkbox', def: '1'}
   ];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label>'+
+  var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label>'+
                   '<div class="btn-group btn-group-attached btn-group-action active">'+
                     '{{#if bold}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b>B</b></button>{{/if}}'+
                     '{{#if italic}}<button type="button" class="btn btn-small btn-silver" data-tag="italic" rel="tooltip" data-placement="bottom" title="Italic"><i>I</i></button>{{/if}}'+
@@ -91,22 +91,22 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
-      console.log('NEW',value);
+      console.log("testset", Module.variables.def);
       return {
         height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '100',
-        bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold') : false,
-        italic: (this.options.settings && this.options.settings.has('italic')) ? this.options.settings.get('italic') : false,
-        underline: (this.options.settings && this.options.settings.has('underline')) ? this.options.settings.get('underline') : false,
-        strikethrough: (this.options.settings && this.options.settings.has('strikethrough')) ? this.options.settings.get('strikethrough') : false,
-        rule: (this.options.settings && this.options.settings.has('rule')) ? this.options.settings.get('rule') : false,
-        createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink') : false,
-        insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage') : false,
+        bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold') : true,
+        italic: (this.options.settings && this.options.settings.has('italic')) ? this.options.settings.get('italic') : true,
+        underline: (this.options.settings && this.options.settings.has('underline')) ? this.options.settings.get('underline') : true,
+        strikethrough: (this.options.settings && this.options.settings.has('strikethrough')) ? this.options.settings.get('strikethrough') : true,
+        rule: (this.options.settings && this.options.settings.has('rule')) ? this.options.settings.get('rule') : true,
+        createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink') : true,
+        insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage') : true,
         markupValue: String(value).replace(/"/g, '&quot;'),
         value: new Handlebars.SafeString(value),
         name: this.options.name,
         maxLength: length,
         characters: length - value.length,
-        note: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment')
       };
     },
 

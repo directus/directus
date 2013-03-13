@@ -246,7 +246,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
-      console.log('NEW',value);
       return {
         height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '100',
         value: new Handlebars.SafeString(value),
