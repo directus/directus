@@ -31,8 +31,16 @@ function(app, User) {
     model: Product.Model,
     initialize: function() {
       this.url = '/directus/api/1/extensions/cashregister/products';
+      this.searchVal = '';
     }
-    
+
+  });
+
+  Product.AllProductsCollection = Backbone.Collection.extend({
+    model: Product.Model,
+    initialize: function() {
+      this.url = '/directus/api/1/extensions/cashregister/products';
+    }
   });
 
   Product.ActiveProductsCollection = Backbone.Collection.extend({
@@ -42,14 +50,14 @@ function(app, User) {
       this.on('change remove cartAdd', this.recalculate, this);
       this.activeProductCollectionInternalModel = new ActiveProductCollectionInternalModel();
     },
-    cartAdd: function(item, collection) {
-      var itemCurrentIndex = collection.indexOf(item);
+    cartAdd: function(item) {
+      var itemCurrentIndex = this.indexOf(item);
       if (itemCurrentIndex === -1) {
         item.set({quantity: 1});
-        collection.add(item);
+        this.add(item);
       } else {
-        var currentQuantity = collection.at(itemCurrentIndex).get('quantity');
-        collection.at(itemCurrentIndex).set({quantity: currentQuantity+1});
+        var currentQuantity = this.at(itemCurrentIndex).get('quantity');
+        this.at(itemCurrentIndex).set({quantity: currentQuantity+1});
       }
     },
     recalculate: function() {
@@ -61,18 +69,52 @@ function(app, User) {
     }
   });
 
+Product.ItemView = Backbone.Layout.extend({
+      prefix: 'extensions/cashregister/templates/',
+
+      template: 'product-item',
+
+      tagName: 'tr',
+
+      events: {
+            'click':'addProduct'
+      },
+
+      initialize: function(options) {
+        this.activeProductsCollection = options.activeProductsCollection;
+        this.listenTo(this.model, {
+          "change": this.render
+        });
+        this.listenTo(this.collection, {
+          "change:searchVal": this.showOrHide
+        });
+      },
+
+      addProduct:function(e) {
+       // var productToAdd = this.collection.get($(e.currentTarget).data('id'));
+        this.activeProductsCollection.trigger('cartAdd', this.model );
+      },
+
+      showOrHide: function(searchValObj) {
+        var searchVal = searchValObj.searchVal;
+        if (~this.model.get('title').toLowerCase().indexOf(searchVal.toLowerCase()) || searchVal === "") {
+          this.$el.fadeIn('fast');
+        } else {
+          this.$el.fadeOut('fast');
+        }
+      },
+
+      serialize: function() {
+        return this.model.toJSON();
+      }
+});
 
 Product.QuickPicksListView = Backbone.Layout.extend({
     prefix: 'extensions/cashregister/templates/',
 
     template: 'quick-picks-table',
 
-    events: {
-      'click tr':'addProduct'
-    },
-
     initialize:function(options) {
-      console.log("options", options);
       this.activeProductsCollection = options.activeProductsCollection;
       this.listenTo(this.collection, {
         "reset": this.render,
@@ -83,13 +125,23 @@ Product.QuickPicksListView = Backbone.Layout.extend({
       });
     },
 
-    addProduct:function(e) {
-      var productToAdd = this.collection.get($(e.currentTarget).data('id'));
-      this.activeProductsCollection.trigger('cartAdd', productToAdd, this.activeProductsCollection );
+    beforeRender: function() {
+      if(this.collection.length > 0) {
+        this.collection.each(function(product) {
+          this.insertView("tbody", new Product.ItemView({
+              model: product,
+              activeProductsCollection: this.activeProductsCollection,
+              collection: this.collection
+            }));
+        }, this);
+      } else {
+        // say there are no products....
+      }
+
     },
 
     serialize: function() {
-      return { rows: this.collection.toJSON(), product1: 'test', product2: 'test 2'};
+      return { rows: this.collection.toJSON() };
     }
 
   });
