@@ -1,8 +1,10 @@
 define([
   "core-ui/directus_media",
   "core-ui/checkbox",
+  "core-ui/color",
   "core-ui/numeric",
   "core-ui/textinput",
+  "core-ui/slider",
   "core-ui/slug",
   "core-ui/textarea",
   "core-ui/relational",
