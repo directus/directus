@@ -1,104 +1,143 @@
 define([
-  'app',
-  'backbone',
-  'underscore',
-  'core/directus',
+    'app',
+    'backbone',
+    'underscore',
+    'core/directus',
 
-  '../../extensions/cashregister/accounting.min',
+    '../../extensions/cashregister/accounting.min',
 
-  // modules
-  '../../extensions/cashregister/product',
-  '../../extensions/cashregister/user'
+    // modules
+    '../../extensions/cashregister/product',
+    '../../extensions/cashregister/user',
+    '../../extensions/cashregister/transaction'
 
 ],
 
-function(app, Backbone, _, Directus, Accounting, Product, User) {
+function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
 
- var Extension = {
-    id: 'cash_register'
-  };
+    var Extension = {
+        id: 'cash_register'
+    };
 
-  Handlebars.registerHelper('moneyFormat', function(number) {
-    return Accounting.formatMoney(number);
-  });;
-  
-Extension.Router = Directus.SubRoute.extend({
-    routes: {
-      "":         "index"
-    },
+    Handlebars.registerHelper('moneyFormat', function (number) {
+        return Accounting.formatMoney(number);
+    });;
 
-    index: function() {
-      this.v.main.render();
-    },
+    Extension.Router = Directus.SubRoute.extend({
+        routes: {
+            "": "index"
+        },
 
-    initialize: function() {
+        index: function () {
+            this.v.main.render();
+        },
 
-      var routerProxy = this;
+        initialize: function () {
 
-      var collections = {
-          quickPicksCollection: new Product.QuickPicksCollection(),
-          customerCollection: new User.Collection(),
-          activeProductsCollection: new Product.ActiveProductsCollection()
-        };
+            this.transaction = new Transaction.Model();
 
-      _.extend(this, collections);
+            var routerProxy = this;
 
-      this.v = {};
+            var collections = {
+                quickPicksCollection: new Product.QuickPicksCollection(),
+                customerCollection: new User.Collection(),
+                activeProductsCollection: this.transaction.activeProductsCollection
+            };
 
-      this.v.subMain = new Backbone.Layout({
-          prefix: 'extensions/cashregister/templates/',
+            _.extend(this, collections);
 
-          template: 'register-main',
+            this.v = {};
 
-          events: {
-            'keyup #customer-filter': 'update_users_table',
-            'keyup #quickpicks-filter': 'update_products_table'
-          },
+            var SubMain = Backbone.Layout.extend({
+                prefix: 'extensions/cashregister/templates/',
 
-          views: {
-              '.quick_picks_table': new Product.QuickPicksListView({collection: this.quickPicksCollection, activeProductsCollection: this.activeProductsCollection}),
-              '.active_products_table': new Product.ActiveProductsListView({collection: this.activeProductsCollection}),
-              '.customers_table': new User.ListView({collection: this.customerCollection })
-          },
+                template: 'register-main',
 
-          update_users_table: _.debounce(function(e) {
+                initialize: function(options) {
+                    this.transaction = options.transaction;
+                    this.listenTo(options.transaction, {
+                        'change:selectedRider':this.show_rider_detail
+                    });
+                },
 
-            var searchVal = e.currentTarget.value;
+                events: {
+                    'keyup #customer-filter': 'update_users_table',
+                    'keyup #quickpicks-filter': 'update_products_table'
+                },
 
-            if (searchVal.length > 0) {
-              routerProxy.customerCollection.url = '/directus/api/1/extensions/cashregister/customers/' + searchVal;
-            } else {
-              routerProxy.customerCollection.url = '/directus/api/1/extensions/cashregister/customers';
-            }
+                views: {
+                    '.quick_picks_table': new Product.Views.QuickPicksList({
+                        collection: this.quickPicksCollection,
+                        activeProductsCollection: this.activeProductsCollection
+                    }),
+                    '.active_products_table': new Transaction.Views.ActiveProductsList({
+                        model: this.transaction
+                    }),
+                    '.customers_table': new User.Views.List({
+                        collection: this.customerCollection,
+                        transaction: this.transaction
+                    })
+                },
 
-            routerProxy.customerCollection.fetch();
-          }, 800),
+                show_rider_detail: function() {
+                    this.setView('.customers_table', new User.Views.Selected({model: this.transaction.get('selectedRider')}));
+                    this.render();
+                },
 
-          update_products_table: _.debounce(function(e) {
+                update_users_table: _.debounce(function (e) {
+                    
+                    var searchVal = e.currentTarget.value;
 
-            routerProxy.quickPicksCollection.trigger('change:searchVal', {searchVal: e.currentTarget.value})
+                    if (searchVal.length > 0) {
+                        routerProxy.customerCollection.url = '/directus/api/1/extensions/cashregister/customers/' + searchVal;
+                    } else {
+                        routerProxy.customerCollection.url = '/directus/api/1/extensions/cashregister/customers';
+                    }
+                    console.log(this);
+                    this.setView('.customers_table', new User.Views.List({
+                      collection: this.options.customerCollection,
+                      transaction: this.transaction
+                    }));
+                    routerProxy.customerCollection.fetch();
+                }, 800),
 
-          }, 500)
-      });
+                update_products_table: _.debounce(function (e) {
 
+                    routerProxy.quickPicksCollection.trigger('change:searchVal', {
+                        searchVal: e.currentTarget.value
+                    })
 
-      this.v.main = new Backbone.Layout({
-          template: 'page',
-          el: '#content',
-          views: {
-              '#page-content': this.v.subMain
-          },
-          serialize: function() {
-            return {title: 'Cash Register'};
-          }
-      });
+                }, 500)
+            });
 
-      this.quickPicksCollection.fetch();
-      this.customerCollection.fetch();
+            this.v.subMain = new SubMain(
+              {
+                transaction: this.transaction, 
+                quickPicksCollection: this.quickPicksCollection,
+                activeProductsCollection: this.activeProductsCollection,
+                customerCollection: this.customerCollection
+              }
+            );
 
-    }
+            this.v.main = new Backbone.Layout({
+                template: 'page',
+                el: '#content',
+                views: {
+                    '#page-content': this.v.subMain
+                },
+                serialize: function () {
+                    return {
+                        title: 'Cash Register'
+                    };
+                }
+            });
 
-  });
+            this.quickPicksCollection.fetch();
+            this.customerCollection.fetch();
 
-  return Extension;
+        }
+
+    });
+
+    return Extension;
 });

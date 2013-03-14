@@ -1,20 +1,11 @@
 define([
   // Application.
-  "app",
-
-  // Modules.
-  "../../extensions/cashregister/user"
+  "app"
 ],
 
-function(app, User) {
+function(app) {
 
   var Product = app.module();
-
-  var ActiveProductCollectionInternalModel = Backbone.Model.extend({
-    initialize: function() {
-
-    }
-  });
 
   Product.Model = Backbone.Model.extend({
     initialize: function() {
@@ -43,33 +34,7 @@ function(app, User) {
     }
   });
 
-  Product.ActiveProductsCollection = Backbone.Collection.extend({
-    model: Product.Model,
-    initialize: function() {
-      this.on('cartAdd', this.cartAdd, this);
-      this.on('change remove cartAdd', this.recalculate, this);
-      this.activeProductCollectionInternalModel = new ActiveProductCollectionInternalModel();
-    },
-    cartAdd: function(item) {
-      var itemCurrentIndex = this.indexOf(item);
-      if (itemCurrentIndex === -1) {
-        item.set({quantity: 1});
-        this.add(item);
-      } else {
-        var currentQuantity = this.at(itemCurrentIndex).get('quantity');
-        this.at(itemCurrentIndex).set({quantity: currentQuantity+1});
-      }
-    },
-    recalculate: function() {
-      var runningTotal = 0;
-      this.each(function(product) {
-        runningTotal += product.get('subtotal');
-      }, this);
-      this.activeProductCollectionInternalModel.set({runningTotal: runningTotal});
-    }
-  });
-
-Product.ItemView = Backbone.Layout.extend({
+Product.Views.Item = Backbone.Layout.extend({
       prefix: 'extensions/cashregister/templates/',
 
       template: 'product-item',
@@ -109,7 +74,7 @@ Product.ItemView = Backbone.Layout.extend({
       }
 });
 
-Product.QuickPicksListView = Backbone.Layout.extend({
+Product.Views.QuickPicksList = Backbone.Layout.extend({
     prefix: 'extensions/cashregister/templates/',
 
     template: 'quick-picks-table',
@@ -128,7 +93,7 @@ Product.QuickPicksListView = Backbone.Layout.extend({
     beforeRender: function() {
       if(this.collection.length > 0) {
         this.collection.each(function(product) {
-          this.insertView("tbody", new Product.ItemView({
+          this.insertView("tbody", new Product.Views.Item({
               model: product,
               activeProductsCollection: this.activeProductsCollection,
               collection: this.collection
@@ -144,37 +109,6 @@ Product.QuickPicksListView = Backbone.Layout.extend({
       return { rows: this.collection.toJSON() };
     }
 
-  });
-
-  Product.ActiveProductsListView = Backbone.Layout.extend({
-
-    prefix: 'extensions/cashregister/templates/',
-
-    template: 'active-products-table',
-
-    events: {
-      'click a.remove_item':'remove_item'
-    },
-
-    initialize: function() {
-      this.listenTo(this.collection, {
-        "remove": this.render
-      });
-
-      this.listenTo(this.collection.activeProductCollectionInternalModel, {
-        "change:runningTotal": this.render
-      });
-    },
-
-    remove_item: function(e) {
-      var productToRemove = this.collection.get($(e.currentTarget).data('id'));
-      productToRemove.set({quantity: 0});
-      this.collection.remove(productToRemove);
-    },
-
-    serialize: function() {
-      return { rows: this.collection.toJSON(), runningTotal: this.collection.activeProductCollectionInternalModel.get('runningTotal') };
-    }
   });
 
   return Product;
