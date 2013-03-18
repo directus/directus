@@ -50,6 +50,19 @@ class cashRegister {
 		return $results;
 	}
 
+	function omnibox($searchVal = "") {
+		if ($searchVal != "") {
+
+		} else {
+			$query = "SELECT id, title, 'product' AS `type` FROM products ";
+			$query .= "UNION ";
+			$query .= "SELECT id, CONCAT(last_name, ', ', first_name,  ' (', email, ')') `title`, 'rider' AS `type` FROM riders";
+		}
+		$stmt = $this->db->dbh->query($query);
+		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $results;
+	}
+
 }
 
 $cashRegister = new cashRegister($db);

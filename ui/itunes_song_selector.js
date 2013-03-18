@@ -40,7 +40,6 @@ define(['app', 'backbone'], function (app, Backbone) {
                 ) 
             });
 
-            console.log("initialize", this.options.settings.get('field_mappings_obj'));
         },
 
         afterRender: function () {
@@ -86,6 +85,7 @@ define(['app', 'backbone'], function (app, Backbone) {
                     return item.artistName + ' - ' + item.trackName;
                 },
                 onselect: function (obj) {
+
                   var item = JSON.parse(obj);
                   this.$element.val(item.artistName + ' - ' + item.trackName);
                   this.$element.siblings('#' + that.options.name).val(item.trackId);
