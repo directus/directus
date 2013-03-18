@@ -5,6 +5,7 @@ define([
   "core-ui/numeric",
   "core-ui/textinput",
   "core-ui/slider",
+  "core-ui/single_media",
   "core-ui/slug",
   "core-ui/textarea",
   "core-ui/relational",
