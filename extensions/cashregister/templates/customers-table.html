@@ -1,0 +1,18 @@
+<div class="status"></div>
+
+
+<table class="table table-striped directus-table">
+	<thead>
+		<tr>
+			<th>Name</th><th>E-Mail</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#rows}}
+		<tr data-id="{{id}}"><td>{{last_name}}, {{first_name}}</td><td>{{email}}</td></tr>
+		{{else}}
+		<tr><td colspan="2">No customers!</td></tr>
+		{{/rows}}
+	</tbody>
+</table>
+</div>

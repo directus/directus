@@ -15,7 +15,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [];
 
-  var template = '<label>Change Password</label>'+
+  var template = '<label>Change Password <span class="note">{{comment}}</span></label>'+
                  '<input type="password" name="{{name}}" class="large"/>'+
                  '<label style="margin-top:12px">Confirm Password</label>'+
                  '<input type="password" value="{{value}}" class="large"/>';
@@ -27,7 +27,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     serialize: function() {
-      return { name: this.options.name };
+      return {
+        name: this.options.name,
+        comment: this.options.schema.get('comment')
+      };
     }
 
   });

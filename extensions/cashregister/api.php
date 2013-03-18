@@ -18,6 +18,7 @@ class cashRegister {
 
 	function products($searchVal = "") {
 		if ($searchVal != "") {
+			$searchVal = urldecode($searchVal);
 			$query = "SELECT * FROM products WHERE title LIKE '%$searchVal%'";
 		} else {
 			$query = "SELECT * FROM products";
@@ -29,12 +30,23 @@ class cashRegister {
 
 	function customers($searchVal = "") {
 		if ($searchVal != "") {
-			$query="SELECT  *, MATCH (`first_name`,`last_name`,`email`) AGAINST ('".$searchVal."*' IN BOOLEAN MODE) AS Relevance FROM users WHERE 1 AND MATCH (`first_name`,`last_name`,`email`) AGAINST ('".$searchVal."*' IN BOOLEAN MODE)  ORDER BY Relevance DESC";
+			$searchVal = urldecode($searchVal);
+			$searchArray = explode(" ", $searchVal);
+			$query="SELECT * FROM riders WHERE  MATCH (`first_name`, `last_name`, `email`) AGAINST ('";
+			$i=0;
+			foreach ($searchArray as $word) {
+				//if ($i != 0) $query .= " OR ";
+
+				$query .= "+".$word."* ";
+     			//$i++;
+			}
+			$query .= "' IN BOOLEAN MODE)";
 		} else {
-			$query = "SELECT * FROM users";
+			$query = "SELECT * FROM riders";
 		}
 		$stmt = $this->db->dbh->query($query);
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		//$results['query'] = $query;
 		return $results;
 	}
 

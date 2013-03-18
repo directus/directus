@@ -10,26 +10,29 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
+  var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
+                  <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}"/>';
+
   Module.id = 'numeric';
   Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR','DOUBLE'];
-
-
-  Module.options = {
-    options: []
-  };
 
   Module.variables = [
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }}
   ];
 
   Module.Input = Backbone.Layout.extend({
+
+    template: Handlebars.compile(template),
+
     tagName: 'fieldset',
+
     events: {
       'keydown input': function(e) {
         if (!e.metaKey && !(e.which < 58 || (this.hasDecimals && e.which === 190))) {
           e.preventDefault();
         }
       },
+
       'blur input': function(e) {
         var val;
         if (!this.$input.val()) return;
@@ -41,13 +44,21 @@ define(['app', 'backbone'], function(app, Backbone) {
         this.$input.val(val);
       }
     },
-    initialize: function(options) {
-      var size = (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large';
-      this.$input = $('<input type="text" value="'+(this.options.value || '')+'" name="'+this.options.name+'" id="'+this.options.name+'" class="'+size+'"/>');
-      this.$el.append('<label>'+app.capitalize(this.options.name)+'</test>');
-      this.$el.append(this.$input);
-      this.hasDecimals = (['float', 'decimal', 'numeric'].indexOf(this.options.schema.get('type')) > -1);
+
+    serialize: function() {
+      var value = this.options.value || '';
+      return {
+        value: value,
+        name: this.options.name,
+        size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
+        comment: this.options.schema.get('comment')
+      };
+    },
+
+    initialize: function() {
+      // this.hasDecimals = (['float', 'decimal', 'numeric'].indexOf(this.options.schema.get('type')) > -1);
     }
+
   });
 
   Module.list = function(options) {
