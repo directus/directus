@@ -67,8 +67,10 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
 
                 views: {
                     '.omnibox': new Transaction.Views.OmniBox({
-                        customerColllection: this.customerCollection,
-                        productCollection: this.quickPicksCollection
+                        customerCollection: this.customerCollection,
+                        activeProductsCollection: this.activeProductsCollection,
+                        productCollection: this.quickPicksCollection,
+                        transaction: this.transaction
                     }),
 
                     '.quick_picks_table': new Product.Views.QuickPicksList({
