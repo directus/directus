@@ -11,8 +11,8 @@
 </thead>
 <tbody>
   {{#rows}}
-  <tr>
-  	<td data-id="{{table_name}}">{{{capitalize table_name}}}</td>
+  <tr data-id="{{table_name}}">
+  	<td>{{{capitalize table_name}}}</td>
 	<td>{{#if hidden}}✔{{/if}}</td>
 	<td>{{#if single}}✔{{/if}}</td>
 	<td>{{#if inactive_by_default}}✔{{/if}}</td>
