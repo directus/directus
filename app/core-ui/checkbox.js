@@ -10,7 +10,9 @@ define(['app','backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label class="checkbox"><input type="checkbox" {{#if selected}}checked{{/if}}/>{{{capitalize name}}}</label><input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
+  var template = '<label style="margin-top:3px;" class="checkbox"> \
+                  <input style="margin-top:1px;" type="checkbox" {{#if selected}}checked{{/if}}/>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
+                  <input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
 
   Module.id = 'checkbox';
   Module.dataTypes = ['TINYINT'];
@@ -25,8 +27,19 @@ define(['app','backbone'], function(app, Backbone) {
       }
     },
     serialize: function() {
-      var selected = (parseInt(this.options.value,10) === 1) ? true : false;
-      return {name: this.options.name, selected: selected};
+      var value = this.options.value;
+
+      // Get default value if there is one
+      if (value === undefined && this.options.schema.has('def')) {
+        value = this.options.schema.get('def');
+      }
+
+      var selected = (parseInt(value,10) === 1) ? true : false;
+      return {
+        name: this.options.name,
+        selected: selected,
+        comment: this.options.schema.get('comment')
+      };
     }
   });
 

@@ -53,6 +53,13 @@ class DB extends MySQL {
      // Gram the schema so we can see what's possible
     $schema = $this->get_table($tbl_name);
 
+    // Grab the value from many-one relations (index 0 if it is an array)
+    foreach($schema as $column) {
+      if ($column['ui'] == 'many_to_one' && is_array($data[$column['id']])) {
+        $data[$column['id']] = $data[$column['id']][0];
+      }
+    }
+
     // Grab relational columns
     foreach($schema as $column) {
       if (in_array($column['type'], $alias_types)) {

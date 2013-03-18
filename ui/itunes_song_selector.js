@@ -15,9 +15,18 @@ define(['app', 'backbone'], function (app, Backbone) {
         {id: 'field_mappings', ui: 'textarea', options: {rows: 4} }
     ];
 
-    var template = '<label>{{{capitalize name}}}</label>' +
-        '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" />' +
-        '<input type="text" value="{{value}}" class="{{size}} for_display_only"/>';
+        var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
+                    <style type="text/css"> \
+                    ul.typeahead li.active a, \
+          ul.typeahead li.active a:hover { \
+                        color: #ffffff; \
+                    } \
+          ul.typeahead li a img { \
+            margin-right: 10px; \
+          } \
+                    </style> \
+                    <input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" /> \
+                    <input type="text" value="{{value}}" class="{{size}} for_display_only"/>';
 
     Module.Input = Backbone.Layout.extend({
 
@@ -74,8 +83,9 @@ define(['app', 'backbone'], function (app, Backbone) {
                     return items;
                 },
                 highlighter: function (item) {
-                    var item = JSON.parse(item);
-                    return '<img src="' + item.artworkUrl100 + '" /> ' + item.artistName + ' - ' + item.trackName;
+                        var item = JSON.parse(item);
+                    return '<img src="' + item.artworkUrl60 + '" /> ' + item.artistName + ' - ' + item.trackName;
+          // http://a1.mzstatic.com/us/r1000/004/Music/24/32/a7/mzi.hjzwehvk.80x60-75.jpg
                 },
                 matcher: function (item) {
                     return true;
@@ -119,5 +129,6 @@ define(['app', 'backbone'], function (app, Backbone) {
     };
 
     return Module;
+
 
 });
