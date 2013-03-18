@@ -29,7 +29,7 @@ define(['app','backbone'], function(app, Backbone) {
     serialize: function() {
       var value = this.options.value;
 
-      // Get default value if there is one
+      // Get default value if there is one...
       if (value === undefined && this.options.schema.has('def')) {
         value = this.options.schema.get('def');
       }
