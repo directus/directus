@@ -266,7 +266,7 @@ function(app, Backbone, ui, Directus) {
     template: 'settings-tables',
 
     events: {
-      'click td': function(e) {
+      'click tr': function(e) {
         var tableName = e.target.getAttribute('data-id');
         app.router.go(['settings','tables',tableName]);
       }
