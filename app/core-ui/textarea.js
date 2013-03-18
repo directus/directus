@@ -10,7 +10,8 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label>{{{capitalize name}}}</label><textarea rows="{{rows}}" name="{{name}}" id="{{name}}">{{value}}</textarea>';
+  var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
+                  <textarea rows="{{rows}}" name="{{name}}" id="{{name}}">{{value}}</textarea>';
 
   Module.id = 'textarea';
   Module.dataTypes = ['TEXT', 'VARCHAR'];
@@ -18,10 +19,6 @@ define(['app', 'backbone'],function(app, Backbone) {
   Module.variables = [
     {id: 'rows', ui: 'numeric', char_length: 3}
   ];
-
-  Module.options = {
-    options: []
-  };
 
   Module.Input = Backbone.Layout.extend({
 
@@ -33,7 +30,8 @@ define(['app', 'backbone'],function(app, Backbone) {
       return {
         value: this.options.value,
         name: this.options.name,
-        rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '5'
+        rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '5',
+        comment: this.options.schema.get('comment')
       };
     }
 

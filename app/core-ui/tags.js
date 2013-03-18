@@ -10,7 +10,7 @@ define(['app','backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label>{{{capitalize name}}}</label>'+
+  var template = '<label>{{{capitalize name}}}  <span class="note">{{comment}}</span></label>'+
                  '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}">'+
                  '<input type="text" class="medium" id="tag-input"/><button class="btn btn-small btn-primary margin-left" type="button">Add</button>'+
                  '<div style="width:84%;">{{#tags}}<span class="label tag">{{this}}</span>{{/tags}}</div>';
@@ -27,7 +27,12 @@ define(['app','backbone'], function(app, Backbone) {
     serialize: function() {
       //Filter out empty tags
       this.tags = _.filter(this.tags, function(tag) { return(tag !== ''); });
-      return {value: this.tags.join(','), name: this.options.name, tags: this.tags};
+      return {
+        value: this.tags.join(','),
+        name: this.options.name,
+        tags: this.tags,
+        comment: this.options.schema.get('comment')
+      };
     },
 
     events: {

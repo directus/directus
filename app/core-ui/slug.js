@@ -1,4 +1,4 @@
-//  Text Input Core UI component
+//  Slug Core UI component
 //  Directus 6.0
 
 //  (c) RANGER
@@ -10,14 +10,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  Module.id = 'textinput';
-  Module.dataTypes = ['VARCHAR', 'DATE', 'TIME'];
+  Module.id = 'slug';
+  Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
-    {id: 'readonly', ui: 'checkbox'},
+    {id: 'readonly', ui: 'checkbox', def: '1'},
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    {id: 'validation_regex', ui: 'textinput', char_length:200},
-    {id: 'validation_message', ui: 'textinput', char_length:200}
+    {id: 'mirrored_field', ui: 'textinput', char_length:200}
   ];
 
   var template = '<label>{{capitalize name}} <span class="note">{{comment}}</span></label>'+
@@ -31,18 +30,34 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'focus input': function() { this.$el.find('.label').show(); },
-      'keyup input': 'updateMaxLength',
-      'blur input': function() { this.$el.find('.label').hide(); }
+      'change input': function() {
+        this.$el.find('.label').show();
+      }
     },
 
-    updateMaxLength: function(e) {
-      var length = this.options.schema.get('char_length') - e.target.value.length;
-      this.$el.find('.label').html(length);
-    },
-
-    afterRender: function() {
+    afterRender: function(e) {
       if (this.options.settings.get("readonly") === "on") this.$("input").prop("readonly",true);
+      var mirrored_field = this.options.settings.get("mirrored_field");
+      var slug_field = this.$el.find('input');
+      $('#'+mirrored_field).keyup(function(){
+        var slug = $(this).val();
+
+        slug = slug.replace(/^\s+|\s+$/g, ''); // trim
+        slug = slug.toLowerCase();
+
+        // Remove accents, swap ñ for n, etc
+        var from = "ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;";
+        var to   = "aaaaaeeeeeiiiiooooouuuunc------";
+        for (var i=0, l=from.length ; i<l ; i++) {
+        slug = slug.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+        }
+
+        slug = slug.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+        .replace(/\s+/g, '-') // collapse whitespace and replace by -
+        .replace(/-+/g, '-'); // collapse dashes
+
+        slug_field.val(slug);
+      });
     },
 
     serialize: function() {
@@ -53,9 +68,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         value: value,
         name: this.options.name,
         maxLength: length,
-        characters: length - value.length,
         comment: this.options.schema.get('comment'),
-        readonly: this.options.settings.get('readonly') === "1"
+        readonly: (this.options.settings && this.options.settings.has('readonly')) ? this.options.settings.get('readonly') : true
       };
     }
   });

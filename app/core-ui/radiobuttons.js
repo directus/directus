@@ -14,10 +14,21 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
-    {id: 'options', ui: 'textinput', 'char_length': 100}
+    {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a JSON object'}
   ];
 
-  var template = '<label>{{{capitalize name}}}</label>{{#options}}<input type="radio" name="{{../name}}" value="{{value}}" {{#if selected}}checked{{/if}}>{{value}}{{/options}}';
+  var template = '<label style="margin-bottom: 7px;">{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
+                  <style type="text/css"> \
+                  label.radiobuttons { \
+                    font-weight:normal; \
+                    display:inline; \
+                    margin-right: 10px; \
+                    padding: 4px; \
+                  } \
+                  </style> \
+                  {{#options}} \
+                    <input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{value}}" id="radio-{{value}}" {{#if selected}}checked{{/if}}><label class="radiobuttons" for="radio-{{value}}">{{value}}</label> \
+                  {{/options}}';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -27,13 +38,17 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var options = _.map(this.options.settings.get('options').split(','), function(item) {
-        return {value: item, selected: (item === this.options.value)};
+        return {
+          value: item,
+          selected: (item === this.options.value)
+        };
       }, this);
 
-
-      console.log(options);
-
-      return {name: this.options.name, options: options};
+      return {
+        name: this.options.name,
+        options: options,
+        comment: this.options.schema.get('comment')
+      };
     }
 
   });
