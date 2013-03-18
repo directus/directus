@@ -53,17 +53,13 @@ function (app, User, Product) {
 
         template: 'omnibox',
 
-        events: {
-            //  'keydown input': 'processKeyDown'
-        },
-
         initialize: function (options) {
-            console.log("omnibox initialized with options", options);
             this.options = options;
+            var self = this;
         },
 
         afterRender: function () {
-
+          var self = this;
             this.$("input").typeahead({
                 minLength: 2,
                 items: 5,
@@ -72,7 +68,6 @@ function (app, User, Product) {
                         url: "/directus/api/1/extensions/cashregister/omnibox",
                         dataType: 'json',
                         success: function (data) {
-                            console.log(data);
                             var items = [];
                             $.each(data, function (i, item) {
                                 items.push(JSON.stringify(item));
@@ -80,11 +75,7 @@ function (app, User, Product) {
                             typeahead.process(items);
                         }
                     });
-
-
                 },
-
-
                 highlighter: function (item) {
                     var item = JSON.parse(item);
                     var itemTitle = item.title;
@@ -96,13 +87,21 @@ function (app, User, Product) {
                 },
                 onselect: function (obj) {
                     var item = JSON.parse(obj);
-                    this.$element.val(item.title);
+                                        switch (item.type) {
+                      case 'product':
+                        var modelToAdd = self.options.productCollection.get(item.id);
+                        self.options.activeProductsCollection.trigger('cartAdd', modelToAdd );
+                        this.$element.val('');
+                      break;
+                      case 'rider':
+                        var modelToAdd = self.options.customerCollection.get(item.id);
+                        self.options.transaction.set({selectedRider: modelToAdd});
+                         this.$element.val('');
+                      break;
+                    }
                     
+                  
                 }
-
-
-
-
             });
         }
 
