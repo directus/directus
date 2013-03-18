@@ -121,7 +121,7 @@ define(['app', 'backbone'], function (app, Backbone) {
     });
 
     Module.validate = function (value) {
-        return true;
+        //return true;
     };
 
     Module.list = function (options) {
