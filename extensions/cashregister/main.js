@@ -36,11 +36,9 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
 
             this.transaction = new Transaction.Model();
 
-            var routerProxy = this;
-
             var collections = {
                 quickPicksCollection: new Product.QuickPicksCollection(),
-                customerCollection: new User.Collection(),
+                customerCollection: new User.Collection({transaction: this.transaction}),
                 activeProductsCollection: this.transaction.activeProductsCollection
             };
 
@@ -56,13 +54,9 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                 initialize: function(options) {
                     this.transaction = options.transaction;
                     this.listenTo(options.transaction, {
-                        'change:selectedRider':this.show_rider_detail
+                        'change:selectedRider':this.show_rider_detail,
+                        'change:userSearchSetting':this.set_user_search_view
                     });
-                },
-
-                events: {
-                    'keyup #customer-filter': 'update_users_table',
-                    'keyup #quickpicks-filter': 'update_products_table'
                 },
 
                 views: {
@@ -91,30 +85,26 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                     this.render();
                 },
 
-                update_users_table: _.debounce(function (e) {
-                    
-                    var searchVal = e.currentTarget.value;
+                set_user_search_view: function() {
+                  console.log("set_user_search_view", this);
+                  var searchSetting = this.transaction.get('userSearchSetting');
+                  this.setView('.customers_table', new User.Views.List({
+                    collection: this.options.customerCollection,
+                    transaction: this.transaction
+                  }));
+                  switch (searchSetting) {
+                    case '':
+                      this.options.customerCollection.url = '/directus/api/1/extensions/cashregister/customers';
+                      this.options.customerCollection.fetch();
+                    break;
+                    case 'class':
+                      this.options.customerCollection.url = '/directus/api/1/extensions/cashregister/customers/class';
+                      this.options.customerCollection.fetch();
+                    break;
+                  }
 
-                    if (searchVal.length > 0) {
-                        routerProxy.customerCollection.url = '/directus/api/1/extensions/cashregister/customers/' + searchVal;
-                    } else {
-                        routerProxy.customerCollection.url = '/directus/api/1/extensions/cashregister/customers';
-                    }
-                    console.log(this);
-                    this.setView('.customers_table', new User.Views.List({
-                      collection: this.options.customerCollection,
-                      transaction: this.transaction
-                    }));
-                    routerProxy.customerCollection.fetch();
-                }, 800),
+                }
 
-                update_products_table: _.debounce(function (e) {
-
-                    routerProxy.quickPicksCollection.trigger('change:searchVal', {
-                        searchVal: e.currentTarget.value
-                    })
-
-                }, 500)
             });
 
             this.v.subMain = new SubMain(
