@@ -26,7 +26,7 @@ a {cursor:pointer;}
 .red { color:@red; }
 .gray-dark { color:@grayDark!important; }
 
-.inactive { opacity: 0.3; cursor: default!important;}
+.inactive { opacity: 0.4; cursor: default!important;}
 
 // STRUCTURE
 // ----------------
@@ -463,8 +463,8 @@ a:hover {text-decoration:none;}
 
   tbody tr.inactive td,
   tbody tr.deleted td {
-    color: rgba(0,0,0,0.2);
-    img {opacity: 0.3;}
+    color: rgba(0,0,0,0.4);
+    img {opacity: 0.4;}
   }
   tbody tr:hover td,
   tbody tr.selected td {
@@ -539,7 +539,7 @@ a:hover {text-decoration:none;}
   th.field-required,
   th.field-master {width: 50px;}
   select {width: 150px; margin:0;}
-  tr.system { cursor:default; }
+  tr.system { cursor:default; opacity: .4; }
 }
 
 #directus_tables .description { width: 250px; }
