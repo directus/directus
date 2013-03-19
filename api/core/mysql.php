@@ -670,7 +670,7 @@ class MySQL {
     $sth = $this->dbh->query("SELECT DU.*,DG.name AS group_name FROM directus_users DU LEFT JOIN directus_groups DG ON (DU.group = DG.id)");
     $result = array();
     while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-      $row['group'] = array((int)$row['group'],$row['group_name']);
+      $row['group'] = array('id'=>(int)$row['group'],'name'=>$row['group_name']);
       unset($row['group_name']);
       $row['active'] = (int)$row['active'];
       array_push($result, $row);
