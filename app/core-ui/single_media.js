@@ -20,7 +20,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
   var Module = {};
 
   Module.id = 'single_media';
-  Module.dataTypes = ['VARCHAR', 'INT'];
+  Module.dataTypes = ['INT'];
 
   Module.variables = [
     {id: 'allowed_filetypes', ui: 'textinput', char_length:200}
