@@ -6,44 +6,60 @@ RewriteEngine On
 
 # Upload
 # ------
-RewriteRule ^1/upload*$									api.php?api_collection=upload [L]
+
+# (DONE)
+# RewriteRule ^1/upload*$									api.php?api_collection=upload [L]
 
 # Extensions
 # ----------
+
+# (DON'T REPLACE)
 RewriteRule ^1/extensions/([^/]+)						../extensions/$1/api.php [L]
 
+# (DONE)
+# RewriteRule ^1/tables/*$ 								api.php?api_collection=tables&api_response_type=json&%{QUERY_STRING} [L]
 
-RewriteRule ^1/tables/*$ 								api.php?api_collection=tables&api_response_type=json&%{QUERY_STRING} [L]
+# (???)
 RewriteRule ^1/([^/]+)\.([^/]+)*$ 						api.php?api_collection=$1&api_response_type=$2&%{QUERY_STRING} [L]
 
 
 # Media
 # -----
-RewriteRule ^1/media/*$ 								api.php?api_collection=media&api_response_type=json&%{QUERY_STRING} [L]
-RewriteRule ^1/media/([^/]+)/*$ 						api.php?api_collection=media&api_response_type=json&id=$1&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/media/*$ 								api.php?api_collection=media&api_response_type=json&%{QUERY_STRING} [L]
+# RewriteRule ^1/media/([^/]+)/*$ 						api.php?api_collection=media&api_response_type=json&id=$1&%{QUERY_STRING} [L]
 
 # Settings
 # --------
-RewriteRule ^1/settings*$ 								api.php?api_collection=settings&%{QUERY_STRING} [L]
-RewriteRule ^1/settings/([^/]+)/*$ 						api.php?api_collection=settings&id=$1&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/settings*$ 								api.php?api_collection=settings&%{QUERY_STRING} [L]
+# RewriteRule ^1/settings/([^/]+)/*$ 						api.php?api_collection=settings&id=$1&%{QUERY_STRING} [L]
 
 # ============
 
 # Users
 # -----
-RewriteRule ^1/users/*$ 								api.php?api_collection=users&%{QUERY_STRING} [L]
-RewriteRule ^1/users/([^/]+)/*$ 						api.php?api_collection=users&id=$1&%{QUERY_STRING} [L]
-RewriteRule ^1/tables/directus_users/rows/*$ 			api.php?api_collection=users&%{QUERY_STRING} [L]
-RewriteRule ^1/tables/directus_users/rows/([^/]+)/*$ 	api.php?api_collection=users&id=$1&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/users/*$ 								api.php?api_collection=users&%{QUERY_STRING} [L]
+# RewriteRule ^1/users/([^/]+)/*$ 						api.php?api_collection=users&id=$1&%{QUERY_STRING} [L]
+# RewriteRule ^1/tables/directus_users/rows/*$ 			api.php?api_collection=users&%{QUERY_STRING} [L]
+# RewriteRule ^1/tables/directus_users/rows/([^/]+)/*$ 	api.php?api_collection=users&id=$1&%{QUERY_STRING} [L]
 
 # Groups
 # ------
-RewriteRule ^1/groups/*$ 								api.php?api_collection=groups&%{QUERY_STRING} [L]
-RewriteRule ^1/groups/([^/]+)/*$ 						api.php?api_collection=groups&id=$1%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/groups/*$ 								api.php?api_collection=groups&%{QUERY_STRING} [L]
+# RewriteRule ^1/groups/([^/]+)/*$ 						api.php?api_collection=groups&id=$1%{QUERY_STRING} [L]
 
 # Activity
 # --------
-RewriteRule ^1/activity/*$ 								api.php?api_collection=activity&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/activity/*$ 								api.php?api_collection=activity&%{QUERY_STRING} [L]
 
 # ============
 
@@ -51,22 +67,34 @@ RewriteRule ^1/activity/*$ 								api.php?api_collection=activity&%{QUERY_STRIN
 # ------
 
 # Schema
-RewriteRule ^1/tables/([^/]+)/*$ 						api.php?api_collection=table&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/tables/([^/]+)/*$ 						api.php?api_collection=table&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 
 # Rows
-RewriteRule ^1/tables/([^/]+)/rows/*$ 					api.php?api_collection=entries&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
-RewriteRule ^1/tables/([^/]+)/rows/([^/]+)/*$ 			api.php?api_collection=entries&api_response_type=json&table_name=$1&id=$2&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/tables/([^/]+)/rows/*$ 					api.php?api_collection=entries&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
+# RewriteRule ^1/tables/([^/]+)/rows/([^/]+)/*$ 			api.php?api_collection=entries&api_response_type=json&table_name=$1&id=$2&%{QUERY_STRING} [L]
 
 # Columns
-RewriteRule ^1/tables/([^/]+)/columns/*$ 				api.php?api_collection=columns&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
-RewriteRule ^1/tables/([^/]+)/columns/([^/]+)/*$ 		api.php?api_collection=columns&api_response_type=json&table_name=$1&column_name=$2&%{QUERY_STRING} [L]
-RewriteRule ^1/tables/([^/]+)/columns/([^/]+)/([^/]+)/*$ api.php?api_collection=ui&api_response_type=json&table_name=$1&column_name=$2&ui_name=$3&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/tables/([^/]+)/columns/*$ 				api.php?api_collection=columns&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
+# RewriteRule ^1/tables/([^/]+)/columns/([^/]+)/*$ 		api.php?api_collection=columns&api_response_type=json&table_name=$1&column_name=$2&%{QUERY_STRING} [L]
+
+# (UNUSED)
+# RewriteRule ^1/tables/([^/]+)/columns/([^/]+)/([^/]+)/*$ api.php?api_collection=ui&api_response_type=json&table_name=$1&column_name=$2&ui_name=$3&%{QUERY_STRING} [L]
 
 # UI
 RewriteRule ^1/tables/([^/]+)/ui/*$ 					api.php?api_collection=ui&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 
 # Preferences
-RewriteRule ^1/tables/([^/]+)/preferences/*$ 			api.php?api_collection=preferences&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/tables/([^/]+)/preferences/*$ 			api.php?api_collection=preferences&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 
 # Revisions
-RewriteRule ^1/tables/([^/]+)/rows/([^/]+)/revisions/*$ api.php?api_collection=revisions&api_response_type=json&table_name=$1&id=$2&%{QUERY_STRING} [L]
+
+# (DONE)
+# RewriteRule ^1/tables/([^/]+)/rows/([^/]+)/revisions/*$ api.php?api_collection=revisions&api_response_type=json&table_name=$1&id=$2&%{QUERY_STRING} [L]

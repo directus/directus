@@ -1,8 +1,11 @@
 <?php
 require 'api/api.php';
-require 'api/vendor/autoload.php';
 
 $data = array();
+
+// @TODO next step: manually run slim routes to duplicate the functionality below,
+// of the request() function in api_old.php
+
 $data['tables'] = request('tables', 'GET');
 $data['users'] = request('users', 'GET');
 $data['groups'] = request('groups', 'GET');
