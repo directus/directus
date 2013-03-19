@@ -64,72 +64,84 @@ function (app, User, Product) {
         afterRender: function () {
           var self = this;
           this.$("input").focus();
-            this.$("input").typeahead({
-                minLength: 2,
-                //items: 5,
-                source: function (typeahead, query) {
-                    $.ajax({
-                        url: "/directus/api/1/extensions/cashregister/omnibox",
-                        dataType: 'json',
-                        success: function (data) {
-                            var items = [];
-                            $.each(data, function (i, item) {
-                                items.push(JSON.stringify(item));
-                            });
-                            items.push(JSON.stringify({id:0, title:'Riders in current and upcoming classes', type:'class'}));
-                            items.push(JSON.stringify({id:0, title:'All Riders', type:'allusers'}));
-                            typeahead.process(items);
-                        }
-                    });
+          this.$("input").typeahead({
+              minLength: 2,
+              //items: 5,
+              source: function (typeahead, query) {
+                  $.ajax({
+                      url: "/directus/api/1/extensions/cashregister/omnibox",
+                      dataType: 'json',
+                      success: function (data) {
+                          var items = [];
+                          $.each(data, function (i, item) {
+                              items.push(JSON.stringify(item));
+                          });
+                          items.push(JSON.stringify({id:0, title:'Riders in current and upcoming classes', type:'class'}));
+                          items.push(JSON.stringify({id:0, title:'All Riders', type:'allusers'}));
+                          typeahead.process(items);
+                      }
+                  });
+              },
+
+              matcher: function(item) {
+                var obj = JSON.parse(item);
+                if (obj.type === "rider" && self.options.customerCollection.pluck('id').indexOf(obj.id) == -1) {
+                  return false;
+                } else {
+                  return ~item.toLowerCase().indexOf(this.query.toLowerCase())
+                } 
+              },
+              sorter: function (items) {
+                    var beginswith = []
+                    , caseSensitive = []
+                    , caseInsensitive = []
+                    , item
+
+                  while (item = items.shift()) {
+                    var itemObj = JSON.parse(item);
+                    var itemName = itemObj.title;
+                    if (!itemName.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
+                    else if (~itemName.indexOf(this.query)) caseSensitive.push(item)
+                    else caseInsensitive.push(item)
+                  }
+
+                  return beginswith.concat(caseSensitive, caseInsensitive)
                 },
+              highlighter: function (item) {
+                var item = JSON.parse(item);
+                var itemTitle = item.title;
 
-                matcher: function(item) {
-                  var obj = JSON.parse(item);
-                    console.log(obj.type, self.options.customerCollection.pluck('id'));
-                    if (obj.type === "rider" && self.options.customerCollection.pluck('id').indexOf(obj.id) == -1) {
-                      return false;
-                    } else {
-                      return ~item.toLowerCase().indexOf(this.query.toLowerCase())
-                    }
-                    
-                },
-
-                highlighter: function (item) {
-                    var item = JSON.parse(item);
-                    var itemTitle = item.title;
-
-                    return itemTitle.replace(new RegExp('(' + this.query + ')', 'ig'), function ($1, match) {
-                        return '<strong>' + match + '</strong>'
-                    })
-
-                },
-                onselect: function (obj) {
-                    var item = JSON.parse(obj);
-                    switch (item.type) {
-                      case 'product':
-                        var modelToAdd = self.options.productCollection.get(item.id);
-                        self.options.activeProductsCollection.trigger('cartAdd', modelToAdd );
-                      break;
-                      case 'rider':
-                        var modelToAdd = self.options.customerCollection.get(item.id);
-                        self.options.transaction.set({selectedRider: modelToAdd});
-                      break;
-                      case 'class':
-                        self.options.transaction.set({userSearchSetting:'class'});
-                      break;
-                      case 'allusers':
-                        self.setView('.customers_table', new User.Views.List({
-                          collection: self.options.customerCollection,
-                          transaction: self.options.transaction
-                        }));
-                        self.options.transaction.set({userSearchSetting:''});
-                        
-                      break;
-                    }
-                    self.$("input").val('');
-                    self.$("input").focus();
-                }
-            });
+                return itemTitle.replace(new RegExp('(' + this.query + ')', 'ig'), function ($1, match) {
+                    return '<strong>' + match + '</strong>'
+                })
+              },
+              onselect: function (obj) {
+                  var item = JSON.parse(obj);
+                  switch (item.type) {
+                    case 'product':
+                      var modelToAdd = self.options.productCollection.get(item.id);
+                      self.options.activeProductsCollection.trigger('cartAdd', modelToAdd );
+                    break;
+                    case 'rider':
+                      var modelToAdd = self.options.customerCollection.get(item.id);
+                      self.options.transaction.set({selectedRider: modelToAdd});
+                    break;
+                    case 'class':
+                      self.options.transaction.set({userSearchSetting:'class'});
+                    break;
+                    case 'allusers':
+                      self.setView('.customers_table', new User.Views.List({
+                        collection: self.options.customerCollection,
+                        transaction: self.options.transaction
+                      }));
+                      self.options.transaction.set({userSearchSetting:''});
+                      
+                    break;
+                  }
+                  self.$("input").val('');
+                  self.$("input").focus();
+              }
+          });
         }
     });
 
