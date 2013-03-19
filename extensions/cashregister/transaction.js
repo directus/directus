@@ -56,13 +56,17 @@ function (app, User, Product) {
         initialize: function (options) {
             this.options = options;
             var self = this;
+            this.listenTo(options.customerCollection, {
+              'reset': this.render
+            });
         },
 
         afterRender: function () {
           var self = this;
+          this.$("input").focus();
             this.$("input").typeahead({
                 minLength: 2,
-                items: 5,
+                //items: 5,
                 source: function (typeahead, query) {
                     $.ajax({
                         url: "/directus/api/1/extensions/cashregister/omnibox",
@@ -72,10 +76,24 @@ function (app, User, Product) {
                             $.each(data, function (i, item) {
                                 items.push(JSON.stringify(item));
                             });
+                            items.push(JSON.stringify({id:0, title:'Riders in current and upcoming classes', type:'class'}));
+                            items.push(JSON.stringify({id:0, title:'All Riders', type:'allusers'}));
                             typeahead.process(items);
                         }
                     });
                 },
+
+                matcher: function(item) {
+                  var obj = JSON.parse(item);
+                    console.log(obj.type, self.options.customerCollection.pluck('id'));
+                    if (obj.type === "rider" && self.options.customerCollection.pluck('id').indexOf(obj.id) == -1) {
+                      return false;
+                    } else {
+                      return ~item.toLowerCase().indexOf(this.query.toLowerCase())
+                    }
+                    
+                },
+
                 highlighter: function (item) {
                     var item = JSON.parse(item);
                     var itemTitle = item.title;
@@ -87,24 +105,32 @@ function (app, User, Product) {
                 },
                 onselect: function (obj) {
                     var item = JSON.parse(obj);
-                                        switch (item.type) {
+                    switch (item.type) {
                       case 'product':
                         var modelToAdd = self.options.productCollection.get(item.id);
                         self.options.activeProductsCollection.trigger('cartAdd', modelToAdd );
-                        this.$element.val('');
                       break;
                       case 'rider':
                         var modelToAdd = self.options.customerCollection.get(item.id);
                         self.options.transaction.set({selectedRider: modelToAdd});
-                         this.$element.val('');
+                      break;
+                      case 'class':
+                        self.options.transaction.set({userSearchSetting:'class'});
+                      break;
+                      case 'allusers':
+                        self.setView('.customers_table', new User.Views.List({
+                          collection: self.options.customerCollection,
+                          transaction: self.options.transaction
+                        }));
+                        self.options.transaction.set({userSearchSetting:''});
+                        
                       break;
                     }
-                    
-                  
+                    self.$("input").val('');
+                    self.$("input").focus();
                 }
             });
         }
-
     });
 
     Transaction.Views.ActiveProductsList = Backbone.Layout.extend({
