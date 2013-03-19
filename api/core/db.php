@@ -63,7 +63,11 @@ class DB extends MySQL {
           continue;
         }
         // Update/Add foreign data
-        $foreign_id = $this->set_entry('directus_media', $foreign_data);
+        if ($column['ui'] == 'single_media') {
+          $foreign_id = $this->set_media($foreign_data);
+        } else {
+          $foreign_id = $this->set_entry('directus_media', $foreign_data);
+        }
 
         // Save the data id...
         $data[$column['id']] = $foreign_id;
@@ -143,11 +147,11 @@ class DB extends MySQL {
     return $id;
   }
 
-  function set_media($data) {
+  function set_media($data, $parent_id = null) {
     $isExisting = isset($data['id']);
     if ($isExisting) unset($data['date_uploaded']);
     $id = $this->set_entry('directus_media', $data);
-    $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data);
+    $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data, $parent_id);
     return $id;
   }
 
