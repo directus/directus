@@ -1,5 +1,6 @@
 <?php
 require 'api/api.php';
+require 'api/vendor/autoload.php';
 
 $data = array();
 $data['tables'] = request('tables', 'GET');

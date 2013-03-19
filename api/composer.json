@@ -1,0 +1,5 @@
+{
+    "require": {
+        "slim/slim": "dev-master"
+    }
+}
