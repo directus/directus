@@ -17,17 +17,15 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     {id: 'visible_columns', ui: 'textinput', char_length: 255}
   ];
 
+  var template = '<label>{{{capitalize title}}}</label> \
+      <div class="related-table"></div> \
+      <div class="btn-row"><button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button> \
+      {{#if manyToMany}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>';
 
   Module.Input = Backbone.Layout.extend({
 
     tagName: 'fieldset',
-
-    template: Handlebars.compile(
-      '<label>{{{capitalize title}}}</label>' +
-      '<div class="related-table"></div>' +
-      '<div class="btn-row"><button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>' +
-      '{{#if manyToMany}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>'),
-
+    template: Handlebars.compile(template),
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click button[data-action=add]': 'addRow'
