@@ -133,6 +133,10 @@ function(app, Backbone, BaseCollection) {
 
     validate: function(attributes, options) {
       var errors = [];
+
+      //only validates attributes that are part of the schema
+      attributes = _.pick(attributes, this.collection.structure.pluck('column_name'));
+
       _.each(attributes, function(value, key, list) {
         var mess = ui.validate(this, key, value);
         if (mess !== undefined) {
