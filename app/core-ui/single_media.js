@@ -15,7 +15,7 @@
 // options.name       String            Field name
 
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Backbone, Directus, Media) {
 
   var Module = {};
 
@@ -59,15 +59,19 @@ define(['app', 'backbone'], function(app, Backbone) {
                     max-width: 100px; \
                   } \
                   </style> \
-                  <!-- <div class="ui-thumbnail"> \
-                    <img src="http://images4.fanpop.com/image/photos/16200000/Kitten-pic-cute-kittens-16292210-1024-768.jpg"> \
-                  </div> --> \
-                  <div class="ui-thumbnail empty">Drag media here</div> \
+                  {{#if url}} \
+                  <div class="ui-thumbnail has-media"> \
+                    <img src="{{url}}"> \
+                  </div> \
+                  {{else}} \
+                  <div class="ui-thumbnail empty ui-thumbnail-dropzone">Drag media here</div> \
+                  {{/if}} \
+                  {{#if url}} \
                   <div class="btn-row"> \
-                    <button class="btn btn-small btn-primary" data-action="add" type="button">Swap media</button> \
+                    <button class="btn btn-small btn-primary" data-action="swap" type="button">Swap media</button> \
                     <button class="btn btn-small btn-primary" data-action="remove" type="button">Remove media</button> \
                   </div> \
-                  <input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}">';
+                  {{/if}}'
 
   Module.Input = Backbone.Layout.extend({
 
@@ -76,29 +80,104 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'change .slider': function(e) {
-        var value = e.target.value;
-        this.$el.find('span.slider-value').html(value);
+      'click button[data-action="remove"]': function() { this.mediaModel.clear(); },
+      'click button[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
+      'click .has-media': 'edit'
+    },
+
+    swap: function() {
+      var collection = app.media;
+      var model;
+      var mediaModel = this.mediaModel;
+      var view = new Directus.Table({collection: collection, selectable: false, footer: false, navigate: true});
+      view.navigate = function(id) {
+        model = collection.get(id);
+        mediaModel.clear({silent: true});
+        mediaModel.set(model.toJSON());
+        modal.close();
       }
+      var modal = app.router.openModal(view, {stretch: true, title: 'Insert Media'});
+      collection.fetch();
+      //console.log('s2sp');
+    },
+
+    edit: function() {
+      var model = this.mediaModel;
+      var view = new Directus.EditView({model: model});
+      var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
+      view.render();
+
+      modal.save = function() {
+        var data = view.data();
+        model.set(data);
+        modal.close();
+      };
     },
 
     afterRender: function() {
-      //
+      var timer;
+      var $dropzone = this.$el.find('.ui-thumbnail');
+      var model = this.mediaModel;
+
+      $dropzone.on('dragover', function(e) {
+        clearInterval(timer);
+        e.stopPropagation();
+        e.preventDefault();
+        $dropzone.addClass('dragover');
+        console.log('enter');
+      });
+
+      $dropzone.on('dragleave', function(e) {
+        clearInterval(timer);
+        timer = setInterval(function(){
+          $dropzone.removeClass('dragover');
+          console.log('leave');
+          clearInterval(timer);
+        },50);
+      });
+
+      // Since data transfer is not supported by jquery...
+      // XHR2, FormData
+      $dropzone[0].ondrop = _.bind(function(e) {
+        console.log('drop');
+        e.stopPropagation();
+        e.preventDefault();
+        if (e.dataTransfer.files.length > 1) {
+          alert('One file only please');
+          return;
+        }
+        app.sendFiles(e.dataTransfer.files, function(data) {
+          _.each(data, function(item) {
+            item.user = 1;
+            item.active = 1;
+            item.title = app.capitalize(item.name);
+            model.set(item);
+          });
+        });
+        $dropzone.removeClass('dragover');
+      }, this);
+
     },
 
     serialize: function() {
-      var value = this.options.value || '';
+      var url = this.mediaModel.has('name') ? app.RESOURCES_URL + 'thumbnail/' + this.mediaModel.get('name') : null;
+
+      console.log(this.mediaModel.toJSON());
 
       return {
-        value: value,
         name: this.options.name,
+        url: url,
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
         comment: this.options.schema.get('comment')
       };
     },
 
     initialize: function() {
-      //
+      this.mediaModel = this.options.value;
+      this.mediaModel.on('change', this.render, this);
+      //this.collection = app.entries['directus_media'];
+      //this.collection.fetch();
+      this.collection.on('reset', this.render, this);
     }
 
   });
