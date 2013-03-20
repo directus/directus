@@ -228,7 +228,7 @@ $app->get("/$V/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
  */
 
 $app->map("/$V/settings(/:id)/?", function ($id = null) use ($db, $params, $requestPayload, $app) {
-    switch ($http_method) {
+    switch ($app->request()->getMethod()) {
         case "POST":
         case "PUT":
             $db->set_settings($requestPayload);
