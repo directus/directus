@@ -6,10 +6,16 @@ $data = array();
 // @TODO next step: manually run slim routes to duplicate the functionality below,
 // of the request() function in api_old.php
 
-$data['tables'] = request('tables', 'GET');
-$data['users'] = request('users', 'GET');
-$data['groups'] = request('groups', 'GET');
-$data['settings'] = request('settings', 'GET');
+// $data['tables'] = request('tables', 'GET');
+// $data['users'] = request('users', 'GET');
+// $data['groups'] = request('groups', 'GET');
+// $data['settings'] = request('settings', 'GET');
+
+$data['tables'] = $db->get_tables();
+$data['users'] = Users::getAllWithGravatar();
+$data['groups'] = $db->get_entries("directus_groups");
+$data['settings'] = $db->get_settings('global');
+
 $data['page'] = '#tables';
 $data['path'] = DIRECTUS_PATH;
 $data['active_media'] = $db->count_active('directus_media');
