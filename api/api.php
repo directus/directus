@@ -280,10 +280,10 @@ $app->post('/upload', function () use ($db, $params, $data, $app) {
 
 // GET user index
 $app->get('/users', function () use ($db, $params, $data) {
-    $users = $db->get_users();
-    foreach ($users['rows'] as &$user) {
-        $user['avatar'] = get_gravatar($user['email'], 28, 'identicon');
-    }
+    $users = Users::getAllWithGravatar();
+    // foreach ($users['rows'] as &$user) {
+    //     $user['avatar'] = get_gravatar($user['email'], 28, 'identicon');
+    // }
     JsonView::render($users);
 })->name('user_index');
 
