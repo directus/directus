@@ -10,9 +10,28 @@ function (app) {
         searchVal = "";
 
     User.Collection = Backbone.Collection.extend({
-        initialize: function () {
+        initialize: function (options) {
             this.url = '/directus/api/1/extensions/cashregister/customers';
+            this.options = options;
+            this.listenTo(options.transaction, {
+            	"change:userSearchSetting":this.handleUserSearchSetting
+            });
         }
+        /**,
+        handleUserSearchSetting: function() {
+        	var searchSetting = this.options.transaction.get('userSearchSetting');
+        	switch (searchSetting) {
+        		case '':
+					this.url = '/directus/api/1/extensions/cashregister/customers';
+					this.fetch();
+        		break;
+        		case 'class':
+        			this.url = '/directus/api/1/extensions/cashregister/customers/class';
+        			this.fetch();
+        		break;
+        	}
+
+        }**/
     });
 
 

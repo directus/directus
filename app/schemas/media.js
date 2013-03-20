@@ -195,7 +195,7 @@ define([], function() {
       "default_value":"0",
       "comment":"",
       "sort":11,
-      "ui":"",
+      "ui":"numeric",
       "system":false,
       "master":false,
       "hidden_list":false,

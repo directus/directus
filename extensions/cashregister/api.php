@@ -29,16 +29,22 @@ class cashRegister {
 	}
 
 	function customers($searchVal = "") {
-		if ($searchVal != "") {
+		if ($searchVal == "class") {
+			// TODO: room_id needs to be a room in the selected studio...
+			// get class start and end time based on class_type_id...
+			$query = "SELECT rid.* from riders rid ";
+			$query .= "JOIN reservations res ";
+			$query .= "ON res.user_id = rid.id ";
+			$query .= "JOIN classes cla ";
+			$query .= "ON res.class_id = cla.id ";
+			$query .= "WHERE cla.datetime < DATE_ADD(NOW(), INTERVAL 1 HOUR) AND cla.datetime >= NOW()";
+		} else if ($searchVal != "") {
 			$searchVal = urldecode($searchVal);
 			$searchArray = explode(" ", $searchVal);
 			$query="SELECT * FROM riders WHERE  MATCH (`first_name`, `last_name`, `email`) AGAINST ('";
 			$i=0;
 			foreach ($searchArray as $word) {
-				//if ($i != 0) $query .= " OR ";
-
 				$query .= "+".$word."* ";
-     			//$i++;
 			}
 			$query .= "' IN BOOLEAN MODE)";
 		} else {

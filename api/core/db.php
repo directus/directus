@@ -54,8 +54,22 @@ class DB extends MySQL {
 
     // Grab the value from many-one relations (index 0 if it is an array)
     foreach($schema as $column) {
-      if ($column['ui'] == 'many_to_one' && is_array($data[$column['id']])) {
-        $data[$column['id']] = $data[$column['id']][0];
+      if (in_array($column['ui'], $this->many_to_one_uis) && is_array($data[$column['id']])) {
+        $foreign_data = $data[$column['id']];
+        // Threre is no nested item. Go ahead...
+        if (sizeof($foreign_data) == 0) {
+          $data[$column['id']] = null;
+          continue;
+        }
+        // Update/Add foreign data
+        if ($column['ui'] == 'single_media') {
+          $foreign_id = $this->set_media($foreign_data);
+        } else {
+          $foreign_id = $this->set_entry('directus_media', $foreign_data);
+        }
+
+        // Save the data id...
+        $data[$column['id']] = $foreign_id;
       }
     }
 
@@ -132,11 +146,11 @@ class DB extends MySQL {
     return $id;
   }
 
-  function set_media($data) {
+  function set_media($data, $parent_id = null) {
     $isExisting = isset($data['id']);
     if ($isExisting) unset($data['date_uploaded']);
     $id = $this->set_entry('directus_media', $data);
-    $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data);
+    $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data, $parent_id);
     return $id;
   }
 

@@ -20,7 +20,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   var Module = {};
 
   Module.id = 'slider';
-  Module.dataTypes = ['VARCHAR', 'INT'];
+  Module.dataTypes = ['INT'];
 
   Module.variables = [
     {id: 'minimum', ui: 'numeric'},

@@ -13,13 +13,14 @@ class MySQL {
   var $db_name;
   var $db_host;
   var $dbh;
+  var $many_to_one_uis = array('many_to_one', 'single_media');
 
   /**
    * Constructor
    *
    * @param $db_user
    * @param $db_password
-   * @param $db_name
+   * @param $db_name  
    * @param $db_host
    */
   function __construct($db_user, $db_password, $db_name, $db_host) {
@@ -444,7 +445,7 @@ class MySQL {
    * @param $params
    * @param $id
    */
-  function get_entries($tbl_name, $params=null) {    // <----- $id does nothing
+  function get_entries($tbl_name, $params=null) {
 
     //$result = $this->get_table_info($tbl_name);
     $result = array();
@@ -474,16 +475,6 @@ class MySQL {
       if ($column_type == 'ALIAS' || $column_type == 'ONETOMANY' || $column_type == "MANYTOMANY") {
         unset($schema[$i]);
         array_push($alias_schema, $col);
-      }
-      if ($column_ui == 'many_to_one') {
-        $related_table = $col['options']['related_table'];
-        $visbile_column = $col['options']['visible_column'];
-
-        // This one needs to check for conflicts
-        $alias_name = '__'.$column_name.'_'.$related_table."_".$visbile_column;
-        $schema[$i]['options']['alias_name'] = $alias_name;
-
-        $sub_selects .= ",(SELECT $visbile_column FROM $related_table WHERE $related_table.id = T.$column_name) AS $alias_name";
       }
     }
 
@@ -521,7 +512,7 @@ class MySQL {
     // Get main data
 
     $sql = "SELECT
-          SQL_CALC_FOUND_ROWS T.* $sub_selects
+          SQL_CALC_FOUND_ROWS T.*
         FROM
           $tbl_name T
         JOIN
@@ -551,17 +542,38 @@ class MySQL {
 
         $column_name = $col['column_name'];
         $column_type = $col['type'];
-        $column_ui = $col['ui'];
-
-        if ($column_ui == 'many_to_one') {
-          $label_column = $col['options']['alias_name'];
-          $item[$column_name] = array(intval($row[$column_name]), $row[$label_column]);
-          continue;
-        }
 
         $item[$column_name] = parse_mysql_type($row[$column_name], $column_type);
       }
+
       array_push($result, $item);
+    }
+
+    // Get Many-2-One-Relationships
+    foreach($schema as $i => $col) {
+      if (in_array($col['ui'], $this->many_to_one_uis)) {
+        $column_name = $col['id'];
+        $foreign_table_name = ($col['ui'] == 'single_media') ? 'directus_media' : $col['options']['related_table'];
+        $ids = array_map(function($row) use ($column_name) { return $row[$column_name]; }, $result);
+        $ids = implode (',' , $ids);
+        if ($ids == '') continue;
+
+        // Grab foreign data
+        $sth = $this->dbh->prepare("SELECT * FROM $foreign_table_name WHERE id IN ($ids)");
+        $sth->execute();
+        $data = array();
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+          $row_casted = array();
+          //cast the datatype
+          foreach ($row as $c => $v) $row[$c] = parse_mysql_type($v);
+          $data[(string)$row['id']] = $row;
+        }
+
+        // Update the result set
+        foreach ($result as &$value) {
+          $value[$column_name] = array_key_exists((string)$value[$column_name], $data) ? $data[$value[(string)$column_name]] : null;
+        }
+      }
     }
 
     // This is a set of data. Count visible and total and we are done!
@@ -658,7 +670,7 @@ class MySQL {
     $sth = $this->dbh->query("SELECT DU.*,DG.name AS group_name FROM directus_users DU LEFT JOIN directus_groups DG ON (DU.group = DG.id)");
     $result = array();
     while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-      $row['group'] = array((int)$row['group'],$row['group_name']);
+      $row['group'] = array('id'=>(int)$row['group'],'name'=>$row['group_name']);
       unset($row['group_name']);
       $row['active'] = (int)$row['active'];
       array_push($result, $row);
@@ -731,7 +743,7 @@ class MySQL {
 
   function delete($tbl_name, $id) {
     $sth = $this->dbh->query("DELETE FROM $tbl_name WHERE id = $id");
-    return $sth->execute(); 
+    return $sth->execute();
   }
 
   /**

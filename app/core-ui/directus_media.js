@@ -24,7 +24,9 @@ define(['app', 'backbone'], function(app, Backbone) {
                  '<label>File</label>' +
                  '<div id="upload_file" class="upload-form"><input type="file" class="large">' +
                  '<p><a href="#" data-action="toggle-form">Use a URL instead</a></p></div>' +
-                 '<div id="upload_url" class="upload-form hide"><input type="text" class="large" name="url"><p><a href="#" data-action="toggle-form">Upload a file from the computer</a></p></div>' +
+                 '<div id="upload_url" class="upload-form hide">'+
+                 //'<input type="text" class="large" name="url">'+
+                 '<p><a href="#" data-action="toggle-form">Upload a file from the computer</a></p></div>' +
                  '</fieldset>' +
                  '{{#if youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/pkWWWKKA8jY" frameborder="0" allowfullscreen></iframe></fieldset>{{/if}}';
 
