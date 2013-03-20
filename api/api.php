@@ -176,7 +176,7 @@ $app->map("/$V/media(/:id)/?", function ($id = null) use ($db, $params, $request
         case "PATCH":
             $requestPayload['id'] = $id;
         case "PUT":
-            if (!isset($id)) {
+            if (!is_null($id)) {
                 $db->set_entries($table, $requestPayload);
                 break;
             }
@@ -237,9 +237,6 @@ $app->map("/$V/settings(/:id)/?", function ($id = null) use ($db, $params, $requ
     $settings = $db->get_settings('global');
     $response = is_null($id) ? $settings : $settings[$id];
     \Directus\View\JsonView::render($response);
-    // $result = $db->get_settings('global');
-    // if (isset($id)) return $result[$id];
-    // return $db->get_settings('global');
 })->via('GET','POST','PUT');
 
 /**
