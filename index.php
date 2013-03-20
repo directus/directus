@@ -3,14 +3,6 @@ require 'api/api.php';
 
 $data = array();
 
-// @TODO next step: manually run slim routes to duplicate the functionality below,
-// of the request() function in api_old.php
-
-// $data['tables'] = request('tables', 'GET');
-// $data['users'] = request('users', 'GET');
-// $data['groups'] = request('groups', 'GET');
-// $data['settings'] = request('settings', 'GET');
-
 $data['tables'] = $db->get_tables();
 $data['users'] = Users::getAllWithGravatar();
 $data['groups'] = $db->get_entries("directus_groups");

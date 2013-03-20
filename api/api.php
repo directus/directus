@@ -30,24 +30,21 @@ $data = json_decode(file_get_contents('php://input'), true);
  * (Collections arranged alphabetically)
  */
 
-/** ACTIVITY COLLECTION
+/**
+ * ACTIVITY COLLECTION
  */
-
-// RewriteRule ^1/activity/*$                api.php?api_collection=activity&%{QUERY_STRING} [L]
 
 $app->get("/$V/activity/", function () use ($db, $params, $data, $app) {
     $response = $db->get_activity();
     JsonView::render($response);
 });
 
-
-/** COLUMNS COLLECTION
+/**
+ * COLUMNS COLLECTION
  */
 
-// RewriteRule ^1/tables/([^/]+)/columns/*$        api.php?api_collection=columns&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
-// RewriteRule ^1/tables/([^/]+)/columns/([^/]+)/*$    api.php?api_collection=columns&api_response_type=json&table_name=$1&column_name=$2&%{QUERY_STRING} [L]
-
 // GET all table columns, or POST one new table column
+
 $app->map("/$V/tables/:table/columns", function ($table) use ($db, $params, $data, $app) {
     if($app->request()->isPost()) {
         /* @TODO improves readability: use two separate methods for fetching one vs all entries */
@@ -58,6 +55,7 @@ $app->map("/$V/tables/:table/columns", function ($table) use ($db, $params, $dat
 })->via('GET', 'POST');
 
 // GET or PUT one column
+
 $app->map("/$V/tables/:table/columns/:column", function ($table, $column) use ($db, $params, $data, $app) {
     $params['column_name'] = $column;
     // Add table name to dataset. @TODO more clarification would be useful
@@ -71,12 +69,9 @@ $app->map("/$V/tables/:table/columns/:column", function ($table, $column) use ($
     JsonView::render($response);
 })->via('GET', 'PUT');
 
-
-/** ENTRIES COLLECTION
+/**
+ * ENTRIES COLLECTION
  */
-
-// RewriteRule ^1/tables/([^/]+)/rows$           api.php?api_collection=entries&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
-// RewriteRule ^1/tables/([^/]+)/rows/([^/]+)/*$       api.php?api_collection=entries&api_response_type=json&table_name=$1&id=$2&%{QUERY_STRING} [L]
 
 $app->map("/$V/tables/:table/rows", function ($table) use ($db, $params, $data, $app) {
     $id = null;
@@ -116,9 +111,6 @@ $app->map("/$V/tables/:table/rows/:id", function ($table, $id) use ($db, $params
  * GROUPS COLLECTION
  */
 
-// RewriteRule ^1/groups/*$                api.php?api_collection=groups&%{QUERY_STRING} [L]
-// RewriteRule ^1/groups/([^/]+)/*$            api.php?api_collection=groups&id=$1%{QUERY_STRING} [L]
-
 /** (Optional slim route params break when these two routes are merged) */
 
 $app->get("/$V/groups", function () use ($db, $params, $data, $app) {
@@ -129,17 +121,15 @@ $app->get("/$V/groups", function () use ($db, $params, $data, $app) {
 
 $app->get("/$V/groups/:id", function ($id = null) use ($db, $params, $data, $app) {
     // @TODO need POST and PUT
-    is_null($id) ? $id = 1 : null ; // Hardcoding ID temporarily
+    // Hardcoding ID temporarily
+    is_null($id) ? $id = 1 : null ;
     $response = $db->get_group($id);
     JsonView::render($response);
 });
 
-
-/** MEDIA COLLECTION
+/**
+ * MEDIA COLLECTION
  */
-
-// RewriteRule ^1/media/*$                 api.php?api_collection=media&api_response_type=json&%{QUERY_STRING} [L]
-// RewriteRule ^1/media/([^/]+)/*$             api.php?api_collection=media&api_response_type=json&id=$1&%{QUERY_STRING} [L]
 
 $app->map("/$V/media(/:id)", function ($id = null) use ($db, $params, $data, $app) {
 
@@ -183,11 +173,9 @@ $app->map("/$V/media(/:id)", function ($id = null) use ($db, $params, $data, $ap
     JsonView::render($response);
 })->via('GET','PATCH','POST','PUT');
 
-
-/** PREFERENCES COLLECTION
+/**
+ * PREFERENCES COLLECTION
  */
-
-// RewriteRule ^1/tables/([^/]+)/preferences/*$       api.php?api_collection=preferences&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 
 $app->map("/$V/tables/:table/preferences", function($table) use ($db, $params, $data, $app) {
     $params['table_name'] = $table;
@@ -209,11 +197,9 @@ $app->map("/$V/tables/:table/preferences", function($table) use ($db, $params, $
     JsonView::render($response);
 })->via('GET','POST','PUT');
 
-
-/** REVISIONS COLLECTION
+/**
+ * REVISIONS COLLECTION
  */
-
-// RewriteRule ^1/tables/([^/]+)/rows/([^/]+)/revisions/*$ api.php?api_collection=revisions&api_response_type=json&table_name=$1&id=$2&%{QUERY_STRING} [L]
 
 $app->get("/$V/tables/:table/rows/:id/revisions", function($table, $id) use ($db, $params, $data, $app) {
     $params['table_name'] = $table;
@@ -222,12 +208,9 @@ $app->get("/$V/tables/:table/rows/:id/revisions", function($table, $id) use ($db
     JsonView::render($response);
 });
 
-
-/** SETTINGS COLLECTION
+/**
+ * SETTINGS COLLECTION
  */
-
-// RewriteRule ^1/settings*$                 api.php?api_collection=settings&%{QUERY_STRING} [L]
-// RewriteRule ^1/settings/([^/]+)/*$            api.php?api_collection=settings&id=$1&%{QUERY_STRING} [L]
 
 $app->map("/$V/settings(/:id)", function ($id = null) use ($db, $params, $data, $app) {
     switch ($http_method) {
@@ -241,11 +224,9 @@ $app->map("/$V/settings(/:id)", function ($id = null) use ($db, $params, $data, 
     JsonView::render($response);
 })->via('GET','POST','PUT');
 
-/** TABLES COLLECTION
+/**
+ * TABLES COLLECTION
  */
-
-// RewriteRule ^1/tables/*$                api.php?api_collection=tables&api_response_type=json&%{QUERY_STRING} [L]
-// RewriteRule ^1/tables/([^/]+)/*$            api.php?api_collection=table&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 
 // GET table index
 $app->get("/$V/tables", function () use ($db, $params, $data) {
@@ -263,11 +244,9 @@ $app->map("/$V/tables/:table", function ($table) use ($db, $params, $data, $app)
     JsonView::render($response);
 })->via('GET', 'PUT')->name('table_detail');
 
-
-/** UPLOAD COLLECTION
+/**
+ * UPLOAD COLLECTION
  */
-
-// RewriteRule ^1/upload*$                 api.php?api_collection=upload [L]
 
 $app->post("/$V/upload", function () use ($db, $params, $data, $app) {
     $result = array();
@@ -278,21 +257,13 @@ $app->post("/$V/upload", function () use ($db, $params, $data, $app) {
     JsonView::render($result);
 });
 
-
-/** USERS COLLECTION
+/**
+ * USERS COLLECTION
  */
-
-// RewriteRule ^1/users/*$                 api.php?api_collection=users&%{QUERY_STRING} [L]
-// RewriteRule ^1/users/([^/]+)/*$             api.php?api_collection=users&id=$1&%{QUERY_STRING} [L]
-// RewriteRule ^1/tables/directus_users/rows/*$      api.php?api_collection=users&%{QUERY_STRING} [L]
-// RewriteRule ^1/tables/directus_users/rows/([^/]+)/*$  api.php?api_collection=users&id=$1&%{QUERY_STRING} [L]
 
 // GET user index
 $app->get("/$V/users", function () use ($db, $params, $data) {
     $users = Users::getAllWithGravatar();
-    // foreach ($users['rows'] as &$user) {
-    //     $user['avatar'] = get_gravatar($user['email'], 28, 'identicon');
-    // }
     JsonView::render($users);
 })->name('user_index');
 
@@ -316,12 +287,9 @@ $app->map("/$V/users/:id", function ($id) use ($db, $params, $data, $app) {
     JsonView::render($response);
 })->via('GET', 'PUT');
 
-
-/** UI COLLECTION
+/**
+ * UI COLLECTION
  */
-
-// RewriteRule ^1/tables/([^/]+)/ui/*$
-//  api.php?api_collection=ui&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 
 $app->map("/$V/tables/:table/ui", function($table) use ($db, $params, $data, $app) {
     switch ($app->request()->getMethod()) {
@@ -339,7 +307,7 @@ $app->map("/$V/tables/:table/ui", function($table) use ($db, $params, $data, $ap
  * Run the Router
  */
 
-if($_GET['run_api_router']) {
+if(isset($_GET['run_api_router']) && $_GET['run_api_router']) {
     try {
         header("Content-Type: application/json; charset=utf-8");
         // Run Slim
