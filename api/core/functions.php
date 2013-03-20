@@ -1,59 +1,69 @@
 <?
-/**
- * Indents a flat JSON string to make it more human-readable.
- * @param string $json The original JSON string to process.
- * @return string Indented version of the original JSON string.
- */
-function format_json($json) {
 
-	$result      = '';
-	$pos         = 0;
-	$strLen      = strlen($json);
-	$indentStr   = '  ';
-	$newLine     = "\n";
-	$prevChar    = '';
-	$outOfQuotes = true;
+class JsonView {
 
-	for ($i=0; $i<=$strLen; $i++) {
+    /**
+     * Indents a flat JSON string to make it more human-readable.
+     * @param string $json The original JSON string to process.
+     * @return string Indented version of the original JSON string.
+     */
+    public static function format_json($json) {
 
-		// Grab the next character in the string.
-		$char = substr($json, $i, 1);
+        $result      = '';
+        $pos         = 0;
+        $strLen      = strlen($json);
+        $indentStr   = '  ';
+        $newLine     = "\n";
+        $prevChar    = '';
+        $outOfQuotes = true;
 
-		// Are we inside a quoted string?
-		if ($char == '"' && $prevChar != '\\') {
-			$outOfQuotes = !$outOfQuotes;
+        for ($i=0; $i<=$strLen; $i++) {
 
-		// If this character is the end of an element,
-		// output a new line and indent the next line.
-		} else if(($char == '}' || $char == ']') && $outOfQuotes) {
-			$result .= $newLine;
-			$pos --;
-			for ($j=0; $j<$pos; $j++) {
-				$result .= $indentStr;
-			}
-		}
+            // Grab the next character in the string.
+            $char = substr($json, $i, 1);
 
-		// Add the character to the result string.
-		$result .= $char;
+            // Are we inside a quoted string?
+            if ($char == '"' && $prevChar != '\\') {
+                $outOfQuotes = !$outOfQuotes;
 
-		// If the last character was the beginning of an element,
-		// output a new line and indent the next line.
-		if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) {
-			$result .= $newLine;
-			if ($char == '{' || $char == '[') {
-				$pos ++;
-			}
+            // If this character is the end of an element,
+            // output a new line and indent the next line.
+            } else if(($char == '}' || $char == ']') && $outOfQuotes) {
+                $result .= $newLine;
+                $pos --;
+                for ($j=0; $j<$pos; $j++) {
+                    $result .= $indentStr;
+                }
+            }
 
-			for ($j = 0; $j < $pos; $j++) {
-				$result .= $indentStr;
-			}
-		}
+            // Add the character to the result string.
+            $result .= $char;
 
-		$prevChar = $char;
-	}
+            // If the last character was the beginning of an element,
+            // output a new line and indent the next line.
+            if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) {
+                $result .= $newLine;
+                if ($char == '{' || $char == '[') {
+                    $pos ++;
+                }
 
-	return $result;
+                for ($j = 0; $j < $pos; $j++) {
+                    $result .= $indentStr;
+                }
+            }
+
+            $prevChar = $char;
+        }
+
+        return $result;
+    }
+
+    public static function render(array $params) {
+        echo self::format_json(json_encode($params));
+    }
+
 }
+
 
 /**
  * Converts a string to title

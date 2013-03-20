@@ -34,7 +34,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 
 $app->delete('/activity', function () use ($db, $params, $data, $app) {
     $response = $db->get_activity();
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 });
 
 
@@ -51,7 +51,7 @@ $app->map('/tables/:table/columns', function ($table) use ($db, $params, $data, 
         $params['column_name'] = $db->add_column($table, $data); // NOTE Alters the behavior of db#get_table below
     }
     $response = $db->get_table($table, $params);
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 })->via('GET', 'POST');
 
 // GET or PUT one column
@@ -65,7 +65,7 @@ $app->map('/tables/:table/columns/:column', function ($table, $column) use ($db,
         $db->set_entries('directus_columns', $data);
     }
     $response = $db->get_table($table, $params);
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 })->via('GET', 'PUT');
 
 
@@ -75,40 +75,42 @@ $app->map('/tables/:table/columns/:column', function ($table, $column) use ($db,
 // RewriteRule ^1/tables/([^/]+)/rows$           api.php?api_collection=entries&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 // RewriteRule ^1/tables/([^/]+)/rows/([^/]+)/*$       api.php?api_collection=entries&api_response_type=json&table_name=$1&id=$2&%{QUERY_STRING} [L]
 
-// GET all table entries, or POST one new table entry
 $app->map('/tables/:table/rows', function ($table) use ($db, $params, $data, $app) {
     $id = null;
-    if($app->request()->isPost()) {
-        $id = $db->set_entry_relational($table, $data);
-        $params['id'] = $id;
+    switch($app->request()->getMethod()) {
+        // POST one new table entry
+        case 'POST':
+            $id = $db->set_entry_relational($table, $data);
+            $params['id'] = $id;
+            break;
+        // PUT a change set of table entries
+        case 'PUT':
+            $db->set_entries($table, $data);
+            break;
     }
-    $response = $db->get_entries($table, $params, $id);
-    echo format_json(json_encode($response));
-})->via('GET', 'POST');
+    // GET all table entries
+    $response = $db->get_entries($table, $params);
+    JsonView::render($response);
+})->via('GET', 'POST', 'PUT');
 
-// PUT a set of table entries
-$app->put('/tables/:table/rows', function ($table) use ($db, $params, $data, $app) {
-    $db->set_entries($table, $data);
-    $response = $db->get_entries($table, $params, $id);
-    echo format_json(json_encode($response));
-});
-
-// GET or PUT a given table entry
 $app->map('/tables/:table/rows/:id', function ($table, $id) use ($db, $params, $data, $app) {
-    if($app->request()->isPut()) {
-        $db->set_entry_relational($table, $data);
+    switch($app->request()->getMethod()) {
+        // PUT an updated table entry
+        case 'PUT':
+            $db->set_entry_relational($table, $data);
+            break;
+        // DELETE a given table entry
+        case 'DELETE':
+            echo $db->delete($table, $id);
+            return;
     }
-    $response = $db->get_entries($table, $params, $id);
-    echo format_json(json_encode($response));
-})->via('GET', 'PUT');
+    // GET a table entry
+    $response = $db->get_entries($table, $params);
+    JsonView::render($response);
+})->via('DELETE', 'GET', 'PUT');
 
-// DELETE a given table entry
-$app->delete('/tables/:table/rows/:id', function ($table, $id) use ($db, $params, $data, $app) {
-    echo $db->delete($table, $id);
-});
-
-
-/** GROUPS COLLECTION
+/**
+ * GROUPS COLLECTION
  */
 
 // RewriteRule ^1/groups/*$                api.php?api_collection=groups&%{QUERY_STRING} [L]
@@ -120,7 +122,7 @@ $app->get('/groups(/:id)', function ($id = null) use ($db, $params, $data, $app)
         $response = $db->get_group($id);
     else
         $response = $db->get_entries("directus_groups");
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 });
 
 
@@ -168,8 +170,8 @@ $app->map('/media(/:id)', function ($id = null) use ($db, $params, $data, $app) 
             break;
     }
 
-    $result = $db->get_entries($table, $params);
-    echo format_json(json_encode($result));
+    $response = $db->get_entries($table, $params);
+    JsonView::render($response);
 })->via('GET','PATCH','POST','PUT');
 
 
@@ -195,7 +197,7 @@ $app->map('/tables/:table/preferences', function($table) use ($db, $params, $dat
             break;
     }
     $response = $db->get_table_preferences($table);
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 
@@ -208,7 +210,7 @@ $app->get('/tables/:table/rows/:id/revisions', function($table, $id) use ($db, $
     $params['table_name'] = $table;
     $params['id'] = $id;
     $response = $db->get_revisions($params);
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 });
 
 
@@ -227,7 +229,7 @@ $app->map('/settings(/:id)', function ($id = null) use ($db, $params, $data, $ap
     }
     $all_settings = $db->get_settings('global');
     $response = is_null($id) ? $all_settings : $result[$id];
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 /** TABLES COLLECTION
@@ -239,7 +241,7 @@ $app->map('/settings(/:id)', function ($id = null) use ($db, $params, $data, $ap
 // GET table index
 $app->get('/tables', function () use ($db, $params, $data) {
     $response = $db->get_tables($params);
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 })->name('table_index');
 
 // GET and PUT table details
@@ -249,7 +251,7 @@ $app->map('/tables/:table', function ($table) use ($db, $params, $data, $app) {
         $db->set_table_settings($data);
     }
     $response = $db->get_table_info($table, $params);
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 })->via('GET', 'PUT')->name('table_detail');
 
 
@@ -264,7 +266,7 @@ $app->post('/upload', function () use ($db, $params, $data, $app) {
       $media = new Media($file, RESOURCES_PATH);
       array_push($result, $media->data());
     }
-    echo format_json(json_encode($result));
+    JsonView::render($result);
 });
 
 
@@ -282,7 +284,7 @@ $app->get('/users', function () use ($db, $params, $data) {
     foreach ($users['rows'] as &$user) {
         $user['avatar'] = get_gravatar($user['email'], 28, 'identicon');
     }
-    echo format_json(json_encode($users));
+    JsonView::render($users);
 })->name('user_index');
 
 // POST new user
@@ -291,7 +293,7 @@ $app->post('/users', function() use ($db, $params, $data) {
     $id = $db->set_entries($table, $params);
     $params['id'] = $id;
     $response = $db->get_entries($table, $params);
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 })->name('user_post');
 
 // GET or PUT a given user
@@ -302,14 +304,15 @@ $app->map('/users/:id', function ($id) use ($db, $params, $data, $app) {
         $db->set_entry($table, $data);
     }
     $response = $db->get_entries($table, $params);
-    echo format_json(json_encode($response));
+    JsonView::render($response);
 })->via('GET', 'PUT');
 
 
 /** UI COLLECTION
  */
 
-// RewriteRule ^1/tables/([^/]+)/ui/*$           api.php?api_collection=ui&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
+// RewriteRule ^1/tables/([^/]+)/ui/*$
+//  api.php?api_collection=ui&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 
 $app->map('/tables/:table/ui', function($table) use ($db, $params, $data, $app) {
     switch ($app->request()->getMethod()) {
@@ -318,7 +321,8 @@ $app->map('/tables/:table/ui', function($table) use ($db, $params, $data, $app) 
         $db->set_ui_options($data, $table, $params['column_name'], $params['ui_name']);
         break;
     }
-    return $db->get_ui_options($table, $params['column_name'], $params['ui_name']);
+    $response = $db->get_ui_options($table, $params['column_name'], $params['ui_name']);
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 
