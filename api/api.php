@@ -116,6 +116,7 @@ $app->map("/$V/tables/:table/rows/:id/?", function ($table, $id) use ($db, $para
             echo $db->delete($table, $id);
             return;
     }
+    $params['id'] = $id;
     // GET a table entry
     $response = $db->get_entries($table, $params);
     \Directus\View\JsonView::render($response);
