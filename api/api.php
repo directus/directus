@@ -234,9 +234,12 @@ $app->map("/$V/settings(/:id)/?", function ($id = null) use ($db, $params, $requ
             $db->set_settings($requestPayload);
             break;
     }
-    $all_settings = $db->get_settings('global');
-    $response = is_null($id) ? $all_settings : $result[$id];
+    $settings = $db->get_settings('global');
+    $response = is_null($id) ? $settings : $settings[$id];
     \Directus\View\JsonView::render($response);
+    // $result = $db->get_settings('global');
+    // if (isset($id)) return $result[$id];
+    // return $db->get_settings('global');
 })->via('GET','POST','PUT');
 
 /**
