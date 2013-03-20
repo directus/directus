@@ -1,6 +1,7 @@
 Options +FollowSymlinks
 RewriteEngine On
-
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ api.php?run_api_router=1&%{QUERY_STRING} [QSA,L]
 
 #API CALLS
 
@@ -20,7 +21,7 @@ RewriteRule ^1/extensions/([^/]+)						../extensions/$1/api.php [L]
 # RewriteRule ^1/tables/*$ 								api.php?api_collection=tables&api_response_type=json&%{QUERY_STRING} [L]
 
 # (???)
-RewriteRule ^1/([^/]+)\.([^/]+)*$ 						api.php?api_collection=$1&api_response_type=$2&%{QUERY_STRING} [L]
+# RewriteRule ^1/([^/]+)\.([^/]+)*$ 						api.php?api_collection=$1&api_response_type=$2&%{QUERY_STRING} [L]
 
 
 # Media
@@ -87,7 +88,7 @@ RewriteRule ^1/([^/]+)\.([^/]+)*$ 						api.php?api_collection=$1&api_response_t
 # RewriteRule ^1/tables/([^/]+)/columns/([^/]+)/([^/]+)/*$ api.php?api_collection=ui&api_response_type=json&table_name=$1&column_name=$2&ui_name=$3&%{QUERY_STRING} [L]
 
 # UI
-RewriteRule ^1/tables/([^/]+)/ui/*$ 					api.php?api_collection=ui&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
+# RewriteRule ^1/tables/([^/]+)/ui/*$ 					api.php?api_collection=ui&api_response_type=json&table_name=$1&%{QUERY_STRING} [L]
 
 # Preferences
 

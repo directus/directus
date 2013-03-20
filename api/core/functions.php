@@ -92,6 +92,8 @@ class Users {
 	}
 
 	public static function getAllWithGravatar() {
+		// TODO can be solved using a static class singleton etc
+		global $db;
 		$users = $db->get_users();
 		foreach($users['rows'] as &$user) {
 			$user['avatar'] = self::get_gravatar($user['email'], 28, 'identicon');
