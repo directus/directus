@@ -33,7 +33,8 @@ $app = new \Slim\Slim(array(
 
 $db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 $params = $_GET;
-$data = json_decode(file_get_contents('php://input'), true);
+// $requestPayload = json_decode(file_get_contents('php://input'), true);
+$requestPayload = json_decode($app->request()->getBody(), true);
 
 /**
  * Slim Routes
@@ -47,7 +48,7 @@ $V = API_VERSION;
  * ACTIVITY COLLECTION
  */
 
-$app->get("/$V/activity/", function () use ($db, $params, $data, $app) {
+$app->get("/$V/activity/", function () use ($db, $params, $requestPayload, $app) {
     $response = $db->get_activity();
     \Directus\View\JsonView::render($response);
 });
@@ -58,10 +59,10 @@ $app->get("/$V/activity/", function () use ($db, $params, $data, $app) {
 
 // GET all table columns, or POST one new table column
 
-$app->map("/$V/tables/:table/columns", function ($table) use ($db, $params, $data, $app) {
+$app->map("/$V/tables/:table/columns", function ($table) use ($db, $params, $requestPayload, $app) {
     if($app->request()->isPost()) {
         /* @TODO improves readability: use two separate methods for fetching one vs all entries */
-        $params['column_name'] = $db->add_column($table, $data); // NOTE Alters the behavior of db#get_table below
+        $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
     }
     $response = $db->get_table($table, $params);
     \Directus\View\JsonView::render($response);
@@ -69,14 +70,14 @@ $app->map("/$V/tables/:table/columns", function ($table) use ($db, $params, $dat
 
 // GET or PUT one column
 
-$app->map("/$V/tables/:table/columns/:column", function ($table, $column) use ($db, $params, $data, $app) {
+$app->map("/$V/tables/:table/columns/:column", function ($table, $column) use ($db, $params, $requestPayload, $app) {
     $params['column_name'] = $column;
     // Add table name to dataset. @TODO more clarification would be useful
-    foreach ($data as &$row) {
+    foreach ($requestPayload as &$row) {
         $row['table_name'] = $table;
     }
     if($app->request()->isPut()) {
-        $db->set_entries('directus_columns', $data);
+        $db->set_entries('directus_columns', $requestPayload);
     }
     $response = $db->get_table($table, $params);
     \Directus\View\JsonView::render($response);
@@ -86,17 +87,17 @@ $app->map("/$V/tables/:table/columns/:column", function ($table, $column) use ($
  * ENTRIES COLLECTION
  */
 
-$app->map("/$V/tables/:table/rows", function ($table) use ($db, $params, $data, $app) {
+$app->map("/$V/tables/:table/rows", function ($table) use ($db, $params, $requestPayload, $app) {
     $id = null;
     switch($app->request()->getMethod()) {
         // POST one new table entry
         case 'POST':
-            $id = $db->set_entry_relational($table, $data);
+            $id = $db->set_entry_relational($table, $requestPayload);
             $params['id'] = $id;
             break;
         // PUT a change set of table entries
         case 'PUT':
-            $db->set_entries($table, $data);
+            $db->set_entries($table, $requestPayload);
             break;
     }
     // GET all table entries
@@ -104,11 +105,11 @@ $app->map("/$V/tables/:table/rows", function ($table) use ($db, $params, $data, 
     \Directus\View\JsonView::render($response);
 })->via('GET', 'POST', 'PUT');
 
-$app->map("/$V/tables/:table/rows/:id", function ($table, $id) use ($db, $params, $data, $app) {
+$app->map("/$V/tables/:table/rows/:id", function ($table, $id) use ($db, $params, $requestPayload, $app) {
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
         case 'PUT':
-            $db->set_entry_relational($table, $data);
+            $db->set_entry_relational($table, $requestPayload);
             break;
         // DELETE a given table entry
         case 'DELETE':
@@ -126,13 +127,13 @@ $app->map("/$V/tables/:table/rows/:id", function ($table, $id) use ($db, $params
 
 /** (Optional slim route params break when these two routes are merged) */
 
-$app->get("/$V/groups", function () use ($db, $params, $data, $app) {
+$app->get("/$V/groups", function () use ($db, $params, $requestPayload, $app) {
     // @TODO need POST and PUT
     $response = $db->get_entries("directus_groups");
     \Directus\View\JsonView::render($response);
 });
 
-$app->get("/$V/groups/:id", function ($id = null) use ($db, $params, $data, $app) {
+$app->get("/$V/groups/:id", function ($id = null) use ($db, $params, $requestPayload, $app) {
     // @TODO need POST and PUT
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null ;
@@ -144,41 +145,41 @@ $app->get("/$V/groups/:id", function ($id = null) use ($db, $params, $data, $app
  * MEDIA COLLECTION
  */
 
-$app->map("/$V/media(/:id)", function ($id = null) use ($db, $params, $data, $app) {
+$app->map("/$V/media(/:id)", function ($id = null) use ($db, $params, $requestPayload, $app) {
 
     // A URL is specified. Upload the file
-    if (isset($data['url']) && $data['url'] != "") {
-        $media = new Media($data['url'], RESOURCES_PATH);
+    if (isset($requestPayload['url']) && $requestPayload['url'] != "") {
+        $media = new Media($requestPayload['url'], RESOURCES_PATH);
         $media_data = $media->data();
-        $data['type'] = $media_data['type'];
-        $data['charset'] = $media_data['charset'];
-        $data['size'] = $media_data['size'];
-        $data['width'] = $media_data['width'];
-        $data['height'] = $media_data['height'];
-        $data['name'] = $media_data['name'];
-        $data['date_uploaded'] = $media_data['date_uploaded'];
+        $requestPayload['type'] = $media_data['type'];
+        $requestPayload['charset'] = $media_data['charset'];
+        $requestPayload['size'] = $media_data['size'];
+        $requestPayload['width'] = $media_data['width'];
+        $requestPayload['height'] = $media_data['height'];
+        $requestPayload['name'] = $media_data['name'];
+        $requestPayload['date_uploaded'] = $media_data['date_uploaded'];
         if (isset($media_data['embed_id'])) {
-            $data['embed_id'] = $media_data['embed_id'];
+            $requestPayload['embed_id'] = $media_data['embed_id'];
         }
     }
 
-    if (isset($data['url']))
-        unset($data['url']);
+    if (isset($requestPayload['url']))
+        unset($requestPayload['url']);
 
     $table = "directus_media";
     switch ($app->request()->getMethod()) {
         case "POST":
-            $data['date_uploaded'] = gmdate('Y-m-d H:i:s');
-            $params['id'] = $db->set_media($data);
+            $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
+            $params['id'] = $db->set_media($requestPayload);
             break;
         case "PATCH":
-            $data['id'] = $id;
+            $requestPayload['id'] = $id;
         case "PUT":
             if (!isset($id)) {
-                $db->set_entries($table, $data);
+                $db->set_entries($table, $requestPayload);
                 break;
             }
-            $db->set_media($data);
+            $db->set_media($requestPayload);
             break;
     }
 
@@ -190,19 +191,19 @@ $app->map("/$V/media(/:id)", function ($id = null) use ($db, $params, $data, $ap
  * PREFERENCES COLLECTION
  */
 
-$app->map("/$V/tables/:table/preferences", function($table) use ($db, $params, $data, $app) {
+$app->map("/$V/tables/:table/preferences", function($table) use ($db, $params, $requestPayload, $app) {
     $params['table_name'] = $table;
     switch ($app->request()->getMethod()) {
         case "PUT":
             //This data should not be hardcoded.
-            $id = $data['id'];
-            $db->set_entry('directus_preferences', $data);
-            //$db->insert_entry($table, $data, $id);
+            $id = $requestPayload['id'];
+            $db->set_entry('directus_preferences', $requestPayload);
+            //$db->insert_entry($table, $requestPayload, $id);
             break;
         case "POST":
             // This should not be hardcoded, needs to be corrected
-            $data['user'] = 1;
-            $id = $db->insert_entry($table, $data);
+            $requestPayload['user'] = 1;
+            $id = $db->insert_entry($table, $requestPayload);
             $params['id'] = $id;
             break;
     }
@@ -214,7 +215,7 @@ $app->map("/$V/tables/:table/preferences", function($table) use ($db, $params, $
  * REVISIONS COLLECTION
  */
 
-$app->get("/$V/tables/:table/rows/:id/revisions", function($table, $id) use ($db, $params, $data, $app) {
+$app->get("/$V/tables/:table/rows/:id/revisions", function($table, $id) use ($db, $params, $requestPayload, $app) {
     $params['table_name'] = $table;
     $params['id'] = $id;
     $response = $db->get_revisions($params);
@@ -225,11 +226,11 @@ $app->get("/$V/tables/:table/rows/:id/revisions", function($table, $id) use ($db
  * SETTINGS COLLECTION
  */
 
-$app->map("/$V/settings(/:id)", function ($id = null) use ($db, $params, $data, $app) {
+$app->map("/$V/settings(/:id)", function ($id = null) use ($db, $params, $requestPayload, $app) {
     switch ($http_method) {
         case "POST":
         case "PUT":
-            $db->set_settings($data);
+            $db->set_settings($requestPayload);
             break;
     }
     $all_settings = $db->get_settings('global');
@@ -242,16 +243,16 @@ $app->map("/$V/settings(/:id)", function ($id = null) use ($db, $params, $data, 
  */
 
 // GET table index
-$app->get("/$V/tables", function () use ($db, $params, $data) {
+$app->get("/$V/tables", function () use ($db, $params, $requestPayload) {
     $response = $db->get_tables($params);
     \Directus\View\JsonView::render($response);
 })->name('table_index');
 
 // GET and PUT table details
-$app->map("/$V/tables/:table", function ($table) use ($db, $params, $data, $app) {
+$app->map("/$V/tables/:table", function ($table) use ($db, $params, $requestPayload, $app) {
     /* PUT updates the table */
     if($app->request()->isPut()) {
-        $db->set_table_settings($data);
+        $db->set_table_settings($requestPayload);
     }
     $response = $db->get_table_info($table, $params);
     \Directus\View\JsonView::render($response);
@@ -261,7 +262,7 @@ $app->map("/$V/tables/:table", function ($table) use ($db, $params, $data, $app)
  * UPLOAD COLLECTION
  */
 
-$app->post("/$V/upload", function () use ($db, $params, $data, $app) {
+$app->post("/$V/upload", function () use ($db, $params, $requestPayload, $app) {
     $result = array();
     foreach ($_FILES as $file) {
       $media = new Media($file, RESOURCES_PATH);
@@ -275,13 +276,13 @@ $app->post("/$V/upload", function () use ($db, $params, $data, $app) {
  */
 
 // GET user index
-$app->get("/$V/users", function () use ($db, $params, $data) {
+$app->get("/$V/users", function () use ($db, $params, $requestPayload) {
     $users = \Directus\Collections\Users::getAllWithGravatar();
     \Directus\View\JsonView::render($users);
 })->name('user_index');
 
 // POST new user
-$app->post("/$V/users", function() use ($db, $params, $data) {
+$app->post("/$V/users", function() use ($db, $params, $requestPayload) {
     $table = 'directus_users';
     $id = $db->set_entries($table, $params);
     $params['id'] = $id;
@@ -290,11 +291,11 @@ $app->post("/$V/users", function() use ($db, $params, $data) {
 })->name('user_post');
 
 // GET or PUT a given user
-$app->map("/$V/users/:id", function ($id) use ($db, $params, $data, $app) {
+$app->map("/$V/users/:id", function ($id) use ($db, $params, $requestPayload, $app) {
     $table = 'directus_users';
     $params['id'] = $id;
     if($app->request()->isPut()) {
-        $db->set_entry($table, $data);
+        $db->set_entry($table, $requestPayload);
     }
     $response = $db->get_entries($table, $params);
     \Directus\View\JsonView::render($response);
@@ -304,11 +305,11 @@ $app->map("/$V/users/:id", function ($id) use ($db, $params, $data, $app) {
  * UI COLLECTION
  */
 
-$app->map("/$V/tables/:table/ui", function($table) use ($db, $params, $data, $app) {
+$app->map("/$V/tables/:table/ui", function($table) use ($db, $params, $requestPayload, $app) {
     switch ($app->request()->getMethod()) {
       case "PUT":
       case "POST":
-        $db->set_ui_options($data, $table, $params['column_name'], $params['ui_name']);
+        $db->set_ui_options($requestPayload, $table, $params['column_name'], $params['ui_name']);
         break;
     }
     $response = $db->get_ui_options($table, $params['column_name'], $params['ui_name']);
