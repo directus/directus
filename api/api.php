@@ -148,6 +148,8 @@ $app->get("/$V/groups/:id/?", function ($id = null) use ($db, $params, $requestP
 
 $app->map("/$V/media(/:id)/?", function ($id = null) use ($db, $params, $requestPayload, $app) {
 
+    $params['id'] = $id;
+
     // A URL is specified. Upload the file
     if (isset($requestPayload['url']) && $requestPayload['url'] != "") {
         $media = new Media($requestPayload['url'], RESOURCES_PATH);
