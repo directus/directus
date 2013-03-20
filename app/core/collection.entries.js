@@ -133,10 +133,14 @@ function(app, Backbone, BaseCollection) {
 
     validate: function(attributes, options) {
       var errors = [];
+
+      //only validates attributes that are part of the schema
+      attributes = _.pick(attributes, this.collection.structure.pluck('column_name'));
+
       _.each(attributes, function(value, key, list) {
         var mess = ui.validate(this, key, value);
         if (mess !== undefined) {
-          errors.push({attr: key, message: ui.validate(this, key, value)});  
+          errors.push({attr: key, message: ui.validate(this, key, value)});
         }
       }, this);
       if (errors.length > 0) return errors;
@@ -160,6 +164,15 @@ function(app, Backbone, BaseCollection) {
         type = column.get('type');
         id = column.id;
         ui = structure.get(column).options;
+        uiType = column.get('ui');
+
+        // THIS SHOULD NOT BE HARDCORDED
+        // THE TABLE MIGHT NOT EXIST YET (CASE USERS) RESOLVE THIS
+        if (uiType === 'many_to_one' || uiType === 'single_media') {
+          var relatedTableName = (uiType === 'single_media') ? 'directus_media' : ui.get('related_table');
+
+          attributes[id] = new Entries.Model(attributes[id], {collection: app.entries[relatedTableName]});
+        }
 
         if (type === 'ONETOMANY' || type === 'MANYTOMANY') {
 

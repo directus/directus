@@ -131,18 +131,14 @@
     }
 
   , sorter: function (items) {
-      var beginswith = []
+        var beginswith = []
         , caseSensitive = []
         , caseInsensitive = []
         , item
-        , sortby
 
       while (item = items.shift()) {
-        if (this.strings) sortby = item
-        else sortby = item[this.options.property]
-
-        if (!sortby.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
-        else if (~sortby.indexOf(this.query)) caseSensitive.push(item)
+        if (!item.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
+        else if (~item.indexOf(this.query)) caseSensitive.push(item)
         else caseInsensitive.push(item)
       }
 
