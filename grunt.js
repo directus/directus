@@ -24,7 +24,8 @@ module.exports = function(grunt) {
     // route.
     jshint: {
       options: {
-        scripturl: true
+        scripturl: true,
+        multistr: true
       }
     },
 
