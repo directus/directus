@@ -76,10 +76,11 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     getCurrentTime: function(value) {
       var thisDate = (value)? new Date(value+'Z') : new Date();
+      var gmtValue;
 
       // Could be handled more elegantly
       try{
-        var gmtValue = new Date(thisDate).toISOString();
+        gmtValue = new Date(thisDate).toISOString();
       } catch(err){
         thisDate = new Date();
       }
@@ -88,8 +89,8 @@ define(['app', 'backbone'], function(app, Backbone) {
       var mm = thisDate.getMonth()+1; // January is 0!
       var yyyy = thisDate.getFullYear();
 
-      if(dd<10){dd='0'+dd}
-      if(mm<10){mm='0'+mm}
+      if(dd<10) {dd='0'+dd;}
+      if(mm<10) {mm='0'+mm;}
 
       return {
         'gmtValue': gmtValue,

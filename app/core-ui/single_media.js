@@ -71,7 +71,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
                     <button class="btn btn-small btn-primary" data-action="swap" type="button">Swap media</button> \
                     <button class="btn btn-small btn-primary" data-action="remove" type="button">Remove media</button> \
                   </div> \
-                  {{/if}}'
+                  {{/if}}';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -95,7 +95,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
         mediaModel.clear({silent: true});
         mediaModel.set(model.toJSON());
         modal.close();
-      }
+      };
       var modal = app.router.openModal(view, {stretch: true, title: 'Insert Media'});
       collection.fetch();
       //console.log('s2sp');
