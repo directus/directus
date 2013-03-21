@@ -1,11 +1,27 @@
 <?php
+
+/**
+ * Initialization
+ *  - Apparently the autoloaders must be registered separately in both index.php and api.php
+ */
+// Composer Autoloader
+require 'api/vendor/autoload.php';
+// Directus Autoloader
+use Symfony\Component\ClassLoader\UniversalClassLoader;
+$loader = new UniversalClassLoader();
+$loader->registerNamespace("Directus", dirname(__FILE__) . "/api/core/");
+$loader->register();
+// Non-autoloaded components
 require 'api/api.php';
+/* End initialization */
 
 $data = array();
-$data['tables'] = request('tables', 'GET');
-$data['users'] = request('users', 'GET');
-$data['groups'] = request('groups', 'GET');
-$data['settings'] = request('settings', 'GET');
+
+$data['tables'] = $db->get_tables();
+$data['users'] = \Directus\Collection\Users::getAllWithGravatar();
+$data['groups'] = $db->get_entries("directus_groups");
+$data['settings'] = $db->get_settings('global');
+
 $data['page'] = '#tables';
 $data['path'] = DIRECTUS_PATH;
 $data['active_media'] = $db->count_active('directus_media');

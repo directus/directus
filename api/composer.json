@@ -1,0 +1,6 @@
+{
+    "require": {
+        "slim/slim": "dev-master",
+        "symfony/class-loader": "2.3.*@dev"
+    }
+}

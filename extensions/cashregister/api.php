@@ -1,4 +1,5 @@
 <?PHP
+// @TODO conditionally do these based on dev/prod
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 require dirname(__FILE__) . '/../../api/api.php';
