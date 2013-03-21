@@ -41,7 +41,6 @@ class DB extends MySQL {
   var $user_token = 'lcjREKokJYNLkIjY7LUqnCs0wnWSvStvb2PTgw4HWu0=';
   var $user_id = 1;
 
-
   function set_entry_relational($tbl_name, $data, $parent_activity_id=null) {
     // These columns are aliases and doesn't have corresponding
     // columns in the DB, for example 'alias' and 'relational'

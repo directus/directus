@@ -1,319 +1,348 @@
 <?php
+
+/**
+ * Initialization
+ *  - Apparently the autoloaders must be registered separately in both index.php and api.php
+ */
+// Composer Autoloader
+require 'vendor/autoload.php';
+// Directus Autoloader
+use Symfony\Component\ClassLoader\UniversalClassLoader;
+$loader = new UniversalClassLoader();
+$loader->registerNamespace("Directus", dirname(__FILE__) . "/core/");
+$loader->register();
+// Non-autoload components
 require dirname(__FILE__) . '/config.php';
 require dirname(__FILE__) . '/core/db.php';
 require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
+/* End initialization */
 
-$db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
-
-$http_method = $_SERVER['REQUEST_METHOD'];
-$collection =  isset($_GET['api_collection']) ? $_GET['api_collection'] : null;
-$params = $_GET;
-$data = json_decode(file_get_contents('php://input'), true);
+// @TODO probably should set this in config
+define('API_VERSION', 1);
 
 /**
- * Request an api-method with parameters, return php data object
- *
- * @param     String  $collection
- * @param     String  $http_method
- * @param     Array $paramscccasdasdas
- * @return    Object
+ * Slim Bootstrap
  */
 
-function request ( $collection, $http_method, $params=array(), $data=array(), $file=null ) {
+// @TODO should set some ENV constant, i.e. DIRECTUS_ENV
 
-  global $db;
+$app = new \Slim\Slim(array(
+    'mode'    => 'development'
+));
 
-  $id = (array_key_exists('id', $params)) ? $params['id'] : null;
-  $tbl_name = (array_key_exists('table_name', $params)) ? $params["table_name"] : null;
-  $column_name = (array_key_exists('column_name', $params)) ? $params['column_name'] : null;
+$db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
+$params = $_GET;
+// $requestPayload = json_decode(file_get_contents('php://input'), true);
+$requestPayload = json_decode($app->request()->getBody(), true);
 
+/**
+ * Slim Routes
+ * (Collections arranged alphabetically)
+ */
 
-  //////////////////////////////////////////////////////////////////////////////
-  // UPLOAD
+// Version shortcut for router:
+$V = API_VERSION;
 
-  if ( $collection == "upload" ) {
-    switch ( $http_method ) {
-      case "POST":
-        $result = array();
-        foreach ($_FILES as $file) {
-          $media = new Media($file, RESOURCES_PATH);
-          array_push($result, $media->data());
-        }
-        return $result;
+/**
+ * ACTIVITY COLLECTION
+ */
+
+$app->get("/$V/activity/?", function () use ($db, $params, $requestPayload, $app) {
+    $response = $db->get_activity();
+    \Directus\View\JsonView::render($response);
+});
+
+/**
+ * COLUMNS COLLECTION
+ */
+
+// GET all table columns, or POST one new table column
+
+$app->map("/$V/tables/:table/columns/?", function ($table) use ($db, $params, $requestPayload, $app) {
+    if($app->request()->isPost()) {
+        /* @TODO improves readability: use two separate methods for fetching one vs all entries */
+        $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
     }
-  }
+    $response = $db->get_table($table, $params);
+    \Directus\View\JsonView::render($response);
+})->via('GET', 'POST');
 
-  //////////////////////////////////////////////////////////////////////////////
-  // TABLES
+// GET or PUT one column
 
-  if ( $collection == "tables" ) {
-
-    //return 401;
-
-    switch ( $http_method ) {
-
-      case "GET":
-        return $db->get_tables($params);
-
-      case "PUT":
-        return array();
+$app->map("/$V/tables/:table/columns/:column/?", function ($table, $column) use ($db, $params, $requestPayload, $app) {
+    $params['column_name'] = $column;
+    // Add table name to dataset. @TODO more clarification would be useful
+    foreach ($requestPayload as &$row) {
+        $row['table_name'] = $table;
     }
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // USERS
-
-  if ( $collection == "users" ) {
-
-    switch ($http_method) {
-      case "PUT":
-        $db->set_entry('directus_users', $data);
-        break;
-      case "POST":
-        $id = $db->set_entry('directus_users', $data);
-        break;
+    if($app->request()->isPut()) {
+        $db->set_entries('directus_columns', $requestPayload);
     }
+    $response = $db->get_table($table, $params);
+    \Directus\View\JsonView::render($response);
+})->via('GET', 'PUT');
 
-    $users = $db->get_users();
+/**
+ * ENTRIES COLLECTION
+ */
 
-    //This is a collection of users...
-    if (isset($users['rows'])) {
-      foreach ($users['rows'] as &$user) {
-        $user['avatar'] = get_gravatar($user['email'], 28, 'identicon');
-      }
-      return $users;
+$app->map("/$V/tables/:table/rows/?", function ($table) use ($db, $params, $requestPayload, $app) {
+    $id = null;
+    switch($app->request()->getMethod()) {
+        // POST one new table entry
+        case 'POST':
+            $id = $db->set_entry_relational($table, $requestPayload);
+            $params['id'] = $id;
+            break;
+        // PUT a change set of table entries
+        case 'PUT':
+            $db->set_entries($table, $requestPayload);
+            break;
     }
+    // GET all table entries
+    $response = $db->get_entries($table, $params);
+    \Directus\View\JsonView::render($response);
+})->via('GET', 'POST', 'PUT');
 
-    $users['avatar'] = get_gravatar($users['email'], 28);
-    return $users;
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // ACTIVITY
-
-  if ( $collection == "activity" ) {
-    return $db->get_activity();
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // REVISIONS
-  if ( $collection == "revisions" ) {
-    return $db->get_revisions($params);
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // GROUPS
-
-  if ( $collection == "groups" ) {
-
-    if (isset($id)) {
-      return $db->get_group(1);
+$app->map("/$V/tables/:table/rows/:id/?", function ($table, $id) use ($db, $params, $requestPayload, $app) {
+    switch($app->request()->getMethod()) {
+        // PUT an updated table entry
+        case 'PUT':
+            $db->set_entry_relational($table, $requestPayload);
+            break;
+        // DELETE a given table entry
+        case 'DELETE':
+            echo $db->delete($table, $id);
+            return;
     }
+    $params['id'] = $id;
+    // GET a table entry
+    $response = $db->get_entries($table, $params);
+    \Directus\View\JsonView::render($response);
+})->via('DELETE', 'GET', 'PUT');
 
-    return $db->get_entries("directus_groups");
-  }
+/**
+ * GROUPS COLLECTION
+ */
 
-  //////////////////////////////////////////////////////////////////////////////
-  // ENTRIES
+/** (Optional slim route params break when these two routes are merged) */
 
-  if ( $collection == "entries" ) {
+$app->get("/$V/groups/?", function () use ($db, $params, $requestPayload, $app) {
+    // @TODO need POST and PUT
+    $response = $db->get_entries("directus_groups");
+    \Directus\View\JsonView::render($response);
+});
 
-    switch ( $http_method ) {
+$app->get("/$V/groups/:id/?", function ($id = null) use ($db, $params, $requestPayload, $app) {
+    // @TODO need POST and PUT
+    // Hardcoding ID temporarily
+    is_null($id) ? $id = 1 : null ;
+    $response = $db->get_group($id);
+    \Directus\View\JsonView::render($response);
+});
 
-      case "PUT":
-        if (!isset($id)) {
-          $db->set_entries($tbl_name, $data);
-          break;
-        }
-        $db->set_entry_relational($tbl_name, $data);
-        break;
+/**
+ * MEDIA COLLECTION
+ */
 
-      case "POST":
-        $id = $db->set_entry_relational($tbl_name, $data);
-        $params['id'] = $id;
-        break;
+$app->map("/$V/media(/:id)/?", function ($id = null) use ($db, $params, $requestPayload, $app) {
 
-      case "DELETE":
-        echo $db->delete($tbl_name, $id);
-        return;
-    }
-
-    //Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
-    //$table_info = $db->get_table_info($tbl_name);
-    //print_r(strtotime($table_info['date_modified']));
-    $result = $db->get_entries($tbl_name, $params, $id);
-
-    // an id is set but there is no result
-    //if (isset($id) && !isset($result)) {
-    //  http_response_code(404);
-    //  exit(0);
-    //};
-
-    return $result;
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // COLUMNS
-
-  if ( $collection == "columns" ) {
-    switch ($http_method) {
-      case "POST":
-        $params['column_name'] = $db->add_column($tbl_name, $data);
-        break;
-      case "PUT":
-        //Add table name to dataset.
-        foreach ($data as &$row) $row['table_name'] = $tbl_name;
-        $db->set_entries('directus_columns', $data);
-        break;
-    }
-    return $db->get_table($tbl_name, $params);
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // TABLE
-
-  if ( $collection == "table" ) {
-    switch ($http_method) {
-      case "PUT":
-        $db->set_table_settings($data);
-        break;
-    }
-    return $db->get_table_info($tbl_name, $params);
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // UI
-
-  if ( $collection == "ui" ) {
-    switch ( $http_method ) {
-      case "PUT":
-      case "POST":
-        $db->set_ui_options($data, $tbl_name, $params['column_name'], $params['ui_name']);
-        break;
-    }
-    return $db->get_ui_options($tbl_name, $params['column_name'], $params['ui_name']);
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // PREFERENCES, COULD EVENTUALLY MERGE WITH TABLE
-
-  if ( $collection == "preferences" ) {
-
-    switch ( $http_method ) {
-
-      case "PUT":
-        //This data should not be hardcoded.
-        $id = $data['id'];
-        $db->set_entry('directus_preferences', $data);
-        //$db->insert_entry($tbl_name, $data, $id);
-        break;
-
-      case "POST":
-        // This should not be hardcoded, needs to be corrected
-        $data['user'] = 1;
-        $id = $db->insert_entry($tbl_name, $data);
-        $params['id'] = $id;
-        break;
-    }
-
-    return $db->get_table_preferences( $tbl_name );
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // SETTINGS
-
-  if ( $collection == "settings" ) {
-
-    switch ($http_method) {
-      case "POST":
-      case "PUT":
-        $db->set_settings($data);
-        break;
-    }
-
-    $result = $db->get_settings('global');
-    if (isset($id)) return $result[$id];
-    return $db->get_settings('global');
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // MEDIA
-
-  if ( $collection == "media" ) {
+    $params['id'] = $id;
 
     // A URL is specified. Upload the file
-    if (isset($data['url']) && $data['url'] != "") {
-      $media = new Media($data['url'], RESOURCES_PATH);
-      $media_data = $media->data();
-      $data['type'] = $media_data['type'];
-      $data['charset'] = $media_data['charset'];
-      $data['size'] = $media_data['size'];
-      $data['width'] = $media_data['width'];
-      $data['height'] = $media_data['height'];
-      $data['name'] = $media_data['name'];
-      $data['date_uploaded'] = $media_data['date_uploaded'];
-      if (isset($media_data['embed_id'])) {
-        $data['embed_id'] = $media_data['embed_id'];
-      }
-    }
-
-    if (isset($data['url'])) unset($data['url']);
-
-    switch ($http_method) {
-      case "POST":
-        $data['date_uploaded'] = gmdate('Y-m-d H:i:s');
-        $params['id'] = $db->set_media($data);
-        break;
-      case "PATCH":
-        $data['id'] = $id;
-      case "PUT":
-        if (!isset($id)) {
-          $db->set_entries('directus_media', $data);
-          break;
+    if (isset($requestPayload['url']) && $requestPayload['url'] != "") {
+        $media = new Media($requestPayload['url'], RESOURCES_PATH);
+        $media_data = $media->data();
+        $requestPayload['type'] = $media_data['type'];
+        $requestPayload['charset'] = $media_data['charset'];
+        $requestPayload['size'] = $media_data['size'];
+        $requestPayload['width'] = $media_data['width'];
+        $requestPayload['height'] = $media_data['height'];
+        $requestPayload['name'] = $media_data['name'];
+        $requestPayload['date_uploaded'] = $media_data['date_uploaded'];
+        if (isset($media_data['embed_id'])) {
+            $requestPayload['embed_id'] = $media_data['embed_id'];
         }
-        $db->set_media($data);
     }
 
-    $result = $db->get_entries('directus_media', $params);
+    if (isset($requestPayload['url']))
+        unset($requestPayload['url']);
 
-    return $result;
-  }
+    $table = "directus_media";
+    switch ($app->request()->getMethod()) {
+        case "POST":
+            $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
+            $params['id'] = $db->set_media($requestPayload);
+            break;
+        case "PATCH":
+            $requestPayload['id'] = $id;
+        case "PUT":
+            if (!is_null($id)) {
+                $db->set_entries($table, $requestPayload);
+                break;
+            }
+            $db->set_media($requestPayload);
+            break;
+    }
 
-}
+    $response = $db->get_entries($table, $params);
+    \Directus\View\JsonView::render($response);
+})->via('GET','PATCH','POST','PUT');
 
-//header('Access-Control-Allow-Origin: *');
-//header("Access-Control-Allow-Methods: GET, POST, DELETE, PUT");
-//header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-//header('Access-Control-Allow-Credentials: true');
-//header("Content-Type: application/json; charset=utf-8");
+/**
+ * PREFERENCES COLLECTION
+ */
 
-// This is an api call
-if (isset($collection)) {
-  try {
-    header("Content-Type: application/json; charset=utf-8");
-    echo format_json(json_encode( request( $collection, $http_method, $params, $data ) ) );
-  } catch (DirectusException $e){ 
-    switch ($e->getCode()) {
-      case 404:
-        header("HTTP/1.0 404 Not Found");
-        echo json_encode($e->getMessage());
+$app->map("/$V/tables/:table/preferences/?", function($table) use ($db, $params, $requestPayload, $app) {
+    $params['table_name'] = $table;
+    switch ($app->request()->getMethod()) {
+        case "PUT":
+            //This data should not be hardcoded.
+            $id = $requestPayload['id'];
+            $db->set_entry('directus_preferences', $requestPayload);
+            //$db->insert_entry($table, $requestPayload, $id);
+            break;
+        case "POST":
+            // This should not be hardcoded, needs to be corrected
+            $requestPayload['user'] = 1;
+            $id = $db->insert_entry($table, $requestPayload);
+            $params['id'] = $id;
+            break;
+    }
+    $response = $db->get_table_preferences($table);
+    \Directus\View\JsonView::render($response);
+})->via('GET','POST','PUT');
+
+/**
+ * REVISIONS COLLECTION
+ */
+
+$app->get("/$V/tables/:table/rows/:id/revisions/?", function($table, $id) use ($db, $params, $requestPayload, $app) {
+    $params['table_name'] = $table;
+    $params['id'] = $id;
+    $response = $db->get_revisions($params);
+    \Directus\View\JsonView::render($response);
+});
+
+/**
+ * SETTINGS COLLECTION
+ */
+
+$app->map("/$V/settings(/:id)/?", function ($id = null) use ($db, $params, $requestPayload, $app) {
+    switch ($app->request()->getMethod()) {
+        case "POST":
+        case "PUT":
+            $db->set_settings($requestPayload);
+            break;
+    }
+    $settings = $db->get_settings('global');
+    $response = is_null($id) ? $settings : $settings[$id];
+    \Directus\View\JsonView::render($response);
+})->via('GET','POST','PUT');
+
+/**
+ * TABLES COLLECTION
+ */
+
+// GET table index
+$app->get("/$V/tables/?", function () use ($db, $params, $requestPayload) {
+    $response = $db->get_tables($params);
+    \Directus\View\JsonView::render($response);
+})->name('table_index');
+
+// GET and PUT table details
+$app->map("/$V/tables/:table/?", function ($table) use ($db, $params, $requestPayload, $app) {
+    /* PUT updates the table */
+    if($app->request()->isPut()) {
+        $db->set_table_settings($requestPayload);
+    }
+    $response = $db->get_table_info($table, $params);
+    \Directus\View\JsonView::render($response);
+})->via('GET', 'PUT')->name('table_detail');
+
+/**
+ * UPLOAD COLLECTION
+ */
+
+$app->post("/$V/upload/?", function () use ($db, $params, $requestPayload, $app) {
+    $result = array();
+    foreach ($_FILES as $file) {
+      $media = new Media($file, RESOURCES_PATH);
+      array_push($result, $media->data());
+    }
+    \Directus\View\JsonView::render($result);
+});
+
+/**
+ * USERS COLLECTION
+ */
+
+// GET user index
+$app->get("/$V/users/?", function () use ($db, $params, $requestPayload) {
+    $users = \Directus\Collections\Users::getAllWithGravatar();
+    \Directus\View\JsonView::render($users);
+})->name('user_index');
+
+// POST new user
+$app->post("/$V/users/?", function() use ($db, $params, $requestPayload) {
+    $table = 'directus_users';
+    $id = $db->set_entries($table, $params);
+    $params['id'] = $id;
+    $response = $db->get_entries($table, $params);
+    \Directus\View\JsonView::render($response);
+})->name('user_post');
+
+// GET or PUT a given user
+$app->map("/$V/users/:id/?", function ($id) use ($db, $params, $requestPayload, $app) {
+    $table = 'directus_users';
+    $params['id'] = $id;
+    if($app->request()->isPut()) {
+        $db->set_entry($table, $requestPayload);
+    }
+    $response = $db->get_entries($table, $params);
+    \Directus\View\JsonView::render($response);
+})->via('GET', 'PUT');
+
+/**
+ * UI COLLECTION
+ */
+
+$app->map("/$V/tables/:table/ui/?", function($table) use ($db, $params, $requestPayload, $app) {
+    switch ($app->request()->getMethod()) {
+      case "PUT":
+      case "POST":
+        $db->set_ui_options($requestPayload, $table, $params['column_name'], $params['ui_name']);
         break;
     }
-  } catch (Exception $e) {
-    header("HTTP/1.1 500 Internal Server Error");
-    //echo format_json(json_encode($e));
-    echo print_r($e, true);
-    //echo $e->getCode();
-    //echo $e->getMessage();
-  }
+    $response = $db->get_ui_options($table, $params['column_name'], $params['ui_name']);
+    \Directus\View\JsonView::render($response);
+})->via('GET','POST','PUT');
+
+
+/**
+ * Run the Router
+ */
+
+if(isset($_GET['run_api_router']) && $_GET['run_api_router']) {
+    try {
+        header("Content-Type: application/json; charset=utf-8");
+        // Run Slim
+        $app->run();
+        // var_dump($app->request());
+        // exit;
+    } catch (DirectusException $e){
+        switch ($e->getCode()) {
+            case 404:
+                header("HTTP/1.0 404 Not Found");
+                echo json_encode($e->getMessage());
+                break;
+        }
+    } catch (Exception $e) {
+        header("HTTP/1.1 500 Internal Server Error");
+        //echo format_json(json_encode($e));
+        echo print_r($e, true);
+        //echo $e->getCode();
+        //echo $e->getMessage();
+    }
 }
-
-
-
-
-
-
-
-
-

@@ -26,6 +26,7 @@
     this.options = $.extend({}, $.fn.typeahead.defaults, options)
     this.matcher = this.options.matcher || this.matcher
     this.sorter = this.options.sorter || this.sorter
+    this.keyup = this.options.keyup || this.keyup
     this.highlighter = this.options.highlighter || this.highlighter
     this.$menu = $(this.options.menu)
     this.updater = this.options.updater || this.updater

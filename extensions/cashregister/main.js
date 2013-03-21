@@ -15,6 +15,7 @@ define([
 
 function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
 
+
     var Extension = {
         id: 'cash_register'
     };
@@ -135,6 +136,39 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
         }
 
     });
+
+      var BarcodeScannerEvents = function() {
+           this.initialize.apply(this, arguments);
+      };
+
+      BarcodeScannerEvents.prototype = {
+        initialize: function(obj) {
+          console.log("obj",obj);
+           $(document).on({
+              keyup: $.proxy(this._keyup, this)
+           });
+        },
+        _timeoutHandler: 0,
+        _inputString: '',
+        _keyup: function (e) {
+        if (this._timeoutHandler) {
+            clearTimeout(this._timeoutHandler);
+            this._inputString += String.fromCharCode(e.which);
+        } 
+
+        this._timeoutHandler = setTimeout($.proxy(function () {
+            if (this._inputString.length <= 3) {
+                this._inputString = '';
+                return;
+            }
+
+            console.log('YES');
+            $(document).trigger('onbarcodescaned', this._inputString);
+            this._inputString = '';
+
+        }, this), 20);
+        }
+      };
 
     return Extension;
 });
