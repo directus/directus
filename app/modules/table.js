@@ -200,6 +200,27 @@ function(app, Backbone, Directus) {
         this.insertView('#sidebar', new RevisionsModule({baseURL: this.model.url()}));
         this.insertView('#sidebar', new Backbone.Layout({template: 'module-messages', attributes: {'class': 'directus-module'}}));
       }
+
+      this.affix();
+    },
+
+    affix: function() {
+      var sidebarOffset = $('.container-sidebar').offset();
+      var navbarHeight = $('.navbar').height();
+      var stickyHeight = parseInt(sidebarOffset.top) - parseInt(navbarHeight) - 20;
+      var stuck = false;
+      $(window).scroll(function(e){
+        var scrollTop = $(window).scrollTop();
+        if(!stuck && scrollTop >= stickyHeight){
+          //console.log("stuck");
+          stuck = true;
+          $(".container-sidebar").addClass('affix-sidebar');
+        } else if(stuck && scrollTop < stickyHeight){
+          //console.log("unstuck");
+          stuck = false;
+          $(".container-sidebar").removeClass('affix-sidebar');
+        }
+      });
     },
 
     initialize: function() {

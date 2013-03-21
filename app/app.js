@@ -122,7 +122,9 @@ function(Handlebars) {
       contentType: false,
       processData: false,
       success: callback,
-      error: function() { console.log('ERRRRRROOOORRR!!'); }
+      error: function(err1, err2, err3) {
+        console.log('ERRRRRROOOORRR!!', err1, err2, err3);
+      }
     });
   };
 
@@ -164,6 +166,27 @@ function(Handlebars) {
       case 2:
         return 'inactive';
     }
+  });
+
+  // Should be combined with userShort below with param: "show_avatar" [true,false]
+  Handlebars.registerHelper('userName', function(userId) {
+    if (!_.isNumber(userId) || _.isNaN(userId)) return;
+    var user = app.users.get(userId);
+    //if (user === undefined) return undefined;
+    var firstName = user.get('first_name').toLowerCase();
+    var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
+    var nickName = firstName;
+    var hit = app.users.find(function(model) {
+      return model.get('first_name').toLowerCase() === firstName && model.id != userId;
+    });
+    if (hit !== undefined) {
+      nickName = firstName + ' ' + lastNameFirstCharacter + '.';
+      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id != userId; });
+      if (hit !== undefined) {
+        nickName = firstName + ' ' + user.get('last_name');
+      }
+    }
+    return new Handlebars.SafeString(app.capitalize(nickName," "));
   });
 
   Handlebars.registerHelper('userShort', function(userId) {
