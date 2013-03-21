@@ -4,7 +4,8 @@ define([
 
     // Modules.
     "../../extensions/cashregister/user",
-    "../../extensions/cashregister/product"],
+    "../../extensions/cashregister/product"
+],
 
 function (app, User, Product) {
 
@@ -57,128 +58,176 @@ function (app, User, Product) {
             this.options = options;
             var self = this;
             this.listenTo(options.customerCollection, {
-              'reset': this.render
+                'reset': this.render
             });
-
-            this._timeoutHandler;
-            this._inputString = '';
-
-            $(document).on({
-              keyup: $.proxy(this.processKeyup, this)
-           });
+            this.on('barcodescan', this.barcodeScanned);
         },
 
-        events: {
-          'keypress input':'processKeyup',
-          'barcodescan input':'barcodeScanned'
-        },
-
-        processKeyup: function(e) {
-          if (this._timeoutHandler) {
-              clearTimeout(this._timeoutHandler);
-              this._inputString += String.fromCharCode(e.which);
-          } 
-
-          this._timeoutHandler = setTimeout($.proxy(function () {
-              if (this._inputString.length <= 3) {
-                  this._inputString = '';
-                  return;
-              }
-
-              self.$("input").trigger('barcodescan', trim1(this._inputString));
-              this._inputString = '';
-
-          }, this), 80);
-        },
-
-        barcodeScanned: function(e, barcode) {
-          var scannedProduct = this.options.productCollection.findWhere({sku:barcode});
-          if (scannedProduct) {
-            this.options.activeProductsCollection.trigger('cartAdd', scannedProduct );
-          }
+        barcodeScanned: function (barcode) {
+            var scannedProduct = this.options.productCollection.findWhere({
+                sku: barcode
+            });
+            if (scannedProduct) {
+                this.options.activeProductsCollection.trigger('cartAdd', scannedProduct);
+                this.$("input").val('');
+                this.$("input").focus();
+            }
         },
 
         afterRender: function () {
-          var self = this;
-          this.$("input").focus();
-          this.$("input").typeahead({
-              minLength: 2,
-              //items: 5,
-              source: function (typeahead, query) {
-                  $.ajax({
-                      url: "/directus/api/1/extensions/cashregister/omnibox",
-                      dataType: 'json',
-                      success: function (data) {
-                          var items = [];
-                          $.each(data, function (i, item) {
-                              items.push(JSON.stringify(item));
-                          });
-                          items.push(JSON.stringify({id:0, title:'Riders in current and upcoming classes', type:'class'}));
-                          items.push(JSON.stringify({id:0, title:'All Riders', type:'allusers'}));
-                          typeahead.process(items);
-                      }
-                  });
-              },
-
-              matcher: function(item) {
-                var obj = JSON.parse(item);
-                if (obj.type === "rider" && self.options.customerCollection.pluck('id').indexOf(obj.id) == -1) {
-                  return false;
-                } else {
-                  return ~item.toLowerCase().indexOf(this.query.toLowerCase())
-                } 
-              },
-              sorter: function (items) {
-                    var beginswith = []
-                    , caseSensitive = []
-                    , caseInsensitive = []
-                    , item
-
-                  while (item = items.shift()) {
-                    var itemObj = JSON.parse(item);
-                    var itemName = itemObj.title;
-                    if (!itemName.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
-                    else if (~itemName.indexOf(this.query)) caseSensitive.push(item)
-                    else caseInsensitive.push(item)
-                  }
-
-                  return beginswith.concat(caseSensitive, caseInsensitive)
+            var self = this,
+                barcodeLogging = false,
+                currentBarcode = '';
+            this.$("input").focus();
+            this.$("input").typeahead({
+                minLength: 2,
+                //items: 5,
+                source: function (typeahead, query) {
+                    $.ajax({
+                        url: "/directus/api/1/extensions/cashregister/omnibox",
+                        dataType: 'json',
+                        success: function (data) {
+                            var items = [];
+                            $.each(data, function (i, item) {
+                                items.push(JSON.stringify(item));
+                            });
+                            items.push(JSON.stringify({
+                                id: 0,
+                                title: 'Riders in current and upcoming classes',
+                                type: 'class'
+                            }));
+                            items.push(JSON.stringify({
+                                id: 0,
+                                title: 'All Riders',
+                                type: 'allusers'
+                            }));
+                            typeahead.process(items);
+                        }
+                    });
                 },
-              highlighter: function (item) {
-                var item = JSON.parse(item);
-                var itemTitle = item.title;
 
-                return itemTitle.replace(new RegExp('(' + this.query + ')', 'ig'), function ($1, match) {
-                    return '<strong>' + match + '</strong>'
-                })
-              },
-              onselect: function (obj) {
-                  var item = JSON.parse(obj);
-                  switch (item.type) {
-                    case 'product':
-                      var modelToAdd = self.options.productCollection.get(item.id);
-                      self.options.activeProductsCollection.trigger('cartAdd', modelToAdd );
-                    break;
-                    case 'rider':
-                      var modelToAdd = self.options.customerCollection.get(item.id);
-                      self.options.transaction.set({selectedRider: modelToAdd});
-                    break;
-                    case 'class':
-                      self.options.transaction.set({userSearchSetting:'class'});
-                    break;
-                    case 'allusers':
-                      self.setView('.customers_table', new User.Views.List({
-                        collection: self.options.customerCollection,
-                        transaction: self.options.transaction
-                      }));
-                      self.options.transaction.set({userSearchSetting:''});
-                      
-                    break;
-                  }
-                  self.$("input").val('');
-                  self.$("input").focus();
-              }
-          });
+                keyup: function (e) {
+
+                    if (barcodeLogging) {
+                        if (e.which == 13) {
+                            barcodeLogging = false;
+                            self.trigger('barcodescan', currentBarcode);
+                            currentBarcode = '';
+                        } else {
+
+                            if (e.which != 16 && e.which != 17) {
+                                currentBarcode = currentBarcode + String.fromCharCode(e.which);
+                            }
+
+                        }
+                        return false;
+                    }
+
+                    if (e.ctrlKey && e.keyCode == 66) {
+                        barcodeLogging = true;
+                        return false;
+                    }
+
+                    switch (e.keyCode) {
+                        case 40:
+                            // down arrow
+                        case 38:
+                            // up arrow
+                        case 16:
+                            // shift
+                        case 17:
+                            // ctrl
+                        case 18:
+                            // alt
+                            break
+
+                        case 9:
+                            // tab
+                        case 13:
+                            // enter
+                            if (!this.shown) return
+                            this.select()
+                            break
+
+                        case 27:
+                            // escape
+                            if (!this.shown) return
+                            this.hide()
+                            break
+
+                        default:
+                            this.lookup()
+                    }
+
+                    e.stopPropagation()
+                    e.preventDefault()
+                },
+
+                matcher: function (item) {
+                    var obj = JSON.parse(item);
+                    if (obj.type === "rider" && self.options.customerCollection.pluck('id').indexOf(obj.id) == -1) {
+                        return false;
+                    } else {
+                        return~ item.toLowerCase().indexOf(this.query.toLowerCase())
+                    }
+                },
+                sorter: function (items) {
+                    var beginswith = [],
+                        caseSensitive = [],
+                        caseInsensitive = [],
+                        item
+
+                    while (item = items.shift()) {
+                        var itemObj = JSON.parse(item);
+                        var itemName = itemObj.title;
+                        if (!itemName.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
+                        else if (~itemName.indexOf(this.query)) caseSensitive.push(item)
+                        else caseInsensitive.push(item)
+                    }
+
+                    return beginswith.concat(caseSensitive, caseInsensitive)
+                },
+                highlighter: function (item) {
+                    var item = JSON.parse(item);
+                    var itemTitle = item.title;
+
+                    return itemTitle.replace(new RegExp('(' + this.query + ')', 'ig'), function ($1, match) {
+                        return '<strong>' + match + '</strong>'
+                    })
+                },
+                onselect: function (obj) {
+                    var item = JSON.parse(obj);
+                    switch (item.type) {
+                        case 'product':
+                            var modelToAdd = self.options.productCollection.get(item.id);
+                            self.options.activeProductsCollection.trigger('cartAdd', modelToAdd);
+                            break;
+                        case 'rider':
+                            var modelToAdd = self.options.customerCollection.get(item.id);
+                            self.options.transaction.set({
+                                selectedRider: modelToAdd
+                            });
+                            break;
+                        case 'class':
+                            self.options.transaction.set({
+                                userSearchSetting: 'class'
+                            });
+                            break;
+                        case 'allusers':
+                            self.setView('.customers_table', new User.Views.List({
+                                collection: self.options.customerCollection,
+                                transaction: self.options.transaction
+                            }));
+                            self.options.transaction.set({
+                                userSearchSetting: ''
+                            });
+
+                            break;
+                    }
+                    self.$("input").val('');
+                    self.$("input").focus();
+                }
+            });
         }
     });
 
@@ -217,10 +266,6 @@ function (app, User, Product) {
             };
         }
     });
-
-    function trim1 (str) {
-        return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-    }
 
     return Transaction;
 });
