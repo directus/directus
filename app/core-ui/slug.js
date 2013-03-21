@@ -52,7 +52,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         slug = slug.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
         }
 
-        slug = slug.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+        slug = slug.replace(/[^a-z0-9 \-]/g, '') // remove invalid chars
         .replace(/\s+/g, '-') // collapse whitespace and replace by -
         .replace(/-+/g, '-'); // collapse dashes
 
