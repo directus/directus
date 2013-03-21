@@ -1,9 +1,9 @@
 define([
-// Application.
-"app",
+    // Application.
+    "app",
 
-// Modules.
-"../../extensions/cashregister/user",
+    // Modules.
+    "../../extensions/cashregister/user",
     "../../extensions/cashregister/product"],
 
 function (app, User, Product) {
@@ -59,6 +59,43 @@ function (app, User, Product) {
             this.listenTo(options.customerCollection, {
               'reset': this.render
             });
+
+            this._timeoutHandler;
+            this._inputString = '';
+
+            $(document).on({
+              keyup: $.proxy(this.processKeyup, this)
+           });
+        },
+
+        events: {
+          'keypress input':'processKeyup',
+          'barcodescan input':'barcodeScanned'
+        },
+
+        processKeyup: function(e) {
+          if (this._timeoutHandler) {
+              clearTimeout(this._timeoutHandler);
+              this._inputString += String.fromCharCode(e.which);
+          } 
+
+          this._timeoutHandler = setTimeout($.proxy(function () {
+              if (this._inputString.length <= 3) {
+                  this._inputString = '';
+                  return;
+              }
+
+              self.$("input").trigger('barcodescan', trim1(this._inputString));
+              this._inputString = '';
+
+          }, this), 80);
+        },
+
+        barcodeScanned: function(e, barcode) {
+          var scannedProduct = this.options.productCollection.findWhere({sku:barcode});
+          if (scannedProduct) {
+            this.options.activeProductsCollection.trigger('cartAdd', scannedProduct );
+          }
         },
 
         afterRender: function () {
@@ -180,6 +217,10 @@ function (app, User, Product) {
             };
         }
     });
+
+    function trim1 (str) {
+        return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    }
 
     return Transaction;
 });
