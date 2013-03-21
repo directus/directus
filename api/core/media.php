@@ -42,7 +42,7 @@ class Media {
   private $name;
   private $target_file;
   private $md5 = false;
-  private $thumb_size = 50;
+  private $thumb_size = 200;
   private $quality = 50;
   private $is_curl;
 
@@ -53,7 +53,6 @@ class Media {
     $this->temp_path = $resources_path . 'temp/';
     //File is a URL, cURL it!
     if (gettype($file) == "string") {
-
       //is youtube?
       preg_match("#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=youtu.be/)[^&\n]+#", $file, $id);
 
@@ -79,6 +78,7 @@ class Media {
     if (!in_array($this->info['type'], $this->formats)) throw new Exception("The type is not supported!");
     $this->target_file = $this->unique_name();
     $this->make_thumb();
+
 
     switch($type) {
       case 'youtube':
@@ -113,7 +113,7 @@ class Media {
     $name = str_replace('_',' ',$name);
     $name = str_replace('-',' ',$name);
     $name = ucwords($name);
-    return $name; 
+    return $name;
   }
 
   private function unique_name($attempt=0) {
@@ -177,19 +177,21 @@ class Media {
 
   private function make_thumb() {
     $img = $this->open_image();
+
+
     $w = imagesx($img);
     $h = imagesy($img);
     $aspect_ratio = $w / $h;
 
-    //portrait mode, maximize height
-    if ($aspect_ratio < 0) {
-      $newH = 50;
-      $newW = 50 * $aspect_ratio;
+    //portrait (or square) mode, maximize height
+    if ($aspect_ratio <= 1) {
+      $newH = $this->thumb_size;
+      $newW = $this->thumb_size * $aspect_ratio;
     }
     //landscape mode, maximize width
-    if ($aspect_ratio > 0) {
-      $newW = 50;
-      $newH = 50 / $aspect_ratio;
+    if ($aspect_ratio > 1) {
+      $newW = $this->thumb_size;
+      $newH = $this->thumb_size / $aspect_ratio;
     }
 
     $imgResized = imagecreatetruecolor($newW, $newH);
@@ -214,11 +216,11 @@ class Media {
     switch($this->format) {
       case 'jpg':
       case 'jpeg':
-        return @imagecreatefromjpeg($this->tmp_name);
+        return imagecreatefromjpeg($this->tmp_name);
       case 'gif':
-        return @imagecreatefromgif($this->tmp_name);
+        return imagecreatefromgif($this->tmp_name);
       case 'png':
-        return @imagecreatefrompng($this->tmp_name);
+        return imagecreatefrompng($this->tmp_name);
     }
   }
 
