@@ -63,6 +63,14 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
 
                 },
 
+                events: {
+                  'keyup #justForCharacters':'processKeyPress'
+                },
+
+                processKeyPress: function(e) {
+                    console.log(String.fromCharCode(e.which), e);
+                },
+
                 views: {
                     '.omnibox': new Transaction.Views.OmniBox({
                         customerCollection: this.customerCollection,
