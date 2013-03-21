@@ -58,17 +58,6 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                         'change:selectedRider':this.show_rider_detail,
                         'change:userSearchSetting':this.set_user_search_view
                     });
-
-
-
-                },
-
-                events: {
-                  'keyup #justForCharacters':'processKeyPress'
-                },
-
-                processKeyPress: function(e) {
-                    console.log(String.fromCharCode(e.which), e);
                 },
 
                 views: {
