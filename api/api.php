@@ -36,6 +36,13 @@ $params = $_GET;
 // $requestPayload = json_decode(file_get_contents('php://input'), true);
 $requestPayload = json_decode($app->request()->getBody(), true);
 
+
+// $authenticate = function($app) {
+//     return function() use ($app) {
+
+//     };
+// };
+
 /**
  * Slim Routes
  * (Collections arranged alphabetically)
@@ -326,11 +333,9 @@ $app->map("/$V/tables/:table/ui/?", function($table) use ($db, $params, $request
 
 if(isset($_GET['run_api_router']) && $_GET['run_api_router']) {
     try {
-        header("Content-Type: application/json; charset=utf-8");
         // Run Slim
+        $app->response()->header('Content-Type', 'application/json; charset=utf-8');
         $app->run();
-        // var_dump($app->request());
-        // exit;
     } catch (DirectusException $e){
         switch ($e->getCode()) {
             case 404:
