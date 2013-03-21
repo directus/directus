@@ -17,6 +17,9 @@ require 'api/api.php';
 
 $data = array();
 
+/**
+ * @todo  this data needs to be ACL dependant
+ */
 $data['tables'] = $db->get_tables();
 $data['users'] = \Directus\Collection\Users::getAllWithGravatar();
 $data['groups'] = $db->get_entries("directus_groups");

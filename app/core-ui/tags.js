@@ -57,7 +57,7 @@ define(['app','backbone'], function(app, Backbone) {
         if (this.tags.indexOf(thisTag) === -1) {
           this.tags.push(thisTag);
         }
-      };
+      }
       this.render().view.$el.find('#tag-input').focus();
     },
 

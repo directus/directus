@@ -93,7 +93,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var now = this.getCurrentTime(value);
       var include_seconds = (this.options.settings && this.options.settings.has('include_seconds') && this.options.settings.get('include_seconds') == '1')? true : false;
 
-      if(!include_seconds){now.tss='00'}
+      if(!include_seconds){now.tss='00';}
 
       return {
         value: now.gmtValue,
@@ -109,10 +109,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     getCurrentTime: function(value) {
       var thisDate = (value)? new Date(value+'Z') : new Date();
-
+      var gmtValue;
       // Could be handled more elegantly
       try{
-        var gmtValue = new Date(thisDate).toISOString();
+        gmtValue = new Date(thisDate).toISOString();
       } catch(err){
         thisDate = new Date();
       }
@@ -124,11 +124,11 @@ define(['app', 'backbone'], function(app, Backbone) {
       var tmm = thisDate.getMinutes();
       var tss = thisDate.getSeconds();
 
-      if(dd<10){dd='0'+dd}
-      if(mm<10){mm='0'+mm}
-      if(thh<10){thh='0'+thh}
-      if(tmm<10){tmm='0'+tmm}
-      if(tss<10){tss='0'+tss}
+      if(dd<10){dd='0'+dd;}
+      if(mm<10){mm='0'+mm;}
+      if(thh<10){thh='0'+thh;}
+      if(tmm<10){tmm='0'+tmm;}
+      if(tss<10){tss='0'+tss;}
 
       return {
         'gmtValue': gmtValue,

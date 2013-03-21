@@ -73,7 +73,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var now = this.getCurrentTime(value);
       var include_seconds = (this.options.settings && this.options.settings.has('include_seconds') && this.options.settings.get('include_seconds') == '1')? true : false;
 
-      if(!include_seconds){now.tss='00'}
+      if(!include_seconds){now.tss='00';}
 
       return {
         value: (include_seconds) ? now.thh+':'+now.tmm+':'+now.tss : now.thh+':'+now.tmm,
@@ -89,18 +89,18 @@ define(['app', 'backbone'], function(app, Backbone) {
       if(value){
         var time = value.split(":");
 
-        thisDate.setHours( parseInt(time[0]) + (time[2] ? 12 : 0) );
-        thisDate.setMinutes( parseInt(time[1]) || 0 );
-        thisDate.setSeconds( parseInt(time[2]) || 0 );
+        thisDate.setHours( parseInt(time[0],10) + (time[2] ? 12 : 0) );
+        thisDate.setMinutes( parseInt(time[1],10) || 0 );
+        thisDate.setSeconds( parseInt(time[2],10) || 0 );
       }
 
       var thh = thisDate.getHours();
       var tmm = thisDate.getMinutes();
       var tss = thisDate.getSeconds();
 
-      if(thh<10){thh='0'+thh}
-      if(tmm<10){tmm='0'+tmm}
-      if(tss<10){tss='0'+tss}
+      if(thh<10){thh='0'+thh;}
+      if(tmm<10){tmm='0'+tmm;}
+      if(tss<10){tss='0'+tss;}
 
       return {
         'value': value,
@@ -125,12 +125,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     var d = new Date();
     var time = options.value.split(":");
-    d.setHours( parseInt(time[0]) + (time[2] ? 12 : 0) );
-    d.setMinutes( parseInt(time[1]) || 0 );
-    d.setSeconds( parseInt(time[2]) || 0 );
+    d.setHours( parseInt(time[0],10) + (time[2] ? 12 : 0) );
+    d.setMinutes( parseInt(time[1],10) || 0 );
+    d.setSeconds( parseInt(time[2],10) || 0 );
     var hours = d.getHours();
     var minutes = d.getMinutes();
-    var seconds = (d.getSeconds() == '' || d.getSeconds() == '0')? '00' : d.getSeconds();
+    var seconds = (d.getSeconds() === 0) ? '00' : d.getSeconds();
+
     var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
 
     suffix = (hours >= 12)? 'pm' : 'am';

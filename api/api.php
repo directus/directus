@@ -36,6 +36,13 @@ $params = $_GET;
 // $requestPayload = json_decode(file_get_contents('php://input'), true);
 $requestPayload = json_decode($app->request()->getBody(), true);
 
+
+// $authenticate = function($app) {
+//     return function() use ($app) {
+
+//     };
+// };
+
 /**
  * Slim Routes
  * (Collections arranged alphabetically)
@@ -60,6 +67,7 @@ $app->get("/$V/activity/?", function () use ($db, $params, $requestPayload, $app
 // GET all table columns, or POST one new table column
 
 $app->map("/$V/tables/:table/columns/?", function ($table) use ($db, $params, $requestPayload, $app) {
+    $params['table_name'] = $table;
     if($app->request()->isPost()) {
         /* @TODO improves readability: use two separate methods for fetching one vs all entries */
         $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
@@ -72,6 +80,7 @@ $app->map("/$V/tables/:table/columns/?", function ($table) use ($db, $params, $r
 
 $app->map("/$V/tables/:table/columns/:column/?", function ($table, $column) use ($db, $params, $requestPayload, $app) {
     $params['column_name'] = $column;
+    $params['table_name'] = $table;
     // Add table name to dataset. @TODO more clarification would be useful
     foreach ($requestPayload as &$row) {
         $row['table_name'] = $table;
@@ -89,6 +98,7 @@ $app->map("/$V/tables/:table/columns/:column/?", function ($table, $column) use 
 
 $app->map("/$V/tables/:table/rows/?", function ($table) use ($db, $params, $requestPayload, $app) {
     $id = null;
+    $params['table_name'] = $table;
     switch($app->request()->getMethod()) {
         // POST one new table entry
         case 'POST':
@@ -106,6 +116,7 @@ $app->map("/$V/tables/:table/rows/?", function ($table) use ($db, $params, $requ
 })->via('GET', 'POST', 'PUT');
 
 $app->map("/$V/tables/:table/rows/:id/?", function ($table, $id) use ($db, $params, $requestPayload, $app) {
+    $params['table_name'] = $table;
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
         case 'PUT':
@@ -308,7 +319,22 @@ $app->map("/$V/users/:id/?", function ($id) use ($db, $params, $requestPayload, 
  * UI COLLECTION
  */
 
-$app->map("/$V/tables/:table/ui/?", function($table) use ($db, $params, $requestPayload, $app) {
+// $app->map("/$V/tables/:table/ui/?", function($table) use ($db, $params, $requestPayload, $app) {
+//     $params['table_name'] = $table;
+//     switch ($app->request()->getMethod()) {
+//       case "PUT":
+//       case "POST":
+//         $db->set_ui_options($requestPayload, $table, $params['column_name'], $params['ui_name']);
+//         break;
+//     }
+//     $response = $db->get_ui_options($table, $params['column_name'], $params['ui_name']);
+//     \Directus\View\JsonView::render($response);
+// })->via('GET','POST','PUT');
+
+$app->map("/$V/tables/:table/columns/:column/:ui/?", function($table, $column, $ui) use ($db, $params, $requestPayload, $app) {
+    $params['table_name'] = $table;
+    $params['column_name'] = $column;
+    $params['ui_name'] = $ui;
     switch ($app->request()->getMethod()) {
       case "PUT":
       case "POST":
@@ -326,11 +352,9 @@ $app->map("/$V/tables/:table/ui/?", function($table) use ($db, $params, $request
 
 if(isset($_GET['run_api_router']) && $_GET['run_api_router']) {
     try {
-        header("Content-Type: application/json; charset=utf-8");
         // Run Slim
+        $app->response()->header('Content-Type', 'application/json; charset=utf-8');
         $app->run();
-        // var_dump($app->request());
-        // exit;
     } catch (DirectusException $e){
         switch ($e->getCode()) {
             case 404:
