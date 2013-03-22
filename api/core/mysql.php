@@ -625,6 +625,26 @@ class MySQL {
 
     $cols = array_keys(reset($data));
 
+    /**
+     * Hack compensation for User table.
+     * Should be broken out into a separate non-generic collection method.
+     */
+
+    if("directus_users" === $tbl_name) {
+      foreach($data as &$item) {
+        $user = \Directus\Collection\Users::findOneById($item['id']);
+        $item['salt'] = $user['salt'];
+        if(empty($item['password']))
+          $item['password'] = $user['password'];
+        else
+          $item['password'] = \Directus\Auth\Provider::hashPassword($item['password'], $user['salt']);
+      }
+      // var_dump($data);
+      // exit;
+    }
+
+    /** End hack compensation for User table. */
+
     // Build values string.
     $values = "";
     foreach ($data as $i => $row) {
