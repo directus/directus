@@ -1,5 +1,7 @@
 <?php
 
+use Directus\Auth\Provider as Auth;
+
 /**
  * Initialization
  *  - Apparently the autoloaders must be registered separately in both index.php and api.php
@@ -16,11 +18,15 @@ $loader->register();
 require 'api/api.php';
 /* End initialization */
 
+// No access, forward to login page
+if (!Auth::loggedIn()) {
+  header( 'location: login.php' ) ;
+  die();
+}
+
 $data = array();
 
-/**
- * @todo  this data needs to be ACL dependant
- */
+$data['authenticatedUser'] = Auth::loggedIn() ? Auth::getUserInfo() : array();
 $data['tables'] = $db->get_tables();
 $data['users'] = \Directus\Collection\Users::getAllWithGravatar();
 $data['groups'] = $db->get_entries("directus_groups");
@@ -31,12 +37,6 @@ $data['path'] = DIRECTUS_PATH;
 $data['active_media'] = $db->count_active('directus_media');
 $data['extensions'] = array();
 $data['ui'] = array();
-
-// No access, forward to login page
-if (!\Directus\Auth\Provider::loggedIn()) {
-  header( 'location: login.php' ) ;
-  die();
-}
 
 // Scan for extensions
 foreach (new DirectoryIterator('./extensions') as $file) {
@@ -49,9 +49,9 @@ foreach (new DirectoryIterator('./extensions') as $file) {
 
 // Scan for UI's
 foreach (new DirectoryIterator('./ui') as $file) {
+	if($file->isDot()) continue;
 	$info = pathinfo($file->getFilename());
 	if (array_key_exists('extension',$info) && $info['extension'] != 'js') continue;
-	if($file->isDot()) continue;
 	array_push($data['ui'], 'ui/'.basename($file->getFilename(),'.js'));
 }
 

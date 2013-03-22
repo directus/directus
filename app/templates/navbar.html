@@ -4,14 +4,14 @@
 			<div class="pull-right dropdown">
 					<div data-toggle="dropdown" class="user">
 					<span class="label speech-bubble">5</span>
-					<span class="user-firstname">{{user}}</span>
-					<img src="{{avatar}}" class="avatar">
+					<span class="user-firstname">{{user.first_name}}</span>
+					<img src="{{user.avatar}}" class="avatar">
 					</div>
 				<ul class="dropdown-menu" style="margin-right: 20px">
-						<li><a href="#users/1">User Settings</a></li>
+						<li><a href="#users/{{user.id}}">User Settings</a></li>
 						<li><a href="#messages">Messages</a><div class="label">10</div></li>
 						<li class="divider"></li>
-						<li><a href="/directus/login.php" data-bypass>Sign Out</a></li>
+						<li><a href="/directus/api/1/auth/logout" data-bypass>Sign Out</a></li>
 					</ul>
 			</div>
 	</div>

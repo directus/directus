@@ -1,6 +1,8 @@
 <?php
 /**
- * @todo  this needs a real templating arrangement that can access the application stack
+ * @todo  this needs a real templating arrangement that can access the
+ * application stack, or else it needs the api to drop a few system
+ * settings into the JSON initialization data.
  */
 require "api/config.php";
 ?>
