@@ -7,6 +7,7 @@
 // Composer Autoloader
 require 'api/vendor/autoload.php';
 // Directus Autoloader
+// require 'api/Directus/autoload.php';
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespace("Directus", dirname(__FILE__) . "/api/core/");
