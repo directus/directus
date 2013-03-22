@@ -28,7 +28,7 @@ class Provider {
 	 * @return null
 	 * @throws  \Directus\Auth\UserIsntLoggedInException
 	 */
-	public function logout() {
+	public static function logout() {
 		if(!self::loggedIn()) {
 			throw new UserIsntLoggedInException("Attempting to de-authenticate a user when a user isn't \
 				authenticated.");
@@ -51,7 +51,7 @@ class Provider {
 	 * @return array Authenticated user metadata.
 	 * @throws  \Directus\Auth\UserIsntLoggedInException
 	 */
-	public function getUserInfo() {
+	public static function getUserInfo() {
 		if(!self::loggedIn()) {
 			throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when \
 				a user isn't authenticated.");
