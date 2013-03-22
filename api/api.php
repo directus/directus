@@ -18,9 +18,6 @@ require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
 /* End initialization */
 
-// @TODO probably should set this in config
-define('API_VERSION', 1);
-
 /**
  * Slim Bootstrap
  */
@@ -40,8 +37,11 @@ $v = API_VERSION;
  */
 
 $authProvider = new \Directus\Auth\Provider();
-// These URL patterns will not be protected by this middleware:
-$routeWhitelist = array("/^\/$v\/auth\/?/");
+// These URL patterns will not be protected
+$routeWhitelist = array(
+    // /auth routes don't require authentication
+    "/^\/?$v\/auth\/?/"
+);
 $app->add(new \Directus\Middleware\MustBeLoggedIn($authProvider, $routeWhitelist));
 
 /**
@@ -61,8 +61,28 @@ $requestPayload = json_decode($app->request()->getBody(), true);
  * AUTHENTICATION
  */
 
-$app->get("/$v/auth/?", function() use ($app, $authProvider) {
-    die('tada');
+$authFail = function() use ($app) {
+    return $app->redirect(DIRECTUS_PATH . "login.php");
+};
+
+$authSuccess = function() use ($app) {
+    return $app->redirect(DIRECTUS_PATH);
+};
+
+$app->post("/$v/auth/login/?", function() use ($app, $authProvider, $db, $authFail, $authSuccess) {
+    if($authProvider::loggedIn())
+        return $authSuccess();
+    $req = $app->request();
+    $email = $req->post('email');
+    $password = $req->post('password');
+    $user = \Directus\Collection\Users::findOneByEmail($email);
+    if(!$user)
+        return $authFail();
+    $authenticationAttempt = $authProvider
+        ->login($user['id'], $user['password'], $user['salt'], $password);
+    if($authenticationAttempt)
+        return $authSuccess();
+    return $authFail();
 });
 
 /**
