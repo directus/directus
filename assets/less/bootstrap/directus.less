@@ -9,7 +9,8 @@
 html,
 body {
   height: 100%;
-  overflow-x: hidden;
+  /* overflow-x breaks the window.scroll event for some reason */
+  /* overflow-x: hidden; */
 }
 
 ::selection {background-color: lighten(@directusPrimary, 30%);}
@@ -764,7 +765,11 @@ a:hover {text-decoration:none;}
 .container-fixed-sidebar {position: relative;}
 .container-main { margin-left:0px; float:none; margin-right:300px; min-height:400px;}
 .container-sidebar { position: absolute; right:0px; top:0px; width:280px;}
-
+.affix-sidebar {
+  position: fixed;
+  top: 73px;
+  right: 40px;
+}
 
 // RESPONSIVNESS
 // ------------------------------

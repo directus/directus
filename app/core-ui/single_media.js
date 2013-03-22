@@ -29,8 +29,9 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
   var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
                   <style type="text/css"> \
                   div.ui-thumbnail { \
-                    margin-bottom: 10px; \
-                    width: 100px; \
+                    float: left; \
+                    margin-top: 8px; \
+                    max-height: 200px; \
                     padding: 10px; \
                     background-color: #ffffff; \
                     border: 1px solid #ededed; \
@@ -39,6 +40,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
                     border-radius:3px; \
                     color: #ededed; \
                     text-align: center; \
+                    cursor: pointer; \
                   } \
                   div.ui-thumbnail.empty { \
                     width: 300px; \
@@ -56,21 +58,44 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
                     cursor: pointer; \
                   } \
                   div.ui-thumbnail img { \
-                    max-width: 100px; \
+                    max-height: 200px; \
+                  } \
+                  div.ui-img-details { \
+                    float: left; \
+                    position: relative; \
+                    margin-top: 15px; \
+                    margin-left: 10px; \
+                    line-height: 18px; \
+                  } \
+                  div.ui-img-details a.title { \
+                    font-size: 18px; \
+                  } \
+                  div.ui-img-details div { \
+                    display: inline; \
+                  } \
+                  div.ui-img-details i { \
+                    font-weight: 400; \
+                    font-style: italic; \
+                    color: #ccc; \
+                  } \
+                  button.btn-right { \
+                    margin-top: 8px; \
+                    margin-right: 10px; \
                   } \
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-media"> \
                     <img src="{{url}}"> \
                   </div> \
-                  {{else}} \
-                  <div class="ui-thumbnail empty ui-thumbnail-dropzone">Drag media here</div> \
-                  {{/if}} \
-                  {{#if url}} \
-                  <div class="btn-row"> \
-                    <button class="btn btn-small btn-primary" data-action="swap" type="button">Swap media</button> \
-                    <button class="btn btn-small btn-primary" data-action="remove" type="button">Remove media</button> \
+                  <div class="ui-img-details"> \
+                    <a href="#" class="title">{{title}}</a><br> \
+                    Uploaded by {{userName user}} {{contextualDate date_uploaded}}<br> \
+                    <i>{{width}} &times; {{height}} – {{bytesToSize size}}</i><br> \
+                    <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose media</button> \
+                    <button class="btn btn-small btn-primary btn-right" data-action="remove" type="button">Remove media</button> \
                   </div> \
+                  {{else}} \
+                  <div class="ui-thumbnail empty ui-thumbnail-dropzone">Drag media here, or click for existing</div> \
                   {{/if}}';
 
   Module.Input = Backbone.Layout.extend({
@@ -98,7 +123,6 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
       };
       var modal = app.router.openModal(view, {stretch: true, title: 'Insert Media'});
       collection.fetch();
-      //console.log('s2sp');
     },
 
     edit: function() {
@@ -124,14 +148,12 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
         e.stopPropagation();
         e.preventDefault();
         $dropzone.addClass('dragover');
-        console.log('enter');
       });
 
       $dropzone.on('dragleave', function(e) {
         clearInterval(timer);
         timer = setInterval(function(){
           $dropzone.removeClass('dragover');
-          console.log('leave');
           clearInterval(timer);
         },50);
       });
@@ -139,7 +161,6 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
       // Since data transfer is not supported by jquery...
       // XHR2, FormData
       $dropzone[0].ondrop = _.bind(function(e) {
-        console.log('drop');
         e.stopPropagation();
         e.preventDefault();
         if (e.dataTransfer.files.length > 1) {
@@ -168,6 +189,12 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
         name: this.options.name,
         url: url,
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
+        title: this.mediaModel.get('name'),
+        date_uploaded: this.mediaModel.get('date_uploaded'),
+        width: this.mediaModel.get('width'),
+        height: this.mediaModel.get('height'),
+        size: this.mediaModel.get('size'),
+        user: this.mediaModel.get('user'),
         comment: this.options.schema.get('comment')
       };
     },
