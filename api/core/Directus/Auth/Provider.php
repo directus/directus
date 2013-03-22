@@ -17,7 +17,7 @@ class Provider {
 	public function login($uid, $password, $salt, $passwordAttempt) {
 		$hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
 		if($password === $hashedPasswordAttempt) {
-			$this->completeAuthentication($uid);
+			$this->completeLogin($uid);
 			return true;
 		}
 		return false;
@@ -29,7 +29,7 @@ class Provider {
 	 * @throws  \Directus\Auth\UserIsntLoggedInException
 	 */
 	public function logout() {
-		if(!$this->loggedIn()) {
+		if(!self::loggedIn()) {
 			throw new UserIsntLoggedInException("Attempting to de-authenticate a user when a user isn't \
 				authenticated.");
 		}
@@ -40,16 +40,19 @@ class Provider {
 	 * Check if a user is logged in.
 	 * @return boolean
 	 */
-	public function loggedIn() {
+	public static function loggedIn() {
+		if("" === session_id())
+			session_start();
 		return isset($_SESSION[self::SESSION_KEY]) && !empty($_SESSION[self::SESSION_KEY]);
 	}
+
 	/**
 	 * Retrieve metadata about the currently logged in user.
 	 * @return array Authenticated user metadata.
 	 * @throws  \Directus\Auth\UserIsntLoggedInException
 	 */
 	public function getUserInfo() {
-		if(!$this->loggedIn()) {
+		if(!self::loggedIn()) {
 			throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when \
 				a user isn't authenticated.");
 		}
@@ -63,7 +66,7 @@ class Provider {
 	 * @throws  \Directus\Auth\UserAlreadyLoggedInException
 	 */
 	private function completeLogin($uid) {
-		if($this->loggedIn()) {
+		if(self::loggedIn()) {
 			throw new UserAlreadyLoggedInException("Attempting to authenticate a user when a user is already \
 				authenticated.");
 		}

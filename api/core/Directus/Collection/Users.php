@@ -4,6 +4,8 @@ namespace Directus\Collection;
 
 class Users {
 
+	public static $table_name = 'directus_users';
+
 	/**
 	 * Get either a Gravatar URL or complete image tag for a specified email address.
 	 *
@@ -37,6 +39,15 @@ class Users {
 			$user['avatar'] = self::get_gravatar($user['email'], 28, 'identicon');
 		}
 		return $users;
+	}
+
+	public static function findOneByEmail($email) {
+		global $db;
+		$sql = "SELECT * FROM `" . self::$table_name. "` WHERE `email` = :email LIMIT 1;";
+	    $sth = $db->dbh->prepare($sql);
+	    $sth->bindValue(':email', $email, \PDO::PARAM_STR);
+	    $sth->execute();
+	    return $sth->fetch(\PDO::FETCH_ASSOC);
 	}
 
 }
