@@ -32,12 +32,17 @@ $app = new \Slim\Slim(array(
     'mode'    => 'development'
 ));
 
+// Version shortcut for routes:
+$v = API_VERSION;
+
 /**
  * Middleware
  */
 
 $authProvider = new \Directus\Auth\Provider();
-$app->add(new \Directus\Middleware\MustBeLoggedIn($authProvider));
+// These URL patterns will not be protected by this middleware:
+$routeWhitelist = array("/^\/$v\/auth\/?/");
+$app->add(new \Directus\Middleware\MustBeLoggedIn($authProvider, $routeWhitelist));
 
 /**
  * Globals
@@ -52,14 +57,19 @@ $requestPayload = json_decode($app->request()->getBody(), true);
  * (Collections arranged alphabetically)
  */
 
-// Version shortcut for router:
-$v = API_VERSION;
+/**
+ * AUTHENTICATION
+ */
+
+$app->get("/$v/auth/?", function() use ($app, $authProvider) {
+    die('tada');
+});
 
 /**
  * ACTIVITY COLLECTION
  */
 
-$app->get("/$v/activity/?", function () use ($db, $params, $requestPayload, $app) {
+$app->get("/$v/activity/?", function () use ($db) {
     $response = $db->get_activity();
     \Directus\View\JsonView::render($response);
 });
@@ -143,13 +153,13 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $para
 
 /** (Optional slim route params break when these two routes are merged) */
 
-$app->get("/$v/groups/?", function () use ($db, $params, $requestPayload, $app) {
+$app->get("/$v/groups/?", function () use ($db) {
     // @TODO need POST and PUT
     $response = $db->get_entries("directus_groups");
     \Directus\View\JsonView::render($response);
 });
 
-$app->get("/$v/groups/:id/?", function ($id = null) use ($db, $params, $requestPayload, $app) {
+$app->get("/$v/groups/:id/?", function ($id = null) use ($db) {
     // @TODO need POST and PUT
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null ;
@@ -233,7 +243,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $params,
  * REVISIONS COLLECTION
  */
 
-$app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($db, $params, $requestPayload, $app) {
+$app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($db, $params) {
     $params['table_name'] = $table;
     $params['id'] = $id;
     $response = $db->get_revisions($params);
@@ -342,10 +352,10 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
     switch ($app->request()->getMethod()) {
       case "PUT":
       case "POST":
-        $db->set_ui_options($requestPayload, $table, $params['column_name'], $params['ui_name']);
+        $db->set_ui_options($requestPayload, $table, $column, $ui);
         break;
     }
-    $response = $db->get_ui_options($table, $params['column_name'], $params['ui_name']);
+    $response = $db->get_ui_options($table, $column, $ui);
     \Directus\View\JsonView::render($response);
 })->via('GET','POST','PUT');
 
