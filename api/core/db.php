@@ -148,8 +148,11 @@ class DB extends MySQL {
 
   function set_media($data, $parent_id = null) {
     $isExisting = isset($data['id']);
-    if ($isExisting) unset($data['date_uploaded']);
+    if ($isExisting)
+      unset($data['date_uploaded']);
     $id = $this->set_entry('directus_media', $data);
+    if(!isset($data['title']))
+      $data['title'] = '';
     $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data, $parent_id);
     return $id;
   }
