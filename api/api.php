@@ -85,6 +85,12 @@ $app->post("/$v/auth/login/?", function() use ($app, $authProvider, $db, $authFa
     return $authFail();
 });
 
+$app->get("/$v/auth/logout/?", function() use ($app, $authProvider, $authFail) {
+    if($authProvider::loggedIn())
+        $authProvider::logout();
+    $authFail();
+});
+
 /**
  * ACTIVITY COLLECTION
  */
