@@ -60,6 +60,9 @@ function (app, User, Product) {
             this.listenTo(options.customerCollection, {
                 'reset': this.render
             });
+            this.listenTo(options.transaction, {
+                'credit_card_swiped':this.show_creditcard_swiped_message
+            });
             this.on('barcodescan', this.barcodeScanned);
         },
 
@@ -72,6 +75,14 @@ function (app, User, Product) {
                 this.$("input").val('');
                 this.$("input").focus();
             }
+        },
+
+        show_creditcard_swiped_message: function() {
+            this.$("input").val('');
+            this.$("input").focus();
+            this.$('.flash_message').text('Credit card successfully swiped. Please select a rider or type "Guest".');
+            this.$('.flash_message').slideDown('slow');
+            setTimeout(function() { this.$('.flash_message').slideUp('slow'); }, 3000);
         },
 
         afterRender: function () {
@@ -105,9 +116,8 @@ function (app, User, Product) {
                         }
                     });
                 },
-
                 keyup: function (e) {
-
+                   //console.log(String.fromCharCode(e.which), e);
                     if (barcodeLogging) {
                         if (e.which == 13) {
                             barcodeLogging = false;
@@ -126,6 +136,14 @@ function (app, User, Product) {
                     if (e.ctrlKey && e.keyCode == 66) {
                         barcodeLogging = true;
                         return false;
+                    }
+
+                    // check for credit card swipe...
+
+                    if (e.keyCode == 13) {
+                        // check the beginning of the string...
+                        var inputVal = this.$element.val();
+                        SwipeParser(inputVal, self.options.transaction);
                     }
 
                     switch (e.keyCode) {
@@ -266,6 +284,123 @@ function (app, User, Product) {
             };
         }
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function SwipeParser(strParse, transactionObj) {
+    //boolean values to determine which method to parse
+    var blnCarrotPresent = false;
+    var blnEqualPresent = false;
+    var blnBothPresent = false;
+
+    var strCarrotPresent = strParse.indexOf("^");
+    var strEqualPresent = strParse.indexOf("=");
+
+    if (strCarrotPresent > 0) {
+        blnCarrotPresent = true;
+    }
+
+    if (strEqualPresent > 0) {
+        blnEqualPresent = true;
+    }
+
+    if (blnEqualPresent == true && blnCarrotPresent == true) {
+        //contains both equal and carrot
+        strParse = '' + strParse + ' ';
+        arrSwipe = new Array(4);
+        arrSwipe = strParse.split("^");
+
+        if (arrSwipe.length > 2) {
+            account = stripAlpha(arrSwipe[0].substring(1, arrSwipe[0].length));
+            account_name = arrSwipe[1];
+            exp_month = arrSwipe[2].substring(2, 4);
+            exp_year = '20' + arrSwipe[2].substring(0, 2);
+            console.log(transactionObj);
+            transactionObj.set({cc_name: account_name, cc_number: account, cc_exp_month: exp_month, cc_exp_year: exp_year});
+            transactionObj.trigger('credit_card_swiped');
+            //console.log("cc_name: " + account_name + ", account: " + account + ", exp: " + exp_month + "/" + exp_year, this);
+
+           // selectOptionByValue(document.getElementById('expmonth'), exp_month);
+           // selectOptionByValue(document.getElementById('expyear'), exp_year);
+           // document.getElementById('ccnum').value = account;
+        } else {
+            alert("Error Parsing Card.  \r\n Please Contact MIS/IT! \r\n");
+        }
+
+    } else if (blnCarrotPresent == true) {
+        //carrot only delimiter
+        strParse = '' + strParse + ' ';
+        arrSwipe = new Array(4);
+        arrSwipe = strParse.split("^");
+
+        if (arrSwipe.length > 2) {
+            account = stripAlpha(arrSwipe[0].substring(1, arrSwipe[0].length));
+            account_name = arrSwipe[1];
+            exp_month = arrSwipe[2].substring(2, 4);
+            exp_year = '20' + arrSwipe[2].substring(0, 2);
+
+            //selectOptionByValue(document.getElementById('expmonth'), exp_month);
+            //selectOptionByValue(document.getElementById('expyear'), exp_year);
+            //document.getElementById('ccnum').value = account;
+            console.log(transactionObj);
+            transactionObj.set({cc_name: account_name, cc_number: account, cc_exp_month: exp_month, cc_exp_year: exp_year});
+            transactionObj.trigger('credit_card_swiped');
+            //console.log("name: " + account_name + ", account: " + account + ", exp: " + exp_month + "/" + exp_year);
+
+        } else {
+            alert("Error Parsing Card.  \r\n Please Contact MIS/IT! \r\n");
+        }
+
+    } else if (blnEqualPresent == true) {
+        //equal only delimiter
+        sCardNumber = strParse.substring(1, strEqualPresent);
+        sYear = strParse.substr(strEqualPresent + 1, 2);
+        sMonth = strParse.substr(strEqualPresent + 3, 2);
+
+        account = sAccountNumber = stripAlpha(sCardNumber);
+        exp_month = sMonth
+        exp_year = '20' + sYear;
+        transactionObj.set({cc_number: account, cc_exp_month: exp_month, cc_exp_year: exp_year});
+        transactionObj.trigger('credit_card_swiped');
+        //console.log("account: " + account + ", exp: " + exp_month + "/" + exp_year);
+
+        //selectOptionByValue(document.getElementById('expmonth'), exp_month);
+        //selectOptionByValue(document.getElementById('expyear'), exp_year);
+        //document.getElementById('ccnum').value = account;
+    } else {
+        return GetRunTotal();
+    }
+
+}
+
+function stripAlpha(sInput) {
+    if (sInput == null) return '';
+    return sInput.replace(/[^0-9]/g, '');
+}
+
+
+
 
     return Transaction;
 });

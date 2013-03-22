@@ -82,7 +82,7 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                 },
 
                 show_rider_detail: function() {
-                    this.setView('.customers_table', new User.Views.Selected({model: this.transaction.get('selectedRider')}));
+                    this.setView('.customers_table', new User.Views.Selected({model: this.transaction.get('selectedRider'), transaction: this.transaction }));
                     this.render();
                 },
 
