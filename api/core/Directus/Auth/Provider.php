@@ -15,7 +15,7 @@ class Provider {
 	 * @return boolean
 	 */
 	public function login($uid, $password, $salt, $passwordAttempt) {
-		$hashedPasswordAttempt = $this->hashPassword($passwordAttempt, $salt);
+		$hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
 		if($password === $hashedPasswordAttempt) {
 			$this->completeAuthentication($uid);
 			return true;
@@ -77,7 +77,9 @@ class Provider {
 	 * @param  string $salt
 	 * @return string
 	 */
-	private function hashPassword($password, $salt) {
+	public static function hashPassword($password, $salt) {
+		return sha1( $salt . $password );
+		// This is not working --
 		$PHPass = new \Directus\Auth\PasswordHash(8, true);
 		return $PHPass->HashPassword( $salt . $password );
 	}
