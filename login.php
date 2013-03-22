@@ -5,6 +5,16 @@
  * settings into the JSON initialization data.
  */
 require "api/config.php";
+
+/**
+ * Temporary solution for disabling this page for logged in users.
+ */
+require "api/core/Directus/Auth/Provider.php";
+if(\Directus\Auth\Provider::loggedIn()) {
+    header('Location: ' . DIRECTUS_PATH );
+    exit;
+}
+
 ?>
 <!doctype html>
 <html lang="en">
