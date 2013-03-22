@@ -33,8 +33,8 @@ $data['extensions'] = array();
 $data['ui'] = array();
 
 // No access, forward to login page
-if ($data == 401) {
-  header( 'location: login.html' ) ;
+if (!\Directus\Auth\Provider::loggedIn()) {
+  header( 'location: login.php' ) ;
   die();
 }
 
