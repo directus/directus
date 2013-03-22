@@ -221,8 +221,10 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($db, $params, $request
         unset($requestPayload['url']);
 
     /** Attribute these actions to the authenticated user. */
-    $currentUser = \Directus\Auth\Provider::getUserInfo();
-    $requestPayload['user'] = $currentUser['id'];
+    if(!empty($requestPayload) && !is_numeric_array($requestPayload)) {
+        $currentUser = \Directus\Auth\Provider::getUserInfo();
+        $requestPayload['user'] = $currentUser['id'];
+    }
 
     $table = "directus_media";
     switch ($app->request()->getMethod()) {
