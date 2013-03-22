@@ -2,7 +2,7 @@
 
 namespace Directus\Collection;
 
-class Users {
+class Users extends \Directus\Collection {
 
 	public static $table_name = 'directus_users';
 
