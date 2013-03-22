@@ -623,8 +623,6 @@ class MySQL {
 
     if (!is_numeric_array($data)) $data = array($data);
 
-    $cols = array_keys(reset($data));
-
     /**
      * Hack compensation for User table.
      * Should be broken out into a separate non-generic collection method.
@@ -632,16 +630,20 @@ class MySQL {
 
     if("directus_users" === $tbl_name) {
       foreach($data as &$item) {
-        $user = \Directus\Collection\Users::findOneById($item['id']);
+        $user = isset($item['id']) ?
+          \Directus\Collection\Users::findOneById($item['id']) :
+          array('salt' => uniqid());
         $item['salt'] = $user['salt'];
-        if(empty($item['password']))
-          $item['password'] = $user['password'];
-        else
-          $item['password'] = \Directus\Auth\Provider::hashPassword($item['password'], $user['salt']);
+        /**
+         * @todo  when creating a user, password field is required
+         */
+        $item['password'] = empty($item['password']) ?
+          $user['password'] :
+          \Directus\Auth\Provider::hashPassword($item['password'], $user['salt']);
       }
-      // var_dump($data);
-      // exit;
     }
+
+    $cols = array_keys(reset($data));
 
     /** End hack compensation for User table. */
 
