@@ -38,8 +38,6 @@ class Middleware extends \Slim\Middleware {
 			}
 		}
 
-		parent::call();
-
 	}
 
 }
