@@ -4,16 +4,44 @@ namespace Directus\Auth;
 
 class RequestNonceProvider {
 
+	/**
+	 * Define via constructor argument.
+	 * See constructor for defaults.
+	 * @var array
+	 */
 	private $options = array();
 
+	/**
+	 * Cache return val for #requestHasValidNonce()
+	 * Access using that function.
+	 * @var [type]
+	 */
 	private $valid_nonce_this_request = null;
 
+	/**
+	 * Cache return val for #getRequestNonce()
+	 * Access using that function.
+	 * @var array
+	 */
+	private $nonce_this_request = null;
+
+	/**
+	 * Populated by #replenishNoncePool()
+	 * Access using #getNewNoncesThisRequest()
+	 * @var array
+	 */
 	private $new_nonces_this_request = array();
+
+	/**
+	 * Return value of apache_request_headers()
+	 * @var array
+	 */
+	private $request_headers = array();
 
 	public function __construct($options = array()) {
 		$default_options = array(
 			'nonce_pool_size' => 10,
-			'nonce_request_field_name' => 'directus_request_nonce'
+			'nonce_request_header' => 'X-Directus-Request-Nonce'
 		);
 
 		$this->options = array_merge($default_options, $options);
@@ -28,6 +56,8 @@ class RequestNonceProvider {
 
 		if(empty($this->nonce_pool))
 			$this->replenishNoncePool();
+
+		$this->request_headers = apache_request_headers();
 	}
 
 	/**
@@ -53,15 +83,19 @@ class RequestNonceProvider {
 	}
 
 	/**
-	 * If the request ($_REQUEST) has a value in the configured nonce field,
-	 * either in the GET or POST data, return it. Otherwise return False.
+	 * If the request headers have a value in the configured nonce header,
+	 * return it. Otherwise return False.
 	 * @return mixed The nonce string or False if it isn't present.
 	 */
 	public function getRequestNonce() {
-		$nonce_field_name = $this->options['nonce_request_field_name'];
-		if(isset($_REQUEST[$nonce_field_name]))
-			return $_REQUEST[$nonce_field_name];
-		return false;
+		if(is_null($this->nonce_this_request)) {
+			$nonce_header = $this->options['nonce_request_header'];
+			$this->nonce_this_request = false;
+			if(isset($this->request_headers[$nonce_header])) {
+				$this->nonce_this_request = $this->request_headers[$nonce_header];
+			}
+		}
+		return $this->nonce_this_request;
 	}
 
 	/**
@@ -100,14 +134,20 @@ class RequestNonceProvider {
 			$message = "You can fetch new nonces after checking the request for old ones.";
 			throw new RequestNonceHasntBeenProcessed($message);
 		}
-		return $this->new_nonces_this_request;
+		// Force array on json encode
+		return array_values($this->new_nonces_this_request);
 	}
 
 	/**
 	 * @return array Array of string nonces
 	 */
 	public function getAllNonces() {
-		return $this->nonce_pool;
+		// Force array on json encode
+		return array_values($this->nonce_pool);
+	}
+
+	public function getOptions() {
+		return $this->options;
 	}
 
 }

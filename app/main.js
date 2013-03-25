@@ -25,6 +25,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
     var sync = Backbone.sync;
 
     Backbone.sync = function(method, model, options) {
+
       options.error = function(xhr, status, thrown) {
         if (status.status === 404) {
           app.router.showAlert('Not found!');
@@ -36,6 +37,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
           app.router.openModal(win, {title: 'Server Error!', stretch: true, buttonText:'OK'});
         }
       };
+
       sync(method, model, options);
     };
 
@@ -64,6 +66,45 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
     app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','active','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
     app.settings = new Directus.Settings(data.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
+
+
+
+    /**
+     * Add nonce to API requests using custom request header
+     *
+     * @todo  modularize this logic
+     */
+    var nonces = window.directusData.nonces;
+    var nonce_refresh_in_progress = false;
+    $.ajaxSetup({beforeSend: function(jqXHR, options){
+      var isApiRequest = options.url.substr(0, app.API_URL.length) == app.API_URL;
+      if(isApiRequest) {
+        nonce = nonces.pool.pop();
+        console.log('Popping nonce, length is ' + nonces.pool.length);
+        jqXHR.setRequestHeader(nonces.nonce_request_header, nonce);
+
+        /**
+         * Replenish our nonce buffer if we're low
+         */
+        buffer_limit = 6;
+        if(nonces.pool.length <= buffer_limit && !nonce_refresh_in_progress) {
+          nonce_refresh_in_progress = true;
+          $.ajax(app.API_URL + 'auth/nonces', {
+            data: {},
+            dataType: 'json',
+            type: 'GET',
+            success: function(data, textStatus, jqXHR) {
+              nonce_refresh_in_progress = false;
+              if(data.hasOwnProperty('nonces')) {
+                window.directusData.nonces.pool = data.nonces;
+                console.log('got new nonces', window.directusData.nonces.pool);
+              }else console.log('got no nonces!');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {}
+          });
+        }
+      }
+    }});
 
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {

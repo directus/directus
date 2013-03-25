@@ -1,6 +1,7 @@
 <?php
 
-use Directus\Auth\Provider as Auth;
+use Directus\Auth\Provider as AuthProvider;
+use Directus\Auth\RequestNonceProvider;
 
 /**
  * Initialization
@@ -19,14 +20,19 @@ require 'api/api.php';
 /* End initialization */
 
 // No access, forward to login page
-if (!Auth::loggedIn()) {
+if (!AuthProvider::loggedIn()) {
   header( 'location: login.php' ) ;
   die();
 }
 
 $data = array();
 
-$data['authenticatedUser'] = Auth::loggedIn() ? Auth::getUserInfo() : array();
+$requestNonceProvider = new RequestNonceProvider();
+$data['nonces'] = array_merge($requestNonceProvider->getOptions(), array(
+	'pool' => $requestNonceProvider->getAllNonces()
+));
+
+$data['authenticatedUser'] = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : array();
 $data['tables'] = $db->get_tables();
 $data['users'] = \Directus\Collection\Users::getAllWithGravatar();
 $data['groups'] = $db->get_entries("directus_groups");
