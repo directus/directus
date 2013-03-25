@@ -68,7 +68,8 @@ class RequestNonceProvider {
 	 * @return boolean Does the request have a populated nonce field.
 	 */
 	public function requestHasNonce() {
-		return !empty($this->getRequestNonce());
+		$nonce = $this->getRequestNonce();
+		return !empty($nonce);
 	}
 
 	/**
