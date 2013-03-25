@@ -2,7 +2,7 @@
 
 namespace Directus\Auth;
 
-class RequestNonce {
+class RequestNonceProvider {
 
 	private $options = array();
 
