@@ -67,7 +67,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         var file = $(e.target)[0].files[0];
         var model = this.model;
         app.sendFiles(file, function(data) {
-          model.set(_.extend({user: 1},data[0]));
+          model.set(data[0]);
         });
       }
     },
