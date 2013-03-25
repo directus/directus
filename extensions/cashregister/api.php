@@ -5,7 +5,9 @@ ini_set('display_errors', '1');
 require dirname(__FILE__) . '/../../api/api.php';
 header("Content-Type: application/json; charset=utf-8");
 
-$request = explode('/', substr($_SERVER['REQUEST_URI'], 1));
+$uriWithoutQueryString = trim(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']), '?');
+
+$request = explode('/', substr($uriWithoutQueryString, 1));
 foreach($request as $k => $v)
     if(!$v) unset($request[$k]);
 $request = array_values($request);
@@ -76,6 +78,12 @@ $cashRegister = new cashRegister($db);
 
 $params = array_slice($request, 5);
 
+// var_dump($params);exit;
+
+/**
+ * @todo this is unstable and very insecure, calling a method by name using an
+ * unsanitized user input!
+ */
 $results = call_user_func_array(array($cashRegister, $params[0]), array_slice($params, 1));
 
 echo json_encode($results);
