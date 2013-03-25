@@ -24,6 +24,7 @@ use Directus\View\JsonView;
 use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
+use Directus\Auth\RequestNonceHasntBeenProcessed;
 
 // Slim Middleware
 use Directus\Middleware\MustBeLoggedIn;
@@ -47,22 +48,29 @@ $v = API_VERSION;
  * Middleware
  */
 
-/* URL patterns which will not be protected */
+/* URL patterns which will not be protected by the following middleware */
 $routeWhitelist = array("/^\/?$v\/auth\/?/");
+
 $authProvider = new AuthProvider();
-$app->add(new MustBeLoggedIn($authProvider, $routeWhitelist));
+$app->add(new MustBeLoggedIn($routeWhitelist, $authProvider));
 
 $requestNonceProvider = new RequestNonceProvider();
-$app->add(new MustHaveRequestNonce($requestNonceProvider));
+$app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 
 /**
  * Add new nonces to all JSON responses
  */
 JsonView::preDispatch(function($responseData) use ($requestNonceProvider) {
-    $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
-    return array_merge($responseData, array(
-        'new_nonces' => $new_nonces
-    ));
+    try {
+        $new_nonces = $requestNonceProvider->getNewNoncesThisRequest();
+        $addenda = array('new_nonces' => $new_nonces);
+    } catch(RequestNonceHasntBeenProcessed $e) {
+        // Meaning this route wasn't protected by the MustHaveRequestNonce
+        // middleware (i.e. it was an auth route), so we'll send all nonces
+        $all_nonces = $requestNonceProvider->getAllNonces();
+        $addenda = array('all_nonces' => $all_nonces);
+    }
+    return array_merge($responseData, $addenda);
 });
 
 /**
@@ -90,20 +98,25 @@ $authSuccess = function() use ($app) {
     return $app->redirect(DIRECTUS_PATH);
 };
 
-$app->post("/$v/auth/login/?", function() use ($app, $authProvider, $db, $authFail, $authSuccess) {
-    if($authProvider::loggedIn())
-        return $authSuccess();
+$app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonceProvider, $authFail, $authSuccess) {
+    $response = array(
+        'success' => false,
+        'all_nonces' => $requestNonceProvider->getAllNonces()
+    );
+    if($authProvider::loggedIn()) {
+        $response['success'] = true;
+        return JsonView::render($response);
+    }
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
     $user = Users::findOneByEmail($email);
-    if(!$user)
-        return $authFail();
-    $authenticationAttempt = $authProvider
+    if(!$user) {
+        return JsonView::render($response);
+    }
+    $response['success'] = $authProvider
         ->login($user['id'], $user['password'], $user['salt'], $password);
-    if($authenticationAttempt)
-        return $authSuccess();
-    return $authFail();
+    JsonView::render($response);
 });
 
 $app->get("/$v/auth/logout/?", function() use ($app, $authProvider, $authFail) {
