@@ -31,6 +31,7 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <style>
     body {background-image: url(assets/img/noise.gif); margin:0; padding:0;}
     .login-panel { background-color:rgba(255,255,255,0.4); padding:20px; width:372px; box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05); position: absolute; left:50%; top:50%; margin-left:-208px; margin-top:-245px;}
+    .login-panel p.error { padding: 15px 10px 0; margin: 0; color: red; }
     input[type="text"], input[type="password"] {font-size:16px; width:360px; border:0;  margin-bottom:20px; height:30px; line-height:30px;} 
     input[type="submit"] { display:block; width:370px; }
     label {margin-bottom:20px; font-weight:normal;}
@@ -49,9 +50,49 @@ if(\Directus\Auth\Provider::loggedIn()) {
       <input type="checkbox" name="remember" /> Keep me logged in on this computer
   </label>
   <input type="submit" class="btn btn-primary" value="Sign in" />
+  <p class="error" style="display:none;"></p>
 </div>
 </form>
 <!-- Javascripts -->
-<script type="text/javascript" src="<?= DIRECTUS_PATH ?>/assets/js/libs/jquery.js"></script>
+<script type="text/javascript" src="<?= DIRECTUS_PATH ?>assets/js/libs/jquery.js"></script>
+<script type="text/javascript">
+$(function(){
+
+  $login_error = $('p.error');
+
+  function form_error(message) {
+    $login_error.html(message);
+    $login_error.show();
+  }
+
+  $('form').bind('submit', function(e){
+    e.preventDefault();
+    $login_error.hide();
+
+    var email = $.trim($(this).find('input[name=email]').val())
+      , password = $.trim($(this).find('input[name=password]').val());
+
+    if(email.length == 0 || password.length == 0)
+      return form_error("We need both!");
+
+    $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/login' ?>', {
+      data: { email: email, password: password },
+      dataType: 'json',
+      type: 'POST',
+      success: function(data, textStatus, jqXHR) {
+        if(!data.success) {
+          form_error(data.message);
+          return;
+        }
+        window.location = <?= DIRECTUS_PATH ?>;
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        form_error("Server error occurred. (" + textStatus + ")");
+      }
+    });
+  });
+
+});
+</script>
 </body>
 </html>
