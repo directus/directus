@@ -88,6 +88,7 @@ function (app, User, Product) {
         afterRender: function () {
             var self = this,
                 barcodeLogging = false,
+                ccSwipeLogging = false,
                 currentBarcode = '';
             this.$("input").focus();
             this.$("input").typeahead({
@@ -117,7 +118,7 @@ function (app, User, Product) {
                     });
                 },
                 keyup: function (e) {
-                   //console.log(String.fromCharCode(e.which), e);
+                  // console.log(String.fromCharCode(e.which), e);
                     if (barcodeLogging) {
                         if (e.which == 13) {
                             barcodeLogging = false;
@@ -139,11 +140,27 @@ function (app, User, Product) {
                     }
 
                     // check for credit card swipe...
+                    if (ccSwipeLogging) {
+                        // check that the second character is %, otherwise this did not come off the CC swiper...
+                        if (e.keyCode != 53 && this.$element.val().length == 1) {
+                            ccSwipeLogging = false;
+                        }
+                    }
+                    if (ccSwipeLogging) {
+                        console.log(e.keyCode);
+                        if (e.keyCode == 13) {
+                            console.log("about to run swipeparser");
+                            var inputVal = this.$element.val();
+                            SwipeParser(inputVal, self.options.transaction);
+                            ccSwipeLogging = false;
+                        }
+                    }
 
-                    if (e.keyCode == 13) {
+                    if (e.keyCode == 16) {
+                        ccSwipeLogging = true;
                         // check the beginning of the string...
-                        var inputVal = this.$element.val();
-                        SwipeParser(inputVal, self.options.transaction);
+                        //var inputVal = this.$element.val();
+                       // SwipeParser(inputVal, self.options.transaction);
                     }
 
                     switch (e.keyCode) {
@@ -345,7 +362,7 @@ function SwipeParser(strParse, transactionObj) {
            // selectOptionByValue(document.getElementById('expyear'), exp_year);
            // document.getElementById('ccnum').value = account;
         } else {
-            alert("Error Parsing Card.  \r\n Please Contact MIS/IT! \r\n");
+            alert("Error Parsing Card.  \r\n Please Contact IT! \r\n");
         }
 
     } else if (blnCarrotPresent == true) {
@@ -369,7 +386,7 @@ function SwipeParser(strParse, transactionObj) {
             //console.log("name: " + account_name + ", account: " + account + ", exp: " + exp_month + "/" + exp_year);
 
         } else {
-            alert("Error Parsing Card.  \r\n Please Contact MIS/IT! \r\n");
+            alert("Error Parsing Card.  \r\n Please Contact IT! \r\n");
         }
 
     } else if (blnEqualPresent == true) {
