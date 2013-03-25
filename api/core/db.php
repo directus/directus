@@ -148,8 +148,11 @@ class DB extends MySQL {
 
   function set_media($data, $parent_id = null) {
     $isExisting = isset($data['id']);
-    if ($isExisting) unset($data['date_uploaded']);
+    if ($isExisting)
+      unset($data['date_uploaded']);
     $id = $this->set_entry('directus_media', $data);
+    if(!isset($data['title']))
+      $data['title'] = '';
     $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data, $parent_id);
     return $id;
   }
@@ -203,17 +206,20 @@ class DB extends MySQL {
   }
 
   function log_activity($type, $tbl_name, $action, $row_id, $identifier, $data, $parent_id=null) {
-    if ($tbl_name == 'directus_media') { 
+    if ($tbl_name == 'directus_media') {
       $type = 'MEDIA';
       $identifier = $data['title'];
     }
+
+    $currentUser = \Directus\Auth\Provider::getUserInfo();
+
     return $this->set_entry('directus_activity', array(
       'type' => $type,
       'identifier' => $identifier,
       'table_name' => $tbl_name,
       'action' => $action,
       'row_id' => $row_id,
-      'user' => 1,
+      'user' => $currentUser['id'],
       'data' => json_encode($data),
       'parent_id' => $parent_id,
       'datetime' => gmdate('Y-m-d H:i:s')
