@@ -7,7 +7,7 @@ use \Directus\Auth\Provider as AuthProvider;
 /**
  * Interrupt the request if the user is not authenticated.
  */
-class MustBeLoggedIn extends \Slim\Middleware {
+class MustBeLoggedIn extends \Directus\Middleware {
 
 	/**
 	 * @var \Directus\Auth\Provider
@@ -15,34 +15,23 @@ class MustBeLoggedIn extends \Slim\Middleware {
 	protected $authProvider = null;
 
 	/**
-	 * Array of route regex patterns for which the authentication
-	 * requirement should not be enforced.
-	 * @var array
-	 *
-	 * @todo  I would much prefer if this were an array of route names, however
-	 * the route object seems to be null: $this->app->router()->getCurrentRoute()
-	 */
-	protected $routeWhitelist = array();
-
-	/**
-	 * @param \Directus\Auth\Provider $authProvider
 	 * @param array                   $routeWhitelist
+	 * @param \Directus\Auth\Provider $authProvider
 	 */
-	public function __construct(AuthProvider $authProvider, $routeWhitelist = array()) {
+	public function __construct($routeWhitelist = array(), AuthProvider $authProvider) {
+		parent::__construct($routeWhitelist);
 		$this->authProvider = $authProvider;
-		$this->routeWhitelist = $routeWhitelist;
 	}
 
 	public function call() {
 
-		/**
-		 * Don't protect the patterns specified on initialization.
-		 */
-		$path = $this->app->request()->getPathInfo();
-		foreach ($this->routeWhitelist as $pattern) {
-			if(preg_match($pattern, $path))
-				return $this->next->call();
-		}
+		$outcome = parent::call();
+
+		// Did \Directus\Middleware detect that the route matches the whitelist?
+		// If so, skip enforcement.
+		// NOTE: $this->next->call() has already run!
+		if(self::MATCHES_ROUTE_WHITELIST == $outcome)
+			return;
 
 		if(!$this->authProvider->loggedIn()) {
 			$response = $this->app->response();
