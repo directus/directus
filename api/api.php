@@ -4,19 +4,25 @@
  * Initialization
  *  - Apparently the autoloaders must be registered separately in both index.php and api.php
  */
+
 // Composer Autoloader
 require 'vendor/autoload.php';
+
 // Directus Autoloader
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespace("Directus", dirname(__FILE__) . "/core/");
 $loader->register();
+
 // Non-autoload components
 require dirname(__FILE__) . '/config.php';
 require dirname(__FILE__) . '/core/db.php';
 require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
-/* End initialization */
+
+use Directus\View\JsonView;
+use Directus\Collections\Users;
+use Directus\Auth\Provider as AuthProvider;
 
 /**
  * Slim Bootstrap
@@ -36,7 +42,7 @@ $v = API_VERSION;
  * Middleware
  */
 
-$authProvider = new \Directus\Auth\Provider();
+$authProvider = new AuthProvider();
 // These URL patterns will not be protected
 $routeWhitelist = array(
     // /auth routes don't require authentication
@@ -75,7 +81,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $authProvider, $db, $authFa
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
-    $user = \Directus\Collection\Users::findOneByEmail($email);
+    $user = Users::findOneByEmail($email);
     if(!$user)
         return $authFail();
     $authenticationAttempt = $authProvider
@@ -97,7 +103,7 @@ $app->get("/$v/auth/logout/?", function() use ($app, $authProvider, $authFail) {
 
 $app->get("/$v/activity/?", function () use ($db) {
     $response = $db->get_activity();
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 });
 
 /**
@@ -113,7 +119,7 @@ $app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $r
         $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
     }
     $response = $db->get_table($table, $params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET', 'POST');
 
 // GET or PUT one column
@@ -129,7 +135,7 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $db->set_entries('directus_columns', $requestPayload);
     }
     $response = $db->get_table($table, $params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET', 'PUT');
 
 /**
@@ -152,7 +158,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $params, $requ
     }
     // GET all table entries
     $response = $db->get_entries($table, $params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET', 'POST', 'PUT');
 
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $params, $requestPayload, $app) {
@@ -170,7 +176,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $para
     $params['id'] = $id;
     // GET a table entry
     $response = $db->get_entries($table, $params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('DELETE', 'GET', 'PUT');
 
 /**
@@ -182,7 +188,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $para
 $app->get("/$v/groups/?", function () use ($db) {
     // @TODO need POST and PUT
     $response = $db->get_entries("directus_groups");
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 });
 
 $app->get("/$v/groups/:id/?", function ($id = null) use ($db) {
@@ -190,7 +196,7 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($db) {
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null ;
     $response = $db->get_group($id);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 });
 
 /**
@@ -222,7 +228,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($db, $params, $request
 
     /** Attribute these actions to the authenticated user. */
     if(!empty($requestPayload) && !is_numeric_array($requestPayload)) {
-        $currentUser = \Directus\Auth\Provider::getUserInfo();
+        $currentUser = AuthProvider::getUserInfo();
         $requestPayload['user'] = $currentUser['id'];
     }
 
@@ -244,7 +250,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($db, $params, $request
     }
 
     $response = $db->get_entries($table, $params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET','PATCH','POST','PUT');
 
 /**
@@ -268,7 +274,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $params,
             break;
     }
     $response = $db->get_table_preferences($table);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 /**
@@ -279,7 +285,7 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
     $params['table_name'] = $table;
     $params['id'] = $id;
     $response = $db->get_revisions($params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 });
 
 /**
@@ -295,7 +301,7 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $params, $requ
     }
     $settings = $db->get_settings('global');
     $response = is_null($id) ? $settings : $settings[$id];
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 /**
@@ -305,7 +311,7 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $params, $requ
 // GET table index
 $app->get("/$v/tables/?", function () use ($db, $params, $requestPayload) {
     $response = $db->get_tables($params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->name('table_index');
 
 // GET and PUT table details
@@ -315,7 +321,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $params, $requestPa
         $db->set_table_settings($requestPayload);
     }
     $response = $db->get_table_info($table, $params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET', 'PUT')->name('table_detail');
 
 /**
@@ -328,7 +334,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
       $media = new Media($file, RESOURCES_PATH);
       array_push($result, $media->data());
     }
-    \Directus\View\JsonView::render($result);
+    JsonView::render($result);
 });
 
 /**
@@ -337,8 +343,8 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
 
 // GET user index
 $app->get("/$v/users/?", function () use ($db, $params, $requestPayload) {
-    $users = \Directus\Collections\Users::getAllWithGravatar();
-    \Directus\View\JsonView::render($users);
+    $users = Users::getAllWithGravatar();
+    JsonView::render($users);
 })->name('user_index');
 
 // POST new user
@@ -347,7 +353,7 @@ $app->post("/$v/users/?", function() use ($db, $params, $requestPayload) {
     $id = $db->set_entries($table, $params);
     $params['id'] = $id;
     $response = $db->get_entries($table, $params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->name('user_post');
 
 // GET or PUT a given user
@@ -358,7 +364,7 @@ $app->map("/$v/users/:id/?", function ($id) use ($db, $params, $requestPayload, 
         $db->set_entry($table, $requestPayload);
     }
     $response = $db->get_entries($table, $params);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET', 'PUT');
 
 /**
@@ -374,7 +380,7 @@ $app->map("/$v/users/:id/?", function ($id) use ($db, $params, $requestPayload, 
 //         break;
 //     }
 //     $response = $db->get_ui_options($table, $params['column_name'], $params['ui_name']);
-//     \Directus\View\JsonView::render($response);
+//     JsonView::render($response);
 // })->via('GET','POST','PUT');
 
 $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $ui) use ($db, $params, $requestPayload, $app) {
@@ -388,7 +394,7 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
         break;
     }
     $response = $db->get_ui_options($table, $column, $ui);
-    \Directus\View\JsonView::render($response);
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 
