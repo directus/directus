@@ -2,6 +2,8 @@
 
 namespace Directus\Middleware;
 
+use \Directus\Auth\Provider as AuthProvider;
+
 /**
  * Interrupt the request if the user is not authenticated.
  */
@@ -26,7 +28,7 @@ class MustBeLoggedIn extends \Slim\Middleware {
 	 * @param \Directus\Auth\Provider $authProvider
 	 * @param array                   $routeWhitelist
 	 */
-	public function __construct(\Directus\Auth\Provider $authProvider, $routeWhitelist = array()) {
+	public function __construct(AuthProvider $authProvider, $routeWhitelist = array()) {
 		$this->authProvider = $authProvider;
 		$this->routeWhitelist = $routeWhitelist;
 	}
@@ -44,7 +46,7 @@ class MustBeLoggedIn extends \Slim\Middleware {
 
 		if(!$this->authProvider->loggedIn()) {
 			$response = $this->app->response();
-			$this->app->halt(403, "You must be logged in to access the API.");
+			$this->app->halt(401, "You must be logged in to access the API.");
 		}
 
 		/** All good, proceed. */
