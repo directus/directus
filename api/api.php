@@ -21,8 +21,13 @@ require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
 
 use Directus\View\JsonView;
-use Directus\Collections\Users;
+use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Auth\RequestNonceProvider;
+
+// Slim Middleware
+use Directus\Middleware\MustBeLoggedIn;
+use Directus\Middleware\MustHaveRequestNonce;
 
 /**
  * Slim Bootstrap
@@ -42,13 +47,23 @@ $v = API_VERSION;
  * Middleware
  */
 
+/* URL patterns which will not be protected */
+$routeWhitelist = array("/^\/?$v\/auth\/?/");
 $authProvider = new AuthProvider();
-// These URL patterns will not be protected
-$routeWhitelist = array(
-    // /auth routes don't require authentication
-    "/^\/?$v\/auth\/?/"
-);
-$app->add(new \Directus\Middleware\MustBeLoggedIn($authProvider, $routeWhitelist));
+$app->add(new MustBeLoggedIn($authProvider, $routeWhitelist));
+
+$requestNonceProvider = new RequestNonceProvider();
+$app->add(new MustHaveRequestNonce($requestNonceProvider));
+
+/**
+ * Add new nonces to all JSON responses
+ */
+JsonView::preDispatch(function($responseData) use ($requestNonceProvider) {
+    $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
+    return array_merge($responseData, array(
+        'new_nonces' => $new_nonces
+    ));
+});
 
 /**
  * Globals
