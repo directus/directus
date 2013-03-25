@@ -40,7 +40,7 @@ if(\Directus\Auth\Provider::loggedIn()) {
 
 <body>
 <!-- Main container. -->
-<form action="<?php echo DIRECTUS_PATH; ?>api/1/auth/login" method="post">
+<form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post">
 <div class='login-panel'>
   <h2>Welcome!</h2>
   <input type="text" name="email" placeholder="Email" />
@@ -51,6 +51,7 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <input type="submit" class="btn btn-primary" value="Sign in" />
 </div>
 </form>
-
+<!-- Javascripts -->
+<script type="text/javascript" src="<?= DIRECTUS_PATH ?>/assets/js/libs/jquery.js"></script>
 </body>
 </html>

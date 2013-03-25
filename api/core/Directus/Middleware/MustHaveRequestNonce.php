@@ -7,18 +7,32 @@ use Directus\Auth\RequestNonceProvider;
 /**
  * Interrupt the request if the request does not contain a valid nonce.
  */
-class MustHaveRequestNonce extends \Slim\Middleware {
+class MustHaveRequestNonce extends \Directus\Middleware {
 
 	/**
 	 * @var \Directus\Auth\RequestNonceProvider
 	 */
 	private $requestNonceProvider;
 
-	public function __construct(RequestNonceProvider $requestNonceProvider) {
+	/**
+	 * @param array                $routeWhitelist
+	 * @param RequestNonceProvider $requestNonceProvider
+	 */
+	public function __construct($routeWhitelist = array(), RequestNonceProvider $requestNonceProvider) {
+		parent::__construct($routeWhitelist);
 		$this->requestNonceProvider = $requestNonceProvider;
 	}
 
 	public function call() {
+
+		$outcome = parent::call();
+
+		// Did \Directus\Middleware detect that the route matches the whitelist?
+		// If so, skip enforcement.
+		// NOTE: $this->next->call() has already run!
+		if(self::MATCHES_ROUTE_WHITELIST == $outcome)
+			return;
+
 		if(!$this->requestNonceProvider->requestHasValidNonce())
 			$this->app->halt(401, "Invalid request (nonce).");
 

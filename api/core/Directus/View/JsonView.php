@@ -29,8 +29,10 @@ class JsonView {
      */
     public static function render(array $params) {
         $responseData = $params;
-        if(!is_null(self::$preDispatch))
-            $responseData = self::$preDispatch($responseData);
+        if(!is_null(self::$preDispatch)) {
+            $preDispatch = self::$preDispatch;
+            $responseData = $preDispatch($responseData);
+        }
         $responseData = json_encode($responseData);
         if(true) // e.g. 'production' !== DIRECTUS_ENV
             $responseData = self::format_json($responseData);
