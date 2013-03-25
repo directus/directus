@@ -92,12 +92,22 @@ class RequestNonceProvider {
 		return $this->valid_nonce_this_request;
 	}
 
+	/**
+	 * @return array Array of string nonces
+	 */
 	public function getNewNoncesThisRequest() {
 		if(is_null($this->valid_nonce_this_request)) {
 			$message = "You can fetch new nonces after checking the request for old ones.";
-			throw new NoncesAreGeneratedAfterCheckingRequestException($message);
+			throw new RequestNonceHasntBeenProcessed($message);
 		}
 		return $this->new_nonces_this_request;
+	}
+
+	/**
+	 * @return array Array of string nonces
+	 */
+	public function getAllNonces() {
+		return $this->nonce_pool;
 	}
 
 }
@@ -106,4 +116,4 @@ class RequestNonceProvider {
  * Exceptions
  */
 
-class NoncesAreGeneratedAfterCheckingRequestException extends \Exception {}
+class RequestNonceHasntBeenProcessed extends \Exception {}
