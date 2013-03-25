@@ -100,6 +100,7 @@ $authSuccess = function() use ($app) {
 
 $app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonceProvider, $authFail, $authSuccess) {
     $response = array(
+        'message' => "Wrong username/password.",
         'success' => false,
         'all_nonces' => $requestNonceProvider->getAllNonces()
     );
@@ -116,6 +117,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonc
     }
     $response['success'] = $authProvider
         ->login($user['id'], $user['password'], $user['salt'], $password);
+    if($response['success'])
+        unset($response['message']);
     JsonView::render($response);
 });
 
