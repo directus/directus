@@ -234,7 +234,9 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       }, this);
 
       var tabs = this.tabs;
-      var user = app.users.get(1);
+
+      var authenticatedUser = window.directusData.authenticatedUser;
+      var user = app.users.get(authenticatedUser.id);
 
       //Top
       var Navbar = Backbone.Layout.extend(
@@ -242,8 +244,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           template: "navbar",
           serialize: function() {
             return {
-              user: user.get('first_name'),
-              avatar: user.get('avatar'),
+              user: user.toJSON(),
               siteName: this.model.get('site_name'),
               siteUrl: this.model.get('site_url')
             };
