@@ -58,22 +58,6 @@ $requestNonceProvider = new RequestNonceProvider();
 $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 
 /**
- * Add new nonces to all JSON responses
- */
-JsonView::preDispatch(function($responseData) use ($requestNonceProvider) {
-    try {
-        $new_nonces = $requestNonceProvider->getNewNoncesThisRequest();
-        $addenda = array('new_nonces' => $new_nonces);
-    } catch(RequestNonceHasntBeenProcessed $e) {
-        // Meaning this route wasn't protected by the MustHaveRequestNonce
-        // middleware (i.e. it was an auth route), so we'll send all nonces
-        $all_nonces = $requestNonceProvider->getAllNonces();
-        $addenda = array('all_nonces' => $all_nonces);
-    }
-    return array_merge($responseData, $addenda);
-});
-
-/**
  * Globals
  */
 
@@ -90,15 +74,7 @@ $requestPayload = json_decode($app->request()->getBody(), true);
  * AUTHENTICATION
  */
 
-$authFail = function() use ($app) {
-    return $app->redirect(DIRECTUS_PATH . "login.php");
-};
-
-$authSuccess = function() use ($app) {
-    return $app->redirect(DIRECTUS_PATH);
-};
-
-$app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonceProvider, $authFail, $authSuccess) {
+$app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonceProvider) {
     $response = array(
         'message' => "Wrong username/password.",
         'success' => false,
@@ -122,10 +98,16 @@ $app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonc
     JsonView::render($response);
 });
 
-$app->get("/$v/auth/logout/?", function() use ($app, $authProvider, $authFail) {
+$app->get("/$v/auth/logout/?", function() use ($app, $authProvider) {
     if($authProvider::loggedIn())
         $authProvider::logout();
-    $authFail();
+    $app->redirect(DIRECTUS_PATH . "login.php");
+});
+
+$app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
+    $all_nonces = $requestNonceProvider->getAllNonces();
+    $response = array('nonces' => $all_nonces);
+    JsonView::render($response);
 });
 
 /**
