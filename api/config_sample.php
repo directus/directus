@@ -16,3 +16,5 @@ define('DIRECTUS_PATH', '/directus/');
 // E.g: /Users/olov/MAMP/resources/
 // Add 'temp' and 'thumbnail' directories in the resources directory
 define('RESOURCES_PATH', '');
+
+define('API_VERSION', 1);
