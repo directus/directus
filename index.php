@@ -7,17 +7,19 @@ use Directus\Auth\RequestNonceProvider;
  * Initialization
  *  - Apparently the autoloaders must be registered separately in both index.php and api.php
  */
+
 // Composer Autoloader
 require 'api/vendor/autoload.php';
+
 // Directus Autoloader
 // require 'api/Directus/autoload.php';
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespace("Directus", dirname(__FILE__) . "/api/core/");
 $loader->register();
+
 // Non-autoloaded components
 require 'api/api.php';
-/* End initialization */
 
 // No access, forward to login page
 if (!AuthProvider::loggedIn()) {
@@ -48,9 +50,7 @@ $data['ui'] = array();
 foreach (new DirectoryIterator('./extensions') as $file) {
 	if($file->isDot()) continue;
 	if(is_dir('./extensions/'.$file->getFilename()))
-	{
 	  array_push($data['extensions'], 'extensions/'.$file->getFilename().'/main');
-	}
 }
 
 // Scan for UI's
