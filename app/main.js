@@ -25,6 +25,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
     var sync = Backbone.sync;
 
     Backbone.sync = function(method, model, options) {
+
       options.error = function(xhr, status, thrown) {
         if (status.status === 404) {
           app.router.showAlert('Not found!');
@@ -36,6 +37,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
           app.router.openModal(win, {title: 'Server Error!', stretch: true, buttonText:'OK'});
         }
       };
+
       sync(method, model, options);
     };
 
@@ -64,6 +66,39 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
     app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','active','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
     app.settings = new Directus.Settings(data.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
+
+
+
+    /**
+     * Add nonce to API requests using custom request header
+     *
+     * @todo  modularize this logic
+     */
+    var nonces = window.directusData.nonces;
+
+    $(document).ajaxSend(function(event, jqXHR, settings) {
+      var isApiRequest = settings.url.substr(0, app.API_URL.length) == app.API_URL;
+      if(isApiRequest) {
+        nonce = nonces.pool.pop();
+        jqXHR.setRequestHeader(nonces.nonce_request_header, nonce);
+        // console.log('Using a nonce. New pool size: ' + nonces.pool.length);
+      }
+    });
+
+    /**
+     * Pull in new nonces from response headers
+     */
+
+    $(document).ajaxSuccess(function(event, xhr, settings) {
+      var new_nonces = xhr.getResponseHeader(nonces.nonce_response_header);
+      if(new_nonces) {
+        new_nonces = new_nonces.split(',');
+        // console.log('Got ' + new_nonces.length + ' new nonces:', new_nonces);
+        // console.log('Old nonce pool size: ' + nonces.pool.length);
+        nonces.pool.push.apply(nonces.pool, new_nonces);
+        // console.log('New nonce pool size: ' + nonces.pool.length);
+      }
+    });
 
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {
