@@ -32,12 +32,6 @@ class RequestNonceProvider {
 	 */
 	private $new_nonces_this_request = array();
 
-	/**
-	 * Return value of apache_request_headers()
-	 * @var array
-	 */
-	private $request_headers = array();
-
 	public function __construct($options = array()) {
 		$default_options = array(
 			'nonce_pool_size' => 10,
@@ -57,8 +51,6 @@ class RequestNonceProvider {
 
 		if(empty($this->nonce_pool))
 			$this->replenishNoncePool();
-
-		$this->request_headers = apache_request_headers();
 	}
 
 	/**
@@ -92,8 +84,9 @@ class RequestNonceProvider {
 		if(is_null($this->nonce_this_request)) {
 			$nonce_header = $this->options['nonce_request_header'];
 			$this->nonce_this_request = false;
-			if(isset($this->request_headers[$nonce_header])) {
-				$this->nonce_this_request = $this->request_headers[$nonce_header];
+			$headerAsSuperglobalKey = 'HTTP_' . strtoupper(str_replace('-', '_', $nonce_header));
+			if(isset($_SERVER[$headerAsSuperglobalKey])) {
+				$this->nonce_this_request = $_SERVER[$headerAsSuperglobalKey];
 			}
 		}
 		return $this->nonce_this_request;
