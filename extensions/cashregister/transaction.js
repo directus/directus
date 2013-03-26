@@ -97,7 +97,6 @@ function (app, User, Product) {
         },
 
         show_creditcard_swiped_message: function() {
-            console.log(this.options);
             this.options.transaction.set({ selected_payment_type: this.options.paymentTypes.findWhere({name: "Credit Card"}) });
             this.$("input").val('');
             this.$("input").focus();
@@ -165,16 +164,17 @@ function (app, User, Product) {
                         }
                     }
                     if (ccSwipeLogging) {
-                        console.log(e.keyCode);
                         if (e.keyCode == 13) {
                             var inputVal = this.$element.val();
                             SwipeParser(inputVal, self.options.transaction);
                             ccSwipeLogging = false;
                         }
+                        return false;
                     }
 
                     if (e.keyCode == 16) {
                         ccSwipeLogging = true;
+                        return false;
                     }
 
                     switch (e.keyCode) {
@@ -367,7 +367,6 @@ function SwipeParser(strParse, transactionObj) {
             account_name = arrSwipe[1];
             exp_month = arrSwipe[2].substring(2, 4);
             exp_year = '20' + arrSwipe[2].substring(0, 2);
-            console.log(transactionObj);
             transactionObj.set({cc_name: account_name, cc_number: account, cc_exp_month: exp_month, cc_exp_year: exp_year });
             transactionObj.trigger('credit_card_swiped');
 
