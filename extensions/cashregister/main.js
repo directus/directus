@@ -46,13 +46,11 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
 
             CashRegister.Models.PaymentType = Backbone.Model.extend({
                 initialize: function() {
-                    console.log("paymenttype", this);
                     this.listenTo(this.collection.transaction, {
                         'change:selected_payment_type':this.check_sel_or_not
                     });
                 },
                 check_sel_or_not: function() {
-                   // console.log('check_sel_or_not');
                     this.set({sel: this.collection.transaction.get('selected_payment_type') == this});
                 }
             });
@@ -62,11 +60,6 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                 model: CashRegister.Models.PaymentType,
                 initialize: function(coll, options) {
                     this.transaction = options.transaction;
-                    console.log("collection", options);
-                    //options.transaction.on('change:selected_payment_type', this.set_selected_type);
-                },
-                set_selected_type: function() {
-
                 }
             });
 
@@ -89,7 +82,6 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                 template: 'register-main',
 
                 initialize: function(options) {
-                    console.log(options);
                     this.transaction = options.transaction;
                     this.paymentTypes = options.paymentTypesCollection;
                     this.listenTo(options.transaction, {
