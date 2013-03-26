@@ -33,6 +33,7 @@ switch (DIRECTUS_ENV) {
         break;
 }
 
+use Directus\Package;
 use Directus\View\JsonView;
 use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
@@ -83,22 +84,36 @@ $requestNonceProvider = new RequestNonceProvider();
 $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 
 /**
- * Extension Alias
- */
-
-if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
-    var_dump($_GET);
-    var_dump($_SERVER);
-    exit;
-}
-
-/**
  * Globals
  */
 
 $db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 $params = $_GET;
 $requestPayload = json_decode($app->request()->getBody(), true);
+
+/**
+ * Extension Alias
+ */
+
+if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
+    // Validate extension name
+    $extensionName = $_REQUEST['run_extension'];
+    if(!Package::extensionExists($extensionName)) {
+        header("HTTP/1.0 404 Not Found");
+        return JsonView::render(array('message' => 'No such extension.'));
+    }
+    // Validate request nonce
+    if(!$requestNonceProvider->requestHasValidNonce()) {
+        header("HTTP/1.0 401 Unauthorized");
+        return JsonView::render(array('message' => 'Unauthorized (nonce).'));
+    }
+    $extensionsDirectory = APPLICATION_PATH . "/extensions";
+    $responseData = require "$extensionsDirectory/$extensionName/api.php";
+    $nonceOptions = $requestNonceProvider->getOptions();
+    $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
+    header($nonceOptions['nonce_response_header'] . ': ' . implode($newNonces, ","));
+    return JsonView::render($responseData);
+}
 
 /**
  * Slim Routes
