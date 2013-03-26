@@ -15,7 +15,7 @@ define('DB_PREFIX', 		'');
 define('DIRECTUS_PATH', '/directus/');
 
 // Absolute path to application
-define('APPLICATION_PATH', realpath('.'));
+define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/..'));
 
 // Full path to the static resources directory.
 // E.g: /Users/olov/MAMP/resources/
