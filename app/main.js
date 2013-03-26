@@ -75,36 +75,30 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
      * @todo  modularize this logic
      */
     var nonces = window.directusData.nonces;
-    var nonce_refresh_in_progress = false;
-    $.ajaxSetup({beforeSend: function(jqXHR, options){
-      var isApiRequest = options.url.substr(0, app.API_URL.length) == app.API_URL;
+
+    $(document).ajaxSend(function(event, jqXHR, settings) {
+      var isApiRequest = settings.url.substr(0, app.API_URL.length) == app.API_URL;
       if(isApiRequest) {
         nonce = nonces.pool.pop();
-        console.log('Popping nonce, length is ' + nonces.pool.length);
         jqXHR.setRequestHeader(nonces.nonce_request_header, nonce);
-
-        /**
-         * Replenish our nonce buffer if we're low
-         */
-        buffer_limit = 6;
-        if(nonces.pool.length <= buffer_limit && !nonce_refresh_in_progress) {
-          nonce_refresh_in_progress = true;
-          $.ajax(app.API_URL + 'auth/nonces', {
-            data: {},
-            dataType: 'json',
-            type: 'GET',
-            success: function(data, textStatus, jqXHR) {
-              nonce_refresh_in_progress = false;
-              if(data.hasOwnProperty('nonces')) {
-                window.directusData.nonces.pool = data.nonces;
-                console.log('got new nonces', window.directusData.nonces.pool);
-              }else console.log('got no nonces!');
-            },
-            error: function(jqXHR, textStatus, errorThrown) {}
-          });
-        }
+        // console.log('Using a nonce. New pool size: ' + nonces.pool.length);
       }
-    }});
+    });
+
+    /**
+     * Pull in new nonces from response headers
+     */
+
+    $(document).ajaxSuccess(function(event, xhr, settings) {
+      var new_nonces = xhr.getResponseHeader(nonces.nonce_response_header);
+      if(new_nonces) {
+        new_nonces = new_nonces.split(',');
+        // console.log('Got ' + new_nonces.length + ' new nonces:', new_nonces);
+        // console.log('Old nonce pool size: ' + nonces.pool.length);
+        nonces.pool.push.apply(nonces.pool, new_nonces);
+        // console.log('New nonce pool size: ' + nonces.pool.length);
+      }
+    });
 
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {
