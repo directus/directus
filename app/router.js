@@ -235,8 +235,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       var tabs = this.tabs;
 
-      var authenticatedUser = window.directusData.authenticatedUser;
-      var user = app.users.get(authenticatedUser.id);
+      var user = app.getCurrentUser();
 
       //Top
       var Navbar = Backbone.Layout.extend(

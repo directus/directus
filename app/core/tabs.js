@@ -25,6 +25,11 @@ function(app, Backbone) {
         model.unset('active',{silent: true});
       });
       model.set({'active':true});
+
+      // Report the "last page" data to the API
+      var user = app.getCurrentUser();
+      user.set('last_page', route);
+      user.save();
     }
   });
 
