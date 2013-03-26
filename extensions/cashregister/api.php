@@ -1,9 +1,9 @@
 <?PHP
 // @TODO conditionally do these based on dev/prod
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-require dirname(__FILE__) . '/../../api/api.php';
-header("Content-Type: application/json; charset=utf-8");
+// error_reporting(E_ALL);
+// ini_set('display_errors', '1');
+// require dirname(__FILE__) . '/../../api/api.php';
+// header("Content-Type: application/json; charset=utf-8");
 
 $uriWithoutQueryString = trim(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']), '?');
 
@@ -86,4 +86,8 @@ $params = array_slice($request, 5);
  */
 $results = call_user_func_array(array($cashRegister, $params[0]), array_slice($params, 1));
 
-echo json_encode($results);
+
+/**
+ * Return the results to the API front controller.
+ */
+return $results;
