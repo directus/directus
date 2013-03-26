@@ -43,8 +43,7 @@ class MustHaveRequestNonce extends \Directus\Middleware {
 
 	    $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
 
-	    $log = $this->app->getLog();
-
+	    // $log = $this->app->getLog();
 	    // $log->info("REQUEST_URI:");
 	    // $log->info($_SERVER['REQUEST_URI']);
 	    // $log->info("Nonce pool size:");
