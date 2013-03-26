@@ -14,6 +14,9 @@ define('DB_PREFIX', 		'');
 // Url path to Directus
 define('DIRECTUS_PATH', '/directus/');
 
+// Absolute path to application
+define('APPLICATION_PATH', realpath('.'));
+
 // Full path to the static resources directory.
 // E.g: /Users/olov/MAMP/resources/
 // Add 'temp' and 'thumbnail' directories in the resources directory

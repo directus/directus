@@ -2,6 +2,7 @@
 
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
+use Directus\Package;
 
 /**
  * Initialization
@@ -23,7 +24,7 @@ require 'api/api.php';
 
 // No access, forward to login page
 if (!AuthProvider::loggedIn()) {
-  header( 'location: login.php' ) ;
+  header( 'Location: login.php' ) ;
   die();
 }
 
@@ -43,23 +44,10 @@ $data['settings'] = $db->get_settings('global');
 $data['page'] = '#tables';
 $data['path'] = DIRECTUS_PATH;
 $data['active_media'] = $db->count_active('directus_media');
-$data['extensions'] = array();
-$data['ui'] = array();
 
-// Scan for extensions
-foreach (new DirectoryIterator('./extensions') as $file) {
-	if($file->isDot()) continue;
-	if(is_dir('./extensions/'.$file->getFilename()))
-	  array_push($data['extensions'], 'extensions/'.$file->getFilename().'/main');
-}
-
-// Scan for UI's
-foreach (new DirectoryIterator('./ui') as $file) {
-	if($file->isDot()) continue;
-	$info = pathinfo($file->getFilename());
-	if (array_key_exists('extension',$info) && $info['extension'] != 'js') continue;
-	array_push($data['ui'], 'ui/'.basename($file->getFilename(),'.js'));
-}
+// Force array json encoding
+$data['extensions'] = array_values(Package::getExtensions());
+$data['ui'] = array_values(Package::getUis());
 
 echo template(file_get_contents('main.html'), array(
 	'data'=> json_encode($data),
