@@ -18,7 +18,10 @@ define(['app', 'backbone'], function(app, Backbone) {
   ];
 
   var template = '<label>Change Password <span class="note">{{comment}}</span></label> \
-                 <input type="password" name="{{name}}" class="medium"/> \
+                 <input type="password" name="{{name}}" class="medium password-primary"/> \
+                 <button class="btn btn-small btn-primary margin-left password-generate" type="button">Generate New</button> \
+                 <button class="btn btn-small btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
+                 <span class="password-text"></span> \
                  {{#if require_confirmation}} \
                  <label style="margin-top:12px">Confirm Password</label> \
                  <input type="password" value="{{value}}" class="medium password-confirm"/> \
@@ -29,6 +32,33 @@ define(['app', 'backbone'], function(app, Backbone) {
     tagName: 'fieldset',
 
     template: Handlebars.compile(template),
+
+    events: {
+      'click .password-generate' : function(e) {
+
+        var length = 10,
+            charset = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+            pass = "";
+
+        for (var i = 0, n = charset.length; i < length; ++i) {
+          pass += charset.charAt(Math.floor(Math.random() * n));
+        }
+        this.$el.find('input.password-primary').val(pass);
+        this.$el.find('input.password-confirm').val(pass);
+        e.preventDefault();
+      },
+      'click .password-toggle' : function(e) {
+        if($(e.target).html() == 'Mask Password'){
+          this.$el.find('input.password-primary').get(0).type = 'password';
+          this.$el.find('input.password-confirm').get(0).type = 'password';
+          $(e.target).html('Reveal Password');
+        } else {
+          this.$el.find('input.password-primary').get(0).type = 'text';
+          this.$el.find('input.password-confirm').get(0).type = 'text';
+          $(e.target).html('Mask Password');
+        }
+      }
+    },
 
     serialize: function() {
       return {
