@@ -5,3 +5,4 @@ Icon
 composer.phar
 api/composer.lock
 api/vendor
+api/logs
