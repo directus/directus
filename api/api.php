@@ -20,6 +20,19 @@ require dirname(__FILE__) . '/core/db.php';
 require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
 
+// Define directus environment
+defined('DIRECTUS_ENV')
+    || define('DIRECTUS_ENV', (getenv('DIRECTUS_ENV') ? getenv('DIRECTUS_ENV') : 'production'));
+
+switch (DIRECTUS_ENV) {
+    case 'development':
+        break;
+    case 'production':
+    default:
+        error_reporting(0);
+        break;
+}
+
 use Directus\View\JsonView;
 use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
