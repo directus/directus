@@ -83,6 +83,16 @@ $requestNonceProvider = new RequestNonceProvider();
 $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 
 /**
+ * Extension Alias
+ */
+
+if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
+    var_dump($_GET);
+    var_dump($_SERVER);
+    exit;
+}
+
+/**
  * Globals
  */
 
