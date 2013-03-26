@@ -11,6 +11,13 @@ function(Handlebars) {
   // Provide a global location to place configuration settings and module
   // creation.
   var app = {
+
+    getCurrentUser: function() {
+       var authenticatedUser = window.directusData.authenticatedUser;
+       var user = app.users.get(authenticatedUser.id);
+       return user;
+    },
+
     capitalize: function(string, seperator) {
       var idIndex;
 
