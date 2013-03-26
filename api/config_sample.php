@@ -2,6 +2,8 @@
 
 date_default_timezone_set('America/New_York');
 
+define('DIRECTUS_ENV', 'production');
+
 // MySQL Settings
 define('DB_HOST', 			'');
 define('DB_NAME', 			'');
@@ -11,6 +13,9 @@ define('DB_PREFIX', 		'');
 
 // Url path to Directus
 define('DIRECTUS_PATH', '/directus/');
+
+// Absolute path to application
+define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/..'));
 
 // Full path to the static resources directory.
 // E.g: /Users/olov/MAMP/resources/

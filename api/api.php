@@ -20,20 +20,52 @@ require dirname(__FILE__) . '/core/db.php';
 require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
 
+// Define directus environment
+defined('DIRECTUS_ENV')
+    || define('DIRECTUS_ENV', (getenv('DIRECTUS_ENV') ? getenv('DIRECTUS_ENV') : 'production'));
+
+switch (DIRECTUS_ENV) {
+    case 'development':
+        break;
+    case 'production':
+    default:
+        error_reporting(0);
+        break;
+}
+
+use Directus\Package;
 use Directus\View\JsonView;
-use Directus\Collections\Users;
+use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Auth\RequestNonceProvider;
+use Directus\Auth\RequestNonceHasntBeenProcessed;
+
+// Slim Middleware
+use Directus\Middleware\MustBeLoggedIn;
+use Directus\Middleware\MustHaveRequestNonce;
 
 /**
  * Slim Bootstrap
  */
 
-/**
- * @todo should set some ENV constant, i.e. DIRECTUS_ENV
- */
 $app = new \Slim\Slim(array(
-    'mode'    => 'development'
+    'mode'    => DIRECTUS_ENV,
+    'log.writer' => new \Slim\Extras\Log\DateTimeFileWriter()
 ));
+
+$app->configureMode('production', function () use ($app) {
+    $app->config(array(
+        'log.enable' => true,
+        'debug' => false
+    ));
+});
+
+$app->configureMode('development', function () use ($app) {
+    $app->config(array(
+        'log.enable' => false,
+        'debug' => true
+    ));
+});
 
 // Version shortcut for routes:
 $v = API_VERSION;
@@ -42,13 +74,14 @@ $v = API_VERSION;
  * Middleware
  */
 
+/* URL patterns which will not be protected by the following middleware */
+$routeWhitelist = array("/^\/?$v\/auth\/?/");
+
 $authProvider = new AuthProvider();
-// These URL patterns will not be protected
-$routeWhitelist = array(
-    // /auth routes don't require authentication
-    "/^\/?$v\/auth\/?/"
-);
-$app->add(new \Directus\Middleware\MustBeLoggedIn($authProvider, $routeWhitelist));
+$app->add(new MustBeLoggedIn($routeWhitelist, $authProvider));
+
+$requestNonceProvider = new RequestNonceProvider();
+$app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 
 /**
  * Globals
@@ -59,6 +92,30 @@ $params = $_GET;
 $requestPayload = json_decode($app->request()->getBody(), true);
 
 /**
+ * Extension Alias
+ */
+
+if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
+    // Validate extension name
+    $extensionName = $_REQUEST['run_extension'];
+    if(!Package::extensionExists($extensionName)) {
+        header("HTTP/1.0 404 Not Found");
+        return JsonView::render(array('message' => 'No such extension.'));
+    }
+    // Validate request nonce
+    if(!$requestNonceProvider->requestHasValidNonce()) {
+        header("HTTP/1.0 401 Unauthorized");
+        return JsonView::render(array('message' => 'Unauthorized (nonce).'));
+    }
+    $extensionsDirectory = APPLICATION_PATH . "/extensions";
+    $responseData = require "$extensionsDirectory/$extensionName/api.php";
+    $nonceOptions = $requestNonceProvider->getOptions();
+    $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
+    header($nonceOptions['nonce_response_header'] . ': ' . implode($newNonces, ","));
+    return JsonView::render($responseData);
+}
+
+/**
  * Slim Routes
  * (Collections arranged alphabetically)
  */
@@ -67,34 +124,40 @@ $requestPayload = json_decode($app->request()->getBody(), true);
  * AUTHENTICATION
  */
 
-$authFail = function() use ($app) {
-    return $app->redirect(DIRECTUS_PATH . "login.php");
-};
-
-$authSuccess = function() use ($app) {
-    return $app->redirect(DIRECTUS_PATH);
-};
-
-$app->post("/$v/auth/login/?", function() use ($app, $authProvider, $db, $authFail, $authSuccess) {
-    if($authProvider::loggedIn())
-        return $authSuccess();
+$app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonceProvider) {
+    $response = array(
+        'message' => "Wrong username/password.",
+        'success' => false,
+        'all_nonces' => $requestNonceProvider->getAllNonces()
+    );
+    if($authProvider::loggedIn()) {
+        $response['success'] = true;
+        return JsonView::render($response);
+    }
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
     $user = Users::findOneByEmail($email);
-    if(!$user)
-        return $authFail();
-    $authenticationAttempt = $authProvider
+    if(!$user) {
+        return JsonView::render($response);
+    }
+    $response['success'] = $authProvider
         ->login($user['id'], $user['password'], $user['salt'], $password);
-    if($authenticationAttempt)
-        return $authSuccess();
-    return $authFail();
+    if($response['success'])
+        unset($response['message']);
+    JsonView::render($response);
 });
 
-$app->get("/$v/auth/logout/?", function() use ($app, $authProvider, $authFail) {
+$app->get("/$v/auth/logout/?", function() use ($app, $authProvider) {
     if($authProvider::loggedIn())
         $authProvider::logout();
-    $authFail();
+    $app->redirect(DIRECTUS_PATH . "login.php");
+});
+
+$app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
+    $all_nonces = $requestNonceProvider->getAllNonces();
+    $response = array('nonces' => $all_nonces);
+    JsonView::render($response);
 });
 
 /**
