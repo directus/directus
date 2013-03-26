@@ -41,7 +41,8 @@ class RequestNonceProvider {
 	public function __construct($options = array()) {
 		$default_options = array(
 			'nonce_pool_size' => 10,
-			'nonce_request_header' => 'X-Directus-Request-Nonce'
+			'nonce_request_header' => 'X-Directus-Request-Nonce',
+			'nonce_response_header' => 'X-Directus-New-Request-Nonces'
 		);
 
 		$this->options = array_merge($default_options, $options);
@@ -66,7 +67,7 @@ class RequestNonceProvider {
 	 */
 	private function replenishNoncePool() {
 		if(count($this->nonce_pool) < $this->options['nonce_pool_size']) {
-			for($i = 0; $i < $this->options['nonce_pool_size']; $i++) {
+			for($i = count($this->nonce_pool); $i < $this->options['nonce_pool_size']; $i++) {
 				$nonce = $this->makeNonce();
 				$this->nonce_pool[] = $nonce;
 				$this->new_nonces_this_request[] = $nonce;
