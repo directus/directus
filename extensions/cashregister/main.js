@@ -37,10 +37,46 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
 
             this.transaction = new Transaction.Model();
 
+            var CashRegister = {};
+
+            CashRegister.Models = {};
+            CashRegister.Collections = {};
+
+            CashRegister.Views = {};
+
+            CashRegister.Models.PaymentType = Backbone.Model.extend({
+                initialize: function() {
+                    console.log("paymenttype", this);
+                    this.listenTo(this.collection.transaction, {
+                        'change:selected_payment_type':this.check_sel_or_not
+                    });
+                },
+                check_sel_or_not: function() {
+                   // console.log('check_sel_or_not');
+                    this.set({sel: this.collection.transaction.get('selected_payment_type') == this});
+                }
+            });
+
+            CashRegister.Collections.PaymentTypes = Backbone.Collection.extend({
+                url: '/directus/api/1/extensions/cashregister/payment_types',
+                model: CashRegister.Models.PaymentType,
+                initialize: function(coll, options) {
+                    this.transaction = options.transaction;
+                    console.log("collection", options);
+                    //options.transaction.on('change:selected_payment_type', this.set_selected_type);
+                },
+                set_selected_type: function() {
+
+                }
+            });
+
+            this.paymentTypes = new CashRegister.Collections.PaymentTypes([], {transaction: this.transaction});
+
             var collections = {
                 quickPicksCollection: new Product.QuickPicksCollection(),
                 customerCollection: new User.Collection({transaction: this.transaction}),
-                activeProductsCollection: this.transaction.activeProductsCollection
+                activeProductsCollection: this.transaction.activeProductsCollection,
+                paymentTypes: this.paymentTypes
             };
 
             _.extend(this, collections);
@@ -53,7 +89,9 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                 template: 'register-main',
 
                 initialize: function(options) {
+                    console.log(options);
                     this.transaction = options.transaction;
+                    this.paymentTypes = options.paymentTypesCollection;
                     this.listenTo(options.transaction, {
                         'change:selectedRider':this.show_rider_detail,
                         'change:userSearchSetting':this.set_user_search_view
@@ -65,7 +103,8 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                         customerCollection: this.customerCollection,
                         activeProductsCollection: this.activeProductsCollection,
                         productCollection: this.quickPicksCollection,
-                        transaction: this.transaction
+                        transaction: this.transaction,
+                        paymentTypes: this.paymentTypes
                     }),
 
                     '.quick_picks_table': new Product.Views.QuickPicksList({
@@ -82,12 +121,11 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                 },
 
                 show_rider_detail: function() {
-                    this.setView('.customers_table', new User.Views.Selected({model: this.transaction.get('selectedRider'), transaction: this.transaction }));
+                    this.setView('.customers_table', new User.Views.Selected({model: this.transaction.get('selectedRider'), transaction: this.transaction, paymentTypes: this.paymentTypes }));
                     this.render();
                 },
 
                 set_user_search_view: function() {
-                  console.log("set_user_search_view", this);
                   var searchSetting = this.transaction.get('userSearchSetting');
                   this.setView('.customers_table', new User.Views.List({
                     collection: this.options.customerCollection,
@@ -113,7 +151,8 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                 transaction: this.transaction, 
                 quickPicksCollection: this.quickPicksCollection,
                 activeProductsCollection: this.activeProductsCollection,
-                customerCollection: this.customerCollection
+                customerCollection: this.customerCollection,
+                paymentTypesCollection: this.paymentTypes
               }
             );
 
@@ -130,6 +169,7 @@ function (app, Backbone, _, Directus, Accounting, Product, User, Transaction) {
                 }
             });
 
+            this.paymentTypes.fetch();
             this.quickPicksCollection.fetch();
             this.customerCollection.fetch();
 
