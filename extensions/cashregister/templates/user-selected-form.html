@@ -1,15 +1,11 @@
-<h2 class="name">{{first_name}} {{last_name}}</h2>
-<div class="payment_options">
-	<input type="radio" name="payment_type" id="payment_type_cash" value="cash"/> Cash<br/>
-	<input type="radio" name="payment_type" id="payment_type_credit_card" value="credit_card"/> Credit Card<br/>
-	<input type="radio" name="payment_type" id="payment_type_gift_card" value="gift_card"/> Gift Card<br/>
-	<input type="radio" name="payment_type" id="payment_type_comp" value="comp"/> Comp
-</div>
+<h2 class="name">{{user.first_name}} {{user.last_name}}</h2>
+<ul class="payment_options">
+</ul>
 <div class="payment_option_details">
 	<div class="payment_option_info_credit_card">
-		Credit Card Name: <input type="text" name="credit_card_name" id="credit_card_name" /><br />
-		 Credit Card Number: <input type="text" name="credit_card_number" id="credit_card_number" placeholder="Please enter the purchaser's credit card number."/><br/>
-		Expiration: <input type="text" id="credit_card_exp_month"/> / <input type="text" id="credit_card_exp_year"/>
+		Credit Card Name: <input type="text" name="credit_card_name" id="credit_card_name" value="{{transaction.cc_name}}" /><br />
+		 Credit Card Number: <input type="text" name="credit_card_number" id="credit_card_number" placeholder="Please enter the purchaser's credit card number." value="{{transaction.cc_number}}"/><br/>
+		Expiration: <input type="text" id="credit_card_exp_month" value="{{transaction.cc_exp_month}}"/> / <input type="text" id="credit_card_exp_year" value="{{transaction.cc_exp_year}}"/>
 	</div>
 </div>
 <div class="employee_id">

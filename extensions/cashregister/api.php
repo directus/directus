@@ -70,6 +70,13 @@ class cashRegister {
 		return $results;
 	}
 
+	function payment_types() {
+		$query = "SELECT * FROM payment_types";
+		$stmt = $this->db->dbh->query($query);
+		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $results;
+	}
+
 }
 
 $cashRegister = new cashRegister($db);
