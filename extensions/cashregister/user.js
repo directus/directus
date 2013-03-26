@@ -105,15 +105,13 @@ User.Views.Item = Backbone.Layout.extend({
           tagName: 'li',
 
           initialize: function() {
-            console.log("instant of paymenttyperadio", this.model);
             this.listenTo(this.model, {
               'change': this.render
             })
           },
 
           serialize: function() {
-              return 
-                  this.model.toJSON()
+              return this.model.toJSON();  
           }
       });
     User.Views.Selected = Backbone.Layout.extend({
@@ -123,7 +121,6 @@ User.Views.Item = Backbone.Layout.extend({
         template: 'user-selected-form',
 
         initialize: function (options) {
-          console.log("options", options);
           this.options = options;
           this.listenTo(options.transaction, {
             'change:selected_payment_type':this.render
@@ -135,7 +132,7 @@ User.Views.Item = Backbone.Layout.extend({
 
         beforeRender: function() {
             this.options.paymentTypes.each(function(payment_type) {
-              this.insertView(".payment_options", new User.Views.PaymentTypeRadio({
+             this.insertView(".payment_options", new User.Views.PaymentTypeRadio({
                   model: payment_type
               }));
             }, this);
