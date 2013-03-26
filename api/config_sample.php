@@ -2,6 +2,8 @@
 
 date_default_timezone_set('America/New_York');
 
+define('DIRECTUS_ENV', 'production');
+
 // MySQL Settings
 define('DB_HOST', 			'');
 define('DB_NAME', 			'');
