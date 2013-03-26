@@ -50,4 +50,9 @@ class Package {
 		return self::$uis;
 	}
 
+	public static function extensionExists($extensionName) {
+		$extensions = self::getExtensions();
+		return array_key_exists($extensionName, $extensions);
+	}
+
 }
