@@ -21,7 +21,7 @@ require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
 
 use Directus\View\JsonView;
-use Directus\Collections\Users;
+use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
 
 /**
