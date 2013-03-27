@@ -11,10 +11,29 @@ function (app, User, Product) {
 
     var Transaction = app.module();
 
+    Transaction.Models = {};
+    Transaction.Collections = {};
+
     Transaction.Model = Backbone.Model.extend({
         initialize: function () {
             this.activeProductsCollection = new Transaction.ActiveProductsCollection();
             this.activeProductsCollection.transaction = this;
+            this.on('change:selected_payment_type', this.process_payment_type_change)
+        },
+
+        process_payment_type_change: function() {
+            var selected_payment_type = this.get('selected_payment_type').get('name');
+            switch (selected_payment_type) {
+                case 'Credit Card':
+                    // if we have a selected user, that is fine. Otherwise lets default to guest.
+                    if ( this.get('selectedRider') ) {
+
+                    } else {
+                        this.set({ selectedRider: new User.Model({ guest: true }) });
+                    }
+                    console.log();
+                break;
+            }
         }
     });
 
@@ -78,11 +97,9 @@ function (app, User, Product) {
         },
 
         show_creditcard_swiped_message: function() {
+            this.options.transaction.set({ selected_payment_type: this.options.paymentTypes.findWhere({name: "Credit Card"}) });
             this.$("input").val('');
             this.$("input").focus();
-            this.$('.flash_message').text('Credit card successfully swiped. Please select a rider or type "Guest".');
-            this.$('.flash_message').slideDown('slow');
-            setTimeout(function() { this.$('.flash_message').slideUp('slow'); }, 3000);
         },
 
         afterRender: function () {
@@ -147,20 +164,17 @@ function (app, User, Product) {
                         }
                     }
                     if (ccSwipeLogging) {
-                        console.log(e.keyCode);
                         if (e.keyCode == 13) {
-                            console.log("about to run swipeparser");
                             var inputVal = this.$element.val();
                             SwipeParser(inputVal, self.options.transaction);
                             ccSwipeLogging = false;
                         }
+                        return false;
                     }
 
                     if (e.keyCode == 16) {
                         ccSwipeLogging = true;
-                        // check the beginning of the string...
-                        //var inputVal = this.$element.val();
-                       // SwipeParser(inputVal, self.options.transaction);
+                        return false;
                     }
 
                     switch (e.keyCode) {
@@ -353,14 +367,9 @@ function SwipeParser(strParse, transactionObj) {
             account_name = arrSwipe[1];
             exp_month = arrSwipe[2].substring(2, 4);
             exp_year = '20' + arrSwipe[2].substring(0, 2);
-            console.log(transactionObj);
-            transactionObj.set({cc_name: account_name, cc_number: account, cc_exp_month: exp_month, cc_exp_year: exp_year});
+            transactionObj.set({cc_name: account_name, cc_number: account, cc_exp_month: exp_month, cc_exp_year: exp_year });
             transactionObj.trigger('credit_card_swiped');
-            //console.log("cc_name: " + account_name + ", account: " + account + ", exp: " + exp_month + "/" + exp_year, this);
 
-           // selectOptionByValue(document.getElementById('expmonth'), exp_month);
-           // selectOptionByValue(document.getElementById('expyear'), exp_year);
-           // document.getElementById('ccnum').value = account;
         } else {
             alert("Error Parsing Card.  \r\n Please Contact IT! \r\n");
         }
@@ -377,13 +386,9 @@ function SwipeParser(strParse, transactionObj) {
             exp_month = arrSwipe[2].substring(2, 4);
             exp_year = '20' + arrSwipe[2].substring(0, 2);
 
-            //selectOptionByValue(document.getElementById('expmonth'), exp_month);
-            //selectOptionByValue(document.getElementById('expyear'), exp_year);
-            //document.getElementById('ccnum').value = account;
             console.log(transactionObj);
             transactionObj.set({cc_name: account_name, cc_number: account, cc_exp_month: exp_month, cc_exp_year: exp_year});
             transactionObj.trigger('credit_card_swiped');
-            //console.log("name: " + account_name + ", account: " + account + ", exp: " + exp_month + "/" + exp_year);
 
         } else {
             alert("Error Parsing Card.  \r\n Please Contact IT! \r\n");
@@ -400,11 +405,7 @@ function SwipeParser(strParse, transactionObj) {
         exp_year = '20' + sYear;
         transactionObj.set({cc_number: account, cc_exp_month: exp_month, cc_exp_year: exp_year});
         transactionObj.trigger('credit_card_swiped');
-        //console.log("account: " + account + ", exp: " + exp_month + "/" + exp_year);
 
-        //selectOptionByValue(document.getElementById('expmonth'), exp_month);
-        //selectOptionByValue(document.getElementById('expyear'), exp_year);
-        //document.getElementById('ccnum').value = account;
     } else {
         return GetRunTotal();
     }
