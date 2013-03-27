@@ -1,9 +1,4 @@
-<?PHP
-// @TODO conditionally do these based on dev/prod
-// error_reporting(E_ALL);
-// ini_set('display_errors', '1');
-// require dirname(__FILE__) . '/../../api/api.php';
-// header("Content-Type: application/json; charset=utf-8");
+<?php
 
 $uriWithoutQueryString = trim(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']), '?');
 
@@ -72,20 +67,24 @@ class cashRegister {
 		return $results;
 	}
 
+	function payment_types() {
+		$query = "SELECT * FROM payment_types";
+		$stmt = $this->db->dbh->query($query);
+		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $results;
+	}
+
 }
 
 $cashRegister = new cashRegister($db);
 
 $params = array_slice($request, 5);
 
-// var_dump($params);exit;
-
 /**
  * @todo this is unstable and very insecure, calling a method by name using an
  * unsanitized user input!
  */
 $results = call_user_func_array(array($cashRegister, $params[0]), array_slice($params, 1));
-
 
 /**
  * Return the results to the API front controller.
