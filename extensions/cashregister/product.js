@@ -56,7 +56,7 @@ Product.Views.Item = Backbone.Layout.extend({
       },
 
       addProduct:function(e) {
-       // var productToAdd = this.collection.get($(e.currentTarget).data('id'));
+        console.log("this", this);
         this.activeProductsCollection.trigger('cartAdd', this.model );
       },
 
@@ -80,7 +80,8 @@ Product.Views.QuickPicksList = Backbone.Layout.extend({
     template: 'quick-picks-table',
 
     initialize:function(options) {
-      this.activeProductsCollection = options.activeProductsCollection;
+      console.log("options in quickpickslist", options, this.options);
+      this.activeProductsCollection = options.transaction.get('activeProductsCollection');
       this.listenTo(this.collection, {
         "reset": this.render,
 
