@@ -5866,6 +5866,9 @@ a {
 .gray-dark {
   color: #8f8f8f !important;
 }
+.gray {
+  color: #ededed !important;
+}
 .inactive {
   opacity: 0.4;
   cursor: default!important;
@@ -6304,16 +6307,8 @@ a:hover {
   right: 0px;
   top: 10px;
   right: 20px;
-  background-color: #8bc53f;
-  color: #FFF;
-}
-.navbar .dropdown-menu li:hover .label {
-  position: absolute;
-  right: 0px;
-  top: 10px;
-  right: 20px;
-  color: #8bc53f;
   background-color: #FFF;
+  color: #8bc53f;
 }
 .nothing-here {
   padding-top: 70px;

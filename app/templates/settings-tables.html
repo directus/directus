@@ -13,11 +13,11 @@
   {{#rows}}
   <tr data-id="{{table_name}}">
   	<td>{{{capitalize table_name}}}</td>
-	<td>{{#if hidden}}✔{{/if}}</td>
-	<td>{{#if single}}✔{{/if}}</td>
-	<td>{{#if inactive_by_default}}✔{{/if}}</td>
-	<td>{{#if is_junction_table}}✔{{/if}}</td>
-	<td>{{#if footer}}✔{{/if}}</td>
+	<td>{{#if hidden}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td>{{#if single}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td>{{#if inactive_by_default}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td>{{#if is_junction_table}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td>{{#if footer}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
   </tr>
   {{/rows}}
 </tbody>
