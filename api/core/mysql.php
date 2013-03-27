@@ -1,9 +1,12 @@
 <?PHP
 
-class DirectusException extends Exception { 
-   public function __construct($message, $code=null){ 
-      parent::__construct($message, $code); 
-   } 
+use Directus\Collection\Users;
+use Directus\Auth\Provider as AuthProvider;
+
+class DirectusException extends Exception {
+   public function __construct($message, $code=null){
+      parent::__construct($message, $code);
+   }
 }
 
 class MySQL {
@@ -20,7 +23,7 @@ class MySQL {
    *
    * @param $db_user
    * @param $db_password
-   * @param $db_name  
+   * @param $db_name
    * @param $db_host
    */
   function __construct($db_user, $db_password, $db_name, $db_host) {
@@ -34,8 +37,15 @@ class MySQL {
       $this->dbh = new PDO("mysql:host=$db_host;dbname=$db_name;charset=UTF8", $db_user, $db_password);
       $this->dbh->exec("SET CHARACTER SET utf8");
       $this->dbh->query("SET NAMES utf8");
-      $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-      //$this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT );
+      switch(DIRECTUS_ENV) {
+        case 'production':
+          $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT );
+          break;
+        case 'development':
+        default:
+          $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+          break;
+      }
     } catch(PDOException $e) {
       print_r($e);
       echo "Error";
@@ -465,6 +475,7 @@ class MySQL {
     $alias_schema = array();
     $sub_selects = "";
 
+    // get column schema for table that is being affected
     $schema = $this->get_table($tbl_name);
 
     // Check what's up in the schema
@@ -472,7 +483,9 @@ class MySQL {
       $column_type = $col['type'];
       $column_ui = $col['ui'];
       $column_name  = $col['column_name'];
+      // Check if it's a "virtual"/alias column
       if ($column_type == 'ALIAS' || $column_type == 'ONETOMANY' || $column_type == "MANYTOMANY") {
+        // Seperate them from schema
         unset($schema[$i]);
         array_push($alias_schema, $col);
       }
@@ -551,6 +564,7 @@ class MySQL {
 
     // Get Many-2-One-Relationships
     foreach($schema as $i => $col) {
+      // Is the UI a many-2-one relationship?
       if (in_array($col['ui'], $this->many_to_one_uis)) {
         $column_name = $col['id'];
         $foreign_table_name = ($col['ui'] == 'single_media') ? 'directus_media' : $col['options']['related_table'];
@@ -630,16 +644,23 @@ class MySQL {
 
     if("directus_users" === $tbl_name) {
       foreach($data as &$item) {
-        $user = isset($item['id']) ?
-          \Directus\Collection\Users::findOneById($item['id']) :
-          array('salt' => uniqid());
-        $item['salt'] = $user['salt'];
         /**
+         * Establish salt and encode password
          * @todo  when creating a user, password field is required
          */
+        $user = isset($item['id']) ?
+          Users::findOneById($item['id']) :
+          array('salt' => uniqid());
+        $item['salt'] = $user['salt'];
         $item['password'] = empty($item['password']) ?
           $user['password'] :
-          \Directus\Auth\Provider::hashPassword($item['password'], $user['salt']);
+          AuthProvider::hashPassword($item['password'], $user['salt']);
+        /**
+         * Arrange gravatar
+         */
+        $item['avatar'] = null;
+        if(!empty($item['email']))
+          $item['avatar'] = Users::get_gravatar($item['email'], 28, 'identicon');
       }
     }
 
@@ -800,6 +821,7 @@ class MySQL {
     if (sizeof($result)) {
       return $result[0];
     }
+    return array();
    }
 
 }

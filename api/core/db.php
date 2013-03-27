@@ -42,6 +42,9 @@ class DB extends MySQL {
   var $user_id = 1;
 
   function set_entry_relational($tbl_name, $data, $parent_activity_id=null) {
+    global $app;
+    $log = $app->getLog();
+
     // These columns are aliases and doesn't have corresponding
     // columns in the DB, for example 'alias' and 'relational'
     $alias_types = array('ONETOMANY','MANYTOMANY','ALIAS');
@@ -52,19 +55,22 @@ class DB extends MySQL {
      // Gram the schema so we can see what's possible
     $schema = $this->get_table($tbl_name);
 
-    // Grab the value from many-one relations (index 0 if it is an array)
+    // Create foreign row and update local column with the data id
     foreach($schema as $column) {
       if (in_array($column['ui'], $this->many_to_one_uis) && is_array($data[$column['id']])) {
         $foreign_data = $data[$column['id']];
+
         // Threre is no nested item. Go ahead...
         if (sizeof($foreign_data) == 0) {
           $data[$column['id']] = null;
           continue;
         }
+
         // Update/Add foreign data
         if ($column['ui'] == 'single_media') {
           $foreign_id = $this->set_media($foreign_data);
         } else {
+          //Fix this. should probably not relate to directus_media, but the specified "related_table"
           $foreign_id = $this->set_entry('directus_media', $foreign_data);
         }
 
@@ -73,7 +79,7 @@ class DB extends MySQL {
       }
     }
 
-    // Grab relational columns
+    // Seperate relational columns from schema
     foreach($schema as $column) {
       if (in_array($column['type'], $alias_types)) {
         array_push($alias_columns, $column['column_name']);
