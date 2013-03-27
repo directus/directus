@@ -406,7 +406,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
 
 // GET user index
 $app->get("/$v/users/?", function () use ($db, $params, $requestPayload) {
-    $users = Users::getAllWithGravatar();
+    $users = $db->get_users();
     JsonView::render($users);
 })->name('user_index');
 
