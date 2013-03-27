@@ -9,14 +9,22 @@ function (app) {
     var User = app.module(),
         searchVal = "";
 
+
+    User.Model = Backbone.Model.extend({
+      initialize: function(options) {
+        if (options.guest) {
+          // this is a guest user... for what its worth...
+          this.set({guest: true, first_name: 'Guest', last_name: 'User'});
+        }
+      }
+    });
+
     User.Collection = Backbone.Collection.extend({
         initialize: function (options) {
             this.url = '/directus/api/1/extensions/cashregister/customers';
             this.options = options;
-            this.listenTo(options.transaction, {
-            	"change:userSearchSetting":this.handleUserSearchSetting
-            });
-        }
+        },
+        model: User.Model
     });
 
 
@@ -88,6 +96,24 @@ User.Views.Item = Backbone.Layout.extend({
       }
 });
 
+
+    User.Views.PaymentTypeRadio = Backbone.Layout.extend({
+          prefix: 'extensions/cashregister/templates/',
+
+          template: 'payment_type_radio',
+
+          tagName: 'li',
+
+          initialize: function() {
+            this.listenTo(this.model, {
+              'change': this.render
+            })
+          },
+
+          serialize: function() {
+              return this.model.toJSON();  
+          }
+      });
     User.Views.Selected = Backbone.Layout.extend({
 
         prefix: 'extensions/cashregister/templates/',
@@ -95,24 +121,25 @@ User.Views.Item = Backbone.Layout.extend({
         template: 'user-selected-form',
 
         initialize: function (options) {
-          console.log("options", options);
           this.options = options;
-        	console.log("selectedRiderview initialized", this.model);
           this.listenTo(options.transaction, {
-            'credit_card_swiped':this.process_credit_card_swipe
+            'change:selected_payment_type':this.render
           });
+          this.listenTo(options.paymentTypes, {
+            'reset': this.render
+          })
         },
 
-        process_credit_card_swipe: function() {
-          this.$('#payment_type_credit_card').prop('checked', true);
-          this.$('#credit_card_name').val(this.options.transaction.get('cc_name'));
-          this.$('#credit_card_number').val(this.options.transaction.get('cc_number'));
-          this.$('#credit_card_exp_month').val(this.options.transaction.get('cc_exp_month'));
-          this.$('#credit_card_exp_year').val(this.options.transaction.get('cc_exp_year'));
+        beforeRender: function() {
+            this.options.paymentTypes.each(function(payment_type) {
+             this.insertView(".payment_options", new User.Views.PaymentTypeRadio({
+                  model: payment_type
+              }));
+            }, this);
         },
 
         serialize: function() {
-			     return this.model.toJSON();
+			     return { user: this.model.toJSON(), transaction: this.options.transaction.toJSON() }
         }
 
     });
