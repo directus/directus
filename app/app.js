@@ -67,6 +67,7 @@ function(Handlebars) {
     },
 
     caseMap: {
+      'Cms': 'CMS',
       'Faq': 'FAQ',
       'Iphone': 'iPhone',
       'Ipad': 'iPad',
