@@ -74,6 +74,13 @@ class cashRegister {
 		return $results;
 	}
 
+	function order() {
+		$data = json_decode(file_get_contents('php://input'), true);
+		$res = [];
+		$res[0] = $data;
+		return $data;
+	}
+
 }
 
 $cashRegister = new cashRegister($db);
