@@ -479,9 +479,11 @@ if(isset($_GET['run_api_router']) && $_GET['run_api_router']) {
         }
     } catch (Exception $e) {
         header("HTTP/1.1 500 Internal Server Error");
-        //echo format_json(json_encode($e));
-        echo print_r($e, true);
-        //echo $e->getCode();
-        //echo $e->getMessage();
+        if('production' != DIRECTUS_ENV) {
+            echo print_r($e, true);
+            //echo format_json(json_encode($e));
+            //echo $e->getCode();
+            //echo $e->getMessage();
+        }
     }
 }
