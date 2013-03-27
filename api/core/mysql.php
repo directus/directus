@@ -821,6 +821,7 @@ class MySQL {
     if (sizeof($result)) {
       return $result[0];
     }
+    return array();
    }
 
 }
