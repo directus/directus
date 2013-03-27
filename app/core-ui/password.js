@@ -46,6 +46,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         this.$el.find('input.password-primary').val(pass);
         this.$el.find('input.password-confirm').val(pass);
         e.preventDefault();
+        return false;
       },
       'click .password-toggle' : function(e) {
         if($(e.target).html() == 'Mask Password'){
@@ -56,6 +57,8 @@ define(['app', 'backbone'], function(app, Backbone) {
           this.$el.find('input.password-primary').get(0).type = 'text';
           this.$el.find('input.password-confirm').get(0).type = 'text';
           $(e.target).html('Mask Password');
+          e.preventDefault();
+          return false;
         }
       }
     },
