@@ -660,7 +660,7 @@ class MySQL {
          */
         $item['avatar'] = null;
         if(!empty($item['email']))
-          $item['avatar'] = Users::get_gravatar($item['email'], 100, 'identicon');
+          $item['avatar'] = Users::get_gravatar($item['email'], Users::GRAVATAR_SIZE, 'identicon');
       }
     }
 
