@@ -18,6 +18,9 @@ class MySQL {
   var $dbh;
   var $many_to_one_uis = array('many_to_one', 'single_media');
 
+
+  var $logger = null;
+
   /**
    * Constructor
    *
@@ -50,6 +53,40 @@ class MySQL {
       print_r($e);
       echo "Error";
     }
+
+    /** tmp dirty access to slim's logger (globals are bad!) */
+    global $app;
+    $this->logger = $app->getLog();
+  }
+
+  /**
+   * Cast a php string to the same type as MySQL.
+   */
+  function parse_mysql_type($string, $type = NULL) {
+    $type = strtolower($type);
+    switch ($type) {
+      case 'blob':
+      case 'mediumblob':
+        return base64_encode($string);
+      case 'year':
+      case 'int':
+      case 'long':
+        return (int)$string;
+      case 'tinyint':
+        return (int)$string;
+      case 'float':
+        return (float)$string;
+      case 'date':
+      case 'datetime':
+        return date("r", strtotime($string));
+      case 'VAR_STRING':
+        return $string;
+    }
+    // If type is not present, just cast numbers...
+    if (is_numeric($string)) {
+      return (float)$string;
+    }
+    return $string;
   }
 
   /**
@@ -571,8 +608,11 @@ class MySQL {
     // var_dump($sth);
     // exit;
 
+    $foundRows = 0;
+
     // Cast the data
     while($row = $sth->fetch(PDO::FETCH_ASSOC)){
+      $foundRows++;
       $item = array();
 
       foreach ($schema as $col) {
@@ -580,7 +620,7 @@ class MySQL {
         $column_name = $col['column_name'];
         $column_type = $col['type'];
 
-        $item[$column_name] = parse_mysql_type($row[$column_name], $column_type);
+        $item[$column_name] = $this->parse_mysql_type($row[$column_name], $column_type);
       }
 
       array_push($result, $item);
@@ -603,7 +643,7 @@ class MySQL {
         while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
           $row_casted = array();
           //cast the datatype
-          foreach ($row as $c => $v) $row[$c] = parse_mysql_type($v);
+          foreach ($row as $c => $v) $row[$c] = $this->parse_mysql_type($v);
           $data[(string)$row['id']] = $row;
         }
 
@@ -616,15 +656,11 @@ class MySQL {
 
     // This is a set of data. Count visible and total and we are done!
     if ($id == -1) {
-      $count_result = $this->dbh->query("SELECT FOUND_ROWS()");
-      $row = $count_result->fetchAll();
-      $set = array(
-        'total'=> (int)$row[0][0],
+      $countActive = $this->count_active($tbl_name, !$has_active);
+      $set = array_merge($countActive, array(
+        'total'=> $foundRows,
         'rows'=> $result
-        );
-
-      $set = array_merge($this->count_active($tbl_name, !$has_active), $set);
-
+      ));
       return $set;
     }
 
