@@ -6748,6 +6748,29 @@ a:hover {
 .media-actions span {
   margin-right: 4px;
 }
+.changelog-description {
+  margin: 20px 0 40px 0;
+}
+#directus-changelog tr.update td.status {
+  background-color: #31aade;
+}
+#directus-changelog tr.add td.status {
+  background-color: #8cc349;
+}
+#directus-changelog tr.remove td.status {
+  background-color: #eb2a49;
+}
+#directus-changelog tr.system td.status {
+  background-color: #fdc030;
+}
+#directus-changelog #changelog-description.directus-table tbody tr:hover td {
+  background-color: #ffffff;
+  cursor: auto;
+}
+#directus-changelog #sidebar div.label {
+  color: #8bc53f;
+  margin-left: 20px;
+}
 #alert {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;

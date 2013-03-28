@@ -696,6 +696,25 @@ a:hover {text-decoration:none;}
   font-weight: 600;
 }
 
+.changelog-description {
+  margin: 20px 0 40px 0;
+}
+
+#directus-changelog {
+  tr.update td.status {background-color:@blue;}
+  tr.add td.status {background-color:@green;}
+  tr.remove td.status {background-color:@red;}
+  tr.system td.status {background-color:@yellow;}
+  #changelog-description.directus-table tbody tr:hover td {
+    background-color:#ffffff;
+    cursor: auto;
+  }
+  #sidebar {
+    div.label {color:@directusPrimary; margin-left:20px;}
+  }
+}
+
+
 // ALERTS
 // ----------------------------
 
