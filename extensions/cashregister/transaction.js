@@ -95,9 +95,11 @@ function (app, User, Product) {
                 sku: barcode
             });
             if (scannedProduct) {
-                this.options.activeProductsCollection.trigger('cartAdd', scannedProduct);
+                this.options.transaction.get('activeProductsCollection').trigger('cartAdd', scannedProduct);
                 this.$("input").val('');
                 this.$("input").focus();
+            } else {
+                alert("Product not found.");
             }
         },
 
@@ -143,9 +145,11 @@ function (app, User, Product) {
                     });
                 },
                 keyup: function (e) {
+                    console.log(e, barcodeLogging);
                     if (barcodeLogging) {
                         if (e.which == 13) {
                             barcodeLogging = false;
+                            console.log(self, currentBarcode);
                             self.trigger('barcodescan', currentBarcode);
                             currentBarcode = '';
                         } else {
