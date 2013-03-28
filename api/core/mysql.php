@@ -154,6 +154,7 @@ class MySQL {
             case "TEXT":
             case "LONGTEXT":
                 return "textarea";
+            case "CHAR":
             case "VARCHAR":
                 return "textinput";
             case "DATETIME":
