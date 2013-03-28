@@ -88,6 +88,11 @@ $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
  */
 
 $db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
+
+// $zendDb = new \Zend\Db\Adapter\Adapter(array(
+//     'driver' =>
+// ));
+
 $params = $_GET;
 $requestPayload = json_decode($app->request()->getBody(), true);
 
