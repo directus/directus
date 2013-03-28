@@ -24,7 +24,7 @@ require 'api/api.php';
 
 // No access, forward to login page
 if (!AuthProvider::loggedIn()) {
-  header( 'Location: login.php' ) ;
+  header( 'Location: ' . DIRECTUS_PATH . 'login.php' ) ;
   die();
 }
 
