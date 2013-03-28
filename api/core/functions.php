@@ -57,36 +57,6 @@ function get_file_info($file) {
 return $info;
 }
 
-/**
- * Cast a php string to the same type as MySQL.
- */
-function parse_mysql_type($string, $type = NULL) {
-	$type = strtolower($type);
-	switch ($type) {
-		case 'blob':
-		case 'mediumblob':
-			return base64_encode($string);
-		case 'year':
-		case 'int':
-		case 'long':
-			return (int)$string;
-		case 'tinyint':
-			return (int)$string;
-		case 'float':
-			return (float)$string;
-		case 'date':
-		case 'datetime':
-			return date("r", strtotime($string));
-		case 'VAR_STRING':
-			return $string;
-	}
-	// If type is not present, just cast numbers...
-	if (is_numeric($string)) {
-		return (float)$string;
-	}
-	return $string;
-}
-
 
 /**
  * Renders a single line. Looks for {{ var }}
