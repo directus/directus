@@ -1,5 +1,7 @@
 <?php
 
+use Directus\Auth\Provider as AuthProvider;
+
 /**
  * Directus - awesome content management framework for everyone
  *
@@ -217,7 +219,7 @@ class DB extends MySQL {
       $identifier = $data['title'];
     }
 
-    $currentUser = \Directus\Auth\Provider::getUserInfo();
+    $currentUser = AuthProvider::getUserInfo();
 
     return $this->set_entry('directus_activity', array(
       'type' => $type,
