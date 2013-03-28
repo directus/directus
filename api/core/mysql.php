@@ -15,33 +15,26 @@ class MySQL {
 
     /**
      * Constructor
-     * @param $db_user
-     * @param $db_password
+     * @param $dbh
      * @param $db_name
-     * @param $db_host
      */
-    function __construct($db_user, $db_password, $db_name, $db_host) {
-        $this->db_user = $db_user;
-        $this->db_password = $db_password;
+    function __construct($dbh, $db_name) {
+        $this->dbh = $dbh;
         $this->db_name = $db_name;
-        $this->db_host = $db_host;
-        try {
-            $this->dbh = new PDO("mysql:host=$db_host;dbname=$db_name;charset=UTF8", $db_user, $db_password);
-            $this->dbh->exec("SET CHARACTER SET utf8");
-            $this->dbh->query("SET NAMES utf8");
-            switch(DIRECTUS_ENV) {
-                case 'production':
-                    $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT );
-                    break;
-                case 'development':
-                default:
-                    $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-                    break;
-            }
-        } catch(PDOException $e) {
-            print_r($e);
-            echo "Error";
+
+        $this->dbh->exec("SET CHARACTER SET utf8");
+        $this->dbh->query("SET NAMES utf8");
+
+        switch(DIRECTUS_ENV) {
+            case 'production':
+                $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT );
+                break;
+            case 'development':
+            default:
+                $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+                break;
         }
+
         /** tmp dirty access to slim's logger (globals are bad!) */
         global $app;
         $this->logger = $app->getLog();
