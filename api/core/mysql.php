@@ -141,6 +141,41 @@ class MySQL {
     return $info;
   }
 
+  function column_type_to_ui_type($column_type) {
+    switch($column_type) {
+        case "ALIAS":
+          return "alias";
+        case "MANYTOMANY":
+        case "ONETOMANY":
+          return "relational";
+        case "TINYINT":
+          return "checkbox"; 
+        case "MEDIUMBLOB":
+        case "BLOB":
+          return "blob";
+        case "TEXT":
+        case "LONGTEXT":
+          return "textarea";
+        case "VARCHAR":
+          return "textinput";
+        case "DATETIME":
+          return "datetime";
+        case "DATE":
+          return "date";
+        case "TIME":
+          return "time";
+        case "YEAR":
+        case "INT":
+        case "SMALLINT":
+        case "MEDIUMINT":
+        case "FLOAT":
+        case "DOUBLE":
+        case "DECIMAL":
+          return "numeric";
+    }
+    /** @todo  throw exception? silent fails are bad */
+  }
+
   /**
    *  Get table structure
    *
@@ -236,21 +271,11 @@ class MySQL {
         $row["sort"] = (int)$row['sort'];
       }
 
-
       $hasMaster = $row["master"];
 
       // Default UI types.
       if (!isset($row["ui"])) {
-        if ($row["type"] == "ALIAS") { $row["ui"] = "alias"; }
-        if ($row["type"] == "MANYTOMANY" || $row["type"] == "ONETOMANY") { $row["ui"] = "relational"; }
-        if ($row["type"] == "TINYINT") { $row["ui"] = "checkbox"; }
-        if ($row["type"] == "MEDIUMBLOB" || $row["type"] == "BLOB") { $row["ui"] = "blob"; }
-        if ($row["type"] == "TEXT" || $row["type"] == "LONGTEXT") { $row["ui"] = "textarea"; }
-        if ($row["type"] == "VARCHAR") { $row["ui"] = "textinput"; }
-        if ($row["type"] == "DATETIME")  { $row["ui"] = "datetime"; }
-        if ($row["type"] == "DATE")  { $row["ui"] = "date"; }
-        if ($row["type"] == "TIME")  { $row["ui"] = "time"; }
-        if ($row["type"] == "YEAR" || $row["type"] == "INT" || $row["type"] == "SMALLINT" || $row["type"] == "MEDIUMINT" || $row["type"] == "FLOAT" || $row["type"] == "DOUBLE" || $row["type"] == "DECIMAL") { $row["ui"] = "numeric"; }
+        $row['ui'] = $this->column_type_to_ui_type($row['type']);
       }
 
       // Defualts as system columns
@@ -352,6 +377,9 @@ class MySQL {
     }
   }
 
+  /**
+   * DB @refactor 1st round candidate
+   */
   function count_active($tbl_name, $no_active=false) {
     $result = array('active'=>0);
 
@@ -524,28 +552,24 @@ class MySQL {
 
     // Get main data
 
-    $sql = "SELECT
-          SQL_CALC_FOUND_ROWS T.*
-        FROM
-          $tbl_name T
-        JOIN
-           INFORMATION_SCHEMA.TABLES S
-        WHERE
-          S.TABLE_SCHEMA = :schema AND S.`TABLE_NAME` = :table_name AND (:id = -1 OR T.id = :id) $search_sql $active_sql
-        GROUP BY
-          T.id
-        ORDER BY
-          $order_column $order_direction
+    $sql = "SELECT * FROM $tbl_name
+        WHERE (:id = -1 OR id = :id) $search_sql $active_sql
+        GROUP BY id
+        ORDER BY $order_column $order_direction
         LIMIT :skip, :per_page";
 
     $sth = $this->dbh->prepare($sql);
     $sth->bindValue(':user', $this->user_token, PDO::PARAM_STR);
-    $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
+    // $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
     $sth->bindValue(':skip', $skip, PDO::PARAM_INT);
     $sth->bindValue(':per_page', $per_page, PDO::PARAM_INT);
     $sth->bindValue(':id', $id, PDO::PARAM_INT);
-    $sth->bindValue(':schema', $this->db_name, PDO::PARAM_STR);
+    // $sth->bindValue(':schema', $this->db_name, PDO::PARAM_STR);
+
     $sth->execute();
+
+    // var_dump($sth);
+    // exit;
 
     // Cast the data
     while($row = $sth->fetch(PDO::FETCH_ASSOC)){
