@@ -3,12 +3,6 @@
 use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
 
-class DirectusException extends Exception {
-    public function __construct($message, $code=null){
-        parent::__construct($message, $code);
-    }
-}
-
 class MySQL {
 
     var $db_user;
@@ -184,7 +178,7 @@ class MySQL {
             case "DECIMAL":
                 return "numeric";
         }
-        /** @todo  throw exception? silent fails are bad */
+        throw new InvalidColumnTypeException("Unrecognized column type: $column_type");
     }
 
     /**
@@ -345,13 +339,9 @@ class MySQL {
                     array_push($columns_visible, $row['column_name']);
                 }
             }
-            /**
-             * @todo  use AuthProvider
-             */
-            // Fix the hardcoded user plz.
-            // Maybe save this to db?
+            $currentUser = AuthProvider::getUserInfo();
             $data = array(
-                'user' => 1,
+                'user' => $currentUser['id'],
                 'columns_visible' => implode (',', $columns_visible),
                 'table_name' => $tbl_name,
                 'sort' => 'id',
@@ -806,3 +796,11 @@ class MySQL {
      }
 
 }
+
+/**
+ * Exceptions
+ */
+
+class DirectusException extends \Exception {}
+
+class InvalidColumnTypeException extends \Exception {}
