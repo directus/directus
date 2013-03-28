@@ -26,6 +26,7 @@ a {cursor:pointer;}
 .green { color:@green; }
 .red { color:@red; }
 .gray-dark { color:@grayDark!important; }
+.gray { color:@gray!important; }
 
 .inactive { opacity: 0.4; cursor: default!important;}
 
@@ -387,8 +388,7 @@ a:hover {text-decoration:none;}
       padding:0px;
     }
    li {position: relative;}
-   li .label { position:absolute; right:0px; top:10px; right:20px; background-color:@directusPrimary; color:#FFF; }
-   li:hover .label { position:absolute; right:0px; top:10px; right:20px; color:@directusPrimary; background-color:#FFF; }
+   li .label { position:absolute; right:0px; top:10px; right:20px; background-color:#FFF; color:@directusPrimary; }
   }
 
 }
@@ -695,6 +695,25 @@ a:hover {text-decoration:none;}
   font-size: 12px;
   font-weight: 600;
 }
+
+.changelog-description {
+  margin: 20px 0 40px 0;
+}
+
+#directus-changelog {
+  tr.update td.status {background-color:@blue;}
+  tr.add td.status {background-color:@green;}
+  tr.remove td.status {background-color:@red;}
+  tr.system td.status {background-color:@yellow;}
+  #changelog-description.directus-table tbody tr:hover td {
+    background-color:#ffffff;
+    cursor: auto;
+  }
+  #sidebar {
+    div.label {color:@directusPrimary; margin-left:20px;}
+  }
+}
+
 
 // ALERTS
 // ----------------------------
