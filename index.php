@@ -24,7 +24,7 @@ require 'api/api.php';
 
 // No access, forward to login page
 if (!AuthProvider::loggedIn()) {
-  header( 'Location: login.php' ) ;
+  header( 'Location: ' . DIRECTUS_PATH . 'login.php' ) ;
   die();
 }
 
@@ -37,7 +37,7 @@ $data['nonces'] = array_merge($requestNonceProvider->getOptions(), array(
 
 $data['authenticatedUser'] = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : array();
 $data['tables'] = $db->get_tables();
-$data['users'] = \Directus\Collection\Users::getAllWithGravatar();
+$data['users'] = $db->get_users();
 $data['groups'] = $db->get_entries("directus_groups");
 $data['settings'] = $db->get_settings('global');
 
