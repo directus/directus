@@ -107,7 +107,7 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
         foreach ($alias_fields as $alias) {
             switch($alias['type']) {
                 case 'MANYTOMANY':
-                    $foreign_data = $this->get_many_many($this->table, $alias['table_related'],
+                    $foreign_data = $this->loadManyToManyData($this->table, $alias['table_related'],
                         $alias['junction_table'], $alias['junction_key_left'], $alias['junction_key_right'],
                         $params['id']);
                     break;
@@ -121,9 +121,6 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         }
 
-        \Directus\View\JsonView::render($table_entries);
-        exit;
-
         return $table_entry;
     }
 
@@ -134,8 +131,7 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
      **/
 
     /**
-     * Fetch related rows
-     * This is used for fetching the related id's in one-many relationships and many-many relationships
+     * Fetch related, foreign rows for one record's OneToMany relationships.
      *
      * @param string $table
      * @param string $column_name
@@ -150,13 +146,14 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
         $results = $statement->execute();
         // Process results
         foreach ($results as $row)
-            array_walk($row, array($this, 'parseMysqlType'));
+            array_walk($row, array($this, 'castFloatIfNumeric'));
         return array('rows' => $results);
     }
 
     /**
-     * Given a table's schema and rows, iterate and replace all of its foreign
-     * keys with the contents of these foreign rows.
+     * Fetch related, foreign rows for a whole rowset's ManyToOne relationships.
+     * (Given a table's schema and rows, iterate and replace all of its foreign
+     * keys with the contents of these foreign rows.)
      * @param  array $schema  Table schema array
      * @param  array $entries Table rows
      * @return array          Revised table rows, now including foreign rows
@@ -184,8 +181,7 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
                 $foreign_table = array();
                 foreach ($results as $row) {
                     // @todo I wonder if all of this looping and casting is necessary
-                    foreach ($row as $column => $value)
-                        $row[$column] = $this->parseMysqlType($value);
+                    array_walk($row, array($this, 'castFloatIfNumeric'));
                     $foreign_table[$row['id']] = $row;
                 }
 
@@ -202,13 +198,8 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $table_entries;
     }
 
-     /**
-     * Get related rows
-     * This is used for fetching the related id's in one-many relationships and many-many relationships
-     * This makes _junction_id reserverd
-     */
     /**
-     * Fetch foreign rows for an entry's ManyToMany relationships.
+     * Fetch related, foreign rows for one record's ManyToMany relationships.
      * @param  string $table_name
      * @param  string $foreign_table
      * @param  string $junction_table
@@ -217,26 +208,46 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
      * @param  string $column_equals
      * @return array                      Foreign rowset
      */
-    function get_many_many($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals) {
-        $data_set = array();
-        $sql = "SELECT JT.id, FT.* FROM $junction_table JT
-            LEFT JOIN $foreign_table FT
-            ON (JT.$junction_key_right = FT.id)
-            WHERE JT.$junction_key_left = $column_equals";
-        $sth = $this->dbh->prepare($sql);
-        $sth->execute();
-        while($row = $sth->fetch(PDO::FETCH_NUM)){
-            $junction_id = $row[0];
-            $data = array();
-            foreach ($row as $i => $value) {
-                $columnMeta = $sth->getColumnMeta($i);
-                $data[$columnMeta['name']] = is_numeric($value) ? (float)$value : $value;
-            }
-            array_push($data_set, array('id'=>$junction_id, 'data' => $data));
+    private function loadManyToManyData($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals) {
+        $foreign_join_column = "$junction_table.$junction_key_right";
+        $join_column = "$table.$junction_key_left";
+
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+            ->from($this->table)
+            ->join($junction_table, "$foreign_join_column = $join_column")
+            ->where(array($join_column => $column_equals));
+        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
+        $results = $statement->execute();
+
+        $foreign_data = array();
+        foreach($results as $row) {
+            array_walk($row, array($this, 'castFloatIfNumeric'));
+            $foreign_data[] = array('id' => $row['id'], 'data' => $row);
         }
-        return array('rows' => $data_set);
-
-
+        return array('rows' => $foreign_data);
+        /**
+         * @todo  Is it necessary to retain this old way of guessing the PK of the table?
+         * The old (& new) version #get_entries already assumes that every table has an 'id'
+         * field. Perhaps we should use table introspection to identify PK?
+         */
+        // $data_set = array();
+        // $sql = "SELECT JT.id, FT.* FROM $junction_table JT
+        //     LEFT JOIN $foreign_table FT
+        //     ON (JT.$junction_key_right = FT.id)
+        //     WHERE JT.$junction_key_left = $column_equals";
+        // $sth = $this->dbh->prepare($sql);
+        // $sth->execute();
+        // while($row = $sth->fetch(PDO::FETCH_NUM)){
+        //     $junction_id = $row[0];
+        //     $data = array();
+        //     foreach ($row as $i => $value) {
+        //         $columnMeta = $sth->getColumnMeta($i);
+        //         $data[$columnMeta['name']] = is_numeric($value) ? (float)$value : $value;
+        //     }
+        //     array_push($data_set, array('id'=>$junction_id, 'data' => $data));
+        // }
+        // return array('rows' => $data_set);
     }
 
     /**
@@ -245,9 +256,13 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
      *
      **/
 
+    private function castFloatIfNumeric($value) {
+        return is_numeric($value) ? (float) $value : $value;
+    }
+
     /**
      * Remove Directus-managed virtual/alias fields from the table schema array
-     * and return them as a separate array,
+     * and return them as a separate array.
      * @param  array $schema Table schema array.
      * @return array         Alias fields
      */
@@ -328,7 +343,9 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
             FROM $tbl_name
             GROUP BY active";
         }
-        $sth = $this->dbh->prepare($sql);
+        // tmp transitional
+        global $db;
+        $sth = $db->dbh->prepare($sql);
         // Test if there is an active column!
         try {
             $sth->execute();
@@ -339,7 +356,7 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
                 throw $e;
             }
         }
-        while($row = $sth->fetch(PDO::FETCH_ASSOC))
+        while($row = $sth->fetch(\PDO::FETCH_ASSOC))
             $result[$row['active']] = (int)$row['count'];
         $total = 0;
         return $result;
