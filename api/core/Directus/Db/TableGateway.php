@@ -185,7 +185,7 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
                     $foreign_table[$row['id']] = $row;
                 }
 
-                // Replace foreign keys with foreight rows
+                // Replace foreign keys with foreign rows
                 foreach ($table_entries as &$parentRow) {
                     $foreign_id = $parentRow[$foreign_id_column];
                     $parentRow[$foreign_id_column] = null;
@@ -256,8 +256,8 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
      *
      **/
 
-    private function castFloatIfNumeric($value) {
-        return is_numeric($value) ? (float) $value : $value;
+    private function castFloatIfNumeric(&$value) {
+        $value = is_numeric($value) ? (float) $value : $value;
     }
 
     /**
