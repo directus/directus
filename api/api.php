@@ -409,7 +409,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $params, $
     $useNewDbLayer = false;
     if($useNewDbLayer) {
         $Table = new TableGateway($table, $ZendDb);
-        $response = $Table->getEntries();
+        $response = $Table->getEntries($params);
     } else
         // GET all table entries
         $response = $db->get_entries($table, $params);
