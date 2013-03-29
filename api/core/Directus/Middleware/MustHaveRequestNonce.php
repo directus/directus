@@ -33,8 +33,11 @@ class MustHaveRequestNonce extends \Directus\Middleware {
 		if(self::MATCHES_ROUTE_WHITELIST == $outcome)
 			return;
 
-		if(!$this->requestNonceProvider->requestHasValidNonce())
-			$this->app->halt(401, "Invalid request (nonce).");
+		if(!$this->requestNonceProvider->requestHasValidNonce()) {
+			if('development' !== DIRECTUS_ENV) {
+				$this->app->halt(401, "Invalid request (nonce).");
+			}
+		}
 
 		$response = $this->app->response();
         $newNonces = $this->requestNonceProvider->getNewNoncesThisRequest();
@@ -42,16 +45,6 @@ class MustHaveRequestNonce extends \Directus\Middleware {
         $nonce_options = $this->requestNonceProvider->getOptions();
 
 	    $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
-
-	    // $log = $this->app->getLog();
-	    // $log->info("REQUEST_URI:");
-	    // $log->info($_SERVER['REQUEST_URI']);
-	    // $log->info("Nonce pool size:");
-	    // $log->info(count($_SESSION['request_nonces']));
-	    // $log->info("Received nonce:");
-	    // $log->info($this->requestNonceProvider->getRequestNonce());
-	    // $log->info("New nonces:");
-	    // $log->info(print_r($newNonces, true));
 
 		/** All good, proceed. */
 		$this->next->call();
