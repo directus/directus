@@ -39,6 +39,7 @@ use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Auth\RequestNonceHasntBeenProcessed;
+use Directus\Db\TableGateway;
 
 // Slim Middleware
 use Directus\Middleware\MustBeLoggedIn;
@@ -276,7 +277,7 @@ $app->get("/$v/groups/?", function () use ($db) {
 $app->get("/$v/groups/:id/?", function ($id = null) use ($db) {
     // @TODO need POST and PUT
     // Hardcoding ID temporarily
-    is_null($id) ? $id = 1 : null ;
+    is_null($id) ? $id = 1 : null;
     $response = $db->get_group($id);
     JsonView::render($response);
 });
@@ -397,12 +398,22 @@ $app->get("/$v/tables/?", function () use ($db, $params, $requestPayload) {
 })->name('table_index');
 
 // GET and PUT table details
-$app->map("/$v/tables/:table/?", function ($table) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $params, $requestPayload, $app) {
     /* PUT updates the table */
     if($app->request()->isPut()) {
         $db->set_table_settings($requestPayload);
     }
     $response = $db->get_table_info($table, $params);
+
+    // Toggle between new and old entries interface, for development.
+    $useNewDbLayer = false;
+    if($useNewDbLayer) {
+        $Table = new TableGateway($table, $ZendDb);
+        $response = $Table->getEntries();
+    } else
+        // GET all table entries
+        $response = $db->get_entries($table, $params);
+
     JsonView::render($response);
 })->via('GET', 'PUT')->name('table_detail');
 
