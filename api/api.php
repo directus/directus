@@ -87,20 +87,18 @@ $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
  * Globals
  */
 
-
-$dbConfig = array(
-    'driver'    => 'Pdo_Mysql',
-    'database'  => DB_NAME,
-    'username'  => DB_USER,
-    'password'  => DB_PASSWORD
-);
-
 /**
  * DB Transitional:
  *   Initialize ZendDb, then extract the PDO object.
  *   Insert the PDO object into the DB class and leave it where it was.
  *   This way we can smoothly transition to using the Zend-structured DB-layer.
  */
+$dbConfig = array(
+    'driver'    => 'Pdo_Mysql',
+    'database'  => DB_NAME,
+    'username'  => DB_USER,
+    'password'  => DB_PASSWORD
+);
 $ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
 $connection = $ZendDb->getDriver()->getConnection();
 $connection->connect();
@@ -123,8 +121,10 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     }
     // Validate request nonce
     if(!$requestNonceProvider->requestHasValidNonce()) {
-        header("HTTP/1.0 401 Unauthorized");
-        return JsonView::render(array('message' => 'Unauthorized (nonce).'));
+        if('development' !== DIRECTUS_ENV) {
+            header("HTTP/1.0 401 Unauthorized");
+            return JsonView::render(array('message' => 'Unauthorized (nonce).'));
+        }
     }
     $extensionsDirectory = APPLICATION_PATH . "/extensions";
     $responseData = require "$extensionsDirectory/$extensionName/api.php";
