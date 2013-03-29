@@ -53,6 +53,8 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
             ->limit($params['per_page'])
             ->offset($params['skip']);
 
+        // @todo incorporate search
+
         // Table has `active` column?
         $has_active_column = $this->schemaHasActiveColumn($table_schema);
 
@@ -99,6 +101,7 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
          * Fetching one item
          */
 
+        // @todo return null and let controller throw HTTP response
         if (0 == count($table_entries))
             throw new DirectusException('Item not found!', 404);
 
