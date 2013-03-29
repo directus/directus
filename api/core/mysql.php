@@ -463,7 +463,6 @@ class MySQL {
         $active = isset($params['active']) ? $params['active'] : null;
 
         $alias_schema = array();
-        $sub_selects = "";
 
         // get column schema for table that is being affected
         $schema = $this->get_table($tbl_name);
