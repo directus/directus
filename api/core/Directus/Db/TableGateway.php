@@ -10,7 +10,6 @@ use Directus\Application;
 
 class TableGateway extends \Zend\Db\TableGateway\TableGateway {
 
-
     protected $many_to_one_uis = array('many_to_one', 'single_media');
 
     protected function getLogger() {
@@ -18,12 +17,17 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     public function find($id, $pk_field_name = "id") {
+        return $this->findOneBy($pk_field_name, $id);
+    }
+
+    public function findOneBy($field, $value) {
         $sql = new Sql($this->adapter);
         $select = $sql->select()
             ->from($this->table)
-            ->where(array($pk_field_name => $id))
             ->limit(1);
-        // Fetch row
+        $select
+            ->where
+                ->equalTo($field, $value);
         $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
         $rowset = $statement->execute();
         $row = $rowset->current();

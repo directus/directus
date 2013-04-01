@@ -147,7 +147,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
  * AUTHENTICATION
  */
 
-$app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonceProvider) {
+$app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $authProvider, $requestNonceProvider) {
     $response = array(
         'message' => "Wrong username/password.",
         'success' => false,
@@ -160,7 +160,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $authProvider, $requestNonc
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
-    $user = Users::findOneByEmail($email);
+    $Users = new Db\Users('directus_users', $ZendDb);
+    $user = $Users->findOneBy('email', $email);
     if(!$user) {
         return JsonView::render($response);
     }
