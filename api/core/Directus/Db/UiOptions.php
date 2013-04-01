@@ -30,9 +30,6 @@ class UiOptions extends TableGateway {
                 ->AND
                 ->equalTo('ui_name', $datatype_name);
 
-        // $logger = Application::getApp()->getLog();
-        // $logger->info($this->dumpSql($select));
-
         $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
         $rowset = $statement->execute();
 
@@ -45,6 +42,8 @@ class UiOptions extends TableGateway {
         }
 
         return $ui_options;
+
+        // The above refactor produces identical output to the old layer's output, in all cases so far.
 
         // This original logic is mystifying -
         // ex., this query seems to demonstrate that only one UI will ever come through this function:
