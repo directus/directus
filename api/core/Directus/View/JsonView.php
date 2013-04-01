@@ -14,8 +14,6 @@ class JsonView {
      */
     public static $preDispatch;
 
-    public static $comparison_increment = 0;
-
     /**
      * Pass a closure to this function in order to modify the output data
      * before it is json_encoded and sent to the client. The callable should
@@ -58,7 +56,7 @@ class JsonView {
     }
 
     public static function compareApiResponses($new, $old) {
-        $inc = self::$comparison_increment++;
+        $id = time();
         $old = self::format_json(json_encode($old));
         $log = Application::getApp()->getLog();
         $uri = get_full_url();
@@ -66,7 +64,7 @@ class JsonView {
             return $log->info("[$uri] The response comparison matched.");
         $log->warn("[$uri] The response comparison failed.");
         // Output path
-        $fname_prefix = "cmp$inc";
+        $fname_prefix = "cmp_$id";
         $dir = APPLICATION_PATH . '/docs/api-responses';
         if(!is_dir($dir)) {
             $log->fatal("Can't write API responses to output directory: $dir");
