@@ -33,7 +33,7 @@ switch (DIRECTUS_ENV) {
         break;
 }
 
-use Directus\Package;
+use Directus\Application;
 use Directus\View\JsonView;
 use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
@@ -67,6 +67,9 @@ $app->configureMode('development', function () use ($app) {
         'debug' => true
     ));
 });
+
+// Custom global accessor for Slim application object
+Application::setApp($app);
 
 // Version shortcut for routes:
 $v = API_VERSION;
@@ -116,7 +119,7 @@ $requestPayload = json_decode($app->request()->getBody(), true);
 if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     // Validate extension name
     $extensionName = $_REQUEST['run_extension'];
-    if(!Package::extensionExists($extensionName)) {
+    if(!Application::extensionExists($extensionName)) {
         header("HTTP/1.0 404 Not Found");
         return JsonView::render(array('message' => 'No such extension.'));
     }
@@ -405,16 +408,17 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $params, $
     }
     $response = $db->get_table_info($table, $params);
 
-    // Toggle between new and old entries interface, for development.
-    $useNewDbLayer = false;
-    if($useNewDbLayer) {
-        $Table = new TableGateway($table, $ZendDb);
-        $response = $Table->getEntries($params);
-    } else
-        // GET all table entries
-        $response = $db->get_entries($table, $params);
+    // GET all table entries
 
-    JsonView::render($response);
+    // New
+    $Table = new TableGateway($table, $ZendDb);
+    $response_new = $Table->getEntries($params);
+
+    // Old
+    $response_old = $db->get_entries($table, $params);
+
+    JsonView::render($response_new, $response_old);
+
 })->via('GET', 'PUT')->name('table_detail');
 
 /**
