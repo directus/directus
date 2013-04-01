@@ -356,7 +356,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($db, $ZendDb, $params,
  * PREFERENCES COLLECTION
  */
 
-$app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb, $params, $requestPayload, $app) {
     $params['table_name'] = $table;
     switch ($app->request()->getMethod()) {
         case "PUT":
@@ -372,8 +372,11 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $params,
             $params['id'] = $id;
             break;
     }
-    $response = $db->get_table_preferences($table);
-    JsonView::render($response);
+    $currentUser = AuthProvider::getUserInfo();
+    $get_old = $db->get_table_preferences($currentUser['id'], $table);
+    $Preferences = new Db\Preferences('directus_preferences', $ZendDb);
+    $get_new = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
+    JsonView::render($get_new, $get_old);
 })->via('GET','POST','PUT');
 
 /**
