@@ -88,7 +88,12 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
         // Table has `active` column?
         $has_active_column = $this->schemaHasActiveColumn($table_schema);
 
-        if ($params['active'] && $has_active_column) {
+        // $logger->info('active param');
+        // $logger->info(print_r($params['active'], true));
+
+        // Note: be sure to explicitly check for null, because the value may be
+        // '0' or 0, which is meaningful.
+        if (null !== $params['active'] && $has_active_column) {
             $haystack = is_array($params['active'])
                 ? $params['active']
                 : explode(",", $params['active']);
@@ -100,6 +105,8 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
             ->expression('-1 = ?', $params['id'])
             ->or
             ->equalTo('id', $params['id']);
+
+        // $logger->info($this->dumpSql($select));
 
         // @todo figure out this warning
         $statement = @$sql->prepareStatementForSqlObject($select);
