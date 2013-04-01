@@ -18,9 +18,10 @@ class MySQL {
      * @param $dbh
      * @param $db_name
      */
-    function __construct($dbh, $db_name) {
+    function __construct($dbh, $db_name, $ZendDb) {
         $this->dbh = $dbh;
         $this->db_name = $db_name;
+        $this->zendDb = $ZendDb;
 
         $this->dbh->exec("SET CHARACTER SET utf8");
         $this->dbh->query("SET NAMES utf8");
@@ -628,9 +629,8 @@ class MySQL {
                  * Establish salt and encode password
                  * @todo    when creating a user, password field is required
                  */
-                $user = isset($item['id']) ?
-                    Users::findOneById($item['id']) :
-                    array('salt' => uniqid());
+                $Users = new Db\Users('directus_users', $this->zendDb);
+                $user = isset($item['id']) ? $Users->find($item['id']) : array('salt' => uniqid());
                 $item['salt'] = $user['salt'];
                 $item['password'] = empty($item['password']) ?
                     $user['password'] :
@@ -640,7 +640,7 @@ class MySQL {
                  */
                 $item['avatar'] = null;
                 if(!empty($item['email']))
-                    $item['avatar'] = Users::get_gravatar($item['email'], Users::GRAVATAR_SIZE, 'identicon');
+                    $item['avatar'] = Db\Users::get_gravatar($item['email'], Db\Users::GRAVATAR_SIZE, 'identicon');
             }
         }
         $cols = array_keys(reset($data));
