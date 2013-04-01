@@ -441,30 +441,51 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
 
 // GET user index
 $app->get("/$v/users/?", function () use ($db, $ZendDb, $params, $requestPayload) {
+
     $Users = new Db\Users("directus_users", $ZendDb);
     $new = $Users->fetchAllWithGroupData();
+
     $old = $db->get_users();
+
     JsonView::render($new, $old);
+
 })->name('user_index');
 
 // POST new user
+/**
+ * Appearances suggest that this route is not used, & that this one is used instead:
+ *     POST /directus/api/1/tables/directus_users/rows
+ * @todo  Confirm & prune this route
+ */
 $app->post("/$v/users/?", function() use ($db, $params, $requestPayload) {
     $table = 'directus_users';
     $id = $db->set_entries($table, $params);
+
     $params['id'] = $id;
-    $response = $db->get_entries($table, $params);
-    JsonView::render($response);
+    $old = $db->get_entries($table, $params);
+
+    $Users = new Db\Users("directus_users", $ZendDb);
+    $new = $Users->find($id);
+
+    JsonView::render($new, $old);
 })->name('user_post');
 
 // GET or PUT a given user
-$app->map("/$v/users/:id/?", function ($id) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/users/:id/?", function ($id) use ($db, $ZendDb, $params, $requestPayload, $app) {
     $table = 'directus_users';
     $params['id'] = $id;
     if($app->request()->isPut()) {
         $db->set_entry($table, $requestPayload);
     }
-    $response = $db->get_entries($table, $params);
-    JsonView::render($response);
+
+    $app->getLog()->info("IGNORE the following comparison failure. It is due to a buggy date field in the \"old\" response.");
+
+    $old_get = $db->get_entries($table, $params);
+
+    $Users = new Db\Users("directus_users", $ZendDb);
+    $new_get = $Users->find($id);
+
+    JsonView::render($new_get, $old_get);
 })->via('GET', 'PUT');
 
 /**
