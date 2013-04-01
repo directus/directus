@@ -10,6 +10,21 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     protected $many_to_one_uis = array('many_to_one', 'single_media');
 
+    public function find($id, $pk_field_name = "id") {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+            ->from($this->table)
+            ->where(array($pk_field_name => $id))
+            ->limit(1);
+        // Fetch row
+        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
+        $rowset = $statement->execute();
+        $row = $rowset->current();
+        // Convert numeric string fields to integers
+        array_walk($row, array($this, 'castFloatIfNumeric'));
+        return $row;
+    }
+
     public function getEntries($params = array()) {
         // tmp transitional.
         global $db;
@@ -336,7 +351,7 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     protected function dumpSql(AbstractSql $query) {
         $sql = new Sql($this->adapter);
-        $query = $sql->getSqlStringForSqlObject($query);
+        $query = @$sql->getSqlStringForSqlObject($query);
         var_dump($query);
     }
 

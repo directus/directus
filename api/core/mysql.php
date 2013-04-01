@@ -682,6 +682,8 @@ class MySQL {
         $result = $sth->execute();
     }
 
+    // refactor done
+    // @see \Directus\Db\Users#fetchAllWithGroupData
     function get_users() {
         $sth = $this->dbh->query("SELECT DU.*,DG.name AS group_name FROM directus_users DU LEFT JOIN directus_groups DG ON (DU.group = DG.id)");
         $result = array();

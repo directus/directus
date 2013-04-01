@@ -8,17 +8,12 @@ use Zend\Db\Sql\Expression;
 class Users extends TableGateway {
 
     public function fetchAllWithGroupData() {
-
-        $foreign_table = "directus_groups";
-        $foreign_join_column = "directus_groups.id";
-        $join_column = "directus_users.group";
-
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from($this->table)
             ->join(
-                $foreign_table,
-                "$foreign_join_column = $join_column",
+                "directus_groups",
+                "directus_groups.id = directus_users.group",
                 array('group_name' => 'name'),
                 $select::JOIN_LEFT
             );
