@@ -516,7 +516,7 @@ $app->map("/$v/users/:id/?", function ($id) use ($db, $ZendDb, $params, $request
 //     JsonView::render($response);
 // })->via('GET','POST','PUT');
 
-$app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $ui) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $ui) use ($db, $ZendDb, $params, $requestPayload, $app) {
     $params['table_name'] = $table;
     $params['column_name'] = $column;
     $params['ui_name'] = $ui;
@@ -526,8 +526,10 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
         $db->set_ui_options($requestPayload, $table, $column, $ui);
         break;
     }
-    $response = $db->get_ui_options($table, $column, $ui);
-    JsonView::render($response);
+    $get_old = $db->get_ui_options($table, $column, $ui);
+    $UiOptions = new Db\UiOptions('directus_ui', $ZendDb);
+    $get_new = $UiOptions->fetchOptions($table, $column, $ui);
+    JsonView::render($get_old, $get_new);
 })->via('GET','POST','PUT');
 
 

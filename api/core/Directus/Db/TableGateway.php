@@ -373,7 +373,7 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
     protected function dumpSql(AbstractSql $query) {
         $sql = new Sql($this->adapter);
         $query = @$sql->getSqlStringForSqlObject($query);
-        var_dump($query);
+        return $query;
     }
 
     /**
