@@ -188,9 +188,11 @@ $app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
  * ACTIVITY COLLECTION
  */
 
-$app->get("/$v/activity/?", function () use ($db) {
-    $response = $db->get_activity();
-    JsonView::render($response);
+$app->get("/$v/activity/?", function () use ($db, $ZendDb) {
+    $Activity = new Db\Activity('directus_activity', $ZendDb);
+    $new_get = $Activity->fetchFeed();
+    $old_get = $db->get_activity();
+    JsonView::render($new_get, $old_get);
 });
 
 /**
