@@ -3,6 +3,7 @@
 namespace Directus\Db;
 
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Expression;
 
 class TableGateway extends \Zend\Db\TableGateway\TableGateway {
@@ -326,6 +327,17 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
         if (is_numeric($mysql_data))
             return (float) $mysql_data;
         return $mysql_data;
+    }
+
+    /**
+     * Convenience method for dumping a ZendDb Sql query object as debug output.
+     * @param  AbstractSql $query
+     * @return null
+     */
+    protected function dumpSql(AbstractSql $query) {
+        $sql = new Sql($this->adapter);
+        $query = $sql->getSqlStringForSqlObject($query);
+        var_dump($query);
     }
 
     /**
