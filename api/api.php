@@ -39,6 +39,7 @@ use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Auth\RequestNonceHasntBeenProcessed;
+use Directus\Db;
 use Directus\Db\TableGateway;
 
 // Slim Middleware
@@ -107,7 +108,7 @@ $ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
 $connection = $ZendDb->getDriver()->getConnection();
 $connection->connect();
 $PDO = $connection->getResource();
-$db = new DB($PDO, DB_NAME);
+$db = new \DB($PDO, DB_NAME);
 
 $params = $_GET;
 $requestPayload = json_decode($app->request()->getBody(), true);
@@ -439,9 +440,11 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
  */
 
 // GET user index
-$app->get("/$v/users/?", function () use ($db, $params, $requestPayload) {
-    $users = $db->get_users();
-    JsonView::render($users);
+$app->get("/$v/users/?", function () use ($db, $ZendDb, $params, $requestPayload) {
+    $Users = new Db\Users("directus_users", $ZendDb);
+    $new = $Users->fetchAllWithGroupData();
+    $old = $db->get_users();
+    JsonView::render($new, $old);
 })->name('user_index');
 
 // POST new user
