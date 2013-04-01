@@ -29,10 +29,9 @@ class JsonView {
     }
 
     /**
-     * [render description]
-     * @param  array  $responseData           [description]
-     * @param  [type] $responseDataComparison [description]
-     * @return [type]                         [description]
+     * @param  array  $responseData           The new API layer's response.
+     * @param  array  $responseDataComparison The old API layer's response
+     * @return null
      * @todo only format JSON for non-prod environments when DIRECTUS_ENV
      * is available
      */
