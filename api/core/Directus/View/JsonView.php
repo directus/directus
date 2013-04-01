@@ -58,7 +58,7 @@ class JsonView {
         $id = time();
         $old = self::format_json(json_encode($old));
         $log = Application::getApp()->getLog();
-        $uri = get_full_url();
+        $uri = $_SERVER['REQUEST_URI'];
         if(0 === strcmp($new, $old))
             return $log->info("[$uri] The response comparison matched.");
         $log->warn("[$uri] The response comparison failed.");
