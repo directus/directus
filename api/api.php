@@ -391,16 +391,22 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
  * SETTINGS COLLECTION
  */
 
-$app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $ZendDb, $params, $requestPayload, $app) {
     switch ($app->request()->getMethod()) {
         case "POST":
         case "PUT":
             $db->set_settings($requestPayload);
             break;
     }
-    $settings = $db->get_settings('global');
-    $response = is_null($id) ? $settings : $settings[$id];
-    JsonView::render($response);
+
+    $settings_old = $db->get_settings();
+    $get_old = is_null($id) ? $settings_old : $settings_old[$id];
+
+    $Settings = new Db\Settings('directus_settings', $ZendDb);
+    $settings_new = $Settings->fetchAll();
+    $get_new = is_null($id) ? $settings_new : $settings_new[$id];
+
+    JsonView::render($get_new, $get_old);
 })->via('GET','POST','PUT');
 
 /**:
