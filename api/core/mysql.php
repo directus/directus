@@ -94,10 +94,12 @@ class MySQL {
         $sth->bindValue(':schema', $this->db_name, PDO::PARAM_STR);
         $sth->execute();
 
+        $currentUser = AuthProvider::getUserInfo();
+
         while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $tbl["schema"] = $this->get_table_info($row['id']);
             //$tbl["columns"] = $this->get_table($row['id']);
-            $tbl["preferences"] = $this->get_table_preferences($row['id']);
+            $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
             array_push($return, $tbl);
         }
         return $return;
@@ -304,13 +306,15 @@ class MySQL {
      *
      *  @param $tbl_name
      */
-    function get_table_preferences($tbl_name) {
+    function get_table_preferences($user_id, $tbl_name) {
         $return = array();
         $sql = 'SELECT PREFERENCES.*
             FROM directus_preferences PREFERENCES
-            WHERE PREFERENCES.table_name = :table_name';
+            WHERE PREFERENCES.table_name = :table_name
+            AND PREFERENCES.user = :user_id';
         $sth = $this->dbh->prepare($sql);
         $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
+        $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $sth->execute();
         // A preference exists, return it.
         if ($sth->rowCount()) {
@@ -329,13 +333,12 @@ class MySQL {
 
             $columns_visible = array();
             while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-                if ($row['column_name'] != 'id' && $row['column_name'] != 'active' &&    $row['column_name'] != 'sort') {
+                if ($row['column_name'] != 'id' && $row['column_name'] != 'active' && $row['column_name'] != 'sort') {
                     array_push($columns_visible, $row['column_name']);
                 }
             }
-            $currentUser = AuthProvider::getUserInfo();
             $data = array(
-                'user' => $currentUser['id'],
+                'user' => $user_id,
                 'columns_visible' => implode (',', $columns_visible),
                 'table_name' => $tbl_name,
                 'sort' => 'id',
