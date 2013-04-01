@@ -34,13 +34,12 @@ switch (DIRECTUS_ENV) {
 }
 
 use Directus\Application;
-use Directus\View\JsonView;
-use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Auth\RequestNonceHasntBeenProcessed;
+use Directus\Collection\Users;
 use Directus\Db;
-use Directus\Db\TableGateway;
+use Directus\View\JsonView;
 
 // Slim Middleware
 use Directus\Middleware\MustBeLoggedIn;
@@ -231,7 +230,7 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
  * ENTRIES COLLECTION
  */
 
-$app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $ZendDb, $params, $requestPayload, $app) {
     $id = null;
     $params['table_name'] = $table;
     switch($app->request()->getMethod()) {
@@ -246,11 +245,13 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $params, $requ
             break;
     }
     // GET all table entries
-    $response = $db->get_entries($table, $params);
-    JsonView::render($response);
+    $get_old = $db->get_entries($table, $params);
+    $Table = new Db\TableGateway($table, $ZendDb);
+    $get_new = $Table->getEntries($params);
+    JsonView::render($get_new, $get_old);
 })->via('GET', 'POST', 'PUT');
 
-$app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $params, $requestPayload, $app) {
     $params['table_name'] = $table;
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
@@ -264,8 +265,10 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $para
     }
     $params['id'] = $id;
     // GET a table entry
-    $response = $db->get_entries($table, $params);
-    JsonView::render($response);
+    $get_old = $db->get_entries($table, $params);
+    $Table = new Db\TableGateway($table, $ZendDb);
+    $get_new = $Table->getEntries($params);
+    JsonView::render($get_new, $get_old);
 })->via('DELETE', 'GET', 'PUT');
 
 /**
@@ -274,27 +277,32 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $para
 
 /** (Optional slim route params break when these two routes are merged) */
 
-$app->get("/$v/groups/?", function () use ($db) {
+$app->get("/$v/groups/?", function () use ($db, $ZendDb) {
     // @TODO need POST and PUT
-    $response = $db->get_entries("directus_groups");
-    JsonView::render($response);
+    $get_old = $db->get_entries("directus_groups");
+    $Groups = new Db\TableGateway('directus_groups', $ZendDb);
+    $get_new = $Groups->getEntries();
+    JsonView::render($get_new, $get_old);
 });
 
-$app->get("/$v/groups/:id/?", function ($id = null) use ($db) {
+$app->get("/$v/groups/:id/?", function ($id = null) use ($db, $ZendDb) {
     // @TODO need POST and PUT
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null;
-    $response = $db->get_group($id);
-    JsonView::render($response);
+    $get_old = $db->get_group($id);
+    $Groups = new Db\TableGateway('directus_groups', $ZendDb);
+    $get_new = $Groups->find($id);
+    JsonView::render($get_new, $get_old);
 });
 
 /**
  * MEDIA COLLECTION
  */
 
-$app->map("/$v/media(/:id)/?", function ($id = null) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/media(/:id)/?", function ($id = null) use ($db, $ZendDb, $params, $requestPayload, $app) {
 
-    $params['id'] = $id;
+    if(!is_null($id))
+        $params['id'] = $id;
 
     // A URL is specified. Upload the file
     if (isset($requestPayload['url']) && $requestPayload['url'] != "") {
@@ -338,8 +346,10 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($db, $params, $request
             break;
     }
 
-    $response = $db->get_entries($table, $params);
-    JsonView::render($response);
+    $get_old = $db->get_entries($table, $params);
+    $Media = new Db\TableGateway($table, $ZendDb);
+    $get_new = $Media->getEntries($params);
+    JsonView::render($get_new, $get_old);
 })->via('GET','PATCH','POST','PUT');
 
 /**
@@ -393,7 +403,7 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $params, $requ
     JsonView::render($response);
 })->via('GET','POST','PUT');
 
-/**
+/**:
  * TABLES COLLECTION
  */
 
@@ -414,7 +424,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $params, $
     // GET all table entries
 
     // New
-    $Table = new TableGateway($table, $ZendDb);
+    $Table = new Db\TableGateway($table, $ZendDb);
     $response_new = $Table->getEntries($params);
 
     // Old
@@ -459,7 +469,7 @@ $app->get("/$v/users/?", function () use ($db, $ZendDb, $params, $requestPayload
  *     POST /directus/api/1/tables/directus_users/rows
  * @todo  Confirm & prune this route
  */
-$app->post("/$v/users/?", function() use ($db, $params, $requestPayload) {
+$app->post("/$v/users/?", function() use ($db, $ZendDb, $params, $requestPayload) {
     $table = 'directus_users';
     $id = $db->set_entries($table, $params);
 
