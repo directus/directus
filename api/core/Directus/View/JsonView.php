@@ -2,12 +2,19 @@
 
 namespace Directus\View;
 
+use Directus\Application;
+
+/**
+ * @todo  Could be implemented as middleware.
+ */
 class JsonView {
 
     /**
      * @var callable
      */
     public static $preDispatch;
+
+    public static $comparison_increment = 0;
 
     /**
      * Pass a closure to this function in order to modify the output data
@@ -24,11 +31,14 @@ class JsonView {
     }
 
     /**
+     * [render description]
+     * @param  array  $responseData           [description]
+     * @param  [type] $responseDataComparison [description]
+     * @return [type]                         [description]
      * @todo only format JSON for non-prod environments when DIRECTUS_ENV
      * is available
      */
-    public static function render(array $params) {
-        $responseData = $params;
+    public static function render(array $responseData, $responseDataComparison = null) {
         if(!is_null(self::$preDispatch)) {
             $preDispatch = self::$preDispatch;
             $responseData = $preDispatch($responseData);
@@ -36,7 +46,41 @@ class JsonView {
         $responseData = json_encode($responseData);
         if(true) // e.g. 'production' !== DIRECTUS_ENV
             $responseData = self::format_json($responseData);
+
+        /**
+         * TRANSITIONAL - Do comparison between two possible responses, the old
+         * DB layer response data and the new.
+         */
+        if(!is_null($responseDataComparison))
+            self::compareApiResponses($responseData, $responseDataComparison);
+
         echo $responseData;
+    }
+
+    public static function compareApiResponses($new, $old) {
+        $inc = self::$comparison_increment++;
+        $old = self::format_json(json_encode($old));
+        $log = Application::getApp()->getLog();
+        $uri = get_full_url();
+        if(0 === strcmp($new, $old))
+            return $log->info("[$uri] The response comparison matched.");
+        $log->warn("[$uri] The response comparison failed.");
+        // Output path
+        $fname_prefix = "cmp$inc";
+        $dir = APPLICATION_PATH . '/docs/api-responses';
+        if(!is_dir($dir)) {
+            $log->fatal("Can't write API responses to output directory: $dir");
+            return;
+        }
+        // Write API responses to disk
+        foreach (array('new','old') as $version) {
+            $fname = "{$fname_prefix}_$version.json";
+            $fpath = "$dir/$fpath";
+            $fp = fopen($fpath, 'w+');
+            fwrite($fp, $$version);
+            fclose($fp);
+            $log->info("Wrote $version API response version to $fpath");
+        }
     }
 
     /**
