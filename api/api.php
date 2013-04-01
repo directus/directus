@@ -380,11 +380,13 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $params,
  * REVISIONS COLLECTION
  */
 
-$app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($db, $params) {
+$app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($db, $ZendDb, $params) {
     $params['table_name'] = $table;
     $params['id'] = $id;
-    $response = $db->get_revisions($params);
-    JsonView::render($response);
+    $get_old = $db->get_revisions($params);
+    $Activity = new Db\Activity('directus_activity', $ZendDb);
+    $get_new = $Activity->fetchRevisions($id, $table);
+    JsonView::render($get_new, $get_old);
 });
 
 /**
