@@ -34,14 +34,14 @@ define(['app', 'backbone'], function(app, Backbone) {
       },
 
       'blur input': function(e) {
-        var val;
-        if (!this.$input.val()) return;
-        if (this.hasDecimals) {
-          val = parseFloat(this.$input.val(), 10);
-        } else {
-          val = parseInt(this.$input.val(), 10);
-        }
-        this.$input.val(val);
+        // var val;
+        // if (!this.$input.val()) return;
+        // if (this.hasDecimals) {
+        //   val = parseFloat(this.$input.val(), 10);
+        // } else {
+        //   val = parseInt(this.$input.val(), 10);
+        // }
+        // this.$input.val(val);
       }
     },
 
