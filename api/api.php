@@ -123,8 +123,10 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     }
     // Validate request nonce
     if(!$requestNonceProvider->requestHasValidNonce()) {
-        header("HTTP/1.0 401 Unauthorized");
-        return JsonView::render(array('message' => 'Unauthorized (nonce).'));
+        if('development' !== DIRECTUS_ENV) {
+            header("HTTP/1.0 401 Unauthorized");
+            return JsonView::render(array('message' => 'Unauthorized (nonce).'));
+        }
     }
     $extensionsDirectory = APPLICATION_PATH . "/extensions";
     $responseData = require "$extensionsDirectory/$extensionName/api.php";
