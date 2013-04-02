@@ -18,7 +18,7 @@ class MySQL {
      * @param $dbh
      * @param $db_name
      */
-    function __construct($dbh, $db_name, $ZendDb) {
+    function __construct($dbh, $db_name, $ZendDb = null) {
         $this->dbh = $dbh;
         $this->db_name = $db_name;
         $this->zendDb = $ZendDb;
