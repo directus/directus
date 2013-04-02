@@ -32,9 +32,13 @@ class MustHaveRequestNonce extends \Directus\Middleware {
 		// NOTE: $this->next->call() has already run!
 		if(self::MATCHES_ROUTE_WHITELIST == $outcome)
 			return;
+		
+		if(!$this->requestNonceProvider->requestHasValidNonce()) {
+			if('development' !== DIRECTUS_ENV) {
+				$this->app->halt(401, "Invalid request (nonce).");
+			}
+		}
 
-		if(!$this->requestNonceProvider->requestHasValidNonce())
-			$this->app->halt(401, "Invalid request (nonce).");
 
 		$response = $this->app->response();
         $newNonces = $this->requestNonceProvider->getNewNoncesThisRequest();
