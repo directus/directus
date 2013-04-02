@@ -74,7 +74,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   Module.list = function(options) {
-    return options.value && options.value.get(options.settings.get('visible_column'));
+    if (options.value === undefined) return '';
+    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
+    return options.value;
   };
 
   return Module;
