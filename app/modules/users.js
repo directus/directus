@@ -59,8 +59,9 @@ function(app, Backbone, Directus) {
 
   var ListView = Directus.Table.extend({
     navigate: function(id) {
-      app.router.navigate('#users/' + id);
-      app.router.setPage(Users.Views.Edit, {model: this.collection.get(id)});
+      app.router.go('#users', id);
+      //app.router.navigate('#users/' + id);
+      //app.router.setPage(Users.Views.Edit, {model: this.collection.get(id)});
     }
   });
 
