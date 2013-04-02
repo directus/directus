@@ -84,7 +84,7 @@ $(function(){
           form_error(data.message);
           return;
         }
-        window.location = <?= DIRECTUS_PATH ?>;
+        window.location = "<?= DIRECTUS_PATH ?>";
       },
       error: function(jqXHR, textStatus, errorThrown) {
         form_error("Server error occurred. (" + textStatus + ")");
