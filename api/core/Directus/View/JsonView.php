@@ -60,8 +60,8 @@ class JsonView {
         $log = Application::getApp()->getLog();
         $uri = $_SERVER['REQUEST_URI'];
         if(0 === strcmp($new, $old))
-            return $log->info("[$uri] The response comparison matched.");
-        $log->warn("[$uri] The response comparison failed.");
+            return $log->info("The response comparison matched. [$uri]");
+        $log->warn("The response comparison failed. [$uri]");
         // Output path
         $fname_prefix = "cmp_$id";
         $dir = APPLICATION_PATH . '/docs/api-responses';

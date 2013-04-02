@@ -5,7 +5,9 @@ namespace Directus\Db;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
-class Users extends TableGateway {
+use Directus\Db\TableGateway\AclAwareTableGateway;
+
+class Users extends AclAwareTableGateway {
 
     const GRAVATAR_SIZE = 100;
 

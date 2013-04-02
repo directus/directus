@@ -5,9 +5,9 @@ namespace Directus\Db;
 use Zend\Db\Sql\Sql;
 
 use Directus\Application;
+use Directus\Db\TableGateway\AclAwareTableGateway;
 
-class Settings extends TableGateway {
-
+class Settings extends AclAwareTableGateway {
 
     public function fetchAll() {
         $sql = new Sql($this->adapter);
@@ -26,13 +26,6 @@ class Settings extends TableGateway {
             $result[$collection][$row['name']] = $row['value'];
         }
         return $result;
-
-        // $sth = $this->dbh->query("SELECT `collection`,`name`,`value` FROM directus_settings ORDER BY `collection");
-        // $result = array();
-        // while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-        //     $result[$row['collection']][$row['name']] = $row['value'];
-        // }
-        // return $result;
     }
 
 }
