@@ -5,8 +5,9 @@ namespace Directus\Db;
 use Zend\Db\Sql\Sql;
 
 use Directus\Application;
+use Directus\Db\TableGateway\AclAwareTableGateway;
 
-class Preferences extends TableGateway {
+class Preferences extends AclAwareTableGateway {
 
     public function fetchByUserAndTable($user_id, $table) {
         $sql = new Sql($this->adapter);
@@ -52,54 +53,5 @@ class Preferences extends TableGateway {
         $id = $db->set_entry('directus_preferences', $data);
         return $data;
     }
-
-    /**
-     *  Get table preferences
-     *
-     *  @param $tbl_name
-     */
-    // function get_table_preferences($tbl_name) {
-    //     $return = array();
-    //     $sql = 'SELECT PREFERENCES.*
-    //         FROM directus_preferences PREFERENCES
-    //         WHERE PREFERENCES.table_name = :table_name';
-    //     $sth = $this->dbh->prepare($sql);
-    //     $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
-    //     $sth->execute();
-    //     // A preference exists, return it.
-    //     if ($sth->rowCount()) {
-    //         return $sth->fetch(PDO::FETCH_ASSOC);
-    //     }
-    //     // User doesn't have any preferences for this table yet. Please create!
-    //     else {
-    //         $sql = 'SELECT S.column_name, D.system, D.master
-    //             FROM INFORMATION_SCHEMA.COLUMNS S
-    //             LEFT JOIN directus_columns D
-    //             ON (D.column_name = S.column_name AND D.table_name = S.table_name)
-    //             WHERE S.table_name = :table_name';
-    //         $sth = $this->dbh->prepare($sql);
-    //         $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
-    //         $sth->execute();
-
-    //         $columns_visible = array();
-    //         while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-    //             if ($row['column_name'] != 'id' && $row['column_name'] != 'active' &&    $row['column_name'] != 'sort') {
-    //                 array_push($columns_visible, $row['column_name']);
-    //             }
-    //         }
-    //         $currentUser = AuthProvider::getUserInfo();
-    //         $data = array(
-    //             'user' => $currentUser['id'],
-    //             'columns_visible' => implode (',', $columns_visible),
-    //             'table_name' => $tbl_name,
-    //             'sort' => 'id',
-    //             'sort_order' => 'asc',
-    //             'active' => '1,2'
-    //         );
-    //         // Insert to DB
-    //         $id = $this->set_entry('directus_preferences', $data);
-    //         return $data;
-    //     }
-    // }
 
 }

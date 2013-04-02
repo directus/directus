@@ -39,6 +39,7 @@ use Directus\Auth\RequestNonceProvider;
 use Directus\Auth\RequestNonceHasntBeenProcessed;
 use Directus\Collection\Users;
 use Directus\Db;
+use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\View\JsonView;
 
 // Slim Middleware
@@ -247,7 +248,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $ZendDb, $para
     }
     // GET all table entries
     $get_old = $db->get_entries($table, $params);
-    $Table = new Db\TableGateway($table, $ZendDb);
+    $Table = new TableGateway($table, $ZendDb);
     $get_new = $Table->getEntries($params);
     JsonView::render($get_new, $get_old);
 })->via('GET', 'POST', 'PUT');
@@ -267,7 +268,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     $params['id'] = $id;
     // GET a table entry
     $get_old = $db->get_entries($table, $params);
-    $Table = new Db\TableGateway($table, $ZendDb);
+    $Table = new TableGateway($table, $ZendDb);
     $get_new = $Table->getEntries($params);
     JsonView::render($get_new, $get_old);
 })->via('DELETE', 'GET', 'PUT');
@@ -281,7 +282,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
 $app->get("/$v/groups/?", function () use ($db, $ZendDb) {
     // @TODO need POST and PUT
     $get_old = $db->get_entries("directus_groups");
-    $Groups = new Db\TableGateway('directus_groups', $ZendDb);
+    $Groups = new TableGateway('directus_groups', $ZendDb);
     $get_new = $Groups->getEntries();
     JsonView::render($get_new, $get_old);
 });
@@ -291,7 +292,7 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($db, $ZendDb) {
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null;
     $get_old = $db->get_group($id);
-    $Groups = new Db\TableGateway('directus_groups', $ZendDb);
+    $Groups = new TableGateway('directus_groups', $ZendDb);
     $get_new = $Groups->find($id);
     JsonView::render($get_new, $get_old);
 });
@@ -348,7 +349,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($db, $ZendDb, $params,
     }
 
     $get_old = $db->get_entries($table, $params);
-    $Media = new Db\TableGateway($table, $ZendDb);
+    $Media = new TableGateway($table, $ZendDb);
     $get_new = $Media->getEntries($params);
     JsonView::render($get_new, $get_old);
 })->via('GET','PATCH','POST','PUT');
@@ -436,7 +437,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $params, $
     // GET all table entries
 
     // New
-    $Table = new Db\TableGateway($table, $ZendDb);
+    $Table = new TableGateway($table, $ZendDb);
     $response_new = $Table->getEntries($params);
 
     // Old
