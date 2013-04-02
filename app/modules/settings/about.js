@@ -19,6 +19,11 @@ function(app, Directus) {
     serialize: {
       title: 'About',
       breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+    },
+    afterRender: function() {
+      var view = new Backbone.Layout({template: 'settings-about'});
+      this.setView('#page-content', view);
+      view.render();
     }
   });
 

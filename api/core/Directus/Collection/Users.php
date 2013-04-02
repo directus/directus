@@ -4,6 +4,8 @@ namespace Directus\Collection;
 
 class Users extends \Directus\Collection {
 
+	const GRAVATAR_SIZE = 100;
+
 	public static $table_name = 'directus_users';
 
 	/**
@@ -29,16 +31,6 @@ class Users extends \Directus\Collection {
 			$url .= ' />';
 		}
 		return $url;
-	}
-
-	public static function getAllWithGravatar() {
-		// TODO can be solved using a static class singleton etc
-		global $db;
-		$users = $db->get_users();
-		foreach($users['rows'] as &$user) {
-			$user['avatar'] = self::get_gravatar($user['email'], 28, 'identicon');
-		}
-		return $users;
 	}
 
 	public static function findOneByEmail($email) {
