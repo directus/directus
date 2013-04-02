@@ -87,7 +87,26 @@ $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
  * Globals
  */
 
-$db = new DB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
+
+$dbConfig = array(
+    'driver'    => 'Pdo_Mysql',
+    'database'  => DB_NAME,
+    'username'  => DB_USER,
+    'password'  => DB_PASSWORD
+);
+
+/**
+ * DB Transitional:
+ *   Initialize ZendDb, then extract the PDO object.
+ *   Insert the PDO object into the DB class and leave it where it was.
+ *   This way we can smoothly transition to using the Zend-structured DB-layer.
+ */
+$ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
+$connection = $ZendDb->getDriver()->getConnection();
+$connection->connect();
+$PDO = $connection->getResource();
+$db = new DB($PDO, DB_NAME);
+
 $params = $_GET;
 $requestPayload = json_decode($app->request()->getBody(), true);
 
@@ -406,7 +425,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
 
 // GET user index
 $app->get("/$v/users/?", function () use ($db, $params, $requestPayload) {
-    $users = Users::getAllWithGravatar();
+    $users = $db->get_users();
     JsonView::render($users);
 })->name('user_index');
 
@@ -479,9 +498,11 @@ if(isset($_GET['run_api_router']) && $_GET['run_api_router']) {
         }
     } catch (Exception $e) {
         header("HTTP/1.1 500 Internal Server Error");
-        //echo format_json(json_encode($e));
-        echo print_r($e, true);
-        //echo $e->getCode();
-        //echo $e->getMessage();
+        if('production' != DIRECTUS_ENV) {
+            echo print_r($e, true);
+            //echo format_json(json_encode($e));
+            //echo $e->getCode();
+            //echo $e->getMessage();
+        }
     }
 }

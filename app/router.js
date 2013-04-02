@@ -133,7 +133,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     mediaItem: function(id) {
       var mediaView = new Media.Views.List({collection: app.media});
       var model = app.media.get(id);
-      
+
       if (model === undefined) {
         model = new app.media.model({id: id}, {collection: app.media});
       }
@@ -144,7 +144,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.tabs.setActive('media');
       this.v.main.setView('#content', mediaView);
       this.v.main.render();
-      
+
     },
 
     users: function() {
