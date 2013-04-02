@@ -1,46 +1,19 @@
 <?php
 
-namespace Directus\Db;
+namespace Directus\Db\TableGateway;
 
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
 
-use Directus\Application;
-
-class TableGateway extends \Zend\Db\TableGateway\TableGateway {
+class RelationalTableGateway extends AclAwareTableGateway {
 
     protected $many_to_one_uis = array('many_to_one', 'single_media');
-
-    protected function getLogger() {
-        return Application::getApp()->getLog();
-    }
-
-    public function find($id, $pk_field_name = "id") {
-        return $this->findOneBy($pk_field_name, $id);
-    }
-
-    public function findOneBy($field, $value) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()
-            ->from($this->table)
-            ->limit(1);
-        $select
-            ->where
-                ->equalTo($field, $value);
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $rowset = $statement->execute();
-        $row = $rowset->current();
-        // Convert numeric string fields to integers
-        array_walk($row, array($this, 'castFloatIfNumeric'));
-        return $row;
-    }
 
     public function getEntries($params = array()) {
         // tmp transitional.
         global $db;
 
-        $logger = $this->getLogger();
+        $logger = $this->logger();
 
         $defaultParams = array(
             'order_column' => 'id', // @todo validate $params['order_*']
@@ -53,9 +26,6 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
             'active' => null
         );
 
-        // $logger->info("TableGateway#getEntries, \$params before parse:");
-        // $logger->info(print_r($params, true));
-
         if(isset($params['per_page']) && isset($params['current_page']))
             $params['skip'] = $params['current_page'] * $params['per_page'];
 
@@ -63,9 +33,6 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
             $params['fields'] = array_merge(array('id'), $params['fields']);
 
         $params = array_merge($defaultParams, $params);
-
-        // $logger->info("TableGateway#getEntries, \$params after parse:");
-        // $logger->info(print_r($params, true));
 
         $platform = $this->adapter->platform; // use for quoting
 
@@ -87,9 +54,6 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
 
         // Table has `active` column?
         $has_active_column = $this->schemaHasActiveColumn($table_schema);
-
-        // $logger->info('active param');
-        // $logger->info(print_r($params['active'], true));
 
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
@@ -307,10 +271,6 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
      *
      **/
 
-    private function castFloatIfNumeric(&$value) {
-        $value = is_numeric($value) ? (float) $value : $value;
-    }
-
     /**
      * Remove Directus-managed virtual/alias fields from the table schema array
      * and return them as a separate array.
@@ -374,17 +334,6 @@ class TableGateway extends \Zend\Db\TableGateway\TableGateway {
         if (is_numeric($mysql_data))
             return (float) $mysql_data;
         return $mysql_data;
-    }
-
-    /**
-     * Convenience method for dumping a ZendDb Sql query object as debug output.
-     * @param  AbstractSql $query
-     * @return null
-     */
-    protected function dumpSql(AbstractSql $query) {
-        $sql = new Sql($this->adapter);
-        $query = @$sql->getSqlStringForSqlObject($query);
-        return $query;
     }
 
     /**

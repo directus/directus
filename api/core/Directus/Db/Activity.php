@@ -4,7 +4,9 @@ namespace Directus\Db;
 
 use Zend\Db\Sql\Sql;
 
-class Activity extends TableGateway {
+use Directus\Db\TableGateway\AclAwareTableGateway;
+
+class Activity extends AclAwareTableGateway {
 
     public function fetchFeed() {
         $columns = array('id','identifier','action','table_name','row_id','user','datetime','type');
@@ -53,14 +55,5 @@ class Activity extends TableGateway {
 
         return $result;
     }
-
-    // function get_revisions($params) {
-    //     $row_id = $params['id'];
-    //     $table_name = $params['table_name'];
-    //     $sql = "SELECT id,action,user,datetime FROM directus_activity WHERE row_id=$row_id AND table_name='$table_name' ORDER BY id DESC";
-    //     $sth = $this->dbh->prepare($sql);
-    //     $sth->execute();
-    //     return $sth->fetchAll(PDO::FETCH_ASSOC);
-    // }
 
 }
