@@ -2,6 +2,11 @@
 
 namespace Directus\View;
 
+use Directus\Application;
+
+/**
+ * @todo  Could be implemented as middleware.
+ */
 class JsonView {
 
     /**
@@ -24,11 +29,13 @@ class JsonView {
     }
 
     /**
+     * @param  array  $responseData           The new API layer's response.
+     * @param  array  $responseDataComparison The old API layer's response
+     * @return null
      * @todo only format JSON for non-prod environments when DIRECTUS_ENV
      * is available
      */
-    public static function render(array $params) {
-        $responseData = $params;
+    public static function render(array $responseData, $responseDataComparison = null) {
         if(!is_null(self::$preDispatch)) {
             $preDispatch = self::$preDispatch;
             $responseData = $preDispatch($responseData);
@@ -36,7 +43,41 @@ class JsonView {
         $responseData = json_encode($responseData);
         if(true) // e.g. 'production' !== DIRECTUS_ENV
             $responseData = self::format_json($responseData);
+
+        /**
+         * TRANSITIONAL - Do comparison between two possible responses, the old
+         * DB layer response data and the new.
+         */
+        if(!is_null($responseDataComparison))
+            self::compareApiResponses($responseData, $responseDataComparison);
+
         echo $responseData;
+    }
+
+    public static function compareApiResponses($new, $old) {
+        $id = time();
+        $old = self::format_json(json_encode($old));
+        $log = Application::getApp()->getLog();
+        $uri = $_SERVER['REQUEST_URI'];
+        if(0 === strcmp($new, $old))
+            return $log->info("The response comparison matched. [$uri]");
+        $log->warn("The response comparison failed. [$uri]");
+        // Output path
+        $fname_prefix = "cmp_$id";
+        $dir = APPLICATION_PATH . '/docs/api-responses';
+        if(!is_dir($dir)) {
+            $log->fatal("Can't write API responses to output directory: $dir");
+            return;
+        }
+        // Write API responses to disk
+        foreach (array('new','old') as $version) {
+            $fname = "{$fname_prefix}_$version.json";
+            $fpath = "$dir/$fname";
+            $fp = fopen($fpath, 'w+');
+            fwrite($fp, $$version);
+            fclose($fp);
+            $log->info("Wrote $version API response version to $fpath");
+        }
     }
 
     /**

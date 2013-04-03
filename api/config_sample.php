@@ -2,6 +2,13 @@
 
 date_default_timezone_set('America/New_York');
 
+/**
+ * DIRECTUS_ENV - Possible values:
+ *
+ *   'production' => error suppression, nonce protection
+ *   'development' => no error suppression, no nonce protection (allows manual viewing of API output)
+ *   'development_enforce_nonce' => no error suppression, nonce protection
+ */
 define('DIRECTUS_ENV', 'production');
 
 // MySQL Settings
