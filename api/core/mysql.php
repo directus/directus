@@ -2,6 +2,7 @@
 
 use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Db;
 
 class MySQL {
 
