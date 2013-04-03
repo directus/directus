@@ -1,5 +1,8 @@
 <?php
 
+ini_set('post_max_size', '72M');
+ini_set('upload_max_filesize', '64M');
+
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Package;
