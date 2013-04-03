@@ -11,3 +11,13 @@ AddType font/woff .woff
     RewriteCond %{REQUEST_URI} !index
     RewriteRule (.*) index.php [L]
 </ifModule>
+
+
+# default is 64, so 64 + 72 (post_max_size value)
+php_value memory_limit 136M
+
+# default is 8, so 8 + 64 (upload_max_filesize value)
+php_value post_max_size 72M
+
+# default is 2
+php_value upload_max_filesize 64M
