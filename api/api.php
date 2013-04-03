@@ -1,5 +1,9 @@
 <?php
 
+ini_set('memory_limit', '136M'); // default is 64, so 64 + 72 (post_max_size value)
+ini_set('post_max_size', '72M'); // default is 8, so 8 + 64 (upload_max_filesize value)
+ini_set('upload_max_filesize', '64M'); // default is 2
+
 /**
  * Initialization
  *  - Apparently the autoloaders must be registered separately in both index.php and api.php
