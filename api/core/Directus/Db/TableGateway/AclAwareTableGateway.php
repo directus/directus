@@ -23,10 +23,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     public function __construct($table, AdapterInterface $adapter)
     {
-        // Inject our AclAwareRowGateway as the "resultSetPrototype"
-        $rowGatewayPrototype = new AclAwareRowGateway('id', $table, $adapter, $sql);
+        $rowGatewayPrototype = new AclAwareRowGateway('id', $table, $adapter);
         $features = new RowGatewayFeature($rowGatewayPrototype);
-        parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
+        parent::__construct($table, $adapter, $features);
     }
 
     protected function logger() {
