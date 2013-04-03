@@ -100,15 +100,25 @@ $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
  */
 $dbConfig = array(
     'driver'    => 'Pdo_Mysql',
+    'host'      => DB_HOST,
     'database'  => DB_NAME,
     'username'  => DB_USER,
     'password'  => DB_PASSWORD
 );
 $ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
 $connection = $ZendDb->getDriver()->getConnection();
-$connection->connect();
+try {
+    $connection->connect();
+} catch(\PDOException $e) {
+    echo "Database connection failed.<br />";
+    $app->getLog()->fatal(print_r($e, true));
+    if('production' !== DIRECTUS_ENV)
+        die(var_dump($e));
+    die;
+}
 $PDO = $connection->getResource();
-$db = new \DB($PDO, DB_NAME);
+$db = new \DB($PDO, DB_NAME, $ZendDb);
+
 
 $params = $_GET;
 $requestPayload = json_decode($app->request()->getBody(), true);
