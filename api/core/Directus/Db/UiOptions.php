@@ -3,6 +3,7 @@
 namespace Directus\Db;
 
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 use Directus\Application;
 use Directus\Db\TableGateway\AclAwareTableGateway;
@@ -17,22 +18,18 @@ class UiOptions extends AclAwareTableGateway {
      *  @param $datatype_name
      */
     public function fetchOptions( $tbl_name, $col_name, $datatype_name ) {
-        $columns = array('id' => 'ui_name','name','value');
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()
-            ->columns($columns)
-            ->from($this->table)
-            ->order('ui_name');
-        $select
-            ->where
-                ->equalTo('column_name', $col_name)
-                ->AND
-                ->equalTo('table_name', $tbl_name)
-                ->AND
-                ->equalTo('ui_name', $datatype_name);
 
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $rowset = $statement->execute();
+        $rowset = $this->select(function(Select $select) use ($tbl_name, $col_name, $datatype_name) {
+            $columns = array('id' => 'ui_name','name','value');
+            $select->columns($columns)->order('ui_name');
+            $select
+                ->where
+                    ->equalTo('column_name', $col_name)
+                    ->AND
+                    ->equalTo('table_name', $tbl_name)
+                    ->AND
+                    ->equalTo('ui_name', $datatype_name);
+        });
 
         $ui_options = array();
 

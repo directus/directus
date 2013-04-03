@@ -3,6 +3,7 @@
 namespace Directus\Db;
 
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 use Directus\Application;
 use Directus\Db\TableGateway\AclAwareTableGateway;
