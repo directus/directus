@@ -2,6 +2,7 @@
 
 use Directus\Collection\Users;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Db;
 
 class MySQL {
 
@@ -18,9 +19,10 @@ class MySQL {
      * @param $dbh
      * @param $db_name
      */
-    function __construct($dbh, $db_name) {
+    function __construct($dbh, $db_name, $ZendDb = null) {
         $this->dbh = $dbh;
         $this->db_name = $db_name;
+        $this->zendDb = $ZendDb;
 
         $this->dbh->exec("SET CHARACTER SET utf8");
         $this->dbh->query("SET NAMES utf8");
@@ -94,10 +96,12 @@ class MySQL {
         $sth->bindValue(':schema', $this->db_name, PDO::PARAM_STR);
         $sth->execute();
 
+        $currentUser = AuthProvider::getUserInfo();
+
         while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $tbl["schema"] = $this->get_table_info($row['id']);
             //$tbl["columns"] = $this->get_table($row['id']);
-            $tbl["preferences"] = $this->get_table_preferences($row['id']);
+            $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
             array_push($return, $tbl);
         }
         return $return;
@@ -304,13 +308,15 @@ class MySQL {
      *
      *  @param $tbl_name
      */
-    function get_table_preferences($tbl_name) {
+    function get_table_preferences($user_id, $tbl_name) {
         $return = array();
         $sql = 'SELECT PREFERENCES.*
             FROM directus_preferences PREFERENCES
-            WHERE PREFERENCES.table_name = :table_name';
+            WHERE PREFERENCES.table_name = :table_name
+            AND PREFERENCES.user = :user_id';
         $sth = $this->dbh->prepare($sql);
         $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
+        $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $sth->execute();
         // A preference exists, return it.
         if ($sth->rowCount()) {
@@ -329,13 +335,12 @@ class MySQL {
 
             $columns_visible = array();
             while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-                if ($row['column_name'] != 'id' && $row['column_name'] != 'active' &&    $row['column_name'] != 'sort') {
+                if ($row['column_name'] != 'id' && $row['column_name'] != 'active' && $row['column_name'] != 'sort') {
                     array_push($columns_visible, $row['column_name']);
                 }
             }
-            $currentUser = AuthProvider::getUserInfo();
             $data = array(
-                'user' => $currentUser['id'],
+                'user' => $user_id,
                 'columns_visible' => implode (',', $columns_visible),
                 'table_name' => $tbl_name,
                 'sort' => 'id',
@@ -463,7 +468,6 @@ class MySQL {
         $active = isset($params['active']) ? $params['active'] : null;
 
         $alias_schema = array();
-        $sub_selects = "";
 
         // get column schema for table that is being affected
         $schema = $this->get_table($tbl_name);
@@ -626,9 +630,8 @@ class MySQL {
                  * Establish salt and encode password
                  * @todo    when creating a user, password field is required
                  */
-                $user = isset($item['id']) ?
-                    Users::findOneById($item['id']) :
-                    array('salt' => uniqid());
+                $Users = new Db\Users('directus_users', $this->zendDb);
+                $user = isset($item['id']) ? $Users->find($item['id']) : array('salt' => uniqid());
                 $item['salt'] = $user['salt'];
                 $item['password'] = empty($item['password']) ?
                     $user['password'] :
@@ -638,7 +641,7 @@ class MySQL {
                  */
                 $item['avatar'] = null;
                 if(!empty($item['email']))
-                    $item['avatar'] = Users::get_gravatar($item['email'], Users::GRAVATAR_SIZE, 'identicon');
+                    $item['avatar'] = Db\Users::get_gravatar($item['email'], Db\Users::GRAVATAR_SIZE, 'identicon');
             }
         }
         $cols = array_keys(reset($data));
@@ -683,6 +686,8 @@ class MySQL {
         $result = $sth->execute();
     }
 
+    // refactor done
+    // @see \Directus\Db\Users#fetchAllWithGroupData
     function get_users() {
         $sth = $this->dbh->query("SELECT DU.*,DG.name AS group_name FROM directus_users DU LEFT JOIN directus_groups DG ON (DU.group = DG.id)");
         $result = array();
