@@ -2,13 +2,41 @@
 
 namespace Directus;
 
-/**
- * @todo  we can improve load time by caching these scan results
- */
-class Package {
+class Application {
 
-	public static $extensions;
-	public static $uis;
+	/**
+	 * Slim application instance
+	 * @var \Slim\Slim
+	 */
+	public static $app = null;
+
+	/**
+	 * Extension paths
+	 * @var array
+	 */
+	public static $extensions = null;
+
+	/**
+	 * UI paths
+	 * @var array
+	 */
+	public static $uis = null;
+
+	/**
+	 * @return \Slim\Slim
+	 */
+	public static function getApp() {
+		if(is_null(self::$app))
+			throw new Exception("Attempting to get \$app object from container before assigning it.");
+		return self::$app;
+	}
+
+	/**
+	 * @param \Slim\Slim $app
+	 */
+	public static function setApp($app) {
+		self::$app = $app;
+	}
 
 	/**
 	 * Scan for extensions.
