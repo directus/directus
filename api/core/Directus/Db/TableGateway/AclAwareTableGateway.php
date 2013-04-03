@@ -32,6 +32,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return Application::getApp()->getLog();
     }
 
+    public function fetchAll() {
+        return $this->select(function(Select $select) {
+
+        });
+    }
+
     public function find($id, $pk_field_name = "id") {
         $record = $this->findOneBy($pk_field_name, $id);
         return $record;
