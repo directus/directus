@@ -10,6 +10,12 @@ use Directus\Db\TableGateway\AclAwareTableGateway;
 
 class Preferences extends AclAwareTableGateway {
 
+    public static $_tableName = "directus_preferences";
+
+    public function __construct(AdapterInterface $adapter) {
+        parent::__construct(self::$_tableName, $adapter);
+    }
+
     public function fetchByUserAndTable($user_id, $table) {
         $sql = new Sql($this->adapter);
         $select = $sql->select()
@@ -50,7 +56,7 @@ class Preferences extends AclAwareTableGateway {
             'active' => '1,2'
         );
         // Insert to DB
-        $id = $db->set_entry('directus_preferences', $data);
+        $id = $db->set_entry(self::$_tableName, $data);
         return $data;
     }
 

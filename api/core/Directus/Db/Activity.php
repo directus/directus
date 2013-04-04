@@ -9,6 +9,12 @@ use Directus\Db\TableGateway\AclAwareTableGateway;
 
 class Activity extends AclAwareTableGateway {
 
+    public static $_tableName = "directus_activity";
+
+    public function __construct(AdapterInterface $adapter) {
+        parent::__construct(self::$_tableName, $adapter);
+    }
+
     public function fetchFeed() {
         $columns = array('id','identifier','action','table_name','row_id','user','datetime','type');
 
