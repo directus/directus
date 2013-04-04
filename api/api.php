@@ -103,7 +103,8 @@ $dbConfig = array(
     'host'      => DB_HOST,
     'database'  => DB_NAME,
     'username'  => DB_USER,
-    'password'  => DB_PASSWORD
+    'password'  => DB_PASSWORD,
+    'charset'   => 'utf8'
 );
 $ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
 $connection = $ZendDb->getDriver()->getConnection();
