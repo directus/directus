@@ -283,6 +283,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->from($this->table)
             ->join($junction_table, "$foreign_join_column = $join_column")
             ->where(array($join_column => $column_equals));
+
+        // Tmp: log this query for prod server, where it is broken
+        $this->logger()->info("RelationalTableGateway#loadManyToManyData");
+        $this->logger()->info($this->dumpSql($select));
+
         $results = $this->selectWith($select);
         $results = $results->toArray();
 
