@@ -21,10 +21,13 @@ class Preferences extends AclAwareTableGateway {
                 ->AND
                 ->equalTo('user', $user_id);
         // Fetch row
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $rowset = $statement->execute();
-        if($row = $rowset->current())
-            return $row;
+        $rowset = $this->selectWith($select);
+        if(1 === count($rowset))
+            return current($rowset);
+        // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
+        // $rowset = $statement->execute();
+        // if($row = $rowset->current())
+        //     return $row;
 
         // @refactor
         // User doesn't have any preferences for this table yet. Please create!
