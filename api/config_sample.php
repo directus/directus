@@ -9,14 +9,14 @@ date_default_timezone_set('America/New_York');
  *   'development' => no error suppression, no nonce protection (allows manual viewing of API output)
  *   'development_enforce_nonce' => no error suppression, nonce protection
  */
-define('DIRECTUS_ENV', 'production');
+define('DIRECTUS_ENV', 	'production');
 
 // MySQL Settings
-define('DB_HOST', 			'');
+define('DB_HOST',			'');
 define('DB_NAME', 			'');
 define('DB_USER', 			'');
-define('DB_PASSWORD', 	'');
-define('DB_PREFIX', 		'');
+define('DB_PASSWORD',		'');
+define('DB_PREFIX',			'');
 
 // Url path to Directus
 define('DIRECTUS_PATH', '/directus/');
