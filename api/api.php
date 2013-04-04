@@ -117,8 +117,10 @@ try {
         die(var_dump($e));
     die;
 }
-$PDO = $connection->getResource();
-$db = new \DB($PDO, DB_NAME, $ZendDb);
+$dbh = $connection->getResource();
+$dbh->exec("SET CHARACTER SET utf8");
+$dbh->query("SET NAMES utf8");
+$db = new \DB($dbh, DB_NAME, $ZendDb);
 
 
 $params = $_GET;

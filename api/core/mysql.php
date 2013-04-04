@@ -24,9 +24,6 @@ class MySQL {
         $this->db_name = $db_name;
         $this->zendDb = $ZendDb;
 
-        $this->dbh->exec("SET CHARACTER SET utf8");
-        $this->dbh->query("SET NAMES utf8");
-
         switch(DIRECTUS_ENV) {
             case 'production':
                 $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT );
