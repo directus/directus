@@ -103,7 +103,8 @@ $dbConfig = array(
     'host'      => DB_HOST,
     'database'  => DB_NAME,
     'username'  => DB_USER,
-    'password'  => DB_PASSWORD
+    'password'  => DB_PASSWORD,
+    'charset'   => 'utf8'
 );
 $ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
 $connection = $ZendDb->getDriver()->getConnection();
@@ -116,8 +117,10 @@ try {
         die(var_dump($e));
     die;
 }
-$PDO = $connection->getResource();
-$db = new \DB($PDO, DB_NAME, $ZendDb);
+$dbh = $connection->getResource();
+$dbh->exec("SET CHARACTER SET utf8");
+$dbh->query("SET NAMES utf8");
+$db = new \DB($dbh, DB_NAME, $ZendDb);
 
 
 $params = $_GET;
