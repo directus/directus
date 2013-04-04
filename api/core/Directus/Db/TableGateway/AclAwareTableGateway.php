@@ -53,7 +53,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $row;
     }
 
-    private function castFloatIfNumeric(&$value) {
+    public function castFloatIfNumeric(&$value) {
         $value = is_numeric($value) ? (float) $value : $value;
     }
 
