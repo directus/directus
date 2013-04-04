@@ -23,14 +23,9 @@ class Activity extends AclAwareTableGateway {
                 ->OR
                 ->equalTo('type', 'MEDIA');
 
-        // @todo why can't we just fetchAll or s'thing?
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $rowset = $statement->execute();
-        $result = array();
-        while($row = $rowset->current())
-            $result[] = $row;
-
-        return array('rows' => $result);
+        $rowset = $this->selectWith($select);
+        $rowset = $rowset->toArray();
+        return array('rows' => $rowset);
     }
 
     public function fetchRevisions($row_id, $table_name) {
