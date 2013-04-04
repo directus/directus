@@ -35,8 +35,8 @@ class MySQL {
         }
 
         /** tmp dirty access to slim's logger (globals are bad!) */
-        global $app;
-        $this->logger = $app->getLog();
+        // global $app;
+        // $this->logger = $app->getLog();
     }
 
     /**
