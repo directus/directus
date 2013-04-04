@@ -10,6 +10,12 @@ use Directus\Db\TableGateway\AclAwareTableGateway;
 
 class UiOptions extends AclAwareTableGateway {
 
+    public static $_tableName = "directus_ui";
+
+    public function __construct(AdapterInterface $adapter) {
+        parent::__construct(self::$_tableName, $adapter);
+    }
+
     /**
      *  Get ui options
      *

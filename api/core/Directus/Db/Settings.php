@@ -10,6 +10,12 @@ use Directus\Db\TableGateway\AclAwareTableGateway;
 
 class Settings extends AclAwareTableGateway {
 
+    public static $_tableName = "directus_settings";
+
+    public function __construct(AdapterInterface $adapter) {
+        parent::__construct(self::$_tableName, $adapter);
+    }
+
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
