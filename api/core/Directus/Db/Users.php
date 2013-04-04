@@ -10,6 +10,12 @@ use Directus\Db\TableGateway\AclAwareTableGateway;
 
 class Users extends AclAwareTableGateway {
 
+    public static $_tableName = "directus_users";
+
+    public function __construct(AdapterInterface $adapter) {
+        parent::__construct(self::$_tableName, $adapter);
+    }
+
     const GRAVATAR_SIZE = 100;
 
     public function fetchAllWithGroupData() {

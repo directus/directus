@@ -174,7 +174,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $authProvider, $re
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
-    $Users = new Db\Users('directus_users', $ZendDb);
+    $Users = new Db\Users($ZendDb);
     $user = $Users->findOneBy('email', $email);
     if(!$user) {
         return JsonView::render($response);
@@ -203,7 +203,7 @@ $app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
  */
 
 $app->get("/$v/activity/?", function () use ($db, $ZendDb) {
-    $Activity = new Db\Activity('directus_activity', $ZendDb);
+    $Activity = new Db\Activity($ZendDb);
     $new_get = $Activity->fetchFeed();
     $old_get = $db->get_activity();
     JsonView::render($new_get, $old_get);
@@ -389,7 +389,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
     }
     $currentUser = AuthProvider::getUserInfo();
     $get_old = $db->get_table_preferences($currentUser['id'], $table);
-    $Preferences = new Db\Preferences('directus_preferences', $ZendDb);
+    $Preferences = new Db\Preferences($ZendDb);
     $get_new = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
     JsonView::render($get_new, $get_old);
 })->via('GET','POST','PUT');
@@ -402,7 +402,7 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
     $params['table_name'] = $table;
     $params['id'] = $id;
     $get_old = $db->get_revisions($params);
-    $Activity = new Db\Activity('directus_activity', $ZendDb);
+    $Activity = new Db\Activity($ZendDb);
     $get_new = $Activity->fetchRevisions($id, $table);
     JsonView::render($get_new, $get_old);
 });
@@ -422,7 +422,7 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $ZendDb, $para
     $settings_old = $db->get_settings();
     $get_old = is_null($id) ? $settings_old : $settings_old[$id];
 
-    $Settings = new Db\Settings('directus_settings', $ZendDb);
+    $Settings = new Db\Settings($ZendDb);
     $settings_new = $Settings->fetchAll();
     $get_new = is_null($id) ? $settings_new : $settings_new[$id];
 
@@ -480,7 +480,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
 // GET user index
 $app->get("/$v/users/?", function () use ($db, $ZendDb, $params, $requestPayload) {
 
-    $Users = new Db\Users("directus_users", $ZendDb);
+    $Users = new Db\Users($ZendDb);
     $new = $Users->fetchAllWithGroupData();
 
     $old = $db->get_users();
@@ -502,7 +502,7 @@ $app->post("/$v/users/?", function() use ($db, $ZendDb, $params, $requestPayload
     $params['id'] = $id;
     $old = $db->get_entries($table, $params);
 
-    $Users = new Db\Users("directus_users", $ZendDb);
+    $Users = new Db\Users($ZendDb);
     $new = $Users->find($id);
 
     JsonView::render($new, $old);
@@ -520,7 +520,7 @@ $app->map("/$v/users/:id/?", function ($id) use ($db, $ZendDb, $params, $request
 
     $old_get = $db->get_entries($table, $params);
 
-    $Users = new Db\Users("directus_users", $ZendDb);
+    $Users = new Db\Users($ZendDb);
     $new_get = $Users->find($id);
 
     JsonView::render($new_get, $old_get);
@@ -553,7 +553,7 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
         break;
     }
     $get_old = $db->get_ui_options($table, $column, $ui);
-    $UiOptions = new Db\UiOptions('directus_ui', $ZendDb);
+    $UiOptions = new Db\UiOptions($ZendDb);
     $get_new = $UiOptions->fetchOptions($table, $column, $ui);
     JsonView::render($get_old, $get_new);
 })->via('GET','POST','PUT');
