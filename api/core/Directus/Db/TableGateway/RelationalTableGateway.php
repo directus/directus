@@ -207,8 +207,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($table);
         $select->where->equalTo($column_name, $column_equals);
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $results = $statement->execute();
+        // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
+        // $results = $statement->execute();
+        $results = $this->selectWith($select);
+        $results = $results->toArray();
         // Process results
         foreach ($results as $row)
             array_walk($row, array($this, 'castFloatIfNumeric'));
@@ -240,8 +242,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $sql = new Sql($this->adapter);
                 $select = $sql->select()->from($foreign_table_name);
                 $select->where->in('id', $ids);
-                $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-                $results = $statement->execute();
+                // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
+                // $results = $statement->execute();
+                $results = $this->selectWith($select);
+                $results = $results->toArray();
 
                 $foreign_table = array();
                 foreach ($results as $row) {
@@ -282,8 +286,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->from($this->table)
             ->join($junction_table, "$foreign_join_column = $join_column")
             ->where(array($join_column => $column_equals));
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $results = $statement->execute();
+        // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
+        // $results = $statement->execute();
+        $results = $this->selectWith($select);
+        $results = $results->toArray();
 
         $foreign_data = array();
         foreach($results as $row) {
