@@ -42,14 +42,8 @@ class Activity extends AclAwareTableGateway {
                 ->AND
                 ->equalTo('table_name', $table_name);
 
-        // @todo why can't we just fetchAll or s'thing?
-        // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        // $rowset = $statement->execute();
         $result = $this->selectWith($select);
         $result = $result->toArray();
-        // $result = array();
-        // while($row = $rowset->current())
-        //     $result[] = $row;
         return $result;
     }
 
