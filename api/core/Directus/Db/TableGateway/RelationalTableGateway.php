@@ -4,6 +4,7 @@ namespace Directus\Db\TableGateway;
 
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 class RelationalTableGateway extends AclAwareTableGateway {
 
@@ -204,13 +205,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
      */
     private function loadOneToManyData($table, $column_name, $column_equals) {
         // Run query
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()->from($table);
+        $select = new Select($table);
         $select->where->equalTo($column_name, $column_equals);
-        // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        // $results = $statement->execute();
-        $results = $this->selectWith($select);
-        $results = $results->toArray();
+        $TableGateway = new RelationalTableGateway($table, $this->adapter);
+        $rowset = $TableGateway->selectWith($select);
+        $results = $rowset->toArray();
         // Process results
         foreach ($results as $row)
             array_walk($row, array($this, 'castFloatIfNumeric'));
@@ -239,13 +238,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     continue;
 
                 // Fetch the foreign data
-                $sql = new Sql($this->adapter);
-                $select = $sql->select()->from($foreign_table_name);
+                $select = new Select($foreign_table_name);
                 $select->where->in('id', $ids);
-                // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-                // $results = $statement->execute();
-                $results = $this->selectWith($select);
-                $results = $results->toArray();
+                $TableGateway = new RelationalTableGateway($foreign_table_name, $this->adapter);
+                $rowset = $TableGateway->selectWith($select);
+                $results = $rowset->toArray();
 
                 $foreign_table = array();
                 foreach ($results as $row) {
@@ -286,8 +283,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->from($this->table)
             ->join($junction_table, "$foreign_join_column = $join_column")
             ->where(array($join_column => $column_equals));
-        // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        // $results = $statement->execute();
         $results = $this->selectWith($select);
         $results = $results->toArray();
 

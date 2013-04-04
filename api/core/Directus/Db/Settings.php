@@ -16,8 +16,6 @@ class Settings extends AclAwareTableGateway {
         $select->columns(array('collection','name','value'))
             ->order('collection');
         // Fetch row
-        // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        // $rowset = $statement->execute();
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 
