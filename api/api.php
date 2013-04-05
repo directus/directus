@@ -69,7 +69,7 @@ $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 /**
  * @var \Zend\Db\Adapter
  */
-$ZendDb = Bootstrap::get('ZendDb', $dbConfig);
+$ZendDb = Bootstrap::get('ZendDb');
 
 /**
  * Old \DB adapter
