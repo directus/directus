@@ -157,7 +157,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Run query
         $select = new Select($table);
         $select->where->equalTo($column_name, $column_equals);
-        $TableGateway = new RelationalTableGateway($table, $this->adapter);
+        $TableGateway = new RelationalTableGateway($this->aclProvider, $table, $this->adapter);
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
         // Process results
@@ -190,7 +190,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 // Fetch the foreign data
                 $select = new Select($foreign_table_name);
                 $select->where->in('id', $ids);
-                $TableGateway = new RelationalTableGateway($foreign_table_name, $this->adapter);
+                $TableGateway = new RelationalTableGateway($this->aclProvider, $foreign_table_name, $this->adapter);
                 $rowset = $TableGateway->selectWith($select);
                 $results = $rowset->toArray();
 
