@@ -108,7 +108,15 @@ class Bootstrap {
 	 * @return \Zend\Db\Adapter
 	 */
 	private static function zenddb(array $dbConfig) {
-		self::requireConstants('DIRECTUS_ENV', __FUNCTION__);
+		self::requireConstants(array('DIRECTUS_ENV','DB_HOST','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
+		$dbconfig = array(
+		    'driver'    => 'Pdo_Mysql',
+		    'host'      => DB_HOST,
+		    'database'  => DB_NAME,
+		    'username'  => DB_USER,
+		    'password'  => DB_PASSWORD,
+		    'charset'   => 'utf8'
+		);
 		$ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
 		$connection = $ZendDb->getDriver()->getConnection();
 		try { $connection->connect(); }
