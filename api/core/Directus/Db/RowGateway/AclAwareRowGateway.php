@@ -30,9 +30,9 @@ class AclAwareRowGateway extends RowGateway {
         return $this->data;
     }
 
-	private function logger() {
-		return Bootstrap::get('app')->getLog();
-	}
+    private function logger() {
+        return Bootstrap::get('app')->getLog();
+    }
 
     /**
      * Populate Data
@@ -87,7 +87,7 @@ class AclAwareRowGateway extends RowGateway {
         }
     }
 
-	/**
+    /**
      * Offset get
      *
      * @param  string $offset
@@ -141,7 +141,7 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function toArray()
     {
-    	// ... omit the fields we can't read
+        // ... omit the fields we can't read
         $data = $this->aclProvider->censorFields($this->table, $this->data);
         return $data;
     }
