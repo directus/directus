@@ -9,7 +9,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
-use Directus\Application;
+use Directus\Bootstrap;
 use Directus\Acl;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 
@@ -34,7 +34,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     protected function logger() {
-        return Application::getApp()->getLog();
+        return Bootstrap::get('app')->getLog();
     }
 
     public function fetchAll() {
