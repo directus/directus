@@ -10,56 +10,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
     protected $many_to_one_uis = array('many_to_one', 'single_media');
 
-    public function runDemoTestSuite($rowset) {
-        foreach($rowset as $row) {
-            echo "<h4>\$row->toArray()</h4><pre>";
-            print_r($row->toArray());
-            echo "</pre>";
-
-            // Doesn't work - so no worries.
-            // echo "\$row key/value loop\n";
-            // foreach($row as $key => $value) {
-            //     echo "\t$key => $value\n";
-            // }
-
-            // Doesn't work - so no worries.
-            // echo "array_keys(\$row)\n";
-            // print_r(array_keys($row));
-
-            echo "<h4>offset lookups</h4>";
-            $keys = array_merge(array_keys($row->__getUncensoredDataForTesting()), array("this_is_a_fake_key"));
-            echo "<ul>";
-            foreach($keys as $key) {
-                echo "<li><h5>$key</h5>";
-
-                echo "<ul>";
-                echo "<li>array_key_exists: ";
-                $keyExists = array_key_exists($key, $row);
-                var_dump($keyExists);
-
-                echo "</li><li>property_exists: ";
-                $propExists = property_exists($row, $key);
-                var_dump($propExists);
-                echo "</li>";
-
-                echo "<li>\$row[$key]: ";
-                try { var_dump($row[$key]); }
-                catch(\ErrorException $e) { echo "<em>lookup threw ErrorException</em>"; }
-                echo  "</li>";
-
-                echo "<li>\$row->$key: ";
-                try { var_dump($row->{$key}); }
-                catch(\ErrorException $e) { echo "<em>lookup threw ErrorException</em>"; }
-                catch(\InvalidArgumentException $e) { echo "<em>lookup threw InvalidArgumentException</em>"; }
-
-                echo "</li>";
-                echo "</ul>";
-            }
-            echo "</ul>";
-        }
-        exit;
-    }
-
     public function getEntries($params = array()) {
         // tmp transitional.
         global $db;
@@ -125,7 +75,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $results = $this->selectWith($select);
 
-        // $this->runDemoTestSuite($results);
+        // $this->__runDemoTestSuite($results);
 
         // Note: ensure this is sufficient, in lieu of incrementing within
         // the foreach loop below.
@@ -423,6 +373,56 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $result[$row['active']] = (int)$row['count'];
         $total = 0;
         return $result;
+    }
+
+    public function __runDemoTestSuite($rowset) {
+        foreach($rowset as $row) {
+            echo "<h4>\$row->toArray()</h4><pre>";
+            print_r($row->toArray());
+            echo "</pre>";
+
+            // Doesn't work - so no worries.
+            // echo "\$row key/value loop\n";
+            // foreach($row as $key => $value) {
+            //     echo "\t$key => $value\n";
+            // }
+
+            // Doesn't work - so no worries.
+            // echo "array_keys(\$row)\n";
+            // print_r(array_keys($row));
+
+            echo "<h4>offset lookups</h4>";
+            $keys = array_merge(array_keys($row->__getUncensoredDataForTesting()), array("this_is_a_fake_key"));
+            echo "<ul>";
+            foreach($keys as $key) {
+                echo "<li><h5>$key</h5>";
+
+                echo "<ul>";
+                echo "<li>array_key_exists: ";
+                $keyExists = array_key_exists($key, $row);
+                var_dump($keyExists);
+
+                echo "</li><li>property_exists: ";
+                $propExists = property_exists($row, $key);
+                var_dump($propExists);
+                echo "</li>";
+
+                echo "<li>\$row[$key]: ";
+                try { var_dump($row[$key]); }
+                catch(\ErrorException $e) { echo "<em>lookup threw ErrorException</em>"; }
+                echo  "</li>";
+
+                echo "<li>\$row->$key: ";
+                try { var_dump($row->{$key}); }
+                catch(\ErrorException $e) { echo "<em>lookup threw ErrorException</em>"; }
+                catch(\InvalidArgumentException $e) { echo "<em>lookup threw InvalidArgumentException</em>"; }
+
+                echo "</li>";
+                echo "</ul>";
+            }
+            echo "</ul>";
+        }
+        exit;
     }
 
 }
