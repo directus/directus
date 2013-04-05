@@ -250,28 +250,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $foreign_data[] = array('id' => $row['id'], 'data' => $row);
         }
         return array('rows' => $foreign_data);
-        /**
-         * @todo  Is it necessary to retain this old way of guessing the PK of the table?
-         * The old (& new) version #get_entries already assumes that every table has an 'id'
-         * field. Perhaps we should use table introspection to identify PK?
-         */
-        // $data_set = array();
-        // $sql = "SELECT JT.id, FT.* FROM $junction_table JT
-        //     LEFT JOIN $foreign_table FT
-        //     ON (JT.$junction_key_right = FT.id)
-        //     WHERE JT.$junction_key_left = $column_equals";
-        // $sth = $this->dbh->prepare($sql);
-        // $sth->execute();
-        // while($row = $sth->fetch(PDO::FETCH_NUM)){
-        //     $junction_id = $row[0];
-        //     $data = array();
-        //     foreach ($row as $i => $value) {
-        //         $columnMeta = $sth->getColumnMeta($i);
-        //         $data[$columnMeta['name']] = is_numeric($value) ? (float)$value : $value;
-        //     }
-        //     array_push($data_set, array('id'=>$junction_id, 'data' => $data));
-        // }
-        // return array('rows' => $data_set);
     }
 
     /**
