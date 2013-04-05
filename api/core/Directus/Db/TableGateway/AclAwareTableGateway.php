@@ -10,20 +10,25 @@ use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
 use Directus\Application;
+use Directus\Acl;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     protected $many_to_one_uis = array('many_to_one', 'single_media');
 
+    protected $aclProvider;
+
     /**
+     * @param AclProvider $aclProvider
      * @param string $table
      * @param AdapterInterface $adapter
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct($table, AdapterInterface $adapter)
+    public function __construct(Acl $aclProvider, $table, AdapterInterface $adapter)
     {
-        $rowGatewayPrototype = new AclAwareRowGateway('id', $table, $adapter);
+        $this->aclProvider = $aclProvider;
+        $rowGatewayPrototype = new AclAwareRowGateway($aclProvider, 'id', $table, $adapter);
         $features = new RowGatewayFeature($rowGatewayPrototype);
         parent::__construct($table, $adapter, $features);
     }
