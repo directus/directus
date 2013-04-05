@@ -31,7 +31,7 @@ class Bootstrap {
 			$constants = array($constants);
 		foreach($constants as $constant) {
 			if(!defined($constant))
-				throw new \Exception("Directus\Bootstrap#$dependentFunctionName depends on undefined constant $constant");
+				throw new \Exception(__CLASS__ . "#$dependentFunctionName depends on undefined constant $constant");
 		}
 	}
 
@@ -62,44 +62,6 @@ class Bootstrap {
 		    ));
 		});
 		return $app;
-	}
-
-	/**
-	 * Scan for extensions.
-	 * @return  array
-	 */
-	private static function extensions() {
-		self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-		$extensions = array();
-		$extensionsDirectory = APPLICATION_PATH . '/extensions/';
-		foreach (new \DirectoryIterator($extensionsDirectory) as $file) {
-			if($file->isDot())
-				continue;
-			$extensionName = $file->getFilename();
-			if(is_dir($extensionsDirectory . $extensionName))
-				$extensions[$extensionName] = "extensions/$extensionName/main";
-		}
-		return $extensions;
-	}
-
-	/**
-	 * Scan for uis.
-	 * @return  array
-	 */
-	private static function uis() {
-		self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-		$uis = array();
-		$uiDirectory = APPLICATION_PATH . '/ui';
-		foreach (new \DirectoryIterator($uiDirectory) as $file) {
-			if($file->isDot())
-				continue;
-			$info = pathinfo($file->getFilename());
-			if(array_key_exists('extension', $info) && $info['extension'] != 'js')
-				continue;
-			$uiFilename = $file->getFilename();
-			$uis[$uiFilename] = 'ui/' . basename($uiFilename,'.js');
-		}
-		return $uis;
 	}
 
 	/**
@@ -139,6 +101,10 @@ class Bootstrap {
 		return $db;
 	}
 
+	/**
+	 * Construct Acl provider
+	 * @return \Directus\Acl
+	 */
 	private static function aclprovider() {
 		$aclProvider = new AclProvider;
 		if(AuthProvider::loggedIn()) {
@@ -153,6 +119,44 @@ class Bootstrap {
 		    }
 		}
 		return $aclProvider;
+	}
+
+	/**
+	 * Scan for extensions.
+	 * @return  array
+	 */
+	private static function extensions() {
+		self::requireConstants('APPLICATION_PATH', __FUNCTION__);
+		$extensions = array();
+		$extensionsDirectory = APPLICATION_PATH . '/extensions/';
+		foreach (new \DirectoryIterator($extensionsDirectory) as $file) {
+			if($file->isDot())
+				continue;
+			$extensionName = $file->getFilename();
+			if(is_dir($extensionsDirectory . $extensionName))
+				$extensions[$extensionName] = "extensions/$extensionName/main";
+		}
+		return $extensions;
+	}
+
+	/**
+	 * Scan for uis.
+	 * @return  array
+	 */
+	private static function uis() {
+		self::requireConstants('APPLICATION_PATH', __FUNCTION__);
+		$uis = array();
+		$uiDirectory = APPLICATION_PATH . '/ui';
+		foreach (new \DirectoryIterator($uiDirectory) as $file) {
+			if($file->isDot())
+				continue;
+			$info = pathinfo($file->getFilename());
+			if(array_key_exists('extension', $info) && $info['extension'] != 'js')
+				continue;
+			$uiFilename = $file->getFilename();
+			$uis[$uiFilename] = 'ui/' . basename($uiFilename,'.js');
+		}
+		return $uis;
 	}
 
 }
