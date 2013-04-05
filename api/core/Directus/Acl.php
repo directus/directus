@@ -19,29 +19,29 @@ class Acl {
     protected $groupPrivileges;
 
     public function __construct(array $groupPrivileges = array()) {
-    	$this->setGroupPrivileges($groupPrivileges);
+        $this->setGroupPrivileges($groupPrivileges);
     }
 
     public function logger() {
-    	return Bootstrap::get('app')->getLog();
+        return Bootstrap::get('app')->getLog();
     }
 
     public function setGroupPrivileges(array $groupPrivileges) {
-    	$this->groupPrivileges = $groupPrivileges;
-    	return $this;
+        $this->groupPrivileges = $groupPrivileges;
+        return $this;
     }
 
     public function getGroupPrivileges() {
-    	return $this->groupPrivileges;
+        return $this->groupPrivileges;
     }
 
     public function isTableListValue($value) {
-    	return array_key_exists($value, self::$base_acl);
+        return array_key_exists($value, self::$base_acl);
     }
 
     public function getTableList($table, $list) {
-    	if(!$this->isTableListValue($list))
-    		throw new \InvalidArgumentException("Invalid list: $list");
+        if(!$this->isTableListValue($list))
+            throw new \InvalidArgumentException("Invalid list: $list");
         $listItems = self::$base_acl[$list];
         // @todo shouldn't necessarily have to check for the presence of the list
         if(array_key_exists($table, $this->groupPrivileges) && array_key_exists($list, $this->groupPrivileges[$table]))
