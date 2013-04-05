@@ -18,13 +18,13 @@ class Bootstrap {
      * Returns the instance of the specified singleton, instantiating one if it
      * doesn't yet exist.
      * @param  string $key  The name of the singleton / singleton factory function
-     * @param  array  $args Arguments to be passed to the singleton factory function
+     * @param  mixed  $arg An argument to be passed to the singleton factory function
      * @return mixed           The singleton with the specified name
      */
-    public static function get($key, $args = array()) {
+    public static function get($key, $arg = null) {
         $key = strtolower($key);
         if(!array_key_exists($key, self::$singletons))
-            self::$singletons[$key] = self::{$key}($args);
+            self::$singletons[$key] = call_user_func(__CLASS__."::$key", $arg);
         return self::$singletons[$key];
     }
 
