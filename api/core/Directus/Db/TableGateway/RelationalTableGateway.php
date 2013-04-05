@@ -88,7 +88,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
             foreach ($table_schema as $col) {
                 // Run custom data casting.
                 $name = $col['column_name'];
-                $item[$name] = $this->parseMysqlType($row[$name], $col['type']);
+                if($row->offsetExists($name))
+                    $item[$name] = $this->parseMysqlType($row[$name], $col['type']);
             }
             $table_entries[] = $item;
         }
@@ -182,8 +183,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $foreign_id_column = $col['id'];
                 $foreign_table_name = ($col['ui'] == 'single_media') ? 'directus_media' : $col['options']['related_table'];
 
-                // @todo could really use a comment
-                $ids = array_map(function($row) use ($foreign_id_column) { return $row[$foreign_id_column]; }, $table_entries);
+                // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
+                $yield = function($row) use ($foreign_id_column) {
+                    if(array_key_exists($foreign_id_column, $row))
+                        return $row[$foreign_id_column];
+                };
+                $ids = array_map($yield, $table_entries);
                 if (empty($ids))
                     continue;
 
@@ -203,11 +208,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                 // Replace foreign keys with foreign rows
                 foreach ($table_entries as &$parentRow) {
-                    $foreign_id = $parentRow[$foreign_id_column];
-                    $parentRow[$foreign_id_column] = null;
-                    // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
-                    if(array_key_exists($foreign_id, $foreign_table))
-                        $parentRow[$foreign_id_column] = $foreign_table[$foreign_id];
+                    if(array_key_exists($foreign_id_column, $parentRow)) {
+                        $foreign_id = $parentRow[$foreign_id_column];
+                        $parentRow[$foreign_id_column] = null;
+                        // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
+                        if(array_key_exists($foreign_id, $foreign_table))
+                            $parentRow[$foreign_id_column] = $foreign_table[$foreign_id];
+                    }
                 }
             }
         }
