@@ -33,7 +33,7 @@ switch (DIRECTUS_ENV) {
         break;
 }
 
-use Directus\Application;
+use Directus\Bootstrap;
 use Directus\Acl as AclProvider;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
@@ -47,38 +47,14 @@ use Directus\View\JsonView;
 use Directus\Middleware\MustBeLoggedIn;
 use Directus\Middleware\MustHaveRequestNonce;
 
-/**
- * Slim Bootstrap
- */
-
-$app = new \Slim\Slim(array(
-    'mode'    => DIRECTUS_ENV,
-    'log.writer' => new \Slim\Extras\Log\DateTimeFileWriter()
-));
-
-$app->configureMode('production', function () use ($app) {
-    $app->config(array(
-        'log.enable' => true,
-        'debug' => false
-    ));
-});
-
-$app->configureMode('development', function () use ($app) {
-    $app->config(array(
-        'log.enable' => false,
-        'debug' => true
-    ));
-});
-
-// Custom global accessor for Slim application object
-Application::setApp($app);
-
-// Version shortcut for routes:
+// API Version shortcut for routes:
 $v = API_VERSION;
 
 /**
- * Middleware
+ * Slim App & Middleware
  */
+
+$app = Bootstrap::get('app');
 
 /* URL patterns which will not be protected by the following middleware */
 $routeWhitelist = array("/^\/?$v\/auth\/?/");
@@ -90,15 +66,13 @@ $requestNonceProvider = new RequestNonceProvider();
 $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 
 /**
- * Globals
+ * Bootstrap Providers
  */
 
-/**
- * DB Transitional:
- *   Initialize ZendDb, then extract the PDO object.
- *   Insert the PDO object into the DB class and leave it where it was.
- *   This way we can smoothly transition to using the Zend-structured DB-layer.
- */
+// DB Transitional:
+//  - Initialize ZendDb, then extract the PDO object.
+//  - Insert the PDO object into the DB class and leave it where it was.
+//  - This way we can smoothly transition to using the Zend-structured DB-layer.
 $dbConfig = array(
     'driver'    => 'Pdo_Mysql',
     'host'      => DB_HOST,
@@ -107,37 +81,22 @@ $dbConfig = array(
     'password'  => DB_PASSWORD,
     'charset'   => 'utf8'
 );
-$ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
-$connection = $ZendDb->getDriver()->getConnection();
-try {
-    $connection->connect();
-} catch(\PDOException $e) {
-    echo "Database connection failed.<br />";
-    $app->getLog()->fatal(print_r($e, true));
-    if('production' !== DIRECTUS_ENV)
-        die(var_dump($e));
-    die;
-}
-$dbh = $connection->getResource();
-$dbh->exec("SET CHARACTER SET utf8");
-$dbh->query("SET NAMES utf8");
-$db = new \DB($dbh, DB_NAME, $ZendDb);
 
 /**
- * Bootstrap Acl
+ * @var \Zend\Db\Adapter
  */
+$ZendDb = Bootstrap::get('ZendDb', $dbConfig);
 
-$aclProvider = new AclProvider;
-if(AuthProvider::loggedIn()) {
-    $currentUser = AuthProvider::getUserInfo();
-    $Users = new Db\Users($aclProvider, $ZendDb);
-    $currentUser = $Users->find($currentUser['id']);
-    if($currentUser) {
-        $Privileges = new Db\Privileges($aclProvider, $ZendDb);
-        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['id']);
-        $aclProvider->setGroupPrivileges($groupPrivileges);
-    }
-}
+/**
+ * Old \DB adapter
+ * @var \DB
+ */
+$db = Bootstrap::get('OldDb');
+
+/**
+ * @var \Directus\Acl
+ */
+$aclProvider = Bootstrap::get('AclProvider');
 
 /**
  * Request Payload
@@ -153,7 +112,7 @@ $requestPayload = json_decode($app->request()->getBody(), true);
 if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     // Validate extension name
     $extensionName = $_REQUEST['run_extension'];
-    if(!Application::extensionExists($extensionName)) {
+    if(!Bootstrap::extensionExists($extensionName)) {
         header("HTTP/1.0 404 Not Found");
         return JsonView::render(array('message' => 'No such extension.'));
     }
