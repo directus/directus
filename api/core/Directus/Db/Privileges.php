@@ -21,11 +21,15 @@ class Privileges extends AclAwareTableGateway {
         $select->where->equalTo('group_id', $group_id);
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-        foreach($rowset as $field => &$value) {
-            if($this->aclProvider->isTableListValue($field))
-                $value = explode(",", $value);
+        $privilegesByTable = array();
+        foreach($rowset as $row) {
+            foreach($row as $field => &$value) {
+                if($this->aclProvider->isTableListValue($field))
+                    $value = explode(",", $value);
+                $privilegesByTable[$row['table_name']] = $row;
+            }
         }
-        return $rowset;
+        return $privilegesByTable;
     }
 
 }

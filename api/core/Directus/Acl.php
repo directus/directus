@@ -25,6 +25,10 @@ class Acl {
     	return $this;
     }
 
+    public function getGroupPrivileges() {
+    	return $this->groupPrivileges;
+    }
+
     public function isTableListValue($value) {
     	return array_key_exists($value, self::$base_acl);
     }
