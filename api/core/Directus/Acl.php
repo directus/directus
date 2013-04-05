@@ -7,13 +7,27 @@ use Directus\Bootstrap;
 class Acl {
 
     const READ_BLACKLIST = "read_field_blacklist";
-    const READ_MANDATORY_LIST = "mandatory_field_whitelist";
     const WRITE_BLACKLIST = "write_field_blacklist";
 
+    /**
+     * Baseline/fallback ACL
+     * @var array
+     */
     public static $base_acl = array(
         self::READ_BLACKLIST => array(),
-        self::READ_MANDATORY_LIST => array('id','active'),
         self::WRITE_BLACKLIST => array()
+    );
+
+    /**
+     * These fields cannot be included on any READ_BLACKLIST. (It is required
+     * that they are readable in order for the application to function.)
+     * @var array
+     */
+    public static $mandatory_read_lists = array(
+        // key: table name ('*' = all tables, baseline definition)
+        // value: array of column names
+        '*' => array('id','active')
+        // ...
     );
 
     protected $groupPrivileges;
@@ -39,18 +53,38 @@ class Acl {
         return array_key_exists($value, self::$base_acl);
     }
 
-    public function getTableList($table, $list) {
+    public function getTableMandatoryReadList($table) {
+        $list = self::$mandatory_read_lists['*'];
+        if(array_key_exists($table, self::$mandatory_read_lists))
+            $list = array_merge($list, self::$mandatory_read_lists[$table]);
+        return $list;
+    }
+
+    public function getTableBlacklist($table, $list) {
         if(!$this->isTableListValue($list))
             throw new \InvalidArgumentException("Invalid list: $list");
-        $listItems = self::$base_acl[$list];
-        // @todo shouldn't necessarily have to check for the presence of the list
-        if(array_key_exists($table, $this->groupPrivileges) && array_key_exists($list, $this->groupPrivileges[$table]))
-            $listItems = array_merge($listItems, $this->groupPrivileges[$table][$list]);
-        return $listItems;
+        $blacklistItems = self::$base_acl[$list];
+
+        // Merge in the table-specific read blacklist, if one exists
+        if(array_key_exists($table, $this->groupPrivileges))
+            $blacklistItems = array_merge($blacklistItems, $this->groupPrivileges[$table][$list]);
+
+        // Filter mandatory read fields from read blacklists
+        $mandatoryReadFields = $this->getTableMandatoryReadList($table);
+        $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $blacklistItems);
+        if(count($disallowedReadBlacklistFields)) {
+            // Log warning
+            $this->logger()->warn("Table $table contains read blacklist items which are designated as mandatory read fields:");
+            $this->logger()->warn(print_r($disallowedReadBlacklistFields, true));
+            // Filter out mandator read items
+            $blacklistItems = array_diff($blacklistItems, $mandatoryReadFields);
+        }
+
+        return $blacklistItems;
     }
 
     public function censorFields($table, $data) {
-        $censorFields = $this->getTableList($table, self::READ_BLACKLIST);
+        $censorFields = $this->getTableBlacklist($table, self::READ_BLACKLIST);
         foreach($censorFields as $key) {
             if(array_key_exists($key, $data))
                 unset($data[$key]);
