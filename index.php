@@ -2,7 +2,7 @@
 
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
-use Directus\Application;
+use Directus\Bootstrap;
 
 /**
  * Initialization
@@ -46,8 +46,8 @@ $data['path'] = DIRECTUS_PATH;
 $data['active_media'] = $db->count_active('directus_media');
 
 // Force array json encoding
-$data['extensions'] = array_values(Application::getExtensions());
-$data['ui'] = array_values(Application::getUis());
+$data['extensions'] = array_values(Bootstrap::get('extensions'));
+$data['ui'] = array_values(Bootstrap::get('uis'));
 
 echo template(file_get_contents('main.html'), array(
 	'data'=> json_encode($data),

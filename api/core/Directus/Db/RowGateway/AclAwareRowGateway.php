@@ -4,7 +4,7 @@ namespace Directus\Db\RowGateway;
 
 use Zend\Db\RowGateway\RowGateway;
 
-use Directus\Application;
+use Directus\Bootstrap;
 use Directus\Acl;
 
 class AclAwareRowGateway extends RowGateway {
@@ -31,7 +31,7 @@ class AclAwareRowGateway extends RowGateway {
     }
 
 	private function logger() {
-		return Application::getApp()->getLog();
+		return Bootstrap::get('app')->getLog();
 	}
 
     /**
