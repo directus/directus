@@ -5,44 +5,29 @@ namespace Directus\Db\RowGateway;
 use Zend\Db\RowGateway\RowGateway;
 
 use Directus\Application;
+use Directus\Acl;
 
 class AclAwareRowGateway extends RowGateway {
 
-    const READ_BLACKLIST = "read_field_blacklist";
-    const READ_MANDATORY_LIST = "mandatory_field_whitelist";
+    protected $aclProvider;
 
-    public static $mock_acl = array(
-        '*' => array(
-            self::READ_BLACKLIST => array(),
-            self::READ_MANDATORY_LIST => array('id','active')
-        ),
-        'directus_media' => array(
-            self::READ_BLACKLIST => array(
-                //'size',// 'active'
-            )
-        )
-    );
+    /**
+     * Constructor
+     * @param AclProvider $aclProvider
+     * @param string $primaryKeyColumn
+     * @param string|\Zend\Db\Sql\TableIdentifier $table
+     * @param Adapter|Sql $adapterOrSql
+     * @throws Exception\InvalidArgumentException
+     */
+    public function __construct(Acl $aclProvider, $primaryKeyColumn, $table, $adapterOrSql) {
+        $this->aclProvider = $aclProvider;
+        parent::__construct($primaryKeyColumn, $table, $adapterOrSql);
+    }
 
     // as opposed to toArray()
     // used only for proof of concept
     public function __getUncensoredDataForTesting() {
         return $this->data;
-    }
-
-    public function getTableReadBlacklist($table, $group = null) {
-        $readBlacklist = self::$mock_acl['*'][self::READ_BLACKLIST];
-        if(array_key_exists($table, self::$mock_acl) && array_key_exists(self::READ_BLACKLIST, self::$mock_acl[$table]))
-            $readBlacklist = array_merge($readBlacklist, self::$mock_acl[$table][self::READ_BLACKLIST]);
-        return $readBlacklist;
-    }
-
-    private function censorFields($data) {
-        $censorFields = $this->getTableReadBlacklist($this->table);
-        foreach($censorFields as $key) {
-            if(array_key_exists($key, $data))
-                unset($data[$key]);
-        }
-        return $data;
     }
 
 	private function logger() {
@@ -113,7 +98,7 @@ class AclAwareRowGateway extends RowGateway {
         // - confirm user group has read privileges on field with name $offset
         // ...
 
-        $censorFields = $this->getTableReadBlacklist($this->table);
+        $censorFields = $this->aclProvider->getTableList($this->table, Acl::READ_BLACKLIST);
         if(in_array($offset, $censorFields))
             throw new \ErrorException("Undefined index: $offset");
 
@@ -157,7 +142,7 @@ class AclAwareRowGateway extends RowGateway {
     public function toArray()
     {
     	// ... omit the fields we can't read
-        $data = $this->censorFields($this->data);
+        $data = $this->aclProvider->censorFields($this->table, $this->data);
         return $data;
     }
 
