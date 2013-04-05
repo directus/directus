@@ -25,6 +25,7 @@ defined('DIRECTUS_ENV')
     || define('DIRECTUS_ENV', (getenv('DIRECTUS_ENV') ? getenv('DIRECTUS_ENV') : 'production'));
 
 switch (DIRECTUS_ENV) {
+    case 'development_enforce_nonce':
     case 'development':
         break;
     case 'production':
