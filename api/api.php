@@ -33,12 +33,9 @@ switch (DIRECTUS_ENV) {
         break;
 }
 
-use Directus\Bootstrap;
-use Directus\Acl as AclProvider;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
-use Directus\Auth\RequestNonceHasntBeenProcessed;
-use Directus\Collection\Users;
+use Directus\Bootstrap;
 use Directus\Db;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\View\JsonView;
@@ -56,7 +53,7 @@ $v = API_VERSION;
 
 $app = Bootstrap::get('app');
 
-/* URL patterns which will not be protected by the following middleware */
+// URL patterns which will not be protected by the following middleware
 $routeWhitelist = array("/^\/?$v\/auth\/?/");
 
 $authProvider = new AuthProvider();
@@ -69,19 +66,6 @@ $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
  * Bootstrap Providers
  */
 
-// DB Transitional:
-//  - Initialize ZendDb, then extract the PDO object.
-//  - Insert the PDO object into the DB class and leave it where it was.
-//  - This way we can smoothly transition to using the Zend-structured DB-layer.
-$dbConfig = array(
-    'driver'    => 'Pdo_Mysql',
-    'host'      => DB_HOST,
-    'database'  => DB_NAME,
-    'username'  => DB_USER,
-    'password'  => DB_PASSWORD,
-    'charset'   => 'utf8'
-);
-
 /**
  * @var \Zend\Db\Adapter
  */
@@ -89,6 +73,7 @@ $ZendDb = Bootstrap::get('ZendDb', $dbConfig);
 
 /**
  * Old \DB adapter
+ * Transitional: initialize old and new until old is obsolete
  * @var \DB
  */
 $db = Bootstrap::get('OldDb');
