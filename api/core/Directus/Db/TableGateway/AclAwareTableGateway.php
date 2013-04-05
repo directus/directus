@@ -2,16 +2,14 @@
 
 namespace Directus\Db\TableGateway;
 
+use Directus\Acl;
+use Directus\Bootstrap;
+use Directus\Db\RowGateway\AclAwareRowGateway;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
-
-use Directus\Bootstrap;
-use Directus\Acl;
-use Directus\Db\RowGateway\AclAwareRowGateway;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
