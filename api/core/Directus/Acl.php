@@ -2,6 +2,8 @@
 
 namespace Directus;
 
+use Directus\Bootstrap;
+
 class Acl {
 
     const READ_BLACKLIST = "read_field_blacklist";
@@ -18,6 +20,10 @@ class Acl {
 
     public function __construct(array $groupPrivileges = array()) {
     	$this->setGroupPrivileges($groupPrivileges);
+    }
+
+    public function logger() {
+    	return Bootstrap::get('app')->getLog();
     }
 
     public function setGroupPrivileges(array $groupPrivileges) {

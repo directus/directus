@@ -14,6 +14,13 @@ class Bootstrap {
 
 	public static $singletons = array();
 
+	/**
+	 * Returns the instance of the specified singleton, instantiating one if it
+	 * doesn't yet exist.
+	 * @param  string $key  The name of the singleton / singleton factory function
+	 * @param  array  $args Arguments to be passed to the singleton factory function
+	 * @return mixed       	The singleton with the specified name
+	 */
 	public static function get($key, $args = array()) {
 		$key = strtolower($key);
 		if(!array_key_exists($key, self::$singletons))
@@ -21,11 +28,24 @@ class Bootstrap {
 		return self::$singletons[$key];
 	}
 
+	/**
+	 * Does an extension by the given name exist?
+	 * @param  string $extensionName
+	 * @return bool
+	 */
 	public static function extensionExists($extensionName) {
 		$extensions = self::getExtensions();
 		return array_key_exists($extensionName, $extensions);
 	}
 
+	/**
+	 * Used to interrupt the bootstrapping of a singleton if the constants it
+	 * requires aren't defined.
+	 * @param  string|array $constants       One or more constant names
+	 * @param  string $dependentFunctionName The name of the function establishing the dependency.
+	 * @return  null
+	 * @throws  Exception If the specified constants are not defined
+	 */
 	private static function requireConstants($constants, $dependentFunctionName) {
 		if(!is_array($constants))
 			$constants = array($constants);
