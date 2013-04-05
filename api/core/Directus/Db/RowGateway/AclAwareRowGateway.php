@@ -98,7 +98,7 @@ class AclAwareRowGateway extends RowGateway {
         // - confirm user group has read privileges on field with name $offset
         // ...
 
-        $censorFields = $this->aclProvider->getTableList($this->table, Acl::READ_BLACKLIST);
+        $censorFields = $this->aclProvider->getTableBlacklist($this->table, Acl::READ_BLACKLIST);
         if(in_array($offset, $censorFields))
             throw new \ErrorException("Undefined index: $offset");
 
