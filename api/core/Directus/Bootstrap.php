@@ -122,7 +122,7 @@ class Bootstrap {
 		    $currentUser = $Users->find($currentUser['id']);
 		    if($currentUser) {
 		        $Privileges = new Db\Privileges($aclProvider, $ZendDb);
-		        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['id']);
+		        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
 		        $aclProvider->setGroupPrivileges($groupPrivileges);
 		    }
 		}
