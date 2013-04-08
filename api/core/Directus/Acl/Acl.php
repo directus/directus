@@ -1,25 +1,27 @@
 <?php
 
-namespace Directus;
+namespace Directus\Acl;
 
 use Directus\Bootstrap;
 
 class Acl {
 
-    const READ_BLACKLIST = "read_field_blacklist";
-    const WRITE_BLACKLIST = "write_field_blacklist";
+    const TABLE_PERMISSIONS     = "table_permissions";
+    const FIELD_READ_BLACKLIST  = "read_field_blacklist";
+    const FIELD_WRITE_BLACKLIST = "write_field_blacklist";
 
     /**
      * Baseline/fallback ACL
      * @var array
      */
     public static $base_acl = array(
-        self::READ_BLACKLIST => array(),
-        self::WRITE_BLACKLIST => array()
+        self::TABLE_PERMISSIONS     => array('edit','delete'),//array('add','edit','delete'),
+        self::FIELD_READ_BLACKLIST  => array(),
+        self::FIELD_WRITE_BLACKLIST => array()
     );
 
     /**
-     * These fields cannot be included on any READ_BLACKLIST. (It is required
+     * These fields cannot be included on any FIELD_READ_BLACKLIST. (It is required
      * that they are readable in order for the application to function.)
      * @var array
      */
@@ -60,7 +62,7 @@ class Acl {
         return $list;
     }
 
-    public function getTableBlacklist($table, $list) {
+    public function getTablePrivilegeList($table, $list) {
         if(!$this->isTableListValue($list))
             throw new \InvalidArgumentException("Invalid list: $list");
         $blacklistItems = self::$base_acl[$list];
@@ -84,12 +86,17 @@ class Acl {
     }
 
     public function censorFields($table, $data) {
-        $censorFields = $this->getTableBlacklist($table, self::READ_BLACKLIST);
+        $censorFields = $this->getTablePrivilegeList($table, self::FIELD_READ_BLACKLIST);
         foreach($censorFields as $key) {
             if(array_key_exists($key, $data))
                 unset($data[$key]);
         }
         return $data;
+    }
+
+    public function hasTablePrivilege($table, $privilege) {
+        $tablePermissions = $this->getTablePrivilegeList($table, self::TABLE_PERMISSIONS);
+        return in_array($privilege, $tablePermissions);
     }
 
 }
