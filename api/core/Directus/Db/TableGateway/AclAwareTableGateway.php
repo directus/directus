@@ -2,11 +2,13 @@
 
 namespace Directus\Db\TableGateway;
 
-use Directus\Acl;
+use Directus\Acl\Acl;
+use Directus\Acl\Exception\UnauthorizedAddException;
 use Directus\Bootstrap;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
+use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
@@ -17,6 +19,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     protected $aclProvider;
 
+    protected $primaryKeyFieldName = "id";
+
     /**
      * @param AclProvider $aclProvider
      * @param string $table
@@ -26,9 +30,58 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public function __construct(Acl $aclProvider, $table, AdapterInterface $adapter)
     {
         $this->aclProvider = $aclProvider;
-        $rowGatewayPrototype = new AclAwareRowGateway($aclProvider, 'id', $table, $adapter);
+        $rowGatewayPrototype = new AclAwareRowGateway($aclProvider, $this->primaryKeyFieldName, $table, $adapter);
         $features = new RowGatewayFeature($rowGatewayPrototype);
         parent::__construct($table, $adapter, $features);
+    }
+
+    /**
+     * OVERRIDES
+     */
+
+    /**
+     * Insert
+     *
+     * @param  array $set
+     * @return int
+     * @throws \Directus\Acl\Exception\UnauthorizedAddException
+     */
+    public function insert($set)
+    {
+        $this->checkAddRights();
+        return parent::insert($set);
+    }
+
+    /**
+     * @param Insert $insert
+     * @return mixed
+     * @throws \Directus\Acl\Exception\UnauthorizedAddException
+     */
+    public function insertWith(Insert $insert)
+    {
+        $this->checkAddRights();
+        return parent::insertWith($insert);
+    }
+
+    /**
+     * HELPER FUNCTIONS
+     */
+
+    /**
+     * Is the user group allowed to create new records?
+     * @return  null
+     * @throws \Directus\Acl\Exception\UnauthorizedAddException
+     */
+    public function checkAddRights() {
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'add')) {
+            throw new UnauthorizedAddException("Group lacks permission to add records to table: " . $this->table);
+        }
+    }
+
+    public function newRow()
+    {
+        $row = new AclAwareRowGateway($this->aclProvider, $this->primaryKeyFieldName, $this->table, $this->adapter);
+        return $row;
     }
 
     protected function logger() {

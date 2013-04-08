@@ -5,7 +5,8 @@ namespace Directus\Db\RowGateway;
 use Zend\Db\RowGateway\RowGateway;
 
 use Directus\Bootstrap;
-use Directus\Acl;
+use Directus\Acl\Acl;
+use Directus\Acl\Exception\UnauthorizedAddException;
 
 class AclAwareRowGateway extends RowGateway {
 
@@ -24,14 +25,19 @@ class AclAwareRowGateway extends RowGateway {
         parent::__construct($primaryKeyColumn, $table, $adapterOrSql);
     }
 
-    // as opposed to toArray()
-    // used only for proof of concept
-    public function __getUncensoredDataForTesting() {
-        return $this->data;
-    }
+    /**
+     * OVERRIDES
+     */
 
-    private function logger() {
-        return Bootstrap::get('app')->getLog();
+    public function save() {
+        $this->initialize();
+
+        /** Is the user group allowed to create new records? */
+        if(!$this->rowExistsInDatabase() && !$this->aclProvider->hasTablePrivilege($this->table, 'add')) {
+            throw new UnauthorizedAddException("Group lacks permission to add records to table: " . $this->table);
+        }
+
+        return parent::save();
     }
 
     /**
@@ -83,7 +89,7 @@ class AclAwareRowGateway extends RowGateway {
         if (array_key_exists($name, $censoredData)) {
             return $censoredData[$name];
         } else {
-            throw new \InvalidArgumentException('Not a valid column in this row: ' . $name);
+            throw new \InvalidArgumentException('Access forbidden to column: ' . $name);
         }
     }
 
@@ -98,9 +104,9 @@ class AclAwareRowGateway extends RowGateway {
         // - confirm user group has read privileges on field with name $offset
         // ...
 
-        $censorFields = $this->aclProvider->getTableBlacklist($this->table, Acl::READ_BLACKLIST);
+        $censorFields = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_READ_BLACKLIST);
         if(in_array($offset, $censorFields))
-            throw new \ErrorException("Undefined index: $offset");
+            throw new \ErrorException("Access forbidden to index: $offset");
 
         return parent::offsetGet($offset);
     }
@@ -144,6 +150,20 @@ class AclAwareRowGateway extends RowGateway {
         // ... omit the fields we can't read
         $data = $this->aclProvider->censorFields($this->table, $this->data);
         return $data;
+    }
+
+    /**
+     * HELPER FUNCTIONS
+     */
+
+    // as opposed to toArray()
+    // used only for proof of concept
+    public function __getUncensoredDataForTesting() {
+        return $this->data;
+    }
+
+    private function logger() {
+        return Bootstrap::get('app')->getLog();
     }
 
 }
