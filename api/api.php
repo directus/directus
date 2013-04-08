@@ -215,6 +215,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
     $params['table_name'] = $table;
     switch($app->request()->getMethod()) {
         // POST one new table entry
+        // @refactor first new write layer implementation
         case 'POST':
             $id = $db->set_entry_relational($table, $requestPayload);
             $params['id'] = $id;
@@ -343,7 +344,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             //This data should not be hardcoded.
             $id = $requestPayload['id'];
             $db->set_entry('directus_preferences', $requestPayload);
-            //$db->insert_entry($table, $requestPayload, $id);
+            // $db->insert_entry($table, $requestPayload, $id);
             break;
         case "POST":
             // This should not be hardcoded, needs to be corrected

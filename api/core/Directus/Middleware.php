@@ -9,10 +9,9 @@ class Middleware extends \Slim\Middleware {
     /**
      * Array of route regex patterns for which the authentication
      * requirement should not be enforced.
-     * @var array
-     *
      * @todo  I would much prefer if this were an array of route names, however
      * the route object seems to be null: $this->app->router()->getCurrentRoute()
+     * @var array
      */
     protected $routeWhitelist = array();
 
@@ -31,8 +30,8 @@ class Middleware extends \Slim\Middleware {
         foreach ($this->routeWhitelist as $pattern) {
             if(preg_match($pattern, $path)) {
                 $this->next->call();
-                // Indicate to the middleware extending this to
-                // skip their enforcement
+                // URL passes Middleware whitelist. Indicate that any middleware extending
+                // this base class should skip their enforcement
                 return self::MATCHES_ROUTE_WHITELIST;
             }
         }
