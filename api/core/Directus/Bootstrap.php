@@ -36,7 +36,7 @@ class Bootstrap {
      * @return bool
      */
     public static function extensionExists($extensionName) {
-        $extensions = self::getExtensions();
+        $extensions = self::get('extensions');
         return array_key_exists($extensionName, $extensions);
     }
 
