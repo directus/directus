@@ -1,6 +1,6 @@
 <?PHP
 
-use Directus\Collection\Users;
+use Directus\Bootstrap;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Db;
 
@@ -522,7 +522,7 @@ class MySQL {
                 LIMIT :skip, :per_page";
 
         $sth = $this->dbh->prepare($sql);
-        $sth->bindValue(':user', $this->user_token, PDO::PARAM_STR);
+        // $sth->bindValue(':user', $this->user_token, PDO::PARAM_STR);
         // $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
         $sth->bindValue(':skip', $skip, PDO::PARAM_INT);
         $sth->bindValue(':per_page', $per_page, PDO::PARAM_INT);
@@ -627,15 +627,14 @@ class MySQL {
                  * Establish salt and encode password
                  * @todo    when creating a user, password field is required
                  */
-                $Users = new Db\Users('directus_users', $this->zendDb);
+                $aclProvider = Bootstrap::get('aclprovider');
+                $Users = new Db\Users($aclProvider, $this->zendDb);
                 $user = isset($item['id']) ? $Users->find($item['id']) : array('salt' => uniqid());
                 $item['salt'] = $user['salt'];
                 $item['password'] = empty($item['password']) ?
                     $user['password'] :
                     AuthProvider::hashPassword($item['password'], $user['salt']);
-                /**
-                 * Arrange gravatar
-                 */
+                /** Gravatar icon URL */
                 $item['avatar'] = null;
                 if(!empty($item['email']))
                     $item['avatar'] = Db\Users::get_gravatar($item['email'], Db\Users::GRAVATAR_SIZE, 'identicon');
