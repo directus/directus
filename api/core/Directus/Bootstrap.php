@@ -23,6 +23,8 @@ class Bootstrap {
      */
     public static function get($key, $arg = null) {
         $key = strtolower($key);
+        if(!method_exists(__CLASS__, $key))
+            throw new \InvalidArgumentException("No such factory function on " . __CLASS__ . ": $key");
         if(!array_key_exists($key, self::$singletons))
             self::$singletons[$key] = call_user_func(__CLASS__."::$key", $arg);
         return self::$singletons[$key];
