@@ -2,7 +2,7 @@
 
 namespace Directus;
 
-use Directus\Acl as AclProvider;
+use Directus\Acl\Acl as AclProvider;
 use Directus\Auth\Provider as AuthProvider;
 use Slim\Slim;
 use Slim\Extras\Log\DateTimeFileWriter;
