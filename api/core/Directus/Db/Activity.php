@@ -2,7 +2,7 @@
 
 namespace Directus\Db;
 
-use Directus\Acl;
+use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
