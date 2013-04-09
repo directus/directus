@@ -237,7 +237,8 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
         case 'PUT':
-            $db->set_entry_relational($table, $requestPayload);
+            // $db->set_entry_relational($table, $requestPayload);
+
             break;
         // DELETE a given table entry
         case 'DELETE':
