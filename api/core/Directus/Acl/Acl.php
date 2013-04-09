@@ -15,7 +15,7 @@ class Acl {
      * @var array
      */
     public static $base_acl = array(
-        self::TABLE_PERMISSIONS     => array('edit','delete'),//array('add','edit','delete'),
+        self::TABLE_PERMISSIONS     => array('add','edit','delete'), //array('edit','delete'),
         self::FIELD_READ_BLACKLIST  => array(),
         self::FIELD_WRITE_BLACKLIST => array()
     );
