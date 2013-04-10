@@ -378,15 +378,16 @@ class RelationalTableGateway extends AclAwareTableGateway {
      */
     private function loadManyToManyData($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals) {
         $foreign_join_column = "$junction_table.$junction_key_right";
-        $join_column = "$table_name.$junction_key_left";
+        $join_column = "$junction_table.$junction_key_left";
 
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-            ->from($this->table)
-            ->join($junction_table, "$foreign_join_column = $join_column")
+            ->from($junction_table)
+            ->join($foreign_table, "$foreign_join_column = $join_column")
             ->where(array($join_column => $column_equals));
 
-        $results = $this->selectWith($select);
+        $JunctionTable = new RelationalTableGateway($this->aclProvider, $junction_table, $this->adapter);
+        $results = $JunctionTable->selectWith($select);
         $results = $results->toArray();
 
         $foreign_data = array();
