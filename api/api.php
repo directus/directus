@@ -246,14 +246,19 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
         // PUT an updated table entry
         case 'PUT':
             $schema = $db->get_table($table);
-            $recordWithoutAliasFields = TableGateway::filterRecordAliasFields($schema, $requestPayload);
-            // Update the parent row
             $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
-            $TableGateway->addOrUpdateRecordByArray($recordWithoutAliasFields);
-            // Log update event
-            $logEntry = $TableGateway->newActivityLog($recordWithoutAliasFields, $table, $schema, $currentUser['id']);
             // Update/add associations
-            $TableGateway->addOrUpdateAssociations($schema, $requestPayload, $logEntry['id']);
+            //   @todo need to figure out how to get the log entry ID of the overall ENTRY activity into this
+            //   method, or register the log entries of this method after we run this function, because we
+            //   can't log the parent record update until it the row array has the correct FK IDs in it, but we don't
+            //   have the proper FK IDs until we do association management.
+            $recordWithForeignIds = $TableGateway->addOrUpdateAssociations($schema, $requestPayload, null);//$logEntry['id']);
+            // Log update event
+            $logEntry = $TableGateway->newActivityLog($recordWithForeignIds, $table, $schema, $currentUser['id']);
+            $app->getLog()->info("Record with foreign ids / removed collections");
+            $app->getLog()->info(print_r($recordWithForeignIds, true));
+            // Update the parent row
+            $TableGateway->addOrUpdateRecordByArray($recordWithForeignIds);
             break;
         // DELETE a given table entry
         case 'DELETE':
