@@ -163,6 +163,12 @@ $app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
     JsonView::render($response);
 });
 
+$app->get("/$v/auth/session/?", function() use ($app) {
+    if('production' === DIRECTUS_ENV)
+        $app->halt('404');
+    JsonView::render($_SESSION);
+});
+
 /**
  * ACTIVITY COLLECTION
  */
