@@ -2,6 +2,7 @@
 
 namespace Directus\Db\TableGateway;
 
+use Directus\Bootstrap;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -24,6 +25,26 @@ class RelationalTableGateway extends AclAwareTableGateway {
         return $filteredRecord;
     }
 
+    public static function identifyTableAliasFields($schema, $record) {
+       // ...
+       // yield list of alias fields in this schema
+    }
+
+    /**
+     * Given a table schema and a record array, extract the nested association data
+     * from the parent record, and apply the changes to the foreign record sets and
+     * junction tables. Foreign records may be applied as inserts or updates.
+     *
+     * The returned copy of the parent row (with Many-to-One fields replaced with
+     * their foreign IDs, and *-to-Many fields removed) can be used to directly
+     * update the parent record.
+     *
+     * @param array $schema              The table schema array.
+     * @param array $parentRow           The parent record being updated.
+     * @param integer $parentActivityLogId The parent activity log entry ID.
+     * @return  array The parent record, with updated foreign keys in the
+     * Many-to-One fields, and nested collection representations removed.
+     */
     public function addOrUpdateAssociations($schema, $parentRow, $parentActivityLogId) {
         // Create foreign row and update local column with the data id
         foreach($schema as $column) {
@@ -38,7 +59,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             /** Many-to-One */
             if (in_array($colUiType, self::$many_to_one_uis))
-                $foreign_id = $this->addOrUpdateManyToOne($foreignDataSet);
+                $parentRow[$colName] = $this->addOrUpdateManyToOne($foreignDataSet);
 
             /** One-to-Many, Many-to-Many */
             elseif (in_array($column['type'], self::$association_types)) {
@@ -48,11 +69,20 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                     /** One-to-Many */
                     case 'onetomany':
+                        $olddb = Bootstrap::get('olddb');
+                        $foreignSchema = $olddb->get_table($foreignTableName);
+                        // $foreignAliasFieldNames = self::identifyForeignAliasFields($foreignSchema, $foreignRecord);
                         foreach ($foreignDataSet as $foreignRecord) {
+                            /**
+                             * @todo fix this. prior to updating the one2many foreign record:
+                             * - only remove collection (*-to-many) fields
+                             * - don't remove other possible many-to-one fields
+                             */
+                            $filteredForeignRecord = self::filterRecordAliasFields($foreignSchema, $foreignRecord);
                             // Register the parent record ("one") on the foreign records ("many")
                             $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
                             // Register changes to the foreign record
-                            $row = $this->addOrUpdateRecordByArray($foreignRecord, $foreignTableName);
+                            $row = $this->addOrUpdateRecordByArray($filteredForeignRecord, $foreignTableName);
                         }
                         break;
 
@@ -77,11 +107,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 continue;
                             }
                             /** Update foreign record */
-                            $this->addOrUpdateRecordByArray($junctionRow['data'], $foreignTableName);
+                            $foreignRecord = $this->addOrUpdateRecordByArray($junctionRow['data'], $foreignTableName);
                             // Junction/Association row
                             $junctionTableRecord = array(
-                                $junctionKeyLeft   => $id,
-                                $foreignJoinColumn => $foreign_id
+                                $junctionKeyLeft   => $parentRow['id'],
+                                $foreignJoinColumn => $foreignRecord['id']
                             );
                             // Optional ID param, to update the junction table record
                             if (isset($junctionRow['id']))
@@ -90,10 +120,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         }
                         break;
                 }
+                // Once they're managed, remove the foreign collections from the
+                // record array
+                unset($parentRow[$colName]);
             }
-
-            $data[$colName] = $foreign_id;
         }
+        return $parentRow;
     }
 
     protected function addOrUpdateManyToOne(array $foreignRecord) {
