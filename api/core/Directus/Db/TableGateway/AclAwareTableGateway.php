@@ -5,6 +5,7 @@ namespace Directus\Db\TableGateway;
 use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedAddException;
 use Directus\Bootstrap;
+use Directus\Db\Activity;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
@@ -15,7 +16,11 @@ use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
-    protected $many_to_one_uis = array('many_to_one', 'single_media');
+    protected static $many_to_one_uis = array('many_to_one', 'single_media');
+
+    // These columns types are aliases for "associations". They don't have
+    // real, corresponding columns in the DB.
+    protected static $association_types = array('ONETOMANY','MANYTOMANY','ALIAS');
 
     protected $aclProvider;
 
@@ -90,15 +95,19 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return Bootstrap::get('app')->getLog();
     }
 
-    public function fetchAll() {
-        return $this->select(function(Select $select) {
-
-        });
+    /**
+     * Convenience method for dumping a ZendDb Sql query object as debug output.
+     * @param  AbstractSql $query
+     * @return null
+     */
+    protected function dumpSql(AbstractSql $query) {
+        $sql = new Sql($this->adapter);
+        $query = @$sql->getSqlStringForSqlObject($query);
+        return $query;
     }
 
-    public function find($id, $pk_field_name = "id") {
-        $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
+    public function fetchAll() {
+        return $this->select(function(Select $select){});
     }
 
     public function findOneBy($field, $value) {
@@ -111,19 +120,40 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $row;
     }
 
-    public function castFloatIfNumeric(&$value) {
-        $value = is_numeric($value) ? (float) $value : $value;
+    public function find($id, $pk_field_name = "id") {
+        $record = $this->findOneBy($pk_field_name, $id);
+        return $record;
     }
 
-    /**
-     * Convenience method for dumping a ZendDb Sql query object as debug output.
-     * @param  AbstractSql $query
-     * @return null
-     */
-    protected function dumpSql(AbstractSql $query) {
-        $sql = new Sql($this->adapter);
-        $query = @$sql->getSqlStringForSqlObject($query);
-        return $query;
+    public function addOrUpdateRecordByArray(array $recordData , $tableName = null) {
+        $tableName = is_null($tableName) ? $this->table : $tableName;
+        $rowExists = isset($recordData['id']);
+        $row = $this->newRow($tableName);
+        $row->populate($recordData, $rowExists);
+        $row->save();
+        return $row;
+    }
+
+    public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = Activity::TYPE_ENTRY) {
+        // Find record identifier
+        $master_item = find($schema, 'master', true);
+        $identifier = $master_item ? $row[$master_item['column_name']] : null;
+        // Make log entry
+        $logEntry = array(
+            'type' => $type,
+            'action' => isset($row['id']) ? Activity::ACTION_UPDATE : Activity::ACTION_ADD,
+            'identifier' => $identifier,
+            'table_name' => $tableName,
+            'row_id' => isset($row['id']) ? $row['id'] : null,
+            'user' => $userId,
+            'data' => json_encode($row),
+            'parent_id' => $parentId
+        );
+        return $this->addOrUpdateRecordByArray($logEntry, 'directus_activity');
+    }
+
+    public function castFloatIfNumeric(&$value) {
+        $value = is_numeric($value) ? (float) $value : $value;
     }
 
 }

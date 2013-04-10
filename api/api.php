@@ -38,6 +38,7 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Db;
+use Directus\Db\Activity;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\View\JsonView;
 
@@ -239,12 +240,20 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
 })->via('GET', 'POST', 'PUT');
 
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $aclProvider, $params, $requestPayload, $app) {
+    $currentUser = AuthProvider::getUserInfo();
     $params['table_name'] = $table;
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
         case 'PUT':
-            // $db->set_entry_relational($table, $requestPayload);
-
+            $schema = $db->get_table($table);
+            $recordWithoutAliasFields = TableGateway::filterRecordAliasFields($schema, $requestPayload);
+            // Update the parent row
+            $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
+            $TableGateway->addOrUpdateRecordByArray($recordWithoutAliasFields);
+            // Log update event
+            $logEntry = $TableGateway->newActivityLog($recordWithoutAliasFields, $table, $schema, $currentUser['id']);
+            // Update/add associations
+            $TableGateway->addOrUpdateAssociations($schema, $requestPayload, $logEntry['id']);
             break;
         // DELETE a given table entry
         case 'DELETE':
@@ -253,10 +262,10 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     }
     $params['id'] = $id;
     // GET a table entry
-    $get_old = $db->get_entries($table, $params);
+    // $get_old = $db->get_entries($table, $params);
     $Table = new TableGateway($aclProvider, $table, $ZendDb);
     $get_new = $Table->getEntries($params);
-    JsonView::render($get_new, $get_old);
+    JsonView::render($get_new);//, $get_old);
 })->via('DELETE', 'GET', 'PUT');
 
 /**
