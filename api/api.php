@@ -260,10 +260,10 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     }
     $params['id'] = $id;
     // GET a table entry
-    // $get_old = $db->get_entries($table, $params);
+    $get_old = $db->get_entries($table, $params);
     $Table = new TableGateway($aclProvider, $table, $ZendDb);
     $get_new = $Table->getEntries($params);
-    JsonView::render($get_new);//, $get_old);
+    JsonView::render($get_new, $get_old);
 })->via('DELETE', 'GET', 'PUT');
 
 /**
