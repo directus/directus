@@ -8,7 +8,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
-class UsersGateway extends AclAwareTableGateway {
+class DirectusUsersGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_users";
 
