@@ -1,4 +1,10 @@
-<?
+<?php
+
+function underscoreToCamelCase($string) {
+    $filtered = preg_replace("/(_)(.)/e", "strtoupper('\\2')", $string);
+    $filtered = ucfirst($filtered);
+    return $filtered;
+}
 
 /**
  * Converts a string to title

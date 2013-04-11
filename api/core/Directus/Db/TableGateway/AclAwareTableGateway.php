@@ -35,6 +35,22 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     /**
+     * Static Factory Methods
+     */
+
+    public static function makeTableGatewayFromTableName($aclProvider, $table, $adapter) {
+        /**
+         * Underscore to camelcase table name to namespaced table gateway classname,
+         * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersGateway
+         */
+        $tableGatewayClassName = underscoreToCamelCase($table) . "TableGateway";
+        $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
+        if(class_exists($tableGatewayClassName))
+            return new $tableGatewayClassName($aclProvider, $adapter);
+        return new self($aclProvider, $table, $adapter);
+    }
+
+    /**
      * OVERRIDES
      */
 
@@ -122,6 +138,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public function addOrUpdateRecordByArray(array $recordData , $tableName = null) {
         $tableName = is_null($tableName) ? $this->table : $tableName;
         $rowExists = isset($recordData['id']);
+
+
+        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
+        $record->populate($recordData, $rowExists);
 
         $log = $this->logger();
         $log->info(__CLASS__ . "#" . __FUNCTION__);

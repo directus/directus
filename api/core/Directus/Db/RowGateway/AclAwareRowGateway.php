@@ -25,6 +25,18 @@ class AclAwareRowGateway extends RowGateway {
         parent::__construct($primaryKeyColumn, $table, $adapterOrSql);
     }
 
+    public static function makeRowGatewayFromTableName($aclProvider, $table, $adapter, $pkFieldName = 'id') {
+        /**
+         * Underscore to camelcase table name to namespaced row gateway classname,
+         * e.g. directus_users => \Directus\Db\RowGateway\DirectusUsersRowGateway
+         */
+        $rowGatewayClassName = self::underscoreToCamelCase($table) . "RowGateway";
+        $rowGatewayClassName = __NAMESPACE__ . "\\$rowGatewayClassName";
+        if(class_exists($rowGatewayClassName))
+            return new $rowGatewayClassName($aclProvider, $pkFieldName, $table, $adapter);
+        return new self($aclProvider, $pkFieldName, $table, $adapter);
+    }
+
     /**
      * OVERRIDES
      */

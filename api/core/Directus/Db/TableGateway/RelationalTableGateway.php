@@ -4,6 +4,7 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Bootstrap;
 use Directus\Db\TableSchema;
+use Directus\Db\RowGateway\AclAwareRowGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -11,18 +12,9 @@ use Zend\Db\Sql\Where;
 
 class RelationalTableGateway extends AclAwareTableGateway {
 
-    public static function makeGatewayFromTableName($aclProvider, $table, $adapter) {
-        /**
-         * Underscore to camelcase table name to namespaced table gateway classname,
-         * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersGateway
-         */
-        $tableGatewayClassName = preg_replace("/(_)(.)/e", "strtoupper('\\2')", $table);
-        $tableGatewayClassName = ucfirst($tableGatewayClassName) . "Gateway";
-        $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
-        if(class_exists($tableGatewayClassName))
-            return new $tableGatewayClassName($aclProvider, $adapter);
-        return new self($aclProvider, $table, $adapter);
-    }
+    /**
+     * Instance methods
+     */
 
     public function manageRecordUpdate($schema, $requestPayload, $userId) {
         // Update/add associations
@@ -41,6 +33,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     /**
+     * Relational Setter
+     *
      * Given a table schema and a record array, extract the nested association data
      * from the parent record, and apply the changes to the foreign record sets and
      * junction tables. Foreign records may be applied as inserts or updates.
@@ -218,6 +212,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         */
     }
 
+    /**
+     * Relational Getter
+     */
     public function getEntries($params = array()) {
         // tmp transitional.
         global $db;
@@ -374,7 +371,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
     /**
      *
-     * ASSOCIATION FUNCTIONS
+     * Association Getter Functions
      *
      **/
 
