@@ -11,6 +11,19 @@ use Zend\Db\Sql\Where;
 
 class RelationalTableGateway extends AclAwareTableGateway {
 
+    public static function makeGatewayFromTableName($aclProvider, $table, $adapter) {
+        /**
+         * Underscore to camelcase table name to namespaced table gateway classname,
+         * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersGateway
+         */
+        $tableGatewayClassName = preg_replace("/(_)(.)/e", "strtoupper('\\2')", $table);
+        $tableGatewayClassName = ucfirst($tableGatewayClassName) . "Gateway";
+        $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
+        if(class_exists($tableGatewayClassName))
+            return new $tableGatewayClassName($aclProvider, $adapter);
+        return new self($aclProvider, $table, $adapter);
+    }
+
     public function manageRecordUpdate($schema, $requestPayload, $userId) {
         // Update/add associations
         //   @todo need to figure out how to get the log entry ID of the overall ENTRY activity into this

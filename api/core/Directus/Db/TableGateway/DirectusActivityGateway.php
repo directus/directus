@@ -8,7 +8,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-class ActivityGateway extends AclAwareTableGateway {
+class DirectusActivityGateway extends AclAwareTableGateway {
 
     // Populates directus_activity.type
     const TYPE_ENTRY    = "ENTRY";
