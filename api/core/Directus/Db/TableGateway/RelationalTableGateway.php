@@ -154,6 +154,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             } else {
                                 $log->info("Establishing new junction row.");
                             }
+
+                            $log->info("Junction row data for table $junctionTableName:");
+                            $log->info(print_r($junctionTableRecord, true));
+
                             $this->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
                         }
                         break;
@@ -456,17 +460,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $junction_join_column = "$junction_table.$junction_key_right";
         $junction_comparison_column = "$junction_table.$junction_key_left";
 
+        $junction_id_column = "$junction_table.id";
+
+        // Less likely name collision:
+        $junction_id_column_alias = "directus_junction_id_column";
+
         $sql = new Sql($this->adapter);
         $select = $sql->select()
             ->from($foreign_table)
-            ->join($junction_table, "$foreign_join_column = $junction_join_column", array())
+            ->join($junction_table, "$foreign_join_column = $junction_join_column", array($junction_id_column_alias => 'id'))
             ->where(array($junction_comparison_column => $column_equals))
-            ->order("$junction_table.id ASC");
-
-        // $sql = "SELECT JT.id, FT.* FROM $junction_table JT
-        //    LEFT JOIN $foreign_table FT
-        //    ON (JT.$junction_key_right = FT.id)
-        //    WHERE JT.$junction_key_left = $column_equals";
+            ->order("$junction_id_column ASC");
 
         $log = $this->logger();
         $log->info(__CLASS__ . "#" . __FUNCTION__);
@@ -476,10 +480,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $results = $ForeignTable->selectWith($select);
         $results = $results->toArray();
 
+        $log->info("results:");
+        $log->info(print_r($results, true));
+
         $foreign_data = array();
         foreach($results as $row) {
             array_walk($row, array($this, 'castFloatIfNumeric'));
-            $foreign_data[] = array('id' => (int) $row['id'], 'data' => $row);
+
+            $junction_table_id = (int) $row[$junction_id_column_alias];
+            unset($row[$junction_id_column_alias]);
+
+            $foreign_data[] = array('id' => $junction_table_id, 'data' => $row);
+
         }
         return array('rows' => $foreign_data);
     }
