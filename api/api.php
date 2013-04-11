@@ -40,11 +40,11 @@ use Directus\Bootstrap;
 use Directus\View\JsonView;
 
 use Directus\Db;
-use Directus\Db\TableGateway\DirectusActivityGateway;
-use Directus\Db\TableGateway\DirectusPreferencesGateway;
-use Directus\Db\TableGateway\DirectusSettingsGateway;
-use Directus\Db\TableGateway\DirectusUiGateway;
-use Directus\Db\TableGateway\DirectusUsersGateway;
+use Directus\Db\TableGateway\DirectusActivityTableGateway;
+use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
+use Directus\Db\TableGateway\DirectusSettingsTableGateway;
+use Directus\Db\TableGateway\DirectusUiTableGateway;
+use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 
 // Slim Middleware
@@ -144,7 +144,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $aclProvider, $aut
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
-    $Users = new DirectusUsersGateway($aclProvider, $ZendDb);
+    $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
     $user = $Users->findOneBy('email', $email);
     if(!$user) {
         return JsonView::render($response);
@@ -179,7 +179,7 @@ $app->get("/$v/auth/session/?", function() use ($app) {
  */
 
 $app->get("/$v/activity/?", function () use ($db, $ZendDb, $aclProvider) {
-    $Activity = new DirectusActivityGateway($aclProvider, $ZendDb);
+    $Activity = new DirectusActivityTableGateway($aclProvider, $ZendDb);
     $new_get = $Activity->fetchFeed();
     $old_get = $db->get_activity();
     JsonView::render($new_get, $old_get);
@@ -369,7 +369,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
     }
     $currentUser = AuthProvider::getUserInfo();
     $get_old = $db->get_table_preferences($currentUser['id'], $table);
-    $Preferences = new DirectusPreferencesGateway($aclProvider, $ZendDb);
+    $Preferences = new DirectusPreferencesTableGateway($aclProvider, $ZendDb);
     $get_new = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
     JsonView::render($get_new, $get_old);
 })->via('GET','POST','PUT');
@@ -382,7 +382,7 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
     $params['table_name'] = $table;
     $params['id'] = $id;
     $get_old = $db->get_revisions($params);
-    $Activity = new DirectusActivityGateway($aclProvider, $ZendDb);
+    $Activity = new DirectusActivityTableGateway($aclProvider, $ZendDb);
     $get_new = $Activity->fetchRevisions($id, $table);
     JsonView::render($get_new, $get_old);
 });
@@ -402,7 +402,7 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $aclProvider, 
     $settings_old = $db->get_settings();
     $get_old = is_null($id) ? $settings_old : $settings_old[$id];
 
-    $Settings = new DirectusSettingsGateway($aclProvider, $ZendDb);
+    $Settings = new DirectusSettingsTableGateway($aclProvider, $ZendDb);
     $settings_new = $Settings->fetchAll();
     $get_new = is_null($id) ? $settings_new : $settings_new[$id];
 
@@ -460,7 +460,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
 // GET user index
 $app->get("/$v/users/?", function () use ($db, $aclProvider, $ZendDb, $params, $requestPayload) {
 
-    $Users = new DirectusUsersGateway($aclProvider, $ZendDb);
+    $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
     $new = $Users->fetchAllWithGroupData();
 
     $old = $db->get_users();
@@ -482,7 +482,7 @@ $app->post("/$v/users/?", function() use ($db, $aclProvider, $ZendDb, $params, $
     $params['id'] = $id;
     $old = $db->get_entries($table, $params);
 
-    $Users = new DirectusUsersGateway($aclProvider, $ZendDb);
+    $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
     $new = $Users->find($id);
 
     JsonView::render($new, $old);
@@ -500,7 +500,7 @@ $app->map("/$v/users/:id/?", function ($id) use ($db, $aclProvider, $ZendDb, $pa
 
     $old_get = $db->get_entries($table, $params);
 
-    $Users = new DirectusUsersGateway($aclProvider, $ZendDb);
+    $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
     $new_get = $Users->find($id);
 
     JsonView::render($new_get, $old_get);
@@ -533,7 +533,7 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
         break;
     }
     $get_old = $db->get_ui_options($table, $column, $ui);
-    $UiOptions = new DirectusUiGateway($aclProvider, $ZendDb);
+    $UiOptions = new DirectusUiTableGateway($aclProvider, $ZendDb);
     $get_new = $UiOptions->fetchOptions($table, $column, $ui);
     JsonView::render($get_old, $get_new);
 })->via('GET','POST','PUT');
