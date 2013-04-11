@@ -4,6 +4,7 @@ namespace Directus\Db\RowGateway;
 
 use Zend\Db\RowGateway\RowGateway;
 
+use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
 
 class DirectusMediaRowGateway extends AclAwareRowGateway {
