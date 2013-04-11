@@ -3,6 +3,7 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Bootstrap;
+use Directus\Db\TableSchema;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -26,21 +27,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $this->addOrUpdateRecordByArray($recordWithForeignIds);
     }
 
-    public static function filterRecordAliasFields($schema, $record) {
-        $filteredRecord = array();
-        foreach($schema as $column) {
-            // Many-to-One
-            if (in_array($column['ui'], self::$many_to_one_uis))
-                continue;
-            // One-to-Many, Many-to-Many
-            elseif (in_array($column['type'], self::$association_types))
-                continue;
-            $field = $column['id'];
-            $filteredRecord[$field] = $record[$field];
-        }
-        return $filteredRecord;
-    }
-
     public static function identifyTableAliasFields($schema, $record) {
        // ...
        // yield list of alias fields in this schema
@@ -62,23 +48,49 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * Many-to-One fields, and nested collection representations removed.
      */
     public function addOrUpdateAssociations($schema, $parentRow, $parentActivityLogId) {
+
+        $log = $this->logger();
+        $log->info("RelationalTableGateway#addOrUpdateAssociations");
+
+        // $log->info("The \$parentRow:");
+        // ob_start();
+        // var_dump($schema);
+        // var_dump($parentRow);
+        // $log->info(ob_get_clean());
+
         // Create foreign row and update local column with the data id
         foreach($schema as $column) {
             $colName = $column['id']; // correct var naming?
 
-            // Ignore non-arrays & empty arrays
-            if(!(isset($parentRow[$colName]) && is_array($parentRow[$colName]) && !empty($parentRow[$colName])))
+            $log->info("Looking at column $colName");
+
+            // Ignore absent values & non-arrays
+            if(!isset($parentRow[$colName]) || !is_array($parentRow[$colName]))
                 continue;
+
+            $fieldIsCollectionAssociation = in_array($column['type'], TableSchema::$association_types);
+
+            // Ignore non-arrays and empty arrays
+            if(empty($parentRow[$colName])) {
+                // Once they're managed, remove the foreign collections from the record array
+                if($fieldIsCollectionAssociation)
+                    unset($parentRow[$colName]);
+                continue;
+            }
 
             $foreignDataSet = $parentRow[$colName];
             $colUiType = $column['ui'];
 
             /** Many-to-One */
-            if (in_array($colUiType, self::$many_to_one_uis))
+            if (in_array($colUiType, TableSchema::$many_to_one_uis)) {
                 $parentRow[$colName] = $this->addOrUpdateManyToOne($foreignDataSet);
+                $log->info("Identified Many-to-One");
+            }
 
             /** One-to-Many, Many-to-Many */
-            elseif (in_array($column['type'], self::$association_types)) {
+            elseif ($fieldIsCollectionAssociation) {
+                $log->info("Identified One-to-Many or Many-to-Many");
+
                 $foreignTableName = $column['table_related'];
                 $foreignJoinColumn = $column['junction_key_right'];
                 switch (strtolower($column['type'])) {
@@ -86,15 +98,20 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     /** One-to-Many */
                     case 'onetomany':
                         $olddb = Bootstrap::get('olddb');
-                        $foreignSchema = $olddb->get_table($foreignTableName);
-                        // $foreignAliasFieldNames = self::identifyForeignAliasFields($foreignSchema, $foreignRecord);
+                        $ForeignSchema = new TableSchema($foreignTableName, $olddb);
+                        $collectionAliasFieldNames = $ForeignSchema->getTableCollectionAliasFieldNames();
                         foreach ($foreignDataSet as $foreignRecord) {
-                            /**
-                             * @todo fix this. prior to updating the one2many foreign record:
-                             * - only remove collection (*-to-many) fields
-                             * - don't remove other possible many-to-one fields
-                             */
-                            $filteredForeignRecord = self::filterRecordAliasFields($foreignSchema, $foreignRecord);
+                            // Remove collection fields
+                            $nonCollectionAliasFieldNames = array_diff(array_keys($foreignRecord), $collectionAliasFieldNames);
+                            $filteredForeignRecord = array_intersect_key($foreignRecord, array_flip($nonCollectionAliasFieldNames));
+
+                            // $this->logger()->info("collectionAliasFieldNames");
+                            // $this->logger()->info(print_r($collectionAliasFieldNames, true));
+                            // $this->logger()->info("nonCollectionAliasFieldNames");
+                            // $this->logger()->info(print_r($nonCollectionAliasFieldNames, true));
+                            // $this->logger()->info("filteredForeignRecord");
+                            // $this->logger()->info(print_r($filteredForeignRecord, true));
+
                             // Register the parent record ("one") on the foreign records ("many")
                             $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
                             // Register changes to the foreign record
@@ -136,9 +153,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         }
                         break;
                 }
-                // Once they're managed, remove the foreign collections from the
-                // record array
+                // Once they're managed, remove the foreign collections from the record array
                 unset($parentRow[$colName]);
+            }
+
+            else {
+                $log->info("Column is not an association.");
             }
         }
         return $parentRow;
@@ -334,7 +354,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     private function loadManyToOneData($table_schema, $table_entries) {
         // Identify the ManyToOne columns
         foreach ($table_schema as $col) {
-            $isManyToOneColumn = in_array($col['ui'], self::$many_to_one_uis);
+            $isManyToOneColumn = in_array($col['ui'], TableSchema::$many_to_one_uis);
             if ($isManyToOneColumn) {
                 $foreign_id_column = $col['id'];
                 $foreign_table_name = ($col['ui'] == 'single_media') ? 'directus_media' : $col['options']['related_table'];
