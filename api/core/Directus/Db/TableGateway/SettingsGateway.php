@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Db;
+namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
@@ -8,7 +8,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-class Settings extends AclAwareTableGateway {
+class SettingsGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_settings";
 

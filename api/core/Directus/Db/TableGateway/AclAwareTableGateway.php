@@ -5,7 +5,7 @@ namespace Directus\Db\TableGateway;
 use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedAddException;
 use Directus\Bootstrap;
-use Directus\Db\Activity;
+use Directus\Db\TableGateway\ActivityGateway;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
@@ -134,14 +134,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $row;
     }
 
-    public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = Activity::TYPE_ENTRY) {
+    public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = ActivityGateway::TYPE_ENTRY) {
         // Find record identifier
         $master_item = find($schema, 'master', true);
         $identifier = $master_item ? $row[$master_item['column_name']] : null;
         // Make log entry
         $logEntry = array(
             'type' => $type,
-            'action' => isset($row['id']) ? Activity::ACTION_UPDATE : Activity::ACTION_ADD,
+            'action' => isset($row['id']) ? ActivityGateway::ACTION_UPDATE : ActivityGateway::ACTION_ADD,
             'identifier' => $identifier,
             'table_name' => $tableName,
             'row_id' => isset($row['id']) ? $row['id'] : null,
