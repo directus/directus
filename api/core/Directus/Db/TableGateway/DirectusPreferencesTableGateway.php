@@ -8,7 +8,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-class DirectusPreferencesGateway extends AclAwareTableGateway {
+class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_preferences";
 
