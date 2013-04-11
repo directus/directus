@@ -459,8 +459,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $sql = new Sql($this->adapter);
         $select = $sql->select()
             ->from($foreign_table)
-            ->join($junction_table, "$foreign_join_column = $junction_join_column")
-            ->where(array($junction_comparison_column => $column_equals));
+            ->join($junction_table, "$foreign_join_column = $junction_join_column", array())
+            ->where(array($junction_comparison_column => $column_equals))
+            ->order("$junction_table.id ASC");
 
         // $sql = "SELECT JT.id, FT.* FROM $junction_table JT
         //    LEFT JOIN $foreign_table FT
@@ -478,7 +479,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $foreign_data = array();
         foreach($results as $row) {
             array_walk($row, array($this, 'castFloatIfNumeric'));
-            $foreign_data[] = array('id' => $row['id'], 'data' => $row);
+            $foreign_data[] = array('id' => (int) $row['id'], 'data' => $row);
         }
         return array('rows' => $foreign_data);
     }
