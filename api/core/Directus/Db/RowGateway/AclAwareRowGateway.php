@@ -30,7 +30,7 @@ class AclAwareRowGateway extends RowGateway {
          * Underscore to camelcase table name to namespaced row gateway classname,
          * e.g. directus_users => \Directus\Db\RowGateway\DirectusUsersRowGateway
          */
-        $rowGatewayClassName = self::underscoreToCamelCase($table) . "RowGateway";
+        $rowGatewayClassName = underscoreToCamelCase($table) . "RowGateway";
         $rowGatewayClassName = __NAMESPACE__ . "\\$rowGatewayClassName";
         if(class_exists($rowGatewayClassName))
             return new $rowGatewayClassName($aclProvider, $pkFieldName, $table, $adapter);
