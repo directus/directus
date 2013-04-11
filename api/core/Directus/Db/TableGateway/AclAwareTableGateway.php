@@ -16,12 +16,6 @@ use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
-    protected static $many_to_one_uis = array('many_to_one', 'single_media');
-
-    // These columns types are aliases for "associations". They don't have
-    // real, corresponding columns in the DB.
-    protected static $association_types = array('ONETOMANY','MANYTOMANY','ALIAS');
-
     protected $aclProvider;
 
     protected $primaryKeyFieldName = "id";

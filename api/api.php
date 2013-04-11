@@ -100,7 +100,6 @@ $requestPayload = json_decode($app->request()->getBody(), true);
 /**
  * Extension Alias
  */
-
 if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     // Validate extension name
     $extensionName = $_REQUEST['run_extension'];
