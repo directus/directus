@@ -4,8 +4,8 @@ namespace Directus;
 
 use Directus\Acl\Acl as AclProvider;
 use Directus\Auth\Provider as AuthProvider;
-use Directus\Db\TableGateway\DirectusUsersGateway;
-use Directus\Db\TableGateway\DirectusPrivilegesGateway;
+use Directus\Db\TableGateway\DirectusUsersTableGateway;
+use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Slim\Slim;
 use Slim\Extras\Log\DateTimeFileWriter;
 
@@ -142,10 +142,10 @@ class Bootstrap {
         if(AuthProvider::loggedIn()) {
             $currentUser = AuthProvider::getUserInfo();
             $ZendDb = self::get('ZendDb');
-            $Users = new DirectusUsersGateway($aclProvider, $ZendDb);
+            $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
             $currentUser = $Users->find($currentUser['id']);
             if($currentUser) {
-                $Privileges = new DirectusPrivilegesGateway($aclProvider, $ZendDb);
+                $Privileges = new DirectusPrivilegesTableGateway($aclProvider, $ZendDb);
                 $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
                 $aclProvider->setGroupPrivileges($groupPrivileges);
             }
