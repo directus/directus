@@ -157,6 +157,7 @@ class MySQL {
                 return "textarea";
             case "CHAR":
             case "VARCHAR":
+            case "POINT":
                 return "textinput";
             case "DATETIME":
                 return "datetime";
