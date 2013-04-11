@@ -10,6 +10,22 @@ use Zend\Db\Sql\Where;
 
 class RelationalTableGateway extends AclAwareTableGateway {
 
+    public function manageRecordUpdate($schema, $requestPayload, $userId) {
+        // Update/add associations
+        //   @todo need to figure out how to get the log entry ID of the overall ENTRY activity into this
+        //   method, or register the log entries of this method after we run this function, because we
+        //   can't log the parent record update until it the row array has the correct FK IDs in it, but we don't
+        //   have the proper FK IDs until we do association management.
+        $recordWithForeignIds = $this->addOrUpdateAssociations($schema, $requestPayload, null);//$logEntry['id']);
+        // Log update event
+        $logEntry = $this->newActivityLog($recordWithForeignIds, $this->table, $schema, $userId);
+        $app = Bootstrap::get('app');
+        $app->getLog()->info("Record with foreign ids / removed collections");
+        $app->getLog()->info(print_r($recordWithForeignIds, true));
+        // Update the parent row
+        $this->addOrUpdateRecordByArray($recordWithForeignIds);
+    }
+
     public static function filterRecordAliasFields($schema, $record) {
         $filteredRecord = array();
         foreach($schema as $column) {

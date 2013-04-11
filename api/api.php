@@ -37,10 +37,15 @@ switch (DIRECTUS_ENV) {
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
-use Directus\Db;
-use Directus\Db\Activity;
-use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\View\JsonView;
+
+use Directus\Db;
+use Directus\Db\TableGateway\ActivityGateway;
+use Directus\Db\TableGateway\PreferencesGateway;
+use Directus\Db\TableGateway\SettingsGateway;
+use Directus\Db\TableGateway\UiOptionsGateway;
+use Directus\Db\TableGateway\UsersGateway;
+use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 
 // Slim Middleware
 use Directus\Middleware\MustBeLoggedIn;
@@ -140,7 +145,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $aclProvider, $aut
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
-    $Users = new Db\Users($aclProvider, $ZendDb);
+    $Users = new UsersGateway($aclProvider, $ZendDb);
     $user = $Users->findOneBy('email', $email);
     if(!$user) {
         return JsonView::render($response);
@@ -175,7 +180,7 @@ $app->get("/$v/auth/session/?", function() use ($app) {
  */
 
 $app->get("/$v/activity/?", function () use ($db, $ZendDb, $aclProvider) {
-    $Activity = new Db\Activity($aclProvider, $ZendDb);
+    $Activity = new ActivityGateway($aclProvider, $ZendDb);
     $new_get = $Activity->fetchFeed();
     $old_get = $db->get_activity();
     JsonView::render($new_get, $old_get);
@@ -247,18 +252,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
         case 'PUT':
             $schema = $db->get_table($table);
             $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
-            // Update/add associations
-            //   @todo need to figure out how to get the log entry ID of the overall ENTRY activity into this
-            //   method, or register the log entries of this method after we run this function, because we
-            //   can't log the parent record update until it the row array has the correct FK IDs in it, but we don't
-            //   have the proper FK IDs until we do association management.
-            $recordWithForeignIds = $TableGateway->addOrUpdateAssociations($schema, $requestPayload, null);//$logEntry['id']);
-            // Log update event
-            $logEntry = $TableGateway->newActivityLog($recordWithForeignIds, $table, $schema, $currentUser['id']);
-            $app->getLog()->info("Record with foreign ids / removed collections");
-            $app->getLog()->info(print_r($recordWithForeignIds, true));
-            // Update the parent row
-            $TableGateway->addOrUpdateRecordByArray($recordWithForeignIds);
+            $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
             break;
         // DELETE a given table entry
         case 'DELETE':
@@ -376,7 +370,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
     }
     $currentUser = AuthProvider::getUserInfo();
     $get_old = $db->get_table_preferences($currentUser['id'], $table);
-    $Preferences = new Db\Preferences($aclProvider, $ZendDb);
+    $Preferences = new PreferencesGateway($aclProvider, $ZendDb);
     $get_new = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
     JsonView::render($get_new, $get_old);
 })->via('GET','POST','PUT');
@@ -389,7 +383,7 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
     $params['table_name'] = $table;
     $params['id'] = $id;
     $get_old = $db->get_revisions($params);
-    $Activity = new Db\Activity($aclProvider, $ZendDb);
+    $Activity = new ActivityGateway($aclProvider, $ZendDb);
     $get_new = $Activity->fetchRevisions($id, $table);
     JsonView::render($get_new, $get_old);
 });
@@ -409,7 +403,7 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $aclProvider, 
     $settings_old = $db->get_settings();
     $get_old = is_null($id) ? $settings_old : $settings_old[$id];
 
-    $Settings = new Db\Settings($aclProvider, $ZendDb);
+    $Settings = new SettingsGateway($aclProvider, $ZendDb);
     $settings_new = $Settings->fetchAll();
     $get_new = is_null($id) ? $settings_new : $settings_new[$id];
 
@@ -467,7 +461,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
 // GET user index
 $app->get("/$v/users/?", function () use ($db, $aclProvider, $ZendDb, $params, $requestPayload) {
 
-    $Users = new Db\Users($aclProvider, $ZendDb);
+    $Users = new UsersGateway($aclProvider, $ZendDb);
     $new = $Users->fetchAllWithGroupData();
 
     $old = $db->get_users();
@@ -489,7 +483,7 @@ $app->post("/$v/users/?", function() use ($db, $aclProvider, $ZendDb, $params, $
     $params['id'] = $id;
     $old = $db->get_entries($table, $params);
 
-    $Users = new Db\Users($aclProvider, $ZendDb);
+    $Users = new UsersGateway($aclProvider, $ZendDb);
     $new = $Users->find($id);
 
     JsonView::render($new, $old);
@@ -507,7 +501,7 @@ $app->map("/$v/users/:id/?", function ($id) use ($db, $aclProvider, $ZendDb, $pa
 
     $old_get = $db->get_entries($table, $params);
 
-    $Users = new Db\Users($aclProvider, $ZendDb);
+    $Users = new UsersGateway($aclProvider, $ZendDb);
     $new_get = $Users->find($id);
 
     JsonView::render($new_get, $old_get);
@@ -540,7 +534,7 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
         break;
     }
     $get_old = $db->get_ui_options($table, $column, $ui);
-    $UiOptions = new Db\UiOptions($aclProvider, $ZendDb);
+    $UiOptions = new UiOptionsGateway($aclProvider, $ZendDb);
     $get_new = $UiOptions->fetchOptions($table, $column, $ui);
     JsonView::render($get_old, $get_new);
 })->via('GET','POST','PUT');
