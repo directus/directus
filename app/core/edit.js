@@ -40,6 +40,8 @@ function(app, Backbone) {
       $first.val($first.val());
     },
 
+/*
+    Not in use
     save: function(data, success, error) {
       formData = this.$el.serializeObject();
       _.extend(formData, data);
@@ -49,7 +51,7 @@ function(app, Backbone) {
         error: error
       });
     },
-
+*/
     data: function() {
       return this.$el.serializeObject();
     },
@@ -61,7 +63,7 @@ function(app, Backbone) {
           if ($fieldset.find('.error').length < 1) {
             $fieldset.append('<span class="error">'+item.message+'</span>');
           }
-        });        
+        });
       });
       this.model.on('sync', function(e) {
         this.render();
