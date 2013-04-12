@@ -29,7 +29,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // $app->getLog()->info("Record with foreign ids / removed collections");
         // $app->getLog()->info(print_r($recordWithForeignIds, true));
         // Update the parent row
-        $this->addOrUpdateRecordByArray($recordWithForeignIds);
+        return $this->addOrUpdateRecordByArray($recordWithForeignIds);
     }
 
     /**
