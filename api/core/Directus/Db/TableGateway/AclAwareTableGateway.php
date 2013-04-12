@@ -138,22 +138,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public function addOrUpdateRecordByArray(array $recordData , $tableName = null) {
         $tableName = is_null($tableName) ? $this->table : $tableName;
         $rowExists = isset($recordData['id']);
-
-
         $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
         $record->populate($recordData, $rowExists);
-
-        $log = $this->logger();
-        $log->info(__CLASS__ . "#" . __FUNCTION__);
-        $log->info("\$tableName: $tableName");
-        $log->info("\$rowExists: " . strval($rowExists));
-        $log->info("\$recordData:");
-        $log->info(print_r($recordData, true));
-
-        $row = $this->newRow($tableName);
-        $row->populate($recordData, $rowExists);
-        $row->save();
-        return $row;
+        $record->save();
+        return $record;
     }
 
     public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = DirectusActivityTableGateway::TYPE_ENTRY) {
