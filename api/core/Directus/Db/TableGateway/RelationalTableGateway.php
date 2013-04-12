@@ -50,7 +50,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * Many-to-One fields, and nested collection representations removed.
      */
     public function addOrUpdateAssociations($schema, $parentRow, $parentActivityLogId) {
-
         $log = $this->logger();
         $log->info("RelationalTableGateway#addOrUpdateAssociations");
 
@@ -169,17 +168,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         }
                         break;
 
-                    default:
-                        $log->warn("Warning: neither One-to-Many nor Many-to-Many");
-                        break;
+                    default: $log->warn("Warning: neither One-to-Many nor Many-to-Many");
                 }
                 // Once they're managed, remove the foreign collections from the record array
                 unset($parentRow[$colName]);
             }
 
-            else {
-                $log->info("Column is not an association.");
-            }
+            else $log->info("Column is not an association.");
         }
 
         $log->info("\$parentRow post-process");
@@ -328,12 +323,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $log = $this->logger();
         $log->info(__CLASS__ . "#" . __FUNCTION__);
-
         $log->info("\$table_entries");
         ob_start();
         var_dump($table_entries);
         $log->info(ob_get_clean());
-
         $log->info("Fetching one item");
         $log->info(count($alias_fields) . " alias fields:");
         $log->info(print_r($alias_fields, true));
@@ -354,7 +347,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
             }
 
             if(isset($foreign_data)) {
-
                 $log->info("\$foreign_data");
                 ob_start();
                 var_dump($foreign_data);
@@ -434,7 +426,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                 $foreign_table = array();
                 foreach ($results as $row) {
-                    // @todo I wonder if all of this looping and casting is necessary
                     array_walk($row, array($this, 'castFloatIfNumeric'));
                     $foreign_table[$row['id']] = $row;
                 }
@@ -501,7 +492,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
             unset($row[$junction_id_column_alias]);
 
             $foreign_data[] = array('id' => $junction_table_id, 'data' => $row);
-
         }
         return array('rows' => $foreign_data);
     }
