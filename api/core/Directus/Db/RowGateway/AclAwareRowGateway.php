@@ -6,7 +6,9 @@ use Zend\Db\RowGateway\RowGateway;
 
 use Directus\Bootstrap;
 use Directus\Acl\Acl;
-use Directus\Acl\Exception\UnauthorizedAddException;
+use Directus\Acl\Exception\UnauthorizedTableAddException;
+use Directus\Acl\Exception\UnauthorizedFieldReadException;
+use Directus\Acl\Exception\UnauthorizedFieldWriteException;
 
 class AclAwareRowGateway extends RowGateway {
 
@@ -46,7 +48,7 @@ class AclAwareRowGateway extends RowGateway {
 
         /** Is the user group allowed to create new records? */
         if(!$this->rowExistsInDatabase() && !$this->aclProvider->hasTablePrivilege($this->table, 'add')) {
-            throw new UnauthorizedAddException("Group lacks permission to add records to table: " . $this->table);
+            throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
         }
 
         return parent::save();
@@ -61,8 +63,13 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function populate(array $rowData, $rowExistsInDatabase = false)
     {
-        // ...
-
+        // Confirm user group has write privileges on field with name $offset
+        $fieldWriteBlacklist = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_WRITE_BLACKLIST);
+        $forbiddenWriteIndices = array_intersect(array_keys($rowData), $fieldWriteBlacklist);
+        if(count($forbiddenWriteIndices)) {
+            $forbiddenWriteIndices = implode(", ", $forbiddenWriteIndices);
+            throw new UnauthorizedFieldWriteException("Write (set) access forbidden to indices $forbiddenWriteIndices on table \"{$this->table}\"");
+        }
         return parent::populate($rowData, $rowExistsInDatabase);
     }
 
@@ -97,12 +104,11 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function __get($name)
     {
-        $censoredData = $this->toArray();
-        if (array_key_exists($name, $censoredData)) {
-            return $censoredData[$name];
-        } else {
-            throw new \InvalidArgumentException('Access forbidden to column: ' . $name);
-        }
+        // Confirm user group has read privileges on field with name $offset
+        $censorFields = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_READ_BLACKLIST);
+        if(in_array($name, $censorFields))
+            throw new UnauthorizedFieldReadException("Read access forbidden to index \"$name\" on table \"{$this->table}\"");
+        return parent::__get($name);
     }
 
     /**
@@ -113,13 +119,10 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetGet($offset)
     {
-        // - confirm user group has read privileges on field with name $offset
-        // ...
-
+        // Confirm user group has read privileges on field with name $offset
         $censorFields = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_READ_BLACKLIST);
         if(in_array($offset, $censorFields))
-            throw new \ErrorException("Access forbidden to index: $offset");
-
+            throw new UnauthorizedFieldReadException("Read access forbidden to index \"$offset\" on table \"{$this->table}\"");
         return parent::offsetGet($offset);
     }
 
@@ -132,9 +135,10 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetSet($offset, $value)
     {
-        // - confirm user group has write privileges on field with name $offset
-        // ...
-
+        // Confirm user group has write privileges on field with name $offset
+        $fieldWriteBlacklist = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_WRITE_BLACKLIST);
+        if(in_array($offset, $fieldWriteBlacklist))
+            throw new UnauthorizedFieldWriteException("Write (set) access forbidden to index \"$offset\" on table \"{$this->table}\"");
         return parent::offsetSet($offset, $value);
     }
 
@@ -146,9 +150,10 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetUnset($offset)
     {
-        // - confirm user group has write privileges on field with name $offset
-        // ...
-
+        // Confirm user group has write privileges on field with name $offset
+        $fieldWriteBlacklist = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_WRITE_BLACKLIST);
+        if(in_array($offset, $fieldWriteBlacklist))
+            throw new UnauthorizedFieldWriteException("Write (unset) access forbidden to index \"$offset\" on table \"{$this->table}\"");
         return parent::offsetUnset($offset);
     }
 
