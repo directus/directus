@@ -161,6 +161,7 @@ function(app, Backbone, Directus) {
 
       model.save(data, {
         success: success,
+        patch: true,
         error: function() {
           console.log('ERROR', arguments);
         }
