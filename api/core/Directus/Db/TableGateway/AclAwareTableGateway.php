@@ -3,7 +3,7 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
-use Directus\Acl\Exception\UnauthorizedAddException;
+use Directus\Acl\Exception\UnauthorizedTableAddException;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\RowGateway\AclAwareRowGateway;
@@ -59,7 +59,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      *
      * @param  array $set
      * @return int
-     * @throws \Directus\Acl\Exception\UnauthorizedAddException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
      */
     public function insert($set)
     {
@@ -70,7 +70,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     /**
      * @param Insert $insert
      * @return mixed
-     * @throws \Directus\Acl\Exception\UnauthorizedAddException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
      */
     public function insertWith(Insert $insert)
     {
@@ -85,11 +85,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     /**
      * Is the user group allowed to create new records?
      * @return  null
-     * @throws \Directus\Acl\Exception\UnauthorizedAddException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
      */
     public function checkAddRights() {
         if(!$this->aclProvider->hasTablePrivilege($this->table, 'add')) {
-            throw new UnauthorizedAddException("Group lacks permission to add records to table: " . $this->table);
+            throw new UnauthorizedTableAddException("Group lacks permission to add records to table: " . $this->table);
         }
     }
 
