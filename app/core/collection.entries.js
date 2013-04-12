@@ -217,7 +217,7 @@ function(app, Backbone, BaseCollection) {
         }
         attributes[key] = value;
       }, this);
-      
+
       // Pick selected columns, useful for collection "save"
       if (options && options.columns) {
         attributes = _.pick(attributes, options.columns);
@@ -225,22 +225,6 @@ function(app, Backbone, BaseCollection) {
 
       return attributes;
     }
-
-    //This should probably override the regular save function.
-/*    saveRelational: function(attributes, options) {
-
-      var references = [];
-
-      _.each(this.collection.references, function(collection, tableName) {
-        references.push({tableName: tableName, remove: collection.getTrash(true), add: collection.getNew(true), update: collection.getChanged(true)});
-      }, this);
-
-      if (references.length) {
-        attributes.__references = references;
-      }
-
-      this.save(attributes, options);
-    }*/
 
   });
 
