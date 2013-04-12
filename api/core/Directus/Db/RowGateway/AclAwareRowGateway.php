@@ -40,17 +40,78 @@ class AclAwareRowGateway extends RowGateway {
     }
 
     /**
+     * HELPER FUNCTIONS
+     */
+
+    /**
+     * Confirm user group has $blacklist privileges on fields in $offsets
+     * @param  array|string $offsets  One or more string table field names
+     * @param  integer $blacklist  One of \Directus\Acl\Acl's blacklist constants
+     * @throws  UnauthorizedFieldWriteException If the specified $offsets intersect with this table's field write blacklist
+     * @throws  UnauthorizedFieldReadException If the specified $offsets intersect with this table's field read blacklist
+     * @return  null
+     */
+    private function enforceBlacklist($offsets, $blacklist) {
+        $offsets = is_array($offsets) ? $offsets : array($offsets);
+        // Acl#getTablePrivilegeList enforces that $blacklist is a correct value
+        $fieldBlacklist = $this->aclProvider->getTablePrivilegeList($this->table, $blacklist);
+        $forbiddenIndices = array_intersect($offsets, $fieldBlacklist);
+        if(count($forbiddenIndices)) {
+            $forbiddenIndices = implode(", ", $forbiddenIndices);
+            switch($blacklist) {
+                case Acl::FIELD_WRITE_BLACKLIST:
+                    throw new UnauthorizedFieldWriteException("Write (set) access forbidden to table \"{$this->table}\" indices: $forbiddenIndices");
+                case Acl::FIELD_READ_BLACKLIST:
+                    throw new UnauthorizedFieldReadException("Read (get) access forbidden to table \"{$this->table}\" indices: $forbiddenIndices");
+            }
+        }
+    }
+
+    // as opposed to toArray()
+    // used only for proof of concept
+    public function __getUncensoredDataForTesting() {
+        return $this->data;
+    }
+
+    private function logger() {
+        return Bootstrap::get('app')->getLog();
+    }
+
+    /**
+     * ONLY USE THIS FOR INITIALIZING THE ROW OBJECT.
+     *
+     * This function does not enforce ACL write privileges.
+     * It shouldn't be used to fulfill data assignment on behalf of the user.
+     *
+     * @param  mixed  $rowData Row key/value pairs.
+     * @return AclAwareRowGateway
+     */
+    private function populateSkipAcl($rowData) {
+        $this->data = $rowData;
+        return $this;
+    }
+
+    /**
      * OVERRIDES
      */
 
+    /**
+     * ONLY USE THIS FOR INITIALIZING THE ROW OBJECT.
+     *
+     * This function does not enforce ACL write privileges.
+     * It shouldn't be used to fulfill data assignment on behalf of the user.
+     * @param  mixed $rowData Row key/value pairs.
+     * @return AclAwareRowGateway
+     */
+    public function exchangeArray($rowData) {
+        return $this->populateSkipAcl($rowData);
+    }
+
     public function save() {
         $this->initialize();
-
-        /** Is the user group allowed to create new records? */
-        if(!$this->rowExistsInDatabase() && !$this->aclProvider->hasTablePrivilege($this->table, 'add')) {
+        // Enforce Privilege: Table Add
+        if(!$this->rowExistsInDatabase() && !$this->aclProvider->hasTablePrivilege($this->table, 'add'))
             throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
-        }
-
         return parent::save();
     }
 
@@ -59,17 +120,13 @@ class AclAwareRowGateway extends RowGateway {
      *
      * @param  array $rowData
      * @param  bool  $rowExistsInDatabase
-     * @return AbstractRowGateway
+     * @return AclAwareRowGateway
      */
     public function populate(array $rowData, $rowExistsInDatabase = false)
     {
-        // Confirm user group has write privileges on field with name $offset
-        $fieldWriteBlacklist = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_WRITE_BLACKLIST);
-        $forbiddenWriteIndices = array_intersect(array_keys($rowData), $fieldWriteBlacklist);
-        if(count($forbiddenWriteIndices)) {
-            $forbiddenWriteIndices = implode(", ", $forbiddenWriteIndices);
-            throw new UnauthorizedFieldWriteException("Write (set) access forbidden to indices $forbiddenWriteIndices on table \"{$this->table}\"");
-        }
+        // Enforce field write blacklist
+        $attemptOffsets = array_keys($rowData);
+        $this->enforceBlacklist($attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         return parent::populate($rowData, $rowExistsInDatabase);
     }
 
@@ -104,10 +161,8 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function __get($name)
     {
-        // Confirm user group has read privileges on field with name $offset
-        $censorFields = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_READ_BLACKLIST);
-        if(in_array($name, $censorFields))
-            throw new UnauthorizedFieldReadException("Read access forbidden to index \"$name\" on table \"{$this->table}\"");
+        // Confirm user group has read privileges on field with name $name
+        $this->enforceBlacklist($name, ACL::FIELD_READ_BLACKLIST);
         return parent::__get($name);
     }
 
@@ -119,26 +174,24 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetGet($offset)
     {
-        // Confirm user group has read privileges on field with name $offset
-        $censorFields = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_READ_BLACKLIST);
-        if(in_array($offset, $censorFields))
-            throw new UnauthorizedFieldReadException("Read access forbidden to index \"$offset\" on table \"{$this->table}\"");
+        // Confirm user group has read privileges on field with name $name
+        $this->enforceBlacklist($offset, ACL::FIELD_READ_BLACKLIST);
         return parent::offsetGet($offset);
     }
 
     /**
      * Offset set
      *
+     * NOTE: Protecting this method protects self#__set, which calls this method in turn.
+     *
      * @param  string $offset
      * @param  mixed $value
-     * @return RowGateway
+     * @return AclAwareRowGateway
      */
     public function offsetSet($offset, $value)
     {
-        // Confirm user group has write privileges on field with name $offset
-        $fieldWriteBlacklist = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_WRITE_BLACKLIST);
-        if(in_array($offset, $fieldWriteBlacklist))
-            throw new UnauthorizedFieldWriteException("Write (set) access forbidden to index \"$offset\" on table \"{$this->table}\"");
+        // Enforce field write blacklist
+        $this->enforceBlacklist($offset, Acl::FIELD_WRITE_BLACKLIST);
         return parent::offsetSet($offset, $value);
     }
 
@@ -146,14 +199,12 @@ class AclAwareRowGateway extends RowGateway {
      * Offset unset
      *
      * @param  string $offset
-     * @return AbstractRowGateway
+     * @return AclAwareRowGateway
      */
     public function offsetUnset($offset)
     {
-        // Confirm user group has write privileges on field with name $offset
-        $fieldWriteBlacklist = $this->aclProvider->getTablePrivilegeList($this->table, Acl::FIELD_WRITE_BLACKLIST);
-        if(in_array($offset, $fieldWriteBlacklist))
-            throw new UnauthorizedFieldWriteException("Write (unset) access forbidden to index \"$offset\" on table \"{$this->table}\"");
+        // Enforce field write blacklist
+        $this->enforceBlacklist($offset, Acl::FIELD_WRITE_BLACKLIST);
         return parent::offsetUnset($offset);
     }
 
@@ -167,20 +218,6 @@ class AclAwareRowGateway extends RowGateway {
         // ... omit the fields we can't read
         $data = $this->aclProvider->censorFields($this->table, $this->data);
         return $data;
-    }
-
-    /**
-     * HELPER FUNCTIONS
-     */
-
-    // as opposed to toArray()
-    // used only for proof of concept
-    public function __getUncensoredDataForTesting() {
-        return $this->data;
-    }
-
-    private function logger() {
-        return Bootstrap::get('app')->getLog();
     }
 
 }
