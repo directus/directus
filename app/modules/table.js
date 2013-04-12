@@ -159,7 +159,7 @@ function(app, Backbone, Directus) {
         data.active = active;
       }
 
-      model.save(data, {
+      model.save(model.diff(data), {
         success: success,
         patch: true,
         error: function() {
