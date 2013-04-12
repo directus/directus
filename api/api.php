@@ -179,14 +179,18 @@ $app->get("/$v/auth/session/?", function() use ($app) {
  */
 
 $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, $ZendDb, $params, $requestPayload, $app) {
+    $currentUser = AuthProvider::getUserInfo();
     $id = null;
     $params['table_name'] = $table;
     switch($app->request()->getMethod()) {
         // POST one new table entry
         // @refactor first new write layer implementation
         case 'POST':
-            $id = $db->set_entry_relational($table, $requestPayload);
-            $params['id'] = $id;
+            // $id = $db->set_entry_relational($table, $requestPayload);
+            $schema = $db->get_table($table);
+            $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
+            $newRecord = $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
+            $params['id'] = $newRecord['id'];
             break;
         // PUT a change set of table entries
         case 'PUT':
