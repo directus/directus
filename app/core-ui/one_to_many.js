@@ -46,7 +46,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
 
       modal.save = function() {
-        model.set(view.data());
+        model.set(model.diff(view.data()));
         modal.close();
       };
 
