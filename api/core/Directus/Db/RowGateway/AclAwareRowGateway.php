@@ -2,13 +2,13 @@
 
 namespace Directus\Db\RowGateway;
 
-use Zend\Db\RowGateway\RowGateway;
-
 use Directus\Bootstrap;
 use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedTableAddException;
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
+use Zend\Db\Adapter\Exception\InvalidQueryException;
+use Zend\Db\RowGateway\RowGateway;
 
 class AclAwareRowGateway extends RowGateway {
 
@@ -86,8 +86,14 @@ class AclAwareRowGateway extends RowGateway {
      * @param  mixed  $rowData Row key/value pairs.
      * @return AclAwareRowGateway
      */
-    private function populateSkipAcl($rowData) {
+    public function populateSkipAcl($rowData, $rowExistsInDatabase = false) {
+        $this->initialize();
         $this->data = $rowData;
+        if ($rowExistsInDatabase == true) {
+            $this->processPrimaryKeyData();
+        } else {
+            $this->primaryKeyData = null;
+        }
         return $this;
     }
 
@@ -104,7 +110,7 @@ class AclAwareRowGateway extends RowGateway {
      * @return AclAwareRowGateway
      */
     public function exchangeArray($rowData) {
-        return $this->populateSkipAcl($rowData);
+        return $this->populateSkipAcl($rowData, true);
     }
 
     public function save() {
@@ -112,7 +118,12 @@ class AclAwareRowGateway extends RowGateway {
         // Enforce Privilege: Table Add
         if(!$this->rowExistsInDatabase() && !$this->aclProvider->hasTablePrivilege($this->table, 'add'))
             throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
-        return parent::save();
+        try {
+            return parent::save();
+        } catch(InvalidQueryException $e) {
+            $this->logger()->fatal("Error running save on this data: " . print_r($this->data, true));
+            throw $e;
+        }
     }
 
     /**
