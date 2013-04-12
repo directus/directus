@@ -175,49 +175,6 @@ $app->get("/$v/auth/session/?", function() use ($app) {
 });
 
 /**
- * ACTIVITY COLLECTION
- */
-
-$app->get("/$v/activity/?", function () use ($db, $ZendDb, $aclProvider) {
-    $Activity = new DirectusActivityTableGateway($aclProvider, $ZendDb);
-    $new_get = $Activity->fetchFeed();
-    $old_get = $db->get_activity();
-    JsonView::render($new_get, $old_get);
-});
-
-/**
- * COLUMNS COLLECTION
- */
-
-// GET all table columns, or POST one new table column
-
-$app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $requestPayload, $app) {
-    $params['table_name'] = $table;
-    if($app->request()->isPost()) {
-        /* @TODO improves readability: use two separate methods for fetching one vs all entries */
-        $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
-    }
-    $response = $db->get_table($table, $params);
-    JsonView::render($response);
-})->via('GET', 'POST');
-
-// GET or PUT one column
-
-$app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($db, $params, $requestPayload, $app) {
-    $params['column_name'] = $column;
-    $params['table_name'] = $table;
-    // Add table name to dataset. @TODO more clarification would be useful
-    foreach ($requestPayload as &$row) {
-        $row['table_name'] = $table;
-    }
-    if($app->request()->isPut()) {
-        $db->set_entries('directus_columns', $requestPayload);
-    }
-    $response = $db->get_table($table, $params);
-    JsonView::render($response);
-})->via('GET', 'PUT');
-
-/**
  * ENTRIES COLLECTION
  */
 
@@ -265,6 +222,49 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     $get_new = $Table->getEntries($params);
     JsonView::render($get_new, $get_old);
 })->via('DELETE', 'GET', 'PUT');
+
+/**
+ * ACTIVITY COLLECTION
+ */
+
+$app->get("/$v/activity/?", function () use ($db, $ZendDb, $aclProvider) {
+    $Activity = new DirectusActivityTableGateway($aclProvider, $ZendDb);
+    $new_get = $Activity->fetchFeed();
+    $old_get = $db->get_activity();
+    JsonView::render($new_get, $old_get);
+});
+
+/**
+ * COLUMNS COLLECTION
+ */
+
+// GET all table columns, or POST one new table column
+
+$app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $requestPayload, $app) {
+    $params['table_name'] = $table;
+    if($app->request()->isPost()) {
+        /* @TODO improves readability: use two separate methods for fetching one vs all entries */
+        $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
+    }
+    $response = $db->get_table($table, $params);
+    JsonView::render($response);
+})->via('GET', 'POST');
+
+// GET or PUT one column
+
+$app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($db, $params, $requestPayload, $app) {
+    $params['column_name'] = $column;
+    $params['table_name'] = $table;
+    // Add table name to dataset. @TODO more clarification would be useful
+    foreach ($requestPayload as &$row) {
+        $row['table_name'] = $table;
+    }
+    if($app->request()->isPut()) {
+        $db->set_entries('directus_columns', $requestPayload);
+    }
+    $response = $db->get_table($table, $params);
+    JsonView::render($response);
+})->via('GET', 'PUT');
 
 /**
  * GROUPS COLLECTION
@@ -509,18 +509,6 @@ $app->map("/$v/users/:id/?", function ($id) use ($db, $aclProvider, $ZendDb, $pa
 /**
  * UI COLLECTION
  */
-
-// $app->map("/$v/tables/:table/ui/?", function($table) use ($db, $params, $requestPayload, $app) {
-//     $params['table_name'] = $table;
-//     switch ($app->request()->getMethod()) {
-//       case "PUT":
-//       case "POST":
-//         $db->set_ui_options($requestPayload, $table, $params['column_name'], $params['ui_name']);
-//         break;
-//     }
-//     $response = $db->get_ui_options($table, $params['column_name'], $params['ui_name']);
-//     JsonView::render($response);
-// })->via('GET','POST','PUT');
 
 $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $ui) use ($db, $aclProvider, $ZendDb, $params, $requestPayload, $app) {
     $params['table_name'] = $table;
