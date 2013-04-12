@@ -51,12 +51,12 @@ function(app, Backbone, BaseCollection) {
     },
 
     add: function(models, options) {
-      if (options && options.nest) {        
+      if (options && options.nest) {
         if (!_.isArray(models)) { models = [models]; }
-        models = _.map(models, function(model) { 
+        models = _.map(models, function(model) {
           var obj = {};
           obj.data = model;
-          return obj; 
+          return obj;
         });
       }
       Entries.NestedCollection.__super__.add.apply(this, [models, options]);
@@ -207,13 +207,52 @@ function(app, Backbone, BaseCollection) {
       return attributes;
     },
 
-    toJSON: function(options, noNest) {
-      var attributes = {};
+    diff: function(key, val, options) {
+      var attrs, changedAttrs = {};
+      if (typeof key === 'object') {
+        attrs = key;
+        options = val;
+      } else {
+        (attrs = {})[key] = val;
+      }
 
+      _.each(attrs, function(val, key) {
+        if (this.get(key) != val) changedAttrs[key] = val;
+      },this);
+
+      //Always pass id
+      changedAttrs['id'] = this.id;
+
+      return changedAttrs;
+    },
+
+    sync: function(method, model, options) {
+      var isBackboneModel;
+      if (method === 'patch') {
+        _.each(this.attributes, function(value, key) {
+          isBackboneModel = _.isObject(value) && (typeof value.toJSON === 'function');
+          // Just check if it's a Backbone Model. Could be done nicer
+          if (isBackboneModel) {
+            // Add foreign data to patch. This needs to be checked if it's new
+            options.attrs[key] = value.toJSON();
+          }
+        });
+      }
+      return Backbone.sync.apply(this, [method, model, options]);
+    },
+
+    toJSON: function(options, noNest) {
+      var attrs = this.attributes;
+
+      if (options && options.test) {
+        console.log(this.changedAttributes());
+      }
+
+      var attributes = {};
       // clone all attributes. expand relations
-      _.each(this.attributes, function(value, key) {
+      _.each(attrs, function(value, key) {
         if (_.isObject(value) && (typeof value.toJSON === 'function')) {
-          value = value.toJSON();  
+          value = value.toJSON();
         }
         attributes[key] = value;
       }, this);
@@ -277,7 +316,7 @@ function(app, Backbone, BaseCollection) {
 
     parse: function(response) {
       if (_.isEmpty(response)) return;
-      
+
       if (response.total) {
         this.total = response.total;
         this.table.set('total', this.total, {silent: true});
