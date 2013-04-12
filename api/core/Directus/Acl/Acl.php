@@ -63,6 +63,30 @@ class Acl {
     }
 
     /**
+     * Confirm current user group has $blacklist privileges on fields in $offsets
+     * @param  array|string $offsets  One or more string table field names
+     * @param  integer $blacklist  One of \Directus\Acl\Acl's blacklist constants
+     * @throws  UnauthorizedFieldWriteException If the specified $offsets intersect with $table's field write blacklist
+     * @throws  UnauthorizedFieldReadException If the specified $offsets intersect with $table's field read blacklist
+     * @return  null
+     */
+    public function enforceBlacklist($table, $offsets, $blacklist) {
+        $offsets = is_array($offsets) ? $offsets : array($offsets);
+        // Acl#getTablePrivilegeList enforces that $blacklist is a correct value
+        $fieldBlacklist = $this->getTablePrivilegeList($table, $blacklist);
+        $forbiddenIndices = array_intersect($offsets, $fieldBlacklist);
+        if(count($forbiddenIndices)) {
+            $forbiddenIndices = implode(", ", $forbiddenIndices);
+            switch($blacklist) {
+                case Acl::FIELD_WRITE_BLACKLIST:
+                    throw new UnauthorizedFieldWriteException("Write (set) access forbidden to table \"{$table}\" indices: $forbiddenIndices");
+                case Acl::FIELD_READ_BLACKLIST:
+                    throw new UnauthorizedFieldReadException("Read (get) access forbidden to table \"{$table}\" indices: $forbiddenIndices");
+            }
+        }
+    }
+
+    /**
      * Given the loaded group privileges, yield the given privilege-/black-list type for the given table.
      * @param  string $table Table name.
      * @param  integer $list  The privilege list type (Class constant, ::FIELD_*_BLACKLIST or ::TABLE_PERMISSIONS)
