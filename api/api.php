@@ -248,6 +248,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     $params['table_name'] = $table;
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
+        case 'PATCH':
         case 'PUT':
             $schema = $db->get_table($table);
             $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
@@ -264,7 +265,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     $Table = new TableGateway($aclProvider, $table, $ZendDb);
     $get_new = $Table->getEntries($params);
     JsonView::render($get_new, $get_old);
-})->via('DELETE', 'GET', 'PUT');
+})->via('DELETE', 'GET', 'PUT','PATCH');
 
 /**
  * GROUPS COLLECTION
