@@ -250,6 +250,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
         // PUT an updated table entry
         case 'PATCH':
         case 'PUT':
+            $requestPayload['id'] = $id;
             $schema = $db->get_table($table);
             $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
             $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
