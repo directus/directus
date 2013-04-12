@@ -26,11 +26,6 @@ class DirectusActivityTableGateway extends AclAwareTableGateway {
         parent::__construct($aclProvider, self::$_tableName, $adapter);
     }
 
-        // $action = isset($data['id']) ? 'UPDATE' : 'ADD';
-        // $master_item = find($schema,'master',true);
-        // $identifier = isset($master_item) ? $data[$master_item['column_name']] : null;
-        // $activity_id = $this->log_activity('ENTRY',$tbl_name, $action, $id, $identifier, $data, $parent_activity_id);
-
     public function fetchFeed() {
         $columns = array('id','identifier','action','table_name','row_id','user','datetime','type');
 
