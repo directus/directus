@@ -139,7 +139,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $tableName = is_null($tableName) ? $this->table : $tableName;
         $rowExists = isset($recordData['id']);
         $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
-        $record->populate($recordData, $rowExists);
+        $record->populateSkipAcl($recordData, $rowExists);
         $record->save();
         return $record;
     }

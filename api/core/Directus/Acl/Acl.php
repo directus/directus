@@ -62,14 +62,31 @@ class Acl {
         return $list;
     }
 
+    /**
+     * Given the loaded group privileges, yield the given privilege-/black-list type for the given table.
+     * @param  string $table Table name.
+     * @param  integer $list  The privilege list type (Class constant, ::FIELD_*_BLACKLIST or ::TABLE_PERMISSIONS)
+     * @return array Array of string table privileges / table blacklist fields, depending on $list.
+     * @throws  \InvalidArgumentException If $list is not a known value.
+     */
     public function getTablePrivilegeList($table, $list) {
         if(!$this->isTableListValue($list))
             throw new \InvalidArgumentException("Invalid list: $list");
         $blacklistItems = self::$base_acl[$list];
 
+        // $log = Bootstrap::get('app')->getLog();
+        // $log->info(__CLASS__."#".__FUNCTION__);
+        // $log->info("table: $table");
+        // $log->info("list: $list");
+        // $log->info("base_acl_blacklistItems: " . print_r($blacklistItems, true));
+
         // Merge in the table-specific read blacklist, if one exists
-        if(array_key_exists($table, $this->groupPrivileges))
+        $tableHasGroupPrivileges = array_key_exists($table, $this->groupPrivileges);
+        // $log->info("tableHasGroupPrivileges: " . print_r($tableHasGroupPrivileges, true));
+        if($tableHasGroupPrivileges)
             $blacklistItems = array_merge($blacklistItems, $this->groupPrivileges[$table][$list]);
+
+        // $log->info("blacklistItems: " . print_r($blacklistItems, true));
 
         // Filter mandatory read fields from read blacklists
         $mandatoryReadFields = $this->getTableMandatoryReadList($table);
