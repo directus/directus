@@ -6,7 +6,7 @@ use Directus\Bootstrap;
 
 class Acl {
 
-    const TABLE_PERMISSIONS     = "table_permissions";
+    const TABLE_PERMISSIONS     = "permissions";
     const FIELD_READ_BLACKLIST  = "read_field_blacklist";
     const FIELD_WRITE_BLACKLIST = "write_field_blacklist";
 
@@ -72,34 +72,35 @@ class Acl {
     public function getTablePrivilegeList($table, $list) {
         if(!$this->isTableListValue($list))
             throw new \InvalidArgumentException("Invalid list: $list");
-        $blacklistItems = self::$base_acl[$list];
-
-        // $log = Bootstrap::get('app')->getLog();
-        // $log->info(__CLASS__."#".__FUNCTION__);
-        // $log->info("table: $table");
-        // $log->info("list: $list");
-        // $log->info("base_acl_blacklistItems: " . print_r($blacklistItems, true));
-
-        // Merge in the table-specific read blacklist, if one exists
+        $privilegeList = self::$base_acl[$list];
         $tableHasGroupPrivileges = array_key_exists($table, $this->groupPrivileges);
-        // $log->info("tableHasGroupPrivileges: " . print_r($tableHasGroupPrivileges, true));
-        if($tableHasGroupPrivileges)
-            $blacklistItems = array_merge($blacklistItems, $this->groupPrivileges[$table][$list]);
-
-        // $log->info("blacklistItems: " . print_r($blacklistItems, true));
-
+        if($tableHasGroupPrivileges) {
+            $groupTableList = $this->groupPrivileges[$table][$list];
+            switch($list) {
+                // Replace base table permissions with group table permissions
+                case self::TABLE_PERMISSIONS:
+                    $privilegeList = $groupTableList;
+                    break;
+                // Merge in the table-specific read blacklist, if one exists
+                case self::FIELD_READ_BLACKLIST:
+                case self::FIELD_WRITE_BLACKLIST:
+                default:
+                    $privilegeList = array_merge($privilegeList, $groupTableList);
+                    break;
+            }
+        }
         // Filter mandatory read fields from read blacklists
         $mandatoryReadFields = $this->getTableMandatoryReadList($table);
-        $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $blacklistItems);
+        $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $privilegeList);
         if(count($disallowedReadBlacklistFields)) {
             // Log warning
             $this->logger()->warn("Table $table contains read blacklist items which are designated as mandatory read fields:");
             $this->logger()->warn(print_r($disallowedReadBlacklistFields, true));
-            // Filter out mandator read items
-            $blacklistItems = array_diff($blacklistItems, $mandatoryReadFields);
+            // Filter out mandatory read items
+            $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
         }
 
-        return $blacklistItems;
+        return $privilegeList;
     }
 
     public function censorFields($table, $data) {
