@@ -5,13 +5,14 @@ namespace Directus\Db\TableGateway;
 use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedTableAddException;
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\RowGateway\AclAwareRowGateway;
+use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Insert;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Update;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
@@ -54,7 +55,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * OVERRIDES
      */
 
-
     /**
      * @todo add $columns support
      *
@@ -67,6 +67,24 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         if(!$this->aclProvider->hasTablePrivilege($this->table, 'add'))
             throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
         return parent::executeInsert($insert);
+    }
+
+    /**
+     * @param Update $update
+     * @return mixed
+     * @throws Exception\RuntimeException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     *
+     * @todo  needs testing
+     */
+    protected function executeUpdate(Update $update)
+    {
+        $updateRaw = $update->getRawState();
+        // @todo will all fields lack table prefixes? what if they're prefixed arbitrarily?
+        // or if they contain quotes? may need to normalize field names
+        $attemptOffsets = array_keys($updateRaw['sets']);
+        $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_READ_BLACKLIST);
+        parent::executeUpdate($update);
     }
 
     /**
@@ -115,9 +133,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $record;
     }
 
-    public function addOrUpdateRecordByArray(array $recordData , $tableName = null) {
+    public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
         $tableName = is_null($tableName) ? $this->table : $tableName;
         $rowExists = isset($recordData['id']);
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__);
+        $log->info("\$tableName: " . print_r($tableName, true));
+        $log->info("\$rowExists: " . print_r($rowExists, true));
+        $log->info("\$recordData: " . print_r($recordData, true));
         $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
         $record->populateSkipAcl($recordData, $rowExists);
         $record->save();
