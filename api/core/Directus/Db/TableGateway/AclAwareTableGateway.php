@@ -54,44 +54,24 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * OVERRIDES
      */
 
-    /**
-     * Insert
-     *
-     * @param  array $set
-     * @return int
-     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
-     */
-    public function insert($set)
-    {
-        $this->checkAddRights();
-        return parent::insert($set);
-    }
 
     /**
+     * @todo add $columns support
+     *
      * @param Insert $insert
      * @return mixed
      * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
      */
-    public function insertWith(Insert $insert)
+    protected function executeInsert(Insert $insert)
     {
-        $this->checkAddRights();
-        return parent::insertWith($insert);
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'add'))
+            throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
+        return parent::executeInsert($insert);
     }
 
     /**
      * HELPER FUNCTIONS
      */
-
-    /**
-     * Is the user group allowed to create new records?
-     * @return  null
-     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
-     */
-    public function checkAddRights() {
-        if(!$this->aclProvider->hasTablePrivilege($this->table, 'add')) {
-            throw new UnauthorizedTableAddException("Group lacks permission to add records to table: " . $this->table);
-        }
-    }
 
     public function newRow($table = null, $pk_field_name = null)
     {
