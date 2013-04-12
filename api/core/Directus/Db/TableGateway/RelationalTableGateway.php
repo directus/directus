@@ -108,14 +108,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             // Remove collection fields
                             $nonCollectionAliasFieldNames = array_diff(array_keys($foreignRecord), $collectionAliasFieldNames);
                             $filteredForeignRecord = array_intersect_key($foreignRecord, array_flip($nonCollectionAliasFieldNames));
-
-                            // $this->logger()->info("collectionAliasFieldNames");
-                            // $this->logger()->info(print_r($collectionAliasFieldNames, true));
-                            // $this->logger()->info("nonCollectionAliasFieldNames");
-                            // $this->logger()->info(print_r($nonCollectionAliasFieldNames, true));
-                            // $this->logger()->info("filteredForeignRecord");
-                            // $this->logger()->info(print_r($filteredForeignRecord, true));
-
                             // Register the parent record ("one") on the foreign records ("many")
                             $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
                             // Register changes to the foreign record
