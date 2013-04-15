@@ -322,11 +322,13 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
     if (isset($requestPayload['url']))
         unset($requestPayload['url']);
 
+
+    $currentUser = AuthProvider::getUserInfo();
     /** Attribute these actions to the authenticated user. */
-    if(!empty($requestPayload) && !is_numeric_array($requestPayload)) {
-        $currentUser = AuthProvider::getUserInfo();
-        $requestPayload['user'] = $currentUser['id'];
-    }
+    // if(!empty($requestPayload) && !is_numeric_array($requestPayload)) {
+    //     $currentUser = AuthProvider::getUserInfo();
+    //     $requestPayload[AclProvider::ROW_OWNER_COLUMN] = $currentUser['id'];
+    // }
 
     $table = "directus_media";
     switch ($app->request()->getMethod()) {
@@ -338,7 +340,10 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
             $requestPayload['id'] = $id;
         case "PUT":
             if (!is_null($id)) {
-                $db->set_entries($table, $requestPayload);
+                // $db->set_entries($table, $requestPayload);
+                $schema = $db->get_table($table);
+                $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
+                $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
                 break;
             }
             $db->set_media($requestPayload);

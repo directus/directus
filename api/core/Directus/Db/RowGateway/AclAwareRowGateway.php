@@ -3,8 +3,11 @@
 namespace Directus\Db\RowGateway;
 
 use Directus\Bootstrap;
+use Directus\Auth\Provider as AuthProvider;
 use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedTableAddException;
+use Directus\Acl\Exception\UnauthorizedTableBigEditException;
+use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
@@ -79,8 +82,6 @@ class AclAwareRowGateway extends RowGateway {
 
         $this->initialize();
 
-        // $log->info("\$this->data after initialize: " . print_r($this->data, true));
-
         $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
 
         $this->data = $rowData;
@@ -108,11 +109,51 @@ class AclAwareRowGateway extends RowGateway {
         return $this->populateSkipAcl($rowData, true);
     }
 
+    protected function stringifyPrimaryKeyForRecordDebugRepresentation() {
+        if(null === $this->primaryKeyData)
+            return "null primary key";
+        return "primary key (" . implode(":", array_keys($this->primaryKeyData)) . ") \"" . implode(":", $this->primaryKeyData) . "\"";
+    }
+
     public function save() {
         $this->initialize();
-        // Enforce Privilege: Table Add
-        if(!$this->rowExistsInDatabase() && !$this->aclProvider->hasTablePrivilege($this->table, 'add'))
-            throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
+
+        /**
+         * ACL Enforcement
+         * Note: Field Write Blacklists are enforced at the object setter level
+         * (AARG#__set, AARG#populate, AARG#offsetSet)
+         */
+        if(!$this->rowExistsInDatabase()) {
+            /**
+             * Enforce Privilege: Table Add
+             */
+            if(!$this->aclProvider->hasTablePrivilege($this->table, 'add')) {
+                throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
+            }
+        } else {
+            $currentUser = AuthProvider::getUserInfo();
+            $cmsOwnerId = $this->aclProvider->getRecordCmsOwnerId($this);
+            /**
+             * Enforce Privilege: "Little" Edit (I am the record CMS owner)
+             */
+            if($cmsOwnerId === (int) $currentUser['id']) {
+                if(!$this->aclProvider->hasTablePrivilege($this->table, 'edit')) {
+                    $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
+                    throw new UnauthorizedTableEditException("Table edit access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
+                }
+            }
+            /**
+             * Enforce Privilege: "Big" Edit (I am not the record CMS owner)
+             */
+            else {
+                if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
+                    $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
+                    $recordOwner = (false === $cmsOwnerId) ? "no magic owner column" : "the CMS owner #$cmsOwnerId";
+                    throw new UnauthorizedTableBigEditException("Table edit access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
+                }
+            }
+        }
+
         try {
             return parent::save();
         } catch(InvalidQueryException $e) {
@@ -181,7 +222,7 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetGet($offset)
     {
-        // Confirm user group has read privileges on field with name $name
+        // Confirm user group has read privileges on field with name $offset
         $this->aclProvider->enforceBlacklist($this->table, $offset, ACL::FIELD_READ_BLACKLIST);
         return parent::offsetGet($offset);
     }
@@ -222,7 +263,7 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function toArray()
     {
-        // Respect the read blacklist
+        // Enforce field read blacklist
         $data = $this->aclProvider->censorFields($this->table, $this->data);
         return $data;
     }
