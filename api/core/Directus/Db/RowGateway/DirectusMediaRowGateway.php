@@ -2,10 +2,9 @@
 
 namespace Directus\Db\RowGateway;
 
-use Zend\Db\RowGateway\RowGateway;
-
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
+use Zend\Db\RowGateway\RowGateway;
 
 class DirectusMediaRowGateway extends AclAwareRowGateway {
 
@@ -15,7 +14,7 @@ class DirectusMediaRowGateway extends AclAwareRowGateway {
         // Attribute the currently authenticated user as the uploader
         if(!$rowExistsInDatabase) {
             $currentUser = AuthProvider::getUserInfo();
-            $rowData['user'] = $currentUser['id'];
+            $rowData['directus_user'] = $currentUser['id'];
         }
         return $rowData;
     }
