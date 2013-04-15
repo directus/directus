@@ -8,8 +8,11 @@ use Directus\Acl\Exception\AclException;
 class AclExceptionView {
 
     public static function exceptionHandler($app, $exception) {
-        $isAclException = $exception instanceof AclException || is_subclass_of($exception, "Directus\Acl\Exception\AclException");
 
+        /**
+         * Only deal with instances/subclasses of Directus\Acl\Exception\AclException
+         */
+        $isAclException = $exception instanceof AclException || is_subclass_of($exception, "Directus\Acl\Exception\AclException");
         if(!$isAclException)
             throw $exception;
 
