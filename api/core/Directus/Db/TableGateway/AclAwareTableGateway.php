@@ -160,7 +160,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = DirectusActivityTableGateway::TYPE_ENTRY) {
         // Find record identifier
         $master_item = find($schema, 'master', true);
-        $identifier = $master_item ? $row[$master_item['column_name']] : null;
+
+        $identifier = null;
+        if($master_item && array_key_exists($master_item['column_name'], $row))
+            $identifier = $row[$master_item['column_name']];
+
         // Make log entry
         $logEntry = array(
             'type' => $type,
