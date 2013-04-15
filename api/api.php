@@ -215,11 +215,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
         // PUT a change set of table entries
         case 'PUT':
             // $db->set_entries($table, $requestPayload);
-            $entries = is_numeric_array($requestPayload) ? array($requestPayload) : $requestPayload;
-            foreach($entries as $entry) {
-                $entry = $TableGateway->addOrUpdateRecordByArray($entry);
-                $entry->save();
-            }
+            $TableGateway->updateCollection($requestPayload);
             break;
     }
     // GET all table entries
