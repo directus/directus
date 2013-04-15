@@ -38,6 +38,7 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\View\JsonView;
+use Directus\View\AclExceptionView;
 
 use Directus\Db;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
@@ -68,6 +69,17 @@ $app->add(new MustBeLoggedIn($routeWhitelist, $authProvider));
 
 $requestNonceProvider = new RequestNonceProvider();
 $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
+
+/**
+ * Catcher for ACL forbidden messages.
+ */
+
+$app->config('debug', false);
+$aclExceptionView = new AclExceptionView();
+$aclExceptionHandler = function (Exception $exception) use ($app, $aclExceptionView) {
+    $aclExceptionView->exceptionHandler($app, $exception);
+};
+$app->error($aclExceptionHandler);
 
 /**
  * Bootstrap Providers
