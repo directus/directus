@@ -18,10 +18,10 @@ define(['app','backbone'], function(app, Backbone) {
     var html;
     switch(options.settings.get("format")) {
       case 'full':
-        html = '{{userFull user}}';
+        html = '{{userFull directus_user}}';
         break;
       case 'short':
-        html = '{{userShort user}}';
+        html = '{{userShort directus_user}}';
         break;
     }
     var template = Handlebars.compile(html);
