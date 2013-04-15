@@ -28,6 +28,18 @@ class AclAwareRowGateway extends RowGateway {
     }
 
     /**
+     * Override this function to do table-specific record data filtration, pre-insert and update.
+     * This method is called during #populate and #populateSkipAcl.
+     * @param  array   $rowData
+     * @param  boolean $rowExistsInDatabase
+     * @return array  Filtered $rowData.
+     */
+    public function preSaveDataHook(array $rowData, $rowExistsInDatabase = false) {
+        // Custom gateway logic
+        return $rowData;
+    }
+
+    /**
      * HELPER FUNCTIONS
      */
 
@@ -60,8 +72,17 @@ class AclAwareRowGateway extends RowGateway {
      * @param  mixed  $rowData Row key/value pairs.
      * @return AclAwareRowGateway
      */
-    public function populateSkipAcl($rowData, $rowExistsInDatabase = false) {
+    public function populateSkipAcl(array $rowData, $rowExistsInDatabase = false) {
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__);
+        $log->info("args: " . print_r(func_get_args(), true));
+
         $this->initialize();
+
+        // $log->info("\$this->data after initialize: " . print_r($this->data, true));
+
+        $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
+
         $this->data = $rowData;
         if ($rowExistsInDatabase == true) {
             $this->processPrimaryKeyData();
@@ -109,6 +130,7 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function populate(array $rowData, $rowExistsInDatabase = false)
     {
+        $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
         // Enforce field write blacklist
         $attemptOffsets = array_keys($rowData);
         $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
