@@ -79,11 +79,17 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     protected function executeUpdate(Update $update)
     {
+        /**
+         * ACL Enforcement
+         */
         $updateRaw = $update->getRawState();
+        /**
+         * Enforce Write Blacklist
+         */
         // @todo will all fields lack table prefixes? what if they're prefixed arbitrarily?
         // or if they contain quotes? may need to normalize field names
         $attemptOffsets = array_keys($updateRaw['sets']);
-        $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_READ_BLACKLIST);
+        $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         parent::executeUpdate($update);
     }
 
@@ -104,6 +110,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
 
         $record->populateSkipAcl($recordData, $rowExists);
+        // $record->populate($recordData, $rowExists);
         $record->save();
         return $record;
     }
