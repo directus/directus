@@ -11,6 +11,11 @@ class Acl {
     const FIELD_WRITE_BLACKLIST = "write_field_blacklist";
 
     /**
+     * The magic Directus column identifying the record's CMS owner.
+     */
+    const ROW_OWNER_COLUMN = "directus_user";
+
+    /**
      * Baseline/fallback ACL
      * @var array
      */
