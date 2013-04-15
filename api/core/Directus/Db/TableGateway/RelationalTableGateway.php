@@ -25,9 +25,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $recordWithForeignIds = $this->addOrUpdateAssociations($schema, $requestPayload, null);//$logEntry['id']);
         // Log update event
         $logEntry = $this->newActivityLog($recordWithForeignIds, $this->table, $schema, $userId);
-        // $app = Bootstrap::get('app');
-        // $app->getLog()->info("Record with foreign ids / removed collections");
-        // $app->getLog()->info(print_r($recordWithForeignIds, true));
         // Update the parent row
         return $this->addOrUpdateRecordByArray($recordWithForeignIds);
     }
