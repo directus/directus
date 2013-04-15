@@ -485,59 +485,6 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app)
 });
 
 /**
- * USERS COLLECTION
- */
-
-// GET user index
-$app->get("/$v/users/?", function () use ($db, $aclProvider, $ZendDb, $params, $requestPayload) {
-
-    $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
-    $new = $Users->fetchAllWithGroupData();
-
-    $old = $db->get_users();
-
-    JsonView::render($new, $old);
-
-})->name('user_index');
-
-// POST new user
-/**
- * Appearances suggest that this route is not used, & that this one is used instead:
- *     POST /directus/api/1/tables/directus_users/rows
- * @todo  Confirm & prune this route
- */
-$app->post("/$v/users/?", function() use ($db, $aclProvider, $ZendDb, $params, $requestPayload) {
-    $table = 'directus_users';
-    $id = $db->set_entries($table, $params);
-
-    $params['id'] = $id;
-    $old = $db->get_entries($table, $params);
-
-    $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
-    $new = $Users->find($id);
-
-    JsonView::render($new, $old);
-})->name('user_post');
-
-// GET or PUT a given user
-$app->map("/$v/users/:id/?", function ($id) use ($db, $aclProvider, $ZendDb, $params, $requestPayload, $app) {
-    $table = 'directus_users';
-    $params['id'] = $id;
-    if($app->request()->isPut()) {
-        $db->set_entry($table, $requestPayload);
-    }
-
-    $app->getLog()->info("IGNORE the following comparison failure. It is due to a buggy date field in the \"old\" response.");
-
-    $old_get = $db->get_entries($table, $params);
-
-    $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
-    $new_get = $Users->find($id);
-
-    JsonView::render($new_get, $old_get);
-})->via('GET', 'PUT');
-
-/**
  * UI COLLECTION
  */
 
