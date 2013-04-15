@@ -91,6 +91,23 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * HELPER FUNCTIONS
      */
 
+    public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
+        $tableName = is_null($tableName) ? $this->table : $tableName;
+        $rowExists = isset($recordData['id']);
+
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__);
+        $log->info("\$tableName: " . print_r($tableName, true));
+        $log->info("\$rowExists: " . ($rowExists ? "yes" : "no"));
+        $log->info("\$recordData: " . print_r($recordData, true));
+
+        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
+
+        $record->populateSkipAcl($recordData, $rowExists);
+        $record->save();
+        return $record;
+    }
+
     public function newRow($table = null, $pk_field_name = null)
     {
         $table = is_null($table) ? $this->table : $table;
@@ -130,20 +147,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     public function find($id, $pk_field_name = "id") {
         $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
-    }
-
-    public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
-        $tableName = is_null($tableName) ? $this->table : $tableName;
-        $rowExists = isset($recordData['id']);
-        $log = $this->logger();
-        $log->info(__CLASS__."#".__FUNCTION__);
-        $log->info("\$tableName: " . print_r($tableName, true));
-        $log->info("\$rowExists: " . print_r($rowExists, true));
-        $log->info("\$recordData: " . print_r($recordData, true));
-        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
-        $record->populateSkipAcl($recordData, $rowExists);
-        $record->save();
         return $record;
     }
 
