@@ -164,7 +164,7 @@ class Acl {
     public function getRecordCmsOwnerId($record) {
         $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, "Zend\Db\RowGateway\RowGateway");
         if(!($isRowGateway || is_array($record)))
-            throw new \InvalidArgumentException("Parameter must be either an array or a subclass of Zend\Db\RowGateway\RowGateway");
+            throw new \InvalidArgumentException("Parameter must be either an array or an instance/subclass of Zend\Db\RowGateway\RowGateway");
         if($isRowGateway && !$record->offsetExists(self::ROW_OWNER_COLUMN))
             return false;
         elseif(is_array($record) && !array_key_exists(self::ROW_OWNER_COLUMN, $record))

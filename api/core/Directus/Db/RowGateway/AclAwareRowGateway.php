@@ -56,6 +56,12 @@ class AclAwareRowGateway extends RowGateway {
         return new self($aclProvider, $pkFieldName, $table, $adapter);
     }
 
+    protected function stringifyPrimaryKeyForRecordDebugRepresentation() {
+        if(null === $this->primaryKeyData)
+            return "null primary key";
+        return "primary key (" . implode(":", array_keys($this->primaryKeyData)) . ") \"" . implode(":", $this->primaryKeyData) . "\"";
+    }
+
     // as opposed to toArray()
     // used only for proof of concept
     public function __getUncensoredDataForTesting() {
@@ -109,10 +115,32 @@ class AclAwareRowGateway extends RowGateway {
         return $this->populateSkipAcl($rowData, true);
     }
 
-    protected function stringifyPrimaryKeyForRecordDebugRepresentation() {
-        if(null === $this->primaryKeyData)
-            return "null primary key";
-        return "primary key (" . implode(":", array_keys($this->primaryKeyData)) . ") \"" . implode(":", $this->primaryKeyData) . "\"";
+    public function delete() {
+        /**
+         * ACL Enforcement
+         */
+        $currentUser = AuthProvider::getUserInfo();
+        $cmsOwnerId = $this->aclProvider->getRecordCmsOwnerId($this);
+        /**
+         * Enforce Privilege: "Little" Delete (I am the record CMS owner)
+         */
+        if($cmsOwnerId === (int) $currentUser['id']) {
+            if(!$this->aclProvider->hasTablePrivilege($this->table, 'delete')) {
+                $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
+                throw new UnauthorizedTableEditException("Table delete access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
+            }
+        }
+        /**
+         * Enforce Privilege: "Big" Delete (I am not the record CMS owner)
+         */
+        else {
+            if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigdelete')) {
+                $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
+                $recordOwner = (false === $cmsOwnerId) ? "no magic owner column" : "the CMS owner #$cmsOwnerId";
+                throw new UnauthorizedTableBigEditException("Table bigdelete access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
+            }
+        }
+        return parent::delete();
     }
 
     public function save() {
@@ -149,7 +177,7 @@ class AclAwareRowGateway extends RowGateway {
                 if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
                     $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
                     $recordOwner = (false === $cmsOwnerId) ? "no magic owner column" : "the CMS owner #$cmsOwnerId";
-                    throw new UnauthorizedTableBigEditException("Table edit access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
+                    throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
                 }
             }
         }

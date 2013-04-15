@@ -180,10 +180,19 @@ $app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
     JsonView::render($response);
 });
 
+// debug helper
 $app->get("/$v/auth/session/?", function() use ($app) {
     if('production' === DIRECTUS_ENV)
         $app->halt('404');
     JsonView::render($_SESSION);
+});
+
+// debug helper
+$app->get("/$v/auth/permissions/?", function() use ($app, $aclProvider) {
+    if('production' === DIRECTUS_ENV)
+        $app->halt('404');
+    $groupPrivileges = $aclProvider->getGroupPrivileges();
+    JsonView::render(array('groupPrivileges' => $groupPrivileges));
 });
 
 /**
@@ -194,19 +203,23 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
     $currentUser = AuthProvider::getUserInfo();
     $id = null;
     $params['table_name'] = $table;
+    $schema = $db->get_table($table);
+    $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
     switch($app->request()->getMethod()) {
         // POST one new table entry
-        // @refactor first new write layer implementation
         case 'POST':
             // $id = $db->set_entry_relational($table, $requestPayload);
-            $schema = $db->get_table($table);
-            $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
             $newRecord = $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
             $params['id'] = $newRecord['id'];
             break;
         // PUT a change set of table entries
         case 'PUT':
-            $db->set_entries($table, $requestPayload);
+            // $db->set_entries($table, $requestPayload);
+            $entries = is_numeric_array($requestPayload) ? array($requestPayload) : $requestPayload;
+            foreach($entries as $entry) {
+                $entry = $TableGateway->addOrUpdateRecordByArray($entry);
+                $entry->save();
+            }
             break;
     }
     // GET all table entries
@@ -219,16 +232,17 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $aclProvider, $params, $requestPayload, $app) {
     $currentUser = AuthProvider::getUserInfo();
     $params['table_name'] = $table;
+    $schema = $db->get_table($table);
+    $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
         case 'PUT':
-            $schema = $db->get_table($table);
-            $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
             $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
             break;
         // DELETE a given table entry
         case 'DELETE':
             echo $db->delete($table, $id);
+            // $row = $TableGateway->find($id);
             return;
     }
     $params['id'] = $id;
