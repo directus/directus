@@ -29,6 +29,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
         return $this->addOrUpdateRecordByArray($recordWithForeignIds);
     }
 
+    public function updateCollection($entries) {
+        $entries = is_numeric_array($requestPayload) ? $requestPayload : array($requestPayload);
+        foreach($entries as $entry) {
+            $entry = $TableGateway->addOrUpdateRecordByArray($entry);
+            $entry->save();
+        }
+    }
+
     /**
      * Relational Setter
      *
