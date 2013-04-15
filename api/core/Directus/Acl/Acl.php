@@ -3,6 +3,7 @@
 namespace Directus\Acl;
 
 use Directus\Bootstrap;
+use Zend\Db\RowGateway\RowGateway;
 
 class Acl {
 
@@ -33,7 +34,7 @@ class Acl {
     public static $mandatory_read_lists = array(
         // key: table name ('*' = all tables, baseline definition)
         // value: array of column names
-        '*' => array('id','active')
+        '*' => array('id','active','directus_user')
         // ...
     );
 
@@ -141,9 +142,34 @@ class Acl {
         return $data;
     }
 
+    /**
+     * Given table name $table and privilege constant $privilege, return boolean
+     * value indicating whether the current user group has permission to perform
+     * the specified table-level action on the specified table.
+     * @param  string  $table     Table name
+     * @param  string  $privilege Privilege constant defined by \Directus\Acl\Acl
+     * @return boolean
+     */
     public function hasTablePrivilege($table, $privilege) {
         $tablePermissions = $this->getTablePrivilegeList($table, self::TABLE_PERMISSIONS);
         return in_array($privilege, $tablePermissions);
+    }
+
+    /**
+     * Given $record, yield the ID contained by the magic CMS ROW_OWNER_COLUMN
+     * field, or false if the field doesn't exist on $record.
+     * @param  mixed $record
+     * @return int|false
+     */
+    public function getRecordCmsOwnerId($record) {
+        $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, "Zend\Db\RowGateway\RowGateway");
+        if(!($isRowGateway || is_array($record)))
+            throw new \InvalidArgumentException("Parameter must be either an array or a subclass of Zend\Db\RowGateway\RowGateway");
+        if($isRowGateway && !$record->offsetExists(self::ROW_OWNER_COLUMN))
+            return false;
+        elseif(is_array($record) && !array_key_exists(self::ROW_OWNER_COLUMN, $record))
+            return false;
+        return (int) $record[self::ROW_OWNER_COLUMN];
     }
 
 }
