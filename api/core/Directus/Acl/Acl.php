@@ -13,8 +13,15 @@ class Acl {
 
     /**
      * The magic Directus column identifying the record's CMS owner.
+     * NOTE: Out of use, in favor of the transitional mapper below.
+     * @see  self::$cms_owner_columns_by_table and self#getRecordCmsOwnerId
      */
     const ROW_OWNER_COLUMN = "directus_user";
+
+    public static $cms_owner_columns_by_table = array(
+        'directus_media' => 'user',
+        'directus_users' => 'id'
+    );
 
     /**
      * Baseline/fallback ACL
@@ -156,20 +163,24 @@ class Acl {
     }
 
     /**
-     * Given $record, yield the ID contained by the magic CMS ROW_OWNER_COLUMN
-     * field, or false if the field doesn't exist on $record.
-     * @param  mixed $record
+     * Given $record, yield the ID contained by that $table's CMS owner column,
+     * if one exists. Otherwise return false.
+     * @param  Zend\Db\RowGateway\RowGateway|array  $record
+     * @param  string $table  The name of the record's table.
      * @return int|false
      */
-    public function getRecordCmsOwnerId($record) {
+    public function getRecordCmsOwnerId($record, $table) {
         $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, "Zend\Db\RowGateway\RowGateway");
         if(!($isRowGateway || is_array($record)))
             throw new \InvalidArgumentException("Parameter must be either an array or an instance/subclass of Zend\Db\RowGateway\RowGateway");
-        if($isRowGateway && !$record->offsetExists(self::ROW_OWNER_COLUMN))
+        if(!array_key_exists($table, self::$cms_owner_columns_by_table))
             return false;
-        elseif(is_array($record) && !array_key_exists(self::ROW_OWNER_COLUMN, $record))
+        $ownerColumnName = self::$cms_owner_columns_by_table[$table];
+        if($isRowGateway && !$record->offsetExists($ownerColumnName))
             return false;
-        return (int) $record[self::ROW_OWNER_COLUMN];
+        elseif(is_array($record) && !array_key_exists($ownerColumnName, $record))
+            return false;
+        return (int) $record[$ownerColumnName];
     }
 
 }
