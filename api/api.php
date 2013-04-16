@@ -237,8 +237,11 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
             break;
         // DELETE a given table entry
         case 'DELETE':
+            // @todo need to find a place where this actually occurs in the pre-existing application
             echo $db->delete($table, $id);
+            // @todo then confirm this will have identical output:
             // $row = $TableGateway->find($id);
+            // $row->delete();
             return;
     }
     $params['id'] = $id;
@@ -278,7 +281,7 @@ $app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $r
 
 // GET or PUT one column
 
-$app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($db, $ZendDb, $aclProvider, $params, $requestPayload, $app) {
     $params['column_name'] = $column;
     $params['table_name'] = $table;
     // Add table name to dataset. @TODO more clarification would be useful
@@ -286,7 +289,9 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $row['table_name'] = $table;
     }
     if($app->request()->isPut()) {
-        $db->set_entries('directus_columns', $requestPayload);
+        // $db->set_entries('directus_columns', $requestPayload);
+        $TableGateway = new TableGateway($aclProvider, 'directus_columns', $ZendDb);
+        $TableGateway->updateCollection($requestPayload);
     }
     $response = $db->get_table($table, $params);
     JsonView::render($response);
@@ -345,12 +350,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
         unset($requestPayload['url']);
 
 
-    $currentUser = AuthProvider::getUserInfo();
-    /** Attribute these actions to the authenticated user. */
-    // if(!empty($requestPayload) && !is_numeric_array($requestPayload)) {
-    //     $currentUser = AuthProvider::getUserInfo();
-    //     $requestPayload[AclProvider::ROW_OWNER_COLUMN] = $currentUser['id'];
-    // }
+    $currentUser = AuthProvider::getUserInfo(); 
 
     $table = "directus_media";
     switch ($app->request()->getMethod()) {
@@ -383,6 +383,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
  */
 
 $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb, $aclProvider, $params, $requestPayload, $app) {
+    $currentUser = AuthProvider::getUserInfo();
     $params['table_name'] = $table;
     switch ($app->request()->getMethod()) {
         case "PUT":
@@ -393,7 +394,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             break;
         case "POST":
             // This should not be hardcoded, needs to be corrected
-            $requestPayload['user'] = 1;
+            $requestPayload['user'] = $currentUser['id'];
             $id = $db->insert_entry($table, $requestPayload);
             $params['id'] = $id;
             break;
@@ -503,7 +504,6 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
     $get_new = $UiOptions->fetchOptions($table, $column, $ui);
     JsonView::render($get_old, $get_new);
 })->via('GET','POST','PUT');
-
 
 /**
  * Run the Router
