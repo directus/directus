@@ -55,24 +55,33 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * Many-to-One fields, and nested collection representations removed.
      */
     public function addOrUpdateAssociations($schema, $parentRow, $parentActivityLogId) {
+
         $log = $this->logger();
         $log->info("RelationalTableGateway#addOrUpdateAssociations");
         $log->info("\$parentRow pre-process");
         ob_start();
         var_dump($parentRow);
         $log->info(ob_get_clean());
+
         // Create foreign row and update local column with the data id
         foreach($schema as $column) {
             $colName = $column['id']; // correct var naming?
             $log->info("Looking at column $colName");
+
             // Ignore absent values & non-arrays
             if(!isset($parentRow[$colName]) || !is_array($parentRow[$colName])) {
-                // $log->info("Unset or non-array. Skipping.");
+                $log->info("Unset or non-array. Skipping.");
                 continue;
             }
+
             $fieldIsCollectionAssociation = in_array($column['type'], TableSchema::$association_types);
-            // Ignore non-arrays and empty arrays
-            if(empty($parentRow[$colName])) {
+            $lowercaseColumnType = strtolower($column['type']);
+
+            // Ignore empty OneToMany collections
+            $fieldIsOneToMany = "onetomany" === $lowercaseColumnType;
+
+            // Ignore non-arrays and empty collections
+            if(empty($parentRow[$colName])) {//} || ($fieldIsOneToMany && )) {
                 $log->info("Empty collection association. Skipping.");
                 // Once they're managed, remove the foreign collections from the record array
                 if($fieldIsCollectionAssociation)
@@ -95,7 +104,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                 $foreignTableName = $column['table_related'];
                 $foreignJoinColumn = $column['junction_key_right'];
-                switch (strtolower($column['type'])) {
+                $log->info("foreignTableName: $foreignTableName");
+                $log->info("foreignJoinColumn: $foreignJoinColumn");
+                switch ($lowercaseColumnType) {
 
                     /** One-to-Many */
                     case 'onetomany':
@@ -103,10 +114,16 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $olddb = Bootstrap::get('olddb');
                         $ForeignSchema = new TableSchema($foreignTableName, $olddb);
                         $collectionAliasFieldNames = $ForeignSchema->getTableCollectionAliasFieldNames();
+                        $log->info("collectionAliasFieldNames");
+                        $log->info(print_r($collectionAliasFieldNames, true));
                         foreach ($foreignDataSet as $foreignRecord) {
                             // Remove collection fields
                             $nonCollectionAliasFieldNames = array_diff(array_keys($foreignRecord), $collectionAliasFieldNames);
+                            $log->info("nonCollectionAliasFieldNames");
+                            $log->info(print_r($nonCollectionAliasFieldNames, true));
                             $filteredForeignRecord = array_intersect_key($foreignRecord, array_flip($nonCollectionAliasFieldNames));
+                            $log->info("filteredForeignRecord");
+                            $log->info(print_r($filteredForeignRecord, true));
                             // Register the parent record ("one") on the foreign records ("many")
                             $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
                             // Register changes to the foreign record
@@ -181,11 +198,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $rowExists = isset($foreignRecord['id']);
         if($rowExists)
             unset($foreignRecord['date_uploaded']);
-        $newRow = $this->addOrUpdateRecordByArray($foreignRecord, 'directus_media');
+        $row = $this->addOrUpdateRecordByArray($foreignRecord, 'directus_media');
         /** Register in activity log */
-        $row = $row->toArray();
-        $activityType = $rowExists ? 'UPDATE' : 'ADD';
-        $this->log_activity('MEDIA', 'directus_media', $activityType, $row['id'], $row['title'], $row, $parentRow['id']);
+        // $row = $row->toArray();
+        // $activityType = $rowExists ? 'UPDATE' : 'ADD';
+        // $this->log_activity('MEDIA', 'directus_media', $activityType, $row['id'], $row['title'], $row, null);//$parentRow['id']);
         return $row['id'];
         /* IS THIS conditional necessary still?
         if ('single_media' == $colUiType) {
