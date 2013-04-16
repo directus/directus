@@ -70,21 +70,11 @@ class Bootstrap {
     private static function app() {
         self::requireConstants('DIRECTUS_ENV', __FUNCTION__);
         $app = new Slim(array(
-            'mode'    => DIRECTUS_ENV,
-            'log.writer' => new DateTimeFileWriter()
+            'mode'          => DIRECTUS_ENV,
+            'log.writer'    => new DateTimeFileWriter(),
+            'log.enable'    => true,
+            'debug'         => false
         ));
-        $app->configureMode('production', function () use ($app) {
-            $app->config(array(
-                'log.enable' => true,
-                'debug' => false
-            ));
-        });
-        $app->configureMode('development', function () use ($app) {
-            $app->config(array(
-                'log.enable' => false,
-                'debug' => true
-            ));
-        });
         return $app;
     }
 
