@@ -1,1 +1,0 @@
-ALTER TABLE  `directus_media` CHANGE  `user`  `directus_user` INT( 11 ) NULL DEFAULT NULL;

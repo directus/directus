@@ -42,7 +42,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         userId = 1;
         data.isNew = true;
       } else {
-        userId = this.model.get('directus_user');
+        userId = this.model.get('user');
         data = this.model.toJSON();
         if (this.model.get('type') === 'embed/youtube') data.youtube = this.model.get('embed_id');
       }
