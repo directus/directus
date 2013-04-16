@@ -82,14 +82,11 @@ class AclAwareRowGateway extends RowGateway {
      * @return AclAwareRowGateway
      */
     public function populateSkipAcl(array $rowData, $rowExistsInDatabase = false) {
-        $log = $this->logger();
-        $log->info(__CLASS__."#".__FUNCTION__);
-        $log->info("args: " . print_r(func_get_args(), true));
-
+        // $log = $this->logger();
+        // $log->info(__CLASS__."#".__FUNCTION__);
+        // $log->info("args: " . print_r(func_get_args(), true));
         $this->initialize();
-
         $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
-
         $this->data = $rowData;
         if ($rowExistsInDatabase == true) {
             $this->processPrimaryKeyData();
