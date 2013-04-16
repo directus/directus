@@ -68,12 +68,15 @@ class Bootstrap {
      * @return Slim
      */
     private static function app() {
-        self::requireConstants('DIRECTUS_ENV', __FUNCTION__);
+        self::requireConstants(array('DIRECTUS_ENV','APPLICATION_PATH'), __FUNCTION__);
+        $loggerSettings = array(
+            'path' => APPLICATION_PATH . '/api/logs'
+        );
         $app = new Slim(array(
             'mode'          => DIRECTUS_ENV,
-            'log.writer'    => new DateTimeFileWriter(),
+            'debug'         => false,
             'log.enable'    => true,
-            'debug'         => false
+            'log.writer'    => new DateTimeFileWriter($loggerSettings)
         ));
         return $app;
     }
