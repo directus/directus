@@ -1,23 +1,26 @@
 <?php
 
-use Directus\Auth\Provider as AuthProvider;
-use Directus\Auth\RequestNonceProvider;
-use Directus\Bootstrap;
+// Initialization
+// - Apparently the autoloaders must be registered separately in both index.php and api.php
 
-/**
- * Initialization
- *  - Apparently the autoloaders must be registered separately in both index.php and api.php
- */
+// Exceptional.io error handling
+if(defined('EXCEPTIONAL_API_KEY')) {
+    require_once 'api/vendor-manual/exceptional-php/exceptional.php';
+    Exceptional::setup(EXCEPTIONAL_API_KEY);
+}
 
 // Composer Autoloader
 require 'api/vendor/autoload.php';
 
 // Directus Autoloader
-// require 'api/Directus/autoload.php';
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespace("Directus", dirname(__FILE__) . "/api/core/");
 $loader->register();
+
+use Directus\Auth\Provider as AuthProvider;
+use Directus\Auth\RequestNonceProvider;
+use Directus\Bootstrap;
 
 // Non-autoloaded components
 require 'api/api.php';

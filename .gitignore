@@ -2,9 +2,14 @@ config.php
 Icon
 .DS_Store
 
+# Don't track composer phar/lock/vendors
 composer.phar
 api/composer.lock
 api/vendor
+
+# Track non-composer vendors
+^api/vendor-manual
+
 api/logs
 
 docs/api-responses
