@@ -2,6 +2,8 @@
 
 date_default_timezone_set('America/New_York');
 
+define('API_VERSION', 1);
+
 /**
  * DIRECTUS_ENV - Possible values:
  *
@@ -29,4 +31,5 @@ define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/..'));
 // Add 'temp' and 'thumbnail' directories in the resources directory
 define('RESOURCES_PATH', '');
 
-define('API_VERSION', 1);
+// To enable exceptional.io error tracking, put your API key here.
+define('EXCEPTIONAL_API_KEY', NULL);
