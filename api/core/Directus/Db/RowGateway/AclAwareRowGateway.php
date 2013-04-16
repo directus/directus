@@ -117,7 +117,7 @@ class AclAwareRowGateway extends RowGateway {
          * ACL Enforcement
          */
         $currentUser = AuthProvider::getUserInfo();
-        $cmsOwnerId = $this->aclProvider->getRecordCmsOwnerId($this);
+        $cmsOwnerId = $this->aclProvider->getRecordCmsOwnerId($this, $this->table);
         /**
          * Enforce Privilege: "Little" Delete (I am the record CMS owner)
          */
@@ -157,11 +157,11 @@ class AclAwareRowGateway extends RowGateway {
             }
         } else {
             $currentUser = AuthProvider::getUserInfo();
-            $cmsOwnerId = $this->aclProvider->getRecordCmsOwnerId($this);
+            $cmsOwnerId = $this->aclProvider->getRecordCmsOwnerId($this, $this->table);
             /**
              * Enforce Privilege: "Little" Edit (I am the record CMS owner)
              */
-            if($cmsOwnerId === (int) $currentUser['id']) {
+            if($cmsOwnerId === intval($currentUser['id'])) {
                 if(!$this->aclProvider->hasTablePrivilege($this->table, 'edit')) {
                     $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
                     throw new UnauthorizedTableEditException("Table edit access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
