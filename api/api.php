@@ -1,9 +1,13 @@
 <?php
 
-/**
- * Initialization
- *  - Apparently the autoloaders must be registered separately in both index.php and api.php
- */
+// Initialization
+//  - Apparently the autoloaders must be registered separately in both index.php and api.php
+
+// Exceptional.io error handling
+if(defined('EXCEPTIONAL_API_KEY')) {
+    require_once 'vendor-manual/exceptional-php/exceptional.php';
+    Exceptional::setup(EXCEPTIONAL_API_KEY);
+}
 
 // Composer Autoloader
 require 'vendor/autoload.php';
@@ -76,10 +80,9 @@ $app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 
 $app->config('debug', false);
 $aclExceptionView = new AclExceptionView();
-$aclExceptionHandler = function (Exception $exception) use ($app, $aclExceptionView) {
+$app->error(function (\Exception $exception) use ($app, $aclExceptionView) {
     $aclExceptionView->exceptionHandler($app, $exception);
-};
-$app->error($aclExceptionHandler);
+});
 
 /**
  * Bootstrap Providers
