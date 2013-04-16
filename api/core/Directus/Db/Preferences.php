@@ -28,6 +28,8 @@ class Preferences extends AclAwareTableGateway {
                 ->equalTo('user', $user_id);
         // Fetch row
         $rowset = $this->selectWith($select);
+        $rowset = $rowset->toArray();
+
         if(1 === count($rowset))
             return current($rowset);
 
