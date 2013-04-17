@@ -90,8 +90,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $select->where->equalTo($field, $value);
         });
         $row = $rowset->current();
-        $row = $row->toArray();
         array_walk($row, array($this, 'castFloatIfNumeric'));
+        return $row;
+    }
 
     /**
      * @param Update $update
@@ -124,15 +125,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
         $tableName = is_null($tableName) ? $this->table : $tableName;
         $rowExists = isset($recordData['id']);
-
-        $log = $this->logger();
-        $log->info(__CLASS__."#".__FUNCTION__);
-        $log->info("\$tableName: " . print_r($tableName, true));
-        $log->info("\$rowExists: " . ($rowExists ? "yes" : "no"));
-        $log->info("\$recordData: " . print_r($recordData, true));
-
+        // $log = $this->logger();
+        // $log->info(__CLASS__."#".__FUNCTION__);
+        // $log->info("\$tableName: " . print_r($tableName, true));
+        // $log->info("\$rowExists: " . ($rowExists ? "yes" : "no"));
+        // $log->info("\$recordData: " . print_r($recordData, true));
         $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
-
         $record->populateSkipAcl($recordData, $rowExists);
         // $record->populate($recordData, $rowExists);
         $record->save();
@@ -164,21 +162,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     public function fetchAll() {
         return $this->select(function(Select $select){});
-    }
-
-    public function findOneBy($field, $value) {
-        $rowset = $this->select(function(Select $select) use ($field, $value) {
-            $select->limit(1);
-            $select->where->equalTo($field, $value);
-        });
-        $row = $rowset->current();
-        array_walk($row, array($this, 'castFloatIfNumeric'));
-        return $row;
-    }
-
-    public function find($id, $pk_field_name = "id") {
-        $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
     }
 
     public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = DirectusActivityTableGateway::TYPE_ENTRY) {
