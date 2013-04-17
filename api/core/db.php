@@ -1,6 +1,7 @@
 <?php
 
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Bootstrap;
 
 /**
  * Directus - awesome content management framework for everyone
@@ -40,12 +41,8 @@ require dirname(__FILE__) . '/mysql.php';
 
 class DB extends MySQL {
 
-    var $user_token = 'lcjREKokJYNLkIjY7LUqnCs0wnWSvStvb2PTgw4HWu0=';
-    var $user_id = 1;
-
     function set_entry_relational($tbl_name, $data, $parent_activity_id=null) {
-        global $app;
-        $log = $app->getLog();
+        $log = Bootstrap::get('app')->getLog();
 
         // These columns are aliases and doesn't have corresponding
         // columns in the DB, for example 'alias' and 'relational'
@@ -54,7 +51,7 @@ class DB extends MySQL {
         $alias_meta = array();
         $alias_data = array();
 
-         // Gram the schema so we can see what's possible
+        // Gram the schema so we can see what's possible
         $schema = $this->get_table($tbl_name);
 
         // Create foreign row and update local column with the data id
@@ -70,7 +67,7 @@ class DB extends MySQL {
 
                 // Update/Add foreign data
                 if ($column['ui'] == 'single_media') {
-                    $foreign_id = $this->set_media($foreign_data);
+                    // $foreign_id = $this->set_media($foreign_data);
                 } else {
                     //Fix this. should probably not relate to directus_media, but the specified "related_table"
                     $foreign_id = $this->set_entry('directus_media', $foreign_data);
