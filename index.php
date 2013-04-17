@@ -1,23 +1,26 @@
 <?php
 
-use Directus\Auth\Provider as AuthProvider;
-use Directus\Auth\RequestNonceProvider;
-use Directus\Application;
+// Initialization
+// - Apparently the autoloaders must be registered separately in both index.php and api.php
 
-/**
- * Initialization
- *  - Apparently the autoloaders must be registered separately in both index.php and api.php
- */
+// Exceptional.io error handling
+if(defined('EXCEPTIONAL_API_KEY')) {
+    require_once 'api/vendor-manual/exceptional-php/exceptional.php';
+    Exceptional::setup(EXCEPTIONAL_API_KEY);
+}
 
 // Composer Autoloader
 require 'api/vendor/autoload.php';
 
 // Directus Autoloader
-// require 'api/Directus/autoload.php';
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespace("Directus", dirname(__FILE__) . "/api/core/");
 $loader->register();
+
+use Directus\Auth\Provider as AuthProvider;
+use Directus\Auth\RequestNonceProvider;
+use Directus\Bootstrap;
 
 // Non-autoloaded components
 require 'api/api.php';
@@ -46,8 +49,8 @@ $data['path'] = DIRECTUS_PATH;
 $data['active_media'] = $db->count_active('directus_media');
 
 // Force array json encoding
-$data['extensions'] = array_values(Application::getExtensions());
-$data['ui'] = array_values(Application::getUis());
+$data['extensions'] = array_values(Bootstrap::get('extensions'));
+$data['ui'] = array_values(Bootstrap::get('uis'));
 
 echo template(file_get_contents('main.html'), array(
 	'data'=> json_encode($data),

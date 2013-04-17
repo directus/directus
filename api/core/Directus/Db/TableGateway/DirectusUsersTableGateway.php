@@ -1,31 +1,24 @@
 <?php
 
-namespace Directus\Db;
+namespace Directus\Db\TableGateway;
 
+use Directus\Acl\Acl;
+use Directus\Db\TableGateway\AclAwareTableGateway;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 
-use Directus\Db\TableGateway\AclAwareTableGateway;
+class DirectusUsersTableGateway extends AclAwareTableGateway {
 
-class Users extends AclAwareTableGateway {
+    public static $_tableName = "directus_users";
+
+    public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
+        parent::__construct($aclProvider, self::$_tableName, $adapter);
+    }
 
     const GRAVATAR_SIZE = 100;
 
     public function fetchAllWithGroupData() {
-        // $sql = new Sql($this->adapter);
-        // $select = $sql->select();
-        // $select->from($this->table)
-        //     ->join(
-        //         "directus_groups",
-        //         "directus_groups.id = directus_users.group",
-        //         array('group_name' => 'name'),
-        //         $select::JOIN_LEFT
-        //     );
-
-        // $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        // $rowset = $statement->execute();
-
         $rowset = $this->select(function(Select $select) {
             $select->join(
                 "directus_groups",
@@ -34,6 +27,8 @@ class Users extends AclAwareTableGateway {
                 $select::JOIN_LEFT
             );
         });
+
+        $rowset = $rowset->toArray();
 
         $results = array();
         foreach ($rowset as $row) {
