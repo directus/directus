@@ -2,6 +2,7 @@ config.php
 Icon
 .DS_Store
 
+# Don't track composer phar/lock/vendors
 composer.phar
 api/composer.lock
 api/vendor

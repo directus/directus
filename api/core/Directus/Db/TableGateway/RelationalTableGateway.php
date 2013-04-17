@@ -2,159 +2,222 @@
 
 namespace Directus\Db\TableGateway;
 
+use Directus\Bootstrap;
+use Directus\Db\TableSchema;
+use Directus\Db\RowGateway\AclAwareRowGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Where;
 
 class RelationalTableGateway extends AclAwareTableGateway {
 
-    protected $many_to_one_uis = array('many_to_one', 'single_media');
+    /**
+     * Instance methods
+     */
+
+    public function manageRecordUpdate($schema, $requestPayload, $userId) {
+        // Update/add associations
+        //   @todo need to figure out how to get the log entry ID of the overall ENTRY activity into this
+        //   method, or register the log entries of this method after we run this function, because we
+        //   can't log the parent record update until it the row array has the correct FK IDs in it, but we don't
+        //   have the proper FK IDs until we do association management.
+        $recordWithForeignIds = $this->addOrUpdateAssociations($schema, $requestPayload, null);//$logEntry['id']);
+        // Log update event
+        $logEntry = $this->newActivityLog($recordWithForeignIds, $this->table, $schema, $userId);
+        // Update the parent row
+        return $this->addOrUpdateRecordByArray($recordWithForeignIds);
+    }
+
+    public function updateCollection($entries) {
+        $entries = is_numeric_array($requestPayload) ? $requestPayload : array($requestPayload);
+        foreach($entries as $entry) {
+            $entry = $TableGateway->addOrUpdateRecordByArray($entry);
+            $entry->save();
+        }
+    }
 
     /**
-     * This function does X things:
+     * Relational Setter
      *
-     * 1. Updates immediate row data
-     * 2. Manages many-to-one relationships:
-     *    a. Establishes these for the parent row.
-     *    b. Manages the foreign record.
+     * Given a table schema and a record array, extract the nested association data
+     * from the parent record, and apply the changes to the foreign record sets and
+     * junction tables. Foreign records may be applied as inserts or updates.
+     *
+     * The returned copy of the parent row (with Many-to-One fields replaced with
+     * their foreign IDs, and *-to-Many fields removed) can be used to directly
+     * update the parent record.
+     *
+     * @param array $schema              The table schema array.
+     * @param array $parentRow           The parent record being updated.
+     * @param integer $parentActivityLogId The parent activity log entry ID.
+     * @return  array The parent record, with updated foreign keys in the
+     * Many-to-One fields, and nested collection representations removed.
      */
-    function set_entry_relational($tbl_name, $data, $parent_activity_id=null) {
-        $log = Bootstrap::get('app')->getLog();
-        $olddb = Bootstrap::get('olddb');
+    public function addOrUpdateAssociations($schema, $parentRow, $parentActivityLogId) {
 
-        // These columns are aliases and doesn't have corresponding
-        // columns in the DB, for example 'alias' and 'relational'
-        $alias_types = array('ONETOMANY','MANYTOMANY','ALIAS');
-        $alias_columns = array();
-        $alias_meta = array();
-        $alias_data = array();
-
-        // Grab the schema so we can see what's possible
-        $schema = $olddb->get_table($tbl_name);
-
-        $this->logger(__CLASS__ . "#" . __FUNCTION__ . " with args:");
-        $this->logger(print_r(func_get_args(), true));
-        $this->logger("Produces schema val:");
-        $this->logger(print_r($schema, true));
+        $log = $this->logger();
+        $log->info("RelationalTableGateway#addOrUpdateAssociations");
+        $log->info("\$parentRow pre-process");
+        ob_start();
+        var_dump($parentRow);
+        $log->info(ob_get_clean());
 
         // Create foreign row and update local column with the data id
         foreach($schema as $column) {
-            if (in_array($column['ui'], $this->many_to_one_uis) && is_array($data[$column['id']])) {
-                $foreign_data = $data[$column['id']];
+            $colName = $column['id']; // correct var naming?
+            $log->info("Looking at column $colName");
 
-                // Threre is no nested item. Go ahead...
-                if (sizeof($foreign_data) == 0) {
-                    $data[$column['id']] = null;
-                    continue;
-                }
-
-                // Update/Add foreign data
-                if ($column['ui'] == 'single_media') {
-                    $foreign_id = $this->set_media($foreign_data);
-                    // {does}
-                    // $isExisting = isset($data['id']);
-                    // if ($isExisting)
-                    //     unset($data['date_uploaded']);
-                    // $id = $this->set_entry('directus_media', $data);
-                    // if(!isset($data['title']))
-                    //     $data['title'] = '';
-                    // $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data, $parent_id);
-                    // return $id;
-                } else {
-                    //Fix this. should probably not relate to directus_media, but the specified "related_table"
-                    $foreign_id = $this->set_entry('directus_media', $foreign_data);
-                    // $record = $this->newRow('directus_media');
-                    /**
-                     * @refactor steps, whether set or single
-                     * 1. For those records which have IDs, do these IDs already exist in the DB?
-                     * 2. Run update queries on those which do
-                     * 3. Run insert queries on those which don't
-                     * * But isn't this just one record we're dealing with?
-                     */
-                }
-
-                // Save the data id...
-                $data[$column['id']] = $foreign_id;
+            // Ignore absent values & non-arrays
+            if(!isset($parentRow[$colName]) || !is_array($parentRow[$colName])) {
+                $log->info("Unset or non-array. Skipping.");
+                continue;
             }
-        }
 
-        // Seperate relational columns from schema
-        foreach($schema as $column) {
-            if (in_array($column['type'], $alias_types)) {
-                array_push($alias_columns, $column['column_name']);
-                $alias_meta[$column['column_name']] = $column;
+            $fieldIsCollectionAssociation = in_array($column['type'], TableSchema::$association_types);
+            $lowercaseColumnType = strtolower($column['type']);
+
+            // Ignore empty OneToMany collections
+            $fieldIsOneToMany = "onetomany" === $lowercaseColumnType;
+
+            // Ignore non-arrays and empty collections
+            if(empty($parentRow[$colName])) {//} || ($fieldIsOneToMany && )) {
+                $log->info("Empty collection association. Skipping.");
+                // Once they're managed, remove the foreign collections from the record array
+                if($fieldIsCollectionAssociation)
+                    unset($parentRow[$colName]);
+                continue;
             }
-        }
 
-        // Seperate relational data
-        foreach($data as $column_name => $value) {
-            if (in_array($column_name, $alias_columns)) {
-                $alias_data[$column_name] = $value;
-                unset($data[$column_name]);
+            $foreignDataSet = $parentRow[$colName];
+            $colUiType = $column['ui'];
+
+            /** Many-to-One */
+            if (in_array($colUiType, TableSchema::$many_to_one_uis)) {
+                $parentRow[$colName] = $this->addOrUpdateManyToOne($foreignDataSet);
+                $log->info("Identified Many-to-One");
             }
-        }
 
-        // Update local (non-relational) data
-        $id = $this->set_entry($tbl_name, $data);
-        /**
-         * @refactor  make update query via QB
-         */
+            /** One-to-Many, Many-to-Many */
+            elseif ($fieldIsCollectionAssociation) {
+                $log->info("Field is a non-empty collection association.");
 
-        // Log it
-        $action = isset($data['id']) ? 'UPDATE' : 'ADD';
-        $master_item = find($schema,'master',true);
-        $identifier = isset($master_item) ? $data[$master_item['column_name']] : null;
-        $activity_id = $this->log_activity('ENTRY',$tbl_name, $action, $id, $identifier, $data, $parent_activity_id);
+                $foreignTableName = $column['table_related'];
+                $foreignJoinColumn = $column['junction_key_right'];
+                $log->info("foreignTableName: $foreignTableName");
+                $log->info("foreignJoinColumn: $foreignJoinColumn");
+                switch ($lowercaseColumnType) {
 
-        // Update the related columns
-        foreach($alias_meta as $column_name => $item) {
-
-            if (!isset($alias_data[$column_name])) continue;
-
-            $data = $alias_data[$column_name];
-            $table_related = $item['table_related'];
-            $junction_key_right = $item['junction_key_right'];
-
-            switch($item['type']) {
-                case 'ONETOMANY':
-                    foreach ($data as $foreign_table_row) {
-                        $foreign_table_row[$junction_key_right] = $id;
-                        $this->set_entry_relational($table_related, $foreign_table_row, $activity_id);
-                    }
-                    break;
-
-                case 'MANYTOMANY':
-                    $junction_table = $item['junction_table'];
-                    $junction_key_left = $item['junction_key_left'];
-                    foreach($data as $junction_table_row) {
-
-                        // Delete?
-                        if (isset($junction_table_row['active']) && ($junction_table_row['active'] == '0')) {
-                            $junction_table_id = intval($junction_table_row['id']);
-                            $this->dbh->exec("DELETE FROM $junction_table WHERE id=$junction_table_id");
-                            $this->log_activity($junction_table, 'DELETE', $junction_table_id, 'TEST', null, $activity_id);
-                            continue;
+                    /** One-to-Many */
+                    case 'onetomany':
+                        $log->info("Identified: One-to-Many.");
+                        $olddb = Bootstrap::get('olddb');
+                        $ForeignSchema = new TableSchema($foreignTableName, $olddb);
+                        $collectionAliasFieldNames = $ForeignSchema->getTableCollectionAliasFieldNames();
+                        $log->info("collectionAliasFieldNames");
+                        $log->info(print_r($collectionAliasFieldNames, true));
+                        foreach ($foreignDataSet as $foreignRecord) {
+                            // Remove collection fields
+                            $nonCollectionAliasFieldNames = array_diff(array_keys($foreignRecord), $collectionAliasFieldNames);
+                            $log->info("nonCollectionAliasFieldNames");
+                            $log->info(print_r($nonCollectionAliasFieldNames, true));
+                            $filteredForeignRecord = array_intersect_key($foreignRecord, array_flip($nonCollectionAliasFieldNames));
+                            $log->info("filteredForeignRecord");
+                            $log->info(print_r($filteredForeignRecord, true));
+                            // Register the parent record ("one") on the foreign records ("many")
+                            $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
+                            // Register changes to the foreign record
+                            $row = $this->addOrUpdateRecordByArray($filteredForeignRecord, $foreignTableName);
                         }
+                        break;
 
-                        // Update foreign table
-                        $foreign_id = $this->set_entry_relational($table_related, $junction_table_row['data'], $activity_id);
+                    /** Many-to-Many */
+                    case 'manytomany':
+                        $log->info("Identified: Many-to-Many.");
+                        /**
+                         * [+] Many-to-Many payloads declare collection items this way:
+                         * $parentRecord['collectionName1'][0-9]['data']; // record key-value array
+                         * [+] With optional association metadata:
+                         * $parentRecord['collectionName1'][0-9]['id']; // for updating a pre-existing junction row
+                         * $parentRecord['collectionName1'][0-9]['active']; // for disassociating a junction via the '0' value
+                         */
+                        $junctionTableName = $column['junction_table'];
+                        $junctionKeyLeft = $column['junction_key_left'];
+                        foreach($foreignDataSet as $junctionRow) {
+                            /** This association is designated for removal */
+                            if (isset($junctionRow['active']) && $junctionRow['active'] == 0) {
+                                $log->info("Association is flagged for removal. Deleting junction record.");
+                                $JunctionTable = new RelationalTableGateway($this->aclProvider, $junctionTableName, $this->adapter);
+                                $Where = new Where;
+                                $Where->equalTo('id', $junctionRow['id']);
+                                $JunctionTable->delete($Where);
+                                continue;
+                            }
+                            /** Update foreign record */
+                            $log->info("Updating foreign records...");
+                            $foreignRecord = $this->addOrUpdateRecordByArray($junctionRow['data'], $foreignTableName);
+                            // Junction/Association row
+                            $junctionTableRecord = array(
+                                $junctionKeyLeft   => $parentRow['id'],
+                                $foreignJoinColumn => $foreignRecord['id']
+                            );
+                            // Optional ID param, to update the junction table record
+                            if (isset($junctionRow['id'])) {
+                                $log->info("Specified Junction row ID -- updating existing junction row.");
+                                $junctionTableRecord['id'] = $junctionRow['id'];
+                            } else {
+                                $log->info("Establishing new junction row.");
+                            }
 
-                        $junction_table_data = array(
-                            $junction_key_left => $id,
-                            $junction_key_right => $foreign_id
-                        );
+                            $log->info("Junction row data for table $junctionTableName:");
+                            $log->info(print_r($junctionTableRecord, true));
 
-                        if (isset($junction_table_row['id']))
-                            $junction_table_data['id'] = $junction_table_row['id'];
+                            $this->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
+                        }
+                        break;
 
-                        $this->set_entry_relational($junction_table, $junction_table_data, $activity_id);
-                    }
-                    break;
+                    default: $log->warn("Warning: neither One-to-Many nor Many-to-Many");
+                }
+                // Once they're managed, remove the foreign collections from the record array
+                unset($parentRow[$colName]);
             }
+
+            else $log->info("Column is not an association.");
         }
-        return $id;
+
+        $log->info("\$parentRow post-process");
+        ob_start();
+        var_dump($parentRow);
+        $log->info(ob_get_clean());
+
+        return $parentRow;
     }
 
+    protected function addOrUpdateManyToOne(array $foreignRecord) {
+        // Update/Add foreign record
+        $rowExists = isset($foreignRecord['id']);
+        if($rowExists)
+            unset($foreignRecord['date_uploaded']);
+        $row = $this->addOrUpdateRecordByArray($foreignRecord, 'directus_media');
+        /** Register in activity log */
+        // $row = $row->toArray();
+        // $activityType = $rowExists ? 'UPDATE' : 'ADD';
+        // $this->log_activity('MEDIA', 'directus_media', $activityType, $row['id'], $row['title'], $row, null);//$parentRow['id']);
+        return $row['id'];
+        /* IS THIS conditional necessary still?
+        if ('single_media' == $colUiType) {
+            // ...
+            // What's just above would be here.
+        }
+        else
+            // Fix this. should probably not relate to directus_media, but the specified "related_table"
+            $foreign_id = $this->set_entry('directus_media', $foreignRecord);
+        */
+    }
+
+    /**
+     * Relational Getter
+     */
     public function getEntries($params = array()) {
         // tmp transitional.
         global $db;
@@ -266,21 +329,41 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         list($table_entry) = $table_entries;
 
+        $log = $this->logger();
+        $log->info(__CLASS__ . "#" . __FUNCTION__);
+        $log->info("\$table_entries");
+        ob_start();
+        var_dump($table_entries);
+        $log->info(ob_get_clean());
+        $log->info("Fetching one item");
+        $log->info(count($alias_fields) . " alias fields:");
+        $log->info(print_r($alias_fields, true));
+
         foreach ($alias_fields as $alias) {
+            // $log->info("Looking at alias field {$alias['id']}");
             switch($alias['type']) {
                 case 'MANYTOMANY':
+                    // $log->info("Many-to-Many");
                     $foreign_data = $this->loadManyToManyData($this->table, $alias['table_related'],
                         $alias['junction_table'], $alias['junction_key_left'], $alias['junction_key_right'],
                         $params['id']);
                     break;
                 case 'ONETOMANY':
+                    // $log->info("One-to-Many");
                     $foreign_data = $this->loadOneToManyData($alias['table_related'], $alias['junction_key_right'], $params['id']);
                     break;
             }
+
             if(isset($foreign_data)) {
+                $log->info("\$foreign_data");
+                ob_start();
+                var_dump($foreign_data);
+                $log->info(ob_get_clean());
+
                 $column = $alias['column_name'];
                 $table_entry[$column] = $foreign_data;
             }
+            else $log->info("no \$foreign_data value");
         }
 
         return $table_entry;
@@ -288,7 +371,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
     /**
      *
-     * ASSOCIATION FUNCTIONS
+     * Association Getter Functions
      *
      **/
 
@@ -303,11 +386,16 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Run query
         $select = new Select($table);
         $select->where->equalTo($column_name, $column_equals);
+
+        $log = $this->logger();
+        $log->info(__CLASS__ . "#" . __FUNCTION__);
+        $log->info("query: " . $this->dumpSql($select));
+
         $TableGateway = new RelationalTableGateway($this->aclProvider, $table, $this->adapter);
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
         // Process results
-        foreach ($results as $row)
+        foreach ($results as &$row)
             array_walk($row, array($this, 'castFloatIfNumeric'));
         return array('rows' => $results);
     }
@@ -323,7 +411,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     private function loadManyToOneData($table_schema, $table_entries) {
         // Identify the ManyToOne columns
         foreach ($table_schema as $col) {
-            $isManyToOneColumn = in_array($col['ui'], $this->many_to_one_uis);
+            $isManyToOneColumn = in_array($col['ui'], TableSchema::$many_to_one_uis);
             if ($isManyToOneColumn) {
                 $foreign_id_column = $col['id'];
                 $foreign_table_name = ($col['ui'] == 'single_media') ? 'directus_media' : $col['options']['related_table'];
@@ -346,7 +434,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                 $foreign_table = array();
                 foreach ($results as $row) {
-                    // @todo I wonder if all of this looping and casting is necessary
                     array_walk($row, array($this, 'castFloatIfNumeric'));
                     $foreign_table[$row['id']] = $row;
                 }
@@ -377,23 +464,42 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @return array                      Foreign rowset
      */
     private function loadManyToManyData($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals) {
-        $foreign_join_column = "$junction_table.$junction_key_right";
-        $join_column = "$junction_table.$junction_key_left";
+        $foreign_table_pk = "id";
+        $foreign_join_column = "$foreign_table.$foreign_table_pk";
+        $junction_join_column = "$junction_table.$junction_key_right";
+        $junction_comparison_column = "$junction_table.$junction_key_left";
+
+        $junction_id_column = "$junction_table.id";
+
+        // Less likely name collision:
+        $junction_id_column_alias = "directus_junction_id_column";
 
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-            ->from($junction_table)
-            ->join($foreign_table, "$foreign_join_column = $join_column")
-            ->where(array($join_column => $column_equals));
+            ->from($foreign_table)
+            ->join($junction_table, "$foreign_join_column = $junction_join_column", array($junction_id_column_alias => 'id'))
+            ->where(array($junction_comparison_column => $column_equals))
+            ->order("$junction_id_column ASC");
 
-        $JunctionTable = new RelationalTableGateway($this->aclProvider, $junction_table, $this->adapter);
-        $results = $JunctionTable->selectWith($select);
+        $log = $this->logger();
+        $log->info(__CLASS__ . "#" . __FUNCTION__);
+        $log->info("query: " . $this->dumpSql($select));
+
+        $ForeignTable = new RelationalTableGateway($this->aclProvider, $foreign_table, $this->adapter);
+        $results = $ForeignTable->selectWith($select);
         $results = $results->toArray();
+
+        $log->info("results:");
+        $log->info(print_r($results, true));
 
         $foreign_data = array();
         foreach($results as $row) {
             array_walk($row, array($this, 'castFloatIfNumeric'));
-            $foreign_data[] = array('id' => $row['id'], 'data' => $row);
+
+            $junction_table_id = (int) $row[$junction_id_column_alias];
+            unset($row[$junction_id_column_alias]);
+
+            $foreign_data[] = array('id' => $junction_table_id, 'data' => $row);
         }
         return array('rows' => $foreign_data);
     }

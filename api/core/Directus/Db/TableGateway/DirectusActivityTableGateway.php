@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Db;
+namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
@@ -8,7 +8,17 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-class Activity extends AclAwareTableGateway {
+class DirectusActivityTableGateway extends AclAwareTableGateway {
+
+    // Populates directus_activity.type
+    const TYPE_ENTRY    = "ENTRY";
+    const TYPE_MEDIA    = "MEDIA";
+    const TYPE_SETTINGS = "SETTINGS";
+    const TYPE_UI       = "UI";
+
+    // Populates directus_activity.action
+    const ACTION_ADD    = "ADD";
+    const ACTION_UPDATE = "UPDATE";
 
     public static $_tableName = "directus_activity";
 

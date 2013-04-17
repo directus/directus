@@ -29,6 +29,12 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
       options.error = function(xhr, status, thrown) {
         if (status.status === 404) {
           app.router.showAlert('Not found!');
+        } else if (status.status === 403) {
+          var errorData = jQuery.parseJSON(status.responseText);
+          var win = new Backbone.Layout();
+          win.$el.html(errorData.message);
+          win.render();
+          app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
         } else {
           console.log('EROR',status);
           var win = new Backbone.Layout();
