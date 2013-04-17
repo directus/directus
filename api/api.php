@@ -41,9 +41,6 @@ switch (DIRECTUS_ENV) {
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
-use Directus\View\JsonView;
-use Directus\View\AclExceptionView;
-
 use Directus\Db;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
@@ -51,10 +48,10 @@ use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
-
-// Slim Middleware
 use Directus\Middleware\MustBeLoggedIn;
 use Directus\Middleware\MustHaveRequestNonce;
+use Directus\View\JsonView;
+use Directus\View\AclExceptionView;
 
 // API Version shortcut for routes:
 $v = API_VERSION;

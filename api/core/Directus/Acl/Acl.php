@@ -28,7 +28,7 @@ class Acl {
      * @var array
      */
     public static $base_acl = array(
-        self::TABLE_PERMISSIONS     => array('add','edit','delete'), //array('edit','delete'),
+        self::TABLE_PERMISSIONS     => array('add','edit','delete'),
         self::FIELD_READ_BLACKLIST  => array(),
         self::FIELD_WRITE_BLACKLIST => array()
     );
@@ -41,8 +41,9 @@ class Acl {
     public static $mandatory_read_lists = array(
         // key: table name ('*' = all tables, baseline definition)
         // value: array of column names
-        '*' => array('id','active','directus_user')
-        // ...
+        '*'                 => array('id','active'),
+        'directus_activity' => array('user'),
+        'directus_media'    => array('user')
     );
 
     protected $groupPrivileges;
