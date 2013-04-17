@@ -69,7 +69,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return parent::executeInsert($insert);
     }
 
-<<<<<<< HEAD
+
     public function fetchAllActiveSort($sort = null, $dir = "ASC") {
         return $this->select(function(Select $select) use ($sort, $dir) {
             $select->where->equalTo("active", 1);
@@ -92,7 +92,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $row = $rowset->current();
         $row = $row->toArray();
         array_walk($row, array($this, 'castFloatIfNumeric'));
-=======
+
     /**
      * @param Update $update
      * @return mixed
@@ -144,7 +144,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $table = is_null($table) ? $this->table : $table;
         $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
         $row = new AclAwareRowGateway($this->aclProvider, $pk_field_name, $table, $this->adapter);
->>>>>>> bbfff3756964dbfeb2f1caecbfa9292010dfe548
         return $row;
     }
 
