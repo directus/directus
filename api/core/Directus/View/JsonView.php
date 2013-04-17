@@ -2,7 +2,7 @@
 
 namespace Directus\View;
 
-use Directus\Application;
+use Directus\Bootstrap;
 
 /**
  * @todo  Could be implemented as middleware.
@@ -57,7 +57,7 @@ class JsonView {
     public static function compareApiResponses($new, $old) {
         $id = time();
         $old = self::format_json(json_encode($old));
-        $log = Application::getApp()->getLog();
+        $log = Bootstrap::get('app')->getLog();
         $uri = $_SERVER['REQUEST_URI'];
         if(0 === strcmp($new, $old))
             return $log->info("The response comparison matched. [$uri]");
