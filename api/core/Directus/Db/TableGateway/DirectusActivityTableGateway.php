@@ -1,13 +1,30 @@
 <?php
 
-namespace Directus\Db;
+namespace Directus\Db\TableGateway;
 
+use Directus\Acl\Acl;
+use Directus\Db\TableGateway\AclAwareTableGateway;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-use Directus\Db\TableGateway\AclAwareTableGateway;
+class DirectusActivityTableGateway extends AclAwareTableGateway {
 
-class Activity extends AclAwareTableGateway {
+    // Populates directus_activity.type
+    const TYPE_ENTRY    = "ENTRY";
+    const TYPE_MEDIA    = "MEDIA";
+    const TYPE_SETTINGS = "SETTINGS";
+    const TYPE_UI       = "UI";
+
+    // Populates directus_activity.action
+    const ACTION_ADD    = "ADD";
+    const ACTION_UPDATE = "UPDATE";
+
+    public static $_tableName = "directus_activity";
+
+    public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
+        parent::__construct($aclProvider, self::$_tableName, $adapter);
+    }
 
     public function fetchFeed() {
         $columns = array('id','identifier','action','table_name','row_id','user','datetime','type');
@@ -23,14 +40,9 @@ class Activity extends AclAwareTableGateway {
                 ->OR
                 ->equalTo('type', 'MEDIA');
 
-        // @todo why can't we just fetchAll or s'thing?
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $rowset = $statement->execute();
-        $result = array();
-        while($row = $rowset->current())
-            $result[] = $row;
-
-        return array('rows' => $result);
+        $rowset = $this->selectWith($select);
+        $rowset = $rowset->toArray();
+        return array('rows' => $rowset);
     }
 
     public function fetchRevisions($row_id, $table_name) {
@@ -47,13 +59,8 @@ class Activity extends AclAwareTableGateway {
                 ->AND
                 ->equalTo('table_name', $table_name);
 
-        // @todo why can't we just fetchAll or s'thing?
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $rowset = $statement->execute();
-        $result = array();
-        while($row = $rowset->current())
-            $result[] = $row;
-
+        $result = $this->selectWith($select);
+        $result = $result->toArray();
         return $result;
     }
 
