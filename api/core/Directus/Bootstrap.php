@@ -82,6 +82,14 @@ class Bootstrap {
     }
 
     /**
+     * Yield Slim logger
+     * @return \Slim\Extras\Log\DateTimeFileWriter
+     */
+    private static function log() {
+        return self::get('app')->getLog();
+    }
+
+    /**
      * Construct ZendDb adapter.
      * @param  array  $dbConfig
      * @return \Zend\Db\Adapter
