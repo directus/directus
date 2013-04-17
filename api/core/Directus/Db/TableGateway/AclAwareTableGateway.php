@@ -90,6 +90,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $select->where->equalTo($field, $value);
         });
         $row = $rowset->current();
+        $row = $row->toArray();
         array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
     }
