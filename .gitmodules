@@ -1,0 +1,3 @@
+[submodule "api/vendor-manual/exceptional-php"]
+	path = api/vendor-manual/exceptional-php
+	url = git://github.com/ankane/exceptional-php.git
