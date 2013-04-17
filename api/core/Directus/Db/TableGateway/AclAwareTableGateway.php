@@ -38,6 +38,15 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         });
     }
 
+    public function fetchAllActiveSort($sort = null, $dir = "ASC") {
+        return $this->select(function(Select $select) use ($sort, $dir) {
+            $select->where->equalTo("active", 1);
+            if(!is_null($sort)) {
+                $select->order("$sort $dir");
+            }
+        });
+    }
+
     public function find($id, $pk_field_name = "id") {
         $record = $this->findOneBy($pk_field_name, $id);
         return $record;
@@ -49,6 +58,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $select->where->equalTo($field, $value);
         });
         $row = $rowset->current();
+        $row = $row->toArray();
         array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
     }
