@@ -3,19 +3,19 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
-use Directus\Acl\Exception\UnauthorizedAddException;
+use Directus\Acl\Exception\UnauthorizedTableAddException;
 use Directus\Bootstrap;
 use Directus\Db\RowGateway\AclAwareRowGateway;
+use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Insert;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Update;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
-
-    protected $many_to_one_uis = array('many_to_one', 'single_media');
 
     protected $aclProvider;
 
@@ -36,46 +36,83 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     /**
+     * Static Factory Methods
+     */
+
+    public static function makeTableGatewayFromTableName($aclProvider, $table, $adapter) {
+        /**
+         * Underscore to camelcase table name to namespaced table gateway classname,
+         * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
+         */
+        $tableGatewayClassName = underscoreToCamelCase($table) . "TableGateway";
+        $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
+        if(class_exists($tableGatewayClassName))
+            return new $tableGatewayClassName($aclProvider, $adapter);
+        return new self($aclProvider, $table, $adapter);
+    }
+
+    /**
      * OVERRIDES
      */
 
     /**
-     * Insert
+     * @todo add $columns support
      *
-     * @param  array $set
-     * @return int
-     * @throws \Directus\Acl\Exception\UnauthorizedAddException
+     * @param Insert $insert
+     * @return mixed
+     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
      */
-    public function insert($set)
+    protected function executeInsert(Insert $insert)
     {
-        $this->checkAddRights();
-        return parent::insert($set);
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'add'))
+            throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
+        return parent::executeInsert($insert);
     }
 
     /**
-     * @param Insert $insert
+     * @param Update $update
      * @return mixed
-     * @throws \Directus\Acl\Exception\UnauthorizedAddException
+     * @throws Exception\RuntimeException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     *
+     * @todo  needs testing
      */
-    public function insertWith(Insert $insert)
+    protected function executeUpdate(Update $update)
     {
-        $this->checkAddRights();
-        return parent::insertWith($insert);
+        /**
+         * ACL Enforcement
+         */
+        $updateRaw = $update->getRawState();
+        /**
+         * Enforce Write Blacklist
+         */
+        // @todo will all fields lack table prefixes? what if they're prefixed arbitrarily?
+        // or if they contain quotes? may need to normalize field names
+        $attemptOffsets = array_keys($updateRaw['sets']);
+        $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+        parent::executeUpdate($update);
     }
 
     /**
      * HELPER FUNCTIONS
      */
 
-    /**
-     * Is the user group allowed to create new records?
-     * @return  null
-     * @throws \Directus\Acl\Exception\UnauthorizedAddException
-     */
-    public function checkAddRights() {
-        if(!$this->aclProvider->hasTablePrivilege($this->table, 'add')) {
-            throw new UnauthorizedAddException("Group lacks permission to add records to table: " . $this->table);
-        }
+    public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
+        $tableName = is_null($tableName) ? $this->table : $tableName;
+        $rowExists = isset($recordData['id']);
+
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__);
+        $log->info("\$tableName: " . print_r($tableName, true));
+        $log->info("\$rowExists: " . ($rowExists ? "yes" : "no"));
+        $log->info("\$recordData: " . print_r($recordData, true));
+
+        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
+
+        $record->populateSkipAcl($recordData, $rowExists);
+        // $record->populate($recordData, $rowExists);
+        $record->save();
+        return $record;
     }
 
     public function newRow($table = null, $pk_field_name = null)
@@ -90,15 +127,19 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return Bootstrap::get('app')->getLog();
     }
 
-    public function fetchAll() {
-        return $this->select(function(Select $select) {
-
-        });
+    /**
+     * Convenience method for dumping a ZendDb Sql query object as debug output.
+     * @param  AbstractSql $query
+     * @return null
+     */
+    protected function dumpSql(AbstractSql $query) {
+        $sql = new Sql($this->adapter);
+        $query = @$sql->getSqlStringForSqlObject($query);
+        return $query;
     }
 
-    public function find($id, $pk_field_name = "id") {
-        $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
+    public function fetchAll() {
+        return $this->select(function(Select $select){});
     }
 
     public function findOneBy($field, $value) {
@@ -111,19 +152,35 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $row;
     }
 
-    public function castFloatIfNumeric(&$value) {
-        $value = is_numeric($value) ? (float) $value : $value;
+    public function find($id, $pk_field_name = "id") {
+        $record = $this->findOneBy($pk_field_name, $id);
+        return $record;
     }
 
-    /**
-     * Convenience method for dumping a ZendDb Sql query object as debug output.
-     * @param  AbstractSql $query
-     * @return null
-     */
-    protected function dumpSql(AbstractSql $query) {
-        $sql = new Sql($this->adapter);
-        $query = @$sql->getSqlStringForSqlObject($query);
-        return $query;
+    public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = DirectusActivityTableGateway::TYPE_ENTRY) {
+        // Find record identifier
+        $master_item = find($schema, 'master', true);
+
+        $identifier = null;
+        if($master_item && array_key_exists($master_item['column_name'], $row))
+            $identifier = $row[$master_item['column_name']];
+
+        // Make log entry
+        $logEntry = array(
+            'type' => $type,
+            'action' => isset($row['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD,
+            'identifier' => $identifier,
+            'table_name' => $tableName,
+            'row_id' => isset($row['id']) ? $row['id'] : null,
+            'user' => $userId,
+            'data' => json_encode($row),
+            'parent_id' => $parentId
+        );
+        return $this->addOrUpdateRecordByArray($logEntry, 'directus_activity');
+    }
+
+    public function castFloatIfNumeric(&$value) {
+        $value = is_numeric($value) ? (float) $value : $value;
     }
 
 }
