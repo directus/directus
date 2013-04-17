@@ -1,14 +1,20 @@
 <?php
 
-namespace Directus\Db;
+namespace Directus\Db\TableGateway;
 
+use Directus\Acl\Acl;
+use Directus\Db\TableGateway\AclAwareTableGateway;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-use Directus\Application;
-use Directus\Db\TableGateway\AclAwareTableGateway;
+class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
-class Preferences extends AclAwareTableGateway {
+    public static $_tableName = "directus_preferences";
+
+    public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
+        parent::__construct($aclProvider, self::$_tableName, $adapter);
+    }
 
     public function fetchByUserAndTable($user_id, $table) {
         $sql = new Sql($this->adapter);
@@ -21,10 +27,11 @@ class Preferences extends AclAwareTableGateway {
                 ->AND
                 ->equalTo('user', $user_id);
         // Fetch row
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $rowset = $statement->execute();
-        if($row = $rowset->current())
-            return $row;
+        $rowset = $this->selectWith($select);
+        $rowset = $rowset->toArray();
+
+        if(1 === count($rowset))
+            return current($rowset);
 
         // @refactor
         // User doesn't have any preferences for this table yet. Please create!
@@ -51,7 +58,7 @@ class Preferences extends AclAwareTableGateway {
             'active' => '1,2'
         );
         // Insert to DB
-        $id = $db->set_entry('directus_preferences', $data);
+        $id = $db->set_entry(self::$_tableName, $data);
         return $data;
     }
 

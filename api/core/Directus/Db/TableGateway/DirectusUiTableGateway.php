@@ -1,14 +1,20 @@
 <?php
 
-namespace Directus\Db;
+namespace Directus\Db\TableGateway;
 
+use Directus\Acl\Acl;
+use Directus\Db\TableGateway\AclAwareTableGateway;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-use Directus\Application;
-use Directus\Db\TableGateway\AclAwareTableGateway;
+class DirectusUiTableGateway extends AclAwareTableGateway {
 
-class UiOptions extends AclAwareTableGateway {
+    public static $_tableName = "directus_ui";
+
+    public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
+        parent::__construct($aclProvider, self::$_tableName, $adapter);
+    }
 
     /**
      *  Get ui options

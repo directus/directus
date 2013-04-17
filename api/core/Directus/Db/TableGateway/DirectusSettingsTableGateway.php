@@ -1,14 +1,20 @@
 <?php
 
-namespace Directus\Db;
+namespace Directus\Db\TableGateway;
 
+use Directus\Acl\Acl;
+use Directus\Db\TableGateway\AclAwareTableGateway;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-use Directus\Application;
-use Directus\Db\TableGateway\AclAwareTableGateway;
+class DirectusSettingsTableGateway extends AclAwareTableGateway {
 
-class Settings extends AclAwareTableGateway {
+    public static $_tableName = "directus_settings";
+
+    public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
+        parent::__construct($aclProvider, self::$_tableName, $adapter);
+    }
 
     public function fetchAll() {
         $sql = new Sql($this->adapter);
@@ -16,8 +22,8 @@ class Settings extends AclAwareTableGateway {
         $select->columns(array('collection','name','value'))
             ->order('collection');
         // Fetch row
-        $statement = @$sql->prepareStatementForSqlObject($select); // @todo figure out this warning
-        $rowset = $statement->execute();
+        $rowset = $this->selectWith($select);
+        $rowset = $rowset->toArray();
 
         $result = array();
         foreach($rowset as $row) {
