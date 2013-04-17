@@ -66,13 +66,21 @@ define(['app', 'backbone'], function (app, Backbone) {
                     };
 
                     $.ajax({
-                        url: window.directusData.path + "api/core/proxy.php",
-                        dataType: 'json',
+                        //url: window.directusData.path + "api/core/proxy.php",
+                        url: 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch?' + $.param(urlParams),
+                        dataType: 'jsonp',
                         data: {
-                            url: 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch?' + $.param(urlParams)
+                            term: query,
+                            limit: 5,
+                            media: 'music',
+                            entity: 'song'
                         },
+                        //data: {
+                        //    url: 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch?' + $.param(urlParams)
+                        //},
                         success: function (data) {
-                            $.each(data.contents.results, function (i, track) {
+                            console.log("data", data);
+                            $.each(data.results, function (i, track) {
                                 tracks.push(JSON.stringify(track));
                             });
                             typeahead.process(tracks);
