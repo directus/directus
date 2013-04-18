@@ -127,13 +127,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
 
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__);
+
         $tableName = is_null($tableName) ? $this->table : $tableName;
+
+        $log->info("Making a new record for table $tableName with record data: " . print_r($recordData, true));
+
         $rowExists = isset($recordData['id']);
-        // $log = $this->logger();
-        // $log->info(__CLASS__."#".__FUNCTION__);
-        // $log->info("\$tableName: " . print_r($tableName, true));
-        // $log->info("\$rowExists: " . ($rowExists ? "yes" : "no"));
-        // $log->info("\$recordData: " . print_r($recordData, true));
         $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
         $record->populateSkipAcl($recordData, $rowExists);
         // $record->populate($recordData, $rowExists);
