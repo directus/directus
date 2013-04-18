@@ -117,8 +117,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             if(empty($parentRow[$colName])) {//} || ($fieldIsOneToMany && )) {
                 $log->info("Empty collection association. Skipping.");
                 // Once they're managed, remove the foreign collections from the record array
-                if($fieldIsCollectionAssociation)
-                    unset($parentRow[$colName]);
+                unset($parentRow[$colName]);
                 continue;
             }
 
