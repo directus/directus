@@ -203,13 +203,12 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
     $currentUser = AuthProvider::getUserInfo();
     $id = null;
     $params['table_name'] = $table;
-    $schema = $db->get_table($table);
     $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
     switch($app->request()->getMethod()) {
         // POST one new table entry
         case 'POST':
             // $id = $db->set_entry_relational($table, $requestPayload);
-            $newRecord = $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
+            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload);
             $params['id'] = $newRecord['id'];
             break;
         // PUT a change set of table entries
@@ -228,12 +227,11 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $aclProvider, $params, $requestPayload, $app) {
     $currentUser = AuthProvider::getUserInfo();
     $params['table_name'] = $table;
-    $schema = $db->get_table($table);
     $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
         case 'PUT':
-            $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
+            $TableGateway->manageRecordUpdate($table, $requestPayload);
             break;
         // DELETE a given table entry
         case 'DELETE':
@@ -363,9 +361,8 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
         case "PUT":
             if (!is_null($id)) {
                 // $db->set_entries($table, $requestPayload);
-                $schema = $db->get_table($table);
                 $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
-                $TableGateway->manageRecordUpdate($schema, $requestPayload, $currentUser['id']);
+                $TableGateway->manageRecordUpdate($table, $requestPayload);
                 break;
             }
             $db->set_media($requestPayload);

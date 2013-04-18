@@ -22,6 +22,20 @@ class DirectusActivityTableGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_activity";
 
+    public static function makeLogTypeFromTableName($table) {
+        switch($table) {
+            // @todo these first two are assumptions. are they correct?
+            case 'directus_ui':
+                return self::TYPE_UI;
+            case 'directus_settings':
+                return self::TYPE_SETTINGS;
+            case "directus_media":
+                return self::TYPE_MEDIA;
+            default:
+                return self::TYPE_ENTRY;
+        }
+    }
+
     public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
         parent::__construct($aclProvider, self::$_tableName, $adapter);
     }
