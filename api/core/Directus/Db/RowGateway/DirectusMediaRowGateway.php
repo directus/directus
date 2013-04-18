@@ -16,6 +16,9 @@ class DirectusMediaRowGateway extends AclAwareRowGateway {
             $currentUser = AuthProvider::getUserInfo();
             $cmsOwnerColumnName = $this->aclProvider->getCmsOwnerColumnByTable($this->table);
             $rowData[$cmsOwnerColumnName] = $currentUser['id'];
+        } else {
+            if(array_key_exists('date_uploaded', $rowData))
+                unset($rowData['date_uploaded']);
         }
         return $rowData;
     }
