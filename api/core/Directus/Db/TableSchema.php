@@ -21,6 +21,18 @@ class TableSchema {
 		$this->_loadedSchema = $this->_load($table);
 	}
 
+    public function getSchemaArray() {
+        return $this->_loadedSchema;
+    }
+
+    public static function getMasterColumn($schema) {
+        foreach ($schema as $column) {
+            if (array_key_exists('master', $column) && true == $column['master'])
+                return $column;
+        }
+        return false;
+    }
+
     /**
      * @return array The names of all *-to-Many alias collection fields in the schema.
      */
