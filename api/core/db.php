@@ -88,7 +88,7 @@ class DB extends MySQL {
 
                 // Update/Add foreign data
                 if ($column['ui'] == 'single_media') {
-                    // $foreign_id = $this->set_media($foreign_data);
+                    $foreign_id = $this->set_media($foreign_data);
                 } else {
                     //Fix this. should probably not relate to directus_media, but the specified "related_table"
                     $foreign_id = $this->set_entry('directus_media', $foreign_data);
