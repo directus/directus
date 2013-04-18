@@ -131,9 +131,29 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $colUiType = $column['ui'];
 
             /** Many-to-One */
+
             if (in_array($colUiType, TableSchema::$many_to_one_uis)) {
-                $parentRow[$colName] = $this->addOrUpdateManyToOne($foreignDataSet);
-                // $log->info("Identified Many-to-One");
+                $log->info("Identified Many-to-One");
+                $foreignTableName = null;
+                if("single_media" === $colUiType)
+                    $foreignTableName = "directus_media";
+                else {
+                    /**
+                     * Transitional workaround, pending bugfix to many to one uis.
+                     * @see  https://github.com/RNGR/directus6/issues/188
+                     */
+                    $foreignTableName = TableSchema::getRelatedTableFromManyToOneColumnName($colName);
+                    if(is_null($foreignTableName)) {
+                        $log->warn("Skipping column with name $colName; unresolved related table.");
+                        unset($parentRow[$colName]);
+                        continue;
+                    }
+                    $log->info("TRANSITIONAL. Resolved Many-to-One column with name $colName to table_related value $foreignTableName.");
+                }
+
+                // Update/Add foreign record
+                $row = $this->addOrUpdateRecordByArray($foreignDataSet, $foreignTableName);
+                $parentRow[$colName] = $row['id'];
             }
 
             /** One-to-Many, Many-to-Many */
@@ -156,28 +176,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $log->info("</Identified:One-to-Many>");
                         break;
 
-                        /*
-                        $olddb = Bootstrap::get('olddb');
-                        $ForeignSchema = new TableSchema($foreignTableName, $olddb);
-                        $collectionAliasFieldNames = $ForeignSchema->getTableCollectionAliasFieldNames();
-                        // $log->info("collectionAliasFieldNames");
-                        // $log->info(print_r($collectionAliasFieldNames, true));
-                        foreach ($foreignDataSet as $foreignRecord) {
-                            // Remove collection fields
-                            $nonCollectionAliasFieldNames = array_diff(array_keys($foreignRecord), $collectionAliasFieldNames);
-                            // $log->info("nonCollectionAliasFieldNames");
-                            // $log->info(print_r($nonCollectionAliasFieldNames, true));
-                            $filteredForeignRecord = array_intersect_key($foreignRecord, array_flip($nonCollectionAliasFieldNames));
-                            // $log->info("filteredForeignRecord");
-                            // $log->info(print_r($filteredForeignRecord, true));
-                            // Register the parent record ("one") on the foreign records ("many")
-                            $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
-                            // Register changes to the foreign record
-                            $row = $this->addOrUpdateRecordByArray($filteredForeignRecord, $foreignTableName);
-                        }
-                        break;
-                        */
-
                     /** Many-to-Many */
                     case 'manytomany':
                         $log->info("<Identified:Many-to-Many>");
@@ -190,11 +188,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
                          */
                         $junctionTableName = $column['junction_table'];
                         $junctionKeyLeft = $column['junction_key_left'];
+                        $JunctionTable = new RelationalTableGateway($this->aclProvider, $junctionTableName, $this->adapter);
+                        $ForeignTable = new RelationalTableGateway($this->aclProvider, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
                             if (isset($junctionRow['active']) && $junctionRow['active'] == 0) {
                                 // $log->info("Association is flagged for removal. Deleting junction record.");
-                                $JunctionTable = new RelationalTableGateway($this->aclProvider, $junctionTableName, $this->adapter);
                                 $Where = new Where;
                                 $Where->equalTo('id', $junctionRow['id']);
                                 $JunctionTable->delete($Where);
@@ -202,7 +201,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             }
                             /** Update foreign record */
                             $log->info("Updating foreign records...");
-                            $foreignRecord = $this->manageRecordUpdate($foreignTableName, $junctionRow['data'], $parentActivityLogId);
+                            $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], $parentActivityLogId);
                             // Junction/Association row
                             $junctionTableRecord = array(
                                 $junctionKeyLeft   => $parentRow['id'],
@@ -219,7 +218,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             $log->info("Junction row data for table $junctionTableName:");
                             $log->info(print_r($junctionTableRecord, true));
 
-                            $this->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
+                            $JunctionTable->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
                         }
                         $log->info("</Identified:Many-to-Many>");
                         break;
@@ -241,26 +240,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
         return $parentRow;
     }
 
-    protected function addOrUpdateManyToOne(array $foreignRecord) {
+    protected function addOrUpdateManyToOne(array $foreignRecord, $foreignTableName) {
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__." with \$foreignRecord: " . print_r($foreignRecord, true));
         // Update/Add foreign record
-        $rowExists = isset($foreignRecord['id']);
-        if($rowExists)
-            unset($foreignRecord['date_uploaded']);
-        $row = $this->addOrUpdateRecordByArray($foreignRecord, 'directus_media');
-        /** Register in activity log */
-        // $row = $row->toArray();
-        // $activityType = $rowExists ? 'UPDATE' : 'ADD';
-        // $this->log_activity('MEDIA', 'directus_media', $activityType, $row['id'], $row['title'], $row, null);//$parentRow['id']);
+        $row = $this->addOrUpdateRecordByArray($foreignRecord, $foreignTableName);
         return $row['id'];
-        /* IS THIS conditional necessary still?
-        if ('single_media' == $colUiType) {
-            // ...
-            // What's just above would be here.
-        }
-        else
-            // Fix this. should probably not relate to directus_media, but the specified "related_table"
-            $foreign_id = $this->set_entry('directus_media', $foreignRecord);
-        */
     }
 
     /**
