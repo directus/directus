@@ -43,7 +43,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
         $logData = array(
             'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
-            'table_name'    => $this->table,
+            'table_name'    => $tableName,
             'action'        => $logEntryAction,
             'user'          => $currentUser['id'],
             'datetime'      => gmdate('Y-m-d H:i:s'),
@@ -53,11 +53,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $parentLogEntry->populate($logData, false);
         $parentLogEntry->save();
 
+        $RecordGateway = $this;
+        if($tableName !== $this->table)
+            $RecordGateway = new RelationalTableGateway($this->aclProvider, $tableName, $this->adapter);
+
         // Update/add associations
-        $recordWithForeignIds = $this->addOrUpdateAssociations($schemaArray, $requestPayload, $parentLogEntry['id']);
+        $recordWithForeignIds = $RecordGateway->addOrUpdateAssociations($schemaArray, $requestPayload, $parentLogEntry['id']);
 
         // Update the parent row, w/ any new association fields replaced by their IDs
-        $parentRecord = $this->addOrUpdateRecordByArray($recordWithForeignIds);
+        $parentRecord = $RecordGateway->addOrUpdateRecordByArray($recordWithForeignIds);
+
+        $log->info("new parent record data after AATG#addOrUpdateRecordByArray: " . print_r($parentRecord->toArray(), true));
 
         // Fill out the remainder of the log entry data & update the record
         $parentLogEntry['row_id'] = $parentRecord['id'];
@@ -143,7 +149,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     /** One-to-Many */
                     case 'onetomany':
                         $log->info("<Identified:One-to-Many>");
-                        $foreignDataSet = $this->manageRecordUpdate($foreignTableName, $foreignDataSet, $parentActivityLogId);
+                        foreach ($foreignDataSet as &$foreignRecord) {
+                            $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
+                            $foreignRecord = $this->manageRecordUpdate($foreignTableName, $foreignRecord, $parentActivityLogId);
+                        }
                         $log->info("</Identified:One-to-Many>");
                         break;
 
