@@ -52,23 +52,17 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     /**
-     * OVERRIDES
+     * HELPER FUNCTIONS
      */
 
-    /**
-     * @todo add $columns support
-     *
-     * @param Insert $insert
-     * @return mixed
-     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
-     */
-    protected function executeInsert(Insert $insert)
-    {
-        if(!$this->aclProvider->hasTablePrivilege($this->table, 'add'))
-            throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
-        return parent::executeInsert($insert);
+    public function find($id, $pk_field_name = "id") {
+        $record = $this->findOneBy($pk_field_name, $id);
+        return $record;
     }
 
+    public function fetchAll() {
+        return $this->select(function(Select $select){});
+    }
 
     public function fetchAllActiveSort($sort = null, $dir = "ASC") {
         return $this->select(function(Select $select) use ($sort, $dir) {
@@ -77,11 +71,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 $select->order("$sort $dir");
             }
         });
-    }
-
-    public function find($id, $pk_field_name = "id") {
-        $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
     }
 
     public function findOneBy($field, $value) {
@@ -97,34 +86,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
     }
-
-    /**
-     * @param Update $update
-     * @return mixed
-     * @throws Exception\RuntimeException
-     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
-     *
-     * @todo  needs testing
-     */
-    protected function executeUpdate(Update $update)
-    {
-        /**
-         * ACL Enforcement
-         */
-        $updateRaw = $update->getRawState();
-        /**
-         * Enforce Write Blacklist
-         */
-        // @todo will all fields lack table prefixes? what if they're prefixed arbitrarily?
-        // or if they contain quotes? may need to normalize field names
-        $attemptOffsets = array_keys($updateRaw['sets']);
-        $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
-        parent::executeUpdate($update);
-    }
-
-    /**
-     * HELPER FUNCTIONS
-     */
 
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
         $log = $this->logger();
@@ -165,34 +126,50 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $query;
     }
 
-    public function fetchAll() {
-        return $this->select(function(Select $select){});
-    }
-
-    public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = DirectusActivityTableGateway::TYPE_ENTRY) {
-        // Find record identifier
-        $master_item = find($schema, 'master', true);
-
-        $identifier = null;
-        if($master_item && array_key_exists($master_item['column_name'], $row))
-            $identifier = $row[$master_item['column_name']];
-
-        // Make log entry
-        $logEntry = array(
-            'type' => $type,
-            'action' => isset($row['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD,
-            'identifier' => $identifier,
-            'table_name' => $tableName,
-            'row_id' => isset($row['id']) ? $row['id'] : null,
-            'user' => $userId,
-            'data' => json_encode($row),
-            'parent_id' => $parentId
-        );
-        return $this->addOrUpdateRecordByArray($logEntry, 'directus_activity');
-    }
-
     public function castFloatIfNumeric(&$value) {
         $value = is_numeric($value) ? (float) $value : $value;
+    }
+
+    /**
+     * OVERRIDES
+     */
+
+    /**
+     * @todo add $columns support
+     *
+     * @param Insert $insert
+     * @return mixed
+     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
+     */
+    protected function executeInsert(Insert $insert)
+    {
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'add'))
+            throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
+        return parent::executeInsert($insert);
+    }
+
+    /**
+     * @param Update $update
+     * @return mixed
+     * @throws Exception\RuntimeException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     *
+     * @todo  needs testing
+     */
+    protected function executeUpdate(Update $update)
+    {
+        /**
+         * ACL Enforcement
+         */
+        $updateRaw = $update->getRawState();
+        /**
+         * Enforce Write Blacklist
+         */
+        // @todo will all fields lack table prefixes? what if they're prefixed arbitrarily?
+        // or if they contain quotes? may need to normalize field names
+        $attemptOffsets = array_keys($updateRaw['sets']);
+        $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+        parent::executeUpdate($update);
     }
 
 }
