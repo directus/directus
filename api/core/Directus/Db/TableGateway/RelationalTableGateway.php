@@ -39,7 +39,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Mock a top-level log entry record & fetch the new ID for reference
         $currentUser = AuthProvider::getUserInfo();
-        $logEntryAction = isset($requestPayload['id']) ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
+        $logEntryAction = isset($requestPayload['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
         $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
         $logData = array(
             'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
