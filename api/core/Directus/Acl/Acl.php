@@ -163,6 +163,12 @@ class Acl {
         return in_array($privilege, $tablePermissions);
     }
 
+    public function getCmsOwnerColumnByTable($table) {
+        if(!array_key_exists($table, self::$cms_owner_columns_by_table))
+            return false;
+        return self::$cms_owner_columns_by_table[$table];
+    }
+
     /**
      * Given $record, yield the ID contained by that $table's CMS owner column,
      * if one exists. Otherwise return false.
@@ -174,9 +180,9 @@ class Acl {
         $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, "Zend\Db\RowGateway\RowGateway");
         if(!($isRowGateway || is_array($record)))
             throw new \InvalidArgumentException("Parameter must be either an array or an instance/subclass of Zend\Db\RowGateway\RowGateway");
-        if(!array_key_exists($table, self::$cms_owner_columns_by_table))
+        $ownerColumnName = $this->getCmsOwnerColumnByTable($table);
+        if(false === $ownerColumnName)
             return false;
-        $ownerColumnName = self::$cms_owner_columns_by_table[$table];
         if($isRowGateway && !$record->offsetExists($ownerColumnName))
             return false;
         elseif(is_array($record) && !array_key_exists($ownerColumnName, $record))
