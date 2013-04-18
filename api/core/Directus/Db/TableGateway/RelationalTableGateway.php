@@ -2,9 +2,11 @@
 
 namespace Directus\Db\TableGateway;
 
+use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
 use Directus\Db\TableSchema;
 use Directus\Db\RowGateway\AclAwareRowGateway;
+use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -16,17 +18,53 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * Instance methods
      */
 
-    public function manageRecordUpdate($schema, $requestPayload, $userId) {
+    /**
+     * NOTE: Equivalent to old DB#set_entry_relational
+     * @param  [type] $schema         [description]
+     * @param  [type] $requestPayload [description]
+     * @param  [type] $userId         [description]
+     * @return [type]                 [description]
+     */
+    public function manageRecordUpdate($tableName, $requestPayload, $parentActivityLogId = null) {
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__.": " . print_r(func_get_args(), true));
+
+        $TableSchema = new TableSchema($tableName, Bootstrap::get('olddb'));
+        $schemaArray = $TableSchema->getSchemaArray();
+        $masterColumn = TableSchema::getMasterColumn($schemaArray);
+
+        $recordIdentifier = null;
+        if($masterColumn && isset($requestPayload[$masterColumn['column_name']]))
+            $recordIdentifier = $requestPayload[$masterColumn['column_name']];
+
+        // Mock a top-level log entry record & fetch the new ID for reference
+        $currentUser = AuthProvider::getUserInfo();
+        $logEntryAction = isset($requestPayload['id']) ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
+        $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
+        $logData = array(
+            'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
+            'table_name'    => $this->table,
+            'action'        => $logEntryAction,
+            'user'          => $currentUser['id'],
+            'datetime'      => gmdate('Y-m-d H:i:s'),
+            'identifier'    => $recordIdentifier,
+            'parent_id'     => $parentActivityLogId
+        );
+        $parentLogEntry->populate($logData, false);
+        $parentLogEntry->save();
+
         // Update/add associations
-        //   @todo need to figure out how to get the log entry ID of the overall ENTRY activity into this
-        //   method, or register the log entries of this method after we run this function, because we
-        //   can't log the parent record update until it the row array has the correct FK IDs in it, but we don't
-        //   have the proper FK IDs until we do association management.
-        $recordWithForeignIds = $this->addOrUpdateAssociations($schema, $requestPayload, null);//$logEntry['id']);
-        // Log update event
-        $logEntry = $this->newActivityLog($recordWithForeignIds, $this->table, $schema, $userId);
-        // Update the parent row
-        return $this->addOrUpdateRecordByArray($recordWithForeignIds);
+        $recordWithForeignIds = $this->addOrUpdateAssociations($schemaArray, $requestPayload, $parentLogEntry['id']);
+
+        // Update the parent row, w/ any new association fields replaced by their IDs
+        $parentRecord = $this->addOrUpdateRecordByArray($recordWithForeignIds);
+
+        // Fill out the remainder of the log entry data & update the record
+        $parentLogEntry['row_id'] = $parentRecord['id'];
+        $parentLogEntry['data'] = json_encode($parentRecord);
+        $parentLogEntry->save();
+
+        return $parentRecord;
     }
 
     public function updateCollection($entries) {
@@ -55,22 +93,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * Many-to-One fields, and nested collection representations removed.
      */
     public function addOrUpdateAssociations($schema, $parentRow, $parentActivityLogId) {
-
-        // $log = $this->logger();
-        // $log->info("RelationalTableGateway#addOrUpdateAssociations");
-        // $log->info("\$parentRow pre-process");
-        // ob_start();
-        // var_dump($parentRow);
-        // $log->info(ob_get_clean());
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__.": " . print_r(func_get_args(), true));
 
         // Create foreign row and update local column with the data id
         foreach($schema as $column) {
             $colName = $column['id']; // correct var naming?
-            // $log->info("Looking at column $colName");
+            $log->info("Looking at column $colName");
 
             // Ignore absent values & non-arrays
             if(!isset($parentRow[$colName]) || !is_array($parentRow[$colName])) {
-                // $log->info("Unset or non-array. Skipping.");
+                $log->info("Unset or non-array. Skipping.");
                 continue;
             }
 
@@ -82,7 +115,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             // Ignore non-arrays and empty collections
             if(empty($parentRow[$colName])) {//} || ($fieldIsOneToMany && )) {
-                // $log->info("Empty collection association. Skipping.");
+                $log->info("Empty collection association. Skipping.");
                 // Once they're managed, remove the foreign collections from the record array
                 if($fieldIsCollectionAssociation)
                     unset($parentRow[$colName]);
@@ -100,17 +133,22 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             /** One-to-Many, Many-to-Many */
             elseif ($fieldIsCollectionAssociation) {
-                // $log->info("Field is a non-empty collection association.");
+                $log->info("Field is a non-empty collection association.");
 
                 $foreignTableName = $column['table_related'];
                 $foreignJoinColumn = $column['junction_key_right'];
-                // $log->info("foreignTableName: $foreignTableName");
-                // $log->info("foreignJoinColumn: $foreignJoinColumn");
+                $log->info("foreignTableName: $foreignTableName");
+                $log->info("foreignJoinColumn: $foreignJoinColumn");
                 switch ($lowercaseColumnType) {
 
                     /** One-to-Many */
                     case 'onetomany':
-                        // $log->info("Identified: One-to-Many.");
+                        $log->info("<Identified:One-to-Many>");
+                        $foreignDataSet = $this->manageRecordUpdate($foreignTableName, $foreignDataSet, $parentActivityLogId);
+                        $log->info("</Identified:One-to-Many>");
+                        break;
+
+                        /*
                         $olddb = Bootstrap::get('olddb');
                         $ForeignSchema = new TableSchema($foreignTableName, $olddb);
                         $collectionAliasFieldNames = $ForeignSchema->getTableCollectionAliasFieldNames();
@@ -130,10 +168,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             $row = $this->addOrUpdateRecordByArray($filteredForeignRecord, $foreignTableName);
                         }
                         break;
+                        */
 
                     /** Many-to-Many */
                     case 'manytomany':
-                        // $log->info("Identified: Many-to-Many.");
+                        $log->info("<Identified:Many-to-Many>");
                         /**
                          * [+] Many-to-Many payloads declare collection items this way:
                          * $parentRecord['collectionName1'][0-9]['data']; // record key-value array
@@ -154,8 +193,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 continue;
                             }
                             /** Update foreign record */
-                            // $log->info("Updating foreign records...");
-                            $foreignRecord = $this->addOrUpdateRecordByArray($junctionRow['data'], $foreignTableName);
+                            $log->info("Updating foreign records...");
+                            $foreignRecord = $this->manageRecordUpdate($foreignTableName, $junctionRow['data'], $parentActivityLogId);
                             // Junction/Association row
                             $junctionTableRecord = array(
                                 $junctionKeyLeft   => $parentRow['id'],
@@ -163,32 +202,33 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             );
                             // Optional ID param, to update the junction table record
                             if (isset($junctionRow['id'])) {
-                                // $log->info("Specified Junction row ID -- updating existing junction row.");
+                                $log->info("Specified Junction row ID -- updating existing junction row.");
                                 $junctionTableRecord['id'] = $junctionRow['id'];
                             } else {
-                                // $log->info("Establishing new junction row.");
+                                $log->info("Establishing new junction row.");
                             }
 
-                            // $log->info("Junction row data for table $junctionTableName:");
-                            // $log->info(print_r($junctionTableRecord, true));
+                            $log->info("Junction row data for table $junctionTableName:");
+                            $log->info(print_r($junctionTableRecord, true));
 
                             $this->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
                         }
+                        $log->info("</Identified:Many-to-Many>");
                         break;
 
-                    // default: $log->warn("Warning: neither One-to-Many nor Many-to-Many");
+                    default: $log->warn("Warning: neither One-to-Many nor Many-to-Many");
                 }
                 // Once they're managed, remove the foreign collections from the record array
                 unset($parentRow[$colName]);
             }
 
-            // else $log->info("Column is not an association.");
+            else $log->info("Column is not an association.");
         }
 
-        // $log->info("\$parentRow post-process");
-        // ob_start();
-        // var_dump($parentRow);
-        // $log->info(ob_get_clean());
+        $log->info("\$parentRow post-process");
+        ob_start();
+        var_dump($parentRow);
+        $log->info(ob_get_clean());
 
         return $parentRow;
     }
@@ -329,15 +369,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         list($table_entry) = $table_entries;
 
-        $log = $this->logger();
-        $log->info(__CLASS__ . "#" . __FUNCTION__);
-        $log->info("\$table_entries");
-        ob_start();
-        var_dump($table_entries);
-        $log->info(ob_get_clean());
-        $log->info("Fetching one item");
-        $log->info(count($alias_fields) . " alias fields:");
-        $log->info(print_r($alias_fields, true));
+        // $log = $this->logger();
+        // $log->info(__CLASS__ . "#" . __FUNCTION__);
+        // $log->info("\$table_entries");
+        // ob_start();
+        // var_dump($table_entries);
+        // $log->info(ob_get_clean());
+        // $log->info("Fetching one item");
+        // $log->info(count($alias_fields) . " alias fields:");
+        // $log->info(print_r($alias_fields, true));
 
         foreach ($alias_fields as $alias) {
             // $log->info("Looking at alias field {$alias['id']}");
@@ -355,15 +395,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
             }
 
             if(isset($foreign_data)) {
-                $log->info("\$foreign_data");
-                ob_start();
-                var_dump($foreign_data);
-                $log->info(ob_get_clean());
+                // $log->info("\$foreign_data");
+                // ob_start();
+                // var_dump($foreign_data);
+                // $log->info(ob_get_clean());
 
                 $column = $alias['column_name'];
                 $table_entry[$column] = $foreign_data;
             }
-            else $log->info("no \$foreign_data value");
+            // else $log->info("no \$foreign_data value");
         }
 
         return $table_entry;
@@ -387,9 +427,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $select = new Select($table);
         $select->where->equalTo($column_name, $column_equals);
 
-        $log = $this->logger();
-        $log->info(__CLASS__ . "#" . __FUNCTION__);
-        $log->info("query: " . $this->dumpSql($select));
+        // $log = $this->logger();
+        // $log->info(__CLASS__ . "#" . __FUNCTION__);
+        // $log->info("query: " . $this->dumpSql($select));
 
         $TableGateway = new RelationalTableGateway($this->aclProvider, $table, $this->adapter);
         $rowset = $TableGateway->selectWith($select);
@@ -481,16 +521,16 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->where(array($junction_comparison_column => $column_equals))
             ->order("$junction_id_column ASC");
 
-        $log = $this->logger();
-        $log->info(__CLASS__ . "#" . __FUNCTION__);
-        $log->info("query: " . $this->dumpSql($select));
+        // $log = $this->logger();
+        // $log->info(__CLASS__ . "#" . __FUNCTION__);
+        // $log->info("query: " . $this->dumpSql($select));
 
         $ForeignTable = new RelationalTableGateway($this->aclProvider, $foreign_table, $this->adapter);
         $results = $ForeignTable->selectWith($select);
         $results = $results->toArray();
 
-        $log->info("results:");
-        $log->info(print_r($results, true));
+        // $log->info("results:");
+        // $log->info(print_r($results, true));
 
         $foreign_data = array();
         foreach($results as $row) {
