@@ -169,9 +169,13 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
         }
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
+            // @todo replace the user value with the auth'd user value
             item.user = 1;
             item.active = 1;
             item.title = app.capitalize(item.name);
+            // Unset the model ID so that a new media record is created
+            // (and the old media record isn't replaced w/ this data)
+            item.id = undefined;
             model.set(item);
           });
         });
