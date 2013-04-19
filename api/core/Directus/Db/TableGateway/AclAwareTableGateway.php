@@ -60,6 +60,24 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $record;
     }
 
+    public function findActive($id, $pk_field_name = "id") {
+        $rowset = $this->select(function(Select $select) use ($pk_field_name, $id) {
+            $select->limit(1);
+            $select
+                ->where
+                    ->equalTo($pk_field_name, $id)
+                    ->AND
+                    ->equalTo('active', AclAwareRowGateway::ACTIVE_STATE_ACTIVE);
+        });
+        $row = $rowset->current();
+        // Supposing this "one" doesn't exist in the DB
+        if(false === $row)
+            return false;
+        $row = $row->toArray();
+        array_walk($row, array($this, 'castFloatIfNumeric'));
+        return $row;
+    }
+
     public function fetchAll() {
         return $this->select(function(Select $select){});
     }
