@@ -43,7 +43,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
       if (model.isNew()) return this.related.entries.remove(model);
 
       model.set({active: 0});
-    },   
+    },
 
     insertRow: function() {
       var collection = app.entries[this.related.table.id];
