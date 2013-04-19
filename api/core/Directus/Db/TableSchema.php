@@ -2,6 +2,8 @@
 
 namespace Directus\Db;
 
+use Directus\Bootstrap;
+
 class TableSchema {
 
     public static $many_to_one_uis = array('many_to_one', 'single_media');
