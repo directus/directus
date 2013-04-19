@@ -14,7 +14,11 @@ class DirectusMediaRowGateway extends AclAwareRowGateway {
         // Attribute the currently authenticated user as the uploader
         if(!$rowExistsInDatabase) {
             $currentUser = AuthProvider::getUserInfo();
-            $rowData['directus_user'] = $currentUser['id'];
+            $cmsOwnerColumnName = $this->aclProvider->getCmsOwnerColumnByTable($this->table);
+            $rowData[$cmsOwnerColumnName] = $currentUser['id'];
+        } else {
+            if(array_key_exists('date_uploaded', $rowData))
+                unset($rowData['date_uploaded']);
         }
         return $rowData;
     }
