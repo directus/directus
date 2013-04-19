@@ -530,9 +530,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
      **/
 
     public function updateCollection($entries) {
-        $entries = is_numeric_array($requestPayload) ? $requestPayload : array($requestPayload);
+        $entries = is_numeric_array($entries) ? $entries : array($entries);
         foreach($entries as $entry) {
-            $entry = $TableGateway->addOrUpdateRecordByArray($entry);
+            $entry = $this->addOrUpdateRecordByArray($entry);
             $entry->save();
         }
     }
