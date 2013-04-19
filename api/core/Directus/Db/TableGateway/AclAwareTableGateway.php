@@ -52,6 +52,85 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     /**
+     * HELPER FUNCTIONS
+     */
+
+    public function find($id, $pk_field_name = "id") {
+        $record = $this->findOneBy($pk_field_name, $id);
+        return $record;
+    }
+
+    public function fetchAll() {
+        return $this->select(function(Select $select){});
+    }
+
+    public function fetchAllActiveSort($sort = null, $dir = "ASC") {
+        return $this->select(function(Select $select) use ($sort, $dir) {
+            $select->where->equalTo("active", 1);
+            if(!is_null($sort)) {
+                $select->order("$sort $dir");
+            }
+        });
+    }
+
+    public function findOneBy($field, $value) {
+        $rowset = $this->select(function(Select $select) use ($field, $value) {
+            $select->limit(1);
+            $select->where->equalTo($field, $value);
+        });
+        $row = $rowset->current();
+        // Supposing this "one" doesn't exist in the DB
+        if(false === $row)
+            return false;
+        $row = $row->toArray();
+        array_walk($row, array($this, 'castFloatIfNumeric'));
+        return $row;
+    }
+
+    public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
+        $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__);
+
+        $tableName = is_null($tableName) ? $this->table : $tableName;
+
+        $log->info("Making a new record for table $tableName with record data: " . print_r($recordData, true));
+
+        $rowExists = isset($recordData['id']);
+        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
+        $record->populateSkipAcl($recordData, $rowExists);
+        // $record->populate($recordData, $rowExists);
+        $record->save();
+        return $record;
+    }
+
+    public function newRow($table = null, $pk_field_name = null)
+    {
+        $table = is_null($table) ? $this->table : $table;
+        $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
+        $row = new AclAwareRowGateway($this->aclProvider, $pk_field_name, $table, $this->adapter);
+        return $row;
+    }
+
+    protected function logger() {
+        return Bootstrap::get('app')->getLog();
+    }
+
+    /**
+     * Convenience method for dumping a ZendDb Sql query object as debug output.
+     * @param  AbstractSql $query
+     * @return null
+     */
+    public function dumpSql(AbstractSql $query) {
+        $sql = new Sql($this->adapter);
+        $query = @$sql->getSqlStringForSqlObject($query);
+        return $query;
+    }
+
+    public function castFloatIfNumeric(&$value) {
+        $value = is_numeric($value) ? (float) $value : $value;
+    }
+
+    /**
      * OVERRIDES
      */
 
@@ -69,30 +148,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return parent::executeInsert($insert);
     }
 
-<<<<<<< HEAD
-    public function fetchAllActiveSort($sort = null, $dir = "ASC") {
-        return $this->select(function(Select $select) use ($sort, $dir) {
-            $select->where->equalTo("active", 1);
-            if(!is_null($sort)) {
-                $select->order("$sort $dir");
-            }
-        });
-    }
-
-    public function find($id, $pk_field_name = "id") {
-        $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
-    }
-
-    public function findOneBy($field, $value) {
-        $rowset = $this->select(function(Select $select) use ($field, $value) {
-            $select->limit(1);
-            $select->where->equalTo($field, $value);
-        });
-        $row = $rowset->current();
-        $row = $row->toArray();
-        array_walk($row, array($this, 'castFloatIfNumeric'));
-=======
     /**
      * @param Update $update
      * @return mixed
@@ -115,97 +170,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $attemptOffsets = array_keys($updateRaw['sets']);
         $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         parent::executeUpdate($update);
-    }
-
-    /**
-     * HELPER FUNCTIONS
-     */
-
-    public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
-        $tableName = is_null($tableName) ? $this->table : $tableName;
-        $rowExists = isset($recordData['id']);
-
-        $log = $this->logger();
-        $log->info(__CLASS__."#".__FUNCTION__);
-        $log->info("\$tableName: " . print_r($tableName, true));
-        $log->info("\$rowExists: " . ($rowExists ? "yes" : "no"));
-        $log->info("\$recordData: " . print_r($recordData, true));
-
-        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
-
-        $record->populateSkipAcl($recordData, $rowExists);
-        // $record->populate($recordData, $rowExists);
-        $record->save();
-        return $record;
-    }
-
-    public function newRow($table = null, $pk_field_name = null)
-    {
-        $table = is_null($table) ? $this->table : $table;
-        $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
-        $row = new AclAwareRowGateway($this->aclProvider, $pk_field_name, $table, $this->adapter);
->>>>>>> bbfff3756964dbfeb2f1caecbfa9292010dfe548
-        return $row;
-    }
-
-    protected function logger() {
-        return Bootstrap::get('app')->getLog();
-    }
-
-    /**
-     * Convenience method for dumping a ZendDb Sql query object as debug output.
-     * @param  AbstractSql $query
-     * @return null
-     */
-    public function dumpSql(AbstractSql $query) {
-        $sql = new Sql($this->adapter);
-        $query = @$sql->getSqlStringForSqlObject($query);
-        return $query;
-    }
-
-    public function fetchAll() {
-        return $this->select(function(Select $select){});
-    }
-
-    public function findOneBy($field, $value) {
-        $rowset = $this->select(function(Select $select) use ($field, $value) {
-            $select->limit(1);
-            $select->where->equalTo($field, $value);
-        });
-        $row = $rowset->current();
-        array_walk($row, array($this, 'castFloatIfNumeric'));
-        return $row;
-    }
-
-    public function find($id, $pk_field_name = "id") {
-        $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
-    }
-
-    public function newActivityLog($row, $tableName, $schema, $userId, $parentId = null, $type = DirectusActivityTableGateway::TYPE_ENTRY) {
-        // Find record identifier
-        $master_item = find($schema, 'master', true);
-
-        $identifier = null;
-        if($master_item && array_key_exists($master_item['column_name'], $row))
-            $identifier = $row[$master_item['column_name']];
-
-        // Make log entry
-        $logEntry = array(
-            'type' => $type,
-            'action' => isset($row['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD,
-            'identifier' => $identifier,
-            'table_name' => $tableName,
-            'row_id' => isset($row['id']) ? $row['id'] : null,
-            'user' => $userId,
-            'data' => json_encode($row),
-            'parent_id' => $parentId
-        );
-        return $this->addOrUpdateRecordByArray($logEntry, 'directus_activity');
-    }
-
-    public function castFloatIfNumeric(&$value) {
-        $value = is_numeric($value) ? (float) $value : $value;
     }
 
 }
