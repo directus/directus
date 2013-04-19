@@ -10,6 +10,8 @@ use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
+use Directus\Db\TableGateway\RelationalTableGateway;
+use Directus\Db\TableSchema;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\RowGateway\RowGateway;
 
@@ -62,11 +64,11 @@ class AclAwareRowGateway extends RowGateway {
         return "primary key (" . implode(":", array_keys($this->primaryKeyData)) . ") \"" . implode(":", $this->primaryKeyData) . "\"";
     }
 
-    // as opposed to toArray()
-    // used only for proof of concept
-    public function __getUncensoredDataForTesting() {
-        return $this->data;
-    }
+    // // as opposed to toArray()
+    // // used only for proof of concept
+    // public function __getUncensoredDataForTesting() {
+    //     return $this->data;
+    // }
 
     public function logger() {
         return Bootstrap::get('app')->getLog();
@@ -94,6 +96,19 @@ class AclAwareRowGateway extends RowGateway {
             $this->primaryKeyData = null;
         }
         return $this;
+    }
+
+    public function toArrayWithImmediateRelationships(RelationalTableGateway $TableGateway) {
+        if($this->table !== $TableGateway->getTable())
+            throw new \InvalidArgumentException("The table of the gateway parameter must match this row's table.");
+        $entry = $this->toArray();
+        $schemaArray = TableSchema::getSchemaArray($this->table);
+        $aliasColumns = $TableGateway->filterSchemaAliasFields($schemaArray);
+        // Many-to-One
+        list($entry) = $TableGateway->loadManyToOneRelationships($schemaArray, array($entry));
+        // One-to-Many, Many-to-Many
+        $entry = $TableGateway->loadToManyRelationships($entry, $aliasColumns);
+        return $entry;
     }
 
     /**
