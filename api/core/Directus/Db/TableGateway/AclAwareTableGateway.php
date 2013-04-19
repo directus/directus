@@ -120,7 +120,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * @param  AbstractSql $query
      * @return null
      */
-    protected function dumpSql(AbstractSql $query) {
+    public function dumpSql(AbstractSql $query) {
         $sql = new Sql($this->adapter);
         $query = @$sql->getSqlStringForSqlObject($query);
         return $query;
