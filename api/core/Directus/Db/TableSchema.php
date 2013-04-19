@@ -2,6 +2,8 @@
 
 namespace Directus\Db;
 
+use Directus\Bootstrap;
+
 class TableSchema {
 
     public static $many_to_one_uis = array('many_to_one', 'single_media');
@@ -13,13 +15,6 @@ class TableSchema {
 	protected $table;
 	protected $db;
 	protected $_loadedSchema;
-
-	public function __construct($table, $db) {
-		$this->table = $table;
-		$this->db = $db;
-		$this->dbh = $db->dbh;
-		$this->_loadedSchema = $this->_load($table);
-	}
 
     /**
      * TRANSITIONAL MAPPER. PENDING BUGFIX FOR MANY TO ONE UIS.
@@ -71,8 +66,16 @@ class TableSchema {
         return self::$many_to_one_column_name_to_table_related[$column_name];
     }
 
-    public function getSchemaArray() {
-        return $this->_loadedSchema;
+    protected static $_schemas = array();
+
+    /**
+     * @todo  for ALTER requests, caching schemas can't be allowed
+     */
+    public static function getSchemaArray($table, $allowCache = true) {
+        if(!$allowCache || !array_key_exists($table, self::$_schemas)) {
+            self::$_schemas[$table] = self::loadSchema($table);
+        }
+        return self::$_schemas[$table];
     }
 
     public static function getMasterColumn($schema) {
@@ -84,24 +87,12 @@ class TableSchema {
     }
 
     /**
-     * @return array The names of all *-to-Many alias collection fields in the schema.
-     */
-    public function getTableCollectionAliasFieldNames() {
-    	$fieldNames = array();
-        foreach($this->_loadedSchema as $column) {
-            // One-to-Many, Many-to-Many
-            if (in_array($column['type'], self::$association_types))
-                $fieldNames[] = $column['id'];
-        }
-        return $fieldNames;
-    }
-
-    /**
      * Get table structure
      * @param $tbl_name
      * @param $params
      */
-    protected function _load($tbl_name, $params = null) {
+    protected static function loadSchema($tbl_name, $params = null) {
+        $db = Bootstrap::get('olddb');
         $return = array();
         $column_name = isset($params['column_name']) ? $params['column_name'] : -1;
         $hasMaster = false;
@@ -158,10 +149,9 @@ class TableSchema {
             (:column_name = -1 OR DC.column_name = :column_name)
         AND
             data_type IS NOT NULL) ORDER BY sort';
-        $sth = $this->dbh->prepare($sql);
+        $sth = $db->dbh->prepare($sql);
         $sth->bindValue(':table_name', $tbl_name, \PDO::PARAM_STR);
-        $sth->bindValue(':schema', $this->db->db_name, \PDO::PARAM_STR);
-        //$sth->bindValue(':user', $this->user_token, \PDO::PARAM_STR);
+        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
         $sth->bindValue(':column_name', $column_name, \PDO::PARAM_INT);
         $sth->execute();
 
@@ -188,7 +178,7 @@ class TableSchema {
 
             // Default UI types.
             if (!isset($row["ui"])) {
-                $row['ui'] = $this->db->column_type_to_ui_type($row['type']);
+                $row['ui'] = $db->column_type_to_ui_type($row['type']);
             }
 
             // Defualts as system columns
@@ -198,7 +188,7 @@ class TableSchema {
             }
 
             if (array_key_exists('ui', $row)) {
-                $options = $this->db->get_ui_options( $tbl_name, $row['id'], $row['ui'] );
+                $options = $db->get_ui_options( $tbl_name, $row['id'], $row['ui'] );
             }
 
             if (isset($options)) {
