@@ -2,9 +2,15 @@ config.php
 Icon
 .DS_Store
 
+# Don't track composer phar/lock/vendors
 composer.phar
 api/composer.lock
 api/vendor
-api/logs
+
+# Track non-composer vendors
+^api/vendor-manual
+
+# Ignore log files, but track the log README
+api/logs/*.log
 
 docs/api-responses

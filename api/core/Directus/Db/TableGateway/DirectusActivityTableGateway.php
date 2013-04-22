@@ -22,14 +22,23 @@ class DirectusActivityTableGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_activity";
 
+    public static function makeLogTypeFromTableName($table) {
+        switch($table) {
+            // @todo these first two are assumptions. are they correct?
+            case 'directus_ui':
+                return self::TYPE_UI;
+            case 'directus_settings':
+                return self::TYPE_SETTINGS;
+            case "directus_media":
+                return self::TYPE_MEDIA;
+            default:
+                return self::TYPE_ENTRY;
+        }
+    }
+
     public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
         parent::__construct($aclProvider, self::$_tableName, $adapter);
     }
-
-        // $action = isset($data['id']) ? 'UPDATE' : 'ADD';
-        // $master_item = find($schema,'master',true);
-        // $identifier = isset($master_item) ? $data[$master_item['column_name']] : null;
-        // $activity_id = $this->log_activity('ENTRY',$tbl_name, $action, $id, $identifier, $data, $parent_activity_id);
 
     public function fetchFeed() {
         $columns = array('id','identifier','action','table_name','row_id','user','datetime','type');
