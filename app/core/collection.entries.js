@@ -172,7 +172,10 @@ function(app, Backbone, BaseCollection) {
 
           var relatedTableName = (uiType === 'single_media') ? 'directus_media' : ui.get('related_table');
 
-          attributes[id] = new Entries.Model({id: attributes[id]}, {collection: app.entries[relatedTableName]});
+          // Make sure the id is always wrapped in an object!
+          var data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
+
+          attributes[id] = new Entries.Model(data, {collection: app.entries[relatedTableName]});
         }
 
         if (type === 'ONETOMANY' || type === 'MANYTOMANY') {
