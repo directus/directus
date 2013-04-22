@@ -559,9 +559,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @param  string $pkFieldName [description]
      * @return [type]              [description]
      */
-    public function recordDataContainsNonPrimaryKeyData($record, $pkFieldName = 'id') {
+    public function recordDataContainsNonPrimaryKeyData(array $record, $pkFieldName = 'id') {
         $keyCount = count(array_keys($record));
-        return array_key_exists($pkFieldName, $record) ? $keyCount > 2 : $keyCount > 0;
+        return array_key_exists($pkFieldName, $record) ? $keyCount > 1 : $keyCount > 0;
     }
 
     /**
