@@ -41,6 +41,27 @@ require dirname(__FILE__) . '/mysql.php';
 
 class DB extends MySQL {
 
+    function log_activity($type, $tbl_name, $action, $row_id, $identifier, $data, $parent_id=null) {
+        if ($tbl_name == 'directus_media') {
+            $type = 'MEDIA';
+            $identifier = $data['title'];
+        }
+
+        $currentUser = AuthProvider::getUserInfo();
+
+        return $this->set_entry('directus_activity', array(
+            'type' => $type,
+            'identifier' => $identifier,
+            'table_name' => $tbl_name,
+            'action' => $action,
+            'row_id' => $row_id,
+            'user' => $currentUser['id'],
+            'data' => json_encode($data),
+            'parent_id' => $parent_id,
+            'datetime' => gmdate('Y-m-d H:i:s')
+        ));
+    }
+
     function set_entry_relational($tbl_name, $data, $parent_activity_id=null) {
         $log = Bootstrap::get('app')->getLog();
 
@@ -67,7 +88,7 @@ class DB extends MySQL {
 
                 // Update/Add foreign data
                 if ($column['ui'] == 'single_media') {
-                    // $foreign_id = $this->set_media($foreign_data);
+                    $foreign_id = $this->set_media($foreign_data);
                 } else {
                     //Fix this. should probably not relate to directus_media, but the specified "related_table"
                     $foreign_id = $this->set_entry('directus_media', $foreign_data);
@@ -209,26 +230,5 @@ class DB extends MySQL {
         $keys = array('table_name' => $tbl_name, 'column_name' => $column_name, 'ui_name' => $ui_name);
         $this->set_entries('directus_ui', to_name_value($data, $keys));
         $this->log_activity('UI','directus_ui', 'UPDATE', $id, $tbl_name .','. $column_name . ',' . $ui_name, $data);
-    }
-
-    function log_activity($type, $tbl_name, $action, $row_id, $identifier, $data, $parent_id=null) {
-        if ($tbl_name == 'directus_media') {
-            $type = 'MEDIA';
-            $identifier = $data['title'];
-        }
-
-        $currentUser = AuthProvider::getUserInfo();
-
-        return $this->set_entry('directus_activity', array(
-            'type' => $type,
-            'identifier' => $identifier,
-            'table_name' => $tbl_name,
-            'action' => $action,
-            'row_id' => $row_id,
-            'user' => $currentUser['id'],
-            'data' => json_encode($data),
-            'parent_id' => $parent_id,
-            'datetime' => gmdate('Y-m-d H:i:s')
-        ));
     }
 }
