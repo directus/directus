@@ -159,7 +159,9 @@ function(app, Backbone, Directus) {
         data.active = active;
       }
 
-      console.log('circular data?','data',data,'mode',model);
+      console.log(this.model.toJSON());
+
+      //console.log('circular data?','data',data,'mode',model);
 
       model.save(model.diff(data), {
         success: success,
@@ -187,6 +189,7 @@ function(app, Backbone, Directus) {
     },
 
     beforeRender: function() {
+      console.log('before:',this.model, this.model.toJSON());
       this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single}));
     },
 
