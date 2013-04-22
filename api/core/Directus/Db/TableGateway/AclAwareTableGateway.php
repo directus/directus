@@ -110,10 +110,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $log->info(__CLASS__."#".__FUNCTION__);
 
         $tableName = is_null($tableName) ? $this->table : $tableName;
-
-        $log->info("Making a new record for table $tableName with record data: " . print_r($recordData, true));
-
         $rowExists = isset($recordData['id']);
+
+        $recordAction = $rowExists ? "Populating an existing" : "Making a new";
+        $log->info("$recordAction record for table $tableName with record data: " . print_r($recordData, true));
+
         $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
         $record->populateSkipAcl($recordData, $rowExists);
         // $record->populate($recordData, $rowExists);
