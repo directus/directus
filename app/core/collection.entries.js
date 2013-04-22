@@ -169,9 +169,10 @@ function(app, Backbone, BaseCollection) {
         // THIS SHOULD NOT BE HARDCORDED
         // THE TABLE MIGHT NOT EXIST YET (CASE USERS) RESOLVE THIS
         if (uiType === 'many_to_one' || uiType === 'single_media') {
+
           var relatedTableName = (uiType === 'single_media') ? 'directus_media' : ui.get('related_table');
 
-          attributes[id] = new Entries.Model(attributes[id], {collection: app.entries[relatedTableName]});
+          attributes[id] = new Entries.Model({id: attributes[id]}, {collection: app.entries[relatedTableName]});
         }
 
         if (type === 'ONETOMANY' || type === 'MANYTOMANY') {
@@ -242,16 +243,14 @@ function(app, Backbone, BaseCollection) {
     },
 
     toJSON: function(options, noNest) {
-      var attrs = this.attributes;
+      var attrs = this.attributes,
+          isBackboneModel,
+          attributes = {};
 
-      if (options && options.test) {
-        console.log(this.changedAttributes());
-      }
-
-      var attributes = {};
       // clone all attributes. expand relations
       _.each(attrs, function(value, key) {
-        if (_.isObject(value) && (typeof value.toJSON === 'function')) {
+        isBackboneModel = _.isObject(value) && (typeof value.toJSON === 'function');
+        if (isBackboneModel) {
           value = value.toJSON();
         }
         attributes[key] = value;
