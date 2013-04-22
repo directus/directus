@@ -68,24 +68,25 @@ class Bootstrap {
      * @return Slim
      */
     private static function app() {
-        self::requireConstants('DIRECTUS_ENV', __FUNCTION__);
+        self::requireConstants(array('DIRECTUS_ENV','APPLICATION_PATH'), __FUNCTION__);
+        $loggerSettings = array(
+            'path' => APPLICATION_PATH . '/api/logs'
+        );
         $app = new Slim(array(
-            'mode'    => DIRECTUS_ENV,
-            'log.writer' => new DateTimeFileWriter()
+            'mode'          => DIRECTUS_ENV,
+            'debug'         => false,
+            'log.enable'    => true,
+            'log.writer'    => new DateTimeFileWriter($loggerSettings)
         ));
-        $app->configureMode('production', function () use ($app) {
-            $app->config(array(
-                'log.enable' => true,
-                'debug' => false
-            ));
-        });
-        $app->configureMode('development', function () use ($app) {
-            $app->config(array(
-                'log.enable' => false,
-                'debug' => true
-            ));
-        });
         return $app;
+    }
+
+    /**
+     * Yield Slim logger
+     * @return \Slim\Extras\Log\DateTimeFileWriter
+     */
+    private static function log() {
+        return self::get('app')->getLog();
     }
 
     /**
