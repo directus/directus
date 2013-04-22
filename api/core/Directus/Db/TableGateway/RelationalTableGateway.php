@@ -120,6 +120,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             /** Many-to-One */
 
             if (in_array($colUiType, TableSchema::$many_to_one_uis)) {
+                $foreignRow = $foreignDataSet;
                 // $log->info("Identified Many-to-One");
                 $foreignTableName = null;
                 if("single_media" === $colUiType)
@@ -139,8 +140,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 }
 
                 // Update/Add foreign record
-                $row = $this->addOrUpdateRecordByArray($foreignDataSet, $foreignTableName);
-                $parentRow[$colName] = $row['id'];
+                if($this->recordDataContainsNonPrimaryKeyData($foreignRow)) {
+                    $foreignRow = $this->addOrUpdateRecordByArray($foreignRow, $foreignTableName);
+                }
+                $parentRow[$colName] = $foreignRow['id'];
             }
 
             /** One-to-Many, Many-to-Many */
@@ -529,6 +532,24 @@ class RelationalTableGateway extends AclAwareTableGateway {
      *
      **/
 
+    /**
+     * Does this record representation contain non-primary-key information?
+     * Used to determine whether or not to update a foreign record, above and
+     * beyond simply assigning it to a parent.
+     * @param  [type] $record      [description]
+     * @param  string $pkFieldName [description]
+     * @return [type]              [description]
+     */
+    public function recordDataContainsNonPrimaryKeyData($record, $pkFieldName = 'id') {
+        $keyCount = count(array_keys($record));
+        return array_key_exists($pkFieldName, $record) ? $keyCount > 2 : $keyCount > 0;
+    }
+
+    /**
+     * Update a collection of records within this table.
+     * @param  array $entries Array of records.
+     * @return void
+     */
     public function updateCollection($entries) {
         $entries = is_numeric_array($entries) ? $entries : array($entries);
         foreach($entries as $entry) {
