@@ -72,7 +72,7 @@ define([], function() {
       "hidden_list":false,
       "hidden_input":true,
       "required":false,
-      "ui":"textinput"
+      "ui":"directus_media"
     },
     {
       "id":"title",
