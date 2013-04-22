@@ -40,18 +40,6 @@ function(app, Backbone) {
       $first.val($first.val());
     },
 
-/*
-    Not in use
-    save: function(data, success, error) {
-      formData = this.$el.serializeObject();
-      _.extend(formData, data);
-
-      this.model.save(formData, {
-        success: success,
-        error: error
-      });
-    },
-*/
     data: function() {
       return this.$el.serializeObject();
     },
@@ -66,6 +54,8 @@ function(app, Backbone) {
         });
       });
       this.model.on('sync', function(e) {
+        // reset changes!
+        this.model.changed = {};
         this.render();
       }, this);
     }

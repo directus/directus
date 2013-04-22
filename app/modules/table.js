@@ -159,8 +159,6 @@ function(app, Backbone, Directus) {
         data.active = active;
       }
 
-      console.log(this.model.toJSON());
-
       //console.log('circular data?','data',data,'mode',model);
 
       model.save(model.diff(data), {
@@ -189,7 +187,6 @@ function(app, Backbone, Directus) {
     },
 
     beforeRender: function() {
-      console.log('before:',this.model, this.model.toJSON());
       this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single}));
     },
 
@@ -197,7 +194,8 @@ function(app, Backbone, Directus) {
       this.setView('#page-content', this.editView);
       //Don't fetch if the model is new!
       if (this.model.has('id')) {
-        this.model.fetch();
+        this.model.fetch({dontTrackChanges: true});
+        console.log(this.model);
       } else {
         this.editView.render();
       }
