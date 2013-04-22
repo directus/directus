@@ -231,14 +231,14 @@ function(app, Backbone, BaseCollection) {
     },
 
     sync: function(method, model, options) {
-      var isBackboneModel;
+      var isModelOrCollection;
       if (method === 'patch') {
         _.each(this.attributes, function(value, key) {
-          isBackboneModel = _.isObject(value) && (typeof value.toJSON === 'function');
-          // Just check if it's a Backbone Model. Could be done nicer
-          if (isBackboneModel) {
+          isModelOrCollection = _.isObject(value) && (typeof value.toJSON === 'function');
+          // Just check if it's a Backbone Model or Collection. Could be done nicer
+          if (isModelOrCollection) {
             // Add foreign data to patch. This needs to be checked if it's new
-            options.attrs[key] = value.toJSON();
+            options.attrs[key] = value.toJSON({changed: true});
           }
         });
       }
@@ -246,18 +246,25 @@ function(app, Backbone, BaseCollection) {
     },
 
     toJSON: function(options, noNest) {
-      var attrs = this.attributes,
-          isBackboneModel,
-          attributes = {};
+      var attributes = _.clone(this.attributes),
+          isModelOrCollection,
+          options = options || {};
 
-      // clone all attributes. expand relations
-      _.each(attrs, function(value, key) {
-        isBackboneModel = _.isObject(value) && (typeof value.toJSON === 'function');
-        if (isBackboneModel) {
-          value = value.toJSON();
+      if (options.changed) {
+        attributes = this.changed;
+      }
+
+      // expand relations
+      _.each(this.attributes, function(value, key) {
+        isModelOrCollection = _.isObject(value) && (typeof value.toJSON === 'function');
+
+        if (isModelOrCollection) {
+          value = value.toJSON(options);
+          if (_.isEmpty(value)) return;
+          attributes[key] = value;
         }
-        attributes[key] = value;
-      }, this);
+
+      });
 
       // Pick selected columns, useful for collection "save"
       if (options && options.columns) {
