@@ -159,6 +159,8 @@ function(app, Backbone, Directus) {
         data.active = active;
       }
 
+      console.log('circular data?','data',data,'mode',model);
+
       model.save(model.diff(data), {
         success: success,
         patch: true,

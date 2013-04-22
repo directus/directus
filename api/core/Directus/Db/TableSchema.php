@@ -2,6 +2,8 @@
 
 namespace Directus\Db;
 
+use Directus\Bootstrap;
+
 class TableSchema {
 
     public static $many_to_one_uis = array('many_to_one', 'single_media');
@@ -14,24 +16,74 @@ class TableSchema {
 	protected $db;
 	protected $_loadedSchema;
 
-	public function __construct($table, $db) {
-		$this->table = $table;
-		$this->db = $db;
-		$this->dbh = $db->dbh;
-		$this->_loadedSchema = $this->_load($table);
-	}
+    /**
+     * TRANSITIONAL MAPPER. PENDING BUGFIX FOR MANY TO ONE UIS.
+     * key: column_name
+     * value: table_related
+     * @see  https://github.com/RNGR/directus6/issues/188
+     * @var array
+     */
+    public static $many_to_one_column_name_to_table_related = array(
+        'region'            => 'regions',
+        'region_id'         => 'regions',
+        'room_id'           => 'rooms',
+        'instructor_id'     => 'instructors',
+        'class_type_id'     => 'classes',
+
+        // potentially ambiguous; there's also the product_categories table
+        // however this
+        'category'          => 'community_categories',
+
+        // potentially ambiguous; but as of yet this should point to riders and not
+        // to directus_users, since the only tables implementing this many-to-one
+        // column name are: waitlist, and community_comments, which seem to have
+        // nothing to do with directus_users
+        'user_id'           => 'riders',
+
+        'studio_id'         => 'studios',
+        'bike_id'           => 'bikes',
+        'complaint'         => 'bike_complaints',
+        'studio_id'         => 'studios',
+
+        // These confound me. They'll be ignored and write silent warnings to the API log:
+        // 'position'           => '',
+        // 'many_to_one'        => '',
+        // 'many_to_one_radios => ''
+    );
 
     /**
-     * @return array The names of all *-to-Many alias collection fields in the schema.
+     * TRANSITIONAL MAPPER. PENDING BUGFIX FOR MANY TO ONE UIS.
+     * @see  https://github.com/RNGR/directus6/issues/188
+     * @param  $column_name string
+     * @return string
      */
-    public function getTableCollectionAliasFieldNames() {
-    	$fieldNames = array();
-        foreach($this->_loadedSchema as $column) {
-            // One-to-Many, Many-to-Many
-            if (in_array($column['type'], self::$association_types))
-                $fieldNames[] = $column['id'];
+    public static function getRelatedTableFromManyToOneColumnName($column_name) {
+        if(!array_key_exists($column_name, self::$many_to_one_column_name_to_table_related)) {
+            $log = Bootstrap::get('log');
+            $log->warning("TRANSITIONAL MAPPER: Attempting to resolve unknown column name `$column_name` to a table_related value. Ignoring.");
+            return;
         }
-        return $fieldNames;
+        return self::$many_to_one_column_name_to_table_related[$column_name];
+    }
+
+    protected static $_schemas = array();
+
+    /**
+     * @todo  for ALTER requests, caching schemas can't be allowed
+     */
+    public static function getSchemaArray($table, $allowCache = true) {
+        if(!$allowCache || !array_key_exists($table, self::$_schemas)) {
+            self::$_schemas[$table] = self::loadSchema($table);
+        }
+        return self::$_schemas[$table];
+    }
+
+    public static function getMasterColumn($schema) {
+        foreach ($schema as $column) {
+            if (array_key_exists('master', $column) && true == $column['master'])
+                return $column;
+        }
+        return false;
     }
 
     /**
@@ -39,7 +91,8 @@ class TableSchema {
      * @param $tbl_name
      * @param $params
      */
-    protected function _load($tbl_name, $params = null) {
+    protected static function loadSchema($tbl_name, $params = null) {
+        $db = Bootstrap::get('olddb');
         $return = array();
         $column_name = isset($params['column_name']) ? $params['column_name'] : -1;
         $hasMaster = false;
@@ -96,10 +149,9 @@ class TableSchema {
             (:column_name = -1 OR DC.column_name = :column_name)
         AND
             data_type IS NOT NULL) ORDER BY sort';
-        $sth = $this->dbh->prepare($sql);
+        $sth = $db->dbh->prepare($sql);
         $sth->bindValue(':table_name', $tbl_name, \PDO::PARAM_STR);
-        $sth->bindValue(':schema', $this->db->db_name, \PDO::PARAM_STR);
-        //$sth->bindValue(':user', $this->user_token, \PDO::PARAM_STR);
+        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
         $sth->bindValue(':column_name', $column_name, \PDO::PARAM_INT);
         $sth->execute();
 
@@ -126,7 +178,7 @@ class TableSchema {
 
             // Default UI types.
             if (!isset($row["ui"])) {
-                $row['ui'] = $this->db->column_type_to_ui_type($row['type']);
+                $row['ui'] = $db->column_type_to_ui_type($row['type']);
             }
 
             // Defualts as system columns
@@ -136,7 +188,7 @@ class TableSchema {
             }
 
             if (array_key_exists('ui', $row)) {
-                $options = $this->db->get_ui_options( $tbl_name, $row['id'], $row['ui'] );
+                $options = $db->get_ui_options( $tbl_name, $row['id'], $row['ui'] );
             }
 
             if (isset($options)) {
