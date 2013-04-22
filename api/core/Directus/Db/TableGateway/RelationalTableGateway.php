@@ -53,19 +53,21 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $RecordGateway = new RelationalTableGateway($this->aclProvider, $tableName, $this->adapter);
 
         // Update/add associations
-        $recordWithForeignIds = $RecordGateway->addOrUpdateRelationships($schemaArray, $requestPayload, $parentLogEntry['id']);
+        $parentRecordWithForeignKeys = $RecordGateway->addOrUpdateRelationships($schemaArray, $requestPayload, $parentLogEntry['id']);
 
-        // Update the parent row, w/ any new association fields replaced by their IDs
-        $parentRecord = $RecordGateway->addOrUpdateRecordByArray($recordWithForeignIds);
-
-        // $log->info("new parent record data after AATG#addOrUpdateRecordByArray: " . print_r($parentRecord->toArray(), true));
+        // If more than the record ID is present...
+        if($this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys)) {
+            // Update the parent row, w/ any new association fields replaced by their IDs
+            $parentRecordWithForeignKeys = $RecordGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
+            // $log->info("new parent record data after AATG#addOrUpdateRecordByArray: " . print_r($parentRecordWithForeignKeys->toArray(), true));
+        }
 
         // Fill out the remainder of the log entry data & update the record
-        $parentLogEntry['row_id'] = $parentRecord['id'];
-        $parentLogEntry['data'] = json_encode($parentRecord);
+        $parentLogEntry['row_id'] = $parentRecordWithForeignKeys['id'];
+        $parentLogEntry['data'] = json_encode($parentRecordWithForeignKeys);
         $parentLogEntry->save();
 
-        return $parentRecord;
+        return $parentRecordWithForeignKeys;
     }
 
     /**
@@ -88,6 +90,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     public function addOrUpdateRelationships($schema, $parentRow, $parentActivityLogId) {
         $log = $this->logger();
         // $log->info(__CLASS__."#".__FUNCTION__.": " . print_r(func_get_args(), true));
+        // $log->info(__CLASS__."#".__FUNCTION__);
 
         // Create foreign row and update local column with the data id
         foreach($schema as $column) {
@@ -96,7 +99,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             // Ignore absent values & non-arrays
             if(!isset($parentRow[$colName]) || !is_array($parentRow[$colName])) {
-                $log->info("Unset or non-array. Skipping.");
+                // $log->info("Unset or non-array. Skipping.");
                 continue;
             }
 
@@ -160,6 +163,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     case 'onetomany':
                         // $log->info("<Identified:One-to-Many>");
                         foreach ($foreignDataSet as &$foreignRecord) {
+                            if(empty($foreignRecord)) {
+                                // $log->info("(Skipping empty foreign record declaration.)");
+                                continue;
+                            }
                             $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
                             $foreignRecord = $this->manageRecordUpdate($foreignTableName, $foreignRecord, $parentActivityLogId);
                         }
@@ -208,7 +215,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             // $log->info("Junction row data for table $junctionTableName:");
                             // $log->info(print_r($junctionTableRecord, true));
 
-                            $JunctionTable->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
+                            if($this->recordDataContainsNonPrimaryKeyData($foreignRow)) {
+                                $JunctionTable->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
+                            }
                         }
                         // $log->info("</Identified:Many-to-Many>");
                         break;
