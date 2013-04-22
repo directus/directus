@@ -238,7 +238,8 @@ function(app, Backbone, BaseCollection) {
           // Just check if it's a Backbone Model or Collection. Could be done nicer
           if (isModelOrCollection) {
             // Add foreign data to patch. This needs to be checked if it's new
-            options.attrs[key] = value.toJSON({changed: true});
+            value = value.toJSON({changed: true});
+            if (!_.every(value, _.isEmpty)) options.attrs[key] = value;
           }
         });
       }
