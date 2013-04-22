@@ -237,12 +237,15 @@ function(app, Backbone, BaseCollection) {
           isModelOrCollection = _.isObject(value) && (typeof value.toJSON === 'function');
           // Just check if it's a Backbone Model or Collection. Could be done nicer
           if (isModelOrCollection) {
-            // Add foreign data to patch. This needs to be checked if it's new
+
+            // Add foreign data to patch. Only add changed attributes
             value = value.toJSON({changed: true});
-            if (!_.every(value, _.isEmpty)) options.attrs[key] = value;
+
+            if (!_.isEmpty(value)) options.attrs[key] = value;
           }
         });
       }
+
       return Backbone.sync.apply(this, [method, model, options]);
     },
 
@@ -253,6 +256,9 @@ function(app, Backbone, BaseCollection) {
 
       if (options.changed) {
         attributes = this.changed;
+        if (!_.isEmpty(attributes) && this.id) {
+          attributes.id = this.id;
+        }
       }
 
       // expand relations
@@ -282,6 +288,14 @@ function(app, Backbone, BaseCollection) {
   Entries.Collection = BaseCollection.extend({
 
     model: Entries.Model,
+
+    toJSON: function(options) {
+      var result = Entries.Collection.__super__.toJSON.apply(this, [options]);
+      if (options.changed) {
+        result = _.filter(result, function(obj) { return !_.isEmpty(obj); });
+      }
+      return result;
+    },
 
     getColumns: function() {
       return (this.filters.columns !== undefined) ? this.filters.columns : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
