@@ -378,8 +378,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     break;
                 case 'ONETOMANY':
                     // $log->info("One-to-Many");
-                    // if(!array_key_exists('id', $entry))
-                    //     die(var_dump($entry));
                     $foreign_data = $this->loadOneToManyRelationships($alias['table_related'], $alias['junction_key_right'], $entry['id']);
                     break;
             }
@@ -417,7 +415,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
         // Process results
-        foreach ($results as &$row)
+        foreach ($results as &$row) 
             array_walk($row, array($this, 'castFloatIfNumeric'));
         return array('rows' => $results);
     }
@@ -436,7 +434,19 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $isManyToOneColumn = in_array($col['ui'], TableSchema::$many_to_one_uis);
             if ($isManyToOneColumn) {
                 $foreign_id_column = $col['id'];
-                $foreign_table_name = ($col['ui'] == 'single_media') ? 'directus_media' : $col['options']['related_table'];
+
+                if('single_media' === $col['ui'])
+                    $foreign_table_name = 'directus_media';
+                elseif(array_key_exists('related_table', $col['options']))
+                    $foreign_table_name = $col['options']['related_table'];
+                else {
+                    $message = 'Non single_media Many-to-One relationship lacks `related_table` value.';
+                    if(array_key_exists('column_name', $col))
+                        $message .= " Column: " . $col['column_name'];
+                    if(array_key_exists('table_name', $col))
+                        $message .= " Table: " . $col['table_name'];
+                    throw new \InvalidArgumentException($message);
+                }
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function($row) use ($foreign_id_column, $table_entries) {
