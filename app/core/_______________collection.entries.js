@@ -290,6 +290,7 @@ function(app, Backbone, BaseCollection) {
     model: Entries.Model,
 
     toJSON: function(options) {
+      options = options || {};
       var result = Entries.Collection.__super__.toJSON.apply(this, [options]);
       if (options.changed) {
         result = _.filter(result, function(obj) { return !_.isEmpty(obj); });
@@ -365,11 +366,11 @@ function(app, Backbone, BaseCollection) {
     }
 
   });
-
+/*
   Entries.MediaModel = Entries.Model.extend({
 
     uploader: true
-/*
+
     sync: function(method, model, options) {
 
       var methodMap = {
@@ -399,14 +400,14 @@ function(app, Backbone, BaseCollection) {
 
       return Backbone.sync.apply(this, [method, model, options]);
     }
-*/
+
   });
 
   Entries.MediaCollection = Entries.Collection.extend({
     droppable: true,
     model: Entries.MediaModel
   });
-
+*/
   return Entries;
 });
 
