@@ -27,20 +27,21 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
   var Router = Backbone.Router.extend({
 
     routes: {
-      "":                       "index",
-      "tables":                 "tables",
-      "tables/:name":           "entries",
-      "tables/:name/:id":       "entry",
-      "activity":               "activity",
-      "media":                  "media",
-      "media/:id":              "mediaItem",
-      "users":                  "users",
-      "users/:id":              "user",
-      "settings":               "settings",
-      "settings/:name":         "settings",
-      "settings/tables/:table": "settingsTable",
-      "messages":               "messages",
-      "cashregister":            "cashregister"
+      "":                               "index",
+      "tables":                         "tables",
+      "tables/:name":                   "entries",
+      "tables/:name/:id":               "entry",
+      "activity":                       "activity",
+      "media":                          "media",
+      "media/:id":                      "mediaItem",
+      "users":                          "users",
+      "users/:id":                      "user",
+      "settings":                       "settings",
+      "settings/:name":                 "settings",
+      "settings/tables/:table":         "settingsTable",
+      "settings/permissions/:groupId":  "settingsPermissions",
+      "messages":                       "messages",
+      "cashregister":                   "cashregister"
     },
 
     go: function() {
@@ -206,6 +207,13 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       this.v.main.setView('#content', new Settings.Table({model: app.tables.get(tableName)}));
 
+      this.v.main.render();
+    },
+
+    settingsPermissions: function(groupId) {
+      this.setTitle('Settings - Permissions');
+      this.tabs.setActive('settings');
+      this.v.main.setView('#content', new Settings.GroupPermissions());
       this.v.main.render();
     },
 
