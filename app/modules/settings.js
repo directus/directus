@@ -16,10 +16,11 @@ define([
   'modules/settings/global',
   'modules/settings/about',
   'modules/settings/permissions',
-  'modules/settings/system'
+  'modules/settings/system',
+  'modules/settings/grouppermissions'
 ],
 
-function(app, Backbone, ui, Directus, Tables, Global, About, Permissions, System) {
+function(app, Backbone, ui, Directus, Tables, Global, About, Permissions, System, GroupPermissions) {
 
   var Settings = app.module();
 
@@ -43,6 +44,8 @@ function(app, Backbone, ui, Directus, Tables, Global, About, Permissions, System
   Settings.Tables = Tables.Views.List;
 
   Settings.Permissions = Permissions;
+  Settings.GroupPermissions = GroupPermissions;
+
   Settings.About = About;
 
   Settings.Main = Backbone.Layout.extend({
