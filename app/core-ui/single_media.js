@@ -187,8 +187,6 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     serialize: function() {
       var url = this.mediaModel.has('name') ? app.RESOURCES_URL + 'thumbnail/' + this.mediaModel.get('name') : null;
 
-      console.log(this.mediaModel.toJSON());
-
       return {
         name: this.options.name,
         url: url,
