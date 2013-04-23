@@ -1,6 +1,8 @@
 define([
   "app",
-  "core/collection.entries",
+  "core/entries.collection",
+  "core/entries.model",
+  "core/entries.nestedcollection",
   "core/collection.columns",
   "core/collection",
   "core/edit",
@@ -11,13 +13,14 @@ define([
   "core/model.table"
 ],
 
-function(app, Entries, Structure, Collection, Edit, Table, Modal, TableSimple, Settings, TableModel) {
+function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Structure, Collection, Edit, Table, Modal, TableSimple, Settings, TableModel) {
+
 
   var Directus = {};
 
-  Directus.Media = Entries.MediaCollection;
+  //Directus.Media = Entries.MediaCollection;
   Directus.Collection = Collection;
-  Directus.Entries = Entries;
+  Directus.EntriesCollection = EntriesCollection;
   Directus.CollectionColumns = Structure.Columns;
   Directus.ModelColumn = Structure.Column;
   Directus.EditView = Edit;
@@ -26,7 +29,7 @@ function(app, Entries, Structure, Collection, Edit, Table, Modal, TableSimple, S
   Directus.TableSimple = TableSimple;
   Directus.Structure = Structure;
   Directus.Settings = Settings;
-  Directus.Model = Entries.Model;
+  Directus.Model = EntriesModel;
   Directus.TableModel = TableModel;
   //Directus.MediaCollection = Structure.MediaCollection;
 
