@@ -1,14 +1,14 @@
 define([
+  "core-ui/textinput",
   "core-ui/directus_media",
   "core-ui/checkbox",
   "core-ui/color",
   "core-ui/numeric",
-  "core-ui/textinput",
   "core-ui/slider",
   "core-ui/single_media",
   "core-ui/slug",
   "core-ui/textarea",
-  "core-ui/relational",
+  //"core-ui/relational",
   'core-ui/directus_user',
   'core-ui/directus_activity',
   'core-ui/datetime',
@@ -26,11 +26,13 @@ define([
   'core-ui/one_to_many',
   'core-ui/wysiwyg',
   'core-ui/password'].concat(window.directusData.ui),
-function() {
+function(textinput) {
 
   ui = {};
 
   ui.core = arguments;
+
+  console.log(ui.core);
 
   var Component = function(options) {
     this.model = options.model;

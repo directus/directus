@@ -128,7 +128,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
 
     // Setup core data collections.
     app.media =
-    app.entries.directus_media = new Directus.Entries.Collection(data.active_media, {
+    app.entries.directus_media = new Directus.EntriesCollection(data.active_media, {
       table: app.tables.get('directus_media'),
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
       preferences: app.preferences.directus_media,
@@ -136,7 +136,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
       parse: true
     });
 
-    app.users = new Directus.Entries.Collection(data.users, {
+    app.users = new Directus.EntriesCollection(data.users, {
       parse: true,
       table: app.tables.get('directus_users'),
       structure: new Directus.CollectionColumns(users.structure, {parse: true}),
@@ -145,7 +145,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
       filters: {columns: ['name', 'group', 'activity', 'email', 'description']}
     });
 
-    app.activity = new Directus.Entries.Collection({}, {
+    app.activity = new Directus.EntriesCollection({}, {
       table: app.tables.get('directus_activity'),
       structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
       preferences: new Backbone.Model(activity.preferences),
@@ -153,7 +153,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
     });
 
     app.groups =
-    app.entries.directus_groups = new Directus.Entries.Collection(data.groups, {
+    app.entries.directus_groups = new Directus.EntriesCollection(data.groups, {
       table: app.tables.get('directus_groups'),
       preferences: new Backbone.Model(groups.preferences),
       structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
@@ -170,7 +170,7 @@ function(module, app, Router, Backbone, Directus, UI, media, users, activity, gr
     // Instantiate entries
     app.tables.each(function(table) {
       if (table.id.substring(0,9) === 'directus_') return;
-      app.entries[table.id] = new Directus.Entries.Collection([], {
+      app.entries[table.id] = new Directus.EntriesCollection([], {
         structure: app.columns[table.id],
         table: table,
         preferences: app.preferences[table.id]
