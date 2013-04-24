@@ -30,14 +30,17 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       options.error = function(xhr, status, thrown) {
         if (status.status === 404) {
           app.router.showAlert('Not found!');
-        } else if (status.status === 403) {
+        } else if (xhr.status === 401) {
+          window.location = app.root;
+          // return;
+        } else if (xhr.status === 403) {
           var errorData = jQuery.parseJSON(status.responseText);
           var win = new Backbone.Layout();
           win.$el.html(errorData.message);
           win.render();
           app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
         } else {
-          console.log('EROR',status);
+          console.log('EROR',status,xhr,thrown);
           var win = new Backbone.Layout();
           win.$el.html(status.responseText);
           win.render();
