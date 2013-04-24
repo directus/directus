@@ -9,10 +9,11 @@
 define([
   'app',
   'backbone',
-  'core/directus'
+  'core/directus',
+  'core/panes/pane.saveview'
 ],
 
-function(app, Directus) {
+function(app, Directus, PaneSaveView) {
 
   var Permissions = Backbone.Layout.extend({
 
@@ -37,14 +38,24 @@ function(app, Directus) {
   });
 
   var GroupPermissions = Backbone.Layout.extend({
+
     template: 'page',
+
     serialize: {
       title: 'XXX',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
+      breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}],
+      sidebar: true
     },
+
     beforeRender: function() {
       this.setView('#page-content', new Permissions({collection: this.collection}));
+      //this.insertView('#sidebar', new PaneSaveView({model: this.model, single: this.single}));
+    },
+
+    afterRender: function() {
+      //this.setView('#sidebar', new)
     }
+
   });
 
   return GroupPermissions;
