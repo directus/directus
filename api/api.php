@@ -83,10 +83,8 @@ $routeWhitelist = array(
 );
 
 $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $requestNonceProvider, $routeWhitelist) {
-
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
-
     if(in_array($routeName, $routeWhitelist))
         return;
 
@@ -96,7 +94,6 @@ $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $request
     }
 
     /** Enforce required request nonces. */
-
     if(!$requestNonceProvider->requestHasValidNonce()) {
         if('development' !== DIRECTUS_ENV) {
             $app->halt(401, "Invalid request (nonce).");
@@ -108,7 +105,6 @@ $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $request
     $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
     $nonce_options = $requestNonceProvider->getOptions();
     $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
-
 });
 
 
