@@ -3,9 +3,10 @@ define([
   "app",
   "backbone",
   "core/entries.nestedcollection",
+  "core/entries.collection"
 ],
 
-function(require, app, Backbone, EntriesNestedCollection) {
+function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
   var Model =  Backbone.Model.extend({
 
@@ -42,12 +43,8 @@ function(require, app, Backbone, EntriesNestedCollection) {
       var options;
       var ui;
       var columns;
-      var EntriesCollection = this.collection.constructor;
 
-
-      console.log('attributes', attributes);
-      console.log('structure', this.collection.structure.pluck('id'));
-
+      EntriesCollection = EntriesCollection || require("core/entries.collection");
 
       structure.each(function(column) {
         type = column.get('type');
@@ -60,9 +57,12 @@ function(require, app, Backbone, EntriesNestedCollection) {
         if (uiType === 'many_to_one' || uiType === 'single_media') {
 
           var relatedTableName = (uiType === 'single_media') ? 'directus_media' : ui.get('related_table');
+          var data = {};
 
-          // Make sure the id is always wrapped in an object!
-          var data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
+          // If an id is avalible, make sure it is always wrapped in an object!
+          if (attributes[id] !== undefined) {
+            data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
+          }
 
           attributes[id] = new Model(data, {collection: app.entries[relatedTableName]});
 
@@ -72,14 +72,14 @@ function(require, app, Backbone, EntriesNestedCollection) {
 
         if (type === 'ONETOMANY' || type === 'MANYTOMANY') {
 
-          columns = ui.get('visible_columns') || '';
+          columns = ui.get('visible_columns') ? ui.get('visible_columns').split(',') : [];
 
           options = {
             table: app. tables.get(column.get('table_related')),
             structure: app.columns[column.get('table_related')],
             //preferences: app.preferences[column.get('table_related')],
-            //parse:true,
-            filters: {columns: columns.split(',')}
+            parse:true,
+            filters: {columns: columns}
           };
 
           value = attributes[id] || [];
@@ -173,7 +173,6 @@ function(require, app, Backbone, EntriesNestedCollection) {
 
       return attributes;
     }
-
   });
 
   return Model;
