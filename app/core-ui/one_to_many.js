@@ -47,6 +47,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
       modal.save = function() {
         model.set(model.diff(view.data()));
+        console.log(model);
         modal.close();
       };
 
@@ -82,18 +83,23 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     },
 
     afterRender: function() {
-      var view = new this.table(this.related.tableOptions);
-      this.setView('.related-table', view).render();
-      //view.render();
+      this.setView('.related-table', this.view).render();
     },
 
     initialize: function (options) {
+
       this.related = {};
       this.related.table = app.tables.get(options.schema.get('table_related'));
       this.related.schema = app.columns[options.schema.get('table_related')];
       this.related.entries = options.value;
+
       this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false, saveAfterDrop: false};
       this.table = Directus.Table.extend({});
+      this.view = new this.table(this.related.tableOptions);
+
+      this.related.entries.on('change add', function() {
+        this.view.render();
+      }, this);
     }
 
   });

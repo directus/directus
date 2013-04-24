@@ -6,7 +6,7 @@ define([
   "core/collection.columns",
   "core/collection",
   "core/edit",
-  "core/table",
+  "core/table.view",
   "core/modal",
   "core/tableSimple",
   "core/collection.settings",

@@ -104,7 +104,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       var model;
 
       if (id === "new") {
-        model = new collection.model({},{collection: collection});
+        // Passing parse:true will setup relations
+        model = new collection.model({},{collection: collection, parse: true});
 
       } else {
         model = collection.get(id);
