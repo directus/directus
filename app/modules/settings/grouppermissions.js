@@ -18,6 +18,21 @@ function(app, Directus) {
 
     template: 'settings-grouppermissions',
 
+    events: {
+      'click .toggleFields': 'expandTableFields'
+    },
+
+    afterRender: function() {
+      // this.$el.find('.table-fields').hide();
+    },
+
+    expandTableFields: function(e){
+      var $clickedCaret = this.$(e.target);
+      var tableName = $clickedCaret.parent().parent().data('tableName');
+      $clickedCaret.toggleClass('active');
+      this.$el.find("[data-table-group='" + tableName + "']").toggleClass('active');
+    }
+
   });
 
   var GroupPermissions = Backbone.Layout.extend({
