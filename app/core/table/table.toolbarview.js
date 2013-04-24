@@ -59,16 +59,16 @@ function(app, Backbone) {
 
     serialize: function() {
 
-      console.log(this.collection.table);
-
+      var table = this.options.collection.table;
       var options = {};
+
+      console.log(table);
 
       options.totalCount = this.collection.length;
       options.lBound = Math.min(1, options.totalCount);
       options.uBound = options.totalCount;
 
-
-      options.totalCount = this.options.collection.total;
+      options.totalCount = this.collection.length;
       options.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, options.totalCount);
       options.uBound = Math.min(options.totalCount, options.lBound + this.collection.getFilter('perPage') - 1);
       options.pageNext = (this.collection.getFilter('currentPage') + 1 < (options.totalCount / this.collection.getFilter('perPage') ) );
@@ -76,14 +76,12 @@ function(app, Backbone) {
 
       options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
 
-      console.log(this.collection.table);
-
       if (this.active) {
         options.visibility = _.map([
-          {text:'All', value: '1,2', count: this.collection.table.get('total')},
-          {text:'Active', value: '1', count: this.collection.table.get('active')},
-          {text:'Inactive', value: '2', count: this.collection.table.get('Inactive')},
-          {text:'Trash', value: '0', count: this.collection.table.get('trash')}], function(obj) {
+          {text:'All', value: '1,2', count: table.get('total')},
+          {text:'Active', value: '1', count: table.get('active')},
+          {text:'Inactive', value: '2', count: table.get('inactive')},
+          {text:'Trash', value: '0', count: table.get('trash')}], function(obj) {
             if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
             return obj;
         }, this);
