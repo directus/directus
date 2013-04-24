@@ -21,6 +21,7 @@ function(app, Directus, PaneSaveView) {
 
     events: {
       'click .toggleFields': 'expandTableFields',
+      'click .toggleAllPermissions': 'toggleAllPermissions',
       'click .togglePermission': 'togglePermission'
     },
 
@@ -38,6 +39,31 @@ function(app, Directus, PaneSaveView) {
       $allCarets.not($clickedCaret).removeClass('active');
       this.$el.find("[data-table-group='" + tableName + "']").toggleClass('active');
       this.$el.find("[data-table-group]").not("[data-table-group='" + tableName + "']").removeClass('active');
+    },
+
+    toggleAllPermissions: function(e){
+      var $target = this.$(e.target),
+          targetIndex = $target.index() + 1;
+
+      var $allRows = this.$el.find("td:nth-child(" + targetIndex + ")");
+
+      if ($target.hasClass('off') || $target.hasClass('on')){
+        console.log('if');
+
+        $target.toggleClass('on off');
+
+        if ($target.hasClass('on')){
+          $allRows.removeClass('on off mix').addClass('on');
+          console.log("all on");
+        } else if($target.hasClass('off')){
+          $allRows.removeClass('on off mix').addClass('off');
+          console.log("all off");
+        }
+      } else {
+        console.log('else');
+        $target.removeClass('on off').addClass('off');
+        $allRows.removeClass('on off mix').addClass('off');
+      }
     },
 
     togglePermission: function(e){
