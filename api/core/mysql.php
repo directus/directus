@@ -589,7 +589,9 @@ class MySQL {
         }
 
         if (sizeof($result) == 0) {
-            throw new DirectusException('Item not found!',404);
+            // throw new DirectusException('Item not found!',404);
+            // @todo return null and let controller handle HTTP response
+            Bootstrap::get('app')->halt(404);
         }
 
         // This is a singular item, include the relationships...
@@ -797,6 +799,6 @@ class MySQL {
  * Exceptions
  */
 
-class DirectusException extends \Exception {}
+// class DirectusException extends \Exception {}
 
 class InvalidColumnTypeException extends \Exception {}
