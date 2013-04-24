@@ -119,7 +119,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       },this);
 
       //Always pass id
-      changedAttrs['id'] = this.id;
+      changedAttrs.id = this.id;
 
       return changedAttrs;
     },
@@ -144,8 +144,9 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
     toJSON: function(options, noNest) {
       var attributes = _.clone(this.attributes),
-          isModelOrCollection,
-          options = options || {};
+          isModelOrCollection;
+
+      options = options || {};
 
       if (options.changed) {
         attributes = this.changed;
