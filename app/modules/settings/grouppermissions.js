@@ -24,6 +24,7 @@ function(app, Directus) {
 
     afterRender: function() {
       // this.$el.find('.table-fields').hide();
+      app.affix();
     },
 
     expandTableFields: function(e){
