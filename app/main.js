@@ -36,7 +36,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
           window.location = app.root;
           // return;
         } else if (xhr.status === 403) {
-          var errorData = jQuery.parseJSON(status.responseText);
+          // console.log(xhr, status, thrown);
+          var errorData = jQuery.parseJSON(xhr.responseText);
           win = new Backbone.Layout();
           win.$el.html(errorData.message);
           win.render();
