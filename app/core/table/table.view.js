@@ -137,8 +137,11 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
             //item.title = app.capitalize(item.name);
 
             if (saveAfterDrop) {
-              console.log('CREATE');
-              collection.create(item, {silent: true});
+              var success = function() {
+                var active = collection.table.get('active') + 1;
+                collection.table.set('active', active);
+              }
+              collection.create(item, {silent: true, success: success});
             } else {
               console.log('ADD');
               collection.add(item, {nest: true, parse: true});
@@ -158,7 +161,6 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
       // this one used to listen to remove.
       collection.on('sync', function() {
-        console.log(this.collection.toJSON());
         app.router.hideAlert();
         this.render();
       }, this);
@@ -166,6 +168,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       collection.on('all', function() {
         //console.log(arguments);
       });
+
 
       // Default values
       if (this.options.toolbar === undefined) {

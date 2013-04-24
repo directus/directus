@@ -226,7 +226,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       this.tabs = new Tabs.Collection([
         {title: "Activity", id: "activity", count: app.activity.table.get('active')},
-        {title: "Tables", id: "tables", count: app.tables.length},
+        {title: "Tables", id: "tables", count: app.tables.getRows().length},
         {title: "Media", id: "media", count: app.media.table.get('active')},
         {title: "Users", id: "users", count: app.users.table.get('active')},
         {title: "Settings", id: "settings"}
@@ -263,14 +263,14 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.v = {};
       this.v.content = undefined;
 
-      var test = new Tabs.View({collection: this.tabs});
+      var tabs = new Tabs.View({collection: this.tabs})
 
       this.v.main = new Backbone.Layout({
         el: "#main",
         //template: "main",
         views: {
           '#navbar': new Navbar({model: app.settings.get('global')}),
-          '#tabs': new Tabs.View({collection: this.tabs})
+          '#tabs': tabs
         }
       });
 
@@ -279,8 +279,12 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       });
 
       // Update media counter
+
       app.media.on('sync add', function() {
-        this.tabs.get('media').set({count: app.media.total});
+        console.log('ssssync');
+        console.log(app.media.table.get('active'), app.media);
+        this.tabs.get('media').set({count: app.media.table.get('active')});
+        tabs.render();
       }, this);
 
       this.v.main.render();

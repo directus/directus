@@ -38,11 +38,13 @@ function(app, Backbone) {
         }
       },
       'click a.pag-next:not(.disabled)': function() {
-        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') + 1);
+        var page = this.collection.getFilter('currentPage') + 1;
+        this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
       'click a.pag-prev:not(.disabled)': function() {
-        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
+        var page = this.collection.getFilter('currentPage') - 1;
+        this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
       'keydown': function(e) {
