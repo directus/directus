@@ -38,11 +38,13 @@ function(app, Backbone) {
         }
       },
       'click a.pag-next:not(.disabled)': function() {
-        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') + 1);
+        var page = this.collection.getFilter('currentPage') + 1;
+        this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
       'click a.pag-prev:not(.disabled)': function() {
-        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
+        var page = this.collection.getFilter('currentPage') - 1;
+        this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
       'keydown': function(e) {
@@ -62,13 +64,21 @@ function(app, Backbone) {
       var table = this.options.collection.table;
       var options = {};
 
-      console.log(table);
+      switch (this.collection.getFilter('active')) {
+        case '1,2':
+          options.totalCount = this.collection.table.get('total');
+          break;
+        case '1':
+          options.totalCount = this.collection.table.get('active');
+          break;
+        case '2':
+          options.totalCount = this.collection.table.get('inactive');
+          break;
+        case '0':
+          options.totalCount = this.collection.table.get('trash');
+          break;
+      }
 
-      options.totalCount = this.collection.length;
-      options.lBound = Math.min(1, options.totalCount);
-      options.uBound = options.totalCount;
-
-      options.totalCount = this.collection.length;
       options.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, options.totalCount);
       options.uBound = Math.min(options.totalCount, options.lBound + this.collection.getFilter('perPage') - 1);
       options.pageNext = (this.collection.getFilter('currentPage') + 1 < (options.totalCount / this.collection.getFilter('perPage') ) );
