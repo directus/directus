@@ -204,7 +204,7 @@ function(app, Backbone, Directus) {
         this.insertView('#sidebar', new Backbone.Layout({template: 'module-messages', attributes: {'class': 'directus-module'}}));
       }
 
-      //app.affix();
+      app.affix();
     },
 
     initialize: function() {
