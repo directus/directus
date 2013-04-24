@@ -60,6 +60,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     initialize: function(options) {
+      console.log(options.value);
       var relatedTable = options.settings.get('related_table');
       this.column = options.settings.get('visible_column');
       this.collection = app.entries[relatedTable];

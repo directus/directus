@@ -1,10 +1,12 @@
 define([
   "app",
   "backbone",
-  "core/collection"
+  "core/collection",
+  "core/entries.collection"
 ],
 
-function(app, Backbone, Collection) {
+function(app, Backbone, Collection, EntriesCollection) {
+
 
   var NestedCollection = Collection.extend({
 
@@ -17,6 +19,9 @@ function(app, Backbone, Collection) {
       parse: function(result) {
         result.data = new this.collection.nestedCollection.model(result.data, {collection: this.collection.nestedCollection});
         this.collection.nestedCollection.add(result.data);
+
+        console.log(result);
+
         return result;
       },
 
@@ -43,7 +48,7 @@ function(app, Backbone, Collection) {
 
     //If getNested is set to true, the this will point to the nested element
     get: function(id, getNested) {
-      var model = Entries.NestedCollection.__super__.get.call(this, id);
+      var model = NestedCollection.__super__.get.call(this, id);
       if (getNested) model = model.get('data');
       return model;
     },
@@ -57,36 +62,8 @@ function(app, Backbone, Collection) {
           return obj;
         });
       }
-      Entries.NestedCollection.__super__.add.apply(this, [models, options]);
+      NestedCollection.__super__.add.apply(this, [models, options]);
     },
-
-    /*
-
-    getNew: function(toJSON) {
-      var models = this.filter(function(model) { return model.isNew(); });
-      if (toJSON) {
-        models = _.map(models, function(model) { return model.toJSON(); });
-      }
-      return models;
-    },
-
-    getTrash: function(toJSON) {
-      var models = this.trash;
-      if (toJSON) {
-        models = _.map(models, function(model) { return model.toJSON(); });
-      }
-      return models;
-    },
-
-    getChanged: function(toJSON) {
-      var models = this.filter(function(model) { return model.hasChanged(); });
-      if (toJSON) {
-        models = _.map(models, function(model) { return model.toJSON(); });
-      }
-      return models;
-    },
-
-    */
 
     getModels: function() {
       return this.filter(function(model) {
@@ -95,6 +72,7 @@ function(app, Backbone, Collection) {
     },
 
     getColumns: function() {
+      console.log('x');
       return this.nestedCollection.getColumns();
     },
 
@@ -103,6 +81,9 @@ function(app, Backbone, Collection) {
     },
 
     initialize: function(models, options) {
+
+      EntriesCollection = EntriesCollection || require('core/entries.collection');
+
       this.structure = options.structure;
       this.table = options.table;
       this.preferences = options.preferences;
@@ -110,10 +91,8 @@ function(app, Backbone, Collection) {
       if (this.table.id === 'directus_media') {
         this.droppable = true;
         options.url = app.API_URL + 'media';
-        this.nestedCollection = new Entries.MediaCollection({}, options);
-      } else {
-        this.nestedCollection = new Entries.Collection({}, options);
       }
+      this.nestedCollection = new EntriesCollection({}, options);
       this.nestedCollection.on('change', function() {
         this.trigger('change');
       }, this);

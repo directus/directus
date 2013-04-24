@@ -20,6 +20,7 @@ function(app, Backbone) {
           collection.get(id).set({active: value}, {silent: true});
         });
         collection.save({columns: ['id','active']});
+        collection.trigger('visibility');
       },
 
       'click #visibility .dropdown-menu li > a': function(e) {
@@ -58,6 +59,8 @@ function(app, Backbone) {
 
     serialize: function() {
 
+      console.log(this.collection.table);
+
       var options = {};
 
       options.totalCount = this.collection.length;
@@ -73,12 +76,14 @@ function(app, Backbone) {
 
       options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
 
+      console.log(this.collection.table);
+
       if (this.active) {
         options.visibility = _.map([
-          {text:'All', value: '1,2', count: this.collection.total},
-          {text:'Active', value: '1', count: this.collection.active},
-          {text:'Inactive', value: '2', count: this.collection.total - this.collection.active},
-          {text:'Trash', value: '0', count: this.collection.trash}], function(obj) {
+          {text:'All', value: '1,2', count: this.collection.table.get('total')},
+          {text:'Active', value: '1', count: this.collection.table.get('active')},
+          {text:'Inactive', value: '2', count: this.collection.table.get('Inactive')},
+          {text:'Trash', value: '0', count: this.collection.table.get('trash')}], function(obj) {
             if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
             return obj;
         }, this);
@@ -111,7 +116,7 @@ function(app, Backbone) {
         this.render();
       }, this);
 
-      this.collection.on('remove', this.render, this);
+      this.collection.on('visibility', this.render, this);
     }
   });
 
@@ -320,7 +325,8 @@ function(app, Backbone) {
       'click tbody td:not(.check):not(.status):not(.sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
-          this.collection.off(null, null, this);
+          //this.collection.off(null, null, this);
+          this.collection.off();
           this.navigate(id);
         }
       }
@@ -445,7 +451,8 @@ function(app, Backbone) {
         app.router.showAlert();
       }, this);
 
-      collection.on('add remove change sync', function() {
+      // this one used to listen to remove.
+      collection.on('sync visibility', function() {
         app.router.hideAlert();
         this.render();
       }, this);
