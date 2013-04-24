@@ -195,7 +195,6 @@ function(app, Backbone, Directus) {
       //Don't fetch if the model is new!
       if (this.model.has('id')) {
         this.model.fetch({dontTrackChanges: true});
-        console.log(this.model);
       } else {
         this.editView.render();
       }
