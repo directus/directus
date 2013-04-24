@@ -48,8 +48,6 @@ use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
-use Directus\Middleware\MustBeLoggedIn;
-use Directus\Middleware\MustHaveRequestNonce;
 use Directus\View\JsonView;
 use Directus\View\AclExceptionView;
 
@@ -57,22 +55,15 @@ use Directus\View\AclExceptionView;
 $v = API_VERSION;
 
 /**
- * Slim App & Middleware
+ * Slim App & Directus Providers
  */
 
 $app = Bootstrap::get('app');
-
-// URL patterns which will not be protected by the following middleware
-$routeWhitelist = array("/^\/?$v\/auth\/?/");
-
 $authProvider = new AuthProvider();
-$app->add(new MustBeLoggedIn($routeWhitelist, $authProvider));
-
 $requestNonceProvider = new RequestNonceProvider();
-$app->add(new MustHaveRequestNonce($routeWhitelist, $requestNonceProvider));
 
 /**
- * Catcher for ACL forbidden messages.
+ * Catch ACL forbidden exceptions.
  */
 
 $app->config('debug', false);
@@ -80,6 +71,46 @@ $aclExceptionView = new AclExceptionView();
 $app->error(function (\Exception $exception) use ($app, $aclExceptionView) {
     $aclExceptionView->exceptionHandler($app, $exception);
 });
+
+// URL patterns which will not be protected by the following middleware
+$routeWhitelist = array(
+    "auth_login",
+    "auth_logout",
+    "auth_session",
+    "auth_clear_session",
+    "auth_nonces",
+    "auth_permissions"
+);
+
+$app->hook('slim.before.dispatch', function() use ($app, $authProvider, $requestNonceProvider, $routeWhitelist) {
+
+    /** Skip routes which don't require these protections */
+    $routeName = $app->router()->getCurrentRoute()->getName();
+
+    if(in_array($routeName, $routeWhitelist))
+        return;
+
+    /** Enforce required authentication. */
+    if(!$authProvider->loggedIn()) {
+        $app->halt(401, "You must be logged in to access the API.");
+    }
+
+    /** Enforce required request nonces. */
+
+    if(!$requestNonceProvider->requestHasValidNonce()) {
+        if('development' !== DIRECTUS_ENV) {
+            $app->halt(401, "Invalid request (nonce).");
+        }
+    }
+
+    /** Include new request nonces in the response headers */
+    $response = $app->response();
+    $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
+    $nonce_options = $requestNonceProvider->getOptions();
+    $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
+
+});
+
 
 /**
  * Bootstrap Providers
@@ -166,26 +197,43 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $aclProvider, $aut
     if($response['success'])
         unset($response['message']);
     JsonView::render($response);
-});
+})->name('auth_login');
 
 $app->get("/$v/auth/logout/?", function() use ($app, $authProvider) {
     if($authProvider::loggedIn())
         $authProvider::logout();
     $app->redirect(DIRECTUS_PATH . "login.php");
-});
+})->name('auth_logout');
 
 $app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
     $all_nonces = $requestNonceProvider->getAllNonces();
     $response = array('nonces' => $all_nonces);
     JsonView::render($response);
-});
+})->name('auth_nonces');
 
 // debug helper
 $app->get("/$v/auth/session/?", function() use ($app) {
     if('production' === DIRECTUS_ENV)
         $app->halt('404');
     JsonView::render($_SESSION);
-});
+})->name('auth_session');
+
+// debug helper
+$app->get("/$v/auth/clear-session/?", function() use ($app) {
+    if('production' === DIRECTUS_ENV)
+        $app->halt('404');
+    // Example #1 - http://php.net/manual/en/function.session-destroy.php
+    $_SESSION = array();
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+    session_destroy();
+    JsonView::render($_SESSION);
+})->name('auth_clear_session');
 
 // debug helper
 $app->get("/$v/auth/permissions/?", function() use ($app, $aclProvider) {
@@ -193,7 +241,7 @@ $app->get("/$v/auth/permissions/?", function() use ($app, $aclProvider) {
         $app->halt('404');
     $groupPrivileges = $aclProvider->getGroupPrivileges();
     JsonView::render(array('groupPrivileges' => $groupPrivileges));
-});
+})->name('auth_permissions');
 
 /**
  * ENTRIES COLLECTION
@@ -509,24 +557,7 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
  */
 
 if(isset($_GET['run_api_router']) && $_GET['run_api_router']) {
-    try {
-        // Run Slim
-        $app->response()->header('Content-Type', 'application/json; charset=utf-8');
-        $app->run();
-    } catch (DirectusException $e){
-        switch ($e->getCode()) {
-            case 404:
-                header("HTTP/1.0 404 Not Found");
-                echo json_encode($e->getMessage());
-                break;
-        }
-    } catch (Exception $e) {
-        header("HTTP/1.1 500 Internal Server Error");
-        if('production' != DIRECTUS_ENV) {
-            echo print_r($e, true);
-            //echo format_json(json_encode($e));
-            //echo $e->getCode();
-            //echo $e->getMessage();
-        }
-    }
+    // Run Slim
+    $app->response()->header('Content-Type', 'application/json; charset=utf-8');
+    $app->run();
 }
