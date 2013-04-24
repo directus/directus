@@ -28,8 +28,23 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      var rowIdentifiers = this.options.rowIdentifiers;
-      var rows = _.map(this.collection.getModels(), function(model) {
+      var rowIdentifiers, activeState, models, rows;
+
+      rowIdentifiers = this.options.rowIdentifiers;
+
+      activeState = _.map(this.collection.getFilter('active').split(','),Number);
+
+      console.log(this.collection.getFilter('active').split(','));
+
+      models = this.collection.filter(function(model) {
+        if (model.has('active')) {
+          return (_.indexOf(activeState, Number(model.get('active'))) > -1);
+        } else {
+          return true;
+        }
+      });
+
+      rows = _.map(models, function(model) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         return {model: model, classes: classes};
       });
