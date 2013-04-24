@@ -125,14 +125,39 @@
       </tbody>
     </table>
   </div>
-  <div class="container-sidebar" id="sidebar">
-    <div class="directus-module">
-      <div class="directus-module-section">
-        <a class="btn btn-primary" id="save-form">Update Directus <div class="label">6.0.1</div></a>
-      </div>
-      <div class="directus-module-section">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur quis urna eu massa commodo faucibus. Aenean mauris nisi, ornare sed vulputate sit amet, suscipit ut libero.
-      </div>
-    </div>
-  </div>
+	<div class="container-sidebar" id="sidebar">
+		<div class="directus-module">
+			<div class="directus-module-section">
+				<label class="radio inline"><input type="radio" name="active" value="1" checked="true"> Active</label> <label class="radio inline"><input type="radio" name="active" value="2"> Inactive</label>
+			</div>
+			<div class="directus-module-section">
+				<div class="btn-group">
+					<a class="btn btn-primary" id="save-form">Save Item</a>
+					<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+					<ul class="dropdown-menu dropdown-menu-primary">
+						<li><a id="save-form-stay">Save &amp; Stay</a></li>
+						<li><a id="save-form-add">Save &amp; Add</a></li>
+						<li><a id="save-form-copy">Save as Copy</a></li>
+					</ul>
+				</div>
+				<div class="cancel">
+					or <a href="#" id="save-form-cancel">Cancel</a>
+				</div>
+			</div>
+			<div class="directus-module-section">
+				<button class="btn-delete" id="delete-form"><span class="glyphicon-remove"></span>Delete</button>
+			</div>
+		</div>
+		<div class="directus-module">
+			<div class="directus-module-header toggle">
+				Item Revisions
+				<div class="label">
+					0
+				</div>
+			</div>
+			<div class="directus-module-section collapsed">
+				<table class="table table-striped directus-table" id="directus_activity"></table>
+			</div>
+		</div>
+	</div>
 </div>
