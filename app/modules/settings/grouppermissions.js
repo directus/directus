@@ -21,6 +21,7 @@ function(app, Directus, PaneSaveView) {
 
     events: {
       'click .toggleFields': 'expandTableFields',
+      'click .toggleAllPermissions': 'toggleAllPermissions',
       'click .togglePermission': 'togglePermission'
     },
 
@@ -30,10 +31,39 @@ function(app, Directus, PaneSaveView) {
     },
 
     expandTableFields: function(e){
+      var $allCarets = this.$el.find('.directus-glyphicon-arrow-right');
       var $clickedCaret = this.$(e.target);
       var tableName = $clickedCaret.parent().parent().data('tableName');
+
       $clickedCaret.toggleClass('active');
+      $allCarets.not($clickedCaret).removeClass('active');
       this.$el.find("[data-table-group='" + tableName + "']").toggleClass('active');
+      this.$el.find("[data-table-group]").not("[data-table-group='" + tableName + "']").removeClass('active');
+    },
+
+    toggleAllPermissions: function(e){
+      var $target = this.$(e.target),
+          targetIndex = $target.index() + 1;
+
+      var $allRows = this.$el.find("td:nth-child(" + targetIndex + ")");
+
+      if ($target.hasClass('off') || $target.hasClass('on')){
+        console.log('if');
+
+        $target.toggleClass('on off');
+
+        if ($target.hasClass('on')){
+          $allRows.removeClass('on off mix').addClass('on');
+          console.log("all on");
+        } else if($target.hasClass('off')){
+          $allRows.removeClass('on off mix').addClass('off');
+          console.log("all off");
+        }
+      } else {
+        console.log('else');
+        $target.removeClass('on off').addClass('off');
+        $allRows.removeClass('on off mix').addClass('off');
+      }
     },
 
     togglePermission: function(e){
@@ -43,6 +73,7 @@ function(app, Directus, PaneSaveView) {
           tableName = $targetParent.parent().data('tableName');
 
       if($targetParent.hasClass('mix')) {
+        // console.log("if");
         this.$el
           .find("[data-table-name='" + tableName + "']")
           .find("td:nth-child(" + targetIndex + ")").removeClass('mix')
@@ -54,30 +85,51 @@ function(app, Directus, PaneSaveView) {
           .addClass('on');
       }
       else if($targetParent.hasClass('tableNameRow')) {
+        // console.log("else if");
         // var targetIndex = $targetParent.index() + 1;
         // var tableName = $targetParent.parent().data('tableName');
         // console.log(targetIndex, tableName);
 
         $targetParent.toggleClass('on off');
         $targetParent.data('isMix', false);
-        console.log($targetParent.data('isMix'));
-        console.log(tableName);
 
         this.$el
           .find("[data-table-group='" + tableName + "']")
           .find("td:nth-child(" + targetIndex + ")").toggleClass('on off');
       }
       else {
-        var tableName = $targetParent.parent().prev('tr').data('tableName');
+        // console.log("else");
+        var tableName = $targetParent.parent().prevAll('tr[data-table-name]').first().data('tableName');
+        // console.log(tableName);
         $targetParent.toggleClass('on off');
         $targetParent.data('isMix', true);
 
         // console.log($targetParent.parent());
 
-        this.$el
+        var $tableNameHeader = this.$el
           .find("[data-table-name='" + tableName + "']")
-          .find("td:nth-child(" + targetIndex + ")").removeClass('on off')
-          .addClass('mix');
+          .find("td:nth-child(" + targetIndex + ")");
+
+        var $affectedCells = this.$el
+          .find("[data-table-group='" + tableName + "']")
+          .find("td:nth-child(" + targetIndex + ")");
+
+        var affectedCellsCount = $affectedCells.length;
+
+        var checkerClass = $affectedCells.eq(0).attr('class');
+
+        if ($affectedCells.not('.' + checkerClass).length === 0){
+          if ($affectedCells.eq(0).hasClass('on')){
+            $tableNameHeader.removeClass('on off mix').addClass('on');
+          } else {
+            $tableNameHeader.removeClass('on off mix').addClass('off');
+          }
+        } else {
+          $tableNameHeader.removeClass('on off').addClass('mix');
+        }
+
+        // console.log(checkerClass);
+        // console.log($target);
 
           // console.log(this.$el.find("[data-table-name='" + tableName + "']"));
           // .toggleClass('on off');
