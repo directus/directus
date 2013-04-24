@@ -11,6 +11,7 @@ require([
   "app",
   "router",
   "backbone",
+  "helpers",
   "core/directus",
   "core/ui",
   "schemas/media",
@@ -19,7 +20,7 @@ require([
   "schemas/groups"
 ],
 
-function(module, app, Router, Backbone, Directus, UI, media, users, activity, groups) {
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups) {
 
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
