@@ -189,7 +189,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      this.collection.fetch();
+      this.collection.fetch({reset: true});
     },
 
     initialize: function() {
