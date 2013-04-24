@@ -285,7 +285,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Table has `active` column?
         $has_active_column = $this->schemaHasActiveColumn($table_schema);
 
-
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
         if (null !== $params['active'] && $has_active_column) {
@@ -334,13 +333,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
         if (-1 == $params['id']) {
             $set = array();
             if($has_active_column) {
-                $countActive = $this->count_active($this->table, !$has_active_column);
+                $countActive = $this->countActive($has_active_column);
                 $set = array_merge($set, $countActive);
+            } else {
+                $set['total'] = $this->countTotal();
             }
-            $set = array_merge($set, array(
-                'total' => $foundRows,
-                'rows' => $table_entries
-            ));
+            $set['rows'] = $table_entries;
             return $set;
         }
 
@@ -431,7 +429,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
         // Process results
-        foreach ($results as &$row) 
+        foreach ($results as &$row)
             array_walk($row, array($this, 'castFloatIfNumeric'));
         return array('rows' => $results);
     }
@@ -670,46 +668,42 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     /**
-     * @refactor
+     * Yield total number of rows on a table, irrespective of any active column.
+     * @return int
      */
-    function count_active($tbl_name, $no_active=false) {
-        $result = array('active'=>0);
-        if ($no_active) {
-            $sql = "SELECT COUNT(*) as count, 'active' as active FROM $tbl_name";
-        } else {
-            $sql = "SELECT
-                CASE active
-                    WHEN 0 THEN 'trash'
-                    WHEN 1 THEN 'active'
-                    WHEN 2 THEN 'inactive'
-                END AS active,
-                COUNT(*) as count
-            FROM $tbl_name
-            GROUP BY active";
+    public function countTotal() {
+        $select = new Select($this->table);
+        $select->columns(array('total' => new Expression('COUNT(*)')));
+        $sql = new Sql($this->adapter, $this->table);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $results = $statement->execute();
+        $row = $results->current();
+        return (int) $row['total'];
+    }
+
+    /**
+     * Only run on tables which have an active column.
+     * @return array
+     */
+    public function countActive() {
+        $select = new Select($this->table);
+        $select
+            ->columns(array('active', 'quantity' => new Expression('COUNT(*)')))
+            ->group('active');
+        $sql = new Sql($this->adapter, $this->table);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $results = $statement->execute();
+        $stats = array();
+        foreach($results as $row) {
+            $statSlug = AclAwareRowGateway::$activeStateSlugs[$row['active']];
+            $stats[$statSlug] = (int) $row['quantity'];
         }
-
-        $db = Bootstrap::get('olddb');
-        $sth = $db->dbh->prepare($sql);
-
-        // Test if there is an active column!
-        try {
-            $sth->execute();
-        } catch(Exception $e) {
-            if ($e->getCode() == "42S22" && strpos(strtolower($e->getMessage()),"unknown column")) {
-                return $this->count_active($tbl_name, true);
-            } else {
-                throw $e;
-            }
-        }
-        while($row = $sth->fetch(\PDO::FETCH_ASSOC))
-            $result[$row['active']] = (int)$row['count'];
-
-        $makeMeZero = array_diff(array('inactive','trash'), array_keys($result));
-
+        $possibleValues = array_values(AclAwareRowGateway::$activeStateSlugs);
+        $makeMeZero = array_diff($possibleValues, array_keys($stats));
         foreach($makeMeZero as $unsetActiveColumn)
-            $result[$unsetActiveColumn] = 0;
-
-        return $result;
+            $stats[$unsetActiveColumn] = 0;
+        $stats['total'] = array_sum($stats);
+        return $stats;
     }
 
     // public function __runDemoTestSuite($rowset) {
