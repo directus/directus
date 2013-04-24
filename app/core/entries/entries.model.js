@@ -2,8 +2,8 @@ define([
   "require",
   "app",
   "backbone",
-  "core/entries.nestedcollection",
-  "core/entries.collection"
+  "core/entries/entries.nestedcollection",
+  "core/entries/entries.collection"
 ],
 
 function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
@@ -44,7 +44,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       var ui;
       var columns;
 
-      EntriesCollection = EntriesCollection || require("core/entries.collection");
+      EntriesCollection = EntriesCollection || require("core/entries/entries.collection");
 
       structure.each(function(column) {
         type = column.get('type');
@@ -119,7 +119,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       },this);
 
       //Always pass id
-      changedAttrs['id'] = this.id;
+      changedAttrs.id = this.id;
 
       return changedAttrs;
     },
@@ -144,8 +144,9 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
     toJSON: function(options, noNest) {
       var attributes = _.clone(this.attributes),
-          isModelOrCollection,
-          options = options || {};
+          isModelOrCollection;
+
+      options = options || {};
 
       if (options.changed) {
         attributes = this.changed;

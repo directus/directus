@@ -2,7 +2,7 @@ define([
   "app",
   "backbone",
   "core/collection",
-  "core/entries.collection"
+  "core/entries/entries.collection"
 ],
 
 function(app, Backbone, Collection, EntriesCollection) {
@@ -82,7 +82,7 @@ function(app, Backbone, Collection, EntriesCollection) {
 
     initialize: function(models, options) {
 
-      EntriesCollection = EntriesCollection || require('core/entries.collection');
+      EntriesCollection = EntriesCollection || require('core/entries/entries.collection');
 
       this.structure = options.structure;
       this.table = options.table;
