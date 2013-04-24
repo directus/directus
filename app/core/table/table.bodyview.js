@@ -34,8 +34,6 @@ function(app, Backbone) {
 
       activeState = _.map(this.collection.getFilter('active').split(','),Number);
 
-      console.log(this.collection.getFilter('active').split(','));
-
       models = this.collection.filter(function(model) {
         if (model.has('active')) {
           return (_.indexOf(activeState, Number(model.get('active'))) > -1);
