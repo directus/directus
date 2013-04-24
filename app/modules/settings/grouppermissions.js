@@ -45,7 +45,8 @@ function(app, Directus, PaneSaveView) {
     },
 
     toggleAllPermissionsRowSingle: function(e){
-      var $target = this.$(e.target),
+      var self = this,
+          $target = this.$(e.target),
           targetIndex = $target.index() + 1,
           $allCols = $target.nextUntil('tr');
 
@@ -58,6 +59,7 @@ function(app, Directus, PaneSaveView) {
             var $this = $(this);
 
             if(!$this.hasClass('disabled')){
+              self.toggleAllPermissionsRowSingleHelper($this);
               $this.removeClass('on off mix').addClass('on');
             }
           });
@@ -67,6 +69,7 @@ function(app, Directus, PaneSaveView) {
             var $this = $(this);
 
             if(!$this.hasClass('disabled')){
+              self.toggleAllPermissionsRowSingleHelper($this);
               $this.removeClass('on off mix').addClass('off');
             }
           });
@@ -79,30 +82,18 @@ function(app, Directus, PaneSaveView) {
           var $this = $(this);
 
           if(!$this.hasClass('disabled')){
+            self.toggleAllPermissionsRowSingleHelper($this);
             $this.removeClass('on off mix').addClass('off');
           }
         });
       }
+    },
 
-      // var $allCols = this.$el.find("td:nth-child(" + targetIndex + ")");
-
-      // if ($target.hasClass('off') || $target.hasClass('on')){
-      //   console.log('if');
-
-      //   $target.toggleClass('on off');
-
-      //   if ($target.hasClass('on')){
-      //     $allCols.removeClass('on off mix').addClass('on');
-      //     console.log("all on");
-      //   } else if($target.hasClass('off')){
-      //     $allCols.removeClass('on off mix').addClass('off');
-      //     console.log("all off");
-      //   }
-      // } else {
-      //   console.log('else');
-      //   $target.removeClass('on off').addClass('off');
-      //   $allCols.removeClass('on off mix').addClass('off');
-      // }
+    toggleAllPermissionsRowSingleHelper: function($fieldCol){
+      console.log($fieldCol[0]);
+      // Check if rows ABOVE AND BELOW are all equal,
+      // and update Table Name's column into X or CHECK,
+      // while remoing the "mix" class....
     },
 
     toggleAllPermissionsCol: function(e){
