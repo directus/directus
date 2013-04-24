@@ -10,10 +10,12 @@
 define([
   'app',
   'backbone',
-  'core/directus'
+  'core/directus',
+  'core/panes/pane.revisionsview',
+  'core/panes/pane.saveview'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, Directus, RevisionsModule, SaveModule) {
 
   var Table = app.module();
 
@@ -28,55 +30,6 @@ function(app, Backbone, Directus) {
     beforeRender: function() {
       this.setView('#page-content', new Directus.TableSimple({collection: this.collection, template: 'tables'}));
       //this.setView('#page-content', new Directus.Table({collection: this.options.list, columns: ['title'], filter: {hidden: false, is_junction_table: false}, navigate: true, toolbar: false}));
-    }
-
-  });
-
-  var SaveModule = Backbone.Layout.extend({
-    template: 'module-save',
-    attributes: {'class': 'directus-module'},
-    serialize: function() {
-      var data = {
-        isActive: (this.model.get('active') === 1),
-        isInactive: (this.model.get('active') === 2 || !this.model.has('id')),
-        isDeleted: (this.model.get('active') === 0),
-        showDelete: !this.options.single && (this.model.get('active') !== 0) && (this.model.id !== undefined),
-        showActive: !this.options.single && this.model.collection.structure.get('active') !== undefined,
-        showDropdown: !this.options.single,
-        showSaveAsCopy: !this.model.isNew()
-      };
-      return data;
-    },
-    initialize: function() {
-      this.model.on('sync', this.render, this);
-    }
-  });
-
-  var RevisionsModule = Backbone.Layout.extend({
-
-    template: 'module-revisions',
-
-    attributes: {'class': 'directus-module'},
-
-    events: {
-      'click .directus-module-header': function() { this.$el.find('.directus-module-section').toggleClass('collapsed'); }
-
-    },
-
-    serialize: function() {
-      var items = this.collection.map(function(model) {
-        var data = model.toJSON();
-        data.pastTense = app.actionMap[data.action];
-        return data;
-      });
-      return {items: items, length: this.collection.length};
-    },
-
-    initialize: function(options) {
-      this.collection = new Backbone.Collection();
-      this.collection.url = options.baseURL + '/revisions';
-      this.collection.fetch();
-      this.collection.on('sync', this.render, this);
     }
 
   });
