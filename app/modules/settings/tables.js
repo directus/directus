@@ -193,7 +193,7 @@ function(app, Backbone, ui, Directus) {
     },
 
     initialize: function() {
-      this.collection.on('change reset sort', this.render, this);
+      this.collection.on('change sync sort', this.render, this);
     }
 
   });
