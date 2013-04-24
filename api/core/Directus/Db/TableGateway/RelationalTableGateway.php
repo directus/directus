@@ -349,8 +349,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
          */
 
         // @todo return null and let controller throw HTTP response
-        if (0 == count($table_entries))
-            throw new \DirectusException('Item not found!', 404);
+        if (0 == count($table_entries)) {
+            // throw new \DirectusException('Item not found!',404);
+            // @todo return null and let controller handle HTTP response
+            Bootstrap::get('app')->halt(404);
+        }
 
         list($table_entry) = $table_entries;
 
