@@ -51,7 +51,7 @@ function(app, Backbone) {
       var columns = _.map(this.collection.getColumns(), function(value) {
         var col = {
           title: value,
-          isNumeric: (["FLOAT", "INT", "SMALLINT", "DECIMAL", "DOUBLE"].indexOf(this.collection.structure.get(value).get('type')) > -1),
+          isNumeric: this.collection.structure.get(value).get('ui') === 'numeric',
           selectedFunction: this.functions.hasOwnProperty(value) ? this.functions[value] : 'SUM'
         };
         if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), col.selectedFunction);
