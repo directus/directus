@@ -65,22 +65,24 @@ function(app, Backbone, Collection, EntriesModel) {
 
       if (_.isEmpty(response)) return;
 
-      if (response.total) {
+      console.log(response);
+
+      if (response.total !== undefined) {
         this.total = response.total;
         this.table.set('total', this.total, {silent: true});
       }
 
-      if (response.active) {
+      if (response.active !== undefined) {
         this.active = response.active;
         this.table.set('active', this.active, {silent: true});
       }
 
-      if (response.inactive) {
-        this.inactive = response.inactive;
+      if (response.total !== undefined && response.active !== undefined) {
+        this.inactive = response.total - response.active;
         this.table.set('inactive', this.inactive, {silent: true});
       }
 
-      if (response.trash) {
+      if (response.trash !== undefined) {
         this.trash = response.trash;
         this.table.set('trash', this.trash, {silent: true});
       }
