@@ -72,8 +72,9 @@ $app->error(function (\Exception $exception) use ($app, $aclExceptionView) {
     $aclExceptionView->exceptionHandler($app, $exception);
 });
 
-// URL patterns which will not be protected by the following middleware
-$routeWhitelist = array(
+// Routes which do not need protection by the authentication and the request
+// nonce enforcement.
+$authAndNonceRouteWhitelist = array(
     "auth_login",
     "auth_logout",
     "auth_session",
@@ -82,12 +83,10 @@ $routeWhitelist = array(
     "auth_permissions"
 );
 
-$app->hook('slim.before.dispatch', function() use ($app, $authProvider, $requestNonceProvider, $routeWhitelist) {
-
+$app->hook('slim.before.dispatch', function() use ($app, $authProvider, $requestNonceProvider, $authAndNonceRouteWhitelist) {
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
-
-    if(in_array($routeName, $routeWhitelist))
+    if(in_array($routeName, $authAndNonceRouteWhitelist))
         return;
 
     /** Enforce required authentication. */
@@ -96,7 +95,6 @@ $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $request
     }
 
     /** Enforce required request nonces. */
-
     if(!$requestNonceProvider->requestHasValidNonce()) {
         if('development' !== DIRECTUS_ENV) {
             $app->halt(401, "Invalid request (nonce).");
@@ -108,7 +106,6 @@ $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $request
     $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
     $nonce_options = $requestNonceProvider->getOptions();
     $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
-
 });
 
 
@@ -505,19 +502,8 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $aclProvid
         $db->set_table_settings($requestPayload);
     }
     $response = $db->get_table_info($table, $params);
-
-    // GET all table entries
-
-    // New
-    $Table = new TableGateway($aclProvider, $table, $ZendDb);
-    $response_new = $Table->getEntries($params);
-
-    // Old
-    $response_old = $db->get_entries($table, $params);
-
-    JsonView::render($response_new, $response_old);
-
-})->via('GET', 'PUT')->name('table_detail');
+    JsonView::render($response);
+})->via('GET', 'PUT')->name('table_meta');
 
 /**
  * UPLOAD COLLECTION
