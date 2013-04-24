@@ -8,6 +8,7 @@ use Directus\Db\TableSchema;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate\PredicateInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
@@ -689,9 +690,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * Yield total number of rows on a table, irrespective of any active column.
      * @return int
      */
-    public function countTotal() {
+    public function countTotal(PredicateInterface $predicate = null) {
         $select = new Select($this->table);
         $select->columns(array('total' => new Expression('COUNT(*)')));
+        if(!is_null($predicate))
+            $select->where($predicate);
         $sql = new Sql($this->adapter, $this->table);
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
