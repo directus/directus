@@ -1,7 +1,0 @@
-define([
-  "app"
-],
-
-function(app) {
-
-});
