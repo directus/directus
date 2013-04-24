@@ -76,7 +76,7 @@ function(Handlebars) {
     affix: function() {
       var sidebarOffset = $('.container-sidebar').offset();
       var navbarHeight = $('.navbar').height();
-      var stickyHeight = parseInt(sidebarOffset.top) - parseInt(navbarHeight) - 20;
+      var stickyHeight = parseInt(sidebarOffset.top,10) - parseInt(navbarHeight,10) - 20;
       var stuck = false;
       $(window).scroll(function(e){
         var scrollTop = $(window).scrollTop();

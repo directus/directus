@@ -115,7 +115,7 @@ function(app, Backbone, Directus) {
 
     afterRender: function() {
       this.setView('#page-content', new Directus.Table({collection:this.collection, selectable: true, droppable: true, deleteOnly: true}));
-      this.collection.fetch();
+      this.collection.fetch({reset: true});
     }
   });
 
