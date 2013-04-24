@@ -95,7 +95,7 @@ function(app, Directus, PaneSaveView) {
             $tableNameHeader.removeClass('on off mix').addClass('off');
           }
         } else {
-          $tableNameHeader.addClass('mix');
+          $tableNameHeader.removeClass('on off').addClass('mix');
         }
 
         // console.log(checkerClass);
