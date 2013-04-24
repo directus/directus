@@ -9,9 +9,11 @@ function(Backbone, app) {
     template: 'module-save',
     attributes: {'class': 'directus-module'},
     serialize: function() {
+      var inactiveByDefault = this.model.collection.table.get('inactive_by_default');
+      var isNew = !this.model.has('id');
       var data = {
-        isActive: (this.model.get('active') === 1),
-        isInactive: (this.model.get('active') === 2 || !this.model.has('id')),
+        isActive: (this.model.get('active') === 1 || (isNew && !inactiveByDefault) ),
+        isInactive: (this.model.get('active') === 2 || (isNew && inactiveByDefault)),
         isDeleted: (this.model.get('active') === 0),
         showDelete: !this.options.single && (this.model.get('active') !== 0) && (this.model.id !== undefined),
         showActive: !this.options.single && this.model.collection.structure.get('active') !== undefined,
