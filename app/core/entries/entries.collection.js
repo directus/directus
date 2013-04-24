@@ -33,7 +33,7 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     setFilter: function(key, value, options) {
-      var attrs;
+      var attrs, preferencesHasChanged = false;
       if (key === null || typeof key === 'object') {
         attrs = key;
       } else {
@@ -41,12 +41,13 @@ function(app, Backbone, Collection, EntriesModel) {
       }
       _.each(attrs, function(value, key) {
         if (this.preferences.has(key)) {
+          preferencesHasChanged = true;
           this.preferences.set(key, value, {silent: true});
         } else {
           this.filters[key] = value;
         }
       },this);
-      this.preferences.save();
+      if (preferencesHasChanged) this.preferences.save();
     },
 
     initialize: function(models, options) {
