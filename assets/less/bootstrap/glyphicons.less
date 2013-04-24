@@ -30,9 +30,26 @@
   font-weight: normal;
 }
 
+@font-face {
+    font-family: 'Directus Glyphicons';
+    src: url('../fonts/directus-regular.eot');
+    src: url('../fonts/directus-regular.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/directus-regular.woff') format('woff'),
+         url('../fonts/directus-regular.ttf') format('truetype'),
+         url('../fonts/directus-regular.svg#directusregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 // Catchall baseclass
 [class^="glyphicon-"]:before {
   font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  line-height: 1;
+}
+
+[class^="directus-glyphicon-"]:before {
+  font-family: 'Directus Glyphicons';
   font-style: normal;
   line-height: 1;
 }
@@ -71,6 +88,12 @@
 .glyphicon-refresh:before                         { content: "\e082"; }
 .glyphicon-circle-ok:before                       { content: "\e194"; }
 .glyphicon-check:before                           { content: "\e069"; }
+
+.directus-glyphicon-ban:before                    { content: "\e200"; }
+.directus-glyphicon-check:before                  { content: "\e207"; }
+.directus-glyphicon-remove:before                 { content: "\e208"; }
+.directus-glyphicon-arrow-right:before            { content: "\e212"; }
+.directus-glyphicon-arrow-down:before             { content: "\e213"; }
 
 
 // Individual icons
