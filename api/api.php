@@ -301,9 +301,9 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
  * ACTIVITY COLLECTION
  */
 
-$app->get("/$v/activity/?", function () use ($db, $ZendDb, $aclProvider) {
+$app->get("/$v/activity/?", function () use ($db, $params, $ZendDb, $aclProvider) {
     $Activity = new DirectusActivityTableGateway($aclProvider, $ZendDb);
-    $new_get = $Activity->fetchFeed();
+    $new_get = $Activity->fetchFeed($params);
     $old_get = $db->get_activity();
     JsonView::render($new_get, $old_get);
 });

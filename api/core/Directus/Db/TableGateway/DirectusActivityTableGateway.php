@@ -4,6 +4,7 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -40,19 +41,30 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
         parent::__construct($aclProvider, self::$_tableName, $adapter);
     }
 
-    public function fetchFeed() {
-        $columns = array('id','identifier','action','table_name','row_id','user','datetime','type');
+    public function fetchFeed($params = null) {
 
         $sql = new Sql($this->adapter);
-        $select = $sql->select()
-            ->from($this->table)
-            ->columns($columns)
-            ->order('id DESC');
+        $select = $sql->select()->from($this->table);
+
+        $params['orderColumn'] = 'id';
+        $params['orderDirection'] = 'DESC';
+
+        $tableSchemaArray = TableSchema::getSchemaArray($this->table);
+        $hasActiveColumn = $this->schemaHasActiveColumn($tableSchemaArray);
+        $params = $this->applyDefaultEntriesSelectParams($params);
+
+        $columns = array('id','identifier','action','table_name','row_id','user','datetime','type');
+        $select->columns($columns);
+            // ->order('id DESC');
         $select
             ->where
                 ->isNull('parent_id')
                 ->OR
                 ->equalTo('type', 'MEDIA');
+
+        $select = $this->applyParamsToTableEntriesSelect($params, $select, $hasActiveColumn);
+
+        // die($this->dumpSql($select));
 
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
