@@ -6,6 +6,7 @@ use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
@@ -68,8 +69,12 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
 
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
+
+        $countTotalWhere = new Predicate\IsNotNull('parent_id');
+        $activityTotal = $this->countTotal($countTotalWhere);
+
         return array(
-            'total' => $this->countTotal(),
+            'total' => $activityTotal,
             'rows' => $rowset
         );
     }
