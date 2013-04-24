@@ -30,10 +30,14 @@ function(app, Directus, PaneSaveView) {
     },
 
     expandTableFields: function(e){
+      var $allCarets = this.$el.find('.directus-glyphicon-arrow-right');
       var $clickedCaret = this.$(e.target);
       var tableName = $clickedCaret.parent().parent().data('tableName');
+
       $clickedCaret.toggleClass('active');
+      $allCarets.not($clickedCaret).removeClass('active');
       this.$el.find("[data-table-group='" + tableName + "']").toggleClass('active');
+      this.$el.find("[data-table-group]").not("[data-table-group='" + tableName + "']").removeClass('active');
     },
 
     togglePermission: function(e){
