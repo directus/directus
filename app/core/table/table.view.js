@@ -1,10 +1,10 @@
 define([
   "app",
   "backbone",
-  "core/table.toolbarview",
-  "core/table.headview",
-  "core/table.bodyview",
-  "core/table.footerview",
+  "core/table/table.toolbarview",
+  "core/table/table.headview",
+  "core/table/table.bodyview",
+  "core/table/table.footerview",
   "jquery-ui"
 ],
 
