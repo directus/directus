@@ -67,10 +67,56 @@
 		cursor: pointer;
 	}
 
+	.directus-glyphicon-remove {
+		color: @red;
+		font-size: 1.6em;
+		cursor: pointer;
+	}
+
 	.directus-glyphicon-ban {
 		// color: @gray;
 		color: #E0E0DF;
 		font-size: 1.6em;
 		// cursor: pointer;
 	}
+
+	.directus-glyphicon-mix {
+		// color: @gray;
+		color: #E0E0DF;
+		font-size: 1.6em;
+		cursor: pointer;
+	}
+
+	.directus-glyphicon-mix {
+		display: none;
+	}
+
+	td.on {
+		.directus-glyphicon-remove {
+			display: none;
+		}
+	}
+	td.off {
+		.directus-glyphicon-check {
+			display: none;
+		}
+	}
+	td.mix {
+		.directus-glyphicon-check, .directus-glyphicon-remove {
+			display: none;
+		}
+		.directus-glyphicon-mix {
+			display: inline;
+		}
+	}
  }
+
+
+
+
+
+
+
+
+
+
