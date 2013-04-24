@@ -32,8 +32,6 @@ function(textinput) {
 
   ui.core = arguments;
 
-  console.log(ui.core);
-
   var Component = function(options) {
     this.model = options.model;
     this.collection = options.collection || this.model.collection;
