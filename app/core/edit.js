@@ -18,8 +18,18 @@ function(app, Backbone) {
     beforeRender: function() {
       var structure = this.options.structure || this.model.collection.structure;
       var UI = ui.initialize({model: this.model, structure: structure});
+      var parent = this.model.collection.parent;
+      var sameAsParent = false;
+      var relatedTable;
+      var meta;
+
       structure.each(function(column) {
-        if (!column.get('hidden_input') && (column.id !== 'id') && (column.id !== 'active') && (column.id !== 'sort')) {
+        meta = structure.get(column);
+        relatedTable = (meta.get('ui') === 'many_to_one') ? meta.options.get('related_table') : meta.get('table_related');
+
+        sameAsParent = parent && (relatedTable === parent.collection.table.id);
+
+        if (!column.get('hidden_input') && (column.id !== 'id') && (column.id !== 'active') && (column.id !== 'sort') && !sameAsParent) {
           var view = UI.getInput(column.id);
           view.$el.attr('id', 'edit_field_'+column.id);
           this.insertView(view);
