@@ -13,8 +13,9 @@ class AclExceptionView {
          * Only deal with instances/subclasses of Directus\Acl\Exception\AclException
          */
         $isAclException = $exception instanceof AclException || is_subclass_of($exception, "Directus\Acl\Exception\AclException");
-        if(!$isAclException)
+        if(!$isAclException) {
             throw $exception;
+        }
 
         $response = $app->response();
         $response->header('Content-type', 'application/json');
