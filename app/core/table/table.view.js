@@ -18,11 +18,11 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
     serialize: function() {
       return {
-        columns: this.collection.getColumns(), 
-        id: this.collection.table.id, 
-        selectable: this.options.selectable, 
-        sortable: this.options.sortable, 
-        hasData: this.collection.length 
+        columns: this.collection.getColumns(),
+        id: this.collection.table.id,
+        selectable: this.options.selectable,
+        sortable: this.options.sortable,
+        hasData: this.collection.length
       };
     },
 
@@ -157,7 +157,8 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       }, this);
 
       // this one used to listen to remove.
-      collection.on('sync visibility', function() {
+      collection.on('sync', function() {
+        console.log(this.collection.toJSON());
         app.router.hideAlert();
         this.render();
       }, this);
