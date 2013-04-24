@@ -118,7 +118,8 @@ function(app, Backbone) {
       var success = options.success;
 
       options.success = function(model, resp, xhr) {
-        collection.reset(resp ,{parse: true});
+        collection.reset(model ,{parse: true});
+        collection.trigger('sync');
         if (success !== undefined) {
           success();
         }
