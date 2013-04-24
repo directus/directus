@@ -65,7 +65,8 @@ define(['app', 'backbone'], function(app, Backbone) {
       this.column = options.settings.get('visible_column');
       this.collection = app.entries[relatedTable];
       this.collection.fetch();
-      this.collection.on('reset', this.render, this);
+      //this.collection.on('reset', this.render, this);
+      this.collection.on('sync', this.render, this);
     }
 
   });
