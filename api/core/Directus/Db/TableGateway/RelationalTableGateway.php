@@ -285,6 +285,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Table has `active` column?
         $has_active_column = $this->schemaHasActiveColumn($table_schema);
 
+
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
         if (null !== $params['active'] && $has_active_column) {
@@ -331,11 +332,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
          */
 
         if (-1 == $params['id']) {
-            $countActive = $this->count_active($this->table, !$has_active_column);
-
-            $set = array_merge($countActive, array(
-                'total'=> $foundRows,
-                'rows'=> $table_entries
+            $set = array();
+            if($has_active_column) {
+                $countActive = $this->count_active($this->table, !$has_active_column);
+                $set = array_merge($set, $countActive);
+            }
+            $set = array_merge($set, array(
+                'total' => $foundRows,
+                'rows' => $table_entries
             ));
             return $set;
         }
@@ -680,9 +684,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
             FROM $tbl_name
             GROUP BY active";
         }
-        // tmp transitional
-        global $db;
+
+        $db = Bootstrap::get('olddb');
         $sth = $db->dbh->prepare($sql);
+
         // Test if there is an active column!
         try {
             $sth->execute();
@@ -695,7 +700,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
         }
         while($row = $sth->fetch(\PDO::FETCH_ASSOC))
             $result[$row['active']] = (int)$row['count'];
-        $total = 0;
+
+        $makeMeZero = array_diff(array('inactive','trash'), array_keys($result));
+
+        foreach($makeMeZero as $unsetActiveColumn)
+            $result[$unsetActiveColumn] = 0;
+
         return $result;
     }
 

@@ -1,0 +1,125 @@
+define([
+  "app",
+  "backbone",
+  "jquery-ui"
+],
+
+function(app, Backbone) {
+
+ var TableToolbarView = Backbone.Layout.extend({
+
+    template: 'table-toolbar',
+
+    events: {
+
+      'click #set-visibility > button': function(e) {
+        var value = $(e.target).closest('button').attr('data-value');
+        var collection = this.collection;
+        $('td.check > input:checked').each(function() {
+          var id = this.value;
+          collection.get(id).set({active: value}, {silent: true});
+        });
+        collection.save({columns: ['id','active']});
+        collection.trigger('visibility');
+      },
+
+      'click #visibility .dropdown-menu li > a': function(e) {
+        var value = $(e.target).attr('data-value');
+        this.collection.setFilter({currentPage: 0, active: value});
+        this.collection.fetch();
+        this.options.preferences.save({active: value});
+      },
+      'keypress #table-filter': function(e) {
+        if (e.which == 13) {
+          var text = $('#table-filter').val();
+          this.collection.setFilter('search', text);
+          this.collection.fetch();
+          this.collection.trigger('search', text);
+        }
+      },
+      'click a.pag-next:not(.disabled)': function() {
+        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') + 1);
+        this.collection.fetch();
+      },
+      'click a.pag-prev:not(.disabled)': function() {
+        this.collection.filters.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
+        this.collection.fetch();
+      },
+      'keydown': function(e) {
+        if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
+          this.collection.setFilter('currentPage', this.collection.filters.currentPage + 1);
+          this.collection.fetch();
+        }
+        if (e.keyCode === 37 && this.collection.getFilter('currentPage') > 0) {
+          this.collection.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
+          this.collection.fetch();
+        }
+      }
+    },
+
+    serialize: function() {
+
+      console.log(this.collection.table);
+
+      var options = {};
+
+      options.totalCount = this.collection.length;
+      options.lBound = Math.min(1, options.totalCount);
+      options.uBound = options.totalCount;
+
+
+      options.totalCount = this.options.collection.total;
+      options.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, options.totalCount);
+      options.uBound = Math.min(options.totalCount, options.lBound + this.collection.getFilter('perPage') - 1);
+      options.pageNext = (this.collection.getFilter('currentPage') + 1 < (options.totalCount / this.collection.getFilter('perPage') ) );
+      options.pagePrev = (this.collection.getFilter('currentPage') !== 0);
+
+      options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
+
+      console.log(this.collection.table);
+
+      if (this.active) {
+        options.visibility = _.map([
+          {text:'All', value: '1,2', count: this.collection.table.get('total')},
+          {text:'Active', value: '1', count: this.collection.table.get('active')},
+          {text:'Inactive', value: '2', count: this.collection.table.get('Inactive')},
+          {text:'Trash', value: '0', count: this.collection.table.get('trash')}], function(obj) {
+            if (this.collection.getFilter('active') == obj.value) { obj.active = true; }
+            return obj;
+        }, this);
+      }
+
+      options.filterText = this.collection.getFilter('search');
+      options.filter = true;
+      options.paginator = (options.pageNext || options.pagePrev);
+      options.deleteOnly = this.options.deleteOnly && this.actionButtons;
+
+      options.visibilityButtons = options.actionButtons || options.deleteOnly;
+
+      return options;
+    },
+
+    afterRender: function() {
+      $filter = $('#table-filter');
+      if ($filter[0]) {
+        $('#table-filter').focus();
+        $filter.val($filter.val());
+      }
+    },
+
+    initialize: function() {
+      //Does the table have the active column?
+      this.active = this.options.structure && this.options.structure.get('active') && !this.options.deleteOnly;
+      //Show action buttons if there are selected models
+      this.collection.on('select', function() {
+        this.actionButtons = Boolean($('td.check > input:checked').length);
+        this.render();
+      }, this);
+
+      this.collection.on('visibility', this.render, this);
+    }
+  });
+
+  return TableToolbarView;
+
+});
