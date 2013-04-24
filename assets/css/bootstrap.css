@@ -1888,8 +1888,20 @@ table th[class*="span"],
   font-style: normal;
   font-weight: normal;
 }
+@font-face {
+  font-family: 'Directus Glyphicons';
+  src: url('../fonts/directus-regular.eot');
+  src: url('../fonts/directus-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/directus-regular.woff') format('woff'), url('../fonts/directus-regular.ttf') format('truetype'), url('../fonts/directus-regular.svg#directusregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 [class^="glyphicon-"]:before {
   font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  line-height: 1;
+}
+[class^="directus-glyphicon-"]:before {
+  font-family: 'Directus Glyphicons';
   font-style: normal;
   line-height: 1;
 }
@@ -1968,6 +1980,21 @@ table th[class*="span"],
 }
 .glyphicon-check:before {
   content: "\e069";
+}
+.directus-glyphicon-ban:before {
+  content: "\e200";
+}
+.directus-glyphicon-check:before {
+  content: "\e207";
+}
+.directus-glyphicon-remove:before {
+  content: "\e208";
+}
+.directus-glyphicon-arrow-right:before {
+  content: "\e212";
+}
+.directus-glyphicon-arrow-down:before {
+  content: "\e213";
 }
 /*
 .glyphicon-glass:before                   { content: "\e001"; }
@@ -7305,4 +7332,62 @@ header {
   .activity-module .center {
     min-width: 600px;
   }
+}
+#directus-grouppermissions tr[data-table-group] {
+  display: none;
+}
+#directus-grouppermissions td,
+#directus-grouppermissions th {
+  position: relative;
+  text-align: center;
+  cursor: default;
+}
+#directus-grouppermissions td:nth-child(2),
+#directus-grouppermissions th:nth-child(2) {
+  text-align: left;
+}
+#directus-grouppermissions td {
+  padding-left: 25px;
+  height: 24px;
+}
+#directus-grouppermissions td.status {
+  padding-left: 0;
+}
+#directus-grouppermissions .table-fields.active {
+  display: table-row;
+}
+#directus-grouppermissions .table-fields.active:hover {
+  background-color: #f1f9e7;
+}
+#directus-grouppermissions .table-fields.active:hover td:not(.status) {
+  background-color: transparent;
+}
+#directus-grouppermissions .table-fields td {
+  background-color: #f9fcf5;
+  color: #8bc53f;
+}
+#directus-grouppermissions .table-fields td.status {
+  background-color: #8cc349;
+}
+#directus-grouppermissions .directus-glyphicon-arrow-right {
+  position: absolute;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  left: 4px;
+  top: 11px;
+  line-height: 2.2;
+  cursor: pointer;
+}
+#directus-grouppermissions .directus-glyphicon-arrow-right.active {
+  -webkit-transform: rotate(90deg);
+}
+#directus-grouppermissions .directus-glyphicon-check {
+  color: #8bc53f;
+  font-size: 1.6em;
+  cursor: pointer;
+}
+#directus-grouppermissions .directus-glyphicon-ban {
+  color: #E0E0DF;
+  font-size: 1.6em;
 }
