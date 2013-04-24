@@ -41,7 +41,7 @@ function(app, Backbone) {
     },
 
     initialize: function() {
-      this.collection.on('change', this.render, this);
+      this.collection.on('change sync', this.render, this);
     }
 
   });
