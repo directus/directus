@@ -239,55 +239,44 @@ class RelationalTableGateway extends AclAwareTableGateway {
         return $parentRow;
     }
 
-    /**
-     * Relational Getter
-     * NOTE: equivalent to old DB#get_entries
-     */
-    public function getEntries($params = array()) {
-        // tmp transitional.
-        $db = Bootstrap::get('olddb');
+    public static $defaultEntriesSelectParams = array(
+        'orderBy' => 'id', // @todo validate $params['order_*']
+        'orderDirection' => 'DESC',
+        'fields' => '*',
+        'perPage' => 500,
+        'currentPage' => 0,
+        'id' => -1,
+        'search' => null,
+        'active' => null
+    );
 
-        $logger = $this->logger();
+    public function applyDefaultEntriesSelectParams(array $params) {
 
-        $defaultParams = array(
-            'order_column' => 'id', // @todo validate $params['order_*']
-            'order_direction' => 'DESC',
-            'fields' => '*',
-            'per_page' => 500,
-            'skip' => 0,
-            'id' => -1,
-            'search' => null,
-            'active' => null
-        );
-
-        if(isset($params['per_page']) && isset($params['current_page']))
-            $params['skip'] = $params['current_page'] * $params['per_page'];
+        if(isset($params['perPage']) && isset($params['current_page']))
+            $params['currentPage'] = $params['current_page'] * $params['perPage'];
 
         if(isset($params['fields']) && is_array($params['fields']))
             $params['fields'] = array_merge(array('id'), $params['fields']);
 
-        $params = array_merge($defaultParams, $params);
+        $params = array_merge(self::$defaultEntriesSelectParams, $params);
 
-        $platform = $this->adapter->platform; // use for quoting
+        array_walk($params, array($this, 'castFloatIfNumeric'));
 
-        // Get table column schema
-        $table_schema = $db->get_table($this->table);
+        return $params;
+    }
 
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()->from($this->table);
+    public function applyParamsToTableEntriesSelect(array $params, Select $select, $hasActiveColumn = false) {
         $select->group('id')
-            ->order(implode(' ', array($params['order_column'], $params['order_direction'])))
-            ->limit($params['per_page'])
-            ->offset($params['skip']);
+            ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
+            ->limit($params['perPage'])
+            ->offset($params['currentPage'] * $params['perPage']);
 
         // @todo incorporate search
 
-        // Table has `active` column?
-        $has_active_column = $this->schemaHasActiveColumn($table_schema);
 
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
-        if (null !== $params['active'] && $has_active_column) {
+        if (null !== $params['active'] && $hasActiveColumn) {
             $haystack = is_array($params['active'])
                 ? $params['active']
                 : explode(",", $params['active']);
@@ -299,6 +288,35 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->expression('-1 = ?', $params['id'])
             ->or
             ->equalTo('id', $params['id']);
+
+        return $select;
+    }
+
+    /**
+     * Relational Getter
+     * NOTE: equivalent to old DB#get_entries
+     */
+    public function getEntries($params = array()) {
+        // tmp transitional.
+        $db = Bootstrap::get('olddb');
+
+        $logger = $this->logger();
+
+        $platform = $this->adapter->platform; // use for quoting
+
+        // Get table column schema
+        $table_schema = TableSchema::getSchemaArray($this->table);
+        // $table_schema = $db->get_table($this->table);
+
+        // Table has `active` column?
+        $hasActiveColumn = $this->schemaHasActiveColumn($table_schema);
+
+        $params = $this->applyDefaultEntriesSelectParams($params);
+
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()->from($this->table);
+
+        $select = $this->applyParamsToTableEntriesSelect($params, $select, $hasActiveColumn);
 
         // $logger->info($this->dumpSql($select));
 
@@ -332,8 +350,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         if (-1 == $params['id']) {
             $set = array();
-            if($has_active_column) {
-                $countActive = $this->countActive($has_active_column);
+            if($hasActiveColumn) {
+                $countActive = $this->countActive($hasActiveColumn);
                 $set = array_merge($set, $countActive);
             } else {
                 $set['total'] = $this->countTotal();
@@ -626,7 +644,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @param  array $schema Table schema array.
      * @return boolean
      */
-    private function schemaHasActiveColumn($schema) {
+    public function schemaHasActiveColumn($schema) {
         foreach($schema as $col) {
             if('active' == $col['column_name'])
                 return true;
