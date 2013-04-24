@@ -8,7 +8,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-class DirectusActivityTableGateway extends AclAwareTableGateway {
+class DirectusActivityTableGateway extends RelationalTableGateway {
 
     // Populates directus_activity.type
     const TYPE_ENTRY    = "ENTRY";
@@ -56,7 +56,10 @@ class DirectusActivityTableGateway extends AclAwareTableGateway {
 
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-        return array('rows' => $rowset);
+        return array(
+            'total' => $this->countTotal(),
+            'rows' => $rowset
+        );
     }
 
     public function fetchRevisions($row_id, $table_name) {
