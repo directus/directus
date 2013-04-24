@@ -42,7 +42,18 @@ function(app, Directus, PaneSaveView) {
           targetIndex = $targetParent.index() + 1,
           tableName = $targetParent.parent().data('tableName');
 
-      if($targetParent.hasClass('tableNameRow')){
+      if($targetParent.hasClass('mix')) {
+        this.$el
+          .find("[data-table-name='" + tableName + "']")
+          .find("td:nth-child(" + targetIndex + ")").removeClass('mix')
+          .addClass('on');
+
+        this.$el
+          .find("[data-table-group='" + tableName + "']")
+          .find("td:nth-child(" + targetIndex + ")").removeClass('on off')
+          .addClass('on');
+      }
+      else if($targetParent.hasClass('tableNameRow')) {
         // var targetIndex = $targetParent.index() + 1;
         // var tableName = $targetParent.parent().data('tableName');
         // console.log(targetIndex, tableName);
