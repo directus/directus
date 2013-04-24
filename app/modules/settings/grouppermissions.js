@@ -19,7 +19,7 @@ function(app, Directus) {
     template: 'settings-grouppermissions',
 
     events: {
-      'click tr': 'expandTableFields'
+      'click .toggleFields': 'expandTableFields'
     },
 
     afterRender: function() {
