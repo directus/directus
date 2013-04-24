@@ -76,7 +76,7 @@ function(app, Backbone, Directus) {
       this.collection = new Backbone.Collection();
       this.collection.url = options.baseURL + '/revisions';
       this.collection.fetch();
-      this.collection.on('reset', this.render, this);
+      this.collection.on('sync', this.render, this);
     }
 
   });
@@ -204,7 +204,7 @@ function(app, Backbone, Directus) {
         this.insertView('#sidebar', new Backbone.Layout({template: 'module-messages', attributes: {'class': 'directus-module'}}));
       }
 
-      app.affix();
+      //app.affix();
     },
 
     initialize: function() {
