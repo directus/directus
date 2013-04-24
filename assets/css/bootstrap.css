@@ -1990,6 +1990,9 @@ table th[class*="span"],
 .directus-glyphicon-remove:before {
   content: "\e208";
 }
+.directus-glyphicon-mix:before {
+  content: "\e188";
+}
 .directus-glyphicon-arrow-right:before {
   content: "\e212";
 }
@@ -7387,7 +7390,33 @@ header {
   font-size: 1.6em;
   cursor: pointer;
 }
+#directus-grouppermissions .directus-glyphicon-remove {
+  color: #eb2a49;
+  font-size: 1.6em;
+  cursor: pointer;
+}
 #directus-grouppermissions .directus-glyphicon-ban {
   color: #E0E0DF;
   font-size: 1.6em;
+}
+#directus-grouppermissions .directus-glyphicon-mix {
+  color: #E0E0DF;
+  font-size: 1.6em;
+  cursor: pointer;
+}
+#directus-grouppermissions .directus-glyphicon-mix {
+  display: none;
+}
+#directus-grouppermissions td.on .directus-glyphicon-remove {
+  display: none;
+}
+#directus-grouppermissions td.off .directus-glyphicon-check {
+  display: none;
+}
+#directus-grouppermissions td.mix .directus-glyphicon-check,
+#directus-grouppermissions td.mix .directus-glyphicon-remove {
+  display: none;
+}
+#directus-grouppermissions td.mix .directus-glyphicon-mix {
+  display: inline;
 }

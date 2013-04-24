@@ -2,7 +2,7 @@ define([
   "app",
   "backbone",
   "core/collection",
-  "core/entries.model"
+  "core/entries/entries.model"
 ],
 
 function(app, Backbone, Collection, EntriesModel) {
