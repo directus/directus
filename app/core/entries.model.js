@@ -8,7 +8,7 @@ define([
 
 function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
-  var Model =  Backbone.Model.extend({
+  var EntriesModel =  Backbone.Model.extend({
 
     parse: function(result) {
       this._lastFetchedResult = result;
@@ -64,7 +64,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
             data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
           }
 
-          attributes[id] = new Model(data, {collection: app.entries[relatedTableName]});
+          attributes[id] = new EntriesModel(data, {collection: app.entries[relatedTableName]});
 
           attributes[id].parent = this;
 
@@ -175,6 +175,6 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     }
   });
 
-  return Model;
+  return EntriesModel;
 
 });
