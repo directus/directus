@@ -1,0 +1,7 @@
+define([
+  "app"
+],
+
+function(app) {
+
+});
