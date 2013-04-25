@@ -217,7 +217,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             // $log->info("Junction row data for table $junctionTableName:");
                             // $log->info(print_r($junctionTableRecord, true));
 
-                            if($this->recordDataContainsNonPrimaryKeyData($foreignRow)) {
+                            if($this->recordDataContainsNonPrimaryKeyData($foreignRecord->toArray())) {
                                 $JunctionTable->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
                             }
                         }
