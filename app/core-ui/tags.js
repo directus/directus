@@ -79,7 +79,7 @@ define(['app','backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
-    return 'TAGS';
+    return options.model.attributes.tags;
   };
 
   return Module;
