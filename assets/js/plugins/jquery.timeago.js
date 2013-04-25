@@ -15,7 +15,6 @@
  */
 (function($) {
   $.timeago = function(timestamp) {
-    console.log("time", timestamp);
     if (timestamp instanceof Date) {
       return inWords(timestamp);
     } else if (typeof timestamp === "string") {

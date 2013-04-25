@@ -56,7 +56,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         // THE TABLE MIGHT NOT EXIST YET (CASE USERS) RESOLVE THIS
         if (uiType === 'many_to_one' || uiType === 'single_media') {
 
-          var relatedTableName = (uiType === 'single_media') ? 'directus_media' : ui.get('related_table');
+          var relatedTableName = (uiType === 'single_media') ? 'directus_media' : ui.get('table_related');
           var data = {};
 
           // If an id is avalible, make sure it is always wrapped in an object!
