@@ -169,10 +169,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
         }
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
-            // @todo replace the user value with the auth'd user value
-            item.user = 1;
             item.active = 1;
-            item.title = app.capitalize(item.name);
             // Unset the model ID so that a new media record is created
             // (and the old media record isn't replaced w/ this data)
             item.id = undefined;
@@ -186,19 +183,13 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
 
     serialize: function() {
       var url = this.mediaModel.has('name') ? app.RESOURCES_URL + 'thumbnail/' + this.mediaModel.get('name') : null;
-
-      return {
-        name: this.options.name,
+      var data = {
         url: url,
+        comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
-        title: this.mediaModel.get('name'),
-        date_uploaded: this.mediaModel.get('date_uploaded'),
-        width: this.mediaModel.get('width'),
-        height: this.mediaModel.get('height'),
-        size: this.mediaModel.get('size'),
-        user: this.mediaModel.get('user'),
-        comment: this.options.schema.get('comment')
       };
+      _.extend(data, this.mediaModel.toJSON());
+      return data;
     },
 
     initialize: function() {
