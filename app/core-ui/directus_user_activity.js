@@ -16,9 +16,9 @@ define(['app','backbone'], function(app, Backbone) {
   Module.list = function(options) {
   	if(options.model.get('last_login') == null){
 	    return '<a href="#activity" title="'+options.model.get('last_login')+'">' + options.model.get('last_page') + ' page ' + jQuery.timeago(options.model.get('last_login')) + '</a>';
-	} else {
-		return '<a href="#">Never logged in</a>';
-	}
+  	} else {
+  		return '<a href="#">Never logged in</a>';
+  	}
   };
 
   return Module;
