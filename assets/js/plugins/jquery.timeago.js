@@ -21,6 +21,8 @@
       return inWords($.timeago.parse(timestamp));
     } else if (typeof timestamp === "number") {
       return inWords(new Date(timestamp));
+    } else if (typeof timestamp === null) {
+      return "never";
     } else {
       return inWords($.timeago.datetime(timestamp));
     }
@@ -99,6 +101,7 @@
       return new Date(s);
     },
     datetime: function(elem) {
+      console.log("elem", elem);
       var iso8601 = $t.isTime(elem) ? $(elem).attr("datetime") : $(elem).attr("title");
       return $t.parse(iso8601);
     },
