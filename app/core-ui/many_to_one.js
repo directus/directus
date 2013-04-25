@@ -14,7 +14,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
-    {id: 'related_table', ui: 'textinput', char_length: 64},
+    {id: 'table_related', ui: 'textinput', char_length: 64},
     {id: 'visible_column', ui: 'textinput', char_length: 64},
     {id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
@@ -61,7 +61,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     initialize: function(options) {
       console.log(options.value);
-      var relatedTable = options.settings.get('related_table');
+      var relatedTable = options.settings.get('table_related');
       this.column = options.settings.get('visible_column');
       this.collection = app.entries[relatedTable];
       this.collection.fetch();
