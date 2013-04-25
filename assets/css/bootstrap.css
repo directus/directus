@@ -7217,7 +7217,7 @@ header {
 .cash-register-header .omnibox {
   position: relative;
   margin-left: 232px;
-  margin-right: 170px;
+  margin-right: 175px;
   height: 42px;
   top: 4px;
 }
@@ -7246,6 +7246,22 @@ header {
 .cash-register-header .btn-group .btn-primary + .dropdown-menu {
   right: 0;
   left: auto;
+}
+.active_products_table .remove_item {
+  position: relative;
+  width: 16px;
+  height: 18px;
+  margin-right: 10px;
+  top: -2px;
+  display: inline-block;
+  background: url('../img/controls.png') no-repeat;
+  text-indent: -9999px;
+  -webkit-filter: grayscale(100%);
+  opacity: .5;
+}
+.active_products_table .remove_item:hover {
+  opacity: 1;
+  -webkit-filter: none;
 }
 .customers_table {
   /* h2 */
