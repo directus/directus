@@ -1,8 +1,10 @@
 <?PHP
 
-use Directus\Bootstrap;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Bootstrap;
 use Directus\Db;
+use Directus\Db\TableSchema;
+use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 
 class MySQL {
 
@@ -94,11 +96,15 @@ class MySQL {
         $sth->execute();
 
         $currentUser = AuthProvider::getUserInfo();
+        $aclProvider = Bootstrap::get('aclProvider');
+        $ZendDb = Bootstrap::get('ZendDb');
+        $Preferences = new DirectusPreferencesTableGateway($aclProvider, $ZendDb);
 
         while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $tbl["schema"] = $this->get_table_info($row['id']);
             //$tbl["columns"] = $this->get_table($row['id']);
-            $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
+            $tbl["preferences"] = $Preferences->fetchByUserAndTable($currentUser['id'], $row['id']);
+            // $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
             array_push($return, $tbl);
         }
         return $return;
@@ -494,7 +500,10 @@ class MySQL {
                 }
             }
             $search_sql = 'AND ' . rtrim($search_sql, 'OR ') . ")";
+
         }
+
+        // die($search_sql);
 
         $has_active = false;
 
@@ -585,6 +594,11 @@ class MySQL {
                 'total'=> $foundRows,
                 'rows'=> $result
             ));
+            // if(isset($search)) {
+            //     $log = Bootstrap::get('log');
+            //     $log->info(__CLASS__.'#'.__FUNCTION__);
+            //     $log->info("Old search query: $sql");
+            // }
             return $set;
         }
 
