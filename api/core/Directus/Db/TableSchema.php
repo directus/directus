@@ -44,6 +44,8 @@ class TableSchema {
         'bike_id'           => 'bikes',
         'complaint'         => 'bike_complaints',
         'studio_id'         => 'studios',
+        'group_id'          => 'directus_groups',
+        'group'             => 'directus_groups',
 
         // These confound me. They'll be ignored and write silent warnings to the API log:
         // 'position'           => '',
@@ -60,7 +62,7 @@ class TableSchema {
     public static function getRelatedTableFromManyToOneColumnName($column_name) {
         if(!array_key_exists($column_name, self::$many_to_one_column_name_to_table_related)) {
             $log = Bootstrap::get('log');
-            $log->warning("TRANSITIONAL MAPPER: Attempting to resolve unknown column name `$column_name` to a table_related value. Ignoring.");
+            $log->warn("TRANSITIONAL MAPPER: Attempting to resolve unknown column name `$column_name` to a table_related value. Ignoring.");
             return;
         }
         return self::$many_to_one_column_name_to_table_related[$column_name];
