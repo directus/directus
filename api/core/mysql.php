@@ -563,14 +563,28 @@ class MySQL {
             // Is the UI a many-2-one relationship?
             if (in_array($col['ui'], $this->many_to_one_uis)) {
                 $column_name = $col['id'];
-                $foreign_table_name = ($col['ui'] == 'single_media') ? 'directus_media' : $col['options']['related_table'];
+
+                $foreign_table_name = null;
+                if($col['ui'] == 'single_media')
+                    $foreign_table_name = 'directus_media';
+                elseif(isset($col['table_related']))
+                    $foreign_table_name = $col['table_related'];
+                elseif(isset($col['options']['table_related']))
+                    $foreign_table_name = $col['options']['table_related'];
+
                 $ids = array_map(function($row) use ($column_name) { return $row[$column_name]; }, $result);
-                $ids = implode (',' , $ids);
+                $ids = implode (',' , array_unique($ids));
                 if ($ids == '')
                     continue;
 
+                // $log = Bootstrap::get('log');
+                // $log->info("M-2-1: foreign table $foreign_table_name ... column $column_name ... column: " . print_r($col, true) . " ids:" . print_r($ids,true) . " .... that row: " . print_r($result, true));
+                // if(is_null($foreign_table_name)) {
+                //     $log->info('empty foreign table name ... ' . $foreign_table_name);
+                // }
+
                 // Grab foreign data
-                $sth = $this->dbh->prepare("SELECT * FROM $foreign_table_name WHERE id IN ($ids)");
+                $sth = $this->dbh->prepare("SELECT * FROM `" . $foreign_table_name . "` WHERE id IN ($ids)");
                 $sth->execute();
                 $data = array();
                 while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
