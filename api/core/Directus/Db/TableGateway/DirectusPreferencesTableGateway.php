@@ -65,7 +65,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         $data = array(
             'user' => $user_id,
             'columns_visible' => implode(',', $columns_visible),
-            'table_name' => $tbl_name
+            'table_name' => $table
         );
         $data = array_merge($data, self::$defaultPreferencesValues);
         // Insert to DB
