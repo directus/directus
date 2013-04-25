@@ -14,8 +14,11 @@ define(['app','backbone'], function(app, Backbone) {
   Module.sortBy = 'last_login';
 
   Module.list = function(options) {
-    //return '<a href="#activity">Activity page ' + app.contextualDate(options.model.get('last_login')) + '</a>';
-    return '<a href="#activity" title="'+options.model.get('last_login')+'">Activity page ' + jQuery.timeago(options.model.get('last_login')) + '</a>';
+  	if(options.model.get('last_login') !== null){
+	    return '<a href="#activity" title="'+options.model.get('last_login')+'">' + options.model.get('last_page') + ' page ' + jQuery.timeago(options.model.get('last_login')) + '</a>';
+  	} else {
+  		return '<a href="#">Never logged in</a>';
+  	}
   };
 
   return Module;

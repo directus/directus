@@ -18,6 +18,7 @@ $loader = new UniversalClassLoader();
 $loader->registerNamespace("Directus", dirname(__FILE__) . "/api/core/");
 $loader->register();
 
+use Directus\View\JsonView;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
@@ -52,7 +53,11 @@ $data['active_media'] = $db->count_active('directus_media');
 $data['extensions'] = array_values(Bootstrap::get('extensions'));
 $data['ui'] = array_values(Bootstrap::get('uis'));
 
+$data = json_encode($data);
+if('production' !== DIRECTUS_ENV)
+	$data = JsonView::format_json($data);
+
 echo template(file_get_contents('main.html'), array(
-	'data'=> json_encode($data),
+	'data'=> $data,
 	'path'=> DIRECTUS_PATH
 ));
