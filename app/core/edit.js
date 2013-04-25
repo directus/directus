@@ -25,7 +25,7 @@ function(app, Backbone) {
 
       structure.each(function(column) {
         meta = structure.get(column);
-        relatedTable = (meta.get('ui') === 'many_to_one') ? meta.options.get('related_table') : meta.get('table_related');
+        relatedTable = (meta.get('ui') === 'many_to_one') ? meta.options.get('table_related') : meta.get('table_related');
 
         sameAsParent = parent && (relatedTable === parent.collection.table.id);
 
