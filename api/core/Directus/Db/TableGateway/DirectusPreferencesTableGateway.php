@@ -3,7 +3,9 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
+use Directus\Bootstrap;
 use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -30,28 +32,26 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 
-        if(1 === count($rowset))
-            return current($rowset);
+        $db = Bootstrap::get('olddb');
 
-        // @refactor
-        // User doesn't have any preferences for this table yet. Please create!
-        $sql = 'SELECT S.column_name, D.system, D.master
-            FROM INFORMATION_SCHEMA.COLUMNS S
-            LEFT JOIN directus_columns D
-            ON (D.column_name = S.column_name AND D.table_name = S.table_name)
-            WHERE S.table_name = :table_name';
-        global $db;
-        $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
-        $sth->execute();
-        $columns_visible = array();
-        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-            if ($row['column_name'] != 'id' && $row['column_name'] != 'active' && $row['column_name'] != 'sort')
-                array_push($columns_visible, $row['column_name']);
+        if(1 === count($rowset)) {
+            $preferences = current($rowset);
+            if(empty($preferences['columns_visible'])) {
+                $columns_visible = TableSchema::getTableColumns($table, 6);
+                $preferences['columns_visible'] = implode(',', $columns_visible);
+                // Insert to DB
+                $id = $db->set_entry(self::$_tableName, $preferences);
+            }
+            return $preferences;
         }
+
+        // User doesn't have any preferences for this table yet. Please create!
+
+        $columns_visible = TableSchema::getTableColumns($table, 6);
+
         $data = array(
             'user' => $user_id,
-            'columns_visible' => implode (',', $columns_visible),
+            'columns_visible' => implode(',', $columns_visible),
             'table_name' => $tbl_name,
             'sort' => 'id',
             'sort_order' => 'asc',
