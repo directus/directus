@@ -86,6 +86,31 @@ class TableSchema {
         return false;
     }
 
+    public static function getTableColumns($table, $limit = null) {
+        $sql = 'SELECT S.column_name, D.system, D.master
+            FROM INFORMATION_SCHEMA.COLUMNS S
+            LEFT JOIN directus_columns D
+            ON (D.column_name = S.column_name AND D.table_name = S.table_name)
+            WHERE S.table_name = :table_name';
+
+        $db = Bootstrap::get('olddb');
+        $sth = $db->dbh->prepare($sql);
+        $sth->bindValue(':table_name', $table, \PDO::PARAM_STR);
+        $sth->execute();
+
+        $columns = array();
+        $ignoreColumns = array('id','active','sort');
+        $i = 0;
+        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+            $i++;
+            if(!in_array($row['column_name'], $ignoreColumns))
+                array_push($columns, $row['column_name']);
+            if($i === $limit)
+                break;
+        }
+        return $columns;
+    }
+
     /**
      * Get table structure
      * @param $tbl_name
