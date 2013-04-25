@@ -286,7 +286,8 @@ define([], function() {
       "required":false,
       "ui":"many_to_one",
       "options": {
-        "related_table": "directus_groups",
+        "table_related": "directus_groups",
+        // "related_table": "directus_groups",
         "visible_column": "name"
       }
     }
