@@ -21,7 +21,7 @@ function(app, Directus, PaneSaveView) {
 
     events: {
       'click .toggleFields': 'expandTableFields',
-      'click .toggleAllPermissionsRowSingle': 'toggleAllPermissionsRowSingle',
+      // 'click .toggleAllPermissionsRowSingle': 'toggleAllPermissionsRowSingle',
       'click .toggleAllPermissionsCol': 'toggleAllPermissionsCol',
       'click .togglePermission': 'togglePermission'
     },
@@ -45,55 +45,60 @@ function(app, Directus, PaneSaveView) {
     },
 
     toggleAllPermissionsRowSingle: function(e){
-      var self = this,
-          $target = this.$(e.target),
-          targetIndex = $target.index() + 1,
-          $allCols = $target.nextUntil('tr');
+      // var self = this,
+      //     $target = this.$(e.target),
+      //     targetIndex = $target.index() + 1,
+      //     $allCols = $target.nextUntil('tr');
 
-      if ($target.hasClass('off') || $target.hasClass('on')){
-        console.log('if');
+      // if ($target.hasClass('off') || $target.hasClass('on')){
+      //   console.log('if');
 
-        if($target.hasClass('off')){
-          $target.toggleClass('on off');
-          $allCols.each(function(){
-            var $this = $(this);
+      //   if($target.hasClass('off')){
+      //     $target.toggleClass('on off');
+      //     $allCols.each(function(){
+      //       var $this = $(this);
 
-            if(!$this.hasClass('disabled')){
-              self.toggleAllPermissionsRowSingleHelper($this);
-              $this.removeClass('on off mix').addClass('on');
-            }
-          });
-        } else {
-          $target.toggleClass('on off');
-          $allCols.each(function(){
-            var $this = $(this);
+      //       if(!$this.hasClass('disabled')){
+      //         self.toggleAllPermissionsRowSingleHelper($this);
+      //         $this.removeClass('on off mix').addClass('on');
+      //       }
+      //     });
+      //   } else {
+      //     $target.toggleClass('on off');
+      //     $allCols.each(function(){
+      //       var $this = $(this);
 
-            if(!$this.hasClass('disabled')){
-              self.toggleAllPermissionsRowSingleHelper($this);
-              $this.removeClass('on off mix').addClass('off');
-            }
-          });
-        }
-      }
-      else { // this exectutes only on FIRST CLICK of table name
-        console.log('else');
-        $target.addClass('off');
-        $allCols.each(function(){
-          var $this = $(this);
+      //       if(!$this.hasClass('disabled')){
+      //         self.toggleAllPermissionsRowSingleHelper($this);
+      //         $this.removeClass('on off mix').addClass('off');
+      //       }
+      //     });
+      //   }
+      // }
+      // else { // this exectutes only on FIRST CLICK of table name
+      //   console.log('else');
+      //   $target.addClass('off');
+      //   $allCols.each(function(){
+      //     var $this = $(this);
 
-          if(!$this.hasClass('disabled')){
-            self.toggleAllPermissionsRowSingleHelper($this);
-            $this.removeClass('on off mix').addClass('off');
-          }
-        });
-      }
+      //     if(!$this.hasClass('disabled')){
+      //       self.toggleAllPermissionsRowSingleHelper($this);
+      //       $this.removeClass('on off mix').addClass('off');
+      //     }
+      //   });
+      // }
     },
 
     toggleAllPermissionsRowSingleHelper: function($fieldCol){
-      console.log($fieldCol[0]);
+      // console.log($fieldCol.parent()[0]);
       // Check if rows ABOVE AND BELOW are all equal,
       // and update Table Name's column into X or CHECK,
       // while remoing the "mix" class....
+
+      // var fieldColIndex = $fieldCol.index() + 1,
+      //     tableName = $fieldCol.parent().data('tableGroup'),
+      //     $tableSiblings = $fieldCol.parent().siblings('[data-table-group=' + tableName + ']');
+      //     console.log($tableSiblings.find('td:nth-child('+ fieldColIndex +')')[0]);
     },
 
     toggleAllPermissionsCol: function(e){
