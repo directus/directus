@@ -42,6 +42,7 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Db;
+use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
@@ -50,6 +51,7 @@ use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\View\JsonView;
 use Directus\View\AclExceptionView;
+use Zend\Db\Sql\Expression;
 
 // API Version shortcut for routes:
 $v = API_VERSION;
@@ -191,8 +193,16 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $aclProvider, $aut
     }
     $response['success'] = $authProvider
         ->login($user['id'], $user['password'], $user['salt'], $password);
-    if($response['success'])
+    if($response['success']) {
         unset($response['message']);
+        $set = array('last_login' => new Expression('NOW()'));
+        $where = array('id' => $user['id']);
+        $Users->update($set, $where);
+        // $user['last_login'] = new Expression('NOW()');
+        // $UsersRowGateway = AclAwareRowGateway::makeRowGatewayFromTableName($aclProvider, 'directus_users', $ZendDb);
+        // $UsersRowGateway->populate($user);
+        // die($UsersRowGateway->save());
+    }
     JsonView::render($response);
 })->name('auth_login');
 
@@ -259,6 +269,10 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
         // PUT a change set of table entries
         case 'PUT':
             // $db->set_entries($table, $requestPayload);
+            if(!is_numeric_array($requestPayload)) {
+                $params['id'] = $requestPayload['id'];
+                $requestPayload = array($requestPayload);
+            }
             $TableGateway->updateCollection($requestPayload);
             break;
     }

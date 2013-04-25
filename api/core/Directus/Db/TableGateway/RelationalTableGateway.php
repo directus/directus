@@ -488,8 +488,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                 if('single_media' === $col['ui'])
                     $foreign_table_name = 'directus_media';
-                elseif(array_key_exists('related_table', $col['options']))
-                    $foreign_table_name = $col['options']['related_table'];
+                elseif(array_key_exists('table_related', $col['options']))
+                    $foreign_table_name = $col['options']['table_related'];
+                elseif(array_key_exists('table_related', $col))
+                    $foreign_table_name = $col['table_related'];
                 else {
                     $message = 'Non single_media Many-to-One relationship lacks `related_table` value.';
                     if(array_key_exists('column_name', $col))
@@ -614,7 +616,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     public function updateCollection($entries) {
         $entries = is_numeric_array($entries) ? $entries : array($entries);
         foreach($entries as $entry) {
-            $entry = $this->addOrUpdateRecordByArray($entry);
+            $entry = $this->manageRecordUpdate($this->table, $entry);
             $entry->save();
         }
     }
