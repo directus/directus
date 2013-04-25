@@ -8,6 +8,7 @@ use Directus\Db\TableSchema;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -266,13 +267,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
         return $params;
     }
 
-    public function applyParamsToTableEntriesSelect(array $params, Select $select, $hasActiveColumn = false) {
+    public function applyParamsToTableEntriesSelect(array $params, Select $select, array $schema, $hasActiveColumn = false) {
         $select->group('id')
             ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
             ->limit($params['perPage'])
             ->offset($params['currentPage'] * $params['perPage']);
-
-        // @todo incorporate search
 
 
         // Note: be sure to explicitly check for null, because the value may be
@@ -285,10 +284,29 @@ class RelationalTableGateway extends AclAwareTableGateway {
         }
 
         // Where
-        $select->where
-            ->expression('-1 = ?', $params['id'])
-            ->or
-            ->equalTo('id', $params['id']);
+        $select
+            ->where
+            ->nest
+                ->expression('-1 = ?', $params['id'])
+                ->or
+                ->equalTo('id', $params['id'])
+            ->unnest;
+
+        if(isset($params['search']) && !empty($params['search'])) {
+            $params['search'] = "%" . $params['search'] . "%";
+            $where = $select->where->nest;
+            foreach ($schema as $col) {
+                if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
+                    $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
+                    $like = new Predicate\Expression("LOWER($columnName) LIKE ?", strtolower($params['search']));
+                    $where->addPredicate($like, Predicate\Predicate::OP_OR);
+                }
+            }
+            $where->unnest;
+            // $log = Bootstrap::get('log');
+            // $log->info(__CLASS__.'#'.__FUNCTION__);
+            // $log->info("New search query: " . $this->dumpSql($select));
+        }
 
         return $select;
     }
@@ -306,18 +324,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $platform = $this->adapter->platform; // use for quoting
 
         // Get table column schema
-        $table_schema = TableSchema::getSchemaArray($this->table);
-        // $table_schema = $db->get_table($this->table);
+        $schemaArray = TableSchema::getSchemaArray($this->table);
+        // $schemaArray = $db->get_table($this->table);
 
         // Table has `active` column?
-        $hasActiveColumn = $this->schemaHasActiveColumn($table_schema);
+        $hasActiveColumn = $this->schemaHasActiveColumn($schemaArray);
 
         $params = $this->applyDefaultEntriesSelectParams($params);
 
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
 
-        $select = $this->applyParamsToTableEntriesSelect($params, $select, $hasActiveColumn);
+        $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
 
         // $logger->info($this->dumpSql($select));
 
@@ -333,7 +351,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $table_entries = array();
         foreach ($results as $row) {
             $item = array();
-            foreach ($table_schema as $col) {
+            foreach ($schemaArray as $col) {
                 // Run custom data casting.
                 $name = $col['column_name'];
                 if($row->offsetExists($name))
@@ -343,7 +361,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         }
 
         // Eager-load related ManyToOne records
-        $table_entries = $this->loadManyToOneRelationships($table_schema, $table_entries);
+        $table_entries = $this->loadManyToOneRelationships($schemaArray, $table_entries);
 
         /**
          * Fetching a set of data
@@ -375,7 +393,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         list($table_entry) = $table_entries;
 
         // Separate alias fields from table schema array
-        $alias_fields = $this->filterSchemaAliasFields($table_schema); // (fmrly $alias_schema)
+        $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
 
         // $log->info(count($alias_fields) . " alias fields:");
         // $log->info(print_r($alias_fields, true));
@@ -461,9 +479,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @param  array $entries Table rows
      * @return array          Revised table rows, now including foreign rows
      */
-    public function loadManyToOneRelationships($table_schema, $table_entries) {
+    public function loadManyToOneRelationships($schemaArray, $table_entries) {
         // Identify the ManyToOne columns
-        foreach ($table_schema as $col) {
+        foreach ($schemaArray as $col) {
             $isManyToOneColumn = in_array($col['ui'], TableSchema::$many_to_one_uis);
             if ($isManyToOneColumn) {
                 $foreign_id_column = $col['id'];
