@@ -3,23 +3,20 @@
     <tr>
       <th class="status"></th>
       <th class="field-note">Table</th>
-      <th class="field-note toggleAllPermissions">View</th>
-      <th class="field-note toggleAllPermissions">Add</th>
-      <th class="field-note toggleAllPermissions">Edit</th>
-      <th class="field-note toggleAllPermissions">Reorder</th>
-      <th class="field-note toggleAllPermissions">Delete</th>
-      <th class="field-note toggleAllPermissions">Drafts</th>
+      <th class="field-note toggleAllPermissionsCol">View</th>
+      <th class="field-note toggleAllPermissionsCol">Add</th>
+      <th class="field-note toggleAllPermissionsCol">Edit</th>
+      <th class="field-note toggleAllPermissionsCol">Reorder</th>
+      <th class="field-note toggleAllPermissionsCol">Delete</th>
+      <th class="field-note toggleAllPermissionsCol">Drafts</th>
     </tr>
   </thead>
   <tbody>
 
     <tr class="" data-table-name="demo-table1">
     	<td class="status"></td>
-    	<td><span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name</td>
-    	<td class="on tableNameRow">
-    		<span class="directus-glyphicon-check togglePermission"></span>
-    		<span class="directus-glyphicon-remove togglePermission"></span>
-    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	<td class="toggleAllPermissionsRow">
+    		<span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name
     	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
@@ -31,7 +28,14 @@
     		<span class="directus-glyphicon-remove togglePermission"></span>
     		<span class="directus-glyphicon-mix togglePermission"></span>
     	</td>
-    	<td><span class="directus-glyphicon-ban"></span></td>
+    	<td class="mix tableNameRow">
+    		<span class="directus-glyphicon-check togglePermission"></span>
+    		<span class="directus-glyphicon-remove togglePermission"></span>
+    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	</td>
+    	<td class="disabled">
+    		<span class="directus-glyphicon-ban"></span>
+    	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
     		<span class="directus-glyphicon-remove togglePermission"></span>
@@ -43,19 +47,23 @@
     		<span class="directus-glyphicon-mix togglePermission"></span>
     	</td>
     </tr>
-        <tr class="add table-fields" data-table-group="demo-table1">
+        <tr class="add table-fields active" data-table-group="demo-table1">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
-			<td class="on">
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
+			<td class="off">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -65,19 +73,23 @@
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
 		</tr>
-        <tr class="add table-fields" data-table-group="demo-table1">
+        <tr class="add table-fields active" data-table-group="demo-table1">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -89,11 +101,8 @@
 		</tr>
 	<tr class="" data-table-name="demo-table2">
     	<td class="status"></td>
-    	<td><span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name</td>
-    	<td class="on tableNameRow">
-    		<span class="directus-glyphicon-check togglePermission"></span>
-    		<span class="directus-glyphicon-remove togglePermission"></span>
-    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	<td class="toggleAllPermissionsRow">
+    		<span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name
     	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
@@ -105,7 +114,14 @@
     		<span class="directus-glyphicon-remove togglePermission"></span>
     		<span class="directus-glyphicon-mix togglePermission"></span>
     	</td>
-    	<td><span class="directus-glyphicon-ban"></span></td>
+    	<td class="on tableNameRow">
+    		<span class="directus-glyphicon-check togglePermission"></span>
+    		<span class="directus-glyphicon-remove togglePermission"></span>
+    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	</td>
+    	<td class="disabled">
+    		<span class="directus-glyphicon-ban"></span>
+    	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
     		<span class="directus-glyphicon-remove togglePermission"></span>
@@ -119,7 +135,7 @@
     </tr>
         <tr class="add table-fields" data-table-group="demo-table2">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -132,7 +148,9 @@
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -144,7 +162,7 @@
 		</tr>
         <tr class="add table-fields" data-table-group="demo-table2">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -157,7 +175,9 @@
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -169,11 +189,8 @@
 		</tr>
 	<tr class="" data-table-name="demo-table3">
     	<td class="status"></td>
-    	<td><span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name</td>
-    	<td class="on tableNameRow">
-    		<span class="directus-glyphicon-check togglePermission"></span>
-    		<span class="directus-glyphicon-remove togglePermission"></span>
-    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	<td class="toggleAllPermissionsRow">
+    		<span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name
     	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
@@ -185,7 +202,14 @@
     		<span class="directus-glyphicon-remove togglePermission"></span>
     		<span class="directus-glyphicon-mix togglePermission"></span>
     	</td>
-    	<td><span class="directus-glyphicon-ban"></span></td>
+    	<td class="on tableNameRow">
+    		<span class="directus-glyphicon-check togglePermission"></span>
+    		<span class="directus-glyphicon-remove togglePermission"></span>
+    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	</td>
+    	<td class="disabled">
+    		<span class="directus-glyphicon-ban"></span>
+    	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
     		<span class="directus-glyphicon-remove togglePermission"></span>
@@ -199,7 +223,7 @@
     </tr>
         <tr class="add table-fields" data-table-group="demo-table3">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -212,7 +236,9 @@
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -224,7 +250,7 @@
 		</tr>
         <tr class="add table-fields" data-table-group="demo-table3">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -237,7 +263,9 @@
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -249,11 +277,8 @@
 		</tr>
 	<tr class="" data-table-name="demo-table4">
     	<td class="status"></td>
-    	<td><span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name</td>
-    	<td class="on tableNameRow">
-    		<span class="directus-glyphicon-check togglePermission"></span>
-    		<span class="directus-glyphicon-remove togglePermission"></span>
-    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	<td class="toggleAllPermissionsRow">
+    		<span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name
     	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
@@ -265,7 +290,14 @@
     		<span class="directus-glyphicon-remove togglePermission"></span>
     		<span class="directus-glyphicon-mix togglePermission"></span>
     	</td>
-    	<td><span class="directus-glyphicon-ban"></span></td>
+    	<td class="on tableNameRow">
+    		<span class="directus-glyphicon-check togglePermission"></span>
+    		<span class="directus-glyphicon-remove togglePermission"></span>
+    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	</td>
+    	<td class="disabled">
+    		<span class="directus-glyphicon-ban"></span>
+    	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
     		<span class="directus-glyphicon-remove togglePermission"></span>
@@ -279,7 +311,7 @@
     </tr>
         <tr class="add table-fields" data-table-group="demo-table4">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -292,7 +324,9 @@
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -304,7 +338,7 @@
 		</tr>
         <tr class="add table-fields" data-table-group="demo-table4">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -317,7 +351,9 @@
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -329,11 +365,8 @@
 		</tr>
 	<tr class="" data-table-name="demo-table5">
     	<td class="status"></td>
-    	<td><span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name</td>
-    	<td class="on tableNameRow">
-    		<span class="directus-glyphicon-check togglePermission"></span>
-    		<span class="directus-glyphicon-remove togglePermission"></span>
-    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	<td class="toggleAllPermissionsRow">
+    		<span class="directus-glyphicon-arrow-right toggleFields"></span> Table Name
     	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
@@ -345,7 +378,14 @@
     		<span class="directus-glyphicon-remove togglePermission"></span>
     		<span class="directus-glyphicon-mix togglePermission"></span>
     	</td>
-    	<td><span class="directus-glyphicon-ban"></span></td>
+    	<td class="on tableNameRow">
+    		<span class="directus-glyphicon-check togglePermission"></span>
+    		<span class="directus-glyphicon-remove togglePermission"></span>
+    		<span class="directus-glyphicon-mix togglePermission"></span>
+    	</td>
+    	<td class="disabled">
+    		<span class="directus-glyphicon-ban"></span>
+    	</td>
     	<td class="on tableNameRow">
     		<span class="directus-glyphicon-check togglePermission"></span>
     		<span class="directus-glyphicon-remove togglePermission"></span>
@@ -359,7 +399,7 @@
     </tr>
         <tr class="add table-fields" data-table-group="demo-table5">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -372,7 +412,9 @@
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -384,7 +426,7 @@
 		</tr>
         <tr class="add table-fields" data-table-group="demo-table5">
         	<td class="status"></td>
-        	<td>td</td>
+        	<td class="toggleAllPermissionsRowSingle">field_name</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
@@ -397,7 +439,9 @@
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
 			</td>
-			<td><span class="directus-glyphicon-ban"></span></td>
+			<td class="disabled">
+				<span class="directus-glyphicon-ban"></span>
+			</td>
 			<td class="on">
 				<span class="directus-glyphicon-check togglePermission"></span>
 				<span class="directus-glyphicon-remove togglePermission"></span>
