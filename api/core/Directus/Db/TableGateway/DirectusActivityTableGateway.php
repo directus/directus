@@ -63,7 +63,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
                 ->OR
                 ->equalTo('type', 'MEDIA');
 
-        $select = $this->applyParamsToTableEntriesSelect($params, $select, $hasActiveColumn);
+        $select = $this->applyParamsToTableEntriesSelect($params, $select, $tableSchemaArray, $hasActiveColumn);
 
         // die($this->dumpSql($select));
 

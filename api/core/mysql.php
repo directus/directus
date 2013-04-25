@@ -494,7 +494,10 @@ class MySQL {
                 }
             }
             $search_sql = 'AND ' . rtrim($search_sql, 'OR ') . ")";
+
         }
+
+        // die($search_sql);
 
         $has_active = false;
 
@@ -585,6 +588,11 @@ class MySQL {
                 'total'=> $foundRows,
                 'rows'=> $result
             ));
+            // if(isset($search)) {
+            //     $log = Bootstrap::get('log');
+            //     $log->info(__CLASS__.'#'.__FUNCTION__);
+            //     $log->info("Old search query: $sql");
+            // }
             return $set;
         }
 
