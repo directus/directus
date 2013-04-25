@@ -6839,6 +6839,10 @@ header {
   position: relative;
 }
 /* h2 { */
+#scheduler_breadcrumb_trail .breadcrumb-divider {
+  display: inline-block;
+  width: 14px;
+}
 .has-dropdown:hover ~ .crumb-bg-hightlight {
   display: block;
 }
