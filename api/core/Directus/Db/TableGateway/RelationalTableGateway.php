@@ -26,6 +26,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     public function manageRecordUpdate($tableName, $requestPayload, $parentActivityLogId = null) {
         $log = $this->logger();
         // $log->info(__CLASS__."#".__FUNCTION__.": " . print_r(func_get_args(), true));
+        // $log->info(__CLASS__."#".__FUNCTION__);
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
         $masterColumn = TableSchema::getMasterColumn($schemaArray);
@@ -34,28 +35,49 @@ class RelationalTableGateway extends AclAwareTableGateway {
         if($masterColumn && isset($requestPayload[$masterColumn['column_name']]))
             $recordIdentifier = $requestPayload[$masterColumn['column_name']];
 
+        // $log->info("<IdentifierDebug>");
+        // $log->info("Table: $tableName");
+        // $log->info("Schema: " . print_r($schemaArray, true));
+        // $log->info("Master Column: " . is_null($masterColumn) ? "NULL" : $masterColumn);
+        // $log->info("Record Identifier: " . is_null($recordIdentifier) ? "NULL" : $recordIdentifier);
+        // $log->info("</IdentifierDebug>");
+
+        if(is_null($masterColumn)) {
+            $log->warn("NEW ACTIVITY ENTRY: Unable to identify a master column for table $tableName");
+        }
+
+        if(is_null($recordIdentifier)) {
+            $log->warn("NEW ACTIVITY ENTRY: Unable to produce a record identifier for table $tableName");
+        }
+
+        $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) || (1 == $_GET['skip_activity_log']));
+
         // Mock a top-level log entry record & fetch the new ID for reference
         $currentUser = AuthProvider::getUserInfo();
-        $logEntryAction = isset($requestPayload['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
-        $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
-        $logData = array(
-            'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
-            'table_name'    => $tableName,
-            'action'        => $logEntryAction,
-            'user'          => $currentUser['id'],
-            'datetime'      => gmdate('Y-m-d H:i:s'),
-            'identifier'    => $recordIdentifier,
-            'parent_id'     => $parentActivityLogId
-        );
-        $parentLogEntry->populate($logData, false);
-        $parentLogEntry->save();
+        $parentLogEntry = null;
+        if($activityLoggingEnabled) {
+            $logEntryAction = isset($requestPayload['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
+            $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
+            $logData = array(
+                'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
+                'table_name'    => $tableName,
+                'action'        => $logEntryAction,
+                'user'          => $currentUser['id'],
+                'datetime'      => gmdate('Y-m-d H:i:s'),
+                'identifier'    => $recordIdentifier,
+                'parent_id'     => $parentActivityLogId
+            );
+            $parentLogEntry->populate($logData, false);
+            $parentLogEntry->save();
+        }
 
         $RecordGateway = $this;
         if($tableName !== $this->table)
             $RecordGateway = new RelationalTableGateway($this->aclProvider, $tableName, $this->adapter);
 
         // Update/add associations
-        $parentRecordWithForeignKeys = $RecordGateway->addOrUpdateRelationships($schemaArray, $requestPayload, $parentLogEntry['id']);
+        $parentLogEntryId = is_null($parentLogEntry) ? false : $parentLogEntry['id'];
+        $parentRecordWithForeignKeys = $RecordGateway->addOrUpdateRelationships($schemaArray, $requestPayload, $parentLogEntryId);
 
         // If more than the record ID is present...
         if($this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys)) {
@@ -64,10 +86,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
             // $log->info("new parent record data after AATG#addOrUpdateRecordByArray: " . print_r($parentRecordWithForeignKeys->toArray(), true));
         }
 
-        // Fill out the remainder of the log entry data & update the record
-        $parentLogEntry['row_id'] = $parentRecordWithForeignKeys['id'];
-        $parentLogEntry['data'] = json_encode($parentRecordWithForeignKeys);
-        $parentLogEntry->save();
+        if(!is_null($parentLogEntry)) {
+            // Fill out the remainder of the log entry data & update the record
+            $parentLogEntry['row_id'] = $parentRecordWithForeignKeys['id'];
+            $parentLogEntry['data'] = json_encode($parentRecordWithForeignKeys);
+            $parentLogEntry->save();
+        }
 
         return $parentRecordWithForeignKeys;
     }
