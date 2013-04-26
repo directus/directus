@@ -18,7 +18,12 @@ function(app, Backbone) {
     beforeRender: function() {
       var structure = this.options.structure || this.model.collection.structure;
       var UI = ui.initialize({model: this.model, structure: structure});
-      var parent = this.model.collection.parent;
+
+      var parent = false;
+      // fixes https://github.com/RNGR/directus6/issues/204
+      if(this.model.hasOwnProperty('collection') && this.model.collection.hasOwnProperty('parent'))
+        parent = this.model.collection.parent;
+
       var sameAsParent = false;
       var relatedTable;
       var meta;
