@@ -7275,6 +7275,12 @@ header {
 .customers_table {
   /* h2 */
 }
+.customers_table.directus-module {
+  border: 0;
+}
+.customers_table.directus-module.add-border {
+  border: 1px solid #ededed;
+}
 .customers_table .name {
   font-size: 18px;
   color: #8bc53f;
