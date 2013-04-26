@@ -38,13 +38,16 @@ define(['app', 'backbone'], function(app, Backbone) {
       var data = {};
       var userId;
 
-      if (!this.model.has('name')) {
-        userId = 1;
+      var authenticatedUser = app.getCurrentUser();
+
+      if (!this.model.has('id')) {
+        userId = authenticatedUser['id'];
         data.isNew = true;
       } else {
         userId = this.model.get('user');
         data = this.model.toJSON();
-        if (this.model.get('type') === 'embed/youtube') data.youtube = this.model.get('embed_id');
+        if (this.model.get('type') === 'embed/youtube')
+          data.youtube = this.model.get('embed_id');
       }
 
       data.userName = app.users.get(userId).get('first_name');
