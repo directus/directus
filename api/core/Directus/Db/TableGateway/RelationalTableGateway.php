@@ -550,7 +550,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 // Replace foreign keys with foreign rows
                 foreach ($table_entries as &$parentRow) {
                     if(array_key_exists($foreign_id_column, $parentRow)) {
-                        $foreign_id = $parentRow[$foreign_id_column];
+                        $foreign_id = (int) $parentRow[$foreign_id_column];
                         $parentRow[$foreign_id_column] = null;
                         // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
                         if(array_key_exists($foreign_id, $foreign_table))
