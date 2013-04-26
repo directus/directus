@@ -32,6 +32,7 @@
  * @since   6.0.0
  */
 
+use Directus\Bootstrap;
 
 class Media {
   private $resources_path;
@@ -110,8 +111,7 @@ class Media {
     $ext = $info['extension'];
     $name = basename($name,'.'.$ext);
     $name = strtolower($name);
-    $name = str_replace('_',' ',$name);
-    $name = str_replace('-',' ',$name);
+    $name = str_replace(array('_','-'),array(' ',' '),$name);
     $name = ucwords($name);
     return $name;
   }
@@ -133,12 +133,21 @@ class Media {
     $file = $path.'/'.$name.'.'.$ext;
 
     if (file_exists($file)) {
-      if ($attempt) {
-        $name = rtrim($name, $attempt);
-        $name = rtrim($name, '-');
+      $matches = array();
+      $trailingDigit = '/\-(\d)\.('.$ext.')$/';
+      if(preg_match($trailingDigit, $file, $matches)) {
+        // Convert "fname-1.jpg" to "fname-2.jpg"
+        $attempt = 1 + (int) $matches[1];
+        $newName = preg_replace($trailingDigit, "-{$attempt}.$ext", $file);
+        $this->name = basename($newName);
+      } else {
+        if ($attempt) {
+          $name = rtrim($name, $attempt);
+          $name = rtrim($name, '-');
+        }
+        $attempt++;
+        $this->name = $name . '-' . $attempt . '.' . $ext;
       }
-      $attempt++;
-      $this->name = $name . '-' . $attempt . '.' . $ext;
       return $this->unique_name($attempt);
     }
 
