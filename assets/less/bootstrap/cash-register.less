@@ -1,0 +1,143 @@
+.row-fluid {
+	&.cash-register-container {
+		position: relative;
+	}
+}
+
+.cash-register-header {
+	.omnibox {
+		position: relative;
+		margin-left: 232px;
+		margin-right: 175px;
+		height: 42px;
+		top: 4px;
+
+		div {
+			position: absolute;
+			height: 100%;
+			width: 100%;
+
+			input {
+				box-sizing: border-box;
+				font-family: Arvo;
+				font-size: 26px;
+				height: 100%;
+				width: 100%;
+				line-height: 30px;
+			}
+		}
+	}
+
+	.btn-group {
+		position: absolute;
+		top: 4px;
+		right: 0;
+
+		.btn-primary {
+			padding-top: 13px;
+			padding-bottom: 13px;
+
+			&+.dropdown-menu {
+				// shift dropdown menu position?
+				right: 0;
+				left: auto;
+			}
+		}
+	}
+}
+
+// .directus-module
+	.active_products_table {
+		.remove_item {
+			position: relative;
+			width: 16px;
+			height: 18px;
+			margin-right: 10px;
+			top: -2px;
+			display: inline-block;
+			background: url('../img/controls.png') no-repeat;
+			text-indent: -9999px;
+			-webkit-filter: grayscale(100%);
+			opacity: .5;
+
+			&:hover {
+				opacity: 1;
+				-webkit-filter: none;
+			}
+		}
+	}
+
+
+	.customers_table {
+		/* h2 */.name {
+			font-size: 18px;
+			color: @directusPrimary;
+			margin: 0;
+			padding: 0;
+
+			.icon {
+				position: relative;
+				width: 32px;
+				height: 22px;
+				display: inline-block;
+				background: url('../img/glyphicons-parents-green.png') no-repeat;
+				margin-right: 7px;
+				bottom: -3px;
+			}
+		}
+
+		input[type=text], select {
+			width: 218px;
+			margin-bottom: 20px;
+
+			&:last-child {
+				// margin-bottom: auto;
+			}
+		}
+
+		.directus-module-section.payment_fields {
+			input[type=text], select {
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+		}
+
+		.credit_card_exp_month,
+		.credit_card_exp_year {
+			width: 60px;
+			vertical-align: middle;
+			margin-bottom: auto;
+			margin-right: 4px;
+		}
+
+		.btn-primary {
+			width: 236px;
+		}
+
+		.payment_options {
+			// overflow: auto;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			// border: 1px solid #000;
+			.clearfix();
+
+			li {
+				float: left;
+				width: 119px;
+				margin-bottom: 5px;
+				cursor: pointer;
+
+				&:nth-child(even) {
+					// 
+				}
+			}
+
+			input {
+				margin-right: 4px;
+			}
+		}
+
+	}
+// }
