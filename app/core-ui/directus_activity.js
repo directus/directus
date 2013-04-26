@@ -31,8 +31,17 @@ define(['app','backbone'], function(app, Backbone) {
         returnStr = 'A UI has been updated';
         break;
       default:
+        var targetObjectPath;
+        switch(table) {
+          case 'directus_users':
+            targetObjectPath = 'users/' + model.get('row_id');
+            break;
+          default:
+            targetObjectPath = '#tables/' + table + '/' + model.get('row_id');
+            break;
+        }
         returnStr =
-            '<a href="#tables/' + table + '/' + model.get('row_id') + '">' + model.get('identifier') + ' </a>'+
+            '<a href="' + targetObjectPath + '">' + model.get('identifier') + ' </a>'+
               ' has been ' + app.actionMap[action] + ' ' + app.prepositionMap[action] +
             ' <a href="#tables/' + table + '">' + app.capitalize(table) + '</a>';
         break;

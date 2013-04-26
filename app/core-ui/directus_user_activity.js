@@ -16,7 +16,7 @@ define(['app','backbone'], function(app, Backbone) {
   Module.list = function(options) {
   	if(options.model.get('last_access') !== null){
       var page_summary = '';
-      var last_page = $.parseJSON(options.model.get('last_page'));
+      var last_page = $.parseJSON(options.model.get('last_page')) || {};
       if(undefined === last_page.param) {
         page_summary += app.capitalize(last_page.route) + " index";
       } else {
