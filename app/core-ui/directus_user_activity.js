@@ -25,7 +25,7 @@ define(['app','backbone'], function(app, Backbone) {
             page_summary += app.capitalize(last_page.param) + " table index";
             break;
           case "entry":
-            var detailType = "new";
+            var detailType = "edit form";
             if("new" == last_page.path.substr(-3))
               detailType = "create form";
             page_summary += app.capitalize(last_page.param) + " table entry " + detailType;
