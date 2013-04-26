@@ -88,6 +88,15 @@ class TableSchema {
         return false;
     }
 
+    public static function getFirstNonSystemColumn($schema) {
+        foreach ($schema as $column) {
+            if(isset($column['system']) && false != $column['system'])
+                continue;
+            return $column;
+        }
+        return false;
+    }
+
     public static function getTableColumns($table, $limit = null) {
         $sql = 'SELECT S.column_name, D.system, D.master
             FROM INFORMATION_SCHEMA.COLUMNS S
