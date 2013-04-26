@@ -50,7 +50,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $log->warn("NEW ACTIVITY ENTRY: Unable to produce a record identifier for table $tableName");
         }
 
-        $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) || (1 == $_GET['skip_activity_log']));
+        $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
 
         // Mock a top-level log entry record & fetch the new ID for reference
         $currentUser = AuthProvider::getUserInfo();
