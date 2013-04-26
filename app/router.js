@@ -310,7 +310,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
             };
             user.save({'last_page': last_page}, {
               patch: true,
-              url: user.url + "/" + user.id
+              url: user.url + "/" + user.id + "?skip_activity_log=1"
             });
             // didn't work:
             //     user.set('last_page', route);
