@@ -1999,6 +1999,9 @@ table th[class*="span"],
 .directus-glyphicon-arrow-down:before {
   content: "\e213";
 }
+.directus-glyphicon-parents:before {
+  content: "\e025";
+}
 /*
 .glyphicon-glass:before                   { content: "\e001"; }
 .glyphicon-music:before                   { content: "\e002"; }
@@ -7207,6 +7210,119 @@ header {
   height: 20px;
   width: 22px;
   background-position: -56px 0;
+}
+.row-fluid.cash-register-container {
+  position: relative;
+}
+.cash-register-header .omnibox {
+  position: relative;
+  margin-left: 232px;
+  margin-right: 175px;
+  height: 42px;
+  top: 4px;
+}
+.cash-register-header .omnibox div {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+.cash-register-header .omnibox div input {
+  box-sizing: border-box;
+  font-family: Arvo;
+  font-size: 26px;
+  height: 100%;
+  width: 100%;
+  line-height: 30px;
+}
+.cash-register-header .btn-group {
+  position: absolute;
+  top: 4px;
+  right: 0;
+}
+.cash-register-header .btn-group .btn-primary {
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+.cash-register-header .btn-group .btn-primary + .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+.active_products_table .remove_item {
+  position: relative;
+  width: 16px;
+  height: 18px;
+  margin-right: 10px;
+  top: -2px;
+  display: inline-block;
+  background: url('../img/controls.png') no-repeat;
+  text-indent: -9999px;
+  -webkit-filter: grayscale(100%);
+  opacity: .5;
+}
+.active_products_table .remove_item:hover {
+  opacity: 1;
+  -webkit-filter: none;
+}
+.customers_table {
+  /* h2 */
+}
+.customers_table .name {
+  font-size: 18px;
+  color: #8bc53f;
+  margin: 0;
+  padding: 0;
+}
+.customers_table .name .icon {
+  position: relative;
+  width: 32px;
+  height: 22px;
+  display: inline-block;
+  background: url('../img/glyphicons-parents-green.png') no-repeat;
+  margin-right: 7px;
+  bottom: -3px;
+}
+.customers_table input[type=text],
+.customers_table select {
+  width: 218px;
+  margin-bottom: 20px;
+}
+.customers_table .directus-module-section.payment_fields input[type=text]:last-child,
+.customers_table .directus-module-section.payment_fields select:last-child {
+  margin-bottom: 0;
+}
+.customers_table .credit_card_exp_month,
+.customers_table .credit_card_exp_year {
+  width: 60px;
+  vertical-align: middle;
+  margin-bottom: auto;
+  margin-right: 4px;
+}
+.customers_table .btn-primary {
+  width: 236px;
+}
+.customers_table .payment_options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  *zoom: 1;
+}
+.customers_table .payment_options:before,
+.customers_table .payment_options:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.customers_table .payment_options:after {
+  clear: both;
+}
+.customers_table .payment_options li {
+  float: left;
+  width: 119px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.customers_table .payment_options input {
+  margin-right: 4px;
 }
 .activity-module {
   background-color: #F4F4F4;
