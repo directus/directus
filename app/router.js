@@ -281,8 +281,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       // Update media counter
 
       app.media.on('sync add', function() {
-        console.log('ssssync');
-        console.log(app.media.table.get('active'), app.media);
+        // console.log('ssssync');
+        // console.log(app.media.table.get('active'), app.media);
         this.tabs.get('media').set({count: app.media.table.get('active')});
         tabs.render();
       }, this);
@@ -292,6 +292,30 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.on('subroute', function(id) {
         this.tabs.setActive(id);
       });
+
+      this.bind("all", function(route, router){
+        var routeTokens = route.split(':');
+        if(routeTokens.length > 1) {
+          // Report the "last page" data to the API
+          // @fixes https://github.com/RNGR/directus6/issues/199
+          // @todo is this the right way to do this?
+          var user = app.getCurrentUser();
+          var last_page = {
+            'path' : window.location.pathname.substring(app.root.length),
+            'route' : route.substring(6),
+            'param' : router,
+          };
+          console.log(last_page);
+          user.save({'last_page': last_page}, {
+            patch: true,
+            url: user.url + "/" + user.id
+          });
+          // didn't work:
+          // user.set('last_page', route);
+          // app.users.save();
+        }
+      });
+
       //this.navigate('#tables', {trigger: true});
     }
   });
