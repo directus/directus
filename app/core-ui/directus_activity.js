@@ -20,9 +20,13 @@ define(['app','backbone'], function(app, Backbone) {
     var type = model.get('type');
     var returnStr;
 
+    var identifier = model.get('identifier');
+    if(null === identifier)
+      identifier = "Entry #" + model.get('row_id');
+
     switch (type) {
       case 'MEDIA':
-        returnStr = '<a href="#" data-action="media" data-id="'+model.get('row_id')+'">' + model.get('identifier') + '</a> has been ' + app.actionMap[action] + ' ' + app.prepositionMap[action] + ' <a href="#media">Media</a>';
+        returnStr = '<a href="#" data-action="media" data-id="'+model.get('row_id')+'">' + identifier + '</a> has been ' + app.actionMap[action] + ' ' + app.prepositionMap[action] + ' <a href="#media">Media</a>';
         break;
       case 'SETTINGS':
         returnStr = 'The settings have been updated';
@@ -41,7 +45,7 @@ define(['app','backbone'], function(app, Backbone) {
             break;
         }
         returnStr =
-            '<a href="' + targetObjectPath + '">' + model.get('identifier') + ' </a>'+
+            '<a href="' + targetObjectPath + '">' + identifier + ' </a>'+
               ' has been ' + app.actionMap[action] + ' ' + app.prepositionMap[action] +
             ' <a href="#tables/' + table + '">' + app.capitalize(table) + '</a>';
         break;
