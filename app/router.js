@@ -294,6 +294,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       });
 
       this.bind("all", function(route, router){
+        // console.log('route change',route,router);
         var routeTokens = route.split(':');
         if(routeTokens.length > 1) {
           // Report the "last page" data to the API
@@ -309,11 +310,14 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
             };
             user.save({'last_page': last_page}, {
               patch: true,
-              url: user.url + "/" + user.id
+              url: user.url + "/" + user.id + "?skip_activity_log=1"
             });
             // didn't work:
-            // user.set('last_page', route);
-            // app.users.save();
+            //     user.set('last_page', route);
+            //     user.save();
+            // nor:
+            //     user.set('last_page', route);
+            //     app.users.save();
           } else {
             // If theere's no path in the location (i.e. the user just logged in),
             // take them to their last visited page, defaulting to "tables".
