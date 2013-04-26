@@ -31,25 +31,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $schemaArray = TableSchema::getSchemaArray($tableName);
         $masterColumn = TableSchema::getMasterColumn($schemaArray);
 
-        $recordIdentifier = null;
-        if($masterColumn && isset($requestPayload[$masterColumn['column_name']]))
-            $recordIdentifier = $requestPayload[$masterColumn['column_name']];
-
-        // $log->info("<IdentifierDebug>");
-        // $log->info("Table: $tableName");
-        // $log->info("Schema: " . print_r($schemaArray, true));
-        // $log->info("Master Column: " . is_null($masterColumn) ? "NULL" : $masterColumn);
-        // $log->info("Record Identifier: " . is_null($recordIdentifier) ? "NULL" : $recordIdentifier);
-        // $log->info("</IdentifierDebug>");
-
-        if(is_null($masterColumn)) {
-            $log->warn("NEW ACTIVITY ENTRY: Unable to identify a master column for table $tableName");
-        }
-
-        if(is_null($recordIdentifier)) {
-            $log->warn("NEW ACTIVITY ENTRY: Unable to produce a record identifier for table $tableName");
-        }
-
         $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
 
         // Mock a top-level log entry record & fetch the new ID for reference
@@ -64,32 +45,47 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 'action'        => $logEntryAction,
                 'user'          => $currentUser['id'],
                 'datetime'      => gmdate('Y-m-d H:i:s'),
-                'identifier'    => $recordIdentifier,
                 'parent_id'     => $parentActivityLogId
             );
             $parentLogEntry->populate($logData, false);
             $parentLogEntry->save();
         }
 
-        $RecordGateway = $this;
+        $TableGateway = $this;
         if($tableName !== $this->table)
-            $RecordGateway = new RelationalTableGateway($this->aclProvider, $tableName, $this->adapter);
+            $TableGateway = new RelationalTableGateway($this->aclProvider, $tableName, $this->adapter);
 
         // Update/add associations
         $parentLogEntryId = is_null($parentLogEntry) ? false : $parentLogEntry['id'];
-        $parentRecordWithForeignKeys = $RecordGateway->addOrUpdateRelationships($schemaArray, $requestPayload, $parentLogEntryId);
+        $parentRecordWithForeignKeys = $TableGateway->addOrUpdateRelationships($schemaArray, $requestPayload, $parentLogEntryId);
 
         // If more than the record ID is present...
         if($this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys)) {
             // Update the parent row, w/ any new association fields replaced by their IDs
-            $parentRecordWithForeignKeys = $RecordGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
+            $parentRecordWithForeignKeys = $TableGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
             // $log->info("new parent record data after AATG#addOrUpdateRecordByArray: " . print_r($parentRecordWithForeignKeys->toArray(), true));
         }
 
         if(!is_null($parentLogEntry)) {
+
+            // Find a record identifier
+            $identifierColumnName = null;
+            if($masterColumn)
+                $identifierColumnName = $masterColumn['column_name'];
+            else {
+                $column = TableSchema::getFirstNonSystemColumn($schemaArray);
+                if($column)
+                    $identifierColumnName = $column['column_name'];
+            }
+            $recordWithIdentifierData = $parentRecordWithForeignKeys;
+            if(count($recordWithIdentifierData) !== count($schemaArray))
+                $recordWithIdentifierData = $TableGateway->find($parentRecordWithForeignKeys['id']);
+            $recordIdentifier = is_null($identifierColumnName) ? null : $recordWithIdentifierData[$identifierColumnName];
+
             // Fill out the remainder of the log entry data & update the record
             $parentLogEntry['row_id'] = $parentRecordWithForeignKeys['id'];
             $parentLogEntry['data'] = json_encode($parentRecordWithForeignKeys);
+            $parentLogEntry['identifier'] = $recordIdentifier;
             $parentLogEntry->save();
         }
 
