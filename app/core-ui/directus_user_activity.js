@@ -25,10 +25,13 @@ define(['app','backbone'], function(app, Backbone) {
             page_summary += app.capitalize(last_page.param) + " table index";
             break;
           case "entry":
-            var detailType = "edit form";
+            var detailType = "edit";
             if("new" == last_page.path.substr(-3))
-              detailType = "create form";
+              detailType = "create";
             page_summary += app.capitalize(last_page.param) + " table entry " + detailType;
+            break;
+          case "user":
+            page_summary += "User edit form";
             break;
         }
       }
