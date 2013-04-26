@@ -193,15 +193,12 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $aclProvider, $aut
     }
     $response['success'] = $authProvider
         ->login($user['id'], $user['password'], $user['salt'], $password);
+
     if($response['success']) {
         unset($response['message']);
         $set = array('last_login' => new Expression('NOW()'));
         $where = array('id' => $user['id']);
-        $Users->update($set, $where);
-        // $user['last_login'] = new Expression('NOW()');
-        // $UsersRowGateway = AclAwareRowGateway::makeRowGatewayFromTableName($aclProvider, 'directus_users', $ZendDb);
-        // $UsersRowGateway->populate($user);
-        // die($UsersRowGateway->save());
+        $updateResult = $Users->update($set, $where);
     }
     JsonView::render($response);
 })->name('auth_login');
