@@ -82,7 +82,7 @@ class TableSchema {
 
     public static function getMasterColumn($schema) {
         foreach ($schema as $column) {
-            if (array_key_exists('master', $column) && true == $column['master'])
+            if (isset($column['master']) && true == $column['master'])
                 return $column;
         }
         return false;
