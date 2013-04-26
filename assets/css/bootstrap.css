@@ -7247,6 +7247,15 @@ header {
   right: 0;
   left: auto;
 }
+#sidebar-left.quick_picks_table {
+  float: left;
+  width: 280px;
+}
+.active_products_table {
+  position: relative;
+  margin-left: 300px;
+  margin-right: 300px;
+}
 .active_products_table .remove_item {
   position: relative;
   width: 16px;
