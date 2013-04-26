@@ -6,18 +6,12 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Zend\Db\RowGateway\RowGateway;
+use Zend\Db\Sql\Expression;
 
 class DirectusUsersRowGateway extends AclAwareRowGateway {
 
     public function preSaveDataHook(array $rowData, $rowExistsInDatabase = false)
     {
-        // New record?
-        // Attribute the currently authenticated user as the uploader
-        if(!$rowExistsInDatabase) {
-            $currentUser = AuthProvider::getUserInfo();
-            $rowData['directus_user'] = $currentUser['id'];
-        }
-
         // transitional:
         // - until we have backend form validation, strip out empty password fields
         if(isset($rowData['password']) && empty($rowData['password']))
@@ -44,6 +38,16 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
         // Hash password, if updating it
         if(isset($rowData['password']) && !empty($rowData['password'])) {
             $rowData['password'] = AuthProvider::hashPassword($rowData['password'], $rowData['salt']);
+        }
+
+        // User is updating themselves.
+        // Corresponds to a ping indicating their last activity.
+        // Updated their "last_access" value.
+        if(AuthProvider::loggedIn()) {
+            $currentUser = AuthProvider::getUserInfo();
+            if($rowData['id'] == $currentUser['id']) {
+                $rowData['last_access'] = new Expression("NOW()");
+            }
         }
 
         return $rowData;
