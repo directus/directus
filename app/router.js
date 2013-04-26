@@ -300,23 +300,34 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           // @fixes https://github.com/RNGR/directus6/issues/199
           // @todo is this the right way to do this?
           var user = app.getCurrentUser();
-          var last_page = {
-            'path' : window.location.pathname.substring(app.root.length),
-            'route' : route.substring(6),
-            'param' : router,
-          };
-          console.log(last_page);
-          user.save({'last_page': last_page}, {
-            patch: true,
-            url: user.url + "/" + user.id
-          });
-          // didn't work:
-          // user.set('last_page', route);
-          // app.users.save();
+          var currentPath = window.location.pathname.substring(app.root.length);
+          if(currentPath.length) {
+            var last_page = {
+              'path' : currentPath,
+              'route' : route.substring(6),
+              'param' : router
+            };
+            user.save({'last_page': last_page}, {
+              patch: true,
+              url: user.url + "/" + user.id
+            });
+            // didn't work:
+            // user.set('last_page', route);
+            // app.users.save();
+          } else {
+            // If theere's no path in the location (i.e. the user just logged in),
+            // take them to their last visited page, defaulting to "tables".
+            var authenticatedUser = app.getCurrentUser();
+            var user = app.users.get(authenticatedUser.id);
+            var last_page = $.parseJSON(user.get('last_page'));
+            if(undefined === last_page.path || '' == last_page.path) {
+              last_page.path = 'tables';
+            }
+            this.navigate(last_page.path, {trigger: true});
+          }
         }
       });
 
-      //this.navigate('#tables', {trigger: true});
     }
   });
 
