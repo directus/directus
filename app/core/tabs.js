@@ -25,18 +25,6 @@ function(app, Backbone) {
         model.unset('active',{silent: true});
       });
       model.set({'active':true});
-
-      // Report the "last page" data to the API
-      // @fixes https://github.com/RNGR/directus6/issues/199
-      // @todo is this the right way to do this?
-      var user = app.getCurrentUser();
-      user.save({'last_page': route}, {
-        patch: true,
-        url: user.url + "/" + user.id
-      });
-      // didn't work:
-      // user.set('last_page', route);
-      // app.users.save();
     }
   });
 
