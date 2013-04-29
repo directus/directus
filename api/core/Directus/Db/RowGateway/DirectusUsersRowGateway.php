@@ -12,9 +12,16 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
 
     public function preSaveDataHook(array $rowData, $rowExistsInDatabase = false)
     {
-        // transitional:
-        // - until we have backend form validation, strip out empty password fields
-        if(isset($rowData['password']) && empty($rowData['password']))
+        $log = Bootstrap::get('log');
+
+
+        // // transitional:
+        // // - until we have backend form validation, strip out empty password fields
+        // if(isset($rowData['password']) && empty($rowData['password']))
+        //     unset($rowData['password']);
+
+        // tmp password hack. see /api.php
+        if(isset($rowData['password']))
             unset($rowData['password']);
 
         if(isset($rowData['id'])) {
@@ -35,10 +42,8 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
             $rowData['salt'] = uniqid();
         }
 
-        // Hash password, if updating it
-        if(isset($rowData['password']) && !empty($rowData['password'])) {
-            $rowData['password'] = AuthProvider::hashPassword($rowData['password'], $rowData['salt']);
-        }
+        // die(var_dump($rowData));
+        // $log->info("pre-password-process row w/ data: " . print_r($rowData, true));
 
         // User is updating themselves.
         // Corresponds to a ping indicating their last activity.
@@ -54,6 +59,8 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
         if(isset($rowData['last_page']) && is_array($rowData['last_page'])) {
             $rowData['last_page'] = json_encode($rowData['last_page']);
         }
+
+        // $log->info("updating user row w/ data: " . print_r($rowData, true));
 
         return $rowData;
     }
