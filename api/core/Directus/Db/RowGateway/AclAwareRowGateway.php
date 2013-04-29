@@ -221,6 +221,9 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function populate(array $rowData, $rowExistsInDatabase = false)
     {
+        // $log = $this->logger();
+        // $log->info(__CLASS__."#".__FUNCTION__);
+        // $log->info("args: " . print_r(func_get_args(), true));
         $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
         // Enforce field write blacklist
         $attemptOffsets = array_keys($rowData);

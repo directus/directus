@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
