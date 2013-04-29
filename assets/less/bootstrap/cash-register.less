@@ -58,6 +58,76 @@
 	position: relative;
 	margin-left: 300px;
 	margin-right: 300px;
+
+	th, td {
+		&:first-child {
+			padding-left: 12px;
+		}
+
+		&:nth-child(2) {
+			text-align: right;
+			padding-left: 0;
+		}
+
+		&:nth-child(3) {
+			width: 60px; // 80px - 20px for left padding
+		}
+
+		&:nth-child(4), &:nth-child(5) {
+			padding-left: 0;
+			width: 80px;
+		}
+	}
+
+	th:last-child {
+		text-align: right;
+		width: 100px;
+	}
+
+	.item-row {
+		td:last-child {
+			text-align: right;
+			width: 80px;
+		}
+	}
+
+	.center {
+		text-align: center;
+	}
+
+	.order-amount {
+		font-size: 21px;
+		color: @green;
+	}
+
+	input[type=text] {
+		width: 35px;
+		text-align: center;
+	}
+
+	select {
+		width: 50px;
+		text-align: center;
+	}
+
+	label {
+		font-weight: normal;
+
+		input {
+			position: relative;
+			top: -2px;
+			margin-right: 5px;
+		}
+	}
+
+	.tax-toggle {
+		text-align: right;
+	}
+
+	.tax-amount {
+		color: @green;
+		font-weight: 600;
+	}
 }
 
 // .directus-module
@@ -91,6 +161,10 @@
 			}
 		}
 
+		.directus-module-section {
+			position: relative;
+		}
+
 		/* h2 */.name {
 			font-size: 18px;
 			color: @directusPrimary;
@@ -105,6 +179,25 @@
 				background: url('../img/glyphicons-parents-green.png') no-repeat;
 				margin-right: 7px;
 				bottom: -3px;
+			}
+		}
+
+		.back-to-users {
+			position: absolute;
+			right: 6px;
+			top: 4px;
+			width: 12px;
+			height: 14px;
+			background: url('../img/controls.png') no-repeat;
+			background-size: 70px 14px;
+			text-indent: -9999px;
+			-webkit-filter: grayscale(100%);
+			opacity: .5;
+			cursor: pointer;
+
+			&:hover {
+				opacity: 1;
+				-webkit-filter: none;
 			}
 		}
 
