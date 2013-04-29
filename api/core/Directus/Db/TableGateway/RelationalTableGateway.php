@@ -513,7 +513,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 elseif(array_key_exists('table_related', $col))
                     $foreign_table_name = $col['table_related'];
                 else {
-                    $message = 'Non single_media Many-to-One relationship lacks `related_table` value.';
+                    $message = 'Non single_media Many-to-One relationship lacks `table_related` value.';
                     if(array_key_exists('column_name', $col))
                         $message .= " Column: " . $col['column_name'];
                     if(array_key_exists('table_name', $col))
