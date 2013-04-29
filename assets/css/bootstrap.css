@@ -7256,6 +7256,64 @@ header {
   margin-left: 300px;
   margin-right: 300px;
 }
+.active_products_table th:first-child,
+.active_products_table td:first-child {
+  padding-left: 12px;
+}
+.active_products_table th:nth-child(2),
+.active_products_table td:nth-child(2) {
+  text-align: right;
+  padding-left: 0;
+}
+.active_products_table th:nth-child(3),
+.active_products_table td:nth-child(3) {
+  width: 60px;
+}
+.active_products_table th:nth-child(4),
+.active_products_table td:nth-child(4),
+.active_products_table th:nth-child(5),
+.active_products_table td:nth-child(5) {
+  padding-left: 0;
+  width: 80px;
+}
+.active_products_table th:last-child {
+  text-align: right;
+  width: 100px;
+}
+.active_products_table .item-row td:last-child {
+  text-align: right;
+  width: 80px;
+}
+.active_products_table .center {
+  text-align: center;
+}
+.active_products_table .order-amount {
+  font-size: 21px;
+  color: #8cc349;
+}
+.active_products_table input[type=text] {
+  width: 35px;
+  text-align: center;
+}
+.active_products_table select {
+  width: 50px;
+  text-align: center;
+}
+.active_products_table label {
+  font-weight: normal;
+}
+.active_products_table label input {
+  position: relative;
+  top: -2px;
+  margin-right: 5px;
+}
+.active_products_table .tax-toggle {
+  text-align: right;
+}
+.active_products_table .tax-amount {
+  color: #8cc349;
+  font-weight: 600;
+}
 .active_products_table .remove_item {
   position: relative;
   width: 16px;
@@ -7275,6 +7333,15 @@ header {
 .customers_table {
   /* h2 */
 }
+.customers_table.directus-module {
+  border: 0;
+}
+.customers_table.directus-module.add-border {
+  border: 1px solid #ededed;
+}
+.customers_table .directus-module-section {
+  position: relative;
+}
 .customers_table .name {
   font-size: 18px;
   color: #8bc53f;
@@ -7289,6 +7356,23 @@ header {
   background: url('../img/glyphicons-parents-green.png') no-repeat;
   margin-right: 7px;
   bottom: -3px;
+}
+.customers_table .back-to-users {
+  position: absolute;
+  right: 6px;
+  top: 4px;
+  width: 12px;
+  height: 14px;
+  background: url('../img/controls.png') no-repeat;
+  background-size: 70px 14px;
+  text-indent: -9999px;
+  -webkit-filter: grayscale(100%);
+  opacity: .5;
+  cursor: pointer;
+}
+.customers_table .back-to-users:hover {
+  opacity: 1;
+  -webkit-filter: none;
 }
 .customers_table input[type=text],
 .customers_table select {
