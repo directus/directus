@@ -112,7 +112,7 @@ class Cache {
         $entryAsJson = json_encode($newEntryData);
         return $this->SocialPostsTableGateway->insert(array(
             'feed' => $feed['id'],
-            'published' => $published->format('c'),
+            'datetime' => $published->format('c'),
             'foreign_id' => $newEntryData['id'],
             'data' => $entryAsJson
         ));
