@@ -48,4 +48,18 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
+    public function fetchByCollectionAndName($collection, $name) {
+        $select = new Select($this->table);
+        $select->limit(1);
+        $select
+            ->where
+                ->equalTo('collection', $collection)
+                ->equalTo('name', $name);
+        $rowset = $this->selectWith($select);
+        $result = $rowset->current();
+        if(false === $result)
+            throw new \Exception("Required `directus_setting` with collection `$collection` and name `$name` not found.");
+        return $result;
+    }
+
 }
