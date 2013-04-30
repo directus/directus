@@ -6871,6 +6871,20 @@ a:hover {
 .directus-module:last-child {
   margin-bottom: 0;
 }
+.media-modal .contextual-date {
+  display: inline;
+}
+.media-actions {
+  position: absolute;
+  top: 28px;
+  right: 119px;
+}
+.media-modal .portrait {
+  max-height: 60px;
+}
+.media-modal .landscape {
+  max-width: 60px;
+}
 .dropzone {
   position: absolute;
   opacity: 0.2;
