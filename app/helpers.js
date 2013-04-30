@@ -25,7 +25,7 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    return new Handlebars.SafeString('<div title="'+ new Date(date+'Z') +'">'+app.contextualDate(date)+'</div>');
+    return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date+'Z') +'">'+app.contextualDate(date)+'</div>');
   });
 
   Handlebars.registerHelper('avatarSmall', function(userId) {
