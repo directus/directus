@@ -173,6 +173,23 @@ class Bootstrap {
     }
 
     /**
+     * Construct Instagram API Client
+     * @return \Codebird\Codebird
+     */
+    // private static function instagram() {
+    //     $aclProvider = self::get('aclProvider');
+    //     $ZendDb = self::get('ZendDb');
+    //     // Social settings
+    //     $SettingsTableGateway = new DirectusSettingsTableGateway($aclProvider, $ZendDb);
+    //     $requiredKeys = array('instagram_oauth_access_token','instagram_client_id');
+    //     $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
+    //     $instagram = new \Instagram\Instagram;
+    //     $instagram->setAccessToken($socialSettings['instagram_oauth_access_token']['value']);
+    //     $instagram->setClientId($socialSettings['instagram_client_id']['value']);
+    //     return $instagram;
+    // }
+
+    /**
      * Scan for extensions.
      * @return  array
      */
