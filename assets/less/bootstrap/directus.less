@@ -27,8 +27,9 @@ a {cursor:pointer;}
 .red { color:@red; }
 .gray-dark { color:@grayDark!important; }
 .gray { color:@gray!important; }
+.silver { color:@silver!important; }
 
-.inactive { opacity: 0.4; cursor: default!important;}
+// .inactive td { opacity: 0.4; cursor: default!important;}
 
 // STRUCTURE
 // ----------------
@@ -412,12 +413,12 @@ a:hover {text-decoration:none;}
   overflow:auto;
   .overlay {
     display:none;
-    background-color:rgba(0,0,0,0.4); 
-    position:absolute; 
-    top:0px; 
-    bottom:0px; 
-    left:0px; 
-    right:0px; 
+    background-color:rgba(0,0,0,0.4);
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
     text-shadow: @textShadow;
     color:#FFF;
     text-align:center;
@@ -461,6 +462,7 @@ a:hover {text-decoration:none;}
   td {
     cursor: pointer;
     vertical-align:middle;
+    text-shadow: @textShadowWhite;
   }
   tfoot td {cursor:default;}
   td.status, th.status {
@@ -473,14 +475,14 @@ a:hover {text-decoration:none;}
   tbody tr.deleted td.status { background-color:@red; }
   tbody tr.inactive td.status { background-color:@gray; }
 
-  tbody tr.inactive td,
-  tbody tr.deleted td {
-    color: rgba(0,0,0,0.4);
+  tbody tr.inactive td:not(.sort),
+  tbody tr.deleted td:not(.sort) {
+    color: @grayInactive;
     img {opacity: 0.4;}
   }
-  tbody tr:hover td,
-  tbody tr.selected td {
-    background-color: @highlightColor;
+  tbody tr:hover,
+  tbody tr.selected {
+    background-color: @highlightColor !important;
   }
   tbody tr:last-child {
     border-bottom: 1px solid @gray!important;
@@ -509,7 +511,7 @@ a:hover {text-decoration:none;}
     border-color: @directusPrimary transparent;
     display: block;
     width: 0;
-    z-index: 1;  
+    z-index: 1;
   }
 }
 
@@ -761,6 +763,25 @@ a:hover {text-decoration:none;}
   }
   margin-bottom: 10px;
   &:last-child { margin-bottom: 0; }
+}
+
+// MEDIA MODAL
+.media-modal .contextual-date {
+  display: inline;
+}
+
+.media-actions {
+  position: absolute;
+  top: 28px;
+  right: 119px;
+}
+
+.media-modal .portrait {
+  max-height: 60px;
+}
+
+.media-modal .landscape {
+  max-width: 60px;
 }
 
 // UPLOADS/DROPZONE!
