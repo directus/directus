@@ -22,10 +22,8 @@ class Cache {
 
     public function scrapeFeedsIfDue() {
         $dueFeeds = $this->getDueFeeds();
-        foreach($dueFeeds as $feed) {
-            // die(var_dump($feed->toArray()));
+        foreach($dueFeeds as $feed)
             $this->scrapeFeed($feed->toArray());
-        }
     }
 
     private function getDueFeeds() {
@@ -35,8 +33,8 @@ class Cache {
         $select
             ->where
                 ->lessThanOrEqualTo('last_checked', $due)
-                ->or
-                ->isNull('last_checked');
+                ->or->isNull('last_checked')
+                ->or->equalTo('last_checked', '0000-00-00 00:00:00');
         return $this->SocialFeedsTableGateway->selectWith($select);
     }
 
@@ -59,10 +57,8 @@ class Cache {
     }
 
     private function scrapeTwitterFeed(array $feed) {
-        // die(var_dump($feed));
         $cb = Bootstrap::get('codebird');
         $statuses = (array) $cb->statuses_userTimeline(array('screen_name' => $feed['name']));
-        // var_dump((array) $statuses);exit;
         $httpStatus = $statuses['httpstatus'];
         unset($statuses['httpstatus']);
         foreach($statuses as $status) {
@@ -112,7 +108,7 @@ class Cache {
         $entryAsJson = json_encode($newEntryData);
         return $this->SocialPostsTableGateway->insert(array(
             'feed' => $feed['id'],
-            'published' => $published->format('c'),
+            'datetime' => $published->format('c'),
             'foreign_id' => $newEntryData['id'],
             'data' => $entryAsJson
         ));

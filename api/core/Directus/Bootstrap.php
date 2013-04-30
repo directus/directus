@@ -110,8 +110,7 @@ class Bootstrap {
         try { $connection->connect(); }
         catch(\PDOException $e) {
             echo "Database connection failed.<br />";
-             $app = self::get('app');
-            $app->getLog()->fatal(print_r($e, true));
+            self::get('log')->fatal(print_r($e, true));
             if('production' !== DIRECTUS_ENV)
                 die(var_dump($e));
             die;
