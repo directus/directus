@@ -38,6 +38,7 @@
         prefixFromNow: null,
         suffixAgo: "ago",
         suffixFromNow: "from now",
+        now: "just now",
         seconds: "%d seconds",
         minute: "a minute",
         minutes: "%d minutes",
@@ -64,6 +65,14 @@
         }
       }
 
+      // Just now
+      if (distanceMillis < 2000){
+        prefix = "";
+        suffix = "";
+      }
+
+      console.log(distanceMillis, suffix);
+
       var seconds = Math.abs(distanceMillis) / 1000;
       var minutes = seconds / 60;
       var hours = minutes / 60;
@@ -76,7 +85,8 @@
         return string.replace(/%d/i, value);
       }
 
-      var words = seconds < 45 && substitute($l.seconds, Math.round(seconds)) ||
+      var words = seconds < 2 && substitute($l.now, 1) ||
+        seconds < 45 && substitute($l.seconds, Math.round(seconds)) ||
         seconds < 90 && substitute($l.minute, 1) ||
         minutes < 45 && substitute($l.minutes, Math.round(minutes)) ||
         minutes < 90 && substitute($l.hour, 1) ||
