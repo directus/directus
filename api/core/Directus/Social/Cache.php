@@ -3,6 +3,7 @@
 namespace Directus\Social;
 
 use Directus\Bootstrap;
+use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusSocialFeedsTableGateway;
 use Directus\Db\TableGateway\DirectusSocialPostsTableGateway;
 use Zend\Db\Sql\Expression;
@@ -44,8 +45,7 @@ class Cache {
                 $updatedFeed = $this->scrapeTwitterFeed($feed);
                 break;
             case DirectusSocialFeedsTableGateway::TYPE_INSTAGRAM:
-                // ...
-                return;
+                $updatedFeed = $this->scrapeInstagramFeed($feed);
                 break;
         }
         // Update feed's last_checked value
@@ -76,6 +76,39 @@ class Cache {
         }
         // Update feed user data
         $sampleEntry = (array) $statuses[0];
+        $feed['data'] = json_encode($sampleEntry['user']);
+        return $feed;
+    }
+
+    private function scrapeInstagramFeed(array $feed) {
+        // Instagram settings
+        $aclProvider = Bootstrap::get('aclProvider');
+        $ZendDb = Bootstrap::get('ZendDb');
+        $SettingsTableGateway = new DirectusSettingsTableGateway($aclProvider, $ZendDb);
+        $requiredKeys = array('instagram_oauth_access_token','instagram_client_id');
+        $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
+        // Ping endpoint
+        $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s";
+        $endpoint = sprintf($endpoint, $feed['name'], $socialSettings['instagram_client_id']['value'], $socialSettings['instagram_oauth_access_token']['value']);
+        $mediaRecent = file_get_contents($endpoint);
+        $mediaRecent = json_decode($mediaRecent, true);
+        $mediaRecent = $mediaRecent['data'];
+        // Scrape entries
+        foreach($mediaRecent as $photo) {
+            unset($photo['user']);
+            $cachedCopy = $this->SocialPostsTableGateway->feedForeignIdExists($photo['id'], $feed['id']);
+            if($cachedCopy) {
+                // Exists in cache. Does the data need updating?
+                $this->updateFeedEntryDataIfNewer($feed, $cachedCopy, $photo);
+            } else {
+                $created = date("F j, Y, g:i a", $photo['created_time']);
+                // Never cached. Cache it.
+                $published = new \DateTime($created, new \DateTimeZone("UTC"));
+                $this->newFeedEntry($feed, $photo, $published);
+            }
+        }
+        // Update feed user data
+        $sampleEntry = (array) $mediaRecent[0];
         $feed['data'] = json_encode($sampleEntry['user']);
         return $feed;
     }
