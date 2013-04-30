@@ -23,10 +23,19 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
             ->where
                 ->equalTo('foreign_id', $foreign_id)
                 ->equalTo('feed', $feed_id);
-        // die($this->dumpSql($select));
         $result = $this->selectWith($select);
         $result = $result->current();
         return $result;
+    }
+
+    public function fetchLatestPostsByType($type, $limit) {
+        $select = new Select($this->table);
+        $select
+            ->limit($limit)
+            ->join('directus_social_feeds', 'directus_social_posts.feed = directus_social_feeds.id', array('feed_type' => 'type'))
+            ->order('datetime DESC');
+        $select->where->equalTo('directus_social_feeds.type', $type);
+        return $this->selectWith($select);
     }
 
 }
