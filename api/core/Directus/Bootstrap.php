@@ -6,6 +6,7 @@ use Directus\Acl\Acl as AclProvider;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Slim\Slim;
 use Slim\Extras\Log\DateTimeFileWriter;
 
@@ -152,6 +153,24 @@ class Bootstrap {
             }
         }
         return $aclProvider;
+    }
+
+    /**
+     * Construct CodeBird Twitter API Client
+     * @return \Codebird\Codebird
+     */
+    private static function codebird() {
+        $aclProvider = self::get('aclProvider');
+        $ZendDb = self::get('ZendDb');
+        // Social settings
+        $SettingsTableGateway = new DirectusSettingsTableGateway($aclProvider, $ZendDb);
+        $requiredKeys = array('twitter_consumer_key','twitter_consumer_secret', 'twitter_oauth_token', 'twitter_oauth_token_secret');
+        $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
+        // Codebird initialization
+        \Codebird\Codebird::setConsumerKey($socialSettings['twitter_consumer_key']['value'], $socialSettings['twitter_consumer_secret']['value']);
+        $cb = \Codebird\Codebird::getInstance();
+        $cb->setToken($socialSettings['twitter_oauth_token']['value'], $socialSettings['twitter_oauth_token_secret']['value']);
+        return $cb;
     }
 
     /**
