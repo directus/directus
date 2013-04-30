@@ -36,7 +36,9 @@ class Cache {
             ->where
                 ->lessThanOrEqualTo('last_checked', $due)
                 ->or
-                ->isNull('last_checked');
+                ->isNull('last_checked')
+                ->or
+                ->equalTo('last_checked', '0000-00-00 00:00:00');
         return $this->SocialFeedsTableGateway->selectWith($select);
     }
 
