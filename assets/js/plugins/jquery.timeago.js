@@ -71,8 +71,6 @@
         suffix = "";
       }
 
-      console.log(distanceMillis, suffix);
-
       var seconds = Math.abs(distanceMillis) / 1000;
       var minutes = seconds / 60;
       var hours = minutes / 60;

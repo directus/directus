@@ -13,22 +13,37 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.id = 'directus_media';
   Module.system = true;
 
-  var template = '{{#unless isNew}}' +
-                 '<fieldset>'+
-                 '<div style="margin-right:10px;float:left;height:50px;width:50px;margin-bottom:30px "><img src="{{url}}thumbnail/{{name}}"></div>'+
-                 '<div style="line-height:20px"><strong><a href="{{url}}/{{name}}" target="_blank">{{name}}</a><br>Uploaded by <a href="#users/{{user}}">{{userName}}</a> {{{contextualDate date_uploaded}}}</strong><br> <em>{{width}} x {{height}} - {{{bytesToSize size}}}</em><br></div>' +
-                 '<ul class="media-actions"><li class="purple inactive"><span class="glyphicon-crop"></span>Crop</li><li class="blue inactive"><span class="glyphicon-repeat"></span>Rotate</li><li class="green" data-action="swap"><span class="glyphicon-random"></span>Swap</li><li class="red"><span class="glyphicon-remove"></span>Delete</li></ul>' +
-                 '</fieldset>' +
-                 '{{/unless}}' +
-                 '<fieldset {{#unless isNew}}class="hide"{{/unless}} id="swap-file">' +
-                 '<label>File</label>' +
-                 '<div id="upload_file" class="upload-form"><input type="file" class="large">' +
-                 '<p><a href="#" data-action="toggle-form">Use a URL instead</a></p></div>' +
-                 '<div id="upload_url" class="upload-form hide">'+
-                 //'<input type="text" class="large" name="url">'+
-                 '<p><a href="#" data-action="toggle-form">Upload a file from the computer</a></p></div>' +
-                 '</fieldset>' +
-                 '{{#if youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/pkWWWKKA8jY" frameborder="0" allowfullscreen></iframe></fieldset>{{/if}}';
+    var template = '{{#unless isNew}} \
+                    <fieldset class="media-modal"> \
+                      <div style="margin-right:10px;float:left;height:auto;width:50px;"> \
+                        <a href="{{url}}{{name}}" target="_blank"> \
+                          <img class="{{orientation}}" src="{{url}}thumbnail/{{name}}"> \
+                        </a> \
+                      </div> \
+                      <div style="line-height:20px"> \
+                        <strong> \
+                        <a href="{{url}}{{name}}" target="_blank">{{name}}</a><br> \
+                        Uploaded by <a href="#users/{{user}}">{{userFirstName}}</a> {{{contextualDate date_uploaded}}} \
+                        </strong><br> \
+                      <em>{{width}} x {{height}} - {{{bytesToSize size}}}</em><br> \
+                      </div> \
+                      <ul class="media-actions"> \
+                        <li class="purple"><span class="glyphicon-crop"></span>Crop</li> \
+                        <li class="blue"><span class="glyphicon-repeat"></span>Rotate</li> \
+                        <li class="green" data-action="swap"><span class="glyphicon-random"></span>Swap</li> \
+                        <li class="red"><span class="glyphicon-remove"></span>Delete</li> \
+                      </ul> \
+                    </fieldset> \
+                    {{/unless}} \
+                    <fieldset {{#unless isNew}}class="hide"{{/unless}} id="swap-file"> \
+                      <label>File</label> \
+                      <div id="upload_file" class="upload-form"><input type="file" class="large"> \
+                      <p><a href="#" data-action="toggle-form">Use a URL instead</a></p></div> \
+                      <div id="upload_url" class="upload-form hide"> \
+                      <input type="text" class="large" name="url"> \
+                      <p><a href="#" data-action="toggle-form">Upload a file from the computer</a></p></div> \
+                    </fieldset> \
+                    {{#if youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/pkWWWKKA8jY" frameborder="0" allowfullscreen></iframe></fieldset>{{/if}}';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -50,9 +65,10 @@ define(['app', 'backbone'], function(app, Backbone) {
           data.youtube = this.model.get('embed_id');
       }
 
-      data.userName = app.users.get(userId).get('first_name');
+      data.userFirstName = app.users.get(userId).get('first_name');
       data.url = app.RESOURCES_URL;
       data.name = this.model.get('name');
+      data.orientation = (parseInt(this.model.get('width'),10) > parseInt(this.model.get('height'),10)) ? 'landscape' : 'portrait';
 
       return data;
     },
