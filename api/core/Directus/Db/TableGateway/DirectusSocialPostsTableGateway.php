@@ -23,7 +23,6 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
             ->where
                 ->equalTo('foreign_id', $foreign_id)
                 ->equalTo('feed', $feed_id);
-        // die($this->dumpSql($select));
         $result = $this->selectWith($select);
         $result = $result->current();
         return $result;
