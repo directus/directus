@@ -35,4 +35,17 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
+    public function fetchCollection($collection, $requiredKeys = array()) {
+        $select = new Select($this->table);
+        $select->where->equalTo('collection', $collection);
+        $rowset = $this->selectWith($select)->toArray();
+        $result = array();
+        foreach($rowset as $row) {
+            $result[$row['name']] = $row;
+        }
+        if(count(array_diff($requiredKeys, array_keys($result))))
+            throw new \Exception("The following keys must be defined in the `$collection` settings collection: " . implode(", ", $requiredKeys));
+        return $result;
+    }
+
 }
