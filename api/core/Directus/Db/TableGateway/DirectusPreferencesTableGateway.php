@@ -48,7 +48,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                 $preferences['columns_visible'] = implode(',', $columns_visible);
             }
             foreach(self::$defaultPreferencesValues as $field => $defaultValue) {
-                if(!isset($preferences[$field]) || empty($preferences[$field])) {
+                if(!isset($preferences[$field]) && ("0" !== $preferences[$field] && empty($preferences[$field]))) {
                     $newPreferencesData = true;
                     $preferences[$field] = $defaultValue;
                 }
