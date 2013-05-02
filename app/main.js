@@ -66,16 +66,18 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       var existingErrorHandler = function(){};
       if(undefined !== options.error)
         var existingErrorHandler = options.error;
+
       var errorCodeHandler = function(xhr, status, thrown) {
         // console.log(arguments);
-        existingErrorHandler();
         app.lastXhrError = {
           xhr : xhr,
           status : status,
           thrown : thrown
         };
+        existingErrorHandler();
         throw new HttpError(xhr.code);
       };
+
       options.error = errorCodeHandler;
 
       sync(method, model, options);
