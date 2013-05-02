@@ -291,7 +291,8 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
         // POST one new table entry
         case 'POST':
             // $id = $db->set_entry_relational($table, $requestPayload);
-            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload);
+            $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
+            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
             $params['id'] = $newRecord['id'];
             break;
         // PUT a change set of table entries
@@ -320,7 +321,8 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
         case 'PATCH':
         case 'PUT':
             $requestPayload['id'] = $id;
-            $TableGateway->manageRecordUpdate($table, $requestPayload);
+            $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
+            $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
             break;
         // DELETE a given table entry
         case 'DELETE':
@@ -451,7 +453,8 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
             if (!is_null($id)) {
                 // $db->set_entries($table, $requestPayload);
                 $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
-                $TableGateway->manageRecordUpdate($table, $requestPayload);
+                $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
+                $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
                 break;
             }
             $db->set_media($requestPayload);
