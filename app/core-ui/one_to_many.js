@@ -87,13 +87,12 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     },
 
     initialize: function (options) {
-
       this.related = {};
       this.related.table = app.tables.get(options.schema.get('table_related'));
       this.related.schema = app.columns[options.schema.get('table_related')];
       this.related.entries = options.value;
 
-      this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false, saveAfterDrop: false};
+      this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false, saveAfterDrop: false, deleteColumn: true};
       this.table = Directus.Table.extend({});
       this.view = new this.table(this.related.tableOptions);
 
