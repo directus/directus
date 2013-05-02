@@ -28,13 +28,24 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     template: Handlebars.compile(template),
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
-      'click button[data-action=add]': 'addRow'
+      'click button[data-action=add]': 'addRow',
+      'click td.delete': 'deleteRow'
     },
 
     editRow: function(e) {
       var cid = $(e.target).closest('tr').attr('data-cid');
       var model = this.related.entries.get(cid, true);
       this.editModel(model);
+    },
+
+    deleteRow: function(e) {
+      var cid = $(e.target).closest('tr').attr('data-cid');
+      var model = this.related.entries.get(cid);
+
+      if (model.isNew()) return this.related.entries.remove(model);
+
+      model.set(this.related.columnName, '');
+
     },
 
     addRow: function() {
@@ -91,12 +102,15 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       this.related.table = app.tables.get(options.schema.get('table_related'));
       this.related.schema = app.columns[options.schema.get('table_related')];
       this.related.entries = options.value;
+      this.related.columnName = this.options.schema.get('junction_key_right');
 
-      this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false, saveAfterDrop: false, deleteColumn: true};
+      var deleteColumn = (this.related.schema.get(this.related.columnName).get('is_nullable') === "YES");
+
+      this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false, saveAfterDrop: false, deleteColumn: deleteColumn};
       this.table = Directus.Table.extend({});
       this.view = new this.table(this.related.tableOptions);
 
-      this.related.entries.on('change add', function() {
+      this.related.entries.on('change add remove', function() {
         this.view.render();
       }, this);
     }
