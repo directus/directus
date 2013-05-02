@@ -70,7 +70,7 @@ function(app, Backbone) {
         return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
 
-      return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns, deleteColumn: this.options.deleteColumn};
+      return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns, deleteColumn: this.options.deleteColumn, hideColumnPreferences: this.options.hideColumnPreferences};
     },
 
     initialize: function() {
