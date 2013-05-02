@@ -94,11 +94,16 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           this.entry(tableName, collection.models[0].get('id'));
         } else {
           // Fetch collection so we know the ID of the "single" row
-          var onFetch = _.bind(function(e){
-            var firstModel = this.collection.models[0];
-            this.router.entry(tableName, firstModel.get('id'));
-          }, {collection:collection, router:this});
-          collection.once('add', onFetch);
+          collection.once('sync', _.bind(function(collection, xhr, status){
+            if(0 === collection.length) {
+              // Add new form
+              this.router.entry(tableName, "new");
+            } else {
+              // Edit first model
+              var model = collection.models[0];
+              this.router.entry(tableName, model.get('id'));
+            }
+          }, {router:this}));
           collection.fetch();
         }
         return;
