@@ -85,7 +85,7 @@ function(app, Backbone, Directus) {
     },
 
     initialize: function() {
-      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false});
+      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false, hideColumnPreferences: true});
     }
   });
 
