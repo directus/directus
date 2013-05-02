@@ -38,7 +38,7 @@ define(['app', 'backbone'],function(app, Backbone) {
   });
 
   Module.list = function(options) {
-    var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
     return val;
   };
 
