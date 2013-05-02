@@ -29,10 +29,11 @@ function(app, Backbone) {
 
     serialize: function() {
       var rowIdentifiers, activeState, models, rows;
+      var activeColumns = this.collection.getFilter('active') || "1,2";
 
       rowIdentifiers = this.options.rowIdentifiers;
 
-      activeState = _.map(this.collection.getFilter('active').split(','),Number);
+      activeState = _.map(activeColumns,Number);
 
       models = this.collection.filter(function(model) {
         if (model.has('active')) {

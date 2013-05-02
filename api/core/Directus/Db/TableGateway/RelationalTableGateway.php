@@ -19,7 +19,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
     /**
      * NOTE: Equivalent to old DB#set_entry_relational
      * @param  [type] $schema         [description]
-     * @param  [type] $requestPayload [description]
      * @param  [type] $recordData [description]
      * @param  [type] $userId         [description]
      * @return [type]                 [description]
