@@ -149,7 +149,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       }, this);
 
       // this one used to listen to remove.
-      collection.on('sync', function() {
+      collection.on('sync visibility', function() {
         app.router.hideAlert();
         this.render();
       }, this);
