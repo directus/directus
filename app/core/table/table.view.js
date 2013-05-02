@@ -50,38 +50,27 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     },
 
     beforeRender: function() {
+      var options;
       this.startRenderTime = new Date().getTime();
 
       if (this.options.toolbar) {
-        this.setView('.directus-toolbar', new Toolbar({
-          collection: this.collection,
-          structure: this.options.structure || this.collection.structure,
-          table: this.options.table || this.collection.table,
-          preferences: this.options.preferences || this.collection.preferences,
-          deleteOnly: this.options.deleteOnly
-        }));
+        options = _.pick(this.options, 'collection', 'structure', 'table', 'preferences', 'deleteOnly');
+        this.setView('.directus-toolbar', new Toolbar(options));
       }
 
       if (this.tableHead) {
-        this.insertView('table', new TableHead(this.options));
+        options = this.options;
+        this.insertView('table', new TableHead(options));
       }
 
       if (this.collection.length > 0) {
-        this.insertView('table', new TableBody({
-          collection: this.collection,
-          selectable: this.options.selectable,
-          filter: this.options.filter,
-          TableRow: this.options.tableRow,
-          preferences: this.options.preferences || this.collection.preferences,
-          structure: this.options.structure || this.collection.structure,
-          sortable: this.options.sortable,
-          deleteColumn: this.options.deleteColumn,
-          rowIdentifiers: this.options.rowIdentifiers
-        }));
+        options = _.pick(this.options, 'collection', 'selectable', 'filter', 'preferences', 'structure', 'sortable', 'deleteColumn', 'rowIdentifiers');
+        this.insertView('table', new TableBody(options));
       }
 
       if (this.collection.length > 0 && this.collection.table.get('footer') && this.options.footer !== false) {
-        this.insertView('table', new TableFooter(this.options));
+        options = this.options;
+        this.insertView('table', new TableFooter());
       }
     },
 
@@ -169,6 +158,9 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
         //console.log(arguments);
       });
 
+      this.options.preferences = this.options.preferences || this.collection.preferences;
+      this.options.structure = this.options.structure || this.collection.structure;
+      this.options.table = this.options.table || this.collection.table;
 
       // Default values
       if (this.options.toolbar === undefined) {
