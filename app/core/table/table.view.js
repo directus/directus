@@ -119,7 +119,6 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
         e.preventDefault();
 
         app.sendFiles(e.dataTransfer.files, function(data) {
-          console.log(data);
           _.each(data, function(item) {
             item.user = 1;
             item.active = 1;
