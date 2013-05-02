@@ -36,6 +36,7 @@ function(app, Backbone) {
       'click #set-visible-columns': function() {
         var structure = this.options.collection.structure;
         var preferences = this.collection.preferences;
+        var collection = this.collection;
         var visibleColumns = preferences.get('columns_visible').split(',');
         var data = {};
         var view, modal;
@@ -52,7 +53,10 @@ function(app, Backbone) {
           var data = this.$el.find('form').serializeObject();
           var string = _.isArray(data.columns_visible) ? data.columns_visible.join(',') : data.columns_visible;
           preferences.save({'columns_visible': string},{
-            success: function() { modal.close(); }
+            success: function() {
+              collection.trigger('visibility');
+              modal.close();
+            }
           });
         };
 
