@@ -6673,6 +6673,27 @@ a:hover {
 .directus-toolbar > div .btn-group-action.active {
   display: inline-block;
 }
+table#directus_media th[data-id="name"] {
+  width: 50px;
+}
+table#directus_media th[data-id="type"] {
+  width: 80px;
+}
+table#directus_media th[data-id="size"] {
+  width: 80px;
+}
+table#directus_media th[data-id="user"] {
+  width: 120px;
+}
+table#directus_media th[data-id="date_uploaded"] {
+  width: 100px;
+}
+table#directus_activity col.col-user {
+  width: 120px;
+}
+table#directus_activity col.col-datetime {
+  width: 140px;
+}
 .directus-form {
   margin-bottom: 0px!important;
   -webkit-border-radius: 2px;
