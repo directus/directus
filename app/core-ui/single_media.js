@@ -207,7 +207,12 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
   };
 
   Module.list = function(options) {
-    return options.value;
+    if (options.value !== undefined) {
+      var url = options.value.has('name') ? app.RESOURCES_URL + 'thumbnail/' + options.value.get('name') : null;
+      return '<img src="'+url+'"/>';
+    } else {
+      return 'No file';
+    }
   };
 
   return Module;
