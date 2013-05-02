@@ -28,7 +28,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         "directus_media" => array(
             "sort"              => "date_uploaded",
             "sort_order"        => "DESC",
-            "columns_visible"   => "name,title,type,caption,size,user,date_uploaded"
+            "columns_visible"   => "name,title,caption,type,size,user,date_uploaded"
         )
     );
 
