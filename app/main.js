@@ -147,8 +147,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
       preferences: app.preferences.directus_media,
       url: app.API_URL + 'media',
-      parse: true,
-      filters: {columns: ['name', 'title', 'type', 'caption', 'size', 'user', 'date_uploaded']}
+      parse: true
+      //filters: {columns: ['name', 'title', 'type', 'caption', 'size', 'user', 'date_uploaded']}
     });
 
     app.users = new Directus.EntriesCollection(data.users, {
