@@ -25,31 +25,58 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
 
+    function HttpError(code) { this.message = code; };
+
+    /** Error "Controller" - Handles uncaught HTTP errors */
+    window.onerror = function(msg, url, line) {
+
+      var xhrError = app.getLastXhrError();
+
+      console.log("Error: " + msg + "\nurl: " + url + "\nline #: " + line);
+      console.log("xhrError data", xhrError);
+
+      var suppressErrorAlert = true;
+
+      if(undefined !== xhrError) {
+        switch(xhrError.xhr.status) {
+          case 404:
+            app.router.showAlert('Not found!');
+            break;
+          case 401:
+            window.location = app.root;
+            break;
+          case 403:
+            // console.log(xhr, status, thrown);
+            var errorData = jQuery.parseJSON(xhr.responseText);
+            win = new Backbone.Layout();
+            win.$el.html(errorData.message);
+            win.render();
+            app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
+            break;
+          default:
+            suppressErrorAlert = false;
+        }
+      }
+
+      return suppressErrorAlert;
+    };
+
     Backbone.sync = function(method, model, options) {
 
-      options.error = function(xhr, status, thrown) {
-        var win;
-
-        if (status.status === 404) {
-          app.router.showAlert('Not found!');
-        } else if (xhr.status === 401) {
-          window.location = app.root;
-          // return;
-        } else if (xhr.status === 403) {
-          // console.log(xhr, status, thrown);
-          var errorData = jQuery.parseJSON(xhr.responseText);
-          win = new Backbone.Layout();
-          win.$el.html(errorData.message);
-          win.render();
-          app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
-        } else {
-          console.log('EROR',status,xhr,thrown);
-          var win = new Backbone.Layout();
-          win.$el.html(status.responseText);
-          win.render();
-          app.router.openModal(win, {title: 'Server Error!', stretch: true, buttonText:'OK'});
-        }
+      var existingErrorHandler = function(){};
+      if(undefined !== options.error)
+        var existingErrorHandler = options.error;
+      var errorCodeHandler = function(xhr, status, thrown) {
+        // console.log(arguments);
+        existingErrorHandler();
+        app.lastXhrError = {
+          xhr : xhr,
+          status : status,
+          thrown : thrown
+        };
+        throw new HttpError(xhr.code);
       };
+      options.error = errorCodeHandler;
 
       sync(method, model, options);
     };
