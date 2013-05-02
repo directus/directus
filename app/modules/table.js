@@ -147,7 +147,23 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
       this.setView('#page-content', this.editView);
       //Don't fetch if the model is new!
       if (this.model.has('id')) {
-        this.model.fetch({dontTrackChanges: true});
+        this.model.fetch({
+          dontTrackChanges: true,
+          error: function(model, XMLHttpRequest) {
+            if(404 === XMLHttpRequest.status) {
+              var route = Backbone.history.fragment;
+              // if(route.charAt(route.length-1) == "/") {
+              //     route = route.slice(0, -1)
+              // }
+              route = route.split('/');
+              if(route.slice(-2)[0] !== "tables") {
+                route.pop();
+              }
+              route.push('new');
+              app.router.go(route);
+            }
+          }
+        });
       } else {
         this.editView.render();
       }
