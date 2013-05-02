@@ -42,7 +42,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         }
         // Global default values
         foreach(self::$defaultPreferencesValues as $field => $defaultValue) {
-            if(!isset($preferences[$field]) && ("0" !== $preferences[$field] && empty($preferences[$field]))) {
+            if(!isset($preferences[$field]) || ("0" !== $preferences[$field] && empty($preferences[$field]))) {
                 $preferences[$field] = $defaultValue;
             }
         }
