@@ -88,8 +88,19 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
     entries: function(tableName) {
       this.setTitle('Tables');
-      if (app.entries[tableName].table.get('single')) {
-        this.entry(tableName, 1);
+      var collection = app.entries[tableName];
+      if (collection.table.get('single')) {
+        if(collection.models.length) {
+          this.entry(tableName, collection.models[0].get('id'));
+        } else {
+          // Fetch collection so we know the ID of the "single" row
+          var onFetch = _.bind(function(e){
+            var firstModel = this.collection.models[0];
+            this.router.entry(tableName, firstModel.get('id'));
+          }, {collection:collection, router:this});
+          collection.once('add', onFetch);
+          collection.fetch();
+        }
         return;
       }
       this.tabs.setActive('tables');
