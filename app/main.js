@@ -25,24 +25,20 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
 
-    function HttpError(code) { this.message = code; };
+    Backbone.sync = function(method, model, options) {
 
+      var existingErrorHandler = function(){};
+      if(undefined !== options.error)
+        var existingErrorHandler = options.error;
 
-
-    /** Error "Controller" - Handles uncaught HTTP errors */
-
-    /*
-    window.onerror = function(msg, url, line) {
-
-      var xhrError = app.getLastXhrError();
-
-      console.log("Error: " + msg + "\nurl: " + url + "\nline #: " + line);
-      console.log("xhrError data", xhrError);
-
-      var suppressErrorAlert = true;
-
-      if(undefined !== xhrError) {
-        switch(xhrError.xhr.status) {
+      var errorCodeHandler = function(xhr, status, thrown) {
+        app.lastXhrError = {
+          xhr : xhr,
+          status : status,
+          thrown : thrown
+        };
+        existingErrorHandler();
+        switch(xhr.status) {
           case 404:
             app.router.showAlert('Not found!');
             break;
@@ -57,30 +53,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
             win.render();
             app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
             break;
-          default:
-            suppressErrorAlert = false;
         }
-      }
-
-      return suppressErrorAlert;
-    };
-    */
-
-    Backbone.sync = function(method, model, options) {
-
-      var existingErrorHandler = function(){};
-      if(undefined !== options.error)
-        var existingErrorHandler = options.error;
-
-      var errorCodeHandler = function(xhr, status, thrown) {
-        // console.log(arguments);
-        app.lastXhrError = {
-          xhr : xhr,
-          status : status,
-          thrown : thrown
-        };
-        existingErrorHandler();
-        throw new HttpError(xhr.code);
       };
 
       options.error = errorCodeHandler;
