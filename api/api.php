@@ -292,7 +292,8 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
         case 'POST':
             // $id = $db->set_entry_relational($table, $requestPayload);
             $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
+            $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
+            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
             $params['id'] = $newRecord['id'];
             break;
         // PUT a change set of table entries
@@ -322,7 +323,8 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
         case 'PUT':
             $requestPayload['id'] = $id;
             $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-            $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
+            $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
+            $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
             break;
         // DELETE a given table entry
         case 'DELETE':
@@ -454,7 +456,8 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
                 // $db->set_entries($table, $requestPayload);
                 $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
                 $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-                $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
+                $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
+                $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
                 break;
             }
             $db->set_media($requestPayload);
