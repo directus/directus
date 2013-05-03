@@ -13,6 +13,7 @@ function(Handlebars) {
   var app = {
 
     lastXhrError: undefined,
+
     getLastXhrError: function() {
       var xhrError;
       if(undefined !== this.lastXhrError) {
@@ -20,6 +21,15 @@ function(Handlebars) {
         this.lastXhrError = undefined;
       }
       return xhrError;
+    },
+
+    evaluateExpression: function(a, operator, b) {
+      switch (operator) {
+        case '==':
+          return (a == b);
+        case '===':
+          return (a === b);
+      }
     },
 
     getCurrentUser: function() {
