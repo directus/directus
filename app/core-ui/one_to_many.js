@@ -115,6 +115,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
         footer: false,
         saveAfterDrop: false,
         deleteColumn: true,
+        hideEmptyMessage: true
       };
 
       // Since this initialize function can be used for both many-many 
