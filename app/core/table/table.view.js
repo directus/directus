@@ -64,7 +64,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'selectable', 'filter', 'preferences', 'structure', 'sortable', 'deleteColumn', 'rowIdentifiers');
+        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sortable', 'deleteColumn', 'rowIdentifiers');
         this.insertView('table', new TableBody(options));
       }
 
@@ -142,6 +142,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
     initialize: function(options) {
       var collection = this.collection;
+
 
       collection.on('fetch',  function() {
         app.router.showAlert();
