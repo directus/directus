@@ -176,7 +176,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             elseif ($fieldIsCollectionAssociation) {
                 // $log->info("Field is a non-empty collection association.");
 
-                $this->enforceColumnHasNonNullValues($alias, array('table_related','junction_key_right'), $this->table);
+                $this->enforceColumnHasNonNullValues($column, array('table_related','junction_key_right'), $this->table);
 
                 $foreignTableName = $column['table_related'];
                 $foreignJoinColumn = $column['junction_key_right'];
@@ -208,7 +208,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                          * $parentRecord['collectionName1'][0-9]['id']; // for updating a pre-existing junction row
                          * $parentRecord['collectionName1'][0-9]['active']; // for disassociating a junction via the '0' value
                          */
-                        $this->enforceColumnHasNonNullValues($alias, array('junction_table','junction_key_left'), $this->table);
+                        $this->enforceColumnHasNonNullValues($column, array('junction_table','junction_key_left'), $this->table);
                         $junctionTableName = $column['junction_table'];
                         $junctionKeyLeft = $column['junction_key_left'];
                         $JunctionTable = new RelationalTableGateway($this->aclProvider, $junctionTableName, $this->adapter);
