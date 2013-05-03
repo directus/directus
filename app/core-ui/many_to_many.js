@@ -44,6 +44,22 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
       model.set({active: 0});
     },
 
+    addModel: function(model) {
+      var modal;
+      var collection = this.related.entries;
+      var view = new Directus.EditView({model: model});
+
+      modal = app.router.openModal(view, {stretch: true, title: 'Add'});
+
+      modal.save = function() {
+        model.set(view.data());
+        collection.add(model,{nest: true});
+        this.close();
+      };
+
+      view.render();
+    },
+
     insertRow: function() {
       var collection = app.entries[this.related.table.id];
       var view = new this.modalTable({collection: collection, selectable: true, footer: false});
