@@ -8,11 +8,31 @@ define([
 
 function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
-  var EntriesModel =  Backbone.Model.extend({
+  var nestedTypes = ['many_to_one', 'single_media'];
+
+  var EntriesModel = Backbone.Model.extend({
 
     parse: function(result) {
       this._lastFetchedResult = result;
       return this.parseRelational(result);
+    },
+
+    // The flatten option flattens many-one relationships so the id is returned
+    // instead of the object
+    get: function(attr, options) {
+      var uiType, value;
+      options = options || {};
+
+      value = Backbone.Model.prototype.get.call(this, attr);
+
+      if (options.flatten) {
+        uiType = this.collection.structure.get(attr).get('ui');
+        if (nestedTypes.indexOf(uiType) > -1 && _.isObject(value) ) {
+          value = value.get('id');
+        }
+      }
+
+      return value;
     },
 
     validate: function(attributes, options) {
