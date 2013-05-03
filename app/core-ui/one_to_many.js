@@ -73,9 +73,6 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     addModel: function(model) {
       var modal;
       var collection = this.related.entries;
-
-      console.log('new model', model);
-
       var view = new Directus.EditView({model: model});
 
       modal = app.router.openModal(view, {stretch: true, title: 'Add'});
@@ -106,7 +103,21 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
       var deleteColumn = (this.related.schema.get(this.related.columnName).get('is_nullable') === "YES");
 
-      this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false, saveAfterDrop: false, deleteColumn: deleteColumn};
+      this.related.tableOptions = {
+        collection: this.related.entries,
+        toolbar:false,
+        selectable: false,
+        sortable: false,
+        footer: false,
+        saveAfterDrop: false,
+        deleteColumn: deleteColumn,
+        filters: {
+          booleanOperator: '&&',
+          expressions: [
+            {column: this.related.columnName, operator: '===', value: this.model.id}
+          ]
+        }
+      }
       this.table = Directus.Table.extend({});
       this.view = new this.table(this.related.tableOptions);
 
