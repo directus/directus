@@ -103,7 +103,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
           };
 
           if (options.table === undefined) {
-              throw "Directus Error! The related table '" + options.table.id + "' does not exist! Check your UI settings";
+              throw "Directus Error! The related table '" + column.get('table_related') + "' does not exist! Check your UI settings for the field '" + id + "' in the table '"+this.collection.table.id+"'";
           }
 
           var diff = _.difference(columns, options.structure.pluck('column_name'));
