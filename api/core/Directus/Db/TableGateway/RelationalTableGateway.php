@@ -4,14 +4,15 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
-use Directus\Db\TableSchema;
+use Directus\Db\Exception;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
+use Directus\Db\TableSchema;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
 class RelationalTableGateway extends AclAwareTableGateway {
@@ -19,25 +20,25 @@ class RelationalTableGateway extends AclAwareTableGateway {
     /**
      * NOTE: Equivalent to old DB#set_entry_relational
      * @param  [type] $schema         [description]
-     * @param  [type] $requestPayload [description]
+     * @param  [type] $recordData [description]
      * @param  [type] $userId         [description]
      * @return [type]                 [description]
      */
-    public function manageRecordUpdate($tableName, $requestPayload, $parentActivityLogId = null) {
+    public function manageRecordUpdate($tableName, $recordData, $parentActivityLogId = null) {
         $log = $this->logger();
+        $log->info(__CLASS__."#".__FUNCTION__);
         // $log->info(__CLASS__."#".__FUNCTION__.": " . print_r(func_get_args(), true));
-        // $log->info(__CLASS__."#".__FUNCTION__);
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
         $masterColumn = TableSchema::getMasterColumn($schemaArray);
 
-        $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
+        $activityLoggingEnabled = !(false === $parentActivityLogId);
 
         // Mock a top-level log entry record & fetch the new ID for reference
         $currentUser = AuthProvider::getUserInfo();
         $parentLogEntry = null;
-        if($activityLoggingEnabled) {
-            $logEntryAction = isset($requestPayload['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
+        if($activityLoggingEnabled && false !== $parentActivityLogId) {
+            $logEntryAction = isset($recordData['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
             $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
             $logData = array(
                 'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
@@ -57,7 +58,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Update/add associations
         $parentLogEntryId = is_null($parentLogEntry) ? false : $parentLogEntry['id'];
-        $parentRecordWithForeignKeys = $TableGateway->addOrUpdateRelationships($schemaArray, $requestPayload, $parentLogEntryId);
+        $parentRecordWithForeignKeys = $TableGateway->addOrUpdateRelationships($schemaArray, $recordData, $parentLogEntryId);
 
         // If more than the record ID is present...
         if($this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys)) {
@@ -175,6 +176,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
             elseif ($fieldIsCollectionAssociation) {
                 // $log->info("Field is a non-empty collection association.");
 
+                $this->enforceColumnHasNonNullValues($column, array('table_related','junction_key_right'), $this->table);
+
                 $foreignTableName = $column['table_related'];
                 $foreignJoinColumn = $column['junction_key_right'];
                 // $log->info("foreignTableName: $foreignTableName");
@@ -205,6 +208,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                          * $parentRecord['collectionName1'][0-9]['id']; // for updating a pre-existing junction row
                          * $parentRecord['collectionName1'][0-9]['active']; // for disassociating a junction via the '0' value
                          */
+                        $this->enforceColumnHasNonNullValues($column, array('junction_table','junction_key_left'), $this->table);
                         $junctionTableName = $column['junction_table'];
                         $junctionKeyLeft = $column['junction_key_left'];
                         $JunctionTable = new RelationalTableGateway($this->aclProvider, $junctionTableName, $this->adapter);
@@ -262,7 +266,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     public static $defaultEntriesSelectParams = array(
-        'orderBy' => 'id', // @todo validate $params['order_*']
+        'orderBy' => 'id', // @todo validate $params['order*']
         'orderDirection' => 'DESC',
         'fields' => '*',
         'perPage' => 500,
@@ -430,6 +434,27 @@ class RelationalTableGateway extends AclAwareTableGateway {
      **/
 
     /**
+     * @param  array $column       One schema column representation.
+     * @param  array $requiredKeys Values requiring definition.
+     * @param  string $tableName
+     * @return void
+     * @throws  \Directus\Db\Exception\RelationshipMetadataException If the required values are undefined.
+     */
+    private function enforceColumnHasNonNullValues($column, $requiredKeys, $tableName) {
+        $erroneouslyNullKeys = array();
+        foreach($requiredKeys as $key) {
+            if(!isset($column[$key]) || (strlen(trim($column[$key])) === 0)) {
+                $erroneouslyNullKeys[] = $key;
+            }
+        }
+        if(!empty($erroneouslyNullKeys)) {
+            $msg = "Required column/ui metadata columns on table $tableName lack values: ";
+            $msg .= implode(" ", $requiredKeys);
+            throw new Exception\RelationshipMetadataException($msg);
+        }
+    }
+
+    /**
      * Populate alias/relational One-To-Many and Many-To-Many fields with their foreign data.
      * @param  array $entry        [description]
      * @param  [type] $aliasColumns [description]
@@ -443,12 +468,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
             switch($alias['type']) {
                 case 'MANYTOMANY':
                     // $log->info("Many-to-Many");
+                    $this->enforceColumnHasNonNullValues($alias, array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
                     $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['table_related'],
                         $alias['junction_table'], $alias['junction_key_left'], $alias['junction_key_right'],
                         $entry['id']);
                     break;
                 case 'ONETOMANY':
                     // $log->info("One-to-Many");
+                    $this->enforceColumnHasNonNullValues($alias, array('table_related','junction_key_right'), $this->table);
                     $foreign_data = $this->loadOneToManyRelationships($alias['table_related'], $alias['junction_key_right'], $entry['id']);
                     break;
             }
@@ -518,7 +545,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $message .= " Column: " . $col['column_name'];
                     if(array_key_exists('table_name', $col))
                         $message .= " Table: " . $col['table_name'];
-                    throw new \InvalidArgumentException($message);
+                    throw new Exception\RelationshipMetadataException($message);
                 }
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
