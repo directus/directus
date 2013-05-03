@@ -50,7 +50,7 @@ use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\View\JsonView;
-use Directus\View\AclExceptionView;
+use Directus\View\ExceptionView;
 use Zend\Db\Sql\Expression;
 
 // API Version shortcut for routes:
@@ -65,13 +65,12 @@ $authProvider = new AuthProvider();
 $requestNonceProvider = new RequestNonceProvider();
 
 /**
- * Catch ACL forbidden exceptions.
+ * Catch user-related exceptions & produce client responses.
  */
-
 $app->config('debug', false);
-$aclExceptionView = new AclExceptionView();
-$app->error(function (\Exception $exception) use ($app, $aclExceptionView) {
-    $aclExceptionView->exceptionHandler($app, $exception);
+$exceptionView = new ExceptionView();
+$app->error(function (\Exception $exception) use ($app, $exceptionView) {
+    $exceptionView->exceptionHandler($app, $exception);
 });
 
 // Routes which do not need protection by the authentication and the request
@@ -291,7 +290,8 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $aclProvider, 
         // POST one new table entry
         case 'POST':
             // $id = $db->set_entry_relational($table, $requestPayload);
-            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload);
+            $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
+            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
             $params['id'] = $newRecord['id'];
             break;
         // PUT a change set of table entries
@@ -320,7 +320,8 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
         case 'PATCH':
         case 'PUT':
             $requestPayload['id'] = $id;
-            $TableGateway->manageRecordUpdate($table, $requestPayload);
+            $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
+            $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
             break;
         // DELETE a given table entry
         case 'DELETE':
@@ -451,7 +452,8 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
             if (!is_null($id)) {
                 // $db->set_entries($table, $requestPayload);
                 $TableGateway = new TableGateway($aclProvider, $table, $ZendDb);
-                $TableGateway->manageRecordUpdate($table, $requestPayload);
+                $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
+                $TableGateway->manageRecordUpdate($table, $requestPayload, $activityLoggingEnabled);
                 break;
             }
             $db->set_media($requestPayload);
