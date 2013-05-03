@@ -22,7 +22,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
         id: this.collection.table.id,
         selectable: this.options.selectable,
         sortable: this.options.sortable,
-        hasData: this.collection.length
+        showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
       };
     },
 
