@@ -7,6 +7,7 @@ use Directus\Bootstrap;
 use Directus\Db\TableSchema;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
+use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;
@@ -39,8 +40,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
         }
         // Yield the column contents
         $identifier = null;
-        if(isset($fulRecordData[$identifierColumnName])) {
-            $identifier = $fulRecordData[$identifierColumnName];
+        if(isset($fullRecordData[$identifierColumnName])) {
+            $identifier = $fullRecordData[$identifierColumnName];
         }
         return $identifier;
     }
@@ -68,31 +69,47 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $thisIsNested = ($activityEntryMode == self::ACTIVITY_ENTRY_MODE_CHILD);
 
         // Recursive functions will change this value (by reference) as necessary
-        $nestedCollectionRelationshipsChanged = $thisIsNested ? $parentCollectionRelationshipsChanged : false;
+        // $nestedCollectionRelationshipsChanged = $thisIsNested ? $parentCollectionRelationshipsChanged : false;
+        $nestedCollectionRelationshipsChanged = false;
+        if($thisIsNested)
+            $nestedCollectionRelationshipsChanged = &$parentCollectionRelationshipsChanged;
 
         // Recursive functions will append to this array by reference
-        $nestedLogEntries = $thisIsNested ? $childLogEntries : false;
+        // $nestedLogEntries = $thisIsNested ? $childLogEntries : array();
+        $nestedLogEntries = array();
+        if($thisIsNested)
+            $nestedLogEntries = &$childLogEntries;
 
         // Update/add associations
         $parentRecordWithForeignKeys = $TableGateway->addOrUpdateRelationships($schemaArray, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
+        $log->info("Parent record with foreign keys: ".print_r((array) $parentRecordWithForeignKeys, true));
 
-        // If more than the record ID is present...
-        if($this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys)) {
+        // If more than the record ID is present.
+        $newRecordObject = null;
+        $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
+        if($parentRecordChanged) {
             // Update the parent row, w/ any new association fields replaced by their IDs
-            $parentRecordWithForeignKeys = $TableGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
-            $log->info("Parent record with foreign keys (post-#addOrUpdateRecordByArray): " . print_r($parentRecordWithForeignKeys->toArray(), true));
+            $newRecordObject = $TableGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
+            $log->info("Parent record with foreign keys (post-#addOrUpdateRecordByArray): " . print_r($parentRecordWithForeignKeys, true));
         }
 
         // Load full record post-facto, for:
         // - loading record identifier
         // - storing a full representation in the activity log
-        $fullRecordData = $this->find($parentRecordWithForeignKeys['id']);
+        $fullRecordData = $TableGateway->find($newRecordObject['id']);
+        $deltaRecordData = array_intersect_key((array) $parentRecordWithForeignKeys, (array) $fullRecordData);
 
         switch($activityEntryMode) {
 
             // Activity logging is enabled, and I am a nested action
             case self::ACTIVITY_ENTRY_MODE_CHILD:
                 $logEntryAction = isset($recordData['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
+
+                $log->info("activity mode: ACTIVITY_ENTRY_MODE_CHILD");
+                isset($recordData['id'])
+                    ? $log->info("action: ACTION_UPDATE")
+                    : $log->info("action: ACTION_ADD");
+
                 $childLogEntries[] = array(
                     'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                     'table_name'    => $tableName,
@@ -100,27 +117,22 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     'user'          => $currentUser['id'],
                     'datetime'      => gmdate('Y-m-d H:i:s'),
                     'data'          => json_encode($fullRecordData),
-                    'delta'         => json_encode($parentRecordWithForeignKeys),
-                    'row_id'        => $parentRecordWithForeignKeys['id'],
+                    'delta'         => json_encode($deltaRecordData),
+                    'row_id'        => $newRecordObject['id'],
                     'identifier'    => null
                 );
                 break;
 
             case self::ACTIVITY_ENTRY_MODE_PARENT:
                 // Does this act deserve a log?
-                $parentRecordNeedsLog = false;
-                if($nestedCollectionRelationshipsChanged) {
-                    /**
-                     * @todo check if collection (*-to-many) associations changed in the following way:
-                     * 1. newly associated record (includes the creation of the new foreign record)
-                     * 2. newly disassociated record
-                     */
-                    $parentRecordNeedsLog = true;
-                    $log->info("Will make log for parent record. (Nested collection relationships changed.)");
-                } elseif($this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys)) {
-                    // Scalar and/or many-to-one/single media values have changed.
-                    $parentRecordNeedsLog = true;
-                    $log->info("Will make log for parent record. (Scalar/many-to-one/single media value changed.)");
+                $parentRecordNeedsLog = $nestedCollectionRelationshipsChanged || $parentRecordChanged;
+
+                if($parentRecordNeedsLog) {
+                    $log->info("Will make log for parent record.");
+                    if($parentRecordChanged)
+                        $log->info("(Scalar/many-to-one/single media value changed.)");
+                    if($nestedCollectionRelationshipsChanged)
+                        $log->info("(Nested collection relationships changed.)");
                 }
 
                 /**
@@ -136,31 +148,40 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                 $recordIdentifier = $this->findRecordIdentitfier($schemaArray, $fullRecordData);
 
-                // Save parent log entry
-                $logEntryAction = isset($recordData['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
-                $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
-                $logData = array(
-                    'type'              => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
-                    'table_name'        => $tableName,
-                    'action'            => $logEntryAction,
-                    'user'              => $currentUser['id'],
-                    'datetime'          => gmdate('Y-m-d H:i:s'),
-                    'parent_id'         => null,
-                    'data'              => json_encode($fullRecordData),
-                    'delta'             => json_encode($parentRecordWithForeignKeys),
-                    'parent_changed'    => $parentRecordNeedsLog,
-                    'identifier'        => $recordIdentifier,
-                    'row_id'            => $parentRecordWithForeignKeys['id']
-                );
-                $parentLogEntry->populate($logData, false);
-                $parentLogEntry->save();
+                $log->info("ACTIVITY_ENTRY_MODE_PARENT");
+                $log->info("\$parentRecordChanged:".print_r($parentRecordChanged,true));
+                $log->info("\$nestedCollectionRelationshipsChanged:".print_r($nestedCollectionRelationshipsChanged,true));
 
-                // Update & insert nested activity entries
-                $ActivityGateway = new DirectusActivityTableGateway($this->aclProvider, $this->adapter);
-                foreach($nestedLogEntries as $entry) {
-                    $entry['parent_id'] = $parentRecordWithForeignKeys['id'];
-                    // @todo ought to insert these in one batch
-                    $ActivityGateway->insert($entry);
+                // Produce log if something changed.
+                if($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
+                    // Save parent log entry
+                    $logEntryAction = isset($recordData['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
+                    $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
+                    $logData = array(
+                        'type'              => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
+                        'table_name'        => $tableName,
+                        'action'            => $logEntryAction,
+                        'user'              => $currentUser['id'],
+                        'datetime'          => gmdate('Y-m-d H:i:s'),
+                        'parent_id'         => null,
+                        'data'              => json_encode($fullRecordData),
+                        'delta'             => json_encode($deltaRecordData),
+                        'parent_changed'    => (int) $parentRecordChanged,
+                        'identifier'        => $recordIdentifier,
+                        'row_id'            => $parentRecordWithForeignKeys['id']
+                    );
+                    $parentLogEntry->populate($logData, false);
+                    $parentLogEntry->save();
+
+                    // Update & insert nested activity entries
+                    $ActivityGateway = new DirectusActivityTableGateway($this->aclProvider, $this->adapter);
+                    if(!empty($nestedLogEntries)) {
+                        foreach($nestedLogEntries as $entry) {
+                            $entry['parent_id'] = $parentRecordWithForeignKeys['id'];
+                            // @todo ought to insert these in one batch
+                            $ActivityGateway->insert($entry);
+                        }
+                    }
                 }
                 break;
         }
@@ -204,7 +225,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $lowercaseColumnType = strtolower($column['type']);
 
             // Ignore empty OneToMany collections
-            $fieldIsOneToMany = "onetomany" === $lowercaseColumnType;
+            $fieldIsOneToMany = ("onetomany" === $lowercaseColumnType);
 
             // Ignore non-arrays and empty collections
             if(empty($parentRow[$colName])) {//} || ($fieldIsOneToMany && )) {
@@ -696,12 +717,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * Does this record representation contain non-primary-key information?
      * Used to determine whether or not to update a foreign record, above and
      * beyond simply assigning it to a parent.
-     * @param  [type] $record      [description]
-     * @param  string $pkFieldName [description]
-     * @return [type]              [description]
+     * @param  array|RowGateway $record
+     * @param  string $pkFieldName
+     * @return boolean
      */
-    public function recordDataContainsNonPrimaryKeyData(array $record, $pkFieldName = 'id') {
-        $keyCount = count(array_keys($record));
+    public function recordDataContainsNonPrimaryKeyData($record, $pkFieldName = 'id') {
+        if(is_subclass_of($record, 'Zend\Db\RowGateway\AbstractRowGateway'))
+            $record = $record->toArray();
+        elseif(!is_array($record)) {
+            throw new \InvalidArgumentException("\$record must an array or a subclass of AbstractRowGateway");
+        }
+        $keyCount = count($record);
         return array_key_exists($pkFieldName, $record) ? $keyCount > 1 : $keyCount > 0;
     }
 
