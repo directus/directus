@@ -50,7 +50,7 @@ use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\View\JsonView;
-use Directus\View\AclExceptionView;
+use Directus\View\ExceptionView;
 use Zend\Db\Sql\Expression;
 
 // API Version shortcut for routes:
@@ -65,13 +65,12 @@ $authProvider = new AuthProvider();
 $requestNonceProvider = new RequestNonceProvider();
 
 /**
- * Catch ACL forbidden exceptions.
+ * Catch user-related exceptions & produce client responses.
  */
-
 $app->config('debug', false);
-$aclExceptionView = new AclExceptionView();
-$app->error(function (\Exception $exception) use ($app, $aclExceptionView) {
-    $aclExceptionView->exceptionHandler($app, $exception);
+$exceptionView = new ExceptionView();
+$app->error(function (\Exception $exception) use ($app, $exceptionView) {
+    $exceptionView->exceptionHandler($app, $exception);
 });
 
 // Routes which do not need protection by the authentication and the request
