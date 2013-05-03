@@ -41,10 +41,11 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     deleteRow: function(e) {
       var cid = $(e.target).closest('tr').attr('data-cid');
       var model = this.related.entries.get(cid);
+      var relatedColumnName = this.options.schema.get('junction_key_right');
 
       if (model.isNew()) return this.related.entries.remove(model);
 
-      model.set(this.related.columnName, '');
+      model.set(relatedColumnName, '');
 
     },
 
@@ -73,15 +74,16 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     addModel: function(model) {
       var modal;
       var collection = this.related.entries;
-
-      console.log('new model', model);
-
       var view = new Directus.EditView({model: model});
+      var columnName = this.options.schema.get('junction_key_right');
+      var id = this.model.id;
 
       modal = app.router.openModal(view, {stretch: true, title: 'Add'});
 
       modal.save = function() {
-        model.set(view.data());
+        var data = view.data();
+        data[columnName] = id;
+        model.set(data);
         collection.add(model,{nest: true});
         this.close();
       };
@@ -97,16 +99,39 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       this.setView('.related-table', this.view).render();
     },
 
+
+    //NOTE: OVERRIDE THIS IN MANY-MANY INSTEAD OF USING CONDITIONALS
     initialize: function (options) {
       this.related = {};
       this.related.table = app.tables.get(options.schema.get('table_related'));
       this.related.schema = app.columns[options.schema.get('table_related')];
       this.related.entries = options.value;
-      this.related.columnName = this.options.schema.get('junction_key_right');
 
-      var deleteColumn = (this.related.schema.get(this.related.columnName).get('is_nullable') === "YES");
+      this.related.tableOptions = {
+        collection: this.related.entries,
+        toolbar:false,
+        selectable: false,
+        sortable: false,
+        footer: false,
+        saveAfterDrop: false,
+        deleteColumn: true,
+        hideEmptyMessage: true
+      };
 
-      this.related.tableOptions = {collection: this.related.entries, toolbar:false, selectable: false, sortable: false, footer: false, saveAfterDrop: false, deleteColumn: deleteColumn};
+      // Since this initialize function can be used for both many-many 
+      // and one-many relationships we need some extra stuff for one-many deletes
+      if (this.options.settings.id === "one_to_many") {
+        var columnName = this.options.schema.get('junction_key_right');
+        this.related.tableOptions.deleteColumn = (this.related.schema.get(columnName).get('is_nullable') === "YES");
+
+        this.related.tableOptions.filters = {
+          booleanOperator: '&&',
+          expressions: [
+            {column: columnName, operator: '===', value: this.model.id}
+          ]
+        };
+      }
+
       this.table = Directus.Table.extend({});
       this.view = new this.table(this.related.tableOptions);
 
