@@ -102,6 +102,15 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
             filters: {columns: columns}
           };
 
+          if (options.table === undefined) {
+              throw "Directus Error! The related table '" + options.table.id + "' does not exist! Check your UI settings";
+          }
+
+          var diff = _.difference(columns, options.structure.pluck('column_name'));
+          if (diff.length > 0) {
+            throw "Directus Error! The column(s) '" + diff.join(',') + "' does not exist in related table '" + options.table.id + "'. Check your UI settings";
+          }
+
           value = attributes[id] || [];
 
           switch (type) {
