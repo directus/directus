@@ -54,7 +54,7 @@ function(app, Backbone) {
 
           // Evaluate each filter
           _.each(expressions, function(expression) {
-            tests.push(app.evaluateExpression(model.getRaw(expression.column), expression.operator, expression.value));
+            tests.push(app.evaluateExpression(model.get(expression.column, {flatten: true}), expression.operator, expression.value));
           });
 
           switch (booleanOperator) {
