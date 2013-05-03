@@ -33,8 +33,8 @@ function(app, Backbone) {
 
       rowIdentifiers = this.options.rowIdentifiers;
 
+      //Filter active/inactive/deleted items
       activeState = _.map(activeColumns,Number);
-
       models = this.collection.filter(function(model) {
         if (model.has('active')) {
           return (_.indexOf(activeState, Number(model.get('active'))) > -1);
@@ -42,6 +42,33 @@ function(app, Backbone) {
           return true;
         }
       });
+
+      //Evaluate filter object
+      var expressions = this.options.filters.expressions;
+      var booleanOperator = this.options.filters.booleanOperator || 'AND';
+
+      if (expressions !== undefined) {
+        models = _.filter(models, function(model) {
+          var tests = [];
+          var result = false;
+
+          // Evaluate each filter
+          _.each(expressions, function(expression) {
+            tests.push(app.evaluateExpression(model.getRaw(expression.column), expression.operator, expression.value));
+          });
+
+          switch (booleanOperator) {
+            case '||':
+              return _.contains(tests, true);
+              break;
+            case '&&':
+            default:
+              return _.every(tests,_.identity);
+              break;
+          }
+
+        });
+      }
 
       rows = _.map(models, function(model) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
@@ -66,7 +93,10 @@ function(app, Backbone) {
       this.collection.setOrder('sort','ASC',{silent: true});
     },
 
-    initialize: function() {
+    initialize: function(options) {
+
+      this.options.filters = this.options.filters || {};
+
       this.collection.on('sort', this.render, this);
       //Setup jquery UI sortable
       if (this.options.structure && this.options.structure.get('sort')) {
