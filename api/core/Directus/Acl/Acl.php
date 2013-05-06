@@ -5,7 +5,10 @@ namespace Directus\Acl;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Bootstrap;
+use Directus\Db\TableGateway\AclAwareTableGateway;
 use Zend\Db\RowGateway\RowGateway;
+use Zend\Db\Sql\Predicate\PredicateSet;
+use Zend\Db\Sql\Select;
 
 class Acl {
 
@@ -190,6 +193,21 @@ class Acl {
         elseif(is_array($record) && !array_key_exists($ownerColumnName, $record))
             return false;
         return (int) $record[$ownerColumnName];
+    }
+
+    public function getCmsOwnerIdsByTableGatewayAndPredicate(AclAwareTableGateway $TableGateway, PredicateSet $predicate) {
+        $ownerIds = array();
+        $table = $TableGateway->getTable();
+        $cmsOwnerColumn = $this->getCmsOwnerColumnByTable($table);
+        $select = new Select($table);
+        $select
+            ->columns(array($TableGateway->primaryKeyFieldName, $cmsOwnerColumn))
+            ->group($cmsOwnerColumn);
+        $select->where($predicate);
+        $results = $TableGateway->selectWith($select);
+        foreach($results as $row)
+            $ownerIds[] = $row[$cmsOwnerColumn];
+        return array(count($results), $ownerIds);
     }
 
 }
