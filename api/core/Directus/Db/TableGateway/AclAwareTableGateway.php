@@ -4,16 +4,19 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedTableAddException;
+use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableBigEditException;
+use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Bootstrap;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\AbstractSql;
+use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
@@ -202,6 +205,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * @return mixed
      * @throws Exception\RuntimeException
      * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableBigEditException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableEditException
      */
     protected function executeUpdate(Update $update)
     {
@@ -220,7 +225,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
 
             /**
-             * Enforce Privilege: "Big" Edit (I am not the record CMS owner)
+             * Enforce Privilege: "Big" Edit
              */
             if(false === $cmsOwnerColumn) {
                 // All edits are "big" edits if there is no magic owner column.
@@ -260,6 +265,48 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
 
         parent::executeUpdate($update);
+    }
+
+    /**
+     * @param Delete $delete
+     * @return mixed
+     * @throws Exception\RuntimeException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableBigDeleteException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableDeleteException
+     */
+    protected function executeDelete(Delete $delete)
+    {
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUserId = intval($currentUser['id']);
+        $cmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable($this->table);
+
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigdelete')) {
+            $deleteState = $delete->getRawState();
+            /**
+             * Enforce Privilege: "Big" Delete
+             */
+            if(false === $cmsOwnerColumn) {
+                // All deletes are "big" deletes if there is no magic owner column.
+                throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on table `" . $this->table . "` (no magic owner column).");
+            } else {
+                // Who are the owners of these rows?
+                $ownerIds = array();
+                $select = new Select($this->table);
+                $select
+                    ->columns(array($this->primaryKeyFieldName, $cmsOwnerColumn))
+                    ->group($cmsOwnerColumn);
+                $select->where($deleteState['where']);
+                $results = $this->selectWith($select);
+                foreach($results as $row)
+                    $ownerIds[] = $row[$cmsOwnerColumn];
+                // Enforce
+                if(count(array_diff($ownerIds, array($currentUserId)))) {
+                    throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on " . count($results) . " `" . $this->table . "` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
+                }
+            }
+        }
+
+        return parent::executeDelete($delete);
     }
 
     /**
@@ -439,6 +486,58 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $set = array('hidden' => '1');
         $where = array('1' => '1');
         $DirectusTablesGateway->update($set, $where);
+    }
+
+    /** Test for executeDelete ACL protection */
+    public function testBigDeleteEnforcementWithoutMagicOwnerColumn() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        // Omit "bigdelete" privileges from the test table
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_tables']['permissions'] = array('edit');
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $DirectusTablesGateway = new self($this->aclProvider, 'directus_tables', $this->adapter);
+        $where = array('1' => '1');
+        $DirectusTablesGateway->delete($where);
+    }
+
+    /** Test for executeDelete ACL protection */
+    public function testBigDeleteEnforcementWithMagicOwnerColumnAndMultipleOwners() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        // Omit "bigdelete" privileges from the test table
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // Find a record which isn't ours on the media table
+        $mediaCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_media");
+        $MediaGateway = new self($this->aclProvider, "directus_media", $this->adapter);
+        $select = new Select("directus_media");
+        $select->group($mediaCmsOwnerColumn);
+        $select->where->notEqualTo($mediaCmsOwnerColumn, $currentUser['id']);
+        $results = $MediaGateway->selectWith($select);
+        if(count($results) < 2)
+            throw new \Exception("This test requires at least 2 `directus_media` records whose CMS owner (column `$mediaCmsOwnerColumn`) is not the current user (with id " . $currentUser['id'] . ")");
+
+        $recordIds = array();
+        foreach($results as $row)
+            $recordIds[] = $row['id'];
+
+        // This should throw an AclException
+        $where = new Where;
+        $where->in('id', $recordIds);
+        $MediaGateway->delete($where);
     }
 
 }
