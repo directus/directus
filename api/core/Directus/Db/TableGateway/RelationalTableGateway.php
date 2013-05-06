@@ -28,7 +28,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @param  array|AclAwareRowGateway $fulRecordData
      * @return string
      */
-    public function findRecordIdentitfier($schemaArray, $fullRecordData) {
+    public function findRecordIdentifier($schemaArray, $fullRecordData) {
         // Decide on the correct column name
         $masterColumn = TableSchema::getMasterColumn($schemaArray);
         $identifierColumnName = null;
@@ -58,6 +58,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $log = $this->logger();
         $log->info(__CLASS__."#".__FUNCTION__);
         // $log->info(__CLASS__."#".__FUNCTION__.": " . print_r(func_get_args(), true));
+        // if($tableName === "classes") {
+            $log->info("recordData: " . print_r($recordData, true));
+        // }
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
 
@@ -91,7 +94,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         if($parentRecordChanged) {
             // Update the parent row, w/ any new association fields replaced by their IDs
             $newRecordObject = $TableGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
-            $log->info("Parent record with foreign keys (post-#addOrUpdateRecordByArray): " . print_r($parentRecordWithForeignKeys, true));
+            $log->info("Parent record with foreign keys (post-#addOrUpdateRecordByArray): " . print_r($newRecordObject->toArray(), true));
         }
 
         // Load full record post-facto, for:
@@ -147,7 +150,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                  * @todo  one day: treat children as parents if this top-level record was not modified.
                  */
 
-                $recordIdentifier = $this->findRecordIdentitfier($schemaArray, $fullRecordData);
+                $recordIdentifier = $this->findRecordIdentifier($schemaArray, $fullRecordData);
 
                 $log->info("ACTIVITY_ENTRY_MODE_PARENT");
                 $log->info("\$parentRecordChanged:".print_r($parentRecordChanged,true));
@@ -240,7 +243,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $colUiType = $column['ui'];
 
             /** Many-to-One */
-
             if (in_array($colUiType, TableSchema::$many_to_one_uis)) {
                 $foreignRow = $foreignDataSet;
                 $log->info("Identified Many-to-One");
