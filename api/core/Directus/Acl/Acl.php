@@ -2,6 +2,8 @@
 
 namespace Directus\Acl;
 
+use Directus\Acl\Exception\UnauthorizedFieldWriteException;
+use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Bootstrap;
 use Zend\Db\RowGateway\RowGateway;
 

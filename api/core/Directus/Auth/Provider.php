@@ -30,8 +30,7 @@ class Provider {
      */
     public static function logout() {
         if(!self::loggedIn()) {
-            throw new UserIsntLoggedInException("Attempting to de-authenticate a user when a user isn't \
-                authenticated.");
+            throw new UserIsntLoggedInException("Attempting to de-authenticate a user when a user isn't authenticated.");
         }
         $_SESSION[self::SESSION_KEY] = array();
     }
@@ -53,8 +52,7 @@ class Provider {
      */
     public static function getUserInfo() {
         if(!self::loggedIn()) {
-            throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when \
-                a user isn't authenticated.");
+            throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when a user isn't authenticated.");
         }
         return $_SESSION[self::SESSION_KEY];
     }
@@ -67,8 +65,7 @@ class Provider {
      */
     private function completeLogin($uid) {
         if(self::loggedIn()) {
-            throw new UserAlreadyLoggedInException("Attempting to authenticate a user when a user is already \
-                authenticated.");
+            throw new UserAlreadyLoggedInException("Attempting to authenticate a user when a user is already authenticated.");
         }
         $user = array( 'id' => $uid );
         $_SESSION[self::SESSION_KEY] = $user;
