@@ -32,21 +32,21 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         var existingErrorHandler = options.error;
 
       var errorCodeHandler = function(xhr, status, thrown) {
-        app.lastXhrError = {
-          xhr : xhr,
-          status : status,
-          thrown : thrown
-        };
-        existingErrorHandler();
-        switch(xhr.status) {
+        var status = xhr.status;
+
+        existingErrorHandler(xhr, status, thrown);
+
+        switch(status) {
           case 404:
             app.router.showAlert('Not found!');
             break;
           case 401:
             window.location = app.root;
             break;
+          case 500:
+            console.log('ERRRRRRAAAOOORE', xhr.responseText);
+            break;
           case 403:
-            // console.log(xhr, status, thrown);
             var errorData = jQuery.parseJSON(xhr.responseText);
             win = new Backbone.Layout();
             win.$el.html(errorData.message);
