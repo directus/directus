@@ -67,6 +67,7 @@ $requestNonceProvider = new RequestNonceProvider();
 /**
  * Catch user-related exceptions & produce client responses.
  */
+
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $app->error(function (\Exception $exception) use ($app, $exceptionView) {
@@ -81,7 +82,8 @@ $authAndNonceRouteWhitelist = array(
     "auth_session",
     "auth_clear_session",
     "auth_nonces",
-    "auth_permissions"
+    "auth_permissions",
+    "debug_acl_poc",
 );
 
 $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $requestNonceProvider, $authAndNonceRouteWhitelist) {
@@ -245,6 +247,16 @@ $app->get("/$v/auth/permissions/?", function() use ($app, $aclProvider) {
     $groupPrivileges = $aclProvider->getGroupPrivileges();
     JsonView::render(array('groupPrivileges' => $groupPrivileges));
 })->name('auth_permissions');
+
+// debug helper
+$app->get("/$v/debug/acl_poc/?", function() use ($app, $aclProvider, $ZendDb) {
+    if('production' === DIRECTUS_ENV)
+        $app->halt('404');
+    $DirectusActivityTableGateway = new DirectusActivityTableGateway($aclProvider, $ZendDb);
+    // $DirectusActivityTableGateway->testInsertWriteBlacklistEnforcement();
+    // $DirectusActivityTableGateway->testUpdateWriteBlacklistEnforcement();
+    $DirectusActivityTableGateway->testInsertAddEnforcement();
+})->name('debug_acl_poc');
 
 /**
  * ENTRIES COLLECTION
