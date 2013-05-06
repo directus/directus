@@ -213,17 +213,15 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $currentUser = AuthProvider::getUserInfo();
         $currentUserId = intval($currentUser['id']);
         $cmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable($this->table);
+        $updateState = $update->getRawState();
 
         /**
          * ACL Enforcement
          */
 
         if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
-            $updateState = $update->getRawState();
-
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
-
             /**
              * Enforce Privilege: "Big" Edit
              */
@@ -250,9 +248,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             /**
              * Enforce Privilege: "Little" Edit (I am the record CMS owner)
              */
-            if($cmsOwnerId === $currentUserId) {
-                $recordPk = AclAwareRowGateway::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
-                throw new UnauthorizedTableEditException("Table delete access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
+            if(false !== $cmsOwnerColumn) {
+                if(!isset($predicateResultQty)) {
+                    // Who are the owners of these rows?
+                    list($predicateResultQty, $predicateOwnerIds) = $this->aclProvider->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                }
+                if(in_array($currentUserId, $predicateOwnerIds)) {
+                    throw new UnauthorizedTableEditException("Table edit access forbidden on $predicateResultQty `" . $this->table . "` table records owned by the authenticated CMS user (#$currentUserId).");
+                }
             }
         }
 
@@ -557,6 +560,27 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $where = new Where;
         $where->equalTo($usersCmsOwnerColumn, $currentUser[$usersCmsOwnerColumn]);
         $Users->delete($where);
+    }
+
+    /** Test for executeUpdate ACL protection */
+    public function testLittleEditEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        // Omit "little" edit privilege from the test table
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_users']['permissions'] = array('delete');
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $usersCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_users");
+        $set = array('first_name' => 'Transgressive');
+        $where = new Where;
+        $where->equalTo($usersCmsOwnerColumn, $currentUser[$usersCmsOwnerColumn]);
+        $Users->update($set, $where);
     }
 
 }
