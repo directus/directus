@@ -4,6 +4,8 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedTableAddException;
+use Directus\Acl\Exception\UnauthorizedTableBigEditException;
+use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Bootstrap;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
@@ -13,6 +15,7 @@ use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
 // FOR TRANSITIONAL TESTS BELOW
@@ -172,6 +175,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * @param Insert $insert
      * @return mixed
      * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
      */
     protected function executeInsert(Insert $insert)
     {
@@ -198,22 +202,61 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * @return mixed
      * @throws Exception\RuntimeException
      * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
-     *
-     * @todo  needs testing
      */
     protected function executeUpdate(Update $update)
     {
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUserId = intval($currentUser['id']);
+        $cmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable($this->table);
+
         /**
          * ACL Enforcement
          */
 
-        // Enforce write field blacklist (if user lacks bigedit privileges on this table)
         if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
             $updateState = $update->getRawState();
+
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
+
+            /**
+             * Enforce Privilege: "Big" Edit (I am not the record CMS owner)
+             */
+            if(false === $cmsOwnerColumn) {
+                // All edits are "big" edits if there is no magic owner column.
+                throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on table `" . $this->table . "` (no magic owner column).");
+            } else {
+                // Who are the owners of these rows?
+                $ownerIds = array();
+                $select = new Select($this->table);
+                $select
+                    ->columns(array($this->primaryKeyFieldName, $cmsOwnerColumn))
+                    ->group($cmsOwnerColumn);
+                $select->where($updateState['where']);
+                $results = $this->selectWith($select);
+                foreach($results as $row)
+                    $ownerIds[] = $row[$cmsOwnerColumn];
+                // Enforce
+                if(count(array_diff($ownerIds, array($currentUserId)))) {
+                    throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on " . count($results) . " `" . $this->table . "` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
+                }
+            }
+
+            /**
+             * Enforce write field blacklist (if user lacks bigedit privileges on this table)
+             */
             $attemptOffsets = array_keys($updateState['set']);
             $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+        }
+
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'edit')) {
+            /**
+             * Enforce Privilege: "Little" Edit (I am the record CMS owner)
+             */
+            if($cmsOwnerId === $currentUserId) {
+                $recordPk = AclAwareRowGateway::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
+                throw new UnauthorizedTableEditException("Table edit access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
+            }
         }
 
         parent::executeUpdate($update);
@@ -291,9 +334,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $currentUser = AuthProvider::getUserInfo();
         $currentUser = $Users->find($currentUser['id']);
 
+        // Omit "add" privileges from the test table & set arbitrary write blacklist
         $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
         $groupPrivileges['directus_activity']['write_field_blacklist'] = array('data');
-        // Omit "add" privileges
         $groupPrivileges['directus_activity']['permissions'] = array('edit','delete');
 
         $this->aclProvider->setGroupPrivileges($groupPrivileges);
@@ -311,6 +354,91 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             'parent_id'     => null,
             'datetime'      => new Expression('NOW()')
         ), array('1' => '1'));
+    }
+
+    /** Test for executeUpdate ACL protection */
+    public function testUpdateBigEditEnforcementWithMagicOwnerColumn() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        // Omit "bigedit" privileges from the test table
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // Find a record which isn't ours on the media table
+        $mediaCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_media");
+        $MediaGateway = new self($this->aclProvider, "directus_media", $this->adapter);
+        $select = new Select("directus_media");
+        $select->where->notEqualTo($mediaCmsOwnerColumn, $currentUser['id']);
+        $select->limit(1);
+        $results = $MediaGateway->selectWith($select);
+        if(0 === count($results))
+            throw new \Exception("This test requires a `directus_media` record whose CMS owner (column `$mediaCmsOwnerColumn`) is not the current user (with id " . $currentUser['id'] . ")");
+
+        $mediaEntry = $results->current();
+
+        // This should throw an AclException
+        $set = array('Caption' => 'Transgressive update attempt.');
+        $where = array('id' => $mediaEntry['id']);
+        $MediaGateway->update($set, $where);
+    }
+
+    /** Test for executeUpdate ACL protection */
+    public function testUpdateBigEditEnforcementWithMagicOwnerColumnAndMultipleOwners() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        // Omit "bigedit" privileges from the test table
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // Find a record which isn't ours on the media table
+        $mediaCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_media");
+        $MediaGateway = new self($this->aclProvider, "directus_media", $this->adapter);
+        $select = new Select("directus_media");
+        $select->group($mediaCmsOwnerColumn);
+        $select->where->notEqualTo($mediaCmsOwnerColumn, $currentUser['id']);
+        $results = $MediaGateway->selectWith($select);
+        if(count($results) < 2)
+            throw new \Exception("This test requires at least 2 `directus_media` records whose CMS owner (column `$mediaCmsOwnerColumn`) is not the current user (with id " . $currentUser['id'] . ")");
+
+        $recordIds = array();
+        foreach($results as $row)
+            $recordIds[] = $row['id'];
+
+        // This should throw an AclException
+        $set = array('Caption' => 'Transgressive update attempt.');
+        $where = new Where;
+        $where->in('id', $recordIds);
+        $MediaGateway->update($set, $where);
+    }
+
+    /** Test for executeUpdate ACL protection */
+    public function testUpdateBigEditEnforcementWithoutMagicOwnerColumn() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        // Omit "bigedit" privileges from the test table
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_tables']['permissions'] = array('edit','delete');
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $DirectusTablesGateway = new self($this->aclProvider, 'directus_tables', $this->adapter);
+        $set = array('hidden' => '1');
+        $where = array('1' => '1');
+        $DirectusTablesGateway->update($set, $where);
     }
 
 }

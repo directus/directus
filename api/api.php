@@ -248,14 +248,20 @@ $app->get("/$v/auth/permissions/?", function() use ($app, $aclProvider) {
     JsonView::render(array('groupPrivileges' => $groupPrivileges));
 })->name('auth_permissions');
 
-// debug helper
+/**
+ * Debug helper.
+ * For development & proof-oc-concept of ACL.
+ */
 $app->get("/$v/debug/acl_poc/?", function() use ($app, $aclProvider, $ZendDb) {
     if('production' === DIRECTUS_ENV)
         $app->halt('404');
     $DirectusActivityTableGateway = new DirectusActivityTableGateway($aclProvider, $ZendDb);
     // $DirectusActivityTableGateway->testInsertWriteBlacklistEnforcement();
     // $DirectusActivityTableGateway->testUpdateWriteBlacklistEnforcement();
-    $DirectusActivityTableGateway->testInsertAddEnforcement();
+    // $DirectusActivityTableGateway->testInsertAddEnforcement();
+    // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithMagicOwnerColumn();
+    // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithMagicOwnerColumnAndMultipleOwners();
+    $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithoutMagicOwnerColumn();
 })->name('debug_acl_poc');
 
 /**
