@@ -30,7 +30,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     protected $aclProvider;
 
-    protected $primaryKeyFieldName = "id";
+    public $primaryKeyFieldName = "id";
 
     /**
      * @param AclProvider $aclProvider
@@ -232,18 +232,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on table `" . $this->table . "` (no magic owner column).");
             } else {
                 // Who are the owners of these rows?
-                $ownerIds = array();
-                $select = new Select($this->table);
-                $select
-                    ->columns(array($this->primaryKeyFieldName, $cmsOwnerColumn))
-                    ->group($cmsOwnerColumn);
-                $select->where($updateState['where']);
-                $results = $this->selectWith($select);
-                foreach($results as $row)
-                    $ownerIds[] = $row[$cmsOwnerColumn];
+                list($resultQty, $ownerIds) = $this->aclProvider->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 // Enforce
                 if(count(array_diff($ownerIds, array($currentUserId)))) {
-                    throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on " . count($results) . " `" . $this->table . "` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
+                    throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on $resultQty `" . $this->table . "` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
                 }
             }
 
@@ -260,7 +252,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
              */
             if($cmsOwnerId === $currentUserId) {
                 $recordPk = AclAwareRowGateway::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
-                throw new UnauthorizedTableEditException("Table edit access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
+                throw new UnauthorizedTableEditException("Table delete access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
             }
         }
 
@@ -279,9 +271,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $currentUser = AuthProvider::getUserInfo();
         $currentUserId = intval($currentUser['id']);
         $cmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable($this->table);
+        $deleteState = $delete->getRawState();
 
         if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigdelete')) {
-            $deleteState = $delete->getRawState();
             /**
              * Enforce Privilege: "Big" Delete
              */
@@ -290,18 +282,25 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on table `" . $this->table . "` (no magic owner column).");
             } else {
                 // Who are the owners of these rows?
-                $ownerIds = array();
-                $select = new Select($this->table);
-                $select
-                    ->columns(array($this->primaryKeyFieldName, $cmsOwnerColumn))
-                    ->group($cmsOwnerColumn);
-                $select->where($deleteState['where']);
-                $results = $this->selectWith($select);
-                foreach($results as $row)
-                    $ownerIds[] = $row[$cmsOwnerColumn];
+                list($predicateResultQty, $predicateOwnerIds) = $this->aclProvider->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
                 // Enforce
-                if(count(array_diff($ownerIds, array($currentUserId)))) {
-                    throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on " . count($results) . " `" . $this->table . "` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
+                if(count(array_diff($predicateOwnerIds, array($currentUserId)))) {
+                    throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on $predicateResultQty `" . $this->table . "` table record(s) and " . count($predicateOwnerIds) . " CMS owner(s) (with ids " . implode(", ", $predicateOwnerIds) . ").");
+                }
+            }
+        }
+
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'delete')) {
+            /**
+             * Enforce Privilege: "Little" Delete (I am the record CMS owner)
+             */
+            if(false !== $cmsOwnerColumn) {
+                if(!isset($predicateResultQty)) {
+                    // Who are the owners of these rows?
+                    list($predicateResultQty, $predicateOwnerIds) = $this->aclProvider->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
+                }
+                if(in_array($currentUserId, $predicateOwnerIds)) {
+                    throw new UnauthorizedTableEditException("Table delete access forbidden on $predicateResultQty `" . $this->table . "` table records owned by the authenticated CMS user (#$currentUserId).");
                 }
             }
         }
@@ -538,6 +537,26 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $where = new Where;
         $where->in('id', $recordIds);
         $MediaGateway->delete($where);
+    }
+
+    /** Test for executeDelete ACL protection */
+    public function testLittleDeleteEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        // Omit "little" delete privilege from the test table
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_users']['permissions'] = array('edit');
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $usersCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_users");
+        $where = new Where;
+        $where->equalTo($usersCmsOwnerColumn, $currentUser[$usersCmsOwnerColumn]);
+        $Users->delete($where);
     }
 
 }
