@@ -250,7 +250,7 @@ $app->get("/$v/auth/permissions/?", function() use ($app, $aclProvider) {
 
 /**
  * Debug helper.
- * For development & proof-oc-concept of ACL.
+ * For development & proof-of-concept of ACL.
  */
 $app->get("/$v/debug/acl_poc/?", function() use ($app, $aclProvider, $ZendDb) {
     if('production' === DIRECTUS_ENV)
@@ -264,7 +264,8 @@ $app->get("/$v/debug/acl_poc/?", function() use ($app, $aclProvider, $ZendDb) {
     // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithoutMagicOwnerColumn();
     // $DirectusActivityTableGateway->testBigDeleteEnforcementWithoutMagicOwnerColumn();
     // $DirectusActivityTableGateway->testBigDeleteEnforcementWithMagicOwnerColumnAndMultipleOwners();
-    $DirectusActivityTableGateway->testLittleDeleteEnforcement();
+    // $DirectusActivityTableGateway->testLittleDeleteEnforcement();
+    $DirectusActivityTableGateway->testLittleEditEnforcement();
 })->name('debug_acl_poc');
 
 /**
