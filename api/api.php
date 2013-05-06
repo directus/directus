@@ -261,7 +261,9 @@ $app->get("/$v/debug/acl_poc/?", function() use ($app, $aclProvider, $ZendDb) {
     // $DirectusActivityTableGateway->testInsertAddEnforcement();
     // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithMagicOwnerColumn();
     // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithMagicOwnerColumnAndMultipleOwners();
-    $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithoutMagicOwnerColumn();
+    // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithoutMagicOwnerColumn();
+    // $DirectusActivityTableGateway->testBigDeleteEnforcementWithoutMagicOwnerColumn();
+    $DirectusActivityTableGateway->testBigDeleteEnforcementWithMagicOwnerColumnAndMultipleOwners();
 })->name('debug_acl_poc');
 
 /**
