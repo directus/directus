@@ -25,7 +25,7 @@ class ExceptionView {
         /**
          * Directus\Db\Exception\RelationshipMetadataException
          */
-        if($exception instanceof RelationshipMetadataException) {
+        elseif($exception instanceof RelationshipMetadataException) {
             $response->header('Content-type', 'application/json');
             $app->halt(424, json_encode(array(
                 'message' => $exception->getMessage()

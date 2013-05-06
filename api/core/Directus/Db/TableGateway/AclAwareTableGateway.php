@@ -15,6 +15,11 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
+// FOR TRANSITIONAL TESTS BELOW
+use Directus\Auth\Provider as AuthProvider;
+use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
+use Zend\Db\Sql\Expression;
+
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     protected $aclProvider;
@@ -39,11 +44,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * Static Factory Methods
      */
 
+    /**
+     * Underscore to camelcase table name to namespaced table gateway classname,
+     * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
+     */
     public static function makeTableGatewayFromTableName($aclProvider, $table, $adapter) {
-        /**
-         * Underscore to camelcase table name to namespaced table gateway classname,
-         * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
-         */
         $tableGatewayClassName = underscoreToCamelCase($table) . "TableGateway";
         $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
         if(class_exists($tableGatewayClassName))
@@ -122,16 +127,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $record;
     }
 
-    public function newRow($table = null, $pk_field_name = null)
-    {
-        $table = is_null($table) ? $this->table : $table;
-        $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
-        $row = new AclAwareRowGateway($this->aclProvider, $pk_field_name, $table, $this->adapter);
-        return $row;
-    }
-
     protected function logger() {
         return Bootstrap::get('app')->getLog();
+    }
+
+    public function castFloatIfNumeric(&$value) {
+        $value = is_numeric($value) ? (float) $value : $value;
     }
 
     /**
@@ -145,8 +146,22 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $query;
     }
 
-    public function castFloatIfNumeric(&$value) {
-        $value = is_numeric($value) ? (float) $value : $value;
+    /**
+     * Extract unescaped & unprefixed column names
+     * @param  array $columns Optionally escaped or table-prefixed column names, e.g. drawn from
+     * \Zend\Db\Sql\Insert|\Zend\Db\Sql\Update#getRawState
+     * @return array
+     */
+    protected function extractRawColumnNames($columns) {
+        $columnNames = array();
+        foreach ($insertState['columns'] as $column) {
+            $sansSpaces = preg_replace('/\s/', '', $column);
+            preg_match('/(\W?\w+\W?\.)?\W?([\*\w+])\W?/', $sansSpaces, $matches);
+            if(isset($matches[2])) {
+                $columnNames[] = $matches[2];
+            }
+        }
+        return $columnNames;
     }
 
     /**
@@ -154,16 +169,27 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
 
     /**
-     * @todo add $columns support
-     *
      * @param Insert $insert
      * @return mixed
      * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
      */
     protected function executeInsert(Insert $insert)
     {
+        /**
+         * ACL Enforcement
+         */
+
         if(!$this->aclProvider->hasTablePrivilege($this->table, 'add'))
             throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
+
+        // Enforce write field blacklist (if user lacks bigedit privileges on this table)
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
+            $insertState = $insert->getRawState();
+            // Parsing for the column name is unnecessary. Zend enforces raw column names.
+            // $rawColumns = $this->extractRawColumnNames($insertState['columns']);
+            $this->aclProvider->enforceBlacklist($this->table, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
+        }
+
         return parent::executeInsert($insert);
     }
 
@@ -180,16 +206,111 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         /**
          * ACL Enforcement
          */
-        $updateRaw = $update->getRawState();
-        // var_dump($updateRaw);exit;
-        /**
-         * Enforce Write Blacklist
-         */
-        // @todo will all fields lack table prefixes? what if they're prefixed arbitrarily?
-        // or if they contain quotes? may need to normalize field names
-        $attemptOffsets = array_keys($updateRaw['set']);
-        $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+
+        // Enforce write field blacklist (if user lacks bigedit privileges on this table)
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
+            $updateState = $update->getRawState();
+            // Parsing for the column name is unnecessary. Zend enforces raw column names.
+            // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
+            $attemptOffsets = array_keys($updateState['set']);
+            $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+        }
+
         parent::executeUpdate($update);
+    }
+
+    /**
+     * PENDING UNIT TESTS
+     * Proofs of concept for development & debugging
+     */
+
+    /** Test for executeUpdate ACL protection */
+    public function testUpdateWriteBlacklistEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_activity']['write_field_blacklist'] = array('data');
+        // Omit "big" privileges
+        $groupPrivileges['directus_activity']['permissions'] = array('add','edit','delete');
+
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $this->update(array(
+            'type'          => 'ENTRY',
+            'action'        => 'UPDATE',
+            'identifier'    => 'Gerry',
+            'table_name'    => 'directus_users',
+            'row_id'        => 4,
+            'user'          => 3,
+            'data'          => '{1:3,2:4}',
+            'parent_id'     => 'null',
+            'datetime'      => new Expression('NOW()')
+        ), array('1' => '1'));
+    }
+
+    /** Test for executeInsert ACL protection */
+    public function testInsertWriteBlacklistEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_activity']['write_field_blacklist'] = array('data');
+        // Omit "big" privileges
+        $groupPrivileges['directus_activity']['permissions'] = array('add','edit','delete');
+
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $this->insert(array(
+            'add'           => null,
+            'type'          => 'ENTRY',
+            'action'        => 'UPDATE',
+            'identifier'    => 'Gerry',
+            'table_name'    => 'directus_users',
+            'row_id'        => 4,
+            'user'          => 3,
+            'data'          => '{1:3,2:4}',
+            'parent_id'     => null,
+            'datetime'      => new Expression('NOW()')
+        ), array('1' => '1'));
+    }
+
+    /** Test for executeInsert ACL protection */
+    public function testInsertAddEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges['directus_activity']['write_field_blacklist'] = array('data');
+        // Omit "add" privileges
+        $groupPrivileges['directus_activity']['permissions'] = array('edit','delete');
+
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $this->insert(array(
+            'add'           => null,
+            'type'          => 'ENTRY',
+            'action'        => 'UPDATE',
+            'identifier'    => 'Gerry',
+            'table_name'    => 'directus_users',
+            'row_id'        => 4,
+            'user'          => 3,
+            'data'          => '{1:3,2:4}',
+            'parent_id'     => null,
+            'datetime'      => new Expression('NOW()')
+        ), array('1' => '1'));
     }
 
 }
