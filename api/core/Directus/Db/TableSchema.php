@@ -73,9 +73,9 @@ class TableSchema {
     /**
      * @todo  for ALTER requests, caching schemas can't be allowed
      */
-    public static function getSchemaArray($table, $allowCache = true) {
+    public static function getSchemaArray($table, $params = null, $allowCache = true) {
         if(!$allowCache || !array_key_exists($table, self::$_schemas)) {
-            self::$_schemas[$table] = self::loadSchema($table);
+            self::$_schemas[$table] = self::loadSchema($table, $params);
         }
         return self::$_schemas[$table];
     }
@@ -98,15 +98,25 @@ class TableSchema {
     }
 
     public static function getTableColumns($table, $limit = null) {
+
+        // Omit columns which are on this table's read field blacklist for the group of
+        // the currently authenticated user.
+        $acl = Bootstrap::get('aclProvider');
+        $readFieldBlacklist = $acl->getTablePrivilegeList($table, $acl::FIELD_READ_BLACKLIST);
+        $readFieldBlacklist = implode(', ', $readFieldBlacklist);
+
         $sql = 'SELECT S.column_name, D.system, D.master
             FROM INFORMATION_SCHEMA.COLUMNS S
             LEFT JOIN directus_columns D
             ON (D.column_name = S.column_name AND D.table_name = S.table_name)
-            WHERE S.table_name = :table_name';
+            WHERE
+                S.table_name = :table_name AND
+                S.column_name NOT IN (:field_read_blacklist)';
 
         $db = Bootstrap::get('olddb');
         $sth = $db->dbh->prepare($sql);
         $sth->bindValue(':table_name', $table, \PDO::PARAM_STR);
+        $sth->bindValue(':field_read_blacklist', $readFieldBlacklist, \PDO::PARAM_STR);
         $sth->execute();
 
         $columns = array();
@@ -128,6 +138,13 @@ class TableSchema {
      * @param $params
      */
     protected static function loadSchema($tbl_name, $params = null) {
+
+        // Omit columns which are on this table's read field blacklist for the group of
+        // the currently authenticated user.
+        $acl = Bootstrap::get('aclProvider');
+        $readFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_READ_BLACKLIST);
+        $readFieldBlacklist = implode(', ', $readFieldBlacklist);
+
         $db = Bootstrap::get('olddb');
         $return = array();
         $column_name = isset($params['column_name']) ? $params['column_name'] : -1;
@@ -157,7 +174,14 @@ class TableSchema {
         LEFT JOIN
             directus_columns AS D ON (C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name)
         WHERE
-            C.TABLE_SCHEMA = :schema AND C.table_name = :table_name AND (:column_name = -1 OR C.column_name = :column_name))
+            C.TABLE_SCHEMA = :schema
+        AND
+            C.table_name = :table_name
+        AND
+            (:column_name = -1 OR C.column_name = :column_name)
+        AND
+            (C.column_name NOT IN (:field_read_blacklist))
+        )
         UNION (SELECT
             DC.`column_name` AS id,
             DC.column_name AS column_name,
@@ -189,6 +213,7 @@ class TableSchema {
         $sth->bindValue(':table_name', $tbl_name, \PDO::PARAM_STR);
         $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
         $sth->bindValue(':column_name', $column_name, \PDO::PARAM_INT);
+        $sth->bindValue(':field_read_blacklist', $readFieldBlacklist, \PDO::PARAM_STR);
         $sth->execute();
 
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {

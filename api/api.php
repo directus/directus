@@ -391,7 +391,8 @@ $app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $r
         /* @TODO improves readability: use two separate methods for fetching one vs all entries */
         $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
     }
-    $response = $db->get_table($table, $params);
+    // $response = $db->get_table($table, $params);
+    $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
 })->via('GET', 'POST');
 
@@ -409,7 +410,8 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $TableGateway = new TableGateway($aclProvider, 'directus_columns', $ZendDb);
         $TableGateway->updateCollection($requestPayload);
     }
-    $response = $db->get_table($table, $params);
+    // $response = $db->get_table($table, $params);
+    $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
 })->via('GET', 'PUT');
 
