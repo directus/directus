@@ -267,7 +267,9 @@ $app->get("/$v/debug/acl_poc/?", function() use ($app, $aclProvider, $ZendDb) {
     // $DirectusActivityTableGateway->testLittleDeleteEnforcement();
     // $DirectusActivityTableGateway->testLittleEditEnforcement();
     // $DirectusActivityTableGateway->testSelectAllFieldReadBlacklistEnforcement();
-    $DirectusActivityTableGateway->testSelectSomeFieldReadBlacklistEnforcement();
+    // $DirectusActivityTableGateway->testSelectSomeFieldReadBlacklistEnforcement();
+    // $DirectusActivityTableGateway->testJoinAllFieldReadBlacklistEnforcement();
+    $DirectusActivityTableGateway->testJoinSomeFieldReadBlacklistEnforcement();
 })->name('debug_acl_poc');
 
 /**
