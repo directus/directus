@@ -18,9 +18,9 @@
 	The Xdebug extension is not loaded. No code coverage will be generated.
 
 
-	.
+	................
 
-	Time: 0 seconds, Memory: 6.25Mb
+	Time: 0 seconds, Memory: 14.50Mb
 
-	OK (1 test, 1 assertion)
+	OK (16 tests, 16 assertions)
 	```
