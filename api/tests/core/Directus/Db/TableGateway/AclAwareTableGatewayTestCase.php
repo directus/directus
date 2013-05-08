@@ -28,7 +28,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $this->UsersGateway = new DirectusUsersTableGateway($this->aclProvider, $this->ZendDb);
         // Pending data fixtures
         $_SESSION[AuthProvider::SESSION_KEY] = array('id' => 7);
-		$this->currentUser = $this->UsersGateway->find(7);
+		$this->currentUser = array('id' => 7, 'group' => 0);
 		$this->baseUserGroupPrivileges = $this->PrivilegesGateway->fetchGroupPrivileges($this->currentUser['group']);
 	}
 
@@ -269,13 +269,14 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testSelectAllFieldReadBlacklistEnforcementWithTableNameAlias() {
         // Include a number of fields on the read field blacklist
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $blacklistedColumns = array('password','salt');
-        $groupPrivileges['directus_users']['read_field_blacklist'] = $blacklistedColumns;
+        $blacklistedColumns = array('non','empty');
+        $groupPrivileges['some_table']['read_field_blacklist'] = $blacklistedColumns;
         $this->aclProvider->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $select = new Select(array('u' => 'directus_users'));
-        $this->UsersGateway->selectWith($select);
+        $SomeTableGateway = new AclAwareTableGateway($this->aclProvider, 'some_table', $this->ZendDb);
+        $select = new Select(array('some_alias' => 'some_table'));
+        $SomeTableGateway->selectWith($select);
     }
 
     /**
