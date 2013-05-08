@@ -182,7 +182,19 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     protected function executeSelect(Select $select)
     {
         $selectState = $select->getRawState();
+
+        /**
+         * ACL Enforcement
+         */
+
+        // Enforce field read blacklist on Select's main table
         $this->aclProvider->enforceBlacklist($this->table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+
+        // Enforce field read blacklist on Select's join tables
+        foreach($selectState['joins'] as $join) {
+            $this->aclProvider->enforceBlacklist($join['name'], $join['columns'], Acl::FIELD_READ_BLACKLIST);
+        }
+
         return parent::executeSelect($select);
     }
 
@@ -642,6 +654,58 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $columns = array_merge($columns, $blacklistedColumns);
         $select->columns($columns);
         $SensitiveTableGateway->selectWith($select);
+    }
+
+    /** Test for executeSelect ACL protection */
+    public function testJoinAllFieldReadBlacklistEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        $table_a = "main_table";
+        $table_b = "join_table";
+
+        // Include a number of fields on the read field blacklist
+        $blacklistedColumns = array('ssn','dreams');
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges[$table_b] = array();
+        $groupPrivileges[$table_b]['read_field_blacklist'] = $blacklistedColumns;
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $ATableGateway = new self($this->aclProvider, $table_a, $this->adapter);
+        $select = new Select($table_a);
+        $select->join($table_b, "$table_a.id = $table_b.foreign_id");
+        $ATableGateway->selectWith($select);
+    }
+
+    /** Test for executeSelect ACL protection */
+    public function testJoinSomeFieldReadBlacklistEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        $table_a = "main_table";
+        $table_b = "join_table";
+
+        // Include a number of fields on the read field blacklist
+        $blacklistedColumns = array('ssn','dreams');
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $groupPrivileges[$table_b] = array();
+        $groupPrivileges[$table_b]['read_field_blacklist'] = $blacklistedColumns;
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $MainTableGateway = new self($this->aclProvider, $table_a, $this->adapter);
+        $columns = array('id','active','public_info_1','public_info_2');
+        $columns = array_merge($columns, $blacklistedColumns);
+        $select = new Select($table_a);
+        $select->join($table_b, "$table_a.id = $table_b.foreign_id", $columns);
+        $MainTableGateway->selectWith($select);
     }
 
 }
