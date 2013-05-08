@@ -267,7 +267,11 @@ $app->get("/$v/debug/acl_poc/?", function() use ($app, $aclProvider, $ZendDb) {
     // $DirectusActivityTableGateway->testLittleDeleteEnforcement();
     // $DirectusActivityTableGateway->testLittleEditEnforcement();
     // $DirectusActivityTableGateway->testSelectAllFieldReadBlacklistEnforcement();
-    $DirectusActivityTableGateway->testSelectSomeFieldReadBlacklistEnforcement();
+    // $DirectusActivityTableGateway->testSelectAllFieldReadBlacklistEnforcementWithTableNameAlias();
+    // $DirectusActivityTableGateway->testSelectSomeFieldReadBlacklistEnforcement();
+    // $DirectusActivityTableGateway->testJoinAllFieldReadBlacklistEnforcement();
+    $DirectusActivityTableGateway->testJoinAllFieldReadBlacklistEnforcementWithTableNameAlias();
+    // $DirectusActivityTableGateway->testJoinSomeFieldReadBlacklistEnforcement();
 })->name('debug_acl_poc');
 
 /**
