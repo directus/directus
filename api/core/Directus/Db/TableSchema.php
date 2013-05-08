@@ -97,6 +97,21 @@ class TableSchema {
         return false;
     }
 
+    public static function columnIsCollectionAssociation($column) {
+        return in_array($column['type'], self::$association_types);
+    }
+
+    public static function getAllNonAliasTableColumns($table) {
+        $columnNames = array();
+        $schemaArray = self::loadSchema($table);
+        foreach($schemaArray as $column) {
+            if(self::columnIsCollectionAssociation($column))
+                continue;
+            $columnNames[] = $column['id'];
+        }
+        return $columnNames;
+    }
+
     public static function getTableColumns($table, $limit = null) {
 
         // Omit columns which are on this table's read field blacklist for the group of
