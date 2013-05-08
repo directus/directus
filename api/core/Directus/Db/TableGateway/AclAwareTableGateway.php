@@ -175,6 +175,18 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
 
     /**
+     * @param Select $select
+     * @return ResultSet
+     * @throws \RuntimeException
+     */
+    protected function executeSelect(Select $select)
+    {
+        $selectState = $select->getRawState();
+        $this->aclProvider->enforceBlacklist($this->table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        return parent::executeSelect($select);
+    }
+
+    /**
      * @param Insert $insert
      * @return mixed
      * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
@@ -275,6 +287,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $currentUserId = intval($currentUser['id']);
         $cmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable($this->table);
         $deleteState = $delete->getRawState();
+
+        /**
+         * ACL Enforcement
+         */
 
         if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigdelete')) {
             /**
@@ -581,6 +597,51 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $where = new Where;
         $where->equalTo($usersCmsOwnerColumn, $currentUser[$usersCmsOwnerColumn]);
         $Users->update($set, $where);
+    }
+
+    /** Test for executeSelect ACL protection */
+    public function testSelectAllFieldReadBlacklistEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        // Include a number of fields on the read field blacklist
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $blacklistedColumns = array('password','salt');
+        $groupPrivileges['directus_users']['read_field_blacklist'] = $blacklistedColumns;
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $select = new Select('directus_users');
+        $Users->selectWith($select);
+    }
+
+    /** Test for executeSelect ACL protection */
+    public function testSelectSomeFieldReadBlacklistEnforcement() {
+        $Privileges = new DirectusPrivilegesTableGateway($this->aclProvider, $this->adapter);
+        $Users = new DirectusUsersTableGateway($this->aclProvider, $this->adapter);
+
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = $Users->find($currentUser['id']);
+
+        $table_name = 'a_table_with_some_sensitive_info';
+
+        // Include a number of fields on the read field blacklist
+        $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+        $blacklistedColumns = array('ssn','dreams');
+        $groupPrivileges[$table_name] = array();
+        $groupPrivileges[$table_name]['read_field_blacklist'] = $blacklistedColumns;
+        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+
+        // This should throw an AclException
+        $SensitiveTableGateway = new self($this->aclProvider, $table_name, $this->adapter);
+        $select = new Select($table_name);
+        $columns = array('id','active','public_info_1','public_info_2');
+        $columns = array_merge($columns, $blacklistedColumns);
+        $select->columns($columns);
+        $SensitiveTableGateway->selectWith($select);
     }
 
 }
