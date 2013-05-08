@@ -359,6 +359,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
 
+
+        // Only select the fields not on the currently authenticated user group's read field blacklist
+        $columns = TableSchema::getAllNonAliasTableColumns($this->table);
+        // die(var_dump(TableSchema::getSchemaArray($this->table)));
+        // die(var_dump($columns));
+        $select->columns($columns);
+
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
 
         // $logger->info($this->dumpSql($select));
@@ -505,6 +512,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $select = new Select($table);
         $select->where->equalTo($column_name, $column_equals);
 
+        // Only select the fields not on the currently authenticated user group's read field blacklist
+        $columns = TableSchema::getAllNonAliasTableColumns($this->table);
+        $select->columns($columns);
+
         // $log = $this->logger();
         // $log->info(__CLASS__ . "#" . __FUNCTION__);
         // $log->info("query: " . $this->dumpSql($select));
@@ -560,6 +571,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 // Fetch the foreign data
                 $select = new Select($foreign_table_name);
                 $select->where->in('id', $ids);
+
+                $columns = TableSchema::getAllNonAliasTableColumns($foreign_table_name);
+                $select->columns($columns);
+
                 $TableGateway = new RelationalTableGateway($this->aclProvider, $foreign_table_name, $this->adapter);
                 $rowset = $TableGateway->selectWith($select);
                 $results = $rowset->toArray();
@@ -612,6 +627,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->join($junction_table, "$foreign_join_column = $junction_join_column", array($junction_id_column_alias => 'id'))
             ->where(array($junction_comparison_column => $column_equals))
             ->order("$junction_id_column ASC");
+
+        // Only select the fields not on the currently authenticated user group's read field blacklist
+        $columns = TableSchema::getAllNonAliasTableColumns($foreign_table);
+        $select->columns($columns);
 
         // $log = $this->logger();
         // $log->info(__CLASS__ . "#" . __FUNCTION__);
