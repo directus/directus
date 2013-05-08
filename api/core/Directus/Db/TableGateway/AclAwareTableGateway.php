@@ -349,11 +349,4 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return parent::executeDelete($delete);
     }
 
-    /**
-     * PENDING UNIT TESTS
-     * Proofs of concept for development & debugging
-     */
-
-
-
 }
