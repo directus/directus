@@ -330,19 +330,27 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 $junctionKeyLeft   => $parentRow['id'],
                                 $foreignJoinColumn => $foreignRecord['id']
                             );
-                            // Optional ID param, to update the junction table record
-                            if (isset($junctionRow['id'])) {
-                                $log->info("Specified Junction row ID -- updating existing junction row.");
-                                $junctionTableRecord['id'] = $junctionRow['id'];
-                            } else {
-                                // Flag the top-level record as having been altered.
-                                // (associating w/ new M2M collection entry)
-                                $parentCollectionRelationshipsChanged = true;
-                                $log->info("Establishing new junction row.");
-                            }
-                            $log->info("Junction row data for table $junctionTableName:");
-                            $log->info(print_r($junctionTableRecord, true));
-                            if($JunctionTable->recordDataContainsNonPrimaryKeyData($junctionTableRecord)) {
+
+                            // Update fields on the Junction Record
+                            $junctionTableRecord = array_merge($junctionTableRecord, $junctionRow);
+
+                            // // Optional ID param, to update the junction table record
+                            // if (isset($junctionRow['id'])) {
+                            //     // $log->info("Specified Junction row ID -- updating existing junction row.");
+                            //     $junctionTableRecord['id'] = $junctionRow['id'];
+                            // } else {
+                            //     // $log->info("Establishing new junction row.");
+                            // }
+
+                            // $log->info("Junction row data for table $junctionTableName:");
+                            // $log->info(print_r($junctionTableRecord, true));
+
+                            $relationshipChanged = $this->recordDataContainsNonPrimaryKeyData($foreignRecord->toArray()) ||
+                                $this->recordDataContainsNonPrimaryKeyData($junctionTableRecord);
+
+                            // Update Foreign Record
+                            if($relationshipChanged) {
+                                unset($junctionTableRecord['data']);
                                 $JunctionTable->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
                             }
                         }
@@ -459,11 +467,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
 
-
         // Only select the fields not on the currently authenticated user group's read field blacklist
         $columns = TableSchema::getAllNonAliasTableColumns($this->table);
-        // die(var_dump(TableSchema::getSchemaArray($this->table)));
-        // die(var_dump($columns));
         $select->columns($columns);
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
@@ -716,12 +721,26 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $junction_id_column = "$junction_table.id";
 
         // Less likely name collision:
-        $junction_id_column_alias = "directus_junction_id_column";
+        $junction_id_column_alias = "directus_junction_id_column_518d31856e131";
+        $junction_sort_column_alias = "directus_junction_sort_column_518d318e3f0f5";
+
+        $junctionSelectColumns = array($junction_id_column_alias => 'id');
 
         $sql = new Sql($this->adapter);
-        $select = $sql->select()
+        $select = $sql->select();
+
+        // If the Junction Table has a Sort column, do eet.
+        // @todo is this the most efficient way?
+        // @hint TableSchema#getUniqueColumnName
+        $junctionColumns = TableSchema::getAllNonAliasTableColumns($junction_table);
+        if(in_array('sort', $junctionColumns)) {
+            $junctionSelectColumns[$junction_sort_column_alias] = "sort";
+            $select->order($junction_sort_column_alias);
+        }
+
+        $select
             ->from($foreign_table)
-            ->join($junction_table, "$foreign_join_column = $junction_join_column", array($junction_id_column_alias => 'id'))
+            ->join($junction_table, "$foreign_join_column = $junction_join_column", $junctionSelectColumns)
             ->where(array($junction_comparison_column => $column_equals))
             ->order("$junction_id_column ASC");
 
@@ -742,12 +761,22 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $foreign_data = array();
         foreach($results as $row) {
+
             array_walk($row, array($this, 'castFloatIfNumeric'));
 
             $junction_table_id = (int) $row[$junction_id_column_alias];
             unset($row[$junction_id_column_alias]);
 
-            $foreign_data[] = array('id' => $junction_table_id, 'data' => $row);
+            $entry = array('id' => $junction_table_id);
+            if(in_array('sort', $junctionColumns)) {
+                $entry['sort'] = $row[$junction_sort_column_alias];
+                unset($row[$junction_sort_column_alias]);
+            }
+            $entry['data'] = $row;
+
+            $foreign_data[] = $entry;
+
+
         }
         return array('rows' => $foreign_data);
     }
