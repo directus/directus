@@ -5,6 +5,7 @@ namespace Directus\View;
 use Directus\Bootstrap;
 use Directus\Acl\Exception\AclException;
 use Directus\Db\Exception\RelationshipMetadataException;
+use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 
 class ExceptionView {
 
@@ -29,6 +30,14 @@ class ExceptionView {
          */
         elseif($exception instanceof RelationshipMetadataException) {
             $httpCode = 424;
+            $data = array('message' => $exception->getMessage());
+        }
+
+        /**
+         * Directus\Db\Exception\SuppliedArrayAsColumnValue
+         */
+        elseif($exception instanceof SuppliedArrayAsColumnValue) {
+            $httpCode = 422;
             $data = array('message' => $exception->getMessage());
         }
 
