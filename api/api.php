@@ -70,9 +70,12 @@ $requestNonceProvider = new RequestNonceProvider();
 
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
-$app->error(function (\Exception $exception) use ($app, $exceptionView) {
+$exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
     $exceptionView->exceptionHandler($app, $exception);
-});
+};
+$app->error($exceptionHandler);
+// // Catch runtime erros etc. as well
+// set_exception_handler($exceptionHandler);
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.
