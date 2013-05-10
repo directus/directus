@@ -88,6 +88,8 @@ function(app, Backbone, Collection, EntriesCollection) {
       this.table = options.table;
       this.preferences = options.preferences;
       this.filters = options.filters;
+      this.junctionStructure = options.junctionStructure;
+
       if (this.table.id === 'directus_media') {
         this.droppable = true;
         options.url = app.API_URL + 'media';
