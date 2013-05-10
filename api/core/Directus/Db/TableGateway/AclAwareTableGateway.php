@@ -9,6 +9,7 @@ use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Bootstrap;
+use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Zend\Db\Adapter\AdapterInterface;
@@ -117,6 +118,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
+        foreach($recordData as $columnName => $columnValue) {
+            if(is_array($columnValue)) {
+                $table = is_null($tableName) ? $this->table : $tableName;
+                throw new SuppliedArrayAsColumnValue("Attempting to write an array as the value for column `$table`.`$columnName`.");
+            }
+        }
         // $log = $this->logger();
         // $log->info(__CLASS__."#".__FUNCTION__);
 
