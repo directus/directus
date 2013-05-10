@@ -147,6 +147,10 @@ class TableSchema {
         return $columns;
     }
 
+    public static function getUniqueColumnName($tbl_name) {
+        // @todo for safe joins w/o name collision
+    }
+
     /**
      * Get table structure
      * @param $tbl_name
@@ -220,7 +224,7 @@ class TableSchema {
             `directus_columns` DC
         WHERE
             DC.`table_name` = :table_name AND (data_type="alias" OR data_type="MANYTOMANY" OR data_type = "ONETOMANY")
-        AND
+        AND 
             (:column_name = -1 OR DC.column_name = :column_name)
         AND
             data_type IS NOT NULL) ORDER BY sort';
