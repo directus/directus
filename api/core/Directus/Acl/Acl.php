@@ -93,8 +93,6 @@ class Acl {
     public function enforceBlacklist($table, $offsets, $blacklist) {
         $offsets = is_array($offsets) ? $offsets : array($offsets);
         $fieldBlacklist = $this->getTablePrivilegeList($table, $blacklist);
-        // Filter for the occasional empty values so that we can test for non-empty blacklists using count()
-        $fieldBlacklist = array_filter($fieldBlacklist);
         /**
          * Enforce catch-all offset attempts.
          */
@@ -154,8 +152,8 @@ class Acl {
             // Filter out mandatory read items
             $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
         }
-
-        return $privilegeList;
+        // Remove null values
+        return array_filter($privilegeList);
     }
 
     public function censorFields($table, $data) {
