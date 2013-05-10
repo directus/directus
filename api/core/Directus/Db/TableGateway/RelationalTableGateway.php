@@ -60,6 +60,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $parentLogEntryId = is_null($parentLogEntry) ? false : $parentLogEntry['id'];
         $parentRecordWithForeignKeys = $TableGateway->addOrUpdateRelationships($schemaArray, $recordData, $parentLogEntryId);
 
+        // if("studios" === $tableName) {
+        //     die(var_dump($parentRecordWithForeignKeys));
+        // }
+
         // If more than the record ID is present...
         if($this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys)) {
             // Update the parent row, w/ any new association fields replaced by their IDs
@@ -250,6 +254,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                             // Update Foreign Record
                             if($relationshipChanged) {
+                                unset($junctionTableRecord['data']);
                                 $JunctionTable->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
                             }
                         }
@@ -367,11 +372,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
 
-
         // Only select the fields not on the currently authenticated user group's read field blacklist
         $columns = TableSchema::getAllNonAliasTableColumns($this->table);
-        // die(var_dump(TableSchema::getSchemaArray($this->table)));
-        // die(var_dump($columns));
         $select->columns($columns);
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
@@ -664,14 +666,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $foreign_data = array();
         foreach($results as $row) {
+
             array_walk($row, array($this, 'castFloatIfNumeric'));
 
             $junction_table_id = (int) $row[$junction_id_column_alias];
             unset($row[$junction_id_column_alias]);
 
             $entry = array('id' => $junction_table_id);
-            if(in_array('sort', $junctionColumns))
+            if(in_array('sort', $junctionColumns)) {
                 $entry['sort'] = $row[$junction_sort_column_alias];
+                unset($row[$junction_sort_column_alias]);
+            }
             $entry['data'] = $row;
 
             $foreign_data[] = $entry;
