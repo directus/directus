@@ -32,18 +32,19 @@ class ExceptionView {
             $data = array('message' => $exception->getMessage());
         }
 
-        /**
-         * @todo treat production differently
-         */
+        // @todo log error nonetheless
         else {
-            $data = array(
-                'code' => $exception->getCode(),
-                'message' => $exception->getMessage(),
-                'file' => $exception->getFile(),
-                'line' => $exception->getLine(),
-                'trace' => $exception->getTrace(),
-                'traceAsString' => $exception->getTraceAsString(),
-            );
+            $data = array('message' => 'Internal server error');
+            if('production' !== DIRECTUS_ENV) {
+                $data = array(
+                    'code' => $exception->getCode(),
+                    'message' => $exception->getMessage(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'trace' => $exception->getTrace(),
+                    'traceAsString' => $exception->getTraceAsString(),
+                );
+            }
         }
 
         $data = json_encode($data);
