@@ -211,7 +211,6 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
       var url = app.RESOURCES_URL + 'thumbnail/' + options.value.get('name');
       var orientation = (parseInt(options.value.get('width'),10) > parseInt(options.value.get('height'),10)) ? 'landscape' : 'portrait';
 
-      console.log(orientation);
       return '<img src="'+url+'" class="'+orientation+' directus-thumbnail"/>';
     } else {
       return 'No file';
