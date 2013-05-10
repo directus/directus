@@ -513,16 +513,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $select->where->equalTo($column_name, $column_equals);
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
-        $columns = TableSchema::getAllNonAliasTableColumns($this->table);
+        $columns = TableSchema::getAllNonAliasTableColumns($table);
         $select->columns($columns);
-
-        // $log = $this->logger();
-        // $log->info(__CLASS__ . "#" . __FUNCTION__);
-        // $log->info("query: " . $this->dumpSql($select));
 
         $TableGateway = new RelationalTableGateway($this->aclProvider, $table, $this->adapter);
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
+
         // Process results
         foreach ($results as &$row)
             array_walk($row, array($this, 'castFloatIfNumeric'));
