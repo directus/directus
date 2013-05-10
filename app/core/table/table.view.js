@@ -64,7 +64,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sortable', 'deleteColumn', 'rowIdentifiers');
+        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop');
         this.insertView('table', new TableBody(options));
       }
 
@@ -169,14 +169,14 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       if (this.options.tableHead !== false) {
         this.tableHead = true;
       }
-      if (this.options.sortable === undefined) {
-        this.options.sortable = (collection.structure.get('sort')) || false;
+      if (this.options.sort === undefined) {
+        this.options.sort = (collection.structure.get('sort')) || false;
       }
       if (this.options.selectable === undefined) {
         this.options.selectable = (collection.structure.get('active')) || false;
       }
 
-      this.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
+      this.saveAfterDrop = this.options.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
 
       if (this.options.droppable || collection.droppable) {
         this.initializeDrop();
