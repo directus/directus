@@ -9,6 +9,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Where;
 
 class DirectusActivityTableGateway extends RelationalTableGateway {
 
@@ -70,7 +71,11 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 
-        $countTotalWhere = new Predicate\IsNotNull('parent_id');
+        $countTotalWhere = new Where;
+        $countTotalWhere
+            ->isNull('parent_id')
+            ->OR
+            ->equalTo('type', 'MEDIA');
         $activityTotal = $this->countTotal($countTotalWhere);
 
         return array(
