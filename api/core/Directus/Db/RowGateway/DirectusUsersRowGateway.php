@@ -55,11 +55,6 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
             }
         }
 
-        // Store last_page information as a json object
-        if(isset($rowData['last_page']) && is_array($rowData['last_page'])) {
-            $rowData['last_page'] = json_encode($rowData['last_page']);
-        }
-
         // $log->info("updating user row w/ data: " . print_r($rowData, true));
 
         return $rowData;
