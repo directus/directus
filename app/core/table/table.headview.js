@@ -33,6 +33,7 @@ function(app, Backbone) {
           this.collection.setOrder(column, 'ASC');
         }
       },
+
       'click #set-visible-columns': function() {
         var structure = this.options.collection.structure;
         var preferences = this.collection.preferences;
@@ -70,7 +71,7 @@ function(app, Backbone) {
         return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
 
-      return {selectable: this.options.selectable, sortable: this.options.sortable, columns: columns, deleteColumn: this.options.deleteColumn, hideColumnPreferences: this.options.hideColumnPreferences};
+      return {selectable: this.options.selectable, sortable: this.options.sort, columns: columns, deleteColumn: this.options.deleteColumn, hideColumnPreferences: this.options.hideColumnPreferences};
     },
 
     initialize: function() {
