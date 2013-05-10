@@ -82,8 +82,12 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
 
     initialize: function(options) {
       Module.Input.__super__.initialize.call(this, options);
+      this.junctionStructure = this.related.entries.junctionStructure;
+      this.hasSort = this.junctionStructure.get('sort') !== undefined;
       this.related.tableOptions.deleteColumn = true;
       this.related.tableOptions.saveAfterDrop = false;
+      this.related.tableOptions.sort = this.hasSort;
+
       this.modalTable = Directus.Table.extend({
         events: {
           'click tbody td': function(e) {
