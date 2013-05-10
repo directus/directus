@@ -142,7 +142,8 @@ class MySQL {
             $info['inactive_by_default'] = (boolean)$info['inactive_by_default'];
         }
         $info = array_merge($info, $this->count_active($tbl_name));
-        $info['columns'] = $this->get_table($tbl_name);
+        // $info['columns'] = $this->get_table($tbl_name);
+        $info['columns'] = TableSchema::getSchemaArray($tbl_name);
         return $info;
     }
 
