@@ -96,7 +96,8 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     },
 
     afterRender: function() {
-      this.setView('.related-table', this.view).render();
+      var view = new this.table(this.related.tableOptions);
+      this.setView('.related-table', view).render();
     },
 
 
@@ -133,7 +134,6 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       }
 
       this.table = Directus.Table.extend({});
-      this.view = new this.table(this.related.tableOptions);
 
       this.related.entries.on('change add remove', function() {
         this.view.render();
