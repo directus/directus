@@ -67,11 +67,15 @@ $requestNonceProvider = new RequestNonceProvider();
 /**
  * Catch user-related exceptions & produce client responses.
  */
+
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
-$app->error(function (\Exception $exception) use ($app, $exceptionView) {
+$exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
     $exceptionView->exceptionHandler($app, $exception);
-});
+};
+$app->error($exceptionHandler);
+// // Catch runtime erros etc. as well
+// set_exception_handler($exceptionHandler);
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.
@@ -81,7 +85,8 @@ $authAndNonceRouteWhitelist = array(
     "auth_session",
     "auth_clear_session",
     "auth_nonces",
-    "auth_permissions"
+    "auth_permissions",
+    "debug_acl_poc",
 );
 
 $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $requestNonceProvider, $authAndNonceRouteWhitelist) {
@@ -108,7 +113,6 @@ $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $request
     $nonce_options = $requestNonceProvider->getOptions();
     $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
 });
-
 
 /**
  * Bootstrap Providers
@@ -365,7 +369,8 @@ $app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $r
         /* @TODO improves readability: use two separate methods for fetching one vs all entries */
         $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
     }
-    $response = $db->get_table($table, $params);
+    // $response = $db->get_table($table, $params);
+    $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
 })->via('GET', 'POST');
 
@@ -383,7 +388,8 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $TableGateway = new TableGateway($aclProvider, 'directus_columns', $ZendDb);
         $TableGateway->updateCollection($requestPayload);
     }
-    $response = $db->get_table($table, $params);
+    // $response = $db->get_table($table, $params);
+    $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
 })->via('GET', 'PUT');
 
