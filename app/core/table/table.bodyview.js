@@ -78,7 +78,7 @@ function(app, Backbone) {
       return {
         columns: this.collection.getColumns(),
         rows: rows,
-        sortable: this.options.sortable,
+        sortable: this.options.sort,
         selectable: this.options.selectable,
         deleteColumn: this.options.deleteColumn
       };
@@ -89,17 +89,22 @@ function(app, Backbone) {
       this.$('tr').each(function(i) {
         collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
       });
-      collection.save({columns:['id','sort']});
+      console.log(this.options.saveAfterDrop);
+
+      if (this.options.saveAfterDrop) {
+        collection.save({columns:['id','sort']});
+      }
+
       this.collection.setOrder('sort','ASC',{silent: true});
     },
 
     initialize: function(options) {
-
       this.options.filters = this.options.filters || {};
+      this.sort = this.options.structure.get('sort') || options.sort;
 
       this.collection.on('sort', this.render, this);
       //Setup jquery UI sortable
-      if (this.options.structure && this.options.structure.get('sort')) {
+      if (this.sort) {
         this.$el.sortable({
           stop: _.bind(this.drop, this),
           axis: "y",
