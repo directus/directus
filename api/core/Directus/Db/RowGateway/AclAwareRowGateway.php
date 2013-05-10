@@ -68,10 +68,10 @@ class AclAwareRowGateway extends RowGateway {
         return new self($aclProvider, $pkFieldName, $table, $adapter);
     }
 
-    protected function stringifyPrimaryKeyForRecordDebugRepresentation() {
-        if(null === $this->primaryKeyData)
+    public static function stringifyPrimaryKeyForRecordDebugRepresentation(array $primaryKeyData) {
+        if(null === $primaryKeyData)
             return "null primary key";
-        return "primary key (" . implode(":", array_keys($this->primaryKeyData)) . ") \"" . implode(":", $this->primaryKeyData) . "\"";
+        return "primary key (" . implode(":", array_keys($primaryKeyData)) . ") \"" . implode(":", $primaryKeyData) . "\"";
     }
 
     // // as opposed to toArray()
@@ -148,7 +148,7 @@ class AclAwareRowGateway extends RowGateway {
          */
         if($cmsOwnerId === (int) $currentUser['id']) {
             if(!$this->aclProvider->hasTablePrivilege($this->table, 'delete')) {
-                $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
+                $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                 throw new UnauthorizedTableDeleteException("Table delete access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
             }
         }
@@ -157,7 +157,7 @@ class AclAwareRowGateway extends RowGateway {
          */
         else {
             if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigdelete')) {
-                $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
+                $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                 $recordOwner = (false === $cmsOwnerId) ? "no magic owner column" : "the CMS owner #$cmsOwnerId";
                 throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
             }
@@ -188,7 +188,7 @@ class AclAwareRowGateway extends RowGateway {
              */
             if($cmsOwnerId === intval($currentUser['id'])) {
                 if(!$this->aclProvider->hasTablePrivilege($this->table, 'edit')) {
-                    $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
+                    $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                     throw new UnauthorizedTableEditException("Table edit access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
                 }
             }
@@ -197,7 +197,7 @@ class AclAwareRowGateway extends RowGateway {
              */
             else {
                 if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
-                    $recordPk = $this->stringifyPrimaryKeyForRecordDebugRepresentation();
+                    $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                     $recordOwner = (false === $cmsOwnerId) ? "no magic owner column" : "the CMS owner #$cmsOwnerId";
                     throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
                 }
@@ -225,9 +225,11 @@ class AclAwareRowGateway extends RowGateway {
         // $log->info(__CLASS__."#".__FUNCTION__);
         // $log->info("args: " . print_r(func_get_args(), true));
         $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
-        // Enforce field write blacklist
-        $attemptOffsets = array_keys($rowData);
-        $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
+            // Enforce field write blacklist
+            $attemptOffsets = array_keys($rowData);
+            $this->aclProvider->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+        }
         return parent::populate($rowData, $rowExistsInDatabase);
     }
 
@@ -291,8 +293,10 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetSet($offset, $value)
     {
-        // Enforce field write blacklist
-        $this->aclProvider->enforceBlacklist($this->table, $offset, Acl::FIELD_WRITE_BLACKLIST);
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
+            // Enforce field write blacklist
+            $this->aclProvider->enforceBlacklist($this->table, $offset, Acl::FIELD_WRITE_BLACKLIST);
+        }
         return parent::offsetSet($offset, $value);
     }
 
@@ -304,8 +308,10 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetUnset($offset)
     {
-        // Enforce field write blacklist
-        $this->aclProvider->enforceBlacklist($this->table, $offset, Acl::FIELD_WRITE_BLACKLIST);
+        if(!$this->aclProvider->hasTablePrivilege($this->table, 'bigedit')) {
+            // Enforce field write blacklist
+            $this->aclProvider->enforceBlacklist($this->table, $offset, Acl::FIELD_WRITE_BLACKLIST);
+        }
         return parent::offsetUnset($offset);
     }
 

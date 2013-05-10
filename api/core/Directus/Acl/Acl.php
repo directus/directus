@@ -2,8 +2,13 @@
 
 namespace Directus\Acl;
 
+use Directus\Acl\Exception\UnauthorizedFieldWriteException;
+use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Bootstrap;
+use Directus\Db\TableGateway\AclAwareTableGateway;
 use Zend\Db\RowGateway\RowGateway;
+use Zend\Db\Sql\Predicate\PredicateSet;
+use Zend\Db\Sql\Select;
 
 class Acl {
 
@@ -78,6 +83,7 @@ class Acl {
 
     /**
      * Confirm current user group has $blacklist privileges on fields in $offsets
+     * NOTE: Acl#getTablePrivilegeList enforces that $blacklist is a correct value
      * @param  array|string $offsets  One or more string table field names
      * @param  integer $blacklist  One of \Directus\Acl\Acl's blacklist constants
      * @throws  UnauthorizedFieldWriteException If the specified $offsets intersect with $table's field write blacklist
@@ -86,16 +92,25 @@ class Acl {
      */
     public function enforceBlacklist($table, $offsets, $blacklist) {
         $offsets = is_array($offsets) ? $offsets : array($offsets);
-        // Acl#getTablePrivilegeList enforces that $blacklist is a correct value
         $fieldBlacklist = $this->getTablePrivilegeList($table, $blacklist);
+        /**
+         * Enforce catch-all offset attempts.
+         */
+        if(self::FIELD_READ_BLACKLIST === $blacklist && count($fieldBlacklist) && in_array('*', $offsets)) {
+            // Cannot select all, given a non-empty field read blacklist.
+            throw new UnauthorizedFieldReadException("Cannot select all (`*`) from table `$table` with non-empty read field blacklist.");
+        }
+        /**
+         * Enforce granular offset attempts.
+         */
         $forbiddenIndices = array_intersect($offsets, $fieldBlacklist);
         if(count($forbiddenIndices)) {
             $forbiddenIndices = implode(", ", $forbiddenIndices);
             switch($blacklist) {
-                case Acl::FIELD_WRITE_BLACKLIST:
-                    throw new UnauthorizedFieldWriteException("Write (set) access forbidden to table \"{$table}\" indices: $forbiddenIndices");
-                case Acl::FIELD_READ_BLACKLIST:
-                    throw new UnauthorizedFieldReadException("Read (get) access forbidden to table \"{$table}\" indices: $forbiddenIndices");
+                case self::FIELD_WRITE_BLACKLIST:
+                    throw new UnauthorizedFieldWriteException("Write (set) access forbidden to table `$table` indices: $forbiddenIndices");
+                case self::FIELD_READ_BLACKLIST:
+                    throw new UnauthorizedFieldReadException("Read (get) access forbidden to table `$table` indices: $forbiddenIndices");
             }
         }
     }
@@ -137,8 +152,8 @@ class Acl {
             // Filter out mandatory read items
             $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
         }
-
-        return $privilegeList;
+        // Remove null values
+        return array_filter($privilegeList);
     }
 
     public function censorFields($table, $data) {
@@ -179,7 +194,7 @@ class Acl {
     public function getRecordCmsOwnerId($record, $table) {
         $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, "Zend\Db\RowGateway\RowGateway");
         if(!($isRowGateway || is_array($record)))
-            throw new \InvalidArgumentException("Parameter must be either an array or an instance/subclass of Zend\Db\RowGateway\RowGateway");
+            throw new \InvalidArgumentException("Parameter must be either an array or an instance/subclass of Zend\Db\RowGateway\RowGateway (instance of " . get_class($record) . " given)");
         $ownerColumnName = $this->getCmsOwnerColumnByTable($table);
         if(false === $ownerColumnName)
             return false;
@@ -188,6 +203,21 @@ class Acl {
         elseif(is_array($record) && !array_key_exists($ownerColumnName, $record))
             return false;
         return (int) $record[$ownerColumnName];
+    }
+
+    public function getCmsOwnerIdsByTableGatewayAndPredicate(AclAwareTableGateway $TableGateway, PredicateSet $predicate) {
+        $ownerIds = array();
+        $table = $TableGateway->getTable();
+        $cmsOwnerColumn = $this->getCmsOwnerColumnByTable($table);
+        $select = new Select($table);
+        $select
+            ->columns(array($TableGateway->primaryKeyFieldName, $cmsOwnerColumn))
+            ->group($cmsOwnerColumn);
+        $select->where($predicate);
+        $results = $TableGateway->selectWith($select);
+        foreach($results as $row)
+            $ownerIds[] = $row[$cmsOwnerColumn];
+        return array(count($results), $ownerIds);
     }
 
 }
