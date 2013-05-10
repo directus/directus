@@ -231,6 +231,8 @@ class TableSchema {
         $sth->bindValue(':field_read_blacklist', $readFieldBlacklist, \PDO::PARAM_STR);
         $sth->execute();
 
+        $writeFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_WRITE_BLACKLIST);
+
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
 
             foreach ($row as $key => $value) {
@@ -245,6 +247,7 @@ class TableSchema {
             $row["master"] = (bool) $row["master"];
             $row["hidden_list"] = (bool) $row["hidden_list"];
             $row["hidden_input"] = (bool) $row["hidden_input"];
+            $row["is_writable"] = !in_array($row['id'], $writeFieldBlacklist);
 
             if (array_key_exists('sort', $row)) {
                 $row["sort"] = (int)$row['sort'];
