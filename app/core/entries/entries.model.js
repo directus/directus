@@ -118,6 +118,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
               attributes[id] = new EntriesCollection(value, options);
               break;
             case 'MANYTOMANY':
+              options.junctionStructure = app.columns[column.get('junction_table')];
               attributes[id] = new EntriesNestedCollection(value, options);
               break;
           }
