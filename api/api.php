@@ -111,7 +111,6 @@ $app->hook('slim.before.dispatch', function() use ($app, $authProvider, $request
     $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
 });
 
-
 /**
  * Bootstrap Providers
  */
@@ -247,32 +246,6 @@ $app->get("/$v/auth/permissions/?", function() use ($app, $aclProvider) {
     $groupPrivileges = $aclProvider->getGroupPrivileges();
     JsonView::render(array('groupPrivileges' => $groupPrivileges));
 })->name('auth_permissions');
-
-/**
- * Debug helper.
- * For development & proof-of-concept of ACL.
- */
-$app->get("/$v/debug/acl_poc/?", function() use ($app, $aclProvider, $ZendDb) {
-    if('production' === DIRECTUS_ENV)
-        $app->halt('404');
-    $DirectusActivityTableGateway = new DirectusActivityTableGateway($aclProvider, $ZendDb);
-    // $DirectusActivityTableGateway->testInsertWriteBlacklistEnforcement();
-    // $DirectusActivityTableGateway->testUpdateWriteBlacklistEnforcement();
-    // $DirectusActivityTableGateway->testInsertAddEnforcement();
-    // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithMagicOwnerColumn();
-    // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithMagicOwnerColumnAndMultipleOwners();
-    // $DirectusActivityTableGateway->testUpdateBigEditEnforcementWithoutMagicOwnerColumn();
-    // $DirectusActivityTableGateway->testBigDeleteEnforcementWithoutMagicOwnerColumn();
-    // $DirectusActivityTableGateway->testBigDeleteEnforcementWithMagicOwnerColumnAndMultipleOwners();
-    // $DirectusActivityTableGateway->testLittleDeleteEnforcement();
-    // $DirectusActivityTableGateway->testLittleEditEnforcement();
-    // $DirectusActivityTableGateway->testSelectAllFieldReadBlacklistEnforcement();
-    // $DirectusActivityTableGateway->testSelectAllFieldReadBlacklistEnforcementWithTableNameAlias();
-    // $DirectusActivityTableGateway->testSelectSomeFieldReadBlacklistEnforcement();
-    // $DirectusActivityTableGateway->testJoinAllFieldReadBlacklistEnforcement();
-    $DirectusActivityTableGateway->testJoinAllFieldReadBlacklistEnforcementWithTableNameAlias();
-    // $DirectusActivityTableGateway->testJoinSomeFieldReadBlacklistEnforcement();
-})->name('debug_acl_poc');
 
 /**
  * ENTRIES COLLECTION
