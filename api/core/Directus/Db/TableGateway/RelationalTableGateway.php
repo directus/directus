@@ -230,18 +230,26 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 $junctionKeyLeft   => $parentRow['id'],
                                 $foreignJoinColumn => $foreignRecord['id']
                             );
-                            // Optional ID param, to update the junction table record
-                            if (isset($junctionRow['id'])) {
-                                // $log->info("Specified Junction row ID -- updating existing junction row.");
-                                $junctionTableRecord['id'] = $junctionRow['id'];
-                            } else {
-                                // $log->info("Establishing new junction row.");
-                            }
+
+                            // Update fields on the Junction Record
+                            $junctionTableRecord = array_merge($junctionTableRecord, $junctionRow);
+
+                            // // Optional ID param, to update the junction table record
+                            // if (isset($junctionRow['id'])) {
+                            //     // $log->info("Specified Junction row ID -- updating existing junction row.");
+                            //     $junctionTableRecord['id'] = $junctionRow['id'];
+                            // } else {
+                            //     // $log->info("Establishing new junction row.");
+                            // }
 
                             // $log->info("Junction row data for table $junctionTableName:");
                             // $log->info(print_r($junctionTableRecord, true));
 
-                            if($this->recordDataContainsNonPrimaryKeyData($foreignRecord->toArray())) {
+                            $relationshipChanged = $this->recordDataContainsNonPrimaryKeyData($foreignRecord->toArray()) ||
+                                $this->recordDataContainsNonPrimaryKeyData($junctionTableRecord);
+
+                            // Update Foreign Record
+                            if($relationshipChanged) {
                                 $JunctionTable->addOrUpdateRecordByArray($junctionTableRecord, $junctionTableName);
                             }
                         }
