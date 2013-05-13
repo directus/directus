@@ -68,7 +68,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $TableGateway = $this;
         if($tableName !== $this->table)
-            $TableGateway = new RelationalTableGateway($this->aclProvider, $tableName, $this->adapter);
+            $TableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
 
         $thisIsNested = ($activityEntryMode == self::ACTIVITY_ENTRY_MODE_CHILD);
 
@@ -171,7 +171,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 if($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
                     // Save parent log entry
                     $logEntryAction = isset($recordData['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
-                    $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, "directus_activity", $this->adapter);
+                    $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, "directus_activity", $this->adapter);
                     $logData = array(
                         'type'              => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                         'table_name'        => $tableName,
@@ -189,7 +189,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     $parentLogEntry->save();
 
                     // Update & insert nested activity entries
-                    $ActivityGateway = new DirectusActivityTableGateway($this->aclProvider, $this->adapter);
+                    $ActivityGateway = new DirectusActivityTableGateway($this->acl, $this->adapter);
                     foreach($nestedLogEntries as $entry) {
                         $entry['parent_id'] = $parentRecordWithForeignKeys['id'];
                         // @todo ought to insert these in one batch
@@ -317,8 +317,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $this->enforceColumnHasNonNullValues($column, array('junction_table','junction_key_left'), $this->table);
                         $junctionTableName = $column['junction_table'];
                         $junctionKeyLeft = $column['junction_key_left'];
-                        $JunctionTable = new RelationalTableGateway($this->aclProvider, $junctionTableName, $this->adapter);
-                        $ForeignTable = new RelationalTableGateway($this->aclProvider, $foreignTableName, $this->adapter);
+                        $JunctionTable = new RelationalTableGateway($this->acl, $junctionTableName, $this->adapter);
+                        $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
                             if (isset($junctionRow['active']) && $junctionRow['active'] == 0) {
@@ -624,7 +624,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $columns = TableSchema::getAllNonAliasTableColumns($table);
         $select->columns($columns);
 
-        $TableGateway = new RelationalTableGateway($this->aclProvider, $table, $this->adapter);
+        $TableGateway = new RelationalTableGateway($this->acl, $table, $this->adapter);
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
 
@@ -680,7 +680,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $columns = TableSchema::getAllNonAliasTableColumns($foreign_table_name);
                 $select->columns($columns);
 
-                $TableGateway = new RelationalTableGateway($this->aclProvider, $foreign_table_name, $this->adapter);
+                $TableGateway = new RelationalTableGateway($this->acl, $foreign_table_name, $this->adapter);
                 $rowset = $TableGateway->selectWith($select);
                 $results = $rowset->toArray();
 
@@ -755,7 +755,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // $log->info(__CLASS__ . "#" . __FUNCTION__);
         // $log->info("query: " . $this->dumpSql($select));
 
-        $ForeignTable = new RelationalTableGateway($this->aclProvider, $foreign_table, $this->adapter);
+        $ForeignTable = new RelationalTableGateway($this->acl, $foreign_table, $this->adapter);
         $results = $ForeignTable->selectWith($select);
         $results = $results->toArray();
 
@@ -827,7 +827,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
      *
      *   use Zend\Db\Sql\Select;
      *   $select = new Select("instructors");
-     *   $InstructorsGateway = new TableGateway($aclProvider, "instructors", $ZendDb);
+     *   $InstructorsGateway = new TableGateway($acl, "instructors", $ZendDb);
      *   $instructorsWithRelationships = $InstructorsGateway->selectWithImmediateRelationships($select);
      *
      * @param  Select $select
@@ -888,6 +888,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
             case 'mediumblob':
                 return base64_encode($mysql_data);
             case 'year':
+            case 'bigint':
+            case 'smallint':
+            case 'mediumint':
             case 'int':
             case 'long':
             case 'tinyint':

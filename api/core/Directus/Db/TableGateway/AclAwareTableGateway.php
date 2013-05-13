@@ -29,20 +29,20 @@ use Zend\Db\Sql\Expression;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
-    protected $aclProvider;
+    protected $acl;
 
     public $primaryKeyFieldName = "id";
 
     /**
-     * @param AclProvider $aclProvider
+     * @param AclProvider $acl
      * @param string $table
      * @param AdapterInterface $adapter
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct(Acl $aclProvider, $table, AdapterInterface $adapter)
+    public function __construct(Acl $acl, $table, AdapterInterface $adapter)
     {
-        $this->aclProvider = $aclProvider;
-        $rowGatewayPrototype = new AclAwareRowGateway($aclProvider, $this->primaryKeyFieldName, $table, $adapter);
+        $this->acl = $acl;
+        $rowGatewayPrototype = new AclAwareRowGateway($acl, $this->primaryKeyFieldName, $table, $adapter);
         $features = new RowGatewayFeature($rowGatewayPrototype);
         parent::__construct($table, $adapter, $features);
     }
@@ -55,12 +55,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * Underscore to camelcase table name to namespaced table gateway classname,
      * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
      */
-    public static function makeTableGatewayFromTableName($aclProvider, $table, $adapter) {
+    public static function makeTableGatewayFromTableName($acl, $table, $adapter) {
         $tableGatewayClassName = underscoreToCamelCase($table) . "TableGateway";
         $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
         if(class_exists($tableGatewayClassName))
-            return new $tableGatewayClassName($aclProvider, $adapter);
-        return new self($aclProvider, $table, $adapter);
+            return new $tableGatewayClassName($acl, $adapter);
+        return new self($acl, $table, $adapter);
     }
 
     /**
@@ -133,7 +133,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         // $recordAction = $rowExists ? "Populating an existing" : "Making a new";
         // $log->info("$recordAction record for table $tableName with record data: " . print_r($recordData, true));
 
-        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->aclProvider, $tableName, $this->adapter);
+        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, $tableName, $this->adapter);
         $record->populateSkipAcl($recordData, $rowExists);
         // $record->populate($recordData, $rowExists);
         $record->save();
@@ -204,12 +204,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $table = $this->getRawTableNameFromQueryStateTable($selectState['table']);
 
         // Enforce field read blacklist on Select's main table
-        $this->aclProvider->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
 
         // Enforce field read blacklist on Select's join tables
         foreach($selectState['joins'] as $join) {
             $joinTable = $this->getRawTableNameFromQueryStateTable($join['name']);
-            $this->aclProvider->enforceBlacklist($joinTable, $join['columns'], Acl::FIELD_READ_BLACKLIST);
+            $this->acl->enforceBlacklist($joinTable, $join['columns'], Acl::FIELD_READ_BLACKLIST);
         }
 
         return parent::executeSelect($select);
@@ -230,14 +230,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $insertState = $insert->getRawState();
         $insertTable = $this->getRawTableNameFromQueryStateTable($insertState['table']);
 
-        if(!$this->aclProvider->hasTablePrivilege($insertTable, 'add'))
+        if(!$this->acl->hasTablePrivilege($insertTable, 'add'))
             throw new UnauthorizedTableAddException("Table add access forbidden on table $insertTable");
 
         // Enforce write field blacklist (if user lacks bigedit privileges on this table)
-        if(!$this->aclProvider->hasTablePrivilege($insertTable, 'bigedit')) {
+        if(!$this->acl->hasTablePrivilege($insertTable, 'bigedit')) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             // $rawColumns = $this->extractRawColumnNames($insertState['columns']);
-            $this->aclProvider->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
+            $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
         }
 
         return parent::executeInsert($insert);
@@ -257,13 +257,13 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $currentUserId = intval($currentUser['id']);
         $updateState = $update->getRawState();
         $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
-        $cmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable($updateTable);
+        $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($updateTable);
 
         /**
          * ACL Enforcement
          */
 
-        if(!$this->aclProvider->hasTablePrivilege($updateTable, 'bigedit')) {
+        if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
             /**
@@ -274,7 +274,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on table `$updateTable` (no magic owner column).");
             } else {
                 // Who are the owners of these rows?
-                list($resultQty, $ownerIds) = $this->aclProvider->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 // Enforce
                 if(count(array_diff($ownerIds, array($currentUserId)))) {
                     throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
@@ -285,17 +285,17 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
              * Enforce write field blacklist (if user lacks bigedit privileges on this table)
              */
             $attemptOffsets = array_keys($updateState['set']);
-            $this->aclProvider->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+            $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         }
 
-        if(!$this->aclProvider->hasTablePrivilege($updateTable, 'edit')) {
+        if(!$this->acl->hasTablePrivilege($updateTable, 'edit')) {
             /**
              * Enforce Privilege: "Little" Edit (I am the record CMS owner)
              */
             if(false !== $cmsOwnerColumn) {
                 if(!isset($predicateResultQty)) {
                     // Who are the owners of these rows?
-                    list($predicateResultQty, $predicateOwnerIds) = $this->aclProvider->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                    list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 }
                 if(in_array($currentUserId, $predicateOwnerIds)) {
                     throw new UnauthorizedTableEditException("Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
@@ -319,13 +319,13 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $currentUserId = intval($currentUser['id']);
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
-        $cmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable($deleteTable);
+        $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($deleteTable);
 
         /**
          * ACL Enforcement
          */
 
-        if(!$this->aclProvider->hasTablePrivilege($deleteTable, 'bigdelete')) {
+        if(!$this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
             /**
              * Enforce Privilege: "Big" Delete
              */
@@ -334,7 +334,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on table `$deleteTable` (no magic owner column).");
             } else {
                 // Who are the owners of these rows?
-                list($predicateResultQty, $predicateOwnerIds) = $this->aclProvider->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
+                list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
                 // Enforce
                 if(count(array_diff($predicateOwnerIds, array($currentUserId)))) {
                     throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on $predicateResultQty `$deleteTable` table record(s) and " . count($predicateOwnerIds) . " CMS owner(s) (with ids " . implode(", ", $predicateOwnerIds) . ").");
@@ -342,14 +342,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         }
 
-        if(!$this->aclProvider->hasTablePrivilege($deleteTable, 'delete')) {
+        if(!$this->acl->hasTablePrivilege($deleteTable, 'delete')) {
             /**
              * Enforce Privilege: "Little" Delete (I am the record CMS owner)
              */
             if(false !== $cmsOwnerColumn) {
                 if(!isset($predicateResultQty)) {
                     // Who are the owners of these rows?
-                    list($predicateResultQty, $predicateOwnerIds) = $this->aclProvider->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
+                    list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
                 }
                 if(in_array($currentUserId, $predicateOwnerIds)) {
                     throw new UnauthorizedTableDeleteException("Table delete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).");

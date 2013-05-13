@@ -2,7 +2,7 @@
 
 namespace Directus;
 
-use Directus\Acl\Acl as AclProvider;
+use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
@@ -138,20 +138,20 @@ class Bootstrap {
      * Construct Acl provider
      * @return \Directus\Acl
      */
-    private static function aclprovider() {
-        $aclProvider = new AclProvider;
+    private static function acl() {
+        $acl = new acl;
         if(AuthProvider::loggedIn()) {
             $currentUser = AuthProvider::getUserInfo();
             $ZendDb = self::get('ZendDb');
-            $Users = new DirectusUsersTableGateway($aclProvider, $ZendDb);
+            $Users = new DirectusUsersTableGateway($acl, $ZendDb);
             $currentUser = $Users->find($currentUser['id']);
             if($currentUser) {
-                $Privileges = new DirectusPrivilegesTableGateway($aclProvider, $ZendDb);
+                $Privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);
                 $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
-                $aclProvider->setGroupPrivileges($groupPrivileges);
+                $acl->setGroupPrivileges($groupPrivileges);
             }
         }
-        return $aclProvider;
+        return $acl;
     }
 
     /**
@@ -159,10 +159,10 @@ class Bootstrap {
      * @return \Codebird\Codebird
      */
     private static function codebird() {
-        $aclProvider = self::get('aclProvider');
+        $acl = self::get('acl');
         $ZendDb = self::get('ZendDb');
         // Social settings
-        $SettingsTableGateway = new DirectusSettingsTableGateway($aclProvider, $ZendDb);
+        $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $ZendDb);
         $requiredKeys = array('twitter_consumer_key','twitter_consumer_secret', 'twitter_oauth_token', 'twitter_oauth_token_secret');
         $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
         // Codebird initialization
@@ -177,10 +177,10 @@ class Bootstrap {
      * @return \Codebird\Codebird
      */
     // private static function instagram() {
-    //     $aclProvider = self::get('aclProvider');
+    //     $acl = self::get('acl');
     //     $ZendDb = self::get('ZendDb');
     //     // Social settings
-    //     $SettingsTableGateway = new DirectusSettingsTableGateway($aclProvider, $ZendDb);
+    //     $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $ZendDb);
     //     $requiredKeys = array('instagram_oauth_access_token','instagram_client_id');
     //     $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
     //     $instagram = new \Instagram\Instagram;
