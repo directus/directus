@@ -38,6 +38,7 @@ switch (DIRECTUS_ENV) {
         break;
 }
 
+use Directus\Acl\Exception\UnauthorizedTableAlterException;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
@@ -364,10 +365,16 @@ $app->get("/$v/activity/?", function () use ($db, $params, $ZendDb, $aclProvider
 
 // GET all table columns, or POST one new table column
 
-$app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $requestPayload, $app, $aclProvider) {
     $params['table_name'] = $table;
     if($app->request()->isPost()) {
-        /* @TODO improves readability: use two separate methods for fetching one vs all entries */
+        /**
+         * @todo  check if a column by this name already exists
+         * @todo  build this into the method when we shift its location to the new layer
+         */
+        if(!$aclProvider->hasTablePrivilege($table, 'alter')) {
+            throw new UnauthorizedTableAlterException("Table alter access forbidden on table `$table`");
+        }
         $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
     }
     // $response = $db->get_table($table, $params);
