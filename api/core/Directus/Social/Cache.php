@@ -46,6 +46,10 @@ class Cache {
                 break;
             case DirectusSocialFeedsTableGateway::TYPE_INSTAGRAM:
                 $updatedFeed = $this->scrapeInstagramFeed($feed);
+                // Do nothing if the API doesn't respond properly
+                if(false === $updatedFeed) {
+                    return;
+                }
                 break;
         }
         // Update feed's last_checked value
@@ -90,7 +94,11 @@ class Cache {
         // Ping endpoint
         $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s";
         $endpoint = sprintf($endpoint, $feed['name'], $socialSettings['instagram_client_id']['value'], $socialSettings['instagram_oauth_access_token']['value']);
-        $mediaRecent = file_get_contents($endpoint);
+        try {
+            $mediaRecent = file_get_contents($endpoint);
+        } catch(\ErrorException $e) {
+            return false;
+        }
         $mediaRecent = json_decode($mediaRecent, true);
         $mediaRecent = $mediaRecent['data'];
         // Scrape entries
