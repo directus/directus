@@ -47,6 +47,7 @@ class ExceptionView {
             if('production' !== DIRECTUS_ENV) {
                 $data = array(
                     'code' => $exception->getCode(),
+                    'class' => get_class($exception),
                     'message' => $exception->getMessage(),
                     'file' => $exception->getFile(),
                     'line' => $exception->getLine(),
