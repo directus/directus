@@ -110,7 +110,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             // Activity logging is enabled, and I am a nested action
             case self::ACTIVITY_ENTRY_MODE_CHILD:
-                $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
+                $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
                 $childLogEntries[] = array(
                     'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                     'table_name'    => $tableName,
@@ -148,8 +148,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 // $log->info("\$nestedLogEntries:".print_r($nestedCollectionRelationshipsChanged,true));
                 // Produce log if something changed.
                 if($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
+                    $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
                     // Save parent log entry
-                    $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
                     $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, "directus_activity", $this->adapter);
                     $logData = array(
                         'type'              => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
