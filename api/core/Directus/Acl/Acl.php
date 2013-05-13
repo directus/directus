@@ -102,8 +102,16 @@ class Acl {
         }
         /**
          * Enforce granular offset attempts.
+         * NOTE: array_intersect attempts to convert all array items to a string, causing exceptions
+         * if $offsets contains objects such as Zend\Db\Sql\Expression
+         * @todo How should ACL react to Expression objects?
          */
-        $forbiddenIndices = array_intersect($offsets, $fieldBlacklist);
+        $forbiddenIndices = array();
+        foreach($offsets as $offset) {
+            if(in_array($offset, $fieldBlacklist)) {
+                $forbiddenIndices[] = $offset;
+            }
+        }
         if(count($forbiddenIndices)) {
             $forbiddenIndices = implode(", ", $forbiddenIndices);
             switch($blacklist) {
