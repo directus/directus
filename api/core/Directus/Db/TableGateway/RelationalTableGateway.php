@@ -104,18 +104,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // - storing a full representation in the activity log
         $fullRecordData = $TableGateway->find($newRecordObject['id']);
         $deltaRecordData = array_intersect_key((array) $parentRecordWithForeignKeys, (array) $fullRecordData);
+        $rowId = $recordIsNew ? $newRecordObject['id'] : $parentRecordWithForeignKeys['id'];
 
         switch($activityEntryMode) {
 
             // Activity logging is enabled, and I am a nested action
             case self::ACTIVITY_ENTRY_MODE_CHILD:
-                $logEntryAction = isset($recordData['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
-
-                // $log->info("activity mode: ACTIVITY_ENTRY_MODE_CHILD");
-                // isset($recordData['id'])
-                //     ? $log->info("action: ACTION_UPDATE")
-                //     : $log->info("action: ACTION_ADD");
-
+                $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
                 $childLogEntries[] = array(
                     'type'          => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                     'table_name'    => $tableName,
@@ -124,10 +119,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     'datetime'      => gmdate('Y-m-d H:i:s'),
                     'data'          => json_encode($fullRecordData),
                     'delta'         => json_encode($deltaRecordData),
-                    'row_id'        => $newRecordObject['id'],
+                    'row_id'        => $rowId,
                     'identifier'    => null
                 );
-
                 if($recordIsNew) {
                     /**
                      * This is a nested call, creating a new record w/in a foreign collection.
@@ -135,42 +129,27 @@ class RelationalTableGateway extends AclAwareTableGateway {
                      */
                     $parentCollectionRelationshipsChanged = true;
                 }
-
                 break;
 
             case self::ACTIVITY_ENTRY_MODE_PARENT:
                 // Does this act deserve a log?
                 $parentRecordNeedsLog = $nestedCollectionRelationshipsChanged || $parentRecordChanged;
-                // if($parentRecordNeedsLog) {
-                //     $log->info("Will make log for parent record.");
-                //     if($parentRecordChanged)
-                //         $log->info("(Scalar/many-to-one/single media value changed.)");
-                //     if($nestedCollectionRelationshipsChanged)
-                //         $log->info("(Nested collection relationships changed.)");
-                // }
-
                 /**
                  * NESTED QUESTIONS!
-                 *
                  * @todo  what do we do if the foreign record OF a foreign record changes?
                  * is that activity entry also directed towards this parent activity entry?
-                 *
                  * @todo  how should nested activity entries relate to the revision histories of foreign items?
-                 *
                  * @todo  one day: treat children as parents if this top-level record was not modified.
                  */
-
                 $recordIdentifier = $this->findRecordIdentifier($schemaArray, $fullRecordData);
-
                 // $log->info("ACTIVITY_ENTRY_MODE_PARENT");
                 // $log->info("\$parentRecordChanged:".print_r($parentRecordChanged,true));
                 // $log->info("\$nestedCollectionRelationshipsChanged:".print_r($nestedCollectionRelationshipsChanged,true));
                 // $log->info("\$nestedLogEntries:".print_r($nestedCollectionRelationshipsChanged,true));
-
                 // Produce log if something changed.
                 if($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
                     // Save parent log entry
-                    $logEntryAction = isset($recordData['id']) ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
+                    $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_UPDATE : DirectusActivityTableGateway::ACTION_ADD;
                     $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, "directus_activity", $this->adapter);
                     $logData = array(
                         'type'              => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
@@ -183,15 +162,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         'delta'             => json_encode($deltaRecordData),
                         'parent_changed'    => (int) $parentRecordChanged,
                         'identifier'        => $recordIdentifier,
-                        'row_id'            => $parentRecordWithForeignKeys['id']
+                        'row_id'            => $rowId
                     );
                     $parentLogEntry->populate($logData, false);
                     $parentLogEntry->save();
-
                     // Update & insert nested activity entries
                     $ActivityGateway = new DirectusActivityTableGateway($this->acl, $this->adapter);
                     foreach($nestedLogEntries as $entry) {
-                        $entry['parent_id'] = $parentRecordWithForeignKeys['id'];
+                        $entry['parent_id'] = $rowId;
                         // @todo ought to insert these in one batch
                         $ActivityGateway->insert($entry);
                     }
@@ -199,7 +177,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 break;
         }
 
-        return $parentRecordWithForeignKeys;
+        return $fullRecordData;
     }
 
     /**
