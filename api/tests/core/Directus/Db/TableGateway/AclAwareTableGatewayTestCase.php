@@ -23,9 +23,9 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
 
 	protected function setUp() {
 		parent::setUp();
-        $this->ActivityTableGateway = new DirectusActivityTableGateway($this->aclProvider, $this->ZendDb);
-        $this->PrivilegesGateway = new DirectusPrivilegesTableGateway($this->aclProvider, $this->ZendDb);
-        $this->UsersGateway = new DirectusUsersTableGateway($this->aclProvider, $this->ZendDb);
+        $this->ActivityTableGateway = new DirectusActivityTableGateway($this->acl, $this->ZendDb);
+        $this->PrivilegesGateway = new DirectusPrivilegesTableGateway($this->acl, $this->ZendDb);
+        $this->UsersGateway = new DirectusUsersTableGateway($this->acl, $this->ZendDb);
         // Pending data fixtures
         $_SESSION[AuthProvider::SESSION_KEY] = array('id' => 7);
 		$this->currentUser = array('id' => 7, 'group' => 0);
@@ -40,7 +40,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_users']['write_field_blacklist'] = array('salt');
         $groupPrivileges['directus_users']['permissions'] = array('add','edit','delete');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
         $set = array('salt' => 'jibbajabba');
@@ -56,7 +56,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_activity']['write_field_blacklist'] = array('data');
         $groupPrivileges['directus_activity']['permissions'] = array('add','edit','delete');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
         $this->ActivityTableGateway->insert(array(
@@ -81,7 +81,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_activity']['write_field_blacklist'] = array('data');
         $groupPrivileges['directus_activity']['permissions'] = array('edit','delete');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
         $this->ActivityTableGateway->insert(array(
@@ -105,11 +105,11 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Omit "bigedit" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // Find a record which isn't ours on the media table
-        $mediaCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_media");
-        $MediaGateway = new AclAwareTableGateway($this->aclProvider, "directus_media", $this->ZendDb);
+        $mediaCmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable("directus_media");
+        $MediaGateway = new AclAwareTableGateway($this->acl, "directus_media", $this->ZendDb);
         $select = new Select("directus_media");
         $select->where->notEqualTo($mediaCmsOwnerColumn, $this->currentUser['id']);
         $select->limit(1);
@@ -132,11 +132,11 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Omit "bigedit" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // Find a record which isn't ours on the media table
-        $mediaCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_media");
-        $MediaGateway = new AclAwareTableGateway($this->aclProvider, "directus_media", $this->ZendDb);
+        $mediaCmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable("directus_media");
+        $MediaGateway = new AclAwareTableGateway($this->acl, "directus_media", $this->ZendDb);
         $select = new Select("directus_media");
         $select->group($mediaCmsOwnerColumn);
         $select->where->notEqualTo($mediaCmsOwnerColumn, $this->currentUser['id']);
@@ -162,10 +162,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Omit "bigedit" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_tables']['permissions'] = array('edit','delete');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $DirectusTablesGateway = new AclAwareTableGateway($this->aclProvider, 'directus_tables', $this->ZendDb);
+        $DirectusTablesGateway = new AclAwareTableGateway($this->acl, 'directus_tables', $this->ZendDb);
         $set = array('hidden' => '1');
         $where = array('1' => '1');
         $DirectusTablesGateway->update($set, $where);
@@ -178,10 +178,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Omit "bigdelete" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_tables']['permissions'] = array('edit');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $DirectusTablesGateway = new AclAwareTableGateway($this->aclProvider, 'directus_tables', $this->ZendDb);
+        $DirectusTablesGateway = new AclAwareTableGateway($this->acl, 'directus_tables', $this->ZendDb);
         $where = array('1' => '1');
         $DirectusTablesGateway->delete($where);
     }
@@ -193,11 +193,11 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Omit "bigdelete" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // Find a record which isn't ours on the media table
-        $mediaCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_media");
-        $MediaGateway = new AclAwareTableGateway($this->aclProvider, "directus_media", $this->ZendDb);
+        $mediaCmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable("directus_media");
+        $MediaGateway = new AclAwareTableGateway($this->acl, "directus_media", $this->ZendDb);
         $select = new Select("directus_media");
         $select->group($mediaCmsOwnerColumn);
         $select->where->notEqualTo($mediaCmsOwnerColumn, $this->currentUser['id']);
@@ -222,10 +222,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Omit "little" delete privilege from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_users']['permissions'] = array('edit');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $usersCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_users");
+        $usersCmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable("directus_users");
         $where = new Where;
         $where->equalTo($usersCmsOwnerColumn, $this->currentUser[$usersCmsOwnerColumn]);
         $this->UsersGateway->delete($where);
@@ -238,10 +238,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Omit "little" edit privilege from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges['directus_users']['permissions'] = array('delete');
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $usersCmsOwnerColumn = $this->aclProvider->getCmsOwnerColumnByTable("directus_users");
+        $usersCmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable("directus_users");
         $set = array('first_name' => 'Transgressive');
         $where = new Where;
         $where->equalTo($usersCmsOwnerColumn, $this->currentUser[$usersCmsOwnerColumn]);
@@ -256,7 +256,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $blacklistedColumns = array('password','salt');
         $groupPrivileges['directus_users']['read_field_blacklist'] = $blacklistedColumns;
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
         $select = new Select('directus_users');
@@ -271,10 +271,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $blacklistedColumns = array('non','empty');
         $groupPrivileges['some_table']['read_field_blacklist'] = $blacklistedColumns;
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $SomeTableGateway = new AclAwareTableGateway($this->aclProvider, 'some_table', $this->ZendDb);
+        $SomeTableGateway = new AclAwareTableGateway($this->acl, 'some_table', $this->ZendDb);
         $select = new Select(array('some_alias' => 'some_table'));
         $SomeTableGateway->selectWith($select);
     }
@@ -290,10 +290,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $blacklistedColumns = array('ssn','dreams');
         $groupPrivileges[$table_name] = array();
         $groupPrivileges[$table_name]['read_field_blacklist'] = $blacklistedColumns;
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $SensitiveTableGateway = new AclAwareTableGateway($this->aclProvider, $table_name, $this->ZendDb);
+        $SensitiveTableGateway = new AclAwareTableGateway($this->acl, $table_name, $this->ZendDb);
         $select = new Select($table_name);
         $columns = array('id','active','public_info_1','public_info_2');
         $columns = array_merge($columns, $blacklistedColumns);
@@ -313,10 +313,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges[$table_b] = array();
         $groupPrivileges[$table_b]['read_field_blacklist'] = $blacklistedColumns;
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $ATableGateway = new AclAwareTableGateway($this->aclProvider, $table_a, $this->ZendDb);
+        $ATableGateway = new AclAwareTableGateway($this->acl, $table_a, $this->ZendDb);
         $select = new Select($table_a);
         $select->join($table_b, "$table_a.id = $table_b.foreign_id");
         $ATableGateway->selectWith($select);
@@ -334,10 +334,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges[$table_b] = array();
         $groupPrivileges[$table_b]['read_field_blacklist'] = $blacklistedColumns;
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $ATableGateway = new AclAwareTableGateway($this->aclProvider, $table_a, $this->ZendDb);
+        $ATableGateway = new AclAwareTableGateway($this->acl, $table_a, $this->ZendDb);
         $select = new Select($table_a);
         $select->join(array('b' => $table_b), "$table_a.id = $table_b.foreign_id");
         $ATableGateway->selectWith($select);
@@ -355,10 +355,10 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges[$table_b] = array();
         $groupPrivileges[$table_b]['read_field_blacklist'] = $blacklistedColumns;
-        $this->aclProvider->setGroupPrivileges($groupPrivileges);
+        $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
-        $MainTableGateway = new AclAwareTableGateway($this->aclProvider, $table_a, $this->ZendDb);
+        $MainTableGateway = new AclAwareTableGateway($this->acl, $table_a, $this->ZendDb);
         $columns = array('id','active','public_info_1','public_info_2');
         $columns = array_merge($columns, $blacklistedColumns);
         $select = new Select($table_a);

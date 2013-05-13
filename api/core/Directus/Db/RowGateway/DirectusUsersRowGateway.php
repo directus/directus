@@ -26,7 +26,7 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
 
         if(isset($rowData['id'])) {
             $logger = Bootstrap::get('log');
-            $TableGateway = new AclAwareTableGateway($this->aclProvider, $this->table, $this->sql->getAdapter());
+            $TableGateway = new AclAwareTableGateway($this->acl, $this->table, $this->sql->getAdapter());
             $dbRecord = $TableGateway->find($rowData['id']);
             if(false === $dbRecord) {
                 // @todo is it better to throw an exception here?
