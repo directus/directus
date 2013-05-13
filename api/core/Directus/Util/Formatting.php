@@ -5,6 +5,9 @@ namespace Directus\Util;
 class Formatting {
 
 	/**
+	 * Credit: WORDPRESS 3.6-BETA3
+	 * http://wpseek.com/sanitize_title_with_dashes/
+	 *
 	 * Sanitizes title, replacing whitespace and a few other characters with dashes.
 	 *
 	 * Limits the output to alphanumeric characters, underscore (_) and dash (-).
@@ -26,7 +29,7 @@ class Formatting {
 		// Restore octets.
 		$title = preg_replace('|---([a-fA-F0-9][a-fA-F0-9])---|', '%$1', $title);
 
-		if (seems_utf8($title)) {
+		if (self::seems_utf8($title)) {
 			if (function_exists('mb_strtolower')) {
 				$title = mb_strtolower($title, 'UTF-8');
 			}
