@@ -177,7 +177,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 break;
         }
 
-        return $fullRecordData;
+        // Yield record object
+        $recordGateway = new AclAwareRowGateway($this->acl, $TableGateway->primaryKeyFieldName, $tableName, $this->adapter);
+        $recordGateway->populate($fullRecordData);
+        return $recordGateway;
     }
 
     /**
