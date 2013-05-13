@@ -49,6 +49,7 @@ use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
+use Directus\Db\TableSchema;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
 use Zend\Db\Sql\Expression;
@@ -445,8 +446,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
     if (isset($requestPayload['url']))
         unset($requestPayload['url']);
 
-
-    $currentUser = AuthProvider::getUserInfo(); 
+    $currentUser = AuthProvider::getUserInfo();
 
     $table = "directus_media";
     switch ($app->request()->getMethod()) {
