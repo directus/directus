@@ -12,8 +12,8 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_social_posts";
 
-    public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
-        parent::__construct($aclProvider, self::$_tableName, $adapter);
+    public function __construct(Acl $acl, AdapterInterface $adapter) {
+        parent::__construct($acl, self::$_tableName, $adapter);
     }
 
     public function feedForeignIdExists($foreign_id, $feed_id) {

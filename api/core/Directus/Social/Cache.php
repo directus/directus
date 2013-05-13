@@ -15,10 +15,10 @@ class Cache {
     public static $scrape_interval_seconds = 300; // 5 min
 
     public function __construct() {
-        $aclProvider = Bootstrap::get('aclProvider');
+        $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
-        $this->SocialFeedsTableGateway = new DirectusSocialFeedsTableGateway($aclProvider, $ZendDb);
-        $this->SocialPostsTableGateway = new DirectusSocialPostsTableGateway($aclProvider, $ZendDb);
+        $this->SocialFeedsTableGateway = new DirectusSocialFeedsTableGateway($acl, $ZendDb);
+        $this->SocialPostsTableGateway = new DirectusSocialPostsTableGateway($acl, $ZendDb);
     }
 
     public function scrapeFeedsIfDue() {
@@ -82,9 +82,9 @@ class Cache {
 
     private function scrapeInstagramFeed(array $feed) {
         // Instagram settings
-        $aclProvider = Bootstrap::get('aclProvider');
+        $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
-        $SettingsTableGateway = new DirectusSettingsTableGateway($aclProvider, $ZendDb);
+        $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $ZendDb);
         $requiredKeys = array('instagram_oauth_access_token','instagram_client_id');
         $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
         // Ping endpoint
