@@ -21,15 +21,41 @@ class Cache {
         $this->SocialPostsTableGateway = new DirectusSocialPostsTableGateway($acl, $ZendDb);
     }
 
+    public function scrapeFeedIfDue($handle, $type) {
+        $feed = $this->SocialFeedsTableGateway->getFeedByHandleAndType($handle, $type);
+        // Create the feeds table record if it doesn't exist
+        if(false === $feed) {
+            $this->SocialFeedsTableGateway->insert(array(
+                'type' => $type,
+                'name' => $handle
+            ));
+            $feedId = $this->SocialFeedsTableGateway->getLastInsertValue();
+            $feed = $this->SocialFeedsTableGateway->find($feedId);
+        } else {
+            $feed = $feed->toArray();
+        }
+        // Scrape if due
+        $feedIsDue = in_array($feed['last_checked'], array(null, '0000-00-00 00:00:00')) ||
+            strtotime($feed['last_checked']) <= $this->getDueDate();
+        if($feedIsDue) {
+            $this->scrapeFeed($feed);
+        }
+    }
+
     public function scrapeFeedsIfDue() {
         $dueFeeds = $this->getDueFeeds();
         foreach($dueFeeds as $feed)
             $this->scrapeFeed($feed->toArray());
     }
 
-    private function getDueFeeds() {
+    private function getDueDate() {
         $due = time() - self::$scrape_interval_seconds;
         $due = date("c", $due);
+        return $due;
+    }
+
+    private function getDueFeeds() {
+        $due = $this->getDueDate();
         $select = new Select($this->SocialFeedsTableGateway->getTable());
         $select
             ->where
@@ -38,6 +64,37 @@ class Cache {
                 ->or->equalTo('last_checked', '0000-00-00 00:00:00');
         return $this->SocialFeedsTableGateway->selectWith($select);
     }
+
+    // private function getFeedIfDue($handle, $type) {
+    //     $select = new Select($this->SocialFeedsTableGateway->getTable());
+    //     $select->limit(1);
+    //     $select
+    //         ->where
+    //             ->equalTo('name', $handle)
+    //             ->equalTo('type', $type)
+    //             ->nest
+    //                 ->lessThanOrEqualTo('last_checked', $due)
+    //                 ->or->isNull('last_checked')
+    //                 ->or->equalTo('last_checked', '0000-00-00 00:00:00')
+    //             ->unnest;
+    //     return $this->SocialFeedsTableGateway->selectWith($select);
+    // }
+
+    // private function getFeed($handle, $type) {
+    //     $due = $this->getDueDate();
+    //     $select = new Select($this->SocialFeedsTableGateway->getTable());
+    //     $select->limit(1);
+    //     $select
+    //         ->where
+    //             ->equalTo('name', $handle)
+    //             ->equalTo('type', $type)
+    //             ->nest
+    //                 ->lessThanOrEqualTo('last_checked', $due)
+    //                 ->or->isNull('last_checked')
+    //                 ->or->equalTo('last_checked', '0000-00-00 00:00:00')
+    //             ->unnest;
+    //     return $this->SocialFeedsTableGateway->selectWith($select);
+    // }
 
     private function scrapeFeed(array $feed) {
         switch($feed['type']) {
