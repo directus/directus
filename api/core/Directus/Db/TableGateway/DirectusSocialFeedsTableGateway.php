@@ -19,4 +19,15 @@ class DirectusSocialFeedsTableGateway extends AclAwareTableGateway {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
+    public function getFeedByHandleAndType($handle, $type) {
+        $select = new Select($this->getTable());
+        $select->limit(1);
+        $select
+            ->where
+                ->equalTo('name', $handle)
+                ->equalTo('type', $type);
+        $rowset = $this->selectWith($select);
+        return $rowset->current();
+    }
+
 }
