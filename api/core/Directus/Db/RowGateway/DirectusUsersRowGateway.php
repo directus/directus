@@ -26,7 +26,7 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
 
         if(isset($rowData['id'])) {
             $logger = Bootstrap::get('log');
-            $TableGateway = new AclAwareTableGateway($this->aclProvider, $this->table, $this->sql->getAdapter());
+            $TableGateway = new AclAwareTableGateway($this->acl, $this->table, $this->sql->getAdapter());
             $dbRecord = $TableGateway->find($rowData['id']);
             if(false === $dbRecord) {
                 // @todo is it better to throw an exception here?
@@ -53,11 +53,6 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
             if($rowData['id'] == $currentUser['id']) {
                 $rowData['last_access'] = new Expression("NOW()");
             }
-        }
-
-        // Store last_page information as a json object
-        if(isset($rowData['last_page']) && is_array($rowData['last_page'])) {
-            $rowData['last_page'] = json_encode($rowData['last_page']);
         }
 
         // $log->info("updating user row w/ data: " . print_r($rowData, true));

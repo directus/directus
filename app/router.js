@@ -319,11 +319,11 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           var user = app.getCurrentUser();
           var currentPath = window.location.pathname.substring(app.root.length);
           if(currentPath.length) {
-            var last_page = {
+            var last_page = JSON.stringify({
               'path' : currentPath,
               'route' : route.substring(6),
               'param' : router
-            };
+            });
             user.save({'last_page': last_page}, {
               patch: true,
               url: user.url + "/" + user.id + "?skip_activity_log=1"
