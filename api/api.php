@@ -206,7 +206,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     JsonView::render($response);
 })->name('auth_login');
 
-$app->get("/$v/auth/logout/?", function() use ($app, $Auth) {
+$app->get("/$v/auth/logout/?", function() use ($app) {
     if(Auth::loggedIn())
         Auth::logout();
     $app->redirect(DIRECTUS_PATH . "login.php");
