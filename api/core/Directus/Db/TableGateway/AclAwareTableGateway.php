@@ -90,16 +90,20 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $row;
     }
 
-    public function fetchAll() {
-        return $this->select(function(Select $select){});
+    public function fetchAll($selectModifier = null) {
+        return $this->select(function(Select $select) use ($selectModifier) {
+            if(is_callable($selectModifier)) {
+                $selectModifier($select);
+            }
+        });
     }
 
     /**
      * @return array All rows in array form with record IDs for the array's keys.
      */
-    public function fetchAllWithIdKeys() {
+    public function fetchAllWithIdKeys($selectModifier = null) {
         $allWithIdKeys = array();
-        $all = $this->fetchAll();
+        $all = $this->fetchAll($selectModifier);
         foreach($all as $entry) {
             $allWithIdKeys[$entry[$this->primaryKeyFieldName]] = $entry;
         }
