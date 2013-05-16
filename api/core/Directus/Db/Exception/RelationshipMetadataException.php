@@ -2,6 +2,6 @@
 
 namespace Directus\Db\Exception;
 
-class RelationshipMetadataException extends \Exception
+class RelationshipMetadataException extends DbException
 {
 }
