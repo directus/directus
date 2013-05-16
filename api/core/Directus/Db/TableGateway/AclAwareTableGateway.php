@@ -94,6 +94,18 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $this->select(function(Select $select){});
     }
 
+    /**
+     * @return array All rows in array form with record IDs for the array's keys.
+     */
+    public function fetchAllWithIdKeys() {
+        $allWithIdKeys = array();
+        $all = $this->fetchAll();
+        foreach($all as $entry) {
+            $allWithIdKeys[$entry[$this->primaryKeyFieldName]] = $entry;
+        }
+        return $allWithIdKeys;
+    }
+
     public function fetchAllActiveSort($sort = null, $dir = "ASC") {
         return $this->select(function(Select $select) use ($sort, $dir) {
             $select->where->equalTo("active", 1);
