@@ -88,6 +88,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
       this.related.tableOptions.saveAfterDrop = false;
       this.related.tableOptions.sort = this.hasSort;
 
+
+      this.view = new this.table(this.related.tableOptions);
       this.modalTable = Directus.Table.extend({
         events: {
           'click tbody td': function(e) {
