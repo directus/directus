@@ -4,7 +4,16 @@ namespace Directus\Auth;
 
 class Provider {
 
-    const SESSION_KEY = "auth_user";
+    public static $SESSION_KEY = "auth_user";
+
+    /**
+     * Change where authentication information is stored on the session array.
+     * @param string $key
+     * @return  null
+     */
+    public static function setSessionKey($key) {
+        self::$SESSION_KEY = $key;
+    }
 
     /**
      * Attempt authentication after user submission.
@@ -14,10 +23,10 @@ class Provider {
      * @param  string $passwordAttempt The User's attempted, unhashed password string.
      * @return boolean
      */
-    public function login($uid, $password, $salt, $passwordAttempt) {
+    public static function login($uid, $password, $salt, $passwordAttempt) {
         $hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
         if($password === $hashedPasswordAttempt) {
-            $this->completeLogin($uid);
+            self::completeLogin($uid);
             return true;
         }
         return false;
@@ -32,7 +41,7 @@ class Provider {
         if(!self::loggedIn()) {
             throw new UserIsntLoggedInException("Attempting to de-authenticate a user when a user isn't authenticated.");
         }
-        $_SESSION[self::SESSION_KEY] = array();
+        $_SESSION[self::$SESSION_KEY] = array();
     }
 
     /**
@@ -42,7 +51,7 @@ class Provider {
     public static function loggedIn() {
         if("" === session_id())
             session_start();
-        return isset($_SESSION[self::SESSION_KEY]) && !empty($_SESSION[self::SESSION_KEY]);
+        return isset($_SESSION[self::$SESSION_KEY]) && !empty($_SESSION[self::$SESSION_KEY]);
     }
 
     /**
@@ -54,7 +63,7 @@ class Provider {
         if(!self::loggedIn()) {
             throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when a user isn't authenticated.");
         }
-        return $_SESSION[self::SESSION_KEY];
+        return $_SESSION[self::$SESSION_KEY];
     }
 
     /**
@@ -63,12 +72,12 @@ class Provider {
      * @return null
      * @throws  \Directus\Auth\UserAlreadyLoggedInException
      */
-    private function completeLogin($uid) {
+    private static function completeLogin($uid) {
         if(self::loggedIn()) {
             throw new UserAlreadyLoggedInException("Attempting to authenticate a user when a user is already authenticated.");
         }
         $user = array( 'id' => $uid );
-        $_SESSION[self::SESSION_KEY] = $user;
+        $_SESSION[self::$SESSION_KEY] = $user;
     }
 
     /**

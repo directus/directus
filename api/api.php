@@ -39,7 +39,7 @@ switch (DIRECTUS_ENV) {
 }
 
 use Directus\Acl\Exception\UnauthorizedTableAlterException;
-use Directus\Auth\Provider as AuthProvider;
+use Directus\Auth\Provider as Auth;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Db;
@@ -63,7 +63,6 @@ $v = API_VERSION;
  */
 
 $app = Bootstrap::get('app');
-$authProvider = new AuthProvider();
 $requestNonceProvider = new RequestNonceProvider();
 
 /**
@@ -91,14 +90,14 @@ $authAndNonceRouteWhitelist = array(
     "debug_acl_poc",
 );
 
-$app->hook('slim.before.dispatch', function() use ($app, $authProvider, $requestNonceProvider, $authAndNonceRouteWhitelist) {
+$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist) {
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
     if(in_array($routeName, $authAndNonceRouteWhitelist))
         return;
 
     /** Enforce required authentication. */
-    if(!$authProvider->loggedIn()) {
+    if(!Auth::loggedIn()) {
         $app->halt(401, "You must be logged in to access the API.");
     }
 
@@ -178,13 +177,13 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
  * AUTHENTICATION
  */
 
-$app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $authProvider, $requestNonceProvider) {
+$app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonceProvider) {
     $response = array(
         'message' => "Wrong username/password.",
         'success' => false,
         'all_nonces' => $requestNonceProvider->getAllNonces()
     );
-    if($authProvider::loggedIn()) {
+    if(Auth::loggedIn()) {
         $response['success'] = true;
         return JsonView::render($response);
     }
@@ -196,8 +195,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $authProvide
     if(!$user) {
         return JsonView::render($response);
     }
-    $response['success'] = $authProvider
-        ->login($user['id'], $user['password'], $user['salt'], $password);
+    $response['success'] = Auth::login($user['id'], $user['password'], $user['salt'], $password);
 
     if($response['success']) {
         unset($response['message']);
@@ -208,9 +206,9 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $authProvide
     JsonView::render($response);
 })->name('auth_login');
 
-$app->get("/$v/auth/logout/?", function() use ($app, $authProvider) {
-    if($authProvider::loggedIn())
-        $authProvider::logout();
+$app->get("/$v/auth/logout/?", function() use ($app, $Auth) {
+    if(Auth::loggedIn())
+        Auth::logout();
     $app->redirect(DIRECTUS_PATH . "login.php");
 })->name('auth_logout');
 
@@ -257,7 +255,7 @@ $app->get("/$v/auth/permissions/?", function() use ($app, $acl) {
  */
 
 $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
-    $currentUser = AuthProvider::getUserInfo();
+    $currentUser = Auth::getUserInfo();
     $id = null;
     $params['table_name'] = $table;
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
@@ -286,7 +284,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
                     $app->halt('404', 'No such user with ID ' . $user['id']);
                 $user['salt'] = $UserRow['salt'];
             }
-            $user['password'] = AuthProvider::hashPassword($user['password'], $user['salt']);
+            $user['password'] = Auth::hashPassword($user['password'], $user['salt']);
             $where = array('id' => $user['id']);
             $Users->update($user, $where);
         }
@@ -319,7 +317,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
 })->via('GET', 'POST', 'PUT');
 
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
-    $currentUser = AuthProvider::getUserInfo();
+    $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
     switch($app->request()->getMethod()) {
@@ -342,10 +340,9 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     }
     $params['id'] = $id;
     // GET a table entry
-    $get_old = $db->get_entries($table, $params);
     $Table = new TableGateway($acl, $table, $ZendDb);
-    $get_new = $Table->getEntries($params);
-    JsonView::render($get_new, $get_old);
+    $entries = $Table->getEntries($params);
+    JsonView::render($entries);
 })->via('DELETE', 'GET', 'PUT','PATCH');
 
 /**
@@ -453,7 +450,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
     if (isset($requestPayload['url']))
         unset($requestPayload['url']);
 
-    $currentUser = AuthProvider::getUserInfo();
+    $currentUser = Auth::getUserInfo();
 
     $table = "directus_media";
     switch ($app->request()->getMethod()) {
@@ -487,7 +484,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
  */
 
 $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
-    $currentUser = AuthProvider::getUserInfo();
+    $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
     switch ($app->request()->getMethod()) {
         case "PUT":
@@ -503,7 +500,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             $params['id'] = $id;
             break;
     }
-    $currentUser = AuthProvider::getUserInfo();
+    $currentUser = Auth::getUserInfo();
     $get_old = $db->get_table_preferences($currentUser['id'], $table);
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
     $get_new = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
