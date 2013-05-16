@@ -27,7 +27,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $this->PrivilegesGateway = new DirectusPrivilegesTableGateway($this->acl, $this->ZendDb);
         $this->UsersGateway = new DirectusUsersTableGateway($this->acl, $this->ZendDb);
         // Pending data fixtures
-        $_SESSION[AuthProvider::SESSION_KEY] = array('id' => 7);
+        $_SESSION[AuthProvider::$SESSION_KEY] = array('id' => 7);
 		$this->currentUser = array('id' => 7, 'group' => 0);
 		$this->baseUserGroupPrivileges = $this->PrivilegesGateway->fetchGroupPrivileges($this->currentUser['group']);
 	}
