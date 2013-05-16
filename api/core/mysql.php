@@ -52,8 +52,10 @@ class MySQL {
                 return base64_encode($string);
             case 'year':
             case 'int':
+            case 'bigint':
+            case 'smallint':
+            case 'mediumint':
             case 'long':
-                return (int)$string;
             case 'tinyint':
                 return (int)$string;
             case 'float':
@@ -96,9 +98,9 @@ class MySQL {
         $sth->execute();
 
         $currentUser = AuthProvider::getUserInfo();
-        $aclProvider = Bootstrap::get('aclProvider');
+        $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
-        $Preferences = new DirectusPreferencesTableGateway($aclProvider, $ZendDb);
+        $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
 
         while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $tbl["schema"] = $this->get_table_info($row['id']);
@@ -174,6 +176,7 @@ class MySQL {
                 return "time";
             case "YEAR":
             case "INT":
+            case "BIGINT":
             case "SMALLINT":
             case "MEDIUMINT":
             case "FLOAT":
@@ -659,8 +662,8 @@ class MySQL {
                  * Establish salt and encode password
                  * @todo    when creating a user, password field is required
                  */
-                $aclProvider = Bootstrap::get('aclprovider');
-                $Users = new Db\Users($aclProvider, $this->zendDb);
+                $acl = Bootstrap::get('acl');
+                $Users = new Db\Users($acl, $this->zendDb);
                 $user = isset($item['id']) ? $Users->find($item['id']) : array('salt' => uniqid());
                 $item['salt'] = $user['salt'];
                 $item['password'] = empty($item['password']) ?
