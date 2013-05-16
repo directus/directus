@@ -23,7 +23,7 @@ use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
 // FOR TRANSITIONAL TESTS BELOW
-use Directus\Auth\Provider as AuthProvider;
+use Directus\Auth\Provider as Auth;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Zend\Db\Sql\Expression;
 
@@ -253,8 +253,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     protected function executeUpdate(Update $update)
     {
-        $currentUser = AuthProvider::getUserInfo();
-        $currentUserId = intval($currentUser['id']);
+        $cuurrentUserId = null;
+        if(Auth::loggedIn()) {
+            $currentUser = Auth::getUserInfo();
+            $currentUserId = intval($currentUser['id']);
+        }
         $updateState = $update->getRawState();
         $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($updateTable);
@@ -276,7 +279,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 // Who are the owners of these rows?
                 list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 // Enforce
-                if(count(array_diff($ownerIds, array($currentUserId)))) {
+                if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
                     throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
                 }
             }
@@ -315,8 +318,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     protected function executeDelete(Delete $delete)
     {
-        $currentUser = AuthProvider::getUserInfo();
-        $currentUserId = intval($currentUser['id']);
+        $cuurrentUserId = null;
+        if(Auth::loggedIn()) {
+            $currentUser = Auth::getUserInfo();
+            $currentUserId = intval($currentUser['id']);
+        }
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($deleteTable);
@@ -336,7 +342,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 // Who are the owners of these rows?
                 list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
                 // Enforce
-                if(count(array_diff($predicateOwnerIds, array($currentUserId)))) {
+                if(is_null($currentUserId) || count(array_diff($predicateOwnerIds, array($currentUserId)))) {
                     throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on $predicateResultQty `$deleteTable` table record(s) and " . count($predicateOwnerIds) . " CMS owner(s) (with ids " . implode(", ", $predicateOwnerIds) . ").");
                 }
             }
@@ -352,7 +358,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                     list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
                 }
                 if(in_array($currentUserId, $predicateOwnerIds)) {
-                    throw new UnauthorizedTableDeleteException("Table delete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).");
+                    $exceptionMessage = "Table delete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
+                    throw new UnauthorizedTableDeleteException($exceptionMessage);
                 }
             }
         }
