@@ -116,7 +116,7 @@ class TableSchema {
 
         // Omit columns which are on this table's read field blacklist for the group of
         // the currently authenticated user.
-        $acl = Bootstrap::get('aclProvider');
+        $acl = Bootstrap::get('acl');
         $readFieldBlacklist = $acl->getTablePrivilegeList($table, $acl::FIELD_READ_BLACKLIST);
         $readFieldBlacklist = implode(', ', $readFieldBlacklist);
 
@@ -160,7 +160,7 @@ class TableSchema {
 
         // Omit columns which are on this table's read field blacklist for the group of
         // the currently authenticated user.
-        $acl = Bootstrap::get('aclProvider');
+        $acl = Bootstrap::get('acl');
         $readFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_READ_BLACKLIST);
         $readFieldBlacklist = implode(', ', $readFieldBlacklist);
 

@@ -5,6 +5,7 @@ namespace Directus\View;
 use Directus\Bootstrap;
 use Directus\Acl\Exception\AclException;
 use Directus\Db\Exception\RelationshipMetadataException;
+use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 
 class ExceptionView {
 
@@ -32,12 +33,21 @@ class ExceptionView {
             $data = array('message' => $exception->getMessage());
         }
 
+        /**
+         * Directus\Db\Exception\SuppliedArrayAsColumnValue
+         */
+        elseif($exception instanceof SuppliedArrayAsColumnValue) {
+            $httpCode = 422;
+            $data = array('message' => $exception->getMessage());
+        }
+
         // @todo log error nonetheless
         else {
             $data = array('message' => 'Internal server error');
             if('production' !== DIRECTUS_ENV) {
                 $data = array(
                     'code' => $exception->getCode(),
+                    'class' => get_class($exception),
                     'message' => $exception->getMessage(),
                     'file' => $exception->getFile(),
                     'line' => $exception->getLine(),

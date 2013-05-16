@@ -6,13 +6,13 @@ use Directus\Bootstrap;
 class DirectusApiTestCase extends \PHPUnit_Framework_TestCase {
 
 	/** @var \Directus\Acl\Acl */
-	protected $aclProvider;
+	protected $acl;
 
 	/** @var \Zend\Db\Adapter\Adapter */
 	protected $ZendDb;
 
 	protected function setUp() {
-		$this->aclProvider = Bootstrap::get('aclProvider');
+		$this->acl = Bootstrap::get('acl');
 		$this->ZendDb = Bootstrap::get('ZendDb');
 	}
 

@@ -12,8 +12,8 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_privileges";
 
-    public function __construct(Acl $aclProvider, AdapterInterface $adapter) {
-        parent::__construct($aclProvider, self::$_tableName, $adapter);
+    public function __construct(Acl $acl, AdapterInterface $adapter) {
+        parent::__construct($acl, self::$_tableName, $adapter);
     }
 
     public function fetchGroupPrivileges($group_id) {
@@ -24,7 +24,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         $privilegesByTable = array();
         foreach($rowset as $row) {
             foreach($row as $field => &$value) {
-                if($this->aclProvider->isTableListValue($field))
+                if($this->acl->isTableListValue($field))
                     $value = explode(",", $value);
                 $privilegesByTable[$row['table_name']] = $row;
             }
