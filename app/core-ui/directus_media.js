@@ -17,7 +17,11 @@ define(['app', 'backbone'], function(app, Backbone) {
                     <fieldset class="media-modal"> \
                       <div style="margin-right:10px;float:left;height:auto;width:50px;"> \
                         <a href="{{url}}{{name}}" target="_blank"> \
+                          {{#if isPDF }} \
+                          <em>PDF Icon Here</em> \
+                          {{else}} \
                           <img class="{{orientation}}" src="{{url}}thumbnail/{{name}}"> \
+                          {{/if}} \
                         </a> \
                       </div> \
                       <div style="line-height:20px"> \
@@ -25,11 +29,13 @@ define(['app', 'backbone'], function(app, Backbone) {
                         <a href="{{url}}{{name}}" target="_blank">{{name}}</a><br> \
                         Uploaded by <a href="#users/{{user}}">{{userFirstName}}</a> {{{contextualDate date_uploaded}}} \
                         </strong><br> \
-                      <em>{{width}} x {{height}} - {{{bytesToSize size}}}</em><br> \
+                      <em>{{#unless isPDF}}{{width}} x {{height}} - {{/unless}}{{{bytesToSize size}}}</em><br> \
                       </div> \
                       <ul class="media-actions"> \
+                        {{#unless isPDF }} \
                         <li class="purple"><span class="glyphicon-crop"></span>Crop</li> \
                         <li class="blue"><span class="glyphicon-repeat"></span>Rotate</li> \
+                        {{/unless}} \
                         <li class="green" data-action="swap"><span class="glyphicon-random"></span>Swap</li> \
                         <li class="red"><span class="glyphicon-remove"></span>Delete</li> \
                       </ul> \
@@ -65,6 +71,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           data.youtube = this.model.get('embed_id');
       }
 
+      data.isPDF = "application/pdf" == this.model.get('type');
       data.userFirstName = app.users.get(userId).get('first_name');
       data.url = app.RESOURCES_URL;
       data.name = this.model.get('name');
@@ -97,6 +104,11 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
+      var isPDF = 'application/pdf' == options.model.get('type');
+      if(isPDF) {
+          var html = '<div class="media-thumb"><em>PDF Icon Here</em></div>';
+          return html;
+      }
       var orientation = (parseInt(options.model.get('width'),10) > parseInt(options.model.get('height'),10)) ? 'landscape' : 'portrait';
       var img = '<div class="media-thumb"><img src="' + app.RESOURCES_URL + 'thumbnail/' + options.model.get('name') +'" class="img ' + orientation + '"></div>';
       return img;
