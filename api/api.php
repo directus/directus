@@ -21,7 +21,6 @@ $loader->register();
 // Non-autoload components
 require dirname(__FILE__) . '/config.php';
 require dirname(__FILE__) . '/core/db.php';
-require dirname(__FILE__) . '/core/media.php';
 require dirname(__FILE__) . '/core/functions.php';
 
 // Define directus environment
@@ -51,6 +50,7 @@ use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableSchema;
+use Directus\Media\Upload;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
 use Zend\Db\Sql\Expression;
@@ -433,7 +433,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
 
     // A URL is specified. Upload the file
     if (isset($requestPayload['url']) && $requestPayload['url'] != "") {
-        $media = new Media($requestPayload['url'], RESOURCES_PATH);
+        $media = new Upload($requestPayload['url'], RESOURCES_PATH);
         $media_data = $media->data();
         $requestPayload['type'] = $media_data['type'];
         $requestPayload['charset'] = $media_data['charset'];
@@ -455,6 +455,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
     $table = "directus_media";
     switch ($app->request()->getMethod()) {
         case "POST":
+            $requestPayload['user'] = $currentUser['id'];
             $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
             $params['id'] = $db->set_media($requestPayload);
             break;
@@ -569,7 +570,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $par
 $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app) {
     $result = array();
     foreach ($_FILES as $file) {
-      $media = new Media($file, RESOURCES_PATH);
+      $media = new Upload($file, RESOURCES_PATH);
       array_push($result, $media->data());
     }
     JsonView::render($result);
