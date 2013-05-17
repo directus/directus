@@ -57,7 +57,7 @@ class ExceptionView {
             }
         }
 
-        $data = json_encode($data);
+        $data = @json_encode($data);
         if('production' !== DIRECTUS_ENV)
             $data = JsonView::format_json($data);
 
