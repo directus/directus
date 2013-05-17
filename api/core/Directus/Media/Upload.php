@@ -83,8 +83,16 @@ class Upload {
 
         $this->target_file = $this->unique_name();
 
-        if('application/pdf' != $this->info['type']) {
-            $this->make_thumb();
+        if('application/pdf' == $this->info['type']) {
+            if (extension_loaded('imagick')) {
+                // extract first page of pdf & make thumbnail
+            }
+        } else {
+            // Genereate & save thumbnail
+            $img = $this->open_image();
+            $img = self::make_thumb($img, $this->thumb_size, $this->format);
+            $this->save_image($img);
+            imagedestroy($img);
         }
 
         switch($type) {
@@ -200,29 +208,26 @@ class Upload {
         $this->info = $info;
     }
 
-    private function make_thumb() {
-        $img = $this->open_image();
-
-
+    public static function make_thumb($img, $thumb_size, $format) {
         $w = imagesx($img);
         $h = imagesy($img);
         $aspect_ratio = $w / $h;
 
         // portrait (or square) mode, maximize height
         if ($aspect_ratio <= 1) {
-            $newH = $this->thumb_size;
-            $newW = $this->thumb_size * $aspect_ratio;
+            $newH = $thumb_size;
+            $newW = $thumb_size * $aspect_ratio;
         }
         // landscape mode, maximize width
         if ($aspect_ratio > 1) {
-            $newW = $this->thumb_size;
-            $newH = $this->thumb_size / $aspect_ratio;
+            $newW = $thumb_size;
+            $newH = $thumb_size / $aspect_ratio;
         }
 
         $imgResized = imagecreatetruecolor($newW, $newH);
 
         // Preserve transperancy for gifs and pngs
-        if ($this->format == 'gif' || $this->format == 'png') {
+        if ($format == 'gif' || $format == 'png') {
             imagealphablending($imgResized, false);
             imagesavealpha($imgResized,true);
             $transparent = imagecolorallocatealpha($imgResized, 255, 255, 255, 127);
@@ -230,11 +235,8 @@ class Upload {
         }
 
         imagecopyresampled($imgResized, $img, 0, 0, 0, 0, $newW, $newH, $w, $h);
-
-        $this->save_image($imgResized);
-
         imagedestroy($img);
-        imagedestroy($imgResized);
+        return $imgResized;
     }
 
     private function open_image() {
@@ -247,6 +249,7 @@ class Upload {
             case 'png':
                 return imagecreatefrompng($this->tmp_name);
         }
+        throw new \Exception("Invalid format:" . $this->format);
     }
 
     private function save_image($img) {
@@ -254,17 +257,16 @@ class Upload {
         switch($this->format) {
             case 'jpg':
             case 'jpeg':
-                imagejpeg($img, $path, $this->quality);
+                return imagejpeg($img, $path, $this->quality);
                 break;
             case 'gif':
-                imagegif($img, $path);
+                return imagegif($img, $path);
                 break;
             case 'png':
-                imagepng($img, $path);
+                return imagepng($img, $path);
                 break;
-            default:
-                throw new \Exception("The image type is not supported!");
         }
+        throw new \Exception("The image type is not supported!");
     }
 
     private function curl_image($file) {
