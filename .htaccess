@@ -6,10 +6,23 @@ AddType font/woff .woff
 
 <ifModule mod_rewrite.c>
     RewriteEngine On
+
+    # Media Thumbnails
+    # - Cached thumbnail exists
+    #RewriteCond %{REQUEST_URI} ^/thumbnail/(.+)$
+    #RewriteCond %{DOCUMENT_ROOT}/images/cached/%1 -f
+    #RewriteRule ^ /images/cached/%1 [L]
+    # - Cached thumbnail doesn't exist
+    RewriteCond %{REQUEST_URI} thumbnail/(.+)$
+    #RewriteCond %{DOCUMENT_ROOT}/images/cached/%2 !-f
+    RewriteRule ^ thumbnail.php?filename=%1 [L]
+
+    # Directus Front Controller
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} !index
     RewriteRule (.*) index.php [L]
+
 </ifModule>
 
 
