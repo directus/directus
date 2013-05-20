@@ -4,6 +4,16 @@ namespace Directus\Auth;
 
 class Provider {
 
+    /**
+     * The user ID of the public API user.
+     * @var integer
+     */
+    public static $PUBLIC_USER_ID = 0;
+
+    /**
+     * The key where we store authentication information on the session array.
+     * @var string
+     */
     public static $SESSION_KEY = "auth_user";
 
     /**
