@@ -7161,6 +7161,7 @@ header {
 .scheduler-table td .scheduler-day-wrapper {
   position: relative;
   padding-top: 10px;
+  min-height: 175px;
 }
 .scheduler-table td:first-child {
   border-left: 1px solid #E6E7E8;
