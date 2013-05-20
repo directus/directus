@@ -310,10 +310,9 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
             break;
     }
     // GET all table entries
-    $get_old = $db->get_entries($table, $params);
     $Table = new TableGateway($acl, $table, $ZendDb);
-    $get_new = $Table->getEntries($params);
-    JsonView::render($get_new, $get_old);
+    $entries = $Table->getEntries($params);
+    JsonView::render($entries);
 })->via('GET', 'POST', 'PUT');
 
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
