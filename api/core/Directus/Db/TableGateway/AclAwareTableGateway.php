@@ -322,7 +322,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         }
 
-        parent::executeUpdate($update);
+        return parent::executeUpdate($update);
     }
 
     /**
