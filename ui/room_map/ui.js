@@ -168,7 +168,9 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     updateUiFieldValue: function() {
-      this.$el.find('input[name="Room Map"]').val(this.serializeGrid());
+      var value = this.serializeGrid();
+      this.options.value = value;
+      this.$el.find('input[name="Room Map"]').val(value);
     },
 
     updateRoomSize: function(e) {
@@ -270,12 +272,8 @@ define(['app', 'backbone'], function(app, Backbone) {
           value[x] = {};
         value[x][y] = $(this).val();
       });
-      console.log('$positions.length', $positions.length);
-      console.log('value', value);
       value = JSON.stringify(value);
-      console.log('stringified', value);
-      // return value;
-      return new Handlebars.SafeString(value);
+      return value;
     },
 
     afterRender: function() {
@@ -293,13 +291,11 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var length = this.options.schema.get('char_length');
-      // var value = this.options.value || '';
-      var value = this.serializeGrid();
-      console.log('value', value);
+      var value = this.options.value || '';
       return {
         height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '100',
         value: value,
-        // value: new Handlebars.SafeString(value),
+        value: new Handlebars.SafeString(value),
         name: this.options.name,
         maxLength: length,
         characters: length - value.length,

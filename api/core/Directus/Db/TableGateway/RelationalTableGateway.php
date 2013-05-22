@@ -94,6 +94,32 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $newRecordObject = null;
         $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
         if($parentRecordChanged) {
+
+            // Run Custom UI Processing
+            $customUis = Bootstrap::get('uis');
+            $aliasColumns = TableSchema::getAllAliasTableColumns($TableGateway->getTable());
+            foreach($aliasColumns as $aliasColumn) {
+                if($aliasColumn['ui'] && array_key_exists($aliasColumn['ui'], $customUis)) {
+                    $formClassName = '\\' . underscoreToCamelCase($aliasColumn['ui']) . 'Form';
+                    if(!class_exists($formClassName)) {
+                        $classFilePath = APPLICATION_PATH . '/ui/' . $aliasColumn['ui'] . '/form.php';
+                        if(!file_exists($classFilePath)) {
+                            continue;
+                        }
+                        require $classFilePath;
+                        if(!class_exists($formClassName)) {
+                            throw new \RuntimeError("Expected class $formClassName to be defined in $classFilePath for custom UI processing.");
+                        }
+                        $form = new $formClassName($recordData);
+                        if(!$form->isValid()) {
+                            $failedField = $TableGateway->getTable() . "[" . $aliasColumn['id'] . "]";
+                            throw new Exception\CustomUiValidationError("Custom UI Form validation failed for field $failedField via $formClassName");
+                        }
+                        $form->submit();
+                    }
+                }
+            }
+
             // Update the parent row, w/ any new association fields replaced by their IDs
             $newRecordObject = $TableGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
             // $log->info("Parent record with foreign keys (post-#addOrUpdateRecordByArray): " . print_r($newRecordObject->toArray(), true));
@@ -452,7 +478,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $select = $sql->select()->from($this->table);
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
-        $columns = TableSchema::getAllNonAliasTableColumns($this->table);
+        $columns = TableSchema::getAllNonAliasTableColumnNames($this->table);
         $select->columns($columns);
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
@@ -602,7 +628,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $select->where->equalTo($column_name, $column_equals);
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
-        $columns = TableSchema::getAllNonAliasTableColumns($table);
+        $columns = TableSchema::getAllNonAliasTableColumnNames($table);
         $select->columns($columns);
 
         $TableGateway = new RelationalTableGateway($this->acl, $table, $this->adapter);
@@ -658,7 +684,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $select = new Select($foreign_table_name);
                 $select->where->in('id', $ids);
 
-                $columns = TableSchema::getAllNonAliasTableColumns($foreign_table_name);
+                $columns = TableSchema::getAllNonAliasTableColumnNames($foreign_table_name);
                 $select->columns($columns);
 
                 $TableGateway = new RelationalTableGateway($this->acl, $foreign_table_name, $this->adapter);
@@ -716,7 +742,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // If the Junction Table has a Sort column, do eet.
         // @todo is this the most efficient way?
         // @hint TableSchema#getUniqueColumnName
-        $junctionColumns = TableSchema::getAllNonAliasTableColumns($junction_table);
+        $junctionColumns = TableSchema::getAllNonAliasTableColumnNames($junction_table);
         if(in_array('sort', $junctionColumns)) {
             $junctionSelectColumns[$junction_sort_column_alias] = "sort";
             $select->order($junction_sort_column_alias);
@@ -729,7 +755,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->order("$junction_id_column ASC");
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
-        $columns = TableSchema::getAllNonAliasTableColumns($foreign_table);
+        $columns = TableSchema::getAllNonAliasTableColumnNames($foreign_table);
         $select->columns($columns);
 
         // $log = $this->logger();
