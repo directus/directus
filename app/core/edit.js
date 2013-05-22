@@ -56,7 +56,12 @@ function(app, Backbone) {
     },
 
     data: function() {
-      return this.$el.serializeObject();
+      // Allows us to exclude certain inputs, i.e. w/in custom uis, which don't
+      // map to an actual record field, and which shouldn't be posted.
+      this.$el.find('.serialize-exclude').attr('disabled','disabled');
+      var data = this.$el.serializeObject();
+      this.$el.find('.serialize-exclude').removeAttr('disabled');
+      return data;
     },
 
     initialize: function() {
