@@ -173,23 +173,6 @@ class Bootstrap {
     }
 
     /**
-     * Construct Instagram API Client
-     * @return \Codebird\Codebird
-     */
-    // private static function instagram() {
-    //     $acl = self::get('acl');
-    //     $ZendDb = self::get('ZendDb');
-    //     // Social settings
-    //     $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $ZendDb);
-    //     $requiredKeys = array('instagram_oauth_access_token','instagram_client_id');
-    //     $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
-    //     $instagram = new \Instagram\Instagram;
-    //     $instagram->setAccessToken($socialSettings['instagram_oauth_access_token']['value']);
-    //     $instagram->setClientId($socialSettings['instagram_client_id']['value']);
-    //     return $instagram;
-    // }
-
-    /**
      * Scan for extensions.
      * @return  array
      */
@@ -213,18 +196,34 @@ class Bootstrap {
      */
     private static function uis() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-        $uis = array();
         $uiDirectory = APPLICATION_PATH . '/ui';
-        foreach (new \DirectoryIterator($uiDirectory) as $file) {
-            if($file->isDot())
-                continue;
-            $info = pathinfo($file->getFilename());
-            if(array_key_exists('extension', $info) && $info['extension'] != 'js')
-                continue;
-            $uiFilename = $file->getFilename();
-            $uis[$uiFilename] = 'ui/' . basename($uiFilename,'.js');
+        $uis = array();
+        $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uiDirectory), \RecursiveIteratorIterator::SELF_FIRST);
+        foreach($objects as $name => $object){
+            if("ui.js" === basename($name)) {
+                $uiPath = substr($name, strlen(APPLICATION_PATH) + 1);
+                $uiName = basename(dirname($name));
+                $uis[$uiName] = substr($uiPath, 0, -3);
+            }
         }
         return $uis;
     }
+
+    /**
+     * Construct Instagram API Client
+     * @return \Codebird\Codebird
+     */
+    // private static function instagram() {
+    //     $acl = self::get('acl');
+    //     $ZendDb = self::get('ZendDb');
+    //     // Social settings
+    //     $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $ZendDb);
+    //     $requiredKeys = array('instagram_oauth_access_token','instagram_client_id');
+    //     $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
+    //     $instagram = new \Instagram\Instagram;
+    //     $instagram->setAccessToken($socialSettings['instagram_oauth_access_token']['value']);
+    //     $instagram->setClientId($socialSettings['instagram_client_id']['value']);
+    //     return $instagram;
+    // }
 
 }

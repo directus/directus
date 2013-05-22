@@ -11,7 +11,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   var Module = {};
 
   Module.id = 'room_map';
-  Module.dataTypes = ['TEXT'];
+  Module.dataTypes = ['ALIAS'];
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'}
