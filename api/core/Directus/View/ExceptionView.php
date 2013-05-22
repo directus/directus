@@ -6,6 +6,7 @@ use Directus\Bootstrap;
 use Directus\Acl\Exception\AclException;
 use Directus\Db\Exception\RelationshipMetadataException;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
+use Directus\Db\Exception\CustomUiValidationError;
 
 class ExceptionView {
 
@@ -37,6 +38,14 @@ class ExceptionView {
          * Directus\Db\Exception\SuppliedArrayAsColumnValue
          */
         elseif($exception instanceof SuppliedArrayAsColumnValue) {
+            $httpCode = 422;
+            $data = array('message' => $exception->getMessage());
+        }
+
+        /**
+         * Directus\Db\Exception\CustomUiValidationError
+         */
+        elseif($exception instanceof CustomUiValidationError) {
             $httpCode = 422;
             $data = array('message' => $exception->getMessage());
         }
