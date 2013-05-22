@@ -4,6 +4,12 @@ namespace Directus\Util;
 
 class Formatting {
 
+	public static function underscoreToCamelCase($string) {
+	    $filtered = preg_replace("/(_)(.)/e", "strtoupper('\\2')", $string);
+	    $filtered = ucfirst($filtered);
+	    return $filtered;
+	}
+
 	/**
 	 * Credit: WORDPRESS 3.6-BETA3
 	 * http://wpseek.com/sanitize_title_with_dashes/
