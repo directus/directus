@@ -8,6 +8,7 @@ use Directus\Db\Exception;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableSchema;
+use Directus\Util\Formatting;
 use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
@@ -100,7 +101,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $aliasColumns = TableSchema::getAllAliasTableColumns($TableGateway->getTable());
             foreach($aliasColumns as $aliasColumn) {
                 if($aliasColumn['ui'] && array_key_exists($aliasColumn['ui'], $customUis)) {
-                    $formClassName = '\\' . underscoreToCamelCase($aliasColumn['ui']) . 'Form';
+                    $formClassName = '\\' . Formatting::underscoreToCamelCase($aliasColumn['ui']) . 'Form';
                     if(!class_exists($formClassName)) {
                         $classFilePath = APPLICATION_PATH . '/ui/' . $aliasColumn['ui'] . '/form.php';
                         if(!file_exists($classFilePath)) {

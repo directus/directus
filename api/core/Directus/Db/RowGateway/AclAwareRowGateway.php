@@ -12,6 +12,7 @@ use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
 use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableSchema;
+use Directus\Util\Formatting;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\RowGateway\RowGateway;
 
@@ -61,7 +62,7 @@ class AclAwareRowGateway extends RowGateway {
     public static function makeRowGatewayFromTableName($acl, $table, $adapter, $pkFieldName = 'id') {
         // Underscore to camelcase table name to namespaced row gateway classname,
         // e.g. directus_users => \Directus\Db\RowGateway\DirectusUsersRowGateway
-        $rowGatewayClassName = underscoreToCamelCase($table) . "RowGateway";
+        $rowGatewayClassName = Formatting::underscoreToCamelCase($table) . "RowGateway";
         $rowGatewayClassName = __NAMESPACE__ . "\\$rowGatewayClassName";
         if(class_exists($rowGatewayClassName))
             return new $rowGatewayClassName($acl, $pkFieldName, $table, $adapter);

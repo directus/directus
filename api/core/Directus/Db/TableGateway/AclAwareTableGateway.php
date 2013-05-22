@@ -12,6 +12,7 @@ use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
+use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Delete;
@@ -56,7 +57,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
      */
     public static function makeTableGatewayFromTableName($acl, $table, $adapter) {
-        $tableGatewayClassName = underscoreToCamelCase($table) . "TableGateway";
+        $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . "TableGateway";
         $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
         if(class_exists($tableGatewayClassName))
             return new $tableGatewayClassName($acl, $adapter);
