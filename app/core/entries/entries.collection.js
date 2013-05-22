@@ -40,7 +40,7 @@ function(app, Backbone, Collection, EntriesModel) {
         (attrs = {})[key] = value;
       }
       _.each(attrs, function(value, key) {
-        if (this.preferences.has(key)) {
+        if (this.preferences && this.preferences.has(key)) {
           preferencesHasChanged = true;
           this.preferences.set(key, value, {silent: true});
         } else {
