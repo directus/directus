@@ -75,16 +75,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   <table class="room_map"> \
                     <tbody> \
                     <tr> \
-                      <td><input type="text" maxlength="4" placeholder="A1"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A2"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A3"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A4"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A5"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A6"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A7"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A8"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A9"></td> \
-                      <td><input type="text" maxlength="4" placeholder="A10"></td> \
+                      <td><input type="text" maxlength="4" placeholder="A1" name="position[0][0]"></td> \
                     </tr> \
                     </tbody> \
                   </table> \
@@ -224,8 +215,11 @@ define(['app', 'backbone'], function(app, Backbone) {
               var $cell = $cellTpl.clone(),
                position = targetWidth + i,
                alpha = View.integerToAlphaSequence(index),
-               coord = alpha + position;
-              $cell.find('input').attr('placeholder', coord);
+               coord = alpha + position,
+               $input = $cell.find('input'),
+               name = 'position['+index+']['+(position-1)+']';
+              $input.attr('placeholder', coord);
+              $input.attr('name', name);
               $cell.appendTo($row);
             }
           });
@@ -246,8 +240,11 @@ define(['app', 'backbone'], function(app, Backbone) {
               var $cell = $(cell),
                position = targetDepth + i,
                alpha = View.integerToAlphaSequence(position),
-               coord = alpha + (index + 1);
-              $cell.find('input').attr('placeholder', coord);
+               coord = alpha + (index + 1),
+               $input = $cell.find('input'),
+               name = 'position['+position+']['+index+']';
+              $input.attr('placeholder', coord);
+              $input.attr('name', name);
             });
             $row.appendTo($roomBody);
           }
