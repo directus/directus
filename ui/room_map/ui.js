@@ -75,7 +75,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   <table class="room_map"> \
                     <tbody> \
                     <tr> \
-                      <td><input type="text" maxlength="4" placeholder="A1" name="position[0][0]"></td> \
+                      <td><input class="position serialize-exclude" type="text" maxlength="4" placeholder="A1" name="position[0][0]" data-x="0" data-y="0"></td> \
                     </tr> \
                     </tbody> \
                   </table> \
@@ -116,6 +116,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       if(type){
         $(e.target).addClass(type);
       }
+      this.updateUiFieldValue();
     },
 
     validateRoom: function(e) {
@@ -166,6 +167,10 @@ define(['app', 'backbone'], function(app, Backbone) {
       return seq;
     },
 
+    updateUiFieldValue: function() {
+      this.$el.find('input[name="Room Map"]').val(this.serializeGrid());
+    },
+
     updateRoomSize: function(e) {
       // console.log('updateRoomSize', e);
       var r = false == e ? null : confirm("Are you sure?\nThis will delete this rooms current setup")
@@ -189,17 +194,9 @@ define(['app', 'backbone'], function(app, Backbone) {
           $roomRows = $roomBody.children('tr'),
           currentWidth = $roomRows.first().children('td').length,
           currentDepth = $roomRows.length,
-          $cellTpl = $('<td><input type="text" maxlength="4" placeholder=""></td>');
-        // console.log('targetWidth', targetWidth);
-        // console.log('targetDepth', targetDepth);
-        // console.log('currentWidth', currentWidth);
-        // console.log('currentDepth', currentDepth);
-        // console.log('$roomMap', $roomMap);
-        // console.log('$roomBody', $roomBody);
-        // console.log('$roomRows', $roomRows);
+          $cellTpl = $('<td><input class="position serialize-exclude" type="text" maxlength="4" placeholder=""></td>');
         /** Update Width */
         var diff = currentWidth - targetWidth;
-        // console.log(diff);
         if(diff > 0) {
           // Remove the trailing width per row
           $roomRows.each(function(index, row) {
@@ -217,16 +214,17 @@ define(['app', 'backbone'], function(app, Backbone) {
                alpha = View.integerToAlphaSequence(index),
                coord = alpha + position,
                $input = $cell.find('input'),
-               name = 'position['+index+']['+(position-1)+']';
+               name = 'room_map['+index+']['+(position-1)+']';
               $input.attr('placeholder', coord);
               $input.attr('name', name);
+              $input.attr('data-x', index);
+              $input.attr('data-y', position-1);
               $cell.appendTo($row);
             }
           });
         }
         /** Update Depth */
         var diff = currentDepth - targetDepth;
-        // console.log(diff);
         if(diff > 0) {
           // Remove the trailing rows
           $roomRows.slice(-diff).remove();
@@ -242,14 +240,17 @@ define(['app', 'backbone'], function(app, Backbone) {
                alpha = View.integerToAlphaSequence(position),
                coord = alpha + (index + 1),
                $input = $cell.find('input'),
-               name = 'position['+position+']['+index+']';
+               name = 'room_map['+position+']['+index+']';
               $input.attr('placeholder', coord);
               $input.attr('name', name);
+              $input.attr('data-x', position);
+              $input.attr('data-y', index);
             });
             $row.appendTo($roomBody);
           }
         }
       }
+      this.updateUiFieldValue();
     },
 
     clearAllValues: function(e) {
@@ -257,6 +258,24 @@ define(['app', 'backbone'], function(app, Backbone) {
       if (r==true){
         this.$el.find('.room_map input').val('').removeClass("fan instructor seat warning");
       }
+    },
+
+    serializeGrid: function() {
+      var value = {},
+        $positions = this.$('input.position');
+      $positions.each(function(){
+        var x = $(this).data('x'),
+         y = $(this).data('y');
+        if(!value.hasOwnProperty(x))
+          value[x] = {};
+        value[x][y] = $(this).val();
+      });
+      console.log('$positions.length', $positions.length);
+      console.log('value', value);
+      value = JSON.stringify(value);
+      console.log('stringified', value);
+      // return value;
+      return new Handlebars.SafeString(value);
     },
 
     afterRender: function() {
@@ -274,10 +293,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var length = this.options.schema.get('char_length');
-      var value = this.options.value || '';
+      // var value = this.options.value || '';
+      var value = this.serializeGrid();
+      console.log('value', value);
       return {
         height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '100',
-        value: new Handlebars.SafeString(value),
+        value: value,
+        // value: new Handlebars.SafeString(value),
         name: this.options.name,
         maxLength: length,
         characters: length - value.length,
