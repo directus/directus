@@ -73,6 +73,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   } \
                   </style> \
                   <table class="room_map"> \
+                    <tbody> \
                     <tr> \
                       <td><input type="text" maxlength="4" placeholder="A1"></td> \
                       <td><input type="text" maxlength="4" placeholder="A2"></td> \
@@ -85,78 +86,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                       <td><input type="text" maxlength="4" placeholder="A9"></td> \
                       <td><input type="text" maxlength="4" placeholder="A10"></td> \
                     </tr> \
-                    <tr> \
-                      <td><input type="text" maxlength="4" placeholder="B1"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B2"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B3"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B4"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B5"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B6"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B7"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B8"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B9"></td> \
-                      <td><input type="text" maxlength="4" placeholder="B10"></td> \
-                    </tr> \
-                    <tr> \
-                      <td><input type="text" maxlength="4" placeholder="C1"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C2"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C3"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C4"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C5"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C6"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C7"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C8"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C9"></td> \
-                      <td><input type="text" maxlength="4" placeholder="C10"></td> \
-                    </tr> \
-                    <tr> \
-                      <td><input type="text" maxlength="4" placeholder="D1"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D2"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D3"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D4"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D5"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D6"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D7"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D8"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D9"></td> \
-                      <td><input type="text" maxlength="4" placeholder="D10"></td> \
-                    </tr> \
-                    <tr> \
-                      <td><input type="text" maxlength="4" placeholder="E1"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E2"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E3"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E4"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E5"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E6"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E7"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E8"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E9"></td> \
-                      <td><input type="text" maxlength="4" placeholder="E10"></td> \
-                    </tr> \
-                    <tr> \
-                      <td><input type="text" maxlength="4" placeholder="F1"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F2"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F3"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F4"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F5"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F6"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F7"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F8"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F9"></td> \
-                      <td><input type="text" maxlength="4" placeholder="F10"></td> \
-                    </tr> \
-                    <tr> \
-                      <td><input type="text" maxlength="4" placeholder="G1"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G2"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G3"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G4"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G5"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G6"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G7"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G8"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G9"></td> \
-                      <td><input type="text" maxlength="4" placeholder="G10"></td> \
-                    </tr> \
+                    </tbody> \
                   </table> \
                   <div class="btn-row"> \
                     <button class="btn btn-small btn-primary update-room-size" data-action="add" type="button">Update room size</button> \
@@ -171,13 +101,13 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'keyup .room_map input': 'updateRoom',
+      'keyup .room_map input': 'updatePosition',
       'blur .room_map input': 'validateRoom',
       'click .update-room-size': 'updateRoomSize',
       'click .clear-all-values': 'clearAllValues'
     },
 
-    updateRoom: function(e) {
+    updatePosition: function(e) {
       var value = e.target.value;
       var type = false;
       var intRegex = /^\d+$/;
@@ -224,11 +154,104 @@ define(['app', 'backbone'], function(app, Backbone) {
       }
     },
 
+    // Warning: at depth 51, 'ZZZ' is returned instead of 'ZZ',
+    // however this depth is out of scope of our use case.
+    integerToAlphaSequence: function(depth) {
+      // console.log('-----------------');
+      // console.log('ITAS depth:', depth);
+      var charQty = 1;
+      if(depth >= 25) {
+        charQty = Math.ceil(depth / 25);
+        depth = (depth % 26);
+        // console.log('new charQty (ceil:' + depth + ' / 25):', charQty);
+        // console.log('new depth ('+depth+' % 26):', depth);
+      }
+      charQty++;
+      var chr = String.fromCharCode(65 + depth),
+        seq = new Array(charQty).join(chr);
+      // console.log('charQty:',charQty);
+      // console.log('chr:',chr);
+      // console.log('seq:',seq);
+      return seq;
+    },
+
     updateRoomSize: function(e) {
-      var r=confirm("Are you sure?\nThis will delete this rooms current setup")
-      if (r==true){
-        var roomWidth = this.$('#room_width').val();
-        $(".room_map tr").append('<td><input type="text" maxlength="4" placeholder="E1"></td>');
+      // console.log('updateRoomSize', e);
+      var r = false == e ? null : confirm("Are you sure?\nThis will delete this rooms current setup")
+      if(false == r) {
+        if('change' === e.type) {
+          var $input = $(e.target),
+            lastValue = this.lastValues[$input.attr('name')];
+          $input.val(lastValue);
+          return;
+        }
+      } else if (false == e || r == true) {
+        if('change' === e.type) {
+          // Maintain a copy of the latest values so we can revert them if the update prompt is declined.
+          var $input = $(e.target);
+          this.lastValues[$input.attr('name')] = $input.val();
+        }
+        var targetWidth = parseInt($('#room_width').val()),
+          targetDepth = parseInt($('#room_depth').val()),
+          $roomMap = this.$('.room_map'),
+          $roomBody = $roomMap.find('tbody'),
+          $roomRows = $roomBody.children('tr'),
+          currentWidth = $roomRows.first().children('td').length,
+          currentDepth = $roomRows.length,
+          $cellTpl = $('<td><input type="text" maxlength="4" placeholder=""></td>');
+        // console.log('targetWidth', targetWidth);
+        // console.log('targetDepth', targetDepth);
+        // console.log('currentWidth', currentWidth);
+        // console.log('currentDepth', currentDepth);
+        // console.log('$roomMap', $roomMap);
+        // console.log('$roomBody', $roomBody);
+        // console.log('$roomRows', $roomRows);
+        /** Update Width */
+        var diff = currentWidth - targetWidth;
+        // console.log(diff);
+        if(diff > 0) {
+          // Remove the trailing width per row
+          $roomRows.each(function(index, row) {
+            $(row).children().slice(-diff).remove();
+          });
+        } else if(diff < 0) {
+          // Add trailing width per row
+          var View = this;
+          $roomRows.each(function(index, row) {
+            var $row = $(row),
+              $lastCell = $row.children().last();
+            for(var i = diff + 1; i < 1; i++) {
+              var $cell = $cellTpl.clone(),
+               position = targetWidth + i,
+               alpha = View.integerToAlphaSequence(index),
+               coord = alpha + position;
+              $cell.find('input').attr('placeholder', coord);
+              $cell.appendTo($row);
+            }
+          });
+        }
+        /** Update Depth */
+        var diff = currentDepth - targetDepth;
+        // console.log(diff);
+        if(diff > 0) {
+          // Remove the trailing rows
+          $roomRows.slice(-diff).remove();
+        } else if(diff < 0) {
+          // Add trailing rows
+          var $lastRow = $roomRows.last();
+          var View = this;
+          for(var i = diff; i < 0; i++) {
+            $row = $lastRow.clone();
+            $row.children().each(function(index, cell) {
+              var $cell = $(cell),
+               position = targetDepth + i,
+               alpha = View.integerToAlphaSequence(position),
+               coord = alpha + (index + 1);
+              $cell.find('input').attr('placeholder', coord);
+            });
+            $row.appendTo($roomBody);
+          }
+        }
       }
     },
 
@@ -240,7 +263,16 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     afterRender: function() {
+      this.lastValues = {};
+      var View = this;
+      // Maintain a copy of the latest values so we can revert them if the update prompt is declined.
+      $('#room_depth, #room_width').each(function(){
+        View.lastValues[$(this).attr('name')] = $(this).val();
+      });
       //if (this.options.settings.get("readonly") === "on") this.$("input").prop("readonly",true);
+      this.updateRoomSize = _.bind(this.updateRoomSize, this);
+      $('#room_depth, #room_width').change(this.updateRoomSize);
+      this.updateRoomSize(false);
     },
 
     serialize: function() {
