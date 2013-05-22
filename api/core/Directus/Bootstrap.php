@@ -200,7 +200,7 @@ class Bootstrap {
         $uis = array();
         $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uiDirectory), \RecursiveIteratorIterator::SELF_FIRST);
         foreach($objects as $name => $object){
-            if("ui.js" === basename($name)) {
+            if("ui.js" == basename($name)) {
                 $uiPath = substr($name, strlen(APPLICATION_PATH) + 1);
                 $uiName = basename(dirname($name));
                 $uis[$uiName] = substr($uiPath, 0, -3);
@@ -208,22 +208,5 @@ class Bootstrap {
         }
         return $uis;
     }
-
-    /**
-     * Construct Instagram API Client
-     * @return \Codebird\Codebird
-     */
-    // private static function instagram() {
-    //     $acl = self::get('acl');
-    //     $ZendDb = self::get('ZendDb');
-    //     // Social settings
-    //     $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $ZendDb);
-    //     $requiredKeys = array('instagram_oauth_access_token','instagram_client_id');
-    //     $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
-    //     $instagram = new \Instagram\Instagram;
-    //     $instagram->setAccessToken($socialSettings['instagram_oauth_access_token']['value']);
-    //     $instagram->setClientId($socialSettings['instagram_client_id']['value']);
-    //     return $instagram;
-    // }
 
 }
