@@ -111,7 +111,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         if(!class_exists($formClassName)) {
                             throw new \RuntimeError("Expected class $formClassName to be defined in $classFilePath for custom UI processing.");
                         }
-                        $form = new $formClassName($recordData);
+                        $form = new $formClassName($recordData, $parentRecordWithForeignKeys);
                         if(!$form->isValid()) {
                             $failedField = $TableGateway->getTable() . "[" . $aliasColumn['id'] . "]";
                             throw new Exception\CustomUiValidationError("Custom UI Form validation failed for field $failedField via $formClassName");
@@ -121,9 +121,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 }
             }
 
-            // Update the parent row, w/ any new association fields replaced by their IDs
-            $newRecordObject = $TableGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
-            // $log->info("Parent record with foreign keys (post-#addOrUpdateRecordByArray): " . print_r($newRecordObject->toArray(), true));
+            // After UI processing, do we still have non-PK data?
+            $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
+            if($parentRecordChanged) {
+                // Update the parent row, w/ any new association fields replaced by their IDs
+                $newRecordObject = $TableGateway->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
+                // $log->info("Parent record with foreign keys (post-#addOrUpdateRecordByArray): " . print_r($newRecordObject->toArray(), true));
+            }
         }
 
         // Load full record post-facto, for:
