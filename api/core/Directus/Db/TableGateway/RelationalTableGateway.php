@@ -129,7 +129,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Load full record post-facto, for:
         // - loading record identifier
         // - storing a full representation in the activity log
-        $fullRecordData = $TableGateway->find($newRecordObject['id']);
+        $fullRecordData = $TableGateway->find($parentRecordWithForeignKeys['id']);
         $deltaRecordData = array_intersect_key((array) $parentRecordWithForeignKeys, (array) $fullRecordData);
         $rowId = $recordIsNew ? $newRecordObject['id'] : $parentRecordWithForeignKeys['id'];
 
