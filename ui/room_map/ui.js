@@ -75,7 +75,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   <table class="room_map"> \
                     <tbody> \
                     <tr> \
-                      <td><input class="position serialize-exclude" type="text" maxlength="4" placeholder="A1" name="position[0][0]" data-x="0" data-y="0"></td> \
+                      <td><input class="position serialize-exclude" type="text" maxlength="4" placeholder="A1" name="room_map[0][0]" data-x="0" data-y="0"></td> \
                     </tr> \
                     </tbody> \
                   </table> \
@@ -149,21 +149,14 @@ define(['app', 'backbone'], function(app, Backbone) {
     // Warning: at depth 51, 'ZZZ' is returned instead of 'ZZ',
     // however this depth is out of scope of our use case.
     integerToAlphaSequence: function(depth) {
-      // console.log('-----------------');
-      // console.log('ITAS depth:', depth);
       var charQty = 1;
       if(depth >= 25) {
         charQty = Math.ceil(depth / 25);
         depth = (depth % 26);
-        // console.log('new charQty (ceil:' + depth + ' / 25):', charQty);
-        // console.log('new depth ('+depth+' % 26):', depth);
       }
       charQty++;
       var chr = String.fromCharCode(65 + depth),
         seq = new Array(charQty).join(chr);
-      // console.log('charQty:',charQty);
-      // console.log('chr:',chr);
-      // console.log('seq:',seq);
       return seq;
     },
 
@@ -174,8 +167,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     updateRoomSize: function(e) {
-      // console.log('updateRoomSize', e);
-      var r = false == e ? null : confirm("Are you sure?\nThis will delete this rooms current setup")
+      var r = false == e ? null : confirm("Are you sure?")
       if(false == r) {
         if('change' === e.type) {
           var $input = $(e.target),
@@ -184,36 +176,37 @@ define(['app', 'backbone'], function(app, Backbone) {
           return;
         }
       } else if (false == e || r == true) {
+
+        // Maintain a copy of the latest values so we can revert them if the update prompt is declined.
         if('change' === e.type) {
-          // Maintain a copy of the latest values so we can revert them if the update prompt is declined.
           var $input = $(e.target);
           this.lastValues[$input.attr('name')] = $input.val();
         }
-        var targetWidth = parseInt($('#room_width').val()),
-          targetDepth = parseInt($('#room_depth').val()),
-          $roomMap = this.$('.room_map'),
-          $roomBody = $roomMap.find('tbody'),
-          $roomRows = $roomBody.children('tr'),
-          currentWidth = $roomRows.first().children('td').length,
-          currentDepth = $roomRows.length,
-          $cellTpl = $('<td><input class="position serialize-exclude" type="text" maxlength="4" placeholder=""></td>');
+
+        var targetWidth = parseInt(this.$roomWidth.val()),
+          targetDepth = parseInt(this.$roomDepth.val()),
+          currentWidth = this.$roomRows.first().children('td').length,
+          currentDepth = this.$roomRows.length;
+
         /** Update Width */
         var diff = currentWidth - targetWidth;
+
+        // Remove the trailing width per row
         if(diff > 0) {
-          // Remove the trailing width per row
-          $roomRows.each(function(index, row) {
+          this.$roomRows.each(function(index, row) {
             $(row).children().slice(-diff).remove();
           });
-        } else if(diff < 0) {
-          // Add trailing width per row
-          var View = this;
-          $roomRows.each(function(index, row) {
+        }
+
+        // Add trailing width per row
+        else if(diff < 0) {
+          this.$roomRows.each(_.bind(function(index, row) {
             var $row = $(row),
               $lastCell = $row.children().last();
             for(var i = diff + 1; i < 1; i++) {
-              var $cell = $cellTpl.clone(),
+              var $cell = this.$cellTpl.clone(),
                position = targetWidth + i,
-               alpha = View.integerToAlphaSequence(index),
+               alpha = this.integerToAlphaSequence(index),
                coord = alpha + position,
                $input = $cell.find('input'),
                name = 'room_map['+index+']['+(position-1)+']';
@@ -223,23 +216,26 @@ define(['app', 'backbone'], function(app, Backbone) {
               $input.attr('data-y', position-1);
               $cell.appendTo($row);
             }
-          });
+          }, this));
         }
+
         /** Update Depth */
         var diff = currentDepth - targetDepth;
+
+        // Remove the trailing rows
         if(diff > 0) {
-          // Remove the trailing rows
-          $roomRows.slice(-diff).remove();
-        } else if(diff < 0) {
-          // Add trailing rows
-          var $lastRow = $roomRows.last();
-          var View = this;
+          this.$roomRows.slice(-diff).remove();
+        }
+
+        // Add trailing rows
+        else if(diff < 0) {
+          var $lastRow = this.$roomRows.last();
           for(var i = diff; i < 0; i++) {
             $row = $lastRow.clone();
-            $row.children().each(function(index, cell) {
+            $row.children().each(_.bind(function(index, cell) {
               var $cell = $(cell),
                position = targetDepth + i,
-               alpha = View.integerToAlphaSequence(position),
+               alpha = this.integerToAlphaSequence(position),
                coord = alpha + (index + 1),
                $input = $cell.find('input'),
                name = 'room_map['+position+']['+index+']';
@@ -247,8 +243,8 @@ define(['app', 'backbone'], function(app, Backbone) {
               $input.attr('name', name);
               $input.attr('data-x', position);
               $input.attr('data-y', index);
-            });
-            $row.appendTo($roomBody);
+            }, this));
+            $row.appendTo(this.$roomBody);
           }
         }
       }
@@ -258,7 +254,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     clearAllValues: function(e) {
       var r=confirm("Are you sure?")
       if (r==true){
-        this.$el.find('.room_map input').val('').removeClass("fan instructor seat warning");
+        this.$roomMap.find('input').val('').removeClass("fan instructor seat warning");
       }
     },
 
@@ -276,17 +272,48 @@ define(['app', 'backbone'], function(app, Backbone) {
       return value;
     },
 
+    loadSeatData: function() {
+      this.seats.each(_.bind(function(seat, index){
+        if(seat.get('room_id') == this.model.id) {
+          var x = seat.get('x'),
+            y = seat.get('y'),
+            value = seat.get('value');
+          var $cell = this.$roomBody.find('input[name="room_map['+x+']['+y+']"]');
+          $cell.val(value).trigger('keyup');
+        }
+      }, this));
+    },
+
     afterRender: function() {
-      this.lastValues = {};
-      var View = this;
+      this.$roomWidth = $('#room_width');
+      this.$roomDepth = $('#room_depth');
+      this.$roomMap = this.$('.room_map');
+      this.$roomBody = this.$roomMap.find('tbody');
+      this.$roomRows = this.$roomBody.children('tr');
+      this.$cellTpl = $('<td><input class="position serialize-exclude" type="text" maxlength="4" placeholder=""></td>');
+      this.$roomDimensions = $([this.$roomWidth, this.$roomDepth]);
+
+      //if (this.options.settings.get("readonly") === "on") this.$("input").prop("readonly",true);
       // Maintain a copy of the latest values so we can revert them if the update prompt is declined.
-      $('#room_depth, #room_width').each(function(){
+      var View = this;
+      this.lastValues = {};
+      this.$roomDimensions.each(function(){
         View.lastValues[$(this).attr('name')] = $(this).val();
       });
-      //if (this.options.settings.get("readonly") === "on") this.$("input").prop("readonly",true);
+
       this.updateRoomSize = _.bind(this.updateRoomSize, this);
-      $('#room_depth, #room_width').change(this.updateRoomSize);
+      this.$roomDimensions.change(this.updateRoomSize);
       this.updateRoomSize(false);
+
+      this.seats = app.entries.seats;
+      if(0 == this.seats.length) {
+        this.seats.once('sync', _.bind(function() {
+          this.loadSeatData();
+        }, this));
+        this.seats.fetch();
+      } else {
+        this.loadSeatData();
+      }
     },
 
     serialize: function() {
