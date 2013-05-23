@@ -514,10 +514,9 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
 $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($db, $acl, $ZendDb, $params) {
     $params['table_name'] = $table;
     $params['id'] = $id;
-    $get_old = $db->get_revisions($params);
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
-    $get_new = $Activity->fetchRevisions($id, $table);
-    JsonView::render($get_new, $get_old);
+    $revisions = $Activity->fetchRevisions($id, $table);
+    JsonView::render($revisions);
 });
 
 /**
