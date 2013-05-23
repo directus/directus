@@ -167,6 +167,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     updateRoomSize: function(e) {
+      console.log('siup');
       var r = undefined == e ? null : confirm("Are you sure?")
       if(false == r) {
         if('change' === e.type) {
@@ -201,8 +202,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         // Add trailing width per row
         else if(diff < 0) {
           this.$roomRows.each(_.bind(function(index, row) {
-            var $row = $(row),
-              $lastCell = $row.children().last();
+            var $row = $(row);
             for(var i = diff + 1; i < 1; i++) {
               var $cell = this.$cellTpl.clone(),
                position = targetWidth + i,
@@ -232,6 +232,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           var $lastRow = this.$roomRows.last();
           for(var i = diff; i < 0; i++) {
             $row = $lastRow.clone();
+            $row.find('input').val('').removeClass("fan instructor seat warning");
             $row.children().each(_.bind(function(index, cell) {
               var $cell = $(cell),
                position = targetDepth + i,
@@ -302,7 +303,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       });
 
       this.updateRoomSize = _.bind(this.updateRoomSize, this);
-      this.$roomDimensions.change(this.updateRoomSize);
+      $('#room_width, #room_depth').change(this.updateRoomSize);
       this.updateRoomSize();
 
       this.seats = app.entries.seats;
