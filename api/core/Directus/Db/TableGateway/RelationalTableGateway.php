@@ -129,9 +129,23 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Load full record post-facto, for:
         // - loading record identifier
         // - storing a full representation in the activity log
-        $fullRecordData = $TableGateway->find($parentRecordWithForeignKeys['id']);
-        $deltaRecordData = array_intersect_key((array) $parentRecordWithForeignKeys, (array) $fullRecordData);
         $rowId = $recordIsNew ? $newRecordObject['id'] : $parentRecordWithForeignKeys['id'];
+        $fullRecordData = $TableGateway->find($rowId);
+        $deltaRecordData = $recordIsNew ? array() : array_intersect_key((array) $parentRecordWithForeignKeys, (array) $fullRecordData);
+
+        // if(false === $newRecordObject)
+        //     $log->info('newRecordObject is false');
+        // elseif(null === $newRecordObject)
+        //     $log->info('newRecordObject is null');
+        // elseif(!is_object($newRecordObject))
+        //     $log->info('newRecordObject ' . print_r($newRecordObject, true));
+        // else
+        //     $log->info('newRecordObject ' . print_r($newRecordObject->toArray(), true));
+
+        // if(false === $fullRecordData)
+        //     $log->info('fullRecordData is false');
+        // else
+        //     $log->info('fullRecordData ' . print_r($fullRecordData, true));
 
         switch($activityEntryMode) {
 
