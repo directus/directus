@@ -167,7 +167,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     updateRoomSize: function(e) {
-      var r = false == e ? null : confirm("Are you sure?")
+      var r = undefined == e ? null : confirm("Are you sure?")
       if(false == r) {
         if('change' === e.type) {
           var $input = $(e.target),
@@ -175,10 +175,10 @@ define(['app', 'backbone'], function(app, Backbone) {
           $input.val(lastValue);
           return;
         }
-      } else if (false == e || r == true) {
+      } else {
 
         // Maintain a copy of the latest values so we can revert them if the update prompt is declined.
-        if('change' === e.type) {
+        if(e && 'change' === e.type) {
           var $input = $(e.target);
           this.lastValues[$input.attr('name')] = $input.val();
         }
@@ -303,7 +303,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       this.updateRoomSize = _.bind(this.updateRoomSize, this);
       this.$roomDimensions.change(this.updateRoomSize);
-      this.updateRoomSize(false);
+      this.updateRoomSize();
 
       this.seats = app.entries.seats;
       if(0 == this.seats.length) {
@@ -314,6 +314,16 @@ define(['app', 'backbone'], function(app, Backbone) {
       } else {
         this.loadSeatData();
       }
+
+      // Hack, since this isn't actually a relational field:
+      // Fetch seats rows &
+      // Update the seats UI in this room edit view once our room syncs
+      this.model.once('all', _.bind(function(e){
+        this.seats.once('sync', _.bind(function() {
+          this.loadSeatData();
+        }, this));
+        this.seats.fetch();
+      }, this));
     },
 
     serialize: function() {
