@@ -146,6 +146,17 @@ define(['app', 'backbone'], function(app, Backbone) {
       }
     },
 
+    // Just can't count on afterRender.
+    reestablishRoomFields: function() {
+      this.$roomWidth = $('#room_width');
+      this.$roomDepth = $('#room_depth');
+      this.$roomMap = this.$('.room_map');
+      this.$roomBody = this.$roomMap.find('tbody');
+      this.$roomRows = this.$roomBody.children('tr');
+      this.$cellTpl = $('<td><input class="position serialize-exclude" type="text" maxlength="4" placeholder=""></td>');
+      this.$roomDimensions = $([this.$roomWidth, this.$roomDepth]);
+    },
+
     // Warning: at depth 51, 'ZZZ' is returned instead of 'ZZ',
     // however this depth is out of scope of our use case.
     integerToAlphaSequence: function(depth) {
@@ -167,7 +178,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     updateRoomSize: function(e) {
-      console.log('siup');
+      this.reestablishRoomFields();
       var r = undefined == e ? null : confirm("Are you sure?")
       if(false == r) {
         if('change' === e.type) {
@@ -195,7 +206,9 @@ define(['app', 'backbone'], function(app, Backbone) {
         // Remove the trailing width per row
         if(diff > 0) {
           this.$roomRows.each(function(index, row) {
-            $(row).children().slice(-diff).remove();
+            var $rowCells = $(row).children();
+            var $latterRowCells = $rowCells.slice(-diff);
+            $latterRowCells.remove();
           });
         }
 
@@ -286,13 +299,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     afterRender: function() {
-      this.$roomWidth = $('#room_width');
-      this.$roomDepth = $('#room_depth');
-      this.$roomMap = this.$('.room_map');
-      this.$roomBody = this.$roomMap.find('tbody');
-      this.$roomRows = this.$roomBody.children('tr');
-      this.$cellTpl = $('<td><input class="position serialize-exclude" type="text" maxlength="4" placeholder=""></td>');
-      this.$roomDimensions = $([this.$roomWidth, this.$roomDepth]);
+      this.reestablishRoomFields();
 
       //if (this.options.settings.get("readonly") === "on") this.$("input").prop("readonly",true);
       // Maintain a copy of the latest values so we can revert them if the update prompt is declined.
