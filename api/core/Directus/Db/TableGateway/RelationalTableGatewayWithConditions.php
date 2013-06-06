@@ -50,22 +50,34 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
         // in the json does not reflect these filters...
         // -MG
         if (array_key_exists('where',$params)) {
-            $where = $select->where->nest;
+            $outer = $select->where->nest;
             foreach ($params['where'] as $whereCond) {
                 $type = $whereCond['type'];
                 $column = $whereCond['column'];
 
                 if ($type == 'equalTo') {
                     $val = $whereCond['val'];
-                    $where->equalTo($column, $val);
+                    if (is_array($val)) {
+                        $where = $select->where->nest;
+                        foreach ($val as $currentval) {
+                            $where->equalTo($column, $currentval);
+                            if ($currentval != end($val)) {
+                                $where->or;
+                            }
+                        }
+                        $where->unnest;
+                    } else {
+                        $outer->equalTo($column, $val);
+                    }
+                    
                 } else if ($type == 'between') {
                     $val1 = $whereCond['val1'];
                     $val2 = $whereCond['val2'];
-                    $where->between($column, $val1, $val2);
+                    $outer->between($column, $val1, $val2);
                 }
 
             }
-             $where->unnest;
+             $outer->unnest;
         }
             
         if(isset($params['search']) && !empty($params['search'])) {
@@ -80,9 +92,9 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             }
             $where->unnest;
         }
-            //$log = Bootstrap::get('log');
-            //$log->info(__CLASS__.'#'.__FUNCTION__);
-            //$log->info("New search query: " . $this->dumpSql($select));
+        //    $log = Bootstrap::get('log');
+        //    $log->info(__CLASS__.'#'.__FUNCTION__);
+        //    $log->info("New search query: " . $this->dumpSql($select));
         return $select;
     }
 
