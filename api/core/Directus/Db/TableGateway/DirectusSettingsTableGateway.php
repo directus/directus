@@ -16,7 +16,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public function fetchAll() {
+    public function fetchAll($selectModifier = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
         $select->columns(array('collection','name','value'))
