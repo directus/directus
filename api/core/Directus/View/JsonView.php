@@ -41,15 +41,17 @@ class JsonView {
             $responseData = $preDispatch($responseData);
         }
         $responseData = json_encode($responseData);
-        if(true) // e.g. 'production' !== DIRECTUS_ENV
+        if(true) { // e.g. 'production' !== DIRECTUS_ENV
             $responseData = self::format_json($responseData);
+        }
 
         /**
          * TRANSITIONAL - Do comparison between two possible responses, the old
          * DB layer response data and the new.
          */
-        if(!is_null($responseDataComparison))
+        if(!is_null($responseDataComparison)) {
             self::compareApiResponses($responseData, $responseDataComparison);
+        }
 
         echo $responseData;
     }
