@@ -17,7 +17,8 @@ class Middleware {
         }
     }
 
-    public static function refuseWithErrorMessage($errorMessage, $responseType = 'redirect') {
+    public static function refuseWithErrorMessage($errorMessage, $responseType = 'redirect', $errorCode = "403 Forbidden") {
+        header('HTTP/1.1 ' . $errorCode);
         $app = Slim::getInstance();
         switch($responseType) {
             case 'json':
