@@ -67,6 +67,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     /**
      * HELPER FUNCTIONS
      */
+    
+    public function newRow($table = null, $pk_field_name = null)
+    {
+        $table = is_null($table) ? $this->table : $table;
+        $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
+        $row = new AclAwareRowGateway($this->aclProvider, $pk_field_name, $table, $this->adapter);
+        return $row;
+    }
 
     public function find($id, $pk_field_name = "id") {
         $record = $this->findOneBy($pk_field_name, $id);
