@@ -72,7 +72,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     {
         $table = is_null($table) ? $this->table : $table;
         $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
-        $row = new AclAwareRowGateway($this->aclProvider, $pk_field_name, $table, $this->adapter);
+        $row = new AclAwareRowGateway($this->acl, $pk_field_name, $table, $this->adapter);
         return $row;
     }
 
