@@ -90,7 +90,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
                     <img src="{{url}}"> \
                   </div> \
                   <div class="ui-img-details"> \
-                    <a href="#" class="title">{{title}}</a><br> \
+                    <a href="#" class="title">{{mediaModel.title}}</a><br> \
                     Uploaded by {{userName user}} {{contextualDate mediaModel.date_uploaded}}<br> \
                     <i>{{mediaModel.width}} &times; {{mediaModel.height}} – {{bytesToSize mediaModel.size}}</i><br> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose media</button> \
