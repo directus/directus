@@ -17,7 +17,8 @@ class Middleware {
         }
     }
 
-    public static function refuseWithErrorMessage($errorMessage, $responseType = 'redirect') {
+    public static function refuseWithErrorMessage($errorMessage, $responseType = 'redirect', $errorCode = "403 Forbidden") {
+        header('HTTP/1.1 ' . $errorCode);
         $app = Slim::getInstance();
         switch($responseType) {
             case 'json':
@@ -27,7 +28,7 @@ class Middleware {
                 );
                 $view = $app->view();
                 $view->setData('jsonResponse', $jsonResponse);
-                MW::renderJson();
+                \Directus\Slim\Middleware::renderJson();
                 break;
             case 'redirect':
             default:
@@ -48,7 +49,7 @@ class Middleware {
                 return true;
             }
 	        $errorMessage = 'You must be logged in to perform that action.';
-	        MW::refuseWithErrorMessage($errorMessage, $responseType);
+	        \Directus\Slim\Middleware::refuseWithErrorMessage($errorMessage, $responseType);
         };
     }
 
@@ -59,7 +60,7 @@ class Middleware {
                 return true;
             }
             $errorMessage = 'You must be logged out to perform that action.';
-	        MW::refuseWithErrorMessage($errorMessage, $responseType);
+	        \Directus\Slim\Middleware::refuseWithErrorMessage($errorMessage, $responseType);
         };
     }
 
