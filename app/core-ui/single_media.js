@@ -26,7 +26,9 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     {id: 'allowed_filetypes', ui: 'textinput', char_length:200}
   ];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
+  //{{capitalize mediaModel.title}}
+
+  var template =  '<label>{{ capitalize name }} <span class="note">{{comment}}</span></label> \
                   <style type="text/css"> \
                   div.ui-thumbnail { \
                     float: left; \
@@ -89,8 +91,8 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
                   </div> \
                   <div class="ui-img-details"> \
                     <a href="#" class="title">{{title}}</a><br> \
-                    Uploaded by {{userName user}} {{contextualDate date_uploaded}}<br> \
-                    <i>{{width}} &times; {{height}} – {{bytesToSize size}}</i><br> \
+                    Uploaded by {{userName user}} {{contextualDate mediaModel.date_uploaded}}<br> \
+                    <i>{{mediaModel.width}} &times; {{mediaModel.height}} – {{bytesToSize mediaModel.size}}</i><br> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose media</button> \
                     <button class="btn btn-small btn-primary btn-right" data-action="remove" type="button">Remove media</button> \
                   </div> \
@@ -184,11 +186,12 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     serialize: function() {
       var url = this.mediaModel.has('name') ? app.RESOURCES_URL + 'thumbnail/' + this.mediaModel.get('name') : null;
       var data = {
+        name: this.options.name,
         url: url,
         comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
+        mediaModel: this.mediaModel.toJSON()
       };
-      _.extend(data, this.mediaModel.toJSON());
       return data;
     },
 
