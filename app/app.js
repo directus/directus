@@ -134,6 +134,7 @@ function(Handlebars) {
       'Html': 'HTML',
       'Js': 'JS',
       'Css': 'CSS',
+      'Sku': 'SKU',
       'Rngr': 'RNGR',
       'Soulcycle': 'SoulCycle'
     },
