@@ -124,6 +124,7 @@ function(Handlebars) {
       'iPad',
       'iPod',
       'iOS',
+      'iMac',
       'PDF',
       'PDFs',
       'URL',
@@ -142,6 +143,8 @@ function(Handlebars) {
       'SKU',
       'DateTime',
       'RNGR',
+      'CC',
+      'CCV',
       'SoulCycle'
     ],
 
