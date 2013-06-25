@@ -94,4 +94,64 @@ require([
     return new Handlebars.SafeString('<img src="'+user.get('avatar')+'"  class="avatar"/>'+user.get('first_name')+' '+user.get('last_name'));
   });
 
+  Handlebars.registerHelper('directusTable', function(data) {
+
+    if (data === undefined || !data.length) return;
+
+    var headers = _.keys(data[0]);
+
+    var headersTH = _.map(headers, function(header) { return '<th>' + app.capitalize(header, '_') + '</th>'; });
+
+    var tHead = '<thead><tr>' + headersTH.join('') + '</tr></thead>';
+
+    var tableRows = _.map(data, function(row) {
+      //wrap values in td
+      var values = _.values(row);
+      var tds = _.map(values, function(value) { return '<td>' + value + '</td>'; });
+      return '<tr>' + tds.join('') + '</tr>';
+    });
+
+    var tBody = '<tbody>' + tableRows.join('') + '</tbody>';
+
+    var table = '<table class="table table-striped directus-table">' + tHead + tBody + '</table>';
+
+    return new Handlebars.SafeString(table);
+  });
+
+  Handlebars.registerHelper('directusTable', function(data) {
+
+    if (data === undefined || !data.length) return;
+
+    var headers = _.keys(data[0]);
+
+    var headersTH = _.map(headers, function(header) { return '<th>' + app.capitalize(header, '_') + '</th>'; });
+
+    var tHead = '<thead><tr>' + headersTH.join('') + '</tr></thead>';
+
+    var tableRows = _.map(data, function(row) {
+      //wrap values in td
+      var values = _.values(row);
+      var tds = _.map(values, function(value) { return '<td>' + value + '</td>'; });
+      return '<tr>' + tds.join('') + '</tr>';
+    });
+
+    var tBody = '<tbody>' + tableRows.join('') + '</tbody>';
+
+    var table = '<table class="table table-striped directus-table">' + tHead + tBody + '</table>';
+
+    return new Handlebars.SafeString(table);
+  });
+
+  Handlebars.registerHelper('directusSelect', function(data) {
+    if (data === undefined || !data.length) return;
+    var options = _.map(data, function(item) {
+      var selected = item.selected ? 'selected' : '';
+      return '<option value="' + item.name + '" ' + selected + '>' + item.value + '</option>';
+    });
+
+    var select = '<select>' + options.join('') + '</select>';
+
+    return new Handlebars.SafeString(select);
+  });
+
 });
