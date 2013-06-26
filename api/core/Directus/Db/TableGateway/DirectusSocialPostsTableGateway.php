@@ -40,6 +40,8 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
             ->order('datetime DESC');
         $select
             ->where
+                ->equalTo('directus_social_posts.active', 1)
+                ->equalTo('directus_social_feeds.active', 1)
                 ->equalTo('directus_social_feeds.type', $type)
                 ->equalTo('directus_social_feeds.name', $handle);
         return $this->selectWith($select);
@@ -50,6 +52,10 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
         $select
             ->join('directus_social_feeds', 'directus_social_feeds.id = directus_social_posts.feed', array('feed_type' => 'type'))
             ->order('directus_social_posts.datetime DESC');
+        $select
+            ->where
+                ->equalTo('directus_social_posts.active', 1)
+                ->equalTo('directus_social_feeds.active', 1);
         $FeedWhere = new Where;
         $SocialCache = new SocialCache();
         foreach($feeds as $feed) {
