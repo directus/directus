@@ -96,8 +96,10 @@ class Cache {
         $statuses = (array) $cb->statuses_userTimeline(array('screen_name' => $feed['name']));
         $httpStatus = $statuses['httpstatus'];
         unset($statuses['httpstatus']);
+        $responseStatusIds = array();
         foreach($statuses as $status) {
             $status = (array) $status;
+            $responseStatusIds[] = $status['id'];
             unset($status['user']);
             $cachedCopy = $this->SocialPostsTableGateway->feedForeignIdExists($status['id'], $feed['id']);
             if($cachedCopy) {
@@ -113,6 +115,8 @@ class Cache {
         $sampleEntry = (array) $statuses[0];
         $feed['data'] = json_encode($sampleEntry['user']);
         $feed['foreign_id'] = $sampleEntry['user']->id;
+        // Remove feed items absent from this feed response
+        $this->SocialPostsTableGateway->deleteOtherFeedPosts($feed['id'], $responseStatusIds);
         return $feed;
     }
 
@@ -140,8 +144,10 @@ class Cache {
         $mediaRecent = json_decode($mediaRecent, true);
         $mediaRecent = $mediaRecent['data'];
 
+        $responseStatusIds = array();
         // Scrape entries
         foreach($mediaRecent as $photo) {
+            $responseStatusIds[] = $photo['id'];
             unset($photo['user']);
             $cachedCopy = $this->SocialPostsTableGateway->feedForeignIdExists($photo['id'], $feed['id']);
             if($cachedCopy) {
