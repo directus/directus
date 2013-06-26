@@ -35,8 +35,8 @@ class Cache {
             $feed = $feed->toArray();
         }
         // Scrape if due
-        $feedIsDue = in_array($feed['last_checked'], array(null, '0000-00-00 00:00:00')) ||
-            strtotime($feed['last_checked']) <= $this->getDueDate();
+        $neverBeenChecked = in_array($feed['last_checked'], array(null, '0000-00-00 00:00:00'));
+        $feedIsDue = $neverBeenChecked || strtotime($feed['last_checked']) <= strtotime($this->getDueDate());
         if($feedIsDue) {
             $this->scrapeFeed($feed);
         }
