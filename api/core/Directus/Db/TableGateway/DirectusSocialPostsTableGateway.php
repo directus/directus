@@ -6,8 +6,10 @@ use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Social\Cache as SocialCache;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
 
 class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
@@ -68,6 +70,18 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
             $post['data'] = json_decode($post['data'], true);
         }
         return $socialPosts;
+    }
+
+    public function deleteOtherFeedPosts($feedId, array $postIds) {
+        $Update = new Update(self::$_tableName);
+        $Update
+            ->set(array('active' => 0));
+        $Update
+            ->where
+                ->addPredicate(new NotIn('foreign_id', $postIds))
+                ->equalTo('feed', $feedId);
+        $affectedRows = $this->updateWith($Update);
+        return $affectedRows;
     }
 
     // public function fetchLatestPostsByType($type, $limit) {
