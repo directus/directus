@@ -160,10 +160,11 @@ class Cache {
                 $this->newFeedEntry($feed, $photo, $published);
             }
         }
-
         // Update feed user data
         $sampleEntry = (array) $mediaRecent[0];
         $feed['data'] = json_encode($sampleEntry['user']);
+        // Remove feed items absent from this feed response
+        $this->SocialPostsTableGateway->deleteOtherFeedPosts($feed['id'], $responseStatusIds);
         return $feed;
     }
 
