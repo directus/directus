@@ -274,7 +274,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     protected function executeUpdate(Update $update)
     {
-        $cuurrentUserId = null;
+        $currentUserId = null;
         if(Auth::loggedIn()) {
             $currentUser = Auth::getUserInfo();
             $currentUserId = intval($currentUser['id']);
