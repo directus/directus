@@ -145,10 +145,8 @@ require([
   Handlebars.registerHelper('directusSelect', function(data) {
     if (data === undefined) return;
 
-    var data = data.options;
     var name = data.name;
-
-    console.log(data, name);
+    var data = data.options;
 
     var options = _.map(data, function(item) {
       var selected = item.selected ? 'selected' : '';
