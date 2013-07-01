@@ -137,6 +137,7 @@ class Upload {
         return $name;
     }
 
+    // refactor @done
     private function unique_name($attempt=0) {
         $info = pathinfo($this->name);
         $path = $this->resources_path;
@@ -175,6 +176,7 @@ class Upload {
         return $file;
     }
 
+    // refactor @done
     private function get_info() {
         $file = $this->tmp_name;
         $finfo = new \finfo(FILEINFO_MIME);
