@@ -567,9 +567,14 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $par
  */
 
 $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app) {
+
+    $FileSystemAdapter = new \Directus\Media\Upload\Adapter\FileSystemAdapter();
+    $FileSystemAdapter->setTarget(RESOURCES_PATH);
+
     $result = array();
     foreach ($_FILES as $file) {
-      $media = new Upload($file, RESOURCES_PATH);
+      // $media = new Upload($file, RESOURCES_PATH);
+      $media = $FileSystemAdapter->acceptUpload($file);
       array_push($result, $media->data());
     }
     JsonView::render($result);
