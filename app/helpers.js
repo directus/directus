@@ -143,13 +143,19 @@ require([
   });
 
   Handlebars.registerHelper('directusSelect', function(data) {
-    if (data === undefined || !data.length) return;
+    if (data === undefined) return;
+
+    var data = data.options;
+    var name = data.name;
+
+    console.log(data, name);
+
     var options = _.map(data, function(item) {
       var selected = item.selected ? 'selected' : '';
-      return '<option value="' + item.name + '" ' + selected + '>' + item.value + '</option>';
+      return '<option value="' + item.name + '" ' + selected + '>' + item.title + '</option>';
     });
 
-    var select = '<select>' + options.join('') + '</select>';
+    var select = '<select id="' + name + '">' + options.join('') + '</select>';
 
     return new Handlebars.SafeString(select);
   });
