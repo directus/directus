@@ -73,6 +73,14 @@ function(Handlebars) {
       });
     },
 
+    numberWithCommas: function(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+
+    summarizeArray: function(array) {
+      return _.reduce(array, function(memo, num){ return memo + parseInt(num,10); }, 0);
+    },
+
     capitalize: function(string, seperator) {
       var idIndex;
 
