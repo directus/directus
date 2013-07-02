@@ -114,7 +114,8 @@ function(app, Backbone) {
 
     setFilterRow: function(){
       var $advSearchFieldRow = $(".advanced-search-fields-row");
-          $advSearchFieldRow.find(".remove-adv-row").click(function(e){
+      var $advSearchFields = $(".advanced-search-fields");
+          $advSearchFields.on("click", ".remove-adv-row", function(e){
             $(this).parent().remove();
           });
       this.getFilterRow = $advSearchFieldRow;
