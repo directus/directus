@@ -11,7 +11,10 @@ class FileSystemAdapter extends Adapter {
 
 	protected function writeFile($localFile, $targetFileName, $destination) {
 		$path = $this->joinPaths($destination, $targetFileName);
-		return move_uploaded_file($localFile, $path);
+		// @todo optionally use move_uploaded_file, for security
+		// $move = move_uploaded_file($localFile, $path);
+		$move = copy($localFile, $path);
+		return $move;
 	}
 
 }

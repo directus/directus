@@ -7,6 +7,7 @@ class Storage {
 	const ADAPTER_NAMESPACE = "\\Directus\\Media\\Storage\\Adapter";
 
 	public $adapter;
+
 	protected $adapterDestination;
 
 	public function __construct($adapterName, $adapterDestination) {
