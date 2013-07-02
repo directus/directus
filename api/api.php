@@ -599,7 +599,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
         $fileData['title'] = Util\Formatting::fileNameToFileTitle($fileData['name']);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
         $result[] = $fileData;
-        
+
         // Push thumbnail file if applicable
         if(!is_null($thumbnailTempName)) {
             $ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name']);
