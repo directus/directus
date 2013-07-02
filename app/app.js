@@ -38,6 +38,10 @@ function(Handlebars) {
        return user;
     },
 
+    deepClone: function(data) {
+      return JSON.parse(JSON.stringify(data));
+    },
+
     bytesToSize: function(bytes, precision) {
       var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
       var posttxt = 0;
@@ -75,6 +79,15 @@ function(Handlebars) {
 
     numberWithCommas: function(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+
+    dateDaysFromNow: function(days) {
+      var today = new Date();
+      return new Date(today.getTime() + days * 24 * 60 * 60 * 1000);
+    },
+
+    dateYYYYMMDD: function(date) {
+      return date.toISOString().slice(0,10);
     },
 
     summarizeArray: function(array) {
