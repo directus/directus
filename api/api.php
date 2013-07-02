@@ -435,18 +435,31 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
 
     // A URL is specified. Upload the file
     if (isset($requestPayload['url']) && $requestPayload['url'] != "") {
-        $media = new Upload($requestPayload['url'], RESOURCES_PATH);
-        $media_data = $media->data();
-        $requestPayload['type'] = $media_data['type'];
-        $requestPayload['charset'] = $media_data['charset'];
-        $requestPayload['size'] = $media_data['size'];
-        $requestPayload['width'] = $media_data['width'];
-        $requestPayload['height'] = $media_data['height'];
-        $requestPayload['name'] = $media_data['name'];
-        $requestPayload['date_uploaded'] = $media_data['date_uploaded'];
-        if (isset($media_data['embed_id'])) {
-            $requestPayload['embed_id'] = $media_data['embed_id'];
+        $videoId = Media\Youtube::getYouTubeIdFromUrl($requestPayload['url']);
+        if($videoId) {
+            $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusYoutubeThumbnail');
+            Media\Youtube::writeThumbnail($videoId, $thumbnailTempName);
+
+            $requestPayload = array_merge($requestPayload, array(
+                'type' => 'embed/youtube',
+                'embed_id' => $videoId
+            ));
         }
+
+
+
+        // $media = new Upload($requestPayload['url'], RESOURCES_PATH);
+        // $media_data = $media->data();
+        // $requestPayload['type'] = $media_data['type'];
+        // $requestPayload['charset'] = $media_data['charset'];
+        // $requestPayload['size'] = $media_data['size'];
+        // $requestPayload['width'] = $media_data['width'];
+        // $requestPayload['height'] = $media_data['height'];
+        // $requestPayload['name'] = $media_data['name'];
+        // $requestPayload['date_uploaded'] = $media_data['date_uploaded'];
+        // if (isset($media_data['embed_id'])) {
+        //     $requestPayload['embed_id'] = $media_data['embed_id'];
+        // }
     }
 
     if (isset($requestPayload['url']))
@@ -583,6 +596,11 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
     $result = array();
     foreach ($_FILES as $file) {
         $fileData = $MediaStorage->adapter->getUploadInfo($file['tmp_name']);
+
+        /**
+         * todo gotta modularize this behind one more layer (the new Upload class...?)
+         * BECAUSE it needs to be used w/in this route above: $app->map("/$v/media(/:id)/?", [...]);
+         */
 
         // Generate thumbnail if image
         $thumbnailTempName = null;
