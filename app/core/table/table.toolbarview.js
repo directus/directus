@@ -29,14 +29,6 @@ function(app, Backbone) {
         this.collection.fetch();
         this.options.preferences.save({active: value});
       },
-      'keypress #table-filter': function(e) {
-        if (e.which == 13) {
-          var text = $('#table-filter').val();
-          this.collection.setFilter('search', text);
-          this.collection.fetch();
-          this.collection.trigger('search', text);
-        }
-      },
       'click a.pag-next:not(.disabled)': function() {
         var page = this.collection.getFilter('currentPage') + 1;
         this.collection.filters.currentPage = page;
@@ -56,6 +48,19 @@ function(app, Backbone) {
           this.collection.setFilter('currentPage', this.collection.getFilter('currentPage') - 1);
           this.collection.fetch();
         }
+      },
+      'keypress #table-filter': function(e) {
+        if (e.which == 13) {
+          var text = $('#table-filter').val();
+          this.collection.setFilter('search', text);
+          this.collection.fetch();
+          this.collection.trigger('search', text);
+        }
+      },
+      'click .add-filter-row': function(e) {
+        console.log("clicked");
+        var $filterRow = this.getFilterRow;
+        $filterRow.clone(true).appendTo(".advanced-search-fields");
       }
     },
 
@@ -107,12 +112,24 @@ function(app, Backbone) {
       return options;
     },
 
+    setFilterRow: function(){
+      var $advSearchFieldRow = $(".advanced-search-fields-row");
+          $advSearchFieldRow.find(".remove-adv-row").click(function(e){
+            $(this).parent().remove();
+          });
+      this.getFilterRow = $advSearchFieldRow;
+    },
+
+    getFilterRow: "adv search fields row object",
+
     afterRender: function() {
       $filter = $('#table-filter');
       if ($filter[0]) {
         $('#table-filter').focus();
         $filter.val($filter.val());
       }
+
+      this.setFilterRow();
     },
 
     initialize: function() {

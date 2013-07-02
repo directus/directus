@@ -592,6 +592,7 @@ a:hover {text-decoration:none;}
     margin-right:5px;
   }
   div.filter {
+    position: relative;
     input {
       background-image: url('../img/magnifying-glass.png');
       background-repeat:no-repeat;
@@ -604,10 +605,104 @@ a:hover {text-decoration:none;}
       padding-top:3px;
       padding-bottom:3px;
       margin:0;
+      &.advanced-search-trigger {
+        position: absolute;
+        width: 26px;
+        height: 30px;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        cursor: pointer;
+
+        &:checked {
+          + .advanced-search-menu {
+            display: block;
+          }
+        }
+      }
+    }
+    .advanced-search-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 30px;
+      width: 400px;
+      padding: 3px 14px 12px;
+      background-color: #fff;
+      border-radius: 2px 0 2px 2px;
+      // border: 1px solid #ededed;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      z-index: 10;
     }
   }
+  // /* div.filter */ .advanced-search-trigger {
+  //   position: absolute;
+  //   background-color: #ccc;
+  //   width: 26px;
+  //   height: 30px;
+  //   top: 0;
+  //   right: 0;
+  //   opacity: 0;
+  //   cursor: pointer;
+  // }
   .btn-group-action { display: none; }
   .btn-group-action.active { display: inline-block;}
+}
+
+.advanced-search-menu {
+  .add-filter-row {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 15px;
+    height: 15px;
+    font-weight: 600;
+    font-size: 20px;
+    cursor: pointer;
+  }
+}
+
+.advanced-search-headline {
+  margin-bottom: 20px;
+}
+
+.advanced-search-fields {
+  select, input {
+    margin-left: 7px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+  select.medium {
+    width: 130px;
+  }
+  select.small {
+    width: 80px;
+  }
+  #advKeywords {
+    margin-left: 7px;
+    background: none;
+    width: 120px;
+      &:focus{
+        border-color: #ccc;
+      }
+  }
+}
+
+.advanced-search-fields-row {
+  position: relative;
+  margin-bottom: 8px;
+  .remove-adv-row {
+    position: absolute;
+    right: 0px;
+    top: 8px;
+    width: 13px;
+    height: 15px;
+    font-weight: normal;
+    font-size: 14px;
+    cursor: pointer;
+  }
 }
 
 // CUSTOM DIRECTUS TABLE COLUMN WIDTHS

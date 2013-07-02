@@ -40,5 +40,28 @@
 {{#if filter}}
 <div class="filter pull-right">
   <input type="text" id="table-filter" placeholder="Filter" value="{{filterText}}">
+  <input type="checkbox" checked="checked" class="advanced-search-trigger">
+  <div class="advanced-search-menu">
+    <h4 class="advanced-search-headline">Advanced Search</h4>
+    <span class="add-filter-row glyphicon-plus"></span>
+    <div class="advanced-search-fields">
+      <div class="advanced-search-fields-row">
+          <select name="" id="" class="medium">
+            <option value="asd">asd</option>
+            <option value="asd">asd</option>
+            <option value="asd">asd</option>
+          </select>
+
+          <select name="" id="" class="small">
+            <option value="asd">asd</option>
+            <option value="asd">asd</option>
+            <option value="asd">asd</option>
+          </select>
+          <input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="50" class="medium">
+
+          <span class="glyphicon-remove remove-adv-row"></span>
+      </div>
+    </div>
+  </div>
 </div>
 {{/if}}
