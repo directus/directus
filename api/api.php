@@ -600,7 +600,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
         $result[] = $fileData;
 
-        // Push thumbnail file if applicable
+        // Push thumbnail file if applicable (if image)
         if(!is_null($thumbnailTempName)) {
             $ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name']);
         }
