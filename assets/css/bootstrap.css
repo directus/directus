@@ -6509,6 +6509,9 @@ a:hover {
   padding-bottom: 3px;
   margin: 0;
 }
+.directus-toolbar > div div.filter input:focus {
+  border-color: #ccc;
+}
 .directus-toolbar > div div.filter input.advanced-search-trigger {
   position: absolute;
   width: 26px;
