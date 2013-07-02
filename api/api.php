@@ -51,7 +51,9 @@ use Directus\Db\TableGateway\DirectusUsersTableGateway;
 //use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
+use Directus\Media;
 use Directus\Media\Upload;
+use Directus\Util;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
 use Zend\Db\Sql\Expression;
@@ -566,16 +568,42 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $par
  * UPLOAD COLLECTION
  */
 
-$app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app) {
+$app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    // Fetch media settings
+    $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
+    $mediaSettings = $Settings->fetchCollection('media', array(
+        'storage_adapter','storage_destination','thumbnail_storage_adapter',
+        'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality'
+    ));
 
-    $FileSystemAdapter = new \Directus\Media\Upload\Adapter\FileSystemAdapter();
-    $FileSystemAdapter->setTarget(RESOURCES_PATH);
+    // Bootstrap storage interfaces
+    $MediaStorage = new Media\Storage\Storage($mediaSettings['storage_adapter']['value'], $mediaSettings['storage_destination']['value']);
+    $ThumbnailStorage = new Media\Storage\Storage($mediaSettings['thumbnail_storage_adapter']['value'], $mediaSettings['thumbnail_storage_destination']['value']);
 
     $result = array();
     foreach ($_FILES as $file) {
-      // $media = new Upload($file, RESOURCES_PATH);
-      $media = $FileSystemAdapter->acceptUpload($file);
-      array_push($result, $media->data());
+        $fileData = $MediaStorage->adapter->getUploadInfo($file['tmp_name']);
+
+        // Generate thumbnail if image
+        $thumbnailTempName = null;
+        $info = pathinfo($file['name']);
+        if(in_array($info['extension'], array('jpg','jpeg','png','gif'))) {
+            $img = Media\Thumbnail::generateThumbnail($file['tmp_name'], $info['extension'], $mediaSettings['thumbnail_size']['value']);
+            $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+            Media\Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $mediaSettings['thumbnail_quality']['value']);
+        }
+
+        // Push original file
+        $finalPath = $MediaStorage->acceptFile($file['tmp_name'], $file['name']);
+        $fileData['name'] = basename($finalPath);
+        $fileData['title'] = Util\Formatting::fileNameToFileTitle($fileData['name']);
+        $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
+        $result[] = $fileData;
+        
+        // Push thumbnail file if applicable
+        if(!is_null($thumbnailTempName)) {
+            $ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name']);
+        }
     }
     JsonView::render($result);
 });

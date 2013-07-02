@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Media\Storage;
+namespace Directus\Media\Storage\Adapter;
 
 abstract class Adapter {
 
@@ -16,7 +16,7 @@ abstract class Adapter {
      * implementation. 
      * @return [type]                 [description]
      */
-    protected abstract function writeFile($localFile, $targetFileName, $destination) {}
+    protected abstract function writeFile($localFile, $targetFileName, $destination);
 
     /**
      * Does the specified file exist in the target location?
@@ -25,7 +25,7 @@ abstract class Adapter {
      * implementation. 
      * @return bool
      */
-    protected abstract function fileExists($fileName, $destination) {}
+    protected abstract function fileExists($fileName, $destination);
 
     /**
      * @param  string $localFile      The local path of the source file.
@@ -41,44 +41,12 @@ abstract class Adapter {
             // @todo use Directus\Media\Upload\Exception
             throw new \Exception("The type is not supported!");
         }
-        $uniqueFileName = $this->uniqueName($targetFileName);
+        $uniqueFileName = $this->uniqueName($targetFileName, $destination);
         $this->writeFile($localFile, $uniqueFileName, $destination);
+        return $this->joinPaths($destination, $uniqueFileName);
     }
 
-    protected function joinPaths($path, $file) {
-        $file = ltrim($file, '/');
-        $path = rtrim($path, '/');
-        return implode('/', array($path, $file));
-    }
-
-    private function uniqueName($filename, $attempt = 0) {
-        $tokens = explode('.', $filename);
-        $ext = array_slice(-1, $tokens);
-        $name = basename($filename,".$ext");
-        $name = str_replace(' ', '_', $name);
-        $filename = "$name.$ext";
-        if($this->fileExists($filename)) {
-            $matches = array();
-            $trailingDigit = '/\-(\d)\.('.$ext.')$/';
-            if(preg_match($trailingDigit, $filename, $matches)) {
-                // Convert "fname-1.jpg" to "fname-2.jpg"
-                $attempt = 1 + (int) $matches[1];
-                $newName = preg_replace($trailingDigit, "-{$attempt}.$ext", $filename);
-                $filename = basename($newName);
-            } else {
-                if ($attempt) {
-                    $name = rtrim($name, $attempt);
-                    $name = rtrim($name, '-');
-                }
-                $attempt++;
-                $filename = $name . '-' . $attempt . '.' . $ext;
-            }
-            return $this->uniqueName($filename, $attempt);
-        }
-        return $filename;
-    }
-
-    private function getUploadInfo($filepath) {
+    public function getUploadInfo($filepath) {
         $finfo = new \finfo(FILEINFO_MIME);
         $type = explode('; charset=', $finfo->file($filepath));
         $info = array('type' => $type[0], 'charset' => $type[1]);
@@ -106,6 +74,39 @@ abstract class Adapter {
             }
         }
         return $info;
+    }
+
+    protected function joinPaths($path, $file) {
+        $file = ltrim($file, '/');
+        $path = rtrim($path, '/');
+        return implode('/', array($path, $file));
+    }
+
+    private function uniqueName($filename, $destination, $attempt = 0) {
+        $info = pathinfo($filename);
+        $ext = $info['extension'];
+        $name = basename($filename, ".$ext");
+        $name = str_replace(' ', '_', $name);
+        $filename = "$name.$ext";
+        if($this->fileExists($filename, $destination)) {
+            $matches = array();
+            $trailingDigit = '/\-(\d)\.('.$ext.')$/';
+            if(preg_match($trailingDigit, $filename, $matches)) {
+                // Convert "fname-1.jpg" to "fname-2.jpg"
+                $attempt = 1 + (int) $matches[1];
+                $newName = preg_replace($trailingDigit, "-{$attempt}.$ext", $filename);
+                $filename = basename($newName);
+            } else {
+                if ($attempt) {
+                    $name = rtrim($name, $attempt);
+                    $name = rtrim($name, '-');
+                }
+                $attempt++;
+                $filename = $name . '-' . $attempt . '.' . $ext;
+            }
+            return $this->uniqueName($filename, $destination, $attempt);
+        }
+        return $filename;
     }
 
 }
