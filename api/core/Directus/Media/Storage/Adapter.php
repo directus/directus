@@ -1,68 +1,61 @@
 <?php
 
-namespace Directus\Media\Upload\Adapter;
+namespace Directus\Media\Storage;
 
 abstract class Adapter {
-
-    protected $target = '';
 
     // @todo define via install config
     protected $allowedFormats = array('image/jpeg','image/gif', 'image/png', 'application/pdf');
     protected $imageFormats = array('image/jpeg','image/gif', 'image/png');
 
     /**
+     * Write file to storage.
+     * @param  string $localFile      The local path of the source file.
+     * @param  string $targetFileName The intended target file name.
+     * @param  mixed $destination    The destination where we'll write the file. Varies depending on adapter
+     * implementation. 
+     * @return [type]                 [description]
      */
-    private abstract function writeFile($file) {}
+    protected abstract function writeFile($localFile, $targetFileName, $destination) {}
 
     /**
+     * Does the specified file exist in the target location?
+     * @param  string $fileName      The file we're checking for.
+     * @param  mixed $destination    The destination where we'll check for this file. Varies depending on adapter
+     * implementation. 
      * @return bool
      */
-    private abstract function fileExists($fileName) {}
+    protected abstract function fileExists($fileName, $destination) {}
 
     /**
-     * @param  array $file One item from the $_FILES superglobal.
+     * @param  string $localFile      The local path of the source file.
+     * @param  string $targetFileName The intended target file name.
+     * @param  mixed $destination    The destination where we'll write the file. Varies depending on adapter
+     * implementation. Passed to Adapter#writeFile.
+     * @return [type]                 [description]
      */
-    public function acceptUpload($file) {
-        $uploadInfo = $this->getUploadInfo($file['tmp_name']);
-        // Enforce format rules
+    public function acceptFile($localFile, $targetFileName, $destination) {
+        $uploadInfo = $this->getUploadInfo($localFile);
+        // Refused disallowed formats
         if(!in_array($uploadInfo['type'], $this->allowedFormats)) {
-            throw new \Exception("The type is not supported!");
             // @todo use Directus\Media\Upload\Exception
+            throw new \Exception("The type is not supported!");
         }
-        // Generate image thumbnails
-        if(in_array($uploadInfo['type'], $this->allowedFormats)) {
-            // generate thumbnail
-        }
+        $uniqueFileName = $this->uniqueName($targetFileName);
+        $this->writeFile($localFile, $uniqueFileName, $destination);
     }
 
-    /**
-     * Designate the generic upload path.
-     * @param string $target Generic target upload "path". 
-     */
-    public function setTarget($target) {
-        $this->target = $target;
-        return $this;
+    protected function joinPaths($path, $file) {
+        $file = ltrim($file, '/');
+        $path = rtrim($path, '/');
+        return implode('/', array($path, $file));
     }
 
-    /**
-     * Retrieve the generic upload path.
-     * @param string $target Generic target upload "path".
-     */
-    public function getTarget() {
-        if(empty($this->target)) {
-            throw new \RuntimeException('Must call setTarget before calling getTarget');
-        }
-        return $this->target;
-    }
-
-    private function uniqueName($filename, $attempt = 0, $md5 = false) {
+    private function uniqueName($filename, $attempt = 0) {
         $tokens = explode('.', $filename);
         $ext = array_slice(-1, $tokens);
         $name = basename($filename,".$ext");
         $name = str_replace(' ', '_', $name);
-        if ($md5) {
-            $name = md5($name);
-        }
         $filename = "$name.$ext";
         if($this->fileExists($filename)) {
             $matches = array();
@@ -80,7 +73,7 @@ abstract class Adapter {
                 $attempt++;
                 $filename = $name . '-' . $attempt . '.' . $ext;
             }
-            return $this->uniqueName($filename, $attempt, $md5);
+            return $this->uniqueName($filename, $attempt);
         }
         return $filename;
     }
