@@ -9,7 +9,7 @@ class YouTube {
     // @todo put in settings
     protected static $thumbnailUrl = "http://img.youtube.com/vi/%s/0.jpg";
 
-    private function getYouTubeIdFromUrl($url) {
+    public static function getYouTubeIdFromUrl($url) {
         preg_match("#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=youtu.be/)[^&\n]+#", $url, $id);
         if(count($id)) {
             return current($id);
