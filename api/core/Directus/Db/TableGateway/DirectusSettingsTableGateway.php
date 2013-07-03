@@ -24,7 +24,6 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         // Fetch row
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-
         $result = array();
         foreach($rowset as $row) {
             $collection = $row['collection'];

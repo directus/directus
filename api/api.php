@@ -582,46 +582,11 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $par
  */
 
 $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-    // Fetch media settings
-    $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
-    $mediaSettings = $Settings->fetchCollection('media', array(
-        'storage_adapter','storage_destination','thumbnail_storage_adapter',
-        'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality'
-    ));
-
-    // Bootstrap storage interfaces
-    $MediaStorage = new Media\Storage\Storage($mediaSettings['storage_adapter'], $mediaSettings['storage_destination']);
-    $ThumbnailStorage = new Media\Storage\Storage($mediaSettings['thumbnail_storage_adapter'], $mediaSettings['thumbnail_storage_destination']);
-
+    $Transfer = new Media\Transfer();
     $result = array();
     foreach ($_FILES as $file) {
-        $fileData = $MediaStorage->adapter->getUploadInfo($file['tmp_name']);
-
-        /**
-         * todo gotta modularize this behind one more layer (the new Upload class...?)
-         * BECAUSE it needs to be used w/in this route above: $app->map("/$v/media(/:id)/?", [...]);
-         */
-
-        // Generate thumbnail if image
-        $thumbnailTempName = null;
-        $info = pathinfo($file['name']);
-        if(in_array($info['extension'], array('jpg','jpeg','png','gif'))) {
-            $img = Media\Thumbnail::generateThumbnail($file['tmp_name'], $info['extension'], $mediaSettings['thumbnail_size']);
-            $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-            Media\Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $mediaSettings['thumbnail_quality']);
-        }
-
-        // Push original file
-        $finalPath = $MediaStorage->acceptFile($file['tmp_name'], $file['name']);
-        $fileData['name'] = basename($finalPath);
-        $fileData['title'] = Util\Formatting::fileNameToFileTitle($fileData['name']);
-        $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
+        $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
         $result[] = $fileData;
-
-        // Push thumbnail file if applicable (if image)
-        if(!is_null($thumbnailTempName)) {
-            $ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name']);
-        }
     }
     JsonView::render($result);
 });
