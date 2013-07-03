@@ -590,8 +590,8 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
     ));
 
     // Bootstrap storage interfaces
-    $MediaStorage = new Media\Storage\Storage($mediaSettings['storage_adapter']['value'], $mediaSettings['storage_destination']['value']);
-    $ThumbnailStorage = new Media\Storage\Storage($mediaSettings['thumbnail_storage_adapter']['value'], $mediaSettings['thumbnail_storage_destination']['value']);
+    $MediaStorage = new Media\Storage\Storage($mediaSettings['storage_adapter'], $mediaSettings['storage_destination']);
+    $ThumbnailStorage = new Media\Storage\Storage($mediaSettings['thumbnail_storage_adapter'], $mediaSettings['thumbnail_storage_destination']);
 
     $result = array();
     foreach ($_FILES as $file) {
@@ -606,9 +606,9 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
         $thumbnailTempName = null;
         $info = pathinfo($file['name']);
         if(in_array($info['extension'], array('jpg','jpeg','png','gif'))) {
-            $img = Media\Thumbnail::generateThumbnail($file['tmp_name'], $info['extension'], $mediaSettings['thumbnail_size']['value']);
+            $img = Media\Thumbnail::generateThumbnail($file['tmp_name'], $info['extension'], $mediaSettings['thumbnail_size']);
             $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-            Media\Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $mediaSettings['thumbnail_quality']['value']);
+            Media\Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $mediaSettings['thumbnail_quality']);
         }
 
         // Push original file
