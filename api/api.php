@@ -442,8 +442,10 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
             Media\Youtube::writeThumbnail($videoId, $thumbnailTempName);
             // Upload video thumbnail
             $targetFileName = "$videoId.jpg";
-            $Transfer = new Media\Transfer();
-            $fileData = $Transfer->acceptFile($thumbnailTempName, $targetFileName);
+            // $Transfer = new Media\Transfer();
+            $Storage = new Media\Storage\Storage();
+            // $fileData = $Transfer->acceptFile($thumbnailTempName, $targetFileName);
+            $fileData = $Storage->acceptFile($thumbnailTempName, $targetFileName);
             $requestPayload = array_merge($requestPayload, array(
                 'type' => 'embed/youtube',
                 'embed_id' => $videoId,
@@ -578,10 +580,12 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $par
  */
 
 $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-    $Transfer = new Media\Transfer();
+    // $Transfer = new Media\Transfer();
+    $Storage = new Media\Storage\Storage();
     $result = array();
     foreach ($_FILES as $file) {
-        $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
+        // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
+        $fileData = $Storage->acceptFile($file['tmp_name'], $file['name']);
         $result[] = $fileData;
     }
     JsonView::render($result);
