@@ -31,6 +31,8 @@ class MySQL {
                 $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT );
                 break;
             case 'development':
+            case 'development_enforce_nonce':
+            case 'staging':
             default:
                 $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
                 break;
