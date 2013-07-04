@@ -141,6 +141,10 @@ class Cache {
             // Don't do anything if the instagram request fails
             return false;
         }
+        // The ErrorException won't necessarily be thrown, depending on the context.
+        if(false === $mediaRecent) {
+            return false;
+        }
         $mediaRecent = json_decode($mediaRecent, true);
         $mediaRecent = $mediaRecent['data'];
 
