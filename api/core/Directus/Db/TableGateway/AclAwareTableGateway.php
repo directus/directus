@@ -8,6 +8,7 @@ use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
+use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
@@ -22,11 +23,6 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
-
-// FOR TRANSITIONAL TESTS BELOW
-use Directus\Auth\Provider as Auth;
-use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
-use Zend\Db\Sql\Expression;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
@@ -67,6 +63,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     /**
      * HELPER FUNCTIONS
      */
+    
+    public function newRow($table = null, $pk_field_name = null)
+    {
+        $table = is_null($table) ? $this->table : $table;
+        $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
+        $row = new AclAwareRowGateway($this->acl, $pk_field_name, $table, $this->adapter);
+        return $row;
+    }
 
     public function find($id, $pk_field_name = "id") {
         $record = $this->findOneBy($pk_field_name, $id);
@@ -270,7 +274,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     protected function executeUpdate(Update $update)
     {
-        $cuurrentUserId = null;
+        $currentUserId = null;
         if(Auth::loggedIn()) {
             $currentUser = Auth::getUserInfo();
             $currentUserId = intval($currentUser['id']);

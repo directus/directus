@@ -38,43 +38,8 @@ function(Handlebars) {
        return user;
     },
 
-    capitalize: function(string, seperator) {
-      var idIndex;
-
-      if (!string) return '';
-
-      if (seperator === undefined) {
-        seperator = "_";
-      }
-
-      directusIndex = string.indexOf("directus_");
-
-      if (directusIndex === 0) {
-        string = string.substring(9);
-      }
-
-      idIndex = string.lastIndexOf("_id");
-
-      if (string.length > 2 && string.length - idIndex === 3) {
-        string = string.substring(0, idIndex);
-      }
-
-      var output = _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
-
-      // var output2 = output;
-      // output.toLowerCase();
-      // output = (output + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
-      //   return $1.toUpperCase();
-      // });
-      // output.trim();
-      // output = output.replace(new RegExp("!\s+!", "g")," ");
-
-      // Swap out case of words in caseMap
-      _.each(app.caseMap, function(correct, incorrect) {
-        output = output.replace(new RegExp("\\b"+incorrect+"\\b", "g"), correct);
-      });
-
-      return output;
+    deepClone: function(data) {
+      return JSON.parse(JSON.stringify(data));
     },
 
     bytesToSize: function(bytes, precision) {
@@ -112,31 +77,116 @@ function(Handlebars) {
       });
     },
 
-    caseMap: {
-      'Cms': 'CMS',
-      'Faq': 'FAQ',
-      'Iphone': 'iPhone',
-      'Ipad': 'iPad',
-      'Ipod': 'iPod',
-      'Ios': 'iOS',
-      'Pdf': 'PDF',
-      'Pdfs': 'PDFs',
-      'Url': 'URL',
-      'Ip': 'IP',
-      'Ui': 'UI',
-      'Ftp': 'FTP',
-      'Db': 'DB',
-      'Wysiwyg': 'WYSIWYG',
-      'Cv': 'CV',
-      'Id': 'ID',
-      'Ph': 'pH',
-      'Php': 'PHP',
-      'Html': 'HTML',
-      'Js': 'JS',
-      'Css': 'CSS',
-      'Rngr': 'RNGR',
-      'Soulcycle': 'SoulCycle'
+    numberWithCommas: function(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
+
+    dateDaysFromNow: function(days) {
+      var today = new Date();
+      return new Date(today.getTime() + days * 24 * 60 * 60 * 1000);
+    },
+
+    dateYYYYMMDD: function(date) {
+      return date.toISOString().slice(0,10);
+    },
+
+    summarizeArray: function(array) {
+      return _.reduce(array, function(memo, num){ return memo + parseInt(num,10); }, 0);
+    },
+
+    capitalize: function(string, seperator) {
+      var idIndex;
+
+      if (!string) return '';
+
+      if (seperator === undefined) {
+        seperator = "_";
+      }
+
+      directusIndex = string.indexOf("directus_");
+
+      if (directusIndex === 0) {
+        string = string.substring(9);
+      }
+
+      idIndex = string.lastIndexOf("_id");
+
+      if (string.length > 2 && string.length - idIndex === 3) {
+        string = string.substring(0, idIndex);
+      }
+
+      var output = _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
+
+      // var output2 = output;
+      // output.toLowerCase();
+      // output = (output + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
+      //   return $1.toUpperCase();
+      // });
+      // output.trim();
+      // output = output.replace(new RegExp("!\s+!", "g")," ");
+
+      // Replace all custom capitalization here
+      _.each(app.caseSpecial, function(correctCase) {
+        output = output.replace(new RegExp("\\b"+correctCase+"\\b", "gi"), correctCase);
+      });
+
+      // Make all prepositions and conjunctions lowercase, except for the first word
+      _.each(app.caseLower, function(correctCase) {
+        output = output.replace(new RegExp(" "+correctCase+"\\b", "gi"), " "+correctCase);
+      });
+
+      return output;
+    },
+
+    caseSpecial: [
+      'CMS',
+      'FAQ',
+      'iPhone',
+      'iPad',
+      'iPod',
+      'iOS',
+      'iMac',
+      'PDF',
+      'PDFs',
+      'URL',
+      'IP',
+      'UI',
+      'FTP',
+      'DB',
+      'WYSIWYG',
+      'CV',
+      'ID',
+      'pH',
+      'PHP',
+      'HTML',
+      'JS',
+      'CSS',
+      'SKU',
+      'DateTime',
+      'RNGR',
+      'CC',
+      'CCV',
+      'SoulCycle'
+    ],
+
+    // Conjunctions and prepositions should be lowercase
+    caseLower: [
+      'a',
+      'an',
+      'the',
+      'and',
+      'of',
+      'but',
+      'or',
+      'for',
+      'nor',
+      'with',
+      'on',
+      'at',
+      'to',
+      'from',
+      'by'
+    ],
 
     actionMap: {
       'ADD': 'added',

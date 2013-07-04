@@ -1,6 +1,7 @@
 config.php
 Icon
 .DS_Store
+dist/*
 
 # Don't track composer phar/lock/vendors
 composer.phar
