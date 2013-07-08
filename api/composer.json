@@ -2,7 +2,6 @@
     "require": {
         "slim/slim": "dev-master",
         "slim/extras": "dev-develop",
-        "symfony/class-loader": "2.3.*@dev",
         "zendframework/zend-db": "2.1.*@dev",
         "mynetx/codebird-php": "dev-master",
         "phpunit/phpunit": "3.7.*@dev",
