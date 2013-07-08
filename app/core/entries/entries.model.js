@@ -172,6 +172,13 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return Backbone.sync.apply(this, [method, model, options]);
     },
 
+    canWrite: function(attribute) {
+      var writeFieldBlacklist = this.collection.privileges.get('write_field_blacklist') || '';
+      var writeFieldBlacklistArray = writeFieldBlacklist.split(',');
+      return !_.contains(writeFieldBlacklistArray, attribute);
+      // /console.log(this.collection);
+    },
+
     toJSON: function(options, noNest) {
       var attributes = _.clone(this.attributes),
           isModelOrCollection;
