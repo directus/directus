@@ -172,11 +172,28 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return Backbone.sync.apply(this, [method, model, options]);
     },
 
-    canWrite: function(attribute) {
-      var writeFieldBlacklist = this.collection.privileges.get('write_field_blacklist') || '';
-      var writeFieldBlacklistArray = writeFieldBlacklist.split(',');
-      return !_.contains(writeFieldBlacklistArray, attribute);
-      // /console.log(this.collection);
+    // bigedit trumps write black list
+    // bigedit = edit others
+    // edit = edit your own
+
+    canEdit: function(attribute) {
+      var myId = parseInt(app.getCurrentUser().id,10),
+          magicOwnerColumn = this.collection.table.get('magic_owner_column'),
+          magicOwnerId = this.get(magicOwnerColumn),
+          iAmTheOwner = myId === magicOwnerId,
+          priviliges = this.collection.privileges,
+          permissions = (priviliges.get('permissions') || '').split(','),
+          bigedit = _.contains(permissions, 'bigedit'),
+          edit = _.contains(permissions, 'edit'),
+          writeFieldBlacklist = (priviliges.get('write_field_blacklist') || '').split(','),
+          columnIsBlacklisted = !_.isEmpty(attribute) && _.contains(writeFieldBlacklist, attribute);
+
+
+
+          console.log(this.get("user_id"));
+          //console.log(iAmTheOwner,myId,, magicOwnerColumn, this);
+
+      return (!iAmTheOwner && bigedit) || (iAmTheOwner && edit && !columnIsBlacklisted);
     },
 
     toJSON: function(options, noNest) {
