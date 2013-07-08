@@ -49,7 +49,8 @@ function(textinput) {
         settings: schema.options,
         schema: schema,
         name: attr,
-        value: this.model.get(attr)
+        value: this.model.get(attr),
+        canWrite: this.model.canWrite(attr)
       });
       return view;
     }
