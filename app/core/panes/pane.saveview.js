@@ -9,6 +9,8 @@ function(Backbone, app) {
     template: 'module-save',
     attributes: {'class': 'directus-module'},
     serialize: function() {
+      if (!this.model.canEdit()) return {readOnly: true};
+
       var inactiveByDefault = this.model.collection.table.get('inactive_by_default');
       var isNew = !this.model.has('id');
       var data = {
