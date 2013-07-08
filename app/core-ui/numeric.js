@@ -11,7 +11,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   var Module = {};
 
   var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
-                  <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}"/>';
+                  <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
 
   Module.id = 'numeric';
   Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR','DOUBLE'];
@@ -51,7 +51,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         value: value,
         name: this.options.name,
         size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
-        comment: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment'),
+        readonly: !this.options.canWrite
       };
     },
 
