@@ -48,6 +48,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
+
       return {
         size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
         value: value,
@@ -55,7 +56,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         maxLength: length,
         characters: length - value.length,
         comment: this.options.schema.get('comment'),
-        readonly: this.options.settings.get('readonly') === "1"
+        readonly: (this.options.settings.get('readonly') === "1" || !this.options.canWrite)
       };
     }
   });
