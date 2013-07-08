@@ -50,7 +50,7 @@ function(app, Backbone, Collection, EntriesModel) {
       if (preferencesHasChanged) this.preferences.save();
     },
 
-    hasPrivelege: function(permissionType) {
+    hasPermission: function(permissionType) {
       var permissions = this.privileges.get('permissions') || '';
       permissionsArray = permissions.split(',');
       return _.contains(permissionsArray, permissionType);
