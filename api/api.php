@@ -30,6 +30,7 @@ defined('DIRECTUS_ENV')
 switch (DIRECTUS_ENV) {
     case 'development_enforce_nonce':
     case 'development':
+    case 'staging':
         break;
     case 'production':
     default:
