@@ -39,6 +39,7 @@ class Storage {
         }
         $this->MediaStorage = self::getStorage($storage['DEFAULT']['adapter_name'], $storage['DEFAULT']['params']);
         $this->ThumbnailStorage = self::getStorage($storage['THUMBNAIL']['adapter_name'], $storage['THUMBNAIL']['params']);
+        $this->storageAdaptersByRole = $storage;
     }
 
     /**
@@ -72,14 +73,16 @@ class Storage {
         }
 
         // Push original file
-        $finalPath = $this->MediaStorage->acceptFile($localFile, $targetFileName, $settings['storage_destination']);
+        $mediaDestination = $this->storageAdaptersByRole['DEFAULT']['destination'];
+        $finalPath = $this->MediaStorage->acceptFile($localFile, $targetFileName, $mediaDestination);
         $fileData['name'] = basename($finalPath);
         $fileData['title'] = Formatting::fileNameToFileTitle($fileData['name']);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
 
         // Push thumbnail file if applicable (if image)
         if(!is_null($thumbnailTempName)) {
-            $this->ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name'], $settings['thumbnail_storage_destination']);
+            $thumbnailDestination = $this->storageAdaptersByRole['THUMBNAIL']['destination'];
+            $this->ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name'], $thumbnailDestination);
         }
 
         return $fileData;
