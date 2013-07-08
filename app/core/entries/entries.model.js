@@ -177,24 +177,23 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     // edit = edit your own
 
     canEdit: function(attribute) {
-      var myId = parseInt(app.getCurrentUser().id,10),
-          magicOwnerColumn = this.collection.table.get('magic_owner_column'),
-          magicOwnerId = this.get(magicOwnerColumn),
-          iAmTheOwner = myId === magicOwnerId,
-          priviliges = this.collection.privileges,
-          permissions = (priviliges.get('permissions') || '').split(','),
-          bigedit = _.contains(permissions, 'bigedit'),
-          edit = _.contains(permissions, 'edit'),
+      var myId                = parseInt(app.getCurrentUser().id,10),
+          magicOwnerColumn    = this.collection.table.get('magic_owner_column'),
+          magicOwnerId        = this.get(magicOwnerColumn),
+          iAmTheOwner         = myId === magicOwnerId,
+          priviliges          = this.collection.privileges,
+          permissions         = (priviliges.get('permissions') || '').split(','),
+          bigedit             = _.contains(permissions, 'bigedit'),
+          edit                = _.contains(permissions, 'edit'),
           writeFieldBlacklist = (priviliges.get('write_field_blacklist') || '').split(','),
           columnIsBlacklisted = !_.isEmpty(attribute) && _.contains(writeFieldBlacklist, attribute);
 
-
-
-          console.log(this.get("user_id"));
-          //console.log(iAmTheOwner,myId,, magicOwnerColumn, this);
-
       return (!iAmTheOwner && bigedit) || (iAmTheOwner && edit && !columnIsBlacklisted);
     },
+
+    canDelete: function() {
+
+    }
 
     toJSON: function(options, noNest) {
       var attributes = _.clone(this.attributes),
