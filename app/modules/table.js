@@ -140,7 +140,9 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     beforeRender: function() {
-      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single}));
+      if (this.model.collection.hasPrivelege('bigedit')) {
+        this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single}));
+      }
     },
 
     afterRender: function() {
@@ -177,6 +179,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     initialize: function() {
+      console.log(app.getCurrentGroup());
       this.single = this.model.collection.table.get('single');
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
     }
