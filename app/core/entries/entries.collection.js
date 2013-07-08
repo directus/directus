@@ -50,8 +50,15 @@ function(app, Backbone, Collection, EntriesModel) {
       if (preferencesHasChanged) this.preferences.save();
     },
 
+    hasPrivelege: function(permissionType) {
+      var permissions = this.privileges.get('permissions') || '';
+      permissionsArray = permissions.split(',');
+      return _.contains(permissionsArray, permissionType);
+    },
+
     initialize: function(models, options) {
       this.structure = options.structure;
+      this.privileges = options.privileges;
       this.table = options.table;
       this.active = this.table.get('active');
       this.url = options.url || this.table.get('url') + '/rows';
