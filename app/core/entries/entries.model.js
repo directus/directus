@@ -193,7 +193,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
     canDelete: function() {
 
-    }
+    },
 
     toJSON: function(options, noNest) {
       var attributes = _.clone(this.attributes),
