@@ -82,6 +82,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.uiSettings = UI.settings();
     app.columns = {};
     app.entries = {};
+    app.privileges = {};
     app.preferences = {};
     app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','active','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
     app.settings = new Directus.Settings(data.settings, {parse: true});
@@ -176,15 +177,15 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       parse: true
     });
 
-
     var groupId = app.getCurrentGroup().get('id');
-
     var privileges = data.privileges.rows;
     var myPrivileges = _.filter(privileges, function(item){ return item.group_id === groupId; });
 
-    //data.groups.each(function(model) {
-      //app.permissions.add(model.id
-    //});
+    // Instantiate permissions
+    _.each(myPrivileges, function(item) {
+      var tableName = item.table_name;
+      app.privileges[tableName] = new Backbone.Model(item,{parse:true});
+    });
 
     // Instantiate entries
     app.tables.each(function(table) {
@@ -192,7 +193,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       app.entries[table.id] = new Directus.EntriesCollection([], {
         structure: app.columns[table.id],
         table: table,
-        preferences: app.preferences[table.id]
+        preferences: app.preferences[table.id],
+        privileges: app.privileges[table.id]
       });
     }, this);
 
@@ -200,7 +202,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       if (value.variables === undefined) return;
       //Cheating way to peform a deep-clone
       var deepClone = JSON.parse(JSON.stringify(value.variables));
-      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
+      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone);
     });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
