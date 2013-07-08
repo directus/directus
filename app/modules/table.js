@@ -177,7 +177,6 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     initialize: function() {
-      console.log(app.getCurrentGroup());
       this.single = this.model.collection.table.get('single');
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
     }
