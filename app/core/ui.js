@@ -50,7 +50,7 @@ function(textinput) {
         schema: schema,
         name: attr,
         value: this.model.get(attr),
-        canWrite: this.model.canWrite(attr)
+        canWrite: this.model.canEdit(attr)
       });
       return view;
     }
