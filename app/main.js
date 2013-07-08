@@ -176,7 +176,11 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       parse: true
     });
 
-    app.permissions = new Backbone.Model();
+
+    var groupId = app.getCurrentGroup().get('id');
+
+    var privileges = data.privileges.rows;
+    var myPrivileges = _.filter(privileges, function(item){ return item.group_id === groupId; });
 
     //data.groups.each(function(model) {
       //app.permissions.add(model.id
