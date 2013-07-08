@@ -3,20 +3,10 @@
 // Initialization
 //  - Apparently the autoloaders must be registered separately in both index.php and api.php
 
-// Exceptional.io error handling
-if(defined('EXCEPTIONAL_API_KEY')) {
-    require_once 'vendor-manual/exceptional-php/exceptional.php';
-    Exceptional::setup(EXCEPTIONAL_API_KEY);
-}
 
 // Composer Autoloader
-require 'vendor/autoload.php';
-
-// Directus Autoloader
-use Symfony\Component\ClassLoader\UniversalClassLoader;
-$loader = new UniversalClassLoader();
-$loader->registerNamespace("Directus", dirname(__FILE__) . "/core/");
-$loader->register();
+$loader = require 'vendor/autoload.php';
+$loader->add("Directus", dirname(__FILE__) . "/core/");
 
 // Non-autoload components
 require dirname(__FILE__) . '/config.php';
