@@ -126,6 +126,7 @@ class MySQL {
             ifnull(single,0) as single,
             inactive_by_default,
             is_junction_table,
+            magic_owner_column,
             footer,
             TABLE_ROWS AS count
             FROM INFORMATION_SCHEMA.TABLES T
