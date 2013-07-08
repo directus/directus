@@ -25,7 +25,12 @@ class RackspaceOpenCloudAdapter extends Adapter {
             'apiKey' => $params['api_key']
         ));
         $this->conn->SetDefaults('ObjectStore', 'cloudFiles', $params['region']);
-        $this->ostore = $this->conn->ObjectStore();
+        try {
+            $this->ostore = $this->conn->ObjectStore();
+        } catch(\OpenCloud\Common\Exceptions\HttpError $e) {
+            // @todo
+            throw $e;
+        }
     }
 
     protected function getObjectList() {
