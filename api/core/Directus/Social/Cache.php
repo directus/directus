@@ -35,7 +35,7 @@ class Cache {
             $feed = $feed->toArray();
         }
         // Scrape if due
-        $neverBeenChecked = in_array($feed['last_checked'], array(null, '0000-00-00 00:00:00'));
+        $neverBeenChecked = empty($feed['last_checked']) || ($feed['last_checked'] == '0000-00-00 00:00:00');
         $feedIsDue = $neverBeenChecked || strtotime($feed['last_checked']) <= strtotime($this->getDueDate());
         if($feedIsDue) {
             $this->scrapeFeed($feed);
@@ -139,6 +139,10 @@ class Cache {
             $mediaRecent = file_get_contents($endpoint);
         } catch(\ErrorException $e) {
             // Don't do anything if the instagram request fails
+            return false;
+        }
+        // The ErrorException won't necessarily be thrown, depending on the context.
+        if(false === $mediaRecent) {
             return false;
         }
         $mediaRecent = json_decode($mediaRecent, true);
