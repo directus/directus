@@ -8,6 +8,20 @@ abstract class Adapter {
     protected $allowedFormats = array('image/jpeg','image/gif', 'image/png', 'application/pdf');
     protected $imageFormats = array('image/jpeg','image/gif', 'image/png');
 
+    protected $params = array();
+    protected static $requiredParams = array();
+
+    public function __construct(array $params = array()) {
+        if(!empty(static::$requiredParams)) {
+            $missingParamKeys = array_diff_key(static::$requiredParams, array_keys($params));
+            if(count($missingParamKeys)) {
+                throw new \RuntimeException(__CLASS__ . " requires " . count(static::$requiredParams)
+                 . " parameters to be defined (missing " . implode(",", $missingParamKeys) . ")");
+            }
+        }
+        $this->params = $params;
+    }
+
     /**
      * Write file to storage.
      * @param  string $localFile      The local path of the source file.
