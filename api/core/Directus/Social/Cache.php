@@ -134,7 +134,7 @@ class Cache {
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
         $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s";
-        $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id']['value'], $socialSettings['instagram_oauth_access_token']['value']);
+        $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id'], $socialSettings['instagram_oauth_access_token']);
         try {
             $mediaRecent = file_get_contents($endpoint);
         } catch(\ErrorException $e) {
@@ -197,7 +197,7 @@ class Cache {
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
         $endpoint = "https://api.instagram.com/v1/users/search?q=%s&access_token=%s";
-        $endpoint = sprintf($endpoint, urlencode($username), urlencode($socialSettings['instagram_oauth_access_token']['value']));
+        $endpoint = sprintf($endpoint, urlencode($username), urlencode($socialSettings['instagram_oauth_access_token']));
         try {
             $userData = file_get_contents($endpoint);
         } catch(\ErrorException $e) {
