@@ -1,13 +1,14 @@
 define([
   "app",
   "backbone",
-  "core/directus"
+  "core/directus",
+  'core/panes/pane.saveview'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, Directus, SaveModule) {
 
   var Users = app.module();
-
+/*
   var SaveModule = Backbone.Layout.extend({
     template: 'module-save',
     attributes: {'class': 'directus-module'},
@@ -23,7 +24,7 @@ function(app, Backbone, Directus) {
       this.model.on('sync', this.render, this);
     }
   });
-
+*/
 
   Users.Views.Edit = Backbone.Layout.extend({
 
