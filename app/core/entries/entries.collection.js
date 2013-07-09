@@ -50,10 +50,19 @@ function(app, Backbone, Collection, EntriesModel) {
       if (preferencesHasChanged) this.preferences.save();
     },
 
+    hasColumn: function(columnName) {
+      return this.structure.get(columnName) !== undefined
+    },
+
     hasPermission: function(permissionType) {
       var permissions = this.privileges.get('permissions') || '';
       permissionsArray = permissions.split(',');
       return _.contains(permissionsArray, permissionType);
+    },
+
+    isWriteBlacklisted: function(attribute) {
+      var writeBlacklist = (this.privileges.get('write_field_blacklist') || '').split(',');
+      return _.contains(writeBlacklist, attribute);
     },
 
     initialize: function(models, options) {
