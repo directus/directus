@@ -43,6 +43,7 @@ $data['authenticatedUser'] = AuthProvider::loggedIn() ? AuthProvider::getUserInf
 $data['tables'] = $db->get_tables();
 $data['users'] = $db->get_users();
 $data['groups'] = $db->get_entries("directus_groups");
+$data['privileges'] = $db->get_entries("directus_privileges");
 $data['settings'] = $db->get_settings('global');
 
 $data['page'] = '#tables';

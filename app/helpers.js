@@ -47,7 +47,7 @@ require([
   Handlebars.registerHelper('userName', function(userId) {
     if (!_.isNumber(userId) || _.isNaN(userId)) return;
     var user = app.users.get(userId);
-    //if (user === undefined) return undefined;
+    if (user === undefined) return "—";// return undefined;
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
@@ -67,7 +67,7 @@ require([
   Handlebars.registerHelper('userShort', function(userId) {
     if (!_.isNumber(userId) || _.isNaN(userId)) return;
     var user = app.users.get(userId);
-    //if (user === undefined) return undefined;
+    if (user === undefined) return "—";// return undefined;
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
@@ -145,10 +145,8 @@ require([
   Handlebars.registerHelper('directusSelect', function(data) {
     if (data === undefined) return;
 
-    var data = data.options;
     var name = data.name;
-
-    console.log(data, name);
+    var data = data.options;
 
     var options = _.map(data, function(item) {
       var selected = item.selected ? 'selected' : '';
