@@ -233,7 +233,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $this->acl->enforceBlacklist($joinTable, $join['columns'], Acl::FIELD_READ_BLACKLIST);
         }
 
-        return parent::executeSelect($select);
+        try {
+            return parent::executeSelect($select);
+        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if('production' !== DIRECTUS_ENV) {
+                echo "This query failed: " . $this->dumpSql($select);
+                die;
+            }
+        }
     }
 
     /**
@@ -261,7 +268,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
         }
 
-        return parent::executeInsert($insert);
+        try {
+            return parent::executeInsert($insert);
+        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if('production' !== DIRECTUS_ENV) {
+                echo "This query failed: " . $this->dumpSql($insert);
+                die;
+            }
+        }
     }
 
     /**
@@ -327,7 +341,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         }
 
-        return parent::executeUpdate($update);
+        try {
+            return parent::executeUpdate($update);
+        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if('production' !== DIRECTUS_ENV) {
+                echo "This query failed: " . $this->dumpSql($update);
+                die;
+            }
+        }
     }
 
     /**
@@ -385,7 +406,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         }
 
-        return parent::executeDelete($delete);
+        try {
+            return parent::executeDelete($delete);
+        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if('production' !== DIRECTUS_ENV) {
+                echo "This query failed: " . $this->dumpSql($delete);
+                die;
+            }
+        }
     }
 
 }

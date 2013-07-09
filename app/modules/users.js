@@ -30,7 +30,7 @@ function(app, Backbone, Directus) {
     template: 'page',
 
     events: {
-      'click .btn-primary': function(e) {
+      'click #save-form': function(e) {
         var data = $('form').serializeObject();
         data.active = $('input[name=active]:checked').val();
         this.model.save(data, {
