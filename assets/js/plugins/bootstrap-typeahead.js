@@ -34,6 +34,8 @@
     this.onselect = this.options.onselect
     this.strings = true
     this.shown = false
+    this.timer_lookup = false
+    this.timer_timeout = this.options.timeout || 400
     this.listen()
   }
 
@@ -270,7 +272,7 @@
           break
 
         default:
-          this.lookup()
+         this.lookup()
       }
 
       e.stopPropagation()
