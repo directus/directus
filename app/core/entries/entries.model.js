@@ -187,12 +187,11 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     canEdit: function(attribute) {
       var iAmTheOwner         = this.isMine(),
           privileges          = this.collection.privileges,
-          bigedit             = this.collection.hasPermission('bigedit'),
-          edit                = this.collection.hasPermission('edit'),
-          writeFieldBlacklist = (privileges.get('write_field_blacklist') || '').split(','),
-          columnIsBlacklisted = !_.isEmpty(attribute) && _.contains(writeFieldBlacklist, attribute);
+          bigeditPermission   = this.collection.hasPermission('bigedit'),
+          editPermission      = this.collection.hasPermission('edit'),
+          columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute);
 
-      return (!iAmTheOwner && bigedit) || (iAmTheOwner && edit && !columnIsBlacklisted);
+      return (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
     },
 
     canDelete: function() {
