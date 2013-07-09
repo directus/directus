@@ -31,6 +31,13 @@ $data['nonces'] = array_merge($requestNonceProvider->getOptions(), array(
 
 $DirectusStorageAdaptersTableGateway = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
 $data['storage_adapters'] = $DirectusStorageAdaptersTableGateway->fetchAllByIdNoParams();
+$adaptersByUniqueRole = array();
+foreach($data['storage_adapters'] as $adapter) {
+	if(!empty($adapter['role'])) {
+		$adaptersByUniqueRole[$adapter['role']] = $adapter;
+	}
+}
+$data['storage_adapters'] = array_merge($data['storage_adapters'], $adaptersByUniqueRole);
 
 $data['path'] = DIRECTUS_PATH;
 $data['page'] = '#tables';
