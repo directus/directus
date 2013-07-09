@@ -17,7 +17,24 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      return {rows: this.collection.getRows(), columns: this.collection.getColumns()};
+      var rows = this.collection.getRows();
+
+      // Check permissions
+      // @todo: filter this on the backend and get rid of this
+      rows = _.filter(rows, function(row) {
+        var privileges = app.privileges[row.table_name];
+
+        // filter out tables without privileges
+        if (privileges === undefined) return false;
+
+        var permissions = privileges.get('permissions').split(',');
+
+        // only return tables with view permissions
+
+        return _.contains(permissions, 'view');
+      });
+
+      return {rows: rows, columns: this.collection.getColumns()};
     }
 
   });
