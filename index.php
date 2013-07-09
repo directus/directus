@@ -107,9 +107,9 @@ if (array_key_exists('tab_blacklist',$data['tab_privileges'])) {
 $data['ui'] = array_values(Bootstrap::get('uis'));
 
 $data = json_encode($data);
-if('production' !== DIRECTUS_ENV) {
-	$data = JsonView::format_json($data);
-}
+//if('production' !== DIRECTUS_ENV) {
+//	$data = JsonView::format_json($data);
+//}
 
 echo template(file_get_contents('main.html'), array(
 	'data'=> $data,
