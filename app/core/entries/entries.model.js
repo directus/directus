@@ -172,6 +172,37 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return Backbone.sync.apply(this, [method, model, options]);
     },
 
+    // returns true or false
+    isMine: function() {
+      var myId = parseInt(app.getCurrentUser().id,10),
+          magicOwnerColumn = this.collection.table.get('magic_owner_column'),
+          magicOwnerId = this.get(magicOwnerColumn);
+
+      return myId === magicOwnerId;
+    },
+
+    // bigedit trumps write black list
+    // bigedit = edit others
+    // edit = edit your own
+    canEdit: function(attribute) {
+      var iAmTheOwner         = this.isMine(),
+          privileges          = this.collection.privileges,
+          bigedit             = this.collection.hasPermission('bigedit'),
+          edit                = this.collection.hasPermission('edit'),
+          writeFieldBlacklist = (privileges.get('write_field_blacklist') || '').split(','),
+          columnIsBlacklisted = !_.isEmpty(attribute) && _.contains(writeFieldBlacklist, attribute);
+
+      return (!iAmTheOwner && bigedit) || (iAmTheOwner && edit && !columnIsBlacklisted);
+    },
+
+    canDelete: function() {
+      var iAmTheOwner = this.isMine(),
+          canDelete = this.collection.hasPermission('delete'),
+          canBigdelete = this.collection.hasPermission('bigdelete');
+
+      return (!iAmTheOwner && canBigdelete) || (iAmTheOwner && canDelete);
+    },
+
     toJSON: function(options, noNest) {
       var attributes = _.clone(this.attributes),
           isModelOrCollection;
