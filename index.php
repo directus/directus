@@ -37,6 +37,7 @@ $data['page'] = '#tables';
 $data['tables'] = $db->get_tables();
 $data['users'] = $db->get_users();
 $data['groups'] = $db->get_entries("directus_groups");
+$data['privileges'] = $db->get_entries("directus_privileges");
 $data['settings'] = $db->get_settings('global');
 $data['active_media'] = $db->count_active('directus_media');
 $data['authenticatedUser'] = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : array();
