@@ -38,6 +38,11 @@ function(Handlebars) {
        return user;
     },
 
+    getCurrentGroup: function() {
+      var user = app.getCurrentUser();
+      return user.get('group');
+    },
+
     deepClone: function(data) {
       return JSON.parse(JSON.stringify(data));
     },
