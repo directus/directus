@@ -191,8 +191,12 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
       var data = {
         title: this.collection.table.id,
         breadcrumbs: [{title: 'Tables', anchor: '#tables'}],
-        buttonTitle: 'Add New Item'
       };
+
+      if (this.collection.hasPermission('add')) {
+        data.buttonTitle = 'Add New Item';
+      };
+
       return data;
     },
 
