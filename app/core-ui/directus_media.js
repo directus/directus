@@ -104,14 +104,16 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
-      var isPDF = 'application/pdf' == options.model.get('type');
-      if(isPDF) {
-          var html = '<div class="media-thumb"><em>PDF Icon Here</em></div>';
-          return html;
-      }
-      var orientation = (parseInt(options.model.get('width'),10) > parseInt(options.model.get('height'),10)) ? 'landscape' : 'portrait';
-      var img = '<div class="media-thumb"><img src="' + app.RESOURCES_URL + 'thumbnail/' + options.model.get('name') +'" class="img ' + orientation + '"></div>';
-      return img;
+    var model = options.model,
+      isPDF = 'application/pdf' == model.get('type');
+    if(isPDF) {
+        var html = '<div class="media-thumb"><em>PDF Icon Here</em></div>';
+        return html;
+    }
+    var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
+    var url = app.makeMediaUrl(model, true);
+    var img = '<div class="media-thumb"><img src="' + url + '" class="img ' + orientation + '"></div>';
+    return img;
   };
 
   return Module;
