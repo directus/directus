@@ -71,7 +71,13 @@ function(app, Backbone, Directus, SaveModule) {
     template: 'page',
 
     serialize: function() {
-      return {title: 'Users', buttonTitle: 'Add New User'};
+      var data = {title: 'Users'};
+
+      if (this.collection.hasPermission('add')) {
+        data.buttonTitle = 'Add New Item';
+      };
+
+      return data;
     },
 
     events: {
