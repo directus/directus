@@ -16,6 +16,17 @@ class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
+    /**
+     * @param  string $string Potentially valid JSON.
+     * @return array
+     */
+    protected function jsonDecodeIfPossible($string) {
+        if(!empty($string) && $decoded = json_decode($string, true)) {
+            return $decoded;
+        }
+        return array();
+    }
+
     public function fetchByUniqueRoles(array $roleNames) {
         $select = new Select(self::$_tableName);
         $select->group('role');
@@ -23,12 +34,10 @@ class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway {
         $rows = $this->selectWith($select);
         $roles = array();
         foreach($rows as $row) {
-            $adapter = $row->toArray();
+            $row = $row->toArray();
             // The adapter's `params` column is JSON serialized.
-            if(!empty($adapter['params']) && $decoded = json_decode($adapter['params'], true)) {
-                $adapter['params'] = $decoded;
-            }
-            $roles[$adapter['role']] = $adapter;
+            $row['params'] = $this->jsonDecodeIfPossible($row['params']);
+            $roles[$row['role']] = $row;
         }
         return $roles;
     }
@@ -37,16 +46,28 @@ class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway {
         $select = new Select(self::$_tableName);
         $select->limit(1);
         $select->where->equalTo('key', $key);
-        $adapter = $this->selectWith($select)->current();
-        if(!$adapter) {
+        $row = $this->selectWith($select)->current();
+        if(!$row) {
             return false;
         }
-        if(!empty($adapter['params']) && $decoded = json_decode($adapter['params'], true)) {
-            $adapter['params'] = $decoded;
-        } else {
-            $adapter['params'] = array();
+        // The adapter's `params` column is JSON serialized.
+        $row['params'] = $this->jsonDecodeIfPossible($row['params']);
+        return $row;
+    }
+
+    /**
+     * Used by Directus front-controller to expose the storage adapters to the front-end. For this reason we exclude
+     * the `params` field which can contain private information, such as API usernames and secret keys.
+     * @return array
+     */
+    public function fetchAllByIdNoParams() {
+        $all = $this->select()->toArray();
+        $allByKey = array();
+        foreach($all as $row) {
+            unset($row['params']);
+            $allByKey[$row['id']] = $row;
         }
-        return $adapter;
+        return $allByKey;
     }
 
 }
