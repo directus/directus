@@ -12,17 +12,6 @@ function(Handlebars) {
   // creation.
   var app = {
 
-    lastXhrError: undefined,
-
-    getLastXhrError: function() {
-      var xhrError;
-      if(undefined !== this.lastXhrError) {
-        xhrError = this.lastXhrError;
-        this.lastXhrError = undefined;
-      }
-      return xhrError;
-    },
-
     evaluateExpression: function(a, operator, b) {
       switch (operator) {
         case '==':
