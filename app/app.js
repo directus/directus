@@ -12,6 +12,27 @@ function(Handlebars) {
   // creation.
   var app = {
 
+    makeMediaUrl: function(mediaModel, thumbnail) {
+      var storageAdapters = window.directusData.storage_adapters,
+        adapterId,
+        storageAdapter;
+      if(thumbnail) {
+        adapterId = 'THUMBNAIL';
+        if(!storageAdapters.hasOwnProperty(adapterId)) {
+          throw new "Cannot find default thumbnail storage_adapter using key: " + adapterId;
+        }
+      } else {
+        adapterId = mediaModel.get('storage_adapter');
+        if(!storageAdapters.hasOwnProperty(adapterId)) {
+          throw new "Media record's storage_adapter FK value maps to an undefined directus_storage_adapters record: "
+            + adapterId;
+        }
+      }
+      storageAdapter = storageAdapters[adapterId];
+      var url = storageAdapter.url + mediaModel.get('name');
+      return url;
+    },
+
     evaluateExpression: function(a, operator, b) {
       switch (operator) {
         case '==':
