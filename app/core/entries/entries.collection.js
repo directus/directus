@@ -66,7 +66,7 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     initialize: function(models, options) {
-      var rowsPerPage = parseInt(app.settings.get('global').get('rows_per_page'),10) || 500;
+      var rowsPerPage = options.rowsPerPage || parseInt(app.settings.get('global').get('rows_per_page'),10) || 500;
       this.structure = options.structure;
       this.privileges = options.privileges;
       this.table = options.table;
