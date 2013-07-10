@@ -166,14 +166,17 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       if (this.options.toolbar === undefined) {
         this.options.toolbar = true;
       }
+
       if (this.options.tableHead !== false) {
         this.tableHead = true;
       }
+
       if (this.options.sort === undefined) {
-        this.options.sort = (collection.structure.get('sort')) || false;
+        this.options.sort = collection.hasColumn('sort') && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('sort');
       }
+
       if (this.options.selectable === undefined) {
-        this.options.selectable = (collection.structure.get('active')) || false;
+        this.options.selectable = collection.hasColumn('active') && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('active');
       }
 
       this.saveAfterDrop = this.options.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
