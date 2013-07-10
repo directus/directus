@@ -11,7 +11,7 @@ define(['app', 'backbone'],function(app, Backbone) {
   var Module = {};
 
   var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
-                  <textarea rows="{{rows}}" name="{{name}}" id="{{name}}">{{value}}</textarea>';
+                  <textarea rows="{{rows}}" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>{{value}}</textarea>';
 
   Module.id = 'textarea';
   Module.dataTypes = ['TEXT', 'VARCHAR'];
@@ -31,7 +31,8 @@ define(['app', 'backbone'],function(app, Backbone) {
         value: this.options.value,
         name: this.options.name,
         rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '5',
-        comment: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment'),
+        readonly: !this.options.canWrite
       };
     }
 
