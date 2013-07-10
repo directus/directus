@@ -169,7 +169,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       preferences: app.preferences.directus_users,
       url: app.API_URL + 'tables/directus_users/rows',
       filters: {columns: ['name', 'group', 'activity', 'email', 'description']},
-      privileges: app.privileges['directus_users']
+      privileges: app.privileges['directus_users'],
+      rowsPerPage: 3000
     });
 
     app.activity = new Directus.EntriesCollection({}, {
