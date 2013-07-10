@@ -80,6 +80,10 @@ function(app, Backbone, Collection, EntriesCollection) {
       return (response.rows === undefined) ? response : response.rows;
     },
 
+    hasColumn: function(columnName) {
+      return this.structure.get(columnName) !== undefined
+    },
+
     initialize: function(models, options) {
 
       EntriesCollection = EntriesCollection || require('core/entries/entries.collection');
