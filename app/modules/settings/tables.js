@@ -222,7 +222,7 @@ function(app, Backbone, ui, Directus) {
 
     saveColumns: function(e) {
       var data = {};
-      
+
       //Take care of the checkboxes
       $('#table-settings').find('input[type=checkbox]:not(:checked)').each(function(){
         data[this.name] = 0;
@@ -245,7 +245,7 @@ function(app, Backbone, ui, Directus) {
     },
 
     beforeRender: function() {
-      this.insertView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false}}));
+      this.insertView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false, canEdit: true}}));
       this.insertView('#sidebar', new TableModule({model: this.model}));
     },
 
@@ -273,8 +273,27 @@ function(app, Backbone, ui, Directus) {
     },
 
     serialize: function() {
+
       var rows = this.collection.filter(function(model) {
-        return (model.id.substring(0,9) !== 'directus_');
+
+        //Filter out _directus tables
+        if (model.id.substring(0,9) === 'directus_') return false;
+
+        //Filter out tables you don't have alter permissions on
+        var privileges = app.privileges[model.id];
+
+        // filter out tables with empty privileges
+        if (privileges === undefined) return false;
+
+        var permissions = privileges.get('permissions').split(',');
+
+        // only return tables with view permissions
+        return _.contains(permissions, 'alter');
+
+
+
+        return true;
+
       });
       rows = _.map(rows, function(model) { return model.toJSON(); });
       return {rows: rows};
