@@ -577,7 +577,16 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
     foreach ($_FILES as $file) {
         // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
         $fileData = $Storage->acceptFile($file['tmp_name'], $file['name']);
-        $result[] = $fileData;
+        $result[] = array(
+            'type' => $fileData['type'],
+            'name' => $fileData['name'],
+            'title' => $fileData['title'],
+            'charset' => $fileData['charset'],
+            'size' => $fileData['size'],
+            'width' => $fileData['width'],
+            'height' => $fileData['height'],
+            'date_uploaded' => $fileData['date_uploaded']
+        );
     }
     JsonView::render($result);
 });
