@@ -585,7 +585,8 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
             'size' => $fileData['size'],
             'width' => $fileData['width'],
             'height' => $fileData['height'],
-            'date_uploaded' => $fileData['date_uploaded']
+            'date_uploaded' => $fileData['date_uploaded'],
+            'storage_adapter' => $fileData['storage_adapter']
         );
     }
     JsonView::render($result);
