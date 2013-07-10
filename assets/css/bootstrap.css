@@ -1993,6 +1993,9 @@ table th[class*="span"],
 .directus-glyphicon-mix:before {
   content: "\e188";
 }
+.directus-glyphicon-arrow-left:before {
+  content: "\e211";
+}
 .directus-glyphicon-arrow-right:before {
   content: "\e212";
 }
@@ -2001,6 +2004,15 @@ table th[class*="span"],
 }
 .directus-glyphicon-parents:before {
   content: "\e025";
+}
+.directus-glyphicon-star:before {
+  content: "\e050";
+}
+.directus-glyphicon-phone:before {
+  content: "\e421";
+}
+.directus-glyphicon-calendar:before {
+  content: "\1F4C5";
 }
 .glyphicon-plus:before {
   content: "\002b";
@@ -2011,7 +2023,6 @@ table th[class*="span"],
 .glyphicon-search:before                  { content: "\e003"; }
 .glyphicon-envelope:before                { content: "\2709"; }
 .glyphicon-heart:before                   { content: "\e005"; }
-.glyphicon-star:before                    { content: "\e006"; }
 .glyphicon-star-empty:before              { content: "\e007"; }
 .glyphicon-user:before                    { content: "\e008"; }
 .glyphicon-film:before                    { content: "\e009"; }
@@ -7538,6 +7549,290 @@ header {
 }
 .customers_table .payment_options input {
   margin-right: 4px;
+}
+#booker-container {
+  border-top: 1px solid #ededed;
+  padding-top: 19px;
+}
+.row-fluid.cash-register-container {
+  position: relative;
+}
+#sidebar-left.schedule-column {
+  float: left;
+  width: 160px;
+}
+#sidebar-left.schedule-column select {
+  width: auto;
+  height: auto;
+  padding: 0;
+}
+#sidebar-left.schedule-column .schedule-today {
+  margin-top: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ededed;
+}
+#sidebar-left.schedule-column .schedule-today-date {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8bc53f;
+}
+#sidebar-left.schedule-column .schedule-today-date span {
+  color: #8f8f8f;
+}
+#sidebar-left.schedule-column .schedule-today-times {
+  padding-top: 6px;
+}
+#sidebar-left.schedule-column .schedule-today-times span {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+#sidebar-left.schedule-column .schedule-today-times span:hover {
+  color: #1c1c1c;
+}
+#sidebar-left.schedule-column .schedule-today-times span.selected {
+  font-weight: bold;
+}
+#sidebar-left.schedule-column .schedule-today-times span.day-full:before {
+  position: absolute;
+  content: url('/directus/extensions/booker/assets/images/day-full.png');
+  left: -14px;
+}
+#sidebar-left.schedule-column .schedule-today-times span.day-half:before {
+  position: absolute;
+  content: url('/directus/extensions/booker/assets/images/day-half.png');
+  left: -14px;
+}
+#sidebar-left.schedule-column .schedule-today-times .times-divider {
+  position: relative;
+  border-bottom: 1px solid #ededed;
+  padding-top: 6px;
+  margin-bottom: 6px;
+}
+#sidebar-left.schedule-column .week-navigator {
+  position: relative;
+  margin-top: 12px;
+  height: 16px;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8bc53f;
+}
+#sidebar-left.schedule-column .week-navigator span {
+  color: #8f8f8f;
+}
+#sidebar-left.schedule-column .week-navigator .left-arrow,
+#sidebar-left.schedule-column .week-navigator .right-arrow,
+#sidebar-left.schedule-column .week-navigator .which-week {
+  position: absolute;
+  top: 0;
+}
+#sidebar-left.schedule-column .week-navigator .which-week {
+  left: 0;
+  line-height: 1;
+}
+#sidebar-left.schedule-column .week-navigator .left-arrow {
+  left: 0;
+  height: 100%;
+  width: 16px;
+  font-family: 'Directus Glyphicons';
+  color: #8bc53f;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 0.5;
+  cursor: pointer;
+}
+#sidebar-left.schedule-column .week-navigator .left-arrow:hover {
+  color: #70a130;
+}
+#sidebar-left.schedule-column .week-navigator .right-arrow {
+  right: 0;
+  height: 100%;
+  width: 16px;
+  font-family: 'Directus Glyphicons';
+  color: #8bc53f;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 0.5;
+  cursor: pointer;
+}
+#sidebar-left.schedule-column .week-navigator .right-arrow:hover {
+  color: #70a130;
+}
+#sidebar-left.schedule-column .week-navigator .which-week {
+  width: 100%;
+  text-align: center;
+}
+#sidebar-left.schedule-column .schedule-other-weeks {
+  position: relative;
+  margin-top: 10px;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8bc53f;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day span {
+  color: #8f8f8f;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day-times {
+  padding-top: 6px;
+  padding-bottom: 10px;
+  display: none;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day-times span {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day-times span:hover {
+  color: #1c1c1c;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day-times span.selected {
+  font-weight: bold;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day-times span.day-full:before {
+  position: absolute;
+  content: url('/directus/extensions/booker/assets/images/day-full.png');
+  left: -14px;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day-times span.day-half:before {
+  position: absolute;
+  content: url('/directus/extensions/booker/assets/images/day-half.png');
+  left: -14px;
+}
+#sidebar-left.schedule-column .schedule-other-weeks .schedule-other-day-times .times-divider {
+  position: relative;
+  border-bottom: 1px solid #ededed;
+  padding-top: 6px;
+  margin-bottom: 6px;
+}
+#sidebar.container-sidebar {
+  width: 170px;
+  /* .member-name */
+}
+#sidebar.container-sidebar .members-title {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8bc53f;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+#sidebar.container-sidebar .members-list {
+  display: none;
+  padding-top: 3px;
+  padding-bottom: 6px;
+}
+#sidebar.container-sidebar .members-list.active {
+  display: block;
+}
+#sidebar.container-sidebar .members-list.soul-activity {
+  position: relative;
+  overflow-x: hidden;
+  background-color: #ffffff;
+}
+#sidebar.container-sidebar .members-list.soul-activity:hover {
+  -webkit-box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.15);
+}
+#sidebar.container-sidebar .members-list.soul-activity .members-single {
+  display: inline-block;
+  white-space: nowrap;
+}
+#sidebar.container-sidebar .members-list.soul-activity .members-single:hover {
+  color: #8bc53f;
+}
+#sidebar.container-sidebar .members-single {
+  position: relative;
+  display: block;
+}
+#sidebar.container-sidebar .member-name {
+  position: relative;
+  padding: 0 3px;
+  cursor: pointer;
+}
+#sidebar.container-sidebar .member-name:hover {
+  color: #020202;
+}
+#sidebar.container-sidebar .member-name:hover .member-options {
+  display: inline-block;
+}
+#sidebar.container-sidebar .member-name.active {
+  background-color: #FFF100;
+}
+#sidebar.container-sidebar .member-name.active:hover {
+  color: #8f8f8f;
+}
+#sidebar.container-sidebar .member-options {
+  position: absolute;
+  left: 101%;
+  width: 80px;
+  height: 100%;
+  display: none;
+}
+#sidebar.container-sidebar .member-edit {
+  position: absolute;
+  left: 3px;
+  height: 16px;
+  color: #8bc53f;
+  font-size: 0.95em;
+}
+#sidebar.container-sidebar .member-edit:hover {
+  -webkit-transform: scale(1.3);
+}
+#sidebar.container-sidebar .member-classes {
+  position: absolute;
+  left: 20px;
+  height: 16px;
+  color: #26A9E0;
+}
+#sidebar.container-sidebar .member-classes:hover {
+  -webkit-transform: scale(1.3);
+}
+#sidebar.container-sidebar .member-remove {
+  position: absolute;
+  left: 37px;
+  height: 16px;
+  color: #eb2a49;
+  font-size: 1.1em;
+}
+#sidebar.container-sidebar .member-remove:hover {
+  -webkit-transform: scale(1.3);
+}
+#sidebar.container-sidebar .member-star,
+#sidebar.container-sidebar .member-call {
+  position: relative;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  color: #e0e0e0;
+  cursor: pointer;
+}
+#sidebar.container-sidebar .member-star:hover,
+#sidebar.container-sidebar .member-call:hover {
+  color: #bababa;
+}
+#sidebar.container-sidebar .member-star:last-child,
+#sidebar.container-sidebar .member-call:last-child {
+  margin-right: 1px;
+}
+#sidebar.container-sidebar .member-star.active {
+  color: #fdc030;
+}
+#sidebar.container-sidebar .member-call.active {
+  color: #7e4295;
+}
+.active_products_table {
+  position: relative;
+  margin-left: 180px;
+  margin-right: 190px;
+}
+.customers_table .directus-module-section {
+  position: relative;
 }
 .activity-module {
   background-color: #F4F4F4;
