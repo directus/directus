@@ -1,13 +1,14 @@
 define([
   "app",
   "backbone",
-  "core/directus"
+  "core/directus",
+  'core/panes/pane.saveview'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, Directus, SaveModule) {
 
   var Users = app.module();
-
+/*
   var SaveModule = Backbone.Layout.extend({
     template: 'module-save',
     attributes: {'class': 'directus-module'},
@@ -23,14 +24,14 @@ function(app, Backbone, Directus) {
       this.model.on('sync', this.render, this);
     }
   });
-
+*/
 
   Users.Views.Edit = Backbone.Layout.extend({
 
     template: 'page',
 
     events: {
-      'click .btn-primary': function(e) {
+      'click #save-form': function(e) {
         var data = $('form').serializeObject();
         data.active = $('input[name=active]:checked').val();
         this.model.save(data, {
@@ -70,7 +71,13 @@ function(app, Backbone, Directus) {
     template: 'page',
 
     serialize: function() {
-      return {title: 'Users', buttonTitle: 'Add New User'};
+      var data = {title: 'Users'};
+
+      if (this.collection.hasPermission('add')) {
+        data.buttonTitle = 'Add New Item';
+      };
+
+      return data;
     },
 
     events: {
