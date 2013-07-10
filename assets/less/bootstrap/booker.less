@@ -1,0 +1,341 @@
+#booker-container {
+	border-top: 1px solid @gray;
+	padding-top: 19px;
+}
+
+.row-fluid {
+	&.cash-register-container {
+		position: relative;
+	}
+}
+
+#sidebar-left.schedule-column {
+	float: left;
+	width: 160px;
+
+	select {
+		width: auto;
+		height: auto;
+		padding: 0;
+	}
+
+	.schedule-today {
+		margin-top: 20px;
+		padding-bottom: 8px;
+		border-bottom: 1px solid @gray;
+	}
+
+	.schedule-today-date {
+		font-style: italic;
+		font-weight: 700;
+		font-size: 14px;
+		color: @directusPrimary;
+		// letter-spacing: 1px;
+
+		span {
+			color: @grayDark;
+		}
+	}
+
+	.schedule-today-times {
+		padding-top: 6px;
+
+		span {
+			position: relative;
+			display: block;
+			cursor: pointer;
+
+			&:hover {
+				color: @grayDarker;
+			}
+
+			&.selected {
+				font-weight: bold;
+			}
+
+			&.day-full:before {
+				position: absolute;
+				content: url('/directus/extensions/booker/assets/images/day-full.png');
+				left: -14px;
+			}
+
+			&.day-half:before {
+				position: absolute;
+				content: url('/directus/extensions/booker/assets/images/day-half.png');
+				left: -14px;
+			}
+		}
+
+		.times-divider {
+			position: relative;
+			border-bottom: 1px solid @gray;
+			padding-top: 6px;
+			margin-bottom: 6px;
+		}
+	}
+
+	.week-navigator {
+		position: relative;
+		margin-top: 12px;
+		height: 16px;
+		font-style: italic;
+		font-weight: 700;
+		font-size: 14px;
+		color: @directusPrimary;
+
+		span {
+			color: @grayDark;
+		}
+
+		.left-arrow, .right-arrow, .which-week {
+			position: absolute;
+			top: 0;
+		}
+		.which-week {
+			left: 0;
+			line-height: 1;
+		}
+		.left-arrow {
+			left: 0;
+			height: 100%;
+			width: 16px;
+			font-family: 'Directus Glyphicons';
+			color: @directusPrimary;
+			font-style: normal;
+			font-size: 20px;
+			line-height: 0.5;
+			cursor: pointer;
+
+			&:hover {
+				color: darken(@directusPrimary, 10%);
+			}
+		}
+		.right-arrow {
+			right: 0;
+			height: 100%;
+			width: 16px;
+			font-family: 'Directus Glyphicons';
+			color: @directusPrimary;
+			font-style: normal;
+			font-size: 20px;
+			line-height: 0.5;
+			cursor: pointer;
+
+			&:hover {
+				color: darken(@directusPrimary, 10%);
+			}
+		}
+
+		.which-week {
+			width: 100%;
+			text-align: center;
+		}
+	}
+
+	.schedule-other-weeks {
+		position: relative;
+		margin-top: 10px;
+
+		.schedule-other-day {
+			.schedule-today-date; // inherits styles of ".schedule-today-date" class
+			margin-bottom: 3px;
+			cursor: pointer;
+		}
+
+		.schedule-other-day-times {
+			.schedule-today-times; // inherits styles of ".schedule-today-times" class
+			padding-bottom: 10px;
+			display: none;
+		}
+	}
+}
+
+#sidebar.container-sidebar {
+	width: 170px;
+
+	.members-title {
+		// .schedule-today-date; // inherits styles of ".schedule-today-date" class
+		font-style: italic;
+		font-weight: 700;
+		font-size: 14px;
+		color: @directusPrimary;
+		margin-bottom: 3px;
+		// letter-spacing: 1px;
+		cursor: pointer;
+	}
+
+	.members-list {
+		display: none;
+		padding-top: 3px;
+		padding-bottom: 6px;
+
+		&.active {
+			display: block;
+		}
+
+		&.soul-activity {
+			position: relative;
+			overflow-x: hidden;
+			background-color: @white;
+
+			&:hover {
+				-webkit-box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.15);
+			}
+			.members-single {
+				display: inline-block;
+				white-space:nowrap;
+
+				&:hover {
+					color: @directusPrimary;
+				}
+			}
+		}
+	}
+
+	.members-single {
+		position: relative;
+		display: block;
+	}
+
+	.member-name {
+		position: relative;
+		padding: 0 3px;
+		cursor: pointer;
+
+		&:hover {
+			color: darken(@grayDarker, 10%);
+
+			.member-options {
+				display: inline-block;
+			}
+		}
+
+		&.active {
+			background-color: #FFF100;
+			&:hover { color: @grayDark; }
+		}
+	}
+
+	/* .member-name */ .member-options {
+		position: absolute;
+		left: 101%;
+		width: 80px;
+		height: 100%;
+		display: none;
+	}
+
+	/* .member-name */ .member-edit {
+		position: absolute;
+		left: 3px;
+		// width: 16px;
+		height: 16px;
+		// background-color: #ccc;
+		color: @directusPrimary;
+		font-size: 0.95em;
+
+		&:hover {
+			// color: lighten(@directusPrimary, 10%);
+			-webkit-transform: scale(1.3);
+		}
+	}
+
+	/* .member-name */ .member-classes {
+		position: absolute;
+		left: 20px;
+		// width: 16px;
+		height: 16px;
+		// background-color: #ccc;
+		color: #26A9E0;
+
+		&:hover {
+			// color: lighten(#26A9E0, 10%);
+			-webkit-transform: scale(1.3);
+		}
+	}
+
+	/* .member-name */ .member-remove {
+		position: absolute;
+		left: 37px;
+		// width: 16px;
+		height: 16px;
+		// background-color: #ccc;
+		color: @red;
+		font-size: 1.1em;
+
+		&:hover {
+			// color: lighten(@red, 10%);
+			-webkit-transform: scale(1.3);
+		}
+	}
+
+	.member-star, .member-call {
+		position: relative;
+		display: inline-block;
+		// text-indent: -9999px;
+		// background-color: #0f0;
+		// color: @grayDarker;
+		width: 12px;
+		height: 12px;
+		color: darken(@gray, 5%);
+		cursor: pointer;
+
+		&:hover {
+			color: darken(@gray, 20%);
+		}
+
+		&:last-child {
+			margin-right: 1px;
+		}
+	}
+
+	.member-star {
+		&.active {
+			color: @yellow;
+		}
+	}
+	.member-call {
+		&.active {
+			color: @purple;
+		}
+	}
+}
+
+.active_products_table {
+	position: relative;
+	margin-left: 180px;
+	margin-right: 190px;
+}
+
+// .directus-module
+	.customers_table {
+		.directus-module-section {
+			position: relative;
+		}
+	}
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
