@@ -12,15 +12,25 @@ function(Handlebars) {
   // creation.
   var app = {
 
-    lastXhrError: undefined,
-
-    getLastXhrError: function() {
-      var xhrError;
-      if(undefined !== this.lastXhrError) {
-        xhrError = this.lastXhrError;
-        this.lastXhrError = undefined;
+    makeMediaUrl: function(mediaModel, thumbnail) {
+      var storageAdapters = window.directusData.storage_adapters,
+        adapterId,
+        storageAdapter;
+      if(thumbnail) {
+        adapterId = 'THUMBNAIL';
+        if(!storageAdapters.hasOwnProperty(adapterId)) {
+          throw new "Cannot find default thumbnail storage_adapter using key: " + adapterId;
+        }
+      } else {
+        adapterId = mediaModel.get('storage_adapter');
+        if(!storageAdapters.hasOwnProperty(adapterId)) {
+          throw new "Media record's storage_adapter FK value maps to an undefined directus_storage_adapters record: "
+            + adapterId;
+        }
       }
-      return xhrError;
+      storageAdapter = storageAdapters[adapterId];
+      var url = storageAdapter.url + mediaModel.get('name');
+      return url;
     },
 
     evaluateExpression: function(a, operator, b) {
@@ -36,6 +46,11 @@ function(Handlebars) {
        var authenticatedUser = window.directusData.authenticatedUser;
        var user = app.users.get(authenticatedUser.id);
        return user;
+    },
+
+    getCurrentGroup: function() {
+      var user = app.getCurrentUser();
+      return user.get('group');
     },
 
     deepClone: function(data) {
