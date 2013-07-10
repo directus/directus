@@ -31,6 +31,8 @@ class MySQL {
                 $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT );
                 break;
             case 'development':
+            case 'development_enforce_nonce':
+            case 'staging':
             default:
                 $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
                 break;
@@ -126,6 +128,7 @@ class MySQL {
             ifnull(single,0) as single,
             inactive_by_default,
             is_junction_table,
+            magic_owner_column,
             footer,
             TABLE_ROWS AS count
             FROM INFORMATION_SCHEMA.TABLES T
