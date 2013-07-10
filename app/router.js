@@ -18,8 +18,7 @@ define([
   "modules/users",
   "modules/messages",
   "core/modal",
-  "core/collection.settings",
-  "core/extensions"
+  "core/collection.settings"
 ],
 
 function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, extensions) {
@@ -41,7 +40,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "settings/tables/:table":         "settingsTable",
       "settings/permissions/:groupId":  "settingsPermissions",
       "messages":                       "messages",
-      "cashregister":                   "cashregister"
+      "cashregister":                   "cashregister",
+      "booker":                         "booker"
     },
 
     go: function() {
@@ -239,25 +239,18 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     initialize: function(options) {
-
-      this.tabs = new Tabs.Collection([
-        {title: "Activity", id: "activity", count: app.activity.table.get('active')},
-        {title: "Tables", id: "tables", count: app.tables.getRows().length},
-        {title: "Media", id: "media", count: app.media.table.get('active')},
-        {title: "Users", id: "users", count: app.users.table.get('active')},
-        {title: "Settings", id: "settings"}
-      ]);
-
+      this.tabs = new Tabs.Collection(options.tabs);
       this.extensions = {};
 
-      _.each(extensions, function(item) {
+      _.each(options.extensions, function(item) {
         this.extensions[item.id] = new item.Router(item.id);
         this.extensions[item.id].on('route', function() {
           this.trigger('subroute',item.id);
         }, this);
-        this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
+        //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
 
+      // Filter tab permissions
       var tabs = this.tabs;
 
       var user = app.getCurrentUser();
