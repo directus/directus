@@ -64,6 +64,23 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * HELPER FUNCTIONS
      */
     
+    protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime')) {
+        foreach($resultSet as &$result) {
+            $result = $this->convertRowDateTimesToTimeZone($result, $targetTimeZone, $fields);
+        }
+        return $resultSet;
+    }
+
+    protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime')) {
+        foreach($fields as $field) {
+            $col =& $row[$field];
+            $datetime = new \DateTime($col, new \DateTimeZone("UTC"));
+            $datetime->setTimeZone(new \DateTimeZone($targetTimeZone));
+            $col = $datetime->format("Y-m-d H:i:s T");
+        }
+        return $row;
+    }
+    
     public function newRow($table = null, $pk_field_name = null)
     {
         $table = is_null($table) ? $this->table : $table;
