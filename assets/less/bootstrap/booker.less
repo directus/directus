@@ -724,6 +724,53 @@
 	}
 }
 
+/* .booking-seat-options */ .booking-seat-guide {
+	position: relative;
+	padding: 20px 0;
+	.clearfix();
+
+	.seat-guide-item {
+		position: relative;
+		float: left;
+		width: 42px;
+		height: 42px;
+		border-radius: 100px;
+		line-height: 3.7;
+		text-align: center;
+		font-size: 1em;
+		font-weight: 600;
+		background-color: #ECECEC;
+		margin-right: 30px;
+
+		.seat-guide-title {
+			position: absolute;
+			bottom: -20px;
+			left: 50%;
+			width: 60px;
+			height: 12px;
+			margin-left: -30px;
+			line-height: 1;
+			white-space: nowrap;
+			overflow: hidden;
+			color: @grayDark;
+			font-weight: 400;
+		}
+
+		&.note, &.vip, &.supersoul, &.firstride, &.hundredrides, &.birthday, &.staff {
+			background-image: url('/directus/extensions/booker/assets/images/seat-states.png');
+			background-repeat: no-repeat;
+			background-position-y: -50px;
+		}
+		&.note { background-position-x: 3px; }
+		&.vip { background-position-x: -96px; }
+		&.supersoul { background-position-x: -197px; }
+		&.firstride { background-position-x: -292px; }
+		&.hundredrides { background-position-x: -385px; }
+		&.birthday { background-position-x: -479px; }
+		&.staff { background-position-x: -573px; }
+	}
+}
+
 // .directus-module
 	.customers_table {
 		.directus-module-section {
