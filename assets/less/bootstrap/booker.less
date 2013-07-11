@@ -9,6 +9,26 @@
 	}
 }
 
+.booking-visibility-state {
+	position: relative;
+	display: inline-block;
+	width: 21px;
+	height: 26px;
+	background: url('/directus/extensions/booker/assets/images/booking-lock-unlock.png') no-repeat;
+	top: 4px;
+	left: 6px;
+	cursor: pointer;
+	opacity: 0.5;
+
+	&:hover {
+		opacity: 1;
+	}
+
+	&.locked {
+		background-position: 0 bottom;
+	}
+}
+
 #sidebar-left.extension-booker {
 	float: left;
 	width: 160px;
@@ -358,7 +378,7 @@
 
 /* .booking-seat-options */ .booking-session-seats {
 	border: 1px solid #ececec;
-	padding: 20px 0;
+	padding: 20px 0 10px;
 
 	.seats {
 		@seatSize: 42px;
@@ -553,6 +573,153 @@
 			font-weight: normal;
 			// font-size: 1.2em;
 			// margin-top: 10px;
+		}
+	}
+}
+
+/* .booking-seat-options */ .booking-extra-seats {
+	position: relative;
+	background-color: @grayLight;
+	border: 1px solid #ECECEC;
+	border-top-width: 0;
+	.clearfix();
+	overflow: hidden;
+	height: 25px;
+	-webkit-box-sizing: border-box;
+
+	&.active {
+		padding: 20px 22px 35px;
+		height: auto;
+
+		.seat {
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+
+	.extra-seats-toggle {
+		position: absolute;
+		top: 5px;
+		right: 10px;
+		cursor: pointer;
+	}
+
+	.seat {
+		opacity: 0;
+		visibility: hidden;
+		position: relative;
+		float: left;
+		margin-right: 15px;
+		width: 42px;
+		height: 42px;
+		border-radius: 100px;
+		line-height: 3.7;
+		text-align: center;
+		// color: @grayDark;
+		font-size: 1em;
+		// .font-family(bold);
+		font-weight: 600;
+		cursor: pointer;
+		background-color: #FFF;
+		color: @grayDarker;
+
+		.customer-name, .customer-actions {
+			position: absolute;
+			bottom: -20px;
+			left: 50%;
+			width: 60px;
+			height: 12px;
+			margin-left: -30px;
+			padding-top: 7px;
+			line-height: 1;
+			white-space: nowrap;
+			overflow: hidden;
+			color: @grayDark;
+			font-weight: 400;
+		}
+
+		&.reserved {
+			.customer-actions {
+				display: none;
+				bottom: 0;
+			}
+
+			&:hover {
+				.customer-NAME { display: none; }
+				.customer-actions { display: block; }
+			}
+		}
+
+		/* .customer-actions */ .customer-remove, .customer-switch, .customer-hold, .customer-note {
+			position: absolute;
+			height: 16px;
+			font-size: 0.95em;
+			cursor: pointer;
+
+			&:hover {
+				-webkit-transform: scale(1.3);
+			}
+		}
+
+		/* .customer-actions */ .customer-remove {
+			left: 0px;
+			color: @red;
+		}
+
+		/* .customer-actions */ .customer-switch {
+			left: 14px;
+			color: @directusPrimary;
+		}
+
+		/* .customer-actions */ .customer-hold {
+			left: 30px;
+			color: #FFC10B;
+		}
+
+		/* .customer-actions */ .customer-note {
+			left: 46px;
+			color: #26A9E0;
+		}
+
+		&.held {
+			background-color: #F9F9F9;
+			color: #ADB0B3;
+			border: 1px solid #F9F9F9;
+
+			&:hover {
+				border: 1px solid @gray;
+			}
+		}
+
+		&.available {
+			border: 1px solid @grayDark;
+
+			&:hover {
+				background-color: @directusPrimary;
+			}
+		}
+
+		&.reserved {
+			background-color: @directusPrimary;
+			border: 1px solid @directusPrimary;
+		}
+
+			&.note, &.vip, &.supersoul, &.firstride, &.hundredrides, &.birthday, &.staff {
+				background: url('/directus/extensions/booker/assets/images/seat-states.png') no-repeat;
+				background-position-y: 2px;
+			}
+			&.note { .reserved; background-position-x: 3px; }
+			&.vip { .reserved; background-position-x: -96px; }
+			&.supersoul { .reserved; background-position-x: -197px; }
+			&.firstride { .reserved; background-position-x: -292px; }
+			&.hundredrides { .reserved; background-position-x: -385px; }
+			&.birthday { .reserved; background-position-x: -479px; }
+			&.staff { .reserved; background-position-x: -573px; }
+
+		&.fan {
+			background: url('/directus/extensions/booker/assets/images/booking-fan.png') no-repeat center center;
+			text-indent: -9999px;
+			cursor: default;
 		}
 	}
 }
