@@ -8503,6 +8503,78 @@ header {
   text-indent: -9999px;
   cursor: default;
 }
+/* .booking-seat-options */.booking-seat-guide {
+  position: relative;
+  padding: 20px 0;
+  *zoom: 1;
+}
+.booking-seat-guide:before,
+.booking-seat-guide:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.booking-seat-guide:after {
+  clear: both;
+}
+.booking-seat-guide .seat-guide-item {
+  position: relative;
+  float: left;
+  width: 42px;
+  height: 42px;
+  border-radius: 100px;
+  line-height: 3.7;
+  text-align: center;
+  font-size: 1em;
+  font-weight: 600;
+  background-color: #ECECEC;
+  margin-right: 30px;
+}
+.booking-seat-guide .seat-guide-item .seat-guide-title {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  width: 60px;
+  height: 12px;
+  margin-left: -30px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #8f8f8f;
+  font-weight: 400;
+}
+.booking-seat-guide .seat-guide-item.note,
+.booking-seat-guide .seat-guide-item.vip,
+.booking-seat-guide .seat-guide-item.supersoul,
+.booking-seat-guide .seat-guide-item.firstride,
+.booking-seat-guide .seat-guide-item.hundredrides,
+.booking-seat-guide .seat-guide-item.birthday,
+.booking-seat-guide .seat-guide-item.staff {
+  background-image: url('/directus/extensions/booker/assets/images/seat-states.png');
+  background-repeat: no-repeat;
+  background-position-y: -50px;
+}
+.booking-seat-guide .seat-guide-item.note {
+  background-position-x: 3px;
+}
+.booking-seat-guide .seat-guide-item.vip {
+  background-position-x: -96px;
+}
+.booking-seat-guide .seat-guide-item.supersoul {
+  background-position-x: -197px;
+}
+.booking-seat-guide .seat-guide-item.firstride {
+  background-position-x: -292px;
+}
+.booking-seat-guide .seat-guide-item.hundredrides {
+  background-position-x: -385px;
+}
+.booking-seat-guide .seat-guide-item.birthday {
+  background-position-x: -479px;
+}
+.booking-seat-guide .seat-guide-item.staff {
+  background-position-x: -573px;
+}
 .customers_table .directus-module-section {
   position: relative;
 }
