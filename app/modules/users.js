@@ -75,7 +75,7 @@ function(app, Backbone, Directus, SaveModule) {
 
       if (this.collection.hasPermission('add')) {
         data.buttonTitle = 'Add New Item';
-      };
+      }
 
       return data;
     },

@@ -51,7 +51,7 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     hasColumn: function(columnName) {
-      return this.structure.get(columnName) !== undefined
+      return this.structure.get(columnName) !== undefined;
     },
 
     hasPermission: function(permissionType) {
