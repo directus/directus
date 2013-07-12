@@ -46,14 +46,20 @@ class RackspaceOpenCloudAdapter extends Adapter {
         return $objects;
     }
 
+    protected function setContainer($name) {
+        if(is_null($this->container) || $name !== $this->container->name) {
+            $this->container = $this->ostore->Container($name);
+        }
+    }
+
     protected function fileExists($fileName, $destination) {
-        $this->container = $this->ostore->Container($destination);
+        $this->setContainer($destination);
         $objects = $this->getObjectList();
         return array_key_exists($fileName, $objects);
     }
 
     protected function writeFile($localFile, $targetFileName, $destination) {
-        $this->container = $this->ostore->Container($destination);
+        $this->setContainer($destination);
         try {
             $object = $this->container->DataObject();
             $object->name = $targetFileName;
