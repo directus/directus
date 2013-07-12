@@ -146,7 +146,7 @@ require([
     if (data === undefined) return;
 
     var name = data.name;
-    var data = data.options;
+    data = data.options;
 
     var options = _.map(data, function(item) {
       var selected = item.selected ? 'selected' : '';
