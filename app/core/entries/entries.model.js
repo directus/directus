@@ -55,6 +55,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return this.set(data);
     },
 
+
+    //@todo: this whole shebang should be cached in the collection
     parseRelational: function(attributes) {
       var type;
       var structure = this.collection.structure;
@@ -170,6 +172,36 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       }
 
       return Backbone.sync.apply(this, [method, model, options]);
+    },
+
+    // returns true or false
+    isMine: function() {
+      var myId = parseInt(app.getCurrentUser().id,10),
+          magicOwnerColumn = this.collection.table.get('magic_owner_column'),
+          magicOwnerId = this.get(magicOwnerColumn);
+
+      return myId === magicOwnerId;
+    },
+
+    // bigedit trumps write black list
+    // bigedit = edit others
+    // edit = edit your own
+    canEdit: function(attribute) {
+      var iAmTheOwner         = this.isMine(),
+          privileges          = this.collection.privileges,
+          bigeditPermission   = this.collection.hasPermission('bigedit'),
+          editPermission      = this.collection.hasPermission('edit'),
+          columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute);
+
+      return (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
+    },
+
+    canDelete: function() {
+      var iAmTheOwner = this.isMine(),
+          canDelete = this.collection.hasPermission('delete'),
+          canBigdelete = this.collection.hasPermission('bigdelete');
+
+      return (!iAmTheOwner && canBigdelete) || (iAmTheOwner && canDelete);
     },
 
     toJSON: function(options, noNest) {
