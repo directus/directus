@@ -9,6 +9,5 @@ Directus is a free and open source content management framework that provides a 
 
 View the Directus documentation here:
 
-Repo Demo
 
 [GitHub Wiki](https://github.com/RNGR/directus6/wiki)
