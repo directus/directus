@@ -40,7 +40,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "settings/tables/:table":         "settingsTable",
       "settings/permissions/:groupId":  "settingsPermissions",
       "messages":                       "messages",
-      "cashregister":                   "cashregister"
+      "cashregister":                   "cashregister",
+      "booker":                         "booker"
     },
 
     go: function() {

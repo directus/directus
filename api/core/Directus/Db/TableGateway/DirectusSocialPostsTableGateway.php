@@ -90,6 +90,21 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
         return $affectedRows;
     }
 
+    public function fetchLimitedPosts($perPage, $offset) {
+        $select = new Select(self::$_tableName);
+        $select->order('datetime DESC')
+               ->limit($perPage)
+               ->offset($offset);
+
+        $socialPosts = $this->selectWith($select);
+        $socialPosts = $socialPosts->toArray();
+        // Unserialize cached feed entry API-responses
+        foreach($socialPosts as &$post) {
+            $post['data'] = json_decode($post['data'], true);
+        }
+        return $socialPosts;
+    }
+
     // public function fetchLatestPostsByType($type, $limit) {
     //     $select = new Select($this->table);
     //     $select

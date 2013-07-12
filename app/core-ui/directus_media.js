@@ -71,8 +71,10 @@ define(['app', 'backbone'], function(app, Backbone) {
           data.youtube = this.model.get('embed_id');
       }
 
+      var user = app.users.get(userId);
+
       data.isPDF = "application/pdf" == this.model.get('type');
-      data.userFirstName = app.users.get(userId).get('first_name');
+      data.userFirstName = user ? user.get('first_name') : "Unknown User";
       data.url = app.RESOURCES_URL;
       data.name = this.model.get('name');
       data.orientation = (parseInt(this.model.get('width'),10) > parseInt(this.model.get('height'),10)) ? 'landscape' : 'portrait';
