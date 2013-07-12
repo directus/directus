@@ -190,12 +190,12 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     serialize: function() {
       var data = {
         title: this.collection.table.id,
-        breadcrumbs: [{title: 'Tables', anchor: '#tables'}],
+        breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
       };
 
       if (this.collection.hasPermission('add')) {
         data.buttonTitle = 'Add New Item';
-      };
+      }
 
       return data;
     },
