@@ -25,27 +25,11 @@ function(app, Backbone) {
       var structure = this.structure;
       var UI = ui.initialize({model: this.model, structure: structure});
 
-      console.log(this.hiddenFields);
-
-      var parent = false;
-      // fixes https://github.com/RNGR/directus6/issues/204
-      if(this.model.hasOwnProperty('collection') && this.model.collection.hasOwnProperty('parent'))
-        parent = this.model.collection.parent;
-
-      var sameAsParent = false;
-      var relatedTable;
-      var meta;
-
       // @todo: would probably be cleaner to filter this first instead of doing it on the fly
       structure.each(function(column) {
-        meta = structure.get(column);
-        relatedTable = (meta.get('ui') === 'many_to_one') ? meta.options.get('table_related') : meta.get('table_related');
-
-        sameAsParent = parent && (relatedTable === parent.collection.table.id);
-
-
-        if (!column.get('hidden_input') && !_.contains(this.hiddenFields, column.id) && !sameAsParent) {
+        if (!_.contains(this.hiddenFields, column.id)) {
           var view = UI.getInput(column.id);
+          //@todo: move this to UI
           view.$el.attr('id', 'edit_field_'+column.id);
           this.insertView(view);
         }
@@ -75,8 +59,22 @@ function(app, Backbone) {
     },
 
     initialize: function(options) {
-      this.hiddenFields = _.union(options.hiddenFields || [], this.hiddenFields);
+      var structureHiddenFields;
+      var optionsHiddenFields = options.hiddenFields || [];
+
       this.structure = this.options.structure || this.model.collection.structure;
+
+      // Hide fields defined as hidden in the schema
+      structureHiddenFields = this.structure.chain()
+                                .filter(function(column) { return column.get('hidden_input'); })
+                                .pluck('id')
+                                .value();
+
+      this.hiddenFields = _.union(
+                            optionsHiddenFields,
+                            structureHiddenFields,
+                            this.hiddenFields
+                          );
 
       this.model.on('invalid', function(model, errors) {
         _.each(errors, function(item) {
