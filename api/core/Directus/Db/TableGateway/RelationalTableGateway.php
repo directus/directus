@@ -324,7 +324,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 // $log->info("(Skipping empty foreign record declaration.)");
                                 continue;
                             }
-                            $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
+
+                            // only add parent id's to items that are lacking the parent column
+                            if (!array_key_exists($foreignJoinColumn, $foreignRecord)) {
+                                $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
+                            }
+
                             $foreignRecord = $this->manageRecordUpdate($foreignTableName, $foreignRecord, self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged);
                         }
                         // $log->info("</Identified:One-to-Many>");
