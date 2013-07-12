@@ -54,7 +54,8 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     },
 
     editModel: function(model) {
-      var view = new Directus.EditView({model: model});
+      var columnName = this.options.schema.get('junction_key_right');
+      var view = new Directus.EditView({model: model, hiddenFields: [columnName]});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
 
       modal.save = function() {

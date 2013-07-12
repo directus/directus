@@ -137,8 +137,7 @@ function(app, Backbone) {
 
       this.trigger('fetch', this);
 
-      if(this.hasOwnProperty('getFilters'))
-        _.extend(options.data, this.getFilters());
+      _.extend(options.data, this.getFilters());
 
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
