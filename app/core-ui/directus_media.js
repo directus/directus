@@ -62,7 +62,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var authenticatedUser = app.getCurrentUser();
 
       if (!this.model.has('id')) {
-        userId = authenticatedUser['id'];
+        userId = authenticatedUser.id;
         data.isNew = true;
       } else {
         userId = this.model.get('user');
