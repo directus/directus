@@ -25,7 +25,10 @@ function(app, Backbone, Collection, EntriesCollection) {
       //DRY this up please and move it to BB's protoype
       toJSON: function(options) {
         var attributes = _.clone(this.attributes);
-        attributes.data = this.get('data').toJSON();
+        attributes.data = this.get('data').toJSON(options);
+        if (_.isEmpty(attributes.data)) {
+          attributes.data.id = this.get('data').id;
+        }
         return attributes;
       }
     }),
@@ -80,6 +83,16 @@ function(app, Backbone, Collection, EntriesCollection) {
       return this.structure.get(columnName) !== undefined;
     },
 
+    comparator: function(model) {
+      var comparator;
+      if (model.has('sort')) {
+        comparator = model.get('sort');
+      } else {
+        comparator = model.get('id');
+      }
+      return parseInt(comparator,10);
+    },
+
     initialize: function(models, options) {
 
       EntriesCollection = EntriesCollection || require('core/entries/entries.collection');
@@ -87,6 +100,7 @@ function(app, Backbone, Collection, EntriesCollection) {
       this.structure = options.structure;
       this.table = options.table;
       this.preferences = options.preferences;
+
       this.filters = options.filters;
       this.junctionStructure = options.junctionStructure;
 
