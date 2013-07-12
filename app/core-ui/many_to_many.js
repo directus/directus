@@ -22,7 +22,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click button[data-action=add]': 'addRow',
-      'click button[data-action=insert]': 'insertRow'
+      'click button[data-action=insert]': 'insertRow',
+      'click td.delete': 'deleteRow'
     },
 
     template: Handlebars.compile(
