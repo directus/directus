@@ -13,6 +13,7 @@ use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
+use Directus\Util\Date;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
@@ -74,8 +75,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime')) {
         foreach($fields as $field) {
             $col =& $row[$field];
-            $datetime = new \DateTime($col, new \DateTimeZone("UTC"));
-            $datetime->setTimeZone(new \DateTimeZone($targetTimeZone));
+            $datetime = Date::convertUtcDateTimeToTimeZone($col, $targetTimeZone);
             $col = $datetime->format("Y-m-d H:i:s T");
         }
         return $row;
