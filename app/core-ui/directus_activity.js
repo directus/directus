@@ -36,13 +36,10 @@ define(['app','backbone'], function(app, Backbone) {
         break;
       default:
         var targetObjectPath;
-        switch(table) {
-          case 'directus_users':
-            targetObjectPath = 'users/' + model.get('row_id');
-            break;
-          default:
-            targetObjectPath = '#tables/' + table + '/' + model.get('row_id');
-            break;
+        if (table === 'directus_users') {
+          targetObjectPath = 'users/' + model.get('row_id');
+        } else {
+          targetObjectPath = '#tables/' + table + '/' + model.get('row_id');
         }
         returnStr =
             '<a href="' + targetObjectPath + '">' + identifier + ' </a>'+

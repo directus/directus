@@ -289,12 +289,8 @@ function(app, Backbone, ui, Directus) {
 
         // only return tables with view permissions
         return _.contains(permissions, 'alter');
-
-
-
-        return true;
-
       });
+
       rows = _.map(rows, function(model) { return model.toJSON(); });
       return {rows: rows};
     }
