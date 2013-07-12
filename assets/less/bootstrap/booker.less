@@ -209,6 +209,7 @@
 			position: relative;
 			overflow-x: hidden;
 			background-color: @white;
+			border-radius: 2px;
 
 			&:hover {
 				-webkit-box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.15);
@@ -630,7 +631,7 @@
 			width: 60px;
 			height: 12px;
 			margin-left: -30px;
-			padding-top: 7px;
+			padding-top: 11px;
 			line-height: 1;
 			white-space: nowrap;
 			overflow: hidden;
@@ -768,6 +769,69 @@
 		&.hundredrides { background-position-x: -385px; }
 		&.birthday { background-position-x: -479px; }
 		&.staff { background-position-x: -573px; }
+	}
+}
+
+.booker-input-modal {
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 1040; // global navbar has z-index of 1030
+	background-color: rgba(0,0,0,.8);
+	top: 0;
+	left: 0;
+
+	&.active {
+		display: block;
+	}
+
+	.btn-primary {
+		position: absolute;
+		right: 0;
+		bottom: -48px;
+		bottom: 0;
+	}
+}
+
+.booker-input-content {
+	position: absolute;
+	top: 25%;
+	left: 50%;
+	width: 444px;
+	height: 202px;
+	margin-left: -222px;
+	font-size: 14px;
+	// background-color: #fff;
+	.clearfix();
+}
+
+.booker-input-presets {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 10px;
+
+	li {
+		color: @white;
+		cursor: pointer;
+		padding-left: 7px;
+
+		&:hover {
+			color: @directusPrimary;
+		}
+	}
+}
+
+.booker-input-notebox {
+	position: relative;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	height: 83px;
+
+	&::-webkit-input-placeholder{
+		color: @grayDark;
 	}
 }
 
