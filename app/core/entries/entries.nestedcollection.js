@@ -19,9 +19,6 @@ function(app, Backbone, Collection, EntriesCollection) {
       parse: function(result) {
         result.data = new this.collection.nestedCollection.model(result.data, {collection: this.collection.nestedCollection});
         this.collection.nestedCollection.add(result.data);
-
-        console.log(result);
-
         return result;
       },
 
@@ -72,7 +69,6 @@ function(app, Backbone, Collection, EntriesCollection) {
     },
 
     getColumns: function() {
-      console.log('x');
       return this.nestedCollection.getColumns();
     },
 
