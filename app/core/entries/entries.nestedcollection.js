@@ -77,7 +77,7 @@ function(app, Backbone, Collection, EntriesCollection) {
     },
 
     hasColumn: function(columnName) {
-      return this.structure.get(columnName) !== undefined
+      return this.structure.get(columnName) !== undefined;
     },
 
     initialize: function(models, options) {
