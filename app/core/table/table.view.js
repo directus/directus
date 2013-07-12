@@ -128,7 +128,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
               var success = function() {
                 var active = collection.table.get('active') + 1;
                 collection.table.set('active', active);
-              }
+              };
               collection.create(item, {silent: true, success: success});
             } else {
               console.log('ADD');

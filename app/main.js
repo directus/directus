@@ -31,10 +31,11 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
       var existingErrorHandler = function(){};
       if(undefined !== options.error)
-        var existingErrorHandler = options.error;
+        existingErrorHandler = options.error;
 
       var errorCodeHandler = function(xhr, status, thrown) {
-        var status = xhr.status;
+        //@todo: note that status is getting overwritten. don't!
+        status = xhr.status;
 
         existingErrorHandler(xhr, status, thrown);
 
@@ -157,7 +158,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
       preferences: app.preferences.directus_media,
       url: app.API_URL + 'media',
-      privileges: app.privileges['directus_media'],
+      privileges: app.privileges.directus_media,
       parse: true
       //filters: {columns: ['name', 'title', 'type', 'caption', 'size', 'user', 'date_uploaded']}
     });
@@ -169,7 +170,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       preferences: app.preferences.directus_users,
       url: app.API_URL + 'tables/directus_users/rows',
       filters: {columns: ['name', 'group', 'activity', 'email', 'description']},
-      privileges: app.privileges['directus_users'],
+      privileges: app.privileges.directus_users,
       rowsPerPage: 3000
     });
 
@@ -178,7 +179,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
       preferences: new Backbone.Model(activity.preferences),
       url: app.API_URL + 'activity/',
-      privileges: app.privileges['directus_activity']
+      privileges: app.privileges.directus_activity
     });
 
     app.groups =
@@ -187,7 +188,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       preferences: new Backbone.Model(groups.preferences),
       structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
       url: app.API_URL + 'groups/',
-      privileges: app.privileges['directus_groups'],
+      privileges: app.privileges.directus_groups,
       parse: true
     });
 

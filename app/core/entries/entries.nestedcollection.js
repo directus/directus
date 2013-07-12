@@ -7,7 +7,7 @@ define([
 
 function(app, Backbone, Collection, EntriesCollection) {
 
-
+  //@todo: Try merging this with entries.collection.js
   var NestedCollection = Collection.extend({
 
     isNested: true,
@@ -19,9 +19,6 @@ function(app, Backbone, Collection, EntriesCollection) {
       parse: function(result) {
         result.data = new this.collection.nestedCollection.model(result.data, {collection: this.collection.nestedCollection});
         this.collection.nestedCollection.add(result.data);
-
-        console.log(result);
-
         return result;
       },
 
@@ -72,7 +69,6 @@ function(app, Backbone, Collection, EntriesCollection) {
     },
 
     getColumns: function() {
-      console.log('x');
       return this.nestedCollection.getColumns();
     },
 
@@ -81,7 +77,7 @@ function(app, Backbone, Collection, EntriesCollection) {
     },
 
     hasColumn: function(columnName) {
-      return this.structure.get(columnName) !== undefined
+      return this.structure.get(columnName) !== undefined;
     },
 
     initialize: function(models, options) {
