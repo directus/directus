@@ -110,7 +110,8 @@ class RequestNonceProvider {
         if(is_null($this->valid_nonce_this_request)) {
             $request_nonce = $this->getRequestNonce();
             $this->valid_nonce_this_request = false;
-            if($index = array_search($request_nonce, $this->nonce_pool)) {
+            $index = array_search($request_nonce, $this->nonce_pool);
+            if(false !== $index) {
                 $this->valid_nonce_this_request = true;
                 // Remove the used nonce from the nonce pool
                 unset($this->nonce_pool[$index]);

@@ -35,8 +35,8 @@ class Cache {
             $feed = $feed->toArray();
         }
         // Scrape if due
-        $feedIsDue = in_array($feed['last_checked'], array(null, '0000-00-00 00:00:00')) ||
-            strtotime($feed['last_checked']) <= $this->getDueDate();
+        $neverBeenChecked = empty($feed['last_checked']) || ($feed['last_checked'] == '0000-00-00 00:00:00');
+        $feedIsDue = $neverBeenChecked || strtotime($feed['last_checked']) <= strtotime($this->getDueDate());
         if($feedIsDue) {
             $this->scrapeFeed($feed);
         }
@@ -96,8 +96,10 @@ class Cache {
         $statuses = (array) $cb->statuses_userTimeline(array('screen_name' => $feed['name']));
         $httpStatus = $statuses['httpstatus'];
         unset($statuses['httpstatus']);
+        $responseStatusIds = array();
         foreach($statuses as $status) {
             $status = (array) $status;
+            $responseStatusIds[] = $status['id'];
             unset($status['user']);
             $cachedCopy = $this->SocialPostsTableGateway->feedForeignIdExists($status['id'], $feed['id']);
             if($cachedCopy) {
@@ -113,6 +115,8 @@ class Cache {
         $sampleEntry = (array) $statuses[0];
         $feed['data'] = json_encode($sampleEntry['user']);
         $feed['foreign_id'] = $sampleEntry['user']->id;
+        // Remove feed items absent from this feed response
+        $this->SocialPostsTableGateway->deleteOtherFeedPosts($feed['id'], $responseStatusIds);
         return $feed;
     }
 
@@ -130,18 +134,24 @@ class Cache {
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
         $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s";
-        $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id']['value'], $socialSettings['instagram_oauth_access_token']['value']);
+        $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id'], $socialSettings['instagram_oauth_access_token']);
         try {
             $mediaRecent = file_get_contents($endpoint);
         } catch(\ErrorException $e) {
             // Don't do anything if the instagram request fails
             return false;
         }
+        // The ErrorException won't necessarily be thrown, depending on the context.
+        if(false === $mediaRecent) {
+            return false;
+        }
         $mediaRecent = json_decode($mediaRecent, true);
         $mediaRecent = $mediaRecent['data'];
 
+        $responseStatusIds = array();
         // Scrape entries
         foreach($mediaRecent as $photo) {
+            $responseStatusIds[] = $photo['id'];
             unset($photo['user']);
             $cachedCopy = $this->SocialPostsTableGateway->feedForeignIdExists($photo['id'], $feed['id']);
             if($cachedCopy) {
@@ -154,10 +164,11 @@ class Cache {
                 $this->newFeedEntry($feed, $photo, $published);
             }
         }
-
         // Update feed user data
         $sampleEntry = (array) $mediaRecent[0];
         $feed['data'] = json_encode($sampleEntry['user']);
+        // Remove feed items absent from this feed response
+        $this->SocialPostsTableGateway->deleteOtherFeedPosts($feed['id'], $responseStatusIds);
         return $feed;
     }
 
@@ -186,7 +197,7 @@ class Cache {
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
         $endpoint = "https://api.instagram.com/v1/users/search?q=%s&access_token=%s";
-        $endpoint = sprintf($endpoint, urlencode($username), urlencode($socialSettings['instagram_oauth_access_token']['value']));
+        $endpoint = sprintf($endpoint, urlencode($username), urlencode($socialSettings['instagram_oauth_access_token']));
         try {
             $userData = file_get_contents($endpoint);
         } catch(\ErrorException $e) {
