@@ -62,7 +62,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var authenticatedUser = app.getCurrentUser();
 
       if (!this.model.has('id')) {
-        userId = authenticatedUser['id'];
+        userId = authenticatedUser.id;
         data.isNew = true;
       } else {
         userId = this.model.get('user');
@@ -71,8 +71,10 @@ define(['app', 'backbone'], function(app, Backbone) {
           data.youtube = this.model.get('embed_id');
       }
 
+      var user = app.users.get(userId);
+
       data.isPDF = "application/pdf" == this.model.get('type');
-      data.userFirstName = app.users.get(userId).get('first_name');
+      data.userFirstName = user ? user.get('first_name') : "Unknown User";
       data.url = app.RESOURCES_URL;
       data.name = this.model.get('name');
       data.orientation = (parseInt(this.model.get('width'),10) > parseInt(this.model.get('height'),10)) ? 'landscape' : 'portrait';
@@ -104,14 +106,16 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.list = function(options) {
-      var isPDF = 'application/pdf' == options.model.get('type');
-      if(isPDF) {
-          var html = '<div class="media-thumb"><em>PDF Icon Here</em></div>';
-          return html;
-      }
-      var orientation = (parseInt(options.model.get('width'),10) > parseInt(options.model.get('height'),10)) ? 'landscape' : 'portrait';
-      var img = '<div class="media-thumb"><img src="' + app.RESOURCES_URL + 'thumbnail/' + options.model.get('name') +'" class="img ' + orientation + '"></div>';
-      return img;
+    var model = options.model,
+      isPDF = 'application/pdf' == model.get('type');
+    if(isPDF) {
+        var html = '<div class="media-thumb"><em>PDF Icon Here</em></div>';
+        return html;
+    }
+    var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
+    var url = app.makeMediaUrl(model, true);
+    var img = '<div class="media-thumb"><img src="' + url + '" class="img ' + orientation + '"></div>';
+    return img;
   };
 
   return Module;

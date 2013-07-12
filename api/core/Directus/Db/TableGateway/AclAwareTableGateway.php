@@ -8,6 +8,7 @@ use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
+use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
@@ -22,11 +23,6 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
-
-// FOR TRANSITIONAL TESTS BELOW
-use Directus\Auth\Provider as Auth;
-use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
-use Zend\Db\Sql\Expression;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
@@ -67,6 +63,23 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     /**
      * HELPER FUNCTIONS
      */
+    
+    protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime')) {
+        foreach($resultSet as &$result) {
+            $result = $this->convertRowDateTimesToTimeZone($result, $targetTimeZone, $fields);
+        }
+        return $resultSet;
+    }
+
+    protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime')) {
+        foreach($fields as $field) {
+            $col =& $row[$field];
+            $datetime = new \DateTime($col, new \DateTimeZone("UTC"));
+            $datetime->setTimeZone(new \DateTimeZone($targetTimeZone));
+            $col = $datetime->format("Y-m-d H:i:s T");
+        }
+        return $row;
+    }
     
     public function newRow($table = null, $pk_field_name = null)
     {
@@ -237,7 +250,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $this->acl->enforceBlacklist($joinTable, $join['columns'], Acl::FIELD_READ_BLACKLIST);
         }
 
-        return parent::executeSelect($select);
+        try {
+            return parent::executeSelect($select);
+        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if('production' !== DIRECTUS_ENV) {
+                echo "This query failed: " . $this->dumpSql($select);
+                die;
+            }
+        }
     }
 
     /**
@@ -265,7 +285,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
         }
 
-        return parent::executeInsert($insert);
+        try {
+            return parent::executeInsert($insert);
+        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if('production' !== DIRECTUS_ENV) {
+                echo "This query failed: " . $this->dumpSql($insert);
+                die;
+            }
+        }
     }
 
     /**
@@ -278,7 +305,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     protected function executeUpdate(Update $update)
     {
-        $cuurrentUserId = null;
+        $currentUserId = null;
         if(Auth::loggedIn()) {
             $currentUser = Auth::getUserInfo();
             $currentUserId = intval($currentUser['id']);
@@ -331,7 +358,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         }
 
-        return parent::executeUpdate($update);
+        try {
+            return parent::executeUpdate($update);
+        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if('production' !== DIRECTUS_ENV) {
+                echo "This query failed: " . $this->dumpSql($update);
+                die;
+            }
+        }
     }
 
     /**
@@ -389,7 +423,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         }
 
-        return parent::executeDelete($delete);
+        try {
+            return parent::executeDelete($delete);
+        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if('production' !== DIRECTUS_ENV) {
+                echo "This query failed: " . $this->dumpSql($delete);
+                die;
+            }
+        }
     }
 
 }

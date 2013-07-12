@@ -50,12 +50,29 @@ function(app, Backbone, Collection, EntriesModel) {
       if (preferencesHasChanged) this.preferences.save();
     },
 
+    hasColumn: function(columnName) {
+      return this.structure.get(columnName) !== undefined;
+    },
+
+    hasPermission: function(permissionType) {
+      var permissions = this.privileges.get('permissions') || '';
+      permissionsArray = permissions.split(',');
+      return _.contains(permissionsArray, permissionType);
+    },
+
+    isWriteBlacklisted: function(attribute) {
+      var writeBlacklist = (this.privileges.get('write_field_blacklist') || '').split(',');
+      return _.contains(writeBlacklist, attribute);
+    },
+
     initialize: function(models, options) {
+      var rowsPerPage = options.rowsPerPage || parseInt(app.settings.get('global').get('rows_per_page'),10) || 500;
       this.structure = options.structure;
+      this.privileges = options.privileges;
       this.table = options.table;
       this.active = this.table.get('active');
       this.url = options.url || this.table.get('url') + '/rows';
-      this.filters = _.extend({ currentPage: 0, perPage: 500, sort: 'id', sort_order: 'ASC', active: '1,2' }, options.filters);
+      this.filters = _.extend({ currentPage: 0, perPage: rowsPerPage, sort: 'id', sort_order: 'ASC', active: '1,2' }, options.filters);
       if (options.preferences) {
         this.preferences = options.preferences;
         this.preferences.on('change', function() { this.trigger('change'); }, this);
