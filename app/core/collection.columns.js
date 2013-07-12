@@ -14,6 +14,7 @@ function(app, Backbone) {
   });
 
   Structure.Column = Backbone.Model.extend({
+
       parse: function(result) {
         var options = result.options || {};
         options.id = result.ui;
@@ -24,15 +25,26 @@ function(app, Backbone) {
         delete result.options;
         return result;
       },
+
       getOptions: function() {
         return this.options.get(this.attributes.ui);
       },
+
+      getRelated: function() {
+        return (this.get('ui') === 'many_to_one') ? this.options.get('table_related') : this.get('table_related');
+      },
+
+      hasRelated: function() {
+        return this.getRelated() !== undefined;
+      },
+
       toJSON: function(options) {
         if (options && options.columns) {
           return _.pick(this.attributes, options.columns);
         }
         return _.clone(this.attributes);
       }
+
   });
 
   //The equivalent of a MySQL columns Schema
