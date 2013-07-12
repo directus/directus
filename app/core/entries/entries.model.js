@@ -55,6 +55,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return this.set(data);
     },
 
+
+    //@todo: this whole shebang should be cached in the collection
     parseRelational: function(attributes) {
       var type;
       var structure = this.collection.structure;
