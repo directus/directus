@@ -157,19 +157,29 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     },
 
     sync: function(method, model, options) {
-      var isModelOrCollection;
+      var isModel,
+          isCollection;
+
       if (method === 'patch') {
         _.each(this.attributes, function(value, key) {
-          isModelOrCollection = _.isObject(value) && (typeof value.toJSON === 'function');
-          if (isModelOrCollection) {
+          isModel = (value instanceof Backbone.Model);
+          isCollection = (value instanceof Backbone.Collection);
+
+          if (isModel || isCollection) {
             // Add foreign data to patch. Only add changed attributes
             value = value.toJSON({changed: true});
+
             if (!_.isEmpty(value)) {
               options.attrs[key] = value;
             }
           }
+
         });
       }
+
+      console.log(options.attrs);
+
+      //return;
 
       return Backbone.sync.apply(this, [method, model, options]);
     },
@@ -206,7 +216,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
     toJSON: function(options, noNest) {
       var attributes = _.clone(this.attributes),
-          isModelOrCollection;
+          isModel,
+          isCollection;
 
       options = options || {};
 
@@ -219,9 +230,10 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
       // expand relations
       _.each(this.attributes, function(value, key) {
-        isModelOrCollection = _.isObject(value) && (typeof value.toJSON === 'function');
+        isModel = (value instanceof Backbone.Model);
+        isCollection = (value instanceof Backbone.Collection);
 
-        if (isModelOrCollection) {
+        if (isModel || isCollection) {
           value = value.toJSON(options);
           if (_.isEmpty(value)) return;
           attributes[key] = value;
