@@ -7,7 +7,7 @@ define([
 
 function(app, Backbone, Collection, EntriesCollection) {
 
-
+  //@todo: Try merging this with entries.collection.js
   var NestedCollection = Collection.extend({
 
     isNested: true,
