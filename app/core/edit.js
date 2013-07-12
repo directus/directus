@@ -9,12 +9,6 @@ function(app, Backbone) {
 
     tagName: "form",
 
-    events: {
-      'save': function() {
-        console.log('save');
-      }
-    },
-
     hiddenFields: [
       'id',
       'active',
@@ -22,17 +16,17 @@ function(app, Backbone) {
     ],
 
     beforeRender: function() {
-      var structure = this.structure;
-      var UI = ui.initialize({model: this.model, structure: structure});
+      var UI = ui.initialize({model: this.model, structure: this.structure});
 
-      // @todo: would probably be cleaner to filter this first instead of doing it on the fly
-      structure.each(function(column) {
-        if (!_.contains(this.hiddenFields, column.id)) {
-          var view = UI.getInput(column.id);
-          //@todo: move this to UI
-          view.$el.attr('id', 'edit_field_'+column.id);
-          this.insertView(view);
-        }
+      this.structure.each(function(column) {
+        // Skip hidden fields
+        if (_.contains(this.hiddenFields, column.id)) return;
+
+        var view = UI.getInput(column.id);
+        //@todo: move this to UI
+        view.$el.attr('id', 'edit_field_'+column.id);
+        this.insertView(view);
+
       }, this);
     },
 
@@ -42,7 +36,7 @@ function(app, Backbone) {
       this.$el.attr('id','directus-form');
     },
 
-    //Focus first input
+    //Focus on first input
     afterRender: function() {
       var $first = this.$el.find(':input:first:visible');
       $first.focus();
@@ -50,17 +44,15 @@ function(app, Backbone) {
     },
 
     data: function() {
-      // Allows us to exclude certain inputs, i.e. w/in custom uis, which don't
-      // map to an actual record field, and which shouldn't be posted.
-      this.$el.find('.serialize-exclude').attr('disabled','disabled');
       var data = this.$el.serializeObject();
-      this.$el.find('.serialize-exclude').removeAttr('disabled');
-      return data;
+      var whiteListedData = _.pick(data, this.visibleFields);
+
+      return whiteListedData;
     },
 
     initialize: function(options) {
-      var structureHiddenFields;
-      var optionsHiddenFields = options.hiddenFields || [];
+      var structureHiddenFields,
+          optionsHiddenFields = options.hiddenFields || [];
 
       this.structure = this.options.structure || this.model.collection.structure;
 
@@ -70,11 +62,8 @@ function(app, Backbone) {
                                 .pluck('id')
                                 .value();
 
-      this.hiddenFields = _.union(
-                            optionsHiddenFields,
-                            structureHiddenFields,
-                            this.hiddenFields
-                          );
+      this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
+      this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
 
       this.model.on('invalid', function(model, errors) {
         _.each(errors, function(item) {
