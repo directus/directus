@@ -33,6 +33,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   <label class="radiobuttons" for="radio-{{id}}">{{name}}</label>{{/data}} \
                   {{else}} \
                   <select name="{{name}}"> \
+                  <option value="">Select from below</option> \
                   {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
                   </select> \
                   {{/if}}';
@@ -51,6 +52,16 @@ define(['app', 'backbone'], function(app, Backbone) {
           selected: this.options.value !== undefined && (model.id === this.options.value.id)
         };
       }, this);
+
+      // default data while syncing (to avoid flickr when data is loaded)
+      if (this.options.value !== undefined && this.options.value.id && !data.length) {
+        data = [{
+          id: this.options.value.id,
+          name: this.options.value.get(this.column),
+          selected: true
+        }];
+      }
+
       return {
         name: this.options.name,
         data: data,

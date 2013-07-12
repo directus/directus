@@ -166,9 +166,9 @@ class Bootstrap {
         $requiredKeys = array('twitter_consumer_key','twitter_consumer_secret', 'twitter_oauth_token', 'twitter_oauth_token_secret');
         $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
         // Codebird initialization
-        \Codebird\Codebird::setConsumerKey($socialSettings['twitter_consumer_key']['value'], $socialSettings['twitter_consumer_secret']['value']);
+        \Codebird\Codebird::setConsumerKey($socialSettings['twitter_consumer_key'], $socialSettings['twitter_consumer_secret']);
         $cb = \Codebird\Codebird::getInstance();
-        $cb->setToken($socialSettings['twitter_oauth_token']['value'], $socialSettings['twitter_oauth_token_secret']['value']);
+        $cb->setToken($socialSettings['twitter_oauth_token'], $socialSettings['twitter_oauth_token_secret']);
         return $cb;
     }
 
