@@ -32,7 +32,8 @@ define(['app', 'backbone'], function(app, Backbone) {
                   {{#data}}<input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{id}}" id="radio-{{id}}" {{#if selected}}checked{{/if}}> \
                   <label class="radiobuttons" for="radio-{{id}}">{{name}}</label>{{/data}} \
                   {{else}} \
-                  <select name="{{name}}"> \
+                  <select name="{{name}}" {{#unless data}}disabled{{/unless}}> \
+                  <option value="">Select from below</option> \
                   {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
                   </select> \
                   {{/if}}';
@@ -43,6 +44,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     template: Handlebars.compile(template),
 
+    //@todo Render with data as only option while waiting for the rest
     serialize: function() {
       var data = this.collection.map(function(model) {
         return {
@@ -51,6 +53,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           selected: this.options.value !== undefined && (model.id === this.options.value.id)
         };
       }, this);
+
       return {
         name: this.options.name,
         data: data,
