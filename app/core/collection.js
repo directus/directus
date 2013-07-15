@@ -60,7 +60,7 @@ function(app, Backbone) {
 
       //There is no value
       if (!row.has(column)) {
-        if (this.structure) {
+        if (this.structure && this.structure.get(column) !== undefined) {
           schema = this.structure.get(column);
           ui = schema.get('ui');
 
