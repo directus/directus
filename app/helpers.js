@@ -3,6 +3,8 @@ require([
   "handlebars"
 ], function(app, Handlebars) {
 
+  var unknowUserMessage = "-";
+
   //Raw handlebars data, helpful with data types
   Handlebars.registerHelper('raw', function(data) {
     return data && new Handlebars.SafeString(data);
@@ -29,7 +31,9 @@ require([
   });
 
   Handlebars.registerHelper('avatarSmall', function(userId) {
-    return '<img src="' + app.users.get(userId).get('avatar') + '" style="margin-right:7px;" class="avatar">' + app.users.get(userId).get('first_name');
+    var user = app.users.get(userId);
+    if (user === undefined) return unknowUserMessage;
+    return '<img src="' + user.get('avatar') + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
   });
 
   Handlebars.registerHelper('activeMap', function(model) {
@@ -47,7 +51,7 @@ require([
   Handlebars.registerHelper('userName', function(userId) {
     if (!_.isNumber(userId) || _.isNaN(userId)) return;
     var user = app.users.get(userId);
-    if (user === undefined) return "—";// return undefined;
+    if (user === undefined) return unknowUserMessage;// return undefined;
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
