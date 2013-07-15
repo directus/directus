@@ -36,7 +36,7 @@ class RoomMapForm {
 
 		$data = $this->data;
 		$roomId = $data['id'];
-		$map = json_decode($data['Room Map'], true);
+		$map = json_decode(isset($data['Room Map']) ? $data['Room Map'] : '[]' , true);
 
 		// Prepare new seat records
 		$rows = array();
