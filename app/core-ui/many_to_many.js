@@ -64,7 +64,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
     insertRow: function() {
       var collection = app.entries[this.related.table.id];
       var view = new this.modalTable({collection: collection, selectable: true, footer: false});
-      var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
+      var modal = app.router.openModal(view, {stretch: true, title: 'Insert Item'});
 
       //please proxy this instead
       var me = this;
@@ -94,7 +94,9 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
       this.modalTable = Directus.Table.extend({
         events: {
           'click tbody td': function(e) {
-            var $checkbox = $(e.target).closest('tr').find('td.check > input');
+            $target = $(e.target);
+            if ($target.is("input")) return;
+            var $checkbox = $target.closest('tr').find('td.check > input');
             $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
           }
         }
