@@ -314,6 +314,8 @@ function(Handlebars, Exeptions) {
     }
   });
 
+  window.app = app;
+
   // Mix Backbone.Events, modules, and layout management into the app object.
   return _.extend(app, {
     // Create a custom object with a nested Views object.
