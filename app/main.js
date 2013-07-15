@@ -208,7 +208,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       if (value.variables === undefined) return;
       //Cheating way to peform a deep-clone
       var deepClone = JSON.parse(JSON.stringify(value.variables));
-      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone);
+      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
     });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
