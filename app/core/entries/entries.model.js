@@ -177,8 +177,6 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         });
       }
 
-      console.log(options.attrs);
-
       //return;
 
       return Backbone.sync.apply(this, [method, model, options]);
@@ -221,7 +219,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
       options = options || {};
 
-      if (options.changed) {
+      if (options.changed && !this.isNew()) {
         attributes = this.changed;
         if (!_.isEmpty(attributes) && this.id) {
           attributes.id = this.id;
