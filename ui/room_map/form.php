@@ -19,7 +19,10 @@ class RoomMapForm {
 	public function isValid() {
 		// return true; // so i can push!
 		$data = $this->data;
-		if(!(isset($data['Room Map']) || 0 === strlen(trim($data['Room Map'])) || empty($data['Room Map']))) {
+		if(!isset($data['Room Map'])) {
+			return false;
+		}
+		if(0 === strlen(trim($data['Room Map'])) || empty($data['Room Map'])) {
 			return false;
 		}
 		return true;
