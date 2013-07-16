@@ -138,6 +138,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return attributes;
     },
 
+    //@todo: This is maybe a hack. Can we make the patch better?
     diff: function(key, val, options) {
       var attrs, changedAttrs = {};
       if (typeof key === 'object') {
