@@ -80,6 +80,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     var data = window.directusData;
 
     app.root = data.path;
+    app.DEFAULT_VALIDATION_MESSAGE = 'The data you entered is not valid';
     app.API_URL = data.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
     app.uiSettings = UI.settings();
