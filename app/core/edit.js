@@ -54,7 +54,6 @@ function(app, Backbone) {
       var structureHiddenFields,
           optionsHiddenFields = options.hiddenFields || [];
 
-      //this.structure = this.options.structure || this.model.collection.structure;
       this.structure = this.model.getStructure();
 
       // Hide fields defined as hidden in the schema
