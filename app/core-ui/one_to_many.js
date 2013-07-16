@@ -14,7 +14,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
   Module.dataTypes = ['ONETOMANY'];
 
   Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255}
+    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true}
   ];
 
   var template = '<label>{{{capitalize title}}}</label> \
