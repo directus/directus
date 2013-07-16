@@ -14,7 +14,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255}
+    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true}
   ];
 
   Module.Input = Onetomany.Input.extend({
