@@ -134,7 +134,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     _.each(app.uiSettings, function(value, key) {
       if (value.variables === undefined) return;
       //Deep-clone settings!
-      var deepClone = JSON.parse(JSON.stringify(value.variables));
+      var deepClone = app.deepClone(value.variables);
       app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
     });
 
