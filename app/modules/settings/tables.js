@@ -151,22 +151,14 @@ function(app, Backbone, ui, Directus) {
     editUI: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
-      var schema = app.uiSettings[column.get('ui')].schema;
       var options = column.options;
-
-      //@todo: Move this to a more appropriate place
-      //options.structure = schema;
-
-      var view = new Directus.EditView({model: options, structure: schema});
+      var view = new Directus.EditView({model: options});
       var modal = app.router.openModal(view, {title: 'UI Settings', stretch: true});
       modal.save = function() {
         options.save(view.data(), {success: function() {
           modal.close();
         }});
       };
-      options.on('all', function() {
-        console.log(arguments);
-      });
       options.fetch();
     },
 
@@ -178,6 +170,14 @@ function(app, Backbone, ui, Directus) {
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
         row.relationship = "";
+
+        var validation = model.options.validate(model.options.toJSON());
+
+        row.valid = true;
+        if (validation !== undefined) {
+          row.valid = false;
+        }
+
         switch (model.getRelationshipType()) {
           case 'ONETOMANY':
             row.relationship = "⊣";
