@@ -63,6 +63,10 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
       sync(method, model, options);
     };
+/*
+    window.onerror = function(message, url, lineNumber) {
+      console.log(message, url, lineNumber);
+    }*/
 
     //Cancel default file drop
     $(document).on('drop dragover', function(e) {
