@@ -14,15 +14,19 @@ function(app, Backbone) {
     },
 
     getStructure: function() {
+      if (!app.uiSettings.hasOwnProperty(this.id)) throw new Error("The UI '" + this.id + "', set for the column '" + this.parent.id + "' could not be found!");
+
+      app.uiSettings[this.id].schema
       return app.uiSettings[this.id].schema;
     },
 
     //@todo: This is code repetition. Almost identical to entries.model. Create a mixin?
     validate: function(attributes, options) {
       var errors = [];
+      var structure = this.getStructure();
 
       //only validates attributes that are part of the schema
-      attributes = _.pick(attributes, this.getStructure().pluck('id'));
+      attributes = _.pick(attributes, structure.pluck('id'));
 
       _.each(attributes, function(value, key, list) {
         var mess = ui.validate(this, key, value);
