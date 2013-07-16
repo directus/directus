@@ -14,7 +14,7 @@ function(app, Backbone) {
     },
 
     getStructure: function() {
-      return this.parent.structure;
+      return app.uiSettings[this.id].schema;
     },
 
     //@todo: This is code repetition. Almost identical to entries.model. Create a mixin?
@@ -51,7 +51,6 @@ function(app, Backbone) {
         if (!app.uiSettings.hasOwnProperty(ui)) {
           throw new Error("The UI '" + ui + "', set for the column '" + result.id + "' in the table '" + tableName + "' does not exist!");
         }
-        this.structure = app.uiSettings[ui].schema;
 
         // initialize UI
         var options = result.options || {};
