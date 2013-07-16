@@ -35,7 +35,7 @@ function(textinput) {
   var Component = function(options) {
     this.model = options.model;
     this.collection = options.collection || this.model.collection;
-    this.structure = options.structure || this.collection.structure;
+    this.structure = options.structure || this.structure;
   };
 
   _.extend(Component.prototype, {
