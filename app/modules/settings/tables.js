@@ -153,15 +153,20 @@ function(app, Backbone, ui, Directus) {
       var model = this.collection.get(id);
       var schema = app.uiSettings[model.get('ui')].schema;
       var options = model.options;
-      console.log(schema);
+
+      //@todo: Move this to a more appropriate place
+      options.structure = schema;
+
       var view = new Directus.EditView({model: options, structure: schema});
       var modal = app.router.openModal(view, {title: 'UI Settings', stretch: true});
       modal.save = function() {
         options.save(view.data(), {success: function() {
-          console.log('HEPP');
+          modal.close();
         }});
-        this.close();
       };
+      options.on('all', function() {
+        console.log(arguments);
+      });
       options.fetch();
     },
 
@@ -172,6 +177,21 @@ function(app, Backbone, ui, Directus) {
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables');
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
+        row.relationship = "";
+        switch (model.getRelationshipType()) {
+          case 'ONETOMANY':
+            row.relationship = "⊣";
+            row.relationshipTooltip = model.getRelated();
+            break;
+          case 'MANYTOONE':
+            row.relationship = "⊢";
+            row.relationshipTooltip = model.getRelated();
+            break;
+          case 'MANYTOMANY':
+            row.relationship = "⊢⊣";
+            row.relationshipTooltip = model.getRelated();
+            break;
+        }
         // Gather a list of UI alternatives
         _.each(ui, function(ui) {
           if (!ui.system && ui.dataTypes.indexOf(row.type) > -1) {
