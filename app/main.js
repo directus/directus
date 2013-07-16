@@ -18,10 +18,12 @@ require([
   "schemas/users",
   "schemas/activity",
   "schemas/groups",
+  "schemas/settings.global",
+  "schemas/settings.media",
   "core/extensions"
 ],
 
-function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, extensions) {
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions) {
 
 
     //Override backbone sync for custom error handling
@@ -127,14 +129,16 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       }
     });
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Instantiate UI settings first
     _.each(app.uiSettings, function(value, key) {
       if (value.variables === undefined) return;
-      //Cheating way to peform a deep-clone
+      //Deep-clone settings!
       var deepClone = JSON.parse(JSON.stringify(value.variables));
       app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
     });
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {
 
@@ -177,6 +181,11 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Setup Global & Media settings
+    app.settings.get('global').structure = new Directus.CollectionColumns(SettingsGlobalSchema.structure,{parse: true});
+    app.settings.get('media').structure = new Directus.CollectionColumns(SettingsMediaSchema.structure,{parse: true});
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Setup core data collections.
     app.media =
     app.entries.directus_media = new Directus.EntriesCollection(data.active_media, {
@@ -186,7 +195,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       url: app.API_URL + 'media',
       privileges: app.privileges.directus_media,
       parse: true
-      //filters: {columns: ['name', 'title', 'type', 'caption', 'size', 'user', 'date_uploaded']}
     });
 
     app.users = new Directus.EntriesCollection(data.users, {
