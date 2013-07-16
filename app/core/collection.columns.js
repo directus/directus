@@ -13,12 +13,16 @@ function(app, Backbone) {
       return this.parent.url() + '/' + this.id;
     },
 
+    getStructure: function() {
+      return app.uiSettings[this.id].schema;
+    },
+
     //@todo: This is code repetition. Almost identical to entries.model. Create a mixin?
     validate: function(attributes, options) {
       var errors = [];
 
       //only validates attributes that are part of the schema
-      attributes = _.pick(attributes, this.structure.pluck('id'));
+      attributes = _.pick(attributes, this.getStructure().pluck('id'));
 
       _.each(attributes, function(value, key, list) {
         var mess = ui.validate(this, key, value);
@@ -26,8 +30,6 @@ function(app, Backbone) {
           errors.push({attr: key, message: ui.validate(this, key, value)});
         }
       }, this);
-
-      console.log(errors);
 
       if (errors.length > 0) return errors;
     }
