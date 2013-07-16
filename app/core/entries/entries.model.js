@@ -47,6 +47,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
           errors.push({attr: key, message: ui.validate(this, key, value)});
         }
       }, this);
+
       if (errors.length > 0) return errors;
     },
 
@@ -245,6 +246,10 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       }
 
       return attributes;
+    },
+
+    initialize: function() {
+      if (this.collection !== undefined) this.structure = this.collection.structure;
     }
   });
 
