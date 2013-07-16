@@ -34,6 +34,14 @@ function(app, Backbone) {
         return (this.get('ui') === 'many_to_one') ? this.options.get('table_related') : this.get('table_related');
       },
 
+      getRelationshipType: function() {
+        var type = this.get('type');
+        var ui = this.get('ui');
+
+        if (_.contains(['MANYTOMANY', 'ONETOMANY'], type)) return type;
+        if (ui === 'many_to_one') return 'MANYTOONE';
+      },
+
       hasRelated: function() {
         return this.getRelated() !== undefined;
       },
