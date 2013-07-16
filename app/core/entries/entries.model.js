@@ -26,7 +26,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       value = Backbone.Model.prototype.get.call(this, attr);
 
       if (options.flatten) {
-        uiType = this.collection.structure.get(attr).get('ui');
+        uiType = this.getStructure().get(attr).get('ui');
         if (nestedTypes.indexOf(uiType) > -1 && _.isObject(value) ) {
           value = value.get('id');
         }
@@ -39,7 +39,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       var errors = [];
 
       //only validates attributes that are part of the schema
-      attributes = _.pick(attributes, this.collection.structure.pluck('column_name'));
+      attributes = _.pick(attributes, this.getStructure().pluck('column_name'));
 
       _.each(attributes, function(value, key, list) {
         var mess = ui.validate(this, key, value);
@@ -60,7 +60,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     //@todo: this whole shebang should be cached in the collection
     parseRelational: function(attributes) {
       var type;
-      var structure = this.collection.structure;
+      var structure = this.getStructure();
       var value;
       var id;
       var options;
@@ -246,6 +246,10 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       }
 
       return attributes;
+    },
+
+    getStructure: function() {
+      return this.structure;
     },
 
     initialize: function() {
