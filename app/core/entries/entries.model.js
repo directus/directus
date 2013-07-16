@@ -249,7 +249,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     },
 
     getStructure: function() {
-      return this.structure;
+      return this.collection.structure;
     },
 
     initialize: function() {
