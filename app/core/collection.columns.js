@@ -14,10 +14,7 @@ function(app, Backbone) {
     },
 
     getStructure: function() {
-      if (!app.uiSettings.hasOwnProperty(this.id)) throw new Error("The UI '" + this.id + "', set for the column '" + this.parent.id + "' could not be found!");
-
-      app.uiSettings[this.id].schema
-      return app.uiSettings[this.id].schema;
+      return this.parent.structure;
     },
 
     //@todo: This is code repetition. Almost identical to entries.model. Create a mixin?
