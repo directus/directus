@@ -62,7 +62,7 @@ function(textinput) {
   // It's also AB-FAB for templates!
   ui.getList = function(model, attr) {
     var collection = model.collection;
-    var structure = model.collection.structure;
+    var structure = model.getStructure();
     var schema = structure.get(attr);
     var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
 
@@ -78,7 +78,7 @@ function(textinput) {
 
   ui.validate = function(model, attr, value) {
     var collection = model.collection;
-    var structure = model.structure;
+    var structure = model.getStructure();
     var schema = structure.get(attr);
     var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
 
