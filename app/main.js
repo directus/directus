@@ -127,6 +127,14 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       }
     });
 
+    // Instantiate UI settings first
+    _.each(app.uiSettings, function(value, key) {
+      if (value.variables === undefined) return;
+      //Cheating way to peform a deep-clone
+      var deepClone = JSON.parse(JSON.stringify(value.variables));
+      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
+    });
+
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {
 
@@ -138,6 +146,19 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       var model = new Directus.TableModel(options.schema, {parse: true});
       model.url = app.API_URL + 'tables/' + tableName;
       model.columns.url = app.API_URL + 'tables/' + tableName + '/columns';
+
+      // Attach schema to columns
+      // @todo: Move all the parsing to the columns object
+      model.columns.each(function(column) {
+        var ui = column.get('ui');
+        if (_.isEmpty(ui)) {
+          throw new Error("Column '"+ column.id + "' in table '" + model.id + "' does not have a UI");
+        }
+        if (!app.uiSettings.hasOwnProperty(ui)) {
+          throw new Error("The UI '" + ui + "', set for the column '" + column.id + "' in the table '" + model.id + "' does not exist!");
+        }
+        column.structure = app.uiSettings[ui].schema;
+      });
 
       app.columns[tableName] = model.columns;
       app.tables.add(model);
@@ -208,13 +229,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         privileges: app.privileges[table.id]
       });
     }, this);
-
-    _.each(app.uiSettings, function(value, key) {
-      if (value.variables === undefined) return;
-      //Cheating way to peform a deep-clone
-      var deepClone = JSON.parse(JSON.stringify(value.variables));
-      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
-    });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Tabs
