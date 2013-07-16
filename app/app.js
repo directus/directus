@@ -1,13 +1,12 @@
 define([
   "handlebars",
-  "exceptions",
   "plugins/backbone.layoutmanager",
   "plugins/bootstrap-dropdown",          //load anonomosly
   "plugins/bootstrap-typeahead",          //load anonomosly
   "plugins/jquery.timeago"               //load anonomosly
 ],
 
-function(Handlebars, Exeptions) {
+function(Handlebars) {
 
   // Provide a global location to place configuration settings and module
   // creation.
@@ -20,12 +19,12 @@ function(Handlebars, Exeptions) {
       if(thumbnail) {
         adapterId = 'THUMBNAIL';
         if(!storageAdapters.hasOwnProperty(adapterId)) {
-          throw new Exceptions.SystemError("Cannot find default thumbnail storage_adapter using key: " + adapterId);
+          throw new Error("Cannot find default thumbnail storage_adapter using key: " + adapterId);
         }
       } else {
         adapterId = mediaModel.get('storage_adapter');
         if(!storageAdapters.hasOwnProperty(adapterId)) {
-          throw new Exceptions.SystemError("Media record's storage_adapter FK value maps to an undefined directus_storage_adapters record: " + adapterId);
+          throw new Error("Media record's storage_adapter FK value maps to an undefined directus_storage_adapters record: " + adapterId);
         }
       }
       storageAdapter = storageAdapters[adapterId];
