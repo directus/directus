@@ -8,9 +8,30 @@ function(app, Backbone) {
   var Structure = {};
 
   Structure.UI = Backbone.Model.extend({
+
     url: function() {
       return this.parent.url() + '/' + this.id;
+    },
+
+    //@todo: This is code repetition. Almost identical to entries.model. Create a mixin?
+    validate: function(attributes, options) {
+      var errors = [];
+
+      //only validates attributes that are part of the schema
+      attributes = _.pick(attributes, this.structure.pluck('id'));
+
+      _.each(attributes, function(value, key, list) {
+        var mess = ui.validate(this, key, value);
+        if (mess !== undefined) {
+          errors.push({attr: key, message: ui.validate(this, key, value)});
+        }
+      }, this);
+
+      console.log(errors);
+
+      if (errors.length > 0) return errors;
     }
+
   });
 
   Structure.Column = Backbone.Model.extend({
