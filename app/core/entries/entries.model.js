@@ -69,7 +69,43 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
       EntriesCollection = EntriesCollection || require("core/entries/entries.collection");
 
+
+
       structure.each(function(column) {
+
+        if (!column.hasRelated()) return;
+
+/*
+        if (column.id !== 'group' && column.hasRelated()) {
+          console.log(column.getRelated(), column.id, column.getRelationshipType());
+        }
+
+        var tableRelated = column.getRelated();
+        var type = column.getRelationshipType();
+
+        switch (type) {
+          case 'MANYTOMANY':
+            //console.log('m2m',tableRelated);
+            break;
+
+          case 'ONETOMANY':
+            //console.log('o2m',tableRelated);
+            break;
+
+          case 'MANYTOONE':
+            //console.log('m2o',tableRelated);
+            break;
+        }
+
+*/
+        //return;
+
+
+
+
+        ////////
+
+
         type = column.get('type');
         id = column.id;
         ui = structure.get(column).options;
