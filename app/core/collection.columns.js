@@ -40,13 +40,29 @@ function(app, Backbone) {
   Structure.Column = Backbone.Model.extend({
 
       parse: function(result) {
+
+        // initialize Schema
+        var ui = result.ui;
+        var tableName = '';
+
+        if (_.isEmpty(ui)) {
+          throw new Error("Column '"+ result.id + "' in table '" + tableName + "' does not have a UI");
+        }
+        if (!app.uiSettings.hasOwnProperty(ui)) {
+          throw new Error("The UI '" + ui + "', set for the column '" + result.id + "' in the table '" + tableName + "' does not exist!");
+        }
+        this.structure = app.uiSettings[ui].schema;
+
+        // initialize UI
         var options = result.options || {};
         options.id = result.ui;
         this.options = new Structure.UI(options);
         this.options.parent = this;
+        delete result.options;
+
         if (result.master) result.header = true;
         result.header = (result.header === "true" || result.header === true || result.header === 1 || result.header === "1") ? true : false;
-        delete result.options;
+
         return result;
       },
 
