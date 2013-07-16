@@ -116,10 +116,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
 
       model.save(model.diff(data), {
         success: success,
-        patch: true,
-        error: function() {
-          console.log('ERROR', arguments);
-        }
+        patch: true
       });
     },
 
