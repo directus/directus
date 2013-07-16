@@ -62,6 +62,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.validate = function(value, options) {
+    if (options.schema.get('required') && _.isEmpty(value)) {
+      return options.settings.get('validation_message');
+    }
     if (options.settings.has('validation_regex')) {
       var regex = new RegExp(options.settings.get('validation_regex'));
       if (!regex.test(value)) {
