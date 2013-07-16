@@ -14,8 +14,8 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
-    {id: 'table_related', ui: 'textinput', char_length: 64},
-    {id: 'visible_column', ui: 'textinput', char_length: 64},
+    {id: 'table_related', ui: 'textinput', char_length: 64, required: true},
+    {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
     {id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
 
