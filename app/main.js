@@ -65,6 +65,14 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
       sync(method, model, options);
     };
+
+    // listen to alter events!
+    app.on('alert', function(message) {
+      console.log('message');
+    });
+
+
+
 /*
     window.onerror = function(message, url, lineNumber) {
       console.log(message, url, lineNumber);
