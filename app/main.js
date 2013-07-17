@@ -67,11 +67,17 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     };
 
     // listen to alter events!
-    app.on('alert', function(message) {
-      console.log('message');
+    app.on('progress', function(message) {
+      console.log('loading');
     });
 
+    app.on('load', function(message) {
+      console.log('loaded');
+    });
 
+    app.on('alert:error', function(message) {
+      alert(message);
+    });
 
 /*
     window.onerror = function(message, url, lineNumber) {
