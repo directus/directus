@@ -56,8 +56,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public static function makeTableGatewayFromTableName($acl, $table, $adapter) {
         $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . "TableGateway";
         $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
-        if(class_exists($tableGatewayClassName))
+        if(class_exists($tableGatewayClassName)) {
             return new $tableGatewayClassName($acl, $adapter);
+        }
         return new self($acl, $table, $adapter);
     }
 
@@ -105,8 +106,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         });
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if(false === $row)
+        if(false === $row) {
             return false;
+        }
         $row = $row->toArray();
         array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
@@ -148,8 +150,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         });
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if(false === $row)
+        if(false === $row) {
             return false;
+        }
         $row = $row->toArray();
         array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
