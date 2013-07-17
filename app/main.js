@@ -44,20 +44,21 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
         switch(status) {
           case 404:
-            app.router.showAlert('Not found!');
+            app.router.notFound();
             break;
           case 401:
             window.location = app.root;
             break;
           case 500:
-            console.log('ERRRRRRAAAOOORE', xhr.responseText);
+            //console.log('ERRRRRRAAAOOORE', xhr.responseText);
             break;
           case 403:
-            var errorData = jQuery.parseJSON(xhr.responseText);
-            win = new Backbone.Layout();
-            win.$el.html(errorData.message);
-            win.render();
-            app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
+            app.trigger("alert:error", "Unauthorized", "You don't have access for this action");
+            //var errorData = jQuery.parseJSON(xhr.responseText);
+            //win = new Backbone.Layout();
+            //win.$el.html(errorData.message);
+            //win.render();
+            //app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
             break;
         }
       };
