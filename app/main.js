@@ -20,10 +20,11 @@ require([
   "schemas/groups",
   "schemas/settings.global",
   "schemas/settings.media",
-  "core/extensions"
+  "core/extensions",
+  "alerts"
 ],
 
-function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions) {
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts) {
 
 
     //Override backbone sync for custom error handling
@@ -66,18 +67,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       sync(method, model, options);
     };
 
-    // listen to alter events!
-    app.on('progress', function(message) {
-      console.log('loading');
-    });
-
-    app.on('load', function(message) {
-      console.log('loaded');
-    });
-
-    app.on('alert:error', function(message) {
-      alert(message);
-    });
 
 /*
     window.onerror = function(message, url, lineNumber) {
@@ -89,12 +78,22 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       e.preventDefault();
     });
 
+    $(document).on('mousewheel DOMMouseScroll', function(e) {
+      if (app.noScroll && event.target.nodeName !== 'TEXTAREA') {
+        e.preventDefault();
+      }
+    });
+
     //Cancel default CMD + S;
     $(window).keydown(_.bind(function(e) {
       if (e.keyCode === 83 && e.metaKey) {
         e.preventDefault();
       }
     }, this));
+
+    window.onerror = function(message, file, line) {
+      app.trigger('alert:error', 'Error', 'Error: ' + message + 'File: ' + file + '\n Line:' + line);
+    };
 
     // Bootstrap global data
     var data = window.directusData;
