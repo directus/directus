@@ -116,6 +116,9 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
 
       model.save(model.diff(data), {
         success: success,
+        error: function() {
+          app.trigger('alert:error', 'Failed to save', arguments);
+        },
         patch: true
       });
     },
