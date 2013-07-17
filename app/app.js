@@ -89,6 +89,11 @@ function(Handlebars, typetools) {
   app.sendFiles = function(files, callback) {
     var formData = new FormData();
 
+    var success = function() {
+      app.trigger('load');
+      callback.apply(this, arguments);
+    }
+
     if (files instanceof File) files = [files];
 
     _.each(files, function(file, i) {
@@ -102,9 +107,10 @@ function(Handlebars, typetools) {
       cache: false,
       contentType: false,
       processData: false,
-      success: callback,
+      success: success,
       error: function(err1, err2, err3) {
-        console.log('ERRRRRROOOORRR!!', err1, err2, err3);
+        app.trigger('alert','upload failed', arguments);
+        //console.log('ERRRRRROOOORRR!!', err1, err2, err3);
       }
     });
   };
