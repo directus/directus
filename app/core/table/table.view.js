@@ -145,7 +145,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
 
       collection.on('fetch',  function() {
-        app.trigger('progress');
+        app.trigger('progress', 'Loading');
       }, this);
 
       // this one used to listen to remove.
