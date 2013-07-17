@@ -6939,13 +6939,15 @@ table#directus_activity col.col-datetime {
   color: #8bc53f;
   margin-left: 20px;
 }
-#alert {
+#alert,
+.alert-xl {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
   text-align: center;
   width: 140px;
   font-size: 26px;
+  line-height: 35px;
   font-family: Arvo, "Times New Roman", Times, serif;
   background-color: rgba(28, 28, 28, 0.7);
   padding: 30px 30px;
@@ -6955,10 +6957,33 @@ table#directus_activity col.col-datetime {
   left: 50%;
   margin-left: -130px;
 }
-#alert span {
+#alert span,
+.alert-xl span {
   display: block;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   font-size: 30px;
+}
+.alert-xl {
+  width: 340px;
+  z-index: 99999999;
+  margin-left: -170px;
+}
+.alert-xl .buttons {
+  text-align: center;
+  display: block;
+  margin-top: 20px;
+}
+.alert-xl button {
+  margin: 10px;
+}
+.alert-xl textarea {
+  font-family: monaco, courier;
+  font-size: 9px;
+  background-color: #1c1c1c;
+  border: 0;
+  width: 320px;
+  height: 100px;
+  margin-top: 20px;
 }
 .directus-module {
   text-shadow: 0 1px 0 #ffffff;
