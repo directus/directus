@@ -449,7 +449,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->limit($params['perPage'])
             ->offset($params['currentPage'] * $params['perPage']);
 
-
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
         if (null !== $params['active'] && $hasActiveColumn) {
