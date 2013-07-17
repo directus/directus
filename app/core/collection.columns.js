@@ -115,6 +115,19 @@ function(app, Backbone) {
       return row.get('sort');
     },
 
+    getRelationalColumns: function() {
+      return this.filter(function(column) {
+        return column.hasRelated();
+      });
+    },
+
+    getColumnsByType: function(type) {
+      type = type.toLowerCase();
+      return this.filter(function(column) {
+        return column.get('type').toLowerCase() === type;
+      });
+    },
+
     save: function(attributes, options) {
       options = options || {};
       var collection = this;
