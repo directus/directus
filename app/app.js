@@ -12,6 +12,23 @@ function(Handlebars, typetools) {
   // creation.
   var app = {
 
+    progressView: undefined,
+
+    alertViews: [],
+
+    lockScreen: function() {
+      this.noScroll = true;
+      $('body').addClass('modal-open');
+      $('body').append('<div class="modal-backdrop" style="background-color:transparent!important;"/>');
+      //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
+    },
+
+    unlockScreen: function() {
+      this.noScroll = false;
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').remove();
+    },
+
     makeMediaUrl: function(mediaModel, thumbnail) {
       var storageAdapters = window.directusData.storage_adapters,
         adapterId,
@@ -99,6 +116,8 @@ function(Handlebars, typetools) {
     _.each(files, function(file, i) {
       formData.append('file'+i, file);
     });
+
+    app.trigger('progress', 'Uploading');
 
     $.ajax({
       url: app.API_URL + 'upload',
