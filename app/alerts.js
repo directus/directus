@@ -38,12 +38,14 @@ define([
       var position = $(window).scrollTop();
       $('#alert-message').text(message);
       $('#alert').css('margin-top', position);
+      $('body').css('cursor', 'progress');
       $('#alert').show();
       app.lockScreen();
     }
 
     var hideProgressNotification = function() {
       $('#alert').fadeOut('fast');
+      $('body').css('cursor', 'default');
       app.unlockScreen();
     }
 
