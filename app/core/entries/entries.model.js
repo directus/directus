@@ -39,16 +39,20 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return value;
     },
 
+    //@todo: Why is this one called so many times?
     validate: function(attributes, options) {
       var errors = [];
+      var structure = this.getStructure();
 
       //only validates attributes that are part of the schema
-      attributes = _.pick(attributes, this.getStructure().pluck('column_name'));
+      attributes = _.pick(attributes, structure.pluck('column_name'));
 
       _.each(attributes, function(value, key, list) {
-        var mess = ui.validate(this, key, value);
+        var notNull = structure.get(key).get('is_nullable') === 'NO';
+        var mess = (notNull && _.isEmpty(value)) ? 'The field cannot be empty' : ui.validate(this, key, value);
+
         if (mess !== undefined) {
-          errors.push({attr: key, message: ui.validate(this, key, value)});
+          errors.push({attr: key, message: mess});
         }
       }, this);
 
