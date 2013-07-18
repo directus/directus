@@ -49,7 +49,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
             window.location = app.root;
             break;
           case 500:
-            app.trigger("alert:error", "Server Error", xhr.responseText);
             break;
           case 403:
             app.trigger("alert:error", "Unauthorized", "You don't have access for this action");
@@ -74,6 +73,10 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     $(document).ajaxStop(function(e) {
       app.trigger('load');
+    });
+
+    $(document).ajaxError(function(e, xhr) {
+      app.trigger("alert:error", "Server Error", xhr.responseText);
     });
 
 /*
