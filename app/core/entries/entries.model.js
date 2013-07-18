@@ -48,6 +48,9 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       attributes = _.pick(attributes, structure.pluck('column_name'));
 
       _.each(attributes, function(value, key, list) {
+        //Dont validate ID
+        if (key === 'id') return;
+
         var notNull = structure.get(key).get('is_nullable') === 'NO';
         var mess = (notNull && _.isEmpty(value)) ? 'The field cannot be empty' : ui.validate(this, key, value);
 
