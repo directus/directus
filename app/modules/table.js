@@ -118,7 +118,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
         success: success,
 
         error: function(model, xhr, options) {
-          app.trigger('alert:error', 'Failed to Save', xhr.responseText);
+          //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
         },
         patch: true
       });
@@ -148,6 +148,8 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
       this.setView('#page-content', this.editView);
       //Don't fetch if the model is new!
       if (this.model.has('id')) {
+
+        //@todo what is going on here?
         this.model.fetch({
           dontTrackChanges: true,
           error: function(model, XMLHttpRequest) {
