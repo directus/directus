@@ -16,17 +16,17 @@ define(['app', 'backbone'], function(app, Backbone) {
     var template = '{{#unless isNew}} \
                     <fieldset class="media-modal"> \
                       <div style="margin-right:10px;float:left;height:auto;width:50px;"> \
-                        <a href="{{url}}{{name}}" target="_blank"> \
+                        <a href="{{url}}" target="_blank"> \
                           {{#if isPDF }} \
                           <em>PDF Icon Here</em> \
                           {{else}} \
-                          <img class="{{orientation}}" src="{{url}}thumbnail/{{name}}"> \
+                          <img class="{{orientation}}" src="{{thumbUrl}}"> \
                           {{/if}} \
                         </a> \
                       </div> \
                       <div style="line-height:20px"> \
                         <strong> \
-                        <a href="{{url}}{{name}}" target="_blank">{{name}}</a><br> \
+                        <a href="{{url}}" target="_blank">{{name}}</a><br> \
                         Uploaded by <a href="#users/{{user}}">{{userFirstName}}</a> {{{contextualDate date_uploaded}}} \
                         </strong><br> \
                       <em>{{#unless isPDF}}{{width}} x {{height}} - {{/unless}}{{{bytesToSize size}}}</em><br> \
@@ -56,28 +56,29 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     serialize: function() {
-      var data = {};
-      var userId;
+      var data = {},
+          userId,
+          model = this.model,
+          authenticatedUser = app.getCurrentUser();
 
-      var authenticatedUser = app.getCurrentUser();
-
-      if (!this.model.has('id')) {
+      if (!model.has('id')) {
         userId = authenticatedUser.id;
         data.isNew = true;
       } else {
-        userId = this.model.get('user');
-        data = this.model.toJSON();
-        if (this.model.get('type') === 'embed/youtube')
-          data.youtube = this.model.get('embed_id');
+        userId = model.get('user');
+        data = model.toJSON();
+        if (model.get('type') === 'embed/youtube')
+          data.youtube = model.get('embed_id');
       }
 
       var user = app.users.get(userId);
 
-      data.isPDF = "application/pdf" == this.model.get('type');
+      data.isPDF = "application/pdf" == model.get('type');
       data.userFirstName = user ? user.get('first_name') : "Unknown User";
-      data.url = app.RESOURCES_URL;
-      data.name = this.model.get('name');
-      data.orientation = (parseInt(this.model.get('width'),10) > parseInt(this.model.get('height'),10)) ? 'landscape' : 'portrait';
+      data.url = app.makeMediaUrl(model, false);
+      data.thumbUrl = app.makeMediaUrl(model, true);
+      data.name = model.get('name');
+      data.orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
 
       return data;
     },
