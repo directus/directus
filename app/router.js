@@ -251,7 +251,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
     initialize: function(options) {
       //Fade out and remove splash
-      $('#splash').fadeOut('slow').remove();
+      $('#splash').fadeOut('fast').remove();
 
 
       this.tabs = new Tabs.Collection(options.tabs);
