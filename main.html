@@ -12,15 +12,10 @@
   <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="{{path}}assets/css/index.css">
 
-  <!-- Exceptional.io error reporting -->
-  <script type="text/javascript" src="http://js.exceptional.io/exceptional.js"></script>
-  <script type="text/javascript">
-    Exceptional.setKey('bd6e7800d68aec99cbf5013c4850dffb54461d20');
-  </script>
-
 </head>
 
 <body>
+
 <!-- Main container. -->
 <div id="wrap">
   <div id="main">
@@ -47,6 +42,7 @@
 
 <div id="messages"></div>
 
+<div id="alert" style="display:none;"><span class="glyphicon-refresh"></span><span id="alert-message">Loading</span></div>
 
 <script>
 window.directusData = {{data}};
