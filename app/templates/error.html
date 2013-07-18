@@ -4,6 +4,6 @@
 	{{#if showDetails}}<textarea>{{details}}</textarea>{{/if}}
 	<div class="buttons">
 		<button class="btn close-alert">OK</button>
-		<button class="btn show-details">Details</button>
+		{{#if details}}<button class="btn show-details">Details</button>{{/if}}
 	</div>
 </div>
