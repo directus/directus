@@ -77,11 +77,11 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     afterRender: function() {
       var now = new Date().getTime();
       console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
-      app.trigger('load');
+      //app.trigger('load');
     },
 
     cleanup: function() {
-      app.trigger('load');
+      //app.trigger('load');
     },
 
     initializeDrop: function() {
@@ -145,12 +145,12 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
 
       collection.on('fetch',  function() {
-        app.trigger('progress', 'Loading');
+        //app.trigger('progress', 'Loading');
       }, this);
 
       // this one used to listen to remove.
       collection.on('sync visibility', function() {
-        app.trigger('load');
+        //app.trigger('load');
         this.render();
       }, this);
 
