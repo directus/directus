@@ -49,7 +49,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
             window.location = app.root;
             break;
           case 500:
-            //console.log('ERRRRRRAAAOOORE', xhr.responseText);
+            app.trigger("alert:error", "Server Error", xhr.responseText);
             break;
           case 403:
             app.trigger("alert:error", "Unauthorized", "You don't have access for this action");
