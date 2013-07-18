@@ -107,7 +107,7 @@ function(Handlebars, typetools) {
     var formData = new FormData();
 
     var success = function() {
-      app.trigger('load');
+      //app.trigger('load');
       callback.apply(this, arguments);
     }
 
@@ -117,7 +117,7 @@ function(Handlebars, typetools) {
       formData.append('file'+i, file);
     });
 
-    app.trigger('progress', 'Uploading');
+    //app.trigger('progress', 'Uploading');
 
     $.ajax({
       url: app.API_URL + 'upload',
