@@ -20,11 +20,13 @@ require([
   "schemas/groups",
   "schemas/settings.global",
   "schemas/settings.media",
-  "core/extensions"
+  "core/extensions",
+  "alerts"
 ],
 
-function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions) {
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts) {
 
+    console.log('starting');
 
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
@@ -43,20 +45,21 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
         switch(status) {
           case 404:
-            app.router.showAlert('Not found!');
+            app.router.notFound();
             break;
           case 401:
             window.location = app.root;
             break;
           case 500:
-            console.log('ERRRRRRAAAOOORE', xhr.responseText);
+            //console.log('ERRRRRRAAAOOORE', xhr.responseText);
             break;
           case 403:
-            var errorData = jQuery.parseJSON(xhr.responseText);
-            win = new Backbone.Layout();
-            win.$el.html(errorData.message);
-            win.render();
-            app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
+            app.trigger("alert:error", "Unauthorized", "You don't have access for this action");
+            //var errorData = jQuery.parseJSON(xhr.responseText);
+            //win = new Backbone.Layout();
+            //win.$el.html(errorData.message);
+            //win.render();
+            //app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
             break;
         }
       };
@@ -65,6 +68,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
       sync(method, model, options);
     };
+
+
 /*
     window.onerror = function(message, url, lineNumber) {
       console.log(message, url, lineNumber);
@@ -75,12 +80,22 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       e.preventDefault();
     });
 
+    $(document).on('mousewheel DOMMouseScroll', function(e) {
+      if (app.noScroll && event.target.nodeName !== 'TEXTAREA') {
+        e.preventDefault();
+      }
+    });
+
     //Cancel default CMD + S;
     $(window).keydown(_.bind(function(e) {
       if (e.keyCode === 83 && e.metaKey) {
         e.preventDefault();
       }
     }, this));
+
+    window.onerror = function(message, file, line) {
+      app.trigger('alert:error', 'Error', 'Error: ' + message + 'File: ' + file + '\n Line:' + line);
+    };
 
     // Bootstrap global data
     var data = window.directusData;
@@ -134,7 +149,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     _.each(app.uiSettings, function(value, key) {
       if (value.variables === undefined) return;
       //Deep-clone settings!
-      var deepClone = JSON.parse(JSON.stringify(value.variables));
+      var deepClone = app.deepClone(value.variables);
       app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
     });
 
@@ -150,19 +165,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       var model = new Directus.TableModel(options.schema, {parse: true});
       model.url = app.API_URL + 'tables/' + tableName;
       model.columns.url = app.API_URL + 'tables/' + tableName + '/columns';
-
-      // Attach schema to columns
-      // @todo: Move all the parsing to the columns object
-      model.columns.each(function(column) {
-        var ui = column.get('ui');
-        if (_.isEmpty(ui)) {
-          throw new Error("Column '"+ column.id + "' in table '" + model.id + "' does not have a UI");
-        }
-        if (!app.uiSettings.hasOwnProperty(ui)) {
-          throw new Error("The UI '" + ui + "', set for the column '" + column.id + "' in the table '" + model.id + "' does not exist!");
-        }
-        column.structure = app.uiSettings[ui].schema;
-      });
 
       app.columns[tableName] = model.columns;
       app.tables.add(model);
@@ -300,4 +302,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         Backbone.history.navigate(href.attr, true);
       }
     });
+
+    console.log('done');
 });

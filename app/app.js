@@ -1,16 +1,33 @@
 define([
   "handlebars",
+  "typetools",
   "plugins/backbone.layoutmanager",
-  "plugins/bootstrap-dropdown",          //load anonomosly
-  "plugins/bootstrap-typeahead",          //load anonomosly
-  "plugins/jquery.timeago"               //load anonomosly
+  "plugins/bootstrap-dropdown",           //load anonomosly
+  "plugins/bootstrap-typeahead"           //load anonomosly
 ],
 
-function(Handlebars) {
+function(Handlebars, typetools) {
 
   // Provide a global location to place configuration settings and module
   // creation.
   var app = {
+
+    progressView: undefined,
+
+    alertViews: [],
+
+    lockScreen: function() {
+      this.noScroll = true;
+      $('body').addClass('modal-open');
+      $('body').append('<div class="modal-backdrop" style="background-color:transparent!important;"/>');
+      //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
+    },
+
+    unlockScreen: function() {
+      this.noScroll = false;
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').remove();
+    },
 
     makeMediaUrl: function(mediaModel, thumbnail) {
       var storageAdapters = window.directusData.storage_adapters,
@@ -56,22 +73,6 @@ function(Handlebars) {
       return JSON.parse(JSON.stringify(data));
     },
 
-    bytesToSize: function(bytes, precision) {
-      var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-      var posttxt = 0;
-      bytes = parseInt(bytes,10);
-      if (bytes === 0) return 'n/a';
-      while( bytes >= 1024 ) {
-          posttxt++;
-          bytes = bytes / 1024;
-      }
-      return bytes.toFixed(precision) + " " + sizes[posttxt];
-    },
-
-    contextualDate: function(value) {
-      return jQuery.timeago(value+'Z');
-    },
-
     affix: function() {
       var sidebarOffset = $('.container-sidebar').offset();
       var navbarHeight = $('.navbar').height();
@@ -91,139 +92,32 @@ function(Handlebars) {
       });
     },
 
-    numberWithCommas: function(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    },
-
     dateDaysFromNow: function(days) {
       var today = new Date();
       return new Date(today.getTime() + days * 24 * 60 * 60 * 1000);
-    },
-
-    dateYYYYMMDD: function(date) {
-      return date.toISOString().slice(0,10);
     },
 
     summarizeArray: function(array) {
       return _.reduce(array, function(memo, num){ return memo + parseInt(num,10); }, 0);
     },
 
-    capitalize: function(string, seperator) {
-      var idIndex;
-
-      if (!string) return '';
-
-      if (seperator === undefined) {
-        seperator = "_";
-      }
-
-      directusIndex = string.indexOf("directus_");
-
-      if (directusIndex === 0) {
-        string = string.substring(9);
-      }
-
-      idIndex = string.lastIndexOf("_id");
-
-      if (string.length > 2 && string.length - idIndex === 3) {
-        string = string.substring(0, idIndex);
-      }
-
-      var output = _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
-
-      // var output2 = output;
-      // output.toLowerCase();
-      // output = (output + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
-      //   return $1.toUpperCase();
-      // });
-      // output.trim();
-      // output = output.replace(new RegExp("!\s+!", "g")," ");
-
-      // Replace all custom capitalization here
-      _.each(app.caseSpecial, function(correctCase) {
-        output = output.replace(new RegExp("\\b"+correctCase+"\\b", "gi"), correctCase);
-      });
-
-      // Make all prepositions and conjunctions lowercase, except for the first word
-      _.each(app.caseLower, function(correctCase) {
-        output = output.replace(new RegExp(" "+correctCase+"\\b", "gi"), " "+correctCase);
-      });
-
-      return output;
-    },
-
-    caseSpecial: [
-      'CMS',
-      'FAQ',
-      'iPhone',
-      'iPad',
-      'iPod',
-      'iOS',
-      'iMac',
-      'PDF',
-      'PDFs',
-      'URL',
-      'IP',
-      'UI',
-      'FTP',
-      'DB',
-      'WYSIWYG',
-      'CV',
-      'ID',
-      'pH',
-      'PHP',
-      'HTML',
-      'JS',
-      'CSS',
-      'SKU',
-      'DateTime',
-      'RNGR',
-      'CC',
-      'CCV',
-      'SoulCycle'
-    ],
-
-    // Conjunctions and prepositions should be lowercase
-    caseLower: [
-      'a',
-      'an',
-      'the',
-      'and',
-      'of',
-      'but',
-      'or',
-      'for',
-      'nor',
-      'with',
-      'on',
-      'at',
-      'to',
-      'from',
-      'by'
-    ],
-
-    actionMap: {
-      'ADD': 'added',
-      'DELETE': 'deleted',
-      'UPDATE': 'updated'
-    },
-
-    prepositionMap: {
-      'ADD': 'to',
-      'DELETE': 'from',
-      'UPDATE': 'within'
-    }
-
   };
 
   app.sendFiles = function(files, callback) {
     var formData = new FormData();
+
+    var success = function() {
+      app.trigger('load');
+      callback.apply(this, arguments);
+    }
 
     if (files instanceof File) files = [files];
 
     _.each(files, function(file, i) {
       formData.append('file'+i, file);
     });
+
+    app.trigger('progress', 'Uploading');
 
     $.ajax({
       url: app.API_URL + 'upload',
@@ -232,9 +126,10 @@ function(Handlebars) {
       cache: false,
       contentType: false,
       processData: false,
-      success: callback,
+      success: success,
       error: function(err1, err2, err3) {
-        console.log('ERRRRRROOOORRR!!', err1, err2, err3);
+        app.trigger('alert','upload failed', arguments);
+        //console.log('ERRRRRROOOORRR!!', err1, err2, err3);
       }
     });
   };
@@ -246,8 +141,7 @@ function(Handlebars) {
   };
 
 
-  //give forms the ability to serialize to objects
-
+  //Give forms the ability to serialize to objects
   $.fn.serializeObject = function() {
     var o = {};
     var a = this.serializeArray();
@@ -267,7 +161,6 @@ function(Handlebars) {
 
   // Localize or create a new JavaScript Template object.
   var JST = window.JST = window.JST || {};
-
 
   // Configure LayoutManager with Backbone Boilerplate defaults.
   Backbone.Layout.configure({
@@ -315,7 +208,7 @@ function(Handlebars) {
 
   window.app = app;
 
-  // Mix Backbone.Events, modules, and layout management into the app object.
+  // Mix Backbone.Events, modules, typetools, and layout management into the app object.
   return _.extend(app, {
     // Create a custom object with a nested Views object.
     module: function(additionalProps) {
@@ -333,5 +226,6 @@ function(Handlebars) {
       return this.layout = layout;
     }
 
-  }, Backbone.Events);
+  }, Backbone.Events, typetools);
+
 });

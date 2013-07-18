@@ -40,13 +40,32 @@ function(app, Backbone) {
   Structure.Column = Backbone.Model.extend({
 
       parse: function(result) {
+
+        // initialize Schema
+        var ui = result.ui;
+        var tableName = '';
+
+        if (_.isEmpty(ui)) {
+          throw new Error("Column '"+ result.id + "' in table '" + tableName + "' does not have a UI");
+        }
+        if (!app.uiSettings.hasOwnProperty(ui)) {
+          throw new Error("The UI '" + ui + "', set for the column '" + result.id + "' in the table '" + tableName + "' does not exist!");
+        }
+
+        // make sure that the structure is the right kind for the UI
+        // @todo: move this to options instead so it doesn't need to change
+        this.structure = app.uiSettings[ui].schema;
+
+        // initialize UI
         var options = result.options || {};
         options.id = result.ui;
         this.options = new Structure.UI(options);
         this.options.parent = this;
+        delete result.options;
+
         if (result.master) result.header = true;
         result.header = (result.header === "true" || result.header === true || result.header === 1 || result.header === "1") ? true : false;
-        delete result.options;
+
         return result;
       },
 
@@ -55,7 +74,15 @@ function(app, Backbone) {
       },
 
       getRelated: function() {
-        return (this.get('ui') === 'many_to_one') ? this.options.get('table_related') : this.get('table_related');
+        if (this.get('ui') === 'many_to_one') {
+          return this.options.get('table_related');
+        }
+        //@todo get rid of this hard dependency
+        if (this.get('ui') === 'single_media') {
+          return 'directus_media';
+        }
+
+        return this.get('table_related');
       },
 
       getRelationshipType: function() {
@@ -63,7 +90,7 @@ function(app, Backbone) {
         var ui = this.get('ui');
 
         if (_.contains(['MANYTOMANY', 'ONETOMANY'], type)) return type;
-        if (ui === 'many_to_one') return 'MANYTOONE';
+        if (_.contains(['many_to_one','single_media'],ui)) return 'MANYTOONE';
       },
 
       hasRelated: function() {
@@ -86,6 +113,19 @@ function(app, Backbone) {
 
     comparator: function(row) {
       return row.get('sort');
+    },
+
+    getRelationalColumns: function() {
+      return this.filter(function(column) {
+        return column.hasRelated();
+      });
+    },
+
+    getColumnsByType: function(type) {
+      type = type.toLowerCase();
+      return this.filter(function(column) {
+        return column.get('type').toLowerCase() === type;
+      });
     },
 
     save: function(attributes, options) {
