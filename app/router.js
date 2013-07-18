@@ -67,6 +67,12 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       }
     },
 
+    notFound: function() {
+      this.setTitle('404');
+      this.v.main.setView('#content', new Backbone.Layout({template: Handlebars.compile('<h1>Not found</h1>')}));
+      this.v.main.render();
+    },
+
     openModal: function(view, options) {
       options.view = view;
       var modal = new Directus.Modal(options);
@@ -88,6 +94,11 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
     entries: function(tableName) {
       this.setTitle('Tables');
+
+      if (!app.entries.hasOwnProperty(tableName)) {
+        return this.notFound();
+      }
+
       var collection = app.entries[tableName];
       if (collection.table.get('single')) {
         if(collection.models.length) {
