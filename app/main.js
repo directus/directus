@@ -26,6 +26,7 @@ require([
 
 function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts) {
 
+    console.log('starting');
 
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
@@ -301,4 +302,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         Backbone.history.navigate(href.attr, true);
       }
     });
+
+    console.log('done');
 });
