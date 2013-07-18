@@ -26,10 +26,6 @@ require([
 
 function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts) {
 
-    //Fade out and remove splash
-    $('#splash').fadeOut('slow').remove();
-
-
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
 
