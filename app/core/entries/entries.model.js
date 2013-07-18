@@ -14,7 +14,11 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
     parse: function(result) {
       this._lastFetchedResult = result;
-      return this.parseRelational(result);
+
+      result = this.parseRelational(result);
+      result = this.parseDate(result);
+
+      return result;
     },
 
     // The flatten option flattens many-one relationships so the id is returned
@@ -56,88 +60,86 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return this.set(data);
     },
 
+    parseDate: function(attributes) {
+      _.each(this.getStructure().getColumnsByType('datetime'), function(column) {
+        attributes[column.id] = new Date(attributes[column.id]);
+      });
+      return attributes;
+    },
 
     //@todo: this whole shebang should be cached in the collection
     parseRelational: function(attributes) {
-      var type;
       var structure = this.getStructure();
-      var value;
-      var id;
-      var options;
-      var ui;
-      var columns;
+      var relationalColumns = structure.getRelationalColumns();
 
       EntriesCollection = EntriesCollection || require("core/entries/entries.collection");
 
-      structure.each(function(column) {
-        type = column.get('type');
-        id = column.id;
-        ui = structure.get(column).options;
-        uiType = column.get('ui');
+      _.each(relationalColumns, function(column) {
+        var id = column.id;
+        var tableRelated = column.getRelated();
+        var relationshipType = column.getRelationshipType();
+        var value = attributes[id];
+        var hasData = attributes[id] !== undefined;
+        var ui = structure.get(column).options;
 
-        // THIS SHOULD NOT BE HARDCORDED
-        // THE TABLE MIGHT NOT EXIST YET (CASE USERS) RESOLVE THIS
-        if (uiType === 'many_to_one' || uiType === 'single_media') {
+        switch (relationshipType) {
+          case 'MANYTOMANY':
+          case 'ONETOMANY':
+            var columns = ui.get('visible_columns') ? ui.get('visible_columns').split(',') : [];
+            var value = attributes[id] || [];
+            var options = {
+              table: app.tables.get(tableRelated),
+              structure: app.columns[tableRelated],
+              parse:true,
+              filters: {columns: columns}
+              //preferences: app.preferences[column.get('table_related')],
+            };
 
-          var relatedTableName = (uiType === 'single_media') ? 'directus_media' : ui.get('table_related');
-          var data = {};
+            // make sure that the table exists
+            // @todo move this to column schema?
+            if (options.table === undefined) {
+              throw "Directus Error! The related table '" + tableRelated + "' does not exist! Check your UI settings for the field '" + id + "' in the table '" + this.collection.table.id + "'";
+            }
 
-          // If an id is avalible, make sure it is always wrapped in an object!
-          if (attributes[id] !== undefined) {
-            data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
-          }
+            // make sure that the visible columns exists
+            // todo move this to ??
+            var diff = _.difference(columns, options.structure.pluck('column_name'));
+            if (diff.length > 0) {
+              throw "Directus Error! The column(s) '" + diff.join(',') + "' does not exist in related table '" + options.table.id + "'. Check your UI settings";
+            }
 
-          attributes[id] = new EntriesModel(data, {collection: app.entries[relatedTableName]});
-
-          attributes[id].parent = this;
-
-        }
-
-        if (type === 'ONETOMANY' || type === 'MANYTOMANY') {
-
-          columns = ui.get('visible_columns') ? ui.get('visible_columns').split(',') : [];
-
-          options = {
-            table: app. tables.get(column.get('table_related')),
-            structure: app.columns[column.get('table_related')],
-            //preferences: app.preferences[column.get('table_related')],
-            parse:true,
-            filters: {columns: columns}
-          };
-
-          if (options.table === undefined) {
-              throw "Directus Error! The related table '" + column.get('table_related') + "' does not exist! Check your UI settings for the field '" + id + "' in the table '"+this.collection.table.id+"'";
-          }
-
-          var diff = _.difference(columns, options.structure.pluck('column_name'));
-          if (diff.length > 0) {
-            throw "Directus Error! The column(s) '" + diff.join(',') + "' does not exist in related table '" + options.table.id + "'. Check your UI settings";
-          }
-
-          value = attributes[id] || [];
-
-          switch (type) {
-            case 'ONETOMANY':
+            if (relationshipType === 'ONETOMANY') {
               attributes[id] = new EntriesCollection(value, options);
               break;
-            case 'MANYTOMANY':
+            }
+
+            if (relationshipType === 'MANYTOMANY') {
               options.junctionStructure = app.columns[column.get('junction_table')];
               attributes[id] = new EntriesNestedCollection(value, options);
-              break;
-          }
+            }
 
-          attributes[id].parent = this;
+            break;
+
+          case 'MANYTOONE':
+            var data = {};
+
+            if (attributes[id] !== undefined) {
+              data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
+            }
+
+            attributes[id] = new EntriesModel(data, {collection: app.entries[tableRelated]});
+
+            break;
         }
 
-        if (type === 'datetime') {
-          attributes[id] = new Date(attributes[id]);
-        }
+        attributes[id].parent = this;
 
       }, this);
 
       return attributes;
     },
 
+    //@todo: This is maybe a hack. Can we make the patch better?
     diff: function(key, val, options) {
       var attrs, changedAttrs = {};
       if (typeof key === 'object') {
