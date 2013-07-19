@@ -66,24 +66,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       sync(method, model, options);
     };
 
-
-    $(document).ajaxStart(function(e) {
-      app.trigger('progress');
-    });
-
-    $(document).ajaxStop(function(e) {
-      app.trigger('load');
-    });
-
-    $(document).ajaxError(function(e, xhr) {
-      app.trigger("alert:error", "Server Error", xhr.responseText);
-    });
-
-/*
-    window.onerror = function(message, url, lineNumber) {
-      console.log(message, url, lineNumber);
-    }*/
-
     //Cancel default file drop
     $(document).on('drop dragover', function(e) {
       e.preventDefault();
@@ -102,10 +84,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       }
     }, this));
 
-    window.onerror = function(message, file, line) {
-      app.trigger('alert:error', 'Error', 'Error: ' + message + 'File: ' + file + '\n Line:' + line);
-    };
-
     // Bootstrap global data
     var data = window.directusData;
 
@@ -121,6 +99,35 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','active','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
     app.settings = new Directus.Settings(data.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
+
+
+    $(document).ajaxStart(function(e) {
+      app.trigger('progress');
+    });
+
+    $(document).ajaxStop(function(e) {
+      app.trigger('load');
+    });
+
+    // Capture sync errors...
+    $(document).ajaxError(function(e, xhr) {
+      var type = 'Server ' + xhr.status;
+      var message = "Server Error";
+      var details = encodeURIComponent(xhr.responseText);
+      //details = 'xxx';
+      app.logErrorToServer(type, message, details);
+      app.trigger("alert:error", "Server Error", xhr.responseText);
+    });
+
+    // And js errors...
+    window.onerror = function(message, file, line) {
+      var type = 'JS';
+      var message = 'Error';
+      var details = 'Error: ' + message + '\nFile: ' + file + '\n Line:' + line;
+      app.logErrorToServer(type, message, details);
+      app.trigger('alert:error', 'Error', details);
+    };
+
 
     /**
      * Add nonce to API requests using custom request header
@@ -208,6 +215,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       parse: true
     });
 
+    // @todo: Maybe do this earlier?
     app.users = new Directus.EntriesCollection(data.users, {
       parse: true,
       table: app.tables.get('directus_users'),
