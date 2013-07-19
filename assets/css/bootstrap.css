@@ -6965,7 +6965,6 @@ table#directus_activity col.col-datetime {
 }
 .alert-xl {
   width: 340px;
-  z-index: 99999999;
   margin-left: -170px;
 }
 .alert-xl .buttons {
@@ -6984,6 +6983,14 @@ table#directus_activity col.col-datetime {
   width: 320px;
   height: 100px;
   margin-top: 20px;
+}
+.blocker {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  z-index: 1500;
 }
 .directus-module {
   text-shadow: 0 1px 0 #ffffff;
