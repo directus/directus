@@ -62,6 +62,8 @@ class MySQL {
                 return (int)$string;
             case 'float':
                 return (float)$string;
+            case 'timestamp'
+                return date("r", (int)$string);
             case 'date':
             case 'datetime':
                 return date("r", strtotime($string));
@@ -172,6 +174,7 @@ class MySQL {
             case "POINT":
                 return "textinput";
             case "DATETIME":
+            case "TIMESTAMP":
                 return "datetime";
             case "DATE":
                 return "date";
@@ -187,7 +190,7 @@ class MySQL {
             case "DECIMAL":
                 return "numeric";
         }
-        throw new InvalidColumnTypeException("Unrecognized column type: $column_type");
+        return "textinput";
     }
 
     /**
