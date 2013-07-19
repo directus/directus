@@ -849,7 +849,6 @@ table#directus_activity col.col-datetime { width: 140px; }
 
 .alert-xl {
   width: 340px;
-  z-index: 99999999;
   margin-left:-170px;
   .buttons {
     text-align: center;
@@ -868,6 +867,15 @@ table#directus_activity col.col-datetime { width: 140px; }
     height: 100px;
     margin-top:20px;
   }
+}
+
+.blocker {
+  position:fixed;
+  top:0px;
+  left:0px;
+  bottom:0px;
+  right:0px;
+  z-index:1500;
 }
 
 // DIRECTUS MODULE
