@@ -65,14 +65,18 @@ function(app, Backbone) {
       this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
 
+      // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {
+        app.trigger('alert:error', 'The data is not valid');
+        //Get rid of all errors
+        this.$el.find('.error').remove();
         _.each(errors, function(item) {
           $fieldset = $('#edit_field_' + item.attr);
           if ($fieldset.find('.error').length < 1) {
             $fieldset.append('<span class="error">'+item.message+'</span>');
           }
         });
-      });
+      }, this);
 
       this.model.on('sync', function(e) {
         // reset changes!
