@@ -122,9 +122,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     // And js errors...
     window.onerror = function(message, file, line) {
       var type = 'JS';
-      var message = 'Error';
       var details = 'Error: ' + message + '\nFile: ' + file + '\n Line:' + line;
-      app.logErrorToServer(type, message, details);
+      app.logErrorToServer(type, 'Error', details);
       app.trigger('alert:error', 'Error', details);
     };
 
