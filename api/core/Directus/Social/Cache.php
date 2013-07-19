@@ -12,7 +12,9 @@ use Zend\Db\Sql\Select;
 
 class Cache {
 
-    public static $scrape_interval_seconds = 300; // 5 min
+    public static $scrapingEnabled = true;
+
+    public static $scrapeIntervalSeconds = 300; // 5 min
 
     public function __construct() {
         $acl = Bootstrap::get('acl');
@@ -43,7 +45,7 @@ class Cache {
     }
 
     private function getDueDate() {
-        $due = time() - self::$scrape_interval_seconds;
+        $due = time() - self::$scrapeIntervalSeconds;
         $due = date("c", $due);
         return $due;
     }
@@ -72,6 +74,9 @@ class Cache {
     }
 
     private function scrapeFeed(array $feed) {
+        if(!self::$scrapingEnabled) {
+            return;
+        }
         switch($feed['type']) {
             case DirectusSocialFeedsTableGateway::TYPE_TWITTER:
                 $updatedFeed = $this->scrapeTwitterFeed($feed);
@@ -97,8 +102,13 @@ class Cache {
         $httpStatus = $statuses['httpstatus'];
         unset($statuses['httpstatus']);
         $responseStatusIds = array();
-        foreach($statuses as $status) {
+        foreach($statuses as $idx => $status) {
             $status = (array) $status;
+            // This occurs during API-end failure states
+            if(!isset($status['id'])) {
+                unset($statuses[$idx]);
+                break;
+            }
             $responseStatusIds[] = $status['id'];
             unset($status['user']);
             $cachedCopy = $this->SocialPostsTableGateway->feedForeignIdExists($status['id'], $feed['id']);
@@ -110,6 +120,10 @@ class Cache {
                 $published = new \DateTime($status['created_at']);
                 $this->newFeedEntry($feed, $status, $published);
             }
+        }
+        // API failure
+        if(empty($statuses)) {
+            return $feed;
         }
         // Update feed user data
         $sampleEntry = (array) $statuses[0];
