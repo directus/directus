@@ -29,6 +29,30 @@ function(Handlebars, typetools) {
       $('.modal-backdrop').remove();
     },
 
+    logErrorToServer: function(type, message, details) {
+      var user, email = 'n/a';
+
+      if (user = app.getCurrentUser()) {
+        email = user.get('email');
+      }
+
+      var data = {
+        type: type,
+        message: message,
+        details: details,
+        page: location.href,
+        user_email: email
+      }
+
+      $.post(app.API_URL + 'exception', JSON.stringify(data))
+        .done(function(response) {
+          console.log(response);
+        })
+        .error(function(obj) {
+          console.log('FAILED TO LOG ERROR'+obj.responseText);
+        });
+    },
+
     makeMediaUrl: function(mediaModel, thumbnail) {
       var storageAdapters = window.directusData.storage_adapters,
         adapterId,
@@ -58,8 +82,11 @@ function(Handlebars, typetools) {
       }
     },
 
+    // Returns undefined is users aren't loaded yet
+    // @todo: Make sure users are loaded as early as possible
     getCurrentUser: function() {
        var authenticatedUser = window.directusData.authenticatedUser;
+       if (!app.users) return undefined;
        var user = app.users.get(authenticatedUser.id);
        return user;
     },
