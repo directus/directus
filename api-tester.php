@@ -65,7 +65,7 @@ $path = DIRECTUS_PATH;
 </fieldset>
 
 <fieldset>
-<label>Payload:</label>
+<label>JSON Payload:</label>
 <textarea id="payload">
 </textarea>
 </fieldset>
