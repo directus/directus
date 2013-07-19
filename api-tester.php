@@ -65,11 +65,6 @@ $path = DIRECTUS_PATH;
 </fieldset>
 
 <fieldset>
-<label>Payload RegExp seperator:</label>
-<input type="text" id="payload-seperator" style="width:200px" value="\n">
-</fieldset>
-
-<fieldset>
 <label>Payload:</label>
 <textarea id="payload">
 </textarea>
@@ -92,16 +87,17 @@ $path = DIRECTUS_PATH;
 <script>
 $(function() {
 	var postRequest	= function(options) {
-		var data = options.payload.split(new RegExp(options.seperator));
-		var dataObject = {};
+		var json, data;
 
-		data.forEach(function(item) {
-			var obj;
-			eval('obj = {'+item+'}');
-			dataObject = _.extend(dataObject, obj);
-		});
+		try {
+			json = JSON.parse(options.payload)
+		} catch(err) {
+			alert('The data is not valid JSON');
+		}
 
-		$.post(options.url, JSON.stringify(dataObject))
+		data = JSON.stringify(json);
+
+		$.post(options.url, data)
 			.done(function(response) {
 				var val = _.isObject(response) ? JSON.stringify(response, 2) : response;
 				$('#response').val(val);
