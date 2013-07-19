@@ -312,6 +312,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
+
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
@@ -589,6 +590,51 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
             'storage_adapter' => $fileData['storage_adapter']
         );
     }
+    JsonView::render($result);
+});
+
+/**
+ * EXCEPTION LOG
+ */
+$app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    // $Transfer = new Media\Transfer();
+
+    $url = 'http://dev.rngr.org/directus_error_logger/';
+
+    $data = array(
+        'server_addr'   =>$_SERVER['SERVER_ADDR'],
+        'server_port'   =>$_SERVER['SERVER_PORT'],
+        'user_agent'    =>$_SERVER['HTTP_USER_AGENT'],
+        'http_host'     =>$_SERVER['HTTP_HOST'],
+        'request_uri'   =>$_SERVER['REQUEST_URI'],
+        'remote_addr'   =>$_SERVER['REMOTE_ADDR'],
+        'page'          =>$requestPayload['page'],
+        'message'       =>$requestPayload['message'],
+        'user_email'    =>$requestPayload['user_email'],
+        'type'          =>$requestPayload['type']
+    );
+
+    $ctx = stream_context_create(array(
+        'http' => array(
+            'method' => 'POST',
+            'content' => "json=".json_encode($data)."&details=".$requestPayload['details']
+        ))
+    );
+
+    $fp = @fopen($url, 'rb', false, $ctx);
+
+    if (!$fp) {
+        throw new Exception("Problem with $url, $php_errormsg");
+    }
+
+    $response = @stream_get_contents($fp);
+
+    if ($response === false) {
+        throw new Exception("Problem reading data from $url, $php_errormsg");
+    }
+
+    $result = array('response'=>$response);
+
     JsonView::render($result);
 });
 
