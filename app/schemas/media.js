@@ -32,7 +32,7 @@ define([], function() {
       "id":"url",
       "column_name":"url",
       "type":"VARCHAR",
-      "is_nullable":"NO",
+      "is_nullable":"YES",
       "sort":-1,
       "ui":"directus_media",
       "system":true,
