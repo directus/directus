@@ -75,7 +75,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       data.isPDF = "application/pdf" == model.get('type');
       data.userFirstName = user ? user.get('first_name') : "Unknown User";
-      data.url = app.makeMediaUrl(model, false);
+      data.url = undefined;
+      if(undefined !== model.storage_adapter) {
+        data.url = app.makeMediaUrl(model, false);
+      }
       data.thumbUrl = app.makeMediaUrl(model, true);
       data.name = model.get('name');
       data.orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
