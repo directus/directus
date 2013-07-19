@@ -494,6 +494,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // tmp transitional.
         $db = Bootstrap::get('olddb');
 
+        // @todo this is for backwards compatibility, make sure this doesn't happen and ditch the following 2 if-blocks
+        if (!array_key_exists('orderBy',$params) && array_key_exists('sort',$params)) {
+            $params['orderBy'] = $params['sort'];
+        }
+        if (!array_key_exists('orderDirection',$params) && array_key_exists('sort_order',$params)) {
+            $params['orderDirection'] = $params['sort_order'];
+        }
+        // end @todo
+
         $logger = $this->logger();
 
         $platform = $this->adapter->platform; // use for quoting
