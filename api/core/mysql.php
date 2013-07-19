@@ -62,7 +62,7 @@ class MySQL {
                 return (int)$string;
             case 'float':
                 return (float)$string;
-            case 'timestamp'
+            case 'timestamp':
                 return date("r", (int)$string);
             case 'date':
             case 'datetime':
