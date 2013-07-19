@@ -18,15 +18,13 @@ function(Handlebars, typetools) {
 
     lockScreen: function() {
       this.noScroll = true;
-      $('body').addClass('modal-open');
-      $('body').append('<div class="modal-backdrop" style="background-color:transparent!important;"/>');
+      //$('body').append('<div class="modal-backdrop" style="background-color:transparent!important;"/>');
       //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
     },
 
     unlockScreen: function() {
       this.noScroll = false;
-      $('body').removeClass('modal-open');
-      $('.modal-backdrop').remove();
+      //$('.modal-backdrop').remove();
     },
 
     logErrorToServer: function(type, message, details) {
@@ -46,7 +44,7 @@ function(Handlebars, typetools) {
 
       $.post(app.API_URL + 'exception', JSON.stringify(data))
         .done(function(response) {
-          console.log(response);
+          console.log(response.response);
         })
         .error(function(obj) {
           console.log('FAILED TO LOG ERROR'+obj.responseText);
