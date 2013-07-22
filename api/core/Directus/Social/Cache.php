@@ -74,9 +74,10 @@ class Cache {
     }
 
     private function scrapeFeed(array $feed) {
-        if(!self::$scrapingEnabled) {
+        if(!Cache::$scrapingEnabled) {
             return;
         }
+        $updatedFeed = array();
         switch($feed['type']) {
             case DirectusSocialFeedsTableGateway::TYPE_TWITTER:
                 $updatedFeed = $this->scrapeTwitterFeed($feed);
@@ -91,7 +92,9 @@ class Cache {
         }
         // Update feed's last_checked value
         $set = array('last_checked' => new Expression('NOW()'));
-        $set = array_merge($updatedFeed, $set);
+        if(!empty($updatedFeed)) {
+            $set = array_merge($updatedFeed, $set);
+        }
         $where = array('id' => $feed['id']);
         $this->SocialFeedsTableGateway->update($set, $where);
     }
