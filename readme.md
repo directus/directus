@@ -26,20 +26,24 @@ View the Directus documentation here:
 ### Instructions
 
 #### Step 1: Setup a development enviroment
-You will need to setup a local AMP enviroment (Apache, MySQL and PHP) in order to test Directus. AMP packages can be found for different platforms [MAMP](http://www.mamp.info/en/index.html) for Mac OS, [WAMP](http://www.wampserver.com/en/) for Windows and [LAMP](https://help.ubuntu.com/community/ApacheMySQLPHP) for Linux.
+You will need to setup a local AMP enviroment (Apache, MySQL and PHP) in order to test Directus. AMP packages can be found for different platforms:
+
+* [MAMP](http://www.mamp.info/en/index.html) for Mac OS
+* [WAMP](http://www.wampserver.com/en/) for Windows
+* [LAMP](https://help.ubuntu.com/community/ApacheMySQLPHP) for Linux
 
 #### Step 2: Install git
-You will need Git to keep the test version of Directus up to date. Unless you allready have Git installed, you can download it from [here](http://git-scm.com/).
+You will need Git to keep your test version of Directus up to date. Unless you already have Git installed, you can download it from [here](http://git-scm.com/).
 
 #### Step 3: Pull down Directus from github
-Create a directory in the www root and name it directus. Open the  directory and type
+Create a directory named "directus" in the www root. Next, open the directory and type:
 
 ```
 $ git init
 $ git clone https://github.com/RNGR/directus6
 ```
 #### Step 4: Install dependencies
-Directus uses composer to handle it's php dependencies. Go to the `directus/api/` folder and install composer:
+Directus uses composer to handle its php dependencies. Go to the `directus/api/` folder and install composer:
 
 ```
 $ curl -s https://getcomposer.org/installer | php
@@ -51,23 +55,22 @@ $ php composer.phar install
 ```
 
 #### Step 5: Setup the database
-The AMP-packages listed above includes Phpmyadmin. The following three steps need to be completed in order to setup the database
+The AMP-packages listed above all include Phpmyadmin. The following three steps need to be completed in order to setup the database
 
 1. Create the database
    1. Databases -> Create Database  
-   2. Type *directus* as name and select utf8_general_ci as Collation. 
-
+   2. Type *directus* as name and select *utf8_general_ci* as Collation. 
 2. Create a user  
-   1. Once you created the database, it will be visible in the left column. Open it by clicking at it.
+   1. Once you've created the database it will be visible in the left column – open it by clicking it.
    2. Privileges -> Add user
-   2. Fill in user name and password. Leave the other fields as defaults.
+   3. Fill in *username* and *password*. Leave the other fields as defaults.
 3. Import the database schema
    1. Import->File to Import->Choose file
    2. Open directus/directus.sql
    3. Press Go  
 
 #### Step 6: Setup Directus
-Open `directus/api/conif_sample.php` Add the database and user password from Step 5 to DB_USER and DB_PASSWORD.   
+Open `directus/api/conif_sample.php` Add the database username and password from Step 5 to *DB_USER* and *DB_PASSWORD*.   
 
 ```
 define('DB_USER', 		'myusername');
