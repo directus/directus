@@ -62,15 +62,15 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'change input': 'updateValue',
+      'blur input': 'updateValue',
       'click .now': 'makeNow'
     },
 
     updateValue: function(e) {
       var value = this.$el.find('input.date').val() + ' ' + this.$el.find('input.time').val();
+      console.log(value);
       var now = new Date(value);
       var gmtValue = new Date(value).toISOString();
-
       this.$el.find('input.merged').val(gmtValue);
     },
 
@@ -95,9 +95,6 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       if(!include_seconds){now.tss='00';}
 
-
-      console.log(_.isDate(value));
-
       return {
         value: now.gmtValue,
         valueDate: now.yyyy+'-'+now.mm+'-'+now.dd,
@@ -106,7 +103,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         includeTime: (this.options.schema.get('type') == 'DATETIME' || this.options.schema.get('type') == 'TIME') ? true : false,
         name: this.options.name,
         note: this.options.schema.get('comment'),
-        includeSeconds: include_seconds
+        includeSeconds: include_seconds,
+        invalid: this.invalid
       };
     },
 
@@ -152,12 +150,12 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.validate = function(value,options) {
     if (!_.isDate(value)) {
-      console.log(value);
+      value = new Date(value);
     }
-    if (_.isDate(value) && !_.isNaN(value.getTime())) {
+    if (!_.isNaN(value.getTime())) {
       return;
     }
-    console.log('bad date', value);
+    return "Not a valid date";
   };
 
   Module.list = function(options) {
