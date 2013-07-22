@@ -1,0 +1,11 @@
+<div class="blocker">
+	<div class="alert-xl">
+		<span class="glyphicon-warning-sign"></span>
+		{{message}}
+		{{#if showDetails}}<textarea>{{details}}</textarea>{{/if}}
+		<div class="buttons">
+			<button class="btn close-alert">OK</button>
+			{{#if details}}<button class="btn show-details">Details</button>{{/if}}
+		</div>
+	</div>
+</div>

@@ -23,7 +23,7 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <link rel="shortcut icon" href="favicon.ico">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="/directus/assets/css/index.css">
+  <link rel="stylesheet" href="assets/css/index.css">
   <style>
     body {background-image: url(assets/img/noise.gif); margin:0; padding:0;}
     .login-panel { background-color:rgba(255,255,255,0.4); padding:20px; width:372px; box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05); position: absolute; left:50%; top:50%; margin-left:-208px; margin-top:-245px;}

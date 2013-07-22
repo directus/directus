@@ -116,10 +116,11 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
 
       model.save(model.diff(data), {
         success: success,
-        patch: true,
-        error: function() {
-          console.log('ERROR', arguments);
-        }
+
+        error: function(model, xhr, options) {
+          //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
+        },
+        patch: true
       });
     },
 
@@ -147,6 +148,8 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
       this.setView('#page-content', this.editView);
       //Don't fetch if the model is new!
       if (this.model.has('id')) {
+
+        //@todo what is going on here?
         this.model.fetch({
           dontTrackChanges: true,
           error: function(model, XMLHttpRequest) {
@@ -190,12 +193,12 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     serialize: function() {
       var data = {
         title: this.collection.table.id,
-        breadcrumbs: [{title: 'Tables', anchor: '#tables'}],
+        breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
       };
 
       if (this.collection.hasPermission('add')) {
         data.buttonTitle = 'Add New Item';
-      };
+      }
 
       return data;
     },

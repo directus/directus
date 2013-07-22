@@ -77,11 +77,11 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     afterRender: function() {
       var now = new Date().getTime();
       console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
-      app.router.hideAlert();
+      //app.trigger('load');
     },
 
     cleanup: function() {
-      app.router.hideAlert();
+      //app.trigger('load');
     },
 
     initializeDrop: function() {
@@ -120,7 +120,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
-            item.user = 1;
+            item.user = app.getCurrentUser().id;
             item.active = 1;
             //item.title = app.capitalize(item.name);
 
@@ -128,7 +128,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
               var success = function() {
                 var active = collection.table.get('active') + 1;
                 collection.table.set('active', active);
-              }
+              };
               collection.create(item, {silent: true, success: success});
             } else {
               console.log('ADD');
@@ -145,12 +145,12 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
 
       collection.on('fetch',  function() {
-        app.router.showAlert();
+        //app.trigger('progress', 'Loading');
       }, this);
 
       // this one used to listen to remove.
       collection.on('sync visibility', function() {
-        app.router.hideAlert();
+        //app.trigger('load');
         this.render();
       }, this);
 

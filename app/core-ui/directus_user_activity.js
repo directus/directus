@@ -14,7 +14,7 @@ define(['app','backbone'], function(app, Backbone) {
   Module.sortBy = 'last_login';
 
   Module.list = function(options) {
-  	if(options.model.get('last_access') !== null){
+    if(options.model.get('last_access') !== null){
       var page_summary = '';
       var last_page = $.parseJSON(options.model.get('last_page')) || {};
       if(undefined === last_page.param) {
@@ -36,10 +36,10 @@ define(['app','backbone'], function(app, Backbone) {
         }
       }
       var activity_time = options.model.get('last_access');
-	    return '<a href="#'+last_page.path+'" title="'+activity_time+'">'+page_summary+' '+jQuery.timeago(activity_time)+'</a>';
-  	} else {
-  		return '<a href="#">Never logged in</a>';
-  	}
+      return '<a href="#'+last_page.path+'" title="'+activity_time+'">'+page_summary+' '+jQuery.timeago(activity_time)+'</a>';
+    } else {
+      return '<a href="#">Never logged in</a>';
+    }
   };
 
   return Module;

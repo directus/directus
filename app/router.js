@@ -40,7 +40,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "settings/tables/:table":         "settingsTable",
       "settings/permissions/:groupId":  "settingsPermissions",
       "messages":                       "messages",
-      "cashregister":                   "cashregister"
+      "cashregister":                   "cashregister",
+      "booker":                         "booker"
     },
 
     go: function() {
@@ -66,6 +67,12 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       }
     },
 
+    notFound: function() {
+      this.setTitle('404');
+      this.v.main.setView('#content', new Backbone.Layout({template: Handlebars.compile('<h1>Not found</h1>')}));
+      this.v.main.render();
+    },
+
     openModal: function(view, options) {
       options.view = view;
       var modal = new Directus.Modal(options);
@@ -87,6 +94,11 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
     entries: function(tableName) {
       this.setTitle('Tables');
+
+      if (!app.entries.hasOwnProperty(tableName)) {
+        return this.notFound();
+      }
+
       var collection = app.entries[tableName];
       if (collection.table.get('single')) {
         if(collection.models.length) {
@@ -194,10 +206,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           this.v.main.setView('#content', new Settings.Tables({collection: app.tables}));
           break;
         case 'global':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), structure: Settings.GlobalStructure, title: 'Global'}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global'}));
           break;
         case 'media':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), structure: Settings.MediaStructure, title: 'Media'}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), title: 'Media'}));
           break;
         case 'permissions':
           this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));
@@ -238,6 +250,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     initialize: function(options) {
+      //Fade out and remove splash
+      $('#splash').fadeOut('fast').remove();
+
+
       this.tabs = new Tabs.Collection(options.tabs);
       this.extensions = {};
 
@@ -248,9 +264,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         }, this);
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
-
-      // Filter tab permissions
-      var tabs = this.tabs;
 
       var user = app.getCurrentUser();
 
@@ -271,7 +284,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.v = {};
       this.v.content = undefined;
 
-      var tabs = new Tabs.View({collection: this.tabs})
+      var tabs = new Tabs.View({collection: this.tabs});
 
       this.v.main = new Backbone.Layout({
         el: "#main",
@@ -303,6 +316,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       this.bind("all", function(route, router){
         // console.log('route change',route,router);
+        var last_page;
         var routeTokens = route.split(':');
         if(routeTokens.length > 1) {
           // Report the "last page" data to the API
@@ -311,7 +325,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           var user = app.getCurrentUser();
           var currentPath = window.location.pathname.substring(app.root.length);
           if(currentPath.length) {
-            var last_page = JSON.stringify({
+            last_page = JSON.stringify({
               'path' : currentPath,
               'route' : route.substring(6),
               'param' : router
@@ -330,9 +344,9 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
             // If theere's no path in the location (i.e. the user just logged in),
             // take them to their last visited page, defaulting to "tables".
             var authenticatedUser = app.getCurrentUser();
-            var user = app.users.get(authenticatedUser.id);
-            var last_page = $.parseJSON(user.get('last_page'));
-            if(undefined === last_page.path || '' == last_page.path) {
+            user = app.users.get(authenticatedUser.id);
+            last_page = $.parseJSON(user.get('last_page'));
+            if(undefined === last_page.path || '' === last_page.path) {
               last_page.path = 'tables';
             }
             this.navigate(last_page.path, {trigger: true});
