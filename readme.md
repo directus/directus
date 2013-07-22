@@ -26,7 +26,7 @@ View the Directus documentation here:
 ### Instructions
 
 #### Step 1: Setup a development enviroment
-You will need to setup a local AMP enviroment (Apache, MySQL and PHP) in order to test Directus. AMP packages can be found for different platforms:
+You will need to setup a local *AMP enviroment (Apache, MySQL and PHP) in order to test Directus. *AMP packages can be found for different platforms:
 
 * [MAMP](http://www.mamp.info/en/index.html) for Mac OS
 * [WAMP](http://www.wampserver.com/en/) for Windows
