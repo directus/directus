@@ -18,11 +18,13 @@ require([
   "schemas/users",
   "schemas/activity",
   "schemas/groups",
-  "core/extensions"
+  "schemas/settings.global",
+  "schemas/settings.media",
+  "core/extensions",
+  "alerts"
 ],
 
-function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, extensions) {
-
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts) {
 
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
@@ -31,29 +33,30 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
       var existingErrorHandler = function(){};
       if(undefined !== options.error)
-        var existingErrorHandler = options.error;
+        existingErrorHandler = options.error;
 
       var errorCodeHandler = function(xhr, status, thrown) {
-        var status = xhr.status;
+        //@todo: note that status is getting overwritten. don't!
+        status = xhr.status;
 
         existingErrorHandler(xhr, status, thrown);
 
         switch(status) {
           case 404:
-            app.router.showAlert('Not found!');
+            app.router.notFound();
             break;
           case 401:
             window.location = app.root;
             break;
           case 500:
-            console.log('ERRRRRRAAAOOORE', xhr.responseText);
             break;
           case 403:
-            var errorData = jQuery.parseJSON(xhr.responseText);
-            win = new Backbone.Layout();
-            win.$el.html(errorData.message);
-            win.render();
-            app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
+            app.trigger("alert:error", "Unauthorized", "You don't have access for this action");
+            //var errorData = jQuery.parseJSON(xhr.responseText);
+            //win = new Backbone.Layout();
+            //win.$el.html(errorData.message);
+            //win.render();
+            //app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
             break;
         }
       };
@@ -68,6 +71,12 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       e.preventDefault();
     });
 
+    $(document).on('mousewheel DOMMouseScroll', function(e) {
+      if (app.noScroll && event.target.nodeName !== 'TEXTAREA') {
+        e.preventDefault();
+      }
+    });
+
     //Cancel default CMD + S;
     $(window).keydown(_.bind(function(e) {
       if (e.keyCode === 83 && e.metaKey) {
@@ -79,6 +88,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     var data = window.directusData;
 
     app.root = data.path;
+    app.DEFAULT_VALIDATION_MESSAGE = 'The data you entered is not valid';
     app.API_URL = data.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
     app.uiSettings = UI.settings();
@@ -89,6 +99,34 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','active','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
     app.settings = new Directus.Settings(data.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
+
+
+    $(document).ajaxStart(function(e) {
+      app.trigger('progress');
+    });
+
+    $(document).ajaxStop(function(e) {
+      app.trigger('load');
+    });
+
+    // Capture sync errors...
+    $(document).ajaxError(function(e, xhr) {
+      var type = 'Server ' + xhr.status;
+      var message = "Server Error";
+      var details = encodeURIComponent(xhr.responseText);
+      //details = 'xxx';
+      app.logErrorToServer(type, message, details);
+      app.trigger("alert:error", "Server Error", xhr.responseText);
+    });
+
+    // And js errors...
+    window.onerror = function(message, file, line) {
+      var type = 'JS';
+      var details = 'Error: ' + message + '\nFile: ' + file + '\n Line:' + line;
+      app.logErrorToServer(type, 'Error', details);
+      app.trigger('alert:error', 'Error', details);
+    };
+
 
     /**
      * Add nonce to API requests using custom request header
@@ -121,6 +159,16 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       }
     });
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Instantiate UI settings first
+    _.each(app.uiSettings, function(value, key) {
+      if (value.variables === undefined) return;
+      //Deep-clone settings!
+      var deepClone = app.deepClone(value.variables);
+      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
+    });
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Always bootstrap schema and table info.
     _.each(data.tables, function(options) {
 
@@ -150,6 +198,11 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Setup Global & Media settings
+    app.settings.get('global').structure = new Directus.CollectionColumns(SettingsGlobalSchema.structure,{parse: true});
+    app.settings.get('media').structure = new Directus.CollectionColumns(SettingsMediaSchema.structure,{parse: true});
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Setup core data collections.
     app.media =
     app.entries.directus_media = new Directus.EntriesCollection(data.active_media, {
@@ -157,11 +210,11 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: new Directus.CollectionColumns(media.structure, {parse: true}),
       preferences: app.preferences.directus_media,
       url: app.API_URL + 'media',
-      privileges: app.privileges['directus_media'],
+      privileges: app.privileges.directus_media,
       parse: true
-      //filters: {columns: ['name', 'title', 'type', 'caption', 'size', 'user', 'date_uploaded']}
     });
 
+    // @todo: Maybe do this earlier?
     app.users = new Directus.EntriesCollection(data.users, {
       parse: true,
       table: app.tables.get('directus_users'),
@@ -169,7 +222,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       preferences: app.preferences.directus_users,
       url: app.API_URL + 'tables/directus_users/rows',
       filters: {columns: ['name', 'group', 'activity', 'email', 'description']},
-      privileges: app.privileges['directus_users']
+      privileges: app.privileges.directus_users,
+      rowsPerPage: 3000
     });
 
     app.activity = new Directus.EntriesCollection({}, {
@@ -177,7 +231,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
       preferences: new Backbone.Model(activity.preferences),
       url: app.API_URL + 'activity/',
-      privileges: app.privileges['directus_activity']
+      privileges: app.privileges.directus_activity
     });
 
     app.groups =
@@ -186,7 +240,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       preferences: new Backbone.Model(groups.preferences),
       structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
       url: app.API_URL + 'groups/',
-      privileges: app.privileges['directus_groups'],
+      privileges: app.privileges.directus_groups,
       parse: true
     });
 
@@ -201,13 +255,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         privileges: app.privileges[table.id]
       });
     }, this);
-
-    _.each(app.uiSettings, function(value, key) {
-      if (value.variables === undefined) return;
-      //Cheating way to peform a deep-clone
-      var deepClone = JSON.parse(JSON.stringify(value.variables));
-      app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone);
-    });
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Tabs

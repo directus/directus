@@ -160,7 +160,7 @@ function(app, Directus, PaneSaveView) {
       }
       else {
         // console.log("else");
-        var tableName = $targetParent.parent().prevAll('tr[data-table-name]').first().data('tableName');
+        tableName = $targetParent.parent().prevAll('tr[data-table-name]').first().data('tableName');
         // console.log(tableName);
         $targetParent.toggleClass('on off');
         $targetParent.data('isMix', true);

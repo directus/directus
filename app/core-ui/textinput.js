@@ -62,10 +62,14 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.validate = function(value, options) {
+    var validationMessage = options.settings.get('validation_message') || app.DEFAULT_VALIDATION_MESSAGE;
+    if (options.schema.get('required') && _.isEmpty(value)) {
+      return validationMessage;
+    }
     if (options.settings.has('validation_regex')) {
       var regex = new RegExp(options.settings.get('validation_regex'));
       if (!regex.test(value)) {
-        return options.settings.get('validation_message');
+        return validationMessage;
       }
     }
     //return 'HELL NO';

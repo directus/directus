@@ -14,8 +14,8 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
-    {id: 'table_related', ui: 'textinput', char_length: 64},
-    {id: 'visible_column', ui: 'textinput', char_length: 64},
+    {id: 'table_related', ui: 'textinput', char_length: 64, required: true},
+    {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
     {id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
 
@@ -33,6 +33,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   <label class="radiobuttons" for="radio-{{id}}">{{name}}</label>{{/data}} \
                   {{else}} \
                   <select name="{{name}}"> \
+                  <option value="">Select from below</option> \
                   {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
                   </select> \
                   {{/if}}';
@@ -51,6 +52,16 @@ define(['app', 'backbone'], function(app, Backbone) {
           selected: this.options.value !== undefined && (model.id === this.options.value.id)
         };
       }, this);
+
+      // default data while syncing (to avoid flickr when data is loaded)
+      if (this.options.value !== undefined && this.options.value.id && !data.length) {
+        data = [{
+          id: this.options.value.id,
+          name: this.options.value.get(this.column),
+          selected: true
+        }];
+      }
+
       return {
         name: this.options.name,
         data: data,
@@ -71,8 +82,22 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   });
 
-  Module.validate = function(value) {
+  Module.validate = function(value, options) {
 
+    if (!options.schema.isNullable()) {
+      // a numer is ok
+      if (!_.isNaN(parseInt(value,10))) {
+        return;
+      }
+      //empty is not ok
+      if (_.isEmpty(value)) {
+        return 'The field cannot be empty';
+      }
+      // model value without proper id is not ok
+      if (value instanceof Backbone.Model && _.isNaN(value.get('id'))) {
+        return 'The field cannot be empty';
+      }
+    }
   };
 
   Module.list = function(options) {

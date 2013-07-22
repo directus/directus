@@ -32,14 +32,14 @@ define(['app', 'backbone'], function(app, Backbone) {
                   input.date { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 110px; \
+                    width: 120px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
                   input.time { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 80px; \
+                    width: 100px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
@@ -95,6 +95,9 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       if(!include_seconds){now.tss='00';}
 
+
+      console.log(_.isDate(value));
+
       return {
         value: now.gmtValue,
         valueDate: now.yyyy+'-'+now.mm+'-'+now.dd,
@@ -147,8 +150,14 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   });
 
-  Module.validate = function(value) {
-    //
+  Module.validate = function(value,options) {
+    if (!_.isDate(value)) {
+      console.log(value);
+    }
+    if (_.isDate(value) && !_.isNaN(value.getTime())) {
+      return;
+    }
+    console.log('bad date', value);
   };
 
   Module.list = function(options) {

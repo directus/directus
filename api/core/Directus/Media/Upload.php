@@ -1,5 +1,7 @@
 <?php
 
+namespace Directus\Media;
+
 /**
  * Directus - awesome content management framework for everyone
  *
@@ -23,8 +25,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Directus. If not, see <http://www.gnu.org/licenses/>.
  */
-
-namespace Directus\Media;
 
 use Directus\Bootstrap;
 
@@ -137,6 +137,7 @@ class Upload {
         return $name;
     }
 
+    // refactor @done
     private function unique_name($attempt=0) {
         $info = pathinfo($this->name);
         $path = $this->resources_path;
@@ -175,6 +176,7 @@ class Upload {
         return $file;
     }
 
+    // refactor @done
     private function get_info() {
         $file = $this->tmp_name;
         $finfo = new \finfo(FILEINFO_MIME);

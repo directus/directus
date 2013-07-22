@@ -150,17 +150,14 @@ function(app, Backbone, ui, Directus) {
 
     editUI: function(e) {
       var id = e.target.getAttribute('data-id');
-      var model = this.collection.get(id);
-      var schema = app.uiSettings[model.get('ui')].schema;
-      var options = model.options;
-      console.log(schema);
-      var view = new Directus.EditView({model: options, structure: schema});
+      var column = this.collection.get(id);
+      var options = column.options;
+      var view = new Directus.EditView({model: options});
       var modal = app.router.openModal(view, {title: 'UI Settings', stretch: true});
       modal.save = function() {
         options.save(view.data(), {success: function() {
-          console.log('HEPP');
+          modal.close();
         }});
-        this.close();
       };
       options.fetch();
     },
@@ -172,6 +169,29 @@ function(app, Backbone, ui, Directus) {
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables');
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
+        row.relationship = "";
+
+        var validation = model.options.validate(model.options.toJSON());
+
+        row.valid = true;
+        if (validation !== undefined) {
+          row.valid = false;
+        }
+
+        switch (model.getRelationshipType()) {
+          case 'ONETOMANY':
+            row.relationship = "⊣";
+            row.relationshipTooltip = model.getRelated();
+            break;
+          case 'MANYTOONE':
+            row.relationship = "⊢";
+            row.relationshipTooltip = model.getRelated();
+            break;
+          case 'MANYTOMANY':
+            row.relationship = "⊢⊣";
+            row.relationshipTooltip = model.getRelated();
+            break;
+        }
         // Gather a list of UI alternatives
         _.each(ui, function(ui) {
           if (!ui.system && ui.dataTypes.indexOf(row.type) > -1) {
@@ -289,12 +309,8 @@ function(app, Backbone, ui, Directus) {
 
         // only return tables with view permissions
         return _.contains(permissions, 'alter');
-
-
-
-        return true;
-
       });
+
       rows = _.map(rows, function(model) { return model.toJSON(); });
       return {rows: rows};
     }
