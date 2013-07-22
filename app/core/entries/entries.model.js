@@ -43,6 +43,9 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     validate: function(attributes, options) {
       var errors = [];
       var structure = this.getStructure();
+      var isEmptyNaN = function(value) {
+        return _.isNaN(parseInt(value,10)) && _.isEmpty(value);
+      }
 
       //only validates attributes that are part of the schema
       attributes = _.pick(attributes, structure.pluck('column_name'));
@@ -52,7 +55,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         if (key === 'id') return;
 
         var notNull = structure.get(key).get('is_nullable') === 'NO';
-        var mess = (notNull && _.isEmpty(value)) ? 'The field cannot be empty' : ui.validate(this, key, value);
+        var mess = (notNull && isEmptyNaN(value)) ? 'The field cannot be empty' : ui.validate(this, key, value);
 
         if (mess !== undefined) {
           errors.push({attr: key, message: mess});
@@ -261,8 +264,21 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return this.collection.structure;
     },
 
+    getTable: function() {
+      return this.collection.table;
+    },
+
     initialize: function() {
       if (this.collection !== undefined) this.structure = this.collection.structure;
+      this.on('invalid', function(model, errors) {
+        var details = _.map(errors, function(err) { return err.attr+':\n'+err.message; }).join('\n\n');
+        details = 'table:\t' + this.getTable().id +
+                  '\nrow id:\t' + this.id +
+                  '\n-----------------------\n' + details;
+        app.trigger('alert:error', 'The data is not valid', details);
+        console.log('invalid', this);
+        console.trace();
+      });
     }
   });
 
