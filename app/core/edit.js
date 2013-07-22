@@ -67,7 +67,6 @@ function(app, Backbone) {
 
       // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {
-        app.trigger('alert:error', 'The data is not valid');
         //Get rid of all errors
         this.$el.find('.error').remove();
         _.each(errors, function(item) {
