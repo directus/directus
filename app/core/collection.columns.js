@@ -97,6 +97,10 @@ function(app, Backbone) {
         return this.getRelated() !== undefined;
       },
 
+      isNullable: function() {
+        return this.get('is_nullable') === 'YES';
+      },
+
       toJSON: function(options) {
         if (options && options.columns) {
           return _.pick(this.attributes, options.columns);
