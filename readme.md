@@ -36,7 +36,7 @@ You will need to setup a local AMP enviroment (Apache, MySQL and PHP) in order t
 You will need Git to keep your test version of Directus up to date. Unless you already have Git installed, you can download it from [here](http://git-scm.com/).
 
 #### Step 3: Pull down Directus from github
-Create a directory named "directus" in the www root. Next, open the directory and type:
+Create a directory named "directus" in the www root. Next, open the directory in the terminal and type:
 
 ```
 $ git init
