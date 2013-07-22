@@ -82,8 +82,22 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   });
 
-  Module.validate = function(value) {
+  Module.validate = function(value, options) {
 
+    if (!options.schema.isNullable()) {
+      // a numer is ok
+      if (!_.isNaN(parseInt(value,10))) {
+        return;
+      }
+      //empty is not ok
+      if (_.isEmpty(value)) {
+        return 'The field cannot be empty';
+      }
+      // model value without proper id is not ok
+      if (value instanceof Backbone.Model && _.isNaN(value.get('id'))) {
+        return 'The field cannot be empty';
+      }
+    }
   };
 
   Module.list = function(options) {
