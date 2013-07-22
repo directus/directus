@@ -39,7 +39,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       return value;
     },
 
-    //@todo: Why is this one called so many times?
+    // @todo: Why is this one called so many times?
+    // @note: Use HTML5 form validation when possible
     validate: function(attributes, options) {
       var errors = [];
       var structure = this.getStructure();
@@ -276,8 +277,6 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
                   '\nrow id:\t' + this.id +
                   '\n-----------------------\n' + details;
         app.trigger('alert:error', 'The data is not valid', details);
-        console.log('invalid', this);
-        console.trace();
       });
     }
   });
