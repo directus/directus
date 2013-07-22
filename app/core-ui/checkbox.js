@@ -17,6 +17,8 @@ define(['app','backbone'], function(app, Backbone) {
   Module.id = 'checkbox';
   Module.dataTypes = ['TINYINT'];
 
+  Module.variables = [];
+
   Module.Input = Backbone.Layout.extend({
     tagName: 'fieldset',
     template: Handlebars.compile(template),

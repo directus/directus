@@ -38,13 +38,8 @@ if(file_exists($cachedThumbnail)) {
 }
 
 // Composer Autoloader
-require 'api/vendor/autoload.php';
-
-// Directus Autoloader
-use Symfony\Component\ClassLoader\UniversalClassLoader;
-$loader = new UniversalClassLoader();
-$loader->registerNamespace("Directus", dirname(__FILE__) . "/api/core/");
-$loader->register();
+$loader = require 'api/vendor/autoload.php';
+$loader->add("Directus", dirname(__FILE__) . "/api/core/");
 
 use Directus\Media\ImageManipulator;
 $Image = new ImageManipulator($path);

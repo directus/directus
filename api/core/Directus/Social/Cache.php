@@ -12,7 +12,9 @@ use Zend\Db\Sql\Select;
 
 class Cache {
 
-    public static $scrape_interval_seconds = 300; // 5 min
+    public static $scrapingEnabled = true;
+
+    public static $scrapeIntervalSeconds = 300; // 5 min
 
     public function __construct() {
         $acl = Bootstrap::get('acl');
@@ -43,7 +45,7 @@ class Cache {
     }
 
     private function getDueDate() {
-        $due = time() - self::$scrape_interval_seconds;
+        $due = time() - self::$scrapeIntervalSeconds;
         $due = date("c", $due);
         return $due;
     }
@@ -72,6 +74,10 @@ class Cache {
     }
 
     private function scrapeFeed(array $feed) {
+        if(!Cache::$scrapingEnabled) {
+            return;
+        }
+        $updatedFeed = array();
         switch($feed['type']) {
             case DirectusSocialFeedsTableGateway::TYPE_TWITTER:
                 $updatedFeed = $this->scrapeTwitterFeed($feed);
@@ -86,7 +92,9 @@ class Cache {
         }
         // Update feed's last_checked value
         $set = array('last_checked' => new Expression('NOW()'));
-        $set = array_merge($updatedFeed, $set);
+        if(!empty($updatedFeed)) {
+            $set = array_merge($updatedFeed, $set);
+        }
         $where = array('id' => $feed['id']);
         $this->SocialFeedsTableGateway->update($set, $where);
     }
@@ -97,8 +105,13 @@ class Cache {
         $httpStatus = $statuses['httpstatus'];
         unset($statuses['httpstatus']);
         $responseStatusIds = array();
-        foreach($statuses as $status) {
+        foreach($statuses as $idx => $status) {
             $status = (array) $status;
+            // This occurs during API-end failure states
+            if(!isset($status['id'])) {
+                unset($statuses[$idx]);
+                break;
+            }
             $responseStatusIds[] = $status['id'];
             unset($status['user']);
             $cachedCopy = $this->SocialPostsTableGateway->feedForeignIdExists($status['id'], $feed['id']);
@@ -110,6 +123,10 @@ class Cache {
                 $published = new \DateTime($status['created_at']);
                 $this->newFeedEntry($feed, $status, $published);
             }
+        }
+        // API failure
+        if(empty($statuses)) {
+            return $feed;
         }
         // Update feed user data
         $sampleEntry = (array) $statuses[0];
@@ -134,7 +151,7 @@ class Cache {
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
         $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s";
-        $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id']['value'], $socialSettings['instagram_oauth_access_token']['value']);
+        $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id'], $socialSettings['instagram_oauth_access_token']);
         try {
             $mediaRecent = file_get_contents($endpoint);
         } catch(\ErrorException $e) {
@@ -197,7 +214,7 @@ class Cache {
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
         $endpoint = "https://api.instagram.com/v1/users/search?q=%s&access_token=%s";
-        $endpoint = sprintf($endpoint, urlencode($username), urlencode($socialSettings['instagram_oauth_access_token']['value']));
+        $endpoint = sprintf($endpoint, urlencode($username), urlencode($socialSettings['instagram_oauth_access_token']));
         try {
             $userData = file_get_contents($endpoint);
         } catch(\ErrorException $e) {

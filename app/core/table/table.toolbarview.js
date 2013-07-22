@@ -71,7 +71,7 @@ function(app, Backbone) {
 
       switch (this.collection.getFilter('active')) {
         case '1,2':
-          options.totalCount = this.collection.table.get('total');
+          options.totalCount = this.collection.table.get('active') + this.collection.table.get('inactive'); //this.collection.table.get('total');
           break;
         case '1':
           options.totalCount = this.collection.table.get('active');

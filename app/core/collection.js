@@ -60,7 +60,7 @@ function(app, Backbone) {
 
       //There is no value
       if (!row.has(column)) {
-        if (this.structure) {
+        if (this.structure && this.structure.get(column) !== undefined) {
           schema = this.structure.get(column);
           ui = schema.get('ui');
 
@@ -137,8 +137,7 @@ function(app, Backbone) {
 
       this.trigger('fetch', this);
 
-      if(this.hasOwnProperty('getFilters'))
-        _.extend(options.data, this.getFilters());
+      _.extend(options.data, this.getFilters());
 
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
