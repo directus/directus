@@ -7,7 +7,7 @@ define([
 
 function(app, Backbone, Collection, EntriesCollection) {
 
-
+  //@todo: Try merging this with entries.collection.js
   var NestedCollection = Collection.extend({
 
     isNested: true,
@@ -19,16 +19,16 @@ function(app, Backbone, Collection, EntriesCollection) {
       parse: function(result) {
         result.data = new this.collection.nestedCollection.model(result.data, {collection: this.collection.nestedCollection});
         this.collection.nestedCollection.add(result.data);
-
-        console.log(result);
-
         return result;
       },
 
       //DRY this up please and move it to BB's protoype
       toJSON: function(options) {
         var attributes = _.clone(this.attributes);
-        attributes.data = this.get('data').toJSON();
+        attributes.data = this.get('data').toJSON(options);
+        if (_.isEmpty(attributes.data)) {
+          attributes.data.id = this.get('data').id;
+        }
         return attributes;
       }
     }),
@@ -72,12 +72,25 @@ function(app, Backbone, Collection, EntriesCollection) {
     },
 
     getColumns: function() {
-      console.log('x');
       return this.nestedCollection.getColumns();
     },
 
     parse: function(response) {
       return (response.rows === undefined) ? response : response.rows;
+    },
+
+    hasColumn: function(columnName) {
+      return this.structure.get(columnName) !== undefined;
+    },
+
+    comparator: function(model) {
+      var comparator;
+      if (model.has('sort')) {
+        comparator = model.get('sort');
+      } else {
+        comparator = model.get('id');
+      }
+      return parseInt(comparator,10);
     },
 
     initialize: function(models, options) {
@@ -87,6 +100,7 @@ function(app, Backbone, Collection, EntriesCollection) {
       this.structure = options.structure;
       this.table = options.table;
       this.preferences = options.preferences;
+
       this.filters = options.filters;
       this.junctionStructure = options.junctionStructure;
 

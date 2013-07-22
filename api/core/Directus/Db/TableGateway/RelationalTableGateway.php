@@ -68,32 +68,35 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $currentUser = AuthProvider::getUserInfo();
 
         $TableGateway = $this;
-        if($tableName !== $this->table)
+        if($tableName !== $this->table) {
             $TableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
+        }
 
         $thisIsNested = ($activityEntryMode == self::ACTIVITY_ENTRY_MODE_CHILD);
 
         // Recursive functions will change this value (by reference) as necessary
         // $nestedCollectionRelationshipsChanged = $thisIsNested ? $parentCollectionRelationshipsChanged : false;
         $nestedCollectionRelationshipsChanged = false;
-        if($thisIsNested)
+        if($thisIsNested) {
             $nestedCollectionRelationshipsChanged = &$parentCollectionRelationshipsChanged;
+        }
 
         // Recursive functions will append to this array by reference
         // $nestedLogEntries = $thisIsNested ? $childLogEntries : array();
         $nestedLogEntries = array();
-        if($thisIsNested)
+        if($thisIsNested) {
             $nestedLogEntries = &$childLogEntries;
+        }
 
         // Update/add associations
         $parentRecordWithForeignKeys = $TableGateway->addOrUpdateRelationships($schemaArray, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
         // $log->info("Parent record with foreign keys: ".print_r((array) $parentRecordWithForeignKeys, true));
 
-        $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
+        $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);  
 
         // If more than the record ID is present.
         $newRecordObject = null;
-        $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
+        $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys); // || $recordIsNew;
         if($parentRecordChanged) {
 
             // Run Custom UI Processing
@@ -134,7 +137,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // - loading record identifier
         // - storing a full representation in the activity log
         $rowId = $recordIsNew ? $newRecordObject['id'] : $parentRecordWithForeignKeys['id'];
+
         $fullRecordData = $TableGateway->find($rowId);
+
+        if(!$fullRecordData) {
+            $recordType = $recordIsNew ? "new" : "pre-existing";
+            throw new \RuntimeException("Attempted to load $recordType record post-insert with empty result. Lookup via row id: " . print_r($rowId, true));
+        }
+
         $deltaRecordData = $recordIsNew ? array() : array_intersect_key((array) $parentRecordWithForeignKeys, (array) $fullRecordData);
 
         // if(false === $newRecordObject)
@@ -324,7 +334,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 // $log->info("(Skipping empty foreign record declaration.)");
                                 continue;
                             }
-                            $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
+
+                            // only add parent id's to items that are lacking the parent column
+                            if (!array_key_exists($foreignJoinColumn, $foreignRecord)) {
+                                $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
+                            }
+
                             $foreignRecord = $this->manageRecordUpdate($foreignTableName, $foreignRecord, self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged);
                         }
                         // $log->info("</Identified:One-to-Many>");
@@ -434,7 +449,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
             ->limit($params['perPage'])
             ->offset($params['currentPage'] * $params['perPage']);
 
-
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
         if (null !== $params['active'] && $hasActiveColumn) {
@@ -479,6 +493,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
     public function getEntries($params = array()) {
         // tmp transitional.
         $db = Bootstrap::get('olddb');
+
+        // @todo this is for backwards compatibility, make sure this doesn't happen and ditch the following 2 if-blocks
+        if (!array_key_exists('orderBy',$params) && array_key_exists('sort',$params)) {
+            $params['orderBy'] = $params['sort'];
+        }
+        if (!array_key_exists('orderDirection',$params) && array_key_exists('sort_order',$params)) {
+            $params['orderDirection'] = $params['sort_order'];
+        }
+        // end @todo
 
         $logger = $this->logger();
 

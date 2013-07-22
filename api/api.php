@@ -3,20 +3,10 @@
 // Initialization
 //  - Apparently the autoloaders must be registered separately in both index.php and api.php
 
-// Exceptional.io error handling
-if(defined('EXCEPTIONAL_API_KEY')) {
-    require_once 'vendor-manual/exceptional-php/exceptional.php';
-    Exceptional::setup(EXCEPTIONAL_API_KEY);
-}
 
 // Composer Autoloader
-require 'vendor/autoload.php';
-
-// Directus Autoloader
-use Symfony\Component\ClassLoader\UniversalClassLoader;
-$loader = new UniversalClassLoader();
-$loader->registerNamespace("Directus", dirname(__FILE__) . "/core/");
-$loader->register();
+$loader = require 'vendor/autoload.php';
+$loader->add("Directus", dirname(__FILE__) . "/core/");
 
 // Non-autoload components
 require dirname(__FILE__) . '/config.php';
@@ -52,7 +42,9 @@ use Directus\Db\TableGateway\DirectusUsersTableGateway;
 //use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
+use Directus\Media;
 use Directus\Media\Upload;
+use Directus\Util;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
 use Zend\Db\Sql\Expression;
@@ -320,6 +312,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
+
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
     switch($app->request()->getMethod()) {
         // PUT an updated table entry
@@ -433,18 +426,29 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
         $params['id'] = $id;
 
     // A URL is specified. Upload the file
-    if (isset($requestPayload['url']) && $requestPayload['url'] != "") {
-        $media = new Upload($requestPayload['url'], RESOURCES_PATH);
-        $media_data = $media->data();
-        $requestPayload['type'] = $media_data['type'];
-        $requestPayload['charset'] = $media_data['charset'];
-        $requestPayload['size'] = $media_data['size'];
-        $requestPayload['width'] = $media_data['width'];
-        $requestPayload['height'] = $media_data['height'];
-        $requestPayload['name'] = $media_data['name'];
-        $requestPayload['date_uploaded'] = $media_data['date_uploaded'];
-        if (isset($media_data['embed_id'])) {
-            $requestPayload['embed_id'] = $media_data['embed_id'];
+    if (isset($requestPayload['url']) && !empty($requestPayload['url'])) {
+        $videoId = Media\Youtube::getYouTubeIdFromUrl($requestPayload['url']);
+        if($videoId) {
+            // Fetch video thumbnail
+            $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusYoutubeThumbnail');
+            Media\Youtube::writeThumbnail($videoId, $thumbnailTempName);
+            // Upload video thumbnail
+            $targetFileName = "$videoId.jpg";
+            // $Transfer = new Media\Transfer();
+            $Storage = new Media\Storage\Storage();
+            // $fileData = $Transfer->acceptFile($thumbnailTempName, $targetFileName);
+            $fileData = $Storage->acceptFile($thumbnailTempName, $targetFileName);
+            $requestPayload = array_merge($requestPayload, array(
+                'type' => 'embed/youtube',
+                'embed_id' => $videoId,
+                'name' => $fileData['name'],
+                'title' => $fileData['title'],
+                'charset' => $fileData['charset'],
+                'size' => $fileData['size'],
+                'width' => $fileData['width'],
+                'height' => $fileData['height'],
+                'date_uploaded' => $fileData['date_uploaded']
+            ));
         }
     }
 
@@ -567,12 +571,70 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $par
  * UPLOAD COLLECTION
  */
 
-$app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app) {
+$app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    // $Transfer = new Media\Transfer();
+    $Storage = new Media\Storage\Storage();
     $result = array();
     foreach ($_FILES as $file) {
-      $media = new Upload($file, RESOURCES_PATH);
-      array_push($result, $media->data());
+        // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
+        $fileData = $Storage->acceptFile($file['tmp_name'], $file['name']);
+        $result[] = array(
+            'type' => $fileData['type'],
+            'name' => $fileData['name'],
+            'title' => $fileData['title'],
+            'charset' => $fileData['charset'],
+            'size' => $fileData['size'],
+            'width' => $fileData['width'],
+            'height' => $fileData['height'],
+            'date_uploaded' => $fileData['date_uploaded'],
+            'storage_adapter' => $fileData['storage_adapter']
+        );
     }
+    JsonView::render($result);
+});
+
+/**
+ * EXCEPTION LOG
+ */
+$app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    // $Transfer = new Media\Transfer();
+
+    $url = 'http://dev.rngr.org/directus_error_logger/';
+
+    $data = array(
+        'server_addr'   =>$_SERVER['SERVER_ADDR'],
+        'server_port'   =>$_SERVER['SERVER_PORT'],
+        'user_agent'    =>$_SERVER['HTTP_USER_AGENT'],
+        'http_host'     =>$_SERVER['HTTP_HOST'],
+        'request_uri'   =>$_SERVER['REQUEST_URI'],
+        'remote_addr'   =>$_SERVER['REMOTE_ADDR'],
+        'page'          =>$requestPayload['page'],
+        'message'       =>$requestPayload['message'],
+        'user_email'    =>$requestPayload['user_email'],
+        'type'          =>$requestPayload['type']
+    );
+
+    $ctx = stream_context_create(array(
+        'http' => array(
+            'method' => 'POST',
+            'content' => "json=".json_encode($data)."&details=".$requestPayload['details']
+        ))
+    );
+
+    $fp = @fopen($url, 'rb', false, $ctx);
+
+    if (!$fp) {
+        throw new Exception("Problem with $url, $php_errormsg");
+    }
+
+    $response = @stream_get_contents($fp);
+
+    if ($response === false) {
+        throw new Exception("Problem reading data from $url, $php_errormsg");
+    }
+
+    $result = array('response'=>$response);
+
     JsonView::render($result);
 });
 

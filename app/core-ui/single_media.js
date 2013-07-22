@@ -184,7 +184,9 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     },
 
     serialize: function() {
-      var url = this.mediaModel.has('name') ? app.RESOURCES_URL + 'thumbnail/' + this.mediaModel.get('name') : null;
+      var url = this.mediaModel.has('name') ?
+        app.makeMediaUrl(this.mediaModel, true) :
+        null;
       var data = {
         name: this.options.name,
         url: url,
@@ -211,9 +213,8 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
 
   Module.list = function(options) {
     if (options.value !== undefined && options.value.has('name')) {
-      var url = app.RESOURCES_URL + 'thumbnail/' + options.value.get('name');
+      var url = app.makeMediaUrl(options.value, true);
       var orientation = (parseInt(options.value.get('width'),10) > parseInt(options.value.get('height'),10)) ? 'landscape' : 'portrait';
-
       return '<img src="'+url+'" class="'+orientation+' directus-thumbnail"/>';
     } else {
       return 'No file';

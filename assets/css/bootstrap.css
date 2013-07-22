@@ -4,7 +4,6 @@
 .glyphicon-search:before                  { content: "\e003"; }
 .glyphicon-envelope:before                { content: "\2709"; }
 .glyphicon-heart:before                   { content: "\e005"; }
-.glyphicon-star:before                    { content: "\e006"; }
 .glyphicon-star-empty:before              { content: "\e007"; }
 .glyphicon-user:before                    { content: "\e008"; }
 .glyphicon-film:before                    { content: "\e009"; }
@@ -2157,6 +2156,9 @@ table th[class*="span"],
 .directus-glyphicon-mix:before {
   content: "\e188";
 }
+.directus-glyphicon-arrow-left:before {
+  content: "\e211";
+}
 .directus-glyphicon-arrow-right:before {
   content: "\e212";
 }
@@ -2165,6 +2167,36 @@ table th[class*="span"],
 }
 .directus-glyphicon-parents:before {
   content: "\e025";
+}
+.directus-glyphicon-star:before {
+  content: "\e050";
+}
+.directus-glyphicon-phone:before {
+  content: "\e421";
+}
+.directus-glyphicon-calendar:before {
+  content: "\1F4C5";
+}
+.directus-glyphicon-cart:before {
+  content: "\e203";
+}
+.directus-glyphicon-cart:before {
+  content: "\e203";
+}
+.directus-glyphicon-time:before {
+  content: "\e055";
+}
+.directus-glyphicon-random:before {
+  content: "\e084";
+}
+.directus-glyphicon-comments:before {
+  content: "\e310";
+}
+.directus-glyphicon-lock:before {
+  content: "\1F512";
+}
+.directus-glyphicon-unlock:before {
+  content: "\e205";
 }
 .glyphicon-plus:before {
   content: "\002b";
@@ -2175,7 +2207,6 @@ table th[class*="span"],
 .glyphicon-search:before                  { content: "\e003"; }
 .glyphicon-envelope:before                { content: "\2709"; }
 .glyphicon-heart:before                   { content: "\e005"; }
-.glyphicon-star:before                    { content: "\e006"; }
 .glyphicon-star-empty:before              { content: "\e007"; }
 .glyphicon-user:before                    { content: "\e008"; }
 .glyphicon-film:before                    { content: "\e009"; }
@@ -6592,10 +6623,10 @@ a:hover {
   vertical-align: middle;
 }
 #directus_columns th.field-field {
-  width: 120px;
+  width: 130px;
 }
 #directus_columns th.field-input_type {
-  width: 210px;
+  width: 220px;
 }
 #directus_columns th.field-hidden,
 #directus_columns th.field-required,
@@ -6908,13 +6939,15 @@ table#directus_activity col.col-datetime {
   color: #8bc53f;
   margin-left: 20px;
 }
-#alert {
+#alert,
+.alert-xl {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
   text-align: center;
   width: 140px;
   font-size: 26px;
+  line-height: 35px;
   font-family: Arvo, "Times New Roman", Times, serif;
   background-color: rgba(28, 28, 28, 0.7);
   padding: 30px 30px;
@@ -6924,10 +6957,40 @@ table#directus_activity col.col-datetime {
   left: 50%;
   margin-left: -130px;
 }
-#alert span {
+#alert span,
+.alert-xl span {
   display: block;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   font-size: 30px;
+}
+.alert-xl {
+  width: 340px;
+  margin-left: -170px;
+}
+.alert-xl .buttons {
+  text-align: center;
+  display: block;
+  margin-top: 20px;
+}
+.alert-xl button {
+  margin: 10px;
+}
+.alert-xl textarea {
+  font-family: monaco, courier;
+  font-size: 9px;
+  background-color: #1c1c1c;
+  border: 0;
+  width: 320px;
+  height: 100px;
+  margin-top: 20px;
+}
+.blocker {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  z-index: 1500;
 }
 .directus-module {
   text-shadow: 0 1px 0 #ffffff;
@@ -7703,6 +7766,1087 @@ header {
 }
 .customers_table .payment_options input {
   margin-right: 4px;
+}
+#booker-container {
+  border-top: 1px solid #ededed;
+  padding-top: 19px;
+}
+.row-fluid.cash-register-container {
+  position: relative;
+}
+.booking-visibility-state {
+  position: relative;
+  display: inline-block;
+  width: 21px;
+  height: 26px;
+  background: url('../../extensions/booker/assets/images/booking-lock-unlock.png') no-repeat;
+  top: 4px;
+  left: 6px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+.booking-visibility-state:hover {
+  opacity: 1;
+}
+.booking-visibility-state.locked {
+  background-position: 0 bottom;
+}
+#sidebar-left.extension-booker {
+  float: left;
+  width: 160px;
+  padding-top: 8px;
+}
+#sidebar-left.extension-booker select {
+  width: auto;
+  height: auto;
+  padding: 0;
+}
+#sidebar-left.extension-booker .schedule-today {
+  margin-top: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ededed;
+}
+#sidebar-left.extension-booker .schedule-today-date {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8bc53f;
+}
+#sidebar-left.extension-booker .schedule-today-date span {
+  color: #8f8f8f;
+}
+#sidebar-left.extension-booker .schedule-today-times {
+  padding-top: 6px;
+}
+#sidebar-left.extension-booker .schedule-today-times span {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+#sidebar-left.extension-booker .schedule-today-times span:hover {
+  color: #1c1c1c;
+}
+#sidebar-left.extension-booker .schedule-today-times span.selected {
+  font-weight: bold;
+}
+#sidebar-left.extension-booker .schedule-today-times span.day-full:before {
+  position: absolute;
+  content: url('../../extensions/booker/assets/images/day-full.png');
+  left: -14px;
+}
+#sidebar-left.extension-booker .schedule-today-times span.day-half:before {
+  position: absolute;
+  content: url('../../extensions/booker/assets/images/day-half.png');
+  left: -14px;
+}
+#sidebar-left.extension-booker .schedule-today-times .times-divider {
+  position: relative;
+  border-bottom: 1px solid #ededed;
+  padding-top: 6px;
+  margin-bottom: 6px;
+}
+#sidebar-left.extension-booker .week-navigator {
+  position: relative;
+  margin-top: 12px;
+  height: 16px;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8bc53f;
+}
+#sidebar-left.extension-booker .week-navigator span {
+  color: #8f8f8f;
+}
+#sidebar-left.extension-booker .week-navigator .left-arrow,
+#sidebar-left.extension-booker .week-navigator .right-arrow,
+#sidebar-left.extension-booker .week-navigator .which-week {
+  position: absolute;
+  top: 0;
+}
+#sidebar-left.extension-booker .week-navigator .which-week {
+  left: 0;
+  line-height: 1;
+}
+#sidebar-left.extension-booker .week-navigator .left-arrow {
+  left: 0;
+  height: 100%;
+  width: 16px;
+  font-family: 'Directus Glyphicons';
+  color: #8bc53f;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 0.5;
+  cursor: pointer;
+}
+#sidebar-left.extension-booker .week-navigator .left-arrow:hover {
+  color: #70a130;
+}
+#sidebar-left.extension-booker .week-navigator .right-arrow {
+  right: 0;
+  height: 100%;
+  width: 16px;
+  font-family: 'Directus Glyphicons';
+  color: #8bc53f;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 0.5;
+  cursor: pointer;
+}
+#sidebar-left.extension-booker .week-navigator .right-arrow:hover {
+  color: #70a130;
+}
+#sidebar-left.extension-booker .week-navigator .which-week {
+  width: 100%;
+  text-align: center;
+}
+#sidebar-left.extension-booker .schedule-other-weeks {
+  position: relative;
+  margin-top: 10px;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8bc53f;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day span {
+  color: #8f8f8f;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day-times {
+  padding-top: 6px;
+  padding-bottom: 10px;
+  display: none;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day-times span {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day-times span:hover {
+  color: #1c1c1c;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day-times span.selected {
+  font-weight: bold;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day-times span.day-full:before {
+  position: absolute;
+  content: url('../../extensions/booker/assets/images/day-full.png');
+  left: -14px;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day-times span.day-half:before {
+  position: absolute;
+  content: url('../../extensions/booker/assets/images/day-half.png');
+  left: -14px;
+}
+#sidebar-left.extension-booker .schedule-other-weeks .schedule-other-day-times .times-divider {
+  position: relative;
+  border-bottom: 1px solid #ededed;
+  padding-top: 6px;
+  margin-bottom: 6px;
+}
+#sidebar.extension-booker {
+  padding-top: 8px;
+  width: 170px;
+  /* .member-name */
+  /* .member-name */
+  /* .member-name */
+  /* .member-name */
+}
+#sidebar.extension-booker select {
+  width: auto;
+  height: auto;
+  padding: 0;
+}
+#sidebar.extension-booker .members-lists {
+  margin-top: 20px;
+}
+#sidebar.extension-booker .members-title {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8bc53f;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+#sidebar.extension-booker .members-list {
+  display: none;
+  padding-top: 3px;
+  padding-bottom: 6px;
+}
+#sidebar.extension-booker .members-list.active {
+  display: block;
+}
+#sidebar.extension-booker .members-list.soul-activity {
+  position: relative;
+  overflow-x: hidden;
+  background-color: #ffffff;
+  border-radius: 2px;
+}
+#sidebar.extension-booker .members-list.soul-activity:hover {
+  -webkit-box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.15);
+}
+#sidebar.extension-booker .members-list.soul-activity .members-single {
+  display: inline-block;
+  white-space: nowrap;
+}
+#sidebar.extension-booker .members-list.soul-activity .members-single:hover {
+  color: #8bc53f;
+}
+#sidebar.extension-booker .members-single {
+  position: relative;
+  display: block;
+}
+#sidebar.extension-booker .member-name {
+  position: relative;
+  padding: 0 3px;
+  cursor: pointer;
+}
+#sidebar.extension-booker .member-name:hover {
+  color: #020202;
+}
+#sidebar.extension-booker .member-name:hover .member-options {
+  display: inline-block;
+}
+#sidebar.extension-booker .member-name.active {
+  background-color: #FFF100;
+}
+#sidebar.extension-booker .member-name.active:hover {
+  color: #8f8f8f;
+}
+#sidebar.extension-booker .member-options {
+  position: absolute;
+  left: 101%;
+  width: 80px;
+  height: 100%;
+  display: none;
+}
+#sidebar.extension-booker .member-edit {
+  position: absolute;
+  left: 3px;
+  height: 16px;
+  color: #8bc53f;
+  font-size: 0.95em;
+}
+#sidebar.extension-booker .member-edit:hover {
+  -webkit-transform: scale(1.3);
+}
+#sidebar.extension-booker .member-classes {
+  position: absolute;
+  left: 20px;
+  height: 16px;
+  color: #26A9E0;
+}
+#sidebar.extension-booker .member-classes:hover {
+  -webkit-transform: scale(1.3);
+}
+#sidebar.extension-booker .member-remove {
+  position: absolute;
+  left: 37px;
+  height: 16px;
+  color: #eb2a49;
+  font-size: 1.1em;
+}
+#sidebar.extension-booker .member-remove:hover {
+  -webkit-transform: scale(1.3);
+}
+#sidebar.extension-booker .member-star,
+#sidebar.extension-booker .member-call {
+  position: relative;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  color: #e0e0e0;
+  cursor: pointer;
+}
+#sidebar.extension-booker .member-star:hover,
+#sidebar.extension-booker .member-call:hover {
+  color: #bababa;
+}
+#sidebar.extension-booker .member-star:last-child,
+#sidebar.extension-booker .member-call:last-child {
+  margin-right: 1px;
+}
+#sidebar.extension-booker .member-star.active {
+  color: #fdc030;
+}
+#sidebar.extension-booker .member-call.active {
+  color: #7e4295;
+}
+.booking-seat-options {
+  position: relative;
+  margin-left: 180px;
+  margin-right: 190px;
+}
+/* .booking-seat-options */.options-bar {
+  font-size: 24px;
+  height: 28px;
+  margin-bottom: 20px;
+  /* input */
+}
+.options-bar .find-customers {
+  float: left;
+  width: 185px;
+  background-image: url('../img/magnifying-glass.png');
+  background-repeat: no-repeat;
+  background-position: 180px 6px;
+  margin-right: 25px;
+}
+.options-bar span {
+  display: inline-block;
+  float: left;
+  margin-right: 12px;
+  color: #8bc53f;
+  cursor: pointer;
+}
+.options-bar span span {
+  float: none;
+  color: #8f8f8f;
+  cursor: auto;
+}
+.options-bar span.customer-name {
+  font-family: Arvo, "Times New Roman", Times, serif;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 1.7;
+  margin-left: 6px;
+  cursor: auto;
+}
+/* .booking-seat-options */.booking-session-seats {
+  border: 1px solid #ececec;
+  padding: 20px 0 10px;
+}
+.booking-session-seats .seats {
+  margin: 0 auto;
+  position: relative;
+}
+.booking-session-seats .seats.cols-5 {
+  width: 284px;
+}
+.booking-session-seats .seats.cols-6 {
+  width: 344px;
+}
+.booking-session-seats .seats.cols-7 {
+  width: 404px;
+}
+.booking-session-seats .seats.cols-8 {
+  width: 464px;
+}
+.booking-session-seats .seats.cols-9 {
+  width: 524px;
+}
+.booking-session-seats .seats.cols-10 {
+  width: 584px;
+}
+.booking-session-seats .seats.cols-11 {
+  width: 644px;
+}
+.booking-session-seats .seats.cols-12 {
+  width: 704px;
+}
+.booking-session-seats .seats.cols-13 {
+  width: 764px;
+}
+.booking-session-seats .seats.cols-14 {
+  width: 884px;
+}
+.booking-session-seats .seats.cols-15 {
+  width: 884px;
+}
+.booking-session-seats .seats.cols-16 {
+  width: 944px;
+}
+.booking-session-seats .seats.cols-17 {
+  width: 1004px;
+}
+.booking-session-seats .seats.cols-18 {
+  width: 1064px;
+}
+.booking-session-seats .seats.cols-19 {
+  width: 1124px;
+}
+.booking-session-seats .seats.cols-20 {
+  width: 1184px;
+}
+.booking-session-seats .seats.cols-21 {
+  width: 1244px;
+}
+.booking-session-seats .seats.cols-22 {
+  width: 1304px;
+}
+.booking-session-seats .seats.cols-23 {
+  width: 1364px;
+}
+.booking-session-seats .seats.cols-24 {
+  width: 1424px;
+}
+.booking-session-seats .seats.cols-25 {
+  width: 1484px;
+}
+.booking-session-seats .seats.rows-4 {
+  height: 280px;
+}
+.booking-session-seats .seats.rows-5 {
+  height: 354px;
+}
+.booking-session-seats .seats.rows-6 {
+  height: 428px;
+}
+.booking-session-seats .seats.rows-7 {
+  height: 502px;
+}
+.booking-session-seats .seats.rows-8 {
+  height: 576px;
+}
+.booking-session-seats .seats.rows-9 {
+  height: 650px;
+}
+.booking-session-seats .seats.rows-10 {
+  height: 724px;
+}
+.booking-session-seats .seats.rows-11 {
+  height: 798px;
+}
+.booking-session-seats .seats.rows-12 {
+  height: 872px;
+}
+.booking-session-seats .seats.rows-13 {
+  height: 946px;
+}
+.booking-session-seats .seats.rows-14 {
+  height: 1020px;
+}
+.booking-session-seats .seats.rows-15 {
+  height: 1094px;
+}
+.booking-session-seats .seats.rows-16 {
+  height: 1168px;
+}
+.booking-session-seats .seats.rows-17 {
+  height: 1242px;
+}
+.booking-session-seats .seats.rows-18 {
+  height: 1316px;
+}
+.booking-session-seats .seat {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 100px;
+  line-height: 3.7;
+  text-align: center;
+  font-size: 1em;
+  font-weight: 600;
+  opacity: 0;
+  cursor: pointer;
+  background-color: #FFF;
+  color: #1c1c1c;
+  /* .customer-actions */
+  /* .customer-actions */
+  /* .customer-actions */
+  /* .customer-actions */
+  /* .customer-actions */
+}
+.booking-session-seats .seat .customer-name,
+.booking-session-seats .seat .customer-actions {
+  position: absolute;
+  bottom: -17px;
+  left: 50%;
+  width: 60px;
+  height: 12px;
+  margin-left: -30px;
+  padding-top: 7px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #8f8f8f;
+  font-weight: 400;
+}
+.booking-session-seats .seat.reserved .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-session-seats .seat.reserved:hover .customer-NAME {
+  display: none;
+}
+.booking-session-seats .seat.reserved:hover .customer-actions {
+  display: block;
+}
+.booking-session-seats .seat .customer-remove,
+.booking-session-seats .seat .customer-switch,
+.booking-session-seats .seat .customer-hold,
+.booking-session-seats .seat .customer-note {
+  position: absolute;
+  height: 16px;
+  font-size: 0.95em;
+  cursor: pointer;
+}
+.booking-session-seats .seat .customer-remove:hover,
+.booking-session-seats .seat .customer-switch:hover,
+.booking-session-seats .seat .customer-hold:hover,
+.booking-session-seats .seat .customer-note:hover {
+  -webkit-transform: scale(1.3);
+}
+.booking-session-seats .seat .customer-remove {
+  left: 0px;
+  color: #eb2a49;
+}
+.booking-session-seats .seat .customer-switch {
+  left: 14px;
+  color: #8bc53f;
+}
+.booking-session-seats .seat .customer-hold {
+  left: 30px;
+  color: #FFC10B;
+}
+.booking-session-seats .seat .customer-note {
+  left: 46px;
+  color: #26A9E0;
+}
+.booking-session-seats .seat.held {
+  background-color: #F9F9F9;
+  color: #ADB0B3;
+  border: 1px solid #F9F9F9;
+}
+.booking-session-seats .seat.held:hover {
+  border: 1px solid #ededed;
+}
+.booking-session-seats .seat.available {
+  border: 1px solid #8f8f8f;
+}
+.booking-session-seats .seat.available:hover {
+  background-color: #8bc53f;
+}
+.booking-session-seats .seat.reserved {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+}
+.booking-session-seats .seat.note,
+.booking-session-seats .seat.vip,
+.booking-session-seats .seat.supersoul,
+.booking-session-seats .seat.firstride,
+.booking-session-seats .seat.hundredrides,
+.booking-session-seats .seat.birthday,
+.booking-session-seats .seat.staff {
+  background: url('../../extensions/booker/assets/images/seat-states.png') no-repeat;
+  background-position-y: 2px;
+}
+.booking-session-seats .seat.note {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: 3px;
+}
+.booking-session-seats .seat.note .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-session-seats .seat.note:hover .customer-NAME {
+  display: none;
+}
+.booking-session-seats .seat.note:hover .customer-actions {
+  display: block;
+}
+.booking-session-seats .seat.vip {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -96px;
+}
+.booking-session-seats .seat.vip .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-session-seats .seat.vip:hover .customer-NAME {
+  display: none;
+}
+.booking-session-seats .seat.vip:hover .customer-actions {
+  display: block;
+}
+.booking-session-seats .seat.supersoul {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -197px;
+}
+.booking-session-seats .seat.supersoul .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-session-seats .seat.supersoul:hover .customer-NAME {
+  display: none;
+}
+.booking-session-seats .seat.supersoul:hover .customer-actions {
+  display: block;
+}
+.booking-session-seats .seat.firstride {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -292px;
+}
+.booking-session-seats .seat.firstride .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-session-seats .seat.firstride:hover .customer-NAME {
+  display: none;
+}
+.booking-session-seats .seat.firstride:hover .customer-actions {
+  display: block;
+}
+.booking-session-seats .seat.hundredrides {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -385px;
+}
+.booking-session-seats .seat.hundredrides .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-session-seats .seat.hundredrides:hover .customer-NAME {
+  display: none;
+}
+.booking-session-seats .seat.hundredrides:hover .customer-actions {
+  display: block;
+}
+.booking-session-seats .seat.birthday {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -479px;
+}
+.booking-session-seats .seat.birthday .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-session-seats .seat.birthday:hover .customer-NAME {
+  display: none;
+}
+.booking-session-seats .seat.birthday:hover .customer-actions {
+  display: block;
+}
+.booking-session-seats .seat.staff {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -573px;
+}
+.booking-session-seats .seat.staff .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-session-seats .seat.staff:hover .customer-NAME {
+  display: none;
+}
+.booking-session-seats .seat.staff:hover .customer-actions {
+  display: block;
+}
+.booking-session-seats .seat.fan {
+  background: url('../../extensions/booker/assets/images/booking-fan.png') no-repeat center center;
+  text-indent: -9999px;
+  cursor: default;
+}
+.booking-session-seats .instructor {
+  position: absolute;
+  left: 50%;
+  top: -13px;
+  margin-left: -45px;
+  width: 131px;
+}
+.booking-session-seats .instructor img {
+  display: block;
+  position: relative;
+  border: 1px solid #C9CBCB;
+  border-radius: 100px;
+  overflow: hidden;
+}
+.booking-session-seats .instructor .name {
+  position: relative;
+  display: block;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+/* .booking-seat-options */.booking-extra-seats {
+  position: relative;
+  background-color: #f4f4f4;
+  border: 1px solid #ECECEC;
+  border-top-width: 0;
+  *zoom: 1;
+  overflow: hidden;
+  height: 25px;
+  -webkit-box-sizing: border-box;
+}
+.booking-extra-seats:before,
+.booking-extra-seats:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.booking-extra-seats:after {
+  clear: both;
+}
+.booking-extra-seats.active {
+  padding: 20px 22px 35px;
+  height: auto;
+}
+.booking-extra-seats.active .seat {
+  opacity: 1;
+  visibility: visible;
+}
+.booking-extra-seats .extra-seats-toggle {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+}
+.booking-extra-seats .seat {
+  opacity: 0;
+  visibility: hidden;
+  position: relative;
+  float: left;
+  margin-right: 15px;
+  width: 42px;
+  height: 42px;
+  border-radius: 100px;
+  line-height: 3.7;
+  text-align: center;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: #FFF;
+  color: #1c1c1c;
+  /* .customer-actions */
+  /* .customer-actions */
+  /* .customer-actions */
+  /* .customer-actions */
+  /* .customer-actions */
+}
+.booking-extra-seats .seat .customer-name,
+.booking-extra-seats .seat .customer-actions {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  width: 60px;
+  height: 12px;
+  margin-left: -30px;
+  padding-top: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #8f8f8f;
+  font-weight: 400;
+}
+.booking-extra-seats .seat.reserved .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-extra-seats .seat.reserved:hover .customer-NAME {
+  display: none;
+}
+.booking-extra-seats .seat.reserved:hover .customer-actions {
+  display: block;
+}
+.booking-extra-seats .seat .customer-remove,
+.booking-extra-seats .seat .customer-switch,
+.booking-extra-seats .seat .customer-hold,
+.booking-extra-seats .seat .customer-note {
+  position: absolute;
+  height: 16px;
+  font-size: 0.95em;
+  cursor: pointer;
+}
+.booking-extra-seats .seat .customer-remove:hover,
+.booking-extra-seats .seat .customer-switch:hover,
+.booking-extra-seats .seat .customer-hold:hover,
+.booking-extra-seats .seat .customer-note:hover {
+  -webkit-transform: scale(1.3);
+}
+.booking-extra-seats .seat .customer-remove {
+  left: 0px;
+  color: #eb2a49;
+}
+.booking-extra-seats .seat .customer-switch {
+  left: 14px;
+  color: #8bc53f;
+}
+.booking-extra-seats .seat .customer-hold {
+  left: 30px;
+  color: #FFC10B;
+}
+.booking-extra-seats .seat .customer-note {
+  left: 46px;
+  color: #26A9E0;
+}
+.booking-extra-seats .seat.held {
+  background-color: #F9F9F9;
+  color: #ADB0B3;
+  border: 1px solid #F9F9F9;
+}
+.booking-extra-seats .seat.held:hover {
+  border: 1px solid #ededed;
+}
+.booking-extra-seats .seat.available {
+  border: 1px solid #8f8f8f;
+}
+.booking-extra-seats .seat.available:hover {
+  background-color: #8bc53f;
+}
+.booking-extra-seats .seat.reserved {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+}
+.booking-extra-seats .seat.note,
+.booking-extra-seats .seat.vip,
+.booking-extra-seats .seat.supersoul,
+.booking-extra-seats .seat.firstride,
+.booking-extra-seats .seat.hundredrides,
+.booking-extra-seats .seat.birthday,
+.booking-extra-seats .seat.staff {
+  background: url('../../extensions/booker/assets/images/seat-states.png') no-repeat;
+  background-position-y: 2px;
+}
+.booking-extra-seats .seat.note {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: 3px;
+}
+.booking-extra-seats .seat.note .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-extra-seats .seat.note:hover .customer-NAME {
+  display: none;
+}
+.booking-extra-seats .seat.note:hover .customer-actions {
+  display: block;
+}
+.booking-extra-seats .seat.vip {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -96px;
+}
+.booking-extra-seats .seat.vip .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-extra-seats .seat.vip:hover .customer-NAME {
+  display: none;
+}
+.booking-extra-seats .seat.vip:hover .customer-actions {
+  display: block;
+}
+.booking-extra-seats .seat.supersoul {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -197px;
+}
+.booking-extra-seats .seat.supersoul .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-extra-seats .seat.supersoul:hover .customer-NAME {
+  display: none;
+}
+.booking-extra-seats .seat.supersoul:hover .customer-actions {
+  display: block;
+}
+.booking-extra-seats .seat.firstride {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -292px;
+}
+.booking-extra-seats .seat.firstride .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-extra-seats .seat.firstride:hover .customer-NAME {
+  display: none;
+}
+.booking-extra-seats .seat.firstride:hover .customer-actions {
+  display: block;
+}
+.booking-extra-seats .seat.hundredrides {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -385px;
+}
+.booking-extra-seats .seat.hundredrides .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-extra-seats .seat.hundredrides:hover .customer-NAME {
+  display: none;
+}
+.booking-extra-seats .seat.hundredrides:hover .customer-actions {
+  display: block;
+}
+.booking-extra-seats .seat.birthday {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -479px;
+}
+.booking-extra-seats .seat.birthday .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-extra-seats .seat.birthday:hover .customer-NAME {
+  display: none;
+}
+.booking-extra-seats .seat.birthday:hover .customer-actions {
+  display: block;
+}
+.booking-extra-seats .seat.staff {
+  background-color: #8bc53f;
+  border: 1px solid #8bc53f;
+  background-position-x: -573px;
+}
+.booking-extra-seats .seat.staff .customer-actions {
+  display: none;
+  bottom: 0;
+}
+.booking-extra-seats .seat.staff:hover .customer-NAME {
+  display: none;
+}
+.booking-extra-seats .seat.staff:hover .customer-actions {
+  display: block;
+}
+.booking-extra-seats .seat.fan {
+  background: url('../../extensions/booker/assets/images/booking-fan.png') no-repeat center center;
+  text-indent: -9999px;
+  cursor: default;
+}
+/* .booking-seat-options */.booking-seat-guide {
+  position: relative;
+  padding: 20px 0;
+  *zoom: 1;
+}
+.booking-seat-guide:before,
+.booking-seat-guide:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.booking-seat-guide:after {
+  clear: both;
+}
+.booking-seat-guide .seat-guide-item {
+  position: relative;
+  float: left;
+  width: 42px;
+  height: 42px;
+  border-radius: 100px;
+  line-height: 3.7;
+  text-align: center;
+  font-size: 1em;
+  font-weight: 600;
+  background-color: #ECECEC;
+  margin-right: 30px;
+}
+.booking-seat-guide .seat-guide-item .seat-guide-title {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  width: 60px;
+  height: 12px;
+  margin-left: -30px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #8f8f8f;
+  font-weight: 400;
+}
+.booking-seat-guide .seat-guide-item.note,
+.booking-seat-guide .seat-guide-item.vip,
+.booking-seat-guide .seat-guide-item.supersoul,
+.booking-seat-guide .seat-guide-item.firstride,
+.booking-seat-guide .seat-guide-item.hundredrides,
+.booking-seat-guide .seat-guide-item.birthday,
+.booking-seat-guide .seat-guide-item.staff {
+  background-image: url('../../extensions/booker/assets/images/seat-states.png');
+  background-repeat: no-repeat;
+  background-position-y: -50px;
+}
+.booking-seat-guide .seat-guide-item.note {
+  background-position-x: 3px;
+}
+.booking-seat-guide .seat-guide-item.vip {
+  background-position-x: -96px;
+}
+.booking-seat-guide .seat-guide-item.supersoul {
+  background-position-x: -197px;
+}
+.booking-seat-guide .seat-guide-item.firstride {
+  background-position-x: -292px;
+}
+.booking-seat-guide .seat-guide-item.hundredrides {
+  background-position-x: -385px;
+}
+.booking-seat-guide .seat-guide-item.birthday {
+  background-position-x: -479px;
+}
+.booking-seat-guide .seat-guide-item.staff {
+  background-position-x: -573px;
+}
+.booker-input-modal {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1040;
+  background-color: rgba(0, 0, 0, 0.8);
+  top: 0;
+  left: 0;
+}
+.booker-input-modal.active {
+  display: block;
+}
+.booker-input-modal .btn-primary {
+  position: absolute;
+  right: 0;
+  bottom: -48px;
+  bottom: 0;
+}
+.booker-input-content {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  width: 444px;
+  height: 202px;
+  margin-left: -222px;
+  font-size: 14px;
+  *zoom: 1;
+}
+.booker-input-content:before,
+.booker-input-content:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.booker-input-content:after {
+  clear: both;
+}
+.booker-input-presets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+.booker-input-presets li {
+  color: #ffffff;
+  cursor: pointer;
+  padding-left: 7px;
+}
+.booker-input-presets li:hover {
+  color: #8bc53f;
+}
+.booker-input-notebox {
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  height: 83px;
+}
+.booker-input-notebox::-webkit-input-placeholder {
+  color: #8f8f8f;
+}
+.customers_table .directus-module-section {
+  position: relative;
 }
 .activity-module {
   background-color: #F4F4F4;

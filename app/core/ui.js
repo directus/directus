@@ -35,7 +35,7 @@ function(textinput) {
   var Component = function(options) {
     this.model = options.model;
     this.collection = options.collection || this.model.collection;
-    this.structure = options.structure || this.collection.structure;
+    this.structure = options.structure || this.structure;
   };
 
   _.extend(Component.prototype, {
@@ -50,7 +50,7 @@ function(textinput) {
         schema: schema,
         name: attr,
         value: this.model.get(attr),
-        canWrite: this.model.canEdit(attr)
+        canWrite: _.has(this.model, 'canEdit') ? this.model.canEdit(attr) : true
       });
       return view;
     }
@@ -62,7 +62,7 @@ function(textinput) {
   // It's also AB-FAB for templates!
   ui.getList = function(model, attr) {
     var collection = model.collection;
-    var structure = model.collection.structure;
+    var structure = model.getStructure();
     var schema = structure.get(attr);
     var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
 
@@ -78,7 +78,7 @@ function(textinput) {
 
   ui.validate = function(model, attr, value) {
     var collection = model.collection;
-    var structure = model.collection.structure;
+    var structure = model.getStructure();
     var schema = structure.get(attr);
     var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
 

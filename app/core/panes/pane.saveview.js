@@ -19,7 +19,7 @@ function(Backbone, app) {
         isInactive: (this.model.get('active') === 2 || (isNew && inactiveByDefault)),
         isDeleted: (this.model.get('active') === 0),
         showDelete: !this.options.single && (this.model.get('active') !== 0) && (this.model.id !== undefined) && this.model.canDelete(),
-        showActive: !this.options.single && this.model.collection.structure.get('active') !== undefined,
+        showActive: !this.options.single && this.model.getStructure().get('active') !== undefined,
         showDropdown: !this.options.single,
         showSaveAsCopy: !this.model.isNew(),
         canEdit: this.model.canEdit()

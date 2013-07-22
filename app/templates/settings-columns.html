@@ -14,7 +14,7 @@
   {{#rows}}
   <tr class="{{#if alias}}alias{{/if}}{{#if system}}system{{/if}}" data-id="{{id}}">
     <td class="sort">{{#unless system}}<span class="glyphicon-show-lines"></span>{{/unless}}</td>
-    <td title="{{this.type}}">{{{capitalize id}}}</td>
+    <td><span title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
     {{#if system}}
     <td colspan="5"><em>This is a system field</em></td>
     {{else}}
@@ -24,7 +24,10 @@
         <option {{#if isActive}}selected{{/if}} value="{{id}}">{{{capitalize id}}}</option>
         {{/types}}
       </select>
-      {{#if uiHasVariables}}<button class="glyphicon-settings btn btn-link" type="button" data-action="ui" data-id="{{id}}"></button>{{/if}}
+      {{#if uiHasVariables}}
+        <button class="glyphicon-settings btn btn-link" type="button" data-action="ui" data-id="{{id}}"></button>
+        {{#unless valid}}<span style="color:#EB2A49; font-weight:bold; font-style:normal">!</span>{{/unless}}
+      {{/if}}
     </td>
     <td>
         <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}">

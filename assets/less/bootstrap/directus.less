@@ -547,8 +547,8 @@ a:hover {text-decoration:none;}
 #directus_columns {
   .alias {font-style: italic; color:@directusPrimary;}
   td {cursor: default; height:37px; vertical-align:middle;}
-  th.field-field {width:120px;}
-  th.field-input_type {width: 210px;}
+  th.field-field {width:130px;}
+  th.field-input_type {width: 220px;}
   th.field-hidden,
   th.field-required,
   th.field-master {width: 50px;}
@@ -830,11 +830,13 @@ table#directus_activity col.col-datetime { width: 140px; }
 // ALERTS
 // ----------------------------
 
-#alert {
-  span {display:block; margin-bottom:30px; font-size:30px; }
+#alert,.alert-xl {
+  span {display:block; margin-bottom:10px; font-size:30px; }
   .border-radius(@baseBorderRadius);
-  text-align:center; width:140px;
+  text-align:center;
+  width:140px;
   font-size:26px;
+  line-height:35px;
   font-family:@serifFontFamily;
   background-color:rgba(28,28,28,0.7);
   padding:30px 30px;
@@ -843,6 +845,37 @@ table#directus_activity col.col-datetime { width: 140px; }
   top:30%;
   left:50%;
   margin-left:-130px;
+}
+
+.alert-xl {
+  width: 340px;
+  margin-left:-170px;
+  .buttons {
+    text-align: center;
+    display: block;
+    margin-top:20px;
+  }
+  button {
+    margin:10px;
+  }
+  textarea {
+    font-family: monaco, courier;
+    font-size:9px;
+    background-color:@grayDarker;
+    border:0;
+    width: 320px;
+    height: 100px;
+    margin-top:20px;
+  }
+}
+
+.blocker {
+  position:fixed;
+  top:0px;
+  left:0px;
+  bottom:0px;
+  right:0px;
+  z-index:1500;
 }
 
 // DIRECTUS MODULE
