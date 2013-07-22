@@ -24,12 +24,12 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         // Fetch row
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-
         $result = array();
         foreach($rowset as $row) {
             $collection = $row['collection'];
-            if(!array_key_exists($collection, $result))
+            if(!array_key_exists($collection, $result)) {
                 $result[$collection] = array();
+            }
             $result[$collection][$row['name']] = $row['value'];
         }
         return $result;
@@ -41,10 +41,11 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         $rowset = $this->selectWith($select)->toArray();
         $result = array();
         foreach($rowset as $row) {
-            $result[$row['name']] = $row;
+            $result[$row['name']] = $row['value'];
         }
-        if(count(array_diff($requiredKeys, array_keys($result))))
+        if(count(array_diff($requiredKeys, array_keys($result)))) {
             throw new \Exception("The following keys must be defined in the `$collection` settings collection: " . implode(", ", $requiredKeys));
+        }
         return $result;
     }
 
@@ -57,8 +58,9 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
                 ->equalTo('name', $name);
         $rowset = $this->selectWith($select);
         $result = $rowset->current();
-        if(false === $result)
+        if(false === $result) {
             throw new \Exception("Required `directus_setting` with collection `$collection` and name `$name` not found.");
+        }
         return $result;
     }
 

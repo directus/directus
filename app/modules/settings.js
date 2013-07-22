@@ -24,19 +24,6 @@ function(app, Backbone, ui, Directus, Tables, Global, About, Permissions, System
 
   var Settings = app.module();
 
-  Settings.GlobalStructure = new Directus.CollectionColumns([
-    {id: 'site_name', ui: 'textinput', char_length: 255},
-    {id: 'site_url', ui: 'textinput', char_length: 255},
-    {id: 'cms_color', ui: 'select', options: { options: [{title: 'Green', value: 'green'}]}},
-    {id: 'cms_user_auto_sign_out', ui: 'numeric', char_length: 255, options: {size: 'small'}}
-  ], {parse: true});
-
-  Settings.MediaStructure = new Directus.CollectionColumns([
-    {id: 'media_naming', ui: 'select', char_length: 255, options:{ options: [{title: 'Original', value: 'original'}, {title: 'Unique', value: 'unique'}] }},
-    {id: 'allowed_thumbnails', ui: 'textinput', char_length: 255},
-    {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small'}}
-  ], {parse: true});
-
   Settings.Global = Global;
   Settings.System = System;
 

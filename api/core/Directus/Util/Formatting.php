@@ -4,6 +4,16 @@ namespace Directus\Util;
 
 class Formatting {
 
+	public static function fileNameToFileTitle($fileName) {
+		$info = pathinfo($fileName);
+        $ext = $info['extension'];
+        $name = basename($fileName,'.'.$ext);
+        $name = strtolower($name);
+        $name = str_replace(array('_','-'),array(' ',' '),$name);
+        $name = ucwords($name);
+        return $name;
+	}
+
 	public static function underscoreToCamelCase($string) {
 	    $filtered = preg_replace("/(_)(.)/e", "strtoupper('\\2')", $string);
 	    $filtered = ucfirst($filtered);

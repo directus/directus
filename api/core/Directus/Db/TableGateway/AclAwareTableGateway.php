@@ -13,6 +13,7 @@ use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
+use Directus\Util\Date;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
@@ -55,14 +56,31 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public static function makeTableGatewayFromTableName($acl, $table, $adapter) {
         $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . "TableGateway";
         $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
-        if(class_exists($tableGatewayClassName))
+        if(class_exists($tableGatewayClassName)) {
             return new $tableGatewayClassName($acl, $adapter);
+        }
         return new self($acl, $table, $adapter);
     }
 
     /**
      * HELPER FUNCTIONS
      */
+    
+    protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
+        foreach($resultSet as &$result) {
+            $result = $this->convertRowDateTimesToTimeZone($result, $targetTimeZone, $fields);
+        }
+        return $resultSet;
+    }
+
+    protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
+        foreach($fields as $field) {
+            $col =& $row[$field];
+            $datetime = Date::convertUtcDateTimeToTimeZone($col, $targetTimeZone);
+            $col = $yieldObjects ? $datetime : $datetime->format("Y-m-d H:i:s T");
+        }
+        return $row;
+    }
     
     public function newRow($table = null, $pk_field_name = null)
     {
@@ -88,10 +106,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         });
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if(false === $row)
+        if(false === $row) {
             return false;
+        }
         $row = $row->toArray();
-        array_walk($row, array($this, 'castFloatIfNumeric'));
+        // Tmp removal note, this breaks things, cannot use:
+        // array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
     }
 
@@ -131,10 +151,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         });
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if(false === $row)
+        if(false === $row) {
             return false;
+        }
         $row = $row->toArray();
-        array_walk($row, array($this, 'castFloatIfNumeric'));
+        // Tmp removal note, this breaks things, cannot use:
+        // array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
     }
 
