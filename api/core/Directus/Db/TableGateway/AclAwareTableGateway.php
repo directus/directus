@@ -110,7 +110,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return false;
         }
         $row = $row->toArray();
-        array_walk($row, array($this, 'castFloatIfNumeric'));
+        // Tmp removal note, this breaks things, cannot use:
+        // array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
     }
 
@@ -154,7 +155,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return false;
         }
         $row = $row->toArray();
-        array_walk($row, array($this, 'castFloatIfNumeric'));
+        // Tmp removal note, this breaks things, cannot use:
+        // array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
     }
 
