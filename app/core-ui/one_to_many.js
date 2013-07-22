@@ -14,7 +14,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
   Module.dataTypes = ['ONETOMANY'];
 
   Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255}
+    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true}
   ];
 
   var template = '<label>{{{capitalize title}}}</label> \
@@ -54,7 +54,8 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     },
 
     editModel: function(model) {
-      var view = new Directus.EditView({model: model});
+      var columnName = this.options.schema.get('junction_key_right');
+      var view = new Directus.EditView({model: model, hiddenFields: [columnName]});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
 
       modal.save = function() {

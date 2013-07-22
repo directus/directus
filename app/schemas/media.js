@@ -29,6 +29,19 @@ define([], function() {
       "required":false
     },
     {
+      "id":"url",
+      "column_name":"url",
+      "type":"VARCHAR",
+      "is_nullable":"YES",
+      "sort":-1,
+      "ui":"directus_media",
+      "system":true,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false
+    },
+    {
       "id":"id",
       "column_name":"id",
       "type":"INT",

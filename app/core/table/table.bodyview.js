@@ -58,13 +58,8 @@ function(app, Backbone) {
           });
 
           switch (booleanOperator) {
-            case '||':
-              return _.contains(tests, true);
-              break;
-            case '&&':
-            default:
-              return _.every(tests,_.identity);
-              break;
+            case '||': return _.contains(tests, true);
+            case '&&': return _.every(tests,_.identity);
           }
 
         });
