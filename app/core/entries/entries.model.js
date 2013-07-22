@@ -44,21 +44,30 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     validate: function(attributes, options) {
       var errors = [];
       var structure = this.getStructure();
-      var isEmptyNaN = function(value) {
-        return _.isNaN(parseInt(value,10)) && _.isEmpty(value);
+      var isNothing = function(value) {
+        return value === undefined || value === null || value === '' || (!app.isNumber(value) && !_.isDate(value) && _.isEmpty(value));
       }
 
       //only validates attributes that are part of the schema
       attributes = _.pick(attributes, structure.pluck('column_name'));
 
       _.each(attributes, function(value, key, list) {
-        //Dont validate ID
+        //Column
+        var column = structure.get(key);
+
+        // Don't validate hidden fields
+        if (column.get('hidden_input')) return;
+
+        //Don't validate ID
         if (key === 'id') return;
 
-        var notNull = structure.get(key).get('is_nullable') === 'NO';
-        var mess = (notNull && isEmptyNaN(value)) ? 'The field cannot be empty' : ui.validate(this, key, value);
+        var notNull = column.get('is_nullable') === 'NO';
+        var mess = (notNull && isNothing(value)) ? 'The field cannot be empty' : ui.validate(this, key, value);
+
+        console.log(key, value, notNull);
 
         if (mess !== undefined) {
+
           errors.push({attr: key, message: mess});
         }
       }, this);

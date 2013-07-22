@@ -51,6 +51,11 @@ function(Handlebars, typetools) {
         });
     },
 
+    // http://stackoverflow.com/a/1830844
+    isNumber: function(n) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    },
+
     makeMediaUrl: function(mediaModel, thumbnail) {
       var storageAdapters = window.directusData.storage_adapters,
         adapterId,
