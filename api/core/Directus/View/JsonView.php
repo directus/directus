@@ -41,7 +41,7 @@ class JsonView {
             $responseData = $preDispatch($responseData);
         }
         $responseData = json_encode($responseData);
-        if(true) { // e.g. 'production' !== DIRECTUS_ENV
+        if('production' !== DIRECTUS_ENV) { // e.g. 'production' !== DIRECTUS_ENV
             $responseData = self::format_json($responseData);
             $responseData .= "\n";
         }
