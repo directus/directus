@@ -31,7 +31,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       page: '',
       extensions: [],
       authenticatedUser: 7,
-      extensions: [],
       groups: {},
       privileges: [],
       ui: [],
@@ -70,7 +69,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         nonce_request_header: "X-Directus-Request-Nonce",
         nonce_response_header: "X-Directus-New-Request-Nonces"
       }
-    }
+    };
 
     // default bootstrap data global storage
     window.directusData = _.defaults(window.directusData, defaultBootstrapData);
