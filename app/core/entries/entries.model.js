@@ -64,8 +64,6 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         var notNull = column.get('is_nullable') === 'NO';
         var mess = (notNull && isNothing(value)) ? 'The field cannot be empty' : ui.validate(this, key, value);
 
-        console.log(key, value, notNull);
-
         if (mess !== undefined) {
 
           errors.push({attr: key, message: mess});
@@ -271,15 +269,14 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     },
 
     getStructure: function() {
-      return this.collection.structure;
+      return this.structure;
     },
 
     getTable: function() {
-      return this.collection.table;
+      return this.table;
     },
 
-    initialize: function() {
-      if (this.collection !== undefined) this.structure = this.collection.structure;
+    initialize: function(data, options) {
       this.on('invalid', function(model, errors) {
         var details = _.map(errors, function(err) { return err.attr+':\n'+err.message; }).join('\n\n');
         details = 'table:\t' + this.getTable().id +
@@ -287,7 +284,18 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
                   '\n-----------------------\n' + details;
         app.trigger('alert:error', 'The data is not valid', details);
       });
+    },
+
+    // we need to do this because initialize is called AFTER parse.
+    constructor: function (data, options) {
+      // inherit structure and table from collection if it exists
+      this.structure = options.collection ? options.collection.structure : options.structure;
+      this.table = options.collection ? options.collection.table : options.table;
+      this.privileges = options.collection ? options.collection.privileges : options.privileges;
+
+      EntriesModel.__super__.constructor.call(this, data, options);
     }
+
   });
 
   return EntriesModel;
