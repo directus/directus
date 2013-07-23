@@ -47,8 +47,14 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
         return $this->selectWith($select);
     }
 
-    public function fetchPostsByFeeds($feeds) {
+    public function fetchPostsByFeeds($feeds, $offset = null, $limit = null) {
         $select = new Select(self::$_tableName);
+        if(!is_null($offset)) {
+            $select->offset($offset);
+        }
+        if(!is_null($limit)) {
+            $select->limit($limit);
+        }
         $select
             ->join('directus_social_feeds', 'directus_social_feeds.id = directus_social_posts.feed', array('feed_type' => 'type'))
             ->order('directus_social_posts.datetime DESC');
