@@ -32,7 +32,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   input.date { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 120px; \
+                    width: 140px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
@@ -89,14 +89,19 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var value = this.value;
-      var data = {value: null, valueDate: null, valueTime: null};
+      var data = {value: null, valueDate: null, valueTime: null, name: this.options.name, note: this.options.schema.get('comment')};
 
       if (value !== undefined) {
 
-        if (!(value instanceof Date)) {
+        // Don't show corrupted dates
+        try {
           value = new Date(value);
+          if (_.isNaN(value.getTime())) {
+            throw Error();
+          }
+        } catch (e) {
+          return data;
         }
-
 
         var date = [
           value.getFullYear(),
@@ -117,7 +122,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         data.value = value.toISOString();
       }
 
-      return _.extend({name: this.options.name, note: this.options.schema.get('comment')}, data);
+      return data;
     },
 
     initialize: function(options) {
