@@ -26,6 +26,55 @@ require([
 
 function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts) {
 
+    var defaultBootstrapData = {
+      path: '/directus/',
+      page: '',
+      extensions: [],
+      authenticatedUser: 7,
+      extensions: [],
+      groups: {},
+      privileges: [],
+      ui: [],
+      active_media: {},
+      users: {},
+      me: {
+        id: 7
+      },
+      settings: {
+        global: {},
+        media: {}
+      },
+      storage_adapters: {},
+      tab_privileges: {},
+      tables: [
+        {
+          preferences: media.preferences,
+          schema: _.extend({columns: media.structure}, media.table)
+        },
+        {
+          preferences: users.preferences,
+          schema: _.extend({columns: users.structure}, users.table)
+        },
+        {
+          preferences: activity.preferences,
+          schema: _.extend({columns: activity.structure}, activity.table)
+        },
+        {
+          preferences: groups.preferences,
+          schema: _.extend({columns: groups.structure}, groups.table)
+        }
+      ],
+      nonces: {
+        pool: [],
+        nonce_pool_size: 10,
+        nonce_request_header: "X-Directus-Request-Nonce",
+        nonce_response_header: "X-Directus-New-Request-Nonces"
+      }
+    }
+
+    // default bootstrap data global storage
+    window.directusData = _.defaults(window.directusData, defaultBootstrapData);
+
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
 
@@ -88,6 +137,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     var data = window.directusData;
 
     app.root = data.path;
+
     app.DEFAULT_VALIDATION_MESSAGE = 'The data you entered is not valid';
     app.API_URL = data.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
@@ -243,6 +293,18 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       privileges: app.privileges.directus_groups,
       parse: true
     });
+
+/*
+    app.me = new Directus.Model(data.me, {
+      table: app.tables.get('directus_users'),
+      structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
+      urlRoot: app.API_URL + 'tables/directus_users/rows/',
+      privileges: app.privileges.directus_users
+    });
+
+    return;
+*/
+    //app.me = new Backbone.Model({});
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Instantiate entries
