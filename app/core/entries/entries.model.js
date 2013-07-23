@@ -46,7 +46,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
       var structure = this.getStructure();
       var isNothing = function(value) {
         return value === undefined || value === null || value === '' || (!app.isNumber(value) && !_.isDate(value) && _.isEmpty(value));
-      }
+      };
 
       //only validates attributes that are part of the schema
       attributes = _.pick(attributes, structure.pluck('column_name'));
@@ -98,7 +98,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         var id = column.id;
         var tableRelated = column.getRelated();
         var relationshipType = column.getRelationshipType();
-        var value = attributes[id];
+        //var value = attributes[id];
         var hasData = attributes[id] !== undefined;
         var ui = structure.get(column).options;
 
