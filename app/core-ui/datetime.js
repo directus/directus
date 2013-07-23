@@ -107,12 +107,12 @@ define(['app', 'backbone'], function(app, Backbone) {
           value.getFullYear(),
           ('0'+(value.getMonth()+1)).slice(-2),
           ('0'+value.getDate()).slice(-2)
-        ]
+        ];
         data.valueDate = date.join('-');
 
         var time = [
           ('0'+value.getHours()).slice(-2),
-          ('0'+value.getMinutes()).slice(-2),
+          ('0'+value.getMinutes()).slice(-2)
         ];
         if (this.includeSeconds) {
           time.push(('0'+value.getSeconds()).slice(-2));
