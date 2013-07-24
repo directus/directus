@@ -519,8 +519,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $select = $sql->select()->from($this->table);
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
-        $columns = TableSchema::getAllNonAliasTableColumnNames($this->table);
-        $select->columns($columns);
+        $columnNames = TableSchema::getAllNonAliasTableColumnNames($this->table);
+        $select->columns($columnNames);
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
 
@@ -535,21 +535,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $foundRows = count($results);
 
         // Perform data casting based on the column types in our schema array
-        $table_entries = array();
-        foreach ($results as $row) {
-            $item = array();
-            foreach ($schemaArray as $col) {
-                // Run custom data casting.
-                $name = $col['column_name'];
-                if(array_key_exists($name, $row)) {
-                    $item[$name] = $this->parseMysqlType($row[$name], $col['type']);
-                }
-            }
-            $table_entries[] = $item;
+        $columns = TableSchema::getAllNonAliasTableColumns($this->table);
+        foreach ($results as &$row) {
+            $row = $this->parseRecordValuesByMysqlType($row, $columns);
         }
 
         // Eager-load related ManyToOne records
-        $table_entries = $this->loadManyToOneRelationships($schemaArray, $table_entries);
+        $results = $this->loadManyToOneRelationships($schemaArray, $results);
         
         /**
          * Fetching a set of data
@@ -563,7 +555,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             } else {
                 $set['total'] = $this->countTotal();
             }
-            $set['rows'] = $table_entries;
+            $set['rows'] = $results;
             return $set;
         }
 
@@ -572,13 +564,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
          */
 
         // @todo return null and let controller throw HTTP response
-        if (0 == count($table_entries)) {
+        if (0 == count($results)) {
             // throw new \DirectusException('Item not found!',404);
             // @todo return null and let controller handle HTTP response
             Bootstrap::get('app')->halt(404);
         }
 
-        list($table_entry) = $table_entries;
+        list($result) = $results;
 
         // Separate alias fields from table schema array
         $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
@@ -586,9 +578,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // $log->info(count($alias_fields) . " alias fields:");
         // $log->info(print_r($alias_fields, true));
 
-        $table_entry = $this->loadToManyRelationships($table_entry, $alias_fields);
+        $result = $this->loadToManyRelationships($result, $alias_fields);
 
-        return $table_entry;
+        return $result;
     }
 
     /**
@@ -680,6 +672,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Process results
         foreach ($results as &$row)
             array_walk($row, array($this, 'castFloatIfNumeric'));
+
         return array('rows' => $results);
     }
 
@@ -730,16 +723,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $select = new Select($foreign_table_name);
                 $select->where->in('id', $ids);
 
-                $columns = TableSchema::getAllNonAliasTableColumnNames($foreign_table_name);
-                $select->columns($columns);
+                $columnNames = TableSchema::getAllNonAliasTableColumnNames($foreign_table_name);
+                $select->columns($columnNames);
 
                 $TableGateway = new RelationalTableGateway($this->acl, $foreign_table_name, $this->adapter);
                 $rowset = $TableGateway->selectWith($select);
                 $results = $rowset->toArray();
 
                 $foreign_table = array();
+                $columns = TableSchema::getAllNonAliasTableColumns($foreign_table_name);
                 foreach ($results as $row) {
-                    array_walk($row, array($this, 'castFloatIfNumeric'));
+                    $row = $this->parseRecordValuesByMysqlType($row, $columns);
                     $foreign_table[$row['id']] = $row;
                 }
 
@@ -805,21 +799,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $columns = TableSchema::getAllNonAliasTableColumnNames($foreign_table);
         $select->columns($columns);
 
-        // $log = $this->logger();
-        // $log->info(__CLASS__ . "#" . __FUNCTION__);
-        // $log->info("query: " . $this->dumpSql($select));
-
         $ForeignTable = new RelationalTableGateway($this->acl, $foreign_table, $this->adapter);
         $results = $ForeignTable->selectWith($select);
         $results = $results->toArray();
 
-        // $log->info("results:");
-        // $log->info(print_r($results, true));
-
         $foreign_data = array();
+        $columns = TableSchema::getAllNonAliasTableColumns($foreign_table);
         foreach($results as $row) {
 
-            array_walk($row, array($this, 'castFloatIfNumeric'));
+            $row = $this->parseRecordValuesByMysqlType($row, $columns);
 
             $junction_table_id = (int) $row[$junction_id_column_alias];
             unset($row[$junction_id_column_alias]);
@@ -832,8 +820,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $entry['data'] = $row;
 
             $foreign_data[] = $entry;
-
-
         }
         return array('rows' => $foreign_data);
     }
@@ -853,9 +839,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @return boolean
      */
     public function recordDataContainsNonPrimaryKeyData($record, $pkFieldName = 'id') {
-        if(is_subclass_of($record, 'Zend\Db\RowGateway\AbstractRowGateway'))
+        if(is_subclass_of($record, 'Zend\Db\RowGateway\AbstractRowGateway')) {
             $record = $record->toArray();
-        elseif(!is_array($record)) {
+        } elseif(!is_array($record)) {
             throw new \InvalidArgumentException("\$record must an array or a subclass of AbstractRowGateway");
         }
         $keyCount = count($record);
@@ -890,8 +876,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
     public function selectWithImmediateRelationships(Select $select) {
         $resultSet = $this->selectWith($select);
         $entriesWithRelationships = array();
-        foreach($resultSet as $rowGateway)
+        foreach($resultSet as $rowGateway) {
             $entriesWithRelationships[] = $rowGateway->toArrayWithImmediateRelationships($this);
+        }
         return $entriesWithRelationships;
     }
 
@@ -921,10 +908,21 @@ class RelationalTableGateway extends AclAwareTableGateway {
      */
     public function schemaHasActiveColumn($schema) {
         foreach($schema as $col) {
-            if('active' == $col['column_name'])
+            if('active' == $col['column_name']) {
                 return true;
+            }
         }
         return false;
+    }
+
+    public function parseRecordValuesByMysqlType($record, $nonAliasSchemaColumns) {
+        foreach($nonAliasSchemaColumns as $column) {
+            $col = $column['id'];
+            if(array_key_exists($col, $record)) {
+                $record[$col] = $this->parseMysqlType($record[$col], $column['type']);
+            }
+        }
+        return $record;
     }
 
     /**
@@ -960,12 +958,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $date = new \DateTime($mysql_data);
                 $formatted = $date->format("D, d M Y H:i:s");
                 return $formatted;
+            case 'char':
+            case 'varchar':
+            case 'text':
+            case 'tinytext':
+            case 'mediumtext':
+            case 'longtext':
             case 'var_string':
                 return $mysql_data;
-        }
-        // If type is null & value is numeric, cast to integer.
-        if (is_numeric($mysql_data)) {
-            return (float) $mysql_data;
         }
         return $mysql_data;
     }
@@ -977,8 +977,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
     public function countTotal(PredicateInterface $predicate = null) {
         $select = new Select($this->table);
         $select->columns(array('total' => new Expression('COUNT(*)')));
-        if(!is_null($predicate))
+        if(!is_null($predicate)) {
             $select->where($predicate);
+        }
         $sql = new Sql($this->adapter, $this->table);
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
@@ -1005,8 +1006,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         }
         $possibleValues = array_values(AclAwareRowGateway::$activeStateSlugs);
         $makeMeZero = array_diff($possibleValues, array_keys($stats));
-        foreach($makeMeZero as $unsetActiveColumn)
+        foreach($makeMeZero as $unsetActiveColumn) {
             $stats[$unsetActiveColumn] = 0;
+        }
         $stats['total'] = array_sum($stats);
         return $stats;
     }
