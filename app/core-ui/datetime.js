@@ -32,7 +32,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   input.date { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 120px; \
+                    width: 140px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
@@ -50,8 +50,8 @@ define(['app', 'backbone'], function(app, Backbone) {
                     \
                   } \
                   </style> \
-                  {{#if includeDate}}<input type="date" class="date" value="{{valueDate}}"">{{/if}} \
-                  {{#if includeTime}}<input type="time" class="time{{#if includeSeconds}} seconds{{/if}}" value="{{valueTime}}">{{/if}} \
+                  <input type="date" class="date" value="{{valueDate}}""> \
+                  <input type="time" class="time{{#if includeSeconds}} seconds{{/if}}" value="{{valueTime}}"> \
                   <a class="now">Now</a> \
                   <input class="merged" type="hidden" value="{{value}}" name="{{name}}" id="{{name}}">';
 
@@ -62,88 +62,72 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'blur input': 'updateValue',
-      'click .now': 'makeNow'
+      'blur  input': 'updateValue',
+      'click .now':   'makeNow'
     },
 
     updateValue: function(e) {
-      var value = this.$el.find('input.date').val() + ' ' + this.$el.find('input.time').val();
-      console.log(value);
-      var now = new Date(value);
-      var gmtValue = new Date(value).toISOString();
-      this.$el.find('input.merged').val(gmtValue);
+      var date = null;
+      var candidate = this.$el.find('input[type=date]').val() + ' ' +
+                      this.$el.find('input[type=time]').val();
+
+      try {
+        date = new Date(candidate);
+      } catch (e) {
+        // Do nothing is the date is bad
+        return;
+      }
+
+      this.value = date;
+      this.render();
     },
 
-    makeNow: function(e) {
-      var now = this.getCurrentTime();
-      var include_seconds = (this.options.settings && this.options.settings.has('include_seconds') && this.options.settings.get('include_seconds') == '1')? true : false;
-      var timeFormat = (include_seconds) ? now.thh+':'+now.tmm+':'+now.tss : now.thh+':'+now.tmm;
-      this.$el.find('input.date').val(now.yyyy+'-'+now.mm+'-'+now.dd);
-      this.$el.find('input.time').val(timeFormat);
-
-      this.updateValue();
-    },
-
-    afterRender: function() {
-      //
+    makeNow: function() {
+      this.value = new Date();
+      this.render();
     },
 
     serialize: function() {
-      var value = this.options.value || '';
-      var now = this.getCurrentTime(value);
-      var include_seconds = (this.options.settings && this.options.settings.has('include_seconds') && this.options.settings.get('include_seconds') == '1')? true : false;
+      var value = this.value;
+      var data = {value: null, valueDate: null, valueTime: null, name: this.options.name, note: this.options.schema.get('comment')};
 
-      if(!include_seconds){now.tss='00';}
+      if (value !== undefined) {
 
-      return {
-        value: now.gmtValue,
-        valueDate: now.yyyy+'-'+now.mm+'-'+now.dd,
-        valueTime: (include_seconds) ? now.thh+':'+now.tmm+':'+now.tss : now.thh+':'+now.tmm,
-        includeDate: (this.options.schema.get('type') == 'DATETIME' || this.options.schema.get('type') == 'DATE') ? true : false,
-        includeTime: (this.options.schema.get('type') == 'DATETIME' || this.options.schema.get('type') == 'TIME') ? true : false,
-        name: this.options.name,
-        note: this.options.schema.get('comment'),
-        includeSeconds: include_seconds,
-        invalid: this.invalid
-      };
-    },
+        // Don't show corrupted dates
+        try {
+          value = new Date(value);
+          if (_.isNaN(value.getTime())) {
+            throw Error();
+          }
+        } catch (e) {
+          return data;
+        }
 
-    getCurrentTime: function(value) {
-      var thisDate = (value)? new Date(value+'Z') : new Date();
-      var gmtValue;
-      // Could be handled more elegantly
-      try{
-        gmtValue = new Date(thisDate).toISOString();
-      } catch(err){
-        thisDate = new Date();
+        var date = [
+          value.getFullYear(),
+          ('0'+(value.getMonth()+1)).slice(-2),
+          ('0'+value.getDate()).slice(-2)
+        ];
+        data.valueDate = date.join('-');
+
+        var time = [
+          ('0'+value.getHours()).slice(-2),
+          ('0'+value.getMinutes()).slice(-2)
+        ];
+        if (this.includeSeconds) {
+          time.push(('0'+value.getSeconds()).slice(-2));
+        }
+        data.valueTime = time.join(':');
+
+        data.value = value.toISOString();
       }
 
-      var dd = thisDate.getDate();
-      var mm = thisDate.getMonth()+1; // January is 0!
-      var yyyy = thisDate.getFullYear();
-      var thh = thisDate.getHours();
-      var tmm = thisDate.getMinutes();
-      var tss = thisDate.getSeconds();
-
-      if(dd<10){dd='0'+dd;}
-      if(mm<10){mm='0'+mm;}
-      if(thh<10){thh='0'+thh;}
-      if(tmm<10){tmm='0'+tmm;}
-      if(tss<10){tss='0'+tss;}
-
-      return {
-        'gmtValue': gmtValue,
-        'dd': dd,
-        'mm': mm,
-        'yyyy': yyyy,
-        'thh': thh,
-        'tmm': tmm,
-        'tss': tss
-      };
+      return data;
     },
 
-    initialize: function() {
-      //
+    initialize: function(options) {
+      this.value = options.value;
+      this.includeSeconds = (options.settings && options.settings.has('include_seconds') && options.settings.get('include_seconds') == '1') ? true : false;
     }
 
   });
