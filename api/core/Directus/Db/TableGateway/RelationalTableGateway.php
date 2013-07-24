@@ -542,8 +542,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
             foreach ($schemaArray as $col) {
                 // Run custom data casting.
                 $name = $col['column_name'];
-                if($row->offsetExists($name))
+                if($row->offsetExists($name)) {
                     $item[$name] = $this->parseMysqlType($row[$name], $col['type']);
+                }
             }
             $table_entries[] = $item;
         }
@@ -949,7 +950,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             case 'date':
             case 'datetime':
                 $nullDate = empty($mysql_data) || ("0000-00-00 00:00:00" == $mysql_data);
-                return $nullDate ? null : date("r", strtotime($mysql_data));
+                return $nullDate ? null : date("D, m M Y H:i:s", strtotime($mysql_data));
             case 'var_string':
                 return $mysql_data;
         }
