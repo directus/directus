@@ -527,7 +527,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // $logger->info($this->dumpSql($select));
 
-        $results = $this->selectWith($select);
+        $results = $this->selectWith($select)->toArray();
 
         // $this->__runDemoTestSuite($results);
 
@@ -542,7 +542,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             foreach ($schemaArray as $col) {
                 // Run custom data casting.
                 $name = $col['column_name'];
-                if($row->offsetExists($name)) {
+                if(array_key_exists($name, $row)) {
                     $item[$name] = $this->parseMysqlType($row[$name], $col['type']);
                 }
             }
@@ -551,7 +551,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Eager-load related ManyToOne records
         $table_entries = $this->loadManyToOneRelationships($schemaArray, $table_entries);
-
+        
         /**
          * Fetching a set of data
          */
@@ -699,29 +699,33 @@ class RelationalTableGateway extends AclAwareTableGateway {
             if ($isManyToOneColumn) {
                 $foreign_id_column = $col['id'];
 
-                if('single_media' === $col['ui'])
+                if('single_media' === $col['ui']) {
                     $foreign_table_name = 'directus_media';
-                elseif(array_key_exists('table_related', $col['options']))
+                } elseif(array_key_exists('table_related', $col['options'])) {
                     $foreign_table_name = $col['options']['table_related'];
-                elseif(array_key_exists('table_related', $col))
+                } elseif(array_key_exists('table_related', $col)) {
                     $foreign_table_name = $col['table_related'];
-                else {
+                } else {
                     $message = 'Non single_media Many-to-One relationship lacks `table_related` value.';
-                    if(array_key_exists('column_name', $col))
+                    if(array_key_exists('column_name', $col)) {
                         $message .= " Column: " . $col['column_name'];
-                    if(array_key_exists('table_name', $col))
+                    }
+                    if(array_key_exists('table_name', $col)) {
                         $message .= " Table: " . $col['table_name'];
+                    }
                     throw new Exception\RelationshipMetadataException($message);
                 }
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function($row) use ($foreign_id_column, $table_entries) {
-                    if(array_key_exists($foreign_id_column, $row))
+                    if(array_key_exists($foreign_id_column, $row)) {
                         return $row[$foreign_id_column];
+                    }
                 };
                 $ids = array_map($yield, $table_entries);
-                if (empty($ids))
+                if (empty($ids)) {
                     continue;
+                }
 
                 // Fetch the foreign data
                 $select = new Select($foreign_table_name);
@@ -746,8 +750,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $foreign_id = (int) $parentRow[$foreign_id_column];
                         $parentRow[$foreign_id_column] = null;
                         // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
-                        if(array_key_exists($foreign_id, $foreign_table))
+                        if(array_key_exists($foreign_id, $foreign_table)) {
                             $parentRow[$foreign_id_column] = $foreign_table[$foreign_id];
+                        }
                     }
                 }
             }
@@ -950,13 +955,19 @@ class RelationalTableGateway extends AclAwareTableGateway {
             case 'date':
             case 'datetime':
                 $nullDate = empty($mysql_data) || ("0000-00-00 00:00:00" == $mysql_data);
-                return $nullDate ? null : date("D, m M Y H:i:s", strtotime($mysql_data));
+                if($nullDate) {
+                    return null;
+                }
+                $date = new \DateTime($mysql_data);
+                $formatted = $date->format("D, d M Y H:i:s");
+                return $formatted;
             case 'var_string':
                 return $mysql_data;
         }
         // If type is null & value is numeric, cast to integer.
-        if (is_numeric($mysql_data))
+        if (is_numeric($mysql_data)) {
             return (float) $mysql_data;
+        }
         return $mysql_data;
     }
 
