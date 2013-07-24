@@ -103,21 +103,32 @@ class TableSchema {
 
     public static function getAllNonAliasTableColumnNames($table) {
         $columnNames = array();
-        $schemaArray = self::loadSchema($table);
-        foreach($schemaArray as $column) {
-            if(self::columnIsCollectionAssociation($column))
-                continue;
+        $columns = self::getAllNonAliasTableColumns($table);
+        foreach($columns as $column) {
             $columnNames[] = $column['id'];
         }
         return $columnNames;
+    }
+
+    public static function getAllNonAliasTableColumns($table) {
+        $columns = array();
+        $schemaArray = self::loadSchema($table);
+        foreach($schemaArray as $column) {
+            if(self::columnIsCollectionAssociation($column)) {
+                continue;
+            }
+            $columns[] = $column;
+        }
+        return $columns;
     }
 
     public static function getAllAliasTableColumns($table) {
         $columns = array();
         $schemaArray = self::loadSchema($table);
         foreach($schemaArray as $column) {
-            if(!self::columnIsCollectionAssociation($column))
+            if(!self::columnIsCollectionAssociation($column)) {
                 continue;
+            }
             $columns[] = $column;
         }
         return $columns;
