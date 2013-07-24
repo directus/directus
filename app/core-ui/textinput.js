@@ -54,7 +54,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         value: value,
         name: this.options.name,
         maxLength: length,
-        characters: length - value.length,
+        characters: length - value.toString().length,
         comment: this.options.schema.get('comment'),
         readonly: (this.options.settings.get('readonly') === "1" || !this.options.canWrite)
       };
