@@ -54,10 +54,8 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
-      var value = this.options.value || '';
-
       return {
-        value: value,
+        value: this.options.value || '0',
         name: this.options.name,
         min: (this.options.settings && this.options.settings.has('minimum')) ? this.options.settings.get('minimum') : '0',
         max: (this.options.settings && this.options.settings.has('maximum')) ? this.options.settings.get('maximum') : '100',
