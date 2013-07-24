@@ -28,9 +28,9 @@ function(Handlebars, typetools) {
     },
 
     logErrorToServer: function(type, message, details) {
-      var user, email = 'n/a';
+      var user = app.getCurrentUser(), email = 'n/a';
 
-      if (user = app.getCurrentUser()) {
+      if (user) {
         email = user.get('email');
       }
 
@@ -40,7 +40,7 @@ function(Handlebars, typetools) {
         details: details,
         page: location.href,
         user_email: email
-      }
+      };
 
       $.post(app.API_URL + 'exception', JSON.stringify(data))
         .done(function(response) {
@@ -129,8 +129,7 @@ function(Handlebars, typetools) {
 
     summarizeArray: function(array) {
       return _.reduce(array, function(memo, num){ return memo + parseInt(num,10); }, 0);
-    },
-
+    }
   };
 
   app.sendFiles = function(files, callback) {
@@ -139,7 +138,7 @@ function(Handlebars, typetools) {
     var success = function() {
       //app.trigger('load');
       callback.apply(this, arguments);
-    }
+    };
 
     if (files instanceof File) files = [files];
 
