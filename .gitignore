@@ -16,3 +16,4 @@ api/logs/*.log
 api/logs/coverage/*.log
 
 docs/api-responses
+/log
