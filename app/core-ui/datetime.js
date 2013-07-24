@@ -142,6 +142,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     return "Not a valid date";
   };
 
+  //@todo make contextual date a ui
   Module.list = function(options) {
     var template = Handlebars.compile('{{contextualDate date}}');
     return template({date: options.value});
