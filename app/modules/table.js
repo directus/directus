@@ -57,17 +57,20 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     deleteItem: function(e) {
-      if (!this.model.has('active')){
-        this.model.destroy();
-        return;
-      }
-
       var success = function() {
         var route = Backbone.history.fragment.split('/');
         route.pop();
         app.router.go(route);
       };
-      this.model.save({active: 0}, {success: success});
+
+      // hard-destroy model if there is no active column
+      if (!this.model.has('active')){
+        this.model.destroy({success: success});
+        return;
+      }
+
+      this.model.set({active: 0});
+      this.model.save({success: success});
     },
 
     save: function(e) {
