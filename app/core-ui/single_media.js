@@ -90,7 +90,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
                     <img src="{{url}}"> \
                   </div> \
                   <div class="ui-img-details"> \
-                    <a href="#" class="title">{{mediaModel.title}}</a><br> \
+                    <a href="{{link}}" class="title" target="single_media">{{mediaModel.title}}</a><br> \
                     Uploaded by {{userName user}} {{contextualDate mediaModel.date_uploaded}}<br> \
                     <i>{{mediaModel.width}} &times; {{mediaModel.height}} – {{bytesToSize mediaModel.size}}</i><br> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose media</button> \
@@ -184,15 +184,15 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     },
 
     serialize: function() {
-      var url = this.mediaModel.has('name') ?
-        app.makeMediaUrl(this.mediaModel, true) :
-        null;
+      var url = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel, true) : null;
+      var link = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel) : null;
       var data = {
         name: this.options.name,
         url: url,
         comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
-        mediaModel: this.mediaModel.toJSON()
+        mediaModel: this.mediaModel.toJSON(),
+        link: link
       };
       return data;
     },
