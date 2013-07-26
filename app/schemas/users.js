@@ -28,15 +28,29 @@ define([], function() {
       "required":false
     },
     {
+      "id":"avatar",
+      "column_name":"avatar",
+      "type":"VARCHAR",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":16,
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "required":false,
+      "ui":"directus_user_avatar"
+    },
+    {
       "id":"name",
-      "column_name":"name",
+      "column_name":"first_name",
       "type":"ALIAS",
       "sort":0,
       "is_nullable":"NO",
       "ui":"directus_user",
       "system":false,
       "master":false,
-      "hidden_list":false,
+      "hidden_list":true,
       "hidden_input":true,
       "required":false,
       "options": {
@@ -297,7 +311,7 @@ define([], function() {
     "id":"1",
     "user":"1",
     "table_name":"directus_users",
-    "columns_visible":"name,activity,email,description",
+    "columns_visible":"avatar,first_name,last_name,activity,email,description",
     "sort":"id",
     "sort_order":"asc",
     "active":"1"

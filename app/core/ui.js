@@ -15,6 +15,7 @@ define([
   'core-ui/date',
   'core-ui/time',
   'core-ui/directus_user_activity',
+  'core-ui/directus_user_avatar',
   'core-ui/directus_media_size',
   'core-ui/blob',
   'core-ui/alias',
