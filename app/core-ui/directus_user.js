@@ -32,8 +32,10 @@ define(['app','backbone'], function(app, Backbone) {
     tagName: 'fieldset',
     initialize: function(options) {
       var user = app.users.get(options.value);
-      this.$el.html('<label>'+app.capitalize(this.options.name)+'</test>');
-      this.$el.append('<img src="' + app.RESOURCES_URL + 'users/default.png" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));
+      if(user) {
+        this.$el.html('<label>'+app.capitalize(this.options.name)+'</test>');
+        this.$el.append('<img src="' + app.RESOURCES_URL + 'users/default.png" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));        
+      }
     }
   });
 
