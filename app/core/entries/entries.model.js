@@ -56,16 +56,27 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         var column = structure.get(key);
 
         // Don't validate hidden fields
-        if (column.get('hidden_input')) return;
+        // @todo should this be adjusted since these fields are now posting in some cases?
+        if (column.get('hidden_input')) {
+          return;
+        }
 
-        //Don't validate ID
-        if (key === 'id') return;
+        // Don't validate ID
+        if (key === 'id') {
+          return;
+        }
 
-        var notNull = column.get('is_nullable') === 'NO';
-        var mess = (notNull && isNothing(value)) ? 'The field cannot be empty' : ui.validate(this, key, value);
+        var nullDisallowed = column.get('is_nullable') === 'NO';
+        var isNull = isNothing(value);
+        var input = ui.getModelColumnInput(this, key);
+  
+        var skipSerializationIfNull = input.hasOwnProperty('skipSerializationIfNull') && input.skipSerializationIfNull;
+
+        var mess = (!skipSerializationIfNull && nullDisallowed && isNull)
+          ? 'The field cannot be empty'
+          : ui.validate(this, key, value);
 
         if (mess !== undefined) {
-
           errors.push({attr: key, message: mess});
         }
       }, this);
