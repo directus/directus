@@ -633,7 +633,7 @@ $app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $a
 
     if ($response === false) {
         // throw new Exception("Problem reading data from $url, $php_errormsg");
-        $response = "Failed to log error. stream_get_contents failed."
+        $response = "Failed to log error. stream_get_contents failed.";
         $app->getLog()->warn($response);   
     }
 
