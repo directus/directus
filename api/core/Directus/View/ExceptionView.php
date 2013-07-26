@@ -37,10 +37,10 @@ class ExceptionView {
         /**
          * Directus\Db\Exception\SuppliedArrayAsColumnValue
          */
-        elseif($exception instanceof SuppliedArrayAsColumnValue) {
-            $httpCode = 422;
-            $data = array('message' => $exception->getMessage());
-        }
+        // elseif($exception instanceof SuppliedArrayAsColumnValue) {
+        //     $httpCode = 422;
+        //     $data = array('message' => $exception->getMessage());
+        // }
 
         /**
          * Directus\Db\Exception\CustomUiValidationError

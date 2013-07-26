@@ -52,6 +52,19 @@ define(['app', 'backbone'], function(app, Backbone) {
       'click .now': 'makeNow'
     },
 
+    updateValue: function(e) {
+      var date = null;
+      var candidate = this.$el.find('input[type=date]').val();
+      try {
+        date = new Date(candidate);
+      } catch (e) {
+        // Do nothing if the date is bad
+        return;
+      }
+      this.options.value = date.toISOString();
+      this.render();
+    },
+
     makeNow: function(e) {
       var now = this.getCurrentTime();
       this.$el.find('input.date').val(now.yyyy+'-'+now.mm+'-'+now.dd);

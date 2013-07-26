@@ -15,6 +15,7 @@ define([
   'core-ui/date',
   'core-ui/time',
   'core-ui/directus_user_activity',
+  'core-ui/directus_user_avatar',
   'core-ui/directus_media_size',
   'core-ui/blob',
   'core-ui/alias',
@@ -64,8 +65,7 @@ function(textinput) {
     var collection = model.collection;
     var structure = model.getStructure();
     var schema = structure.get(attr);
-    var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
-
+    var View = ui.getModelColumnInput(model, attr);
     return View.list({
         model: model,
         collection: collection,
@@ -76,12 +76,19 @@ function(textinput) {
     });
   };
 
-  ui.validate = function(model, attr, value) {
+  ui.getModelColumnInput = function(model, attr) {
     var collection = model.collection;
     var structure = model.getStructure();
     var schema = structure.get(attr);
     var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
+    return View;
+  };
 
+  ui.validate = function(model, attr, value) {
+    var collection = model.collection;
+    var structure = model.getStructure();
+    var schema = structure.get(attr);
+    var View = ui.getModelColumnInput(model, attr);
     if (View.hasOwnProperty('validate')) {
       return View.validate(value, {
         model: model,
