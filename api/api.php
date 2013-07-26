@@ -624,13 +624,17 @@ $app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $a
     $fp = @fopen($url, 'rb', false, $ctx);
 
     if (!$fp) {
-        throw new Exception("Problem with $url, $php_errormsg");
+        // throw new Exception("Problem with $url, $php_errormsg");
+        $response = "Failed to log error. File pointer could not be initialized.";
+        $app->getLog()->warn($response);
     }
 
     $response = @stream_get_contents($fp);
 
     if ($response === false) {
-        throw new Exception("Problem reading data from $url, $php_errormsg");
+        // throw new Exception("Problem reading data from $url, $php_errormsg");
+        $response = "Failed to log error. stream_get_contents failed."
+        $app->getLog()->warn($response);   
     }
 
     $result = array('response'=>$response);
