@@ -277,6 +277,13 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
               siteName: this.model.get('site_name'),
               siteUrl: this.model.get('site_url')
             };
+          },
+
+          events: {
+            'click .sign-out': function(e) {
+              e.preventDefault();
+              window.location.href = app.API_URL + "auth/logout";
+            }
           }
       });
 
