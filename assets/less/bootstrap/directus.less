@@ -33,13 +33,21 @@ a {cursor:pointer;}
 
 // STRUCTURE
 // ----------------
-#tabs { margin-top: 20px; }
+#tabs { position: relative; margin-top: 20px; }
+
+#more-tabs { position:absolute; right:0; top:0; font-weight: 400; font-size: 14px; padding: 10px 20px; color:@grayDark; cursor: pointer; text-align: right; }
+#more-tabs:hover { color: darken(@grayDark, 5%); }
+#more-tabs:hover #hidden-tabs { display: block; }
+#hidden-tabs { display: none; background-color: @white; .border-radius(@baseBorderRadius); border:1px solid @gray; z-index: 11; padding: 8px 14px 8px; margin-top: 13px; list-style-type: none; }
+#hidden-tabs li { margin: 2px 0 2px; }
+#hidden-tabs li.active { text-decoration: underline; }
+#tabs.more-padding { padding-right: 70px; }
 
 // Why am I adding 3 to the navbar height here?
-.head {overflow:auto; background-image:url(../img/noise.gif); padding-top:@navbarHeight + 3; }
+.head { position:relative; z-index:2; overflow:visible; background-image:url(../img/noise.gif); padding-top:@navbarHeight + 3; }
 
 
-#content {padding-top:20px; padding-bottom:40px;overflow:hidden;}
+#content { position:relative; z-index:1; padding-top:20px; padding-bottom:40px;overflow:hidden;}
 
 .breadcrumb-divider {font-weight: normal; font-size:14px; color:@gray; margin:0 10px; }
 .container-fluid { padding-right:40px; padding-left:40px;}
@@ -295,6 +303,7 @@ a:hover {text-decoration:none;}
   margin:0 auto;
   border:0;
   overflow:hidden;
+  height:39px;
   li {
     margin-bottom: 0px;
   }
@@ -987,9 +996,7 @@ table#directus_activity col.col-datetime { width: 140px; }
     position: static;
   }
 
-  .head {
-    padding-top:0;
-  }
+  #tabs { margin-top: -40px; }
 
   #footer {
     margin-left: -20px;
