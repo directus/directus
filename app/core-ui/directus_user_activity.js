@@ -13,6 +13,9 @@ define(['app','backbone'], function(app, Backbone) {
   Module.system = true;
   Module.sortBy = 'last_login';
 
+  Module.Input = Backbone.Layout.extend({
+  });
+
   Module.list = function(options) {
     if(options.model.get('last_access') !== null){
       var page_summary = '';
