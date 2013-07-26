@@ -119,7 +119,6 @@ define(['app', 'backbone'], function(app, Backbone) {
         // Don't show corrupted dates
         try {
           value = new Date(value);
-          console.log('instantiated new Date', value);
           if (_.isNaN(value.getTime())) {
             throw Error();
           }
