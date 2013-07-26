@@ -79,6 +79,9 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     },
 
     parseDate: function(attributes) {
+      if(!attributes) {
+        return;
+      }
       _.each(this.getStructure().getColumnsByType('datetime'), function(column) {
         if (attributes[column.id] !== null) {
           attributes[column.id] = new Date(attributes[column.id]);
