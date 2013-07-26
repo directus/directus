@@ -12,6 +12,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.id = 'password';
   Module.dataTypes = ['VARCHAR'];
+  Module.skipSerializationIfNull = true;
 
   Module.variables = [
     {id: 'require_confirmation', ui: 'checkbox', def: '1'}
@@ -69,6 +70,10 @@ define(['app', 'backbone'], function(app, Backbone) {
         comment: this.options.schema.get('comment'),
         require_confirmation: (this.options.settings && this.options.settings.has('require_confirmation') && this.options.settings.get('require_confirmation') == '0') ? false : true
       };
+    },
+
+    initialize: function(options) {
+      //
     }
 
   });
