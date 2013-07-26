@@ -119,6 +119,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         // Don't show corrupted dates
         try {
           value = new Date(value);
+          console.log('instantiated new Date', value);
           if (_.isNaN(value.getTime())) {
             throw Error();
           }
@@ -137,12 +138,18 @@ define(['app', 'backbone'], function(app, Backbone) {
           ('0'+value.getHours()).slice(-2),
           ('0'+value.getMinutes()).slice(-2)
         ];
+
         if (this.includeSeconds) {
           time.push(('0'+value.getSeconds()).slice(-2));
         }
         data.valueTime = time.join(':');
 
-        data.value = value.toISOString();
+        // To guard against presumptive locale adjustments which are made by Daee.toISOString,
+        // render the zulu format manually. See directus6 issue #289:
+        // https://github.com/RNGR/directus6/issues/289
+        var zuluDate = data.valueDate + 'T' + data.valueTime + ':00.000Z';
+
+        data.value = zuluDate;
       }
 
       return data;
