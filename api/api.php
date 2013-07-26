@@ -244,6 +244,21 @@ $app->get("/$v/auth/permissions/?", function() use ($app, $acl) {
     JsonView::render(array('groupPrivileges' => $groupPrivileges));
 })->name('auth_permissions');
 
+$app->post("/$v/hash/?", function() use ($app) {
+    if(!(isset($_POST['password']) && !empty($_POST['password']))) {
+        return JsonView::render(array(
+            'success' => false,
+            'message' => 'Must provide password.'
+        ));
+    }
+    $salt = isset($_POST['salt']) && !empty($_POST['salt']) ? $_POST['salt'] : '';
+    $hashedPassword = Auth::hashPassword($_POST['password'], $salt);
+    return JsonView::render(array(
+        'success' => true,
+        'password' => $hashedPassword
+    ));
+});
+
 /**
  * ENTRIES COLLECTION
  */
