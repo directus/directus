@@ -19,10 +19,16 @@ function(app, Backbone) {
       var UI = ui.initialize({model: this.model, structure: this.structure});
 
       this.structure.each(function(column) {
-        // Skip hidden fields
-        if (_.contains(this.hiddenFields, column.id)) return;
 
         var view = UI.getInput(column.id);
+
+        // Display:none; hidden fields
+        if (_.contains(this.hiddenFields, column.id)) {
+          // return;
+          // console.log('hidden view',view);
+          view.$el.css({'display':'none'});
+        }
+
         //@todo: move this to UI
         view.$el.attr('id', 'edit_field_'+column.id);
         this.insertView(view);
@@ -46,7 +52,6 @@ function(app, Backbone) {
     data: function() {
       var data = this.$el.serializeObject();
       var whiteListedData = _.pick(data, this.visibleFields);
-
       return whiteListedData;
     },
 
@@ -58,9 +63,9 @@ function(app, Backbone) {
 
       // Hide fields defined as hidden in the schema
       structureHiddenFields = this.structure.chain()
-                                .filter(function(column) { return column.get('hidden_input'); })
-                                .pluck('id')
-                                .value();
+        .filter(function(column) { return column.get('hidden_input'); })
+        .pluck('id')
+        .value();
 
       this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
