@@ -19,6 +19,10 @@ define(['app','backbone'], function(app, Backbone) {
     return app.bytesToSize(options.value);
   };
 
+
+  Module.Input = Backbone.Layout.extend({
+  });
+
   return Module;
 
 });

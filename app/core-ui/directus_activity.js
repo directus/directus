@@ -13,6 +13,10 @@ define(['app','backbone'], function(app, Backbone) {
   Module.id = 'directus_activity';
   Module.system = true;
 
+
+  Module.Input = Backbone.Layout.extend({
+  });
+
   Module.list = function(options) {
     var model = options.model;
     var action = model.get('action');
