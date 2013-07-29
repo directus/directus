@@ -126,9 +126,12 @@ define(["plugins/jquery.timeago"], function() {
       },
 
       contextualDate: function(value) {
-        if (value === undefined) return '';
+        if (value === undefined) {
+          return '';
+        }
         //@todo: convert value to correct timezone
-        return jQuery.timeago(value + 'z');
+        value = (value.substr(-1).toLowerCase() == 'z') ? value : value + 'z';
+        return jQuery.timeago(value);
       },
 
       dateYYYYMMDD: function(date) {
