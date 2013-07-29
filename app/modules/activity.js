@@ -17,7 +17,6 @@ function(app, Backbone, Directus, Chart, Media) {
 
     events: {
       'click a[data-action=media]': function(e) {
-
         var id = parseInt($(e.target).attr('data-id'),10);
         var model = new app.media.model({id: id}, {collection: app.media});
         var modal = new Media.Views.Edit({model: model, stretch: true});
