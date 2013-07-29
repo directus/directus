@@ -270,7 +270,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: new Directus.CollectionColumns(users.structure, {parse: true}),
       preferences: app.preferences.directus_users,
       url: app.API_URL + 'tables/directus_users/rows',
-      filters: {columns: ['name', 'group', 'activity', 'email', 'description']},
+      filters: {columns: ['avatar', 'first_name', 'last_name', 'group', 'activity', 'email', 'description']},
       privileges: app.privileges.directus_users,
       rowsPerPage: 3000
     });

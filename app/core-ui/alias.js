@@ -13,5 +13,8 @@ define(['app','backbone'], function(app, Backbone) {
   Module.id = 'alias';
   Module.dataTypes = ['ALIAS', 'ONETOMANY', 'MANYTOMANY'];
 
+  Module.Input = Backbone.Layout.extend({
+  });
+  
   return Module;
 });
