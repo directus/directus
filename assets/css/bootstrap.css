@@ -5940,14 +5940,57 @@ a {
   color: #cccccc !important;
 }
 #tabs {
+  position: relative;
   margin-top: 20px;
 }
+#more-tabs {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-weight: 400;
+  font-size: 14px;
+  padding: 10px 20px;
+  color: #8f8f8f;
+  cursor: pointer;
+  text-align: right;
+}
+#more-tabs:hover {
+  color: #828282;
+}
+#more-tabs:hover #hidden-tabs {
+  display: block;
+}
+#hidden-tabs {
+  display: none;
+  background-color: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #ededed;
+  z-index: 11;
+  padding: 8px 14px 8px;
+  margin-top: 13px;
+  list-style-type: none;
+}
+#hidden-tabs li {
+  margin: 2px 0 2px;
+}
+#hidden-tabs li.active {
+  text-decoration: underline;
+}
+#tabs.more-padding {
+  padding-right: 70px;
+}
 .head {
-  overflow: auto;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
   background-image: url(../img/noise.gif);
   padding-top: 53px;
 }
 #content {
+  position: relative;
+  z-index: 1;
   padding-top: 20px;
   padding-bottom: 40px;
   overflow: hidden;
@@ -6252,6 +6295,7 @@ a:hover {
   margin: 0 auto;
   border: 0;
   overflow: hidden;
+  height: 39px;
 }
 .nav-tabs li {
   margin-bottom: 0px;
@@ -6856,6 +6900,7 @@ table#directus_activity col.col-datetime {
 .directus-form label.checkbox {
   margin-bottom: 0px;
 }
+.directus-form .encrypted,
 .directus-form .char-count {
   color: #ffffff;
   margin-left: 10px;
@@ -7113,8 +7158,8 @@ table#directus_activity col.col-datetime {
   .navbar-fixed-bottom {
     position: static;
   }
-  .head {
-    padding-top: 0;
+  #tabs {
+    margin-top: -40px;
   }
   #footer {
     margin-left: -20px;
