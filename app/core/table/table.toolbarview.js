@@ -126,7 +126,6 @@ function(app, Backbone) {
     afterRender: function() {
       $filter = $('#table-filter');
       if ($filter[0]) {
-        $('#table-filter').focus();
         $filter.val($filter.val());
       }
 

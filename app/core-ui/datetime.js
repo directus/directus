@@ -25,7 +25,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
     {id: 'include_seconds', ui: 'checkbox'},
-    {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox'}
+    {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
   ];
 
   var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label> \
@@ -98,21 +98,11 @@ define(['app', 'backbone'], function(app, Backbone) {
         note: this.options.schema.get('comment')
       };
 
-      // console.log( 'Module.Input.serialize BEGIN', this );
-
       var nullValue = (this.value == undefined || this.value == 'Invalid Date');
-      // console.log( 'nullValue', nullValue);
-      // console.log( 'this.value', this.value);
       if (nullValue && this.autoPopulateWhenHiddenAndNull) {
         this.makeNow();
-        var attr = this.options.name;
-        this.model.attributes[attr] = this.value;
-        // @todo there must be a more correct way of doing this, than manually
-        // setting the `changed` values.
-        this.model.changed[attr] = this.value;
+        this.model.set(this.options.name, this.value);
       }
-
-      // console.log( 'Module.Input.serialize END', this );
 
       if (value !== undefined) {
 
