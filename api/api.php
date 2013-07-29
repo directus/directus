@@ -244,6 +244,21 @@ $app->get("/$v/auth/permissions/?", function() use ($app, $acl) {
     JsonView::render(array('groupPrivileges' => $groupPrivileges));
 })->name('auth_permissions');
 
+$app->post("/$v/hash/?", function() use ($app) {
+    if(!(isset($_POST['password']) && !empty($_POST['password']))) {
+        return JsonView::render(array(
+            'success' => false,
+            'message' => 'Must provide password.'
+        ));
+    }
+    $salt = isset($_POST['salt']) && !empty($_POST['salt']) ? $_POST['salt'] : '';
+    $hashedPassword = Auth::hashPassword($_POST['password'], $salt);
+    return JsonView::render(array(
+        'success' => true,
+        'password' => $hashedPassword
+    ));
+});
+
 /**
  * ENTRIES COLLECTION
  */
@@ -259,30 +274,30 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
      * AARG#preSaveDataHook is insufficient for this.
      * We need back-end form processing :)
      */
-    if("directus_users" === $table && in_array($app->request()->getMethod(), array('PUT','POST'))) {
-        $users = $requestPayload;
-        if(!is_numeric_array($users))
-            $users = array($users);
-        foreach($users as $user) {
-            if(!isset($user['password']) || empty($user['password']))
-                continue;
-            $Users = new DirectusUsersTableGateway($acl, $ZendDb);
-            $UserRow = null;
-            $isNew = !(isset($user['id']) && !empty($user['id']));
-            // Salt can't be written by client
-            if($isNew) {
-                $user['salt'] = uniqid();
-            } else {
-                $UserRow = $Users->find($user['id']);
-                if(false === $UserRow)
-                    $app->halt('404', 'No such user with ID ' . $user['id']);
-                $user['salt'] = $UserRow['salt'];
-            }
-            $user['password'] = Auth::hashPassword($user['password'], $user['salt']);
-            $where = array('id' => $user['id']);
-            $Users->update($user, $where);
-        }
-    }
+    // if("directus_users" === $table && in_array($app->request()->getMethod(), array('PUT','POST'))) {
+    //     $users = $requestPayload;
+    //     if(!is_numeric_array($users))
+    //         $users = array($users);
+    //     foreach($users as $user) {
+    //         if(!isset($user['password']) || empty($user['password']))
+    //             continue;
+    //         $Users = new DirectusUsersTableGateway($acl, $ZendDb);
+    //         $UserRow = null;
+    //         $isNew = !(isset($user['id']) && !empty($user['id']));
+    //         // Salt can't be written by client
+    //         if($isNew) {
+    //             $user['salt'] = uniqid();
+    //         } else {
+    //             $UserRow = $Users->find($user['id']);
+    //             if(false === $UserRow)
+    //                 $app->halt('404', 'No such user with ID ' . $user['id']);
+    //             $user['salt'] = $UserRow['salt'];
+    //         }
+    //         $user['password'] = Auth::hashPassword($user['password'], $user['salt']);
+    //         $where = array('id' => $user['id']);
+    //         $Users->update($user, $where);
+    //     }
+    // }
 
     switch($app->request()->getMethod()) {
         // POST one new table entry
@@ -492,25 +507,20 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
 $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
+    $TableGateway = new TableGateway($acl, 'directus_preferences', $ZendDb);
     switch ($app->request()->getMethod()) {
         case "PUT":
-            //This data should not be hardcoded.
-            $id = $requestPayload['id'];
-            $db->set_entry('directus_preferences', $requestPayload);
-            // $db->insert_entry($table, $requestPayload, $id);
+            $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
             break;
         case "POST":
-            // This should not be hardcoded, needs to be corrected
             $requestPayload['user'] = $currentUser['id'];
             $id = $db->insert_entry($table, $requestPayload);
             $params['id'] = $id;
             break;
     }
-    $currentUser = Auth::getUserInfo();
-    $get_old = $db->get_table_preferences($currentUser['id'], $table);
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
-    $get_new = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
-    JsonView::render($get_new, $get_old);
+    $jsonResponse = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
+    JsonView::render($jsonResponse);
 })->via('GET','POST','PUT');
 
 /**
@@ -624,13 +634,17 @@ $app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $a
     $fp = @fopen($url, 'rb', false, $ctx);
 
     if (!$fp) {
-        throw new Exception("Problem with $url, $php_errormsg");
+        // throw new Exception("Problem with $url, $php_errormsg");
+        $response = "Failed to log error. File pointer could not be initialized.";
+        $app->getLog()->warn($response);
     }
 
     $response = @stream_get_contents($fp);
 
     if ($response === false) {
-        throw new Exception("Problem reading data from $url, $php_errormsg");
+        // throw new Exception("Problem reading data from $url, $php_errormsg");
+        $response = "Failed to log error. stream_get_contents failed.";
+        $app->getLog()->warn($response);   
     }
 
     $result = array('response'=>$response);
