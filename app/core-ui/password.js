@@ -28,7 +28,9 @@ define(['app', 'backbone'], function(app, Backbone) {
                  {{#if require_confirmation}} \
                  <label style="margin-top:12px">Confirm Password</label> \
                  <input type="password" value="{{value}}" class="medium password-confirm"/> \
-                 {{/if}}';
+                 {{/if}} \
+                 <span class="label encrypted hide">ENCRYPTED</span> \
+                 ';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -41,7 +43,50 @@ define(['app', 'backbone'], function(app, Backbone) {
      */
     events: function() {
 
+      var $password = this.$el.find('input.password-primary'),
+          $confirm = this.$el.find('input.password-confirm'),
+          changeTargetClass = $confirm.length ? 'password-confirm' : 'password-primary';
+
       var eventsHash = {
+
+        'focus input.password-primary' : function(e) {
+          if(this.$el.data('isAPIHashed')) {
+            var that = this;
+            this.$el.find('input[type=password]').each(function(e) {
+              var val = $(this).val();
+              if(!_.isEmpty(val)) {
+                $(this).data('oldVal', val);
+                $(this).val('');
+                that.$el.data('wasAPIHashed', that.$el.data('isAPIHashed'));
+                that.$el.find('.encrypted').addClass('hide');
+                $confirm.removeAttr('disabled');
+              }
+            });
+          }
+        },
+
+        'blur input.password-primary' : function(e) {
+          if(!_.isEmpty($.trim($(e.target).val()))) {
+            this.$el.data('wasAPIHashed', this.$el.data('isAPIHashed'));
+            this.$el.data('isAPIHashed', false);
+            this.$el.find('input[type=password]').data('oldVal', undefined);
+            return;
+          }
+          var that = this;
+          this.$el.find('input[type=password]').each(function(e) {
+            var val = $(this).val();
+            if(_.isEmpty(val) && $(this).data('oldVal')) {
+              $(this).val($(this).data('oldVal'));
+              that.$el.data('isAPIHashed', true);
+              that.$el.data('wasAPIHashed', false);
+              that.$el.find('.encrypted').removeClass('hide');
+              if($confirm.length) {
+                $confirm.attr('disabled','disabled');
+              }
+            }
+          });
+        },
+
         'click .password-generate' : function(e) {
           var length = 10,
               charset = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
@@ -49,30 +94,38 @@ define(['app', 'backbone'], function(app, Backbone) {
           for (var i = 0, n = charset.length; i < length; ++i) {
             pass += charset.charAt(Math.floor(Math.random() * n));
           }
+          this.$el.data('isAPIHashed', false);
+          this.$el.data('wasAPIHashed', false);
+          this.$el.find('.encrypted').addClass('hide');
           this.$el.find('input.password-primary').val(pass);
           this.$el.find('input.password-confirm').val(pass);
+          if($confirm.length) {
+            $confirm.removeAttr('disabled');
+          }
+
+          var $onChangeInput = this.$el.find('input.' + changeTargetClass);
+          var that = this;
+          $onChangeInput.one('blur', function(e) {
+            $onChangeInput.trigger('change');
+            that.hidePass();
+          });
+          this.showPass();
+          $onChangeInput.trigger('focus');
+
           e.preventDefault();
           return false;
         },
 
         'click .password-toggle' : function(e) {
           if($(e.target).html() == 'Mask Password'){
-            this.$el.find('input.password-primary').get(0).type = 'password';
-            this.$el.find('input.password-confirm').get(0).type = 'password';
-            $(e.target).html('Reveal Password');
+            this.hidePass(e);
           } else {
-            this.$el.find('input.password-primary').get(0).type = 'text';
-            this.$el.find('input.password-confirm').get(0).type = 'text';
-            $(e.target).html('Mask Password');
+            this.showPass(e);
             e.preventDefault();
             return false;
           }
         }
       };
-
-      var $password = this.$el.find('input.password-primary'),
-          $confirm = this.$el.find('input.password-confirm'),
-          changeTargetClass = $confirm.length ? 'password-confirm' : 'password-primary';
 
       eventsHash['change input.' + changeTargetClass] = function(e) {
 
@@ -81,12 +134,15 @@ define(['app', 'backbone'], function(app, Backbone) {
           return;
         }
 
-        var clearFields = function() {
+        var clearFields = _.bind(function() {
+          this.$el.data('isAPIHashed', false);
+          this.$el.find('.encrypted').addClass('hide');
           $password.val('');
           if($confirm.length) {
             $confirm.val('');
+            $confirm.removeAttr('disabled');
           }
-        };
+        }, this);
 
         // @todo run UI validation (e.g. for matching passwords)
         var hashParams = {password:primaryPass};
@@ -101,18 +157,20 @@ define(['app', 'backbone'], function(app, Backbone) {
           }
         }
 
-        var hashSuccess = function(data, textStatus, jqXHR) {
-          console.log(arguments);
+        var hashSuccess = _.bind(function(data, textStatus, jqXHR) {
           if(!_.isEmpty(data) && !_.isEmpty(data.password)) {
             $password.val(data.password);
             if($confirm.length) {
               $confirm.val(data.password);
+              $confirm.attr('disabled','disabled');
             }
+            this.$el.find('.encrypted').removeClass('hide');
+            this.$el.data('isAPIHashed', true);
             return;
           }
           // @todo alert user that the hashing failed
           clearFields();
-        };
+        }, this);
 
         $.ajax({
           type: "POST",
@@ -131,12 +189,29 @@ define(['app', 'backbone'], function(app, Backbone) {
       return eventsHash;
     },
 
+    initialize: function() {
+      this.$el.data('isAPIHashed', false);
+      this.$el.data('wasAPIHashed', false);
+    },
+
     serialize: function() {
       return {
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         require_confirmation: (this.options.settings && this.options.settings.has('require_confirmation') && this.options.settings.get('require_confirmation') == '0') ? false : true
       };
+    },
+
+    showPass: function() {
+      this.$el.find('input.password-primary').get(0).type = 'text';
+      this.$el.find('input.password-confirm').get(0).type = 'text';
+      this.$el.find('.password-toggle').html('Mask Password');
+    },
+
+    hidePass: function() {
+      this.$el.find('input.password-primary').get(0).type = 'password';
+      this.$el.find('input.password-confirm').get(0).type = 'password';
+      this.$el.find('.password-toggle').html('Reveal Password');
     }
 
   });
