@@ -13,14 +13,14 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.id = 'directus_media';
   Module.system = true;
 
-    var template = '{{#unless isNew}} \
+    var template = '{{#if url}} \
                     <fieldset class="media-modal"> \
                       <div style="margin-right:10px;float:left;height:auto;width:50px;"> \
                         <a href="{{url}}" target="_blank"> \
                           {{#if isPDF }} \
                           <em>PDF Icon Here</em> \
                           {{else}} \
-                          <img class="{{orientation}}" src="{{thumbUrl}}"> \
+                          <img class="{{orientation}}" src="{{thumbUrl}}" /> \
                           {{/if}} \
                         </a> \
                       </div> \
@@ -40,13 +40,13 @@ define(['app', 'backbone'], function(app, Backbone) {
                         <li class="red"><span class="glyphicon-remove"></span>Delete</li> \
                       </ul> \
                     </fieldset> \
-                    {{/unless}} \
-                    <fieldset {{#unless isNew}}class="hide"{{/unless}} id="swap-file"> \
+                    {{/if}} \
+                    <fieldset {{#if url}}class="hide"{{/if}} id="swap-file"> \
                       <label>File</label> \
-                      <div id="upload_file" class="upload-form"><input type="file" class="large"> \
+                      <div id="upload_file" class="upload-form"><input type="file" class="large" /> \
                       <p><a href="#" data-action="toggle-form">Use a URL instead</a></p></div> \
                       <div id="upload_url" class="upload-form hide"> \
-                      <input type="text" class="large" name="url"> \
+                      <input type="text" class="large" name="url" /> \
                       <p><a href="#" data-action="toggle-form">Upload a file from the computer</a></p></div> \
                     </fieldset> \
                     {{#if youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/pkWWWKKA8jY" frameborder="0" allowfullscreen></iframe></fieldset>{{/if}}';
@@ -56,33 +56,36 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     serialize: function() {
+
       var data = {},
           userId,
           model = this.model,
           authenticatedUser = app.getCurrentUser();
 
+      data = model.toJSON();
       if (!model.has('id')) {
         userId = authenticatedUser.id;
         data.isNew = true;
       } else {
         userId = model.get('user');
-        data = model.toJSON();
-        if (model.get('type') === 'embed/youtube')
+        if (model.get('type') === 'embed/youtube') {
           data.youtube = model.get('embed_id');
+        }
       }
 
       var user = app.users.get(userId);
 
-      data.isPDF = "application/pdf" == model.get('type');
+      data.isPDF = ("application/pdf" == model.get('type'));
       data.userFirstName = user ? user.get('first_name') : "Unknown User";
       data.url = undefined;
-      if(undefined !== model.storage_adapter) {
+      data.thumbUrl = undefined;
+      if(!_.isEmpty(model.get('storage_adapter'))) {
         data.url = app.makeMediaUrl(model, false);
+        data.thumbUrl = app.makeMediaUrl(model, true);
       }
-      data.thumbUrl = app.makeMediaUrl(model, true);
       data.name = model.get('name');
       data.orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-
+      
       return data;
     },
 

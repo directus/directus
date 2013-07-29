@@ -14,7 +14,9 @@ function(app, Backbone) {
 
     events: {
       'change td.check > input': 'select',
-      'click td.check > input': function() { this.collection.trigger('select'); }
+      'click td.check > input': function() {
+        this.collection.trigger('select');
+      }
     },
 
     select: function(e) {
