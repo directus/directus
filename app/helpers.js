@@ -90,7 +90,9 @@ require([
 
   Handlebars.registerHelper('userAvatar', function(userId) {
     var user = app.users.get(userId);
-    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>');
+    if(user) {
+      return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>');
+    }
   });
 
   Handlebars.registerHelper('userFull', function(userId) {

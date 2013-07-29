@@ -24,7 +24,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
-    {id: 'include_seconds', ui: 'checkbox'}
+    {id: 'include_seconds', ui: 'checkbox'},
+    {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
   ];
 
   var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label> \
@@ -63,7 +64,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     events: {
       'blur  input': 'updateValue',
-      'click .now':   'makeNow'
+      'click .now': 'makeNow'
     },
 
     updateValue: function(e) {
@@ -74,7 +75,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       try {
         date = new Date(candidate);
       } catch (e) {
-        // Do nothing is the date is bad
+        // Do nothing if the date is bad
         return;
       }
 
@@ -89,7 +90,19 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var value = this.value;
-      var data = {value: null, valueDate: null, valueTime: null, name: this.options.name, note: this.options.schema.get('comment')};
+      var data = {
+        value: null,
+        valueDate: null,
+        valueTime: null,
+        name: this.options.name,
+        note: this.options.schema.get('comment')
+      };
+
+      var nullValue = (this.value == undefined || this.value == 'Invalid Date');
+      if (nullValue && this.autoPopulateWhenHiddenAndNull) {
+        this.makeNow();
+        this.model.set(this.options.name, this.value);
+      }
 
       if (value !== undefined) {
 
@@ -114,12 +127,18 @@ define(['app', 'backbone'], function(app, Backbone) {
           ('0'+value.getHours()).slice(-2),
           ('0'+value.getMinutes()).slice(-2)
         ];
+
         if (this.includeSeconds) {
           time.push(('0'+value.getSeconds()).slice(-2));
         }
         data.valueTime = time.join(':');
 
-        data.value = value.toISOString();
+        // To guard against presumptive locale adjustments which are made by Daee.toISOString,
+        // render the zulu format manually. See directus6 issue #289:
+        // https://github.com/RNGR/directus6/issues/289
+        var zuluDate = data.valueDate + 'T' + data.valueTime + ':00.000Z';
+
+        data.value = zuluDate;
       }
 
       return data;
@@ -127,7 +146,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     initialize: function(options) {
       this.value = options.value;
-      this.includeSeconds = (options.settings && options.settings.has('include_seconds') && options.settings.get('include_seconds') == '1') ? true : false;
+      this.includeSeconds = (options.settings && options.settings.has('include_seconds') && options.settings.get('include_seconds') == '1');
+      this.autoPopulateWhenHiddenAndNull = (options.settings && options.settings.has('auto-populate_when_hidden_and_null') && options.settings.get('auto-populate_when_hidden_and_null') == '1');
     }
 
   });
