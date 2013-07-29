@@ -353,7 +353,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
             var authenticatedUser = app.getCurrentUser();
             user = app.users.get(authenticatedUser.id);
             last_page = $.parseJSON(user.get('last_page'));
-            if(undefined === last_page.path || '' === last_page.path) {
+            if(_.isEmpty(last_page)) {
+              last_page = {};
+            }
+            if(_.isEmpty(last_page.path)) {
               last_page.path = 'tables';
             }
             this.navigate(last_page.path, {trigger: true});
