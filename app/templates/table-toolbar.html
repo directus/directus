@@ -34,7 +34,7 @@
   <a class="btn btn-small {{#unless pageNext}}disabled{{/unless}} pag-next"><span class="glyphicon-arrow-right"></span></a>
 </div>
 {{/if}}
-<div class="pagination-number">{{#if uBound}} {{lBound}}–{{uBound}} of {{totalCount}}{{/if}}</div>
+<div class="pagination-number">{{#if uBound}} {{number lBound}}–{{number uBound}} of {{number totalCount}}{{/if}}</div>
 
 
 {{#if filter}}
@@ -47,15 +47,16 @@
     <div class="advanced-search-fields">
       <div class="advanced-search-fields-row">
           <select name="" id="" class="medium">
-            <option value="asd">asd</option>
-            <option value="asd">asd</option>
-            <option value="asd">asd</option>
+            <option value="asd">Table 1</option>
+            <option value="asd">Table 2</option>
+            <option value="asd">Table 3</option>
           </select>
 
           <select name="" id="" class="small">
-            <option value="asd">asd</option>
-            <option value="asd">asd</option>
-            <option value="asd">asd</option>
+            <option value="asd">==</option>
+            <option value="asd">&lt;=</option>
+            <option value="asd">&gt;=</option>
+            <option value="asd">like</option>
           </select>
           <input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="50" class="medium">
 

@@ -277,6 +277,13 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
               siteName: this.model.get('site_name'),
               siteUrl: this.model.get('site_url')
             };
+          },
+
+          events: {
+            'click .sign-out': function(e) {
+              e.preventDefault();
+              window.location.href = app.API_URL + "auth/logout";
+            }
           }
       });
 
@@ -321,7 +328,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         if(routeTokens.length > 1) {
           // Report the "last page" data to the API
           // @fixes https://github.com/RNGR/directus6/issues/199
-          // @todo is this the right way to do this?
           var user = app.getCurrentUser();
           var currentPath = window.location.pathname.substring(app.root.length);
           if(currentPath.length) {
@@ -334,19 +340,16 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
               patch: true,
               url: user.url + "/" + user.id + "?skip_activity_log=1"
             });
-            // didn't work:
-            //     user.set('last_page', route);
-            //     user.save();
-            // nor:
-            //     user.set('last_page', route);
-            //     app.users.save();
           } else {
             // If theere's no path in the location (i.e. the user just logged in),
             // take them to their last visited page, defaulting to "tables".
             var authenticatedUser = app.getCurrentUser();
             user = app.users.get(authenticatedUser.id);
             last_page = $.parseJSON(user.get('last_page'));
-            if(undefined === last_page.path || '' === last_page.path) {
+            if(_.isEmpty(last_page)) {
+              last_page = {};
+            }
+            if(_.isEmpty(last_page.path)) {
               last_page.path = 'tables';
             }
             this.navigate(last_page.path, {trigger: true});
