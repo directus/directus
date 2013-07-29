@@ -20,6 +20,11 @@ function(app, Backbone) {
 
       this.structure.each(function(column) {
 
+        // Skip ID
+        if('id' == column.id) {
+          return;
+        }
+
         var view = UI.getInput(column.id);
 
         // Display:none; hidden fields
