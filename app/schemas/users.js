@@ -37,7 +37,7 @@ define([], function() {
       "system":false,
       "master":false,
       "hidden_list":false,
-      "hidden_input":false,
+      "hidden_input":true,
       "required":false,
       "ui":"directus_user_avatar"
     },
@@ -173,7 +173,26 @@ define([], function() {
       "hidden_list":true,
       "hidden_input":false,
       "required":false,
-      "ui":"password"
+      "ui":"password",
+      "options": {
+        "salt_field":"salt"
+      }
+    },
+    {
+      "id":"salt",
+      "column_name":"salt",
+      "type":"VARCHAR",
+      "char_length":"255",
+      "is_nullable":"NO",
+      "default_value":"",
+      "comment":"",
+      "sort":8,
+      "system":true,
+      "master":false,
+      "hidden_list":true,
+      "hidden_input":true,
+      "required":true,
+      "ui":"salt"
     },
     {
       "id":"token",
