@@ -62,13 +62,14 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             ->where
                 ->equalTo('table_name', $table)
                 ->equalTo('user', $user_id);
+
         $preferences = $this
             ->selectWith($select)
-            ->current()
-            ->toArray();
+            ->current();
 
         if($preferences) {
             $newPreferencesData = false;
+            $preferences = $preferences->toArray();
 
             // @todo enforce non-empty set
             if(empty($preferences['columns_visible'])) {
