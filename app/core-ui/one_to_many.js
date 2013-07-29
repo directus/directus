@@ -117,7 +117,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
       this.related.tableOptions = {
         collection: this.related.entries,
-        toolbar:false,
+        toolbar: false,
         selectable: false,
         sortable: false,
         footer: false,
