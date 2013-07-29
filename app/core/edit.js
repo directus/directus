@@ -52,6 +52,12 @@ function(app, Backbone) {
       var $first = this.$el.find(':input:first:visible');
       $first.focus();
       $first.val($first.val());
+
+      if(this.options.collectionAdd && !_.isEmpty(this.options.parentField)) {
+        this.model.set(this.options.parentField.name, this.options.parentField.value);
+        var $select = this.$el.find('[name=' + this.options.parentField.name + ']');
+        $select.closest('fieldset').hide();
+      }
     },
 
     data: function() {
