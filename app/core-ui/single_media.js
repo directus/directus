@@ -107,9 +107,15 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     template: Handlebars.compile(template),
 
     events: {
-      'click button[data-action="remove"]': function() { this.mediaModel.clear(); },
+      'click button[data-action="remove"]': 'remove',
       'click button[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
       'click .has-media': 'edit'
+    },
+
+    remove: function(e) {
+      this.mediaModel.clear();
+      // this.model.set(this.options.name, {});
+      this.model.set(this.options.name, undefined);
     },
 
     swap: function() {
