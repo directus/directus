@@ -35,6 +35,14 @@ class RoomMapForm {
 		$SeatsTableGateway = new AclAwareTableGateway($acl, 'seats', $db);
 
 		$data = $this->data;
+
+		if(!isset($data['id'])) {
+			// It's not a real field. Revoke it from the RelationalTableGateway's data.
+			unset($this->data['Room Map']);
+			unset($this->parentRecordWithForeignKeys['Room Map']);
+			return;
+		}
+
 		$roomId = $data['id'];
 		$map = json_decode(isset($data['Room Map']) ? $data['Room Map'] : '[]' , true);
 

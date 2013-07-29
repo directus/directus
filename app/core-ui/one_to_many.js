@@ -75,9 +75,17 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
     addModel: function(model) {
       var modal;
       var collection = this.related.entries;
-      var view = new Directus.EditView({model: model});
       var columnName = this.options.schema.get('junction_key_right');
       var id = this.model.id;
+
+      var view = new Directus.EditView({
+        model: model,
+        collectionAdd: true,
+        parentField: {
+          name: columnName,
+          value: id
+        }
+      });
 
       modal = app.router.openModal(view, {stretch: true, title: 'Add'});
 
@@ -85,7 +93,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
         var data = view.data();
         data[columnName] = id;
         model.set(data);
-        collection.add(model,{nest: true});
+        collection.add(model, {nest: true});
         this.close();
       };
 
@@ -100,7 +108,6 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       this.setView('.related-table', this.view).render();
     },
 
-
     //NOTE: OVERRIDE THIS IN MANY-MANY INSTEAD OF USING CONDITIONALS
     initialize: function (options) {
       this.related = {};
@@ -110,7 +117,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
       this.related.tableOptions = {
         collection: this.related.entries,
-        toolbar:false,
+        toolbar: false,
         selectable: false,
         sortable: false,
         footer: false,
