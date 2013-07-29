@@ -507,25 +507,20 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
 $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
+    $TableGateway = new TableGateway($acl, 'directus_preferences', $ZendDb);
     switch ($app->request()->getMethod()) {
         case "PUT":
-            //This data should not be hardcoded.
-            $id = $requestPayload['id'];
-            $db->set_entry('directus_preferences', $requestPayload);
-            // $db->insert_entry($table, $requestPayload, $id);
+            $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
             break;
         case "POST":
-            // This should not be hardcoded, needs to be corrected
             $requestPayload['user'] = $currentUser['id'];
             $id = $db->insert_entry($table, $requestPayload);
             $params['id'] = $id;
             break;
     }
-    $currentUser = Auth::getUserInfo();
-    $get_old = $db->get_table_preferences($currentUser['id'], $table);
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
-    $get_new = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
-    JsonView::render($get_new, $get_old);
+    $jsonResponse = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
+    JsonView::render($jsonResponse);
 })->via('GET','POST','PUT');
 
 /**
