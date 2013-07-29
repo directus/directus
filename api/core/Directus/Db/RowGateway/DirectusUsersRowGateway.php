@@ -50,7 +50,7 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
         // Updated their "last_access" value.
         if(AuthProvider::loggedIn()) {
             $currentUser = AuthProvider::getUserInfo();
-            if($rowData['id'] == $currentUser['id']) {
+            if(isset($rowData['id']) && $rowData['id'] == $currentUser['id']) {
                 $rowData['last_access'] = new Expression("NOW()");
             }
         }

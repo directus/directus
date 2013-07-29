@@ -274,30 +274,30 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
      * AARG#preSaveDataHook is insufficient for this.
      * We need back-end form processing :)
      */
-    if("directus_users" === $table && in_array($app->request()->getMethod(), array('PUT','POST'))) {
-        $users = $requestPayload;
-        if(!is_numeric_array($users))
-            $users = array($users);
-        foreach($users as $user) {
-            if(!isset($user['password']) || empty($user['password']))
-                continue;
-            $Users = new DirectusUsersTableGateway($acl, $ZendDb);
-            $UserRow = null;
-            $isNew = !(isset($user['id']) && !empty($user['id']));
-            // Salt can't be written by client
-            if($isNew) {
-                $user['salt'] = uniqid();
-            } else {
-                $UserRow = $Users->find($user['id']);
-                if(false === $UserRow)
-                    $app->halt('404', 'No such user with ID ' . $user['id']);
-                $user['salt'] = $UserRow['salt'];
-            }
-            $user['password'] = Auth::hashPassword($user['password'], $user['salt']);
-            $where = array('id' => $user['id']);
-            $Users->update($user, $where);
-        }
-    }
+    // if("directus_users" === $table && in_array($app->request()->getMethod(), array('PUT','POST'))) {
+    //     $users = $requestPayload;
+    //     if(!is_numeric_array($users))
+    //         $users = array($users);
+    //     foreach($users as $user) {
+    //         if(!isset($user['password']) || empty($user['password']))
+    //             continue;
+    //         $Users = new DirectusUsersTableGateway($acl, $ZendDb);
+    //         $UserRow = null;
+    //         $isNew = !(isset($user['id']) && !empty($user['id']));
+    //         // Salt can't be written by client
+    //         if($isNew) {
+    //             $user['salt'] = uniqid();
+    //         } else {
+    //             $UserRow = $Users->find($user['id']);
+    //             if(false === $UserRow)
+    //                 $app->halt('404', 'No such user with ID ' . $user['id']);
+    //             $user['salt'] = $UserRow['salt'];
+    //         }
+    //         $user['password'] = Auth::hashPassword($user['password'], $user['salt']);
+    //         $where = array('id' => $user['id']);
+    //         $Users->update($user, $where);
+    //     }
+    // }
 
     switch($app->request()->getMethod()) {
         // POST one new table entry
