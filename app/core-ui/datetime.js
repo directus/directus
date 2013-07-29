@@ -25,7 +25,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
     {id: 'include_seconds', ui: 'checkbox'},
-    {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox'}
+    {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
   ];
 
   var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label> \
