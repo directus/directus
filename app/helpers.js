@@ -27,7 +27,8 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date+'Z') +'">'+app.contextualDate(date)+'</div>');
+    date = (date.substr(-1).toLowerCase() == 'z') ? date : date + 'z';
+    return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + app.contextualDate(date) + '</div>');
   });
 
   Handlebars.registerHelper('avatarSmall', function(userId) {
