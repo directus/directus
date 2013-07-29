@@ -32,14 +32,9 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function(options) {
       this.options = options;
       this.value = this.options.value;
-      // console.log(this);
       if(_.isEmpty(this.options.value)) {
         this.value = this.uniqid();
-        var attr = options.name;
-        this.model.attributes[attr] = this.value;
-        // @todo there must be a more correct way of doing this, than manually
-        // setting the `changed` values.
-        this.model.changed[attr] = this.value;
+        this.model.set(options.name, this.value);
       }
     },
 
