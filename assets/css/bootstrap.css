@@ -5966,7 +5966,7 @@ a {
   width: 160px;
 }
 #directus_activity .col-user {
-  width: 180px;
+  width: 200px;
 }
 #directus_activity tr.row-action-UPDATE td.status {
   background-color: #31aade;
@@ -6803,7 +6803,7 @@ table#directus_media th[data-id="date_uploaded"] {
   width: 100px;
 }
 table#directus_activity col.col-user {
-  width: 120px;
+  width: 200px;
 }
 table#directus_activity col.col-datetime {
   width: 140px;
