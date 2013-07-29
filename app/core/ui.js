@@ -19,6 +19,7 @@ define([
   'core-ui/directus_media_size',
   'core-ui/blob',
   'core-ui/alias',
+  'core-ui/salt',
   'core-ui/select',
   'core-ui/tags',
   'core-ui/many_to_one',

@@ -143,8 +143,6 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.validate = function(value,options) {
 
-    console.log(arguments);
-
     // need access to peer element somehow.
 
     // var $el = this.Input.$el,
