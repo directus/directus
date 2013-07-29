@@ -114,11 +114,8 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
 
     remove: function(e) {
       this.mediaModel.clear();
-      var attr = this.options.name;
-      // this.model.attributes[attr] = {};
-      // this.model.changed[attr] = {};
-      this.model.attributes[attr] = undefined;
-      this.model.changed[attr] = undefined;
+      // this.model.set(this.options.name, {});
+      this.model.set(this.options.name, undefined);
     },
 
     swap: function() {
