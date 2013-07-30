@@ -27,6 +27,9 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
+    if(_.isEmpty(date)) {
+      return '-';
+    }
     date = (date.substr(-1).toLowerCase() == 'z') ? date : date + 'z';
     return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + app.contextualDate(date) + '</div>');
   });
