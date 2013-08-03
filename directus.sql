@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.5.29)
 # Database: directus
-# Generation Time: 2013-08-03 18:50:09 +0000
+# Generation Time: 2013-08-03 18:56:31 +0000
 # ************************************************************
 
 
@@ -267,7 +267,8 @@ VALUES
 	(4,'media','storage_destination',NULL),
 	(5,'media','thumbnail_storage_adapter','FileSystemAdapter'),
 	(6,'media','thumbnail_storage_destination',NULL),
-	(7,'media','thumbnail_size',NULL);
+	(7,'media','thumbnail_size','200'),
+	(8,'media','thumbnail_quality','80');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
