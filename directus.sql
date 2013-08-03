@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.5.29)
 # Database: directus
-# Generation Time: 2013-08-03 16:57:36 +0000
+# Generation Time: 2013-08-03 18:50:09 +0000
 # ************************************************************
 
 
@@ -262,7 +262,12 @@ LOCK TABLES `directus_settings` WRITE;
 INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
 VALUES
 	(1,'global','site_name','Site Name'),
-	(2,'media','media_naming','original');
+	(2,'media','media_naming','original'),
+	(3,'media','storage_adapter','FileSystemAdapter'),
+	(4,'media','storage_destination',NULL),
+	(5,'media','thumbnail_storage_adapter','FileSystemAdapter'),
+	(6,'media','thumbnail_storage_destination',NULL),
+	(7,'media','thumbnail_size',NULL);
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
