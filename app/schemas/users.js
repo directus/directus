@@ -245,7 +245,7 @@ define([], function() {
       "column_name":"description",
       "type":"TEXT",
       "char_length":"65535",
-      "is_nullable":"NO",
+      "is_nullable":"YES",
       "comment":"",
       "sort":11,
       "system":false,
