@@ -70,7 +70,11 @@ The AMP-packages listed above all include Phpmyadmin. The following three steps 
    3. Press Go  
 
 #### Step 6: Setup Directus
+<<<<<<< HEAD
 Open `directus/api/conif_sample.php` Add the database username and password from Step 5 to *DB_USER* and *DB_PASSWORD*.   
+=======
+Open `directus/api/conif_sample.php` Add the database username and password from Step 5 to *DB_USER* and *DB_PASSWORD*. Save the file as ```directus/api/config.php```
+>>>>>>> 2776319ef958a9b27d9384e2b6ef459d38264e82
 
 ```
 define('DB_USER', 		'myusername');
