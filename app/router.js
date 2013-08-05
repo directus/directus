@@ -130,6 +130,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       var collection = app.entries[tableName];
       var model;
 
+      if (collection === undefined) {
+        return this.notFound();
+      }
+
       if (id === "new") {
         // Passing parse:true will setup relations
         model = new collection.model({},{collection: collection, parse: true});
