@@ -7606,6 +7606,12 @@ header {
   width: 22px;
   background-position: -56px 0;
 }
+.scheduler-notification-modal-body {
+  padding: 10px 10px;
+}
+.scheduler-notification-modal-body select {
+  margin-top: 10px;
+}
 .row-fluid.cash-register-container {
   position: relative;
 }
