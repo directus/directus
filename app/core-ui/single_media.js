@@ -94,7 +94,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
                     Uploaded by {{userName user}} {{contextualDate mediaModel.date_uploaded}}<br> \
                     <i>{{mediaModel.width}} &times; {{mediaModel.height}} – {{bytesToSize mediaModel.size}}</i><br> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose media</button> \
-                    <button class="btn btn-small btn-primary btn-right" data-action="remove" type="button">Remove media</button> \
+                    <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove media</button> \
                   </div> \
                   {{else}} \
                   <div class="ui-thumbnail empty ui-thumbnail-dropzone">Drag media here, or click for existing</div> \
@@ -107,15 +107,13 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     template: Handlebars.compile(template),
 
     events: {
-      'click button[data-action="remove"]': 'remove',
+      'click button[data-action="remove-single-media"]': 'removeMedia',
       'click button[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
       'click .has-media': 'edit'
     },
 
-    remove: function(e) {
+    removeMedia: function(e) {
       this.mediaModel.clear();
-      // this.model.set(this.options.name, {});
-      this.model.set(this.options.name, undefined);
     },
 
     swap: function() {
