@@ -57,7 +57,7 @@ foreach ($tables as $table) {
 	unset($table['preferences']);
 
 	//skip directus tables
-	if ('directus_' === substr($tableName,0,9)) {
+	if ('directus_' === substr($tableName,0,9) && 'directus_users' !== $tableName) {
 		continue;
 	}
 
