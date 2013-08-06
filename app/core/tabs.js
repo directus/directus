@@ -25,6 +25,15 @@ function(app, Backbone) {
         model.unset('active',{silent: true});
       });
       model.set({'active':true});
+    },
+
+    initialize: function() {
+      app.users.on('reset sync add', function() {
+        this.get('users').set({count: app.users.table.get('active')});
+      }, this);
+      app.media.on('reset sync add', function() {
+        this.get('media').set({count: app.media.table.get('active')});
+      }, this);   
     }
   });
 
