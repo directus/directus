@@ -41,12 +41,6 @@ define([], function() {
     }
   ];
 
-  groups.preferences = {
-    "columns_visible": "name,description",
-    "sort": "id",
-    "sort_order": "ASC"
-  };
-
   return groups;
 
 });
