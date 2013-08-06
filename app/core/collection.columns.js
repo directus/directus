@@ -101,6 +101,10 @@ function(app, Backbone) {
         return this.get('is_nullable') === 'YES';
       },
 
+      isRequired: function() {
+        return this.get('required') || !this.isNullable();
+      },
+
       toJSON: function(options) {
         if (options && options.columns) {
           return _.pick(this.attributes, options.columns);
