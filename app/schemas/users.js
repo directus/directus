@@ -327,15 +327,5 @@ define([], function() {
     }
   ];
 
-  users.preferences = {
-    "id":"1",
-    "user":"1",
-    "table_name":"directus_users",
-    "columns_visible":"avatar,first_name,last_name,activity,email,description",
-    "sort":"id",
-    "sort_order":"asc",
-    "active":"1"
-  };
-
   return users;
 });
