@@ -149,7 +149,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.settings = new Directus.Settings(data.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
 
-
+    //@todo: move these event handlers to alerts.js
     $(document).ajaxStart(function(e) {
       app.trigger('progress');
     });
@@ -175,6 +175,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       app.logErrorToServer(type, 'Error', details);
       app.trigger('alert:error', 'Error', details);
     };
+    // ---
 
 
     /**
