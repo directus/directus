@@ -292,7 +292,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       //holds references to view instances
       this.v = {};
-      this.v.content = undefined;
 
       var tabs = new Tabs.View({collection: this.tabs});
 
