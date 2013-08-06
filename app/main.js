@@ -1,3 +1,4 @@
+
 //  main.js
 //  Directus 6.0
 
@@ -21,10 +22,11 @@ require([
   "schemas/settings.global",
   "schemas/settings.media",
   "core/extensions",
-  "alerts"
+  "alerts",
+  "core/tabs"
 ],
 
-function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts) {
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts, Tabs) {
 
     var defaultBootstrapData = {
       path: '/directus/',
@@ -45,24 +47,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       },
       storage_adapters: {},
       tab_privileges: {},
-      tables: [
-        {
-          preferences: media.preferences,
-          schema: _.extend({columns: media.structure}, media.table)
-        },
-        {
-          preferences: users.preferences,
-          schema: _.extend({columns: users.structure}, users.table)
-        },
-        {
-          preferences: activity.preferences,
-          schema: _.extend({columns: activity.structure}, activity.table)
-        },
-        {
-          preferences: groups.preferences,
-          schema: _.extend({columns: groups.structure}, groups.table)
-        }
-      ],
+      preferences: [],
+      tables: [],
       nonces: {
         pool: [],
         nonce_pool_size: 10,
@@ -71,8 +57,16 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       }
     };
 
+    var defaultTables = [
+      { schema: _.extend({columns: media.structure}, media.table) },
+      { schema: _.extend({columns: users.structure}, users.table) },
+      { schema: _.extend({columns: activity.structure}, activity.table) },
+      { schema: _.extend({columns: groups.structure}, groups.table) }
+    ];
+
     // default bootstrap data global storage
     window.directusData = _.defaults(window.directusData, defaultBootstrapData);
+    window.directusData.tables = _.union(window.directusData.tables, defaultTables);
 
     //Override backbone sync for custom error handling
     var sync = Backbone.sync;
@@ -220,6 +214,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Always bootstrap schema and table info.
+
     _.each(data.tables, function(options) {
 
       var tableName = options.schema.id;
@@ -234,8 +229,12 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       app.columns[tableName] = model.columns;
       app.tables.add(model);
 
-      // Set user preferences
-      app.preferences[tableName] = new Backbone.Model(options.preferences);
+    });
+
+    // Set user preferences
+    _.each(data.preferences, function(data) {
+      var tableName = data.table_name;
+      app.preferences[tableName] = new Backbone.Model(data);
       app.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
     });
 
@@ -254,21 +253,12 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Setup core data collections.
-    app.media =
-    app.entries.directus_media = new Directus.EntriesCollection(data.active_media, {
-      table: app.tables.get('directus_media'),
-      structure: new Directus.CollectionColumns(media.structure, {parse: true}),
-      preferences: app.preferences.directus_media,
-      url: app.API_URL + 'media',
-      privileges: app.privileges.directus_media,
-      parse: true
-    });
 
     // @todo: Maybe do this earlier?
-    app.users = new Directus.EntriesCollection(data.users, {
-      parse: true,
+
+    app.users = new Directus.EntriesCollection([], {
       table: app.tables.get('directus_users'),
-      structure: new Directus.CollectionColumns(users.structure, {parse: true}),
+      structure: app.columns.directus_users,
       preferences: app.preferences.directus_users,
       url: app.API_URL + 'tables/directus_users/rows',
       filters: {columns: ['avatar', 'first_name', 'last_name', 'group', 'activity', 'email', 'description']},
@@ -276,25 +266,35 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       rowsPerPage: 3000
     });
 
-    app.activity = new Directus.EntriesCollection({}, {
+    app.media =
+    app.entries.directus_media = new Directus.EntriesCollection([], {
+      table: app.tables.get('directus_media'),
+      structure: app.columns.directus_media,
+      preferences: app.preferences.directus_media,
+      url: app.API_URL + 'media',
+      privileges: app.privileges.directus_media,
+      filters: {columns: ['name','title','size','user','date_uploaded']}
+    });
+
+    app.activity = new Directus.EntriesCollection([], {
       table: app.tables.get('directus_activity'),
-      structure: new Directus.CollectionColumns(activity.structure, {parse: true}),
+      structure: app.columns.directus_activity,
       preferences: new Backbone.Model(activity.preferences),
       url: app.API_URL + 'activity/',
       privileges: app.privileges.directus_activity
     });
 
     app.groups =
-    app.entries.directus_groups = new Directus.EntriesCollection(data.groups, {
+    app.entries.directus_groups = new Directus.EntriesCollection([], {
       table: app.tables.get('directus_groups'),
       preferences: new Backbone.Model(groups.preferences),
-      structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
+      structure: app.columns.directus_groups,
       url: app.API_URL + 'groups/',
       privileges: app.privileges.directus_groups,
-      parse: true
     });
 
-/*
+/*  
+
     app.me = new Directus.Model(data.me, {
       table: app.tables.get('directus_users'),
       structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
@@ -346,6 +346,14 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     tabs = _.filter(tabs, function(tab) {
       return !_.contains(tabBlacklist, tab.id);
     });
+
+    // Turn into collection
+    tabs = new Tabs.Collection(tabs);
+
+    // Bootstrap data
+    app.groups.reset(data.groups, {parse: true});
+    app.users.reset(data.users, {parse: true});
+    app.media.reset(data.active_media, {parse: true});
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
