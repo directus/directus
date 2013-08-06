@@ -13,6 +13,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
   var EntriesModel = Backbone.Model.extend({
 
     parse: function(result) {
+
       this._lastFetchedResult = result;
 
       result = this.parseRelational(result);
@@ -195,26 +196,37 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
     sync: function(method, model, options) {
       var isModel,
-          isCollection;
+          isCollection,
+          attributes = this.attributes;
+
 
       if (method === 'patch') {
-        _.each(this.attributes, function(value, key) {
-          isModel = (value instanceof Backbone.Model);
-          isCollection = (value instanceof Backbone.Collection);
 
-          if (isModel || isCollection) {
+
+
+        var relationalColumns = this.getStructure().getRelationalColumns();
+        //var relationalAttributes = _.pick(this.attributes, relationalKeys);
+        
+        _.each(relationalColumns, function(column) {
+            var key = column.id;
+            var value = attributes[key];
+
+            // Check if it's a one-many and it should be deleted!
+            if ('MANYTOONE' === column.getRelationshipType() && _.isEmpty(value.attributes)) {
+              options.attrs[key] = null;
+              return;
+            }
+
             // Add foreign data to patch. Only add changed attributes
             value = value.toJSON({changed: true});
 
             if (!_.isEmpty(value)) {
               options.attrs[key] = value;
             }
-          }
 
-        });
+        }, this);
+
       }
-
-      //return;
 
       return Backbone.sync.apply(this, [method, model, options]);
     },
