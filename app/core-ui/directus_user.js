@@ -21,9 +21,11 @@ define(['app','backbone'], function(app, Backbone) {
         html = '{{userFull user}}';
         break;
       case 'short':
+      default:      
         html = '{{userShort user}}';
         break;
     }
+
     var template = Handlebars.compile(html);
     return template({user: parseInt(options.value,10)});
   };
