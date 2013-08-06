@@ -168,12 +168,5 @@ define([], function() {
   }
   ];
 
-  activity.preferences = {
-    "columns_visible":"activity,datetime,user",
-    "sort":"datetime",
-    "sort_order":"DESC",
-    "active":"1"
-  };
-
   return activity;
 });

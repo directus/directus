@@ -279,15 +279,6 @@ define([], function() {
     }
   ];
 
-  media.preferences = {
-    "id":"9",
-    "user":"1",
-    "table_name":"directus_media",
-    "columns_visible":"item,title,type,size,user,date_uploaded",
-    "sort":"id",
-    "sort_order":"ASC",
-    "active":"1"
-  };
 
   return media;
 });
