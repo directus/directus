@@ -41,8 +41,35 @@ $data['storage_adapters'] = array_merge($data['storage_adapters'], $adaptersByUn
 
 $data['path'] = DIRECTUS_PATH;
 $data['page'] = '#tables';
-$data['tables'] = $db->get_tables();
-$data['users'] = $db->get_users();
+
+
+// ==================================================================
+// @todo: this is a hack! we need to decouple preferences from tables
+// and exclude schemas for directus_ tables
+$data['tables'] = array();
+$data['preferences'] = array();
+$tables = $db->get_tables();
+foreach ($tables as $table) {
+	$tableName = $table['schema']['id'];
+
+	//decouple preferences
+	$data['preferences'][] = $table['preferences'];
+	unset($table['preferences']);
+
+	//skip directus tables
+	if ('directus_' === substr($tableName,0,9)) {
+		continue;
+	}
+
+	$data['tables'][] = $table;
+}
+
+// ==================================================================
+
+
+$data['users'] = $db->get_entries("directus_users", array('perPage'=>99999,'active'=>1));
+
+
 $data['groups'] = $db->get_entries("directus_groups");
 $data['settings'] = $db->get_settings('global');
 $data['active_media'] = $db->count_active('directus_media');
