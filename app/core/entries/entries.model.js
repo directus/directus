@@ -158,7 +158,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
           case 'MANYTOONE':
             var data = {};
 
-            if (attributes[id] !== undefined) {
+            if (attributes[id] !== undefined || attributes[id] !== null) {
               data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
             }
 
