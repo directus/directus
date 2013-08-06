@@ -257,8 +257,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       //Fade out and remove splash
       $('#splash').fadeOut('fast').remove();
 
-
-      this.tabs = new Tabs.Collection(options.tabs);
+      this.tabs = options.tabs;
       this.extensions = {};
 
       _.each(options.extensions, function(item) {
@@ -298,28 +297,19 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       var tabs = new Tabs.View({collection: this.tabs});
 
       this.v.main = new Backbone.Layout({
+
         el: "#main",
-        //template: "main",
+
         views: {
           '#navbar': new Navbar({model: app.settings.get('global')}),
           '#tabs': tabs
         }
+
       });
 
       this.v.messages = new Backbone.Layout({
         el: "#messages"
       });
-
-      // Update media counter
-
-      app.media.on('sync add', function() {
-        // console.log('ssssync');
-        // console.log(app.media.table.get('active'), app.media);
-        this.tabs.get('media').set({count: app.media.table.get('active')});
-        tabs.render();
-      }, this);
-
-      this.v.main.render();
 
       this.on('subroute', function(id) {
         this.tabs.setActive(id);
@@ -335,15 +325,18 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           var user = app.getCurrentUser();
           var currentPath = window.location.pathname.substring(app.root.length);
           if(currentPath.length) {
+
             last_page = JSON.stringify({
               'path' : currentPath,
               'route' : route.substring(6),
               'param' : router
             });
+
             user.save({'last_page': last_page}, {
               patch: true,
-              url: user.url + "/" + user.id + "?skip_activity_log=1"
+              url: user.url() + "?skip_activity_log=1"
             });
+
           } else {
             // If theere's no path in the location (i.e. the user just logged in),
             // take them to their last visited page, defaulting to "tables".
