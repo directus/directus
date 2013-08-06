@@ -212,7 +212,6 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
   });
 
   Module.validate = function(value, options) {
-    console.log(options.schema.isRequired());
     if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
       return 'The field is required';
     };
