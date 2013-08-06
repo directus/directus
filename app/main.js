@@ -240,6 +240,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       app.preferences[tableName].url = app.API_URL + 'tables/' + tableName + '/preferences';
     });
 
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Instantiate privileges
     var myPrivileges = data.privileges;
@@ -281,9 +283,10 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.activity = new Directus.EntriesCollection([], {
       table: app.tables.get('directus_activity'),
       structure: app.columns.directus_activity,
-      preferences: new Backbone.Model(activity.preferences),
+      preferences: app.preferences.directus_activity,
       url: app.API_URL + 'activity/',
-      privileges: app.privileges.directus_activity
+      privileges: app.privileges.directus_activity,
+      filters: {columns: ['activity','datetime','user']}
     });
 
     app.groups =
