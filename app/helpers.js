@@ -11,7 +11,7 @@ require([
   });
 
   Handlebars.registerHelper('number', function(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return number === undefined ? '' : number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   });
 
   Handlebars.registerHelper('resource', function(name) {
