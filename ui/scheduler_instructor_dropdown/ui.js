@@ -62,6 +62,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     load_instructors: function() {
       var that = this;
+      var instructor_id = $('select[name=instructor_id]').val();
       console.log($('select[name=room_id]').val(), $('select[name=instructor_id]').val());
       // we will hit the scheduler API for this I suppose, since we don't really have a different perfect place for it...
        $.ajax({
@@ -69,12 +70,12 @@ define(['app', 'backbone'], function(app, Backbone) {
           type: 'get',
           dataType: 'json',
           success: function(res) {
-            that.process_instructors(res)
+            that.process_instructors(res, instructor_id)
           }
       });
     },
 
-    process_instructors: function(res) {
+    process_instructors: function(res, instructor_id) {
       var that = this;
       //console.log(that.$('select'));
       that.$('select').empty();
@@ -82,7 +83,12 @@ define(['app', 'backbone'], function(app, Backbone) {
       _.each(res, function(instructor) {
         console.log(instructor);
         if (instructor.status == "available") {
-          that.$('select').append("<option value='" + instructor.id + "'>" + instructor['last_name'] + ", " + instructor['first_name'] + "</option>");
+          var opt_string = "<option value='" + instructor.id + "'";
+          if (instructor.id === instructor_id) {
+            opt_string += " selected ";
+          }
+          opt_string += ">" + instructor['last_name'] + ", " + instructor['first_name'] + "</option>";
+          that.$('select').append(opt_string);
         } else if (instructor.status == "conflict") {
           that.$('select').append("<option value='" + instructor.id + "' class='red' disabled>" + instructor['last_name'] + ", " + instructor['first_name'] + " (already teaching at: " + instructor.room_title + ")</option>");
         }
