@@ -61,7 +61,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       { schema: _.extend({columns: media.structure}, media.table) },
       // @todo: for now we are ignoring the static user schema since we are extending it 
       // with custom fields, eventually we should merge static and custom data.
-      //{ schema: _.extend({columns: users.structure}, users.table) },
+      { schema: _.extend({columns: users.structure}, users.table) },
       { schema: _.extend({columns: activity.structure}, activity.table) },
       { schema: _.extend({columns: groups.structure}, groups.table) }
     ];
