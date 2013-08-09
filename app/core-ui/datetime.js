@@ -81,11 +81,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       this.value = date;
       this.render();
+      this.$('input[type=hidden]').trigger('change');
     },
 
     makeNow: function() {
       this.value = new Date();
       this.render();
+      this.$('input[type=hidden]').trigger('change');
     },
 
     serialize: function() {
