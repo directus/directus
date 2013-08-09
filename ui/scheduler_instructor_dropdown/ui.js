@@ -64,7 +64,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var that = this;
       // we will hit the scheduler API for this I suppose, since we don't really have a different perfect place for it...
        $.ajax({
-          url: app.API_URL + 'extensions/scheduler/get_instructor_list_with_conflicts/' + $('#datetime').val() + '/' + $('select[name=room_id]').val() + '/0', // + $('select[name=instructor_id]').val(),
+          url: app.API_URL + 'extensions/scheduler/get_instructor_list_with_conflicts/' + $('#datetime').val() + '/' + $('select[name=room_id]').val() + '/' + $('select[name=instructor_id]').val(),
           type: 'get',
           dataType: 'json',
           success: function(res) {
