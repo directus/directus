@@ -62,6 +62,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     load_instructors: function() {
       var that = this;
+      var instructor_id = $('select[name=instructor_id]').val();
+      console.log(instructor_id);
       // we will hit the scheduler API for this I suppose, since we don't really have a different perfect place for it...
        $.ajax({
           url: app.API_URL + 'extensions/scheduler/get_instructor_list_with_conflicts/' + $('#datetime').val() + '/' + $('select[name=room_id]').val() + '/' + $('select[name=instructor_id]').val(),
