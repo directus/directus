@@ -63,7 +63,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     load_instructors: function() {
       var that = this;
       var instructor_id = $('select[name=instructor_id]').val();
-      console.log($('select[name=room_id]').val(), $('select[name=instructor_id]').val());
       // we will hit the scheduler API for this I suppose, since we don't really have a different perfect place for it...
        $.ajax({
           url: app.API_URL + 'extensions/scheduler/get_instructor_list_with_conflicts/' + $('#datetime').val() + '/' + $('select[name=room_id]').val() + '/' + $('select[name=instructor_id]').val(),
@@ -90,7 +89,8 @@ define(['app', 'backbone'], function(app, Backbone) {
           opt_string += ">" + instructor['last_name'] + ", " + instructor['first_name'] + "</option>";
           that.$('select').append(opt_string);
         } else if (instructor.status == "conflict") {
-          that.$('select').append("<option value='" + instructor.id + "' class='red' disabled>" + instructor['last_name'] + ", " + instructor['first_name'] + " (already teaching at: " + instructor.room_title + ")</option>");
+          if (instructor.id != instructor_id)
+            that.$('select').append("<option value='" + instructor.id + "' class='red' disabled>" + instructor['last_name'] + ", " + instructor['first_name'] + " (already teaching at: " + instructor.room_title + ")</option>");
         }
         
       }, this);
