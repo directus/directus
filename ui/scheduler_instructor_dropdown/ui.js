@@ -57,15 +57,21 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function(options) {
       _.bindAll(this, 'load_instructors', 'process_instructors');
       $('#datetime').live('change', this.load_instructors);
-
+      this.load_instructors();
     },
 
     load_instructors: function() {
       var that = this;
       var instructor_id = $('select[name=instructor_id]').val();
+
+      if (typeof $('#datetime').val() === "undefined") {
+        var url = app.API_URL + 'extensions/scheduler/get_instructor_list_with_conflicts';
+      } else {
+        var url = app.API_URL + 'extensions/scheduler/get_instructor_list_with_conflicts/' + $('#datetime').val() + '/' + $('select[name=room_id]').val() + '/' + $('select[name=instructor_id]').val();
+      }
       // we will hit the scheduler API for this I suppose, since we don't really have a different perfect place for it...
        $.ajax({
-          url: app.API_URL + 'extensions/scheduler/get_instructor_list_with_conflicts/' + $('#datetime').val() + '/' + $('select[name=room_id]').val() + '/' + $('select[name=instructor_id]').val(),
+          url: url,
           type: 'get',
           dataType: 'json',
           success: function(res) {
@@ -80,7 +86,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       that.$('select').empty();
       this.$('select').append('<option value="">Please select an instructor from the list below.</option>');
       _.each(res, function(instructor) {
-        console.log(instructor);
         if (instructor.status == "available") {
           var opt_string = "<option value='" + instructor.id + "'";
           if (instructor.id === instructor_id) {
@@ -90,7 +95,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           that.$('select').append(opt_string);
         } else if (instructor.status == "conflict") {
           if (instructor.id != instructor_id)
-            that.$('select').append("<option value='" + instructor.id + "' class='red' disabled>" + instructor['last_name'] + ", " + instructor['first_name'] + " (already teaching at: " + instructor.room_title + ")</option>");
+            that.$('select').append("<option value='" + instructor.id + "' disabled>" + instructor['last_name'] + ", " + instructor['first_name'] + " (already teaching at: " + instructor.room_title + ")</option>");
         }
         
       }, this);
