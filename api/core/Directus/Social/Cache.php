@@ -16,11 +16,34 @@ class Cache {
 
     public static $scrapeIntervalSeconds = 300; // 5 min
 
+    /**
+     * Functions used to filter API responses. (e.g. isolate certain hashtags)
+     * @var array
+     */
+    protected $scrapeFilters = array();
+
     public function __construct() {
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
         $this->SocialFeedsTableGateway = new DirectusSocialFeedsTableGateway($acl, $ZendDb);
         $this->SocialPostsTableGateway = new DirectusSocialPostsTableGateway($acl, $ZendDb);
+    }
+
+    public function addScrapeFilter($filter) {
+        if(!is_callable($filter)) {
+            throw new \RuntimeException("Filter must be callable.");
+        }
+        $this->scrapeFilters[] = $filter;
+    }
+
+    protected function filterFeedItem($item, $feedType) {
+        foreach($this->scrapeFilters as $filter) {
+            $item = $filter($item, $feedType);
+            if(false === $item) {
+                return false;
+            }
+        }
+        return $item;
     }
 
     public function scrapeFeedIfDue($handle, $type) {
@@ -48,29 +71,6 @@ class Cache {
         $due = time() - self::$scrapeIntervalSeconds;
         $due = date("c", $due);
         return $due;
-    }
-
-    /**
-     * Most useful for a cron job.
-     */
-    public function scrapeFeedsIfDue() {
-        $dueFeeds = $this->getDueFeeds();
-        foreach($dueFeeds as $feed)
-            $this->scrapeFeed($feed->toArray());
-    }
-
-    /**
-     * Most useful for a cron job.
-     */
-    private function getDueFeeds() {
-        $due = $this->getDueDate();
-        $select = new Select($this->SocialFeedsTableGateway->getTable());
-        $select
-            ->where
-                ->lessThanOrEqualTo('last_checked', $due)
-                ->or->isNull('last_checked')
-                ->or->equalTo('last_checked', '0000-00-00 00:00:00');
-        return $this->SocialFeedsTableGateway->selectWith($select);
     }
 
     private function scrapeFeed(array $feed) {
@@ -102,6 +102,10 @@ class Cache {
     private function scrapeTwitterFeed(array $feed) {
         $cb = Bootstrap::get('codebird');
         $statuses = (array) $cb->statuses_userTimeline(array('screen_name' => $feed['name']));
+        // The Twitter account is "protected"
+        if(isset($statuses['error']) && $statuses['error'] = "Not authorized") {
+            return $feed;
+        }
         $httpStatus = $statuses['httpstatus'];
         unset($statuses['httpstatus']);
         $responseStatusIds = array();
@@ -111,6 +115,10 @@ class Cache {
             if(!isset($status['id'])) {
                 unset($statuses[$idx]);
                 break;
+            }
+            $status = $this->filterFeedItem($status, DirectusSocialFeedsTableGateway::TYPE_TWITTER);
+            if(false === $status) {
+                continue;
             }
             $responseStatusIds[] = $status['id'];
             unset($status['user']);
@@ -132,8 +140,10 @@ class Cache {
         $sampleEntry = (array) $statuses[0];
         $feed['data'] = json_encode($sampleEntry['user']);
         $feed['foreign_id'] = $sampleEntry['user']->id;
-        // Remove feed items absent from this feed response
-        $this->SocialPostsTableGateway->deleteOtherFeedPosts($feed['id'], $responseStatusIds);
+        if(!empty($responseStatusIds)) {
+            // Remove feed items absent from this feed response
+            $this->SocialPostsTableGateway->deleteOtherFeedPosts($feed['id'], $responseStatusIds);            
+        }
         return $feed;
     }
 
@@ -153,7 +163,10 @@ class Cache {
         $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s";
         $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id'], $socialSettings['instagram_oauth_access_token']);
         try {
-            $mediaRecent = file_get_contents($endpoint);
+            $mediaRecent = @file_get_contents($endpoint);
+            if(false === $mediaRecent) {
+                return false;
+            }
         } catch(\ErrorException $e) {
             // Don't do anything if the instagram request fails
             return false;
@@ -168,6 +181,10 @@ class Cache {
         $responseStatusIds = array();
         // Scrape entries
         foreach($mediaRecent as $photo) {
+            $photo = $this->filterFeedItem($photo, DirectusSocialFeedsTableGateway::TYPE_INSTAGRAM);
+            if(false === $photo) {
+                continue;
+            }
             $responseStatusIds[] = $photo['id'];
             unset($photo['user']);
             $cachedCopy = $this->SocialPostsTableGateway->feedForeignIdExists($photo['id'], $feed['id']);
@@ -184,8 +201,10 @@ class Cache {
         // Update feed user data
         $sampleEntry = (array) $mediaRecent[0];
         $feed['data'] = json_encode($sampleEntry['user']);
-        // Remove feed items absent from this feed response
-        $this->SocialPostsTableGateway->deleteOtherFeedPosts($feed['id'], $responseStatusIds);
+        if(!empty($responseStatusIds)) {
+            // Remove feed items absent from this feed response
+            $this->SocialPostsTableGateway->deleteOtherFeedPosts($feed['id'], $responseStatusIds);
+        }
         return $feed;
     }
 
@@ -240,8 +259,9 @@ class Cache {
      * @return void
      */
     private function updateFeedEntryDataIfNewer(array $feed, $cachedEntry, $newEntryData) {
-        if(!is_array($newEntryData))
+        if(!is_array($newEntryData)) {
             $newEntryData = (array) $newEntryData;
+        }
         $newEntryData = json_encode($newEntryData);
         if($newEntryData !== $cachedEntry['data']) {
             $set = array('data' => $newEntryData);
@@ -254,8 +274,9 @@ class Cache {
     }
 
     private function newFeedEntry(array $feed, $newEntryData, \DateTime $published) {
-        if(!is_array($newEntryData))
+        if(!is_array($newEntryData)) {
             $newEntryData = (array) $newEntryData;
+        }
         $entryAsJson = json_encode($newEntryData);
         return $this->SocialPostsTableGateway->insert(array(
             'feed' => $feed['id'],
