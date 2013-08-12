@@ -63,6 +63,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     load_instructors: function() {
       var that = this;
       var instructor_id = $('select[name=instructor_id]').val();
+      if (typeof instructor_id === "undefined") {
+        instructor_id = this.model.get('instructor_id');
+      }
+        
 
       if (typeof $('#datetime').val() === "undefined") {
         var url = app.API_URL + 'extensions/scheduler/get_instructor_list_with_conflicts';
@@ -88,9 +92,9 @@ define(['app', 'backbone'], function(app, Backbone) {
       _.each(res, function(instructor) {
         if (instructor.status == "available") {
           var opt_string = "<option value='" + instructor.id + "'";
-          if (instructor.id === instructor_id) {
-            opt_string += " selected ";
-          }
+         // if (instructor.id === instructor_id || instructor.id === this.model.get('instructor_id')) {
+         //   opt_string += " selected='selected' ";
+         // }
           opt_string += ">" + instructor['last_name'] + ", " + instructor['first_name'] + "</option>";
           that.$('select').append(opt_string);
         } else if (instructor.status == "conflict") {
@@ -99,6 +103,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         }
         
       }, this);
+
+      that.$('select').val(instructor_id);
 
     }
 
