@@ -72,6 +72,14 @@ function(app, Backbone) {
     data: function() {
       var data = this.$el.serializeObject();
       var whiteListedData = _.pick(data, this.visibleFields);
+      
+      // check if any of the listed data has multiple values, then serialize it to string
+      _.each(whiteListedData, function(value, key, obj) {
+        if (_.isArray(value)) {
+          obj[key] = value.join(',');
+        }
+      });
+      
       return whiteListedData;
     },
 
