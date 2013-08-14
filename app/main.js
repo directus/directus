@@ -227,6 +227,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       var model = new Directus.TableModel(options.schema, {parse: true});
       model.url = app.API_URL + 'tables/' + tableName;
       model.columns.url = app.API_URL + 'tables/' + tableName + '/columns';
+      model.columns.table = model;
 
       app.columns[tableName] = model.columns;
       app.tables.add(model);
