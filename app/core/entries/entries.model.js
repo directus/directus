@@ -211,7 +211,10 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
             var key = column.id;
             var value = attributes[key];
 
-            // Check if it's a one-many and it should be deleted!
+            // Some one-manys are not nested objects and will not need any special treatment
+            if (!_.isObject(value)) return;
+
+            // Check if it is a one-many and if it should be deleted!
             if ('MANYTOONE' === column.getRelationshipType() && _.isEmpty(value.attributes)) {
               options.attrs[key] = null;
               return;
