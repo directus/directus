@@ -24,7 +24,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label>';
+  var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label>' +
+                  '{{#columns}}<label><input type="checkbox" name="{{../name}}" value="{{columnName}}" {{#if selected}}checked{{/if}}>{{title}}</label>{{/columns}}';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -37,11 +38,27 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       return {
         name: this.options.name,
-        note: this.options.schema.get('comment')
+        note: this.options.schema.get('comment'),
+        columns: this.columns
       };
     },
 
-    initialize: function() {
+    initialize: function(options) {
+      var table = options.model.getTable();
+      var tableName = table.id;
+    	var columns = app.columns[tableName].pluck('column_name');      
+      var selected = this.options.value ? this.options.value.split(',') : [];
+
+      this.columns = _.map(columns, function(value) {
+        var item = {
+          columnName: value,
+          title: app.capitalize(value),
+        }
+
+        if (_.contains(selected, value)) item.selected = true;
+
+        return item;
+      });
 
     }
 
