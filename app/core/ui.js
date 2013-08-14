@@ -1,5 +1,6 @@
 define([
   "core-ui/textinput",
+  "core-ui/directus_columns",
   "core-ui/directus_media",
   "core-ui/checkbox",
   "core-ui/color",
