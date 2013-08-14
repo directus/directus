@@ -51,6 +51,7 @@ function(textinput) {
         collection: this.collection,
         settings: schema.options,
         schema: schema,
+        structure: this.structure,
         name: attr,
         value: this.model.get(attr),
         canWrite: _.has(this.model, 'canEdit') ? this.model.canEdit(attr) : true
