@@ -17,6 +17,10 @@ function(app, Backbone) {
       return this.parent.structure;
     },
 
+    getTable: function() {
+      return this.parent.getTable();
+    },
+
     //@todo: This is code repetition. Almost identical to entries.model. Create a mixin?
     validate: function(attributes, options) {
       var errors = [];
@@ -83,6 +87,10 @@ function(app, Backbone) {
         }
 
         return this.get('table_related');
+      },
+
+      getTable: function() {
+        return this.collection.table;
       },
 
       getRelationshipType: function() {
