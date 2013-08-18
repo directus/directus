@@ -104,6 +104,11 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
 
         $result = $this->selectWith($select);
         $result = $result->toArray();
+
+        foreach ($result as &$row) {
+            $row['datetime'] .= ' UTC';
+        }
+
         return $result;
     }
 
