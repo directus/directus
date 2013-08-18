@@ -497,6 +497,15 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
     $get_old = $db->get_entries($table, $params);
     $Media = new TableGateway($acl, $table, $ZendDb);
     $get_new = $Media->getEntries($params);
+
+    if (array_key_exists('rows', $get_new)) {
+        foreach ($get_new['rows'] as &$row) {
+            $row['date_uploaded'] .= ' UTC';
+        }
+    } else {
+        $get_new['date_uploaded'] .= ' UTC';
+    }
+
     JsonView::render($get_new, $get_old);
 })->via('GET','PATCH','POST','PUT');
 
