@@ -71,6 +71,10 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 
+        foreach ($rowset as &$row) {
+            $row['datetime'] .= ' UTC';
+        }
+
         $countTotalWhere = new Where;
         $countTotalWhere
             ->isNull('parent_id')
