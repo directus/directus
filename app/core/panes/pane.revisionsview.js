@@ -4,6 +4,18 @@ define([
 
 function(app) {
 
+  var RevisionsModel = Backbone.Model.extend({
+    parse: function(row) {
+      row.datetime = new Date(row.datetime);
+      return row;
+    }
+  });
+
+  var RevisionsCollection = Backbone.Collection.extend({
+    model: RevisionsModel
+  });
+
+
   var PaneRevisionsView = Backbone.Layout.extend({
 
     template: 'module-revisions',
@@ -25,7 +37,7 @@ function(app) {
     },
 
     initialize: function(options) {
-      this.collection = new Backbone.Collection();
+      this.collection = new RevisionsCollection();
       this.collection.url = options.baseURL + '/revisions';
       this.collection.fetch();
       this.collection.on('sync', this.render, this);
