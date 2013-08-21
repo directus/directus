@@ -8899,6 +8899,75 @@ header {
 .customers_table .directus-module-section {
   position: relative;
 }
+/* h2 { */
+#booker_breadcrumb_trail .breadcrumb-divider {
+  display: inline-block;
+  width: 14px;
+}
+.has-dropdown:hover ~ .crumb-bg-hightlight {
+  display: block;
+}
+.has-dropdown:hover .crumb-dropdown {
+  visibility: visible;
+  opacity: 1;
+}
+.has-dropdown .crumb-name {
+  position: relative;
+  z-index: 10;
+}
+.has-dropdown .dropdown-caret {
+  position: relative;
+  display: inline-block;
+  margin-left: 2px;
+  width: 9px;
+  height: 7px;
+  top: -6px;
+  background: url('../img/crumb-dropdown-arrow.png') no-repeat;
+}
+.crumb-bg-hightlight {
+  display: none;
+  position: absolute;
+  height: 39px;
+  display: none;
+  border: 1px solid #ededed;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom: 0;
+  box-shadow: 0 3px 12px #ddd;
+}
+.crumb-bg-hightlight.wider-than-dropdown {
+  border-bottom-right-radius: 4px;
+}
+.crumb-dropdown {
+  position: absolute;
+  display: inline-block;
+  opacity: 0;
+  visibility: hidden;
+  border: 1px solid #ededed;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  border-top: 0;
+  box-shadow: 0 3px 12px #ddd;
+  background-color: #fff;
+  z-index: 2;
+  min-width: 200px;
+  padding: 8px;
+  -webkit-transition: height 0.1s ease-in-out;
+}
+.crumb-dropdown .cover-box-shadow {
+  display: inline-block;
+  position: absolute;
+  height: 10px;
+  width: 90px;
+  background: #fff;
+  top: -4px;
+  left: 0;
+}
+.crumb-dropdown .crumb-dropdown-content {
+  overflow: auto;
+}
+/* } */
 .activity-module {
   background-color: #F4F4F4;
   border-radius: 2px;
