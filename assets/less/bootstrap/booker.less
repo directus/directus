@@ -849,7 +849,93 @@
 
 
 
+/* h2 { */
+	&#booker_breadcrumb_trail {
+		.breadcrumb-divider {
+			display: inline-block;
+			width: 14px;
+		}
+	}
 
+	.has-dropdown {
+		&:hover {
+			~.crumb-bg-hightlight {
+				display: block;
+			}
+
+			.crumb-dropdown {
+				visibility: visible;
+				opacity: 1;
+				// height: 500px; // DERTMINE THE HEIGHT DYNAMICALLY, SIMILAR TO SOULCYCLE GLOBAL NAV DROPDOWN
+			}
+		}
+
+		.crumb-name {
+			position: relative;
+			z-index: 10;
+		}
+
+		.dropdown-caret {
+			position: relative;
+			display: inline-block;
+			margin-left: 2px;
+			width: 9px;
+			height: 7px;
+			top: -6px;
+			background: url('../img/crumb-dropdown-arrow.png') no-repeat;
+		}
+	}
+	.crumb-bg-hightlight {
+		display: none;
+		position: absolute;
+		height: 39px;
+		display: none;
+		border: 1px solid #ededed;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+		border-bottom: 0;
+		box-shadow: 0 3px 12px #ddd;
+
+		&.wider-than-dropdown {
+			border-bottom-right-radius: 4px;
+		}
+	}
+
+	.crumb-dropdown {
+		position: absolute;
+		display: inline-block;
+		opacity: 0;
+		visibility: hidden;
+		border: 1px solid #ededed;
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+		border-top-right-radius: 4px;
+		border-top: 0;
+		box-shadow: 0 3px 12px #ddd;
+		background-color: #fff;
+		z-index: 2;
+		min-width: 200px;
+		padding: 8px;
+		// height: 0; // MAKE SURE THIS IS ADDED DYNAMICALLY IN ORDER TO GET CSS TRANSITION TO WORK
+		// overflow: auto;
+		-webkit-transition: height .1s ease-in-out;
+
+		.cover-box-shadow {
+			display: inline-block;
+			position: absolute;
+			height: 10px;
+			width: 90px; // is overwritten by JS that determines width based on .crumb-bg-highlight width
+			background: #fff;
+			top: -4px;
+			left: 0;
+		}
+
+		.crumb-dropdown-content {
+			overflow: auto;
+		}
+	}
+
+/* } */
 
 
 
