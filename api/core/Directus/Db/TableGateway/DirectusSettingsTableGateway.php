@@ -64,4 +64,33 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
+
+    public function setValues($collection, $data) {
+        $itemCount = count($data);
+        $placeholders = array_fill(0, $itemCount, "(?,?,?)");
+        //$placeholders = array("('x','x','x')","('u','u','u')");
+        $values = array();
+
+        foreach ($data as $key => $value) {
+            $values[] = $collection;
+            $values[] = $key;
+            $values[] = $value;
+/*            $values[] = array(
+                'collection' => $collection,
+                'name'       => $key,
+                'value'      => $value
+            );*/
+        }
+
+        $sql = 'INSERT INTO directus_settings (collection, name, value) VALUES ' . implode(',', $placeholders) .' '.
+               'ON DUPLICATE KEY UPDATE collection = VALUES(collection), name = VALUES(name), name = VALUES(value)';
+
+
+        $this->adapter->query($sql, $values);
+
+
+        // Since Zend doesn't support “INSERT…ON DUPLICATE KEY UDPATE” we need some raw SQL
+        // http://stackoverflow.com/questions/302544/is-there-a-way-to-do-an-insert-on-duplicate-key-udpate-in-zend-framework
+    }
+
 }
