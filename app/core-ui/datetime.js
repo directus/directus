@@ -25,6 +25,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
     {id: 'include_seconds', ui: 'checkbox'},
+    {id: 'contextual_date_in_listview', ui: 'checkbox'},
     {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
   ];
 
@@ -168,8 +169,11 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   //@todo make contextual date a ui
   Module.list = function(options) {
-    var template = Handlebars.compile('{{contextualDate date}}');
-    return template({date: options.value});
+    if (options.settings.get('contextual_date_in_listview') == '1') {
+      var template = Handlebars.compile('{{contextualDate date}}');
+      return template({date: options.value});
+    }
+    return options.value;
   };
 
   return Module;

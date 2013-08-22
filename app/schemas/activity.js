@@ -164,7 +164,11 @@ define([], function() {
     "hidden_list":false,
     "hidden_input":false,
     "required":false,
-    "ui":"datetime"
+    "ui":"datetime",
+    "options": {
+        "id": "datetime",
+        "contextual_date_in_listview": "1"
+    }
   }
   ];
 
