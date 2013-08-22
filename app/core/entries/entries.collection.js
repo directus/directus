@@ -29,7 +29,8 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     getFilters: function() {
-      return _.extend(this.filters, _.pick(this.preferences.toJSON(),'columns_visible','sort','sort_order','active'));
+      var preferences = this.preferences ? this.preferences.toJSON() : {};
+      return _.extend(this.filters, _.pick(preferences,'columns_visible','sort','sort_order','active'));
     },
 
     setFilter: function(key, value, options) {
