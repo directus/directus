@@ -74,7 +74,7 @@ function(textinput) {
         collection: collection,
         settings: schema.options,
         schema: schema,
-        value: model.has(attr) ? model.get(attr) : model.id,
+        value: model.get(attr),
         tagName: 'td'
     });
   };
