@@ -100,13 +100,15 @@ define(['app', 'backbone'], function(app, Backbone) {
         note: this.options.schema.get('comment')
       };
 
-      var nullValue = (this.value == undefined || this.value == 'Invalid Date');
+      var nullValue = (this.value == undefined || this.value == 'Invalid Date' || this.value === null);
+
       if (nullValue && this.autoPopulateWhenHiddenAndNull) {
         this.makeNow();
         this.model.set(this.options.name, this.value);
       }
 
-      if (value !== undefined) {
+
+      if (!nullValue) {
 
         // Don't show corrupted dates
         try {
@@ -166,6 +168,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   //@todo make contextual date a ui
   Module.list = function(options) {
+    console.log('x', options);
     var template = Handlebars.compile('{{contextualDate date}}');
     return template({date: options.value});
   };
