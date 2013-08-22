@@ -168,7 +168,6 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   //@todo make contextual date a ui
   Module.list = function(options) {
-    console.log('x', options);
     var template = Handlebars.compile('{{contextualDate date}}');
     return template({date: options.value});
   };
