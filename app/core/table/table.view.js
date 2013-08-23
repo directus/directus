@@ -149,14 +149,14 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       }, this);
 
       // this one used to listen to remove.
-      collection.on('sync visibility', function() {
-        //app.trigger('load');
+      collection.on('visibility', function() {
         this.render();
       }, this);
 
-      collection.on('all', function() {
-        //console.log(arguments);
-      });
+      collection.on('sync', function(collection) {
+        if (collection instanceof Backbone.Model) return;
+        this.render();
+      },this);
 
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;
