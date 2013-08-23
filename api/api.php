@@ -549,9 +549,15 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
  */
 
 $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+
+    $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
+
     switch ($app->request()->getMethod()) {
         case "POST":
         case "PUT":
+            unset($requestPayload['id']);
+            $Settings->setValues($id, $requestPayload);
+            die();
             $db->set_settings($requestPayload);
             break;
     }
@@ -559,7 +565,6 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $acl, $ZendDb,
     $settings_old = $db->get_settings();
     $get_old = is_null($id) ? $settings_old : $settings_old[$id];
 
-    $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
     $settings_new = $Settings->fetchAll();
     $get_new = is_null($id) ? $settings_new : $settings_new[$id];
 
