@@ -4,7 +4,9 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
@@ -64,33 +66,42 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
-
+    // Since ZF2 doesn't support “INSERT…ON DUPLICATE KEY UDPATE” we need some raw SQL
     public function setValues($collection, $data) {
-        $itemCount = count($data);
-        $placeholders = array_fill(0, $itemCount, "(?,?,?)");
-        //$placeholders = array("('x','x','x')","('u','u','u')");
-        $values = array();
 
-        foreach ($data as $key => $value) {
-            $values[] = $collection;
-            $values[] = $key;
-            $values[] = $value;
-/*            $values[] = array(
-                'collection' => $collection,
-                'name'       => $key,
-                'value'      => $value
-            );*/
+        $whiteList = array(
+            'media' => array(
+                    'media_naming',
+                    'allowed_thumbnails',
+                    'thumbnail_quality'
+                ),
+            'global' => array(
+                    'site_name',
+                    'site_url',
+                    'cms_color',
+                    'cms_user_auto_sign_out'
+                )
+        );
+
+        if ($collection !== 'media' && $collection !== 'global') {
+            throw new \Exception("The settings collection $collection is not supported");
         }
 
-        $sql = 'INSERT INTO directus_settings (collection, name, value) VALUES ' . implode(',', $placeholders) .' '.
-               'ON DUPLICATE KEY UPDATE collection = VALUES(collection), name = VALUES(name), name = VALUES(value)';
+        $data = ArrayUtils::pick($data, $whiteList[$collection]);
 
+        foreach ($data as $key => $value) {
+            $parameters[] = '(' .
+                $this->adapter->platform->quoteValue($collection) .','.
+                $this->adapter->platform->quoteValue($key) .','.
+                $this->adapter->platform->quoteValue($value) .
+            ')';
+        }
 
-        $this->adapter->query($sql, $values);
+        $sql = 'INSERT INTO directus_settings (`collection`, `name`, `value`) VALUES ' . implode(',', $parameters) .' '.
+               'ON DUPLICATE KEY UPDATE `collection` = VALUES(collection), `name` = VALUES(name), `value` = VALUES(value)';
 
+        $query = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
 
-        // Since Zend doesn't support “INSERT…ON DUPLICATE KEY UDPATE” we need some raw SQL
-        // http://stackoverflow.com/questions/302544/is-there-a-way-to-do-an-insert-on-duplicate-key-udpate-in-zend-framework
     }
 
 }
