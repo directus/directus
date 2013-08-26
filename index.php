@@ -138,7 +138,14 @@ $data = json_encode($data);
 //	$data = JsonView::format_json($data);
 //}
 
-echo template(file_get_contents('main.html'), array(
+$templateVars = array(
 	'data'=> $data,
-	'path'=> DIRECTUS_PATH
-));
+	'path'=> DIRECTUS_PATH,
+	'customFooterHTML' => ''
+);
+
+if(file_exists('./customFooterHTML.html')) {
+	$templateVars['customFooterHTML'] = file_get_contents('./customFooterHTML.html');
+}
+
+echo template(file_get_contents('main.html'), $templateVars);
