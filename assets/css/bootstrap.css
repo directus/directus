@@ -8314,14 +8314,14 @@ header {
   color: #8f8f8f;
   font-weight: 400;
 }
-.booking-session-seats .seat.reserved .customer-actions {
+.booking-session-seats .seat.taken .customer-actions {
   display: none;
   bottom: 0;
 }
-.booking-session-seats .seat.reserved:hover .customer-NAME {
+.booking-session-seats .seat.taken:hover .customer-NAME {
   display: none;
 }
-.booking-session-seats .seat.reserved:hover .customer-actions {
+.booking-session-seats .seat.taken:hover .customer-actions {
   display: block;
 }
 .booking-session-seats .seat .customer-remove,
@@ -8369,7 +8369,7 @@ header {
 .booking-session-seats .seat.open:hover {
   background-color: #8bc53f;
 }
-.booking-session-seats .seat.reserved {
+.booking-session-seats .seat.taken {
   background-color: #8bc53f;
   border: 1px solid #8bc53f;
 }
@@ -8583,14 +8583,14 @@ header {
   color: #8f8f8f;
   font-weight: 400;
 }
-.booking-extra-seats .seat.reserved .customer-actions {
+.booking-extra-seats .seat.taken .customer-actions {
   display: none;
   bottom: 0;
 }
-.booking-extra-seats .seat.reserved:hover .customer-NAME {
+.booking-extra-seats .seat.taken:hover .customer-NAME {
   display: none;
 }
-.booking-extra-seats .seat.reserved:hover .customer-actions {
+.booking-extra-seats .seat.taken:hover .customer-actions {
   display: block;
 }
 .booking-extra-seats .seat .customer-remove,
@@ -8632,13 +8632,13 @@ header {
 .booking-extra-seats .seat.held:hover {
   border: 1px solid #ededed;
 }
-.booking-extra-seats .seat.available {
+.booking-extra-seats .seat.open {
   border: 1px solid #8f8f8f;
 }
-.booking-extra-seats .seat.available:hover {
+.booking-extra-seats .seat.open:hover {
   background-color: #8bc53f;
 }
-.booking-extra-seats .seat.reserved {
+.booking-extra-seats .seat.taken {
   background-color: #8bc53f;
   border: 1px solid #8bc53f;
 }
