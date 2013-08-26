@@ -266,7 +266,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: app.columns.directus_users,
       preferences: app.preferences.directus_users,
       url: app.API_URL + 'tables/directus_users/rows',
-      filters: {columns: ['avatar', 'first_name', 'last_name', 'group', 'email', 'description']},
+      filters: {columns_visible: ['avatar', 'first_name', 'last_name', 'group', 'email', 'description']},
       privileges: app.privileges.directus_users,
       rowsPerPage: 3000
     });
@@ -278,7 +278,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       preferences: app.preferences.directus_media,
       url: app.API_URL + 'media',
       privileges: app.privileges.directus_media,
-      filters: {columns: ['name','title','size','user','date_uploaded']}
+      filters: {columns_visible: ['name','title','size','user','date_uploaded']}
     });
 
     app.activity = new Directus.EntriesCollection([], {
@@ -286,7 +286,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: app.columns.directus_activity,
       url: app.API_URL + 'activity/',
       privileges: app.privileges.directus_activity,
-      filters: {columns: ['activity','datetime','user'], sort_order: 'DESC'}
+      filters: {columns_visible: ['activity','datetime','user'], sort_order: 'DESC'}
     });
 
     app.groups =
@@ -298,7 +298,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       privileges: app.privileges.directus_groups,
     });
 
-/*  
+/*
 
     app.me = new Directus.Model(data.me, {
       table: app.tables.get('directus_users'),
