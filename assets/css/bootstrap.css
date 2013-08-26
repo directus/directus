@@ -8363,10 +8363,10 @@ header {
 .booking-session-seats .seat.held:hover {
   border: 1px solid #ededed;
 }
-.booking-session-seats .seat.available {
+.booking-session-seats .seat.open {
   border: 1px solid #8f8f8f;
 }
-.booking-session-seats .seat.available:hover {
+.booking-session-seats .seat.open:hover {
   background-color: #8bc53f;
 }
 .booking-session-seats .seat.reserved {
