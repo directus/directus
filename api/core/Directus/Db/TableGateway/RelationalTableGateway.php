@@ -524,8 +524,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         //Filter out visible columns only
         if (array_key_exists('columns_visible', $params)) {
             $systemColumns = array('id','sort','active');
-            $columnsVisible = explode(',', $params['columns_visible']);
-            $columnsVisible = array_unique(array_merge($systemColumns, $columnsVisible));
+            $columnsVisible = array_unique(array_merge($systemColumns, $params['columns_visible']));
             $columnNames = array_intersect($columnNames, $columnsVisible);
         }
 
