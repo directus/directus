@@ -13,7 +13,8 @@ function(app, Backbone) {
 
     getColumns: function() {
       var cols = (this.length) ? _.keys(this.at(0).toJSON()) : [];
-      return this.filters.hasOwnProperty('columns') ? _.intersection(cols, this.filters.columns) : cols;
+      var result = this.filters.hasOwnProperty('columns_visible') ? _.intersection(cols, this.filters.columns_visible) : cols;
+      return result;
     },
 
     getRows: function() {
@@ -134,11 +135,9 @@ function(app, Backbone) {
     fetch: function(options) {
       options = options || {};
       options.data = options.data || {};
-
-      this.trigger('fetch', this);
-
       _.extend(options.data, this.getFilters());
-
+      //options.data.columns_visible = this.getColumns().join(',');
+      this.trigger('fetch', this);
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
 
