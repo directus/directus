@@ -21,7 +21,8 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     getColumns: function() {
-      return (this.filters.columns !== undefined) ? this.filters.columns : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      var columns = (this.filters.columns_visible !== undefined) ? this.filters.columns_visible : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      return columns;
     },
 
     getFilter: function(key) {
@@ -30,7 +31,14 @@ function(app, Backbone, Collection, EntriesModel) {
 
     getFilters: function() {
       var preferences = this.preferences ? this.preferences.toJSON() : {};
-      return _.extend(this.filters, _.pick(preferences,'columns_visible','sort','sort_order','active'));
+      var filters = _.clone(this.filters);
+
+      //Temporary fix to turn columns_visible into an array. @todo: Move this to the preferences object
+      if (preferences.hasOwnProperty('columns_visible')) {
+        preferences.columns_visible = preferences.columns_visible.split(',');
+      }
+
+      return _.extend(filters, _.pick(preferences, 'columns_visible','sort','sort_order','active'));
     },
 
     setFilter: function(key, value, options) {
@@ -74,6 +82,7 @@ function(app, Backbone, Collection, EntriesModel) {
       this.active = this.table.get('active');
       this.url = options.url || this.table.get('url') + '/rows';
       this.filters = _.extend({ currentPage: 0, perPage: rowsPerPage, sort: 'id', sort_order: 'ASC', active: '1,2' }, options.filters);
+
       if (options.preferences) {
         this.preferences = options.preferences;
         this.preferences.on('change', function() { this.trigger('change'); }, this);
