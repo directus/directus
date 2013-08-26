@@ -17,3 +17,5 @@ api/logs/coverage/*.log
 
 docs/api-responses
 /log
+
+customFooterHTML.html
