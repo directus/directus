@@ -123,7 +123,8 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
         error: function(model, xhr, options) {
           //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
         },
-        patch: true
+        patch: true,
+        includeRelationships: true
       });
     },
 
