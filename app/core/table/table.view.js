@@ -143,20 +143,14 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     initialize: function(options) {
       var collection = this.collection;
 
-
-      collection.on('fetch',  function() {
-        //app.trigger('progress', 'Loading');
-      }, this);
-
-      // this one used to listen to remove.
-      collection.on('visibility', function() {
-        this.render();
-      }, this);
-
-      collection.on('sync', function(collection) {
+      this.listenTo(collection, 'sync', function(collection) {
         if (collection instanceof Backbone.Model) return;
         this.render();
-      },this);
+      });
+
+      this.listenTo(collection, 'visibility', function() {
+        this.render();
+      });
 
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;
