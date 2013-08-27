@@ -33,10 +33,19 @@ function(app, Backbone, Directus, SaveModule) {
     events: {
       'click #save-form': function(e) {
         var data = $('form').serializeObject();
+        var model = this.model;
         data.active = $('input[name=active]:checked').val();
-        this.model.save(data, {
+
+        //Dont include empty passwords!
+        if (data.password === "") {
+          delete data.password;
+        }
+
+        model.save(model.diff(data), {
           success: function() { app.router.go('#users'); },
-          error: function() { console.log('error',arguments); }
+          error: function() { console.log('error',arguments); },
+          patch: true,
+          includeRelationships: true
         });
       }
     },
