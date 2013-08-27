@@ -190,12 +190,14 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     serialize: function() {
       var url = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel, true) : null;
       var link = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel) : null;
+      var data = this.mediaModel.toJSON();
+      data.date_uploaded = new Date(data.date_uploaded);
       var data = {
         name: this.options.name,
         url: url,
         comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
-        mediaModel: this.mediaModel.toJSON(),
+        mediaModel: data,
         link: link
       };
       return data;
