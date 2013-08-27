@@ -115,17 +115,24 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
         data.active = active;
       }
 
-      //console.log('circular data?','data',data,'mode',model);
+      // set data if it's valid
+      var isValid = model.set(model.diff(data), {validate: true});
 
-      model.save(model.diff(data), {
+      if (!isValid) return;
+
+      // patch only the changed values
+      model.save(model.toJSON({changed: true}), {
         success: success,
 
         error: function(model, xhr, options) {
+          console.log('err');
           //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
         },
-        patch: true,
-        includeRelationships: true
+        patch: true
+        //includeRelationships: true
       });
+
+
     },
 
     serialize: function() {
