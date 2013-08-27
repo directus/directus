@@ -141,7 +141,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       } else {
         model = collection.get(id);
         if (model === undefined) {
-          model = new collection.model({id: id}, {collection: collection});
+          model = new collection.model({id: id}, {collection: collection, parse: true});
         }
       }
 
@@ -353,6 +353,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         }
       });
 
+      this.v.main.render();
     }
   });
 
