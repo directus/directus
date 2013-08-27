@@ -115,10 +115,12 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
         data.active = active;
       }
 
+
       // patch only the changed values
       model.save(model.diff(data), {
         success: success,
         error: function(model, xhr, options) {
+          console.log('err');
           //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
         },
         wait: true,

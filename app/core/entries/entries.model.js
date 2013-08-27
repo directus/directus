@@ -70,7 +70,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         var nullDisallowed = column.get('is_nullable') === 'NO';
         var isNull = isNothing(value);
         var input = ui.getModelColumnInput(this, key);
-  
+
         var skipSerializationIfNull = input.hasOwnProperty('skipSerializationIfNull') && input.skipSerializationIfNull;
 
         var mess = (!skipSerializationIfNull && nullDisallowed && isNull)
@@ -195,14 +195,13 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     },
 
     sync: function(method, model, options) {
+
+      /*
       var isModel,
           isCollection,
           attributes = this.attributes;
 
-
       if (method === 'patch' && options.includeRelationships) {
-
-
 
         var relationalColumns = this.getStructure().getRelationalColumns();
         //var relationalAttributes = _.pick(this.attributes, relationalKeys);
@@ -222,6 +221,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
             // Add foreign data to patch. Only add changed attributes
             value = value.toJSON({changed: true});
+            console.log(key, value);
 
             if (!_.isEmpty(value)) {
               options.attrs[key] = value;
@@ -230,6 +230,9 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         }, this);
 
       }
+
+      console.log('ATTRS', options.attrs);
+      */
 
       return Backbone.sync.apply(this, [method, model, options]);
     },
@@ -273,6 +276,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
       if (options.changed && !this.isNew()) {
         attributes = this.changed;
+        // always include id
         if (!_.isEmpty(attributes) && this.id) {
           attributes.id = this.id;
         }
