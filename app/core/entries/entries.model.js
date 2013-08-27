@@ -126,7 +126,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
               table: app.tables.get(tableRelated),
               structure: app.columns[tableRelated],
               parse:true,
-              filters: {columns: columns}
+              filters: {columns_visible: columns}
               //preferences: app.preferences[column.get('table_related')],
             };
 
@@ -200,13 +200,13 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
           attributes = this.attributes;
 
 
-      if (method === 'patch') {
+      if (method === 'patch' && options.includeRelationships) {
 
 
 
         var relationalColumns = this.getStructure().getRelationalColumns();
         //var relationalAttributes = _.pick(this.attributes, relationalKeys);
-        
+
         _.each(relationalColumns, function(column) {
             var key = column.id;
             var value = attributes[key];
