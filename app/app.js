@@ -198,7 +198,8 @@ function(Handlebars, typetools) {
 
     prefix: "app/templates/",
 
-    fetch: function(path) {
+
+    fetchTemplate: function(path) {
       // Concatenate the file extension.
 
       // If template is not a path but instead Handlebars.Compile
