@@ -38,7 +38,7 @@ function(app, Backbone, Collection, EntriesModel) {
         preferences.columns_visible = preferences.columns_visible.split(',');
       }
 
-      return _.extend(filters, _.pick(preferences, 'columns_visible','sort','sort_order','active'));
+      return _.extend(_.pick(preferences, 'columns_visible','sort','sort_order','active'), filters);
     },
 
     setFilter: function(key, value, options) {
