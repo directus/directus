@@ -7125,6 +7125,7 @@ header {
   min-width: 200px;
   padding: 8px;
   -webkit-transition: height 0.1s ease-in-out;
+  /* .crumb-dropdown-content */
 }
 .crumb-dropdown .cover-box-shadow {
   display: inline-block;
@@ -7137,6 +7138,9 @@ header {
 }
 .crumb-dropdown .crumb-dropdown-content {
   overflow: auto;
+}
+.crumb-dropdown .room_item {
+  white-space: nowrap;
 }
 /* } */
 .scheduler-table-header-container {
