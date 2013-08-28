@@ -196,7 +196,6 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
     sync: function(method, model, options) {
 
-      /*
       var isModel,
           isCollection,
           attributes = this.attributes;
@@ -230,9 +229,6 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         }, this);
 
       }
-
-      console.log('ATTRS', options.attrs);
-      */
 
       return Backbone.sync.apply(this, [method, model, options]);
     },
