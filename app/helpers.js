@@ -27,7 +27,7 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    if(date === undefined || date === null) {
+    if(date === undefined || date === null || isNaN(date.getTime()) ) {
       return '-';
     }
     date = date.toISOString();
