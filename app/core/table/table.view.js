@@ -144,7 +144,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       var collection = this.collection;
 
       this.listenTo(collection, 'sync', function(collection) {
-        if (collection instanceof Backbone.Model) return;
+        //if (collection instanceof Backbone.Model) return;
         this.render();
       });
 
