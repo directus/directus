@@ -135,7 +135,15 @@ function(app, Backbone) {
     fetch: function(options) {
       options = options || {};
       options.data = options.data || {};
-      _.extend(options.data, this.getFilters());
+      var filters = this.getFilters();
+
+      // preferences normally trump filters, this is an edge case
+      // @todo fix the data structure to make this logic less wierd
+      if (this.filters.hasOwnProperty('columns_visible')) {
+        filters.columns_visible = this.filters.columns_visible;
+      }
+
+      _.extend(options.data, filters);
       //options.data.columns_visible = this.getColumns().join(',');
       this.trigger('fetch', this);
       return Backbone.Collection.prototype.fetch.call(this, options);
