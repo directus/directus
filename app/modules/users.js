@@ -62,8 +62,17 @@ function(app, Backbone, Directus, SaveModule) {
     },
 
     beforeRender: function() {
-      this.setView('#page-content', new Directus.EditView({model: this.model}));
       this.setView('#sidebar', new SaveModule({model: this.model}));
+    },
+
+    afterRender: function() {
+      var editView = new Directus.EditView({model: this.model});
+      this.setView('#page-content', editView);
+      if (!this.model.isNew()) {
+        this.model.fetch();
+      } else {
+        editView.render();
+      }
     }
   });
 
@@ -83,7 +92,7 @@ function(app, Backbone, Directus, SaveModule) {
       var data = {title: 'Users'};
 
       if (this.collection.hasPermission('add')) {
-        data.buttonTitle = 'Add New Item';
+        data.buttonTitle = 'Add New User';
       }
 
       return data;
