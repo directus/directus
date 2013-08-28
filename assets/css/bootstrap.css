@@ -7991,10 +7991,14 @@ header {
   color: #8bc53f;
   cursor: pointer;
 }
-.options-bar span span {
+.options-bar span.customer-credit {
   float: none;
   color: #8f8f8f;
   cursor: auto;
+  font-family: Arvo, "Times New Roman", Times, serif;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 1.7;
 }
 .options-bar span.customer-name {
   font-family: Arvo, "Times New Roman", Times, serif;
