@@ -66,9 +66,12 @@ function(app, Backbone, Directus, SaveModule) {
     },
 
     afterRender: function() {
-      this.setView('#page-content', new Directus.EditView({model: this.model}));
+      var editView = new Directus.EditView({model: this.model});
+      this.setView('#page-content', editView);
       if (!this.model.isNew()) {
         this.model.fetch();
+      } else {
+        editView.render();
       }
     }
   });
