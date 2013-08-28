@@ -135,9 +135,17 @@ function(Handlebars, typetools) {
   app.sendFiles = function(files, callback) {
     var formData = new FormData();
 
-    var success = function() {
-      //app.trigger('load');
-      callback.apply(this, arguments);
+    var success = function(responseData) {
+
+      //Parse response date
+      responseData = _.map(responseData, function(item) {
+        item.date_uploaded = new Date(item.date_uploaded);
+        return item;
+      });
+
+      console.log(responseData);
+
+      callback.apply(this, [responseData]);
     };
 
     if (files instanceof File) files = [files];
