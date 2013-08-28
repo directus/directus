@@ -2014,6 +2014,9 @@ table th[class*="span"],
 .directus-glyphicon-calendar:before {
   content: "\1F4C5";
 }
+.directus-glyphicon-pencil:before {
+  content: "\270F";
+}
 .directus-glyphicon-cart:before {
   content: "\e203";
 }
@@ -5830,7 +5833,7 @@ a {
   z-index: 1;
   padding-top: 20px;
   padding-bottom: 40px;
-  overflow: hidden;
+  overflow: visible;
 }
 .breadcrumb-divider {
   font-weight: normal;
