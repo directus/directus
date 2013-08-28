@@ -58,7 +58,7 @@ define(['app','backbone'], function(app, Backbone) {
           this.tags.push(thisTag);
         }
       }
-      this.render().view.$el.find('#tag-input').focus();
+      this.render().$el.find('#tag-input').focus();
     },
 
     serialize: function() {
