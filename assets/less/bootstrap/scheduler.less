@@ -193,7 +193,7 @@ header {
 			left: 9px;
 			visibility: hidden;
 			opacity: 0;
-			-webkit-transition: all .2s linear;
+			-webkit-transition: all .05s linear;
 
 			.class-clear, .class-copy, .class-paste {
 				position: relative;
@@ -202,10 +202,11 @@ header {
 				float: left;
 				margin-right: 7px;
 				cursor: pointer;
-				-webkit-transition: all .2s linear;
+				-webkit-transition: all .05s linear;
 
 				&:hover {
-					-webkit-transform: rotate(360deg);
+					// -webkit-transform: rotate(360deg);
+					-webkit-transform: scale(1.15);
 				}
 			}
 			.class-clear {
@@ -330,7 +331,7 @@ header {
 	height: 28px;
 	overflow: hidden;
 	text-align: center;
-	-webkit-transition: all .2s linear;
+	-webkit-transition: all .05s linear;
 
 	&:hover {
 		height: 107px;
@@ -350,10 +351,11 @@ header {
 		cursor: pointer;
 		visibility: hidden;
 		opacity: 0;
-		-webkit-transition: all .2s linear;
+		-webkit-transition: all .05s linear;
 
 		&:hover {
-			-webkit-transform: rotate(360deg);
+			// -webkit-transform: rotate(360deg);
+			-webkit-transform: scale(1.15);
 		}
 	}
 
@@ -432,10 +434,11 @@ header {
 		visibility: hidden;
 		opacity: 0;
 		// border: 1px solid #000;
-		-webkit-transition: all .2s linear;
+		-webkit-transition: all .05s linear;
 
 		&:hover {
-			-webkit-transform: rotate(360deg);
+			// -webkit-transform: rotate(360deg);
+			-webkit-transform: scale(1.15);
 		}
 	}
 
@@ -473,6 +476,14 @@ header {
 	select {
 		margin-top: 10px;
 	}
+}
+
+.scheduler-table tbody tr:hover {
+	background-color: transparent !important;
+}
+
+.scheduler-table tbody td:hover {
+	background-color: @highlightColor !important;
 }
 
 
