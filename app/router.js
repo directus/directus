@@ -262,8 +262,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       _.each(options.extensions, function(item) {
         this.extensions[item.id] = new item.Router(item.id);
+        //this.extensions[item.id].bind('all', logRoute);
         this.extensions[item.id].on('route', function() {
           this.trigger('subroute',item.id);
+          this.trigger('route:'+item.id,item.id);
         }, this);
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
@@ -310,15 +312,18 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         el: "#messages"
       });
 
-      this.on('subroute', function(id) {
+      this.on('subroute', function(id, router) {
         this.tabs.setActive(id);
       });
 
+
       this.bind("all", function(route, router){
+        console.log(route, router);
         // console.log('route change',route,router);
         var last_page;
         var routeTokens = route.split(':');
         if(routeTokens.length > 1) {
+          console.log(routeTokens);
           // Report the "last page" data to the API
           // @fixes https://github.com/RNGR/directus6/issues/199
           var user = app.getCurrentUser();
