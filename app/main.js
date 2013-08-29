@@ -57,6 +57,27 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       }
     };
 
+    //////////////////////////////////////////////////////////////////////////////
+    // This block is for extending the user table with custom fields
+
+    // Find users table
+    var directusUsers = _.find(window.directusData.tables, function(item) {
+      return item.schema.id === 'directus_users';
+    });
+
+    var directusUsersColumns = directusUsers.schema.columns;
+    var defaultUserColumns = _.pluck(users.structure, 'id')
+
+    // Add non default columns
+    _.each(directusUsersColumns, function(item) {
+      if (!_.contains(defaultUserColumns, item.id)) {
+        users.structure.push(item);
+      }
+    });
+
+    //////////////////////////////////////////////////////////////////////////////
+
+
     var defaultTables = [
       { schema: _.extend({columns: media.structure}, media.table) },
       // @todo: for now we are ignoring the static user schema since we are extending it 
