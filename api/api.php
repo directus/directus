@@ -555,19 +555,16 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $acl, $ZendDb,
     switch ($app->request()->getMethod()) {
         case "POST":
         case "PUT":
-            unset($requestPayload['id']);
-            $Settings->setValues($id, $requestPayload);
-            //$db->set_settings($requestPayload);
+            $data = $requestPayload;
+            unset($data['id']);
+            $Settings->setValues($id, $data);
             break;
     }
-
-    $settings_old = $db->get_settings();
-    $get_old = is_null($id) ? $settings_old : $settings_old[$id];
 
     $settings_new = $Settings->fetchAll();
     $get_new = is_null($id) ? $settings_new : $settings_new[$id];
 
-    JsonView::render($get_new, $get_old);
+    JsonView::render($get_new);
 })->via('GET','POST','PUT');
 
 /**:
