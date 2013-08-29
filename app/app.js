@@ -234,6 +234,7 @@ function(Handlebars, typetools) {
 
       $.ajax({
         url: app.root + path,
+        global: false,
         async: false,
         success: function(contents) {
           done(JST[path] = Handlebars.compile(contents));
