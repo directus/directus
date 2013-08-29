@@ -94,14 +94,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
             break;
           case 500:
             break;
-          case 403:
-            app.trigger("alert:error", "Unauthorized", "You don't have access for this action");
-            //var errorData = jQuery.parseJSON(xhr.responseText);
-            //win = new Backbone.Layout();
-            //win.$el.html(errorData.message);
-            //win.render();
-            //app.router.openModal(win, {title: 'Unauthorized!', stretch: false, buttonText:'OK'});
-            break;
         }
       };
 
@@ -156,12 +148,22 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     // Capture sync errors...
     $(document).ajaxError(function(e, xhr) {
-      var type = 'Server ' + xhr.status;
-      var message = "Server Error";
-      var details = encodeURIComponent(xhr.responseText);
+      var type, message, details;
+
+      switch(xhr.status) {
+        case 403:
+          app.trigger("alert:error", "Unauthorized", xhr.responseText);
+          break;
+        default:
+          type = 'Server ' + xhr.status;
+          message = "Server Error";
+          details = encodeURIComponent(xhr.responseText);
+          app.logErrorToServer(type, message, details);
+          app.trigger("alert:error", "Server Error", xhr.responseText);
+          break;
+      }
+
       //details = 'xxx';
-      app.logErrorToServer(type, message, details);
-      app.trigger("alert:error", "Server Error", xhr.responseText);
     });
 
     // And js errors...
