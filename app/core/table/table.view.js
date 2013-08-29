@@ -179,6 +179,11 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
         this.initializeDrop();
       }
 
+      // pre-render if there is stuff in the collection
+      if (this.collection.length > 0) {
+        this.render();
+      }
+
     },
 
     constructor: function (options) {
