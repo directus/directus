@@ -120,14 +120,13 @@ function(app, Backbone) {
 
       options.success = function(model, resp, xhr) {
         collection.reset(model ,{parse: true});
-        collection.trigger('sync');
         if (success !== undefined) {
           success();
         }
       };
 
       // would be awesome if this is always how it werkz...
-      options.url = this.url + '?' + $.param(this.filters);
+      options.url = this.url + '?' + $.param(this.getFilters());
 
       return Backbone.sync('update', this, options);
     },
@@ -136,12 +135,6 @@ function(app, Backbone) {
       options = options || {};
       options.data = options.data || {};
       var filters = this.getFilters();
-
-      // preferences normally trump filters, this is an edge case
-      // @todo fix the data structure to make this logic less wierd
-      if (this.filters.hasOwnProperty('columns_visible')) {
-        filters.columns_visible = this.filters.columns_visible;
-      }
 
       _.extend(options.data, filters);
       //options.data.columns_visible = this.getColumns().join(',');
