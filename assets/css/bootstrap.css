@@ -7462,7 +7462,7 @@ header {
   background-color: transparent !important;
 }
 .scheduler-table tbody td:hover {
-  background-color: #fffcd0 !important;
+  background-color: transparent !important;
 }
 .row-fluid.cash-register-container {
   position: relative;
