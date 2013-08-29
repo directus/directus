@@ -7213,7 +7213,7 @@ header {
   left: 9px;
   visibility: hidden;
   opacity: 0;
-  -webkit-transition: all .2s linear;
+  -webkit-transition: all .05s linear;
 }
 .scheduler-table td .class-controls .class-clear,
 .scheduler-table td .class-controls .class-copy,
@@ -7224,12 +7224,12 @@ header {
   float: left;
   margin-right: 7px;
   cursor: pointer;
-  -webkit-transition: all .2s linear;
+  -webkit-transition: all .05s linear;
 }
 .scheduler-table td .class-controls .class-clear:hover,
 .scheduler-table td .class-controls .class-copy:hover,
 .scheduler-table td .class-controls .class-paste:hover {
-  -webkit-transform: rotate(360deg);
+  -webkit-transform: scale(1.15);
 }
 .scheduler-table td .class-controls .class-clear {
   height: 20px;
@@ -7319,7 +7319,7 @@ header {
   height: 28px;
   overflow: hidden;
   text-align: center;
-  -webkit-transition: all .2s linear;
+  -webkit-transition: all .05s linear;
 }
 .week-row-controls:hover {
   height: 107px;
@@ -7343,13 +7343,13 @@ header {
   cursor: pointer;
   visibility: hidden;
   opacity: 0;
-  -webkit-transition: all .2s linear;
+  -webkit-transition: all .05s linear;
 }
 .week-row-controls .week-clear:hover,
 .week-row-controls .week-copy:hover,
 .week-row-controls .week-paste:hover,
 .week-row-controls .reveal-arrow:hover {
-  -webkit-transform: rotate(360deg);
+  -webkit-transform: scale(1.15);
 }
 .week-row-controls .reveal-arrow {
   margin-top: 0;
@@ -7419,13 +7419,13 @@ header {
   cursor: pointer;
   visibility: hidden;
   opacity: 0;
-  -webkit-transition: all .2s linear;
+  -webkit-transition: all .05s linear;
 }
 .month-controls .month-clear:hover,
 .month-controls .month-copy:hover,
 .month-controls .month-paste:hover,
 .month-controls .reveal-arrow:hover {
-  -webkit-transform: rotate(360deg);
+  -webkit-transform: scale(1.15);
 }
 .month-controls .reveal-arrow {
   margin-top: 0;
@@ -7454,6 +7454,12 @@ header {
 }
 .scheduler-notification-modal-body select {
   margin-top: 10px;
+}
+.scheduler-table tbody tr:hover {
+  background-color: transparent !important;
+}
+.scheduler-table tbody td:hover {
+  background-color: #fffcd0 !important;
 }
 .row-fluid.cash-register-container {
   position: relative;
