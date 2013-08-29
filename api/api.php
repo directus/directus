@@ -361,8 +361,8 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
 $app->get("/$v/activity/?", function () use ($db, $params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
     $new_get = $Activity->fetchFeed($params);
-    $old_get = $db->get_activity();
-    JsonView::render($new_get, $old_get);
+    $new_get['active'] = $new_get['total'];
+    JsonView::render($new_get);
 });
 
 /**
