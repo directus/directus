@@ -557,8 +557,7 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $acl, $ZendDb,
         case "PUT":
             unset($requestPayload['id']);
             $Settings->setValues($id, $requestPayload);
-            die();
-            $db->set_settings($requestPayload);
+            //$db->set_settings($requestPayload);
             break;
     }
 
