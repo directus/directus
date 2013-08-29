@@ -19,7 +19,12 @@ function(app, Backbone) {
           var id = this.value;
           collection.get(id).set({active: value}, {silent: true});
         });
-        collection.save({columns: ['id','active']});
+        collection.save({
+          columns: ['id','active'],
+          success: function() {
+            collection.trigger('visibility');
+          }
+        });
         collection.trigger('visibility');
       },
 
@@ -144,7 +149,7 @@ function(app, Backbone) {
         this.render();
       }, this);
 
-      this.collection.on('visibility', this.render, this);
+      //this.collection.on('visibility', this.render, this);
     }
   });
 
