@@ -148,7 +148,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     beforeRender: function() {
-      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single}));
+      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: !this.single}));
     },
 
     afterRender: function() {
