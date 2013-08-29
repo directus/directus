@@ -494,7 +494,6 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
             break;
     }
 
-    $get_old = $db->get_entries($table, $params);
     $Media = new TableGateway($acl, $table, $ZendDb);
     $get_new = $Media->getEntries($params);
 
@@ -506,7 +505,7 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
         $get_new['date_uploaded'] .= ' UTC';
     }
 
-    JsonView::render($get_new, $get_old);
+    JsonView::render($get_new);
 })->via('GET','PATCH','POST','PUT');
 
 /**

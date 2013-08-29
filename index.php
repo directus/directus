@@ -34,10 +34,9 @@ $data['storage_adapters'] = $DirectusStorageAdaptersTableGateway->fetchAllByIdNo
 $adaptersByUniqueRole = array();
 foreach($data['storage_adapters'] as $adapter) {
 	if(!empty($adapter['role'])) {
-		$adaptersByUniqueRole[$adapter['role']] = $adapter;
+		$data['storage_adapters'][$adapter['role']] = $adapter;
 	}
 }
-$data['storage_adapters'] = array_merge($data['storage_adapters'], $adaptersByUniqueRole);
 
 $data['path'] = DIRECTUS_PATH;
 $data['page'] = '#tables';
