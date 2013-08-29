@@ -79,7 +79,8 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
                     'site_name',
                     'site_url',
                     'cms_color',
-                    'cms_user_auto_sign_out'
+                    'cms_user_auto_sign_out',
+                    'rows_per_page'
                 )
         );
 
