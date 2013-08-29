@@ -38,7 +38,15 @@ function(app, Backbone, Collection, EntriesModel) {
         preferences.columns_visible = preferences.columns_visible.split(',');
       }
 
-      return _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'active'));
+      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'active'));
+
+      // preferences normally trump filters, this is an edge case
+      // @todo fix the data structure to make this logic less wierd
+      if (this.filters.hasOwnProperty('columns_visible')) {
+        result.columns_visible = this.filters.columns_visible;
+      }
+
+      return result;
     },
 
     setFilter: function(key, value, options) {
