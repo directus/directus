@@ -21,7 +21,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
     public function fetchAll($selectModifier = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
-        $select->columns(array('collection','name','value'))
+        $select->columns(array('id', 'collection','name','value'))
             ->order('collection');
         // Fetch row
         $rowset = $this->selectWith($select);
