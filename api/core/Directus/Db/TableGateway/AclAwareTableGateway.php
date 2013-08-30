@@ -23,6 +23,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
+use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
@@ -32,17 +33,43 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public $primaryKeyFieldName = "id";
 
     /**
+     * Constructor
+     *
      * @param AclProvider $acl
      * @param string $table
      * @param AdapterInterface $adapter
+     * @param Feature\AbstractFeature|Feature\FeatureSet|Feature\AbstractFeature[] $features
+     * @param ResultSetInterface $resultSetPrototype
+     * @param Sql $sql
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct(Acl $acl, $table, AdapterInterface $adapter)
+    public function __construct(Acl $acl, $table, AdapterInterface $adapter, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null)
     {
         $this->acl = $acl;
+
+        // process features
+        if ($features !== null) {
+            if ($features instanceof Feature\AbstractFeature) {
+                $features = array($features);
+            }
+            if (is_array($features)) {
+                $this->featureSet = new Feature\FeatureSet($features);
+            } elseif ($features instanceof Feature\FeatureSet) {
+                $this->featureSet = $features;
+            } else {
+                throw new Exception\InvalidArgumentException(
+                    'TableGateway expects $feature to be an instance of an AbstractFeature or a FeatureSet, or an array of AbstractFeatures'
+                );
+            }
+        } else {
+            $this->featureSet = new Feature\FeatureSet();
+        }
+
         $rowGatewayPrototype = new AclAwareRowGateway($acl, $this->primaryKeyFieldName, $table, $adapter);
-        $features = new RowGatewayFeature($rowGatewayPrototype);
-        parent::__construct($table, $adapter, $features);
+        $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
+        $this->featureSet->addFeature($rowGatewayFeature);
+
+        parent::__construct($table, $adapter, $this->featureSet, $resultSetPrototype, $sql);
     }
 
     /**
