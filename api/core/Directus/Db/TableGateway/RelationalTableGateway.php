@@ -1042,7 +1042,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Test if there is an active column!
         try {
             $sth->execute();
-        } catch(Exception $e) {
+        } catch(\PDOException $e) {
             if ($e->getCode() == "42S22" && strpos(strtolower($e->getMessage()),"unknown column")) {
                 return $this->countActiveOld(true);
             } else {
