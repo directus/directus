@@ -2,7 +2,10 @@
 
 namespace Directus\Db;
 
+use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
+use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
+use Directus\Db\TableGateway\RelationalTableGateway;
 
 class TableSchema {
 
@@ -171,6 +174,90 @@ class TableSchema {
 
     public static function getUniqueColumnName($tbl_name) {
         // @todo for safe joins w/o name collision
+    }
+
+
+
+    /**
+     * Get info about all tables
+     *
+     * @param $params
+     */
+    public static function getTables($params=null) {
+        $return = array();
+        $db = Bootstrap::get('olddb');
+        $name = $db->db_name;
+        $sql = 'SELECT S.TABLE_NAME as id
+            FROM INFORMATION_SCHEMA.TABLES S
+            WHERE
+                S.TABLE_SCHEMA = :schema AND
+                (S.TABLE_NAME NOT LIKE "directus\_%" OR
+                S.TABLE_NAME = "directus_activity" OR
+                S.TABLE_NAME = "directus_media" OR
+                S.TABLE_NAME = "directus_messages" OR
+                S.TABLE_NAME = "directus_groups" OR
+                S.TABLE_NAME = "directus_users")
+            GROUP BY S.TABLE_NAME
+            ORDER BY S.TABLE_NAME';
+        $sth = $db->dbh->prepare($sql);
+        $sth->bindValue(':schema', $name, \PDO::PARAM_STR);
+        $sth->execute();
+
+        $currentUser = Auth::getUserInfo();
+
+        $acl = Bootstrap::get('acl');
+        $ZendDb = Bootstrap::get('ZendDb');
+        $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
+
+        while($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+            $tbl["schema"] = self::getTable($row['id']);
+            //$tbl["columns"] = $this->get_table($row['id']);
+            $tbl["preferences"] = $Preferences->fetchByUserAndTable($currentUser['id'], $row['id']);
+            // $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
+            print_r($tbl);
+            $return[] = $tbl;
+        }
+        return $return;
+    }
+
+    protected static function getTable($tbl_name) {
+        $db = Bootstrap::get('olddb');
+        $acl = Bootstrap::get('acl');
+        $ZendDb = Bootstrap::get('ZendDb');
+
+        $sql = "SELECT T.TABLE_NAME AS id,
+            T.TABLE_NAME AS table_name,
+            CREATE_TIME AS date_created,
+            TABLE_COMMENT AS comment,
+            ifnull(hidden,0) as hidden,
+            ifnull(single,0) as single,
+            inactive_by_default,
+            is_junction_table,
+            magic_owner_column,
+            footer,
+            TABLE_ROWS AS count
+            FROM INFORMATION_SCHEMA.TABLES T
+            LEFT JOIN directus_tables DT ON (DT.table_name = T.TABLE_NAME)
+            WHERE T.TABLE_SCHEMA = :schema AND T.TABLE_NAME = :table_name";
+        $sth = $db->dbh->prepare($sql);
+        $sth->bindValue(':table_name', $tbl_name, \PDO::PARAM_STR);
+        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
+        $sth->execute();
+        $info = $sth->fetch(\PDO::FETCH_ASSOC);
+        if ($info) {
+            $info['hidden'] = (boolean)$info['hidden'];
+            $info['single'] = (boolean)$info['single'];
+            $info['footer'] = (boolean)$info['footer'];
+            $info['is_junction_table'] = (boolean)$info['is_junction_table'];
+            $info['inactive_by_default'] = (boolean)$info['inactive_by_default'];
+        }
+        $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $ZendDb);
+        $info = array_merge($info, $relationalTableGateway->countActiveOld());
+
+
+        // $info['columns'] = $this->get_table($tbl_name);
+        $info['columns'] = self::getSchemaArray($tbl_name);
+        return $info;
     }
 
     /**
