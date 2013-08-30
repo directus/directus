@@ -214,7 +214,6 @@ class TableSchema {
             //$tbl["columns"] = $this->get_table($row['id']);
             $tbl["preferences"] = $Preferences->fetchByUserAndTable($currentUser['id'], $row['id']);
             // $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
-            print_r($tbl);
             $return[] = $tbl;
         }
         return $return;
