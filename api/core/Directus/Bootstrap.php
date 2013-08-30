@@ -7,6 +7,7 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
+use Directus\Db\TableGateway\DirectusTablesTableGateway;
 use Slim\Slim;
 use Slim\Extras\Log\DateTimeFileWriter;
 
@@ -105,8 +106,8 @@ class Bootstrap {
             'password'  => DB_PASSWORD,
             'charset'   => 'utf8'
         );
-        $ZendDb = new \Zend\Db\Adapter\Adapter($dbConfig);
-        $connection = $ZendDb->getDriver()->getConnection();
+        $db = new \Zend\Db\Adapter\Adapter($dbConfig);
+        $connection = $db->getDriver()->getConnection();
         try { $connection->connect(); }
         catch(\PDOException $e) {
             echo "Database connection failed.<br />";
@@ -118,7 +119,7 @@ class Bootstrap {
         $dbh = $connection->getResource();
         $dbh->exec("SET CHARACTER SET utf8");
         $dbh->query("SET NAMES utf8");
-        return $ZendDb;
+        return $db;
     }
 
     /**
@@ -127,10 +128,10 @@ class Bootstrap {
      */
     private static function olddb() {
         self::requireConstants('DB_NAME', __FUNCTION__);
-        $ZendDb = self::get('ZendDb');
-        $connection = $ZendDb->getDriver()->getConnection();
+        $db = self::get('ZendDb');
+        $connection = $db->getDriver()->getConnection();
         $dbh = $connection->getResource();
-        $db = new \DB($dbh, DB_NAME, $ZendDb);
+        $db = new \DB($dbh, DB_NAME, $db);
         return $db;
     }
 
@@ -140,13 +141,25 @@ class Bootstrap {
      */
     private static function acl() {
         $acl = new acl;
+            
+        $db = self::get('ZendDb');
+        $DirectusTablesTableGateway = new DirectusTablesTableGateway($acl, $db);
+        $tableRecords = $DirectusTablesTableGateway->select()->toArray();
+        $magicOwnerColumnsByTable = array();
+        foreach($tableRecords as $tableRecord) {
+            if(!empty($tableRecord['magic_owner_column'])) {
+                $magicOwnerColumnsByTable[$tableRecord['table_name']] = $tableRecord['magic_owner_column'];
+            }
+        }
+        $acl::$cms_owner_columns_by_table = $magicOwnerColumnsByTable;
+
         if(AuthProvider::loggedIn()) {
             $currentUser = AuthProvider::getUserInfo();
-            $ZendDb = self::get('ZendDb');
-            $Users = new DirectusUsersTableGateway($acl, $ZendDb);
+
+            $Users = new DirectusUsersTableGateway($acl, $db);
             $currentUser = $Users->find($currentUser['id']);
             if($currentUser) {
-                $Privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);
+                $Privileges = new DirectusPrivilegesTableGateway($acl, $db);
                 $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
                 $acl->setGroupPrivileges($groupPrivileges);
             }
@@ -160,9 +173,9 @@ class Bootstrap {
      */
     private static function codebird() {
         $acl = self::get('acl');
-        $ZendDb = self::get('ZendDb');
+        $db = self::get('ZendDb');
         // Social settings
-        $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $ZendDb);
+        $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $db);
         $requiredKeys = array('twitter_consumer_key','twitter_consumer_secret', 'twitter_oauth_token', 'twitter_oauth_token_secret');
         $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
         // Codebird initialization
