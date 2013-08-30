@@ -42,9 +42,9 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <h2>Welcome!</h2>
   <input type="text" name="email" placeholder="Email" />
   <input type="password" name="password" placeholder="Password" />
-  <label class="checkbox">
+  <!--<label class="checkbox">
       <input type="checkbox" name="remember" /> Keep me logged in on this computer
-  </label>
+  </label>-->
   <input type="submit" class="btn btn-primary" value="Sign in" />
   <p class="error" style="display:none;"></p>
 </div>
