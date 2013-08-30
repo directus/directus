@@ -223,7 +223,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     initialize: function() {
-      this.table = new Directus.Table({collection: this.collection, navigate: true});
+      this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
     }
 
   });
