@@ -70,11 +70,23 @@ The AMP-packages listed above all include Phpmyadmin. The following three steps 
    3. Press Go  
 
 #### Step 6: Setup Directus
-Open `directus/api/conif_sample.php` Add the database username and password from Step 5 to *DB_USER* and *DB_PASSWORD*. Save the file as ```directus/api/config.php```
+Open `directus/api/config_sample.php` Add the database username and password from Step 5 to *DB_USER* and *DB_PASSWORD*. Save the file as ```directus/api/config.php```
 
 ```
 define('DB_USER', 		'myusername');
 define('DB_PASSWORD',	'mypassword');
 ```
-#### Step 7: Done!
+#### Step 7: Setup Media Uploads
+This requires configuring your Storage Adapters. Currently the best way to do this is to manually edit the `directus_storage_adapters` table using a SQL client.
+
+By default, `directus.sql` should contain two storage adapters out of the box, with the `DEFAULT` and `THUMBNAIL` roles, both using the `FileSystemAdapter` (meaning these will map to your local hard drive).
+
+Simply define the `destination` (absolute path) and `url` (equivalent URL to the same directory) parameters of each of these records. For example, using a MAMP setup, you might define them this way:
+
+```
+UPDATE  `directus_storage_adapters` SET  `destination` =  '/Applications/MAMP/htdocs/directus-media/', `url` = 'http://localhost:8888/directus-media/' WHERE  `directus_storage_adapters`.`id` = 1;
+UPDATE  `directus_storage_adapters` SET  `destination` =  '/Applications/MAMP/htdocs/directus-media-thumbnails/', `url` = 'http://localhost:8888/directus-media-thumbnails/' WHERE  `directus_storage_adapters`.`id` = 2;
+```
+
+#### Step 8: Done!
 Open directus by navigating to the path *directus* in your local host. Log in using the default user *admin@getdirectus.com* and password *admin*
