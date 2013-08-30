@@ -6691,6 +6691,9 @@ a:hover {
   cursor: default;
   opacity: .4;
 }
+#directus_columns button {
+  padding-right: 0px;
+}
 #directus_tables .description {
   width: 250px;
 }
