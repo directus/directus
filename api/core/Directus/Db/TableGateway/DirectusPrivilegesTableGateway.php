@@ -32,4 +32,12 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         return $privilegesByTable;
     }
 
+
+    public function fetchGroupPrivilegesRaw($group_id) {
+        $select = new Select($this->table);
+        $select->where->equalTo('group_id', $group_id);
+        $rowset = $this->selectWith($select);
+        $rowset = $rowset->toArray();
+        return $rowset;
+    }
 }
