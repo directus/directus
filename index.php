@@ -12,6 +12,14 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\DirectusStorageAdaptersTableGateway;
+use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
+use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
+use Directus\Db\TableGateway\DirectusSettingsTableGateway;
+use Directus\Db\TableGateway\DirectusTabPrivilegesTableGateway;
+use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Db\TableSchema;
+
+
 
 // No access, forward to login page
 if (!AuthProvider::loggedIn()) {
@@ -21,86 +29,93 @@ if (!AuthProvider::loggedIn()) {
 
 $acl = Bootstrap::get('acl');
 $ZendDb = Bootstrap::get('ZendDb');
+$authenticatedUser = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : array();
 
-$data = array();
 
-$requestNonceProvider = new RequestNonceProvider();
-$data['nonces'] = array_merge($requestNonceProvider->getOptions(), array(
-	'pool' => $requestNonceProvider->getAllNonces()
-));
+function getNonces() {
+	$requestNonceProvider = new RequestNonceProvider();
 
-$DirectusStorageAdaptersTableGateway = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
-$data['storage_adapters'] = $DirectusStorageAdaptersTableGateway->fetchAllByIdNoParams();
-$adaptersByUniqueRole = array();
-foreach($data['storage_adapters'] as $adapter) {
-	if(!empty($adapter['role'])) {
-		$data['storage_adapters'][$adapter['role']] = $adapter;
+	$nonces = array_merge($requestNonceProvider->getOptions(), array(
+		'pool' => $requestNonceProvider->getAllNonces()
+	));
+
+	return $nonces;
+};
+
+function getStorageAdapters() {
+	global $ZendDb, $acl;
+	$DirectusStorageAdaptersTableGateway = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
+	$storageAdapters = $DirectusStorageAdaptersTableGateway->fetchAllByIdNoParams();
+	$adaptersByUniqueRole = array();
+	foreach($storageAdapters as $adapter) {
+		if(!empty($adapter['role'])) {
+			$storageAdapters[$adapter['role']] = $adapter;
+		}
 	}
+	return $storageAdapters;
 }
 
-$data['path'] = DIRECTUS_PATH;
-$data['page'] = '#tables';
+function getTables($tableSchema) {
+	$tables = array();
 
+	foreach ($tableSchema as $table) {
+		$tableName = $table['schema']['id'];
 
-// ==================================================================
-// @todo: this is a hack! we need to decouple preferences from tables
-// and exclude schemas for directus_ tables
-$data['tables'] = array();
-$data['preferences'] = array();
-$tables = $db->get_tables();
-foreach ($tables as $table) {
-	$tableName = $table['schema']['id'];
+		//remove preferences
+		unset($table['preferences']);
 
-	//decouple preferences
-	$data['preferences'][] = $table['preferences'];
-	unset($table['preferences']);
+		//skip directus tables
+		if ('directus_' === substr($tableName,0,9) && 'directus_users' !== $tableName) {
+			continue;
+		}
 
-	//skip directus tables
-	if ('directus_' === substr($tableName,0,9) && 'directus_users' !== $tableName) {
-		continue;
+		$tables[] = $table;
 	}
 
-	$data['tables'][] = $table;
+	return $tables;
 }
 
-// ==================================================================
+function getPreferences($tableSchema) {
+	$preferences = array();
 
-
-$data['users'] = $db->get_entries("directus_users", array('perPage'=>99999,'active'=>1));
-
-
-$data['groups'] = $db->get_entries("directus_groups");
-$data['settings'] = $db->get_settings('global');
-$data['active_media'] = $db->count_active('directus_media');
-$data['authenticatedUser'] = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : array();
-
-// @todo: maybe the $data['authenticatedUser'] could also provide group?
-function getGroupId() {
-	global $data;
-	$userId = $data['authenticatedUser']['id'];
-
-	foreach ($data['users']['rows'] as $user) {
-		if ($user['id'] == $userId) return $user['group']['id'];
+	foreach ($tableSchema as $table) {
+		$preferences[] = $table['preferences'];
 	}
+
+	return $preferences;
 }
 
-// @todo: do a real mysql query instead
-function getMyTabPrivileges($tabPermissions, $groupId) {
-	foreach ($tabPermissions['rows'] as $row) {
-		if ($row['group_id'] == $groupId) return $row;
-	}
-	return array();
+function getUsers() {
+	global $ZendDb, $acl;
+	$tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
+	return $tableGateway->getEntries(array('table_name'=>'directus_users','perPage'=>1000, 'active'=>1));
 }
 
-// @todo: do a real mysql query instead
-function getMyPrivileges($privileges, $groupId) {
-	return array_filter($privileges['rows'], function($row) use ($groupId) {
-		return ($row['group_id'] == $groupId);
-		//if ($row['group_id'] == $groupId) return $row;
-	});
+function getGroups() {
+	global $ZendDb, $acl;
+	$groups = new TableGateway($acl, 'directus_groups', $ZendDb);
+	return $groups->getEntries();
 }
 
-// @todo: this is a very sloppy and temporary solution
+function getSettings() {
+	global $ZendDb, $acl;
+	$settings = new DirectusSettingsTableGateway($acl, $ZendDb);
+	return $settings->fetchAll();
+}
+
+function getActiveMedia() {
+	global $ZendDb, $acl;
+	$tableGateway = new TableGateway($acl, 'directus_media', $ZendDb);
+	return $tableGateway->countActive();
+}
+
+function getTabPrivileges() {
+	global $ZendDb, $acl;
+	$tableGateway = new DirectusTabPrivilegesTableGateway($acl, $ZendDb);
+	return $tableGateway->fetchAllByGroup(0);
+}
+
+// @todo: this is a quite sloppy and temporary solution
 // bake it into Bootstrap?
 function filterPermittedExtensions($extensions, $blacklist) {
 
@@ -117,34 +132,66 @@ function filterPermittedExtensions($extensions, $blacklist) {
 	return array_values($permittedExtensions);
 }
 
+function getExtensions($tabPrivileges) {
 
-$groupId = getGroupId();
-$data['tab_privileges'] = getMyTabPrivileges($db->get_entries('directus_tab_privileges'), $groupId);
+	$extensions = array_values(Bootstrap::get('extensions'));
 
+	// filter out tabs that aren't visible
+	if (array_key_exists('tab_blacklist', $tabPrivileges)) {
+		$extensions = filterPermittedExtensions($extensions, $tabPrivileges['tab_blacklist']);
+	}
 
-// Encode these as JSON arrays, not as objects.
-$data['extensions'] = array_values(Bootstrap::get('extensions'));
-$data['privileges'] = getMyPrivileges($db->get_entries("directus_privileges"),$groupId);
-
-if (array_key_exists('tab_blacklist',$data['tab_privileges'])) {
-	$data['extensions'] = filterPermittedExtensions($data['extensions'], $data['tab_privileges']['tab_blacklist']);
+	return $extensions;
 }
 
-$data['ui'] = array_values(Bootstrap::get('uis'));
+function getPrivileges() {
+	global $ZendDb, $acl;
+	$tableGateway = new DirectusPrivilegesTableGateway($acl, $ZendDb);
+	return $tableGateway->fetchGroupPrivilegesRaw(0);
+}
 
-$data = json_encode($data);
-//if('production' !== DIRECTUS_ENV) {
-//	$data = JsonView::format_json($data);
-//}
+function getUI() {
+	return array_values(Bootstrap::get('uis'));
+}
 
-$templateVars = array(
-	'data'=> $data,
-	'path'=> DIRECTUS_PATH,
-	'customFooterHTML' => ''
+function getCusomFooterHTML() {
+	if(file_exists('./customFooterHTML.html')) {
+		return file_get_contents('./customFooterHTML.html');
+	}
+	return '';
+
+}
+
+// ---------------------------------------------------------------------
+
+$tabPrivileges = getTabPrivileges();
+$tableSchema = TableSchema::getTables();
+
+$data = array(
+	'nonces' => getNonces(),
+	'storage_adapters' => getStorageAdapters(),
+	'path' => DIRECTUS_PATH,
+	'page' => '#tables',
+	'tables' => getTables($tableSchema),
+	'preferences' => getPreferences($tableSchema), //ok
+	'users' => getUsers(),
+	'groups' => getGroups(),
+	'settings' => getSettings(),
+	'active_media' => getActiveMedia(),
+	'authenticatedUser' => $authenticatedUser,
+	'tab_privileges' => $tabPrivileges,
+	'extensions' => getExtensions($tabPrivileges),
+	'privileges' => getPrivileges(),
+	'ui' => getUI()
 );
 
-if(file_exists('./customFooterHTML.html')) {
-	$templateVars['customFooterHTML'] = file_get_contents('./customFooterHTML.html');
-}
+$templateVars = array(
+	'data' => json_encode($data),
+	'path' => DIRECTUS_PATH,
+	'customFooterHTML' => getCusomFooterHTML()
+);
+
 
 echo template(file_get_contents('main.html'), $templateVars);
+
+?>
