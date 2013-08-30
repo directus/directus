@@ -1,7 +1,7 @@
 <form class="directus-form">
 <fieldset>
 {{#columns}}
-	<label class="checkbox"><input name="columns_visible" type="checkbox" value="{{name}}" {{#if visible}}checked{{/if}}>{{capitalize name}}</label>
+	<label class="checkbox"><input name="columns_visible" type="checkbox" value="{{name}}" {{#if isForeign}}data-foreign="true"{{/if}} {{#if visible}}checked{{/if}} {{#if disabled}}disabled{{/if}}>{{capitalize name}}</label>
 {{/columns}}
 </fieldset>
 </form>
