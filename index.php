@@ -54,7 +54,7 @@ function getStorageAdapters() {
 	return $storageAdapters;
 }
 
-function getTables($tableSchema) {
+function parseTables($tableSchema) {
 	$tables = array();
 
 	foreach ($tableSchema as $table) {
@@ -74,7 +74,7 @@ function getTables($tableSchema) {
 	return $tables;
 }
 
-function getPreferences($tableSchema) {
+function parseTables($tableSchema) {
 	$preferences = array();
 
 	foreach ($tableSchema as $table) {
@@ -180,8 +180,8 @@ $data = array(
 	'storage_adapters' => getStorageAdapters(),
 	'path' => DIRECTUS_PATH,
 	'page' => '#tables',
-	'tables' => getTables($tableSchema),
-	'preferences' => getPreferences($tableSchema), //ok
+	'tables' => parseTables($tableSchema),
+	'preferences' => parsePreferences($tableSchema), //ok
 	'users' => $users,
 	'groups' => getGroups(),
 	'settings' => getSettings(),
