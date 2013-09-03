@@ -49,6 +49,31 @@ function(app, Backbone, Collection, EntriesModel) {
       return result;
     },
 
+    getTotalCount: function() {
+      var totalCount;
+
+      switch (this.getFilter('active')) {
+        case '1,2':
+          totalCount = this.table.get('active');
+          if (this.table.has('inactive')) {
+            totalCount += this.table.get('inactive');
+          }
+          break;
+        case '1':
+          totalCount = this.table.get('active');
+          break;
+        case '2':
+          totalCount = this.table.get('inactive');
+          break;
+        case '0':
+          totalCount = this.table.get('trash');
+          break;
+      }
+
+      return totalCount;
+
+    },
+
     setFilter: function(key, value, options) {
       var attrs, preferencesHasChanged = false;
       if (key === null || typeof key === 'object') {
