@@ -31,7 +31,6 @@ $acl = Bootstrap::get('acl');
 $ZendDb = Bootstrap::get('ZendDb');
 $authenticatedUser = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : array();
 
-
 function getNonces() {
 	$requestNonceProvider = new RequestNonceProvider();
 
@@ -91,6 +90,14 @@ function getUsers() {
 	return $tableGateway->getEntries(array('table_name'=>'directus_users','perPage'=>1000, 'active'=>1));
 }
 
+function getCurrentUserInfo($users) {
+	global $authenticatedUser;
+	$data = array_filter($users['rows'], function ($item) use ($authenticatedUser) {
+    	return ($item['id'] == $authenticatedUser['id']);
+	});
+	return reset($data);
+}
+
 function getGroups() {
 	global $ZendDb, $acl;
 	$groups = new TableGateway($acl, 'directus_groups', $ZendDb);
@@ -109,10 +116,10 @@ function getActiveMedia() {
 	return $tableGateway->countActive();
 }
 
-function getTabPrivileges() {
+function getTabPrivileges($groupId) {
 	global $ZendDb, $acl;
 	$tableGateway = new DirectusTabPrivilegesTableGateway($acl, $ZendDb);
-	return $tableGateway->fetchAllByGroup(0);
+	return $tableGateway->fetchAllByGroup($groupId);
 }
 
 // @todo: this is a quite sloppy and temporary solution
@@ -159,13 +166,14 @@ function getCusomFooterHTML() {
 		return file_get_contents('./customFooterHTML.html');
 	}
 	return '';
-
 }
 
 // ---------------------------------------------------------------------
 
-$tabPrivileges = getTabPrivileges();
 $tableSchema = TableSchema::getTables();
+$users = getUsers();
+$currentUserInfo = getCurrentUserInfo($users);
+$tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 
 $data = array(
 	'nonces' => getNonces(),
@@ -174,7 +182,7 @@ $data = array(
 	'page' => '#tables',
 	'tables' => getTables($tableSchema),
 	'preferences' => getPreferences($tableSchema), //ok
-	'users' => getUsers(),
+	'users' => $users,
 	'groups' => getGroups(),
 	'settings' => getSettings(),
 	'active_media' => getActiveMedia(),
