@@ -74,7 +74,7 @@ function parseTables($tableSchema) {
 	return $tables;
 }
 
-function parseTables($tableSchema) {
+function parsePreferences($tableSchema) {
 	$preferences = array();
 
 	foreach ($tableSchema as $table) {
