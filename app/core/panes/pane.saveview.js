@@ -22,7 +22,8 @@ function(Backbone, app) {
         showActive: !this.options.single && this.model.getStructure().get('active') !== undefined,
         showDropdown: this.options.showDropDown,
         showSaveAsCopy: !this.model.isNew(),
-        canEdit: this.model.canEdit()
+        canEdit: this.model.canEdit(),
+        buttonText: this.options.buttonText || 'Save Item'
       };
       return data;
     },
