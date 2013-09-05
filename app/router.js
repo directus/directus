@@ -338,6 +338,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
               patch: true,
               global: false,
               wait: true,
+              validate: false,
               url: user.url() + "?skip_activity_log=1"
             });
 
