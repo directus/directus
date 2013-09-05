@@ -31,9 +31,11 @@ function(app, Backbone) {
       app.users.on('reset sync add', function() {
         this.get('users').set({count: app.users.table.get('active')});
       }, this);
-      app.media.on('reset sync add', function() {
-        this.get('media').set({count: app.media.table.get('active')});
-      }, this);   
+      if(undefined !== this.get('media')) {
+        app.media.on('reset sync add', function() {
+          this.get('media').set({count: app.media.table.get('active')});
+        }, this);   
+      }
     }
   });
 
