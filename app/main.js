@@ -19,6 +19,7 @@ require([
   "schemas/users",
   "schemas/activity",
   "schemas/groups",
+  "schemas/messages",
   "schemas/settings.global",
   "schemas/settings.media",
   "core/extensions",
@@ -26,7 +27,7 @@ require([
   "core/tabs"
 ],
 
-function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts, Tabs) {
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, messages, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts, Tabs) {
 
     var defaultBootstrapData = {
       path: '/directus/',
@@ -77,11 +78,11 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     //////////////////////////////////////////////////////////////////////////////
 
-
     var defaultTables = [
       { schema: _.extend({columns: media.structure}, media.table) },
       // @todo: for now we are ignoring the static user schema since we are extending it 
       // with custom fields, eventually we should merge static and custom data.
+      { schema: _.extend({columns: messages.structure}, messages.table)  },
       { schema: _.extend({columns: users.structure}, users.table) },
       { schema: _.extend({columns: activity.structure}, activity.table) },
       { schema: _.extend({columns: groups.structure}, groups.table) }
@@ -244,6 +245,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
       var tableName = options.schema.id;
 
+      console.log(tableName);
+
       // Set table schema
       options.schema.url = app.API_URL + 'tables/' + tableName;
 
@@ -284,6 +287,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     // @todo: Maybe do this earlier?
 
+
     app.users = new Directus.EntriesCollection([], {
       table: app.tables.get('directus_users'),
       structure: app.columns.directus_users,
@@ -319,6 +323,16 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: app.columns.directus_groups,
       url: app.API_URL + 'groups/',
       privileges: app.privileges.directus_groups,
+    });
+
+    app.messages =
+    app.entries.directus_messages = new Directus.EntriesCollection([], {
+      table: app.tables.get('directus_messages'),
+      structure: app.columns.directus_messages,
+      privileges: app.privileges.directus_messages,
+      preferences: app.preferences.directus_messages,
+      url: app.API_URL + 'messages/',
+      filters: {columns_visible: ['from','subject','message'], sort_order: 'DESC'}
     });
 
 /*
