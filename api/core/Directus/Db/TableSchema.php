@@ -196,7 +196,9 @@ class TableSchema {
                 S.TABLE_NAME = "directus_media" OR
                 S.TABLE_NAME = "directus_messages" OR
                 S.TABLE_NAME = "directus_groups" OR
-                S.TABLE_NAME = "directus_users")
+                S.TABLE_NAME = "directus_users" OR
+                S.TABLE_NAME = "directus_messages_recipients"
+                )
             GROUP BY S.TABLE_NAME
             ORDER BY S.TABLE_NAME';
         $sth = $db->dbh->prepare($sql);
