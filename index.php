@@ -170,7 +170,7 @@ function getCusomFooterHTML() {
 
 function getCSSFilePath() {
 	if(file_exists('./assets/css/custom.css')) {
-		return DIRECTUS_PATH . '/assets/css/custom.css';
+		return DIRECTUS_PATH . 'assets/css/custom.css';
 	}
 	return DIRECTUS_PATH . 'assets/css/index.css';
 }
@@ -206,7 +206,6 @@ $templateVars = array(
 	'customFooterHTML' => getCusomFooterHTML(),
 	'cssFilePath' => getCSSFilePath()
 );
-
 
 echo template(file_get_contents('main.html'), $templateVars);
 
