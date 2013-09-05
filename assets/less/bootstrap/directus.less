@@ -179,7 +179,8 @@ label { text-shadow: @textShadowWhite; }
 }
 .well {
   border: 0;
-  color: @white;
+  background-color: @directusPrimary;
+  color: @directusTextOnPrimary;
   min-height:150px;
 }
 .well-small {
@@ -237,7 +238,7 @@ label { text-shadow: @textShadowWhite; }
   //background-color: darken(@btnBackground, 6%);
 }
 
-.btn.active {background-color:@directusPrimary; color:#FFF; border-color:darken(@directusPrimary,3%); text-shadow:@textShadow;}
+.btn.active {background-color:@directusPrimary; color:@directusTextOnPrimary; border-color:darken(@directusPrimary,3%); text-shadow:@textShadow;}
 
 .btn-link:hover {background-color:inherit;}
 
@@ -316,7 +317,7 @@ a:hover {text-decoration:none;}
     font-weight: 400;
     font-size: 14px;
     background-color:@directusPrimary;
-    color:@white;
+    color:@directusTextOnPrimary;
     border:0;
     padding: 10px 20px;
     margin-right:4px;
@@ -375,7 +376,7 @@ a:hover {text-decoration:none;}
     vertical-align:middle;
     font-size:14px;
     .avatar { margin-left: 10px; height:28px; width:28px; margin-right: 0px;}
-    .label { background-color: @directusPrimary; color:#FFF; }
+    .label { background-color: @directusPrimary; color:@directusTextOnPrimary; }
     .user-firstname {margin-left:10px;}
   }
 
