@@ -9,7 +9,7 @@
 		<div class="directus-module-section">
 			{{#if showDropdown}}
 				<div class="btn-group">
-					<a class="btn btn-primary" id="save-form">{{buttonText}}</a>
+					<a class="btn btn-primary" id="save-form">Save Item</a>
 					<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
 					<ul class="dropdown-menu dropdown-menu-primary">
 						<li><a id="save-form-stay">Save & Stay</a></li>
@@ -18,7 +18,7 @@
 					</ul>
 				</div>
 			{{else}}
-				<a class="btn btn-primary" id="save-form">Save Item</a>
+				<a class="btn btn-primary" id="save-form">{{buttonText}}</a>
 			{{/if}}
 			<div class="cancel">or <a href="#" id="save-form-cancel">Cancel</a></div>
 		</div>
