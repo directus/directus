@@ -40,6 +40,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "settings/tables/:table":         "settingsTable",
       "settings/permissions/:groupId":  "settingsPermissions",
       "messages":                       "messages",
+      "messages/:id":                   "message",
       "cashregister":                   "cashregister",
       "booker":                         "booker"
     },
@@ -250,8 +251,24 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     messages: function(name) {
-      this.setPage(Messages.Views.List, {collection: this.messages});
+      this.setPage(Messages.Views.List, {collection: app.messages});
     },
+
+    message: function(id) {
+      var model;
+      this.setTitle('Message');
+      //this.tabs.setActive('users');
+      if (id === "new") {
+        model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages});
+      } else {
+        model = app.messages.get(id);
+      }
+
+      this.v.main.setView('#content', new Messages.Views.Edit({model: model}));
+      this.v.main.render();
+    },
+
+
 
     initialize: function(options) {
       //Fade out and remove splash
