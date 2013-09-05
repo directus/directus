@@ -30,9 +30,9 @@ define([
      });
 
     var showProgressNotification = function(message) {
-      $('#alert-message').text(message);
-      $('body').css('cursor', 'progress');
-      $('#loader').show();
+      //$('#alert-message').text(message);
+      $('body').css('cursor', 'progress!important');
+      //$('#loader').show();
       app.lockScreen();
     };
 
