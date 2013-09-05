@@ -612,6 +612,38 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
     JsonView::render($result);
 });
 
+$app->get("/$v/messages/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $result = array(
+        'total'=>1
+    );
+
+    $result['rows'] = array(
+        array(
+            'id'=>1,
+            'active'=>1,
+            'from'=>1,
+            'subject'=>'Hello there',
+            'message'=>'This is a test message'
+        )
+    );
+
+    JsonView::render($result);
+});
+
+$app->get("/$v/messages/:id/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $result = array(
+        'id'=>1,
+        'active'=>1,
+        'from'=>1,
+        'subject'=>'Hello there',
+        'message'=>'This is a test message',
+        'recipients'=>array(),
+        'attachment'=>array()
+    );
+
+    JsonView::render($result);
+});
+
 /**
  * EXCEPTION LOG
  */
@@ -653,7 +685,7 @@ $app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $a
     if ($response === false) {
         // throw new Exception("Problem reading data from $url, $php_errormsg");
         $response = "Failed to log error. stream_get_contents failed.";
-        $app->getLog()->warn($response);   
+        $app->getLog()->warn($response);
     }
 
     $result = array('response'=>$response);
