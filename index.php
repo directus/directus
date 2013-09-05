@@ -168,6 +168,13 @@ function getCusomFooterHTML() {
 	return '';
 }
 
+function getCSSFilePath() {
+	if(file_exists('./assets/css/custom.css')) {
+		return DIRECTUS_PATH . '/assets/css/custom.css';
+	}
+	return DIRECTUS_PATH . 'assets/css/index.css';
+}
+
 // ---------------------------------------------------------------------
 
 $tableSchema = TableSchema::getTables();
@@ -196,7 +203,8 @@ $data = array(
 $templateVars = array(
 	'data' => json_encode($data),
 	'path' => DIRECTUS_PATH,
-	'customFooterHTML' => getCusomFooterHTML()
+	'customFooterHTML' => getCusomFooterHTML(),
+	'cssFilePath' => getCSSFilePath()
 );
 
 
