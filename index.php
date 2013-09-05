@@ -64,7 +64,7 @@ function parseTables($tableSchema) {
 		unset($table['preferences']);
 
 		//skip directus tables
-		if ('directus_' === substr($tableName,0,9) && 'directus_users' !== $tableName) {
+		if ('directus_' === substr($tableName,0,9) && 'directus_users' !== $tableName && 'directus_messages_recipients' !== $tableName) {
 			continue;
 		}
 
