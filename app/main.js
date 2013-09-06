@@ -24,10 +24,11 @@ require([
   "schemas/settings.media",
   "core/extensions",
   "alerts",
-  "core/tabs"
+  "core/tabs",
+  'modules/messages'
 ],
 
-function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, messages, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts, Tabs) {
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, messages, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts, Tabs, Messages) {
 
     var defaultBootstrapData = {
       path: '/directus/',
@@ -245,8 +246,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
       var tableName = options.schema.id;
 
-      console.log(tableName);
-
       // Set table schema
       options.schema.url = app.API_URL + 'tables/' + tableName;
 
@@ -326,7 +325,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     });
 
     app.messages =
-    app.entries.directus_messages = new Directus.EntriesCollection([], {
+    app.entries.directus_messages = new Messages.Collection([], {
       table: app.tables.get('directus_messages'),
       structure: app.columns.directus_messages,
       privileges: app.privileges.directus_messages,
@@ -335,21 +334,11 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       filters: {columns_visible: ['from','subject','message'], sort_order: 'DESC'}
     });
 
-/*
-
-    app.me = new Directus.Model(data.me, {
-      table: app.tables.get('directus_users'),
-      structure: new Directus.CollectionColumns(groups.structure, {parse: true}),
-      urlRoot: app.API_URL + 'tables/directus_users/rows/',
-      privileges: app.privileges.directus_users
-    });
-
-    return;
-*/
-    //app.me = new Backbone.Model({});
+    app.messages.startPolling();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Instantiate entries
+
     app.tables.each(function(table) {
       if (table.id.substring(0,9) === 'directus_') return;
       app.entries[table.id] = new Directus.EntriesCollection([], {
@@ -397,7 +386,6 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.users.reset(data.users, {parse: true});
     app.media.reset(data.active_media, {parse: true});
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     app.router = new Router({extensions: extensions, tabs: tabs});
 
