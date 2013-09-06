@@ -11,12 +11,39 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'core/panes/pane.saveview'
+  'core/panes/pane.saveview',
+  'core/entries/entries.collection'
 ],
 
-function(app, Backbone, Directus, SaveModule) {
+function(app, Backbone, Directus, SaveModul, EntriesCollection) {
 
   var Messages = app.module();
+
+  Messages.Collection = EntriesCollection.extend({
+
+    updateFrequency: 20000,
+
+    updateMessages: function() {
+
+      var data = {
+        'maxId': 10
+      };
+
+      this.fetch({data: data});
+      console.log('looking for msgs');
+    },
+
+    startPolling: function(ms) {
+      window.setInterval(this.updateMessages, this.updateFrequency);
+    },
+
+    // Restore fetch to default style
+    fetch: function(options) {
+      this.trigger('fetch', this);
+      return Backbone.Collection.prototype.fetch.call(this, options);
+    }
+
+  });
 
   Messages.Views.Edit = Backbone.Layout.extend({
 
@@ -39,8 +66,6 @@ function(app, Backbone, Directus, SaveModule) {
     }
 
   });
-
-
 
   Messages.Views.List = Backbone.Layout.extend({
 
