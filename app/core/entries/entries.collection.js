@@ -122,10 +122,7 @@ function(app, Backbone, Collection, EntriesModel) {
       }
     },
 
-    parse: function(response) {
-
-      if (_.isEmpty(response)) return;
-
+    parseHeaders: function(response) {
       if (response.total !== undefined) {
         this.table.set('total', response.total, {silent: true});
       }
@@ -141,6 +138,13 @@ function(app, Backbone, Collection, EntriesModel) {
       if (response.trash !== undefined) {
         this.table.set('trash', response.trash, {silent: true});
       }
+    },
+
+    parse: function(response) {
+      if (_.isEmpty(response)) return;
+
+      // Parse table headers
+      this.parseHeaders(response);
 
       return response.rows;
     }
