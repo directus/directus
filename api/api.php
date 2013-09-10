@@ -39,6 +39,8 @@ use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
+use Directus\Db\TableGateway\DirectusGroupsTableGateway;
+use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 //use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
@@ -644,10 +646,53 @@ $app->get("/$v/messages/rows/:id/?", function () use ($db, $params, $requestPayl
     JsonView::render($result);
 });
 
+$app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+
+    // Unpack recepients
+    $recepients = explode(',', $requestPayload['recepients']);
+    $groupRecepients = array();
+    $userRecepients = array();
+
+    foreach($recepients as $recepient) {
+        $typeAndId = explode('_', $recepient);
+        if ($typeAndId[0] == 0) {
+            $userRecepients[] = $typeAndId[1];
+        } else {
+            $groupRecepients[] = $typeAndId[1];
+        }
+
+    }
+
+    if (count($groupRecepients) > 0) {
+        $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+        $result = $usersTableGateway->findUserIdsByGroupIds($groupRecepients);
+        foreach($result as $item) {
+            $userRecepients[] = $item['id'];
+        }
+    }
+
+    print_r($requestPayload);
+
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients));
+
+    die();
+
+    JsonView::render($result);
+});
+
+
+
 $app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $tokens = explode(' ', $_GET['q']);
-    $users = new DirectusUsersTableGateway($acl, $ZendDb);
-    $result = $users->findUserByFirstOrLastName($tokens);
+
+    $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+    $users = $usersTableGateway->findUserByFirstOrLastName($tokens);
+
+    $groupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
+    $groups = $groupsTableGateway->findUserByFirstOrLastName($tokens);
+
+    $result = array_merge($groups, $users);
 
     JsonView::render($result);
 });
