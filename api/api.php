@@ -612,14 +612,14 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
     JsonView::render($result);
 });
 
-$app->get("/$v/messages/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $result = array(
         'total'=>1
     );
 
     $result['rows'] = array(
         array(
-            'id'=>1,
+            'id'=>rand(1, 15),
             'active'=>1,
             'from'=>1,
             'subject'=>'Hello there',
@@ -630,7 +630,7 @@ $app->get("/$v/messages/?", function () use ($db, $params, $requestPayload, $app
     JsonView::render($result);
 });
 
-$app->get("/$v/messages/:id/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->get("/$v/messages/rows/:id/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $result = array(
         'id'=>1,
         'active'=>1,
@@ -643,6 +643,16 @@ $app->get("/$v/messages/:id/?", function () use ($db, $params, $requestPayload, 
 
     JsonView::render($result);
 });
+
+$app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $tokens = explode(' ', $_GET['q']);
+    $users = new DirectusUsersTableGateway($acl, $ZendDb);
+    $result = $users->findUserByFirstOrLastName($tokens);
+
+    JsonView::render($result);
+});
+
+
 
 /**
  * EXCEPTION LOG
