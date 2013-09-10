@@ -151,6 +151,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.DEFAULT_VALIDATION_MESSAGE = 'The data you entered is not valid';
     app.API_URL = data.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
+    app.PATH = data.path;
     app.uiSettings = UI.settings();
     app.columns = {};
     app.entries = {};
@@ -334,7 +335,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       filters: {columns_visible: ['from','subject','message'], sort_order: 'DESC'}
     });
 
-    app.messages.startPolling();
+    //app.messages.startPolling();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Instantiate entries
