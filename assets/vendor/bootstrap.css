@@ -3596,7 +3596,7 @@ a.thumbnail:hover {
 }
 .tooltip {
   position: absolute;
-  z-index: 1020;
+  z-index: 1040;
   display: block;
   visibility: visible;
   padding: 5px;
