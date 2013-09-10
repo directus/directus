@@ -330,7 +330,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       structure: app.columns.directus_messages,
       privileges: app.privileges.directus_messages,
       preferences: app.preferences.directus_messages,
-      url: app.API_URL + 'messages/',
+      url: app.API_URL + 'messages/rows/',
       filters: {columns_visible: ['from','subject','message'], sort_order: 'DESC'}
     });
 
