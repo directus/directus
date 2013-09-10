@@ -15,32 +15,31 @@ define([
   'core/entries/entries.collection'
 ],
 
-function(app, Backbone, Directus, SaveModul, EntriesCollection) {
+function(app, Backbone, Directus, SaveModule, EntriesCollection) {
 
   var Messages = app.module();
 
   Messages.Collection = EntriesCollection.extend({
 
-    updateFrequency: 20000,
+    updateFrequency: 2000,
 
     updateMessages: function() {
-
       var data = {
         'maxId': 10
       };
 
-      this.fetch({data: data});
-      console.log('looking for msgs');
+      this.fetch({data: data, remove: false});
+      //console.log(this, 'looking for msgs');
     },
 
     startPolling: function(ms) {
-      window.setInterval(this.updateMessages, this.updateFrequency);
+      window.setInterval(this.updateMessages.bind(this), this.updateFrequency);
     },
 
     // Restore fetch to default style
     fetch: function(options) {
       this.trigger('fetch', this);
-      return Backbone.Collection.prototype.fetch.call(this, options);
+      EntriesCollection.prototype.fetch.call(this, options);
     }
 
   });
@@ -76,8 +75,9 @@ function(app, Backbone, Directus, SaveModul, EntriesCollection) {
     },
 
     afterRender: function() {
-      this.setView('#page-content', new Directus.Table({collection: this.collection, navigate: true, hideColumnPreferences: true}));
-      this.collection.fetch();
+      var view = new Directus.Table({collection: this.collection, navigate: true, hideColumnPreferences: true});
+      this.setView('#page-content', view);
+      view.render();
     }
 
   });
