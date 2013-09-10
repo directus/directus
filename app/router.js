@@ -259,7 +259,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.setTitle('Message');
       //this.tabs.setActive('users');
       if (id === "new") {
-        model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages});
+        model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages, parse: true});
       } else {
         model = app.messages.get(id);
       }
