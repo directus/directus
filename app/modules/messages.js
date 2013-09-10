@@ -48,6 +48,13 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
 
     template: 'page',
 
+    events: {
+      'click #save-form': function(e) {
+        console.log(this.model.toJSON());
+        this.model.save(this.editView.data());
+      }
+    },
+
     serialize: function() {
       var title = this.model.isNew() ? 'Compose New' : 'Reading Message';
       return {title: title, sidebar: true};
@@ -58,8 +65,14 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     },
 
     afterRender: function() {
-      this.setView('#page-content', new Directus.EditView({model: this.model}));
-      this.model.fetch();
+      this.editView = new Directus.EditView({model: this.model});
+      this.setView('#page-content', this.editView);
+
+      if (!this.model.isNew()) {
+        this.model.fetch();
+      } else {
+        this.editView.render();
+      }
       //this.setView('#page-content', new Directus.Table({collection: this.collection, navigate: true, hideColumnPreferences: true}));
       //this.collection.fetch();
     }
