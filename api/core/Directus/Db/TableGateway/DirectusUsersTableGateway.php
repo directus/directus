@@ -7,6 +7,7 @@ use Directus\Db\TableGateway\AclAwareTableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\Adapter;
 
 class DirectusUsersTableGateway extends AclAwareTableGateway {
 
@@ -17,6 +18,14 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
     }
 
     const GRAVATAR_SIZE = 100;
+
+    // @todo sanitize parameters and implement ACL
+    public function findUserByFirstOrLastName($tokens) {
+        $tokenString = implode("|", $tokens);
+        $sql = "SELECT id, 'directus_users' as type, CONCAT(first_name, ' ', last_name) name from `directus_users` WHERE `first_name` REGEXP '^($tokenString)' OR `last_name` REGEXP '^($tokenString)'";
+        $result = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
+        return $result->toArray();
+    }
 
     public function fetchAllWithGroupData() {
         $rowset = $this->select(function(Select $select) {
@@ -38,6 +47,14 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
             array_push($results, $row);
         }
         return array('rows' => $results);
+    }
+
+    public function findUserIdsByGroupIds($ids) {
+        $select = new Select($this->getTable());
+        $select
+            ->columns(array('id'))
+            ->where->in('group', $ids);
+        return $this->selectWith($select)->toArray();
     }
 
     /**
