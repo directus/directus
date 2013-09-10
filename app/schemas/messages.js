@@ -44,26 +44,14 @@ define([], function() {
       }
     },
     {
-      "id":"recipients",
-      "column_name":"directus_users",
-      "type":"MANYTOMANY",
-      "is_nullable":"NO",
-      "comment":"",
-      "ui":"many_to_many",
+      "id":"recepients",
+      "column_name":"recepients",
+      "ui":"directus_messages_recepients",
+      "type":"VARCHAR",
       "system":false,
-      "master":false,
+      "char_length":1000,
       "hidden_list":false,
-      "hidden_input":false,
-      "table_related": "directus_users",
-      "junction_table": "directus_messages_recipients",
-      "junction_key_left": "directus_messages_id",
-      "junction_key_right": "directus_users_id",
-      "required":false,
-      "is_writable":true,
-      "options":{
-        "id":"many_to_many",
-        "visible_columns":"first_name,last_name"
-      }
+      "hidden_input":false
     },
     {
       "id":"subject",
@@ -71,6 +59,7 @@ define([], function() {
       "ui":"textinput",
       "type":"VARCHAR",
       "system":false,
+      "char_length":200,
       "hidden_list":false,
       "hidden_input":false
     },
@@ -91,7 +80,7 @@ define([], function() {
       "id":"attachment",
       "column_name":"attachment",
       "type":"INT",
-      "is_nullable":"NO",
+      "is_nullable":"YES",
       "comment":"312 x 312",
       "ui":"single_media",
       "system":false,
