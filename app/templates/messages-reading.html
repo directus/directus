@@ -1,0 +1,15 @@
+<!--<h3>{{subject}}</h3>-->
+<hr style="border:1px solid #EDEDED">
+<strong>{{userFull from}}</strong>
+<div style="margin-left:38px; overflow: auto;">{{contextualDate datetime}}<br/> {{message}}</div>
+<hr style="border:1px solid #EDEDED">
+{{#each responses}}
+<strong>{{userFull from}}</strong>
+<div style="margin-left:38px; overflow: auto;">{{contextualDate datetime}}<br/> {{message}} </div>
+<hr style="border:1px solid #EDEDED">
+{{/each}}
+
+<div style="margin-left:38px;">
+<textarea rows="7" style="width:500px; margin-bottom:10px" id="messages-response"></textarea>
+<p><button class="btn btn-primary" id="messages-response-button">Reply</button></p>
+</div>
