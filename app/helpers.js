@@ -105,6 +105,11 @@ require([
     return new Handlebars.SafeString('<img src="'+user.get('avatar')+'"  class="avatar"/>'+user.get('first_name')+' '+user.get('last_name'));
   });
 
+  Handlebars.registerHelper('userFirstAndLastName', function(userId) {
+    var user = app.users.get(userId);
+    return new Handlebars.SafeString(user.get('first_name')+' '+user.get('last_name'));
+  });
+
   Handlebars.registerHelper('directusTable', function(data) {
 
     if (data === undefined || !data.length) return;
