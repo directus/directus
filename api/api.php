@@ -615,38 +615,24 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
 });
 
 $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-    $result = array(
-        'total'=>1
-    );
+    $currentUser = Auth::getUserInfo();
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
 
-    $result['rows'] = array(
-        array(
-            'id'=>rand(1, 15),
-            'active'=>1,
-            'from'=>1,
-            'subject'=>'Hello there',
-            'message'=>'This is a test message'
-        )
-    );
+    $result = $messagesTableGateway->fetchMessagesInbox($currentUser['id']);
 
-    JsonView::render($result);
+    JsonView::render(array('rows'=>$result));
 });
 
-$app->get("/$v/messages/rows/:id/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-    $result = array(
-        'id'=>1,
-        'active'=>1,
-        'from'=>1,
-        'subject'=>'Hello there',
-        'message'=>'This is a test message',
-        'recipients'=>array(),
-        'attachment'=>array()
-    );
+$app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
 
-    JsonView::render($result);
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $message = $messagesTableGateway->fetchMessage($id);
+
+    JsonView::render($message);
 });
 
 $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $currentUser = Auth::getUserInfo();
 
     // Unpack recepients
     $recepients = explode(',', $requestPayload['recepients']);
@@ -671,14 +657,12 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
         }
     }
 
-    print_r($requestPayload);
-
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
-    $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients));
+    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients), $currentUser['id']);
 
-    die();
+    $message = $messagesTableGateway->fetchMessage($id);
 
-    JsonView::render($result);
+    JsonView::render($message);
 });
 
 
