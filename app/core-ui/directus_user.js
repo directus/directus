@@ -36,7 +36,7 @@ define(['app','backbone'], function(app, Backbone) {
       var user = app.users.get(options.value);
       if(user) {
         this.$el.html('<label>'+app.capitalize(this.options.name)+'</label>');
-        this.$el.append('<img src="' + app.RESOURCES_URL + 'users/default.png" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));        
+        this.$el.append('<img src="' + user.get('avatar') + '" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));        
       }
     }
   });
