@@ -10,6 +10,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Adapter\Adapter;
+use Directus\Db\TableGateway\DirectusMessagesRecepientsTableGateway;
 
 class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
@@ -52,7 +53,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
     private function fetchResponses($messageId) {
         $select = new Select($this->getTable());
         $select
-            ->columns(array('id', 'from', 'subject', 'message', 'attachment'))
+            ->columns(array('id', 'from', 'subject', 'message', 'attachment', 'datetime'))
             ->where
                 ->equalTo('directus_messages.response_to', $messageId);
 
@@ -62,7 +63,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
     public function fetchMessage($id) {
         $select = new Select($this->getTable());
         $select
-            ->columns(array('id', 'from', 'subject', 'message', 'attachment'))
+            ->columns(array('id', 'from', 'subject', 'message', 'attachment','datetime'))
             ->join('directus_messages_recepients', 'directus_messages.id = directus_messages_recepients.message_id', array('recepients' => new Expression("GROUP_CONCAT(recepient)")))
             ->where
                 ->equalTo('directus_messages.id', $id);
@@ -88,13 +89,16 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         $resultLookup = array();
         $ids = array();
 
-        //->where->in('group', $ids);
-        // print_r($ids);
+        // Grab ids;
+        foreach ($result as $item) { $ids[] = $item['id']; }
+
+        $directusMessagesTableGateway = new DirectusMessagesRecepientsTableGateway($this->acl, $this->adapter);
+        $recepients = $directusMessagesTableGateway->fetchMessageRecepients($ids);
 
         foreach ($result as $item) {
             $item['responses'] = array('rows'=>array());
+            $item['recepients'] = implode(',', $recepients[$item['id']]);
             $resultLookup[$item['id']] = $item;
-            $ids[] = $item['id'];
         }
 
         foreach ($result as $item) {
