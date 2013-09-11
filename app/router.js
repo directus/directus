@@ -40,6 +40,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "settings/tables/:table":         "settingsTable",
       "settings/permissions/:groupId":  "settingsPermissions",
       "messages":                       "messages",
+      "messages/new":                   "newMessage",
       "messages/:id":                   "message",
       "cashregister":                   "cashregister",
       "booker":                         "booker"
@@ -255,20 +256,23 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     message: function(id) {
-      var model;
+      var model = app.messages.get(id);;
       this.setTitle('Message');
-      //this.tabs.setActive('users');
-      if (id === "new") {
-        model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages, parse: true});
-      } else {
-        model = app.messages.get(id);
+
+      if (model === undefined) {
+        model = new app.messages.model({id: id}, {collection: app.messages, parse: true});
+        model.fetch();
       }
 
-      this.v.main.setView('#content', new Messages.Views.Edit({model: model}));
+      this.v.main.setView('#content', new Messages.Views.Read({model: model}));
       this.v.main.render();
     },
 
-
+    newMessage: function() {
+      var model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages, parse: true});
+      this.v.main.setView('#content', new Messages.Views.New({model: model}));
+      this.v.main.render();
+    },
 
     initialize: function(options) {
       //Fade out and remove splash
