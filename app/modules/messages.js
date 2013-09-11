@@ -70,8 +70,11 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     },
 
     serialize: function() {
-      console.log(this.model.toJSON());
-      return this.model.toJSON()
+      var data = this.model.toJSON();
+      data.recepients = data.recepients.split(',');
+      data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
+      console.log(data);
+      return data;
     },
 
     initialize: function() {
@@ -87,7 +90,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     template: 'page',
 
     serialize: function() {
-      return {title: this.model.get('subject'), breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
+      return {title: 'Reading Message', breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
     },
 
     beforeRender: function() {
