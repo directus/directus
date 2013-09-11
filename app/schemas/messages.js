@@ -47,6 +47,7 @@ define([], function() {
       "id":"recepients",
       "column_name":"recepients",
       "ui":"directus_messages_recepients",
+      "is_nullable":"NO",
       "type":"VARCHAR",
       "system":false,
       "char_length":1000,
@@ -92,7 +93,44 @@ define([], function() {
       "options":[
 
       ]
-  }
+    },
+    {
+      "id":"datetime",
+      "column_name":"datetime",
+      "type":"DATETIME",
+      "is_nullable":"YES",
+      "ui":"datetime",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "is_writable":true,
+      "options":[
+
+      ]
+    },
+    {
+      "id":"responses",
+      "column_name":"responses",
+      "type":"ONETOMANY",
+      "is_nullable":"NO",
+      "comment":"",
+      "sort":38,
+      "ui":"one_to_many",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":false,
+      "table_related":"directus_messages",
+      "junction_key_right":"instructor_id",
+      "required":false,
+      "is_writable":true,
+      "options":{
+        "id":"one_to_many",
+        "visible_columns":"subject"
+      }
+    }
   ];
 
   return messages;
