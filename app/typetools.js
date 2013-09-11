@@ -136,6 +136,10 @@ define(["plugins/jquery.timeago"], function() {
 
       dateYYYYMMDD: function(date) {
           return date.toISOString().slice(0,10);
+      },
+
+      replaceAll: function(find, replace, str) {
+        return str.replace(new RegExp(find, 'g'), replace);
       }
 
   };
