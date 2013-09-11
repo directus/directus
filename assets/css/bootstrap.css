@@ -7092,6 +7092,9 @@ table#directus_activity col.col-datetime {
 .directus-module:last-child {
   margin-bottom: 0;
 }
+.contextual-date {
+  display: inline-block;
+}
 .media-modal .contextual-date {
   display: inline;
 }
