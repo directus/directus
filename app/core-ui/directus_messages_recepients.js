@@ -44,7 +44,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       _.each(this.recepients, function(item) {
         var fontWeight = item.type === 1 ? 'font-weight:bold;' : '';
-        elArray.push('<div style="padding:4px; overflow: auto; display:inline-block; border-radius: 2px; background-color:#EEE; border:1px solid #CCC; margin-right:5px; margin-bottom:5px;' + fontWeight + '"><img src="' + item.avatar + '" style="width:20px; height:20px; margin-right:4px">' + item.name + '</div>');
+        elArray.push('<div style="padding:4px; line-height:0px; overflow: auto; display:inline-block; border-radius: 2px; background-color:#EEE; border:1px solid #CCC; margin-right:5px; margin-bottom:5px;' + fontWeight + '"><img src="' + item.avatar + '" style="width:20px; height:20px; margin-right:4px">' + item.name + '<span class="glyphicon-remove" style="display:inline-block; padding:0; line-height:3px; margin-left:5px"></span></div>');
       });
 
       this.$el.find('#directus_messages_recepients-form').val(_.keys(this.recepients));
