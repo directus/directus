@@ -22,15 +22,6 @@ define([], function() {
       "hidden_input":true
     },
     {
-      "id":"active",
-      "column_name":"active",
-      "ui":"numeric",
-      "type":"INT",
-      "system":true,
-      "hidden_list":true,
-      "hidden_input":true
-    },
-    {
       "id":"from",
       "column_name":"from",
       "ui":"directus_user",
@@ -111,6 +102,22 @@ define([], function() {
       ]
     },
     {
+      "id":"date_updated",
+      "column_name":"date_updated",
+      "type":"DATETIME",
+      "is_nullable":"YES",
+      "ui":"datetime",
+      "system":false,
+      "master":false,
+      "hidden_list":false,
+      "hidden_input":true,
+      "required":false,
+      "is_writable":true,
+      "options":[
+
+      ]
+    },
+    {
       "id":"responses",
       "column_name":"responses",
       "type":"ONETOMANY",
@@ -120,16 +127,25 @@ define([], function() {
       "ui":"one_to_many",
       "system":false,
       "master":false,
-      "hidden_list":false,
-      "hidden_input":false,
+      "hidden_list":true,
+      "hidden_input":true,
       "table_related":"directus_messages",
-      "junction_key_right":"instructor_id",
+      "junction_key_right":"response_to",
       "required":false,
       "is_writable":true,
       "options":{
         "id":"one_to_many",
         "visible_columns":"subject"
       }
+    },
+    {
+      "id":"response_to",
+      "column_name":"response_to",
+      "ui":"numeric",
+      "type":"INT",
+      "system":true,
+      "hidden_list":true,
+      "hidden_input":true
     }
   ];
 
