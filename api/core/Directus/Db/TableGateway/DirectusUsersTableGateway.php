@@ -49,11 +49,11 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
         return array('rows' => $results);
     }
 
-    public function findUserIdsByGroupIds($ids) {
+    public function findActiveUserIdsByGroupIds($ids = array()) {
         $select = new Select($this->getTable());
         $select
             ->columns(array('id'))
-            ->where->in('group', $ids);
+            ->where->in('group', $ids)->and->equalTo('active', 1);
         return $this->selectWith($select)->toArray();
     }
 
