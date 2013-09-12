@@ -7,6 +7,7 @@ use Directus\Db\TableGateway\AclAwareTableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Adapter\Adapter;
@@ -19,7 +20,7 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public function fetchMessageRecepients($messageIds) {
+    public function fetchMessageRecepients($messageIds = array()) {
         $select = new Select($this->getTable());
         $select
             ->columns(array('id','message_id','recepient'))
@@ -37,6 +38,17 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
         }
 
         return $recepientMap;
+    }
+
+    public function markAsRead($messageIds, $uid) {
+        $update = new Update($this->getTable());
+        $update
+            ->set(array('read'=>1))
+            ->where->in('message_id', $messageIds)
+            ->and
+            ->where->equalTo('recepient', $uid);
+
+        return $this->updateWith($update);
     }
 
 }
