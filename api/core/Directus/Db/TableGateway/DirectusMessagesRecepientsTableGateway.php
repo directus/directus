@@ -43,12 +43,23 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
     public function markAsRead($messageIds, $uid) {
         $update = new Update($this->getTable());
         $update
-            ->set(array('read'=>1))
+            ->set(array('read' => 1))
             ->where->in('message_id', $messageIds)
             ->and
             ->where->equalTo('recepient', $uid);
 
         return $this->updateWith($update);
+    }
+
+    public function getMessagesNewerThan($maxId, $currentUser) {
+        $select = new Select($this->getTable());
+        $select
+            ->where
+                ->greaterThan('message_id', $maxId)
+                ->and
+                ->equalTo('recepient', $currentUser);
+
+        return $this->selectWith($select)->toArray();
     }
 
 }
