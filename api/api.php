@@ -41,6 +41,7 @@ use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusGroupsTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
+use Directus\Db\TableGateway\DirectusMessagesRecepientsTableGateway;
 //use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
@@ -624,12 +625,32 @@ $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload,
 });
 
 $app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-
+    $currentUser = Auth::getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
-    $message = $messagesTableGateway->fetchMessage($id);
+    $message = $messagesTableGateway->fetchMessage($id, $currentUser['id']);
 
     JsonView::render($message);
 });
+
+$app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $currentUser = Auth::getUserInfo();
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
+
+    $message = $messagesTableGateway->fetchMessage($id, $currentUser['id']);
+
+    $ids = array($message['id']);
+    $message['read'] = "1";
+    foreach ($message['responses']['rows'] as &$response) {
+        $ids[] = $response['id'];
+        $response['read'] = "1";
+    }
+
+    $messagesRecepientsTableGateway->markAsRead($ids, $currentUser['id']);
+
+    JsonView::render($message);
+})->via('PATCH');
+
 
 $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
@@ -646,12 +667,11 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
         } else {
             $groupRecepients[] = $typeAndId[1];
         }
-
     }
 
     if (count($groupRecepients) > 0) {
         $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
-        $result = $usersTableGateway->findUserIdsByGroupIds($groupRecepients);
+        $result = $usersTableGateway->findActiveUserIdsByGroupIds($groupRecepients);
         foreach($result as $item) {
             $userRecepients[] = $item['id'];
         }
@@ -660,7 +680,7 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients), $currentUser['id']);
 
-    $message = $messagesTableGateway->fetchMessage($id);
+    $message = $messagesTableGateway->fetchMessage($id, $currentUser['id']);
 
     JsonView::render($message);
 });
