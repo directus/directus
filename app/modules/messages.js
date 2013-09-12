@@ -66,6 +66,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
         var model = new Model(attrs, {collection: collection, parse: true, url: app.API_URL + 'messages/rows/'});
         model.save();
         collection.add(model);
+        this.render();
       }
     },
 
@@ -73,13 +74,42 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
       var data = this.model.toJSON();
       data.recepients = data.recepients.split(',');
       data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
-      console.log(data);
       return data;
     },
 
     initialize: function() {
       this.model.on('sync', this.render, this);
-      this.model.get('responses').on('add', this.render, this);
+      //this.model.get('responses').setOrder('id', 'ASC');
+      this.model.save({read: 1}, {patch: true, silent: true});
+    }
+
+  });
+
+  var ListView = Backbone.Layout.extend({
+
+    template: 'messages-list',
+
+    events: {
+      'click tr': function(e) {
+        var id = $(e.target).closest('tr').attr('data-id');
+        app.router.go('#messages', id);
+      }
+    },
+
+    serialize: function() {
+      var data = this.collection.map(function(model) {
+        var data = model.toJSON();
+        data.read = (data.read === '1');
+        data.responsesLength = data.responses.length;
+        data.from = parseInt(data.from, 10);
+        //console.log(_.map(data.responses, 'from'));
+        return data;
+      });
+      return {messages: data};
+    },
+
+    initialize: function() {
+      this.collection.on('sync', this.render, this);
     }
 
   });
@@ -116,7 +146,8 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
 
     events: {
       'click #save-form': function(e) {
-        this.model.save(this.editView.data(), {success: function() {
+        var data = this.editView.data();
+        this.model.save(data, {success: function() {
           app.router.go('#messages');
         }});
 
@@ -158,7 +189,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     },
 
     afterRender: function() {
-      var view = new Directus.Table({collection: this.collection, navigate: true, hideColumnPreferences: true});
+      var view = new ListView({collection: this.collection});
       this.setView('#page-content', view);
       this.collection.fetch();
     }
