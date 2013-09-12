@@ -624,10 +624,22 @@ $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload,
     JsonView::render(array('rows'=>$result));
 });
 
+$app->get("/$v/messages/poll/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $currentUser = Auth::getUserInfo();
+    $maxId = $_GET['max_id'];
+    $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
+    $result = $messagesRecepientsTableGateway->getMessagesNewerThan($maxId, $currentUser['id']);
+
+    print_r($result);
+    die();
+
+    JsonView::render(array('rows'=>$result));
+});
+
 $app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
-    $message = $messagesTableGateway->fetchMessage($id, $currentUser['id']);
+    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
 
     JsonView::render($message);
 });
@@ -637,7 +649,7 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
 
-    $message = $messagesTableGateway->fetchMessage($id, $currentUser['id']);
+    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
 
     $ids = array($message['id']);
     $message['read'] = "1";
@@ -677,10 +689,12 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
         }
     }
 
+    $userRecepients[] = $currentUser['id'];
+
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients), $currentUser['id']);
 
-    $message = $messagesTableGateway->fetchMessage($id, $currentUser['id']);
+    $message = $messagesTableGateway->fetchMessage($id);
 
     JsonView::render($message);
 });
