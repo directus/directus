@@ -78,6 +78,19 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
+    public function fetchMessage($id) {
+        $select = new Select($this->getTable());
+        $select
+            ->columns(array('id', 'from', 'subject', 'message', 'attachment','datetime'))
+            ->where
+                ->equalTo('directus_messages.id', $id);
+
+        $result = $this->selectWith($select)->toArray();
+        $result = $result[0];
+
+        return $result;
+    }
+
     public function fetchMessageWithRecepients($id, $uid) {
         $select = new Select($this->getTable());
         $select
@@ -122,12 +135,30 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
+
+
+    /*
+        Will solve pagination:
+
+
+        SELECT response_to AS `message_id`, COUNT(`directus_messages`.`id`) as responses FROM `directus_messages` 
+
+        INNER JOIN `directus_messages_recepients` ON `directus_messages`.`id` = `directus_messages_recepients`.`message_id`  
+
+        WHERE `recepient` = 7
+
+        GROUP BY response_to ORDER BY `directus_messages`.`id` DESC
+
+    */
+
     public function fetchMessagesInbox($uid) {
         $select = new Select('directus_messages');
         $select
             ->join('directus_messages_recepients', 'directus_messages.id = directus_messages_recepients.message_id', array('read'))
             ->where
                 ->equalTo('directus_messages_recepients.recepient', $uid);
+
+        print_r($this->dumpSql($select));
 
         $result = $this->selectWith($select)->toArray();
 
@@ -150,7 +181,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         }
 
         foreach ($result as $item) {
-            if ($item['response_to'] != null) {
+            if ($item['response_to'] != $item['id']) {
                 // Move it to resultLookup
                 unset($resultLookup[$item['id']]);
                 $resultLookup[$item['response_to']]['responses']['rows'][] = $item;
