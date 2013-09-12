@@ -332,7 +332,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       privileges: app.privileges.directus_messages,
       //preferences: app.preferences.directus_messages,
       url: app.API_URL + 'messages/rows/',
-      filters: {columns_visible: ['from','subject','date_updated'], sort: 'date_update', sort_order: 'DESC'}
+      filters: {columns_visible: ['from','subject','date_updated'], sort: 'date_updated', sort_order: 'DESC'}
     });
 
     //app.messages.startPolling();
