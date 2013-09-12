@@ -1,0 +1,23 @@
+<table class="table table-striped directus-table" id="messages-list">
+<colgroup>
+	<col class="status"></col>
+	<col class="col-from" style="width:200px;"></col>
+	<col class="col-subject"></col>
+	<col class="date" style="width:150px"></col>
+</colgroup>
+
+{{#each messages}}
+<tr {{#unless read}}style="font-weight:bold;" class="new"{{/unless}} data-id="{{id}}">
+	<td class="status"></td>
+	<td>{{userShort from}} {{#if responsesLength}}({{responsesLength}}){{/if}}</td>
+	<td>{{subject}}</td>
+	<td>{{contextualDate date_updated}}</td>
+</tr>
+{{/each}}
+</table>
+
+
+<style>
+	#messages-list tr.new td.status {background-color: #80B838;}
+
+</style>
