@@ -52,11 +52,15 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
       'click #messages-response-button': function() {
         var collection = this.model.get('responses');
         var Model = collection.model;
+        var recepients = _.map(this.model.get('recepients').split(','), function(id) { return '0_'+id; });
+        var myId = app.getCurrentUser().get('id');
+
+        recepients.push('0_'+this.model.get('from'));
 
         var attrs = {
           'from': app.getCurrentUser().get('id'),
           'subject': '',
-          'recepients': '0_7',
+          'recepients': recepients.join(','),
           'datetime': (new Date()).toISOString(),
           'response_to': this.model.id,
           'message': $('#messages-response').val(),
