@@ -107,6 +107,9 @@ require([
 
   Handlebars.registerHelper('userFirstAndLastName', function(userId) {
     var user = app.users.get(userId);
+    if (user === undefined) {
+      return unknowUserMessage;
+    }
     return new Handlebars.SafeString(user.get('first_name')+' '+user.get('last_name'));
   });
 
