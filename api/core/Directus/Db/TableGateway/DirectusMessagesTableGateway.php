@@ -114,21 +114,6 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         return $result[0];
     }
 
-    /*
-        Will solve pagination:
-
-
-        SELECT response_to AS `message_id`, COUNT(`directus_messages`.`id`) as responses FROM `directus_messages` 
-
-        INNER JOIN `directus_messages_recepients` ON `directus_messages`.`id` = `directus_messages_recepients`.`message_id`  
-
-        WHERE `recepient` = 7
-
-        GROUP BY response_to ORDER BY `directus_messages`.`id` DESC
-
-
-    */
-
     public function fetchMessagesInbox($uid, $messageId = null) {
 
         $select = new Select($this->table);
@@ -204,7 +189,11 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
-    public function fetchMessagesSent($uid) {
+    public function fetchMessagesInboxWithHeaders($uid) {
+        $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($this->acl, $this->adapter);
+        $result = $messagesRecepientsTableGateway->countMessages($uid);
+        $result['rows'] = $this->fetchMessagesInbox($uid);
+        return $result;
 
     }
 }
