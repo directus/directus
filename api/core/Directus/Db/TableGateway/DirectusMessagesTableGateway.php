@@ -115,7 +115,6 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
     }
 
     public function fetchMessagesInbox($uid, $messageId = null) {
-
         $select = new Select($this->table);
         $select
             ->columns(array('message_id' => 'response_to', 'thread_length' => new Expression('COUNT(`directus_messages`.`id`)')))
@@ -124,7 +123,11 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
             ->where->equalTo('recepient', $uid);
 
         if (!empty($messageId)) {
-            $select->where->equalTo('response_to', $messageId);
+            if (gettype($messageId) ==  'array') {
+                $select->where->in('response_to', $messageId);
+            } else {
+                $select->where->equalTo('response_to', $messageId);
+            }
         }
 
         $select
@@ -189,10 +192,10 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
-    public function fetchMessagesInboxWithHeaders($uid) {
+    public function fetchMessagesInboxWithHeaders($uid, $messageIds=null) {
         $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($this->acl, $this->adapter);
         $result = $messagesRecepientsTableGateway->countMessages($uid);
-        $result['rows'] = $this->fetchMessagesInbox($uid);
+        $result['rows'] = $this->fetchMessagesInbox($uid, $messageIds);
         return $result;
 
     }
