@@ -74,10 +74,10 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
             }
             switch($item['read']) {
                 case '1':
-                    $count['read'] = $item['count'];
+                    $count['read'] = (int)$item['count'];
                     break;
                 case '0':
-                    $count['unread'] = $item['count'];
+                    $count['unread'] = (int)$item['count'];
                     break;
             }
         }
@@ -98,6 +98,7 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
                 ->equalTo('recepient', $currentUser);
 
         $result = $this->selectWith($select)->toArray();
+
         $messageThreads = array();
 
         foreach ($result as $message) {
