@@ -51,6 +51,38 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
         return $this->updateWith($update);
     }
 
+    public function countMessages($uid) {
+        $select = new Select($this->table);
+        $select
+            ->columns(array('id','read','count' => new Expression('COUNT(`id`)')))
+            ->where->equalTo('recepient', $uid);
+        $select
+            ->group('read');
+
+        $result = $this->selectWith($select)->toArray();
+
+        $count = array(
+            'read'=> null,
+            'unread' => null,
+            'total' => null
+        );
+
+        foreach($result as $item) {
+            switch($item['read']) {
+                case '1':
+                    $count['read'] = $item['count'];
+                    break;
+                case '0':
+                    $count['unread'] = $item['count'];
+                    break;
+            }
+        }
+
+        $count['total'] = $count['read'] + $count['unread'];
+
+        return $count;
+    }
+
     public function getMessagesNewerThan($maxId, $currentUser) {
         $select = new Select($this->getTable());
         $select
