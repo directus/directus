@@ -21,19 +21,30 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
 
   Messages.Collection = EntriesCollection.extend({
 
-    updateFrequency: 2000,
+    updateFrequency: 10000,
 
     updateMessages: function() {
       var data = {
-        'maxId': 10
+        'max_id': this.maxId
       };
 
       this.fetch({data: data, remove: false});
-      //console.log(this, 'looking for msgs');
     },
 
     startPolling: function(ms) {
       window.setInterval(this.updateMessages.bind(this), this.updateFrequency);
+    },
+
+    parse: function(response) {
+      if (response === null) return [];
+
+      if (response.max_id !== undefined) {
+        this.maxId = response.max_id;
+        this.unread = response.unread;
+        this.total = response.total;
+      }
+
+      return response.rows;
     },
 
     // Restore fetch to default style
@@ -82,7 +93,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     },
 
     initialize: function() {
-      this.model.on('sync', this.render, this);
+      this.model.on('sync change', this.render, this);
       //this.model.get('responses').setOrder('id', 'ASC');
       this.model.save({read: 1}, {patch: true, silent: true});
     }
@@ -155,6 +166,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
           app.router.go('#messages');
         }});
 
+        this.model.collection.add(this.model);
       }
     },
 
