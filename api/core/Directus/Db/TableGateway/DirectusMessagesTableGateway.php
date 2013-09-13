@@ -85,6 +85,10 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
         $result = $this->selectWith($select)->toArray();
 
+        foreach($result as &$message) {
+            $message['id'] = (int)$message['id'];
+        }
+
         return $result;
     }
 
