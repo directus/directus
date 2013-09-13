@@ -54,7 +54,7 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
     public function countMessages($uid) {
         $select = new Select($this->table);
         $select
-            ->columns(array('id','read','count' => new Expression('COUNT(`id`)')))
+            ->columns(array('id','read','count' => new Expression('COUNT(`id`)'),'max_id' => new Expression('MAX(`message_id`)')))
             ->where->equalTo('recepient', $uid);
         $select
             ->group('read');
@@ -62,12 +62,16 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
         $result = $this->selectWith($select)->toArray();
 
         $count = array(
-            'read'=> null,
-            'unread' => null,
-            'total' => null
+            'read'=> 0,
+            'unread' => 0,
+            'total' => 0,
+            'max_id' => 0
         );
 
         foreach($result as $item) {
+            if ((int)$item['max_id'] > $count['max_id']) {
+                $count['max_id'] = (int)$item['max_id'];
+            }
             switch($item['read']) {
                 case '1':
                     $count['read'] = $item['count'];
@@ -86,12 +90,21 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
     public function getMessagesNewerThan($maxId, $currentUser) {
         $select = new Select($this->getTable());
         $select
+            ->columns(array('id','message_id'))
+            ->join('directus_messages', 'directus_messages_recepients.message_id = directus_messages.id',array('response_to'))
             ->where
                 ->greaterThan('message_id', $maxId)
                 ->and
                 ->equalTo('recepient', $currentUser);
 
-        return $this->selectWith($select)->toArray();
+        $result = $this->selectWith($select)->toArray();
+        $messageThreads = array();
+
+        foreach ($result as $message) {
+            $messageThreads[] = $message['response_to'];
+        }
+
+        return array_values(array_unique($messageThreads));
     }
 
 }
