@@ -617,22 +617,22 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
 
 $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
+
+    if (isset($_GET['max_id'])) {
+        $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
+        $ids = $messagesRecepientsTableGateway->getMessagesNewerThan($_GET['max_id'], $currentUser['id']);
+        if (sizeof($ids) > 0) {
+            $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+            $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUser['id'], $ids);
+            return JsonView::render($result);
+        } else {
+            return '';
+        }
+    }
+
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUser['id']);
-
     JsonView::render($result);
-});
-
-$app->get("/$v/messages/poll/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-    $currentUser = Auth::getUserInfo();
-    $maxId = $_GET['max_id'];
-    $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
-    $result = $messagesRecepientsTableGateway->getMessagesNewerThan($maxId, $currentUser['id']);
-
-    print_r($result);
-    die();
-
-    JsonView::render(array('rows'=>$result));
 });
 
 $app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
