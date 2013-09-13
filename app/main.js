@@ -336,7 +336,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       filters: {columns_visible: ['from','subject','date_updated'], sort: 'date_updated', sort_order: 'DESC'}
     });
 
-    //app.messages.startPolling();
+    app.messages.startPolling();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Instantiate entries
