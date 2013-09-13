@@ -40,6 +40,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       ui: [],
       active_media: {},
       users: {},
+      messages: {},
       me: {
         id: 7
       },
@@ -386,7 +387,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.groups.reset(data.groups, {parse: true});
     app.users.reset(data.users, {parse: true});
     app.media.reset(data.active_media, {parse: true});
-
+    app.messages.reset(data.messages, {parse: true});
 
     app.router = new Router({extensions: extensions, tabs: tabs});
 
