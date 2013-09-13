@@ -17,6 +17,7 @@ use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTabPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableSchema;
 
 
@@ -122,6 +123,12 @@ function getTabPrivileges($groupId) {
 	return $tableGateway->fetchAllByGroup($groupId);
 }
 
+function getInbox() {
+	global $ZendDb, $acl, $authenticatedUser;
+	$tableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+	return $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
+}
+
 // @todo: this is a quite sloppy and temporary solution
 // bake it into Bootstrap?
 function filterPermittedExtensions($extensions, $blacklist) {
@@ -197,7 +204,8 @@ $data = array(
 	'tab_privileges' => $tabPrivileges,
 	'extensions' => getExtensions($tabPrivileges),
 	'privileges' => getPrivileges(),
-	'ui' => getUI()
+	'ui' => getUI(),
+	'messages' => getInbox()
 );
 
 $templateVars = array(
