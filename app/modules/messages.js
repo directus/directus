@@ -192,10 +192,11 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
       };
     },
 
-    afterRender: function() {
+    beforeRender: function() {
       var view = new ListView({collection: this.collection});
       this.setView('#page-content', view);
-      this.collection.fetch();
+
+      //this.collection.fetch();
     }
 
   });
