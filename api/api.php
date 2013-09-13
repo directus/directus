@@ -618,12 +618,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
 $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
-    $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
-
-    $rows = $messagesTableGateway->fetchMessagesInbox($currentUser['id']);
-    $result = $messagesRecepientsTableGateway->countMessages($currentUser['id']);
-    $result['rows'] = $rows;;
-        //$dataset['rows'] = ;
+    $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUser['id']);
 
     JsonView::render($result);
 });
