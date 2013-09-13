@@ -40,12 +40,27 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
                 ));
         $rows = $this->insertWith($insert);
 
-        // Insert recepients
         $messageId = $this->lastInsertValue;
-        $values = array();
 
+        // @todo: This is a bit wierd, needs to be handled differently
+        // keep response_to NULL and search for ids also when building message thread
+        if ($payload['response_to'] == null) {
+            $update = new Update($this->getTable());
+            $update
+                ->set(array('response_to' => $messageId))
+                ->where->equalTo('id', $messageId);
+
+            $this->updateWith($update);
+        }
+
+        // Inset recepients
+        $values = array();
         foreach($recepients as $recepient) {
-            $values[] = "($messageId,$recepient,0)";
+            $read = 0;
+            if ((int)$recepient == (int)$from) {
+                $read = 1;
+            }
+            $values[] = "($messageId, $recepient, $read)";
         }
 
         $valuesString = implode(',', $values);
@@ -56,29 +71,6 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
         return $messageId;
     }
-
-    /*
-    private function fetchResponses($messageId, $uid) {
-        $select = new Select($this->getTable());
-        $select
-            ->columns(array('id', 'from', 'subject', 'message', 'attachment', 'datetime'))
-            ->join('directus_messages_recepients', 'directus_messages.id = directus_messages_recepients.message_id', array('read'))
-            ->where
-                ->equalTo('directus_messages_recepients.recepient', 7)
-            ->and
-            ->where
-                ->equalTo('directus_messages.response_to', $messageId);
-
-        $result = $this->selectWith($select)->toArray();
-
-        // Do some typecasting
-        foreach ($result as &$message) {
-            $message['id'] = (int)$message['id'];
-        }
-
-        return $result;
-    }
-    */
 
     public function fetchMessageThreads($ids, $uid) {
         $select = new Select($this->getTable());
