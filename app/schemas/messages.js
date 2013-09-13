@@ -73,7 +73,7 @@ define([], function() {
       "column_name":"attachment",
       "type":"INT",
       "is_nullable":"YES",
-      "comment":"312 x 312",
+      "comment":"Does not work yet",
       "ui":"single_media",
       "system":false,
       "master":false,
