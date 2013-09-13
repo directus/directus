@@ -57,6 +57,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         return $messageId;
     }
 
+    /*
     private function fetchResponses($messageId, $uid) {
         $select = new Select($this->getTable());
         $select
@@ -77,6 +78,23 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
         return $result;
     }
+    */
+
+    public function fetchMessageThreads($ids, $uid) {
+        $select = new Select($this->getTable());
+        $select
+            ->columns(array('id', 'from', 'subject', 'message', 'attachment', 'datetime', 'response_to'))
+            ->join('directus_messages_recepients', 'directus_messages.id = directus_messages_recepients.message_id', array('read'))
+            ->where
+                ->equalTo('directus_messages_recepients.recepient', $uid)
+            ->and
+            ->where
+                ->in('directus_messages.response_to', $ids);
+
+        $result = $this->selectWith($select)->toArray();
+
+        return $result;
+    }
 
     public function fetchMessage($id) {
         $select = new Select($this->getTable());
@@ -92,50 +110,9 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
     }
 
     public function fetchMessageWithRecepients($id, $uid) {
-        $select = new Select($this->getTable());
-        $select
-            ->columns(array('id', 'from', 'subject', 'message', 'attachment','datetime'))
-            ->join('directus_messages_recepients', 'directus_messages.id = directus_messages_recepients.message_id', array('read'))
-            ->where
-                ->equalTo('directus_messages.id', $id)
-                ->and
-                ->equalTo('directus_messages_recepients.recepient', $uid);
-
-        $result = $this->selectWith($select)->toArray();
-
-        $result = $result[0];
-
-        $directusMessagesTableGateway = new DirectusMessagesRecepientsTableGateway($this->acl, $this->adapter);
-        $recepients = $directusMessagesTableGateway->fetchMessageRecepients(array($id));
-
-        $result['id'] = (int)$result['id'];
-        $result['recepients'] = implode(',', $recepients[$id]);
-
-        $responses = $this->fetchResponses($id, $uid);
-
-        // Turn read to 0 if there are undread responses
-        foreach ($responses as $response) {
-            if($response['read'] == "0") {
-                $result['read'] = "0";
-                break;
-            }
-        }
-
-        $lastResponse = (end($responses));
-
-        if ($lastResponse) {
-            $result['date_updated'] = $lastResponse['datetime'];
-        } else {
-            $result['date_updated'] = $result['datetime'];
-        }
-
-        $result['attachment'] = array();
-        $result['responses'] = array('rows' => $responses);
-
-        return $result;
+        $result = $this->fetchMessagesInbox($uid, $id);
+        return $result[0];
     }
-
-
 
     /*
         Will solve pagination:
@@ -149,19 +126,35 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
         GROUP BY response_to ORDER BY `directus_messages`.`id` DESC
 
+
     */
 
-    public function fetchMessagesInbox($uid) {
-        $select = new Select('directus_messages');
-        $select
-            ->join('directus_messages_recepients', 'directus_messages.id = directus_messages_recepients.message_id', array('read'))
-            ->where
-                ->equalTo('directus_messages_recepients.recepient', $uid);
+    public function fetchMessagesInbox($uid, $messageId = null) {
 
-        print_r($this->dumpSql($select));
+        $select = new Select($this->table);
+        $select
+            ->columns(array('message_id' => 'response_to', 'thread_length' => new Expression('COUNT(`directus_messages`.`id`)')))
+            ->join('directus_messages_recepients', 'directus_messages_recepients.message_id = directus_messages.id');
+        $select
+            ->where->equalTo('recepient', $uid);
+
+        if (!empty($messageId)) {
+            $select->where->equalTo('response_to', $messageId);
+        }
+
+        $select
+            ->group('response_to')
+            ->order('directus_messages.id DESC');
+
 
         $result = $this->selectWith($select)->toArray();
+        $messageIds = array();
 
+        foreach ($result as $message) {
+            $messageIds[] = $message['message_id'];
+        }
+
+        $result = $this->fetchMessageThreads($messageIds, $uid);
 
         if (sizeof($result) == 0) return array();
 
