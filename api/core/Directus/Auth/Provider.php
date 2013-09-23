@@ -59,6 +59,7 @@ class Provider {
      */
     public static function logout() {
         self::enforceUserIsAuthenticated();
+        self::expireCachedUserRecord();
         $_SESSION[self::$SESSION_KEY] = array();
     }
 
