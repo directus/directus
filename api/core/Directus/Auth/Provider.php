@@ -89,7 +89,20 @@ class Provider {
     }
 
     public static function getUserRecord() {
+
         self::enforceUserIsAuthenticated();
+        
+        
+
+        /**
+         * @todo  tmp until cache expiration is nailed down.
+         */
+        $userRefreshProvider = self::$userCacheRefreshProvider;
+        $userInfo = self::getUserInfo();
+        return $userRefreshProvider($userInfo['id']);
+
+
+
         if(!isset($_SESSION[self::USER_RECORD_CACHE_SESSION_KEY])) {
             self::expireCachedUserRecord();
         }
