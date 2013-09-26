@@ -92,12 +92,14 @@ class Provider {
 
         self::enforceUserIsAuthenticated();
         
-        
+        $userRefreshProvider = self::$userCacheRefreshProvider;
+        if(!is_callable($userRefreshProvider)) {
+            throw new \RuntimeException("Undefined user cache refresh provider.");
+        }
 
         /**
          * @todo  tmp until cache expiration is nailed down.
          */
-        $userRefreshProvider = self::$userCacheRefreshProvider;
         $userInfo = self::getUserInfo();
         return $userRefreshProvider($userInfo['id']);
 
