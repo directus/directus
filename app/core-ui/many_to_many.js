@@ -62,7 +62,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
     },
 
     insertRow: function() {
-      var collection = app.entries[this.related.table.id];
+      var collection = app.getEntries[this.related.table.id];
       var view = new this.modalTable({collection: collection, selectable: true, footer: false});
       var modal = app.router.openModal(view, {stretch: true, title: 'Insert Item'});
 
