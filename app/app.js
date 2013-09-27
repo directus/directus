@@ -22,6 +22,10 @@ function(Handlebars, typetools) {
       //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
     },
 
+    getEntries: function(tableName) {
+      return app.entries[tableName];
+    },
+
     unlockScreen: function() {
       this.noScroll = false;
       //$('.modal-backdrop').remove();
