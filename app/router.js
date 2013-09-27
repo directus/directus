@@ -101,7 +101,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         return this.notFound();
       }
 
-      var collection = app.entries[tableName];
+      var collection = app.getEntries[tableName];
       if (collection.table.get('single')) {
         if(collection.models.length) {
           this.entry(tableName, collection.models[0].get('id'));
@@ -122,14 +122,14 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         return;
       }
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.List({collection: app.entries[tableName]}));
+      this.v.main.setView('#content', new Table.Views.List({collection: app.getEntries[tableName]}));
       this.v.main.render();
     },
 
     entry: function(tableName, id) {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      var collection = app.entries[tableName];
+      var collection = app.getEntries[tableName];
       var model;
 
       if (collection === undefined) {
