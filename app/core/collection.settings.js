@@ -6,6 +6,8 @@ define([
 
 function(app, Backbone, Collection) {
 
+	"use strict";
+
 	var Settings = Collection.extend({
 
 		model: Backbone.Model.extend({

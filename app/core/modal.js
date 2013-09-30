@@ -4,6 +4,9 @@ define([
 ],
 
 function(app, Backbone) {
+
+  "use strict";
+
   var Modal = Backbone.Layout.extend({
 
     template: 'modal',
