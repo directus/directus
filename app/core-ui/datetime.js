@@ -101,7 +101,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         note: this.options.schema.get('comment')
       };
 
-      var nullValue = (this.value == undefined || this.value == 'Invalid Date' || this.value === null);
+      var nullValue = (this.value === undefined || this.value == 'Invalid Date' || this.value === null);
 
       if (nullValue && this.autoPopulateWhenHiddenAndNull) {
         this.makeNow();

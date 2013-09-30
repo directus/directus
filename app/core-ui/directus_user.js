@@ -20,8 +20,7 @@ define(['app','backbone'], function(app, Backbone) {
       case 'full':
         html = '{{userFull user}}';
         break;
-      case 'short':
-      default:      
+      default:
         html = '{{userShort user}}';
         break;
     }

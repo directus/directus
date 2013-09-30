@@ -62,8 +62,8 @@ define(['app', 'backbone'], function(app, Backbone) {
           uid: DIRECTUS_USERS + '_' + item.id,
           name: item.get('first_name') + ' ' + item.get('last_name'),
           avatar: item.get('avatar'),
-          type: DIRECTUS_USERS,
-        }
+          type: DIRECTUS_USERS
+        };
       });
 
       var groups = app.groups.map(function(item) {
@@ -73,7 +73,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           name: item.get('name'),
           avatar: app.PATH + 'assets/img/directus-group-avatar-100x100.jpg',
           type: DIRECTUS_GROUPS
-        }
+        };
       });
 
       var usersAndGroups = users.concat(groups);

@@ -69,7 +69,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     });
 
     var directusUsersColumns = directusUsers.schema.columns;
-    var defaultUserColumns = _.pluck(users.structure, 'id')
+    var defaultUserColumns = _.pluck(users.structure, 'id');
 
     // Add non default columns
     _.each(directusUsersColumns, function(item) {
@@ -323,7 +323,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       preferences: new Backbone.Model(groups.preferences),
       structure: app.columns.directus_groups,
       url: app.API_URL + 'groups/',
-      privileges: app.privileges.directus_groups,
+      privileges: app.privileges.directus_groups
     });
 
     app.messages =
