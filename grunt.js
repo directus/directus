@@ -24,9 +24,11 @@ module.exports = function(grunt) {
     // route.
     jshint: {
       options: {
+        browser: true,
         scripturl: true,
         multistr: true,
-        onecase: true
+        onecase: true,
+        predef: ['$', '_', 'Backbone']
       }
     },
 
