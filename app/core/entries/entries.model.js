@@ -162,7 +162,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
               data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
             }
 
-            attributes[id] = new EntriesModel(data, {collection: app.getEntries[tableRelated]});
+            attributes[id] = new EntriesModel(data, {collection: app.getEntries(tableRelated)});
 
             break;
         }
