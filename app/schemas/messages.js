@@ -69,23 +69,6 @@ define([], function() {
       }
     },
     {
-      "id":"attachment",
-      "column_name":"attachment",
-      "type":"INT",
-      "is_nullable":"YES",
-      "comment":"Does not work yet",
-      "ui":"single_media",
-      "system":false,
-      "master":false,
-      "hidden_list":false,
-      "hidden_input":false,
-      "required":false,
-      "is_writable":true,
-      "options":[
-
-      ]
-    },
-    {
       "id":"datetime",
       "column_name":"datetime",
       "type":"DATETIME",
