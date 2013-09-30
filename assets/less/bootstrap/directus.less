@@ -148,7 +148,7 @@ label { text-shadow: @textShadowWhite; }
   right: -4px;
   border-width: 4px 0 4px 5px;
   border-style:solid;
-  border-color: transparent @directusPrimary;
+  border-color: transparent @directusSecondary;
   display: block;
   width: 0;
   z-index: 1;
@@ -337,9 +337,9 @@ a:hover {text-decoration:none;}
     .label {border: 1px solid @directusPrimary; padding: 2px 5px 1px 5px;}
   }
   li.extension > a {
-    background-color:@grayDark;
+    background-color:@directusPrimary; // @grayDark
     &:hover {
-      background-color: darken(@grayDark, 5%);
+      background-color: darken(@directusPrimary, 5%);
     }
   }
 }
@@ -376,7 +376,7 @@ a:hover {text-decoration:none;}
     vertical-align:middle;
     font-size:14px;
     .avatar { margin-left: 10px; height:28px; width:28px; margin-right: 0px;}
-    .label { background-color: @directusPrimary; color:@directusTextOnPrimary; }
+    .label { background-color: @directusSecondary; color:@directusTextOnSecondary; }
     .user-firstname {margin-left:10px;}
   }
 
