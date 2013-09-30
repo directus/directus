@@ -25,7 +25,7 @@ function(app, Backbone) {
         var privileges = app.privileges[row.table_name];
 
         // filter out tables without privileges
-        if (typeof privileges === "undefined" || privileges == undefined || privileges === null) return false;
+        if (typeof privileges === "undefined" || privileges === undefined || privileges === null) return false;
         if (privileges.get('permissions') === null) return false;
 
         var permissions = privileges.get('permissions').split(',');
