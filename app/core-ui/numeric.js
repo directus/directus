@@ -8,6 +8,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \

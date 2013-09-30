@@ -17,6 +17,8 @@ define([
 
 function(app, Backbone, Directus, RevisionsModule, SaveModule) {
 
+  "use strict";
+
   var Table = app.module();
 
   Table.Views = {};

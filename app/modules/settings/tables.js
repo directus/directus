@@ -17,6 +17,8 @@ define([
 
 function(app, Backbone, ui, Directus) {
 
+  "use strict";
+
   var SettingsTables = app.module();
 
   // Handles new columns and aliases.

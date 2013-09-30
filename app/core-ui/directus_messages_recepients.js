@@ -8,6 +8,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'directus_messages_recepients';
@@ -40,7 +42,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     renderTags: function() {
-      $el = this.$el.find('#directus_messages_recepients-recepients');
+      var $el = this.$el.find('#directus_messages_recepients-recepients');
       var elArray = [];
 
       _.each(this.recepients, function(item) {

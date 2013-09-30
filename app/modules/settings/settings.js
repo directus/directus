@@ -22,6 +22,8 @@ define([
 
 function(app, Backbone, ui, Directus, Tables, Global, About, Permissions, System, GroupPermissions) {
 
+  "use strict";
+
   var Settings = app.module();
 
   Settings.Global = Global;
