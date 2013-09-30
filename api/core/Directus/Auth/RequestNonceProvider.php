@@ -41,16 +41,19 @@ class RequestNonceProvider {
 
         $this->options = array_merge($default_options, $options);
 
-        if("" == session_id())
+        if("" == session_id()) {
             session_start();
+        }
 
-        if(!isset($_SESSION['request_nonces']))
+        if(!isset($_SESSION['request_nonces'])) {
             $_SESSION['request_nonces'] = array();
+        }
 
         $this->nonce_pool = &$_SESSION['request_nonces'];
 
-        if(empty($this->nonce_pool))
+        if(empty($this->nonce_pool)) {
             $this->replenishNoncePool();
+        }
     }
 
     /**
@@ -109,14 +112,19 @@ class RequestNonceProvider {
         // Cache this request's result
         if(is_null($this->valid_nonce_this_request)) {
             $request_nonce = $this->getRequestNonce();
-            $this->valid_nonce_this_request = false;
-            $index = array_search($request_nonce, $this->nonce_pool);
-            if(false !== $index) {
-                $this->valid_nonce_this_request = true;
-                // Remove the used nonce from the nonce pool
-                unset($this->nonce_pool[$index]);
-                $this->replenishNoncePool();
-            }
+            $this->nonceIsValid($request_nonce);
+        }
+        return $this->valid_nonce_this_request;
+    }
+
+    public function nonceIsValid($nonce) {
+        $this->valid_nonce_this_request = false;
+        $index = array_search($nonce, $this->nonce_pool);
+        if(false !== $index) {
+            // Remove the used nonce from the nonce pool
+            unset($this->nonce_pool[$index]);
+            $this->replenishNoncePool();
+            $this->valid_nonce_this_request = true;
         }
         return $this->valid_nonce_this_request;
     }
