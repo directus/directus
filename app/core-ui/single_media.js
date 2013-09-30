@@ -15,7 +15,7 @@
 // options.name       String            Field name
 
 
-define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Backbone, Directus, Media) {
+define(['app', 'backbone', 'core/directus', 'modules/media/media'], function(app, Backbone, Directus, Media) {
 
   var Module = {};
 
