@@ -44,6 +44,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
         // @todo: This is a bit wierd, needs to be handled differently
         // keep response_to NULL and search for ids also when building message thread
+        /*
         if ($payload['response_to'] == null) {
             $update = new Update($this->getTable());
             $update
@@ -52,8 +53,9 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
             $this->updateWith($update);
         }
+        */
 
-        // Inset recepients
+        // Insert recepients
         $values = array();
         foreach($recepients as $recepient) {
             $read = 0;
@@ -81,7 +83,11 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
                 ->equalTo('directus_messages_recepients.recepient', $uid)
             ->and
             ->where
-                ->in('directus_messages.response_to', $ids);
+                ->nest
+                  ->in('directus_messages.response_to', $ids)
+                  ->or
+                  ->in('directus_messages.id', $ids)
+                ->unnest;
 
         $result = $this->selectWith($select)->toArray();
 
@@ -107,7 +113,9 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
     public function fetchMessageWithRecepients($id, $uid) {
         $result = $this->fetchMessagesInbox($uid, $id);
-        return $result[0];
+        if (sizeof($result) > 0) {
+            return $result[0];
+        }
     }
 
     public function fetchMessagesInbox($uid, $messageId = null) {
@@ -120,9 +128,17 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
         if (!empty($messageId)) {
             if (gettype($messageId) ==  'array') {
-                $select->where->in('response_to', $messageId);
+                $select->where
+                       ->in('response_to', $messageId)
+                       ->or
+                       ->in('directus_messages.id', $messageId);
             } else {
-                $select->where->equalTo('response_to', $messageId);
+                $select->where
+                       ->nest
+                         ->equalTo('response_to', $messageId)
+                         ->or
+                         ->equalTo('directus_messages.id', $messageId)
+                       ->unnest;
             }
         }
 
@@ -130,13 +146,16 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
             ->group('response_to')
             ->order('directus_messages.id DESC');
 
-
         $result = $this->selectWith($select)->toArray();
         $messageIds = array();
 
         foreach ($result as $message) {
             $messageIds[] = $message['message_id'];
         }
+
+        if (sizeof($messageIds) == 0) {
+            return array();
+        };
 
         $result = $this->fetchMessageThreads($messageIds, $uid);
 
@@ -158,7 +177,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         }
 
         foreach ($result as $item) {
-            if ($item['response_to'] != $item['id']) {
+            if ($item['response_to'] != NULL) {
                 // Move it to resultLookup
                 unset($resultLookup[$item['id']]);
                 $resultLookup[$item['response_to']]['responses']['rows'][] = $item;
