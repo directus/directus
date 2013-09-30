@@ -25,7 +25,7 @@ require([
   "core/extensions",
   "alerts",
   "core/tabs",
-  'modules/messages'
+  'modules/messages/messages'
 ],
 
 function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, messages, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts, Tabs, Messages) {
