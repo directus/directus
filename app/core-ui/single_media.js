@@ -206,7 +206,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     initialize: function() {
       this.mediaModel = this.options.value;
       this.mediaModel.on('change', this.render, this);
-      //this.collection = app.getEntries['directus_media'];
+      //this.collection = app.getEntries('directus_media');
       //this.collection.fetch();
       this.collection.on('reset', this.render, this);
     }

@@ -1,9 +1,12 @@
 define([
   "app",
-  "backbone"
+  "backbone",
+  "core/ui"
 ],
 
-function(app, Backbone) {
+function(app, Backbone, ui) {
+
+  "use strict";
 
   var EditView = Backbone.Layout.extend({
 
@@ -103,7 +106,7 @@ function(app, Backbone) {
         //Get rid of all errors
         this.$el.find('.error').remove();
         _.each(errors, function(item) {
-          $fieldset = $('#edit_field_' + item.attr);
+          var $fieldset = $('#edit_field_' + item.attr);
           if ($fieldset.find('.error').length < 1) {
             $fieldset.append('<span class="error">'+item.message+'</span>');
           }

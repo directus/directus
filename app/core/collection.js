@@ -5,6 +5,8 @@ define([
 
 function(app, Backbone) {
 
+  "use strict";
+
   var Collection = Backbone.Collection.extend({
 
     initialize: function(models, options) {
@@ -36,6 +38,7 @@ function(app, Backbone) {
     },
 
     setFilter: function(key, value) {
+      var attrs;
       if (key === null || typeof key === 'object') {
         attrs = key;
       } else {
@@ -57,7 +60,7 @@ function(app, Backbone) {
     comparator: function(row) {
       var column = this.getFilter('sort') || 'id';
       var value = row.get(column);
-      var options, ui, type;
+      var options, ui, type, schema;
 
       //There is no value
       if (!row.has(column)) {

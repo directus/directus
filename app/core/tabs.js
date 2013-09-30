@@ -14,6 +14,8 @@ define([
 
 function(app, Backbone) {
 
+  "use strict";
+
   var Tabs = {};
 
   Tabs.Collection = Backbone.Collection.extend({

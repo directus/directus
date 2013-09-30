@@ -32,7 +32,9 @@ define([
   'core-ui/password'].concat(window.directusData.ui),
 function(textinput) {
 
-  ui = {};
+  "use strict";
+
+  var ui = {};
 
   ui.core = arguments;
 
