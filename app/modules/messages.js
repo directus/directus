@@ -6,7 +6,6 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-
 define([
   'app',
   'backbone',
@@ -109,8 +108,10 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     },
 
     initialize: function() {
-      this.model.on('sync change', this.render, this);
-      //this.model.get('responses').setOrder('id', 'ASC');
+      this.model.on('sync change', function() {
+        this.model.set({read: "1"}, {silent: true});
+        this.render();
+      }, this);
       this.model.save({read: 1}, {patch: true, silent: true});
     }
 
@@ -171,6 +172,10 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     events: {
       'click #save-form': function(e) {
         var data = this.editView.data();
+
+        data.read = "1";
+        data.date_updated = new Date();
+
         this.model.save(data, {success: function() {
           app.router.go('#messages');
         }});
