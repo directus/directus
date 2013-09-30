@@ -144,9 +144,6 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
       if (this.model.has('message')) {
         readView.render();
       }
-      //this.editView = new Directus.EditView({model: this.model});
-      //this.setView('#page-content', this.editView);
-      //this.editView.render();
     }
 
   });
