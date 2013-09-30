@@ -2,6 +2,8 @@ define([
   "app"
 ], function(app) {
 
+  "use strict";
+
   // Messages Container
   var messages = new Backbone.Layout({el: '#messages'});
 
