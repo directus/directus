@@ -85,19 +85,6 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
-    public function fetchMessage($id) {
-        $select = new Select($this->getTable());
-        $select
-            ->columns(array('id', 'from', 'subject', 'message', 'attachment','datetime'))
-            ->where
-                ->equalTo('directus_messages.id', $id);
-
-        $result = $this->selectWith($select)->toArray();
-        $result = $result[0];
-
-        return $result;
-    }
-
     public function fetchMessageWithRecepients($id, $uid) {
         $result = $this->fetchMessagesInbox($uid, $id);
         if (sizeof($result) > 0) {
