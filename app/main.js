@@ -30,6 +30,8 @@ require([
 
 function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, messages, SettingsGlobalSchema, SettingsMediaSchema, extensions, alerts, Tabs, Messages) {
 
+    "use strict";
+
     var defaultBootstrapData = {
       path: '/directus/',
       page: '',
@@ -206,7 +208,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
      *
      * @todo  modularize this logic
      */
-    var nonces = window.directusData.nonces;
+    var nonces = window.directusData.nonces,
+        nonce;
 
     $(document).ajaxSend(function(event, jqXHR, settings) {
       var isApiRequest = settings.url.substr(0, app.API_URL.length) == app.API_URL;
