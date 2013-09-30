@@ -19,6 +19,9 @@ function(app, Backbone, ui) {
     ],
 
     beforeRender: function() {
+
+      // @todo: this is because of bad design. straighten this out
+      ui = ui || require('core/ui');
       var UI = ui.initialize({model: this.model, structure: this.structure});
 
       this.structure.each(function(column) {
