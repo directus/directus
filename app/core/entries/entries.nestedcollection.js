@@ -7,6 +7,8 @@ define([
 
 function(app, Backbone, Collection, EntriesCollection) {
 
+  "use strict";
+
   //@todo: Try merging this with entries.collection.js
   var NestedCollection = Collection.extend({
 

@@ -7,6 +7,8 @@ define([
 
 function(app, Backbone, Collection, EntriesModel) {
 
+  "use strict";
+
   var EntriesCollection = Collection.extend({
 
     model: EntriesModel,
@@ -98,7 +100,7 @@ function(app, Backbone, Collection, EntriesModel) {
 
     hasPermission: function(permissionType) {
       var permissions = this.privileges.get('permissions') || '';
-      permissionsArray = permissions.split(',');
+      var permissionsArray = permissions.split(',');
       return _.contains(permissionsArray, permissionType);
     },
 

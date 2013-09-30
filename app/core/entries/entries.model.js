@@ -3,10 +3,13 @@ define([
   "app",
   "backbone",
   "core/entries/entries.nestedcollection",
-  "core/entries/entries.collection"
+  "core/entries/entries.collection",
+  "core/ui"
 ],
 
-function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
+function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui) {
+
+  "use strict";
 
   var nestedTypes = ['many_to_one', 'single_media'];
 

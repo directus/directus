@@ -10,6 +10,8 @@ define([
 
 function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
+  "use strict";
+
   var TableView = Backbone.Layout.extend({
 
     tagname: 'div',

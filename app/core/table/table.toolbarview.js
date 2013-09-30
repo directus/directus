@@ -6,7 +6,9 @@ define([
 
 function(app, Backbone) {
 
- var TableToolbarView = Backbone.Layout.extend({
+  "use strict";
+
+  var TableToolbarView = Backbone.Layout.extend({
 
     template: 'table-toolbar',
 
@@ -115,7 +117,7 @@ function(app, Backbone) {
     getFilterRow: "adv search fields row object",
 
     afterRender: function() {
-      $filter = $('#table-filter');
+      var $filter = $('#table-filter');
       if ($filter[0]) {
         $filter.val($filter.val());
       }
