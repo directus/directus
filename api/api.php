@@ -700,7 +700,8 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
     $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients), $currentUser['id']);
 
     // could this be replaced?
-    $message = $messagesTableGateway->fetchMessage($id);
+    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
+    //$message = $messagesTableGateway->fetchMessage($id);
 
     JsonView::render($message);
 });
