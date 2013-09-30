@@ -2766,7 +2766,7 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.25);
 }
 .btn-primary {
-  color: #FFFFFF;
+  color: #ffffff;
   background-color: #8bc53f;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
@@ -4365,8 +4365,8 @@ input[type="submit"].btn.btn-mini {
   margin-left: 0;
 }
 .tooltip {
-  position: absolute;
-  z-index: 1030;
+  position: fixed;
+  z-index: 1035;
   display: block;
   visibility: visible;
   padding: 5px;
@@ -6157,6 +6157,7 @@ label {
 }
 .well {
   border: 0;
+  background-color: #8bc53f;
   color: #ffffff;
   min-height: 150px;
 }
@@ -6217,7 +6218,7 @@ label {
 }
 .btn.active {
   background-color: #8bc53f;
-  color: #FFF;
+  color: #ffffff;
   border-color: #83bc39;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
@@ -6386,7 +6387,7 @@ a:hover {
 }
 .navbar .user .label {
   background-color: #8bc53f;
-  color: #FFF;
+  color: #ffffff;
 }
 .navbar .user .user-firstname {
   margin-left: 10px;
