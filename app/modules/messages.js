@@ -57,14 +57,18 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
 
   var ReadView = Backbone.Layout.extend({
 
+    maxRecepients: 10,
+
     template: 'messages-reading',
 
     events: {
       'click #messages-response-button': function() {
         var collection = this.model.get('responses');
         var Model = collection.model;
-        var recepients = _.map(this.model.get('recepients').split(','), function(id) { return '0_'+id; });
         var myId = app.getCurrentUser().get('id');
+        var recepients = _.map(this.model.get('recepients').split(','), function(id) {
+          return '0_' + id;
+        });
 
         recepients.push('0_'+this.model.get('from'));
 
@@ -78,16 +82,28 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
           'responses': []
         };
 
-        var model = new Model(attrs, {collection: collection, parse: true, url: app.API_URL + 'messages/rows/'});
+        var model = new Model(attrs, {
+          collection: collection,
+          parse: true,
+          url: app.API_URL + 'messages/rows/'
+        });
+
         model.save();
         collection.add(model);
         this.render();
+      },
+      'click #messages-show-recepients': function() {
+        $el = $('#messages-recepients');
+        $el.toggle();
       }
     },
 
     serialize: function() {
       var data = this.model.toJSON();
       data.recepients = data.recepients.split(',');
+      data.recepientsCount = data.recepients.length;
+      data.collapseRecepients = data.recepients.length > this.maxRecepients;
+
       data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
       return data;
     },
@@ -164,12 +180,19 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     },
 
     serialize: function() {
-      var title = 'Compose';
-      return {title: title, sidebar: true, breadcrumbs: [{ title: 'Messages', anchor: '#messages'}]};
+      return {
+        title: 'Compose',
+        sidebar: true,
+        breadcrumbs: [{ title: 'Messages', anchor: '#messages'}]
+      };
     },
 
     beforeRender: function() {
-      this.setView('#sidebar', new SaveModule({model: this.model, buttonText: 'Send Message', single: true}));
+      this.setView('#sidebar', new SaveModule({
+        model: this.model,
+        buttonText: 'Send Message',
+        single: true
+      }));
     },
 
     afterRender: function() {
