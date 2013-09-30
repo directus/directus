@@ -5,6 +5,8 @@ define([
 
 function(app, Backbone) {
 
+  "use strict";
+
   var TableSimple = Backbone.Layout.extend({
 
     events: {
