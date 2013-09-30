@@ -17,6 +17,8 @@
 
 define(['app', 'backbone', 'core/directus', 'modules/media/media'], function(app, Backbone, Directus, Media) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'single_media';

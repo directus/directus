@@ -8,6 +8,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'wysiwyg';
@@ -109,7 +111,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     saveSelection: function() {
         if (window.getSelection) {
-            sel = window.getSelection();
+            var sel = window.getSelection();
             if (sel.getRangeAt && sel.rangeCount) {
                 var ranges = [];
                 for (var i = 0, len = sel.rangeCount; i < len; ++i) {
@@ -126,7 +128,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     restoreSelection: function(savedSel) {
         if (savedSel) {
             if (window.getSelection) {
-                sel = window.getSelection();
+                var sel = window.getSelection();
                 sel.removeAllRanges();
                 for (var i = 0, len = savedSel.length; i < len; ++i) {
                     sel.addRange(savedSel[i]);

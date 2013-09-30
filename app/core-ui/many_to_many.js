@@ -8,6 +8,8 @@
 
 define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app, Backbone, Onetomany, Directus) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'many_to_many';
@@ -94,7 +96,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
       this.modalTable = Directus.Table.extend({
         events: {
           'click tbody td': function(e) {
-            $target = $(e.target);
+            var $target = $(e.target);
             if ($target.is("input")) return;
             var $checkbox = $target.closest('tr').find('td.check > input');
             $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
