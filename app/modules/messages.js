@@ -138,10 +138,6 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
       return {title: 'Reading Message', breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
     },
 
-    beforeRender: function() {
-      //this.setView('#sidebar', new SaveModule({model: this.model, buttonText: 'Send Message', single: true}));
-    },
-
     afterRender: function() {
       var readView = new ReadView({model: this.model});
       this.setView('#page-content', readView);
