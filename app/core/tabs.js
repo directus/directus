@@ -52,7 +52,7 @@ function(app, Backbone) {
           tab_width = 0,
           cutoff = false,
           visible_count = 0,
-          tabs = new Array(),
+          tabs = [],
           window_width = $(window).width();
 
       // Get individual tab widths
@@ -80,13 +80,13 @@ function(app, Backbone) {
           cutoff = i;
 
           // Add hidden tabs to dropdown
-          for (var i = cutoff; i < tabs.length; i++) {
-            $('#tabs ul.nav-tabs li:eq('+i+')').clone().appendTo("#hidden-tabs");
-          };
+          for (var j = cutoff; j < tabs.length; j++) {
+            $('#tabs ul.nav-tabs li:eq('+j+')').clone().appendTo("#hidden-tabs");
+          }
 
           break;
         }
-      };
+      }
 
     },
 
@@ -100,7 +100,7 @@ function(app, Backbone) {
       var that = this;
       window.onresize = function(event) {
         that.checkTabs();
-      }
+      };
     }
 
   });

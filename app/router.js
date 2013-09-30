@@ -256,7 +256,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     message: function(id) {
-      var model = app.messages.get(id);;
+      var model = app.messages.get(id);
       this.setTitle('Message');
 
       if (model === undefined) {
@@ -316,7 +316,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       // Update unread message counter
       app.messages.on('sync', function() {
         $('#unread-messages-counter').html(app.messages.unread);
-      })
+      });
 
 
       //holds references to view instances

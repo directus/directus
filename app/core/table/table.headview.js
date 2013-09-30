@@ -110,7 +110,7 @@ function(app, Backbone) {
 
           serialize: function() {
             return this.options.data;
-          },
+          }
 
         });
 

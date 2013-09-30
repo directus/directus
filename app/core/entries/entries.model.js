@@ -73,8 +73,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
         var skipSerializationIfNull = input.hasOwnProperty('skipSerializationIfNull') && input.skipSerializationIfNull;
 
-        var mess = (!skipSerializationIfNull && nullDisallowed && isNull)
-          ? 'The field cannot be empty'
+        var mess = (!skipSerializationIfNull && nullDisallowed && isNull) ?
+          'The field cannot be empty'
           : ui.validate(this, key, value);
 
         if (mess !== undefined) {

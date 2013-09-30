@@ -192,7 +192,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
       var link = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel) : null;
       var data = this.mediaModel.toJSON();
       data.date_uploaded = new Date(data.date_uploaded);
-      var data = {
+      data = {
         name: this.options.name,
         url: url,
         comment: this.options.schema.get('comment'),
@@ -216,7 +216,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
   Module.validate = function(value, options) {
     if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
       return 'The field is required';
-    };
+    }
   };
 
   Module.list = function(options) {
