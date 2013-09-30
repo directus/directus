@@ -640,6 +640,11 @@ $app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
 
+    if (!isset($message)) {
+        header("HTTP/1.0 404 Not Found");
+        return JsonView::render(array('message' => 'Message not found.'));
+    }
+
     JsonView::render($message);
 });
 
@@ -651,7 +656,8 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
     $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
 
     $ids = array($message['id']);
-    $message['read'] = "1";
+    $message['read'] = '1';
+
     foreach ($message['responses']['rows'] as &$response) {
         $ids[] = $response['id'];
         $response['read'] = "1";
@@ -693,6 +699,7 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients), $currentUser['id']);
 
+    // could this be replaced?
     $message = $messagesTableGateway->fetchMessage($id);
 
     JsonView::render($message);
