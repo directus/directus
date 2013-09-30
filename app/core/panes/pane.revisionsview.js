@@ -4,6 +4,8 @@ define([
 
 function(app) {
 
+  "use strict";
+
   var RevisionsModel = Backbone.Model.extend({
     parse: function(row) {
       row.datetime = new Date(row.datetime);

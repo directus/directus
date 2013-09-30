@@ -24,11 +24,12 @@ module.exports = function(grunt) {
     // route.
     jshint: {
       options: {
+        devel: true,
         browser: true,
         scripturl: true,
         multistr: true,
         onecase: true,
-        predef: ['$', '_', 'Backbone']
+        predef: ['$', '_', 'Backbone', 'File', 'Handlebars', 'require'] //Remove File from here asap
       }
     },
 
