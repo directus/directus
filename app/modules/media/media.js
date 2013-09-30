@@ -8,6 +8,8 @@ define([
 
 function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
 
+  "use strict";
+
   var Media = app.module();
 
 

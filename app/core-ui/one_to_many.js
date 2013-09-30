@@ -8,6 +8,8 @@
 
 define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'one_to_many';

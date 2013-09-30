@@ -7,6 +7,8 @@ define([
 
 function(app, Backbone, Directus, SaveModule) {
 
+  "use strict";
+
   var Users = app.module();
 /*
   var SaveModule = Backbone.Layout.extend({

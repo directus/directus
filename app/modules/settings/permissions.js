@@ -14,6 +14,8 @@ define([
 
 function(app, Directus) {
 
+  "use strict";
+
   var Groups = Backbone.Layout.extend({
 
     template: 'settings-groups',

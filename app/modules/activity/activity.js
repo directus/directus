@@ -8,6 +8,8 @@ define([
 
 function(app, Backbone, Directus, Chart, Media) {
 
+  "use strict";
+
   var Dashboard = app.module();
   var ListView = Directus.Table.extend({});
 

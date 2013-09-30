@@ -17,6 +17,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'datetime';
@@ -115,7 +117,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         try {
           value = new Date(value);
           if (_.isNaN(value.getTime())) {
-            throw Error();
+            throw new Error();
           }
         } catch (e) {
           return data;

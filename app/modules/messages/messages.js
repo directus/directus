@@ -16,6 +16,8 @@ define([
 
 function(app, Backbone, Directus, SaveModule, EntriesCollection) {
 
+  "use strict";
+
   var Messages = app.module();
 
   Messages.Collection = EntriesCollection.extend({
@@ -92,7 +94,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
         this.render();
       },
       'click #messages-show-recepients': function() {
-        $el = $('#messages-recepients');
+        var $el = $('#messages-recepients');
         $el.toggle();
       }
     },
