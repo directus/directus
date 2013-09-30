@@ -84,9 +84,9 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       return modal;
     },
 
-    setPage: function(view, options) {
+    setPage: function(View, options) {
       options.ui = UI;
-      this.v.main.setView('#content', new view(options)).render();
+      this.v.main.setView('#content', new View(options)).render();
     },
 
     tables: function() {
