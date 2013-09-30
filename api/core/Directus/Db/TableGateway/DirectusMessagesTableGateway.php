@@ -42,19 +42,6 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
         $messageId = $this->lastInsertValue;
 
-        // @todo: This is a bit wierd, needs to be handled differently
-        // keep response_to NULL and search for ids also when building message thread
-        /*
-        if ($payload['response_to'] == null) {
-            $update = new Update($this->getTable());
-            $update
-                ->set(array('response_to' => $messageId))
-                ->where->equalTo('id', $messageId);
-
-            $this->updateWith($update);
-        }
-        */
-
         // Insert recepients
         $values = array();
         foreach($recepients as $recepient) {
@@ -143,7 +130,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         }
 
         $select
-            ->group('response_to')
+            ->group(new Expression('IFNULL(response_to, directus_messages.id)'))
             ->order('directus_messages.id DESC');
 
         $result = $this->selectWith($select)->toArray();
