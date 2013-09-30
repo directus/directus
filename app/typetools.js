@@ -1,6 +1,8 @@
 //@todo: Make vanilla-js (not a require module) and move to vendor folder
 define(["plugins/jquery.timeago"], function() {
 
+  "use strict";
+
   var typetools = {
 
       numberWithCommas: function(x) {

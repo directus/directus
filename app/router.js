@@ -23,6 +23,8 @@ define([
 
 function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, extensions) {
 
+  "use strict";
+
   var Router = Backbone.Router.extend({
 
     routes: {
