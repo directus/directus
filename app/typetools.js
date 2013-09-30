@@ -18,7 +18,7 @@ define(["plugins/jquery.timeago"], function() {
         seperator = "_";
       }
 
-      directusIndex = string.indexOf("directus_");
+      var directusIndex = string.indexOf("directus_");
 
       if (directusIndex === 0) {
         string = string.substring(9);
@@ -133,7 +133,7 @@ define(["plugins/jquery.timeago"], function() {
         }
         //@todo: convert value to correct timezone
         value = (value.substr(-1).toLowerCase() == 'z') ? value : value + 'z';
-        return jQuery.timeago(value);
+        return $.timeago(value);
       },
 
       dateYYYYMMDD: function(date) {
