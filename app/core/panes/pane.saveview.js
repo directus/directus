@@ -5,6 +5,8 @@ define([
 
 function(Backbone, app) {
 
+  "use strict";
+
   var PaneSaveView = Backbone.Layout.extend({
 
     template: 'module-save',

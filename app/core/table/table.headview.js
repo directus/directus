@@ -6,6 +6,8 @@ define([
 
 function(app, Backbone) {
 
+  "use strict";
+
   var TableHeadView = Backbone.Layout.extend({
 
     template: 'table-head',
@@ -99,7 +101,7 @@ function(app, Backbone) {
 
           enableNonSelected: function() {
             this.$el.find('input:disabled').each(function(i, el) {
-              $el = $(el);
+              var $el = $(el);
               if (!$el.attr('data-foreign')) {
                 $el.prop('disabled', false);
               }

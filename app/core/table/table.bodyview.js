@@ -6,6 +6,8 @@ define([
 
 function(app, Backbone) {
 
+  "use strict";
+
   var TableBodyView = Backbone.Layout.extend({
 
     tagName: 'tbody',
@@ -20,7 +22,7 @@ function(app, Backbone) {
     },
 
     select: function(e) {
-      $target = $(e.target);
+      var $target = $(e.target);
 
       if ($target.attr('checked') !== undefined) {
         $target.closest('tr').addClass('selected');
