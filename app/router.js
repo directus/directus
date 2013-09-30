@@ -129,7 +129,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     entry: function(tableName, id) {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      var collection = app.getEntries[tableName];
+      var collection = app.getEntries(tableName);
       var model;
 
       if (collection === undefined) {
