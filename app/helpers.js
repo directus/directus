@@ -3,6 +3,8 @@ require([
   "handlebars"
 ], function(app, Handlebars) {
 
+  "use strict";
+
   var unknowUserMessage = "-";
 
   //Raw handlebars data, helpful with data types
