@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app, Backbone, Onetomany, Directus) {
+define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], function(app, Backbone, Onetomany, TableView) {
 
   "use strict";
 
@@ -93,7 +93,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
 
 
       this.view = new this.table(this.related.tableOptions);
-      this.modalTable = Directus.Table.extend({
+      this.modalTable = TableView.extend({
         events: {
           'click tbody td': function(e) {
             var $target = $(e.target);

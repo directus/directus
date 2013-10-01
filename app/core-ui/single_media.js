@@ -15,7 +15,7 @@
 // options.name       String            Field name
 
 
-define(['app', 'backbone', 'core/directus', 'modules/media/media'], function(app, Backbone, Directus, Media) {
+define(['app', 'backbone', 'modules/media/media', 'core/table/table.view','core/edit'], function(app, Backbone, Media, TableView, EditView) {
 
   "use strict";
 
@@ -122,7 +122,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media/media'], function(app
       var collection = app.media;
       var model;
       var mediaModel = this.mediaModel;
-      var view = new Directus.Table({collection: collection, selectable: false, footer: false, navigate: true});
+      var view = new TableView({collection: collection, selectable: false, footer: false, navigate: true});
       view.navigate = function(id) {
         model = collection.get(id);
         mediaModel.clear({silent: true});
@@ -135,7 +135,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media/media'], function(app
 
     edit: function() {
       var model = this.mediaModel;
-      var view = new Directus.EditView({model: model});
+      var view = new EditView({model: model});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
       view.render();
 
