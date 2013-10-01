@@ -22,3 +22,7 @@ customFooterHTML.html
 assets/css/custom.css
 
 node_modules
+
+build_test
+build_test.html
+build_test_release
