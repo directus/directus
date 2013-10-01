@@ -20,3 +20,5 @@ docs/api-responses
 
 customFooterHTML.html
 assets/css/custom.css
+
+node_modules
