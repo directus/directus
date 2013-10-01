@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
+define(['app', 'backbone', 'core/edit', 'core/table/table.view'], function(app, Backbone, EditView, TableView) {
 
   "use strict";
 
@@ -57,7 +57,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
 
     editModel: function(model) {
       var columnName = this.options.schema.get('junction_key_right');
-      var view = new Directus.EditView({model: model, hiddenFields: [columnName]});
+      var view = new EditView({model: model, hiddenFields: [columnName]});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
 
       modal.save = function() {
@@ -80,7 +80,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
       var columnName = this.options.schema.get('junction_key_right');
       var id = this.model.id;
 
-      var view = new Directus.EditView({
+      var view = new EditView({
         model: model,
         collectionAdd: true,
         parentField: {
@@ -142,7 +142,7 @@ define(['app', 'backbone', 'core/directus'], function(app, Backbone, Directus) {
         };
       }
 
-      this.table = Directus.Table.extend({});
+      this.table = TableView.extend({});
 
       this.view = new this.table(this.related.tableOptions);
 
