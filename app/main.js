@@ -304,6 +304,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     app.media =
     app.entries.directus_media = new Directus.EntriesCollection([], {
+      rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'),10),
       table: app.tables.get('directus_media'),
       structure: app.columns.directus_media,
       preferences: app.preferences.directus_media,
@@ -313,6 +314,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     });
 
     app.activity = new Directus.EntriesCollection([], {
+      rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'),10),
       table: app.tables.get('directus_activity'),
       structure: app.columns.directus_activity,
       url: app.API_URL + 'activity/',
@@ -322,6 +324,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     app.groups =
     app.entries.directus_groups = new Directus.EntriesCollection([], {
+      rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'),10),
       table: app.tables.get('directus_groups'),
       preferences: new Backbone.Model(groups.preferences),
       structure: app.columns.directus_groups,
@@ -331,6 +334,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
 
     app.messages =
     app.entries.directus_messages = new Messages.Collection([], {
+      rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'),10),
       table: app.tables.get('directus_messages'),
       structure: app.columns.directus_messages,
       privileges: app.privileges.directus_messages,
@@ -347,6 +351,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     app.tables.each(function(table) {
       if (table.id.substring(0,9) === 'directus_') return;
       app.entries[table.id] = new Directus.EntriesCollection([], {
+        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'),10),
         structure: app.columns[table.id],
         table: table,
         preferences: app.preferences[table.id],
