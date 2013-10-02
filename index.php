@@ -137,7 +137,7 @@ function filterPermittedExtensions($extensions, $blacklist) {
 
 	$permittedExtensions = array_filter($extensions, function($item) use ($blacklistArray) {
 		//@todo: id's should be a bit more sophisticated than this
-		$path = explode('/',$item);
+		$path = explode('/', $item);
 		$extensionId = $path[1];
 
 		return !in_array($extensionId, $blacklistArray);
@@ -154,6 +154,11 @@ function getExtensions($tabPrivileges) {
 	if (array_key_exists('tab_blacklist', $tabPrivileges)) {
 		$extensions = filterPermittedExtensions($extensions, $tabPrivileges['tab_blacklist']);
 	}
+
+	// Append relative path and filename for dynamic loading
+	foreach ($extensions as &$extension) {
+		$extension = DIRECTUS_PATH . $extension . '.js';
+	};
 
 	return $extensions;
 }
