@@ -16,11 +16,18 @@ module.exports = function(grunt) {
 
         clean: ["dist/"],
 
-        // uglify: {
-        //     options: {
-        //         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-        //     }
-        // },
+        jshint: {
+          options: {
+            devel: true,
+            browser: true,
+            scripturl: true,
+            multistr: true,
+            onecase: true,
+            predef: ['$', '_', 'Backbone', 'File', 'Handlebars', 'require']
+          },
+          all: ['app/**/*.js']
+        },
+
         concat: {
             dist: {
               src: ['dist/app.js','dist/templates.js'],
@@ -48,7 +55,7 @@ module.exports = function(grunt) {
                 mainConfigFile: 'app/config.js',
                 out: 'dist/app.js',
 
-                optimize: "none",
+                optimize: "uglify2",
 
                 paths: {
                     requireLib: '../assets/js/libs/require'
@@ -69,9 +76,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks("grunt-contrib-handlebars");
     grunt.loadNpmTasks("grunt-contrib-concat");
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
     grunt.registerTask('default', [
         'clean',
+        'jshint',
         'handlebars',
         'requirejs',
         'concat'
