@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], function(app, Backbone, Onetomany, TableView) {
+define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core/edit'], function(app, Backbone, Onetomany, TableView, EditView) {
 
   "use strict";
 
@@ -50,7 +50,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
     addModel: function(model) {
       var modal;
       var collection = this.related.entries;
-      var view = new Directus.EditView({model: model});
+      var view = new EditView({model: model});
 
       modal = app.router.openModal(view, {stretch: true, title: 'Add'});
 
