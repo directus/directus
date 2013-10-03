@@ -77,7 +77,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       try {
         date = new Date(candidate);
-      } catch (e) {
+      } catch (err) {
         // Do nothing if the date is bad
         return;
       }
