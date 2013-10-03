@@ -1,6 +1,6 @@
 {
   "name": "directus",
-  "version": "0.0.0-ignored",
+  "version": "6.0.0-alpha",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -16,6 +16,7 @@
     "grunt-contrib-watch": "0.2.0rc5",
     "grunt-contrib-requirejs": "0.4.1",
     "grunt-contrib-handlebars":"0.5.11",
-    "grunt": "0.4.0rc7"
+    "grunt": "0.4.0rc7",
+    "bower": "1.2.7"
   }
 }
