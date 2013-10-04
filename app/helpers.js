@@ -29,7 +29,8 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    if(date === undefined || date === null || isNaN(date.getTime()) ) {
+    if(date === undefined || date === null || typeof date === 'string' || isNaN(date.getTime()) ) {
+      //throw new Error('The date is not in a correct date format');
       return '-';
     }
     date = date.toISOString();
