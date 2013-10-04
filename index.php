@@ -170,7 +170,13 @@ function getPrivileges() {
 }
 
 function getUI() {
-	return array_values(Bootstrap::get('uis'));
+	$uis = array_values(Bootstrap::get('uis'));
+	// Add full path
+	foreach ($uis as &$ui) {
+		$ui = DIRECTUS_PATH . $ui . '.js';
+	}
+
+	return $uis;
 }
 
 function getCusomFooterHTML() {
