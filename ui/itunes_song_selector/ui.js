@@ -92,7 +92,7 @@ define(['app', 'backbone'], function (app, Backbone) {
                 },
                 highlighter: function (item) {
                         var item = JSON.parse(item);
-                    return '<img src="' + item.artworkUrl60 + '" /> ' + item.artistName + ' - ' + item.trackName;
+                    return '<img src="' + item.artworkUrl100 + '" test /> ' + item.artistName + ' - ' + item.trackName;
           // http://a1.mzstatic.com/us/r1000/004/Music/24/32/a7/mzi.hjzwehvk.80x60-75.jpg
                 },
                 matcher: function (item) {
