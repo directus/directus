@@ -223,7 +223,6 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
 
             // Add foreign data to patch. Only add changed attributes
             value = value.toJSON({changed: true});
-            console.log(key, value);
 
             if (!_.isEmpty(value)) {
               options.attrs[key] = value;
@@ -276,7 +275,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
       if (options.changed && !this.isNew()) {
         attributes = this.changed;
         // always include id
-        if (!_.isEmpty(attributes) && this.id) {
+        if (this.id) {
           attributes.id = this.id;
         }
       }
