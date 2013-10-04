@@ -109,7 +109,11 @@ define(['app', 'backbone'], function (app, Backbone) {
                   this.$element.siblings('#' + that.options.name).val(item.trackId);
                   var fieldMappings = that.options.settings.get('field_mappings_obj');
                   for (fieldName in fieldMappings) {
-                    this.$element.parents('#directus-form').find('#' + fieldMappings[fieldName]).val(item[fieldName]);
+                    if(fieldMappings[fieldName] == 'album_art_url'){ // Replaces 100px image with 600px (undocumented hack)
+                        this.$element.parents('#directus-form').find('#' + fieldMappings[fieldName]).val( item[fieldName].replace("100x100-75.jpg","600x600-75.jpg"));
+                    } else {
+                        this.$element.parents('#directus-form').find('#' + fieldMappings[fieldName]).val(item[fieldName]);
+                    }
                   }
                 }
             });
