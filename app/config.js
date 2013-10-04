@@ -19,7 +19,7 @@ require.config({
 
     // Extensions
     "extensions": "../extensions",
-    "ui": '../ui',
+    "ui": '../ui'
   },
 
   shim: {
