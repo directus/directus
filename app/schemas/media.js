@@ -264,6 +264,20 @@ define([], function() {
       }
     },
     {
+      "id":"storage_adapter",
+      "column_name":"storage_adapter",
+      "type":"INT",
+      "is_nullable":"YES",
+      "comment":"",
+      "sort":14,
+      "ui":"numeric",
+      "system":true,
+      "master":false,
+      "hidden_list":true,
+      "hidden_input":true,
+      "required":false
+    },
+    {
       "id":"date_uploaded",
       "column_name":"date_uploaded",
       "type":"DATETIME",
