@@ -314,7 +314,7 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         preferences: app.preferences.directus_media,
         url: app.API_URL + 'media',
         privileges: app.privileges.directus_media,
-        filters: {columns_visible: ['name','title','size','user','date_uploaded']}
+        filters: {columns_visible: ['name','title','size','user','date_uploaded', 'storage_adapter']}
       });
 
       app.activity = new Directus.EntriesCollection([], {
