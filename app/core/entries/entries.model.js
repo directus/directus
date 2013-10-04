@@ -288,7 +288,10 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
 
         if (isModel || isCollection) {
           value = value.toJSON(options);
-          if (_.isEmpty(value)) return;
+
+          //@todo keep an eye on why this wasn't serialized before
+          //if (_.isEmpty(value)) return;
+
           attributes[key] = value;
         }
 
