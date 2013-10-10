@@ -98,12 +98,20 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
     entries: function(tableName) {
       this.setTitle('Tables');
+      var collection;
 
-      if (!app.entries.hasOwnProperty(tableName)) {
+
+      if (!app.tables.get(tableName)) {
         return this.notFound();
       }
 
-      var collection = app.getEntries(tableName);
+      // see if the collection is cached...
+      if (this.currentCollection !== undefined && this.currentCollection.table.id == tableName) {
+        collection = this.currentCollection;
+      } else {
+        collection = app.getEntries(tableName);
+      }
+
       if (collection.table.get('single')) {
         if(collection.models.length) {
           this.entry(tableName, collection.models[0].get('id'));
@@ -123,16 +131,28 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         }
         return;
       }
+
+      // Cache collection for next route
+      this.currentCollection = collection;
+
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.List({collection: app.getEntries(tableName)}));
+      this.v.main.setView('#content', new Table.Views.List({collection: collection}));
       this.v.main.render();
     },
 
     entry: function(tableName, id) {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      var collection = app.getEntries(tableName);
+
+      var collection;
       var model;
+
+      // see if the collection is cached...
+      if (this.currentCollection !== undefined && this.currentCollection.table.id == tableName) {
+        collection = this.currentCollection;
+      } else {
+        collection = app.getEntries(tableName);
+      }
 
       if (collection === undefined) {
         return this.notFound();
