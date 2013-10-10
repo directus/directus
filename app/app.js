@@ -24,8 +24,25 @@ function(Handlebars, typetools) {
       //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
     },
 
+    // Return a new instance
     getEntries: function(tableName) {
-      return app.entries[tableName];
+      var directusTables = ['directus_media', 'directus_groups', 'directus_users'];
+
+      // Directus tables are cached...
+      if (_.contains(directusTables, tableName)) {
+        return app.entries[tableName];
+      }
+
+      // Other tables need a new instance
+      var entries = new app.EntriesCollection([], {
+        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'), 10),
+        structure: app.columns[tableName],
+        table: app.tables.get(tableName),
+        preferences: app.preferences[tableName],
+        privileges: app.privileges[tableName]
+      });
+
+      return entries;
     },
 
     unlockScreen: function() {
