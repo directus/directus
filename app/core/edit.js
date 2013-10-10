@@ -90,6 +90,10 @@ function(app, Backbone, ui) {
     },
 
     initialize: function(options) {
+
+
+      console.log((new Date()).getTime() - app.timeEntryBegin, 'milliseconds to instance (Entry)');
+
       var structureHiddenFields,
           optionsHiddenFields = options.hiddenFields || [];
 
@@ -117,7 +121,7 @@ function(app, Backbone, ui) {
       }, this);
 
       this.model.on('sync', function(e) {
-        // reset changes!
+        console.log((new Date()).getTime() - app.timeEntryBegin, 'milliseconds to render');
         this.model.changed = {};
         this.render();
       }, this);

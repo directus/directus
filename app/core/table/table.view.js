@@ -145,7 +145,10 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     initialize: function(options) {
       var collection = this.collection;
 
+      console.log((new Date()).getTime() - app.timeEntriesBegin, 'milliseconds to instance');
+
       this.listenTo(collection, 'sync', function(collection) {
+        console.log((new Date()).getTime() - app.timeEntriesBegin, 'milliseconds to render');
         //if (collection instanceof Backbone.Model) return;
         this.render();
       });
