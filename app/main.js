@@ -352,6 +352,8 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Instantiate entries
 
+      /*
+      Trying to get rid of this...
       app.tables.each(function(table) {
         if (table.id.substring(0,9) === 'directus_') return;
         app.entries[table.id] = new Directus.EntriesCollection([], {
@@ -362,6 +364,10 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
           privileges: app.privileges[table.id]
         });
       }, this);
+      */
+
+      // Lazy way to solve a HUGE problem
+      app.EntriesCollection = Directus.EntriesCollection;
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Tabs
