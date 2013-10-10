@@ -4,7 +4,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
-define(['app', 'backbone'], function (app, Backbone) {
+define(['app', 'backbone', 'plugins/bootstrap-typeahead'], function (app, Backbone) {
 
     var Module = {};
 
