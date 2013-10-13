@@ -5,8 +5,12 @@
 
 // Global values
 // --------------------------------------------------
-@directusPrimary:       #8BC53F;
+@directusPrimary:       #404040; // #8BC53F
+@directusTextOnPrimary: #FFF;
 
+// Directus specific
+@directusSecondary: #FFDD15;
+@directusTextOnSecondary: #000000;
 
 // Grays
 // -------------------------
@@ -41,8 +45,8 @@
 // -------------------------
 @bodyBackground:        @white;
 @textColor:             @grayDark;
-@textShadow: 						0 1px 0 rgba(0,0,0,.2);
-@textShadowWhite: 			0 1px 0 rgba(255,255,255,1);
+@textShadow:            0 1px 0 rgba(0,0,0,.2);
+@textShadowWhite:       0 1px 0 rgba(255,255,255,1);
 
 // Links
 // -------------------------
@@ -53,7 +57,7 @@
 // Typography
 // -------------------------
 @sansFontFamily:        "Open Sans", Helvetica, Arial, sans-serif;
-@serifFontFamily:       Arvo, "Times New Roman", Times, serif;
+@serifFontFamily:       "HelveticaNeue-Light", "HelveticaNeueLight", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; // "HelveticaNeue-UltraLight", "Helvetica Neue UltraLight", "Helvetica Neue", Arial, Helvetica, sans-serif; // Arvo, "Times New Roman", Times, serif;
 @monoFontFamily:        Monaco, Menlo, Consolas, "Courier New", monospace;
 
 @baseFontSize:          12px;
@@ -98,6 +102,7 @@
 
 @btnPrimaryBackground:             	@directusPrimary;
 @btnPrimaryBackgroundHighlight:     @directusPrimary; //spin(@btnPrimaryBackground, 20%);
+@btnPrimaryForeground:				@directusTextOnPrimary;
 
 @btnInfoBackground:                 #5bc0de;
 @btnInfoBackgroundHighlight:        #2f96b4;
@@ -151,7 +156,7 @@
 // Try to avoid customizing these :)
 @zindexDropdown:          1100;
 @zindexPopover:           1010;
-@zindexTooltip:           1030;
+@zindexTooltip:           1035;
 @zindexFixedNavbar:       1030;
 @zindexModalBackdrop:     1040;
 @zindexModal:             1050;
@@ -200,7 +205,7 @@
 @navbarLinkBackgroundHover:       transparent;
 @navbarLinkBackgroundActive:      darken(@navbarBackground, 5%);
 
-@navbarBrandColor:                @white;
+@navbarBrandColor:                @directusSecondary;
 
 // Inverted navbar
 @navbarInverseBackground:                #111111;

@@ -17,6 +17,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'datetime';
@@ -25,6 +27,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
     {id: 'include_seconds', ui: 'checkbox'},
+    {id: 'contextual_date_in_listview', ui: 'checkbox'},
     {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
   ];
 
@@ -74,7 +77,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       try {
         date = new Date(candidate);
-      } catch (e) {
+      } catch (err) {
         // Do nothing if the date is bad
         return;
       }
@@ -100,19 +103,21 @@ define(['app', 'backbone'], function(app, Backbone) {
         note: this.options.schema.get('comment')
       };
 
-      var nullValue = (this.value == undefined || this.value == 'Invalid Date');
+      var nullValue = (this.value === undefined || this.value == 'Invalid Date' || this.value === null);
+
       if (nullValue && this.autoPopulateWhenHiddenAndNull) {
         this.makeNow();
         this.model.set(this.options.name, this.value);
       }
 
-      if (value !== undefined) {
+
+      if (!nullValue) {
 
         // Don't show corrupted dates
         try {
           value = new Date(value);
           if (_.isNaN(value.getTime())) {
-            throw Error();
+            throw new Error();
           }
         } catch (e) {
           return data;
@@ -166,8 +171,11 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   //@todo make contextual date a ui
   Module.list = function(options) {
-    var template = Handlebars.compile('{{contextualDate date}}');
-    return template({date: options.value});
+    if (options.settings.get('contextual_date_in_listview') == '1') {
+      var template = Handlebars.compile('{{contextualDate date}}');
+      return template({date: options.value});
+    }
+    return options.value;
   };
 
   return Module;

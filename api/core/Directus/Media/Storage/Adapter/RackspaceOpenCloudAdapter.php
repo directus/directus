@@ -48,7 +48,12 @@ class RackspaceOpenCloudAdapter extends Adapter {
 
     protected function setContainer($name) {
         if(is_null($this->container) || $name !== $this->container->name) {
-            $this->container = $this->ostore->Container($name);
+            try {
+                $this->container = $this->ostore->Container($name);
+            } catch(\OpenCloud\Common\Exceptions\HttpError $e) {
+                // @todo
+                throw $e;
+            }
         }
     }
 

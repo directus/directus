@@ -520,6 +520,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
         $columnNames = TableSchema::getAllNonAliasTableColumnNames($this->table);
+
+        //Filter out visible columns only
+        if (array_key_exists('columns_visible', $params)) {
+            $systemColumns = array('id','sort','active');
+            $columnsVisible = array_unique(array_merge($systemColumns, $params['columns_visible']));
+            $columnNames = array_intersect($columnNames, $columnsVisible);
+        }
+
         $select->columns($columnNames);
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
@@ -542,7 +550,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Eager-load related ManyToOne records
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
-        
+
         /**
          * Fetching a set of data
          */
@@ -1011,6 +1019,40 @@ class RelationalTableGateway extends AclAwareTableGateway {
         }
         $stats['total'] = array_sum($stats);
         return $stats;
+    }
+
+    function countActiveOld($no_active=false) {
+        $db = Bootstrap::get('olddb');
+        $tbl_name = $this->table;
+        $result = array('active'=>0);
+        if ($no_active) {
+            $sql = "SELECT COUNT(*) as count, 'active' as active FROM $tbl_name";
+        } else {
+            $sql = "SELECT
+                CASE active
+                    WHEN 0 THEN 'trash'
+                    WHEN 1 THEN 'active'
+                    WHEN 2 THEN 'inactive'
+                END AS active,
+                COUNT(*) as count
+            FROM $tbl_name
+            GROUP BY active";
+        }
+        $sth = $db->dbh->prepare($sql);
+        // Test if there is an active column!
+        try {
+            $sth->execute();
+        } catch(\PDOException $e) {
+            if ($e->getCode() == "42S22" && strpos(strtolower($e->getMessage()),"unknown column")) {
+                return $this->countActiveOld(true);
+            } else {
+                throw $e;
+            }
+        }
+        while($row = $sth->fetch(\PDO::FETCH_ASSOC))
+            $result[$row['active']] = (int)$row['count'];
+        $total = 0;
+        return $result;
     }
 
     // public function __runDemoTestSuite($rowset) {

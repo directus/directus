@@ -6,6 +6,8 @@ define([
 
 function(app, Backbone) {
 
+  "use strict";
+
   var TableHeadView = Backbone.Layout.extend({
 
     template: 'table-head',
@@ -41,13 +43,83 @@ function(app, Backbone) {
         var visibleColumns = preferences.get('columns_visible').split(',');
         var data = {};
         var view, modal;
+        var totalSelected = 0;
 
         data.columns = structure.chain()
-          .filter(function(model) { return !model.get('system') && !model.get('hidden_list'); } )
-          .map(function(model) { return {name: model.id, visible: (visibleColumns.indexOf(model.id) > -1)}; })
+          .filter(function(model) {
+            return !model.get('system') && !model.get('hidden_list');
+          })
+          .map(function(model) {
+            var isVisible = _.contains(visibleColumns, model.id);
+            var isForeign = _.contains(['MANYTOMANY', 'ONETOMANY'],
+                                       model.getRelationshipType());
+
+            if (isVisible) {
+              totalSelected++;
+            }
+
+            return {
+              name: model.id,
+              visible: isVisible,
+              disabled: isForeign,
+              isForeign: isForeign
+            };
+          }, this)
           .value();
 
-        view = new Backbone.Layout({template: 'table-set-columns', serialize: data});
+        if (totalSelected >= this.maxColumns) {
+          data.columns = _.map(data.columns, function(column) {
+            if (!column.visible) {
+              column.disabled = true;
+            }
+            return column;
+          });
+        }
+
+        data.maxColumns = this.maxColumns;
+
+        var View = Backbone.Layout.extend({
+
+          events: {
+            'click input': function() {
+              var checkedInputs = this.$el.find('input:checked'),
+                  maxColumns = this.options.data.maxColumns;
+
+              if (checkedInputs.length >= maxColumns) {
+                this.disableNonSelected();
+              } else {
+                this.enableNonSelected();
+              }
+            }
+          },
+
+          disableNonSelected: function() {
+            this.$el.find('input:not(:checked)').each(function(i, el) {
+              $(el).prop('disabled', true);
+            });
+          },
+
+          enableNonSelected: function() {
+            this.$el.find('input:disabled').each(function(i, el) {
+              var $el = $(el);
+              if (!$el.attr('data-foreign')) {
+                $el.prop('disabled', false);
+              }
+            });
+          },
+
+          template: 'table-set-columns',
+
+          serialize: function() {
+            return this.options.data;
+          }
+
+        });
+
+        view = new View({data: data});
+
+
+
         modal = app.router.openModal(view, {title: 'Set visible columns'});
 
         modal.save = function() {
@@ -75,6 +147,7 @@ function(app, Backbone) {
     },
 
     initialize: function() {
+      this.maxColumns = this.options.maxColumns || 8;
       this.collection.on('sort', this.render, this);
     }
 

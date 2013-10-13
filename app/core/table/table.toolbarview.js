@@ -6,7 +6,9 @@ define([
 
 function(app, Backbone) {
 
- var TableToolbarView = Backbone.Layout.extend({
+  "use strict";
+
+  var TableToolbarView = Backbone.Layout.extend({
 
     template: 'table-toolbar',
 
@@ -19,7 +21,12 @@ function(app, Backbone) {
           var id = this.value;
           collection.get(id).set({active: value}, {silent: true});
         });
-        collection.save({columns: ['id','active']});
+        collection.save({
+          columns: ['id','active'],
+          success: function() {
+            collection.trigger('visibility');
+          }
+        });
         collection.trigger('visibility');
       },
 
@@ -69,21 +76,7 @@ function(app, Backbone) {
       var table = this.options.collection.table;
       var options = {};
 
-      switch (this.collection.getFilter('active')) {
-        case '1,2':
-          options.totalCount = this.collection.table.get('active') + this.collection.table.get('inactive'); //this.collection.table.get('total');
-          break;
-        case '1':
-          options.totalCount = this.collection.table.get('active');
-          break;
-        case '2':
-          options.totalCount = this.collection.table.get('inactive');
-          break;
-        case '0':
-          options.totalCount = this.collection.table.get('trash');
-          break;
-      }
-
+      options.totalCount = this.collection.getTotalCount();
       options.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, options.totalCount);
       options.uBound = Math.min(options.totalCount, options.lBound + this.collection.getFilter('perPage') - 1);
       options.pageNext = (this.collection.getFilter('currentPage') + 1 < (options.totalCount / this.collection.getFilter('perPage') ) );
@@ -124,7 +117,7 @@ function(app, Backbone) {
     getFilterRow: "adv search fields row object",
 
     afterRender: function() {
-      $filter = $('#table-filter');
+      var $filter = $('#table-filter');
       if ($filter[0]) {
         $filter.val($filter.val());
       }
@@ -141,7 +134,7 @@ function(app, Backbone) {
         this.render();
       }, this);
 
-      this.collection.on('visibility', this.render, this);
+      //this.collection.on('visibility', this.render, this);
     }
   });
 

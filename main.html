@@ -10,7 +10,7 @@
   <link rel="shortcut icon" href="{{path}}favicon.ico">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="{{path}}assets/css/index.css">
+  <link rel="stylesheet" href="{{cssFilePath}}">
 
 </head>
 
@@ -38,13 +38,13 @@
 
 <div id="footer">
 	<div class="container-fluid">
-		Powered by <a href="http://www.getdirectus.com" target="get_directus">Directus (v5.1.b)</a> | <a href="http://directus.rngr.org/directus/g1thu3.php" target="get_directus" data-bypass >Git it!</a>
+		Powered by <a href="http://www.getdirectus.com" target="get_directus">Directus (v5.1.b)</a>
 	</div>
 </div>
 
 <div id="messages"></div>
 
-<div class="blocker" id="loader">
+<div class="blocker" id="loader" style="display:none;">
   <div id="alert"><span class="glyphicon-refresh"></span></div>
 </div>
 
@@ -54,5 +54,10 @@ window.directusData = {{data}};
 
 <!-- Application source. -->
 <script data-main="{{path}}app/config" src="{{path}}assets/js/libs/require.js"></script>
+<!--<script src="{{path}}dist/release.js"></script>-->
+
+
+{{customFooterHTML}}
+
 </body>
 </html>

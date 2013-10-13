@@ -1,9 +1,12 @@
 define([
   "app",
-  "backbone"
+  "backbone",
+  "core/ui"
 ],
 
-function(app, Backbone) {
+function(app, Backbone, ui) {
+
+  "use strict";
 
   var EditView = Backbone.Layout.extend({
 
@@ -16,6 +19,9 @@ function(app, Backbone) {
     ],
 
     beforeRender: function() {
+
+      // @todo: this is because of bad design. straighten this out
+      ui = ui || require('core/ui');
       var UI = ui.initialize({model: this.model, structure: this.structure});
 
       this.structure.each(function(column) {
@@ -72,6 +78,14 @@ function(app, Backbone) {
     data: function() {
       var data = this.$el.serializeObject();
       var whiteListedData = _.pick(data, this.visibleFields);
+      
+      // check if any of the listed data has multiple values, then serialize it to string
+      _.each(whiteListedData, function(value, key, obj) {
+        if (_.isArray(value)) {
+          obj[key] = value.join(',');
+        }
+      });
+      
       return whiteListedData;
     },
 
@@ -95,7 +109,7 @@ function(app, Backbone) {
         //Get rid of all errors
         this.$el.find('.error').remove();
         _.each(errors, function(item) {
-          $fieldset = $('#edit_field_' + item.attr);
+          var $fieldset = $('#edit_field_' + item.attr);
           if ($fieldset.find('.error').length < 1) {
             $fieldset.append('<span class="error">'+item.message+'</span>');
           }

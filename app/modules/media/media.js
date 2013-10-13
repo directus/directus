@@ -1,21 +1,25 @@
 define([
   'app',
   'backbone',
-  'core/directus'
+  'core/modal',
+  'core/edit',
+  'core/table/table.view'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
+
+  "use strict";
 
   var Media = app.module();
 
 
 
-  Media.Views.Edit = Directus.Modal.extend({
+  Media.Views.Edit = DirectusModal.extend({
 
     afterRender: function() {
       this.setView('.modal-body', this.editView);
       if (!this.model.isNew()) {
-        this.model.fetch();        
+        this.model.fetch();
       } else {
         this.editView.render();
       }
@@ -34,7 +38,7 @@ function(app, Backbone, Directus) {
     },
 
     initialize: function() {
-      this.editView = new Directus.EditView({model: this.model});
+      this.editView = new DirectusEdit({model: this.model});
       this.collection = app.media;
       this.options.title = this.options.title || 'Editing Media';
       this.on('close', function() {
@@ -114,7 +118,7 @@ function(app, Backbone, Directus) {
     },
 
     afterRender: function() {
-      this.setView('#page-content', new Directus.Table({collection:this.collection, selectable: true, droppable: true, deleteOnly: true, hideColumnPreferences: true}));
+      this.setView('#page-content', new DirectusTable({collection:this.collection, selectable: true, droppable: true, deleteOnly: true, hideColumnPreferences: true}));
       this.collection.fetch({reset: true});
     }
   });

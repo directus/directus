@@ -8,6 +8,8 @@ define([
 
 function(Handlebars, typetools) {
 
+  "use strict";
+
   // Provide a global location to place configuration settings and module
   // creation.
   var app = {
@@ -20,6 +22,10 @@ function(Handlebars, typetools) {
       this.noScroll = true;
       //$('body').append('<div class="modal-backdrop" style="background-color:transparent!important;"/>');
       //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
+    },
+
+    getEntries: function(tableName) {
+      return app.entries[tableName];
     },
 
     unlockScreen: function() {
@@ -135,9 +141,17 @@ function(Handlebars, typetools) {
   app.sendFiles = function(files, callback) {
     var formData = new FormData();
 
-    var success = function() {
-      //app.trigger('load');
-      callback.apply(this, arguments);
+    var success = function(responseData) {
+
+      //Parse response date
+      responseData = _.map(responseData, function(item) {
+        item.date_uploaded = new Date(item.date_uploaded);
+        return item;
+      });
+
+      console.log(responseData);
+
+      callback.apply(this, [responseData]);
     };
 
     if (files instanceof File) files = [files];
@@ -198,7 +212,8 @@ function(Handlebars, typetools) {
 
     prefix: "app/templates/",
 
-    fetch: function(path) {
+
+    fetchTemplate: function(path) {
       // Concatenate the file extension.
 
       // If template is not a path but instead Handlebars.Compile
@@ -225,6 +240,7 @@ function(Handlebars, typetools) {
 
       $.ajax({
         url: app.root + path,
+        global: false,
         async: false,
         success: function(contents) {
           done(JST[path] = Handlebars.compile(contents));

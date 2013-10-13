@@ -17,6 +17,8 @@ define([
 
 function(app, Backbone, Directus, RevisionsModule, SaveModule) {
 
+  "use strict";
+
   var Table = app.module();
 
   Table.Views = {};
@@ -115,16 +117,20 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
         data.active = active;
       }
 
-      //console.log('circular data?','data',data,'mode',model);
 
+      // patch only the changed values
       model.save(model.diff(data), {
         success: success,
-
         error: function(model, xhr, options) {
+          console.log('err');
           //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
         },
-        patch: true
+        wait: true,
+        patch: true,
+        includeRelationships: true
       });
+
+
     },
 
     serialize: function() {
@@ -144,7 +150,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     beforeRender: function() {
-      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single}));
+      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: !this.single}));
     },
 
     afterRender: function() {
@@ -219,7 +225,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     initialize: function() {
-      this.table = new Directus.Table({collection: this.collection, navigate: true});
+      this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
     }
 
   });

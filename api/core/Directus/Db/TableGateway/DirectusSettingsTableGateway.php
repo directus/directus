@@ -4,7 +4,9 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
@@ -19,7 +21,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
     public function fetchAll($selectModifier = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
-        $select->columns(array('collection','name','value'))
+        $select->columns(array('id', 'collection','name','value'))
             ->order('collection');
         // Fetch row
         $rowset = $this->selectWith($select);
@@ -62,6 +64,45 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             throw new \Exception("Required `directus_setting` with collection `$collection` and name `$name` not found.");
         }
         return $result;
+    }
+
+    // Since ZF2 doesn't support “INSERT…ON DUPLICATE KEY UDPATE” we need some raw SQL
+    public function setValues($collection, $data) {
+
+        $whiteList = array(
+            'media' => array(
+                    'media_naming',
+                    'allowed_thumbnails',
+                    'thumbnail_quality'
+                ),
+            'global' => array(
+                    'site_name',
+                    'site_url',
+                    'cms_color',
+                    'cms_user_auto_sign_out',
+                    'rows_per_page'
+                )
+        );
+
+        if ($collection !== 'media' && $collection !== 'global') {
+            throw new \Exception("The settings collection $collection is not supported");
+        }
+
+        $data = ArrayUtils::pick($data, $whiteList[$collection]);
+
+        foreach ($data as $key => $value) {
+            $parameters[] = '(' .
+                $this->adapter->platform->quoteValue($collection) .','.
+                $this->adapter->platform->quoteValue($key) .','.
+                $this->adapter->platform->quoteValue($value) .
+            ')';
+        }
+
+        $sql = 'INSERT INTO directus_settings (`collection`, `name`, `value`) VALUES ' . implode(',', $parameters) .' '.
+               'ON DUPLICATE KEY UPDATE `collection` = VALUES(collection), `name` = VALUES(name), `value` = VALUES(value)';
+
+        $query = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
+
     }
 
 }
