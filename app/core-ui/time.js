@@ -17,6 +17,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'time';
@@ -134,7 +136,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
 
-    suffix = (hours >= 12)? 'pm' : 'am';
+    var suffix = (hours >= 12)? 'pm' : 'am';
     hours = (hours > 12)? hours -12 : hours;
     hours = (hours == '00')? 12 : hours;
 

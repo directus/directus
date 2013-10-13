@@ -6,6 +6,8 @@ define([
 
 function(app, Backbone, Directus) {
 
+  "use strict";
+
   var view = Backbone.Layout.extend({
 
     tagName: 'div',

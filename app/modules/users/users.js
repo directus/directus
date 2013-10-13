@@ -7,6 +7,8 @@ define([
 
 function(app, Backbone, Directus, SaveModule) {
 
+  "use strict";
+
   var Users = app.module();
 /*
   var SaveModule = Backbone.Layout.extend({
@@ -33,10 +35,19 @@ function(app, Backbone, Directus, SaveModule) {
     events: {
       'click #save-form': function(e) {
         var data = $('form').serializeObject();
+        var model = this.model;
         data.active = $('input[name=active]:checked').val();
-        this.model.save(data, {
+
+        //Dont include empty passwords!
+        if (data.password === "") {
+          delete data.password;
+        }
+
+        model.save(model.diff(data), {
           success: function() { app.router.go('#users'); },
-          error: function() { console.log('error',arguments); }
+          error: function() { console.log('error',arguments); },
+          patch: true,
+          includeRelationships: true
         });
       }
     },
@@ -53,8 +64,17 @@ function(app, Backbone, Directus, SaveModule) {
     },
 
     beforeRender: function() {
-      this.setView('#page-content', new Directus.EditView({model: this.model}));
       this.setView('#sidebar', new SaveModule({model: this.model}));
+    },
+
+    afterRender: function() {
+      var editView = new Directus.EditView({model: this.model});
+      this.setView('#page-content', editView);
+      if (!this.model.isNew()) {
+        this.model.fetch();
+      } else {
+        editView.render();
+      }
     }
   });
 
@@ -74,7 +94,7 @@ function(app, Backbone, Directus, SaveModule) {
       var data = {title: 'Users'};
 
       if (this.collection.hasPermission('add')) {
-        data.buttonTitle = 'Add New Item';
+        data.buttonTitle = 'Add New User';
       }
 
       return data;

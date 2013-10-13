@@ -39,6 +39,9 @@ use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
+use Directus\Db\TableGateway\DirectusGroupsTableGateway;
+use Directus\Db\TableGateway\DirectusMessagesTableGateway;
+use Directus\Db\TableGateway\DirectusMessagesRecepientsTableGateway;
 //use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
@@ -361,8 +364,8 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
 $app->get("/$v/activity/?", function () use ($db, $params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
     $new_get = $Activity->fetchFeed($params);
-    $old_get = $db->get_activity();
-    JsonView::render($new_get, $old_get);
+    $new_get['active'] = $new_get['total'];
+    JsonView::render($new_get);
 });
 
 /**
@@ -494,10 +497,18 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
             break;
     }
 
-    $get_old = $db->get_entries($table, $params);
     $Media = new TableGateway($acl, $table, $ZendDb);
     $get_new = $Media->getEntries($params);
-    JsonView::render($get_new, $get_old);
+
+    if (array_key_exists('rows', $get_new)) {
+        foreach ($get_new['rows'] as &$row) {
+            $row['date_uploaded'] .= ' UTC';
+        }
+    } else {
+        $get_new['date_uploaded'] .= ' UTC';
+    }
+
+    JsonView::render($get_new);
 })->via('GET','PATCH','POST','PUT');
 
 /**
@@ -540,21 +551,22 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
  */
 
 $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+
+    $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
+
     switch ($app->request()->getMethod()) {
         case "POST":
         case "PUT":
-            $db->set_settings($requestPayload);
+            $data = $requestPayload;
+            unset($data['id']);
+            $Settings->setValues($id, $data);
             break;
     }
 
-    $settings_old = $db->get_settings();
-    $get_old = is_null($id) ? $settings_old : $settings_old[$id];
-
-    $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
     $settings_new = $Settings->fetchAll();
     $get_new = is_null($id) ? $settings_new : $settings_new[$id];
 
-    JsonView::render($get_new, $get_old);
+    JsonView::render($get_new);
 })->via('GET','POST','PUT');
 
 /**:
@@ -596,12 +608,121 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
             'size' => $fileData['size'],
             'width' => $fileData['width'],
             'height' => $fileData['height'],
-            'date_uploaded' => $fileData['date_uploaded'],
+            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
             'storage_adapter' => $fileData['storage_adapter']
         );
     }
     JsonView::render($result);
 });
+
+$app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $currentUser = Auth::getUserInfo();
+
+    if (isset($_GET['max_id'])) {
+        $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
+        $ids = $messagesRecepientsTableGateway->getMessagesNewerThan($_GET['max_id'], $currentUser['id']);
+        if (sizeof($ids) > 0) {
+            $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+            $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUser['id'], $ids);
+            return JsonView::render($result);
+        } else {
+            return '';
+        }
+    }
+
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUser['id']);
+    JsonView::render($result);
+});
+
+$app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $currentUser = Auth::getUserInfo();
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
+
+    if (!isset($message)) {
+        header("HTTP/1.0 404 Not Found");
+        return JsonView::render(array('message' => 'Message not found.'));
+    }
+
+    JsonView::render($message);
+});
+
+$app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $currentUser = Auth::getUserInfo();
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
+
+    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
+
+    $ids = array($message['id']);
+    $message['read'] = '1';
+
+    foreach ($message['responses']['rows'] as &$response) {
+        $ids[] = $response['id'];
+        $response['read'] = "1";
+    }
+
+    $messagesRecepientsTableGateway->markAsRead($ids, $currentUser['id']);
+
+    JsonView::render($message);
+})->via('PATCH');
+
+
+$app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $currentUser = Auth::getUserInfo();
+
+    // Unpack recepients
+    $recepients = explode(',', $requestPayload['recepients']);
+    $groupRecepients = array();
+    $userRecepients = array();
+
+    foreach($recepients as $recepient) {
+        $typeAndId = explode('_', $recepient);
+        if ($typeAndId[0] == 0) {
+            $userRecepients[] = $typeAndId[1];
+        } else {
+            $groupRecepients[] = $typeAndId[1];
+        }
+    }
+
+    if (count($groupRecepients) > 0) {
+        $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+        $result = $usersTableGateway->findActiveUserIdsByGroupIds($groupRecepients);
+        foreach($result as $item) {
+            $userRecepients[] = $item['id'];
+        }
+    }
+
+    $userRecepients[] = $currentUser['id'];
+
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients), $currentUser['id']);
+
+    // could this be replaced?
+    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
+    //$message = $messagesTableGateway->fetchMessage($id);
+
+    JsonView::render($message);
+});
+
+
+
+$app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    $tokens = explode(' ', $_GET['q']);
+
+    $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+    $users = $usersTableGateway->findUserByFirstOrLastName($tokens);
+
+    $groupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
+    $groups = $groupsTableGateway->findUserByFirstOrLastName($tokens);
+
+    $result = array_merge($groups, $users);
+
+    JsonView::render($result);
+});
+
+
 
 /**
  * EXCEPTION LOG
@@ -644,7 +765,7 @@ $app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $a
     if ($response === false) {
         // throw new Exception("Problem reading data from $url, $php_errormsg");
         $response = "Failed to log error. stream_get_contents failed.";
-        $app->getLog()->warn($response);   
+        $app->getLog()->warn($response);
     }
 
     $result = array('response'=>$response);

@@ -11,17 +11,19 @@ define([
   "core/directus",
   "core/tabs",
   "core/ui",
-  "modules/activity",
-  "modules/table",
-  "modules/settings",
-  "modules/media",
-  "modules/users",
-  "modules/messages",
+  "modules/activity/activity",
+  "modules/tables/table",
+  "modules/settings/settings",
+  "modules/media/media",
+  "modules/users/users",
+  "modules/messages/messages",
   "core/modal",
   "core/collection.settings"
 ],
 
 function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, extensions) {
+
+  "use strict";
 
   var Router = Backbone.Router.extend({
 
@@ -40,6 +42,8 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       "settings/tables/:table":         "settingsTable",
       "settings/permissions/:groupId":  "settingsPermissions",
       "messages":                       "messages",
+      "messages/new":                   "newMessage",
+      "messages/:id":                   "message",
       "cashregister":                   "cashregister",
       "booker":                         "booker"
     },
@@ -80,9 +84,9 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       return modal;
     },
 
-    setPage: function(view, options) {
+    setPage: function(View, options) {
       options.ui = UI;
-      this.v.main.setView('#content', new view(options)).render();
+      this.v.main.setView('#content', new View(options)).render();
     },
 
     tables: function() {
@@ -99,7 +103,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         return this.notFound();
       }
 
-      var collection = app.entries[tableName];
+      var collection = app.getEntries(tableName);
       if (collection.table.get('single')) {
         if(collection.models.length) {
           this.entry(tableName, collection.models[0].get('id'));
@@ -120,14 +124,14 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         return;
       }
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.List({collection: app.entries[tableName]}));
+      this.v.main.setView('#content', new Table.Views.List({collection: app.getEntries(tableName)}));
       this.v.main.render();
     },
 
     entry: function(tableName, id) {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      var collection = app.entries[tableName];
+      var collection = app.getEntries(tableName);
       var model;
 
       if (collection === undefined) {
@@ -141,7 +145,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       } else {
         model = collection.get(id);
         if (model === undefined) {
-          model = new collection.model({id: id}, {collection: collection});
+          model = new collection.model({id: id}, {collection: collection, parse: true});
         }
       }
 
@@ -250,7 +254,26 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     },
 
     messages: function(name) {
-      this.setPage(Messages.Views.List, {collection: this.messages});
+      this.setPage(Messages.Views.List, {collection: app.messages});
+    },
+
+    message: function(id) {
+      var model = app.messages.get(id);
+      this.setTitle('Message');
+
+      if (model === undefined) {
+        model = new app.messages.model({id: id}, {collection: app.messages, parse: true});
+        model.fetch();
+      }
+
+      this.v.main.setView('#content', new Messages.Views.Read({model: model}));
+      this.v.main.render();
+    },
+
+    newMessage: function() {
+      var model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages, parse: true});
+      this.v.main.setView('#content', new Messages.Views.New({model: model}));
+      this.v.main.render();
     },
 
     initialize: function(options) {
@@ -262,8 +285,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       _.each(options.extensions, function(item) {
         this.extensions[item.id] = new item.Router(item.id);
+        //this.extensions[item.id].bind('all', logRoute);
         this.extensions[item.id].on('route', function() {
           this.trigger('subroute',item.id);
+          this.trigger('route:'+item.id,item.id);
         }, this);
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
@@ -290,6 +315,12 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           }
       });
 
+      // Update unread message counter
+      app.messages.on('sync', function() {
+        $('#unread-messages-counter').html(app.messages.unread);
+      });
+
+
       //holds references to view instances
       this.v = {};
 
@@ -310,9 +341,10 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         el: "#messages"
       });
 
-      this.on('subroute', function(id) {
+      this.on('subroute', function(id, router) {
         this.tabs.setActive(id);
       });
+
 
       this.bind("all", function(route, router){
         // console.log('route change',route,router);
@@ -333,6 +365,9 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
             user.save({'last_page': last_page}, {
               patch: true,
+              global: false,
+              wait: true,
+              validate: false,
               url: user.url() + "?skip_activity_log=1"
             });
 
@@ -353,6 +388,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
         }
       });
 
+      this.v.main.render();
     }
   });
 

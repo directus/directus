@@ -3,6 +3,8 @@ require([
   "handlebars"
 ], function(app, Handlebars) {
 
+  "use strict";
+
   var unknowUserMessage = "-";
 
   //Raw handlebars data, helpful with data types
@@ -27,10 +29,11 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    if(_.isEmpty(date)) {
+    if(date === undefined || date === null || isNaN(date.getTime()) ) {
       return '-';
     }
-    date = (date.substr(-1).toLowerCase() == 'z') ? date : date + 'z';
+    date = date.toISOString();
+    //date = (date.substr(-1).toLowerCase() == 'z') ? date : date + 'z';
     return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + app.contextualDate(date) + '</div>');
   });
 
@@ -102,6 +105,14 @@ require([
   Handlebars.registerHelper('userFull', function(userId) {
     var user = app.users.get(userId);
     return new Handlebars.SafeString('<img src="'+user.get('avatar')+'"  class="avatar"/>'+user.get('first_name')+' '+user.get('last_name'));
+  });
+
+  Handlebars.registerHelper('userFirstAndLastName', function(userId) {
+    var user = app.users.get(userId);
+    if (user === undefined) {
+      return unknowUserMessage;
+    }
+    return new Handlebars.SafeString(user.get('first_name')+' '+user.get('last_name'));
   });
 
   Handlebars.registerHelper('directusTable', function(data) {

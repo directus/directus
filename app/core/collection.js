@@ -5,6 +5,8 @@ define([
 
 function(app, Backbone) {
 
+  "use strict";
+
   var Collection = Backbone.Collection.extend({
 
     initialize: function(models, options) {
@@ -13,7 +15,8 @@ function(app, Backbone) {
 
     getColumns: function() {
       var cols = (this.length) ? _.keys(this.at(0).toJSON()) : [];
-      return this.filters.hasOwnProperty('columns') ? _.intersection(cols, this.filters.columns) : cols;
+      var result = this.filters.hasOwnProperty('columns_visible') ? _.intersection(cols, this.filters.columns_visible) : cols;
+      return result;
     },
 
     getRows: function() {
@@ -35,6 +38,7 @@ function(app, Backbone) {
     },
 
     setFilter: function(key, value) {
+      var attrs;
       if (key === null || typeof key === 'object') {
         attrs = key;
       } else {
@@ -56,7 +60,7 @@ function(app, Backbone) {
     comparator: function(row) {
       var column = this.getFilter('sort') || 'id';
       var value = row.get(column);
-      var options, ui, type;
+      var options, ui, type, schema;
 
       //There is no value
       if (!row.has(column)) {
@@ -91,7 +95,7 @@ function(app, Backbone) {
         this.setFilter({sort: column, sort_order: sortOrder});
       }
 
-      if (this.filters.perPage < this.total) {
+      if (this.filters.perPage < this.table.get('total')) {
         this.fetch();
       } else {
         this.sort(options);
@@ -119,14 +123,13 @@ function(app, Backbone) {
 
       options.success = function(model, resp, xhr) {
         collection.reset(model ,{parse: true});
-        collection.trigger('sync');
         if (success !== undefined) {
           success();
         }
       };
 
       // would be awesome if this is always how it werkz...
-      options.url = this.url + '?' + $.param(this.filters);
+      options.url = this.url + '?' + $.param(this.getFilters());
 
       return Backbone.sync('update', this, options);
     },
@@ -134,11 +137,11 @@ function(app, Backbone) {
     fetch: function(options) {
       options = options || {};
       options.data = options.data || {};
+      var filters = this.getFilters();
 
+      _.extend(options.data, filters);
+      //options.data.columns_visible = this.getColumns().join(',');
       this.trigger('fetch', this);
-
-      _.extend(options.data, this.getFilters());
-
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
 

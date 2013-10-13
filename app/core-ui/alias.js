@@ -8,6 +8,8 @@
 
 define(['app','backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'alias';
@@ -15,6 +17,6 @@ define(['app','backbone'], function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
   });
-  
+
   return Module;
 });

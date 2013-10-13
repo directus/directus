@@ -15,6 +15,7 @@ define([
 
 function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Structure, Collection, Edit, Table, Modal, TableSimple, Settings, TableModel) {
 
+  "use strict";
 
   var Directus = {};
 

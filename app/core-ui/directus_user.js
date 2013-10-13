@@ -8,6 +8,8 @@
 
 define(['app','backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'directus_user';
@@ -20,8 +22,7 @@ define(['app','backbone'], function(app, Backbone) {
       case 'full':
         html = '{{userFull user}}';
         break;
-      case 'short':
-      default:      
+      default:
         html = '{{userShort user}}';
         break;
     }
@@ -36,7 +37,7 @@ define(['app','backbone'], function(app, Backbone) {
       var user = app.users.get(options.value);
       if(user) {
         this.$el.html('<label>'+app.capitalize(this.options.name)+'</label>');
-        this.$el.append('<img src="' + app.RESOURCES_URL + 'users/default.png" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));        
+        this.$el.append('<img src="' + user.get('avatar') + '" style="margin-right:10px;" class="avatar">' + user.get('first_name') + ' ' + user.get('last_name'));        
       }
     }
   });

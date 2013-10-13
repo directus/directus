@@ -15,6 +15,8 @@ define([
 
 function(app, Directus, PaneSaveView) {
 
+  "use strict";
+
   var Permissions = Backbone.Layout.extend({
 
     template: 'settings-grouppermissions',

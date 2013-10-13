@@ -6,6 +6,8 @@ define([
 
 function(app, Backbone, Structure) {
 
+  "use strict";
+
   var Model =  Backbone.Model.extend({
 
     parse: function(data) {
@@ -19,7 +21,7 @@ function(app, Backbone, Structure) {
     },
 
     toJSON: function(options) {
-      attrs = _.clone(this.attributes);
+      var attrs = _.clone(this.attributes);
       attrs.columns = this.columns.toJSON();
       return attrs;
     }
