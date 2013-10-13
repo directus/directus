@@ -7,6 +7,8 @@ define([
 
 function(app, Backbone, Collection, EntriesModel) {
 
+  "use strict";
+
   var EntriesCollection = Collection.extend({
 
     model: EntriesModel,
@@ -21,7 +23,8 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     getColumns: function() {
-      return (this.filters.columns !== undefined) ? this.filters.columns : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      var columns = (this.filters.columns_visible !== undefined) ? this.filters.columns_visible : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      return columns;
     },
 
     getFilter: function(key) {
@@ -29,7 +32,48 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     getFilters: function() {
-      return _.extend(this.filters, _.pick(this.preferences.toJSON(),'columns_visible','sort','sort_order','active'));
+      var preferences = this.preferences ? this.preferences.toJSON() : {};
+      var filters = _.clone(this.filters);
+
+      //Temporary fix to turn columns_visible into an array. @todo: Move this to the preferences object
+      if (preferences.hasOwnProperty('columns_visible')) {
+        preferences.columns_visible = preferences.columns_visible.split(',');
+      }
+
+      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'active'));
+
+      // preferences normally trump filters, this is an edge case
+      // @todo fix the data structure to make this logic less wierd
+      if (this.filters.hasOwnProperty('columns_visible')) {
+        result.columns_visible = this.filters.columns_visible;
+      }
+
+      return result;
+    },
+
+    getTotalCount: function() {
+      var totalCount;
+
+      switch (this.getFilter('active')) {
+        case '1,2':
+          totalCount = this.table.get('active');
+          if (this.table.has('inactive')) {
+            totalCount += this.table.get('inactive');
+          }
+          break;
+        case '1':
+          totalCount = this.table.get('active');
+          break;
+        case '2':
+          totalCount = this.table.get('inactive');
+          break;
+        case '0':
+          totalCount = this.table.get('trash');
+          break;
+      }
+
+      return totalCount;
+
     },
 
     setFilter: function(key, value, options) {
@@ -56,7 +100,7 @@ function(app, Backbone, Collection, EntriesModel) {
 
     hasPermission: function(permissionType) {
       var permissions = this.privileges.get('permissions') || '';
-      permissionsArray = permissions.split(',');
+      var permissionsArray = permissions.split(',');
       return _.contains(permissionsArray, permissionType);
     },
 
@@ -66,23 +110,21 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     initialize: function(models, options) {
-      var rowsPerPage = options.rowsPerPage || parseInt(app.settings.get('global').get('rows_per_page'),10) || 500;
+      var rowsPerPage = options.rowsPerPage || 500;
       this.structure = options.structure;
       this.privileges = options.privileges;
       this.table = options.table;
       this.active = this.table.get('active');
       this.url = options.url || this.table.get('url') + '/rows';
       this.filters = _.extend({ currentPage: 0, perPage: rowsPerPage, sort: 'id', sort_order: 'ASC', active: '1,2' }, options.filters);
+
       if (options.preferences) {
         this.preferences = options.preferences;
         this.preferences.on('change', function() { this.trigger('change'); }, this);
       }
     },
 
-    parse: function(response) {
-
-      if (_.isEmpty(response)) return;
-
+    parseHeaders: function(response) {
       if (response.total !== undefined) {
         this.table.set('total', response.total, {silent: true});
       }
@@ -98,6 +140,13 @@ function(app, Backbone, Collection, EntriesModel) {
       if (response.trash !== undefined) {
         this.table.set('trash', response.trash, {silent: true});
       }
+    },
+
+    parse: function(response) {
+      if (_.isEmpty(response)) return;
+
+      // Parse table headers
+      this.parseHeaders(response);
 
       return response.rows;
     }

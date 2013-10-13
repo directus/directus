@@ -5,7 +5,6 @@
 	</div>
 	{{/if}}
 
-
 	{{#if canEdit}}
 		<div class="directus-module-section">
 			{{#if showDropdown}}
@@ -19,7 +18,7 @@
 					</ul>
 				</div>
 			{{else}}
-				<a class="btn btn-primary" id="save-form">Save Item</a>
+				<a class="btn btn-primary" id="save-form">{{buttonText}}</a>
 			{{/if}}
 			<div class="cancel">or <a href="#" id="save-form-cancel">Cancel</a></div>
 		</div>
@@ -30,10 +29,6 @@
 			</div>
 		</div>
 	{{/if}}
-
-
-
-
 
 	{{#if showDelete}}
 	<div class="directus-module-section">

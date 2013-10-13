@@ -15,7 +15,9 @@
 // options.name       String            Field name
 
 
-define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Backbone, Directus, Media) {
+define(['app', 'backbone', 'modules/media/media', 'core/table/table.view','core/edit'], function(app, Backbone, Media, TableView, EditView) {
+
+  "use strict";
 
   var Module = {};
 
@@ -120,7 +122,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
       var collection = app.media;
       var model;
       var mediaModel = this.mediaModel;
-      var view = new Directus.Table({collection: collection, selectable: false, footer: false, navigate: true});
+      var view = new TableView({collection: collection, selectable: false, footer: false, navigate: true});
       view.navigate = function(id) {
         model = collection.get(id);
         mediaModel.clear({silent: true});
@@ -133,7 +135,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
 
     edit: function() {
       var model = this.mediaModel;
-      var view = new Directus.EditView({model: model});
+      var view = new EditView({model: model});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
       view.render();
 
@@ -190,12 +192,14 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     serialize: function() {
       var url = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel, true) : null;
       var link = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel) : null;
-      var data = {
+      var data = this.mediaModel.toJSON();
+      data.date_uploaded = new Date(data.date_uploaded);
+      data = {
         name: this.options.name,
         url: url,
         comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
-        mediaModel: this.mediaModel.toJSON(),
+        mediaModel: data,
         link: link
       };
       return data;
@@ -204,7 +208,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
     initialize: function() {
       this.mediaModel = this.options.value;
       this.mediaModel.on('change', this.render, this);
-      //this.collection = app.entries['directus_media'];
+      //this.collection = app.getEntries('directus_media');
       //this.collection.fetch();
       this.collection.on('reset', this.render, this);
     }
@@ -214,7 +218,7 @@ define(['app', 'backbone', 'core/directus', 'modules/media'], function(app, Back
   Module.validate = function(value, options) {
     if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
       return 'The field is required';
-    };
+    }
   };
 
   Module.list = function(options) {

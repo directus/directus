@@ -8,6 +8,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'salt';
@@ -69,7 +71,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           return seed.slice(seed.length - reqWidth);
         }
         if (reqWidth > seed.length) { // so short we pad
-          return Array(1 + (reqWidth - seed.length)).join('0') + seed;
+          return [1 + (reqWidth - seed.length)].join('0') + seed;
         }
         return seed;
       };

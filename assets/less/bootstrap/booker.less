@@ -41,7 +41,6 @@
 	}
 
 	.schedule-today {
-		margin-top: 20px;
 		padding-bottom: 8px;
 		border-bottom: 1px solid @gray;
 	}
@@ -360,10 +359,15 @@
 		color: @directusPrimary;
 		cursor: pointer;
 
-		span {
+		&.customer-credit {
 			float: none;
 			color: @grayDark;
 			cursor: auto;
+			font-family: Arvo, "Times New Roman", Times, serif;
+			font-weight: normal;
+			font-size: 18px;
+			// margin-left: 6px;
+			line-height: 1.7;
 		}
 
 		&.customer-name {
@@ -460,7 +464,7 @@
 			font-weight: 400;
 		}
 
-		&.reserved {
+		&.taken {
 			.customer-actions {
 				display: none;
 				bottom: 0;
@@ -513,7 +517,7 @@
 			}
 		}
 
-		&.available {
+		&.open {
 			border: 1px solid @grayDark;
 
 			&:hover {
@@ -521,7 +525,7 @@
 			}
 		}
 
-		&.reserved {
+		&.taken {
 			background-color: @directusPrimary;
 			border: 1px solid @directusPrimary;
 		}
@@ -530,13 +534,13 @@
 				background: url('../../extensions/booker/assets/images/seat-states.png') no-repeat;
 				background-position-y: 2px;
 			}
-			&.note { .reserved; background-position-x: 3px; }
-			&.vip { .reserved; background-position-x: -96px; }
-			&.supersoul { .reserved; background-position-x: -197px; }
-			&.firstride { .reserved; background-position-x: -292px; }
-			&.hundredrides { .reserved; background-position-x: -385px; }
-			&.birthday { .reserved; background-position-x: -479px; }
-			&.staff { .reserved; background-position-x: -573px; }
+			&.note { .taken; background-position-x: 3px; }
+			&.vip { .taken; background-position-x: -96px; }
+			&.supersoul { .taken; background-position-x: -197px; }
+			&.firstride { .taken; background-position-x: -292px; }
+			&.hundredrides { .taken; background-position-x: -385px; }
+			&.birthday { .taken; background-position-x: -479px; }
+			&.staff { .taken; background-position-x: -573px; }
 
 		&.fan {
 			background: url('../../extensions/booker/assets/images/booking-fan.png') no-repeat center center;
@@ -564,6 +568,10 @@
 			// width: 126px;
 			// height: 126px;
 			overflow: hidden;
+		}
+
+		&.offset {
+			margin-left: -15px;
 		}
 
 		.name {
@@ -639,7 +647,7 @@
 			font-weight: 400;
 		}
 
-		&.reserved {
+		&.taken {
 			.customer-actions {
 				display: none;
 				bottom: 0;
@@ -692,7 +700,7 @@
 			}
 		}
 
-		&.available {
+		&.open {
 			border: 1px solid @grayDark;
 
 			&:hover {
@@ -700,7 +708,7 @@
 			}
 		}
 
-		&.reserved {
+		&.taken {
 			background-color: @directusPrimary;
 			border: 1px solid @directusPrimary;
 		}
@@ -709,13 +717,13 @@
 				background: url('../../extensions/booker/assets/images/seat-states.png') no-repeat;
 				background-position-y: 2px;
 			}
-			&.note { .reserved; background-position-x: 3px; }
-			&.vip { .reserved; background-position-x: -96px; }
-			&.supersoul { .reserved; background-position-x: -197px; }
-			&.firstride { .reserved; background-position-x: -292px; }
-			&.hundredrides { .reserved; background-position-x: -385px; }
-			&.birthday { .reserved; background-position-x: -479px; }
-			&.staff { .reserved; background-position-x: -573px; }
+			&.note { .taken; background-position-x: 3px; }
+			&.vip { .taken; background-position-x: -96px; }
+			&.supersoul { .taken; background-position-x: -197px; }
+			&.firstride { .taken; background-position-x: -292px; }
+			&.hundredrides { .taken; background-position-x: -385px; }
+			&.birthday { .taken; background-position-x: -479px; }
+			&.staff { .taken; background-position-x: -573px; }
 
 		&.fan {
 			background: url('../../extensions/booker/assets/images/booking-fan.png') no-repeat center center;
@@ -849,7 +857,97 @@
 
 
 
+/* h2 { */
+	&#booker_breadcrumb_trail {
+		.breadcrumb-divider {
+			display: inline-block;
+			width: 14px;
+		}
+	}
 
+	.has-dropdown {
+		&:hover {
+			~.crumb-bg-hightlight {
+				display: block;
+			}
+
+			.crumb-dropdown {
+				visibility: visible;
+				opacity: 1;
+				// height: 500px; // DERTMINE THE HEIGHT DYNAMICALLY, SIMILAR TO SOULCYCLE GLOBAL NAV DROPDOWN
+			}
+		}
+
+		.crumb-name {
+			position: relative;
+			z-index: 10;
+		}
+
+		.dropdown-caret {
+			position: relative;
+			display: inline-block;
+			margin-left: 2px;
+			width: 9px;
+			height: 7px;
+			top: -6px;
+			background: url('../img/crumb-dropdown-arrow.png') no-repeat;
+		}
+	}
+	.crumb-bg-hightlight {
+		display: none;
+		position: absolute;
+		height: 39px;
+		display: none;
+		border: 1px solid #ededed;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+		border-bottom: 0;
+		box-shadow: 0 3px 12px #ddd;
+
+		&.wider-than-dropdown {
+			border-bottom-right-radius: 4px;
+		}
+	}
+
+	.crumb-dropdown {
+		position: absolute;
+		display: inline-block;
+		opacity: 0;
+		visibility: hidden;
+		border: 1px solid #ededed;
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+		border-top-right-radius: 4px;
+		border-top: 0;
+		box-shadow: 0 3px 12px #ddd;
+		background-color: #fff;
+		z-index: 2;
+		min-width: 200px;
+		padding: 8px;
+		// height: 0; // MAKE SURE THIS IS ADDED DYNAMICALLY IN ORDER TO GET CSS TRANSITION TO WORK
+		// overflow: auto;
+		-webkit-transition: height .1s ease-in-out;
+
+		.cover-box-shadow {
+			display: inline-block;
+			position: absolute;
+			height: 10px;
+			width: 90px; // is overwritten by JS that determines width based on .crumb-bg-highlight width
+			background: #fff;
+			top: -4px;
+			left: 0;
+		}
+
+		.crumb-dropdown-content {
+			overflow: auto;
+		}
+
+		/* .crumb-dropdown-content */ .room_item {
+			white-space: nowrap;
+		}
+	}
+
+/* } */
 
 
 

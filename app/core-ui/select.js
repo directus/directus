@@ -8,6 +8,8 @@
 
 define(['app', 'backbone'],function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label><select name="{{name}}"><option value="">Select from below</option>{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
@@ -29,7 +31,7 @@ define(['app', 'backbone'],function(app, Backbone) {
       var options = this.options.settings.get('options');
 
       if (_.isString(options)) {
-        options = jQuery.parseJSON(options);
+        options = $.parseJSON(options);
       }
 
       options = _.map(options, function(value, key) {

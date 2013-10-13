@@ -15,6 +15,8 @@ define([
 
 function(app, Backbone, ui, Directus) {
 
+  "use strict";
+
   var SettingsGlobal = app.module();
 
   var Global = Backbone.Layout.extend({

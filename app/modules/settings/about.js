@@ -14,6 +14,8 @@ define([
 
 function(app, Directus) {
 
+  "use strict";
+
   var About = Backbone.Layout.extend({
     template: 'page',
     serialize: {

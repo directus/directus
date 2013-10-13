@@ -8,6 +8,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'many_to_one';
@@ -74,7 +76,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       // @todo display warning on UI & gracefully fail if the next value is undefined
       var relatedTable = options.settings.get('table_related');
       this.column = options.settings.get('visible_column');
-      this.collection = app.entries[relatedTable];
+      this.collection = app.getEntries(relatedTable);
       this.collection.fetch();
       //this.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);

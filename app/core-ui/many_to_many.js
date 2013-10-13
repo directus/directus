@@ -6,7 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app, Backbone, Onetomany, Directus) {
+define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core/edit'], function(app, Backbone, Onetomany, TableView, EditView) {
+
+  "use strict";
 
   var Module = {};
 
@@ -48,7 +50,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
     addModel: function(model) {
       var modal;
       var collection = this.related.entries;
-      var view = new Directus.EditView({model: model});
+      var view = new EditView({model: model});
 
       modal = app.router.openModal(view, {stretch: true, title: 'Add'});
 
@@ -62,7 +64,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
     },
 
     insertRow: function() {
-      var collection = app.entries[this.related.table.id];
+      var collection = app.getEntries(this.related.table.id);
       var view = new this.modalTable({collection: collection, selectable: true, footer: false});
       var modal = app.router.openModal(view, {stretch: true, title: 'Insert Item'});
 
@@ -91,10 +93,10 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/directus'], function(app
 
 
       this.view = new this.table(this.related.tableOptions);
-      this.modalTable = Directus.Table.extend({
+      this.modalTable = TableView.extend({
         events: {
           'click tbody td': function(e) {
-            $target = $(e.target);
+            var $target = $(e.target);
             if ($target.is("input")) return;
             var $checkbox = $target.closest('tr').find('td.check > input');
             $checkbox.attr('checked', $checkbox.attr('checked') === undefined);

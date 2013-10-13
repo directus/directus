@@ -1,0 +1,31 @@
+<!--<h3>{{subject}}</h3>-->
+<h3>{{subject}}</h3>
+<hr style="border:1px solid #EDEDED">
+<strong>{{userFull from}}</strong>
+<div style="float:right;">{{contextualDate datetime}}</div>
+<div style="margin-left:38px; overflow: auto;">
+    to
+    {{#if collapseRecepients}}
+        <a href="#" id="messages-show-recepients">{{recepientsCount}} Repcepients</a>
+        <div id="messages-recepients" style="display:none">
+            {{#each recepients}}{{userFirstAndLastName this}}, {{/each}}
+        </div>
+    {{else}}
+        {{#each recepients}}{{userFirstAndLastName this}}, {{/each}}
+    {{/if}}
+
+    <br><br>
+    {{message}}</div>
+<hr style="border:1px solid #EDEDED">
+{{#each responses}}
+<strong>{{userFull from}}</strong>
+<div style="float:right;">{{contextualDate datetime}}</div>
+<div style="margin-left:38px; overflow: auto;">
+    <br/> {{message}} </div>
+<hr style="border:1px solid #EDEDED">
+{{/each}}
+
+<div style="margin-left:38px;">
+<textarea rows="7" style="width:500px; margin-bottom:10px" id="messages-response"></textarea>
+<p><button class="btn btn-primary" id="messages-response-button">Reply</button></p>
+</div>

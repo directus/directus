@@ -4,6 +4,10 @@ namespace Directus\Auth;
 
 class Provider {
 
+    const USER_RECORD_CACHE_SESSION_KEY = 'auth_provider_user_record_cache';
+
+    public static $userCacheRefreshProvider;
+
     /**
      * The user ID of the public API user.
      * @var integer
@@ -23,6 +27,12 @@ class Provider {
      */
     public static function setSessionKey($key) {
         self::$SESSION_KEY = $key;
+    }
+
+    protected static function enforceUserIsAuthenticated() {
+        if(!self::loggedIn()) {
+            throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when a user isn't authenticated.");
+        }
     }
 
     /**
@@ -48,9 +58,8 @@ class Provider {
      * @throws  \Directus\Auth\UserIsntLoggedInException
      */
     public static function logout() {
-        if(!self::loggedIn()) {
-            throw new UserIsntLoggedInException("Attempting to de-authenticate a user when a user isn't authenticated.");
-        }
+        self::enforceUserIsAuthenticated();
+        self::expireCachedUserRecord();
         $_SESSION[self::$SESSION_KEY] = array();
     }
 
@@ -59,8 +68,9 @@ class Provider {
      * @return boolean
      */
     public static function loggedIn() {
-        if("" === session_id())
+        if("" === session_id()) {
             session_start();
+        }
         return isset($_SESSION[self::$SESSION_KEY]) && !empty($_SESSION[self::$SESSION_KEY]);
     }
 
@@ -70,10 +80,48 @@ class Provider {
      * @throws  \Directus\Auth\UserIsntLoggedInException
      */
     public static function getUserInfo() {
-        if(!self::loggedIn()) {
-            throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when a user isn't authenticated.");
-        }
+        self::enforceUserIsAuthenticated();
         return $_SESSION[self::$SESSION_KEY];
+    }
+
+    public static function expireCachedUserRecord() {
+        $_SESSION[self::USER_RECORD_CACHE_SESSION_KEY] = null;
+    }
+
+    public static function getUserRecord() {
+
+        self::enforceUserIsAuthenticated();
+        
+        $userRefreshProvider = self::$userCacheRefreshProvider;
+        if(!is_callable($userRefreshProvider)) {
+            throw new \RuntimeException("Undefined user cache refresh provider.");
+        }
+
+        /**
+         * @todo  tmp until cache expiration is nailed down.
+         */
+        $userInfo = self::getUserInfo();
+        return $userRefreshProvider($userInfo['id']);
+
+
+
+        if(!isset($_SESSION[self::USER_RECORD_CACHE_SESSION_KEY])) {
+            self::expireCachedUserRecord();
+        }
+        $cachedUserRecord =& $_SESSION[self::USER_RECORD_CACHE_SESSION_KEY];
+        if(is_null($cachedUserRecord)) {
+            $userInfo = self::getUserInfo();
+            $userRefreshProvider = self::$userCacheRefreshProvider;
+            $cachedUserRecord = $userRefreshProvider($userInfo['id']);
+        }
+        return $cachedUserRecord;
+    }
+
+    public static function setUserCacheRefreshProvider($callable) {
+        if(!is_callable($callable)) {
+            throw new \InvalidArgumentException("Argument must be callable");
+        }
+        self::$userCacheRefreshProvider = $callable;
     }
 
     /**

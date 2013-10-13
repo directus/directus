@@ -10,6 +10,8 @@ define([
 
 function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
+  "use strict";
+
   var TableView = Backbone.Layout.extend({
 
     tagname: 'div',
@@ -143,19 +145,13 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     initialize: function(options) {
       var collection = this.collection;
 
-
-      collection.on('fetch',  function() {
-        //app.trigger('progress', 'Loading');
-      }, this);
-
-      // this one used to listen to remove.
-      collection.on('sync visibility', function() {
-        //app.trigger('load');
+      this.listenTo(collection, 'sync', function(collection) {
+        //if (collection instanceof Backbone.Model) return;
         this.render();
-      }, this);
+      });
 
-      collection.on('all', function() {
-        //console.log(arguments);
+      this.listenTo(collection, 'visibility', function() {
+        this.render();
       });
 
       this.options.preferences = this.options.preferences || this.collection.preferences;
@@ -183,6 +179,11 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
       if (this.options.droppable || collection.droppable) {
         this.initializeDrop();
+      }
+
+      // pre-render if there is stuff in the collection
+      if (this.collection.length > 0) {
+        this.render();
       }
 
     },

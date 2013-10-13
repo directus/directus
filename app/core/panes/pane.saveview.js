@@ -5,6 +5,8 @@ define([
 
 function(Backbone, app) {
 
+  "use strict";
+
   var PaneSaveView = Backbone.Layout.extend({
 
     template: 'module-save',
@@ -20,9 +22,10 @@ function(Backbone, app) {
         isDeleted: (this.model.get('active') === 0),
         showDelete: !this.options.single && (this.model.get('active') !== 0) && (this.model.id !== undefined) && this.model.canDelete(),
         showActive: !this.options.single && this.model.getStructure().get('active') !== undefined,
-        showDropdown: !this.options.single,
+        showDropdown: this.options.showDropDown,
         showSaveAsCopy: !this.model.isNew(),
-        canEdit: this.model.canEdit()
+        canEdit: this.model.canEdit(),
+        buttonText: this.options.buttonText || 'Save Item'
       };
       return data;
     },

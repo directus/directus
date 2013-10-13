@@ -3,10 +3,13 @@ define([
   "app",
   "backbone",
   "core/entries/entries.nestedcollection",
-  "core/entries/entries.collection"
+  "core/entries/entries.collection",
+  "core/ui"
 ],
 
-function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
+function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui) {
+
+  "use strict";
 
   var nestedTypes = ['many_to_one', 'single_media'];
 
@@ -70,11 +73,11 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         var nullDisallowed = column.get('is_nullable') === 'NO';
         var isNull = isNothing(value);
         var input = ui.getModelColumnInput(this, key);
-  
+
         var skipSerializationIfNull = input.hasOwnProperty('skipSerializationIfNull') && input.skipSerializationIfNull;
 
-        var mess = (!skipSerializationIfNull && nullDisallowed && isNull)
-          ? 'The field cannot be empty'
+        var mess = (!skipSerializationIfNull && nullDisallowed && isNull) ?
+          'The field cannot be empty'
           : ui.validate(this, key, value);
 
         if (mess !== undefined) {
@@ -126,7 +129,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
               table: app.tables.get(tableRelated),
               structure: app.columns[tableRelated],
               parse:true,
-              filters: {columns: columns}
+              filters: {columns_visible: columns}
               //preferences: app.preferences[column.get('table_related')],
             };
 
@@ -162,7 +165,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
               data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
             }
 
-            attributes[id] = new EntriesModel(data, {collection: app.entries[tableRelated]});
+            attributes[id] = new EntriesModel(data, {collection: app.getEntries(tableRelated)});
 
             break;
         }
@@ -195,23 +198,24 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
     },
 
     sync: function(method, model, options) {
+
       var isModel,
           isCollection,
           attributes = this.attributes;
 
-
-      if (method === 'patch') {
-
-
+      if (method === 'patch' && options.includeRelationships) {
 
         var relationalColumns = this.getStructure().getRelationalColumns();
         //var relationalAttributes = _.pick(this.attributes, relationalKeys);
-        
+
         _.each(relationalColumns, function(column) {
             var key = column.id;
             var value = attributes[key];
 
-            // Check if it's a one-many and it should be deleted!
+            // Some one-manys are not nested objects and will not need any special treatment
+            if (!_.isObject(value)) return;
+
+            // Check if it is a one-many and if it should be deleted!
             if ('MANYTOONE' === column.getRelationshipType() && _.isEmpty(value.attributes)) {
               options.attrs[key] = null;
               return;
@@ -219,6 +223,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
             // Add foreign data to patch. Only add changed attributes
             value = value.toJSON({changed: true});
+            console.log(key, value);
 
             if (!_.isEmpty(value)) {
               options.attrs[key] = value;
@@ -270,6 +275,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
       if (options.changed && !this.isNew()) {
         attributes = this.changed;
+        // always include id
         if (!_.isEmpty(attributes) && this.id) {
           attributes.id = this.id;
         }

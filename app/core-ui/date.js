@@ -17,6 +17,8 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
+  "use strict";
+
   var Module = {};
 
   Module.id = 'date';
@@ -57,7 +59,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var candidate = this.$el.find('input[type=date]').val();
       try {
         date = new Date(candidate);
-      } catch (e) {
+      } catch (err) {
         // Do nothing if the date is bad
         return;
       }

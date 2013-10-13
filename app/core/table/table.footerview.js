@@ -6,6 +6,8 @@ define([
 
 function(app, Backbone) {
 
+  "use strict";
+
   var TableFooterView = Backbone.Layout.extend({
     tagName: 'tfoot',
     template: 'table-foot',
