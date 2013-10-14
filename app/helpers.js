@@ -7,6 +7,10 @@ require([
 
   var unknowUserMessage = "-";
 
+  Handlebars.registerHelper('imagesPath', function() {
+    return app.PATH + 'assets/img/';
+  });
+
   //Raw handlebars data, helpful with data types
   Handlebars.registerHelper('raw', function(data) {
     return data && new Handlebars.SafeString(data);

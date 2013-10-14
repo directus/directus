@@ -308,7 +308,13 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.extensions = {};
 
       _.each(options.extensions, function(item) {
-        this.extensions[item.id] = new item.Router(item.id);
+        try {
+          this.extensions[item.id] = new item.Router(item.id);
+        } catch (e) {
+          console.log(item.id + ' failed to load:', e.stack);
+          this.tabs.get(item.id).set({'error': e});
+          return;
+        }
         //this.extensions[item.id].bind('all', logRoute);
         this.extensions[item.id].on('route', function() {
           this.trigger('subroute',item.id);
