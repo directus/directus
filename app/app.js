@@ -2,8 +2,8 @@ define([
   "handlebars",
   "typetools",
   "plugins/backbone.layoutmanager",
-  "plugins/bootstrap-dropdown",           //load anonomosly
-  "plugins/bootstrap-typeahead"           //load anonomosly
+  "plugins/bootstrap-dropdown",
+  "plugins/bootstrap-typeahead"
 ],
 
 function(Handlebars, typetools) {
