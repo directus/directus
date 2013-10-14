@@ -148,6 +148,8 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     initialize: function(options) {
       var collection = this.collection;
 
+      this.$el.html('Loading...');
+
       this.listenTo(collection, 'sync', function(model, resp, options) {
         //if (collection instanceof Backbone.Model) return;
         if (options.silent) return;
