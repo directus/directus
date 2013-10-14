@@ -36,7 +36,7 @@ function(app, Backbone) {
       if(undefined !== this.get('media')) {
         app.media.on('reset sync add', function() {
           this.get('media').set({count: app.media.table.get('active')});
-        }, this);   
+        }, this);
       }
     }
   });
@@ -45,7 +45,12 @@ function(app, Backbone) {
     template: "tabs",
 
     serialize: function() {
-      return {tabs: this.collection.toJSON()};
+      var tabs = this.collection.map(function(model) {
+        var tab = model.toJSON();
+        tab.hasErrors = model.has('error');
+        return tab;
+      });
+      return {tabs: tabs};
     },
 
     // Check if tabs are hidden and puts them into a dropdown
