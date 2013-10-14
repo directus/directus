@@ -396,6 +396,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
             user.save({'last_page': last_page}, {
               patch: true,
               global: false,
+              silent: true,
               wait: true,
               validate: false,
               url: user.url() + "?skip_activity_log=1"
