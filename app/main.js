@@ -24,10 +24,11 @@ require([
   "schemas/settings.media",
   "alerts",
   "core/tabs",
-  'modules/messages/messages'
+  'modules/messages/messages',
+  'plugins/alertify'
 ],
 
-function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, messages, SettingsGlobalSchema, SettingsMediaSchema, alerts, Tabs, Messages) {
+function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, messages, SettingsGlobalSchema, SettingsMediaSchema, alerts, Tabs, Messages, alertify) {
 
   "use strict";
 
@@ -345,6 +346,10 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         //preferences: app.preferences.directus_messages,
         url: app.API_URL + 'messages/rows/',
         filters: {columns_visible: ['from','subject','date_updated'], sort: 'date_updated', sort_order: 'DESC'}
+      });
+
+      app.messages.on('error:polling', function() {
+        alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
       });
 
       app.messages.startPolling();
