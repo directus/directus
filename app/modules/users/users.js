@@ -93,7 +93,7 @@ function(app, Backbone, Directus, SaveModule) {
     },
 
     initialize: function(options) {
-      console.log(options.collection);
+      this.collection.on('sort', this.render, this);
     }
 
   });
