@@ -10,23 +10,7 @@ function(app, Backbone, Directus, SaveModule) {
   "use strict";
 
   var Users = app.module();
-/*
-  var SaveModule = Backbone.Layout.extend({
-    template: 'module-save',
-    attributes: {'class': 'directus-module'},
-    serialize: function() {
-      return {
-        isNew: (this.model.id === undefined),
-        showActive: true,
-        isActive: this.model.isNew() || (this.model.get('active') === 1),
-        isInactive: (this.model.get('active') === 2)
-      };
-    },
-    initialize: function() {
-      this.model.on('sync', this.render, this);
-    }
-  });
-*/
+
 
   Users.Views.Edit = Backbone.Layout.extend({
 
@@ -78,7 +62,46 @@ function(app, Backbone, Directus, SaveModule) {
     }
   });
 
+  var BodyView = Backbone.Layout.extend({
+
+    tagName: 'tbody',
+
+    template: Handlebars.compile('{{#rows}}<tr data-id="{{id}}" data-cid="{{cid}}"><td></td><td>{{avatar}}</td><td>{{first_name}}</td><td>{{last_name}}</td><td>{{group}}</td><td>{{email}}</td><td>{{description}}</td></tr>{{/rows}}'),
+
+    serialize: function() {
+      var rows = this.collection.map(function(model) {
+        var data = {
+          "id": model.get('id'),
+          "cid": model.cid,
+          'avatar': model.get('avatar'),
+          'first_name': model.get('first_name'),
+          'last_name': model.get('last_name'),
+          'group': model.get('group').get('name'),
+          'email': model.get('email'),
+          'description': model.get('description')
+        };
+
+        if (data.avatar !== null) {
+            //@todo this is a hack, maybe change avatar so it only includes a hash?
+            var avatarSmall = data.avatar.replace('?s=100','?s=50');
+            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" class="avatar" />');
+        }
+
+        return data;
+      });
+      return {rows: rows}
+    },
+
+    initialize: function(options) {
+      console.log(options.collection);
+    }
+
+  });
+
   var ListView = Directus.Table.extend({
+
+    TableBody: BodyView,
+
     navigate: function(id) {
       app.router.go('#users', id);
       //app.router.navigate('#users/' + id);
@@ -108,7 +131,8 @@ function(app, Backbone, Directus, SaveModule) {
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      this.collection.fetch();
+      this.table.render();
+      //this.collection.fetch();
     },
 
     initialize: function() {

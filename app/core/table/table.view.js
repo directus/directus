@@ -18,6 +18,8 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     attributes: {'class':'directus-table-container'},
     template: 'table',
 
+    TableBody: TableBody,
+
     serialize: function() {
       return {
         columns: this.collection.getColumns(),
@@ -67,7 +69,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
       if (this.collection.length > 0) {
         options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop');
-        this.insertView('table', new TableBody(options));
+        this.insertView('table', new this.TableBody(options));
       }
 
       if (this.collection.length > 0 && this.collection.table.get('footer') && this.options.footer !== false) {
@@ -145,17 +147,18 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     initialize: function(options) {
       var collection = this.collection;
 
-      console.log((new Date()).getTime() - app.timeEntriesBegin, 'milliseconds to instance');
-
-      this.listenTo(collection, 'sync', function(collection) {
-        console.log((new Date()).getTime() - app.timeEntriesBegin, 'milliseconds to render');
+      this.listenTo(collection, 'sync', function(model, resp, options) {
         //if (collection instanceof Backbone.Model) return;
+        if (options.silent) return;
+        console.log('sync event', arguments);
         this.render();
       });
 
       this.listenTo(collection, 'visibility', function() {
+        console.log('visibility', arguments);
         this.render();
       });
+
 
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;
@@ -186,7 +189,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
       // pre-render if there is stuff in the collection
       if (this.collection.length > 0) {
-        this.render();
+        //this.render();
       }
 
     },
