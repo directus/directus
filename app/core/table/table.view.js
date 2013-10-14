@@ -34,6 +34,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       'click tbody td:not(.check):not(.status):not(.sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
+          $(document).scrollTop(0);
           //this.collection.off(null, null, this);
           this.collection.off();
           this.navigate(id);
