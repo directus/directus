@@ -14,7 +14,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.id = 'directus_messages_recepients';
 
-  Module.dataTypes = ['DATETIME'];
+  Module.dataTypes = [];
   Module.variables = [];
 
   var template = '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \

@@ -6878,8 +6878,14 @@ table#directus_activity col.col-datetime {
 .directus-form fieldset label .note {
   font-weight: normal;
   font-style: italic;
-  margin-left: 10px;
+  margin-left: 12px;
   color: #cccccc;
+  position: relative;
+}
+.directus-form fieldset.required label span:before {
+  content: '*';
+  position: absolute;
+  left: -12px;
 }
 .directus-form fieldset:first-child {
   border-top: 0;

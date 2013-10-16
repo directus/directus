@@ -68,6 +68,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
         this.insertView('table', new TableHead(options));
       }
 
+
       if (this.collection.length > 0) {
         options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop');
         this.insertView('table', new this.TableBody(options));
@@ -134,7 +135,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
                 var active = collection.table.get('active') + 1;
                 collection.table.set('active', active);
               };
-              collection.create(item, {silent: true, success: success});
+              collection.create(item, {success: success});
             } else {
               console.log('ADD');
               collection.add(item, {nest: true, parse: true});
@@ -148,7 +149,9 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     initialize: function(options) {
       var collection = this.collection;
 
-      this.$el.html('Loading...');
+      //this.html("<img src='/assets/img/spinner.gif'>");
+      //return;
+
 
       this.listenTo(collection, 'sync', function(model, resp, options) {
         //if (collection instanceof Backbone.Model) return;
@@ -161,7 +164,6 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
         console.log('visibility', arguments);
         this.render();
       });
-
 
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;
