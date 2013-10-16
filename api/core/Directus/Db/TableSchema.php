@@ -355,6 +355,10 @@ class TableSchema {
                 }
             }
 
+            if ($row['is_nullable'] == "NO") {
+                $row["required"] = true;
+            }
+
             // Basic type casting. Should eventually be done with the schema
             $row["required"] = (bool) $row['required'];
             $row["system"] = (bool) $row["system"];

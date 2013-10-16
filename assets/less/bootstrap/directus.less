@@ -745,7 +745,8 @@ table#directus_activity col.col-datetime { width: 140px; }
     border-bottom: 1px solid @gray;
     border-top: 1px solid @white;
     padding: 12px 20px 14px 20px;
-    label .note { font-weight:normal; font-style: italic; margin-left:10px; color:@silver;}
+    label .note { font-weight:normal; font-style: italic; margin-left:12px; color:@silver; position: relative;}
+    &.required label span:before {content: '*'; position:absolute; left:-12px;}
   }
   fieldset:first-child {border-top:0;}
   & > fieldset:last-child {border-bottom:0;}

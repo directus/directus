@@ -100,9 +100,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.setTitle('Tables');
       var collection;
 
-      app.timeEntriesBegin = (new Date()).getTime();
-
-
       if (!app.tables.get(tableName)) {
         return this.notFound();
       }
@@ -145,8 +142,6 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     entry: function(tableName, id) {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-
-      app.timeEntryBegin = (new Date()).getTime();
 
       var collection;
       var model;
