@@ -39,6 +39,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     '{{#if createlink}}<button type="button" class="btn btn-small btn-silver" data-tag="createlink" rel="tooltip" data-placement="bottom" title="Link">Link</button>'+
                     '<button type="button" class="btn btn-small btn-silver" data-tag="unlink" rel="tooltip" data-placement="bottom" title="Unlink">Unlink</button>{{/if}}'+
                     '{{#if insertimage}}<button type="button" class="btn btn-small btn-silver" data-tag="insertimage" rel="tooltip" data-placement="bottom" title="Image">Image</button>{{/if}}'+
+                                      '<button type="button" class="btn btn-small btn-silver" data-tag="insertHTML" rel="tooltip" data-placement="bottom" title="HTML">HTML</button>'+
                   '</div>'+
                   '<div class="force-editable" style="display:block; height:{{height}}px;" contenteditable="true" id="{{name}}">{{value}}</div>'+
                   '<input type="hidden" name="{{name}}" value="{{markupValue}}">';
@@ -60,6 +61,10 @@ define(['app', 'backbone'], function(app, Backbone) {
         var tag = $(e.target).attr('data-tag');
         var value = null;
 
+        if(tag == 'insertHTML'){
+          value = prompt("Enter HTML", "");
+        }
+
         if(tag == 'createlink' || tag == 'insertimage'){
           this.saveSelection();
           value = prompt("Please enter your link", "http://example.com");
@@ -72,7 +77,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
         document.execCommand(tag,false,value);
       },
-      'blur div.force-editable' : function(e) {
+      'input div.force-editable' : function(e) {
         var innerHtml = $(e.target).html();
         //innerHtml = String(innerHtml).replace(/"/g, '&quot;');
         this.$el.find('input').val(innerHtml);
