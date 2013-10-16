@@ -168,6 +168,12 @@ function(app, Backbone, ui, Directus) {
       var ui = app.uiSettings;
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
+
+        if (row.is_nullable === "NO") {
+          row.required = true;
+          row.requiredDisabled = true;
+        }
+
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables');
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
@@ -267,7 +273,7 @@ function(app, Backbone, ui, Directus) {
     },
 
     beforeRender: function() {
-      this.insertView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false, canEdit: true}}));
+      this.insertView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false, canEdit: true, buttonText: 'Save'}}));
       this.insertView('#sidebar', new TableModule({model: this.model}));
     },
 
