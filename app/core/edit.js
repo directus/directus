@@ -51,6 +51,11 @@ function(app, Backbone, ui) {
 
         // @todo: move this to UI
         view.$el.attr('id', 'edit_field_'+column.id);
+
+        if (column.isRequired()) {
+          view.$el.addClass('required');
+        };
+
         this.insertView(view);
 
       }, this);
