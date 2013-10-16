@@ -155,7 +155,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     public function fetchAllWithIdKeys($selectModifier = null) {
         $allWithIdKeys = array();
-        $all = $this->fetchAll($selectModifier);
+        $all = $this->fetchAll($selectModifier)->toArray();
         foreach($all as $entry) {
             $allWithIdKeys[$entry[$this->primaryKeyFieldName]] = $entry;
         }
