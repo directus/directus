@@ -32,7 +32,7 @@
     <td>
         <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}">
     </td>
-    <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}"></td>
+    <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="Allow Null: {{is_nullable}}"></td>
     <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}"></td>
     <td><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input"></td>
     {{/if}}
