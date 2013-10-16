@@ -78,22 +78,18 @@ function(app, Backbone, ui) {
     data: function() {
       var data = this.$el.serializeObject();
       var whiteListedData = _.pick(data, this.visibleFields);
-      
+
       // check if any of the listed data has multiple values, then serialize it to string
       _.each(whiteListedData, function(value, key, obj) {
         if (_.isArray(value)) {
           obj[key] = value.join(',');
         }
       });
-      
+
       return whiteListedData;
     },
 
     initialize: function(options) {
-
-
-      console.log((new Date()).getTime() - app.timeEntryBegin, 'milliseconds to instance (Entry)');
-
       var structureHiddenFields,
           optionsHiddenFields = options.hiddenFields || [];
 
@@ -121,7 +117,6 @@ function(app, Backbone, ui) {
       }, this);
 
       this.model.on('sync', function(e) {
-        console.log((new Date()).getTime() - app.timeEntryBegin, 'milliseconds to render');
         this.model.changed = {};
         this.render();
       }, this);
