@@ -8,6 +8,8 @@ use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Insert;
 
 class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
@@ -31,6 +33,43 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
             }
         }
         return $privilegesByTable;
+    }
+
+    public function fetchById($privilegeId) {
+        $select = new Select($this->table);
+        $select->where->equalTo('id', $privilegeId);
+        $rowset = $this->selectWith($select);
+        $rowset = $rowset->toArray();
+        return current($rowset);
+    }
+
+    // @todo This currently only supports permissions,
+    // include blacklists when there is a UI for it
+    public function insertPrivilege($attributes) {
+        $insert = new Insert($this->getTable());
+        $insert
+            ->columns(array('table_name','permissions','group_id'))
+            ->values(array(
+                'table_name' => $attributes['table_name'],
+                'permissions' => $attributes['permissions'],
+                'group_id' => $attributes['group_id']
+                ));
+        $this->insertWith($insert);
+
+        $privilegeId = $this->lastInsertValue;
+
+        return $this->fetchById($privilegeId);
+    }
+
+    // @todo This currently only supports permissions,
+    // include blacklists when there is a UI for it
+    public function updatePrivilege($attributes) {
+        $update = new Update($this->getTable());
+        $update->where->equalTo('id', $attributes['id']);
+        $update->set(array('permissions' => $attributes['permissions']));
+        $this->updateWith($update);
+
+        return $this->fetchById($attributes['id']);
     }
 
     public function fetchPerTable($groupId) {
