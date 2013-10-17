@@ -89,7 +89,7 @@ function(app, Backbone, Directus, SaveModule) {
 
         return data;
       });
-      return {rows: rows}
+      return {rows: rows};
     },
 
     initialize: function(options) {

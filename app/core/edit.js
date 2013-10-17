@@ -54,7 +54,7 @@ function(app, Backbone, ui) {
 
         if (column.isRequired()) {
           view.$el.addClass('required');
-        };
+        }
 
         this.insertView(view);
 
