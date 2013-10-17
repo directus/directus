@@ -131,7 +131,6 @@ function(app, Directus, PaneSaveView) {
     template: 'page',
 
     serialize: function() {
-      console.log(this.options);
       return {
         title: this.options.title,
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
