@@ -269,7 +269,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.setTitle('Settings - Permissions');
       this.tabs.setActive('settings');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
-      this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection}));
+      this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
       this.v.main.render();
     },
 
