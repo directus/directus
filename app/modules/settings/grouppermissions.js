@@ -75,8 +75,6 @@ function(app, Directus, PaneSaveView) {
         data.title = app.capitalize(data.table_name, '_', true);
 
         permissions = (model.get('permissions') || '').split(','),
-        read_field_blacklist = (model.get('read_field_blacklist') || '').split(),
-        write_field_blacklist = (model.get('write_field_blacklist') || '').split();
 
         data.hasReadBlacklist = false;
         data.hasWriteBlacklist = false;
@@ -98,6 +96,11 @@ function(app, Directus, PaneSaveView) {
           }
         });
 
+        /*
+        Don't blacklist columns yet
+        read_field_blacklist = (model.get('read_field_blacklist') || '').split();
+        write_field_blacklist = (model.get('write_field_blacklist') || '').split();
+
         data.blacklist = app.columns[data.table_name].map(function(model) {
           var readBlacklist = _.contains(read_field_blacklist, model.id);
           var writeBlacklist = _.contains(write_field_blacklist, model.id);
@@ -113,6 +116,7 @@ function(app, Directus, PaneSaveView) {
             write: writeBlacklist
           };
         });
+        */
 
         return data;
       });
