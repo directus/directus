@@ -177,6 +177,25 @@ class TableSchema {
     }
 
 
+    /**
+     * Get all table names
+     *
+     */
+    public static function getTablenames($params=null) {
+        $db = Bootstrap::get('olddb');
+
+        $sql = 'SHOW TABLES';
+        $sth = $db->dbh->prepare($sql);
+        $sth->execute();
+
+        $tables = array();
+
+        while ($row = $sth->fetch(\PDO::FETCH_NUM)) {
+            $tables[] = $row[0];
+        }
+
+        return $tables;
+    }
 
     /**
      * Get info about all tables
