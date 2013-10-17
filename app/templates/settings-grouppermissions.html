@@ -1,32 +1,51 @@
-<table class="table table-striped directus-table" id="directus-grouppermissions">
+<table class="table table-striped directus-table not-responsive" id="directus-grouppermissions">
 	<thead>
 		<tr>
 			<th class="status"></th>
 			<th class="field-note">Table</th>
-			<th class="field-note toggleAllPermissionsCol">Add</th>
-			<th class="field-note toggleAllPermissionsCol">Alter</th>
-			<th class="field-note toggleAllPermissionsCol">Bigdelete</th>
-			<th class="field-note toggleAllPermissionsCol">Bigedit</th>
-			<th class="field-note toggleAllPermissionsCol">Delete</th>
-			<th class="field-note toggleAllPermissionsCol">Edit</th>
-			<th class="field-note toggleAllPermissionsCol">View</th>
+			<th class="permissions">Add</th>
+			<th class="permissions">Alter</th>
+			<th class="permissions">Bigdelete</th>
+			<th class="permissions">Bigedit</th>
+			<th class="permissions">Delete</th>
+			<th class="permissions">Edit</th>
+			<th class="permissions">View</th>
 		</tr>
 	</thead>
 	<tbody>
 		{{#tables}}
-		<tr class="" data-table-name="demo-table1">
+		<tr class="" data-table-name="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
 			<td class="status"></td>
-			<td>{{table_name}}</td>
+			<td>{{title}}</td>
 			{{#with permissions}}
-			<td>{{#if add}}<span class="directus-glyphicon-check"></span>{{/if}}</td>
-			<td>{{#if alter}}<span class="directus-glyphicon-check"></span>{{/if}}</td>
-			<td>{{#if bigdelete}}<span class="directus-glyphicon-check"></span>{{/if}}</td>
-			<td>{{#if bigedit}}<span class="directus-glyphicon-check"></span>{{/if}}</td>
-			<td>{{#if delete}}<span class="directus-glyphicon-check"></span>{{/if}}</td>
-			<td>{{#if edit}}<span class="directus-glyphicon-check"></span>{{/if}}</td>
-			<td>{{#if view}}<span class="directus-glyphicon-check"></span>{{/if}}</td>
-			<td></td>
-			<td></td>
+			<td data-value="add">
+				{{#if add}}<span class="directus-glyphicon-check"></span>{{/if}}
+				{{#unless add}}<span class="directus-glyphicon-remove"></span>{{/unless}}
+			</td>
+			<td data-value="alter">
+				{{#if alter}}<span class="directus-glyphicon-check"></span>{{/if}}
+				{{#unless alter}}<span class="directus-glyphicon-remove"></span>{{/unless}}
+			</td>
+			<td data-value="bigdelete">
+				{{#if bigdelete}}<span class="directus-glyphicon-check"></span>{{/if}}
+				{{#unless bigdelete}}<span class="directus-glyphicon-remove"></span>{{/unless}}
+			</td>
+			<td data-value="bigedit">
+				{{#if bigedit}}<span class="directus-glyphicon-check"></span>{{/if}}
+				{{#unless bigedit}}<span class="directus-glyphicon-remove"></span>{{/unless}}
+			</td>
+			<td data-value="delete">
+				{{#if delete}}<span class="directus-glyphicon-check"></span>{{/if}}
+				{{#unless delete}}<span class="directus-glyphicon-remove"></span>{{/unless}}
+			</td>
+			<td data-value="edit">
+				{{#if edit}}<span class="directus-glyphicon-check"></span>{{/if}}
+				{{#unless edit}}<span class="directus-glyphicon-remove"></span>{{/unless}}
+			</td>
+			<td data-value="view">
+				{{#if view}}<span class="directus-glyphicon-check"></span>{{/if}}
+				{{#unless view}}<span class="directus-glyphicon-remove"></span>{{/unless}}
+			</td>
 			{{/with}}
 		</tr>
 		{{/tables}}
