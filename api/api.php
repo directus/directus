@@ -282,6 +282,34 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendD
     return JsonView::render($response);
 });
 
+$app->map("/$v/privileges/:grupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+    $currentUser = Auth::getUserRecord();
+    $myGroupId = $currentUser['group'];
+
+    if ($myGroupId != 0) {
+        throw new Exception('Permission denied');
+    }
+
+    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+    $response = $privileges->insertPrivilege($requestPayload);
+
+    return JsonView::render($response);
+})->via('POST');
+
+$app->map("/$v/privileges/:grupId/:privilegeId", function ($groupId, $privilegeId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+    $currentUser = Auth::getUserRecord();
+    $myGroupId = $currentUser['group'];
+
+    if ($myGroupId != 0) {
+        throw new Exception('Permission denied');
+    }
+
+    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+    $response = $privileges->updatePrivilege($requestPayload);
+
+    return JsonView::render($response);
+})->via('PUT');
+
 /**
  * ENTRIES COLLECTION
  */
