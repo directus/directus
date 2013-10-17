@@ -72,7 +72,7 @@ function(app, Directus, PaneSaveView) {
 
         data = model.toJSON();
         data.cid = model.cid;
-        data.title = app.capitalize(data.table_name);
+        data.title = app.capitalize(data.table_name, '_', true);
 
         permissions = (model.get('permissions') || '').split(','),
         read_field_blacklist = (model.get('read_field_blacklist') || '').split(),
