@@ -74,7 +74,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
     public function fetchPerTable($groupId) {
         // Don't include tables that can't have privileges changed
-        $blacklist = array(
+        /*$blacklist = array(
             'directus_columns',
             'directus_ip_whitelist',
             'directus_messages_recepients',
@@ -88,7 +88,8 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
             'directus_tables',
             'directus_ui',
             'directus_users_copy'
-        );
+        );*/
+        $blacklist = array();
 
 
         $select = new Select($this->table);
