@@ -95,7 +95,7 @@ function(app, Directus, PaneSaveView) {
         _.each(permissions, function(property) {
           if (data.permissions.hasOwnProperty(property)) {
             data.permissions[property] = true;
-          };
+          }
         });
 
         data.blacklist = app.columns[data.table_name].map(function(model) {
@@ -134,7 +134,7 @@ function(app, Directus, PaneSaveView) {
       return {
         title: this.options.title,
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
-      }
+      };
     },
 
     afterRender: function() {
