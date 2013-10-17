@@ -6862,6 +6862,9 @@ table#directus_activity col.col-user {
 table#directus_activity col.col-datetime {
   width: 140px;
 }
+table#directus-grouppermissions th.permissions {
+  width: 55px;
+}
 .directus-form {
   margin-bottom: 0px!important;
   -webkit-border-radius: 2px;
@@ -7167,8 +7170,8 @@ table#directus_activity col.col-datetime {
   right: 40px;
 }
 @media (max-width: 979px) {
-  .directus-table tbody td:nth-child(n+8),
-  .directus-table th:nth-child(n+8) {
+  .directus-table:not(.not-responsive) tbody td:nth-child(n+8),
+  .directus-table:not(.not-responsive) th:nth-child(n+8) {
     display: none;
   }
 }
@@ -7199,8 +7202,8 @@ table#directus_activity col.col-datetime {
     padding-right: 20px;
     padding-left: 20px;
   }
-  .directus-table tbody td:nth-child(n+7),
-  .directus-table th:nth-child(n+7) {
+  .directus-table:not(.not-responsive) tbody td:nth-child(n+7),
+  .directus-table:not(.not-responsive) th:nth-child(n+7) {
     display: none;
   }
   .modal,
@@ -7220,8 +7223,8 @@ table#directus_activity col.col-datetime {
   }
 }
 @media (max-width: 480px) {
-  .directus-table tbody td:nth-child(n+5),
-  .directus-table th:nth-child(n+5) {
+  .directus-table:not(.not-responsive) tbody td:nth-child(n+5),
+  .directus-table:not(.not-responsive) th:nth-child(n+5) {
     display: none;
   }
   .btn-top {
