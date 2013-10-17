@@ -30,13 +30,49 @@ function(app, Directus, PaneSaveView) {
 
     template: 'settings-grouppermissions',
 
+    events: {
+      'click td > span': function(e) {
+        var $target = $(e.target),
+            $tr = $target.closest('tr'),
+            permissions, cid, attributes, model;
+
+        this.toggleIcon($target);
+
+        cid = $tr.data('cid');
+        attributes = this.parseTablePermissions($tr);
+
+        model = this.collection.get(cid);
+        model.set(attributes);
+        model.save();
+      }
+    },
+
+    toggleIcon: function($span) {
+        $span.toggleClass('directus-glyphicon-check')
+             .toggleClass('directus-glyphicon-remove');
+    },
+
+    parseTablePermissions: function($tr) {
+      var cid, id, permissions;
+
+      permissions = $tr.children()
+                       .has('span.directus-glyphicon-check')
+                       .map(function() { return $(this).data('value'); })
+                       .get()
+                       .join();
+
+      return {permissions: permissions};
+    },
+
     serialize: function() {
       // Create data structure suitable for view
       var data = this.collection.map(function(model) {
-        var permissions, read_field_blacklist, 
+        var permissions, read_field_blacklist,
             write_field_blacklist, data, defaultPermissions;
 
         data = model.toJSON();
+        data.cid = model.cid;
+        data.title = app.capitalize(data.table_name);
 
         permissions = (model.get('permissions') || '').split(','),
         read_field_blacklist = (model.get('read_field_blacklist') || '').split(),
@@ -79,9 +115,7 @@ function(app, Directus, PaneSaveView) {
         });
 
         return data;
-      })
-
-      console.log(data);
+      });
 
       return {tables: data};
     },
@@ -96,9 +130,12 @@ function(app, Directus, PaneSaveView) {
 
     template: 'page',
 
-    serialize: {
-      title: 'XXX',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
+    serialize: function() {
+      console.log(this.options);
+      return {
+        title: this.options.title,
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
+      }
     },
 
     afterRender: function() {
