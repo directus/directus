@@ -7684,22 +7684,28 @@ header {
   margin-right: 300px;
 }
 .active_products_table th:first-child,
-.active_products_table td:first-child {
-  padding-left: 12px;
-}
+.active_products_table td:first-child,
 .active_products_table th:nth-child(2),
 .active_products_table td:nth-child(2) {
-  text-align: right;
-  padding-left: 0;
+  width: 60px;
 }
 .active_products_table th:nth-child(3),
 .active_products_table td:nth-child(3) {
-  width: 60px;
+  padding-left: 12px;
 }
 .active_products_table th:nth-child(4),
-.active_products_table td:nth-child(4),
+.active_products_table td:nth-child(4) {
+  text-align: right;
+  padding-left: 0;
+}
 .active_products_table th:nth-child(5),
 .active_products_table td:nth-child(5) {
+  width: 60px;
+}
+.active_products_table th:nth-child(6),
+.active_products_table td:nth-child(6),
+.active_products_table th:nth-child(7),
+.active_products_table td:nth-child(7) {
   padding-left: 0;
   width: 80px;
 }
