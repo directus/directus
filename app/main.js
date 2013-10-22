@@ -98,9 +98,24 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
     // Dynamically load extensions
     var extensionPaths = window.directusData.extensions || [];
 
-    require(extensionPaths, function() {
+    // Dynamically load ui's
+    var uiPaths = window.directusData.ui || [];
 
-      var extensions = arguments;
+    // Merge the two so everything can be loaded in one go
+    var externalDependencies = extensionPaths.concat(uiPaths);
+
+    require(externalDependencies, function() {
+
+      var params = _.values(arguments);
+
+      // Unpack extensions as the first part of the array
+      var extensions = params.slice(0, extensionPaths.length);
+
+      // Unpack extenal ui's as the second part
+      var uis = params.slice(extensionPaths.length, externalDependencies.length);
+
+      // @todo This has to be nicer! Make a setter
+      UI.core = _.union(UI.core, uis);
 
       //////////////////////////////////////////////////////////////////////////////
       //Override backbone sync for custom error handling
