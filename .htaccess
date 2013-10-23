@@ -9,6 +9,7 @@ AddType font/woff .woff
 
     RewriteRule ^assets - [L,NC]
     RewriteRule ^extensions/([^/]+)/assets - [L,NC]
+    RewriteRule ^extensions/([^/]+)/main.js - [L,NC]
 
     # Media Thumbnails
     # - Cached thumbnail exists
