@@ -64,6 +64,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         }];
       }
 
+      data = _.sortBy(data, 'name');
+
       return {
         name: this.options.name,
         data: data,
