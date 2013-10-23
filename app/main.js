@@ -8,29 +8,23 @@
 //  http://www.getdirectus.com
 require(["config"], function() {
   require([
-    "module",
     "app",
     "router",
     "backbone",
-    "helpers",
     "core/directus",
     "core/ui",
-    "schemas/media",
-    "schemas/users",
-    "schemas/activity",
-    "schemas/groups",
-    "schemas/messages",
-    "schemas/settings.global",
-    "schemas/settings.media",
     "alerts",
     "core/tabs",
     'modules/messages/messages',
-    'plugins/alertify'
+    'plugins/alertify',
+    'schemas/index'
   ],
 
-  function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, users, activity, groups, messages, SettingsGlobalSchema, SettingsMediaSchema, alerts, Tabs, Messages, alertify) {
+  function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, schema) {
 
     "use strict";
+
+    console.log(schema);
 
     window.directusData = window.directusData || {};
 
@@ -70,25 +64,25 @@ require(["config"], function() {
       });
 
       var directusUsersColumns = directusUsers.schema.columns;
-      var defaultUserColumns = _.pluck(users.structure, 'id');
+      var defaultUserColumns = _.pluck(schema.users.structure, 'id');
 
       // Add non default columns
       _.each(directusUsersColumns, function(item) {
         if (!_.contains(defaultUserColumns, item.id)) {
-          users.structure.push(item);
+          schema.users.structure.push(item);
         }
       });
 
       //////////////////////////////////////////////////////////////////////////////
 
       var defaultTables = [
-        { schema: _.extend({columns: media.structure}, media.table) },
+        { schema: _.extend({columns: schema.media.structure}, schema.media.table) },
         // @todo: for now we are ignoring the static user schema since we are extending it
         // with custom fields, eventually we should merge static and custom data.
-        { schema: _.extend({columns: messages.structure}, messages.table)  },
-        { schema: _.extend({columns: users.structure}, users.table) },
-        { schema: _.extend({columns: activity.structure}, activity.table) },
-        { schema: _.extend({columns: groups.structure}, groups.table) }
+        { schema: _.extend({columns: schema.messages.structure}, schema.messages.table)  },
+        { schema: _.extend({columns: schema.users.structure}, schema.users.table) },
+        { schema: _.extend({columns: schema.activity.structure}, schema.activity.table) },
+        { schema: _.extend({columns: schema.groups.structure}, schema.groups.table) }
       ];
 
       // default bootstrap data global storage
@@ -303,10 +297,10 @@ require(["config"], function() {
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Setup Global & Media settings
-        app.settings.get('global').structure = new Directus.CollectionColumns(SettingsGlobalSchema.structure,{parse: true});
-        app.settings.get('media').structure = new Directus.CollectionColumns(SettingsMediaSchema.structure,{parse: true});
+        app.settings.get('global').structure = new Directus.CollectionColumns(schema.settingsGlobal.structure,{parse: true});
+        app.settings.get('media').structure = new Directus.CollectionColumns(schema.settingsMedia.structure,{parse: true});
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////u////////////////////////////////
         // Setup core data collections.
 
         // @todo: Maybe do this earlier?
@@ -346,7 +340,7 @@ require(["config"], function() {
         app.entries.directus_groups = new Directus.EntriesCollection([], {
           rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'),10),
           table: app.tables.get('directus_groups'),
-          preferences: new Backbone.Model(groups.preferences),
+          preferences: new Backbone.Model(schema.groups.preferences),
           structure: app.columns.directus_groups,
           url: app.API_URL + 'groups/',
           privileges: app.privileges.directus_groups
