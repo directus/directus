@@ -6,24 +6,22 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define([
-  "app",
-  "core/directus",
-  "core/tabs",
-  "core/ui",
-  "modules/activity/activity",
-  "modules/tables/table",
-  "modules/settings/settings",
-  "modules/media/media",
-  "modules/users/users",
-  "modules/messages/messages",
-  "core/modal",
-  "core/collection.settings"
-],
-
-function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, extensions) {
+define(function(require, exports, module) {
 
   "use strict";
+
+  var app = require('app'),
+      Directus = require('core/directus'),
+      Tabs = require('core/tabs'),
+      UI = require('core/ui'),
+      Activity = require('modules/activity/activity'),
+      Table = require('modules/tables/table'),
+      Settings = require('modules/settings/settings'),
+      Media = require('modules/media/media'),
+      Users = require('modules/users/users'),
+      Messages = require('modules/messages/messages'),
+      Modal = require('core/modal'),
+      CollectionSettings = require('core/collection.settings');
 
   var Router = Backbone.Router.extend({
 
