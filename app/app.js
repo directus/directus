@@ -11,6 +11,7 @@ define(function(require, exports, module) {
 
   // Provide a global location to place configuration settings and module
   // creation.
+
   var app = {
 
     progressView: undefined,
@@ -269,7 +270,7 @@ define(function(require, exports, module) {
   window.app = app;
 
   // Mix Backbone.Events, modules, typetools, and layout management into the app object.
-  return _.extend(app, {
+  app = _.extend(app, {
     // Create a custom object with a nested Views object.
     module: function(additionalProps) {
       return _.extend({ Views: {} }, additionalProps);
@@ -287,5 +288,7 @@ define(function(require, exports, module) {
     }
 
   }, Backbone.Events, typetools);
+
+  module.exports = app;
 
 });
