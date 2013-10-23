@@ -5,6 +5,7 @@ define(function(require, exports, module) {
   var Handlebars = require('handlebars'),
       typetools = require("typetools");
 
+  require("helpers");
   require("plugins/backbone.layoutmanager");
   require("plugins/bootstrap-dropdown");
   require("plugins/bootstrap-typeahead");
