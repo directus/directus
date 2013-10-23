@@ -1,14 +1,13 @@
-define([
-  "handlebars",
-  "typetools",
-  "plugins/backbone.layoutmanager",
-  "plugins/bootstrap-dropdown",
-  "plugins/bootstrap-typeahead"
-],
-
-function(Handlebars, typetools) {
+define(function(require, exports, module) {
 
   "use strict";
+
+  var Handlebars = require('handlebars'),
+      typetools = require("typetools");
+
+  require("plugins/backbone.layoutmanager");
+  require("plugins/bootstrap-dropdown");
+  require("plugins/bootstrap-typeahead");
 
   // Provide a global location to place configuration settings and module
   // creation.
