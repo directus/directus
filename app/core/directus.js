@@ -3,17 +3,15 @@ define([
   "core/entries/entries.collection",
   "core/entries/entries.model",
   "core/entries/entries.nestedcollection",
-  "core/collection.columns",
   "core/collection",
   "core/edit",
   "core/table/table.view",
   "core/modal",
   "core/tableSimple",
-  "core/collection.settings",
-  "core/model.table"
+  "core/collection.settings"
 ],
 
-function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Structure, Collection, Edit, Table, Modal, TableSimple, Settings, TableModel) {
+function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Collection, Edit, Table, Modal, TableSimple, Settings) {
 
   "use strict";
 
@@ -22,16 +20,12 @@ function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Structur
   //Directus.Media = Entries.MediaCollection;
   Directus.Collection = Collection;
   Directus.EntriesCollection = EntriesCollection;
-  Directus.CollectionColumns = Structure.Columns;
-  Directus.ModelColumn = Structure.Column;
   Directus.EditView = Edit;
   Directus.Table = Table;
   Directus.Modal = Modal;
   Directus.TableSimple = TableSimple;
-  Directus.Structure = Structure;
   Directus.Settings = Settings;
   Directus.Model = EntriesModel;
-  Directus.TableModel = TableModel;
   //Directus.MediaCollection = Structure.MediaCollection;
 
   Directus.SubRoute = Backbone.Router.extend({
