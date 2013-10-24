@@ -17,7 +17,7 @@ require(["config"], function() {
     "core/tabs",
     'modules/messages/messages',
     'plugins/alertify',
-    'schemas/index'
+    'schema/index'
   ],
 
   function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, schema) {

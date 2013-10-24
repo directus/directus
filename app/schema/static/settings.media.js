@@ -1,5 +1,8 @@
-define([], function() {
-  var SettingsMediaSchema = {};
+define(function(require, exports, module) {
+
+  "use strict";
+
+  var SettingsMediaSchema = module.exports;
 
   SettingsMediaSchema.structure = [
     {id: 'media_naming', ui: 'textinput', char_length: 255 /*, options:{ options: [{title: 'Original', value: 'original'}, {title: 'Unique', value: 'unique'}] }*/},
