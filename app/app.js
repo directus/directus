@@ -3,8 +3,8 @@ define(function(require, exports, module) {
   "use strict";
 
   var Handlebars = require('handlebars'),
-      typetools = require("typetools"),
-      Extensions = require('extensions');
+      typetools = require("typetools");
+      //Extensions = require('core/extensionsmanager');
 
   // Globally load Handlebars helpers
   require('helpers');

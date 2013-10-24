@@ -10,7 +10,6 @@ define([
   "core-ui/single_media",
   "core-ui/slug",
   "core-ui/textarea",
-  //"core-ui/relational",
   'core-ui/directus_user',
   'core-ui/directus_activity',
   'core-ui/datetime',
@@ -52,6 +51,19 @@ function(module, textinput) {
     getInput: function(attr) {
       var schema = this.structure.get(attr);
       var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
+
+      console.log({
+        model: this.model,
+        collection: this.collection,
+        settings: schema.options,
+        schema: schema,
+        structure: this.structure,
+        name: attr,
+        value: this.model.get(attr),
+        canWrite: _.has(this.model, 'canEdit') ? this.model.canEdit(attr) : true
+      });
+
+
       var view = new View.Input({
         model: this.model,
         collection: this.collection,
