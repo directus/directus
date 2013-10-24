@@ -27,6 +27,7 @@ require(["config"], function() {
     "use strict";
 
     app.uiManager = new UIManager();
+    app.schemaManager = new Schema();
 
     // Register Core UI's
     app.uiManager.register([
@@ -62,13 +63,11 @@ require(["config"], function() {
       require('core-ui/password')
     ]);
 
-    //var model = new Schema.ColumnsCollection(Schema.Fixed.media.structure, {parse: true});
-
-    var schema = new Schema();
-    schema.registerUISchemas(app.uiManager.getAllSettings());
-    schema.registerSchemas(window.directusData.tables);
+    schemaManager.registerUISchemas(app.uiManager.getAllSettings());
+    schemaManager.registerSchemas(window.directusData.tables);
 
     console.log(schema);
+
     return;
 
     window.directusData = window.directusData || {};
