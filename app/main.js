@@ -18,19 +18,62 @@ require(["config"], function() {
     'modules/messages/messages',
     'plugins/alertify',
     'schema/index',
-    'modules/settings/collection'
+    'modules/settings/collection',
+    'core/uimanager'
   ],
 
-  function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, Schema, SettingsCollection) {
+  function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, Schema, SettingsCollection, UIManager) {
 
     "use strict";
 
-    var cols = new Schema.ColumnsCollection();
-    var col = new Schema.ColumnModel();
-    var ui = new Schema.UIModel();
-    var table = new Schema.TableModel();
+    app.uiManager = new UIManager();
+
+    // Register Core UI's
+    app.uiManager.register([
+      require('core-ui/textinput'),
+      require('core-ui/directus_columns'),
+      require('core-ui/directus_media'),
+      require('core-ui/checkbox'),
+      require('core-ui/color'),
+      require('core-ui/numeric'),
+      require('core-ui/slider'),
+      require('core-ui/single_media'),
+      require('core-ui/slug'),
+      require('core-ui/textarea'),
+      require('core-ui/directus_user'),
+      require('core-ui/directus_activity'),
+      require('core-ui/datetime'),
+      require('core-ui/date'),
+      require('core-ui/time'),
+      require('core-ui/directus_user_activity'),
+      require('core-ui/directus_user_avatar'),
+      require('core-ui/directus_media_size'),
+      require('core-ui/blob'),
+      require('core-ui/alias'),
+      require('core-ui/salt'),
+      require('core-ui/select'),
+      require('core-ui/tags'),
+      require('core-ui/many_to_one'),
+      require('core-ui/radiobuttons'),
+      require('core-ui/many_to_many'),
+      require('core-ui/one_to_many'),
+      require('core-ui/wysiwyg'),
+      require('core-ui/directus_messages_recepients'),
+      require('core-ui/password')
+    ]);
+
+    //var model = new Schema.ColumnsCollection(Schema.Fixed.media.structure, {parse: true});
+
+    var schema = new Schema();
+    schema.registerUISchemas(app.uiManager.getAllSettings());
+    schema.registerSchemas(window.directusData.tables);
+
+    console.log(schema);
+    return;
 
     window.directusData = window.directusData || {};
+
+    //return;
 
     var defaultBootstrapData = {
         path: '/directus/',
@@ -73,7 +116,7 @@ require(["config"], function() {
       // Add non default columns
       _.each(directusUsersColumns, function(item) {
         if (!_.contains(defaultUserColumns, item.id)) {
-          schema.users.structure.push(item);
+          Schema.Fixed.users.structure.push(item);
         }
       });
 

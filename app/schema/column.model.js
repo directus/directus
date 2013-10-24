@@ -16,19 +16,22 @@ define(function(require, exports, module) {
         if (_.isEmpty(ui)) {
           throw new Error("Column '"+ result.id + "' in table '" + tableName + "' does not have a UI");
         }
-        if (!app.uiSettings.hasOwnProperty(ui)) {
+
+        if (!app.uiManager.hasUI(ui)) {
           throw new Error("The UI '" + ui + "', set for the column '" + result.id + "' in the table '" + tableName + "' does not exist!");
         }
 
         // make sure that the structure is the right kind for the UI
         // @todo: move this to options instead so it doesn't need to change
-        this.structure = app.uiSettings[ui].schema;
+        //this.structure = app.uiSettings[ui].schema;
 
+        // this.structure = new ColumnsCollection(uiStructure, {parse: true});
         // initialize UI
         var options = result.options || {};
         options.id = result.ui;
         this.options = new UIModel(options);
         this.options.parent = this;
+
         delete result.options;
 
         if (result.master) result.header = true;
@@ -83,7 +86,6 @@ define(function(require, exports, module) {
         }
         return _.clone(this.attributes);
       }
-
   });
 
 });
