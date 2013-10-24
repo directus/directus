@@ -20,11 +20,14 @@ require(["config"], function() {
     'schema/index'
   ],
 
-  function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, schema) {
+  function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, Schema) {
 
     "use strict";
 
-    console.log(schema);
+    var cols = new Schema.ColumnsCollection();
+    var col = new Schema.ColumnModel();
+    var ui = new Schema.UIModel();
+    var table = new Schema.TableModel();
 
     window.directusData = window.directusData || {};
 
@@ -63,8 +66,8 @@ require(["config"], function() {
         return item.schema.id === 'directus_users';
       });
 
-      var directusUsersColumns = directusUsers.schema.columns;
-      var defaultUserColumns = _.pluck(schema.users.structure, 'id');
+      var directusUsersColumns = Schema.Fixed.columns;
+      var defaultUserColumns = _.pluck(Schema.Fixed.users.structure, 'id');
 
       // Add non default columns
       _.each(directusUsersColumns, function(item) {
@@ -76,13 +79,13 @@ require(["config"], function() {
       //////////////////////////////////////////////////////////////////////////////
 
       var defaultTables = [
-        { schema: _.extend({columns: schema.media.structure}, schema.media.table) },
+        { schema: _.extend({columns: Schema.Fixed.media.structure}, Schema.Fixed.media.table) },
         // @todo: for now we are ignoring the static user schema since we are extending it
         // with custom fields, eventually we should merge static and custom data.
-        { schema: _.extend({columns: schema.messages.structure}, schema.messages.table)  },
-        { schema: _.extend({columns: schema.users.structure}, schema.users.table) },
-        { schema: _.extend({columns: schema.activity.structure}, schema.activity.table) },
-        { schema: _.extend({columns: schema.groups.structure}, schema.groups.table) }
+        { schema: _.extend({columns: Schema.Fixed.messages.structure}, Schema.Fixed.messages.table)  },
+        { schema: _.extend({columns: Schema.Fixed.users.structure}, Schema.Fixed.users.table) },
+        { schema: _.extend({columns: Schema.Fixed.activity.structure}, Schema.Fixed.activity.table) },
+        { schema: _.extend({columns: Schema.Fixed.groups.structure}, Schema.Fixed.groups.table) }
       ];
 
       // default bootstrap data global storage
@@ -257,7 +260,7 @@ require(["config"], function() {
           if (value.variables === undefined) return;
           //Deep-clone settings!
           var deepClone = app.deepClone(value.variables);
-          app.uiSettings[key].schema = new Directus.CollectionColumns(deepClone, {parse: true});
+          app.uiSettings[key].schema = new Schema.ColumnsCollection(deepClone, {parse: true});
         });
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,7 +273,7 @@ require(["config"], function() {
           // Set table schema
           options.schema.url = app.API_URL + 'tables/' + tableName;
 
-          var model = new Directus.TableModel(options.schema, {parse: true});
+          var model = new Schema.TableModel(options.schema, {parse: true});
           model.url = app.API_URL + 'tables/' + tableName;
           model.columns.url = app.API_URL + 'tables/' + tableName + '/columns';
           model.columns.table = model;
@@ -297,8 +300,8 @@ require(["config"], function() {
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Setup Global & Media settings
-        app.settings.get('global').structure = new Directus.CollectionColumns(schema.settingsGlobal.structure,{parse: true});
-        app.settings.get('media').structure = new Directus.CollectionColumns(schema.settingsMedia.structure,{parse: true});
+        app.settings.get('global').structure = new Schema.ColumnsCollection(Schema.Fixed.settingsGlobal.structure,{parse: true});
+        app.settings.get('media').structure = new Schema.ColumnsCollection(Schema.Fixed.settingsMedia.structure,{parse: true});
 
         ///////////////////////////////////////////////////////////////////////////////u////////////////////////////////
         // Setup core data collections.
@@ -340,7 +343,7 @@ require(["config"], function() {
         app.entries.directus_groups = new Directus.EntriesCollection([], {
           rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'),10),
           table: app.tables.get('directus_groups'),
-          preferences: new Backbone.Model(schema.groups.preferences),
+          preferences: new Backbone.Model(Schema.Fixed.groups.preferences),
           structure: app.columns.directus_groups,
           url: app.API_URL + 'groups/',
           privileges: app.privileges.directus_groups
