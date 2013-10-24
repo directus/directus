@@ -7,11 +7,10 @@ define([
   "core/edit",
   "core/table/table.view",
   "core/modal",
-  "core/tableSimple",
-  "core/collection.settings"
+  "core/tableSimple"
 ],
 
-function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Collection, Edit, Table, Modal, TableSimple, Settings) {
+function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Collection, Edit, Table, Modal, TableSimple) {
 
   "use strict";
 
@@ -24,7 +23,6 @@ function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Collecti
   Directus.Table = Table;
   Directus.Modal = Modal;
   Directus.TableSimple = TableSimple;
-  Directus.Settings = Settings;
   Directus.Model = EntriesModel;
   //Directus.MediaCollection = Structure.MediaCollection;
 
