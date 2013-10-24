@@ -3,15 +3,19 @@ define(function(require, exports, module) {
   "use strict";
 
   var Handlebars = require('handlebars'),
-      typetools = require("typetools");
+      typetools = require("typetools"),
+      Extensions = require('extensions');
 
-  require("helpers");
-  require("plugins/backbone.layoutmanager");
-  require("plugins/bootstrap-dropdown");
-  require("plugins/bootstrap-typeahead");
+  // Globally load Handlebars helpers
+  require('helpers');
 
-  // Provide a global location to place configuration settings and module
-  // creation.
+  // Load layout manager so it can be configured
+  require('plugins/backbone.layoutmanager');
+
+  // Globally load Bootstrap plugins
+  require('plugins/bootstrap-dropdown');
+  require('plugins/bootstrap-typeahead');
+
 
   var app = {
 
@@ -25,7 +29,13 @@ define(function(require, exports, module) {
       //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
     },
 
-    // Return a new instance
+
+    unlockScreen: function() {
+      this.noScroll = false;
+      //$('.modal-backdrop').remove();
+    },
+
+    // Return a new instance of Entries
     getEntries: function(tableName) {
       var directusTables = ['directus_media', 'directus_groups', 'directus_users'];
 
@@ -44,11 +54,6 @@ define(function(require, exports, module) {
       });
 
       return entries;
-    },
-
-    unlockScreen: function() {
-      this.noScroll = false;
-      //$('.modal-backdrop').remove();
     },
 
     logErrorToServer: function(type, message, details) {
