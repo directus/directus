@@ -1,14 +1,38 @@
 define(function(require, exports, module) {
+
   "use strict";
 
   module.exports = {
-    activity: require('./static/activity'),
-    groups: require('./static/groups'),
-    media: require('./static/media'),
-    messages: require('./static/messages'),
-    settingsGlobal: require('./static/settings.global'),
-    settingsMedia: require('./static/settings.media'),
-    users: require('./static/users')
+
+    //  Data Model
+
+    ColumnModel: require('./column.model'),
+
+    ColumnsCollection: require('./columns.collection'),
+
+    TableModel: require('./table.model'),
+
+    UIModel: require('./ui.model'),
+
+    // Fixed Schemas
+
+    Fixed: {
+
+      activity: require('./fixed/activity'),
+
+      groups: require('./fixed/groups'),
+
+      media: require('./fixed/media'),
+
+      messages: require('./fixed/messages'),
+
+      settingsGlobal: require('./fixed/settings.global'),
+
+      settingsMedia: require('./fixed/settings.media'),
+
+      users: require('./fixed/users')
+
+    }
   }
 
 });
