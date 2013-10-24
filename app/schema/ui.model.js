@@ -10,6 +10,7 @@ define(function(require, exports, module) {
       return this.parent.url() + '/' + this.id;
     },
 
+    // When the time is right, this part need serious reconsideration
     getStructure: function() {
       return this.parent.structure;
     },

@@ -2,7 +2,8 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var ColumnModel = require('./column.model');
+  var Backbone = require('backbone'),
+      ColumnModel = require('./column.model')
 
   module.exports = Backbone.Collection.extend({
 
@@ -38,6 +39,9 @@ define(function(require, exports, module) {
       };
 
       return Backbone.sync('update', this, options);
+    },
+
+    initialize: function() {
     }
 
   });
