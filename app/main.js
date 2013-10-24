@@ -17,10 +17,11 @@ require(["config"], function() {
     "core/tabs",
     'modules/messages/messages',
     'plugins/alertify',
-    'schema/index'
+    'schema/index',
+    'modules/settings/collection'
   ],
 
-  function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, Schema) {
+  function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, Schema, SettingsCollection) {
 
     "use strict";
 
@@ -180,7 +181,7 @@ require(["config"], function() {
         app.privileges = {};
         app.preferences = {};
         app.tables = new Directus.Collection([], {filters: {columns: ['table_name','comment','active','date_modified','single'], conditions: {hidden: false, is_junction_table: false}}} );
-        app.settings = new Directus.Settings(data.settings, {parse: true});
+        app.settings = new SettingsCollection(data.settings, {parse: true});
         app.settings.url = app.API_URL + 'settings';
 
         //@todo: move these event handlers to alerts.js
