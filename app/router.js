@@ -20,8 +20,7 @@ define(function(require, exports, module) {
       Media = require('modules/media/media'),
       Users = require('modules/users/users'),
       Messages = require('modules/messages/messages'),
-      Modal = require('core/modal'),
-      CollectionSettings = require('core/collection.settings');
+      Modal = require('core/modal');
 
   var Router = Backbone.Router.extend({
 
