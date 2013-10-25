@@ -52,7 +52,8 @@ function(module, textinput) {
       var schema = this.structure.get(attr);
       var View = _.where(ui.core, {id: schema.get('ui')})[0] || textinput;
 
-      console.log({
+      /*console.log(
+        attr, {
         model: this.model,
         collection: this.collection,
         settings: schema.options,
@@ -61,7 +62,7 @@ function(module, textinput) {
         name: attr,
         value: this.model.get(attr),
         canWrite: _.has(this.model, 'canEdit') ? this.model.canEdit(attr) : true
-      });
+      });*/
 
 
       var view = new View.Input({

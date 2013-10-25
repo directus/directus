@@ -126,8 +126,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
             var columns = ui.get('visible_columns') ? ui.get('visible_columns').split(',') : [];
             var value = attributes[id] || [];
             var options = {
-              table: app.tables.get(tableRelated),
-              structure: app.columns[tableRelated],
+              table: app.schemaManager.getTable(tableRelated),
+              structure: app.schemaManager.getColumns('tables', tableRelated),
               parse:true,
               filters: {columns_visible: columns}
               //preferences: app.preferences[column.get('table_related')],
@@ -152,7 +152,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
             }
 
             if (relationshipType === 'MANYTOMANY') {
-              options.junctionStructure = app.columns[column.get('junction_table')];
+              options.junctionStructure = app.schemaManager.getColumns('tables', column.get('junction_table'));
               attributes[id] = new EntriesNestedCollection(value, options);
             }
 

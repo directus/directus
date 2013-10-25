@@ -44,14 +44,12 @@ define(function(require, exports, module) {
         return app.entries[tableName];
       }
 
+      var defaultOptions = app.schemaManager.getFullSchema(tableName);
+
       // Other tables need a new instance
-      var entries = new app.EntriesCollection([], {
-        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'), 10),
-        structure: app.columns[tableName],
-        table: app.tables.get(tableName),
-        preferences: app.preferences[tableName],
-        privileges: app.privileges[tableName]
-      });
+      var entries = new app.EntriesCollection([], _.extend({
+        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'), 10)
+      },defaultOptions));
 
       return entries;
     },

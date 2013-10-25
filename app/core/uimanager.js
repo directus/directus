@@ -2,18 +2,53 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var UI = function UI(options) {
+  // Register Core UI's
+  var defaultUis = ([
+    require('core-ui/textinput'),
+    require('core-ui/directus_columns'),
+    require('core-ui/directus_media'),
+    require('core-ui/checkbox'),
+    require('core-ui/color'),
+    require('core-ui/numeric'),
+    require('core-ui/slider'),
+    require('core-ui/single_media'),
+    require('core-ui/slug'),
+    require('core-ui/textarea'),
+    require('core-ui/directus_user'),
+    require('core-ui/directus_activity'),
+    require('core-ui/datetime'),
+    require('core-ui/date'),
+    require('core-ui/time'),
+    require('core-ui/directus_user_activity'),
+    require('core-ui/directus_user_avatar'),
+    require('core-ui/directus_media_size'),
+    require('core-ui/blob'),
+    require('core-ui/alias'),
+    require('core-ui/salt'),
+    require('core-ui/select'),
+    require('core-ui/tags'),
+    require('core-ui/many_to_one'),
+    require('core-ui/radiobuttons'),
+    require('core-ui/many_to_many'),
+    require('core-ui/one_to_many'),
+    require('core-ui/wysiwyg'),
+    require('core-ui/directus_messages_recepients'),
+    require('core-ui/password')
+  ]);
+
+  var UIManager = function UI(options) {
     this._uis = {};
+    this.register(defaultUis);
   };
 
   // Registers one or many UI's
-  UI.prototype.register = function(uis) {
+  UIManager.prototype.register = function(uis) {
     _.each(uis, function(ui) {
       this._uis[ui.id] = ui;
     },this);
-  }
+  };
 
-  UI.prototype._getUI = function(uiId) {
+  UIManager.prototype._getUI = function(uiId) {
     var ui = this._uis[uiId];
 
     if (ui === undefined) {
@@ -21,17 +56,17 @@ define(function(require, exports, module) {
     }
 
     return ui;
-  }
+  };
 
-  UI.prototype.getList = function() {
+  UIManager.prototype.getList = function() {
 
-  }
+  };
 
-  UI.prototype.hasUI = function(uiId) {
+  UIManager.prototype.hasUI = function(uiId) {
     return this._uis.hasOwnProperty(uiId);
-  }
+  };
 
-  UI.prototype.getSettings = function(uiId) {
+  UIManager.prototype.getSettings = function(uiId) {
     var ui = this._getUI(uiId),
         variables = [];
 
@@ -41,15 +76,35 @@ define(function(require, exports, module) {
     }
 
     return variables;
-  }
+  };
 
-  UI.prototype.getAllSettings = function() {
-    return _.map(this._uis, function(ui) {
-      return {id: ui.id, settings: ui.variables || []};
+  UIManager.prototype.getAllSettings = function(options) {
+    options = options || {};
+
+    var array = _.map(this._uis, function(ui) {
+      return {
+        id: ui.id,
+        variables: ui.variables || [],
+        dataTypes: ui.dataTypes || [],
+        system: ui.system || false
+      };
     });
-  }
 
-  UI.prototype.getInput = function(uiId, columnName, options) {
+    if (options.returnObject) {
+      var obj = {};
+
+      _.each(array, function(item) {
+        obj[item.id] = item;
+      });
+
+     return obj;
+
+    }
+
+    return array;
+  };
+
+  UIManager.prototype.getInput = function(uiId, columnName, options) {
     var ui = this._getUI(uiId);
     var View = ui.Input;
 
@@ -65,17 +120,17 @@ define(function(require, exports, module) {
       structure: options.columns,
       name: columnName,
       value: options.model.get(columnName),
-      canWrite: _.has(options.model, 'canEdit') ? options.model.canEdit(attr) : true
+      canWrite: _.has(options.model, 'canEdit') ? options.model.canEdit(columnName) : true
     }, options);
 
     var view = new View(viewOptions);
 
     return view;
-  }
+  };
 
-  UI.prototype.getValidator = function() {
+  UIManager.prototype.getValidator = function() {
 
-  }
+  };
 
-  module.exports = UI;
+  module.exports = UIManager;
 });
