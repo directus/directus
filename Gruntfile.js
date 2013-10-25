@@ -23,6 +23,7 @@ module.exports = function(grunt) {
             scripturl: true,
             multistr: true,
             onecase: true,
+            sub: true,
             predef: ['$', '_', 'Backbone', 'File', 'Handlebars', 'require']
           },
           all: ['app/**/*.js']
