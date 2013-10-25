@@ -3,7 +3,7 @@
 namespace Directus\Db\RowGateway;
 
 use Directus\Bootstrap;
-use Directus\Auth\Provider as AuthProvider;
+use Directus\Auth\Provider as Auth;
 use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedTableAddException;
 use Directus\Acl\Exception\UnauthorizedTableBigEditException;
@@ -142,12 +142,16 @@ class AclAwareRowGateway extends RowGateway {
         /**
          * ACL Enforcement
          */
-        $currentUser = AuthProvider::getUserInfo();
+        $currentUserId = null;
+        if(Auth::loggedIn()) {
+            $currentUser = Auth::getUserInfo();
+            $currentUserId = intval($currentUser['id']);
+        }
         $cmsOwnerId = $this->acl->getRecordCmsOwnerId($this, $this->table);
         /**
          * Enforce Privilege: "Little" Delete (I am the record CMS owner)
          */
-        if($cmsOwnerId === (int) $currentUser['id']) {
+        if($cmsOwnerId === $currentUserId) {
             if(!$this->acl->hasTablePrivilege($this->table, 'delete')) {
                 $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                 throw new UnauthorizedTableDeleteException("Table delete access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
@@ -169,6 +173,12 @@ class AclAwareRowGateway extends RowGateway {
     public function save() {
         $this->initialize();
 
+        $currentUserId = null;
+        if(Auth::loggedIn()) {
+            $currentUser = Auth::getUserInfo();
+            $currentUserId = intval($currentUser['id']);
+        }
+
         /**
          * ACL Enforcement
          * Note: Field Write Blacklists are enforced at the object setter level
@@ -182,12 +192,11 @@ class AclAwareRowGateway extends RowGateway {
                 throw new UnauthorizedTableAddException("Table add access forbidden on table " . $this->table);
             }
         } else {
-            $currentUser = AuthProvider::getUserInfo();
             $cmsOwnerId = $this->acl->getRecordCmsOwnerId($this, $this->table);
             /**
              * Enforce Privilege: "Little" Edit (I am the record CMS owner)
              */
-            if($cmsOwnerId === intval($currentUser['id'])) {
+            if($cmsOwnerId === intval($currentUserId)) {
                 if(!$this->acl->hasTablePrivilege($this->table, 'edit')) {
                     $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                     throw new UnauthorizedTableEditException("Table edit access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
