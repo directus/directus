@@ -26,3 +26,7 @@ node_modules
 build_test
 build_test.html
 build_test_release
+
+utils
+_____app
+seperator
