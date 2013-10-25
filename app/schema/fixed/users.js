@@ -322,6 +322,7 @@ define(function(require, exports, module) {
       "required":false,
       "ui":"many_to_one",
       "options": {
+        "id": "many_to_one",
         "table_related": "directus_groups",
         // "related_table": "directus_groups",
         "visible_column": "name"

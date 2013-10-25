@@ -98,7 +98,11 @@ function(app, Backbone, ui) {
       var structureHiddenFields,
           optionsHiddenFields = options.hiddenFields || [];
 
-      this.structure = this.model.getStructure();
+      this.structure = options.structure || this.model.getStructure();
+
+      if (this.structure === undefined) {
+        throw new Error('The edit view will not work without a valid model schema');
+      }
 
       // Hide fields defined as hidden in the schema
       structureHiddenFields = this.structure.chain()
