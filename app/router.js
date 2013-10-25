@@ -230,10 +230,10 @@ define(function(require, exports, module) {
           this.v.main.setView('#content', new Settings.Tables({collection: app.schemaManager.getTables()}));
           break;
         case 'global':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global'}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global', structure: app.schemaManager.getColumns('settings', 'global')}));
           break;
         case 'media':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), title: 'Media'}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), title: 'Media', structure: app.schemaManager.getColumns('settings', 'media')}));
           break;
         case 'permissions':
           this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));
