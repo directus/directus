@@ -22,10 +22,10 @@ define(function(require, exports, module) {
     //@todo: This is code repetition. Almost identical to entries.model. Create a mixin?
     validate: function(attributes, options) {
       var errors = [];
-      var structure = this.getStructure();
+      //var structure = this.getStructure();
 
       //only validates attributes that are part of the schema
-      attributes = _.pick(attributes, structure.pluck('id'));
+      //attributes = _.pick(attributes, structure.pluck('id'));
 
       /*
       @todo: Fix this. Validation does not work!

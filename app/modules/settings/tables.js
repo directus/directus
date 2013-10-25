@@ -46,7 +46,7 @@ function(app, Backbone, ui, Directus) {
         .map(function(ui) { return {id: ui.id, datatype: ui.dataTypes[0]}; })
         .value();*/
 
-      var tables = app.tables;
+      var tables = app.schemaManager.getTables();
       var options = {data: this.model.toJSON()};
       var dataType = this.model.get('data_type');
       var tableRelated = this.model.get('table_related');
@@ -58,18 +58,18 @@ function(app, Backbone, ui, Directus) {
         }
       }
       if (tableRelated !== undefined) {
-        options.columns = app.columns[tableRelated].map(function(model) {
+        options.columns = app.schemaManager.getColumns(tableRelated).map(function(model) {
           return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
         }, this);
       }
       if (dataType === 'MANYTOMANY') {
-        options.junctionTables = app.tables.chain()
+        options.junctionTables = tables.chain()
           .filter(function(model) { return model.get('is_junction_table'); })
           .map(function(model) { return {id: model.id, selected: (model.id === this.model.get('junction_table'))}; }, this)
           .value();
       }
 
-      options.tables = app.tables.map(function(model) {
+      options.tables = tables.map(function(model) {
         return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table') ,selected: (model.id === this.model.get('table_related'))};
       },this);
 
@@ -153,19 +153,21 @@ function(app, Backbone, ui, Directus) {
     editUI: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
-      var options = column.options;
-      var view = new Directus.EditView({model: options});
+      var model = column.options;
+      var schema = app.schemaManager.getColumns('ui', model.id);
+      var view = new Directus.EditView({model: model, structure: schema});
       var modal = app.router.openModal(view, {title: 'UI Settings', stretch: true});
       modal.save = function() {
-        options.save(view.data(), {success: function() {
+        model.save(view.data(), {success: function() {
           modal.close();
         }});
       };
-      options.fetch();
+      model.fetch();
     },
 
     serialize: function() {
-      var ui = app.uiSettings;
+      var ui = app.uiManager.getAllSettings({returnObject: true});
+
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
 
@@ -175,6 +177,7 @@ function(app, Backbone, ui, Directus) {
         }
 
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables');
+
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
         row.relationship = "";
@@ -308,7 +311,7 @@ function(app, Backbone, ui, Directus) {
         if (model.id.substring(0,9) === 'directus_') return false;
 
         //Filter out tables you don't have alter permissions on
-        var privileges = app.privileges[model.id];
+        var privileges = app.schemaManager.getPrivileges(model.id);
 
         // filter out tables with empty privileges
         if (privileges === undefined) return false;

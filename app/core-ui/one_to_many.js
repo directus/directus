@@ -113,8 +113,8 @@ define(['app', 'backbone', 'core/edit', 'core/table/table.view'], function(app, 
     //NOTE: OVERRIDE THIS IN MANY-MANY INSTEAD OF USING CONDITIONALS
     initialize: function (options) {
       this.related = {};
-      this.related.table = app.tables.get(options.schema.get('table_related'));
-      this.related.schema = app.columns[options.schema.get('table_related')];
+      this.related.table = app.schemaManager.getTable(options.schema.get('table_related'));
+      this.related.schema = app.schemaManager.getColumns('tables', options.schema.get('table_related'));
       this.related.entries = options.value;
 
       this.related.tableOptions = {

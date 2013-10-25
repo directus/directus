@@ -48,7 +48,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function(options) {
       var table = options.model.getTable();
       var tableName = table.id;
-      var columns = app.columns[tableName].pluck('column_name');      
+      var columns = app.schemaManager.getColumns[tableName].pluck('column_name');
       var selected = this.options.value ? this.options.value.split(',') : [];
 
       this.columns = _.map(columns, function(value) {

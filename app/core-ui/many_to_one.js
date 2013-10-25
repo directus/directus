@@ -75,6 +75,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     initialize: function(options) {
+      console.log(this);
       // @todo display warning on UI & gracefully fail if the next value is undefined
       var relatedTable = options.settings.get('table_related');
       this.column = options.settings.get('visible_column');

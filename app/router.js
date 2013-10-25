@@ -89,7 +89,7 @@ define(function(require, exports, module) {
     tables: function() {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.Tables({collection: app.tables}));
+      this.v.main.setView('#content', new Table.Views.Tables({collection: app.schemaManager.getTables()}));
       this.v.main.render();
     },
 
@@ -97,7 +97,7 @@ define(function(require, exports, module) {
       this.setTitle('Tables');
       var collection;
 
-      if (!app.tables.get(tableName)) {
+      if (!app.schemaManager.getTable(tableName)) {
         return this.notFound();
       }
 
@@ -227,7 +227,7 @@ define(function(require, exports, module) {
 
       switch(name) {
         case 'tables':
-          this.v.main.setView('#content', new Settings.Tables({collection: app.tables}));
+          this.v.main.setView('#content', new Settings.Tables({collection: app.schemaManager.getTables()}));
           break;
         case 'global':
           this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global'}));
@@ -245,7 +245,7 @@ define(function(require, exports, module) {
           this.v.main.setView('#content', new Settings.About());
           break;
         default:
-          this.v.main.setView('#content', new Settings.Main({tables: app.tables}));
+          this.v.main.setView('#content', new Settings.Main({tables: app.schemaManager.getTables()}));
           break;
       }
 
@@ -257,7 +257,7 @@ define(function(require, exports, module) {
       this.setTitle('Settings');
       this.tabs.setActive('settings');
 
-      this.v.main.setView('#content', new Settings.Table({model: app.tables.get(tableName)}));
+      this.v.main.setView('#content', new Settings.Table({model: app.schemaManager.getTable(tableName)}));
 
       this.v.main.render();
     },
