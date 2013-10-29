@@ -286,8 +286,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeSelect($select);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
-                echo "This query failed: " . $this->dumpSql($select);
-                die;
+                throw new \RuntimeException("This query failed: " . $this->dumpSql($select));
             }
         }
     }
@@ -395,8 +394,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeUpdate($update);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
-                echo "This query failed: " . $this->dumpSql($update);
-                die;
+                throw new \RuntimeException("This query failed: " . $this->dumpSql($update));
             }
         }
     }
@@ -460,8 +458,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeDelete($delete);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
-                echo "This query failed: " . $this->dumpSql($delete);
-                die;
+                throw new \RuntimeException("This query failed: " . $this->dumpSql($delete));
+                // die;
             }
         }
     }
