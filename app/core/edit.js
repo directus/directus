@@ -1,10 +1,9 @@
 define([
   "app",
-  "backbone",
-  "core/ui"
+  "backbone"
 ],
 
-function(app, Backbone, ui) {
+function(app, Backbone) {
 
   "use strict";
 
@@ -19,10 +18,6 @@ function(app, Backbone, ui) {
     ],
 
     beforeRender: function() {
-
-      // @todo: this is because of bad design. straighten this out
-      ui = ui || require('core/ui');
-      var UI = ui.initialize({model: this.model, structure: this.structure});
 
       this.structure.each(function(column) {
 
@@ -41,7 +36,11 @@ function(app, Backbone, ui) {
           this.model.set('active',1);
         }
 
-        var view = UI.getInput(column.id);
+        var view = app.uiManager.getInputInstance({
+          structure: this.structure,
+          model: this.model,
+          name: column.id
+        });
 
         // Display:none; hidden fields
         if (_.contains(this.hiddenFields, column.id)) {
@@ -95,6 +94,7 @@ function(app, Backbone, ui) {
     },
 
     initialize: function(options) {
+
       var structureHiddenFields,
           optionsHiddenFields = options.hiddenFields || [];
 
