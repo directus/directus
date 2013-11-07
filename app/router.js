@@ -339,8 +339,8 @@ define(function(require, exports, module) {
       });
 
       // Update unread message counter
-      app.messages.on('sync', function() {
-        $('#unread-messages-counter').html(app.messages.unread);
+      app.messages.on('sync', function(collection, model) {
+        $('.unread-messages-counter').html(app.messages.unread);
       });
 
 

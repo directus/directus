@@ -164,7 +164,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     template: 'page',
 
     serialize: function() {
-      return {title: 'Reading Message', breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
+      return {title: this.model.get('subject'), breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
     },
 
     afterRender: function() {
