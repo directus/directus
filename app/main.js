@@ -140,6 +140,12 @@ require(["config"], function() {
       alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
     });
 
+    app.messages.on('sync', function(collection, object) {
+      if (object !== null && object.rows) {
+        alertify.log('New Message');
+      }
+    });
+
     // Temporary pointer so app can instanciate entries
     app.EntriesCollection = Directus.EntriesCollection;
 
