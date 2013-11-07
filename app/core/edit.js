@@ -36,11 +36,7 @@ function(app, Backbone) {
           this.model.set('active',1);
         }
 
-        var view = app.uiManager.getInputInstance({
-          structure: this.structure,
-          model: this.model,
-          name: column.id
-        });
+        var view = app.uiManager.getInputInstance(this.model, column.id, {structure: this.structure});
 
         // Display:none; hidden fields
         if (_.contains(this.hiddenFields, column.id)) {
