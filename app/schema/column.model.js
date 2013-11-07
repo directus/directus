@@ -32,11 +32,6 @@ define(function(require, exports, module) {
         this.options = new UIModel(options);
         this.options.parent = this;
 
-        if (result.id === 'closest_studio') {
-          console.log(this.options, this);
-        }
-
-
         delete result.options;
 
         if (result.master) result.header = true;
