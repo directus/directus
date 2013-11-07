@@ -63,6 +63,7 @@ require(["config"], function() {
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;
     app.settings = new SettingsCollection(options.settings, {parse: true});
+    app.settings.url = app.API_URL + 'settings';
 
     // Setup managers
     app.uiManager = new UIManager();
