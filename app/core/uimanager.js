@@ -123,7 +123,22 @@ define(function(require, exports, module) {
     return view;
   };
 
-  UIManager.prototype.getValidator = function() {
+  UIManager.prototype.validate = function(model, attr, value) {
+    var collection = model.collection;
+    var structure = model.getStructure();
+    var schema = structure.get(attr);
+    var uiId = schema.get('ui');
+    var UI = this._getUI(uiId);
+
+    if (UI.hasOwnProperty('validate')) {
+      return UI.validate(value, {
+        model: model,
+        collection: collection,
+        settings: schema.options,
+        schema: schema,
+        tagName: 'td'
+      });
+    }
 
   };
 
