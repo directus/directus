@@ -67,29 +67,29 @@ define(function(require, exports, module) {
   };
 
   UIManager.prototype.getSettings = function(uiId) {
-    var ui = this._getUI(uiId),
-        variables = [];
+    var ui = this._getUI(uiId);
 
-    // Deep Clone variables if they exist
-    if (ui.variables !== undefined) {
-      variables = JSON.parse(JSON.stringify(ui.variables));
-    }
+    var variablesDeepClone = JSON.parse(JSON.stringify(ui.variables || []));
 
-    return variables;
+    return {
+      id: ui.id,
+      skipSerializationIfNull: ui.skipSerializationIfNull || false,
+      variables: variablesDeepClone,
+      dataTypes: ui.dataTypes || [],
+      system: ui.system || false
+    };
   };
 
   UIManager.prototype.getAllSettings = function(options) {
     options = options || {};
 
-    var array = _.map(this._uis, function(ui) {
-      return {
-        id: ui.id,
-        variables: ui.variables || [],
-        dataTypes: ui.dataTypes || [],
-        system: ui.system || false
-      };
-    });
 
+    var array = _.map(this._uis, function(ui) {
+      return this.getSettings(ui.id);
+    }, this);
+
+    // Maps the settings to a key-value datastructure where
+    // the key is the id of the UI.
     if (options.returnObject) {
       var obj = {};
 
@@ -98,32 +98,27 @@ define(function(require, exports, module) {
       });
 
      return obj;
-
     }
 
     return array;
   };
 
-  UIManager.prototype.getInput = function(uiId, columnName, options) {
-    var ui = this._getUI(uiId);
-    var View = ui.Input;
+  UIManager.prototype.getInputInstance = function(options) {
+    options.structure = options.structure || options.model.getStructure();
+    options.schema = options.structure.get(options.name);
+    options.value = options.model.get(options.name);
+    options.collection = options.collection || options.model.collection;
+    options.canWrite = _.has(options.model, 'canEdit') ? options.model.canEdit(columnName) : true;
+    options.settings = options.schema.options;
 
-    if (View === undefined) {
+    var uiId = options.schema.get('ui');
+    var UI = this._getUI(uiId);
+
+    if (UI.Input === undefined) {
       throw new Error('The UI with id "' + uiId + '" has no input view');
     }
 
-    var column = options.columns.get(columnName);
-
-    var viewOptions = _.extend({
-      schema: column,
-      settings: column.options,
-      structure: options.columns,
-      name: columnName,
-      value: options.model.get(columnName),
-      canWrite: _.has(options.model, 'canEdit') ? options.model.canEdit(columnName) : true
-    }, options);
-
-    var view = new View(viewOptions);
+    var view = new UI.Input(options);
 
     return view;
   };
