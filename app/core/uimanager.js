@@ -41,106 +41,142 @@ define(function(require, exports, module) {
     this.register(defaultUis);
   };
 
-  // Registers one or many UI's
-  UIManager.prototype.register = function(uis) {
-    _.each(uis, function(ui) {
-      this._uis[ui.id] = ui;
-    },this);
-  };
 
-  UIManager.prototype._getUI = function(uiId) {
-    var ui = this._uis[uiId];
+  // Attach all methods to the UIManager prototype.
+  _.extend(UIManager.prototype, {
 
-    if (ui === undefined) {
-      throw new Error('There is no registered UI with id "' + uiId + '"');
-    }
+    // Get reference to external UI file
+    _getUI: function(uiId) {
+      var ui = this._uis[uiId];
 
-    return ui;
-  };
+      if (ui === undefined) {
+        throw new Error('There is no registered UI with id "' + uiId + '"');
+      }
 
-  UIManager.prototype.getList = function() {
+      return ui;
+    },
 
-  };
+    // Returns a reference to a UI based on a
+    // model/attribute/schema combination
+    _getModelUI: function(model, attr, schema) {
+      var structure = model.getStructure();
+      var schema = structure.get(attr);
+      var uiId = schema.get('ui');
 
-  UIManager.prototype.hasUI = function(uiId) {
-    return this._uis.hasOwnProperty(uiId);
-  };
+      return this._getUI(uiId);
+    },
 
-  UIManager.prototype.getSettings = function(uiId) {
-    var ui = this._getUI(uiId);
+    // Registers one or many UI's
+    register: function(uis) {
+      _.each(uis, function(ui) {
+        this._uis[ui.id] = ui;
+      },this);
+    },
 
-    var variablesDeepClone = JSON.parse(JSON.stringify(ui.variables || []));
+    // Returns `true` if a UI with the provided ID exists
+    hasUI: function(uiId) {
+      return this._uis.hasOwnProperty(uiId);
+    },
 
-    return {
-      id: ui.id,
-      skipSerializationIfNull: ui.skipSerializationIfNull || false,
-      variables: variablesDeepClone,
-      dataTypes: ui.dataTypes || [],
-      system: ui.system || false
-    };
-  };
+    // Returns all properties and settings of a UI with the provided ID
+    getSettings: function(uiId) {
+      var ui = this._getUI(uiId);
 
-  UIManager.prototype.getAllSettings = function(options) {
-    options = options || {};
+      var variablesDeepClone = JSON.parse(JSON.stringify(ui.variables || []));
+
+      return {
+        id: ui.id,
+        skipSerializationIfNull: ui.skipSerializationIfNull || false,
+        variables: variablesDeepClone,
+        dataTypes: ui.dataTypes || [],
+        system: ui.system || false
+      };
+    },
+
+    // Returns all properties and settings for all registered UI's
+    getAllSettings: function(options) {
+      options = options || {};
 
 
-    var array = _.map(this._uis, function(ui) {
-      return this.getSettings(ui.id);
-    }, this);
+      var array = _.map(this._uis, function(ui) {
+        return this.getSettings(ui.id);
+      }, this);
 
-    // Maps the settings to a key-value datastructure where
-    // the key is the id of the UI.
-    if (options.returnObject) {
-      var obj = {};
+      // Maps the settings to a key-value datastructure where
+      // the key is the id of the UI.
+      if (options.returnObject) {
+        var obj = {};
 
-      _.each(array, function(item) {
-        obj[item.id] = item;
+        _.each(array, function(item) {
+          obj[item.id] = item;
+        });
+
+       return obj;
+      }
+
+      return array;
+    },
+
+    // Finds the UI for the model/attribute and
+    // returns a string containing the table view
+    getList: function(model, attr) {
+      var collection = model.collection;
+      var structure = model.getStructure();
+      var schema = structure.get(attr);
+      var UI = this._getModelUI(model, attr, schema);
+      return UI.list({
+          model: model,
+          collection: collection,
+          settings: schema.options,
+          schema: schema,
+          value: model.get(attr),
+          tagName: 'td'
       });
+    },
 
-     return obj;
+    // Finds the UI for the provided model/attribute and
+    // returns a backbone view instance containing the input view
+    getInputInstance: function(model, attr, options) {
+      options.model = model;
+      options.name = attr;
+      options.structure = options.structure || options.model.getStructure();
+      options.schema = options.structure.get(options.name);
+      options.value = options.model.get(options.name);
+      options.collection = options.collection || options.model.collection;
+      options.canWrite = _.has(options.model, 'canEdit') ? options.model.canEdit(columnName) : true;
+      options.settings = options.schema.options;
+
+      var UI = this._getModelUI(model, attr, options.schema);
+
+      if (UI.Input === undefined) {
+        throw new Error('The UI with id "' + UI.id + '" has no input view');
+      }
+
+      var view = new UI.Input(options);
+
+      return view;
+    },
+
+    // Finds the UI for the provided model/attribute and
+    // and returns the result of the UI validation
+    validate: function(model, attr, value) {
+      var collection = model.collection;
+      var structure = model.getStructure();
+      var schema = structure.get(attr);
+      var UI = this._getModelUI(model, attr, schema);
+
+      if (UI.hasOwnProperty('validate')) {
+        return UI.validate(value, {
+          model: model,
+          collection: collection,
+          settings: schema.options,
+          schema: schema,
+          tagName: 'td'
+        });
+      }
     }
 
-    return array;
-  };
-
-  UIManager.prototype.getInputInstance = function(options) {
-    options.structure = options.structure || options.model.getStructure();
-    options.schema = options.structure.get(options.name);
-    options.value = options.model.get(options.name);
-    options.collection = options.collection || options.model.collection;
-    options.canWrite = _.has(options.model, 'canEdit') ? options.model.canEdit(columnName) : true;
-    options.settings = options.schema.options;
-
-    var uiId = options.schema.get('ui');
-    var UI = this._getUI(uiId);
-
-    if (UI.Input === undefined) {
-      throw new Error('The UI with id "' + uiId + '" has no input view');
-    }
-
-    var view = new UI.Input(options);
-
-    return view;
-  };
-
-  UIManager.prototype.validate = function(model, attr, value) {
-    var collection = model.collection;
-    var structure = model.getStructure();
-    var schema = structure.get(attr);
-    var uiId = schema.get('ui');
-    var UI = this._getUI(uiId);
-
-    if (UI.hasOwnProperty('validate')) {
-      return UI.validate(value, {
-        model: model,
-        collection: collection,
-        settings: schema.options,
-        schema: schema,
-        tagName: 'td'
-      });
-    }
-
-  };
+  });
 
   module.exports = UIManager;
 });
