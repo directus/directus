@@ -367,6 +367,12 @@ function(module, app, Router, Backbone, HandlebarsHelpers, Directus, UI, media, 
         alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
       });
 
+      app.messages.on('sync', function(collection, object) {
+          if (object !== null && object.rows) {
+            alertify.log('New Message');
+          }
+      });
+
       app.messages.startPolling();
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
