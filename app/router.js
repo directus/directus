@@ -342,7 +342,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       });
 
       // Update unread message counter
-      app.messages.on('sync', function() {
+      app.messages.on('sync', function(collection, model) {
         $('.unread-messages-counter').html(app.messages.unread);
       });
 
