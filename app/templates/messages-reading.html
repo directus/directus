@@ -1,5 +1,3 @@
-<!--<h3>{{subject}}</h3>-->
-<h3>{{subject}}</h3>
 <hr style="border:1px solid #EDEDED">
 <strong>{{userFull from}}</strong>
 <div style="float:right;">{{contextualDate datetime}}</div>
@@ -15,17 +13,21 @@
     {{/if}}
 
     <br><br>
-    {{message}}</div>
+    <div style="max-width:700px;">{{message}}</div>
+
+    </div>
 <hr style="border:1px solid #EDEDED">
 {{#each responses}}
 <strong>{{userFull from}}</strong>
 <div style="float:right;">{{contextualDate datetime}}</div>
 <div style="margin-left:38px; overflow: auto;">
-    <br/> {{message}} </div>
+    <br/>
+    <div style="max-width:700px;">{{message}}</div>
+</div>
 <hr style="border:1px solid #EDEDED">
 {{/each}}
 
 <div style="margin-left:38px;">
-<textarea rows="7" style="width:500px; margin-bottom:10px" id="messages-response"></textarea>
+<textarea rows="7" style="width:700px; margin-bottom:10px" id="messages-response"></textarea>
 <p><button class="btn btn-primary" id="messages-response-button">Reply</button></p>
 </div>
