@@ -3,13 +3,13 @@
 			<a href="{{siteUrl}}" target="_blank" class="brand">{{siteName}}  <span class="glyphicon-share-alt"></span></a>
 			<div class="pull-right dropdown">
 					<div data-toggle="dropdown" class="user">
-					<span class="label speech-bubble" id="unread-messages-counter">0</span>
+					<span class="label speech-bubble unread-messages-counter" id="unread-messages-counter">0</span>
 					<span class="user-firstname">{{user.first_name}}</span>
 					<img src="{{user.avatar}}" class="avatar">
 					</div>
 				<ul class="dropdown-menu" style="margin-right: 20px">
 						<li><a href="#users/{{user.id}}">User Settings</a></li>
-						<li><a href="#messages">Messages</a><div class="label">10</div></li>
+						<li><a href="#messages">Messages</a><div class="label unread-messages-counter">0</div></li>
 						<li class="divider"></li>
 						<li><a href="#" class="sign-out" data-bypass>Sign Out</a></li>
 					</ul>
