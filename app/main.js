@@ -12,7 +12,6 @@ require(["config"], function() {
     "router",
     "backbone",
     "core/directus",
-    "core/ui",
     "alerts",
     "core/tabs",
     'modules/messages/messages',
@@ -22,7 +21,7 @@ require(["config"], function() {
     'core/uimanager'
   ],
 
-  function(app, Router, Backbone, Directus, UI, alerts, Tabs, Messages, alertify, Schema, SettingsCollection, UIManager) {
+  function(app, Router, Backbone, Directus, alerts, Tabs, Messages, alertify, Schema, SettingsCollection, UIManager) {
 
     "use strict";
 

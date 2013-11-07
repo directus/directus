@@ -10,7 +10,6 @@
 define([
   'app',
   'backbone',
-  'core/ui',
   'core/directus',
   'modules/settings/tables',
   'modules/settings/global',
@@ -20,7 +19,7 @@ define([
   'modules/settings/grouppermissions'
 ],
 
-function(app, Backbone, ui, Directus, Tables, Global, About, Permissions, System, GroupPermissions) {
+function(app, Backbone, Directus, Tables, Global, About, Permissions, System, GroupPermissions) {
 
   "use strict";
 
