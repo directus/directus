@@ -13,7 +13,6 @@ define(function(require, exports, module) {
   var app = require('app'),
       Directus = require('core/directus'),
       Tabs = require('core/tabs'),
-      UI = require('core/ui'),
       Activity = require('modules/activity/activity'),
       Table = require('modules/tables/table'),
       Settings = require('modules/settings/settings'),
