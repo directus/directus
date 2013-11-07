@@ -2,11 +2,35 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var Extensions = function Extensions() {
+  _ = require('underscore');
+
+  var ExtensionsManager = function Extensions() {
     console.log('extensions begin');
   };
 
-  Extensions.prototype.register = function(sources) {
+  _.extend(ExtensionsManager.prototype, {
+
+    register: function(extensions) {
+      _.each(extensions, function(extension) {
+        this._extensions[extension.id] = extension;
+      },this);
+    },
+
+    load: function(paths) {
+      var self = this;
+      var dfd = new jQuery.Deferred();
+
+      require(paths, function() {
+        self.register(_.values(arguments));
+        dfd.resolve();
+      });
+
+      return dfd;
+    }
+
+  });
+
+/*  Extensions.prototype.register = function(sources) {
     this.external = sources;
   };
 
@@ -22,8 +46,8 @@ define(function(require, exports, module) {
     }, errback);
 
   };
+*/
 
-
-  module.exports = Extensions;
+  module.exports = ExtensionsManager;
 
 });

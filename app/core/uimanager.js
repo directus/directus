@@ -41,7 +41,6 @@ define(function(require, exports, module) {
     this.register(defaultUis);
   };
 
-
   // Attach all methods to the UIManager prototype.
   _.extend(UIManager.prototype, {
 
@@ -66,11 +65,25 @@ define(function(require, exports, module) {
       return this._getUI(uiId);
     },
 
-    // Registers one or many UI's
+    // Registers (@todo: one or) many UI's
     register: function(uis) {
       _.each(uis, function(ui) {
         this._uis[ui.id] = ui;
       },this);
+    },
+
+    // Loads an array of paths to UI's and registers them.
+    // Returns a jQuery Deferred's Promise object
+    load: function(paths) {
+      var self = this;
+      var dfd = new jQuery.Deferred();
+
+      require(paths, function() {
+        self.register(_.values(arguments));
+        dfd.resolve();
+      });
+
+      return dfd;
     },
 
     // Returns `true` if a UI with the provided ID exists
