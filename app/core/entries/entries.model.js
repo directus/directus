@@ -3,11 +3,10 @@ define([
   "app",
   "backbone",
   "core/entries/entries.nestedcollection",
-  "core/entries/entries.collection",
-  "core/ui"
+  "core/entries/entries.collection"
 ],
 
-function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui) {
+function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
   "use strict";
 
@@ -72,13 +71,14 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
 
         var nullDisallowed = column.get('is_nullable') === 'NO';
         var isNull = isNothing(value);
-        var input = ui.getModelColumnInput(this, key);
 
-        var skipSerializationIfNull = input.hasOwnProperty('skipSerializationIfNull') && input.skipSerializationIfNull;
+        var uiSettings = app.uiManager.getSettings(column.get('ui'));
+
+        var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
 
         var mess = (!skipSerializationIfNull && nullDisallowed && isNull) ?
           'The field cannot be empty'
-          : ui.validate(this, key, value);
+          : app.uiManager.validate(this, key, value);
 
         if (mess !== undefined) {
           errors.push({attr: key, message: mess});
