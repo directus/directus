@@ -32,6 +32,10 @@ define(function(require, exports, module) {
       var extension = new this._extensions[id].Router;
 
       return extension;
+    },
+
+    getIds: function() {
+      return _.keys(this._extensions);
     }
 
   });
