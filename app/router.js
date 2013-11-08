@@ -304,7 +304,8 @@ define(function(require, exports, module) {
           this.extensions[item.id] = new item.Router(item.id);
         } catch (e) {
           console.log(item.id + ' failed to load:', e.stack);
-          this.tabs.get(item.id).set({'error': e});
+          console.log(item);
+          this.tabs.get(item).set({'error': e});
           return;
         }
         //this.extensions[item.id].bind('all', logRoute);
