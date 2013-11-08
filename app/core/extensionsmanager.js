@@ -5,7 +5,7 @@ define(function(require, exports, module) {
   _ = require('underscore');
 
   var ExtensionsManager = function Extensions() {
-    console.log('extensions begin');
+    this._extensions = {};
   };
 
   _.extend(ExtensionsManager.prototype, {
@@ -26,6 +26,12 @@ define(function(require, exports, module) {
       });
 
       return dfd;
+    },
+
+    getInstance: function(id) {
+      var extension = new this._extensions[id].Router;
+
+      return extension;
     }
 
   });
