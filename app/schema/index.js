@@ -25,7 +25,7 @@ define(function(require, exports, module) {
     'media': require('./fixed/settings.media')
   };
 
-  var Schema = module.exports = function() {
+  var SchemaManager = module.exports = function() {
 
     var TableCollection = DirectusCollection.extend({
       model: TableModel
@@ -65,93 +65,91 @@ define(function(require, exports, module) {
     ]);
   };
 
-  Schema.prototype.register = function(namespace, tables) {
-    _.each(tables, function(options) {
+  _.extend(SchemaManager.prototype, {
 
-      var tableName = options.schema.id;
+    register: function(namespace, tables) {
+      _.each(tables, function(options) {
 
-      if (this._tableSchemas[namespace].get(tableName)) {
-        console.warn('Warning: ' + tableName + ' allready exists in the schema manager, the schema will be ignored');
-        return;
-      }
+        var tableName = options.schema.id;
 
-      // Set table schema
-      options.schema.url = app.API_URL + 'tables/' + tableName;
+        if (this._tableSchemas[namespace].get(tableName)) {
+          console.warn('Warning: ' + tableName + ' allready exists in the schema manager, the schema will be ignored');
+          return;
+        }
 
-      var model = new TableModel(options.schema, {parse: true});
-      model.url = app.API_URL + 'tables/' + tableName;
-      model.columns.url = app.API_URL + 'tables/' + tableName + '/columns';
-      model.columns.table = model;
+        // Set table schema
+        options.schema.url = app.API_URL + 'tables/' + tableName;
 
-      this._columnSchemas[namespace][tableName] = model.columns;
-      this._tableSchemas[namespace].add(model);
+        var model = new TableModel(options.schema, {parse: true});
+        model.url = app.API_URL + 'tables/' + tableName;
+        model.columns.url = app.API_URL + 'tables/' + tableName + '/columns';
+        model.columns.table = model;
 
-    }, this);
-  };
+        this._columnSchemas[namespace][tableName] = model.columns;
+        this._tableSchemas[namespace].add(model);
 
-  Schema.prototype.registerUISchemas = function(data) {
-    var namespace = 'ui';
-    _.each(data, function(ui) {
-      this._columnSchemas[namespace][ui.id] = new ColumnsCollection(ui.variables, {parse: true});
-    }, this);
-  };
+      }, this);
+    },
 
-  Schema.prototype.registerSettingsSchemas = function(data) {
-    var namespace = 'settings';
-    _.each(data, function(settings) {
-      this._columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.structure, {parse: true});
-    }, this);
-  };
+    // Registers the UI variables as schemas so they can be
+    // used as forms in the table settings
+    registerUISchemas: function(data) {
+      var namespace = 'ui';
+      _.each(data, function(ui) {
+        this._columnSchemas[namespace][ui.id] = new ColumnsCollection(ui.variables, {parse: true});
+      }, this);
+    },
 
-  Schema.prototype.registerPreferences = function(data) {
-    _.each(data, function(preference) {
-      this._preferences[preference.table_name] = new Backbone.Model(preference, {url: app.API_URL + 'tables/' + preference.table_name + '/preferences'});
-    }, this);
-  };
+    // Registers static schemas for the global and media settings
+    registerSettingsSchemas: function(data) {
+      var namespace = 'settings';
+      _.each(data, function(settings) {
+        this._columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.structure, {parse: true});
+      }, this);
+    },
 
-  Schema.prototype.registerPrivileges = function(data) {
-    _.each(data, function(privilege) {
-      this._privileges[privilege.table_name] = new Backbone.Model(privilege, {parse:true});
-    }, this);
-  };
+    // Registers user preferences for tables (sort, visible columns etc)
+    registerPreferences: function(data) {
+      _.each(data, function(preference) {
+        this._preferences[preference.table_name] = new Backbone.Model(preference, {url: app.API_URL + 'tables/' + preference.table_name + '/preferences'});
+      }, this);
+    },
 
-  Schema.prototype.getColumns = function(namespace, tableName) {
-    return this._columnSchemas[namespace][tableName];
-  };
+    // Registers user priviliges
+    registerPrivileges: function(data) {
+      _.each(data, function(privilege) {
+        this._privileges[privilege.table_name] = new Backbone.Model(privilege, {parse:true});
+      }, this);
+    },
 
-  Schema.prototype.getTable = function(tableName) {
-    return this._tableSchemas.tables.get(tableName);
-  };
+    getColumns: function(namespace, tableName) {
+      return this._columnSchemas[namespace][tableName];
+    },
 
-  Schema.prototype.getTables = function(tableName) {
-    return this._tableSchemas.tables;
-  };
+    getTable: function(tableName) {
+      return this._tableSchemas.tables.get(tableName);
+    },
 
-  Schema.prototype.getPrivileges = function(tableName) {
-    return this._privileges[tableName];
-  };
+    getTables: function(tableName) {
+      return this._tableSchemas.tables;
+    },
 
-  Schema.prototype.countTables = function() {
-    return this._tableSchemas.tables.length;
-  };
+    getPrivileges: function(tableName) {
+      return this._privileges[tableName];
+    },
 
-  Schema.prototype.getFullSchema = function(tableName) {
-    return {
-      table: this._tableSchemas.tables.get(tableName),
-      structure: this._columnSchemas.tables[tableName],
-      preferences: this._preferences[tableName],
-      privileges: this._privileges[tableName]
-    };
-  };
+    countTables: function() {
+      return this._tableSchemas.tables.length;
+    },
 
-/*
-  Schema = {
-    ColumnModel: require('./column.model'),
-    ColumnsCollection: require('./columns.collection'),
-    TableModel: require('./table.model'),
-    UIModel: require('./ui.model')
-  }
+    getFullSchema: function(tableName) {
+      return {
+        table: this._tableSchemas.tables.get(tableName),
+        structure: this._columnSchemas.tables[tableName],
+        preferences: this._preferences[tableName],
+        privileges: this._privileges[tableName]
+      };
+    }
+  });
 
-  // Static Schemas
-*/
 });
