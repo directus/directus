@@ -62,8 +62,7 @@ require(["config"], function() {
     app.API_URL = options.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;
-    app.settings = new SettingsCollection(options.settings, {parse: true});
-    app.settings.url = app.API_URL + 'settings';
+    app.settings = new SettingsCollection(options.settings, {parse: true, url: app.API_URL + 'settings'});
 
     app.uiManager = new UIManager();
 
@@ -175,11 +174,11 @@ require(["config"], function() {
         {title: "Settings", id: "settings"}
       ];
 
-      var extensions = [];
+      var extensions = app.extensionsManager.getIds();
 
       // Add extensions to tabs
       _.each(extensions, function(item) {
-        tabs.push({title: app.capitalize(item.id), id: item.id, extension: true});
+        tabs.push({title: app.capitalize(item), id: item, extension: true});
       });
 
       // Grab tab permissions from DB
