@@ -301,17 +301,16 @@ define(function(require, exports, module) {
 
       _.each(options.extensions, function(item) {
         try {
-          this.extensions[item.id] = new item.Router(item.id);
+          this.extensions[item] = app.extensionsManager.getInstance(item);
         } catch (e) {
-          console.log(item.id + ' failed to load:', e.stack);
-          console.log(item);
+          console.log(item + ' failed to load:', e.stack);
           this.tabs.get(item).set({'error': e});
           return;
         }
         //this.extensions[item.id].bind('all', logRoute);
-        this.extensions[item.id].on('route', function() {
-          this.trigger('subroute',item.id);
-          this.trigger('route:'+item.id,item.id);
+        this.extensions[item].on('route', function() {
+          this.trigger('subroute',item);
+          this.trigger('route:'+item,item);
         }, this);
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
