@@ -26,4 +26,10 @@ node_modules
 build_test
 build_test.html
 build_test_release
+
 extensions/*
+
+utils
+_____app
+seperator
+

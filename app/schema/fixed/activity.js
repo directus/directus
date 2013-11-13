@@ -1,6 +1,8 @@
-define([], function() {
+define(function(require, exports, module) {
 
-  var activity = {};
+  "use strict";
+
+  var activity = module.exports;
 
   activity.table = {
     "id":"directus_activity",

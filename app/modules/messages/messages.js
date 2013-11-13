@@ -25,15 +25,25 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     updateFrequency: 10000,
 
     updateMessages: function() {
+      var that = this;
       var data = {
         'max_id': this.maxId
       };
 
-      this.fetch({data: data, remove: false});
+      this.fetch({data: data, remove: false, global: false, error: function(collection, response, options) {
+        that.trigger('error:polling');
+        that.stopPolling();
+      }});
+
     },
 
     startPolling: function(ms) {
-      window.setInterval(this.updateMessages.bind(this), this.updateFrequency);
+      this.timerId = window.setInterval(this.updateMessages.bind(this), this.updateFrequency);
+    },
+
+    stopPolling: function(ms) {
+      clearInterval(this.timerId);
+      window.setTimeout(this.startPolling.bind(this), 30000);
     },
 
     parse: function(response) {
@@ -154,7 +164,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     template: 'page',
 
     serialize: function() {
-      return {title: 'Reading Message', breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
+      return {title: this.model.get('subject'), breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
     },
 
     afterRender: function() {

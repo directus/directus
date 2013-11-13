@@ -34,7 +34,7 @@ define([
     var showProgressNotification = function(message) {
       //$('#alert-message').text(message);
       $('body').css('cursor', 'progress!important');
-      //$('#loader').show();
+      $('#loader').show();
       app.lockScreen();
     };
 

@@ -41,6 +41,7 @@ use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusGroupsTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
+use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecepientsTableGateway;
 //use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
@@ -174,6 +175,11 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
  * AUTHENTICATION
  */
 
+$DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+Auth::setUserCacheRefreshProvider(function($userId) use ($DirectusUsersTableGateway) {
+    return $DirectusUsersTableGateway->find($userId);
+});
+
 $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonceProvider) {
     $response = array(
         'message' => "Wrong username/password.",
@@ -261,6 +267,48 @@ $app->post("/$v/hash/?", function() use ($app) {
         'password' => $hashedPassword
     ));
 });
+
+$app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+    $currentUser = Auth::getUserRecord();
+    $myGroupId = $currentUser['group'];
+
+    if ($myGroupId != 0) {
+        throw new Exception('Permission denied');
+    }
+
+    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+    $response = $privileges->fetchPerTable($groupId);
+
+    return JsonView::render($response);
+});
+
+$app->map("/$v/privileges/:grupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+    $currentUser = Auth::getUserRecord();
+    $myGroupId = $currentUser['group'];
+
+    if ($myGroupId != 0) {
+        throw new Exception('Permission denied');
+    }
+
+    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+    $response = $privileges->insertPrivilege($requestPayload);
+
+    return JsonView::render($response);
+})->via('POST');
+
+$app->map("/$v/privileges/:grupId/:privilegeId", function ($groupId, $privilegeId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+    $currentUser = Auth::getUserRecord();
+    $myGroupId = $currentUser['group'];
+
+    if ($myGroupId != 0) {
+        throw new Exception('Permission denied');
+    }
+
+    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+    $response = $privileges->updatePrivilege($requestPayload);
+
+    return JsonView::render($response);
+})->via('PUT');
 
 /**
  * ENTRIES COLLECTION

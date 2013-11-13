@@ -18,6 +18,8 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     attributes: {'class':'directus-table-container'},
     template: 'table',
 
+    TableBody: TableBody,
+
     serialize: function() {
       return {
         columns: this.collection.getColumns(),
@@ -32,6 +34,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       'click tbody td:not(.check):not(.status):not(.sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
+          $(document).scrollTop(0);
           //this.collection.off(null, null, this);
           this.collection.off();
           this.navigate(id);
@@ -65,9 +68,10 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
         this.insertView('table', new TableHead(options));
       }
 
+
       if (this.collection.length > 0) {
         options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop');
-        this.insertView('table', new TableBody(options));
+        this.insertView('table', new this.TableBody(options));
       }
 
       if (this.collection.length > 0 && this.collection.table.get('footer') && this.options.footer !== false) {
@@ -131,7 +135,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
                 var active = collection.table.get('active') + 1;
                 collection.table.set('active', active);
               };
-              collection.create(item, {silent: true, success: success});
+              collection.create(item, {success: success});
             } else {
               console.log('ADD');
               collection.add(item, {nest: true, parse: true});
@@ -145,12 +149,18 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     initialize: function(options) {
       var collection = this.collection;
 
-      this.listenTo(collection, 'sync', function(collection) {
+      //this.html("<img src='/assets/img/spinner.gif'>");
+      //return;
+
+
+      this.listenTo(collection, 'sync', function(model, resp, options) {
         //if (collection instanceof Backbone.Model) return;
+        if (options.silent) return;
         this.render();
       });
 
       this.listenTo(collection, 'visibility', function() {
+        console.log('visibility', arguments);
         this.render();
       });
 
@@ -183,7 +193,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
       // pre-render if there is stuff in the collection
       if (this.collection.length > 0) {
-        this.render();
+        //this.render();
       }
 
     },
