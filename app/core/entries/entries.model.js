@@ -3,11 +3,10 @@ define([
   "app",
   "backbone",
   "core/entries/entries.nestedcollection",
-  "core/entries/entries.collection",
-  "core/ui"
+  "core/entries/entries.collection"
 ],
 
-function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui) {
+function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
   "use strict";
 
@@ -72,13 +71,14 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
 
         var nullDisallowed = column.get('is_nullable') === 'NO';
         var isNull = isNothing(value);
-        var input = ui.getModelColumnInput(this, key);
 
-        var skipSerializationIfNull = input.hasOwnProperty('skipSerializationIfNull') && input.skipSerializationIfNull;
+        var uiSettings = app.uiManager.getSettings(column.get('ui'));
+
+        var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
 
         var mess = (!skipSerializationIfNull && nullDisallowed && isNull) ?
           'The field cannot be empty'
-          : ui.validate(this, key, value);
+          : app.uiManager.validate(this, key, value);
 
         if (mess !== undefined) {
           errors.push({attr: key, message: mess});
@@ -126,8 +126,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
             var columns = ui.get('visible_columns') ? ui.get('visible_columns').split(',') : [];
             var value = attributes[id] || [];
             var options = {
-              table: app.tables.get(tableRelated),
-              structure: app.columns[tableRelated],
+              table: app.schemaManager.getTable(tableRelated),
+              structure: app.schemaManager.getColumns('tables', tableRelated),
               parse:true,
               filters: {columns_visible: columns}
               //preferences: app.preferences[column.get('table_related')],
@@ -152,7 +152,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
             }
 
             if (relationshipType === 'MANYTOMANY') {
-              options.junctionStructure = app.columns[column.get('junction_table')];
+              options.junctionStructure = app.schemaManager.getColumns('tables', column.get('junction_table'));
               attributes[id] = new EntriesNestedCollection(value, options);
             }
 
@@ -223,7 +223,6 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
 
             // Add foreign data to patch. Only add changed attributes
             value = value.toJSON({changed: true});
-            console.log(key, value);
 
             if (!_.isEmpty(value)) {
               options.attrs[key] = value;
@@ -276,7 +275,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
       if (options.changed && !this.isNew()) {
         attributes = this.changed;
         // always include id
-        if (!_.isEmpty(attributes) && this.id) {
+        if (this.id) {
           attributes.id = this.id;
         }
       }
@@ -288,7 +287,10 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, ui)
 
         if (isModel || isCollection) {
           value = value.toJSON(options);
-          if (_.isEmpty(value)) return;
+
+          //@todo keep an eye on why this wasn't serialized before
+          //if (_.isEmpty(value)) return;
+
           attributes[key] = value;
         }
 

@@ -1,6 +1,8 @@
-define([], function() {
+define(function(require, exports, module) {
 
-  var media = {};
+  "use strict";
+
+  var media = module.exports;
 
   media.table = {
     "id":"directus_media",

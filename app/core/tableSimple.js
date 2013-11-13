@@ -24,7 +24,7 @@ function(app, Backbone) {
       // Check permissions
       // @todo: filter this on the backend and get rid of this
       rows = _.filter(rows, function(row) {
-        var privileges = app.privileges[row.table_name];
+        var privileges = app.schemaManager.getPrivileges(row.table_name);
 
         // filter out tables without privileges
         if (typeof privileges === "undefined" || privileges === undefined || privileges === null) return false;

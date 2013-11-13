@@ -1,6 +1,8 @@
-define([], function() {
+define(function(require, exports, module) {
 
-  var messages = {};
+  "use strict";
+
+  var messages = module.exports;
 
   messages.table = {
     "id":"directus_messages",

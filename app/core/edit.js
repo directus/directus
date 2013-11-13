@@ -1,10 +1,9 @@
 define([
   "app",
-  "backbone",
-  "core/ui"
+  "backbone"
 ],
 
-function(app, Backbone, ui) {
+function(app, Backbone) {
 
   "use strict";
 
@@ -19,10 +18,6 @@ function(app, Backbone, ui) {
     ],
 
     beforeRender: function() {
-
-      // @todo: this is because of bad design. straighten this out
-      ui = ui || require('core/ui');
-      var UI = ui.initialize({model: this.model, structure: this.structure});
 
       this.structure.each(function(column) {
 
@@ -41,7 +36,7 @@ function(app, Backbone, ui) {
           this.model.set('active',1);
         }
 
-        var view = UI.getInput(column.id);
+        var view = app.uiManager.getInputInstance(this.model, column.id, {structure: this.structure});
 
         // Display:none; hidden fields
         if (_.contains(this.hiddenFields, column.id)) {
@@ -51,6 +46,11 @@ function(app, Backbone, ui) {
 
         // @todo: move this to UI
         view.$el.attr('id', 'edit_field_'+column.id);
+
+        if (column.isRequired()) {
+          view.$el.addClass('required');
+        }
+
         this.insertView(view);
 
       }, this);
@@ -78,22 +78,27 @@ function(app, Backbone, ui) {
     data: function() {
       var data = this.$el.serializeObject();
       var whiteListedData = _.pick(data, this.visibleFields);
-      
+
       // check if any of the listed data has multiple values, then serialize it to string
       _.each(whiteListedData, function(value, key, obj) {
         if (_.isArray(value)) {
           obj[key] = value.join(',');
         }
       });
-      
+
       return whiteListedData;
     },
 
     initialize: function(options) {
+
       var structureHiddenFields,
           optionsHiddenFields = options.hiddenFields || [];
 
-      this.structure = this.model.getStructure();
+      this.structure = options.structure || this.model.getStructure();
+
+      if (this.structure === undefined) {
+        throw new Error('The edit view will not work without a valid model schema');
+      }
 
       // Hide fields defined as hidden in the schema
       structureHiddenFields = this.structure.chain()
@@ -117,7 +122,6 @@ function(app, Backbone, ui) {
       }, this);
 
       this.model.on('sync', function(e) {
-        // reset changes!
         this.model.changed = {};
         this.render();
       }, this);

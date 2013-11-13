@@ -9,11 +9,10 @@
 define([
   'app',
   'backbone',
-  'core/ui',
   'core/directus'
 ],
 
-function(app, Backbone, ui, Directus) {
+function(app, Backbone, Directus) {
 
   "use strict";
 
@@ -46,7 +45,7 @@ function(app, Backbone, ui, Directus) {
 
     beforeRender: function() {
       this.setView('#page-content', this.editView);
-      this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false, canEdit:true}}));
+      this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, buttonText: 'Save', showDropdown: false, showDelete: false, canEdit:true}}));
     },
 
     initialize: function(options) {

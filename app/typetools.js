@@ -9,7 +9,7 @@ define(["plugins/jquery.timeago"], function() {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       },
 
-    capitalize: function(string, seperator) {
+    capitalize: function(string, seperator, keepDirectus) {
       var idIndex;
 
       if (!string) return '';
@@ -20,7 +20,7 @@ define(["plugins/jquery.timeago"], function() {
 
       var directusIndex = string.indexOf("directus_");
 
-      if (directusIndex === 0) {
+      if (directusIndex === 0 && !keepDirectus) {
         string = string.substring(9);
       }
 

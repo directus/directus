@@ -108,7 +108,13 @@ function getGroups() {
 function getSettings() {
 	global $ZendDb, $acl;
 	$settings = new DirectusSettingsTableGateway($acl, $ZendDb);
-	return $settings->fetchAll();
+	$items = array();
+	foreach ($settings->fetchAll() as $key => $value) {
+		$value['id'] = $key;
+		$items[] = $value;
+	};
+
+	return $items;
 }
 
 function getActiveMedia() {

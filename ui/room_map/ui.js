@@ -313,7 +313,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       $('#room_width, #room_depth').change(this.updateRoomSize);
       this.updateRoomSize();
 
-      this.seats = app.entries.seats;
+      this.seats = app.getEntries('seats');
       if(0 == this.seats.length) {
         this.seats.once('sync', _.bind(function() {
           this.loadSeatData();
