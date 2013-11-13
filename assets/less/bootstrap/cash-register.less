@@ -60,20 +60,24 @@
 	margin-right: 300px;
 
 	th, td {
-		&:first-child {
+		&:first-child, &:nth-child(2) {
+			width: 60px;
+		}
+
+		&:nth-child(3) {
 			padding-left: 12px;
 		}
 
-		&:nth-child(2) {
+		&:nth-child(4) {
 			text-align: right;
 			padding-left: 0;
 		}
 
-		&:nth-child(3) {
+		&:nth-child(5) {
 			width: 60px; // 80px - 20px for left padding
 		}
 
-		&:nth-child(4), &:nth-child(5) {
+		&:nth-child(6), &:nth-child(7) {
 			padding-left: 0;
 			width: 80px;
 		}

@@ -14,6 +14,7 @@ class Formatting {
         return $name;
     }
 
+
     public static function underscoreToCamelCase($string) {
         $filtered = preg_replace_callback(
             "/(_)(.)/",
