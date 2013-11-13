@@ -1,6 +1,8 @@
-define([], function() {
+define(function(require, exports, module) {
 
-  var groups = {};
+  "use strict";
+
+  var groups = module.exports;
 
   groups.table = {
     "id":"directus_groups",

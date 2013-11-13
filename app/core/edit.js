@@ -1,10 +1,9 @@
 define([
   "app",
-  "backbone",
-  "core/ui"
+  "backbone"
 ],
 
-function(app, Backbone, ui) {
+function(app, Backbone) {
 
   "use strict";
 
@@ -19,10 +18,6 @@ function(app, Backbone, ui) {
     ],
 
     beforeRender: function() {
-
-      // @todo: this is because of bad design. straighten this out
-      ui = ui || require('core/ui');
-      var UI = ui.initialize({model: this.model, structure: this.structure});
 
       this.structure.each(function(column) {
 
@@ -41,7 +36,7 @@ function(app, Backbone, ui) {
           this.model.set('active',1);
         }
 
-        var view = UI.getInput(column.id);
+        var view = app.uiManager.getInputInstance(this.model, column.id, {structure: this.structure});
 
         // Display:none; hidden fields
         if (_.contains(this.hiddenFields, column.id)) {
@@ -95,10 +90,15 @@ function(app, Backbone, ui) {
     },
 
     initialize: function(options) {
+
       var structureHiddenFields,
           optionsHiddenFields = options.hiddenFields || [];
 
-      this.structure = this.model.getStructure();
+      this.structure = options.structure || this.model.getStructure();
+
+      if (this.structure === undefined) {
+        throw new Error('The edit view will not work without a valid model schema');
+      }
 
       // Hide fields defined as hidden in the schema
       structureHiddenFields = this.structure.chain()

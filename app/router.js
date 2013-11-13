@@ -6,24 +6,20 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define([
-  "app",
-  "core/directus",
-  "core/tabs",
-  "core/ui",
-  "modules/activity/activity",
-  "modules/tables/table",
-  "modules/settings/settings",
-  "modules/media/media",
-  "modules/users/users",
-  "modules/messages/messages",
-  "core/modal",
-  "core/collection.settings"
-],
-
-function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messages, Modal, CollectionSettings, extensions) {
+define(function(require, exports, module) {
 
   "use strict";
+
+  var app = require('app'),
+      Directus = require('core/directus'),
+      Tabs = require('core/tabs'),
+      Activity = require('modules/activity/activity'),
+      Table = require('modules/tables/table'),
+      Settings = require('modules/settings/settings'),
+      Media = require('modules/media/media'),
+      Users = require('modules/users/users'),
+      Messages = require('modules/messages/messages'),
+      Modal = require('core/modal');
 
   var Router = Backbone.Router.extend({
 
@@ -92,7 +88,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
     tables: function() {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.Tables({collection: app.tables}));
+      this.v.main.setView('#content', new Table.Views.Tables({collection: app.schemaManager.getTables()}));
       this.v.main.render();
     },
 
@@ -100,7 +96,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.setTitle('Tables');
       var collection;
 
-      if (!app.tables.get(tableName)) {
+      if (!app.schemaManager.getTable(tableName)) {
         return this.notFound();
       }
 
@@ -230,13 +226,13 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       switch(name) {
         case 'tables':
-          this.v.main.setView('#content', new Settings.Tables({collection: app.tables}));
+          this.v.main.setView('#content', new Settings.Tables({collection: app.schemaManager.getTables()}));
           break;
         case 'global':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global'}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global', structure: app.schemaManager.getColumns('settings', 'global')}));
           break;
         case 'media':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), title: 'Media'}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), title: 'Media', structure: app.schemaManager.getColumns('settings', 'media')}));
           break;
         case 'permissions':
           this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));
@@ -248,7 +244,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
           this.v.main.setView('#content', new Settings.About());
           break;
         default:
-          this.v.main.setView('#content', new Settings.Main({tables: app.tables}));
+          this.v.main.setView('#content', new Settings.Main({tables: app.schemaManager.getTables()}));
           break;
       }
 
@@ -260,7 +256,7 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
       this.setTitle('Settings');
       this.tabs.setActive('settings');
 
-      this.v.main.setView('#content', new Settings.Table({model: app.tables.get(tableName)}));
+      this.v.main.setView('#content', new Settings.Table({model: app.schemaManager.getTable(tableName)}));
 
       this.v.main.render();
     },
@@ -305,16 +301,16 @@ function(app, Directus, Tabs, UI, Activity, Table, Settings, Media, Users, Messa
 
       _.each(options.extensions, function(item) {
         try {
-          this.extensions[item.id] = new item.Router(item.id);
+          this.extensions[item] = app.extensionsManager.getInstance(item);
         } catch (e) {
-          console.log(item.id + ' failed to load:', e.stack);
-          this.tabs.get(item.id).set({'error': e});
+          console.log(item + ' failed to load:', e.stack);
+          this.tabs.get(item).set({'error': e});
           return;
         }
         //this.extensions[item.id].bind('all', logRoute);
-        this.extensions[item.id].on('route', function() {
-          this.trigger('subroute',item.id);
-          this.trigger('route:'+item.id,item.id);
+        this.extensions[item].on('route', function() {
+          this.trigger('subroute',item);
+          this.trigger('route:'+item,item);
         }, this);
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);

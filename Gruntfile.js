@@ -23,6 +23,7 @@ module.exports = function(grunt) {
             scripturl: true,
             multistr: true,
             onecase: true,
+            sub: true,
             predef: ['$', '_', 'Backbone', 'File', 'Handlebars', 'require']
           },
           all: ['app/**/*.js']
@@ -55,13 +56,15 @@ module.exports = function(grunt) {
                 mainConfigFile: 'app/config.js',
                 out: 'dist/app.js',
 
+                findNestedDependencies: true,
+
                 optimize: "uglify2",
 
                 paths: {
                     requireLib: '../assets/js/libs/require'
                 },
                 name: 'main',
-                include: ["requireLib"]
+                include: ['requireLib']
 
                 // name: "almond",
                 // include: ["main"]

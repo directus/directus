@@ -1,18 +1,15 @@
-define([
-  "app",
-  "backbone",
-  "core/collection.columns"
-],
-
-function(app, Backbone, Structure) {
+define(function(require, exports, module) {
 
   "use strict";
 
-  var Model =  Backbone.Model.extend({
+  var Backbone = require('backbone'),
+      ColumnsCollection = require('./columns.collection');
+
+  module.exports =  Backbone.Model.extend({
 
     parse: function(data) {
       if (this.columns === undefined) {
-        this.columns = new Structure.Columns(data.columns, {parse: true});
+        this.columns = new ColumnsCollection(data.columns, {parse: true});
       } else {
         this.columns.reset(data.columns, {parse: true});
       }
@@ -28,5 +25,4 @@ function(app, Backbone, Structure) {
 
   });
 
-  return Model;
 });
