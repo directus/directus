@@ -156,7 +156,6 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       this.listenTo(collection, 'sync', function(model, resp, options) {
         //if (collection instanceof Backbone.Model) return;
         if (options.silent) return;
-        console.log('sync event', arguments);
         this.render();
       });
 
