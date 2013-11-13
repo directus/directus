@@ -62,8 +62,8 @@ require(["config"], function() {
     app.API_URL = options.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;
-    app.settings = new SettingsCollection(options.settings, {parse: true, url: app.API_URL + 'settings'});
-
+    app.settings = new SettingsCollection(options.settings, {parse: true});
+    app.settings.url = app.API_URL + 'settings';
     app.uiManager = new UIManager();
 
     app.extensionsManager = new ExtensionsManager();
@@ -104,7 +104,6 @@ require(["config"], function() {
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup global instances
-
       var rowsPerPage = parseInt(app.settings.get('global').get('rows_per_page'), 10);
 
       app.entries = {};
