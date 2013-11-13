@@ -27,6 +27,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'insertimage', ui: 'checkbox', def: '1'}
   ];
 
+   Handlebars.registerHelper('newlineToBr', function(text){
+       return new Handlebars.SafeString(text.string.replace(/\n/g, '<br/>'));
+   });
+
   var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label>'+
                   '<div class="btn-group btn-group-attached btn-group-action active">'+
                     '{{#if bold}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b>B</b></button>{{/if}}'+
@@ -41,7 +45,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     '{{#if insertimage}}<button type="button" class="btn btn-small btn-silver" data-tag="insertimage" rel="tooltip" data-placement="bottom" title="Image">Image</button>{{/if}}'+
                                       '<button type="button" class="btn btn-small btn-silver" data-tag="insertHTML" rel="tooltip" data-placement="bottom" title="HTML">HTML</button>'+
                   '</div>'+
-                  '<div class="force-editable" style="display:block; height:{{height}}px;" contenteditable="true" id="{{name}}">{{value}}</div>'+
+                  '<div class="force-editable" style="display:block; height:{{height}}px;" contenteditable="true" id="{{name}}">{{newlineToBr value}}</div>'+
                   '<input type="hidden" name="{{name}}" value="{{markupValue}}">';
 
 //<span class="glyphicon-eye-close"></span>
@@ -96,6 +100,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
+         //value = value.replace(/[\n]/g, '<br/>');
       return {
         height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '100',
         bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold') : true,
