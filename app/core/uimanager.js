@@ -58,8 +58,10 @@ define(function(require, exports, module) {
     // Returns a reference to a UI based on a
     // model/attribute/schema combination
     _getModelUI: function(model, attr, schema) {
-      var structure = model.getStructure();
-      var schema = structure.get(attr);
+      if (schema === undefined) {
+        var structure = model.getStructure();
+        schema = structure.get(attr);
+      }
       var uiId = schema.get('ui');
 
       return this._getUI(uiId);
