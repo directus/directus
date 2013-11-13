@@ -95,7 +95,9 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
             ->where
                 ->greaterThan('message_id', $maxId)
                 ->and
-                ->equalTo('recepient', $currentUser);
+                ->equalTo('recepient', $currentUser)
+                ->and
+                ->equalTo('read', 0);
 
         $result = $this->selectWith($select)->toArray();
 

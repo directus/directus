@@ -7,6 +7,11 @@ AddType font/woff .woff
 <ifModule mod_rewrite.c>
     RewriteEngine On
 
+    RewriteRule ^assets - [L,NC]
+    RewriteRule ^extensions/([^/]+) - [L,NC]
+    RewriteRule ^extensions/([^/]+)/assets - [L,NC]
+    RewriteRule ^extensions/([^/]+)/main.js - [L,NC]
+
     # Media Thumbnails
     # - Cached thumbnail exists
     #RewriteCond %{REQUEST_URI} ^/thumbnail/(.+)$

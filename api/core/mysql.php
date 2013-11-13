@@ -779,7 +779,19 @@ class MySQL {
             //This is a 'virtual column'. Write to directus schema instead of MYSQL
             $data['table_name'] = $tbl_name;
             $data['sort'] = 9999;
-            $data['ui'] = ($data_type == 'ALIAS') ? 'alias' : 'relational';
+
+            switch ($data_type) {
+                case 'ALIAS':
+                    $data['ui'] = 'alias';
+                    break;
+                case 'ONETOMANY':
+                    $data['ui'] = 'one_to_many';
+                    break;
+                case 'MANYTOMANY':
+                    $data['ui'] = 'many_to_many';
+                    break;
+            }
+
             $data = array_intersect_key($data, array_flip($alias_columns));
             //Wrap data in an array so the multi collection can be used.
             $this->set_entries('directus_columns', array($data));

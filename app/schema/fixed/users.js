@@ -1,6 +1,8 @@
-define([], function() {
+define(function(require, exports, module) {
 
-  var users = {};
+  "use strict";
+
+  var users = module.exports;
 
   users.table = {
     "id":"directus_users",
@@ -320,6 +322,7 @@ define([], function() {
       "required":false,
       "ui":"many_to_one",
       "options": {
+        "id": "many_to_one",
         "table_related": "directus_groups",
         // "related_table": "directus_groups",
         "visible_column": "name"

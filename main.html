@@ -11,12 +11,14 @@
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="{{cssFilePath}}">
+  <link rel="stylesheet" href="{{path}}assets/css/alertify.core.css">
+  <link rel="stylesheet" href="{{path}}assets/css/alertify.default.css">
 
 </head>
 
 <body>
 
-<div id="splash" style="position:absolute; left:0px; top:0px; right:0px; bottom:0px; background-color:#FFF; z-index:99999999; cursor:progress"></div>
+<div id="splash" style="position:absolute; left:0px; top:0px; right:0px; bottom:0px; background-color:#FFF; z-index:99999999; cursor:progress; background-image:url({{path}}assets/img/directus-logo-throbber.gif); background-repeat:no-repeat; background-position:center center;"></div>
 
 <!-- Main container. -->
 <div id="wrap">
@@ -53,7 +55,7 @@ window.directusData = {{data}};
 </script>
 
 <!-- Application source. -->
-<script data-main="{{path}}app/config" src="{{path}}assets/js/libs/require.js"></script>
+<script data-main="{{path}}app/main" src="{{path}}assets/js/libs/require.js"></script>
 <!--<script src="{{path}}dist/release.js"></script>-->
 
 

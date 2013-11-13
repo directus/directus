@@ -1,6 +1,8 @@
-define([], function() {
+define(function(require, exports, module) {
 
-  var settingsGlobalSchema = {};
+  "use strict";
+
+  var settingsGlobalSchema = module.exports;
 
   settingsGlobalSchema.structure = [
       {id: 'site_name', ui: 'textinput', char_length: 255},

@@ -85,6 +85,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
     initialize: function(options) {
       Module.Input.__super__.initialize.call(this, options);
+      console.log(this.related.entries);
       this.junctionStructure = this.related.entries.junctionStructure;
       this.hasSort = this.junctionStructure.get('sort') !== undefined;
       this.related.tableOptions.deleteColumn = true;

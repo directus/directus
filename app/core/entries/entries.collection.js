@@ -1,11 +1,10 @@
 define([
-  "app",
   "backbone",
   "core/collection",
   "core/entries/entries.model"
 ],
 
-function(app, Backbone, Collection, EntriesModel) {
+function(Backbone, Collection, EntriesModel) {
 
   "use strict";
 
@@ -110,13 +109,23 @@ function(app, Backbone, Collection, EntriesModel) {
     },
 
     initialize: function(models, options) {
-      var rowsPerPage = options.rowsPerPage || 500;
       this.structure = options.structure;
       this.privileges = options.privileges;
       this.table = options.table;
-      this.active = this.table.get('active');
+
+      this.rowsPerPage = options.rowsPerPage || 500;
       this.url = options.url || this.table.get('url') + '/rows';
-      this.filters = _.extend({ currentPage: 0, perPage: rowsPerPage, sort: 'id', sort_order: 'ASC', active: '1,2' }, options.filters);
+      this.filters = options.filters;
+
+      this.active = this.table.get('active');
+
+      this.filters = _.extend({
+        currentPage: 0,
+        perPage: this.rowsPerPage,
+        sort: 'id',
+        sort_order: 'ASC',
+        active: '1,2'
+      }, this.filters);
 
       if (options.preferences) {
         this.preferences = options.preferences;

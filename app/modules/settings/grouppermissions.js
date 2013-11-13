@@ -17,215 +17,135 @@ function(app, Directus, PaneSaveView) {
 
   "use strict";
 
-  var Permissions = Backbone.Layout.extend({
+  var GroupPermissions = {};
 
-    template: 'settings-grouppermissions',
+  GroupPermissions.Collection = Backbone.Collection.extend({
 
-    events: {
-      'click .toggleFields': 'expandTableFields',
-      // 'click .toggleAllPermissionsRowSingle': 'toggleAllPermissionsRowSingle',
-      'click .toggleAllPermissionsCol': 'toggleAllPermissionsCol',
-      'click .togglePermission': 'togglePermission'
-    },
-
-    afterRender: function() {
-      // this.$el.find('.table-fields').hide();
-      app.affix();
-    },
-
-    expandTableFields: function(e){
-      e.stopPropagation();
-      e.preventDefault();
-      var $allCarets = this.$el.find('.directus-glyphicon-arrow-right');
-      var $clickedCaret = this.$(e.target);
-      var tableName = $clickedCaret.parent().parent().data('tableName');
-
-      $clickedCaret.toggleClass('active');
-      $allCarets.not($clickedCaret).removeClass('active');
-      this.$el.find("[data-table-group='" + tableName + "']").toggleClass('active');
-      this.$el.find("[data-table-group]").not("[data-table-group='" + tableName + "']").removeClass('active');
-    },
-
-    toggleAllPermissionsRowSingle: function(e){
-      // var self = this,
-      //     $target = this.$(e.target),
-      //     targetIndex = $target.index() + 1,
-      //     $allCols = $target.nextUntil('tr');
-
-      // if ($target.hasClass('off') || $target.hasClass('on')){
-      //   console.log('if');
-
-      //   if($target.hasClass('off')){
-      //     $target.toggleClass('on off');
-      //     $allCols.each(function(){
-      //       var $this = $(this);
-
-      //       if(!$this.hasClass('disabled')){
-      //         self.toggleAllPermissionsRowSingleHelper($this);
-      //         $this.removeClass('on off mix').addClass('on');
-      //       }
-      //     });
-      //   } else {
-      //     $target.toggleClass('on off');
-      //     $allCols.each(function(){
-      //       var $this = $(this);
-
-      //       if(!$this.hasClass('disabled')){
-      //         self.toggleAllPermissionsRowSingleHelper($this);
-      //         $this.removeClass('on off mix').addClass('off');
-      //       }
-      //     });
-      //   }
-      // }
-      // else { // this exectutes only on FIRST CLICK of table name
-      //   console.log('else');
-      //   $target.addClass('off');
-      //   $allCols.each(function(){
-      //     var $this = $(this);
-
-      //     if(!$this.hasClass('disabled')){
-      //       self.toggleAllPermissionsRowSingleHelper($this);
-      //       $this.removeClass('on off mix').addClass('off');
-      //     }
-      //   });
-      // }
-    },
-
-    toggleAllPermissionsRowSingleHelper: function($fieldCol){
-      // console.log($fieldCol.parent()[0]);
-      // Check if rows ABOVE AND BELOW are all equal,
-      // and update Table Name's column into X or CHECK,
-      // while remoing the "mix" class....
-
-      // var fieldColIndex = $fieldCol.index() + 1,
-      //     tableName = $fieldCol.parent().data('tableGroup'),
-      //     $tableSiblings = $fieldCol.parent().siblings('[data-table-group=' + tableName + ']');
-      //     console.log($tableSiblings.find('td:nth-child('+ fieldColIndex +')')[0]);
-    },
-
-    toggleAllPermissionsCol: function(e){
-      console.log('works?');
-      var $target = this.$(e.target),
-          targetIndex = $target.index() + 1;
-
-      var $allRows = this.$el.find("td:nth-child(" + targetIndex + ")");
-
-      if ($target.hasClass('off') || $target.hasClass('on')){
-        console.log('if');
-
-        $target.toggleClass('on off');
-
-        if ($target.hasClass('on')){
-          $allRows.removeClass('on off mix').addClass('on');
-          console.log("all on");
-        } else if($target.hasClass('off')){
-          $allRows.removeClass('on off mix').addClass('off');
-          console.log("all off");
-        }
-      } else {
-        console.log('else');
-        $target.removeClass('on off').addClass('off');
-        $allRows.removeClass('on off mix').addClass('off');
-      }
-    },
-
-    togglePermission: function(e){
-      var $target = this.$(e.target),
-          $targetParent = $target.parent(),
-          targetIndex = $targetParent.index() + 1,
-          tableName = $targetParent.parent().data('tableName');
-
-      if($targetParent.hasClass('mix')) {
-        // console.log("if");
-        this.$el
-          .find("[data-table-name='" + tableName + "']")
-          .find("td:nth-child(" + targetIndex + ")").removeClass('mix')
-          .addClass('on');
-
-        this.$el
-          .find("[data-table-group='" + tableName + "']")
-          .find("td:nth-child(" + targetIndex + ")").removeClass('on off')
-          .addClass('on');
-      }
-      else if($targetParent.hasClass('tableNameRow')) {
-        // console.log("else if");
-        // var targetIndex = $targetParent.index() + 1;
-        // var tableName = $targetParent.parent().data('tableName');
-        // console.log(targetIndex, tableName);
-
-        $targetParent.toggleClass('on off');
-        $targetParent.data('isMix', false);
-
-        this.$el
-          .find("[data-table-group='" + tableName + "']")
-          .find("td:nth-child(" + targetIndex + ")").toggleClass('on off');
-      }
-      else {
-        // console.log("else");
-        tableName = $targetParent.parent().prevAll('tr[data-table-name]').first().data('tableName');
-        // console.log(tableName);
-        $targetParent.toggleClass('on off');
-        $targetParent.data('isMix', true);
-
-        // console.log($targetParent.parent());
-
-        var $tableNameHeader = this.$el
-          .find("[data-table-name='" + tableName + "']")
-          .find("td:nth-child(" + targetIndex + ")");
-
-        var $affectedCells = this.$el
-          .find("[data-table-group='" + tableName + "']")
-          .find("td:nth-child(" + targetIndex + ")");
-
-        var affectedCellsCount = $affectedCells.length;
-
-        var checkerClass = $affectedCells.eq(0).attr('class');
-
-        if ($affectedCells.not('.' + checkerClass).length === 0){
-          if ($affectedCells.eq(0).hasClass('on')){
-            $tableNameHeader.removeClass('on off mix').addClass('on');
-          } else {
-            $tableNameHeader.removeClass('on off mix').addClass('off');
-          }
-        } else {
-          $tableNameHeader.removeClass('on off').addClass('mix');
-        }
-
-        // console.log(checkerClass);
-        // console.log($target);
-
-          // console.log(this.$el.find("[data-table-name='" + tableName + "']"));
-          // .toggleClass('on off');
-      }
-
-      // HANDLE AJAX LOGIC FOR PERMISSIONS
-      // if ($target.hasClass('directus-glyphicon-check')){
-      //   // logic to remove permission
-      // }
-      // else if ($target.hasClass('directus-glyphicon-remove')){
-      //   // logic to add permission
-      // }
+    getExpandedPermissions: function() {
     }
 
   });
 
-  var GroupPermissions = Backbone.Layout.extend({
+  GroupPermissions.Permissions = Backbone.Layout.extend({
+
+    template: 'settings-grouppermissions',
+
+    events: {
+      'click td > span': function(e) {
+        var $target = $(e.target),
+            $tr = $target.closest('tr'),
+            permissions, cid, attributes, model;
+
+        this.toggleIcon($target);
+
+        cid = $tr.data('cid');
+        attributes = this.parseTablePermissions($tr);
+
+        model = this.collection.get(cid);
+        model.set(attributes);
+        model.save();
+      }
+    },
+
+    toggleIcon: function($span) {
+        $span.toggleClass('directus-glyphicon-check')
+             .toggleClass('directus-glyphicon-remove');
+    },
+
+    parseTablePermissions: function($tr) {
+      var cid, id, permissions;
+
+      permissions = $tr.children()
+                       .has('span.directus-glyphicon-check')
+                       .map(function() { return $(this).data('value'); })
+                       .get()
+                       .join();
+
+      return {permissions: permissions};
+    },
+
+    serialize: function() {
+      // Create data structure suitable for view
+      var data = this.collection.map(function(model) {
+        var permissions, read_field_blacklist,
+            write_field_blacklist, data, defaultPermissions;
+
+        data = model.toJSON();
+        data.cid = model.cid;
+        data.title = app.capitalize(data.table_name, '_', true);
+
+        permissions = (model.get('permissions') || '').split(','),
+
+        data.hasReadBlacklist = false;
+        data.hasWriteBlacklist = false;
+
+        // Default permissions
+        data.permissions = {
+          'add': false,
+          'edit': false,
+          'bigedit': false,
+          'delete': false,
+          'bigdelete': false,
+          'alter': false,
+          'view': false
+        };
+
+        _.each(permissions, function(property) {
+          if (data.permissions.hasOwnProperty(property)) {
+            data.permissions[property] = true;
+          }
+        });
+
+        /*
+        Don't blacklist columns yet
+        read_field_blacklist = (model.get('read_field_blacklist') || '').split();
+        write_field_blacklist = (model.get('write_field_blacklist') || '').split();
+
+        data.blacklist = app.columns[data.table_name].map(function(model) {
+          var readBlacklist = _.contains(read_field_blacklist, model.id);
+          var writeBlacklist = _.contains(write_field_blacklist, model.id);
+
+          if (readBlacklist) {
+            data.hasReadBlacklist = true;
+            data.hasWriteBlacklist = true;
+          }
+
+          return {
+            column_name: model.id,
+            read: readBlacklist,
+            write: writeBlacklist
+          };
+        });
+        */
+
+        return data;
+      });
+
+      return {tables: data};
+    },
+
+    initialize: function() {
+      this.collection.on('sync', this.render, this);
+    }
+
+  });
+
+  GroupPermissions.Page = Backbone.Layout.extend({
 
     template: 'page',
 
-    serialize: {
-      title: 'XXX',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}],
-      sidebar: true
-    },
-
-    beforeRender: function() {
-      this.setView('#page-content', new Permissions({collection: this.collection}));
-      //this.insertView('#sidebar', new PaneSaveView({model: this.model, single: this.single}));
+    serialize: function() {
+      return {
+        title: this.options.title,
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
+      };
     },
 
     afterRender: function() {
-      //this.setView('#sidebar', new)
+      var view = new GroupPermissions.Permissions({collection: this.collection});
+      this.setView('#page-content', view);
+      this.collection.fetch();
+      //this.insertView('#sidebar', new PaneSaveView({model: this.model, single: this.single}));
     }
 
   });

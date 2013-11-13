@@ -7,6 +7,10 @@ require([
 
   var unknowUserMessage = "-";
 
+  Handlebars.registerHelper('imagesPath', function() {
+    return app.PATH + 'assets/img/';
+  });
+
   //Raw handlebars data, helpful with data types
   Handlebars.registerHelper('raw', function(data) {
     return data && new Handlebars.SafeString(data);
@@ -29,7 +33,8 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    if(date === undefined || date === null || isNaN(date.getTime()) ) {
+    if(date === undefined || date === null || typeof date === 'string' || isNaN(date.getTime()) ) {
+      //throw new Error('The date is not in a correct date format');
       return '-';
     }
     date = date.toISOString();
@@ -177,6 +182,13 @@ require([
     var select = '<select id="' + name + '">' + options.join('') + '</select>';
 
     return new Handlebars.SafeString(select);
+  });
+
+  //Handlebars UI helper!
+  Handlebars.registerHelper("ui", function(model, attr, options) {
+    if (model.isNested) model = model.get('data');
+    var html = app.uiManager.getList(model, attr) || '';
+    return new Handlebars.SafeString(html);
   });
 
 });
