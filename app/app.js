@@ -1,17 +1,22 @@
-define([
-  "handlebars",
-  "typetools",
-  "plugins/backbone.layoutmanager",
-  "plugins/bootstrap-dropdown",
-  "plugins/bootstrap-typeahead"
-],
-
-function(Handlebars, typetools) {
+define(function(require, exports, module) {
 
   "use strict";
 
-  // Provide a global location to place configuration settings and module
-  // creation.
+  var Handlebars = require('handlebars'),
+      typetools = require("typetools");
+      //Extensions = require('core/extensionsmanager');
+
+  // Globally load Handlebars helpers
+  require('helpers');
+
+  // Load layout manager so it can be configured
+  require('plugins/backbone.layoutmanager');
+
+  // Globally load Bootstrap plugins
+  require('plugins/bootstrap-dropdown');
+  require('plugins/bootstrap-typeahead');
+
+
   var app = {
 
     progressView: undefined,
@@ -24,7 +29,13 @@ function(Handlebars, typetools) {
       //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
     },
 
-    // Return a new instance
+
+    unlockScreen: function() {
+      this.noScroll = false;
+      //$('.modal-backdrop').remove();
+    },
+
+    // Return a new instance of Entries
     getEntries: function(tableName) {
       var directusTables = ['directus_media', 'directus_groups', 'directus_users'];
 
@@ -33,21 +44,14 @@ function(Handlebars, typetools) {
         return app.entries[tableName];
       }
 
+      var defaultOptions = app.schemaManager.getFullSchema(tableName);
+
       // Other tables need a new instance
-      var entries = new app.EntriesCollection([], {
-        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'), 10),
-        structure: app.columns[tableName],
-        table: app.tables.get(tableName),
-        preferences: app.preferences[tableName],
-        privileges: app.privileges[tableName]
-      });
+      var entries = new app.EntriesCollection([], _.extend({
+        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'), 10)
+      },defaultOptions));
 
       return entries;
-    },
-
-    unlockScreen: function() {
-      this.noScroll = false;
-      //$('.modal-backdrop').remove();
     },
 
     logErrorToServer: function(type, message, details) {
@@ -270,7 +274,7 @@ function(Handlebars, typetools) {
   window.app = app;
 
   // Mix Backbone.Events, modules, typetools, and layout management into the app object.
-  return _.extend(app, {
+  app = _.extend(app, {
     // Create a custom object with a nested Views object.
     module: function(additionalProps) {
       return _.extend({ Views: {} }, additionalProps);
@@ -288,5 +292,7 @@ function(Handlebars, typetools) {
     }
 
   }, Backbone.Events, typetools);
+
+  module.exports = app;
 
 });
