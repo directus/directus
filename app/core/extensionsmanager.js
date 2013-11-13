@@ -29,7 +29,7 @@ define(function(require, exports, module) {
     },
 
     getInstance: function(id) {
-      var extension = new this._extensions[id].Router;
+      var extension = new this._extensions[id].Router(id);
 
       return extension;
     },
