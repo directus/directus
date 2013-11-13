@@ -15,7 +15,7 @@ class Formatting {
 	}
 
 	public static function underscoreToCamelCase($string) {
-	    $filtered = preg_replace("/(_)(.)/e", "strtoupper('\\2')", $string);
+	    $filtered = preg_replace_callback("/(_)(.)/", function($m){return strtoupper($m[2]);}, $string);
 	    $filtered = ucfirst($filtered);
 	    return $filtered;
 	}
