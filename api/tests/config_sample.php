@@ -17,8 +17,3 @@ define('DIRECTUS_PATH', '/directus/');
 define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../..'));
 
 define('API_VERSION', 1);
-
-// Full path to the static resources directory.
-// E.g: /Users/olov/MAMP/resources/
-// Add 'temp' and 'thumbnail' directories in the resources directory
-define('RESOURCES_PATH', '');
