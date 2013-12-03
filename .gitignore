@@ -13,7 +13,7 @@ api/vendor
 
 # Ignore log files, but track the log README
 api/logs/*.log
-api/logs/coverage/*
+api/tests/logs/coverage/*
 
 docs/api-responses
 /log
