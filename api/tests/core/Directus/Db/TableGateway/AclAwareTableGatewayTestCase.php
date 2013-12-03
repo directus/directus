@@ -3,13 +3,6 @@
 namespace ApiTestSuite\Directus\Db\TableGateway;
 
 use Directus\Bootstrap;
-use Directus\Acl\Exception\UnauthorizedFieldReadException;
-use Directus\Acl\Exception\UnauthorizedFieldWriteException;
-use Directus\Acl\Exception\UnauthorizedTableAddException;
-use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
-use Directus\Acl\Exception\UnauthorizedTableBigEditException;
-use Directus\Acl\Exception\UnauthorizedTableDeleteException;
-use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
