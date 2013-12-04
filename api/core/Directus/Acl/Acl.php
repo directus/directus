@@ -136,32 +136,36 @@ class Acl {
             throw new \InvalidArgumentException("Invalid list: $list");
         }
         $privilegeList = self::$base_acl[$list];
-        $tableHasGroupPrivileges = array_key_exists($table, $this->groupPrivileges);
-        if($tableHasGroupPrivileges) {
-            $groupTableList = $this->groupPrivileges[$table][$list];
-            switch($list) {
-                // Replace base table permissions with group table permissions
-                case self::TABLE_PERMISSIONS:
-                    $privilegeList = $groupTableList;
-                    break;
-                // Merge in the table-specific read blacklist, if one exists
-                case self::FIELD_READ_BLACKLIST:
-                case self::FIELD_WRITE_BLACKLIST:
-                default:
-                    $privilegeList = array_merge($privilegeList, $groupTableList);
-                    break;
+
+        $groupHasTablePrivileges = array_key_exists($table, $this->groupPrivileges);
+        if($groupHasTablePrivileges) {
+            if(!isset($this->groupPrivileges[$table][$list]) || !is_array($this->groupPrivileges[$table][$list])) {
+                throw new \RuntimeException('Expected permissions list `$list` for table `$table` to be set and type array.');
+            }
+            $privilegeList = $this->groupPrivileges[$table][$list];
+        } else {
+            $groupHasFallbackTablePrivileges = array_key_exists('*', $this->groupPrivileges);
+            if($groupHasFallbackTablePrivileges) {
+                if(!isset($this->groupPrivileges['*'][$list]) || !is_array($this->groupPrivileges['*'][$list])) {
+                    throw new \RuntimeException('Expected permissions list `$list` for table `$table` to be set and type array.');
+                }
+                $privilegeList = $this->groupPrivileges['*'][$list];
             }
         }
-        // Filter mandatory read fields from read blacklists
-        $mandatoryReadFields = $this->getTableMandatoryReadList($table);
-        $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $privilegeList);
-        if(count($disallowedReadBlacklistFields)) {
-            // Log warning
-            $this->logger()->warn("Table $table contains read blacklist items which are designated as mandatory read fields:");
-            $this->logger()->warn(print_r($disallowedReadBlacklistFields, true));
-            // Filter out mandatory read items
-            $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
+
+        if(self::FIELD_READ_BLACKLIST === $privilegeList) {
+            // Filter mandatory read fields from read blacklists
+            $mandatoryReadFields = $this->getTableMandatoryReadList($table);
+            $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $privilegeList);
+            if(count($disallowedReadBlacklistFields)) {
+                // Log warning
+                $this->logger()->warn("Table $table contains read blacklist items which are designated as mandatory read fields:");
+                $this->logger()->warn(print_r($disallowedReadBlacklistFields, true));
+                // Filter out mandatory read items
+                $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
+            }
         }
+
         // Remove null values
         return array_filter($privilegeList);
     }
