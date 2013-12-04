@@ -2,8 +2,9 @@
 
 namespace ApiTestSuite\Directus\Db\TableGateway;
 
-use Directus\Bootstrap;
+use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Bootstrap;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
@@ -25,14 +26,45 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
 		$this->baseUserGroupPrivileges = $this->PrivilegesGateway->fetchGroupPrivileges($this->currentUser['group']);
 	}
 
+    public function testGroupFallbackTablePrivilegesAreYieldedAsExpected() {
+        $groupPrivileges = $this->baseUserGroupPrivileges;
+        $groupPrivileges['tableA'][Acl::FIELD_READ_BLACKLIST] = array('col3','col2','col5');
+        $groupPrivileges['tableA'][Acl::FIELD_WRITE_BLACKLIST] = array('col1','col10','col8');
+        $groupPrivileges['tableA'][Acl::TABLE_PERMISSIONS] = array('add','edit');
+        $this->acl->setGroupPrivileges($groupPrivileges);
+
+        $privilegeLists = array_keys(Acl::$base_acl);
+
+        foreach($privilegeLists as $list) {
+            $privileges = $this->acl->getTablePrivilegeList('tableB', $list);
+            $this->assertEquals($privileges, Acl::$base_acl[$list], "Undefined group table privileges list should match base privileges list.");
+        }
+
+        $groupPrivileges['*'][Acl::FIELD_READ_BLACKLIST] = array('col1','col2','col6');
+        $groupPrivileges['*'][Acl::FIELD_WRITE_BLACKLIST] = array('col9','col12','col7');
+        $groupPrivileges['*'][Acl::TABLE_PERMISSIONS] = array('add','edit','bigedit','delete','bigdelete');
+        $this->acl->setGroupPrivileges($groupPrivileges);
+
+        foreach($privilegeLists as $list) {
+            // Test undefined table privileges
+            $privileges = $this->acl->getTablePrivilegeList('tableB', $list);
+            $this->assertEquals($privileges, $groupPrivileges['*'][$list], "Undefined table privileges should have yielded group fallback privilege list.");
+
+            // Test defined table privileges
+            $privileges = $this->acl->getTablePrivilegeList('tableA', $list);
+            $this->assertEquals($privileges, $groupPrivileges['tableA'][$list], "Defined table privileges should have yielded the privilege list that was defined.");
+        }
+
+    }
+
     /**
      * @expectedException Directus\Acl\Exception\UnauthorizedFieldWriteException
      */
     public function testUpdateWriteBlacklistEnforcement() {
         // Omit "big" privileges
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_users']['write_field_blacklist'] = array('salt');
-        $groupPrivileges['directus_users']['permissions'] = array('add','edit','delete');
+        $groupPrivileges['directus_users'][Acl::FIELD_WRITE_BLACKLIST] = array('salt');
+        $groupPrivileges['directus_users'][Acl::TABLE_PERMISSIONS] = array('add','edit','delete');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -47,8 +79,8 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testInsertWriteBlacklistEnforcement() {
         // Omit "big" privileges
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_activity']['write_field_blacklist'] = array('data');
-        $groupPrivileges['directus_activity']['permissions'] = array('add','edit','delete');
+        $groupPrivileges['directus_activity'][Acl::FIELD_WRITE_BLACKLIST] = array('data');
+        $groupPrivileges['directus_activity'][Acl::TABLE_PERMISSIONS] = array('add','edit','delete');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -72,8 +104,8 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testInsertAddEnforcement() {
         // Omit "add" privileges from the test table & set arbitrary write blacklist
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_activity']['write_field_blacklist'] = array('data');
-        $groupPrivileges['directus_activity']['permissions'] = array('edit','delete');
+        $groupPrivileges['directus_activity'][Acl::FIELD_WRITE_BLACKLIST] = array('data');
+        $groupPrivileges['directus_activity'][Acl::TABLE_PERMISSIONS] = array('edit','delete');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -97,7 +129,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testUpdateBigEditEnforcementWithMagicOwnerColumn() {
         // Omit "bigedit" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
+        $groupPrivileges['directus_media'][Acl::TABLE_PERMISSIONS] = array('edit','delete');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // Find a record which isn't ours on the media table
@@ -124,7 +156,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testUpdateBigEditEnforcementWithMagicOwnerColumnAndMultipleOwners() {
         // Omit "bigedit" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
+        $groupPrivileges['directus_media'][Acl::TABLE_PERMISSIONS] = array('edit','delete');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // Find a record which isn't ours on the media table
@@ -154,7 +186,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testUpdateBigEditEnforcementWithoutMagicOwnerColumn() {
         // Omit "bigedit" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_tables']['permissions'] = array('edit','delete');
+        $groupPrivileges['directus_tables'][Acl::TABLE_PERMISSIONS] = array('edit','delete');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -170,7 +202,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testBigDeleteEnforcementWithoutMagicOwnerColumn() {
         // Omit "bigdelete" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_tables']['permissions'] = array('edit');
+        $groupPrivileges['directus_tables'][Acl::TABLE_PERMISSIONS] = array('edit');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -185,7 +217,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testBigDeleteEnforcementWithMagicOwnerColumnAndMultipleOwners() {
         // Omit "bigdelete" privileges from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_media']['permissions'] = array('edit','delete');
+        $groupPrivileges['directus_media'][Acl::TABLE_PERMISSIONS] = array('edit','delete');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // Find a record which isn't ours on the media table
@@ -214,7 +246,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testLittleDeleteEnforcement() {
         // Omit "little" delete privilege from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_users']['permissions'] = array('edit');
+        $groupPrivileges['directus_users'][Acl::TABLE_PERMISSIONS] = array('edit');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -230,7 +262,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
     public function testLittleEditEnforcement() {
         // Omit "little" edit privilege from the test table
         $groupPrivileges = $this->baseUserGroupPrivileges;
-        $groupPrivileges['directus_users']['permissions'] = array('delete');
+        $groupPrivileges['directus_users'][Acl::TABLE_PERMISSIONS] = array('delete');
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -248,7 +280,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Include a number of fields on the read field blacklist
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $blacklistedColumns = array('password','salt');
-        $groupPrivileges['directus_users']['read_field_blacklist'] = $blacklistedColumns;
+        $groupPrivileges['directus_users'][Acl::FIELD_READ_BLACKLIST] = $blacklistedColumns;
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -263,7 +295,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         // Include a number of fields on the read field blacklist
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $blacklistedColumns = array('non','empty');
-        $groupPrivileges['some_table']['read_field_blacklist'] = $blacklistedColumns;
+        $groupPrivileges['some_table'][Acl::FIELD_READ_BLACKLIST] = $blacklistedColumns;
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -282,7 +314,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $blacklistedColumns = array('ssn','dreams');
         $groupPrivileges[$table_name] = array();
-        $groupPrivileges[$table_name]['read_field_blacklist'] = $blacklistedColumns;
+        $groupPrivileges[$table_name][Acl::FIELD_READ_BLACKLIST] = $blacklistedColumns;
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -305,7 +337,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $blacklistedColumns = array('ssn','dreams');
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges[$table_b] = array();
-        $groupPrivileges[$table_b]['read_field_blacklist'] = $blacklistedColumns;
+        $groupPrivileges[$table_b][Acl::FIELD_READ_BLACKLIST] = $blacklistedColumns;
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -326,7 +358,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $blacklistedColumns = array('ssn','dreams');
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges[$table_b] = array();
-        $groupPrivileges[$table_b]['read_field_blacklist'] = $blacklistedColumns;
+        $groupPrivileges[$table_b][Acl::FIELD_READ_BLACKLIST] = $blacklistedColumns;
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
@@ -347,7 +379,7 @@ class AclAwareTableGatewayTestCase extends \DirectusApiTestCase {
         $blacklistedColumns = array('ssn','dreams');
         $groupPrivileges = $this->baseUserGroupPrivileges;
         $groupPrivileges[$table_b] = array();
-        $groupPrivileges[$table_b]['read_field_blacklist'] = $blacklistedColumns;
+        $groupPrivileges[$table_b][Acl::FIELD_READ_BLACKLIST] = $blacklistedColumns;
         $this->acl->setGroupPrivileges($groupPrivileges);
 
         // This should throw an AclException
