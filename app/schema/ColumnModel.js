@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   "use strict";
 
   var app = require('app'),
-      UIModel = require('./ui.model');
+      UIModel = require('./UIModel');
 
   module.exports = Backbone.Model.extend({
 
@@ -17,6 +17,7 @@ define(function(require, exports, module) {
           throw new Error("Column '"+ result.id + "' in table '" + tableName + "' does not have a UI");
         }
 
+        // Can this be done elsewhere so we can break the app dependency?
         if (!app.uiManager.hasUI(ui)) {
           throw new Error("The UI '" + ui + "', set for the column '" + result.id + "' in the table '" + tableName + "' does not exist!");
         }
