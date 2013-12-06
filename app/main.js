@@ -16,7 +16,7 @@ require(["config"], function() {
     "core/tabs",
     'modules/messages/messages',
     'plugins/alertify',
-    'schema/index',
+    'schema/SchemaManager',
     'modules/settings/collection',
     'core/uimanager',
     'core/extensionsmanager'
@@ -64,11 +64,10 @@ require(["config"], function() {
     app.PATH = options.path;
     app.settings = new SettingsCollection(options.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
+
     app.uiManager = new UIManager();
-
     app.extensionsManager = new ExtensionsManager();
-
-    app.schemaManager = new SchemaManager();
+    app.schemaManager = new SchemaManager({apiURL: app.API_URL});
 
     // Load extenral UI / extensions
     $.when(
