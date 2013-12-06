@@ -320,9 +320,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeInsert($insert);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
-                echo "This query failed: " . $this->dumpSql($insert);
-                // throw $e;
-                die;
+                throw new \RuntimeException("This query failed: " . $this->dumpSql($insert));
             }
             throw $e;
         }
