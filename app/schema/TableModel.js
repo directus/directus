@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   "use strict";
 
   var Backbone = require('backbone'),
-      ColumnsCollection = require('./columns.collection');
+      ColumnsCollection = require('./ColumnsCollection');
 
   module.exports =  Backbone.Model.extend({
 
