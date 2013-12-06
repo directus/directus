@@ -76,8 +76,9 @@ class Acl {
 
     public function getTableMandatoryReadList($table) {
         $list = self::$mandatory_read_lists['*'];
-        if(array_key_exists($table, self::$mandatory_read_lists))
+        if(array_key_exists($table, self::$mandatory_read_lists)) {
             $list = array_merge($list, self::$mandatory_read_lists[$table]);
+        }
         return $list;
     }
 
@@ -131,35 +132,40 @@ class Acl {
      * @throws  \InvalidArgumentException If $list is not a known value.
      */
     public function getTablePrivilegeList($table, $list) {
-        if(!$this->isTableListValue($list))
+        if(!$this->isTableListValue($list)) {
             throw new \InvalidArgumentException("Invalid list: $list");
+        }
         $privilegeList = self::$base_acl[$list];
-        $tableHasGroupPrivileges = array_key_exists($table, $this->groupPrivileges);
-        if($tableHasGroupPrivileges) {
-            $groupTableList = $this->groupPrivileges[$table][$list];
-            switch($list) {
-                // Replace base table permissions with group table permissions
-                case self::TABLE_PERMISSIONS:
-                    $privilegeList = $groupTableList;
-                    break;
-                // Merge in the table-specific read blacklist, if one exists
-                case self::FIELD_READ_BLACKLIST:
-                case self::FIELD_WRITE_BLACKLIST:
-                default:
-                    $privilegeList = array_merge($privilegeList, $groupTableList);
-                    break;
+
+        $groupHasTablePrivileges = array_key_exists($table, $this->groupPrivileges);
+        if($groupHasTablePrivileges) {
+            if(!isset($this->groupPrivileges[$table][$list]) || !is_array($this->groupPrivileges[$table][$list])) {
+                throw new \RuntimeException('Expected permissions list `$list` for table `$table` to be set and type array.');
+            }
+            $privilegeList = $this->groupPrivileges[$table][$list];
+        } else {
+            $groupHasFallbackTablePrivileges = array_key_exists('*', $this->groupPrivileges);
+            if($groupHasFallbackTablePrivileges) {
+                if(!isset($this->groupPrivileges['*'][$list]) || !is_array($this->groupPrivileges['*'][$list])) {
+                    throw new \RuntimeException('Expected permissions list `$list` for table `$table` to be set and type array.');
+                }
+                $privilegeList = $this->groupPrivileges['*'][$list];
             }
         }
-        // Filter mandatory read fields from read blacklists
-        $mandatoryReadFields = $this->getTableMandatoryReadList($table);
-        $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $privilegeList);
-        if(count($disallowedReadBlacklistFields)) {
-            // Log warning
-            $this->logger()->warn("Table $table contains read blacklist items which are designated as mandatory read fields:");
-            $this->logger()->warn(print_r($disallowedReadBlacklistFields, true));
-            // Filter out mandatory read items
-            $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
+
+        if(self::FIELD_READ_BLACKLIST === $privilegeList) {
+            // Filter mandatory read fields from read blacklists
+            $mandatoryReadFields = $this->getTableMandatoryReadList($table);
+            $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $privilegeList);
+            if(count($disallowedReadBlacklistFields)) {
+                // Log warning
+                $this->logger()->warn("Table $table contains read blacklist items which are designated as mandatory read fields:");
+                $this->logger()->warn(print_r($disallowedReadBlacklistFields, true));
+                // Filter out mandatory read items
+                $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
+            }
         }
+
         // Remove null values
         return array_filter($privilegeList);
     }
@@ -167,8 +173,9 @@ class Acl {
     public function censorFields($table, $data) {
         $censorFields = $this->getTablePrivilegeList($table, self::FIELD_READ_BLACKLIST);
         foreach($censorFields as $key) {
-            if(array_key_exists($key, $data))
+            if(array_key_exists($key, $data)) {
                 unset($data[$key]);
+            }
         }
         return $data;
     }
@@ -187,8 +194,9 @@ class Acl {
     }
 
     public function getCmsOwnerColumnByTable($table) {
-        if(!array_key_exists($table, self::$cms_owner_columns_by_table))
+        if(!array_key_exists($table, self::$cms_owner_columns_by_table)) {
             return false;
+        }
         return self::$cms_owner_columns_by_table[$table];
     }
 
@@ -201,15 +209,18 @@ class Acl {
      */
     public function getRecordCmsOwnerId($record, $table) {
         $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, "Zend\Db\RowGateway\RowGateway");
-        if(!($isRowGateway || is_array($record)))
+        if(!($isRowGateway || is_array($record))) {
             throw new \InvalidArgumentException("Parameter must be either an array or an instance/subclass of Zend\Db\RowGateway\RowGateway (instance of " . get_class($record) . " given)");
+        }
         $ownerColumnName = $this->getCmsOwnerColumnByTable($table);
-        if(false === $ownerColumnName)
+        if(false === $ownerColumnName) {
             return false;
-        if($isRowGateway && !$record->offsetExists($ownerColumnName))
+        }
+        if($isRowGateway && !$record->offsetExists($ownerColumnName)) {
             return false;
-        elseif(is_array($record) && !array_key_exists($ownerColumnName, $record))
+        } elseif(is_array($record) && !array_key_exists($ownerColumnName, $record)) {
             return false;
+        }
         return (int) $record[$ownerColumnName];
     }
 
@@ -223,8 +234,9 @@ class Acl {
             ->group($cmsOwnerColumn);
         $select->where($predicate);
         $results = $TableGateway->selectWith($select);
-        foreach($results as $row)
+        foreach($results as $row) {
             $ownerIds[] = $row[$cmsOwnerColumn];
+        }
         return array(count($results), $ownerIds);
     }
 
