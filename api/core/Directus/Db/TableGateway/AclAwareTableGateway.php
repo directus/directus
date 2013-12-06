@@ -92,6 +92,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     /**
      * HELPER FUNCTIONS
      */
+
+    protected function withKey($key, $resultSet) {
+        $withKey = array();
+        foreach($resultSet as $row) {
+            $withKey[$row[$key]] = $row;
+        }
+        return $withKey;
+    }
     
     protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
         foreach($resultSet as &$result) {
@@ -156,10 +164,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public function fetchAllWithIdKeys($selectModifier = null) {
         $allWithIdKeys = array();
         $all = $this->fetchAll($selectModifier)->toArray();
-        foreach($all as $entry) {
-            $allWithIdKeys[$entry[$this->primaryKeyFieldName]] = $entry;
-        }
-        return $allWithIdKeys;
+        return $this->withKey('id', $all);
     }
 
     public function fetchAllActiveSort($sort = null, $dir = "ASC") {
@@ -182,8 +187,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return false;
         }
         $row = $row->toArray();
-        // Tmp removal note, this breaks things, cannot use:
-        // array_walk($row, array($this, 'castFloatIfNumeric'));
         return $row;
     }
 
@@ -288,6 +291,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             if('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($select));
             }
+            // @todo send developer warning
+            throw $e;
         }
     }
 
@@ -322,6 +327,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             if('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($insert));
             }
+            // @todo send developer warning
             throw $e;
         }
     }
@@ -395,6 +401,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             if('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($update));
             }
+            // @todo send developer warning
+            throw $e;
         }
     }
 
@@ -458,8 +466,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($delete));
-                // die;
             }
+            // @todo send developer warning
+            throw $e;
         }
     }
 
