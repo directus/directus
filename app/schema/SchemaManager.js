@@ -2,13 +2,11 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var app = require('app');
-
   // Structures
-  var ColumnModel = require('./column.model'),
-      ColumnsCollection = require('./columns.collection'),
-      TableModel = require('./table.model'),
-      UIModel = require('./ui.model'),
+  var ColumnModel = require('./ColumnModel'),
+      ColumnsCollection = require('./ColumnsCollection'),
+      TableModel = require('./TableModel'),
+      UIModel = require('./UIModel'),
       DirectusCollection = require('core/collection');
 
   // Static Schemas
@@ -25,7 +23,9 @@ define(function(require, exports, module) {
     'media': require('./fixed/settings.media')
   };
 
-  var SchemaManager = module.exports = function() {
+  var SchemaManager = module.exports = function SchemaManager(options) {
+
+    this.apiURL = options.apiURL;
 
     var TableCollection = DirectusCollection.extend({
       model: TableModel
@@ -78,11 +78,11 @@ define(function(require, exports, module) {
         }
 
         // Set table schema
-        options.schema.url = app.API_URL + 'tables/' + tableName;
+        options.schema.url = this.apiURL + 'tables/' + tableName;
 
         var model = new TableModel(options.schema, {parse: true});
-        model.url = app.API_URL + 'tables/' + tableName;
-        model.columns.url = app.API_URL + 'tables/' + tableName + '/columns';
+        model.url = this.apiURL + 'tables/' + tableName;
+        model.columns.url = this.apiURL + 'tables/' + tableName + '/columns';
         model.columns.table = model;
 
         this._columnSchemas[namespace][tableName] = model.columns;
@@ -111,7 +111,7 @@ define(function(require, exports, module) {
     // Registers user preferences for tables (sort, visible columns etc)
     registerPreferences: function(data) {
       _.each(data, function(preference) {
-        this._preferences[preference.table_name] = new Backbone.Model(preference, {url: app.API_URL + 'tables/' + preference.table_name + '/preferences'});
+        this._preferences[preference.table_name] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
       }, this);
     },
 
@@ -149,7 +149,12 @@ define(function(require, exports, module) {
         preferences: this._preferences[tableName],
         privileges: this._privileges[tableName]
       };
+    },
+
+    getEntriesInstance: function(tableName) {
+
     }
+
   });
 
 });
