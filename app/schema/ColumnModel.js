@@ -18,9 +18,9 @@ define(function(require, exports, module) {
         }
 
         // Can this be done elsewhere so we can break the app dependency?
-        if (!app.uiManager.hasUI(ui)) {
+        /*if (!app.uiManager.hasUI(ui)) {
           throw new Error("The UI '" + ui + "', set for the column '" + result.id + "' in the table '" + tableName + "' does not exist!");
-        }
+        }*/
 
         // make sure that the structure is the right kind for the UI
         // @todo: move this to options instead so it doesn't need to change
