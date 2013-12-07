@@ -24,6 +24,8 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
 
     updateFrequency: 10000,
 
+    filters: {columns_visible: ['from','subject','date_updated'], sort: 'date_updated', sort_order: 'DESC'},
+
     updateMessages: function() {
       var that = this;
       var data = {

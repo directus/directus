@@ -18,11 +18,12 @@ require(["config"], function() {
     'plugins/alertify',
     'schema/SchemaManager',
     'modules/settings/collection',
-    'core/uimanager',
-    'core/extensionsmanager'
+    'core/UIManager',
+    'core/ExtensionManager',
+    'core/EntriesManager'
   ],
 
-  function(app, Router, Backbone, Directus, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, UIManager, ExtensionsManager) {
+  function(app, Router, Backbone, Directus, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, UIManager, ExtensionManager, EntriesManager) {
 
     "use strict";
 
@@ -62,12 +63,15 @@ require(["config"], function() {
     app.API_URL = options.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;
+
+    // This needs elegance
     app.settings = new SettingsCollection(options.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
 
-    app.uiManager = new UIManager();
-    app.extensionsManager = new ExtensionsManager();
-    app.schemaManager = new SchemaManager({apiURL: app.API_URL});
+    app.uiManager = UIManager;
+    app.extensionsManager = ExtensionManager;
+    app.schemaManager = SchemaManager;
+    app.schemaManager.setup({apiURL: app.API_URL});
 
     // Load extenral UI / extensions
     $.when(
@@ -101,43 +105,32 @@ require(["config"], function() {
 
       usersSchema.add(extendedUsers, {parse: true});
 
+
+
+      EntriesManager.setup({
+        apiURL: app.API_URL,
+        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'), 10)
+      });
+
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup global instances
-      var rowsPerPage = parseInt(app.settings.get('global').get('rows_per_page'), 10);
 
       app.entries = {};
 
       app.users =
-      app.entries.directus_users = new Directus.EntriesCollection([], _.extend({
-        rowsPerPage: 3000,
-        url: app.API_URL + 'tables/directus_users/rows',
-        filters: {columns_visible: ['avatar', 'first_name', 'last_name', 'group', 'email', 'description']}
-      }, app.schemaManager.getFullSchema('directus_users')));
+      app.entries.directus_users = EntriesManager.getInstance('directus_users');
 
       app.media =
-      app.entries.directus_media = new Directus.EntriesCollection([], _.extend({
-        rowsPerPage: rowsPerPage,
-        url: app.API_URL + 'media',
-        filters: {columns_visible: ['name','title','size','user','date_uploaded', 'storage_adapter']}
-      }, app.schemaManager.getFullSchema('directus_media')));
+      app.entries.directus_media = EntriesManager.getInstance('directus_media');
 
-      app.activity = new Directus.EntriesCollection([], _.extend({
-        rowsPerPage: rowsPerPage,
-        url: app.API_URL + 'activity/',
-        filters: {columns_visible: ['activity','datetime','user'], sort_order: 'DESC'}
-      }, app.schemaManager.getFullSchema('directus_activity')));
+      app.activity = EntriesManager.getInstance('directus_activity');
 
       app.groups =
-      app.entries.directus_groups = new Directus.EntriesCollection([], _.extend({
-        rowsPerPage: rowsPerPage,
-        url: app.API_URL + 'groups/'
-      }, app.schemaManager.getFullSchema('directus_groups')));
+      app.entries.directus_groups = EntriesManager.getInstance('directus_groups');;
 
       app.messages =
       app.entries.directus_messages = new Messages.Collection([],  _.extend({
-        rowsPerPage: rowsPerPage,
-        url: app.API_URL + 'messages/rows/',
-        filters: {columns_visible: ['from','subject','date_updated'], sort: 'date_updated', sort_order: 'DESC'}
+        url: app.API_URL + 'messages/rows/'
       }, app.schemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {

@@ -3,76 +3,107 @@ define(function(require, exports, module) {
   "use strict";
 
   // Structures
-  var ColumnModel = require('./ColumnModel'),
-      ColumnsCollection = require('./ColumnsCollection'),
-      TableModel = require('./TableModel'),
-      UIModel = require('./UIModel'),
+  var ColumnModel        = require('./ColumnModel'),
+      ColumnsCollection  = require('./ColumnsCollection'),
+      TableModel         = require('./TableModel'),
+      UIModel            = require('./UIModel'),
       DirectusCollection = require('core/collection');
 
   // Static Schemas
   var directusSchemas = {
-    'directus_activity': require('./fixed/activity'),
-    'directus_groups': require('./fixed/groups'),
-    'directus_media': require('./fixed/media'),
-    'directus_messages': require('./fixed/messages'),
-    'directus_users': require('./fixed/users')
+    'directus_activity'  : require('./fixed/activity'),
+    'directus_groups'    : require('./fixed/groups'),
+    'directus_media'     : require('./fixed/media'),
+    'directus_messages'  : require('./fixed/messages'),
+    'directus_users'     : require('./fixed/users')
   };
-  // Static Settings Schemas
+
+  /**
+   * @private
+   * Static Settings Schemas
+   */
   var settingsSchemas = {
     'global': require('./fixed/settings.global'),
     'media': require('./fixed/settings.media')
   };
 
-  var SchemaManager = module.exports = function SchemaManager(options) {
+  /**
+   * @private
+   * Collection of MySQL Tables
+   */
+  var TableCollection = DirectusCollection.extend({
+    model: TableModel
+  });
 
-    this.apiURL = options.apiURL;
-
-    var TableCollection = DirectusCollection.extend({
-      model: TableModel
-    });
-
-    this._tableSchemas = {
-      tables: new TableCollection([], {
-        filters: {
-          columns: ['table_name','comment','active','date_modified','single'], 
-          conditions: {hidden: false, is_junction_table: false}
-        }
-      })
-    };
-
-    this._columnSchemas = {
-      tables: {},
-      settings: {},
-      ui: {}
-    };
-
-    this._preferences = {};
-    this._privileges = {};
-
-    var defaultTables = [
-      { schema: _.extend({columns: directusSchemas['directus_activity'].structure}, directusSchemas['directus_activity'].table) },
-      { schema: _.extend({columns: directusSchemas['directus_groups'].structure}, directusSchemas['directus_groups'].table)  },
-      { schema: _.extend({columns: directusSchemas['directus_media'].structure}, directusSchemas['directus_media'].table) },
-      { schema: _.extend({columns: directusSchemas['directus_messages'].structure}, directusSchemas['directus_messages'].table) },
-      { schema: _.extend({columns: directusSchemas['directus_users'].structure}, directusSchemas['directus_users'].table) }
-    ];
-
-    this.register('tables', defaultTables);
-
-    this.registerSettingsSchemas([
-      {id: 'global', schema: settingsSchemas.global},
-      {id: 'media', schema: settingsSchemas.media}
-    ]);
+  /**
+   * @private
+   * Holds schemas of all tables in the database
+   */
+  var tableSchemas = {
+    tables: new TableCollection([], {
+      filters: {
+        columns: ['table_name','comment','active','date_modified','single'],
+        conditions: {hidden: false, is_junction_table: false}
+      }
+    })
   };
 
-  _.extend(SchemaManager.prototype, {
+  /**
+   * @private
+   * Holds schemas of all columns in the database
+   */
+  var columnSchemas = {
+    tables: {},
+    settings: {},
+    ui: {}
+  };
+
+  /**
+   * @private
+   * Holds preferences
+   */
+  var preferences = {};
+
+  /**
+   * @private
+   * Holds privileges
+   */
+  var privileges = {};
+
+  /**
+   * @private
+   * Holds defaualt table configurations
+   */
+  var defaultTables = [
+    { schema: _.extend({columns: directusSchemas['directus_activity'].structure}, directusSchemas['directus_activity'].table) },
+    { schema: _.extend({columns: directusSchemas['directus_groups'].structure}, directusSchemas['directus_groups'].table)  },
+    { schema: _.extend({columns: directusSchemas['directus_media'].structure}, directusSchemas['directus_media'].table) },
+    { schema: _.extend({columns: directusSchemas['directus_messages'].structure}, directusSchemas['directus_messages'].table) },
+    { schema: _.extend({columns: directusSchemas['directus_users'].structure}, directusSchemas['directus_users'].table) }
+  ];
+
+
+
+  module.exports = {
+
+    setup: function(options) {
+      this.apiURL = options.apiURL;
+
+      this.register('tables', defaultTables);
+
+      this.registerSettingsSchemas([
+        {id: 'global', schema: settingsSchemas.global},
+        {id: 'media', schema: settingsSchemas.media}
+      ]);
+
+    },
 
     register: function(namespace, tables) {
       _.each(tables, function(options) {
 
         var tableName = options.schema.id;
 
-        if (this._tableSchemas[namespace].get(tableName)) {
+        if (tableSchemas[namespace].get(tableName)) {
           console.warn('Warning: ' + tableName + ' allready exists in the schema manager, the schema will be ignored');
           return;
         }
@@ -85,8 +116,8 @@ define(function(require, exports, module) {
         model.columns.url = this.apiURL + 'tables/' + tableName + '/columns';
         model.columns.table = model;
 
-        this._columnSchemas[namespace][tableName] = model.columns;
-        this._tableSchemas[namespace].add(model);
+        columnSchemas[namespace][tableName] = model.columns;
+        tableSchemas[namespace].add(model);
 
       }, this);
     },
@@ -96,7 +127,7 @@ define(function(require, exports, module) {
     registerUISchemas: function(data) {
       var namespace = 'ui';
       _.each(data, function(ui) {
-        this._columnSchemas[namespace][ui.id] = new ColumnsCollection(ui.variables, {parse: true});
+        columnSchemas[namespace][ui.id] = new ColumnsCollection(ui.variables, {parse: true});
       }, this);
     },
 
@@ -104,50 +135,50 @@ define(function(require, exports, module) {
     registerSettingsSchemas: function(data) {
       var namespace = 'settings';
       _.each(data, function(settings) {
-        this._columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.structure, {parse: true});
+        columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.structure, {parse: true});
       }, this);
     },
 
     // Registers user preferences for tables (sort, visible columns etc)
     registerPreferences: function(data) {
       _.each(data, function(preference) {
-        this._preferences[preference.table_name] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
+        preferences[preference.table_name] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
       }, this);
     },
 
     // Registers user priviliges
     registerPrivileges: function(data) {
       _.each(data, function(privilege) {
-        this._privileges[privilege.table_name] = new Backbone.Model(privilege, {parse:true});
+        privileges[privilege.table_name] = new Backbone.Model(privilege, {parse:true});
       }, this);
     },
 
     getColumns: function(namespace, tableName) {
-      return this._columnSchemas[namespace][tableName];
+      return columnSchemas[namespace][tableName];
     },
 
     getTable: function(tableName) {
-      return this._tableSchemas.tables.get(tableName);
+      return tableSchemas.tables.get(tableName);
     },
 
     getTables: function(tableName) {
-      return this._tableSchemas.tables;
+      return tableSchemas.tables;
     },
 
     getPrivileges: function(tableName) {
-      return this._privileges[tableName];
+      return privileges[tableName];
     },
 
     countTables: function() {
-      return this._tableSchemas.tables.length;
+      return tableSchemas.tables.length;
     },
 
     getFullSchema: function(tableName) {
       return {
-        table: this._tableSchemas.tables.get(tableName),
-        structure: this._columnSchemas.tables[tableName],
-        preferences: this._preferences[tableName],
-        privileges: this._privileges[tableName]
+        table: tableSchemas.tables.get(tableName),
+        structure: columnSchemas.tables[tableName],
+        preferences: preferences[tableName],
+        privileges: privileges[tableName]
       };
     },
 
@@ -155,6 +186,6 @@ define(function(require, exports, module) {
 
     }
 
-  });
+  }
 
 });
