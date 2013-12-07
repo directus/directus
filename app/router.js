@@ -293,6 +293,7 @@ define(function(require, exports, module) {
     },
 
     initialize: function(options) {
+
       //Fade out and remove splash
       $('#splash').fadeOut('fast').remove();
 

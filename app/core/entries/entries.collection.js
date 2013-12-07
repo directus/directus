@@ -12,6 +12,8 @@ function(Backbone, Collection, EntriesModel) {
 
     model: EntriesModel,
 
+    rowsPerPage: 100,
+
     toJSON: function(options) {
       options = options || {};
       var result = EntriesCollection.__super__.toJSON.apply(this, [options]);
@@ -113,9 +115,10 @@ function(Backbone, Collection, EntriesModel) {
       this.privileges = options.privileges;
       this.table = options.table;
 
-      this.rowsPerPage = options.rowsPerPage || 500;
+      if (options.rowsPerPage) this.rowsPerPage = options.rowsPerPage;
+      if (options.filters) this.filters = options.filters;
+
       this.url = options.url || this.table.get('url') + '/rows';
-      this.filters = options.filters;
 
       this.active = this.table.get('active');
 

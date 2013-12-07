@@ -36,17 +36,18 @@ define(function(require, exports, module) {
     require('core-ui/password')
   ]);
 
-  var UIManager = function UI(options) {
-    this._uis = {};
-    this.register(defaultUis);
-  };
+  /**
+   * @private
+   * Holds all UI's that are registered
+   */
+  var uis = {};
 
   // Attach all methods to the UIManager prototype.
-  _.extend(UIManager.prototype, {
+  var UIManager = {
 
     // Get reference to external UI file
     _getUI: function(uiId) {
-      var ui = this._uis[uiId];
+      var ui = uis[uiId];
 
       if (ui === undefined) {
         throw new Error('There is no registered UI with id "' + uiId + '"');
@@ -68,9 +69,9 @@ define(function(require, exports, module) {
     },
 
     // Registers (@todo: one or) many UI's
-    register: function(uis) {
-      _.each(uis, function(ui) {
-        this._uis[ui.id] = ui;
+    register: function(uiArray) {
+      _.each(uiArray, function(ui) {
+        uis[ui.id] = ui;
       },this);
     },
 
@@ -90,7 +91,7 @@ define(function(require, exports, module) {
 
     // Returns `true` if a UI with the provided ID exists
     hasUI: function(uiId) {
-      return this._uis.hasOwnProperty(uiId);
+      return uis.hasOwnProperty(uiId);
     },
 
     // Returns all properties and settings of a UI with the provided ID
@@ -113,7 +114,7 @@ define(function(require, exports, module) {
       options = options || {};
 
 
-      var array = _.map(this._uis, function(ui) {
+      var array = _.map(uis, function(ui) {
         return this.getSettings(ui.id);
       }, this);
 
@@ -191,7 +192,10 @@ define(function(require, exports, module) {
       }
     }
 
-  });
+  };
+
+  //Register default UI's
+  UIManager.register(defaultUis);
 
   module.exports = UIManager;
 });

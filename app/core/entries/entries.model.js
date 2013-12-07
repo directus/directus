@@ -3,10 +3,12 @@ define([
   "app",
   "backbone",
   "core/entries/entries.nestedcollection",
-  "core/entries/entries.collection"
+  "core/entries/entries.collection",
+  "core/UIManager",
+  "schema/SchemaManager"
 ],
 
-function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
+function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, UIManager, SchemaManager) {
 
   "use strict";
 
@@ -72,13 +74,13 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
         var nullDisallowed = column.get('is_nullable') === 'NO';
         var isNull = isNothing(value);
 
-        var uiSettings = app.uiManager.getSettings(column.get('ui'));
+        var uiSettings = UIManager.getSettings(column.get('ui'));
 
         var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
 
         var mess = (!skipSerializationIfNull && nullDisallowed && isNull) ?
           'The field cannot be empty'
-          : app.uiManager.validate(this, key, value);
+          : UIManager.validate(this, key, value);
 
         if (mess !== undefined) {
           errors.push({attr: key, message: mess});
@@ -112,6 +114,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
 
       EntriesCollection = EntriesCollection || require("core/entries/entries.collection");
 
+      var EntriesManager = require("core/EntriesManager");
+
       _.each(relationalColumns, function(column) {
         var id = column.id;
         var tableRelated = column.getRelated();
@@ -126,8 +130,8 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
             var columns = ui.get('visible_columns') ? ui.get('visible_columns').split(',') : [];
             var value = attributes[id] || [];
             var options = {
-              table: app.schemaManager.getTable(tableRelated),
-              structure: app.schemaManager.getColumns('tables', tableRelated),
+              table: SchemaManager.getTable(tableRelated),
+              structure: SchemaManager.getColumns('tables', tableRelated),
               parse:true,
               filters: {columns_visible: columns}
               //preferences: app.preferences[column.get('table_related')],
@@ -152,7 +156,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
             }
 
             if (relationshipType === 'MANYTOMANY') {
-              options.junctionStructure = app.schemaManager.getColumns('tables', column.get('junction_table'));
+              options.junctionStructure = SchemaManager.getColumns('tables', column.get('junction_table'));
               attributes[id] = new EntriesNestedCollection(value, options);
             }
 
@@ -165,7 +169,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection) {
               data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
             }
 
-            attributes[id] = new EntriesModel(data, {collection: app.getEntries(tableRelated)});
+            attributes[id] = new EntriesModel(data, {collection: EntriesManager.getInstance(tableRelated)});
 
             break;
         }

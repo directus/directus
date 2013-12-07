@@ -16,7 +16,6 @@ define(function(require, exports, module) {
   require('plugins/bootstrap-dropdown');
   require('plugins/bootstrap-typeahead');
 
-
   var app = {
 
     progressView: undefined,
