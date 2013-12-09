@@ -115,21 +115,15 @@ require(["config"], function() {
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup global instances
 
-      app.entries = {};
-
-      app.users =
-      app.entries.directus_users = EntriesManager.getInstance('directus_users');
-
-      app.media =
-      app.entries.directus_media = EntriesManager.getInstance('directus_media');
-
+      app.users    = EntriesManager.getInstance('directus_users');
+      app.media    = EntriesManager.getInstance('directus_media');
       app.activity = EntriesManager.getInstance('directus_activity');
+      app.groups   = EntriesManager.getInstance('directus_groups');;
 
-      app.groups =
-      app.entries.directus_groups = EntriesManager.getInstance('directus_groups');;
+      // Proxy to EntriesManager
+      app.getEntries = function(tableName) { return EntriesManager.getInstance(tableName); },
 
-      app.messages =
-      app.entries.directus_messages = new Messages.Collection([],  _.extend({
+      app.messages = new Messages.Collection([], _.extend({
         url: app.API_URL + 'messages/rows/'
       }, app.schemaManager.getFullSchema('directus_messages')));
 
@@ -142,9 +136,6 @@ require(["config"], function() {
           alertify.log('New Message');
         }
       });
-
-      // Temporary pointer so app can instanciate entries
-      app.EntriesCollection = Directus.EntriesCollection;
 
       // Bootstrap data
       app.groups.reset(options.groups, {parse: true});
