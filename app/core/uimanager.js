@@ -99,13 +99,15 @@ define(function(require, exports, module) {
       var ui = this._getUI(uiId);
 
       var variablesDeepClone = JSON.parse(JSON.stringify(ui.variables || []));
+      var sortbyDeepClone = JSON.parse(JSON.stringify(ui.sortBy || []));
 
       return {
         id: ui.id,
         skipSerializationIfNull: ui.skipSerializationIfNull || false,
         variables: variablesDeepClone,
         dataTypes: ui.dataTypes || [],
-        system: ui.system || false
+        system: ui.system || false,
+        sortBy: sortbyDeepClone
       };
     },
 
