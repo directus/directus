@@ -5,9 +5,9 @@ define(["plugins/jquery.timeago"], function() {
 
   var typetools = {
 
-      numberWithCommas: function(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      },
+    numberWithCommas: function(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
 
     capitalize: function(string, seperator, keepDirectus) {
       var idIndex;
@@ -127,22 +127,22 @@ define(["plugins/jquery.timeago"], function() {
         return bytes.toFixed(precision) + " " + sizes[posttxt];
       },
 
-      contextualDate: function(value) {
-        if (value === undefined) {
-          return '';
-        }
-        //@todo: convert value to correct timezone
-        value = (value.substr(-1).toLowerCase() == 'z') ? value : value + 'z';
-        return $.timeago(value);
-      },
-
-      dateYYYYMMDD: function(date) {
-          return date.toISOString().slice(0,10);
-      },
-
-      replaceAll: function(find, replace, str) {
-        return str.replace(new RegExp(find, 'g'), replace);
+    contextualDate: function(value) {
+      if (value === undefined) {
+        return '';
       }
+      //@todo: convert value to correct timezone
+      value = (value.substr(-1).toLowerCase() == 'z') ? value : value + 'z';
+      return $.timeago(value);
+    },
+
+    dateYYYYMMDD: function(date) {
+        return date.toISOString().slice(0,10);
+    },
+
+    replaceAll: function(find, replace, str) {
+      return str.replace(new RegExp(find, 'g'), replace);
+    }
 
   };
 
