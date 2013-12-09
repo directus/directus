@@ -1,9 +1,10 @@
 define([
   "app",
-  "backbone"
+  "backbone",
+  "core/UIManager"
 ],
 
-function(app, Backbone) {
+function(app, Backbone, UIManager) {
 
   "use strict";
 
@@ -68,8 +69,8 @@ function(app, Backbone) {
           schema = this.structure.get(column);
           ui = schema.get('ui');
 
-          options = app.uiSettings[ui];
-          if (options.sortBy !== undefined) {
+          options = UIManager.getSettings(ui);
+          if (options.length > 0) {
 
             //Merge the column values, eg first_name, last_name
             if (_.isArray(options.sortBy)) {
