@@ -10,16 +10,18 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var app = require('app'),
-      Directus = require('core/directus'),
-      Tabs = require('core/tabs'),
-      Activity = require('modules/activity/activity'),
-      Table = require('modules/tables/table'),
-      Settings = require('modules/settings/settings'),
-      Media = require('modules/media/media'),
-      Users = require('modules/users/users'),
-      Messages = require('modules/messages/messages'),
-      Modal = require('core/modal');
+  var app            = require('app'),
+      Directus       = require('core/directus'),
+      Tabs           = require('core/tabs'),
+      SchemaManager  = require('schema/SchemaManager'),
+      EntriesManager = require('core/EntriesManager'),
+      Activity       = require('modules/activity/activity'),
+      Table          = require('modules/tables/table'),
+      Settings       = require('modules/settings/settings'),
+      Media          = require('modules/media/media'),
+      Users          = require('modules/users/users'),
+      Messages       = require('modules/messages/messages'),
+      Modal          = require('core/modal');
 
   var Router = Backbone.Router.extend({
 
@@ -81,14 +83,13 @@ define(function(require, exports, module) {
     },
 
     setPage: function(View, options) {
-      options.ui = UI;
       this.v.main.setView('#content', new View(options)).render();
     },
 
     tables: function() {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.Tables({collection: app.schemaManager.getTables()}));
+      this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
     },
 
@@ -96,7 +97,7 @@ define(function(require, exports, module) {
       this.setTitle('Tables');
       var collection;
 
-      if (!app.schemaManager.getTable(tableName)) {
+      if (!SchemaManager.getTable(tableName)) {
         return this.notFound();
       }
 
@@ -104,7 +105,7 @@ define(function(require, exports, module) {
       if (this.currentCollection !== undefined && this.currentCollection.table.id == tableName) {
         collection = this.currentCollection;
       } else {
-        collection = app.getEntries(tableName);
+        collection = EntriesManager.getInstance(tableName);
       }
 
       if (collection.table.get('single')) {
@@ -146,7 +147,7 @@ define(function(require, exports, module) {
       if (this.currentCollection !== undefined && this.currentCollection.table.id == tableName) {
         collection = this.currentCollection;
       } else {
-        collection = app.getEntries(tableName);
+        collection = EntriesManager.getInstance(tableName);
       }
 
       if (collection === undefined) {
@@ -226,13 +227,13 @@ define(function(require, exports, module) {
 
       switch(name) {
         case 'tables':
-          this.v.main.setView('#content', new Settings.Tables({collection: app.schemaManager.getTables()}));
+          this.v.main.setView('#content', new Settings.Tables({collection: SchemaManager.getTables()}));
           break;
         case 'global':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global', structure: app.schemaManager.getColumns('settings', 'global')}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global', structure: SchemaManager.getColumns('settings', 'global')}));
           break;
         case 'media':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), title: 'Media', structure: app.schemaManager.getColumns('settings', 'media')}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), title: 'Media', structure: SchemaManager.getColumns('settings', 'media')}));
           break;
         case 'permissions':
           this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));
@@ -244,7 +245,7 @@ define(function(require, exports, module) {
           this.v.main.setView('#content', new Settings.About());
           break;
         default:
-          this.v.main.setView('#content', new Settings.Main({tables: app.schemaManager.getTables()}));
+          this.v.main.setView('#content', new Settings.Main({tables: SchemaManager.getTables()}));
           break;
       }
 
@@ -256,7 +257,7 @@ define(function(require, exports, module) {
       this.setTitle('Settings');
       this.tabs.setActive('settings');
 
-      this.v.main.setView('#content', new Settings.Table({model: app.schemaManager.getTable(tableName)}));
+      this.v.main.setView('#content', new Settings.Table({model: SchemaManager.getTable(tableName)}));
 
       this.v.main.render();
     },
