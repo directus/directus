@@ -146,12 +146,5 @@ define(["plugins/jquery.timeago"], function() {
 
   };
 
-  //console.log(typetools.contextualDate('2011-10-02'));
-  //console.log(typetools.numberWithCommas(500000000000000));
-  //console.log(typetools.bytesToSize(10000));
-  //console.log(typetools.numberWithCommas(500000000000000));
-  //console.log(typetools.numberWithCommas(500000000000000));
-
-
   return typetools;
 });
