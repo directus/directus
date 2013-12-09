@@ -34,25 +34,6 @@ define(function(require, exports, module) {
       //$('.modal-backdrop').remove();
     },
 
-    // Return a new instance of Entries
-    getEntries: function(tableName) {
-      var directusTables = ['directus_media', 'directus_groups', 'directus_users'];
-
-      // Directus tables are cached...
-      if (_.contains(directusTables, tableName)) {
-        return app.entries[tableName];
-      }
-
-      var defaultOptions = app.schemaManager.getFullSchema(tableName);
-
-      // Other tables need a new instance
-      var entries = new app.EntriesCollection([], _.extend({
-        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'), 10)
-      },defaultOptions));
-
-      return entries;
-    },
-
     logErrorToServer: function(type, message, details) {
       var user = app.getCurrentUser(), email = 'n/a';
 
