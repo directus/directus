@@ -121,6 +121,11 @@ define(function(require, exports, module) {
       "options":{
         "id":"one_to_many",
         "visible_columns":"subject"
+      },
+      "relationship": {
+        "type": "ONETOMANY",
+        "table_related": "directus_messages",
+        "junction_key_right": "response_to",
       }
     },
     {
