@@ -51,7 +51,7 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
       var tables = app.schemaManager.getTables();
       var options = {data: this.model.toJSON()};
       var dataType = this.model.get('data_type');
-      var tableRelated = this.model.get('table_related');
+      var tableRelated = this.model.relationship.get('table_related');
 
       if (dataType !== undefined) {
         options[dataType] = true;
@@ -61,7 +61,7 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
       }
       if (tableRelated !== undefined) {
         options.columns = app.schemaManager.getColumns(tableRelated).map(function(model) {
-          return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
+          return {column_name: model.id, selected: (model.id === this.model.relationship.get('junction_key_right'))};
         }, this);
       }
       if (dataType === 'MANYTOMANY') {
@@ -72,7 +72,7 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
       }
 
       options.tables = tables.map(function(model) {
-        return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table') ,selected: (model.id === this.model.get('table_related'))};
+        return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table') ,selected: (model.id === this.model.relationship.get('table_related'))};
       },this);
 
       return options;

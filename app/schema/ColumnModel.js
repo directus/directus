@@ -36,7 +36,7 @@ define(function(require, exports, module) {
         delete result.options;
 
         if (result.relationship) {
-          this.relationship = new RelationshipModel(options);
+          this.relationship = new RelationshipModel(result.relationship);
           this.relationship.parent;
           delete result.relationship;
         }
@@ -52,15 +52,7 @@ define(function(require, exports, module) {
       },
 
       getRelated: function() {
-        if (this.get('ui') === 'many_to_one') {
-          return this.options.get('table_related');
-        }
-        //@todo get rid of this hard dependency
-        if (this.get('ui') === 'single_media') {
-          return 'directus_media';
-        }
-
-        return this.get('table_related');
+        return this.relationship.get('table_related');
       },
 
       getTable: function() {
@@ -68,11 +60,8 @@ define(function(require, exports, module) {
       },
 
       getRelationshipType: function() {
-        var type = this.get('type');
-        var ui = this.get('ui');
-
-        if (_.contains(['MANYTOMANY', 'ONETOMANY'], type)) return type;
-        if (_.contains(['many_to_one','single_media'],ui)) return 'MANYTOONE';
+        if (!this.hasRelated()) return;
+        return this.relationship.get('type');
       },
 
       hasRelated: function() {
