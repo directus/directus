@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core/edit', 'core/table/table.view'], function(app, Backbone, EditView, TableView) {
+define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, TableView) {
 
   "use strict";
 
@@ -56,6 +56,7 @@ define(['app', 'backbone', 'core/edit', 'core/table/table.view'], function(app, 
     },
 
     editModel: function(model) {
+      var EditView = require("core/edit");
       var columnName = this.options.schema.get('junction_key_right');
       var view = new EditView({model: model, hiddenFields: [columnName]});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
@@ -75,6 +76,7 @@ define(['app', 'backbone', 'core/edit', 'core/table/table.view'], function(app, 
     },
 
     addModel: function(model) {
+      var EditView = require("core/edit");
       var modal;
       var collection = this.related.entries;
       var columnName = this.options.schema.get('junction_key_right');
