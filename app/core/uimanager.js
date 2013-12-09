@@ -35,7 +35,6 @@ define(function(require, exports, module) {
     require('core-ui/directus_messages_recepients'),
     require('core-ui/password')
   ]);
-
   /**
    * @private
    * Holds all UI's that are registered
@@ -43,7 +42,12 @@ define(function(require, exports, module) {
   var uis = {};
 
   // Attach all methods to the UIManager prototype.
-  var UIManager = {
+  module.exports = {
+
+    setup: function() {
+      //Register default UI's
+      this.register(defaultUis);
+    },
 
     // Get reference to external UI file
     _getUI: function(uiId) {
@@ -196,8 +200,4 @@ define(function(require, exports, module) {
 
   };
 
-  //Register default UI's
-  UIManager.register(defaultUis);
-
-  module.exports = UIManager;
 });

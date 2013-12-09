@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core/edit'], function(app, Backbone, Onetomany, TableView, EditView) {
+define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], function(app, Backbone, Onetomany, TableView) {
 
   "use strict";
 
@@ -48,6 +48,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
     },
 
     addModel: function(model) {
+      var EditView = require("core/edit");
       var modal;
       var collection = this.related.entries;
       var view = new EditView({model: model});
