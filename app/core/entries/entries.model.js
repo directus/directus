@@ -156,7 +156,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, UIM
             }
 
             if (relationshipType === 'MANYTOMANY') {
-              options.junctionStructure = SchemaManager.getColumns('tables', column.get('junction_table'));
+              options.junctionStructure = SchemaManager.getColumns('tables', column.relationship.get('junction_table'));
               attributes[id] = new EntriesNestedCollection(value, options);
             }
 

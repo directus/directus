@@ -43,7 +43,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
     deleteRow: function(e) {
       var cid = $(e.target).closest('tr').attr('data-cid');
       var model = this.related.entries.get(cid);
-      var relatedColumnName = this.options.schema.get('junction_key_right');
+      var relatedColumnName = this.options.schema.relationship.get('junction_key_right');
 
       if (model.isNew()) return this.related.entries.remove(model);
 
@@ -57,7 +57,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
 
     editModel: function(model) {
       var EditView = require("core/edit");
-      var columnName = this.options.schema.get('junction_key_right');
+      var columnName = this.options.schema.relationship.get('junction_key_right');
       var view = new EditView({model: model, hiddenFields: [columnName]});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
 
@@ -79,7 +79,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
       var EditView = require("core/edit");
       var modal;
       var collection = this.related.entries;
-      var columnName = this.options.schema.get('junction_key_right');
+      var columnName = this.options.schema.relationship.get('junction_key_right');
       var id = this.model.id;
 
       var view = new EditView({
@@ -115,8 +115,8 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
     //NOTE: OVERRIDE THIS IN MANY-MANY INSTEAD OF USING CONDITIONALS
     initialize: function (options) {
       this.related = {};
-      this.related.table = app.schemaManager.getTable(options.schema.get('table_related'));
-      this.related.schema = app.schemaManager.getColumns('tables', options.schema.get('table_related'));
+      this.related.table = app.schemaManager.getTable(options.schema.relationship.get('table_related'));
+      this.related.schema = app.schemaManager.getColumns('tables', options.schema.relationship.get('table_related'));
       this.related.entries = options.value;
 
       this.related.tableOptions = {
@@ -133,7 +133,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
       // Since this initialize function can be used for both many-many 
       // and one-many relationships we need some extra stuff for one-many deletes
       if (this.options.settings.id === "one_to_many") {
-        var columnName = this.options.schema.get('junction_key_right');
+        var columnName = this.options.schema.relationship.get('junction_key_right');
         this.related.tableOptions.deleteColumn = (this.related.schema.get(columnName).get('is_nullable') === "YES");
 
         this.related.tableOptions.filters = {
