@@ -339,9 +339,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             /** One-to-Many, Many-to-Many */
             if ($fieldIsCollectionAssociation) {
-                $this->enforceColumnHasNonNullValues($column, array('table_related','junction_key_right'), $this->table);
-                $foreignTableName = $column['table_related'];
-                $foreignJoinColumn = $column['junction_key_right'];
+                $this->enforceColumnHasNonNullValues($column['relationship'], array('table_related','junction_key_right'), $this->table);
+                $foreignTableName = $column['relationship']['table_related'];
+                $foreignJoinColumn = $column['relationship']['junction_key_right'];
                 switch ($lowercaseColumnType) {
 
                     /** One-to-Many */
@@ -368,8 +368,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                          * $parentRecord['collectionName1'][0-9]['active']; // for disassociating a junction via the '0' value
                          */
                         $this->enforceColumnHasNonNullValues($column, array('junction_table','junction_key_left'), $this->table);
-                        $junctionTableName = $column['junction_table'];
-                        $junctionKeyLeft = $column['junction_key_left'];
+                        $junctionTableName = $column['relationship']['junction_table'];
+                        $junctionKeyLeft = $column['relationship']['junction_key_left'];
                         $JunctionTable = new RelationalTableGateway($this->acl, $junctionTableName, $this->adapter);
                         $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
@@ -598,6 +598,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
      **/
 
     /**
+     * Throws error if column or relation is missing values
      * @param  array $column       One schema column representation.
      * @param  array $requiredKeys Values requiring definition.
      * @param  string $tableName
@@ -632,15 +633,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
             switch($alias['type']) {
                 case 'MANYTOMANY':
                     // $log->info("Many-to-Many");
-                    $this->enforceColumnHasNonNullValues($alias, array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
-                    $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['table_related'],
-                        $alias['junction_table'], $alias['junction_key_left'], $alias['junction_key_right'],
+                    $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
+                    $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
+                        $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
                         $entry['id']);
                     break;
                 case 'ONETOMANY':
                     // $log->info("One-to-Many");
-                    $this->enforceColumnHasNonNullValues($alias, array('table_related','junction_key_right'), $this->table);
-                    $foreign_data = $this->loadOneToManyRelationships($alias['table_related'], $alias['junction_key_right'], $entry['id']);
+                    $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_key_right'), $this->table);
+                    $foreign_data = $this->loadOneToManyRelationships($alias['relationship']['table_related'], $alias['relationship']['junction_key_right'], $entry['id']);
                     break;
             }
 
@@ -693,18 +694,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @return array          Revised table rows, now including foreign rows
      */
     public function loadManyToOneRelationships($schemaArray, $table_entries) {
+
         // Identify the ManyToOne columns
         foreach ($schemaArray as $col) {
+
             $isManyToOneColumn = in_array($col['ui'], TableSchema::$many_to_one_uis);
+
             if ($isManyToOneColumn) {
                 $foreign_id_column = $col['id'];
 
-                if('single_media' === $col['ui']) {
-                    $foreign_table_name = 'directus_media';
-                } elseif(array_key_exists('table_related', $col['options'])) {
-                    $foreign_table_name = $col['options']['table_related'];
-                } elseif(array_key_exists('table_related', $col)) {
-                    $foreign_table_name = $col['table_related'];
+                if(array_key_exists('relationship', $col)) {
+                    $foreign_table_name = $col['relationship']['table_related'];
+
                 } else {
                     $message = 'Non single_media Many-to-One relationship lacks `table_related` value.';
                     if(array_key_exists('column_name', $col)) {
