@@ -1,7 +1,8 @@
 require([
   "app",
-  "handlebars"
-], function(app, Handlebars) {
+  "handlebars",
+  "core/UIManager"
+], function(app, Handlebars, UIManager) {
 
   "use strict";
 
@@ -187,7 +188,7 @@ require([
   //Handlebars UI helper!
   Handlebars.registerHelper("ui", function(model, attr, options) {
     if (model.isNested) model = model.get('data');
-    var html = app.uiManager.getList(model, attr) || '';
+    var html = UIManager.getList(model, attr) || '';
     return new Handlebars.SafeString(html);
   });
 
