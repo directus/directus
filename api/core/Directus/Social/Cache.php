@@ -99,9 +99,9 @@ class Cache {
         $this->SocialFeedsTableGateway->update($set, $where);
     }
 
-    private function scrapeTwitterFeed(array $feed) {
+    private function scrapeTwitterFeed(array $feed, $count = 200) {
         $cb = Bootstrap::get('codebird');
-        $statuses = (array) $cb->statuses_userTimeline(array('screen_name' => $feed['name']));
+        $statuses = (array) $cb->statuses_userTimeline(array('screen_name' => $feed['name'], 'count' => $count));
         // The Twitter account is "protected"
         if(isset($statuses['error']) && $statuses['error'] = "Not authorized") {
             return $feed;
@@ -147,7 +147,7 @@ class Cache {
         return $feed;
     }
 
-    private function scrapeInstagramFeed(array $feed) {
+    private function scrapeInstagramFeed(array $feed, $count = 100) {
         // Load the instagram user id onto the feed record if we haven't already
         $feed['foreign_id'] = isset($feed['foreign_id']) ? trim($feed['foreign_id']) : '';
         if(empty($feed['foreign_id'])) {
@@ -160,8 +160,8 @@ class Cache {
         }
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
-        $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s";
-        $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id'], $socialSettings['instagram_oauth_access_token']);
+        $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s&count=%s";
+        $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id'], $socialSettings['instagram_oauth_access_token'], $count);
         try {
             $mediaRecent = @file_get_contents($endpoint);
             if(false === $mediaRecent) {
@@ -199,6 +199,9 @@ class Cache {
             }
         }
         // Update feed user data
+        if(empty($mediaRecent)) {
+            return false;
+        }
         $sampleEntry = (array) $mediaRecent[0];
         $feed['data'] = json_encode($sampleEntry['user']);
         if(!empty($responseStatusIds)) {
