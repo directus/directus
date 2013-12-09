@@ -15,7 +15,7 @@
 // options.name       String            Field name
 
 
-define(['app', 'backbone', 'modules/media/media', 'core/table/table.view','core/edit'], function(app, Backbone, Media, TableView, EditView) {
+define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, TableView) {
 
   "use strict";
 
@@ -134,6 +134,7 @@ define(['app', 'backbone', 'modules/media/media', 'core/table/table.view','core/
     },
 
     edit: function() {
+      var EditView = require("core/edit");
       var model = this.mediaModel;
       var view = new EditView({model: model});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});

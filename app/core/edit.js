@@ -1,13 +1,13 @@
-define([
-  "app",
-  "backbone"
-],
-
-function(app, Backbone) {
+define(function(require, exports, module) {
 
   "use strict";
 
-  var EditView = Backbone.Layout.extend({
+  console.log('edit');
+
+  var app = require('app');
+  var UIManager = require('./UIManager');
+
+  var EditView = module.exports = Backbone.Layout.extend({
 
     tagName: "form",
 
@@ -36,7 +36,7 @@ function(app, Backbone) {
           this.model.set('active',1);
         }
 
-        var view = app.uiManager.getInputInstance(this.model, column.id, {structure: this.structure});
+        var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure});
 
         // Display:none; hidden fields
         if (_.contains(this.hiddenFields, column.id)) {
@@ -130,5 +130,4 @@ function(app, Backbone) {
 
   });
 
-  return EditView;
 });
