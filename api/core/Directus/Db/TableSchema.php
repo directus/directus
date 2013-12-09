@@ -80,6 +80,7 @@ class TableSchema {
         if(!$allowCache || !array_key_exists($table, self::$_schemas)) {
             self::$_schemas[$table] = self::loadSchema($table, $params);
         }
+
         return self::$_schemas[$table];
     }
 
@@ -312,6 +313,7 @@ class TableSchema {
             ifnull(master,0) as master,
             ifnull(hidden_list,0) as hidden_list,
             ifnull(hidden_input,0) as hidden_input,
+            relationship_type,
             table_related,
             junction_table,
             junction_key_left,
@@ -344,6 +346,7 @@ class TableSchema {
             master,
             hidden_list,
             hidden_input,
+            relationship_type,
             table_related,
             junction_table,
             junction_key_left,
@@ -411,9 +414,37 @@ class TableSchema {
                 $row["options"] = $options;
             }
 
-            array_push($return, array_change_key_case($row,CASE_LOWER));
+            if (array_key_exists('table_related', $row)) {
+                $row['relationship'] = array();
+
+                $row['relationship']['type'] = $row['relationship_type'];
+                $row['relationship']['table_related'] = $row['table_related'];
+
+                unset($row['relationship_type']);
+                unset($row['table_related']);
+
+                if (array_key_exists('junction_key_left', $row)) {
+                    $row['relationship']['junction_key_left'] = $row['junction_key_left'];
+                    unset($row['junction_key_left']);
+                }
+
+                if (array_key_exists('junction_key_right', $row)) {
+                    $row['relationship']['junction_key_right'] = $row['junction_key_right'];
+                    unset($row['junction_key_right']);
+                }
+
+                if (array_key_exists('junction_table', $row)) {
+                    $row['relationship']['junction_table'] = $row['junction_table'];
+                    unset($row['junction_table']);
+                }
+
+
+            }
+
+            array_push($return, array_change_key_case($row, CASE_LOWER));
 
         }
+
         // Default column 3 as master. Should be refined!
         //if (!$hasMaster) {
         //    $return[3]['master'] = true;
