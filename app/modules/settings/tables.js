@@ -11,10 +11,11 @@ define([
   'app',
   'backbone',
   'core/directus',
+  'schema/ColumnModel',
   'jquery-ui'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, Directus, ColumnModel) {
 
   "use strict";
 
@@ -96,7 +97,8 @@ function(app, Backbone, Directus) {
 
     newField: function(e) {
       var collection = this.collection;
-      var model = new Directus.Structure.Column({'data_type':'ALIAS','ui':{}}, {collection: this.collection});
+      //@todo: link real col
+      var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: this.collection});
       var view = new NewColumn({model: model});
       var modal = app.router.openModal(view, {title: 'Add new column', stretch: true});
       view.render();
