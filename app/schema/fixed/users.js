@@ -326,6 +326,10 @@ define(function(require, exports, module) {
         "table_related": "directus_groups",
         // "related_table": "directus_groups",
         "visible_column": "name"
+      },
+      "relationship":{
+        "type":"MANYTOONE",
+        "table_related":"directus_groups"
       }
     }
   ];
