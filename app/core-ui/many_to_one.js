@@ -16,7 +16,6 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
-    {id: 'table_related', ui: 'textinput', char_length: 64, required: true},
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
     {id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
@@ -77,7 +76,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function(options) {
       console.log(this);
       // @todo display warning on UI & gracefully fail if the next value is undefined
-      var relatedTable = options.settings.get('table_related');
+      var relatedTable = options.schema.relationship.get('table_related');
       this.column = options.settings.get('visible_column');
       this.collection = app.getEntries(relatedTable);
       this.collection.fetch();
