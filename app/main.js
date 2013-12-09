@@ -9,21 +9,20 @@
 require(["config"], function() {
   require([
     "app",
+    'core/UIManager',
     "router",
     "backbone",
-    "core/directus",
     "alerts",
     "core/tabs",
     'modules/messages/messages',
     'plugins/alertify',
     'schema/SchemaManager',
     'modules/settings/collection',
-    'core/UIManager',
     'core/ExtensionManager',
     'core/EntriesManager'
   ],
 
-  function(app, Router, Backbone, Directus, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, UIManager, ExtensionManager, EntriesManager) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager) {
 
     "use strict";
 
@@ -68,20 +67,20 @@ require(["config"], function() {
     app.settings = new SettingsCollection(options.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
 
-    app.uiManager = UIManager;
+    UIManager.setup();
     app.extensionsManager = ExtensionManager;
     app.schemaManager = SchemaManager;
     app.schemaManager.setup({apiURL: app.API_URL});
 
     // Load extenral UI / extensions
     $.when(
-      app.uiManager.load(options.ui),
+      UIManager.load(options.ui),
       app.extensionsManager.load(options.extensions)
 
     ).done(function() {
 
       // Register UI schemas
-      app.schemaManager.registerUISchemas(app.uiManager.getAllSettings());
+      app.schemaManager.registerUISchemas(UIManager.getAllSettings());
 
       // Register Table Schemas
       app.schemaManager.register('tables', options.tables);
