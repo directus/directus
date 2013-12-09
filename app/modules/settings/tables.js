@@ -12,10 +12,12 @@ define([
   'backbone',
   'core/directus',
   'schema/ColumnModel',
-  'jquery-ui'
+  'core/UIManager',
+  'jquery-ui',
+
 ],
 
-function(app, Backbone, Directus, ColumnModel) {
+function(app, Backbone, Directus, ColumnModel, UIManager) {
 
   "use strict";
 
@@ -167,7 +169,7 @@ function(app, Backbone, Directus, ColumnModel) {
     },
 
     serialize: function() {
-      var ui = app.uiManager.getAllSettings({returnObject: true});
+      var ui = UIManager.getAllSettings({returnObject: true});
 
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
