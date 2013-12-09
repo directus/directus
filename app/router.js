@@ -11,7 +11,7 @@ define(function(require, exports, module) {
   "use strict";
 
   var app            = require('app'),
-      Directus       = require('core/directus'),
+      //Directus       = require('core/directus'),
       Tabs           = require('core/tabs'),
       SchemaManager  = require('schema/SchemaManager'),
       EntriesManager = require('core/EntriesManager'),
@@ -77,7 +77,7 @@ define(function(require, exports, module) {
 
     openModal: function(view, options) {
       options.view = view;
-      var modal = new Directus.Modal(options);
+      var modal = new Modal(options);
       this.v.messages.insertView(modal).render();
       return modal;
     },
