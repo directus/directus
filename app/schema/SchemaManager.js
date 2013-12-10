@@ -75,14 +75,12 @@ define(function(require, exports, module) {
    * Holds defaualt table configurations
    */
   var defaultTables = [
-    { schema: _.extend({columns: directusSchemas['directus_activity'].structure}, directusSchemas['directus_activity'].table) },
-    { schema: _.extend({columns: directusSchemas['directus_groups'].structure}, directusSchemas['directus_groups'].table)  },
-    { schema: _.extend({columns: directusSchemas['directus_media'].structure}, directusSchemas['directus_media'].table) },
-    { schema: _.extend({columns: directusSchemas['directus_messages'].structure}, directusSchemas['directus_messages'].table) },
-    { schema: _.extend({columns: directusSchemas['directus_users'].structure}, directusSchemas['directus_users'].table) }
+    { schema: directusSchemas['directus_activity'] },
+    { schema: directusSchemas['directus_groups'] },
+    { schema: directusSchemas['directus_media'] },
+    { schema: directusSchemas['directus_messages'] },
+    { schema: directusSchemas['directus_users'] }
   ];
-
-
 
   module.exports = {
 
@@ -186,6 +184,6 @@ define(function(require, exports, module) {
 
     }
 
-  }
+  };
 
 });
