@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   "use strict";
 
   var SchemaManager      = require('./../schema/SchemaManager'),
-      EntriesCollection  = require('./entries/entries.collection');
+      EntriesCollection  = require('./entries/EntriesCollection');
 
   // Contains collections that should be persistent
   var usersInstance;

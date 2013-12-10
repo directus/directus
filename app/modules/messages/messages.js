@@ -11,7 +11,7 @@ define([
   'backbone',
   'core/directus',
   'core/panes/pane.saveview',
-  'core/entries/entries.collection'
+  'core/entries/EntriesCollection'
 ],
 
 function(app, Backbone, Directus, SaveModule, EntriesCollection) {
