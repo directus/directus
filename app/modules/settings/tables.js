@@ -13,7 +13,7 @@ define([
   'core/directus',
   'schema/ColumnModel',
   'core/UIManager',
-  'jquery-ui',
+  'jquery-ui'
 
 ],
 
