@@ -1,20 +1,16 @@
-define([
-  "require",
-  "app",
-  "backbone",
-  "core/entries/entries.nestedcollection",
-  "core/entries/entries.collection",
-  "core/UIManager",
-  "schema/SchemaManager"
-],
-
-function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, UIManager, SchemaManager) {
+define(function(require, exports, module) {
 
   "use strict";
 
+  var app                     = require("app"),
+      Backbone                = require("backbone"),
+      EntriesNestedCollection = require("core/entries/EntriesNestedCollection"),
+      UIManager               = require("core/UIManager"),
+      SchemaManager           = require("schema/SchemaManager");
+
   var nestedTypes = ['many_to_one', 'single_media'];
 
-  var EntriesModel = Backbone.Model.extend({
+  var EntriesModel = module.exports = Backbone.Model.extend({
 
     parse: function(result) {
 
@@ -111,8 +107,7 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, UIM
     parseRelational: function(attributes) {
       var structure = this.getStructure();
       var relationalColumns = structure.getRelationalColumns();
-
-      EntriesCollection = EntriesCollection || require("core/entries/entries.collection");
+      var EntriesCollection = require("core/entries/EntriesCollection");
 
       var EntriesManager = require("core/EntriesManager");
 
@@ -337,7 +332,5 @@ function(require, app, Backbone, EntriesNestedCollection, EntriesCollection, UIM
     }
 
   });
-
-  return EntriesModel;
 
 });

@@ -1,8 +1,8 @@
 define([
   "app",
-  "core/entries/entries.collection",
-  "core/entries/entries.model",
-  "core/entries/entries.nestedcollection",
+  "core/entries/EntriesCollection",
+  "core/entries/EntriesModel",
+  "core/entries/EntriesNestedCollection",
   "core/collection",
   "core/edit",
   "core/table/table.view",

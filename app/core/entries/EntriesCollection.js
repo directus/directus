@@ -1,14 +1,12 @@
-define([
-  "backbone",
-  "core/collection",
-  "core/entries/entries.model"
-],
-
-function(Backbone, Collection, EntriesModel) {
+define(function(require, exports, module) {
 
   "use strict";
 
-  var EntriesCollection = Collection.extend({
+  var Backbone = require("backbone"),
+      Collection = require("core/collection"),
+      EntriesModel = require("core/entries/EntriesModel");
+
+  var EntriesCollection = module.exports = Collection.extend({
 
     model: EntriesModel,
 
@@ -164,7 +162,5 @@ function(Backbone, Collection, EntriesModel) {
     }
 
   });
-
-  return EntriesCollection;
 
 });

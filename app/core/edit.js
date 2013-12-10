@@ -2,8 +2,6 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  console.log('edit');
-
   var app = require('app');
   var UIManager = require('./UIManager');
 
