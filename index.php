@@ -20,8 +20,6 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableSchema;
 
-
-
 // No access, forward to login page
 if (!AuthProvider::loggedIn()) {
 	header('Location: ' . DIRECTUS_PATH . 'login.php');
@@ -65,7 +63,7 @@ function parseTables($tableSchema) {
 		unset($table['preferences']);
 
 		//skip directus tables
-		if ('directus_' === substr($tableName,0,9) && 'directus_users' !== $tableName && 'directus_messages_recipients' !== $tableName) {
+		if ('directus_' === substr($tableName,0,9) && 'directus_messages_recipients' !== $tableName) {
 			continue;
 		}
 
@@ -73,6 +71,23 @@ function parseTables($tableSchema) {
 	}
 
 	return $tables;
+}
+
+function getExtendedUserColumns($tableSchema) {
+	$userColumns = array("activity", "avatar", "name", "id", "active", "first_name", "last_name", "email", "email_messages", "password", "salt", "token", "reset_token", "reset_expiration", "description", "last_login", "last_page", "ip", "group");
+
+	$schema = array_filter($tableSchema, function($table) {
+		return $table['schema']['id'] === 'directus_users';
+	});
+
+	$schema = reset($schema);
+
+	$columns = array_filter($schema['schema']['columns'], function($column) use ($userColumns) {
+		return !in_array($column['id'], $userColumns);
+	});
+
+	return array_values($columns);
+
 }
 
 function parsePreferences($tableSchema) {
@@ -222,7 +237,8 @@ $data = array(
 	'extensions' => getExtensions($tabPrivileges),
 	'privileges' => getPrivileges(),
 	'ui' => getUI(),
-	'messages' => getInbox()
+	'messages' => getInbox(),
+	'extendedUserColumns' => getExtendedUserColumns($tableSchema)
 );
 
 $templateVars = array(
