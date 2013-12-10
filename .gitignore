@@ -1,3 +1,6 @@
+.bowerrc
+assets/bower
+
 config.php
 Icon
 .DS_Store
@@ -30,6 +33,4 @@ build_test_release
 extensions/*
 
 utils
-_____app
 seperator
-
