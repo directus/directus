@@ -1,16 +1,13 @@
-define([
-  "app",
-  "backbone",
-  "core/collection",
-  "core/entries/entries.collection"
-],
-
-function(app, Backbone, Collection, EntriesCollection) {
+define(function(require, exports, module) {
 
   "use strict";
 
+  var app               = require('app'),
+      Backbone          = require('backbone'),
+      Collection        = require('core/collection');
+
   //@todo: Try merging this with entries.collection.js
-  var NestedCollection = Collection.extend({
+  module.exports = Collection.extend({
 
     isNested: true,
 
@@ -97,7 +94,7 @@ function(app, Backbone, Collection, EntriesCollection) {
 
     initialize: function(models, options) {
 
-      EntriesCollection = EntriesCollection || require('core/entries/entries.collection');
+      EntriesCollection = require('core/entries/EntriesCollection');
 
       this.structure = options.structure;
       this.table = options.table;
@@ -118,5 +115,5 @@ function(app, Backbone, Collection, EntriesCollection) {
 
   });
 
-  return NestedCollection;
+  //return NestedCollection;
 });
