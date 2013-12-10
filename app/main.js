@@ -68,43 +68,32 @@ require(["config"], function() {
     app.settings.url = app.API_URL + 'settings';
 
     UIManager.setup();
-    app.extensionsManager = ExtensionManager;
+    SchemaManager.setup({apiURL: app.API_URL});
+
     app.schemaManager = SchemaManager;
-    app.schemaManager.setup({apiURL: app.API_URL});
+
 
     // Load extenral UI / extensions
     $.when(
       UIManager.load(options.ui),
-      app.extensionsManager.load(options.extensions)
+      ExtensionManager.load(options.extensions)
 
     ).done(function() {
 
       // Register UI schemas
-      app.schemaManager.registerUISchemas(UIManager.getAllSettings());
+      SchemaManager.registerUISchemas(UIManager.getAllSettings());
 
       // Register Table Schemas
-      app.schemaManager.register('tables', options.tables);
+      SchemaManager.register('tables', options.tables);
 
       // Register Preferences
-      app.schemaManager.registerPreferences(options.preferences);
+      SchemaManager.registerPreferences(options.preferences);
 
       // Register Privileges
-      app.schemaManager.registerPrivileges(options.privileges);
+      SchemaManager.registerPrivileges(options.privileges);
 
       // Extend user schema with extra fields
-      var directusUsers = _.find(window.directusData.tables, function(item) {
-        return item.schema.id === 'directus_users';
-      });
-      var usersSchema = app.schemaManager.getColumns('tables', 'directus_users');
-      var userColumns = usersSchema.pluck('id');
-      var extendedUsers = _.filter(directusUsers.schema.columns, function(column) {
-
-        return !_.contains(userColumns, column.id);
-      });
-
-      usersSchema.add(extendedUsers, {parse: true});
-
-
+      SchemaManager.getColumns('tables', 'directus_users').add(options.extendedUserColumns, {parse: true});
 
       EntriesManager.setup({
         apiURL: app.API_URL,
@@ -117,14 +106,14 @@ require(["config"], function() {
       app.users    = EntriesManager.getInstance('directus_users');
       app.media    = EntriesManager.getInstance('directus_media');
       app.activity = EntriesManager.getInstance('directus_activity');
-      app.groups   = EntriesManager.getInstance('directus_groups');;
+      app.groups   = EntriesManager.getInstance('directus_groups');
 
       // Proxy to EntriesManager
       app.getEntries = function(tableName) { return EntriesManager.getInstance(tableName); },
 
       app.messages = new Messages.Collection([], _.extend({
         url: app.API_URL + 'messages/rows/'
-      }, app.schemaManager.getFullSchema('directus_messages')));
+      }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
         alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
@@ -149,13 +138,13 @@ require(["config"], function() {
       // Default directus tabs
       var tabs = [
         {title: "Activity", id: "activity", count: app.activity.table.get('active')},
-        {title: "Tables",   id: "tables",   count: app.schemaManager.countTables() },
+        {title: "Tables",   id: "tables",   count: SchemaManager.countTables() },
         {title: "Media",    id: "media",    count: app.media.table.get('active')},
         {title: "Users",    id: "users",    count: app.users.table.get('active')},
         {title: "Settings", id: "settings"}
       ];
 
-      var extensions = app.extensionsManager.getIds();
+      var extensions = ExtensionManager.getIds();
 
       // Add extensions to tabs
       _.each(extensions, function(item) {
