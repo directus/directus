@@ -10,18 +10,19 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var app            = require('app'),
+  var app              = require('app'),
       //Directus       = require('core/directus'),
-      Tabs           = require('core/tabs'),
-      SchemaManager  = require('schema/SchemaManager'),
-      EntriesManager = require('core/EntriesManager'),
-      Activity       = require('modules/activity/activity'),
-      Table          = require('modules/tables/table'),
-      Settings       = require('modules/settings/settings'),
-      Media          = require('modules/media/media'),
-      Users          = require('modules/users/users'),
-      Messages       = require('modules/messages/messages'),
-      Modal          = require('core/modal');
+      Tabs             = require('core/tabs'),
+      SchemaManager    = require('schema/SchemaManager'),
+      EntriesManager   = require('core/EntriesManager'),
+      ExtensionManager = require('core/ExtensionManager'),
+      Activity         = require('modules/activity/activity'),
+      Table            = require('modules/tables/table'),
+      Settings         = require('modules/settings/settings'),
+      Media            = require('modules/media/media'),
+      Users            = require('modules/users/users'),
+      Messages         = require('modules/messages/messages'),
+      Modal            = require('core/modal');
 
   var Router = Backbone.Router.extend({
 
@@ -303,7 +304,7 @@ define(function(require, exports, module) {
 
       _.each(options.extensions, function(item) {
         try {
-          this.extensions[item] = app.extensionsManager.getInstance(item);
+          this.extensions[item] = ExtensionManager.getInstance(item);
         } catch (e) {
           console.log(item + ' failed to load:', e.stack);
           this.tabs.get(item).set({'error': e});
