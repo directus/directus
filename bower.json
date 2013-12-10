@@ -1,0 +1,15 @@
+{
+  "name": "directus",
+
+  "dependencies": {
+    "almond":     "~0.2.6",
+    "lodash":     "~2.2.0",
+    "backbone":   "~1.1.0",
+    "jquery":     "~1.8.0",
+    "handlebars": "~1.1.2",
+    "jquery-ui":  "~1.9.2",
+    "underscore": "~1.4.4",
+    "requirejs":    "~2.1.9",
+    "qunit":      "latest"
+  }
+}
