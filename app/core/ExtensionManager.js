@@ -2,7 +2,8 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var _ = require('underscore');
+  var _        = require('underscore'),
+      jQuery   = require('jquery');
 
   // Private
   var extensions = {};
