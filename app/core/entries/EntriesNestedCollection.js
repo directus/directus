@@ -7,7 +7,7 @@ define(function(require, exports, module) {
       Collection        = require('core/collection');
 
   //@todo: Try merging this with entries.collection.js
-  module.exports = Collection.extend({
+  var NestedCollection = module.exports = Collection.extend({
 
     isNested: true,
 
@@ -93,8 +93,7 @@ define(function(require, exports, module) {
     },
 
     initialize: function(models, options) {
-
-      EntriesCollection = require('core/entries/EntriesCollection');
+      var EntriesCollection = require('core/entries/EntriesCollection');
 
       this.structure = options.structure;
       this.table = options.table;
