@@ -37,7 +37,7 @@ define(function(require, exports, module) {
 
         if (result.relationship) {
           this.relationship = new RelationshipModel(result.relationship);
-          this.relationship.parent;
+          this.relationship.parent = this;
           delete result.relationship;
         }
 
