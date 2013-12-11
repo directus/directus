@@ -1,0 +1,30 @@
+{
+  "id":4,
+  "title":"Steamin' with The Miles Davis Quintet",
+  "year":1961,
+  "artist":{
+    "id":1,
+    "name":"Miles Davis",
+    "biography":"Throughout a professional career lasting 50 years, Miles Davis played the trumpet in a lyrical, introspective, and melodic style, often employing a stemless Harmon mute to make his sound more personal and intimate. But if his approach to his instrument was constant, his approach to jazz was dazzlingly protean. To examine his career is to examine the history of jazz from the mid-'40s to the early '90s, since he was in the thick of almost every important innovation and stylistic development in the music during that period, and he often led the way in those changes, both with his own performances and recordings and by choosing sidemen and collaborators who forged new directions. It can even be argued that jazz stopped evolving when Davis wasn't there to push it forward."
+  },
+  "performers":{
+    "rows":[
+      {
+        "id":6,
+        "data":{
+          "id":4,
+          "name":"John Coltrane",
+          "biography":"Despite a relatively brief career (he first came to notice as a sideman at age 29 in 1955, formally launched a solo career at 33 in 1960, and was dead at 40 in 1967), saxophonist John Coltrane was among the most important, and most controversial, figures in jazz. It seems amazing that his period of greatest activity was so short, not only because he recorded prolifically, but also because, taking advantage of his fame, the record companies that recorded him as a sideman in the 1950s frequently reissued those recordings under his name and there has been a wealth of posthumously released material as well. Since Coltrane was a protean player who changed his style radically over the course of his career, this has made for much confusion in his discography and in appreciations of his playing. There remains a critical divide between the adherents of his earlier, more conventional (if still highly imaginative) work and his later, more experimental work. No one, however, questions Coltrane's almost religious commitment to jazz or doubts his significance in the history of the music."
+        }
+      },
+      {
+        "id":7,
+        "data":{
+          "id":1,
+          "name":"Miles Davis",
+          "biography":"Throughout a professional career lasting 50 years, Miles Davis played the trumpet in a lyrical, introspective, and melodic style, often employing a stemless Harmon mute to make his sound more personal and intimate. But if his approach to his instrument was constant, his approach to jazz was dazzlingly protean. To examine his career is to examine the history of jazz from the mid-'40s to the early '90s, since he was in the thick of almost every important innovation and stylistic development in the music during that period, and he often led the way in those changes, both with his own performances and recordings and by choosing sidemen and collaborators who forged new directions. It can even be argued that jazz stopped evolving when Davis wasn't there to push it forward."
+        }
+      }
+    ]
+  }
+}
