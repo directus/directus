@@ -1,0 +1,63 @@
+<html>
+ <head>
+    <meta charset="utf-8"/>
+    <title>Directus Tests</title>
+    <link rel="stylesheet" href="../assets/bower/mocha/mocha.css"/>
+ </head>
+<body>
+<div id="mocha"></div>
+
+<script src="../assets/bower/requirejs/require.js"></script>
+
+<script>
+require.config({
+
+  paths: {
+    'mocha'     : '../assets/bower/mocha/mocha',
+    'chai'      : '../assets/bower/chai/chai',
+    'sinon'			: '../assets/bower/sinon/lib/sinon',
+    'text' 			: '../assets/bower/requirejs-text/text',
+    'test'  		: '../test'
+  },
+
+  shim: {
+  	'mocha': {
+  		exports: 'mocha'
+  	},
+  	'sinon': {
+  		exports: 'sinon'
+  	}
+  },
+
+  baseUrl: "../app"
+
+});
+
+require(['config', 'chai', 'sinon', 'mocha'], function(config, chai, sinon, mocha) {
+
+	mocha.setup('bdd');
+
+	expect = chai.expect;
+
+	// Run tests
+	require([
+		'test/mocha/example.spec',
+		'test/mocha/directus/TableModel.spec',
+    'test/mocha/directus/ColumnsCollection.spec',
+    'test/mocha/directus/ColumnModel.spec',
+
+    // UI's
+    'test/mocha/directus/core-ui/one_to_many.spec',
+    'test/mocha/directus/core-ui/many_to_one.spec',
+    'test/mocha/directus/core-ui/many_to_many.spec',
+
+    'test/mocha/directus/EntriesModel.spec'
+	], function() {
+		mocha.run();
+	});
+});
+
+</script>
+
+</body>
+</html>
