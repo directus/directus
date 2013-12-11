@@ -35,26 +35,33 @@ require.config({
 
 require(['config', 'chai', 'sinon', 'mocha'], function(config, chai, sinon, mocha) {
 
-	mocha.setup('bdd');
+	require(['schema/SchemaManager', 'text!test/assets/schema/tables.json'], function(SchemaManager, tables) {
 
-	expect = chai.expect;
+    // Setup a table schema for testing
+    SchemaManager.setup({apiURL: 'test'});
+    SchemaManager.register('tables', JSON.parse(tables));
 
-	// Run tests
-	require([
-		'test/mocha/example.spec',
-		'test/mocha/directus/TableModel.spec',
-    'test/mocha/directus/ColumnsCollection.spec',
-    'test/mocha/directus/ColumnModel.spec',
+    mocha.setup('bdd');
 
-    // UI's
-    'test/mocha/directus/core-ui/one_to_many.spec',
-    'test/mocha/directus/core-ui/many_to_one.spec',
-    'test/mocha/directus/core-ui/many_to_many.spec',
+  	expect = chai.expect;
 
-    'test/mocha/directus/EntriesModel.spec'
-	], function() {
-		mocha.run();
-	});
+  	// Run tests
+  	require([
+  		'test/mocha/example.spec',
+  		'test/mocha/directus/TableModel.spec',
+      'test/mocha/directus/ColumnsCollection.spec',
+      'test/mocha/directus/ColumnModel.spec',
+
+      // UI's
+      'test/mocha/directus/core-ui/one_to_many.spec',
+      'test/mocha/directus/core-ui/many_to_one.spec',
+      'test/mocha/directus/core-ui/many_to_many.spec',
+
+      'test/mocha/directus/EntriesModel.spec'
+  	], function() {
+  		mocha.run();
+  	});
+  });
 });
 
 </script>
