@@ -7,6 +7,7 @@
   "scripts": {
     "test": "grunt qunit"
   },
+
   "devDependencies": {
     "grunt-contrib-clean": "~0.4.0rc6",
     "grunt-contrib-jshint": "0.1.1rc6",
@@ -16,7 +17,23 @@
     "grunt-contrib-watch": "0.2.0rc5",
     "grunt-contrib-requirejs": "0.4.1",
     "grunt-contrib-handlebars":"0.5.11",
+    "grunt-karma": "~0.6.2",
+    "grunt-karma-coveralls": "~2.0.2",
+    "karma-jasmine": "~0.1.0",
+    "karma-mocha": "~0.1.0",
+    "karma-qunit": "~0.1.0",
+    "karma-phantomjs-launcher": "~0.1.0",
+    "karma-coverage": "~0.1.0",
     "grunt": "0.4.0rc7",
-    "bower": "1.2.7"
+    "bower": "1.2.7",
+    "karma": "0.11.9",
+    "mocha": "1.15.1"
+  },
+
+  "peerDependencies": {
+    "bower": "*",
+    "coveralls": "*"
   }
+
+
 }
