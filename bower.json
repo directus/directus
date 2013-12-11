@@ -9,7 +9,14 @@
     "handlebars": "~1.1.2",
     "jquery-ui":  "~1.9.2",
     "underscore": "~1.4.4",
-    "requirejs":    "~2.1.9",
-    "qunit":      "latest"
+    "requirejs":  "~2.1.9",
+    "qunit":      "latest",
+    "lodash":     "~2.2.0",
+
+    "chai":       "~1.8.0",
+    "mocha":      "~1.15.1",
+    "sinon":      "~1.7.3",
+
+    "requirejs-text": "2.0.10"
   }
 }
