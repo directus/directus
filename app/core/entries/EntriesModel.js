@@ -147,6 +147,8 @@ define(function(require, exports, module) {
             }
 
             if (relationshipType === 'ONETOMANY') {
+              // Provide model to prevent loading issues
+              options.model = EntriesModel;
               attributes[id] = new EntriesCollection(value, options);
               break;
             }
