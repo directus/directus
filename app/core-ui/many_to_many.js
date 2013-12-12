@@ -34,15 +34,15 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
       '<div class="btn-row"><button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>' +
       '<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button></div>'),
 
-		addRow: function() {
-      this.addModel(new this.related.entries.nestedCollection.model({}, {collection: this.related.entries.nestedCollection, parse: true}));
+    addRow: function() {
+      this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
     },
 
     deleteRow: function(e) {
       var cid = $(e.target).closest('tr').attr('data-cid');
-      var model = this.related.entries.get(cid);
+      var model = this.relatedCollection.get(cid);
 
-      if (model.isNew()) return this.related.entries.remove(model);
+      if (model.isNew()) return this.relatedCollection.remove(model);
 
       model.set({active: 0});
     },
@@ -50,7 +50,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
     addModel: function(model) {
       var EditView = require("core/edit");
       var modal;
-      var collection = this.related.entries;
+      var collection = this.relatedCollection;
       var view = new EditView({model: model});
 
       modal = app.router.openModal(view, {stretch: true, title: 'Add'});
@@ -65,7 +65,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
     },
 
     insertRow: function() {
-      var collection = app.getEntries(this.related.table.id);
+      var collection = app.getEntries(this.relatedCollection.table.id);
       var view = new this.modalTable({collection: collection, selectable: true, footer: false});
       var modal = app.router.openModal(view, {stretch: true, title: 'Insert Item'});
 
@@ -75,9 +75,9 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
       modal.save = function() {
         _.each(view.selection(), function(id) {
           var data = collection.get(id).toJSON();
-          me.related.entries.add(data, {parse: true, silent: true, nest: true});
+          me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
         }, this);
-        me.related.entries.trigger('add');
+        me.relatedCollection.trigger('add');
         modal.close();
       };
 
@@ -85,16 +85,31 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
     },
 
     initialize: function(options) {
-      Module.Input.__super__.initialize.call(this, options);
-      console.log(this.related.entries);
-      this.junctionStructure = this.related.entries.junctionStructure;
-      this.hasSort = this.junctionStructure.get('sort') !== undefined;
-      this.related.tableOptions.deleteColumn = true;
-      this.related.tableOptions.saveAfterDrop = false;
-      this.related.tableOptions.sort = this.hasSort;
 
+      if (!this.columnSchema.relationship ||
+           'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
+        throw "The column " + this.columnSchema.id + " need to have a relationship of the type MANYTOMANY inorder to use the one_to_many ui";
+      };
 
-      this.view = new this.table(this.related.tableOptions);
+      var relatedCollection = this.model.get(this.name);
+      var relatedSchema = relatedCollection.structure;
+      var junctionStructure = relatedCollection.junctionStructure;
+
+      this.nestedTableView = new TableView({
+        collection: relatedCollection,
+        toolbar: false,
+        selectable: false,
+        sortable: false,
+        footer: false,
+        saveAfterDrop: false,
+        deleteColumn: true,
+        hideEmptyMessage: true,
+        hasSort: junctionStructure.get('sort') !== undefined,
+      });
+
+      this.relatedCollection = relatedCollection;
+      this.listenTo(relatedCollection, 'change add remove', this.nestedTableView.render, this);
+
       this.modalTable = TableView.extend({
         events: {
           'click tbody td': function(e) {
