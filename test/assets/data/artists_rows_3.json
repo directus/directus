@@ -5,6 +5,16 @@
   "albums":{
     "rows":[
       {
+        "id":3,
+        "title":"Head Hunters",
+        "year":1973,
+        "artist":3
+      }
+    ]
+  },
+  "albums_performer":{
+    "rows":[
+      {
         "id":4,
         "data":{
           "id":2,

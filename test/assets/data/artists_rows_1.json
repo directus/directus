@@ -5,6 +5,22 @@
   "albums":{
     "rows":[
       {
+        "id":1,
+        "title":"Bitches Brew",
+        "year":1970,
+        "artist":1
+      },
+      {
+        "id":4,
+        "title":"Steamin' with The Miles Davis Quintet",
+        "year":1961,
+        "artist":1
+      }
+    ]
+  },
+  "albums_performer":{
+    "rows":[
+      {
         "id":2,
         "data":{
           "id":1,

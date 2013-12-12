@@ -5,6 +5,16 @@
   "albums":{
     "rows":[
       {
+        "id":2,
+        "title":"Speak No Evil",
+        "year":1964,
+        "artist":2
+      }
+    ]
+  },
+  "albums_performer":{
+    "rows":[
+      {
         "id":1,
         "data":{
           "id":1,

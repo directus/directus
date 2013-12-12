@@ -13,9 +13,10 @@
     "qunit":      "latest",
     "lodash":     "~2.2.0",
 
-    "chai":       "~1.8.0",
+    "chai":       "~1.8.1",
     "mocha":      "~1.15.1",
     "sinon":      "~1.7.3",
+    "chai-jquery":"1.1.2",
 
     "requirejs-text": "2.0.10"
   }
