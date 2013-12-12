@@ -16,7 +16,8 @@ define(function(require, exports, module) {
       isNested: true,
 
       parse: function(result) {
-        result.data = new this.collection.nestedCollection.model(result.data, {collection: this.collection.nestedCollection});
+        var EntriesModel = require('core/entries/EntriesModel');
+        result.data = new EntriesModel(result.data, {collection: this.collection.nestedCollection});
         this.collection.nestedCollection.add(result.data);
         return result;
       },
@@ -106,7 +107,9 @@ define(function(require, exports, module) {
         this.droppable = true;
         options.url = app.API_URL + 'media';
       }
+
       this.nestedCollection = new EntriesCollection({}, options);
+
       this.nestedCollection.on('change', function() {
         this.trigger('change');
       }, this);

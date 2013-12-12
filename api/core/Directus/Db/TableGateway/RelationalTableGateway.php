@@ -367,7 +367,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                          * $parentRecord['collectionName1'][0-9]['id']; // for updating a pre-existing junction row
                          * $parentRecord['collectionName1'][0-9]['active']; // for disassociating a junction via the '0' value
                          */
-                        $this->enforceColumnHasNonNullValues($column, array('junction_table','junction_key_left'), $this->table);
+                        $this->enforceColumnHasNonNullValues($column['relationship'], array('junction_table','junction_key_left'), $this->table);
                         $junctionTableName = $column['relationship']['junction_table'];
                         $junctionKeyLeft = $column['relationship']['junction_key_left'];
                         $JunctionTable = new RelationalTableGateway($this->acl, $junctionTableName, $this->adapter);
@@ -630,9 +630,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         foreach ($aliasColumns as $alias) {
             $foreign_data = null;
             // $log->info("Looking at alias field {$alias['id']}");
+
             switch($alias['type']) {
                 case 'MANYTOMANY':
-                    // $log->info("Many-to-Many");
                     $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
                     $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
                         $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],

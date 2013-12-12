@@ -33,18 +33,15 @@ define(function(require, exports, module) {
         this.options = new UIModel(options);
         this.options.parent = this;
 
-        delete result.options;
-
         if (result.relationship) {
           this.relationship = new RelationshipModel(result.relationship);
           this.relationship.parent = this;
-          delete result.relationship;
         }
 
         if (result.master) result.header = true;
         result.header = (result.header === "true" || result.header === true || result.header === 1 || result.header === "1") ? true : false;
 
-        return result;
+        return _.omit(result, 'options', 'relationship');
       },
 
       getOptions: function() {

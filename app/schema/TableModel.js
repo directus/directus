@@ -9,12 +9,12 @@ define(function(require, exports, module) {
 
     parse: function(data) {
       if (this.columns === undefined) {
-        this.columns = new ColumnsCollection(data.columns, {parse: true});
+        this.columns = new ColumnsCollection(data.columns, {parse: true, url: this.url + '/columns'});
       } else {
         this.columns.reset(data.columns, {parse: true});
       }
-      delete data.columns;
-      return data;
+
+      return _.omit(data, 'columns');
     },
 
     toJSON: function(options) {
