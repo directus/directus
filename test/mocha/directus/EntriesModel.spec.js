@@ -4,10 +4,9 @@ define(function(require) {
 
   var SchemaManager = require("schema/SchemaManager"),
       EntriesModel = require("core/entries/EntriesModel"),
-      TableModel = require("schema/TableModel"),
       albumData = JSON.parse(require('text!test/assets/data/albums_rows_1.json'));
 
-  var table = SchemaManager.getTable('albums')
+  var table = SchemaManager.getTable('albums');
 
   describe("EntriesModel", function() {
 
