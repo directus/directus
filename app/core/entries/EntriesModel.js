@@ -132,6 +132,7 @@ define(function(require, exports, module) {
               //preferences: app.preferences[column.get('table_related')],
             };
 
+
             // make sure that the table exists
             // @todo move this to column schema?
             if (options.table === undefined) {
@@ -146,6 +147,8 @@ define(function(require, exports, module) {
             }
 
             if (relationshipType === 'ONETOMANY') {
+              // Provide model to prevent loading issues
+              options.model = EntriesModel;
               attributes[id] = new EntriesCollection(value, options);
               break;
             }
@@ -322,7 +325,7 @@ define(function(require, exports, module) {
     },
 
     // we need to do this because initialize is called AFTER parse.
-    constructor: function (data, options) {
+    constructor: function EntriesModel(data, options) {
       // inherit structure and table from collection if it exists
       this.structure = options.collection ? options.collection.structure : options.structure;
       this.table = options.collection ? options.collection.table : options.table;

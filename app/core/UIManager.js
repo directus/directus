@@ -56,7 +56,7 @@ define(function(require, exports, module) {
       var ui = uis[uiId];
 
       if (ui === undefined) {
-        throw new Error('There is no registered UI with id "' + uiId + '"');
+        console.warn('There is no registered UI with id "' + uiId + '"');
       }
 
       return ui;
@@ -148,6 +148,12 @@ define(function(require, exports, module) {
       var structure = model.getStructure();
       var schema = structure.get(attr);
       var UI = this._getModelUI(model, attr, schema);
+
+      // If there is no UI, return just text
+      if (UI === undefined) {
+        return model.get(attr);
+      }
+
       return UI.list({
           model: model,
           collection: collection,
