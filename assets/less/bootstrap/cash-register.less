@@ -22,6 +22,9 @@
 		}
 	}
 
+	.directus-form fieldset {
+		padding: 10px 10px 10px 10px;
+	}
 
 	.register-left-sidebar {
 		.register-recent-purchases {
@@ -29,11 +32,10 @@
 			margin-bottom: 10px;
 		}
 	}
-	.active_products_table {
-
-	}
 	.register-right-sidebar {
-
+		.directus-module-section {
+			padding: 10px 10px 10px 10px;
+		}
 	}
 }
 
@@ -92,9 +94,17 @@
 	margin-left: 300px;
 	margin-right: 300px;
 
+	.item-single-price {
+		display: inline;
+	}
+
 	th, td {
-		&:first-child, &:nth-child(2) {
-			width: 30px;
+		&:first-child {
+			width: 20px;
+		}
+		
+		&:nth-child(2) {
+			width: 60px;
 		}
 
 		&:nth-child(3) {
@@ -104,27 +114,26 @@
 		&:nth-child(4) {
 			text-align: right;
 			padding-left: 0;
+			width: 60px;
 		}
 
 		&:nth-child(5) {
-			width: 60px; // 80px - 20px for left padding
+			width: 50px; // 80px - 20px for left padding
 		}
 
-		&:nth-child(6), &:nth-child(7) {
+		&:nth-child(6) {
 			padding-left: 0;
-			width: 80px;
+			width: 60px;
 		}
-	}
 
-	th:last-child {
-		text-align: right;
-		width: 100px;
-	}
-
-	.item-row {
-		td:last-child {
+		&:nth-child(7) {
+			padding-left: 0;
+			width: 50px;
 			text-align: right;
-			width: 80px;
+
+			.item-quantity-price {
+				display: inline;
+			}
 		}
 	}
 
@@ -135,11 +144,14 @@
 	.order-amount {
 		font-size: 21px;
 		color: @green;
+		text-align: right;
 	}
 
 	input[type=text] {
 		width: 35px;
 		text-align: center;
+		padding: 4px 4px;
+		margin-bottom: 4px;
 	}
 
 	select {
@@ -149,11 +161,12 @@
 
 	label {
 		font-weight: normal;
+		margin-bottom: 2px;
 
 		input {
-			position: relative;
-			top: -2px;
-			margin-right: 5px;
+			// position: relative;
+			// top: -2px;
+			margin-right: 2px;
 		}
 	}
 
@@ -173,7 +186,8 @@
 			position: relative;
 			width: 16px;
 			height: 18px;
-			margin-right: 10px;
+			margin-left: 6px;
+			margin-right: 0;
 			top: -2px;
 			display: inline-block;
 			background: url('../img/controls.png') no-repeat;
@@ -208,33 +222,36 @@
 			margin: 0;
 			padding: 0;
 
-			.icon {
+			.customer-options {
 				position: relative;
-				width: 32px;
-				height: 22px;
 				display: inline-block;
-				background: url('../img/glyphicons-parents-green.png') no-repeat;
-				margin-right: 7px;
+				margin-right: 2px;
 				bottom: -3px;
+				cursor: pointer;
+
+				&:hover {
+					opacity: 1;
+					-webkit-filter: none;
+				}
 			}
-		}
 
-		.back-to-users {
-			position: absolute;
-			right: 6px;
-			top: 4px;
-			width: 12px;
-			height: 14px;
-			background: url('../img/controls.png') no-repeat;
-			background-size: 70px 14px;
-			text-indent: -9999px;
-			-webkit-filter: grayscale(100%);
-			opacity: .5;
-			cursor: pointer;
+			.back-to-users {
+				display: inline-block;
+				vertical-align: middle;
+				margin-top: -3px;
+				width: 12px;
+				height: 14px;
+				background: url('../img/controls.png') no-repeat;
+				background-size: 70px 14px;
+				text-indent: -9999px;
+				-webkit-filter: grayscale(100%);
+				opacity: .5;
+				cursor: pointer;
 
-			&:hover {
-				opacity: 1;
-				-webkit-filter: none;
+				&:hover {
+					opacity: 1;
+					-webkit-filter: none;
+				}
 			}
 		}
 
