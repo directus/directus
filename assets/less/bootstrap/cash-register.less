@@ -22,6 +22,9 @@
 		}
 	}
 
+	.directus-form fieldset {
+		padding: 10px 10px 10px 10px;
+	}
 
 	.register-left-sidebar {
 		.register-recent-purchases {
@@ -29,11 +32,10 @@
 			margin-bottom: 10px;
 		}
 	}
-	.active_products_table {
-
-	}
 	.register-right-sidebar {
-
+		.directus-module-section {
+			padding: 10px 10px 10px 10px;
+		}
 	}
 }
 
@@ -220,33 +222,36 @@
 			margin: 0;
 			padding: 0;
 
-			.icon {
+			.customer-options {
 				position: relative;
-				width: 32px;
-				height: 22px;
 				display: inline-block;
-				background: url('../img/glyphicons-parents-green.png') no-repeat;
-				margin-right: 7px;
+				margin-right: 2px;
 				bottom: -3px;
+				cursor: pointer;
+
+				&:hover {
+					opacity: 1;
+					-webkit-filter: none;
+				}
 			}
-		}
 
-		.back-to-users {
-			position: absolute;
-			right: 6px;
-			top: 4px;
-			width: 12px;
-			height: 14px;
-			background: url('../img/controls.png') no-repeat;
-			background-size: 70px 14px;
-			text-indent: -9999px;
-			-webkit-filter: grayscale(100%);
-			opacity: .5;
-			cursor: pointer;
+			.back-to-users {
+				display: inline-block;
+				vertical-align: middle;
+				margin-top: -3px;
+				width: 12px;
+				height: 14px;
+				background: url('../img/controls.png') no-repeat;
+				background-size: 70px 14px;
+				text-indent: -9999px;
+				-webkit-filter: grayscale(100%);
+				opacity: .5;
+				cursor: pointer;
 
-			&:hover {
-				opacity: 1;
-				-webkit-filter: none;
+				&:hover {
+					opacity: 1;
+					-webkit-filter: none;
+				}
 			}
 		}
 
