@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   "use strict";
 
@@ -33,15 +33,28 @@ define(['app', 'backbone'], function(app, Backbone) {
                   {{#data}}<input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{id}}" id="radio-{{id}}" {{#if selected}}checked{{/if}}> \
                   <label class="radiobuttons" for="radio-{{id}}">{{name}}</label>{{/data}} \
                   {{else}} \
-                  <select name="{{name}}"> \
+                  <select> \
                   <option value="">Select from below</option> \
                   {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
                   </select> \
                   {{/if}}';
 
-  Module.Input = Backbone.Layout.extend({
+  //name="{{name}}"
+
+  Module.Input = UIView.extend({
 
     tagName: 'fieldset',
+
+    events: {
+      'change select': function(e) {
+        var model = this.model.get(this.name);
+        var selectedId = parseInt($(e.target).find(':selected').val(),10);
+        model.clear();
+        model.set({id: selectedId});
+
+        console.log(model.toJSON());
+      }
+    },
 
     template: Handlebars.compile(template),
 
@@ -74,11 +87,12 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     initialize: function(options) {
-      console.log(this);
       // @todo display warning on UI & gracefully fail if the next value is undefined
-      var relatedTable = options.schema.relationship.get('table_related');
-      this.column = options.settings.get('visible_column');
-      this.collection = app.getEntries(relatedTable);
+      var relatedTable = this.columnSchema.relationship.get('table_related');
+      var value = this.model.get(this.name);
+      this.column = this.columnSchema.options.get('visible_column');
+
+      this.collection = value.collection.getNewInstance();
       this.collection.fetch();
       //this.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
