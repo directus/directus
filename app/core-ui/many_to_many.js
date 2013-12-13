@@ -16,7 +16,11 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true}
+    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
+    {id: 'add_button', ui: 'checkbox'},
+    {id: 'choose_button', ui: 'checkbox'},
+    {id: 'remove_button', ui: 'checkbox'}
+
   ];
 
   Module.Input = Onetomany.Input.extend({
