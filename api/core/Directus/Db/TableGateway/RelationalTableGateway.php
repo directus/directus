@@ -269,25 +269,33 @@ class RelationalTableGateway extends AclAwareTableGateway {
             }
 
             $foreignDataSet = $parentRow[$colName];
+
             $colUiType = $column['ui'];
 
+            $isManyToOne = (array_key_exists('relationship', $column) && 
+                $column['relationship']['type'] == 'MANYTOONE'
+            );
+
             /** Many-to-One */
-            if (in_array($colUiType, TableSchema::$many_to_one_uis)) {
+            if ($isManyToOne) {
                 $foreignRow = $foreignDataSet;
                 $foreignTableName = null;
-                if("single_media" === $colUiType)
-                    $foreignTableName = "directus_media";
-                else {
-                    /**
-                     * Transitional workaround, pending bugfix to many to one uis.
-                     * @see  https://github.com/RNGR/directus6/issues/188
-                     */
-                    $foreignTableName = TableSchema::getRelatedTableFromManyToOneColumnName($colName);
-                    if(is_null($foreignTableName)) {
-                        unset($parentRow[$colName]);
-                        continue;
-                    }
-                }
+
+                // if("single_media" === $colUiType)
+                //     $foreignTableName = "directus_media";
+                // else {
+                //     /**
+                //      * Transitional workaround, pending bugfix to many to one uis.
+                //      * @see  https://github.com/RNGR/directus6/issues/188
+                //      */
+                //     $foreignTableName = TableSchema::getRelatedTableFromManyToOneColumnName($colName);
+                //     if(is_null($foreignTableName)) {
+                //         unset($parentRow[$colName]);
+                //         continue;
+                //     }
+                // }
+
+                $foreignTableName = $column['relationship']['table_related'];
 
                 // Update/Add foreign record
                 if($this->recordDataContainsNonPrimaryKeyData($foreignRow)) {
@@ -698,9 +706,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Identify the ManyToOne columns
         foreach ($schemaArray as $col) {
 
-            $isManyToOneColumn = in_array($col['ui'], TableSchema::$many_to_one_uis);
+            $isManyToOneColumn = (
+                array_key_exists('relationship', $col) &&
+                $col['relationship']['type'] == 'MANYTOONE'
+            );
+
+            //print_r($col['ui']);
+            //print_r(TableSchema::$many_to_one_uis);
+            //die();
 
             if ($isManyToOneColumn) {
+
                 $foreign_id_column = $col['id'];
 
                 if(array_key_exists('relationship', $col)) {
