@@ -109,7 +109,7 @@ require(["config"], function() {
       app.groups   = EntriesManager.getInstance('directus_groups');
 
       // Proxy to EntriesManager
-      app.getEntries = function(tableName) { return EntriesManager.getInstance(tableName); },
+      app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); },
 
       app.messages = new Messages.Collection([], _.extend({
         url: app.API_URL + 'messages/rows/'
