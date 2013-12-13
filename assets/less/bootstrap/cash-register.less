@@ -6,6 +6,11 @@
 
 .cash-register-container {
 
+	label {
+		margin-bottom: 0;
+		display: inline-block;
+	}
+
 	table.directus-table {
 
 		margin-bottom: 20px;
@@ -35,6 +40,22 @@
 	.register-right-sidebar {
 		.directus-module-section {
 			padding: 10px 10px 10px 10px;
+		}
+
+		.swipe-enter-card {
+			font-style: italic;
+			margin-bottom: 4px;
+		}
+
+		.please_add_items {
+			font-weight: bold;
+		}
+
+		label {
+			margin-bottom: 0;
+			display: inline-block;
+			width: 110px;
+			vertical-align: sub;
 		}
 	}
 }
@@ -143,8 +164,10 @@
 
 	.order-amount {
 		font-size: 21px;
-		color: @green;
+		color: @directusPrimary;
+		background-color: @directusSecondary;
 		text-align: right;
+		font-weight: bold;
 	}
 
 	input[type=text] {
@@ -175,7 +198,7 @@
 	}
 
 	.tax-amount {
-		color: @green;
+		color: @directusPrimary;
 		font-weight: 600;
 	}
 }
@@ -256,8 +279,9 @@
 		}
 
 		input[type=text], select {
-			width: 218px;
-			margin-bottom: 20px;
+			width: 130px;
+			margin-top: 4px;
+			padding: 4px;
 
 			&:last-child {
 				// margin-bottom: auto;
@@ -282,6 +306,18 @@
 
 		.btn-primary {
 			width: 236px;
+			margin-top: 10px;
+			margin-bottom: 4px;
+		}
+
+		.btn-primary[disabled] {
+			background-color: #bbbbbb;
+			color: #eeeeee;
+
+			&:hover {
+				background-color: #bbbbbb;
+				color: #eeeeee;
+			}
 		}
 
 		.payment_options {
@@ -301,6 +337,10 @@
 				&:nth-child(even) {
 					// 
 				}
+			}
+
+			.make-split-container {
+				color: @directusPrimary;
 			}
 
 			input {
