@@ -16,7 +16,11 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true}
+    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
+    {id: 'add_button', ui: 'checkbox'},
+    {id: 'choose_button', ui: 'checkbox'},
+    {id: 'remove_button', ui: 'checkbox'}
+
   ];
 
   Module.Input = Onetomany.Input.extend({
@@ -31,8 +35,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
     template: Handlebars.compile(
       '<label>{{{capitalize title}}}</label>' +
       '<div class="related-table"></div>' +
-      '<div class="btn-row"><button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>' +
-      '<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button></div>'),
+      '<div class="btn-row">{{#if canEdit}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}' +
+      '{{#if canEdit}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>'),
 
     addRow: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
@@ -51,7 +55,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
       var EditView = require("core/edit");
       var modal;
       var collection = this.relatedCollection;
-      var view = new EditView({model: model});
+      var view = new EditView({model: model, inModal: true});
 
       modal = app.router.openModal(view, {stretch: true, title: 'Add'});
 
@@ -91,6 +95,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
         throw "The column " + this.columnSchema.id + " need to have a relationship of the type MANYTOMANY inorder to use the one_to_many ui";
       };
 
+      this.canEdit = !(options.inModal || false);
+
       var relatedCollection = this.model.get(this.name);
       var relatedSchema = relatedCollection.structure;
       var junctionStructure = relatedCollection.junctionStructure;
@@ -102,7 +108,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
         sortable: false,
         footer: false,
         saveAfterDrop: false,
-        deleteColumn: true,
+        deleteColumn: this.canEdit,
         hideEmptyMessage: true,
         hasSort: junctionStructure.get('sort') !== undefined,
       });

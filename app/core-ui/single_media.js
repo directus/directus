@@ -89,12 +89,12 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-media"> \
-                    <img src="{{url}}"> \
+                    <img src="{{thumbUrl}}"> \
                   </div> \
                   <div class="ui-img-details"> \
                     <a href="{{link}}" class="title" target="single_media">{{mediaModel.title}}</a><br> \
                     Uploaded by {{userName user}} {{contextualDate mediaModel.date_uploaded}}<br> \
-                    <i>{{mediaModel.width}} &times; {{mediaModel.height}} – {{bytesToSize mediaModel.size}}</i><br> \
+                    <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{bytesToSize mediaModel.size}}</i><br> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose media</button> \
                     <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove media</button> \
                   </div> \
@@ -194,10 +194,18 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
       var url = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel, true) : null;
       var link = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel) : null;
       var data = this.mediaModel.toJSON();
+      var isImage = _.contains(['image/jpeg','image/png'], this.mediaModel.get('type'));
+
       data.date_uploaded = new Date(data.date_uploaded);
+
+
+      var thumbUrl = isImage ? data.url : app.PATH + 'assets/img/document.png';
+
       data = {
+        isImage: isImage,
         name: this.options.name,
         url: url,
+        thumbUrl: thumbUrl,
         comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
         mediaModel: data,
