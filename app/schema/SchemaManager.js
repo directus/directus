@@ -109,9 +109,9 @@ define(function(require, exports, module) {
         // Set table schema
         options.schema.url = this.apiURL + 'tables/' + tableName;
 
-        var model = new TableModel(options.schema, {parse: true});
-        model.url = this.apiURL + 'tables/' + tableName;
-        model.columns.url = this.apiURL + 'tables/' + tableName + '/columns';
+        var model = new TableModel(options.schema, {parse: true, url: this.apiURL + 'tables/' + tableName});
+        //model.url = this.apiURL + 'tables/' + tableName;
+        //model.columns.url = this.apiURL + 'tables/' + tableName + '/columns';
         model.columns.table = model;
 
         columnSchemas[namespace][tableName] = model.columns;

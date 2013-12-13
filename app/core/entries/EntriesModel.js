@@ -4,7 +4,7 @@ define(function(require, exports, module) {
 
   var app                     = require("app"),
       Backbone                = require("backbone"),
-      EntriesNestedCollection = require("core/entries/EntriesNestedCollection"),
+      EntriesJunctionCollection = require("core/entries/EntriesJunctionCollection"),
       UIManager               = require("core/UIManager"),
       SchemaManager           = require("schema/SchemaManager");
 
@@ -155,7 +155,7 @@ define(function(require, exports, module) {
 
             if (relationshipType === 'MANYTOMANY') {
               options.junctionStructure = SchemaManager.getColumns('tables', column.relationship.get('junction_table'));
-              attributes[id] = new EntriesNestedCollection(value, options);
+              attributes[id] = new EntriesJunctionCollection(value, options);
             }
 
             break;
@@ -308,6 +308,14 @@ define(function(require, exports, module) {
 
     getStructure: function() {
       return this.structure;
+    },
+
+    getNewInstance: function() {
+      return new EntriesModel({}, {
+        structure: this.structure,
+        table: this.table,
+        privileges: this.privileges
+      });
     },
 
     getTable: function() {

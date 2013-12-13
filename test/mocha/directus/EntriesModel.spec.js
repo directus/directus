@@ -28,6 +28,13 @@ define(function(require) {
 
     });
 
+    describe("#getNewInstance()", function() {
+      it('should return an empty instance of the model', function() {
+        var newAlbums = albums.getNewInstance();
+        expect(albums.structure).to.equal(newAlbums.structure);
+      });
+    });
+
     describe("#toJSON()", function() {
 
       it('should contain nested properties', function() {
