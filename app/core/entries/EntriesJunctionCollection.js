@@ -113,6 +113,10 @@ define(function(require, exports, module) {
       this.nestedCollection.on('change', function() {
         this.trigger('change');
       }, this);
+    },
+
+    constructor: function EntriesJunctionCollection(data, options) {
+      NestedCollection.__super__.constructor.call(this, data, options);
     }
 
   });

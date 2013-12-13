@@ -134,6 +134,17 @@ define(function(require, exports, module) {
       }
     },
 
+    getNewInstance: function() {
+      return new EntriesCollection([], {
+        structure: this.structure,
+        table: this.table,
+        privileges: this.privileges,
+        url: this.url,
+        filters: this.filters,
+        preferences: this.preferences
+      });
+    },
+
     parseHeaders: function(response) {
       if (response.total !== undefined) {
         this.table.set('total', response.total, {silent: true});
@@ -159,6 +170,10 @@ define(function(require, exports, module) {
       this.parseHeaders(response);
 
       return response.rows;
+    },
+
+    constructor: function EntriesCollection(data, options) {
+      EntriesCollection.__super__.constructor.call(this, data, options);
     }
 
   });

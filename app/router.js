@@ -272,7 +272,9 @@ define(function(require, exports, module) {
     },
 
     messages: function(name) {
-      this.setPage(Messages.Views.List, {collection: app.messages});
+      this.tabs.setActive();
+      this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
+      this.v.main.render();
     },
 
     message: function(id) {
