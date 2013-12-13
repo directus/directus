@@ -21,8 +21,8 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
   var template = '<label>{{{capitalize title}}}</label> \
       <div class="related-table"></div> \
-      <div class="btn-row"><button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button> \
-      {{#if manyToMany}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>';
+      <div class="btn-row"><button class="btn btn-small btn-primary" data-action="add" type="button" {{#unless canEdit}}disabled{{/unless}}>Add New {{{capitalize tableTitle}}} Item</button> \
+      {{#if manyToMany}}<button class="btn btn-small btn-primary" data-action="insert" type="button" {{#unless canEdit}}disabled{{/unless}}>Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>';
 
   Module.Input = UIView.extend({
 
@@ -57,7 +57,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     editModel: function(model) {
       var EditView = require("core/edit");
       var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({model: model, hiddenFields: [columnName]});
+      var view = new EditView({model: model, hiddenFields: [columnName], inModal: true});
       var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
 
       modal.save = function() {
@@ -84,6 +84,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       var view = new EditView({
         model: model,
         collectionAdd: true,
+        inModal: true,
         parentField: {
           name: columnName,
           value: id
@@ -104,7 +105,8 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     serialize: function() {
-      return {title: this.name, tableTitle: this.relatedCollection.table.get('table_name')};
+      console.log('canedit',this.canEdit);
+      return {title: this.name, tableTitle: this.relatedCollection.table.get('table_name'), canEdit: this.canEdit};
     },
 
     afterRender: function() {
@@ -122,6 +124,8 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         throw "The column " + this.columnSchema.id + " need to have a relationship of the type ONETOMANY inorder to use the one_to_many ui";
       };
 
+      this.canEdit = !(options.inModal || false);
+
       var relatedCollection = this.model.get(this.name);
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
 
@@ -132,7 +136,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         sortable: false,
         footer: false,
         saveAfterDrop: false,
-        deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES"),
+        deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES") && this.canEdit,
         hideEmptyMessage: true,
         filters: {
           booleanOperator: '&&',

@@ -34,7 +34,7 @@ define(function(require, exports, module) {
           this.model.set('active',1);
         }
 
-        var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure});
+        var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
 
         // Display:none; hidden fields
         if (_.contains(this.hiddenFields, column.id)) {
@@ -92,6 +92,7 @@ define(function(require, exports, module) {
       var structureHiddenFields,
           optionsHiddenFields = options.hiddenFields || [];
 
+      this.inModal = options.inModal || false;
       this.structure = options.structure || this.model.getStructure();
 
       if (this.structure === undefined) {
