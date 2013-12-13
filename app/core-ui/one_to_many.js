@@ -16,7 +16,9 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
   Module.dataTypes = ['ONETOMANY'];
 
   Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true}
+    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
+    {id: 'add_button', ui: 'checkbox'},
+    {id: 'remove_button', ui: 'checkbox'}
   ];
 
   var template = '<label>{{{capitalize title}}}</label> \
