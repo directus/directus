@@ -16,8 +16,8 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
-    {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
-    {id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
+    {id: 'visible_column', ui: 'textinput', char_length: 64, required: true}
+    //{id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
 
   var template = '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
