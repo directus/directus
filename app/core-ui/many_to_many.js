@@ -35,8 +35,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
     template: Handlebars.compile(
       '<label>{{{capitalize title}}}</label>' +
       '<div class="related-table"></div>' +
-      '<div class="btn-row">{{#if canEdit}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}' +
-      '{{#if canEdit}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>'),
+      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}' +
+      '{{#if showChooseButton}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>'),
 
     addRow: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
@@ -96,6 +96,10 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
       };
 
       this.canEdit = !(options.inModal || false);
+      this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
+      this.showChooseButton = this.columnSchema.options.get('choose_button') === "1";
+      this.showAddButton = this.columnSchema.options.get('add_button') === "1";
+
 
       var relatedCollection = this.model.get(this.name);
       var relatedSchema = relatedCollection.structure;
@@ -108,7 +112,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
         sortable: false,
         footer: false,
         saveAfterDrop: false,
-        deleteColumn: this.canEdit,
+        deleteColumn: this.canEdit && this.showRemoveButton,
         hideEmptyMessage: true,
         hasSort: junctionStructure.get('sort') !== undefined,
       });

@@ -23,8 +23,8 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
   var template = '<label>{{{capitalize title}}}</label> \
       <div class="related-table"></div> \
-      <div class="btn-row"><button class="btn btn-small btn-primary" data-action="add" type="button" {{#unless canEdit}}disabled{{/unless}}>Add New {{{capitalize tableTitle}}} Item</button> \
-      {{#if manyToMany}}<button class="btn btn-small btn-primary" data-action="insert" type="button" {{#unless canEdit}}disabled{{/unless}}>Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>';
+      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}} \
+      {{#if manyToMany}}{{#if canEdit}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}{{/if}}</div>';
 
   Module.Input = UIView.extend({
 
@@ -110,8 +110,13 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     serialize: function() {
-      console.log('canedit',this.canEdit);
-      return {title: this.name, tableTitle: this.relatedCollection.table.get('table_name'), canEdit: this.canEdit};
+      return {
+        title: this.name,
+        tableTitle: this.relatedCollection.table.get('table_name'),
+        canEdit: this.canEdit,
+        showChooseButton: this.showChooseButton && this.canEdit,
+        showAddButton: this.showAddButton && this.canEdit
+      };
     },
 
     afterRender: function() {
@@ -131,8 +136,13 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.canEdit = !(options.inModal || false);
 
+      console.log(this.columnSchema.options);
+
       var relatedCollection = this.model.get(this.name);
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
+
+      this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
+      this.showAddButton = this.columnSchema.options.get('add_button') === "1";
 
       this.nestedTableView = new TableView({
         collection: relatedCollection,
@@ -141,7 +151,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         sortable: false,
         footer: false,
         saveAfterDrop: false,
-        deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES") && this.canEdit,
+        deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES") && this.canEdit && this.showRemoveButton,
         hideEmptyMessage: true,
         filters: {
           booleanOperator: '&&',
