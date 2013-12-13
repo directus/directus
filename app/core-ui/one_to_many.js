@@ -35,6 +35,9 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     editRow: function(e) {
+      if (!this.canEdit) {
+        return;
+      }
       var cid = $(e.target).closest('tr').attr('data-cid');
       var model = this.relatedCollection.get(cid, true);
       this.editModel(model);
