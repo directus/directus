@@ -2,7 +2,27 @@ define(function(require) {
 
   "use strict";
 
-  var ManyToOne = require('core-ui/many_to_one');
+  var ManyToOne = require('core-ui/many_to_one'),
+      SchemaManager = require("schema/SchemaManager"),
+      EntriesModel = require("core/entries/EntriesModel"),
+      albumData = JSON.parse(require('text!test/assets/data/albums_rows_1.json'));
+
+  var table = SchemaManager.getTable('albums');
+
+  var album = new EntriesModel(albumData, {
+    structure: table.columns,
+    table: table,
+    parse: true
+  });
+
+  var options = {
+
+    // Instance of EntriesModel (required)
+    model: album,
+
+    // Attribute on the EntriesModel (required)
+    name: 'artist'
+  }
 
   describe("core-ui/many_to_one", function() {
 
@@ -17,32 +37,9 @@ define(function(require) {
         expect(ManyToOne.Input).to.be.a('function');
       });
 
-      var options = {
+      var ui = new ManyToOne.Input(options);
 
-        // Instance of EntriesModel (required)
-        model: null,
-
-        // Attribute on the EntriesModel (required)
-        name: null,
-
-        // ColumnsCollections
-        structure: null,
-
-        // ColumnModel
-        schema: null,
-
-        // Value of the model/attribute
-        value: null,
-
-        // The model's collection
-        collection: null,
-
-        // Based on privleges, boolean
-        canWrite: null,
-
-        // UI Settings
-        settings: null
-      }
+      console.log(ui);
 
       /*var view = new ManyToOne.Input({
 
@@ -53,3 +50,4 @@ define(function(require) {
   });
 
 });
+;
