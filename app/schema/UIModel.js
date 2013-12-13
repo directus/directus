@@ -7,7 +7,10 @@ define(function(require, exports, module) {
   module.exports = Backbone.Model.extend({
 
     url: function() {
-      return this.parent.url() + '/' + this.id;
+      var column = this.parent;
+      var columnSchema = this.parent.collection;
+
+      return this.parent.collection.url + '/' + this.parent.id + '/' + this.id;
     },
 
     // When the time is right, this part need serious reconsideration
