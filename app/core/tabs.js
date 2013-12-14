@@ -32,7 +32,10 @@ function(app, Backbone) {
 
     initialize: function() {
       app.users.on('reset sync add', function() {
-        this.get('users').set({count: app.users.table.get('active')});
+        var userTab = this.get('users');
+        if (userTab) {
+          userTab.set({count: app.users.table.get('active')});
+        }
       }, this);
       if(undefined !== this.get('media')) {
         app.media.on('reset sync add', function() {
