@@ -322,7 +322,7 @@ define(function(require, exports, module) {
 
     initialize: function(options) {
 
-      this.tabBlacklist = options.tabPrivileges.tab_blacklist.split(',');
+      this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
 
       console.log(this.tabBlacklist);
 
