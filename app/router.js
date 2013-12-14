@@ -44,7 +44,8 @@ define(function(require, exports, module) {
       "messages/new":                   "newMessage",
       "messages/:id":                   "message",
       "cashregister":                   "cashregister",
-      "booker":                         "booker"
+      "booker":                         "booker",
+      '*notFound':                      "notFound"
     },
 
     go: function() {
@@ -88,6 +89,9 @@ define(function(require, exports, module) {
     },
 
     tables: function() {
+      if (_.contains(this.tabBlacklist,'tables'))
+        return this.notFound();
+
       this.setTitle('Tables');
       this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
@@ -95,6 +99,9 @@ define(function(require, exports, module) {
     },
 
     entries: function(tableName) {
+      if (_.contains(this.tabBlacklist,'tables'))
+        return this.notFound();
+
       this.setTitle('Tables');
       var collection;
 
@@ -138,6 +145,9 @@ define(function(require, exports, module) {
     },
 
     entry: function(tableName, id) {
+      if (_.contains(this.tabBlacklist,'tables'))
+        return this.notFound();
+
       this.setTitle('Tables');
       this.tabs.setActive('tables');
 
@@ -171,6 +181,9 @@ define(function(require, exports, module) {
     },
 
     activity: function() {
+      if (_.contains(this.tabBlacklist,'activity'))
+        return this.notFound();
+
       this.setTitle('Activity');
       this.tabs.setActive('activity');
       this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
@@ -178,6 +191,9 @@ define(function(require, exports, module) {
     },
 
     media: function() {
+      if (_.contains(this.tabBlacklist,'media'))
+        return this.notFound();
+
       this.setTitle('Media');
       this.tabs.setActive('media');
       this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
@@ -223,6 +239,9 @@ define(function(require, exports, module) {
     },
 
     settings: function(name) {
+      if (_.contains(this.tabBlacklist,'settings'))
+        return this.notFound();
+
       this.setTitle('Settings');
       this.tabs.setActive('settings');
 
@@ -254,6 +273,8 @@ define(function(require, exports, module) {
     },
 
     settingsTable: function(tableName) {
+      if (_.contains(this.tabBlacklist,'settings'))
+        return this.notFound();
 
       this.setTitle('Settings');
       this.tabs.setActive('settings');
@@ -264,6 +285,9 @@ define(function(require, exports, module) {
     },
 
     settingsPermissions: function(groupId) {
+      if (_.contains(this.tabBlacklist,'settings'))
+        return this.notFound();
+
       this.setTitle('Settings - Permissions');
       this.tabs.setActive('settings');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
@@ -297,6 +321,10 @@ define(function(require, exports, module) {
     },
 
     initialize: function(options) {
+
+      this.tabBlacklist = options.tabPrivileges.tab_blacklist.split(',');
+
+      console.log(this.tabBlacklist);
 
       //Fade out and remove splash
       $('#splash').fadeOut('fast').remove();
