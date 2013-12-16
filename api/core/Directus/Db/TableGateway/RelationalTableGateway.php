@@ -676,7 +676,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @param string $column_equals
      */
     public function loadOneToManyRelationships($table, $column_name, $column_equals) {
-        if(!TableSchema::canGroupViewTable($foreign_table_name)) {
+        if(!TableSchema::canGroupViewTable($table)) {
             return false;
         }
 
