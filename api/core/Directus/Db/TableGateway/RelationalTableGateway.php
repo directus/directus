@@ -85,7 +85,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Update and/or Add Many-to-One Associations
         $parentRecordWithForeignKeys = $TableGateway->addOrUpdateManyToOneRelationships($schemaArray, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
-        
+
         // Merge the M21 foreign keys into the recordData array
         $recordData = array_merge($recordData, $parentRecordWithForeignKeys);
 
@@ -94,42 +94,43 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // If more than the record ID is present.
         $newRecordObject = null;
         $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys); // || $recordIsNew;
-        if($parentRecordChanged) {
 
-            // Run Custom UI Processing
-            $customUis = Bootstrap::get('uis');
-            $aliasColumns = TableSchema::getAllAliasTableColumns($TableGateway->getTable());
-            foreach($aliasColumns as $aliasColumn) {
-                if($aliasColumn['ui'] && array_key_exists($aliasColumn['ui'], $customUis)) {
-                    $formClassName = '\\' . Formatting::underscoreToCamelCase($aliasColumn['ui']) . 'Form';
-                    if(!class_exists($formClassName)) {
-                        $classFilePath = APPLICATION_PATH . '/ui/' . $aliasColumn['ui'] . '/form.php';
-                        if(!file_exists($classFilePath)) {
-                            continue;
-                        }
-                        require $classFilePath;
-                        if(!class_exists($formClassName)) {
-                            throw new \RuntimeError("Expected class $formClassName to be defined in $classFilePath for custom UI processing.");
-                        }
-                        $form = new $formClassName($recordData, $parentRecordWithForeignKeys);
-                        if(!$form->isValid()) {
-                            $failedField = $TableGateway->getTable() . "[" . $aliasColumn['id'] . "]";
-                            throw new Exception\CustomUiValidationError("Custom UI Form validation failed for field $failedField via $formClassName");
-                        }
-                        $form->submit();
-                    }
-                }
-            }
+        // if($parentRecordChanged) {
 
-            // After UI processing, do we still have non-PK data?
-            $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
-            if($parentRecordChanged) {
-                // Update the parent row, w/ any new association fields replaced by their IDs
-                $newRecordObject = $TableGateway
-                    ->addOrUpdateRecordByArray($parentRecordWithForeignKeys)
-                    ->toArray();
-            }
-        }
+        //     // Run Custom UI Processing
+        //     $customUis = Bootstrap::get('uis');
+        //     $aliasColumns = TableSchema::getAllAliasTableColumns($TableGateway->getTable());
+        //     foreach($aliasColumns as $aliasColumn) {
+        //         if($aliasColumn['ui'] && array_key_exists($aliasColumn['ui'], $customUis)) {
+        //             $formClassName = '\\' . Formatting::underscoreToCamelCase($aliasColumn['ui']) . 'Form';
+        //             if(!class_exists($formClassName)) {
+        //                 $classFilePath = APPLICATION_PATH . '/ui/' . $aliasColumn['ui'] . '/form.php';
+        //                 if(!file_exists($classFilePath)) {
+        //                     continue;
+        //                 }
+        //                 require $classFilePath;
+        //                 if(!class_exists($formClassName)) {
+        //                     throw new \RuntimeError("Expected class $formClassName to be defined in $classFilePath for custom UI processing.");
+        //                 }
+        //                 $form = new $formClassName($recordData, $parentRecordWithForeignKeys);
+        //                 if(!$form->isValid()) {
+        //                     $failedField = $TableGateway->getTable() . "[" . $aliasColumn['id'] . "]";
+        //                     throw new Exception\CustomUiValidationError("Custom UI Form validation failed for field $failedField via $formClassName");
+        //                 }
+        //                 $form->submit();
+        //             }
+        //         }
+        //     }
+
+        //     // After UI processing, do we still have non-PK data?
+        //     $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
+        //     if($parentRecordChanged) {
+        //         // Update the parent row, w/ any new association fields replaced by their IDs
+        //         $newRecordObject = $TableGateway
+        //             ->addOrUpdateRecordByArray($parentRecordWithForeignKeys)
+        //             ->toArray();
+        //     }
+        // }
 
         // Do it this way, because & byref for outcome of ternary operator spells trouble
         $draftRecord = &$parentRecordWithForeignKeys;
