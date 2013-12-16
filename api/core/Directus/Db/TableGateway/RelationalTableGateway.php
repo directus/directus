@@ -639,18 +639,20 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $foreign_data = null;
             // $log->info("Looking at alias field {$alias['id']}");
 
-            switch($alias['type']) {
-                case 'MANYTOMANY':
-                    $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
-                    $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
-                        $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
-                        $entry['id']);
-                    break;
-                case 'ONETOMANY':
-                    // $log->info("One-to-Many");
-                    $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_key_right'), $this->table);
-                    $foreign_data = $this->loadOneToManyRelationships($alias['relationship']['table_related'], $alias['relationship']['junction_key_right'], $entry['id']);
-                    break;
+            if(TableSchema::canGroupViewTable($alias['relationship']['table_related'])) {
+                switch($alias['type']) {
+                    case 'MANYTOMANY':
+                        $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
+                        $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
+                            $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
+                            $entry['id']);
+                        break;
+                    case 'ONETOMANY':
+                        // $log->info("One-to-Many");
+                        $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_key_right'), $this->table);
+                        $foreign_data = $this->loadOneToManyRelationships($alias['relationship']['table_related'], $alias['relationship']['junction_key_right'], $entry['id']);
+                        break;
+                }
             }
 
             if(!is_null($foreign_data)) {
@@ -674,6 +676,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @param string $column_equals
      */
     public function loadOneToManyRelationships($table, $column_name, $column_equals) {
+        if(!TableSchema::canGroupViewTable($foreign_table_name)) {
+            return false;
+        }
+
         // Run query
         $select = new Select($table);
         $select->where->equalTo($column_name, $column_equals);
@@ -687,8 +693,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $results = $rowset->toArray();
 
         // Process results
-        foreach ($results as &$row)
+        foreach ($results as &$row) {
             array_walk($row, array($this, 'castFloatIfNumeric'));
+        }
 
         return array('rows' => $results);
     }
@@ -741,6 +748,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 };
                 $ids = array_map($yield, $table_entries);
                 if (empty($ids)) {
+                    continue;
+                }
+
+                if(!TableSchema::canGroupViewTable($foreign_table_name)) {
                     continue;
                 }
 
