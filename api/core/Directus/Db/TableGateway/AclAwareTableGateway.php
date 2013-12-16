@@ -100,7 +100,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
         return $withKey;
     }
-    
+
     protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
         foreach($resultSet as &$result) {
             $result = $this->convertRowDateTimesToTimeZone($result, $targetTimeZone, $fields);
@@ -116,7 +116,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
         return $row;
     }
-    
+
     public function newRow($table = null, $pk_field_name = null)
     {
         $table = is_null($table) ? $this->table : $table;
@@ -251,11 +251,13 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     protected function getRawTableNameFromQueryStateTable($table) {
-        if(is_string($table))
+        if(is_string($table)) {
             return $table;
-        if(is_array($table))
+        }
+        if(is_array($table)) {
             // The only value is the real table name (key is alias).
             return array_pop($table);
+        }
         throw new \InvalidArgumentException("Unexpected parameter of type " . get_class($table));
     }
 

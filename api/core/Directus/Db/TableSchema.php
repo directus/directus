@@ -86,16 +86,18 @@ class TableSchema {
 
     public static function getMasterColumn($schema) {
         foreach ($schema as $column) {
-            if (isset($column['master']) && true == $column['master'])
+            if (isset($column['master']) && true == $column['master']) {
                 return $column;
+            }
         }
         return false;
     }
 
     public static function getFirstNonSystemColumn($schema) {
         foreach ($schema as $column) {
-            if(isset($column['system']) && false != $column['system'])
+            if(isset($column['system']) && false != $column['system']) {
                 continue;
+            }
             return $column;
         }
         return false;
@@ -108,6 +110,9 @@ class TableSchema {
     public static function getAllNonAliasTableColumnNames($table) {
         $columnNames = array();
         $columns = self::getAllNonAliasTableColumns($table);
+        if(false === $columns) {
+            return false;
+        }
         foreach($columns as $column) {
             $columnNames[] = $column['id'];
         }
@@ -117,6 +122,9 @@ class TableSchema {
     public static function getAllNonAliasTableColumns($table) {
         $columns = array();
         $schemaArray = self::loadSchema($table);
+        if(false === $schemaArray) {
+            return false;
+        }
         foreach($schemaArray as $column) {
             if(self::columnIsCollectionAssociation($column)) {
                 continue;
@@ -139,6 +147,11 @@ class TableSchema {
     }
 
     public static function getTableColumns($table, $limit = null) {
+
+        if(!self::canGroupViewTable($table)) {
+            return array();
+            // return false;
+        }
 
         // Omit columns which are on this table's read field blacklist for the group of
         // the currently authenticated user.
@@ -165,10 +178,12 @@ class TableSchema {
         $i = 0;
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
             $i++;
-            if(!in_array($row['column_name'], $ignoreColumns))
+            if(!in_array($row['column_name'], $ignoreColumns)) {
                 array_push($columns, $row['column_name']);
-            if($i === $limit)
+            }
+            if($i === $limit) {
                 break;
+            }
         }
         return $columns;
     }
@@ -192,7 +207,10 @@ class TableSchema {
         $tables = array();
 
         while ($row = $sth->fetch(\PDO::FETCH_NUM)) {
-            $tables[] = $row[0];
+            $name = $row[0];
+            if(self::canGroupViewTable($name)) {
+                $tables[] = $name;
+            }
         }
 
         return $tables;
@@ -232,6 +250,9 @@ class TableSchema {
         $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
 
         while($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+            if(!self::canGroupViewTable($row['id'])) {
+                continue;
+            }
             $tbl["schema"] = self::getTable($row['id']);
             //$tbl["columns"] = $this->get_table($row['id']);
             $tbl["preferences"] = $Preferences->fetchByUserAndTable($currentUser['id'], $row['id']);
@@ -241,10 +262,23 @@ class TableSchema {
         return $return;
     }
 
+    public static function canGroupViewTable($tableName) {
+        $acl = Bootstrap::get('acl');
+        $tablePrivilegeList = $acl->getTablePrivilegeList($tableName, $acl::TABLE_PERMISSIONS);
+        if(in_array('view', $tablePrivilegeList)) {
+            return true;
+        }
+        return false;
+    }
+
     protected static function getTable($tbl_name) {
         $db = Bootstrap::get('olddb');
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
+
+        if(!self::canGroupViewTable($tbl_name)) {
+            return false;
+        }
 
         $sql = "SELECT T.TABLE_NAME AS id,
             T.TABLE_NAME AS table_name,
@@ -266,17 +300,15 @@ class TableSchema {
         $sth->execute();
         $info = $sth->fetch(\PDO::FETCH_ASSOC);
         if ($info) {
-            $info['hidden'] = (boolean)$info['hidden'];
-            $info['single'] = (boolean)$info['single'];
-            $info['footer'] = (boolean)$info['footer'];
-            $info['is_junction_table'] = (boolean)$info['is_junction_table'];
-            $info['inactive_by_default'] = (boolean)$info['inactive_by_default'];
+            $info['hidden'] = (boolean) $info['hidden'];
+            $info['single'] = (boolean) $info['single'];
+            $info['footer'] = (boolean) $info['footer'];
+            $info['is_junction_table'] = (boolean) $info['is_junction_table'];
+            $info['inactive_by_default'] = (boolean) $info['inactive_by_default'];
         }
         $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $ZendDb);
         $info = array_merge($info, $relationalTableGateway->countActiveOld());
 
-
-        // $info['columns'] = $this->get_table($tbl_name);
         $info['columns'] = self::getSchemaArray($tbl_name);
         return $info;
     }
@@ -291,6 +323,12 @@ class TableSchema {
         // Omit columns which are on this table's read field blacklist for the group of
         // the currently authenticated user.
         $acl = Bootstrap::get('acl');
+
+        if(!self::canGroupViewTable($tbl_name)) {
+            // return array();
+            return false;
+        }
+
         $readFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_READ_BLACKLIST);
         $readFieldBlacklist = implode(', ', $readFieldBlacklist);
 
@@ -356,7 +394,7 @@ class TableSchema {
             `directus_columns` DC
         WHERE
             DC.`table_name` = :table_name AND (data_type="alias" OR data_type="MANYTOMANY" OR data_type = "ONETOMANY")
-        AND 
+        AND
             (:column_name = -1 OR DC.column_name = :column_name)
         AND
             data_type IS NOT NULL) ORDER BY sort';
@@ -438,11 +476,9 @@ class TableSchema {
                     unset($row['junction_table']);
                 }
 
-
             }
 
             array_push($return, array_change_key_case($row, CASE_LOWER));
-
         }
 
         // Default column 3 as master. Should be refined!
