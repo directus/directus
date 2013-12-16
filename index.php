@@ -32,11 +32,9 @@ $authenticatedUser = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : ar
 
 function getNonces() {
 	$requestNonceProvider = new RequestNonceProvider();
-
 	$nonces = array_merge($requestNonceProvider->getOptions(), array(
 		'pool' => $requestNonceProvider->getAllNonces()
 	));
-
 	return $nonces;
 };
 
@@ -249,5 +247,3 @@ $templateVars = array(
 );
 
 echo template(file_get_contents('main.html'), $templateVars);
-
-?>
