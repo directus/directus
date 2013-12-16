@@ -637,9 +637,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // $log = $this->logger();
         foreach ($aliasColumns as $alias) {
             $foreign_data = null;
-            // $log->info("Looking at alias field {$alias['id']}");
 
-            if(TableSchema::canGroupViewTable($alias['relationship']['table_related'])) {
+            if(array_key_exists('relationship', $alias) && $alias['relationship'] && TableSchema::canGroupViewTable($alias['relationship']['table_related'])) {
                 switch($alias['type']) {
                     case 'MANYTOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
