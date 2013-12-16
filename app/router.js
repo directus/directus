@@ -228,7 +228,7 @@ define(function(require, exports, module) {
       var user = app.getCurrentUser();
       var userGroup = user.get('group');
 
-      if (!(parseInt(id) === user.id || userGroup.id === 0)) {
+      if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
         return this.notFound();
       }
 
@@ -330,8 +330,6 @@ define(function(require, exports, module) {
     initialize: function(options) {
 
       this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
-
-      console.log(this.tabBlacklist);
 
       //Fade out and remove splash
       $('#splash').fadeOut('fast').remove();

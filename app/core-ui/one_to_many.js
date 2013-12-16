@@ -132,7 +132,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       if (!this.columnSchema.relationship ||
            'ONETOMANY' !== this.columnSchema.relationship.get('type')) {
         throw "The column " + this.columnSchema.id + " need to have a relationship of the type ONETOMANY inorder to use the one_to_many ui";
-      };
+      }
 
       this.canEdit = !(options.inModal || false);
 

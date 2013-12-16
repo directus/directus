@@ -64,8 +64,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
       data.hasDate = this.value.isValid();
       data.valueDate = this.value.format('YYYY-MM-DD');
-      data.name = this.options.name,
-      data.note = this.options.schema.get('comment')
+      data.name = this.options.name;
+      data.note = this.options.schema.get('comment');
 
       return data;
     },

@@ -93,7 +93,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
       if (!this.columnSchema.relationship ||
            'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
         throw "The column " + this.columnSchema.id + " need to have a relationship of the type MANYTOMANY inorder to use the one_to_many ui";
-      };
+      }
 
       this.canEdit = !(options.inModal || false);
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
@@ -114,7 +114,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
         saveAfterDrop: false,
         deleteColumn: this.canEdit && this.showRemoveButton,
         hideEmptyMessage: true,
-        hasSort: junctionStructure.get('sort') !== undefined,
+        hasSort: junctionStructure.get('sort') !== undefined
       });
 
       this.relatedCollection = relatedCollection;
