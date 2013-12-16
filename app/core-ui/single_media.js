@@ -196,10 +196,11 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
       var data = this.mediaModel.toJSON();
       var isImage = _.contains(['image/jpeg','image/png'], this.mediaModel.get('type'));
 
-      data.date_uploaded = new Date(data.date_uploaded);
+      data.date_uploaded = new Date(data.date_uploaded, this.mediaModel);
 
+      var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
-      var thumbUrl = isImage ? data.url : app.PATH + 'assets/img/document.png';
+      console.log(thumbUrl);
 
       data = {
         isImage: isImage,
