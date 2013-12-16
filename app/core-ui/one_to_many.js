@@ -136,8 +136,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.canEdit = !(options.inModal || false);
 
-      console.log(this.columnSchema.options);
-
       var relatedCollection = this.model.get(this.name);
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
 
