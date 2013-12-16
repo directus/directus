@@ -102,8 +102,10 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         var data = view.data();
         data[columnName] = id;
         model.set(data);
-        collection.add(model, {nest: true});
-        this.close();
+        if (model.isValid()) {
+          collection.add(model, {nest: true});
+          modal.close();
+        }
       };
 
       view.render();
