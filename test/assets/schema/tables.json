@@ -1,6 +1,80 @@
 [
 {
   "schema": {
+    "id":"date_test",
+    "table_name":"date_test",
+    "date_created":"2013-12-10 16:41:54",
+    "comment":"",
+    "hidden":false,
+    "single":false,
+    "inactive_by_default":false,
+    "is_junction_table":true,
+    "magic_owner_column":null,
+    "footer":false,
+    "count":"7",
+    "active":7,
+    "columns":[
+      {
+        "id":"id",
+        "column_name":"id",
+        "type":"INT",
+        "is_nullable":"NO",
+        "comment":"",
+        "sort":1,
+        "system":true,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":true,
+        "is_writable":true,
+        "ui":"numeric",
+        "hidden":true,
+        "options":[
+          
+        ]
+      },
+      {
+        "id":"datetime_column",
+        "column_name":"datetime_column",
+        "type":"DATETIME",
+        "is_nullable":"YES",
+        "comment":"",
+        "sort":2,
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "is_writable":true,
+        "ui":"datetime",
+        "options":[
+          
+        ]
+      },
+      {
+        "id":"date_column",
+        "column_name":"date_column",
+        "type":"DATE",
+        "is_nullable":"YES",
+        "comment":"",
+        "sort":2,
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "is_writable":true,
+        "ui":"date",
+        "options":[
+          
+        ]
+      }
+
+    ]
+  }
+},
+{
+  "schema": {
     "id":"albums_artists",
     "table_name":"albums_artists",
     "date_created":"2013-12-10 16:41:54",
@@ -308,4 +382,4 @@
     }
   ]
 }
-  }]
+}]
