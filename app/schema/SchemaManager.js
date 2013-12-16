@@ -174,7 +174,7 @@ define(function(require, exports, module) {
     getFullSchema: function(tableName) {
       if (!tableSchemas.tables.get(tableName)) {
         throw "Table `"+ tableName +"` does not exist";
-      };
+      }
       return {
         table: tableSchemas.tables.get(tableName),
         structure: columnSchemas.tables[tableName],
