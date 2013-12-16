@@ -106,7 +106,7 @@ function(app, Backbone, Directus, SaveModule) {
       var user = app.getCurrentUser();
       var userGroup = user.get('group');
 
-      if (!(parseInt(id) === user.id || userGroup === 0)) {
+      if (!(parseInt(id) === user.id || userGroup.id === 0)) {
         return;
       }
 
