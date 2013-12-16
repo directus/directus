@@ -19,7 +19,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   input.date { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 140px; \
+                    width: 150px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
@@ -42,7 +42,8 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   <a class="now">Now</a> \
                   <input class="merged" type="hidden" {{#if hasDate}}value="{{valueMerged}}"{{/if}} name="{{name}}" id="{{name}}">';
 
-  var format = 'ddd, DD MMM YYYY HH:mm:ss';
+  //var format = 'ddd, DD MMM YYYY HH:mm:ss';
+  var format = 'YYYY-MM-DD HH:mm';
 
   Module.Input = UIView.extend({
 
@@ -59,16 +60,19 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     },
 
     makeNow: function() {
-      console.log('y');
       this.value = moment();
       this.render();
-      this.$('input[type=hidden]').trigger('change');
     },
 
     updateValue: function() {
-      var val = moment(this.$('input[type=date]').val() + ' ' + this.$('input[type=time]').val());
-      if (val.isValid()) {
+      var time = this.$('input[type=time]').val();
+      var date = this.$('input[type=date]').val();
+      var val = date + ' ' + time;
+
+      if (moment(val).isValid()) {
         this.$('#'+this.name).val(val.format(format));
+      } else {
+        this.$('#'+this.name).val('');
       }
     },
 
@@ -80,21 +84,14 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     serialize: function() {
       var data = {};
       var date = this.value;
-      var value = this.model.get(this.name);
 
-
-
-      data.hasDate = !(value === null || 
-                       value === undefined || 
-                       value === '');
+      data.hasDate = this.value.isValid();
 
       data.valueDate = date.format('YYYY-MM-DD');
       data.valueTime = date.format('HH:mm');
       data.valueMerged = date.format(format);
       data.name = this.name;
       data.note = this.columnSchema.get('comment');
-
-      console.log(data);
 
       return data;
     },
@@ -108,8 +105,15 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   Module.validate = function(value, options) {
     var m = moment(value);
 
-    if (m.isValid()) return;
-    
+    console.log(value);
+
+    if (m.isValid() || value === '' || value === null || value === undefined) {
+      console.log(value === '');
+      return;
+    }
+
+    console.log(value);
+
     return "Not a valid date";
   };
 
