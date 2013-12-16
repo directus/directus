@@ -976,7 +976,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 return (float) $mysql_data;
             case 'date':
             case 'datetime':
-                $nullDate = empty($mysql_data) || ("0000-00-00 00:00:00" == $mysql_data);
+                $nullDate = empty($mysql_data) || ("0000-00-00 00:00:00" == $mysql_data) || ('0000-00-00' === $mysql_data);
                 if($nullDate) {
                     return null;
                 }
