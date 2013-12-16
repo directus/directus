@@ -17,7 +17,7 @@ define(function(require, exports, module) {
       this._lastFetchedResult = result;
 
       result = this.parseRelational(result);
-      result = this.parseDate(result);
+      //result = this.parseDate(result);
 
       return result;
     },
