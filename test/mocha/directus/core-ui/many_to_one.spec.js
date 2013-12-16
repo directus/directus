@@ -39,8 +39,6 @@ define(function(require) {
 
       var ui = new ManyToOne.Input(options);
 
-      console.log(ui);
-
       /*var view = new ManyToOne.Input({
 
       });*/
