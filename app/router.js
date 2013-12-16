@@ -225,6 +225,13 @@ define(function(require, exports, module) {
     },
 
     user: function(id) {
+      var user = app.getCurrentUser();
+      var userGroup = user.get('group');
+
+      if (!(parseInt(id) === user.id || userGroup === 0)) {
+        return this.notFound();
+      }
+
       var model;
       this.setTitle('Users');
       this.tabs.setActive('users');
