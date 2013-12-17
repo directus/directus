@@ -397,6 +397,8 @@ class TableSchema {
         AND
             (:column_name = -1 OR DC.column_name = :column_name)
         AND
+            (DC.column_name NOT IN (:field_read_blacklist))
+        AND
             data_type IS NOT NULL) ORDER BY sort';
         $sth = $db->dbh->prepare($sql);
         $sth->bindValue(':table_name', $tbl_name, \PDO::PARAM_STR);
