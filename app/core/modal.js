@@ -17,7 +17,7 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      return {title: this.options.title || 'Dialog', buttonText: this.options.buttonText, showFooter: this.options.showFooter};
+      return {title: this.options.title || 'Dialog', buttonText: this.options.buttonText, showFooter: this.options.showFooter, showCancel: this.options.showCancel};
     },
 
     events: {
@@ -61,6 +61,7 @@ function(app, Backbone) {
 
       this.options.buttonText = this.options.buttonText || 'Save changes';
       this.options.showFooter = (this.options.showFooter === undefined) ? true : this.options.showFooter;
+      this.options.showCancel = (this.options.showCancel === undefined) ? true : this.options.showCancel;
 
       this.view = this.options.view;
 
