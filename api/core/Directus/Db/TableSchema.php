@@ -313,6 +313,16 @@ class TableSchema {
         return $info;
     }
 
+    protected static function createParamArray($values, $prefix) {
+        $result = array();
+
+        foreach($values as $i => $field) {
+            $result[$prefix.$i] = $field;
+        }
+
+        return $result;
+    }
+
     /**
      * Get table structure
      * @param $tbl_name
@@ -330,7 +340,12 @@ class TableSchema {
         }
 
         $readFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_READ_BLACKLIST);
-        $readFieldBlacklist = implode(', ', $readFieldBlacklist);
+        $readFieldBlacklistParams = self::createParamArray($readFieldBlacklist, ':readfield_blacklist_');
+        $readFieldBlacklistKeys = implode(',', array_keys($readFieldBlacklistParams));
+
+        if (empty($readFieldBlacklistKeys)) {
+            $readFieldBlacklistKeys = "''";
+        }
 
         $db = Bootstrap::get('olddb');
         $return = array();
@@ -368,7 +383,7 @@ class TableSchema {
         AND
             (:column_name = -1 OR C.column_name = :column_name)
         AND
-            (C.column_name NOT IN (:field_read_blacklist))
+            (C.column_name NOT IN ('.$readFieldBlacklistKeys.'))
         )
         UNION (SELECT
             DC.`column_name` AS id,
@@ -397,14 +412,19 @@ class TableSchema {
         AND
             (:column_name = -1 OR DC.column_name = :column_name)
         AND
-            (DC.column_name NOT IN (:field_read_blacklist))
+            (DC.column_name NOT IN ('.$readFieldBlacklistKeys.'))
         AND
             data_type IS NOT NULL) ORDER BY sort';
+
         $sth = $db->dbh->prepare($sql);
         $sth->bindValue(':table_name', $tbl_name, \PDO::PARAM_STR);
         $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
         $sth->bindValue(':column_name', $column_name, \PDO::PARAM_INT);
-        $sth->bindValue(':field_read_blacklist', $readFieldBlacklist, \PDO::PARAM_STR);
+
+        foreach($readFieldBlacklistParams as $key => $value) {
+            $sth->bindValue($key, $value, \PDO::PARAM_STR);
+        }
+
         $sth->execute();
 
         $writeFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_WRITE_BLACKLIST);
