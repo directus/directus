@@ -116,12 +116,13 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         title: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
-        showChooseButton: this.showChooseButton && this.canEdit,
+        showChooseButton: this.showChooseButton, //&& this.canEdit,
         showAddButton: this.showAddButton && this.canEdit
       };
     },
 
     afterRender: function() {
+      console.log('after render');
       this.setView('.related-table', this.nestedTableView).render();
     },
 
@@ -156,6 +157,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         filters: {
           booleanOperator: '&&',
           expressions: [
+            //@todo, make sure that this can also nest
             {column: joinColumn, operator: '===', value: this.model.id}
           ]
         }
