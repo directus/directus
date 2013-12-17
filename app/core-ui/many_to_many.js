@@ -112,7 +112,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
         sortable: false,
         footer: false,
         saveAfterDrop: false,
-        deleteColumn: this.canEdit && this.showRemoveButton,
+        deleteColumn: /*this.canEdit &&*/ this.showRemoveButton,
         hideEmptyMessage: true,
         hasSort: junctionStructure.get('sort') !== undefined
       });
