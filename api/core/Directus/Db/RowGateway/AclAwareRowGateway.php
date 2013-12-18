@@ -235,11 +235,11 @@ class AclAwareRowGateway extends RowGateway {
         // $log->info(__CLASS__."#".__FUNCTION__);
         // $log->info("args: " . print_r(func_get_args(), true));
         $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
-        if(!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
+        //if(!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
             // Enforce field write blacklist
             $attemptOffsets = array_keys($rowData);
             $this->acl->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
-        }
+        //}
         return parent::populate($rowData, $rowExistsInDatabase);
     }
 
@@ -303,10 +303,10 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetSet($offset, $value)
     {
-        if(!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
+        //if(!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
             // Enforce field write blacklist
             $this->acl->enforceBlacklist($this->table, $offset, Acl::FIELD_WRITE_BLACKLIST);
-        }
+        //}
         return parent::offsetSet($offset, $value);
     }
 
@@ -318,10 +318,10 @@ class AclAwareRowGateway extends RowGateway {
      */
     public function offsetUnset($offset)
     {
-        if(!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
+        //if(!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
             // Enforce field write blacklist
             $this->acl->enforceBlacklist($this->table, $offset, Acl::FIELD_WRITE_BLACKLIST);
-        }
+        //}
         return parent::offsetUnset($offset);
     }
 
