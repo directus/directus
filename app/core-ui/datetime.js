@@ -70,7 +70,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
       var val = date + ' ' + time;
 
       if (moment(val).isValid()) {
-        this.$('#'+this.name).val(val.format(format));
+        this.$('#'+this.name).val(moment(val).format(format));
       } else {
         this.$('#'+this.name).val('');
       }
