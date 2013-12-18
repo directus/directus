@@ -230,7 +230,7 @@ class AclAwareRowGateway extends RowGateway {
      * @param  bool  $rowExistsInDatabase
      * @return AclAwareRowGateway
      */
-    public function populate(array $rowData, $rowExistsInDatabase = false, $honorAcl = false)
+    public function populate(array $rowData, $rowExistsInDatabase = false)
     {
        // IDEAL OR SOMETHING LIKE IT
          // grab record
@@ -239,13 +239,13 @@ class AclAwareRowGateway extends RowGateway {
         // only run blacklist on the diff from real data and the db data
 
         $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
-        if($honorAcl) {
+
         //if(!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
             // Enforce field write blacklist
             // $attemptOffsets = array_keys($rowData);
             // $this->acl->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         //}
-        }
+
         return parent::populate($rowData, $rowExistsInDatabase);
     }
 
