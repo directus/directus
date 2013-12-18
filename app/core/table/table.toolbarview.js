@@ -17,17 +17,24 @@ function(app, Backbone) {
       'click #set-visibility > button': function(e) {
         var value = $(e.target).closest('button').attr('data-value');
         var collection = this.collection;
-        $('td.check > input:checked').each(function() {
-          var id = this.value;
-          collection.get(id).set({active: value}, {silent: true});
-        });
-        collection.save({
-          columns: ['id','active'],
-          success: function() {
+
+        var $checked = $('td.check > input:checked');
+        var expectedResponses = $checked.length;
+
+        var success = function() {
+          expectedResponses--;
+          if (expectedResponses === 0) {
             collection.trigger('visibility');
           }
+        }
+
+        $checked.each(function() {
+          var id = this.value;
+          console.log(id);
+          var model = collection.get(id);
+          model.save({active: value}, {silent: true, patch:true, validate:false, success: success});
         });
-        collection.trigger('visibility');
+
       },
 
       'click #visibility .dropdown-menu li > a': function(e) {
