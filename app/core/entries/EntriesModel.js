@@ -128,7 +128,8 @@ define(function(require, exports, module) {
               table: SchemaManager.getTable(tableRelated),
               structure: SchemaManager.getColumns('tables', tableRelated),
               parse:true,
-              filters: {columns_visible: columns}
+              filters: {columns_visible: columns},
+              privileges: SchemaManager.getPrivileges(tableRelated)
               //preferences: app.preferences[column.get('table_related')],
             };
 
