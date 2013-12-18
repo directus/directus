@@ -38,3 +38,6 @@ php_value post_max_size 72M
 
 # default is 2
 php_value upload_max_filesize 64M
+
+# E_ALL | E_STRICT
+php_value error_reporting 32767
