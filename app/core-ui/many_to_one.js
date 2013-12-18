@@ -33,7 +33,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
                   {{#data}}<input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{id}}" id="radio-{{id}}" {{#if selected}}checked{{/if}}> \
                   <label class="radiobuttons" for="radio-{{id}}">{{name}}</label>{{/data}} \
                   {{else}} \
-                  <select> \
+                  <select {{#unless canEdit}}disabled{{/unless}}> \
                   <option value="">Select from below</option> \
                   {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
                   </select> \
@@ -79,6 +79,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       data = _.sortBy(data, 'name');
 
       return {
+        canEdit: this.canEdit,
         name: this.options.name,
         data: data,
         comment: this.options.schema.get('comment'),
@@ -90,8 +91,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       // @todo display warning on UI & gracefully fail if the next value is undefined
       var relatedTable = this.columnSchema.relationship.get('table_related');
       var value = this.model.get(this.name);
-      this.column = this.columnSchema.options.get('visible_column');
 
+      this.column = this.columnSchema.options.get('visible_column');
+      this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance();
       this.collection.fetch();
       //this.collection.on('reset', this.render, this);
