@@ -31,6 +31,7 @@ function(app, Backbone, Directus, SaveModule) {
           success: function() { app.router.go('#users'); },
           error: function() { console.log('error',arguments); },
           patch: true,
+          ignoreWriteFieldBlacklisted: true,
           includeRelationships: true
         });
       }

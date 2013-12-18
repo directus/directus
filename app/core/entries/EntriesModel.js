@@ -231,7 +231,12 @@ define(function(require, exports, module) {
             }
 
         }, this);
+      }
 
+      if (options.ignoreWriteFieldBlacklisted) {
+        options.attrs = _.omit(options.attrs, this.getWriteFieldBlacklist());
+
+        console.log(options.attrs);
       }
 
       return Backbone.sync.apply(this, [method, model, options]);
@@ -257,6 +262,10 @@ define(function(require, exports, module) {
           columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute);
 
       return (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
+    },
+
+    getWriteFieldBlacklist: function() {
+      return (this.collection.privileges.get('write_field_blacklist') || '').split(',');
     },
 
     canDelete: function() {
