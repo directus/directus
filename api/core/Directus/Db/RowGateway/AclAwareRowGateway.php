@@ -70,8 +70,9 @@ class AclAwareRowGateway extends RowGateway {
     }
 
     public static function stringifyPrimaryKeyForRecordDebugRepresentation(array $primaryKeyData) {
-        if(null === $primaryKeyData)
+        if(null === $primaryKeyData) {
             return "null primary key";
+        }
         return "primary key (" . implode(":", array_keys($primaryKeyData)) . ") \"" . implode(":", $primaryKeyData) . "\"";
     }
 
@@ -229,17 +230,22 @@ class AclAwareRowGateway extends RowGateway {
      * @param  bool  $rowExistsInDatabase
      * @return AclAwareRowGateway
      */
-    public function populate(array $rowData, $rowExistsInDatabase = false)
+    public function populate(array $rowData, $rowExistsInDatabase = false, $honorAcl = false)
     {
-        // $log = $this->logger();
-        // $log->info(__CLASS__."#".__FUNCTION__);
-        // $log->info("args: " . print_r(func_get_args(), true));
+       // IDEAL OR SOMETHING LIKE IT
+         // grab record
+        // populate skip acl
+        // diff btwn real record $rowData parameter
+        // only run blacklist on the diff from real data and the db data
+
         $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
+        if($honorAcl) {
         //if(!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
             // Enforce field write blacklist
-            $attemptOffsets = array_keys($rowData);
-            $this->acl->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+            // $attemptOffsets = array_keys($rowData);
+            // $this->acl->enforceBlacklist($this->table, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         //}
+        }
         return parent::populate($rowData, $rowExistsInDatabase);
     }
 
