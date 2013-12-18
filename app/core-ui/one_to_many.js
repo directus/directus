@@ -56,7 +56,8 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     addRow: function() {
-      this.addModel(new this.relatedCollection.model({}, {collection: this.relatedCollection, parse: true}));
+      var collection = this.relatedCollection;
+      this.addModel(new collection.model({}, {collection: collection, parse: true, structure: collection.structure, table: collection.table, privileges: collection.privileges}));
     },
 
     editModel: function(model) {
