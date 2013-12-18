@@ -95,7 +95,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $newRecordObject = null;
         $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys); // || $recordIsNew;
 
-        // if($parentRecordChanged) {
+         if($parentRecordChanged) {
 
         //     // Run Custom UI Processing
         //     $customUis = Bootstrap::get('uis');
@@ -122,15 +122,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
         //         }
         //     }
 
-        //     // After UI processing, do we still have non-PK data?
-        //     $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
-        //     if($parentRecordChanged) {
-        //         // Update the parent row, w/ any new association fields replaced by their IDs
-        //         $newRecordObject = $TableGateway
-        //             ->addOrUpdateRecordByArray($parentRecordWithForeignKeys)
-        //             ->toArray();
-        //     }
-        // }
+             // After UI processing, do we still have non-PK data?
+             $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
+             if($parentRecordChanged) {
+                 // Update the parent row, w/ any new association fields replaced by their IDs
+                 $newRecordObject = $TableGateway
+                     ->addOrUpdateRecordByArray($parentRecordWithForeignKeys)
+                     ->toArray();
+             }
+         }
 
         // Do it this way, because & byref for outcome of ternary operator spells trouble
         $draftRecord = &$parentRecordWithForeignKeys;
