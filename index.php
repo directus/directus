@@ -101,7 +101,14 @@ function parsePreferences($tableSchema) {
 function getUsers() {
 	global $ZendDb, $acl;
 	$tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
-	return $tableGateway->getEntries(array('table_name'=>'directus_users','perPage'=>1000, 'active'=>1));
+	return $tableGateway->getEntries(
+		array(
+			'table_name'=>'directus_users',
+			'perPage'=>1000, 
+			'active'=>1,
+			'columns_visible'=>array('avatar', 'first_name', 'last_name', 'group', 'email', 'description')
+		)
+	);
 }
 
 function getCurrentUserInfo($users) {
@@ -182,10 +189,10 @@ function getExtensions($tabPrivileges) {
 	return $extensions;
 }
 
-function getPrivileges() {
+function getPrivileges($groupId) {
 	global $ZendDb, $acl;
 	$tableGateway = new DirectusPrivilegesTableGateway($acl, $ZendDb);
-	return $tableGateway->fetchGroupPrivilegesRaw(0);
+	return $tableGateway->fetchGroupPrivilegesRaw($groupId);
 }
 
 function getUI() {
@@ -218,6 +225,8 @@ $tableSchema = TableSchema::getTables();
 $users = getUsers();
 $currentUserInfo = getCurrentUserInfo($users);
 $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
+$groupId = $currentUserInfo['group']['id'];
+
 
 $data = array(
 	'nonces' => getNonces(),
@@ -233,7 +242,7 @@ $data = array(
 	'authenticatedUser' => $authenticatedUser,
 	'tab_privileges' => $tabPrivileges,
 	'extensions' => getExtensions($tabPrivileges),
-	'privileges' => getPrivileges(),
+	'privileges' => getPrivileges($groupId),
 	'ui' => getUI(),
 	'messages' => getInbox(),
 	'extendedUserColumns' => getExtendedUserColumns($tableSchema)
