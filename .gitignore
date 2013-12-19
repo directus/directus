@@ -11,9 +11,6 @@ composer.phar
 api/composer.lock
 api/vendor
 
-# Track non-composer vendors
-^api/vendor-manual
-
 # Ignore log files, but track the log README
 api/logs/*.log
 api/tests/logs/coverage/*
