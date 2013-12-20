@@ -1,14 +1,15 @@
 .bowerrc
 assets/bower
 
-config.php
+api/config.php
+api/configuration.php
+
 Icon
 .DS_Store
 dist/*
 
-# Don't track composer phar/lock/vendors
+# Don't track composer phar/vendors
 composer.phar
-api/composer.lock
 api/vendor
 
 # Ignore log files, but track the log README
