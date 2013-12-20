@@ -15,7 +15,7 @@
 // options.name       String            Field name
 
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
   "use strict";
 
@@ -41,7 +41,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     \
                   } \
                   </style> \
-                  <input type="date" class="date" name="{{name}}" id="{{name}}" value="{{valueDate}}"> \
+                  <input type="date" class="date" name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
                   <a class="now">Now</a>';
 
   Module.Input = Backbone.Layout.extend({
@@ -54,69 +54,24 @@ define(['app', 'backbone'], function(app, Backbone) {
       'click .now': 'makeNow'
     },
 
-    updateValue: function(e) {
-      var date = null;
-      var candidate = this.$el.find('input[type=date]').val();
-      try {
-        date = new Date(candidate);
-      } catch (err) {
-        // Do nothing if the date is bad
-        return;
-      }
-      this.options.value = date.toISOString();
+    makeNow: function() {
+      this.value = moment();
       this.render();
     },
 
-    makeNow: function(e) {
-      var now = this.getCurrentTime();
-      this.$el.find('input.date').val(now.yyyy+'-'+now.mm+'-'+now.dd);
-      this.updateValue();
-    },
-
-    afterRender: function() {
-      //
-    },
-
     serialize: function() {
-      var value = this.options.value || '';
-      var now = this.getCurrentTime(value);
+      var data = {};
 
-      return {
-        value: now.gmtValue,
-        valueDate: now.yyyy+'-'+now.mm+'-'+now.dd,
-        name: this.options.name,
-        note: this.options.schema.get('comment')
-      };
-    },
+      data.hasDate = this.value.isValid();
+      data.valueDate = this.value.format('YYYY-MM-DD');
+      data.name = this.options.name;
+      data.note = this.options.schema.get('comment');
 
-    getCurrentTime: function(value) {
-      var thisDate = (value)? new Date(value+'Z') : new Date();
-      var gmtValue;
-
-      // Could be handled more elegantly
-      try{
-        gmtValue = new Date(thisDate).toISOString();
-      } catch(err){
-        thisDate = new Date();
-      }
-
-      var dd = thisDate.getDate();
-      var mm = thisDate.getMonth()+1; // January is 0!
-      var yyyy = thisDate.getFullYear();
-
-      if(dd<10) {dd='0'+dd;}
-      if(mm<10) {mm='0'+mm;}
-
-      return {
-        'gmtValue': gmtValue,
-        'dd': dd,
-        'mm': mm,
-        'yyyy': yyyy
-      };
+      return data;
     },
 
     initialize: function() {
-      //
+      this.value = moment(this.options.value);
     }
 
   });

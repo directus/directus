@@ -85,7 +85,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Update and/or Add Many-to-One Associations
         $parentRecordWithForeignKeys = $TableGateway->addOrUpdateManyToOneRelationships($schemaArray, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
-        
+
         // Merge the M21 foreign keys into the recordData array
         $recordData = array_merge($recordData, $parentRecordWithForeignKeys);
 
@@ -94,42 +94,43 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // If more than the record ID is present.
         $newRecordObject = null;
         $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys); // || $recordIsNew;
-        if($parentRecordChanged) {
 
-            // Run Custom UI Processing
-            $customUis = Bootstrap::get('uis');
-            $aliasColumns = TableSchema::getAllAliasTableColumns($TableGateway->getTable());
-            foreach($aliasColumns as $aliasColumn) {
-                if($aliasColumn['ui'] && array_key_exists($aliasColumn['ui'], $customUis)) {
-                    $formClassName = '\\' . Formatting::underscoreToCamelCase($aliasColumn['ui']) . 'Form';
-                    if(!class_exists($formClassName)) {
-                        $classFilePath = APPLICATION_PATH . '/ui/' . $aliasColumn['ui'] . '/form.php';
-                        if(!file_exists($classFilePath)) {
-                            continue;
-                        }
-                        require $classFilePath;
-                        if(!class_exists($formClassName)) {
-                            throw new \RuntimeError("Expected class $formClassName to be defined in $classFilePath for custom UI processing.");
-                        }
-                        $form = new $formClassName($recordData, $parentRecordWithForeignKeys);
-                        if(!$form->isValid()) {
-                            $failedField = $TableGateway->getTable() . "[" . $aliasColumn['id'] . "]";
-                            throw new Exception\CustomUiValidationError("Custom UI Form validation failed for field $failedField via $formClassName");
-                        }
-                        $form->submit();
-                    }
-                }
-            }
+         if($parentRecordChanged) {
 
-            // After UI processing, do we still have non-PK data?
-            $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
-            if($parentRecordChanged) {
-                // Update the parent row, w/ any new association fields replaced by their IDs
-                $newRecordObject = $TableGateway
-                    ->addOrUpdateRecordByArray($parentRecordWithForeignKeys)
-                    ->toArray();
-            }
-        }
+        //     // Run Custom UI Processing
+        //     $customUis = Bootstrap::get('uis');
+        //     $aliasColumns = TableSchema::getAllAliasTableColumns($TableGateway->getTable());
+        //     foreach($aliasColumns as $aliasColumn) {
+        //         if($aliasColumn['ui'] && array_key_exists($aliasColumn['ui'], $customUis)) {
+        //             $formClassName = '\\' . Formatting::underscoreToCamelCase($aliasColumn['ui']) . 'Form';
+        //             if(!class_exists($formClassName)) {
+        //                 $classFilePath = APPLICATION_PATH . '/ui/' . $aliasColumn['ui'] . '/form.php';
+        //                 if(!file_exists($classFilePath)) {
+        //                     continue;
+        //                 }
+        //                 require $classFilePath;
+        //                 if(!class_exists($formClassName)) {
+        //                     throw new \RuntimeError("Expected class $formClassName to be defined in $classFilePath for custom UI processing.");
+        //                 }
+        //                 $form = new $formClassName($recordData, $parentRecordWithForeignKeys);
+        //                 if(!$form->isValid()) {
+        //                     $failedField = $TableGateway->getTable() . "[" . $aliasColumn['id'] . "]";
+        //                     throw new Exception\CustomUiValidationError("Custom UI Form validation failed for field $failedField via $formClassName");
+        //                 }
+        //                 $form->submit();
+        //             }
+        //         }
+        //     }
+
+             // After UI processing, do we still have non-PK data?
+             $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys);
+             if($parentRecordChanged) {
+                 // Update the parent row, w/ any new association fields replaced by their IDs
+                 $newRecordObject = $TableGateway
+                     ->addOrUpdateRecordByArray($parentRecordWithForeignKeys)
+                     ->toArray();
+             }
+         }
 
         // Do it this way, because & byref for outcome of ternary operator spells trouble
         $draftRecord = &$parentRecordWithForeignKeys;
@@ -269,25 +270,33 @@ class RelationalTableGateway extends AclAwareTableGateway {
             }
 
             $foreignDataSet = $parentRow[$colName];
+
             $colUiType = $column['ui'];
 
+            $isManyToOne = (array_key_exists('relationship', $column) && 
+                $column['relationship']['type'] == 'MANYTOONE'
+            );
+
             /** Many-to-One */
-            if (in_array($colUiType, TableSchema::$many_to_one_uis)) {
+            if ($isManyToOne) {
                 $foreignRow = $foreignDataSet;
                 $foreignTableName = null;
-                if("single_media" === $colUiType)
-                    $foreignTableName = "directus_media";
-                else {
-                    /**
-                     * Transitional workaround, pending bugfix to many to one uis.
-                     * @see  https://github.com/RNGR/directus6/issues/188
-                     */
-                    $foreignTableName = TableSchema::getRelatedTableFromManyToOneColumnName($colName);
-                    if(is_null($foreignTableName)) {
-                        unset($parentRow[$colName]);
-                        continue;
-                    }
-                }
+
+                // if("single_media" === $colUiType)
+                //     $foreignTableName = "directus_media";
+                // else {
+                //     /**
+                //      * Transitional workaround, pending bugfix to many to one uis.
+                //      * @see  https://github.com/RNGR/directus6/issues/188
+                //      */
+                //     $foreignTableName = TableSchema::getRelatedTableFromManyToOneColumnName($colName);
+                //     if(is_null($foreignTableName)) {
+                //         unset($parentRow[$colName]);
+                //         continue;
+                //     }
+                // }
+
+                $foreignTableName = $column['relationship']['table_related'];
 
                 // Update/Add foreign record
                 if($this->recordDataContainsNonPrimaryKeyData($foreignRow)) {
@@ -367,7 +376,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                          * $parentRecord['collectionName1'][0-9]['id']; // for updating a pre-existing junction row
                          * $parentRecord['collectionName1'][0-9]['active']; // for disassociating a junction via the '0' value
                          */
-                        $this->enforceColumnHasNonNullValues($column, array('junction_table','junction_key_left'), $this->table);
+                        $this->enforceColumnHasNonNullValues($column['relationship'], array('junction_table','junction_key_left'), $this->table);
                         $junctionTableName = $column['relationship']['junction_table'];
                         $junctionKeyLeft = $column['relationship']['junction_key_left'];
                         $JunctionTable = new RelationalTableGateway($this->acl, $junctionTableName, $this->adapter);
@@ -629,20 +638,21 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // $log = $this->logger();
         foreach ($aliasColumns as $alias) {
             $foreign_data = null;
-            // $log->info("Looking at alias field {$alias['id']}");
-            switch($alias['type']) {
-                case 'MANYTOMANY':
-                    // $log->info("Many-to-Many");
-                    $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
-                    $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
-                        $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
-                        $entry['id']);
-                    break;
-                case 'ONETOMANY':
-                    // $log->info("One-to-Many");
-                    $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_key_right'), $this->table);
-                    $foreign_data = $this->loadOneToManyRelationships($alias['relationship']['table_related'], $alias['relationship']['junction_key_right'], $entry['id']);
-                    break;
+
+            if(array_key_exists('relationship', $alias) && $alias['relationship'] && TableSchema::canGroupViewTable($alias['relationship']['table_related'])) {
+                switch($alias['type']) {
+                    case 'MANYTOMANY':
+                        $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
+                        $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
+                            $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
+                            $entry['id']);
+                        break;
+                    case 'ONETOMANY':
+                        // $log->info("One-to-Many");
+                        $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_key_right'), $this->table);
+                        $foreign_data = $this->loadOneToManyRelationships($alias['relationship']['table_related'], $alias['relationship']['junction_key_right'], $entry['id']);
+                        break;
+                }
             }
 
             if(!is_null($foreign_data)) {
@@ -666,6 +676,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @param string $column_equals
      */
     public function loadOneToManyRelationships($table, $column_name, $column_equals) {
+        if(!TableSchema::canGroupViewTable($table)) {
+            return false;
+        }
+
         // Run query
         $select = new Select($table);
         $select->where->equalTo($column_name, $column_equals);
@@ -679,8 +693,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $results = $rowset->toArray();
 
         // Process results
-        foreach ($results as &$row)
+        foreach ($results as &$row) {
             array_walk($row, array($this, 'castFloatIfNumeric'));
+        }
 
         return array('rows' => $results);
     }
@@ -698,9 +713,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Identify the ManyToOne columns
         foreach ($schemaArray as $col) {
 
-            $isManyToOneColumn = in_array($col['ui'], TableSchema::$many_to_one_uis);
+            $isManyToOneColumn = (
+                array_key_exists('relationship', $col) &&
+                $col['relationship']['type'] == 'MANYTOONE'
+            );
+
+            //print_r($col['ui']);
+            //print_r(TableSchema::$many_to_one_uis);
+            //die();
 
             if ($isManyToOneColumn) {
+
                 $foreign_id_column = $col['id'];
 
                 if(array_key_exists('relationship', $col)) {
@@ -725,6 +748,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 };
                 $ids = array_map($yield, $table_entries);
                 if (empty($ids)) {
+                    continue;
+                }
+
+                if(!TableSchema::canGroupViewTable($foreign_table_name)) {
                     continue;
                 }
 
@@ -960,7 +987,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 return (float) $mysql_data;
             case 'date':
             case 'datetime':
-                $nullDate = empty($mysql_data) || ("0000-00-00 00:00:00" == $mysql_data);
+                $nullDate = empty($mysql_data) || ("0000-00-00 00:00:00" == $mysql_data) || ('0000-00-00' === $mysql_data);
                 if($nullDate) {
                     return null;
                 }

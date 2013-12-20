@@ -43,6 +43,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
       this.options.title = this.options.title || 'Editing Media';
       this.on('close', function() {
         if (this.model.hasChanged()) {
+          // @todo evaluate the usefulness of this
           this.model.rollBack();
         }
       }, this);
