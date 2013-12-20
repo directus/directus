@@ -96,26 +96,25 @@ $authAndNonceRouteWhitelist = array(
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist) {
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
-    if(in_array($routeName, $authAndNonceRouteWhitelist))
-        return;
-
-    /** Enforce required authentication. */
-    if(!Auth::loggedIn()) {
-        $app->halt(401, "You must be logged in to access the API.");
-    }
-
-    /** Enforce required request nonces. */
-    if(!$requestNonceProvider->requestHasValidNonce()) {
-        if('development' !== DIRECTUS_ENV) {
-            $app->halt(401, "Invalid request (nonce).");
+    if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
+        /** Enforce required authentication. */
+        if(!Auth::loggedIn()) {
+            $app->halt(401, "You must be logged in to access the API.");
         }
-    }
 
-    /** Include new request nonces in the response headers */
-    $response = $app->response();
-    $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
-    $nonce_options = $requestNonceProvider->getOptions();
-    $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
+        /** Enforce required request nonces. */
+        if(!$requestNonceProvider->requestHasValidNonce()) {
+            if('development' !== DIRECTUS_ENV) {
+                $app->halt(401, "Invalid request (nonce).");
+            }
+        }
+
+        /** Include new request nonces in the response headers */
+        $response = $app->response();
+        $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
+        $nonce_options = $requestNonceProvider->getOptions();
+        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
+    }
 });
 
 /**
@@ -138,6 +137,21 @@ $db = Bootstrap::get('OldDb');
  * @var \Directus\Acl
  */
 $acl = Bootstrap::get('acl');
+
+/**
+ * Authentication
+ */
+
+$DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+Auth::setUserCacheRefreshProvider(function($userId) use ($DirectusUsersTableGateway) {
+    return $DirectusUsersTableGateway->find($userId);
+});
+
+if(Auth::loggedIn()) {
+    $user = Auth::getUserRecord();
+    $acl->setUserId($user['id']);
+    $acl->setGroupId($user['group']);
+}
 
 /**
  * Request Payload
@@ -175,15 +189,6 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
  * Slim Routes
  * (Collections arranged alphabetically)
  */
-
-/**
- * AUTHENTICATION
- */
-
-$DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
-Auth::setUserCacheRefreshProvider(function($userId) use ($DirectusUsersTableGateway) {
-    return $DirectusUsersTableGateway->find($userId);
-});
 
 $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonceProvider) {
 
