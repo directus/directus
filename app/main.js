@@ -229,7 +229,9 @@ require(["config"], function() {
 
         switch(xhr.status) {
           case 403:
-            app.trigger("alert:error", "Unauthorized", xhr.responseText);
+            // var response = $.parseJSON(xhr.responseText);
+            var message = "You don't have permission to access this table. IT has been notified. This will be resolved shortly.";
+            app.trigger("alert:error", "Restricted Access", message, true);
             break;
           default:
             type = 'Server ' + xhr.status;
