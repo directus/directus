@@ -48,12 +48,16 @@ define([
     app.on('progress', showProgressNotification);
     app.on('load', hideProgressNotification);
 
-    app.on('alert:error', function(message, details) {
-      $('#loader').hide();
-      var view = new ErrorView({message: message, details: details});
-      hideProgressNotification();
-      app.lockScreen();
-      messages.insertView(view).render();
+    app.on('alert:error', function(message, details, showDetails) {
+        showDetails = showDetails || false;
+        $('#loader').hide();
+        var view = new ErrorView({message: message, details: details});
+        hideProgressNotification();
+        app.lockScreen();
+        messages.insertView(view).render();
         view.render();
+        if(showDetails) {
+          view.$el.find('button.show-details').click();
+        }
       });
 });
