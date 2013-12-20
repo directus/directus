@@ -329,8 +329,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $insertState = $insert->getRawState();
         $insertTable = $this->getRawTableNameFromQueryStateTable($insertState['table']);
 
-        if(!$this->acl->hasTablePrivilege($insertTable, 'add'))
-            throw new UnauthorizedTableAddException("Table add access forbidden on table $insertTable");
+        if(!$this->acl->hasTablePrivilege($insertTable, 'add')) {
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+            throw new UnauthorizedTableAddException($aclErrorPrefix . "Table add access forbidden on table $insertTable");
+        }
 
         // Enforce write field blacklist (if user lacks bigedit privileges on this table)
         if(!$this->acl->hasTablePrivilege($insertTable, 'bigedit')) {
@@ -373,6 +375,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
          * ACL Enforcement
          */
 
+
         if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
@@ -381,13 +384,15 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
              */
             if(false === $cmsOwnerColumn) {
                 // All edits are "big" edits if there is no magic owner column.
-                throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on table `$updateTable` (no magic owner column).");
+                $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on table `$updateTable` (no magic owner column).");
             } else {
                 // Who are the owners of these rows?
                 list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 // Enforce
                 if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
-                    throw new UnauthorizedTableBigEditException("Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
+                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                    throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
                 }
             }
 
@@ -408,7 +413,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                     list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 }
                 if(in_array($currentUserId, $predicateOwnerIds)) {
-                    throw new UnauthorizedTableEditException("Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
+                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                    throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
                 }
             }
         }
@@ -452,13 +458,15 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
              */
             if(false === $cmsOwnerColumn) {
                 // All deletes are "big" deletes if there is no magic owner column.
-                throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on table `$deleteTable` (no magic owner column).");
+                $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigdelete access forbidden on table `$deleteTable` (no magic owner column).");
             } else {
                 // Who are the owners of these rows?
                 list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
                 // Enforce
                 if(is_null($currentUserId) || count(array_diff($predicateOwnerIds, array($currentUserId)))) {
-                    throw new UnauthorizedTableBigDeleteException("Table bigdelete access forbidden on $predicateResultQty `$deleteTable` table record(s) and " . count($predicateOwnerIds) . " CMS owner(s) (with ids " . implode(", ", $predicateOwnerIds) . ").");
+                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                    throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigdelete access forbidden on $predicateResultQty `$deleteTable` table record(s) and " . count($predicateOwnerIds) . " CMS owner(s) (with ids " . implode(", ", $predicateOwnerIds) . ").");
                 }
             }
         }
@@ -474,7 +482,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 }
                 if(in_array($currentUserId, $predicateOwnerIds)) {
                     $exceptionMessage = "Table delete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
-                    throw new UnauthorizedTableDeleteException($exceptionMessage);
+                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                    throw new UnauthorizedTableDeleteException($aclErrorPrefix . $exceptionMessage);
                 }
             }
         }

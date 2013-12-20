@@ -52,9 +52,27 @@ class Acl {
     );
 
     protected $groupPrivileges;
+    protected $userId = "null";
+    protected $groupId = "null";
 
     public function __construct(array $groupPrivileges = array()) {
         $this->setGroupPrivileges($groupPrivileges);
+    }
+
+    public function setUserId($userId) {
+        $this->userId = $userId;
+    }
+
+    public function setGroupId($groupId) {
+        $this->groupId = $groupId;
+    }
+
+    public function getUserId() {
+        return $this->userId;
+    }
+
+    public function getGroupId() {
+        return $this->groupId;
     }
 
     public function logger() {
@@ -82,6 +100,13 @@ class Acl {
         return $list;
     }
 
+    public function getErrorMessagePrefix() {
+        // %s and not %d so that null will appear as "null"
+        $aclErrorPrefix = "[Group #%s User #%s] ";
+        $aclErrorPrefix = sprintf($aclErrorPrefix, $this->getGroupId(), $this->getUserId());
+        return $aclErrorPrefix;
+    }
+
     /**
      * Confirm current user group has $blacklist privileges on fields in $offsets
      * NOTE: Acl#getTablePrivilegeList enforces that $blacklist is a correct value
@@ -99,7 +124,8 @@ class Acl {
          */
         if(self::FIELD_READ_BLACKLIST === $blacklist && count($fieldBlacklist) && in_array('*', $offsets)) {
             // Cannot select all, given a non-empty field read blacklist.
-            throw new UnauthorizedFieldReadException("Cannot select all (`*`) from table `$table` with non-empty read field blacklist.");
+            $prefix = $this->getErrorMessagePrefix();
+            throw new UnauthorizedFieldReadException($prefix . "Cannot select all (`*`) from table `$table` with non-empty read field blacklist.");
         }
         /**
          * Enforce granular offset attempts.
@@ -117,9 +143,11 @@ class Acl {
             $forbiddenIndices = implode(", ", $forbiddenIndices);
             switch($blacklist) {
                 case self::FIELD_WRITE_BLACKLIST:
-                    throw new UnauthorizedFieldWriteException("Write (set) access forbidden to table `$table` indices: $forbiddenIndices");
+                    $prefix = $this->getErrorMessagePrefix();
+                    throw new UnauthorizedFieldWriteException($prefix . "Write (set) access forbidden to table `$table` indices: $forbiddenIndices");
                 case self::FIELD_READ_BLACKLIST:
-                    throw new UnauthorizedFieldReadException("Read (get) access forbidden to table `$table` indices: $forbiddenIndices");
+                    $prefix = $this->getErrorMessagePrefix();
+                    throw new UnauthorizedFieldReadException($prefix . "Read (get) access forbidden to table `$table` indices: $forbiddenIndices");
             }
         }
     }
@@ -158,9 +186,10 @@ class Acl {
             $mandatoryReadFields = $this->getTableMandatoryReadList($table);
             $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $privilegeList);
             if(count($disallowedReadBlacklistFields)) {
-                // Log warning
-                $this->logger()->warn("Table $table contains read blacklist items which are designated as mandatory read fields:");
-                $this->logger()->warn(print_r($disallowedReadBlacklistFields, true));
+                trigger_error(
+                    "Table $table contains read blacklist items which are designated as mandatory read fields: "
+                    . print_r($disallowedReadBlacklistFields, true)
+                );
                 // Filter out mandatory read items
                 $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
             }
