@@ -94,11 +94,11 @@ class Bootstrap {
 
     private static function mailer() {
         $config = self::get('config');
-        $smtp = $config['smtp'];
+        $smtp = $config['SMTP'];
         $transport = \Swift_SmtpTransport::newInstance($smtp['host'], $smtp['port'])
-            ->setUsername($smtp['user'])
+            ->setUsername($smtp['username'])
             ->setPassword($smtp['password']);
-        $mailer = Swift_Mailer::newInstance($transport);
+        $mailer = \Swift_Mailer::newInstance($transport);
         return $mailer;
     }
 
