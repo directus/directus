@@ -28,6 +28,10 @@ switch (DIRECTUS_ENV) {
         break;
 }
 
+$isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+$url = ($isHttps ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+define('HOST_URL', $url);
+
 use Directus\Acl\Exception\UnauthorizedTableAlterException;
 use Directus\Auth\Provider as Auth;
 use Directus\Auth\RequestNonceProvider;
@@ -249,15 +253,17 @@ $app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
 
 // debug helper
 $app->get("/$v/auth/session/?", function() use ($app) {
-    if('production' === DIRECTUS_ENV)
+    if('production' === DIRECTUS_ENV) {
         $app->halt('404');
+    }
     JsonView::render($_SESSION);
 })->name('auth_session');
 
 // debug helper
 $app->get("/$v/auth/clear-session/?", function() use ($app) {
-    if('production' === DIRECTUS_ENV)
+    if('production' === DIRECTUS_ENV) {
         $app->halt('404');
+    }
     // Example #1 - http://php.net/manual/en/function.session-destroy.php
     $_SESSION = array();
     if (ini_get("session.use_cookies")) {
@@ -272,20 +278,69 @@ $app->get("/$v/auth/clear-session/?", function() use ($app) {
 })->name('auth_clear_session');
 
 // debug helper
-$app->get("/$v/auth/test-email/?", function() use ($app, $acl) {
-    if('production' === DIRECTUS_ENV) {
-        return $app->halt('404');
+$app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
+    if(!isset($_POST['email'])) {
+        return JsonView::render(array(
+            'success' => false,
+            'message' => 'Invalid email address.'
+        ));
     }
-    $Mailer = Bootstrap::get('mailer');
 
-    // Create a message
-    $message = Swift_Message::newInstance('Test Directus Email')
+    $DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+    $user = $DirectusUsersTableGateway->findOneBy('email', $_POST['email']);
+
+    if(false === $user) {
+        return JsonView::render(array(
+            'success' => false,
+            'message' => "An account with that email address doesn't exist."
+        ));
+    }
+
+    $password = uniqid();
+    $appURL = HOST_URL;
+
+    $emailBodyPlainText = <<<EMAILBODY
+Hey there,
+
+Here is a temporary password to login to Directus:
+
+$password
+
+You can log in here:
+
+$appURL
+
+Once you log in, you can change your password via the User Settings menu.
+
+Thanks!
+Directus
+EMAILBODY;
+
+    $set = array();
+    $set['salt'] = uniqid();
+    $set['password'] = Auth::hashPassword($password, $set['salt']);
+    // Skip ACL
+    $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+    $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
+
+    if(1 !== $affectedRows) {
+        return JsonView::render(array(
+            'success' => false
+        ));
+    }
+
+    $message = Swift_Message::newInstance('You reset your Directus password')
       ->setFrom(array('noreply@getdirectus.com' => 'Directus'))
-      ->setTo(array('daniel@rngr.org'))
-      ->setBody('Here is the message itself');
+      ->setTo(array($user['email']))
+      ->setBody($emailBodyPlainText);
 
-    // Send the message
+    $mailer = Bootstrap::get('mailer');
     $result = $mailer->send($message);
+
+    $success = ($result === 1);
+    return JsonView::render(array(
+        'success' => $success
+    ));
 
 })->name('auth_permissions');
 

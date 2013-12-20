@@ -91,7 +91,7 @@ class Provider {
     public static function getUserRecord() {
 
         self::enforceUserIsAuthenticated();
-        
+
         $userRefreshProvider = self::$userCacheRefreshProvider;
         if(!is_callable($userRefreshProvider)) {
             throw new \RuntimeException("Undefined user cache refresh provider.");
