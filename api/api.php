@@ -51,6 +51,7 @@ use Directus\Media\Upload;
 use Directus\Util;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
+use Directus\Db\TableGateway\DirectusIPWhitelist;
 use Zend\Db\Sql\Expression;
 
 // API Version shortcut for routes:
@@ -181,20 +182,45 @@ Auth::setUserCacheRefreshProvider(function($userId) use ($DirectusUsersTableGate
 });
 
 $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonceProvider) {
+
     $response = array(
         'message' => "Wrong username/password.",
         'success' => false,
         'all_nonces' => $requestNonceProvider->getAllNonces()
     );
+
     if(Auth::loggedIn()) {
         $response['success'] = true;
         return JsonView::render($response);
     }
+
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
     $Users = new DirectusUsersTableGateway($acl, $ZendDb);
     $user = $Users->findOneBy('email', $email);
+
+    // ------------------------------
+    // Check if group needs whitelist
+    $groupId = $user['group'];
+    $directusGroupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
+    $group = $directusGroupsTableGateway->find($groupId);
+
+    if (1 == $group['restrict_to_ip_whitelist']) {
+        $directusIPWhitelist = new DirectusIPWhitelist($acl, $ZendDb);
+        if (!$directusIPWhitelist->hasIP($_SERVER['REMOTE_ADDR'])) {
+            return JsonView::render(array(
+                'message' => 'Request not allowed from IP address',
+                'success' => false,
+                'all_nonces' => $requestNonceProvider->getAllNonces()
+            ));
+        }
+    }
+
+    // ------------------------------
+
+
+
     if(!$user) {
         return JsonView::render($response);
     }

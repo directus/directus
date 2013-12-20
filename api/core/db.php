@@ -215,8 +215,8 @@ class DB extends MySQL {
                 'hidden_input'=>$col['hidden_input'],
                 'required'=>$col['required'],
                 'master'=>$col['master'],
-                'sort'=>$col['sort'],
-                'comment'=>$col['comment']
+                'sort'=> array_key_exists('sort', $col) ? $col['sort'] : 99999,
+                'comment'=> array_key_exists('comment', $col) ? $col['comment'] : ''
             ));
         }
 

@@ -1,10 +1,9 @@
 define([
   "app",
-  "backbone",
-  "core/UIManager"
+  "backbone"
 ],
 
-function(app, Backbone, UIManager) {
+function(app, Backbone) {
 
   "use strict";
 
@@ -59,6 +58,7 @@ function(app, Backbone, UIManager) {
     },
 
     comparator: function(row) {
+      var UIManager = require('core/UIManager');
       var column = this.getFilter('sort') || 'id';
       var value = row.get(column);
       var options, ui, type, schema;

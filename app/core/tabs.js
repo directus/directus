@@ -21,17 +21,21 @@ function(app, Backbone) {
   Tabs.Collection = Backbone.Collection.extend({
     setActive: function(route) {
       var model = this.get(route);
-      if (!model) { return; }
       //deactive all tabs
       _.each(this.where({'active':true}),function(model) {
         model.unset('active',{silent: true});
       });
+
+      if (!model) { return; }
       model.set({'active':true});
     },
 
     initialize: function() {
       app.users.on('reset sync add', function() {
-        this.get('users').set({count: app.users.table.get('active')});
+        var userTab = this.get('users');
+        if (userTab) {
+          userTab.set({count: app.users.table.get('active')});
+        }
       }, this);
       if(undefined !== this.get('media')) {
         app.media.on('reset sync add', function() {

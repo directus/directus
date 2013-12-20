@@ -109,7 +109,7 @@ require(["config"], function() {
       app.groups   = EntriesManager.getInstance('directus_groups');
 
       // Proxy to EntriesManager
-      app.getEntries = function(tableName) { return EntriesManager.getInstance(tableName); },
+      app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); },
 
       app.messages = new Messages.Collection([], _.extend({
         url: app.API_URL + 'messages/rows/'
@@ -282,7 +282,7 @@ require(["config"], function() {
       });
 
 
-      app.router = new Router({extensions: extensions, tabs: tabs});
+      app.router = new Router({extensions: extensions, tabs: tabs, tabPrivileges: options.tab_privileges});
 
       // Trigger the initial route and enable HTML5 History API support, set the
       // root folder to '/' by default.  Change in app.js.

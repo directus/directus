@@ -12,7 +12,7 @@ use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
-use Directus\Db\TableGateway\DirectusActivityTableGateway;
+use Directus\Db\TableSchema;
 use Directus\Util\Date;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
@@ -100,7 +100,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
         return $withKey;
     }
-    
+
     protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
         foreach($resultSet as &$result) {
             $result = $this->convertRowDateTimesToTimeZone($result, $targetTimeZone, $fields);
@@ -116,7 +116,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
         return $row;
     }
-    
+
     public function newRow($table = null, $pk_field_name = null)
     {
         $table = is_null($table) ? $this->table : $table;
@@ -197,20 +197,36 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 throw new SuppliedArrayAsColumnValue("Attempting to write an array as the value for column `$table`.`$columnName`.");
             }
         }
-        // $log = $this->logger();
-        // $log->info(__CLASS__."#".__FUNCTION__);
 
         $tableName = is_null($tableName) ? $this->table : $tableName;
         $rowExists = isset($recordData['id']);
 
-        // $recordAction = $rowExists ? "Populating an existing" : "Making a new";
-        // $log->info("$recordAction record for table $tableName with record data: " . print_r($recordData, true));
-
-        $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, $tableName, $this->adapter);
-        $record->populateSkipAcl($recordData, $rowExists);
+        // $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, $tableName, $this->adapter);
+        // $record->populateSkipAcl($recordData, $rowExists);
         // $record->populate($recordData, $rowExists);
-        $record->save();
-        return $record;
+        // $record->save();
+        // return $record;
+
+        $TableGateway = new self($this->acl, $tableName, $this->adapter);
+        if($rowExists) {
+            $Update = new Update($tableName);
+            $Update->set($recordData);
+            $Update->where(array('id' => $recordData['id']));
+            $TableGateway->updateWith($Update);
+        } else {
+            $TableGateway->insert($recordData);
+            $recordData['id'] = $TableGateway->getLastInsertValue();
+        }
+
+        $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
+        $recordData = $TableGateway->fetchAll(function($select) use ($recordData, $columns) {
+            $select
+                ->columns($columns)
+                ->limit(1);
+            $select->where->equalTo('id', $recordData['id']);
+        })->current();
+
+        return $recordData;
     }
 
     protected function logger() {
@@ -228,7 +244,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      */
     public function dumpSql(AbstractSql $query) {
         $sql = new Sql($this->adapter);
-        $query = @$sql->getSqlStringForSqlObject($query);
+        $query = $sql->getSqlStringForSqlObject($query, $this->adapter->getPlatform());
         return $query;
     }
 
@@ -251,11 +267,13 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     }
 
     protected function getRawTableNameFromQueryStateTable($table) {
-        if(is_string($table))
+        if(is_string($table)) {
             return $table;
-        if(is_array($table))
+        }
+        if(is_array($table)) {
             // The only value is the real table name (key is alias).
             return array_pop($table);
+        }
         throw new \InvalidArgumentException("Unexpected parameter of type " . get_class($table));
     }
 
