@@ -2,7 +2,7 @@ define([
   "app",
   "core/entries/EntriesCollection",
   "core/entries/EntriesModel",
-  "core/entries/EntriesNestedCollection",
+  "core/entries/EntriesJunctionCollection",
   "core/collection",
   "core/edit",
   "core/table/table.view",

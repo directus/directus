@@ -29,7 +29,7 @@ define(function(require, exports, module) {
     mediaInstance = new EntriesCollection([], _.extend({
       rowsPerPage: rowsPerPage,
       url: apiURL + 'media',
-      filters: {columns_visible: ['name','title','size','user','date_uploaded', 'storage_adapter']}
+      filters: {columns_visible: ['name','title','size','user','date_uploaded', 'storage_adapter','type']}
     }, SchemaManager.getFullSchema('directus_media')));
 
     activityInstance = new EntriesCollection([], _.extend({
@@ -44,7 +44,7 @@ define(function(require, exports, module) {
     }, SchemaManager.getFullSchema('directus_groups')));
   }
 
-  function getInstance(tableName) {
+  function getInstance(tableName, options) {
     switch (tableName) {
       case 'directus_users':
         return usersInstance;
@@ -59,7 +59,9 @@ define(function(require, exports, module) {
         return activityInstance;
     }
 
-    var defaultOptions = SchemaManager.getFullSchema(tableName);
+    options = options || {};
+
+    var defaultOptions = _.extend(SchemaManager.getFullSchema(tableName), options);
 
     var entries = new EntriesCollection([], _.extend({
       rowsPerPage: rowsPerPage

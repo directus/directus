@@ -4,6 +4,70 @@
 	}
 }
 
+.daily-cash-format, .big-simple-text-modal {
+	width: 100%;
+	text-align: center;
+	font-size: 30px;
+	padding-top: 50px;
+	line-height: 36px;
+}
+
+.cash-register-container {
+
+	label {
+		margin-bottom: 0;
+		display: inline-block;
+	}
+
+	table.directus-table {
+
+		margin-bottom: 20px;
+
+		thead tr th {
+			padding: 10px 10px 10px 10px;
+		}
+
+		tbody tr td {
+			padding: 4px;
+		}
+		.register-price {
+			text-align: right;
+		}
+	}
+
+	.directus-form fieldset {
+		padding: 10px 10px 10px 10px;
+	}
+
+	.register-left-sidebar {
+		.register-recent-purchases {
+			font-style: italic;
+			margin-bottom: 10px;
+		}
+	}
+	.register-right-sidebar {
+		.directus-module-section {
+			padding: 10px 10px 10px 10px;
+		}
+
+		.swipe-enter-card {
+			font-style: italic;
+			margin-bottom: 4px;
+		}
+
+		.please_add_items {
+			font-weight: bold;
+		}
+
+		label {
+			margin-bottom: 0;
+			display: inline-block;
+			width: 110px;
+			vertical-align: sub;
+		}
+	}
+}
+
 .cash-register-header {
 	.omnibox {
 		position: relative;
@@ -59,8 +123,16 @@
 	margin-left: 300px;
 	margin-right: 300px;
 
+	.item-single-price {
+		display: inline;
+	}
+
 	th, td {
-		&:first-child, &:nth-child(2) {
+		&:first-child {
+			width: 20px;
+		}
+		
+		&:nth-child(2) {
 			width: 60px;
 		}
 
@@ -71,27 +143,26 @@
 		&:nth-child(4) {
 			text-align: right;
 			padding-left: 0;
+			width: 60px;
 		}
 
 		&:nth-child(5) {
-			width: 60px; // 80px - 20px for left padding
+			width: 50px; // 80px - 20px for left padding
 		}
 
-		&:nth-child(6), &:nth-child(7) {
+		&:nth-child(6) {
 			padding-left: 0;
-			width: 80px;
+			width: 60px;
 		}
-	}
 
-	th:last-child {
-		text-align: right;
-		width: 100px;
-	}
-
-	.item-row {
-		td:last-child {
+		&:nth-child(7) {
+			padding-left: 0;
+			width: 50px;
 			text-align: right;
-			width: 80px;
+
+			.item-quantity-price {
+				display: inline;
+			}
 		}
 	}
 
@@ -101,12 +172,17 @@
 
 	.order-amount {
 		font-size: 21px;
-		color: @green;
+		color: @directusPrimary;
+		background-color: @directusSecondary;
+		text-align: right;
+		font-weight: bold;
 	}
 
 	input[type=text] {
 		width: 35px;
 		text-align: center;
+		padding: 4px 4px;
+		margin-bottom: 4px;
 	}
 
 	select {
@@ -116,11 +192,12 @@
 
 	label {
 		font-weight: normal;
+		margin-bottom: 2px;
 
 		input {
-			position: relative;
-			top: -2px;
-			margin-right: 5px;
+			// position: relative;
+			// top: -2px;
+			margin-right: 2px;
 		}
 	}
 
@@ -129,7 +206,7 @@
 	}
 
 	.tax-amount {
-		color: @green;
+		color: @directusPrimary;
 		font-weight: 600;
 	}
 }
@@ -140,7 +217,8 @@
 			position: relative;
 			width: 16px;
 			height: 18px;
-			margin-right: 10px;
+			margin-left: 6px;
+			margin-right: 0;
 			top: -2px;
 			display: inline-block;
 			background: url('../img/controls.png') no-repeat;
@@ -175,39 +253,43 @@
 			margin: 0;
 			padding: 0;
 
-			.icon {
+			.customer-options {
 				position: relative;
-				width: 32px;
-				height: 22px;
 				display: inline-block;
-				background: url('../img/glyphicons-parents-green.png') no-repeat;
-				margin-right: 7px;
+				margin-right: 2px;
 				bottom: -3px;
+				cursor: pointer;
+
+				&:hover {
+					opacity: 1;
+					-webkit-filter: none;
+				}
 			}
-		}
 
-		.back-to-users {
-			position: absolute;
-			right: 6px;
-			top: 4px;
-			width: 12px;
-			height: 14px;
-			background: url('../img/controls.png') no-repeat;
-			background-size: 70px 14px;
-			text-indent: -9999px;
-			-webkit-filter: grayscale(100%);
-			opacity: .5;
-			cursor: pointer;
+			.back-to-users {
+				display: inline-block;
+				vertical-align: middle;
+				margin-top: -3px;
+				width: 12px;
+				height: 14px;
+				background: url('../img/controls.png') no-repeat;
+				background-size: 70px 14px;
+				text-indent: -9999px;
+				-webkit-filter: grayscale(100%);
+				opacity: .5;
+				cursor: pointer;
 
-			&:hover {
-				opacity: 1;
-				-webkit-filter: none;
+				&:hover {
+					opacity: 1;
+					-webkit-filter: none;
+				}
 			}
 		}
 
 		input[type=text], select {
-			width: 218px;
-			margin-bottom: 20px;
+			width: 130px;
+			margin-top: 4px;
+			padding: 4px;
 
 			&:last-child {
 				// margin-bottom: auto;
@@ -232,6 +314,18 @@
 
 		.btn-primary {
 			width: 236px;
+			margin-top: 10px;
+			margin-bottom: 4px;
+		}
+
+		.btn-primary[disabled] {
+			background-color: #bbbbbb;
+			color: #eeeeee;
+
+			&:hover {
+				background-color: #bbbbbb;
+				color: #eeeeee;
+			}
 		}
 
 		.payment_options {
@@ -251,6 +345,10 @@
 				&:nth-child(even) {
 					// 
 				}
+			}
+
+			.make-split-container {
+				color: @directusPrimary;
 			}
 
 			input {

@@ -1,12 +1,16 @@
 <div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon-remove"></span></button>
+    {{#if showCancel}}<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon-remove"></span></button>{{/if}}
 <h3 id="myModalLabel">{{title}}</h3>
 </div>
 
 <div class="modal-body">
 </div>
 
+{{#if showFooter}}
 <div class="modal-footer">
 	<button class="btn btn-primary" name="save">{{buttonText}}</button>
+    {{#if showCancel}}
 	<button class="btn btn-link gray-dark" name="close">Cancel</button>
+    {{/if}}
 </div>
+{{/if}}

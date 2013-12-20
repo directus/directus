@@ -4,7 +4,7 @@ define(function(require, exports, module) {
 
   var app                     = require("app"),
       Backbone                = require("backbone"),
-      EntriesNestedCollection = require("core/entries/EntriesNestedCollection"),
+      EntriesJunctionCollection = require("core/entries/EntriesJunctionCollection"),
       UIManager               = require("core/UIManager"),
       SchemaManager           = require("schema/SchemaManager");
 
@@ -17,7 +17,7 @@ define(function(require, exports, module) {
       this._lastFetchedResult = result;
 
       result = this.parseRelational(result);
-      result = this.parseDate(result);
+      //result = this.parseDate(result);
 
       return result;
     },
@@ -128,9 +128,11 @@ define(function(require, exports, module) {
               table: SchemaManager.getTable(tableRelated),
               structure: SchemaManager.getColumns('tables', tableRelated),
               parse:true,
-              filters: {columns_visible: columns}
+              filters: {columns_visible: columns},
+              privileges: SchemaManager.getPrivileges(tableRelated)
               //preferences: app.preferences[column.get('table_related')],
             };
+
 
             // make sure that the table exists
             // @todo move this to column schema?
@@ -146,13 +148,15 @@ define(function(require, exports, module) {
             }
 
             if (relationshipType === 'ONETOMANY') {
+              // Provide model to prevent loading issues
+              options.model = EntriesModel;
               attributes[id] = new EntriesCollection(value, options);
               break;
             }
 
             if (relationshipType === 'MANYTOMANY') {
               options.junctionStructure = SchemaManager.getColumns('tables', column.relationship.get('junction_table'));
-              attributes[id] = new EntriesNestedCollection(value, options);
+              attributes[id] = new EntriesJunctionCollection(value, options);
             }
 
             break;
@@ -228,7 +232,12 @@ define(function(require, exports, module) {
             }
 
         }, this);
+      }
 
+      if (options.ignoreWriteFieldBlacklisted) {
+        options.attrs = _.omit(options.attrs, this.getWriteFieldBlacklist());
+
+        console.log(options.attrs);
       }
 
       return Backbone.sync.apply(this, [method, model, options]);
@@ -254,6 +263,10 @@ define(function(require, exports, module) {
           columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute);
 
       return (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
+    },
+
+    getWriteFieldBlacklist: function() {
+      return (this.collection.privileges.get('write_field_blacklist') || '').split(',');
     },
 
     canDelete: function() {
@@ -307,6 +320,14 @@ define(function(require, exports, module) {
       return this.structure;
     },
 
+    getNewInstance: function() {
+      return new EntriesModel({}, {
+        structure: this.structure,
+        table: this.table,
+        privileges: this.privileges
+      });
+    },
+
     getTable: function() {
       return this.table;
     },
@@ -322,7 +343,7 @@ define(function(require, exports, module) {
     },
 
     // we need to do this because initialize is called AFTER parse.
-    constructor: function (data, options) {
+    constructor: function EntriesModel(data, options) {
       // inherit structure and table from collection if it exists
       this.structure = options.collection ? options.collection.structure : options.structure;
       this.table = options.collection ? options.collection.table : options.table;
