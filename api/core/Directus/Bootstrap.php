@@ -27,10 +27,12 @@ class Bootstrap {
      */
     public static function get($key, $arg = null) {
         $key = strtolower($key);
-        if(!method_exists(__CLASS__, $key))
+        if(!method_exists(__CLASS__, $key)) {
             throw new \InvalidArgumentException("No such factory function on " . __CLASS__ . ": $key");
-        if(!array_key_exists($key, self::$singletons))
+        }
+        if(!array_key_exists($key, self::$singletons)) {
             self::$singletons[$key] = call_user_func(__CLASS__."::$key", $arg);
+        }
         return self::$singletons[$key];
     }
 
@@ -53,11 +55,13 @@ class Bootstrap {
      * @throws  Exception If the specified constants are not defined
      */
     private static function requireConstants($constants, $dependentFunctionName) {
-        if(!is_array($constants))
+        if(!is_array($constants)) {
             $constants = array($constants);
+        }
         foreach($constants as $constant) {
-            if(!defined($constant))
+            if(!defined($constant)) {
                 throw new \Exception(__CLASS__ . "#$dependentFunctionName depends on undefined constant $constant");
+            }
         }
     }
 
@@ -81,6 +85,21 @@ class Bootstrap {
             'log.writer'    => new DateTimeFileWriter($loggerSettings)
         ));
         return $app;
+    }
+
+    private static function config() {
+        $config = require APPLICATION_PATH . "/api/configuration.php";
+        return $config;
+    }
+
+    private static function mailer() {
+        $config = self::get('config');
+        $smtp = $config['smtp'];
+        $transport = \Swift_SmtpTransport::newInstance($smtp['host'], $smtp['port'])
+            ->setUsername($smtp['user'])
+            ->setPassword($smtp['password']);
+        $mailer = Swift_Mailer::newInstance($transport);
+        return $mailer;
     }
 
     /**
@@ -112,8 +131,9 @@ class Bootstrap {
         catch(\PDOException $e) {
             echo "Database connection failed.<br />";
             self::get('log')->fatal(print_r($e, true));
-            if('production' !== DIRECTUS_ENV)
+            if('production' !== DIRECTUS_ENV) {
                 die(var_dump($e));
+            }
             die;
         }
         $dbh = $connection->getResource();
@@ -141,7 +161,6 @@ class Bootstrap {
      */
     private static function acl() {
         $acl = new acl;
-            
         $db = self::get('ZendDb');
         $DirectusTablesTableGateway = new DirectusTablesTableGateway($acl, $db);
         $tableRecords = $DirectusTablesTableGateway->select()->toArray();
@@ -194,11 +213,13 @@ class Bootstrap {
         $extensions = array();
         $extensionsDirectory = APPLICATION_PATH . '/extensions/';
         foreach (new \DirectoryIterator($extensionsDirectory) as $file) {
-            if($file->isDot())
+            if($file->isDot()) {
                 continue;
+            }
             $extensionName = $file->getFilename();
-            if(is_dir($extensionsDirectory . $extensionName))
+            if(is_dir($extensionsDirectory . $extensionName)) {
                 $extensions[$extensionName] = "extensions/$extensionName/main";
+            }
         }
         return $extensions;
     }
