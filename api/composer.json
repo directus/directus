@@ -5,6 +5,7 @@
         "zendframework/zend-db": "2.1.*@dev",
         "mynetx/codebird-php": "dev-master",
         "phpunit/phpunit": "3.7.*@dev",
-        "rackspace/php-opencloud": "dev-master"
+        "rackspace/php-opencloud": "dev-master",
+        "swiftmailer/swiftmailer": "@stable"
     }
 }

@@ -246,9 +246,28 @@ $app->get("/$v/auth/clear-session/?", function() use ($app) {
 })->name('auth_clear_session');
 
 // debug helper
+$app->get("/$v/auth/test-email/?", function() use ($app, $acl) {
+    if('production' === DIRECTUS_ENV) {
+        return $app->halt('404');
+    }
+    $Mailer = Bootstrap::get('mailer');
+
+    // Create a message
+    $message = Swift_Message::newInstance('Test Directus Email')
+      ->setFrom(array('noreply@getdirectus.com' => 'Directus'))
+      ->setTo(array('daniel@rngr.org'))
+      ->setBody('Here is the message itself');
+
+    // Send the message
+    $result = $mailer->send($message);
+
+})->name('auth_permissions');
+
+// debug helper
 $app->get("/$v/auth/permissions/?", function() use ($app, $acl) {
-    if('production' === DIRECTUS_ENV)
-        $app->halt('404');
+    if('production' === DIRECTUS_ENV) {
+        return $app->halt('404');
+    }
     $groupPrivileges = $acl->getGroupPrivileges();
     JsonView::render(array('groupPrivileges' => $groupPrivileges));
 })->name('auth_permissions');
@@ -716,7 +735,6 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
     JsonView::render($message);
 })->via('PATCH');
 
-
 $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
 
@@ -754,8 +772,6 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
     JsonView::render($message);
 });
 
-
-
 $app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $tokens = explode(' ', $_GET['q']);
 
@@ -769,8 +785,6 @@ $app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPa
 
     JsonView::render($result);
 });
-
-
 
 /**
  * EXCEPTION LOG
