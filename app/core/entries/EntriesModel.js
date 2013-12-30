@@ -32,7 +32,8 @@ define(function(require, exports, module) {
 
       if (options.flatten) {
         uiType = this.getStructure().get(attr).get('ui');
-        if (nestedTypes.indexOf(uiType) > -1 && _.isObject(value) ) {
+        var relationshipType = this.getStructure().get(attr).getRelationshipType();
+        if ('MANYTOONE' === relationshipType && _.isObject(value) ) {
           value = value.get('id');
         }
       }
