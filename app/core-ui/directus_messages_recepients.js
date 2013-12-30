@@ -17,9 +17,41 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = [];
   Module.variables = [];
 
-  var template = '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
+  var template = 
+                '<style type="text/css">\
+                #edit_field_{{name}} .twitter-typeahead {\
+                  width:100%;\
+                }\
+                #edit_field_{{name}} .tt-dropdown-menu { \
+                  padding: 3px 0; \
+                  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); \
+                  -webkit-border-radius: 2px; \
+                  -moz-border-radius: 2px; \
+                  border-radius: 2px; \
+                  background-color: #fff; \
+                } \
+                #edit_field_{{name}} .tt-suggestions { \
+                    margin-right: 0 !important; \
+                } \
+                \
+                #edit_field_{{name}} .tt-suggestion { \
+                    display: block; \
+                    padding: 3px 20px; \
+                    clear: both; \
+                    font-weight: normal; \
+                    white-space: nowrap; \
+                    font-size: 12px; \
+                    margin-right: 0 !important; \
+                } \
+                \
+                #edit_field_{{name}} .tt-is-under-cursor { \
+                    color: white; \
+                    background-color: black; \
+                }\
+                </style>\
+                <label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
                  <input type="text" id="directus_messages_recepients-input">\
-                 <div style="width:84%; margin-top:5px" id="directus_messages_recepients-recepients">{{#tags}}<span class="label tag">{{this}}</span>{{/tags}}</div>\
+                 <div style="width:84%; margin-top:5px" id="directus_messages_recepients-recepients">{{#tags}}<span class="label tag recepient-tag">{{this}}</span>{{/tags}}</div>\
                  <input type="hidden" name="{{name}}" id="directus_messages_recepients-form">';
 
   Module.Input = Backbone.Layout.extend({
@@ -28,7 +60,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     template: Handlebars.compile(template),
 
-    events: {},
+    events: {
+      'click .recepient-tag': function(e) {
+        var targetId = $(e.target).data('id');
+        delete this.recepients[targetId];
+        this.renderTags();
+      }
+    },
 
     recepients: {},
 
@@ -47,7 +85,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       _.each(this.recepients, function(item) {
         var fontWeight = item.type === 1 ? 'font-weight:bold;' : '';
-        elArray.push('<div style="padding:4px; line-height:0px; overflow: auto; display:inline-block; border-radius: 2px; background-color:#EEE; border:1px solid #CCC; margin-right:5px; margin-bottom:5px;' + fontWeight + '"><img src="' + item.avatar + '" style="width:20px; height:20px; margin-right:4px">' + item.name + '<span class="glyphicon-remove" style="display:inline-block; padding:0; line-height:3px; margin-left:5px"></span></div>');
+        elArray.push('<div style="padding:4px; line-height:0px; overflow: auto; display:inline-block; border-radius: 2px; background-color:#EEE; border:1px solid #CCC; margin-right:5px; margin-bottom:5px;' + fontWeight + '"><img src="' + item.avatar + '" style="width:20px; height:20px; margin-right:4px">' + item.name + '<span class="glyphicon-remove recepient-tag" data-id="'+item.id+'" style="display:inline-block; padding:0; line-height:3px; cursor:pointer; margin-left:5px"></span></div>');
       });
 
       this.$el.find('#directus_messages_recepients-form').val(_.keys(this.recepients));
@@ -82,23 +120,32 @@ define(['app', 'backbone'], function(app, Backbone) {
       var usersAndGroups = users.concat(groups);
       var keywordsMap = {};
       var keywords = [];
+      var datums = [];
 
        _.each(usersAndGroups, function(item) {
         var uid = item.uid;
+
+        datums.push({
+          id: uid,
+          value: name,
+          name: item.name,
+          avatar: item.avatar,
+          tokens: item.name.split()
+        });
+
         keywordsMap[uid] = item;
         keywords.push(uid+': '+item.name);
        });
 
+
       this.$("#directus_messages_recepients-input").typeahead({
 
-        minLength: 2,
+        limit: 5,
 
-        items: 5,
+        local: datums,
 
-        source: function (typeahead, query) {
-          typeahead.process(keywords);
-        },
-
+        template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar">{{name}}</div>'),
+/*
         highlighter: function (item) {
           var id = item.split(':')[0];
           var obj = keywordsMap[id];
@@ -109,8 +156,18 @@ define(['app', 'backbone'], function(app, Backbone) {
           var id = item.split(':')[0];
           me.recepients[id] = keywordsMap[id];
           me.renderTags();
-        }
+        }*/
       });
+
+      this.$('#directus_messages_recepients-input').on('typeahead:selected', function (object, datum) {
+        me.recepients[datum.id] = datum;
+        me.renderTags();
+      });
+
+    },
+
+    initialize: function() {
+      this.recepients = {};
     }
   });
 
