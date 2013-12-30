@@ -195,6 +195,11 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
         }});
 
         this.model.collection.add(this.model);
+      },
+      'click #save-form-cancel': function() {
+        var route = Backbone.history.fragment.split('/');
+        route.pop();
+        app.router.go(route);
       }
     },
 
