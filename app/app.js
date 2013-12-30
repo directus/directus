@@ -14,7 +14,7 @@ define(function(require, exports, module) {
 
   // Globally load Bootstrap plugins
   require('plugins/bootstrap-dropdown');
-  require('plugins/bootstrap-typeahead');
+  require('plugins/typeahead');
 
   var app = {
 
