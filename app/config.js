@@ -45,7 +45,7 @@ require.config({
     "plugins/jquery.timeago": ["jquery"],
     "plugins/backbone.layoutmanager": ["backbone"],
     "plugins/bootstrap-dropdown": ["jquery"],
-    "plugins/bootstrap-typeahead": ["jquery"],
+    "plugins/typeahead": ["jquery"],
     "plugins/bootstrap-tooltip": ["jquery"]
   }
 
