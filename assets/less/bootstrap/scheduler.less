@@ -214,7 +214,6 @@ header {
 				width: 17px;
 				margin-right: 8px;
 			}
-
 			.class-copy {
 				height: 20px;
 				width: 21px;
@@ -225,6 +224,34 @@ header {
 				height: 20px;
 				width: 22px;
 				background-position: -56px 0;
+			}
+		}
+
+		.class-controls-individual {
+			position: relative;
+			float: left;
+			visibility: hidden;
+			opacity: 0;
+			-webkit-transition: all .05s linear;
+
+			.class-clear-individual {
+				position: relative;
+				background: url('../../extensions/scheduler/assets/images/controls.png') no-repeat;
+				text-indent: -9999px;
+				float: left;
+				cursor: pointer;
+				-webkit-transition: all .05s linear;
+
+				&:hover {
+					// -webkit-transform: rotate(360deg);
+					-webkit-transform: scale(1.15);
+				}
+			}
+			.class-clear-individual {
+				height: 20px;
+				width: 17px;
+				margin-left: 8px;
+				margin-top: 4px;
 			}
 		}
 
@@ -251,9 +278,11 @@ header {
 				cursor: pointer;
 
 				&:hover {
-					// background-color: #e5e5e5;
-					.class-time {
-						color: @directusPrimary;
+					background-color: @directusSecondary;
+
+					.class-controls-individual {
+						opacity: 1;
+						visibility: visible;
 					}
 				}
 			}
