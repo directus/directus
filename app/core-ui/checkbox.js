@@ -13,7 +13,7 @@ define(['app','backbone'], function(app, Backbone) {
   var Module = {};
 
   var template = '<label style="margin-top:3px;" class="checkbox"> \
-                  <input style="margin-top:1px;" type="checkbox" {{#if selected}}checked{{/if}}/>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
+                  <input style="margin-top:1px;" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}}/>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
                   <input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
 
   Module.id = 'checkbox';
@@ -42,7 +42,8 @@ define(['app','backbone'], function(app, Backbone) {
       return {
         name: this.options.name,
         selected: selected,
-        comment: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment'),
+        readonly: !this.options.canWrite
       };
     }
   });
