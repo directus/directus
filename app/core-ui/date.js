@@ -41,7 +41,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                     \
                   } \
                   </style> \
-                  <input type="date" class="date" name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
+                  <input type="date" class="date" {{#if readonly}}disabled{{/if}} name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
                   <a class="now">Now</a>';
 
   Module.Input = Backbone.Layout.extend({
@@ -66,6 +66,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
       data.valueDate = this.value.format('YYYY-MM-DD');
       data.name = this.options.name;
       data.note = this.options.schema.get('comment');
+
+      data.readonly = !this.options.canWrite;
 
       return data;
     },
