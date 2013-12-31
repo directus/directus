@@ -27,13 +27,21 @@ function(app, Backbone, Directus, SaveModule) {
           delete data.password;
         }
 
-        model.save(model.diff(data), {
+        var diff = model.diff(data);
+
+        var options = {
           success: function() { app.router.go('#users'); },
           error: function() { console.log('error',arguments); },
           patch: true,
-          ignoreWriteFieldBlacklisted: true,
           includeRelationships: true
-        });
+        }
+
+        // @todo, fix EntriesCollection and get rid of this
+        if (!model.isNew()) {
+          options.ignoreWriteFieldBlacklisted = true;
+        }
+
+        model.save(diff, options);
       }
     },
 
