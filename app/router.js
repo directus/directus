@@ -237,7 +237,7 @@ define(function(require, exports, module) {
       this.tabs.setActive('users');
 
       if (id === "new") {
-        model = new app.users.model({}, {collection: app.users});
+        model = new app.users.model({}, {collection: app.users, parse:true});
       } else {
         model = app.users.get(id);
       }
