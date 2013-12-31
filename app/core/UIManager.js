@@ -173,7 +173,7 @@ define(function(require, exports, module) {
       options.schema = options.structure.get(options.name);
       options.value = options.model.get(options.name);
       options.collection = options.collection || options.model.collection;
-      options.canWrite = _.has(options.model, 'canEdit') ? options.model.canEdit(attr) : true;
+      options.canWrite = typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
       options.settings = options.schema.options;
 
       var UI = this._getModelUI(model, attr, options.schema);
