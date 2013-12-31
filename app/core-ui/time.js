@@ -45,7 +45,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                     \
                   } \
                   </style> \
-                  <input type="time" class="time{{#if includeSeconds}} seconds{{/if}}" value="{{value}}" name="{{name}}" id="{{name}}"> \
+                  <input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" value="{{value}}" name="{{name}}" id="{{name}}"> \
                   <a class="now">Now</a>';
 
   Module.Input = Backbone.Layout.extend({
@@ -69,6 +69,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
       data.name = this.options.name;
       data.comment = this.options.schema.get('comment');
       data.value = this.value;
+
+      data.readonly = !this.options.canWrite;
 
       return data;
     },

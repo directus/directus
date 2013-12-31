@@ -37,8 +37,8 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                     \
                   } \
                   </style> \
-                  <input type="date" class="date" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
-                  <input type="time" class="time{{#if includeSeconds}} seconds{{/if}}" {{#if hasDate}}value="{{valueTime}}"{{/if}}> \
+                  <input type="date" {{#if readonly}}disabled{{/if}} class="date" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
+                  <input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" {{#if hasDate}}value="{{valueTime}}"{{/if}}> \
                   <a class="now">Now</a> \
                   <input class="merged" type="hidden" {{#if hasDate}}value="{{valueMerged}}"{{/if}} name="{{name}}" id="{{name}}">';
 
@@ -92,6 +92,8 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
       data.valueMerged = date.format(format);
       data.name = this.name;
       data.note = this.columnSchema.get('comment');
+
+      data.readonly = !this.options.canWrite;
 
       return data;
     },
