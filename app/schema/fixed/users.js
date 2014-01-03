@@ -242,24 +242,6 @@ define(function(require, exports, module) {
         "ui":"datetime"
       },
       {
-        "id":"description",
-        "column_name":"description",
-        "type":"TEXT",
-        "char_length":"65535",
-        "is_nullable":"YES",
-        "comment":"",
-        "sort":11,
-        "system":false,
-        "master":false,
-        "hidden_list":false,
-        "hidden_input":false,
-        "required":false,
-        "ui":"textarea",
-        "options": {
-          "rows": "4"
-        }
-      },
-      {
         "id":"last_login",
         "column_name":"last_login",
         "type":"DATETIME",

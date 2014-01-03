@@ -23,7 +23,7 @@ define(function(require, exports, module) {
     usersInstance = new EntriesCollection([], _.extend({
       rowsPerPage: 3000,
       url: apiURL + 'tables/directus_users/rows',
-      filters: {columns_visible: ['avatar', 'first_name', 'last_name', 'group', 'email', 'description']}
+      filters: {columns_visible: ['avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'default_studio', 'last_access']}
     }, SchemaManager.getFullSchema('directus_users')));
 
     mediaInstance = new EntriesCollection([], _.extend({

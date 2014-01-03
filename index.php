@@ -72,7 +72,7 @@ function parseTables($tableSchema) {
 }
 
 function getExtendedUserColumns($tableSchema) {
-	$userColumns = array("activity", "avatar", "name", "id", "active", "first_name", "last_name", "email", "email_messages", "password", "salt", "token", "reset_token", "reset_expiration", "description", "last_login", "last_page", "ip", "group");
+	$userColumns = array("activity", "avatar", "name", "id", "active", "first_name", "last_name", "email", "email_messages", "password", "salt", "token", "reset_token", "reset_expiration", "last_login", "last_page", "ip", "group");
 
 	$schema = array_filter($tableSchema, function($table) {
 		return $table['schema']['id'] === 'directus_users';
@@ -106,7 +106,7 @@ function getUsers() {
 			'table_name'=>'directus_users',
 			'perPage'=>1000, 
 			'active'=>1,
-			'columns_visible'=>array('avatar', 'first_name', 'last_name', 'group', 'email', 'description')
+			'columns_visible'=>array('avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'default_studio', 'last_access')
 		)
 	);
 }

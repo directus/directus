@@ -75,7 +75,7 @@ function(app, Backbone, Directus, SaveModule) {
 
     tagName: 'tbody',
 
-    template: Handlebars.compile('{{#rows}}<tr data-id="{{id}}" data-cid="{{cid}}"><td></td><td>{{avatar}}</td><td>{{first_name}}</td><td>{{last_name}}</td><td>{{group}}</td><td>{{email}}</td><td>{{description}}</td></tr>{{/rows}}'),
+    template: Handlebars.compile('{{#rows}}<tr data-id="{{id}}" data-cid="{{cid}}"><td></td><td>{{avatar}}</td><td>{{first_name}}</td><td>{{last_name}}</td><td>{{group}}</td><td>{{email}}</td><td>{{position}}</td><td>{{default_studio}}</td><td>{{last_access}}</td></tr>{{/rows}}'),
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
@@ -87,7 +87,9 @@ function(app, Backbone, Directus, SaveModule) {
           'last_name': model.get('last_name'),
           'group': model.get('group').get('name'),
           'email': model.get('email'),
-          'description': model.get('description')
+          'position': model.get('position'),
+          'default_studio': model.get('default_studio'),
+          'last_access': model.get('last_access')
         };
 
         if (data.avatar !== null) {
