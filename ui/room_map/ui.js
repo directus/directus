@@ -69,7 +69,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
                     {{#each room}} \
                     <tr> \
                       {{#each this}} \
-                      <td><input class="position serialize-exclude {{#unless isLegal}}warning{{/unless}}" type="text" maxlength="4" name="room_map[0][0]" data-x="{{x}}" data-y="{{y}}" data-id="{{id}}" value="{{value}}" placeholder="X{{x}} Y{{y}}"></td> \
+                      <td><input class="position serialize-exclude {{#unless isLegal}}warning{{/unless}}" type="text" maxlength="4" name="room_map[0][0]" data-x="{{x}}" data-y="{{y}}" data-id="{{id}}" data-cid="{{cid}}" value="{{value}}" placeholder="X{{x}} Y{{y}}"></td> \
                       {{/each}} \
                     </tr> \
                     {{/each}} \
@@ -100,11 +100,12 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     updateSeatValue: function(e) {
       var $el = $(e.target),
           id = $el.data('id'),
+          cid = $el.data('cid'),
           x = $el.data('x'),
           y = $el.data('y'),
           value = $el.val();
 
-      var seatHasId = (id !== ''),
+      var seatHasId = (cid !== ''),
           model;
 
       var Model = this.relatedCollection.model;
@@ -119,7 +120,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       // Update existing model
       if (seatHasId) {
-        model = this.relatedCollection.get(id);
+        model = this.relatedCollection.get(cid);
         model.set(values);
         
       // Add a new model
@@ -196,16 +197,16 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         var x = model.get('x');
         var y = model.get('y');
 
-
         if (x > -1 && 
             y > -1 && 
             x < self.roomDepth && 
             y < self.roomWidth) {
               room[x][y] = model.toJSON();
               room[x][y].isLegal = self.valueIsLegal(room[x][y].value);
+              room[x][y].cid = model.cid;
         }
       });
-      
+
       return {
         title: this.name,
         room: room
