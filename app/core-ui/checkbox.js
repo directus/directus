@@ -22,14 +22,18 @@ define(['app','backbone'], function(app, Backbone) {
   Module.variables = [];
 
   Module.Input = Backbone.Layout.extend({
+
     tagName: 'fieldset',
+
     template: Handlebars.compile(template),
+
     events: {
       'change input[type=checkbox]': function(e) {
         var val = (this.$el.find('input[type=checkbox]:checked').val() === undefined) ? 0 : 1;
         this.$el.find('input[type=hidden]').val(val);
       }
     },
+
     serialize: function() {
       var value = this.options.value;
 
@@ -39,6 +43,13 @@ define(['app','backbone'], function(app, Backbone) {
       }
 
       var selected = (parseInt(value,10) === 1) ? true : false;
+
+      if (
+        this.options.model.isNew() &&
+        this.options.schema.has('default_value')) {
+          selected = parseInt(this.options.schema.get('default_value'),10) === 1;
+      }
+
       return {
         name: this.options.name,
         selected: selected,
@@ -46,6 +57,7 @@ define(['app','backbone'], function(app, Backbone) {
         readonly: !this.options.canWrite
       };
     }
+
   });
 
   Module.list = function(options) {
