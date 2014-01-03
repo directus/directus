@@ -7259,6 +7259,9 @@ header {
 .calendar-add-class-btn {
   float: right;
 }
+.notify-margin-left {
+  margin-left: 10px !important;
+}
 /* h2 { */
 #scheduler_breadcrumb_trail .breadcrumb-divider {
   display: inline-block;
@@ -7596,7 +7599,7 @@ header {
   display: block;
   position: absolute;
   top: 2px;
-  right: 170px;
+  right: 200px;
   z-index: 1;
   width: 28px;
   height: 28px;
@@ -7617,7 +7620,7 @@ header {
 .month-controls .controls-container {
   position: absolute;
   right: 0;
-  width: 130px;
+  width: 150px;
 }
 .month-controls .controls-container:hover .reveal-arrow {
   -webkit-transform: rotate(90deg);
