@@ -53,7 +53,8 @@ abstract class Adapter {
         // Refused disallowed formats
         if(!in_array($uploadInfo['type'], $this->allowedFormats)) {
             // @todo use Directus\Media\Upload\Exception
-            throw new \Exception("The type is not supported!");
+            // @todo the filters are currently turned off, please turned on again at some point
+            // throw new \Exception("The type is not supported!");
         }
         $uniqueFileName = $this->uniqueName($targetFileName, $destination);
         $this->writeFile($localFile, $uniqueFileName, $destination);
