@@ -48,7 +48,16 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
+
       var value = this.options.value || '';
+
+      // Fill in default value
+      if (
+        this.options.model.isNew() &&
+        this.options.schema.has('default_value')) {
+          value = this.options.schema.get('default_value');
+      }
+
       return {
         value: value,
         name: this.options.name,

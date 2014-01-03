@@ -51,6 +51,13 @@ define(['app', 'backbone'], function(app, Backbone) {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
 
+      // Fill in default value
+      if (
+        this.options.model.isNew() &&
+        this.options.schema.has('default_value')) {
+          value = this.options.schema.get('default_value');
+      }
+
       return {
         size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
         value: value,
