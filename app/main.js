@@ -230,7 +230,7 @@ require(["config"], function() {
         switch(xhr.status) {
           case 403:
             // var response = $.parseJSON(xhr.responseText);
-            var message = "You don't have permission to access this table. Please send this to IT:\n\n" + message;
+            var message = "You don't have permission to access this table. Please send this to IT:\n\n" + xhr.responseText;
             app.trigger("alert:error", "Restricted Access", message, true);
             break;
           default:
