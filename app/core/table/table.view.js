@@ -26,8 +26,6 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
         return !_.contains(blacklist, col);
       });
 
-      console.log(columns);
-
       return {
         columns: columns,
         id: this.collection.table.id,

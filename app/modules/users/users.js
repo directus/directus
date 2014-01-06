@@ -42,6 +42,12 @@ function(app, Backbone, Directus, SaveModule) {
         }
 
         model.save(diff, options);
+      },
+
+      'click #delete-form': function(e) {
+        this.model.save({active: 0}, {success: function() {
+          app.router.go('#users');
+        }, patch: true});
       }
     },
 
