@@ -19,10 +19,11 @@ require(["config"], function() {
     'schema/SchemaManager',
     'modules/settings/collection',
     'core/ExtensionManager',
-    'core/EntriesManager'
+    'core/EntriesManager',
+    'core/idle'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, Idle) {
 
     "use strict";
 
@@ -79,6 +80,32 @@ require(["config"], function() {
       ExtensionManager.load(options.extensions)
 
     ).done(function() {
+
+      var autoLogoutMinutes = parseInt(app.settings.get('global').get('cms_user_auto_sign_out') || 60);
+
+      var waitForForAvtivity = function() {
+        console.log('minutes until automatic logout:', autoLogoutMinutes);
+        
+        Idle.start({
+          timeout: function() {
+            alertify.log('You have been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
+
+            //Wait for another 10 seconds before kicking the user out
+            Idle.start({
+              timeout: app.logOut,
+              interrupt: waitForForAvtivity,
+              delay: 10000,
+              repeat: false
+            });
+
+          },
+          delay: autoLogoutMinutes * 60 * 1000,
+          repeat: true,
+        });
+
+      }
+
+      waitForForAvtivity();
 
       // Register UI schemas
       SchemaManager.registerUISchemas(UIManager.getAllSettings());
