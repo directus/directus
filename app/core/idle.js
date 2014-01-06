@@ -5,7 +5,6 @@ define(function(require, exports, module) {
   var $ = require('jquery');
 
   var Idle = module.exports;
-  
   var timerId = null;
   var interruptionEvents = 'mousemove click keydown';
 
@@ -29,7 +28,7 @@ define(function(require, exports, module) {
   }
 
   Idle.bindEvents = function() {
-    $(document).on(interruptionEvents, this.interrupt.bind(this));    
+    $(document).on(interruptionEvents, this.interrupt.bind(this));
   }
 
   Idle.unbindEvents = function() {
@@ -49,7 +48,7 @@ define(function(require, exports, module) {
     }
 
     this.bindEvents();
-    
+
     timerId = resetTimer(timerId, this.fn, this.ms);
   }
 
