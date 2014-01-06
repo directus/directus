@@ -24,6 +24,8 @@ define(function(require, exports, module) {
       Messages         = require('modules/messages/messages'),
       Modal            = require('core/modal');
 
+      moment           = require('moment');
+
   var Router = Backbone.Router.extend({
 
     routes: {
@@ -424,7 +426,7 @@ define(function(require, exports, module) {
               'param' : router
             });
 
-            user.save({'last_page': last_page}, {
+            user.save({'last_page': last_page, 'last_access': moment().format('YYYY-MM-DD HH:mm')}, {
               patch: true,
               global: false,
               silent: true,
