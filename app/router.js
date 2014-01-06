@@ -363,7 +363,8 @@ define(function(require, exports, module) {
             return {
               user: user.toJSON(),
               siteName: this.model.get('site_name'),
-              siteUrl: this.model.get('site_url')
+              siteUrl: this.model.get('site_url'),
+              messageCounter: app.messages.unread
             };
           },
 
