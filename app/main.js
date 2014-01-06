@@ -85,7 +85,7 @@ require(["config"], function() {
 
       var waitForForAvtivity = function() {
         console.log('minutes until automatic logout:', autoLogoutMinutes);
-        
+
         Idle.start({
           timeout: function() {
             alertify.log('You have been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
