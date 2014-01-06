@@ -797,7 +797,8 @@ $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload,
             $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUser['id'], $ids);
             return JsonView::render($result);
         } else {
-            return '';
+            $result = $messagesRecepientsTableGateway->countMessages($currentUser['id']);
+            return JsonView::render($result);
         }
     }
 
