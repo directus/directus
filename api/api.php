@@ -455,6 +455,15 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
     //     }
     // }
 
+    // any CREATE requests should md5 the email
+    if("directus_users" === $table && 
+       in_array($app->request()->getMethod(), array('POST')) &&
+       array_key_exists('email',$requestPayload)
+       ) {
+        $avatar = DirectusUsersTableGateway::get_gravatar($requestPayload['email']);
+        $requestPayload['avatar'] = $avatar;
+    }
+
     switch($app->request()->getMethod()) {
         // POST one new table entry
         case 'POST':
@@ -483,6 +492,15 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
+
+    // any UPDATE requests should md5 the email
+    if("directus_users" === $table && 
+       in_array($app->request()->getMethod(), array('PUT', 'PATCH')) &&
+       array_key_exists('email',$requestPayload)
+       ) {
+        $avatar = DirectusUsersTableGateway::get_gravatar($requestPayload['email']);
+        $requestPayload['avatar'] = $avatar;
+    }
 
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
     switch($app->request()->getMethod()) {
