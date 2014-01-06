@@ -94,7 +94,7 @@ function(app, Backbone, Directus, SaveModule) {
         if (data.avatar !== null) {
             //@todo this is a hack, maybe change avatar so it only includes a hash?
             var avatarSmall = data.avatar.replace('?s=100','?s=50');
-            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" class="avatar" />');
+            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="max-width:none!important;"/>');
         }
 
         return data;
