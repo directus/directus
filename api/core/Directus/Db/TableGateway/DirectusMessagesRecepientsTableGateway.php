@@ -104,7 +104,7 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
         $messageThreads = array();
 
         foreach ($result as $message) {
-            $messageThreads[] = $message['response_to'];
+            $messageThreads[] = empty($message['response_to']) ? $message['message_id'] : $message['response_to'];
         }
 
         return array_values(array_unique($messageThreads));
