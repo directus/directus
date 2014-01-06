@@ -164,12 +164,12 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         // Update read
         foreach ($result as &$message) {
             $responses = $message['responses']['rows'];
-            foreach ($responses as $response) {
+            /*foreach ($responses as $response) {
                 if($response['read'] == "0") {
                     $message['read'] = "0";
                     break;
                 }
-            }
+            }*/
             $lastResponse = (end($responses));
             if ($lastResponse) {
                 $message['date_updated'] = $lastResponse['datetime'];
