@@ -21,8 +21,15 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     TableBody: TableBody,
 
     serialize: function() {
+      var blacklist = this.options.blacklist || [];
+      var columns = _.filter(this.collection.getColumns(), function(col) {
+        return !_.contains(blacklist, col);
+      });
+
+      console.log(columns);
+
       return {
-        columns: this.collection.getColumns(),
+        columns: columns,
         id: this.collection.table.id,
         selectable: this.options.selectable,
         sortable: this.options.sortable,
