@@ -85,7 +85,6 @@ function(app, Backbone, Directus, SaveModule) {
           'avatar': model.get('avatar'),
           'first_name': model.get('first_name'),
           'last_name': model.get('last_name'),
-          'group': model.get('group').get('name'),
           'email': model.get('email'),
           'position': model.get('position'),
           'default_studio': model.get('default_studio'),
@@ -117,6 +116,7 @@ function(app, Backbone, Directus, SaveModule) {
       var user = app.getCurrentUser();
       var userGroup = user.get('group');
 
+      //@todo fix this so it respects ACL instead of being hardcoded
       if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
         return;
       }
@@ -154,7 +154,7 @@ function(app, Backbone, Directus, SaveModule) {
     },
 
     initialize: function() {
-      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false, hideColumnPreferences: true});
+      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false, hideColumnPreferences: true, blacklist: ['group']});
     }
   });
 
