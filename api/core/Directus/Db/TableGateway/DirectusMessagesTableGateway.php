@@ -11,7 +11,7 @@ use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Adapter\Adapter;
-use Directus\Db\TableGateway\DirectusMessagesRecepientsTableGateway;
+use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 
 class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
@@ -21,7 +21,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public function sendMessage($payload, $recepients, $from) {
+    public function sendMessage($payload, $recipients, $from) {
         $defaultValues = array(
             'response_to' => null
         );
@@ -42,20 +42,20 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
 
         $messageId = $this->lastInsertValue;
 
-        // Insert recepients
+        // Insert recipients
         $values = array();
-        foreach($recepients as $recepient) {
+        foreach($recipients as $recipient) {
             $read = 0;
-            if ((int)$recepient == (int)$from) {
+            if ((int)$recipient == (int)$from) {
                 $read = 1;
             }
-            $values[] = "($messageId, $recepient, $read)";
+            $values[] = "($messageId, $recipient, $read)";
         }
 
         $valuesString = implode(',', $values);
 
         //@todo sanitize and implement ACL
-        $sql = "INSERT INTO directus_messages_recepients (`message_id`, `recepient`, `read`) VALUES $valuesString";
+        $sql = "INSERT INTO directus_messages_recipients (`message_id`, `recipient`, `read`) VALUES $valuesString";
         $result = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
 
         return $messageId;
@@ -65,9 +65,9 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         $select = new Select($this->getTable());
         $select
             ->columns(array('id', 'from', 'subject', 'message', 'attachment', 'datetime', 'response_to'))
-            ->join('directus_messages_recepients', 'directus_messages.id = directus_messages_recepients.message_id', array('read'))
+            ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', array('read'))
             ->where
-                ->equalTo('directus_messages_recepients.recepient', $uid)
+                ->equalTo('directus_messages_recipients.recipient', $uid)
             ->and
             ->where
                 ->nest
@@ -85,7 +85,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         return $result;
     }
 
-    public function fetchMessageWithRecepients($id, $uid) {
+    public function fetchMessageWithRecipients($id, $uid) {
         $result = $this->fetchMessagesInbox($uid, $id);
         if (sizeof($result) > 0) {
             return $result[0];
@@ -96,9 +96,9 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         $select = new Select($this->table);
         $select
             ->columns(array('message_id' => 'response_to', 'thread_length' => new Expression('COUNT(`directus_messages`.`id`)')))
-            ->join('directus_messages_recepients', 'directus_messages_recepients.message_id = directus_messages.id');
+            ->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id');
         $select
-            ->where->equalTo('recepient', $uid);
+            ->where->equalTo('recipient', $uid);
 
         if (!empty($messageId)) {
             if (gettype($messageId) ==  'array') {
@@ -141,12 +141,12 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         // Grab ids;
         foreach ($result as $item) { $ids[] = $item['id']; }
 
-        $directusMessagesTableGateway = new DirectusMessagesRecepientsTableGateway($this->acl, $this->adapter);
-        $recepients = $directusMessagesTableGateway->fetchMessageRecepients($ids);
+        $directusMessagesTableGateway = new DirectusMessagesRecipientsTableGateway($this->acl, $this->adapter);
+        $recipients = $directusMessagesTableGateway->fetchMessageRecipients($ids);
 
         foreach ($result as $item) {
             $item['responses'] = array('rows'=>array());
-            $item['recepients'] = implode(',', $recepients[$item['id']]);
+            $item['recipients'] = implode(',', $recipients[$item['id']]);
             $resultLookup[$item['id']] = $item;
         }
 
@@ -182,8 +182,8 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
     }
 
     public function fetchMessagesInboxWithHeaders($uid, $messageIds=null) {
-        $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($this->acl, $this->adapter);
-        $result = $messagesRecepientsTableGateway->countMessages($uid);
+        $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($this->acl, $this->adapter);
+        $result = $messagesRecipientsTableGateway->countMessages($uid);
         $result['rows'] = $this->fetchMessagesInbox($uid, $messageIds);
         return $result;
 

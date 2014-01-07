@@ -109,7 +109,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, m
 
   var ReadView = Backbone.Layout.extend({
 
-    maxRecepients: 10,
+    maxRecipients: 10,
 
     template: 'messages-reading',
 
@@ -118,16 +118,16 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, m
         var collection = this.model.get('responses');
         var Model = collection.model;
         var myId = app.getCurrentUser().get('id');
-        var recepients = _.map(this.model.get('recepients').split(','), function(id) {
+        var recipients = _.map(this.model.get('recipients').split(','), function(id) {
           return '0_' + id;
         });
 
-        recepients.push('0_'+this.model.get('from'));
+        recipients.push('0_'+this.model.get('from'));
 
         var attrs = {
           'from': app.getCurrentUser().get('id'),
           'subject': '',
-          'recepients': recepients.join(','),
+          'recipients': recipients.join(','),
           'datetime': (new Date()).toISOString(),
           'response_to': this.model.id,
           'message': $('#messages-response').val(),
@@ -144,17 +144,17 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, m
         collection.add(model);
         this.render();
       },
-      'click #messages-show-recepients': function() {
-        var $el = $('#messages-recepients');
+      'click #messages-show-recipients': function() {
+        var $el = $('#messages-recipients');
         $el.toggle();
       }
     },
 
     serialize: function() {
       var data = this.model.toJSON();
-      data.recepients = data.recepients.split(',');
-      data.recepientsCount = data.recepients.length;
-      data.collapseRecepients = data.recepients.length > this.maxRecepients;
+      data.recipients = data.recipients.split(',');
+      data.recipientsCount = data.recipients.length;
+      data.collapseRecipients = data.recipients.length > this.maxRecipients;
 
       data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
       return data;

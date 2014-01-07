@@ -12,32 +12,32 @@ use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Adapter\Adapter;
 
-class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
+class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
 
-    public static $_tableName = "directus_messages_recepients";
+    public static $_tableName = "directus_messages_recipients";
 
     public function __construct(Acl $acl, AdapterInterface $adapter) {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public function fetchMessageRecepients($messageIds = array()) {
+    public function fetchMessageRecipients($messageIds = array()) {
         $select = new Select($this->getTable());
         $select
-            ->columns(array('id','message_id','recepient'))
+            ->columns(array('id','message_id','recipient'))
             ->where->in('message_id', $messageIds);
 
         $records = $this->selectWith($select)->toArray();
-        $recepientMap = array();
+        $recipientMap = array();
 
         foreach ($records as $record) {
             $messageId = $record['message_id'];
-            if (!array_key_exists($messageId, $recepientMap)) {
-                $recepientMap[$messageId] = array();
+            if (!array_key_exists($messageId, $recipientMap)) {
+                $recipientMap[$messageId] = array();
             }
-            $recepientMap[$messageId][] = $record['recepient'];
+            $recipientMap[$messageId][] = $record['recipient'];
         }
 
-        return $recepientMap;
+        return $recipientMap;
     }
 
     public function markAsRead($messageIds, $uid) {
@@ -46,7 +46,7 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
             ->set(array('read' => 1))
             ->where->in('message_id', $messageIds)
             ->and
-            ->where->equalTo('recepient', $uid);
+            ->where->equalTo('recipient', $uid);
 
         return $this->updateWith($update);
     }
@@ -55,7 +55,7 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
         $select = new Select($this->table);
         $select
             ->columns(array('id','read','count' => new Expression('COUNT(`id`)'),'max_id' => new Expression('MAX(`message_id`)')))
-            ->where->equalTo('recepient', $uid);
+            ->where->equalTo('recipient', $uid);
         $select
             ->group('read');
 
@@ -91,11 +91,11 @@ class DirectusMessagesRecepientsTableGateway extends AclAwareTableGateway {
         $select = new Select($this->getTable());
         $select
             ->columns(array('id','message_id'))
-            ->join('directus_messages', 'directus_messages_recepients.message_id = directus_messages.id',array('response_to'))
+            ->join('directus_messages', 'directus_messages_recipients.message_id = directus_messages.id',array('response_to'))
             ->where
                 ->greaterThan('message_id', $maxId)
                 ->and
-                ->equalTo('recepient', $currentUser)
+                ->equalTo('recipient', $currentUser)
                 ->and
                 ->equalTo('read', 0);
 
