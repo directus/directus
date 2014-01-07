@@ -46,7 +46,7 @@ use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusGroupsTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
-use Directus\Db\TableGateway\DirectusMessagesRecepientsTableGateway;
+use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 //use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
@@ -790,14 +790,14 @@ $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload,
     $currentUser = Auth::getUserInfo();
 
     if (isset($_GET['max_id'])) {
-        $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
-        $ids = $messagesRecepientsTableGateway->getMessagesNewerThan($_GET['max_id'], $currentUser['id']);
+        $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($acl, $ZendDb);
+        $ids = $messagesRecipientsTableGateway->getMessagesNewerThan($_GET['max_id'], $currentUser['id']);
         if (sizeof($ids) > 0) {
             $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
             $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUser['id'], $ids);
             return JsonView::render($result);
         } else {
-            $result = $messagesRecepientsTableGateway->countMessages($currentUser['id']);
+            $result = $messagesRecipientsTableGateway->countMessages($currentUser['id']);
             return JsonView::render($result);
         }
     }
@@ -810,7 +810,7 @@ $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload,
 $app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
-    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
+    $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
 
     if (!isset($message)) {
         header("HTTP/1.0 404 Not Found");
@@ -823,9 +823,9 @@ $app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
 $app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
-    $messagesRecepientsTableGateway = new DirectusMessagesRecepientsTableGateway($acl, $ZendDb);
+    $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($acl, $ZendDb);
 
-    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
+    $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
 
     $ids = array($message['id']);
     $message['read'] = '1';
@@ -835,7 +835,7 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
         $response['read'] = "1";
     }
 
-    $messagesRecepientsTableGateway->markAsRead($ids, $currentUser['id']);
+    $messagesRecipientsTableGateway->markAsRead($ids, $currentUser['id']);
 
     JsonView::render($message);
 })->via('PATCH');
@@ -843,35 +843,35 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
 $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
 
-    // Unpack recepients
-    $recepients = explode(',', $requestPayload['recepients']);
-    $groupRecepients = array();
-    $userRecepients = array();
+    // Unpack recipients
+    $recipients = explode(',', $requestPayload['recipients']);
+    $groupRecipients = array();
+    $userRecipients = array();
 
-    foreach($recepients as $recepient) {
-        $typeAndId = explode('_', $recepient);
+    foreach($recipients as $recipient) {
+        $typeAndId = explode('_', $recipient);
         if ($typeAndId[0] == 0) {
-            $userRecepients[] = $typeAndId[1];
+            $userRecipients[] = $typeAndId[1];
         } else {
-            $groupRecepients[] = $typeAndId[1];
+            $groupRecipients[] = $typeAndId[1];
         }
     }
 
-    if (count($groupRecepients) > 0) {
+    if (count($groupRecipients) > 0) {
         $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
-        $result = $usersTableGateway->findActiveUserIdsByGroupIds($groupRecepients);
+        $result = $usersTableGateway->findActiveUserIdsByGroupIds($groupRecipients);
         foreach($result as $item) {
-            $userRecepients[] = $item['id'];
+            $userRecipients[] = $item['id'];
         }
     }
 
-    $userRecepients[] = $currentUser['id'];
+    $userRecipients[] = $currentUser['id'];
 
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
-    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecepients), $currentUser['id']);
+    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
 
     // could this be replaced?
-    $message = $messagesTableGateway->fetchMessageWithRecepients($id, $currentUser['id']);
+    $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
     //$message = $messagesTableGateway->fetchMessage($id);
 
     JsonView::render($message);
