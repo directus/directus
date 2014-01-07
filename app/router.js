@@ -438,16 +438,17 @@ define(function(require, exports, module) {
           } else {
             // If theere's no path in the location (i.e. the user just logged in),
             // take them to their last visited page, defaulting to "tables".
-            var authenticatedUser = app.getCurrentUser();
+            /*var authenticatedUser = app.getCurrentUser();
             user = app.users.get(authenticatedUser.id);
             last_page = $.parseJSON(user.get('last_page'));
+
             if(_.isEmpty(last_page)) {
               last_page = {};
             }
             if(_.isEmpty(last_page.path)) {
               last_page.path = 'tables';
             }
-            this.navigate(last_page.path, {trigger: true});
+            this.navigate(last_page.path, {trigger: true});*/
           }
         }
       });
