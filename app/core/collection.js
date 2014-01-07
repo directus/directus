@@ -138,10 +138,16 @@ function(app, Backbone) {
     fetch: function(options) {
       options = options || {};
       options.data = options.data || {};
-      var filters = this.getFilters();
 
-      _.extend(options.data, filters);
-      //options.data.columns_visible = this.getColumns().join(',');
+      if (options.includeFilters === undefined) {
+        options.includeFilters = true;
+      }
+
+      if (options.includeFilters) {
+        var filters = this.getFilters();
+        _.extend(options.data, filters);
+      }
+
       this.trigger('fetch', this);
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
