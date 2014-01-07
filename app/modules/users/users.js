@@ -104,7 +104,7 @@ function(app, Backbone, Directus, SaveModule) {
         }
 
         return data;
-      
+
       });
 
       return {rows: rows};
@@ -157,8 +157,7 @@ function(app, Backbone, Directus, SaveModule) {
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      this.table.render();
-      //this.collection.fetch();
+      this.collection.fetch();
     },
 
     initialize: function() {
