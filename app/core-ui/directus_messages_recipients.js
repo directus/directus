@@ -12,7 +12,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  Module.id = 'directus_messages_recepients';
+  Module.id = 'directus_messages_recipients';
 
   Module.dataTypes = [];
   Module.variables = [];
@@ -50,9 +50,9 @@ define(['app', 'backbone'], function(app, Backbone) {
                 }\
                 </style>\
                 <label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
-                 <input type="text" id="directus_messages_recepients-input">\
-                 <div style="width:84%; margin-top:5px" id="directus_messages_recepients-recepients">{{#tags}}<span class="label tag recepient-tag">{{this}}</span>{{/tags}}</div>\
-                 <input type="hidden" name="{{name}}" id="directus_messages_recepients-form">';
+                 <input type="text" id="directus_messages_recipients-input">\
+                 <div style="width:84%; margin-top:5px" id="directus_messages_recipients-recipients">{{#tags}}<span class="label tag recipient-tag">{{this}}</span>{{/tags}}</div>\
+                 <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -61,14 +61,14 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'click .recepient-tag': function(e) {
+      'click .recipient-tag': function(e) {
         var targetId = $(e.target).data('id');
-        delete this.recepients[targetId];
+        delete this.recipients[targetId];
         this.renderTags();
       }
     },
 
-    recepients: {},
+    recipients: {},
 
     serialize: function() {
       return {
@@ -80,15 +80,15 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     renderTags: function() {
-      var $el = this.$el.find('#directus_messages_recepients-recepients');
+      var $el = this.$el.find('#directus_messages_recipients-recipients');
       var elArray = [];
 
-      _.each(this.recepients, function(item) {
+      _.each(this.recipients, function(item) {
         var fontWeight = item.type === 1 ? 'font-weight:bold;' : '';
-        elArray.push('<div style="padding:4px; line-height:0px; overflow: auto; display:inline-block; border-radius: 2px; background-color:#EEE; border:1px solid #CCC; margin-right:5px; margin-bottom:5px;' + fontWeight + '"><img src="' + item.avatar + '" style="width:20px; height:20px; margin-right:4px">' + item.name + '<span class="glyphicon-remove recepient-tag" data-id="'+item.id+'" style="display:inline-block; padding:0; line-height:3px; cursor:pointer; margin-left:5px"></span></div>');
+        elArray.push('<div style="padding:4px; line-height:0px; overflow: auto; display:inline-block; border-radius: 2px; background-color:#EEE; border:1px solid #CCC; margin-right:5px; margin-bottom:5px;' + fontWeight + '"><img src="' + item.avatar + '" style="width:20px; height:20px; margin-right:4px">' + item.name + '<span class="glyphicon-remove recipient-tag" data-id="'+item.id+'" style="display:inline-block; padding:0; line-height:3px; cursor:pointer; margin-left:5px"></span></div>');
       });
 
-      this.$el.find('#directus_messages_recepients-form').val(_.keys(this.recepients));
+      this.$el.find('#directus_messages_recipients-form').val(_.keys(this.recipients));
       $el.html(elArray.join(''));
     },
 
@@ -138,7 +138,7 @@ define(['app', 'backbone'], function(app, Backbone) {
        });
 
 
-      this.$("#directus_messages_recepients-input").typeahead({
+      this.$("#directus_messages_recipients-input").typeahead({
 
         limit: 5,
 
@@ -154,20 +154,20 @@ define(['app', 'backbone'], function(app, Backbone) {
 
         updater: function(item) {
           var id = item.split(':')[0];
-          me.recepients[id] = keywordsMap[id];
+          me.recipients[id] = keywordsMap[id];
           me.renderTags();
         }*/
       });
 
-      this.$('#directus_messages_recepients-input').on('typeahead:selected', function (object, datum) {
-        me.recepients[datum.id] = datum;
+      this.$('#directus_messages_recipients-input').on('typeahead:selected', function (object, datum) {
+        me.recipients[datum.id] = datum;
         me.renderTags();
       });
 
     },
 
     initialize: function() {
-      this.recepients = {};
+      this.recipients = {};
     }
   });
 
