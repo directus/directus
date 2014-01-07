@@ -81,7 +81,20 @@ function(app, Backbone, Directus, SaveModule) {
 
     tagName: 'tbody',
 
-    template: Handlebars.compile('{{#rows}}<tr data-id="{{id}}" data-cid="{{cid}}"><td class="status"></td><td>{{avatar}}</td><td>{{first_name}}</td><td>{{last_name}}</td><td>{{email}}</td><td>{{position}}</td><td>{{default_studio}}</td><td>{{last_access}}</td></tr>{{/rows}}'),
+    template: Handlebars.compile(
+      '{{#rows}}' +
+      '<tr data-id="{{id}}" data-cid="{{cid}}">' +
+      '<td class="status"></td>' +
+      '<td>{{avatar}}</td>' +
+      '<td>{{first_name}}</td>' +
+      '<td>{{last_name}}</td>' +
+      '<td>{{email}}</td>' +
+      '<td>{{position}}</td>' +
+      '<td>{{default_studio}}</td>' +
+      '<td>{{last_access}}</td>' +
+      '</tr>' +
+      '{{/rows}}'
+    ),
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
@@ -161,7 +174,7 @@ function(app, Backbone, Directus, SaveModule) {
     },
 
     initialize: function() {
-      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false, hideColumnPreferences: true, blacklist: ['group']});
+      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false, hideColumnPreferences: true, blacklist: ['group','active']});
     }
   });
 
