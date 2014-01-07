@@ -118,11 +118,25 @@ $(function(){
       dataType: 'json',
       type: 'POST',
       success: function(data, textStatus, jqXHR) {
+
+        // Default path
+        var path = 'users';
+
+        // Silent error if the path is not avalible
+        try {
+          var lastPage = JSON.parse(data.last_page);
+          path = lastPage.path;
+        } catch(e) {
+          console.warn('Parsing path object failed', data.last_page);
+        }
+
         if(!data.success) {
           message(data.message, true);
           return;
         }
-        window.location = "<?= DIRECTUS_PATH ?>";
+
+        window.location = "<?= DIRECTUS_PATH ?>"+path;
+
       },
       error: function(jqXHR, textStatus, errorThrown) {
         message("Server error occurred. (" + textStatus + ")", true);

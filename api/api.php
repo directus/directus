@@ -237,6 +237,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
 
     if($response['success']) {
         unset($response['message']);
+        $response['last_page'] = $user['last_page'];
         $set = array('last_login' => new Expression('NOW()'));
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
