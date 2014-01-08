@@ -1,166 +1,3 @@
-/*
-.glyphicon-glass:before                   { content: "\e001"; }
-.glyphicon-music:before                   { content: "\e002"; }
-.glyphicon-search:before                  { content: "\e003"; }
-.glyphicon-envelope:before                { content: "\2709"; }
-.glyphicon-heart:before                   { content: "\e005"; }
-.glyphicon-star-empty:before              { content: "\e007"; }
-.glyphicon-user:before                    { content: "\e008"; }
-.glyphicon-film:before                    { content: "\e009"; }
-.glyphicon-th-large:before                { content: "\e010"; }
-.glyphicon-th:before                      { content: "\e011"; }
-.glyphicon-th-list:before                 { content: "\e012"; }
-.glyphicon-ok:before                      { content: "\e013"; }
-.glyphicon-remove:before                  { content: "\e014"; }
-.glyphicon-zoom-in:before                 { content: "\e015"; }
-.glyphicon-zoom-out:before                { content: "\e016"; }
-.glyphicon-off:before                     { content: "\e017"; }
-.glyphicon-signal:before                  { content: "\e018"; }
-.glyphicon-cog:before                     { content: "\e019"; }
-.glyphicon-trash:before                   { content: "\e020"; }
-.glyphicon-home:before                    { content: "\e021"; }
-.glyphicon-file:before                    { content: "\e022"; }
-.glyphicon-time:before                    { content: "\e023"; }
-.glyphicon-road:before                    { content: "\e024"; }
-.glyphicon-download-alt:before            { content: "\e025"; }
-.glyphicon-download:before                { content: "\e026"; }
-.glyphicon-upload:before                  { content: "\e027"; }
-.glyphicon-inbox:before                   { content: "\e028"; }
-.glyphicon-play-circle:before             { content: "\e029"; }
-.glyphicon-repeat:before                  { content: "\e030"; }
-.glyphicon-refresh:before                 { content: "\e031"; }
-.glyphicon-list-alt:before                { content: "\e032"; }
-.glyphicon-lock:before                    { content: "\e033"; }
-.glyphicon-flag:before                    { content: "\e034"; }
-.glyphicon-headphones:before              { content: "\e035"; }
-.glyphicon-volume-off:before              { content: "\e036"; }
-.glyphicon-volume-down:before             { content: "\e037"; }
-.glyphicon-volume-up:before               { content: "\e038"; }
-.glyphicon-qrcode:before                  { content: "\e039"; }
-.glyphicon-barcode:before                 { content: "\e040"; }
-.glyphicon-tag:before                     { content: "\e041"; }
-.glyphicon-tags:before                    { content: "\e042"; }
-.glyphicon-book:before                    { content: "\e043"; }
-.glyphicon-bookmark:before                { content: "\e044"; }
-.glyphicon-print:before                   { content: "\e045"; }
-.glyphicon-camera:before                  { content: "\e046"; }
-.glyphicon-font:before                    { content: "\e047"; }
-.glyphicon-bold:before                    { content: "\e048"; }
-.glyphicon-italic:before                  { content: "\e049"; }
-.glyphicon-text-height:before             { content: "\e050"; }
-.glyphicon-text-width:before              { content: "\e051"; }
-.glyphicon-align-left:before              { content: "\e052"; }
-.glyphicon-align-center:before            { content: "\e053"; }
-.glyphicon-align-right:before             { content: "\e054"; }
-.glyphicon-align-justify:before           { content: "\e055"; }
-.glyphicon-list:before                    { content: "\e056"; }
-.glyphicon-indent-left:before             { content: "\e057"; }
-.glyphicon-indent-right:before            { content: "\e058"; }
-.glyphicon-facetime-video:before          { content: "\e059"; }
-.glyphicon-picture:before                 { content: "\e060"; }
-.glyphicon-pencil:before                  { content: "\270f"; }
-.glyphicon-map-marker:before              { content: "\e062"; }
-.glyphicon-adjust:before                  { content: "\e063"; }
-.glyphicon-tint:before                    { content: "\e064"; }
-.glyphicon-edit:before                    { content: "\e065"; }
-.glyphicon-share:before                   { content: "\e066"; }
-.glyphicon-check:before                   { content: "\e067"; }
-.glyphicon-move:before                    { content: "\e068"; }
-.glyphicon-step-backward:before           { content: "\e069"; }
-.glyphicon-fast-backward:before           { content: "\e070"; }
-.glyphicon-backward:before                { content: "\e071"; }
-.glyphicon-play:before                    { content: "\e072"; }
-.glyphicon-pause:before                   { content: "\e073"; }
-.glyphicon-stop:before                    { content: "\e074"; }
-.glyphicon-forward:before                 { content: "\e075"; }
-.glyphicon-fast-forward:before            { content: "\e076"; }
-.glyphicon-step-forward:before            { content: "\e077"; }
-.glyphicon-eject:before                   { content: "\e078"; }
-.glyphicon-chevron-left:before            { content: "\e079"; }
-.glyphicon-chevron-right:before           { content: "\e080"; }
-.glyphicon-plus-sign:before               { content: "\e081"; }
-.glyphicon-minus-sign:before              { content: "\e082"; }
-.glyphicon-remove-sign:before             { content: "\e083"; }
-.glyphicon-ok-sign:before                 { content: "\e084"; }
-.glyphicon-question-sign:before           { content: "\e085"; }
-.glyphicon-info-sign:before               { content: "\e086"; }
-.glyphicon-screenshot:before              { content: "\e087"; }
-.glyphicon-remove-circle:before           { content: "\e088"; }
-.glyphicon-ok-circle:before               { content: "\e089"; }
-.glyphicon-ban-circle:before              { content: "\e090"; }
-.glyphicon-arrow-left:before              { content: "\e091"; }
-.glyphicon-arrow-right:before             { content: "\e092"; }
-.glyphicon-arrow-up:before                { content: "\e093"; }
-.glyphicon-arrow-down:before              { content: "\e094"; }
-.glyphicon-share-alt:before               { content: "\e095"; }
-.glyphicon-resize-full:before             { content: "\e096"; }
-.glyphicon-resize-small:before            { content: "\e097"; }
-.glyphicon-plus:before                    { content: "\002b"; }
-.glyphicon-minus:before                   { content: "\2212"; }
-.glyphicon-asterisk:before                { content: "\002a"; }
-.glyphicon-exclamation-sign:before        { content: "\e101"; }
-.glyphicon-gift:before                    { content: "\e102"; }
-.glyphicon-leaf:before                    { content: "\e103"; }
-.glyphicon-fire:before                    { content: "\e104"; }
-.glyphicon-eye-open:before                { content: "\e105"; }
-.glyphicon-eye-close:before               { content: "\e106"; }
-.glyphicon-warning-sign:before            { content: "\e107"; }
-.glyphicon-plane:before                   { content: "\e108"; }
-.glyphicon-calendar:before                { content: "\e109"; }
-.glyphicon-random:before                  { content: "\e110"; }
-.glyphicon-comment:before                 { content: "\e111"; }
-.glyphicon-magnet:before                  { content: "\e112"; }
-.glyphicon-chevron-up:before              { content: "\e113"; }
-.glyphicon-chevron-down:before            { content: "\e114"; }
-.glyphicon-retweet:before                 { content: "\e115"; }
-.glyphicon-shopping-cart:before           { content: "\e116"; }
-.glyphicon-folder-close:before            { content: "\e117"; }
-.glyphicon-folder-open:before             { content: "\e118"; }
-.glyphicon-resize-vertical:before         { content: "\e119"; }
-.glyphicon-resize-horizontal:before       { content: "\e120"; }
-.glyphicon-hdd:before                     { content: "\e121"; }
-.glyphicon-bullhorn:before                { content: "\e122"; }
-.glyphicon-bell:before                    { content: "\e123"; }
-.glyphicon-certificate:before             { content: "\e124"; }
-.glyphicon-thumbs-up:before               { content: "\e125"; }
-.glyphicon-thumbs-down:before             { content: "\e126"; }
-.glyphicon-hand-right:before              { content: "\e127"; }
-.glyphicon-hand-left:before               { content: "\e128"; }
-.glyphicon-hand-up:before                 { content: "\e129"; }
-.glyphicon-hand-down:before               { content: "\e130"; }
-.glyphicon-circle-arrow-right:before      { content: "\e131"; }
-.glyphicon-circle-arrow-left:before       { content: "\e132"; }
-.glyphicon-circle-arrow-up:before         { content: "\e133"; }
-.glyphicon-circle-arrow-down:before       { content: "\e134"; }
-.glyphicon-globe:before                   { content: "\e135"; }
-.glyphicon-wrench:before                  { content: "\e136"; }
-.glyphicon-tasks:before                   { content: "\e137"; }
-.glyphicon-filter:before                  { content: "\e138"; }
-.glyphicon-briefcase:before               { content: "\e139"; }
-.glyphicon-fullscreen:before              { content: "\e140"; }
-.glyphicon-dashboard:before               { content: "\e141"; }
-.glyphicon-paperclip:before               { content: "\e142"; }
-.glyphicon-heart-empty:before             { content: "\e143"; }
-.glyphicon-link:before                    { content: "\e144"; }
-.glyphicon-phone:before                   { content: "\e145"; }
-.glyphicon-pushpin:before                 { content: "\e146"; }
-.glyphicon-euro:before                    { content: "\20ac"; }
-
-.glyphicon-gbp:before                     { content: "\e149"; }
-.glyphicon-sort:before                    { content: "\e150"; }
-.glyphicon-sort-by-alphabet:before        { content: "\e151"; }
-.glyphicon-sort-by-alphabet-alt:before    { content: "\e152"; }
-.glyphicon-sort-by-order:before           { content: "\e153"; }
-.glyphicon-sort-by-order-alt:before       { content: "\e154"; }
-.glyphicon-sort-by-attributes:before      { content: "\e155"; }
-.glyphicon-sort-by-attributes-alt:before  { content: "\e156"; }
-.glyphicon-unchecked:before               { content: "\e157"; }
-.glyphicon-expand:before                  { content: "\e158"; }
-.glyphicon-collapse:before                { content: "\e159"; }
-.glyphicon-collapse-top:before            { content: "\e160"; }
-
-.glyphicon-settings:before                { content: "\e160"; }
-*/
 /*!
  * Bootstrap v2.2.1
  *
@@ -221,16 +58,12 @@ sub {
 }
 img {
   /* Responsive images (ensure images don't scale beyond their parents) */
-
   max-width: 100%;
   /* Part 1: Set a maxium relative to the parent */
-
   width: auto\9;
   /* IE7-8 need help adjusting responsive images */
-
   height: auto;
   /* Part 2: Scale the height according to the width, otherwise you get stretching */
-
   vertical-align: middle;
   border: 0;
   -ms-interpolation-mode: bicubic;
@@ -1113,7 +946,6 @@ input[type="color"]:focus,
   outline: 0;
   outline: thin dotted \9;
   /* IE6-9 */
-
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0,0,0,.3);
   -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0,0,0,.3);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0,0,0,.3);
@@ -1136,10 +968,8 @@ select,
 input[type="file"] {
   height: 26px;
   /* In IE7, the height of the select element cannot be changed by height, only font-size */
-
   *margin-top: 4px;
   /* For IE7, add top margin to align select with labels */
-
   line-height: 26px;
 }
 select {
@@ -1264,40 +1094,76 @@ textarea,
 .controls-row [class*="span"] + [class*="span"] {
   margin-left: 20px;
 }
-input.span12, textarea.span12, .force-editable.span12, .uneditable-input.span12 {
+input.span12,
+textarea.span12,
+.force-editable.span12,
+.uneditable-input.span12 {
   width: 926px;
 }
-input.span11, textarea.span11, .force-editable.span11, .uneditable-input.span11 {
+input.span11,
+textarea.span11,
+.force-editable.span11,
+.uneditable-input.span11 {
   width: 846px;
 }
-input.span10, textarea.span10, .force-editable.span10, .uneditable-input.span10 {
+input.span10,
+textarea.span10,
+.force-editable.span10,
+.uneditable-input.span10 {
   width: 766px;
 }
-input.span9, textarea.span9, .force-editable.span9, .uneditable-input.span9 {
+input.span9,
+textarea.span9,
+.force-editable.span9,
+.uneditable-input.span9 {
   width: 686px;
 }
-input.span8, textarea.span8, .force-editable.span8, .uneditable-input.span8 {
+input.span8,
+textarea.span8,
+.force-editable.span8,
+.uneditable-input.span8 {
   width: 606px;
 }
-input.span7, textarea.span7, .force-editable.span7, .uneditable-input.span7 {
+input.span7,
+textarea.span7,
+.force-editable.span7,
+.uneditable-input.span7 {
   width: 526px;
 }
-input.span6, textarea.span6, .force-editable.span6, .uneditable-input.span6 {
+input.span6,
+textarea.span6,
+.force-editable.span6,
+.uneditable-input.span6 {
   width: 446px;
 }
-input.span5, textarea.span5, .force-editable.span5, .uneditable-input.span5 {
+input.span5,
+textarea.span5,
+.force-editable.span5,
+.uneditable-input.span5 {
   width: 366px;
 }
-input.span4, textarea.span4, .force-editable.span4, .uneditable-input.span4 {
+input.span4,
+textarea.span4,
+.force-editable.span4,
+.uneditable-input.span4 {
   width: 286px;
 }
-input.span3, textarea.span3, .force-editable.span3, .uneditable-input.span3 {
+input.span3,
+textarea.span3,
+.force-editable.span3,
+.uneditable-input.span3 {
   width: 206px;
 }
-input.span2, textarea.span2, .force-editable.span2, .uneditable-input.span2 {
+input.span2,
+textarea.span2,
+.force-editable.span2,
+.uneditable-input.span2 {
   width: 126px;
 }
-input.span1, textarea.span1, .force-editable.span1, .uneditable-input.span1 {
+input.span1,
+textarea.span1,
+.force-editable.span1,
+.uneditable-input.span1 {
   width: 46px;
 }
 .controls-row {
@@ -1526,7 +1392,6 @@ select:focus:required:invalid:focus {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   vertical-align: middle;
   padding-left: 5px;
@@ -1670,7 +1535,6 @@ input.search-query {
   padding-left: 14px;
   padding-left: 4px \9;
   /* IE7-8 doesn't have border-radius, so don't indent the padding */
-
   margin-bottom: 0;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
@@ -1730,7 +1594,6 @@ input.search-query {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   margin-bottom: 0;
   vertical-align: middle;
@@ -2372,7 +2235,8 @@ table th[class*="span"],
 .glyphicon-collapse-top:before            { content: "\e160"; }
 
 .glyphicon-settings:before                { content: "\e160"; }
-*/.dropup,
+*/
+.dropup,
 .dropdown {
   position: relative;
 }
@@ -2486,7 +2350,7 @@ table th[class*="span"],
 .open {
   *z-index: 1100;
 }
-.open  > .dropdown-menu {
+.open > .dropdown-menu {
   display: block;
 }
 .pull-right > .dropdown-menu {
@@ -2648,7 +2512,6 @@ button.close {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   padding: 4px 12px;
   margin-bottom: 0;
@@ -2677,7 +2540,6 @@ button.close {
   background-color: #e6e6e6;
   *background-color: #d9d9d9;
   /* Buttons in IE7 don't get borders, so darken on hover */
-
   background-position: 0 -15px;
   -webkit-transition: background-position 0.1s linear;
   -moz-transition: background-position 0.1s linear;
@@ -2803,7 +2665,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #f89406;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-warning:hover,
@@ -2834,7 +2695,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #bd362f;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-danger:hover,
@@ -2865,7 +2725,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #51a351;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-success:hover,
@@ -2896,7 +2755,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #2f96b4;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-info:hover,
@@ -2927,7 +2785,6 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #1c1c1c;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-inverse:hover,
@@ -2998,7 +2855,6 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   font-size: 0;
   vertical-align: middle;
@@ -3171,7 +3027,6 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
 }
 .btn-group-vertical .btn {
@@ -3830,7 +3685,6 @@ input[type="submit"].btn.btn-mini {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #0f0f0f;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.075);
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.075);
@@ -4047,7 +3901,6 @@ input[type="submit"].btn.btn-mini {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #040404;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .navbar-inverse .btn-navbar:hover,
@@ -4076,7 +3929,6 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   text-shadow: 0 1px 0 #ffffff;
 }
@@ -4094,7 +3946,6 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
-
   *zoom: 1;
   margin-left: 0;
   margin-bottom: 0;
@@ -4291,7 +4142,6 @@ input[type="submit"].btn.btn-mini {
   border: 1px solid rgba(0, 0, 0, 0.3);
   *border: 1px solid #999;
   /* IE6-7 */
-
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
@@ -5400,40 +5250,76 @@ a.badge:hover {
   .controls-row [class*="span"] + [class*="span"] {
     margin-left: 30px;
   }
-  input.span12, textarea.span12, .force-editable.span12, .uneditable-input.span12 {
+  input.span12,
+  textarea.span12,
+  .force-editable.span12,
+  .uneditable-input.span12 {
     width: 1156px;
   }
-  input.span11, textarea.span11, .force-editable.span11, .uneditable-input.span11 {
+  input.span11,
+  textarea.span11,
+  .force-editable.span11,
+  .uneditable-input.span11 {
     width: 1056px;
   }
-  input.span10, textarea.span10, .force-editable.span10, .uneditable-input.span10 {
+  input.span10,
+  textarea.span10,
+  .force-editable.span10,
+  .uneditable-input.span10 {
     width: 956px;
   }
-  input.span9, textarea.span9, .force-editable.span9, .uneditable-input.span9 {
+  input.span9,
+  textarea.span9,
+  .force-editable.span9,
+  .uneditable-input.span9 {
     width: 856px;
   }
-  input.span8, textarea.span8, .force-editable.span8, .uneditable-input.span8 {
+  input.span8,
+  textarea.span8,
+  .force-editable.span8,
+  .uneditable-input.span8 {
     width: 756px;
   }
-  input.span7, textarea.span7, .force-editable.span7, .uneditable-input.span7 {
+  input.span7,
+  textarea.span7,
+  .force-editable.span7,
+  .uneditable-input.span7 {
     width: 656px;
   }
-  input.span6, textarea.span6, .force-editable.span6, .uneditable-input.span6 {
+  input.span6,
+  textarea.span6,
+  .force-editable.span6,
+  .uneditable-input.span6 {
     width: 556px;
   }
-  input.span5, textarea.span5, .force-editable.span5, .uneditable-input.span5 {
+  input.span5,
+  textarea.span5,
+  .force-editable.span5,
+  .uneditable-input.span5 {
     width: 456px;
   }
-  input.span4, textarea.span4, .force-editable.span4, .uneditable-input.span4 {
+  input.span4,
+  textarea.span4,
+  .force-editable.span4,
+  .uneditable-input.span4 {
     width: 356px;
   }
-  input.span3, textarea.span3, .force-editable.span3, .uneditable-input.span3 {
+  input.span3,
+  textarea.span3,
+  .force-editable.span3,
+  .uneditable-input.span3 {
     width: 256px;
   }
-  input.span2, textarea.span2, .force-editable.span2, .uneditable-input.span2 {
+  input.span2,
+  textarea.span2,
+  .force-editable.span2,
+  .uneditable-input.span2 {
     width: 156px;
   }
-  input.span1, textarea.span1, .force-editable.span1, .uneditable-input.span1 {
+  input.span1,
+  textarea.span1,
+  .force-editable.span1,
+  .uneditable-input.span1 {
     width: 56px;
   }
   .thumbnails {
@@ -5726,40 +5612,76 @@ a.badge:hover {
   .controls-row [class*="span"] + [class*="span"] {
     margin-left: 20px;
   }
-  input.span12, textarea.span12, .force-editable.span12, .uneditable-input.span12 {
+  input.span12,
+  textarea.span12,
+  .force-editable.span12,
+  .uneditable-input.span12 {
     width: 710px;
   }
-  input.span11, textarea.span11, .force-editable.span11, .uneditable-input.span11 {
+  input.span11,
+  textarea.span11,
+  .force-editable.span11,
+  .uneditable-input.span11 {
     width: 648px;
   }
-  input.span10, textarea.span10, .force-editable.span10, .uneditable-input.span10 {
+  input.span10,
+  textarea.span10,
+  .force-editable.span10,
+  .uneditable-input.span10 {
     width: 586px;
   }
-  input.span9, textarea.span9, .force-editable.span9, .uneditable-input.span9 {
+  input.span9,
+  textarea.span9,
+  .force-editable.span9,
+  .uneditable-input.span9 {
     width: 524px;
   }
-  input.span8, textarea.span8, .force-editable.span8, .uneditable-input.span8 {
+  input.span8,
+  textarea.span8,
+  .force-editable.span8,
+  .uneditable-input.span8 {
     width: 462px;
   }
-  input.span7, textarea.span7, .force-editable.span7, .uneditable-input.span7 {
+  input.span7,
+  textarea.span7,
+  .force-editable.span7,
+  .uneditable-input.span7 {
     width: 400px;
   }
-  input.span6, textarea.span6, .force-editable.span6, .uneditable-input.span6 {
+  input.span6,
+  textarea.span6,
+  .force-editable.span6,
+  .uneditable-input.span6 {
     width: 338px;
   }
-  input.span5, textarea.span5, .force-editable.span5, .uneditable-input.span5 {
+  input.span5,
+  textarea.span5,
+  .force-editable.span5,
+  .uneditable-input.span5 {
     width: 276px;
   }
-  input.span4, textarea.span4, .force-editable.span4, .uneditable-input.span4 {
+  input.span4,
+  textarea.span4,
+  .force-editable.span4,
+  .uneditable-input.span4 {
     width: 214px;
   }
-  input.span3, textarea.span3, .force-editable.span3, .uneditable-input.span3 {
+  input.span3,
+  textarea.span3,
+  .force-editable.span3,
+  .uneditable-input.span3 {
     width: 152px;
   }
-  input.span2, textarea.span2, .force-editable.span2, .uneditable-input.span2 {
+  input.span2,
+  textarea.span2,
+  .force-editable.span2,
+  .uneditable-input.span2 {
     width: 90px;
   }
-  input.span1, textarea.span1, .force-editable.span1, .uneditable-input.span1 {
+  input.span1,
+  textarea.span1,
+  .force-editable.span1,
+  .uneditable-input.span1 {
     width: 28px;
   }
 }
@@ -5911,9 +5833,7 @@ html,
 body {
   height: 100%;
   /* overflow-x breaks the window.scroll event for some reason */
-
   /* overflow-x: hidden; */
-
 }
 ::selection {
   background-color: #dddddd;
@@ -6041,7 +5961,6 @@ a {
   height: auto !important;
   height: 100%;
   /* Negative indent footer by it's height */
-
   margin: 0 auto -40px;
 }
 #push,
@@ -6086,7 +6005,6 @@ h2 {
   width: auto;
   height: auto;
   */
-
   width: 50px;
   height: 50px;
 }
@@ -6896,7 +6814,7 @@ table#directus-grouppermissions th.permissions {
 .directus-form fieldset:first-child {
   border-top: 0;
 }
-.directus-form  > fieldset:last-child {
+.directus-form > fieldset:last-child {
   border-bottom: 0;
 }
 .directus-form input[type="text"],
@@ -7288,7 +7206,6 @@ header {
   background: url('../img/crumb-dropdown-arrow.png') no-repeat;
 }
 .crumb-bg-hightlight {
-  display: none;
   position: absolute;
   height: 39px;
   display: none;
@@ -7511,6 +7428,18 @@ header {
   color: #1c1c1c;
   font-size: 14px;
   line-height: 1;
+}
+.scheduler-table td .class-time.CANCELLED {
+  color: #ff1b11;
+}
+.scheduler-table td .class-time.AWAITING {
+  color: #000000;
+}
+.scheduler-table td .class-time.CONFIRMED {
+  color: #6da410;
+}
+.scheduler-table td .class-time.CONFLICT {
+  color: #ff9000;
 }
 .scheduler-table td .class-duration {
   font-size: 9px;
@@ -8278,7 +8207,8 @@ header {
   margin-left: 180px;
   margin-right: 190px;
 }
-/* .booking-seat-options */.options-bar {
+/* .booking-seat-options */
+.options-bar {
   font-size: 24px;
   height: 28px;
   margin-bottom: 20px;
@@ -8316,7 +8246,8 @@ header {
   margin-left: 6px;
   cursor: auto;
 }
-/* .booking-seat-options */.booking-session-seats {
+/* .booking-seat-options */
+.booking-session-seats {
   border: 1px solid #ececec;
   padding: 20px 0 10px;
 }
@@ -8668,7 +8599,8 @@ header {
   text-transform: uppercase;
   font-weight: normal;
 }
-/* .booking-seat-options */.booking-extra-seats {
+/* .booking-seat-options */
+.booking-extra-seats {
   position: relative;
   background-color: #f4f4f4;
   border: 1px solid #ECECEC;
@@ -8917,7 +8849,8 @@ header {
   text-indent: -9999px;
   cursor: default;
 }
-/* .booking-seat-options */.booking-seat-guide {
+/* .booking-seat-options */
+.booking-seat-guide {
   position: relative;
   padding: 20px 0;
   *zoom: 1;
@@ -9080,7 +9013,6 @@ header {
   background: url('../img/crumb-dropdown-arrow.png') no-repeat;
 }
 .crumb-bg-hightlight {
-  display: none;
   position: absolute;
   height: 39px;
   display: none;
