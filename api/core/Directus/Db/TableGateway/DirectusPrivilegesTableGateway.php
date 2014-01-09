@@ -77,7 +77,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         /*$blacklist = array(
             'directus_columns',
             'directus_ip_whitelist',
-            'directus_messages_recepients',
+            'directus_messages_recipients',
             'directus_preferences',
             'directus_privileges',
             'directus_settings',

@@ -57,6 +57,15 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
         return $this->selectWith($select)->toArray();
     }
 
+    public function getUserByGroupAndStudio($groupId, $studioId){
+        $select = new Select(self::$_tableName);
+        $select
+            ->where
+                ->equalTo('default_studio_id', $studioId)
+                ->equalTo('group', $groupId);
+        return $this->selectWith($select);
+    }
+
     /**
      * Get either a Gravatar URL or complete image tag for a specified email address.
      *
@@ -69,7 +78,7 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
      * @return String containing either just a URL or a complete image tag
      * @source http://gravatar.com/site/implement/images/php/
      */
-    public static function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
+    public static function get_gravatar( $email, $s = 100, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
         $url = 'http://www.gravatar.com/avatar/';
         $url .= md5( strtolower( trim( $email ) ) );
         $url .= "?s=$s&d=$d&r=$r";

@@ -32,7 +32,7 @@ define(function(require, exports, module) {
     require('core-ui/many_to_many'),
     require('core-ui/one_to_many'),
     require('core-ui/wysiwyg'),
-    require('core-ui/directus_messages_recepients'),
+    require('core-ui/directus_messages_recipients'),
     require('core-ui/password'),
     require('core-ui/many_to_one_typeahead')
   ]);

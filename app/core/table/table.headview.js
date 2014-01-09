@@ -15,10 +15,12 @@ function(app, Backbone) {
     tagName: 'thead',
 
     events: {
+
       'click th.check > input': function(e) {
         $('td.check > input').attr('checked', ($(e.target).attr('checked') !== undefined)).trigger('change');
         this.collection.trigger('select');
       },
+      
       'click th:not(.check)': function(e) {
         var column = $(e.target).attr('data-id');
         var order = this.collection.getOrder();
@@ -118,8 +120,6 @@ function(app, Backbone) {
 
         view = new View({data: data});
 
-
-
         modal = app.router.openModal(view, {title: 'Set visible columns'});
 
         modal.save = function() {
@@ -139,8 +139,13 @@ function(app, Backbone) {
 
     serialize: function() {
       var order = this.collection.getOrder();
+      var blacklist = this.options.blacklist || [];
       var columns = _.map(this.collection.getColumns(), function(column) {
         return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
+      });
+
+      columns = _.filter(columns, function(col) {
+        return !_.contains(blacklist, col.name);
       });
 
       return {selectable: this.options.selectable, sortable: this.options.sort, columns: columns, deleteColumn: this.options.deleteColumn, hideColumnPreferences: this.options.hideColumnPreferences};

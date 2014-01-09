@@ -24,6 +24,8 @@ define(function(require, exports, module) {
       Messages         = require('modules/messages/messages'),
       Modal            = require('core/modal');
 
+      moment           = require('moment');
+
   var Router = Backbone.Router.extend({
 
     routes: {
@@ -363,7 +365,8 @@ define(function(require, exports, module) {
             return {
               user: user.toJSON(),
               siteName: this.model.get('site_name'),
-              siteUrl: this.model.get('site_url')
+              siteUrl: this.model.get('site_url'),
+              messageCounter: app.messages.unread
             };
           },
 
@@ -423,7 +426,7 @@ define(function(require, exports, module) {
               'param' : router
             });
 
-            user.save({'last_page': last_page}, {
+            user.save({'last_page': last_page, 'last_access': moment().format('YYYY-MM-DD HH:mm')}, {
               patch: true,
               global: false,
               silent: true,
@@ -435,16 +438,17 @@ define(function(require, exports, module) {
           } else {
             // If theere's no path in the location (i.e. the user just logged in),
             // take them to their last visited page, defaulting to "tables".
-            var authenticatedUser = app.getCurrentUser();
+            /*var authenticatedUser = app.getCurrentUser();
             user = app.users.get(authenticatedUser.id);
             last_page = $.parseJSON(user.get('last_page'));
+
             if(_.isEmpty(last_page)) {
               last_page = {};
             }
             if(_.isEmpty(last_page.path)) {
               last_page.path = 'tables';
             }
-            this.navigate(last_page.path, {trigger: true});
+            this.navigate(last_page.path, {trigger: true});*/
           }
         }
       });

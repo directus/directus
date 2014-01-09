@@ -42,6 +42,12 @@ function(app, Backbone, Directus, SaveModule) {
         }
 
         model.save(diff, options);
+      },
+
+      'click #delete-form': function(e) {
+        this.model.save({active: 0}, {success: function() {
+          app.router.go('#users');
+        }, patch: true});
       }
     },
 
@@ -75,7 +81,20 @@ function(app, Backbone, Directus, SaveModule) {
 
     tagName: 'tbody',
 
-    template: Handlebars.compile('{{#rows}}<tr data-id="{{id}}" data-cid="{{cid}}"><td></td><td>{{avatar}}</td><td>{{first_name}}</td><td>{{last_name}}</td><td>{{group}}</td><td>{{email}}</td><td>{{position}}</td><td>{{default_studio}}</td><td>{{last_access}}</td></tr>{{/rows}}'),
+    template: Handlebars.compile(
+      '{{#rows}}' +
+      '<tr data-id="{{id}}" data-cid="{{cid}}">' +
+      '<td class="status"></td>' +
+      '<td>{{avatar}}</td>' +
+      '<td>{{first_name}}</td>' +
+      '<td>{{last_name}}</td>' +
+      '<td>{{email}}</td>' +
+      '<td>{{position}}</td>' +
+      '<td>{{default_studio}}</td>' +
+      '<td>{{last_access}}</td>' +
+      '</tr>' +
+      '{{/rows}}'
+    ),
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
@@ -85,7 +104,6 @@ function(app, Backbone, Directus, SaveModule) {
           'avatar': model.get('avatar'),
           'first_name': model.get('first_name'),
           'last_name': model.get('last_name'),
-          'group': model.get('group').get('name'),
           'email': model.get('email'),
           'position': model.get('position'),
           'default_studio': model.get('default_studio'),
@@ -95,11 +113,13 @@ function(app, Backbone, Directus, SaveModule) {
         if (data.avatar !== null) {
             //@todo this is a hack, maybe change avatar so it only includes a hash?
             var avatarSmall = data.avatar.replace('?s=100','?s=50');
-            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" class="avatar" />');
+            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="max-width:none!important;"/>');
         }
 
         return data;
+
       });
+
       return {rows: rows};
     },
 
@@ -117,6 +137,7 @@ function(app, Backbone, Directus, SaveModule) {
       var user = app.getCurrentUser();
       var userGroup = user.get('group');
 
+      //@todo fix this so it respects ACL instead of being hardcoded
       if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
         return;
       }
@@ -149,12 +170,11 @@ function(app, Backbone, Directus, SaveModule) {
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      this.table.render();
-      //this.collection.fetch();
+      this.collection.fetch();
     },
 
     initialize: function() {
-      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false, hideColumnPreferences: true});
+      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false, hideColumnPreferences: true, blacklist: ['group','active']});
     }
   });
 
