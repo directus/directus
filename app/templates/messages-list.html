@@ -11,7 +11,7 @@
 	<td class="status"></td>
 	<td>{{userShort from}} {{#if responsesLength}}({{responsesLength}}){{/if}}</td>
 	<td>{{subject}}</td>
-	<td>{{contextualDate date_updated}}</td>
+	<td><span title="{{date_updated}}">{{niceDate}}</span></td>
 </tr>
 {{/each}}
 </table>

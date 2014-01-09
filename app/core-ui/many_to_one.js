@@ -95,7 +95,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       this.column = this.columnSchema.options.get('visible_column');
       this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
-      this.collection.fetch();
+
+      // FILTER HERE!
+      this.collection.fetch({includeFilters: false, data: {active:1}});
       //this.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }

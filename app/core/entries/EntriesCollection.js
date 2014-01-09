@@ -47,6 +47,13 @@ define(function(require, exports, module) {
         result.columns_visible = this.filters.columns_visible;
       }
 
+      // very wierd hot-fix to hardcode the user table to always show active=1
+      // @todo make sure that preferences and filters follow the rules!
+      if ('directus_users' === this.table.id) {
+        console.warn('Active users only');
+        result.active = "1";
+      }
+
       return result;
     },
 

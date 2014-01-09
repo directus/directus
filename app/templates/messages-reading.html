@@ -3,13 +3,13 @@
 <div style="float:right;">{{contextualDate datetime}}</div>
 <div style="margin-left:38px; overflow: auto;">
     to
-    {{#if collapseRecepients}}
-        <a href="#" id="messages-show-recepients">{{recepientsCount}} Repcepients</a>
-        <div id="messages-recepients" style="display:none">
-            {{#each recepients}}{{userFirstAndLastName this}}, {{/each}}
+    {{#if collapseRecipients}}
+        <a href="#" id="messages-show-recipients">{{recipientsCount}} Repcepients</a>
+        <div id="messages-recipients" style="display:none">
+            {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
         </div>
     {{else}}
-        {{#each recepients}}{{userFirstAndLastName this}}, {{/each}}
+        {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
     {{/if}}
 
     <br><br>

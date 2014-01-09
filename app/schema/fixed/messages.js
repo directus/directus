@@ -34,9 +34,9 @@ define(function(require, exports, module) {
         }
       },
       {
-        "id":"recepients",
-        "column_name":"recepients",
-        "ui":"directus_messages_recepients",
+        "id":"recipients",
+        "column_name":"recipients",
+        "ui":"directus_messages_recipients",
         "is_nullable":"NO",
         "type":"VARCHAR",
         "system":false,
