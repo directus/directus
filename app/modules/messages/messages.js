@@ -11,16 +11,55 @@ define([
   'backbone',
   'core/directus',
   'core/panes/pane.saveview',
-  'core/entries/EntriesCollection'
+  'core/entries/EntriesCollection',
+  'core/entries/EntriesModel',
+  'moment'
 ],
 
-function(app, Backbone, Directus, SaveModule, EntriesCollection) {
+function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, moment) {
 
   "use strict";
 
   var Messages = app.module();
 
+  Messages.Model = EntriesModel.extend({
+
+    getUnreadCount: function() {
+      var unread = this.get('read') == 1 ? 0 : 1;
+
+      var unreadResponses = this.get('responses').reduce(function(memo, model){ 
+        var unread = model.get('read') == 1 ? 0 : 1;
+        return memo + unread;
+      }, 0);
+
+      return unread + unreadResponses;
+    },
+
+    markAsRead: function(options) {
+      options = options || {};
+
+      var unreadCount = this.getUnreadCount();
+
+      // Do nothing if model is allready read
+      if (unreadCount === 0) {
+        return;
+      }
+
+      // Decrease unread counter
+      this.collection.unread -= unreadCount;
+
+      if (options.save) {
+        return this.save({read: 1}, {patch: true, silent: true});
+      }
+
+      return this.set({read: "1"}, {silent: true});
+    }
+
+  });
+
   Messages.Collection = EntriesCollection.extend({
+
+    model: Messages.Model,
 
     updateFrequency: 10000,
 
@@ -70,7 +109,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
 
   var ReadView = Backbone.Layout.extend({
 
-    maxRecepients: 10,
+    maxRecipients: 10,
 
     template: 'messages-reading',
 
@@ -79,16 +118,16 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
         var collection = this.model.get('responses');
         var Model = collection.model;
         var myId = app.getCurrentUser().get('id');
-        var recepients = _.map(this.model.get('recepients').split(','), function(id) {
+        var recipients = _.map(this.model.get('recipients').split(','), function(id) {
           return '0_' + id;
         });
 
-        recepients.push('0_'+this.model.get('from'));
+        recipients.push('0_'+this.model.get('from'));
 
         var attrs = {
           'from': app.getCurrentUser().get('id'),
           'subject': '',
-          'recepients': recepients.join(','),
+          'recipients': recipients.join(','),
           'datetime': (new Date()).toISOString(),
           'response_to': this.model.id,
           'message': $('#messages-response').val(),
@@ -105,28 +144,28 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
         collection.add(model);
         this.render();
       },
-      'click #messages-show-recepients': function() {
-        var $el = $('#messages-recepients');
+      'click #messages-show-recipients': function() {
+        var $el = $('#messages-recipients');
         $el.toggle();
       }
     },
 
     serialize: function() {
       var data = this.model.toJSON();
-      data.recepients = data.recepients.split(',');
-      data.recepientsCount = data.recepients.length;
-      data.collapseRecepients = data.recepients.length > this.maxRecepients;
+      data.recipients = data.recipients.split(',');
+      data.recipientsCount = data.recipients.length;
+      data.collapseRecipients = data.recipients.length > this.maxRecipients;
 
       data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
       return data;
     },
 
     initialize: function() {
-      this.model.on('sync change', function() {
-        this.model.set({read: "1"}, {silent: true});
+      this.model.on('change:read', function() {
+        this.model.markAsRead({save: true});
         this.render();
       }, this);
-      this.model.save({read: 1}, {patch: true, silent: true});
+      this.model.markAsRead({save: true});
     }
 
   });
@@ -145,12 +184,21 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection) {
     serialize: function() {
       var data = this.collection.map(function(model) {
         var data = model.toJSON();
-        data.read = (data.read === '1');
+        var momentDate = moment(data.date_updated);
+        data.timestamp = parseInt(momentDate.format('X'));
+        data.niceDate = momentDate.fromNow();
+        data.read = model.getUnreadCount() === 0;
         data.responsesLength = data.responses.length;
         data.from = parseInt(data.from, 10);
         //console.log(_.map(data.responses, 'from'));
         return data;
       });
+
+      // Order the data by timestamp
+      data = _.sortBy(data, function(item) {
+        return -item.timestamp;
+      });
+
       return {messages: data};
     },
 
