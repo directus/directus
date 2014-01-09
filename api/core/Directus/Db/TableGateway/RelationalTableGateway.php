@@ -10,6 +10,7 @@ use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableSchema;
 use Directus\Util\Formatting;
 use Zend\Db\RowGateway\AbstractRowGateway;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;
@@ -152,12 +153,21 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Load full record post-facto, for:
         // - loading record identifier
         // - storing a full representation in the activity log
-        $fullRecordData = $TableGateway->find($rowId);
+
+        // Necessary modification 1/9/14
+        // ACL implications need to be reviewed
+        $FullAccessTableGateway = new TableGateway($tableName, $this->adapter);
+        $select = new Select($tableName);
+        $select->limit(1);
+        $select->where->equalTo('id', $rowId);
+        $fullRecordData = $FullAccessTableGateway->selectWith($select)->current();
 
         if(!$fullRecordData) {
             $recordType = $recordIsNew ? "new" : "pre-existing";
             throw new \RuntimeException("Attempted to load $recordType record post-insert with empty result. Lookup via row id: " . print_r($rowId, true));
         }
+
+        $fullRecordData = (array) $fullRecordData;
 
         $deltaRecordData = $recordIsNew ? array() : array_intersect_key((array) $parentRecordWithForeignKeys, (array) $fullRecordData);
 
