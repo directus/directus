@@ -25,12 +25,14 @@ use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
+use Directus\MemcacheProvider;
 
 class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     protected $acl;
 
     public $primaryKeyFieldName = "id";
+    public $memcache;
 
     /**
      * Constructor
@@ -68,6 +70,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $rowGatewayPrototype = new AclAwareRowGateway($acl, $this->primaryKeyFieldName, $table, $adapter);
         $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
         $this->featureSet->addFeature($rowGatewayFeature);
+        $this->memcache = new MemcacheProvider();
 
         parent::__construct($table, $adapter, $this->featureSet, $resultSetPrototype, $sql);
     }
