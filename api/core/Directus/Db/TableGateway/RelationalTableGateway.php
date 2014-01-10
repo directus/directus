@@ -16,6 +16,7 @@ use Zend\Db\Sql\Predicate\PredicateInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
+use Zend\Db\TableGateway\TableGateway;
 
 class RelationalTableGateway extends AclAwareTableGateway {
 
@@ -152,12 +153,22 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Load full record post-facto, for:
         // - loading record identifier
         // - storing a full representation in the activity log
-        $fullRecordData = $TableGateway->find($rowId);
+//        $fullRecordData = $TableGateway->find($rowId);
+
+        $columnNames = TableSchema::getAllNonAliasTableColumnNames($tableName);
+        $TemporaryTableGateway = new TableGateway($tableName, $this->adapter);
+        $fullRecordData= $TemporaryTableGateway->select(function ($select) use ($rowId, $columnNames) {
+            $select->where->equalTo('id', $rowId);
+            $select->limit(1)->columns($columnNames);
+        })->current();
 
         if(!$fullRecordData) {
             $recordType = $recordIsNew ? "new" : "pre-existing";
             throw new \RuntimeException("Attempted to load $recordType record post-insert with empty result. Lookup via row id: " . print_r($rowId, true));
         }
+
+        $fullRecordData = (array) $fullRecordData;
+
 
         $deltaRecordData = $recordIsNew ? array() : array_intersect_key((array) $parentRecordWithForeignKeys, (array) $fullRecordData);
 
