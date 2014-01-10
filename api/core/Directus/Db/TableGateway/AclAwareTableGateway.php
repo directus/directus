@@ -375,7 +375,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
          * ACL Enforcement
          */
 
-
         if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
