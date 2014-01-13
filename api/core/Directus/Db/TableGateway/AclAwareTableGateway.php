@@ -500,8 +500,4 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             throw $e;
         }
     }
-
-    public function memcache(){
-        return $this->memcache;
-    }
 }
