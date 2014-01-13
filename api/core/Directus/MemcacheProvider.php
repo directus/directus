@@ -17,7 +17,6 @@ class MemcacheProvider {
     const DISTRIBUTED = false;
     const DEFAULT_CACHE_EXPIRE_SECONDS = 300;
 
-
     private $mc;
 
     public function __construct(){
@@ -64,6 +63,7 @@ class MemcacheProvider {
             }
             return $cacheReturn;
         }
+        return $functionReturningVal();
     }
 
     public function delete($key){
