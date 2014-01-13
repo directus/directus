@@ -92,7 +92,11 @@ $(function(){
       type: 'POST',
       success: function(data, textStatus, jqXHR) {
         if(!data.success) {
-          message("Oops an error occurred!", true);
+          var errorMessage = "Oops an error occurred!";
+          if(data.message) {
+              errorMessage = data.message;
+          }
+          message(errorMessage, true);
           return;
         }
         message("We sent a temporary password to your email address.")
