@@ -62,6 +62,7 @@ class MemcacheProvider {
             }
             return $cacheReturn;
         }
+        return $functionReturningVal();
     }
 
     public function delete($key){
