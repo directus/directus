@@ -182,6 +182,9 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     $nonceOptions = $requestNonceProvider->getOptions();
     $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
     header($nonceOptions['nonce_response_header'] . ': ' . implode($newNonces, ","));
+    if(!is_array($responseData)) {
+        throw new \RuntimeException("Extension $extensionName must return array, got " . gettype($responseData) . " instead.");
+    }
     return JsonView::render($responseData);
 }
 
