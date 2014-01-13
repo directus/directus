@@ -115,4 +115,7 @@ class MemcacheProvider {
     public static function getKeyStudiosByRegion(){
         return 'studios_by_region';
     }
+    public static function getKeySeriesDataByRiderId($riderId){
+        return "series_data_by_rider_id?rider_id=$riderId";
+    }
 }
