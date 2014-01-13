@@ -15,8 +15,6 @@ class MemcacheProvider {
     const MEMCACHED_SERVER_CLOUD_2 = '166.78.77.1';
     const MEMCACHED_SERVER_CLOUD_3 = '166.78.77.2';
     const DISTRIBUTED = false;
-    const COMPRESSION_FLAG = MEMCACHE_COMPRESSED;
-
 
     private $mc;
 
@@ -27,9 +25,9 @@ class MemcacheProvider {
                 $this->mc->addServer(MEMCACHED_SERVER, 11211);
             }
             else {
-                $this->mc->addServer(SELF::MEMCACHED_SERVER_CLOUD_1, 11211);
-                $this->mc->addServer(SELF::MEMCACHED_SERVER_CLOUD_2, 11211);
-                $this->mc->addServer(SELF::MEMCACHED_SERVER_CLOUD_3, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_1, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_2, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_3, 11211);
             }
             //$this->memcache->setCompressThreshold(100000);
         }
@@ -59,7 +57,7 @@ class MemcacheProvider {
             $cacheReturn = $this->get($key);
             if (!$cacheReturn){
                 $val = $functionReturningVal();
-                $this->set($key, $val, self::COMPRESSION_FLAG, $expire);
+                $this->set($key, $val, MEMCACHE_COMPRESSED, $expire);
                 return $val;
             }
             return $cacheReturn;
