@@ -114,4 +114,10 @@ class MemcacheProvider {
     public static function getKeyStudiosByRegion(){
         return 'studios_by_region';
     }
+    public static function getKeyDirectusTables() {
+        return 'directus_tables';
+    }
+    public static function getKeyDirectusUserPrivileges($userId) {
+        return 'directus_user_privileges_' . $userId;
+    }
 }
