@@ -201,4 +201,10 @@ class MemcacheProvider {
     public static function getKeyStudioDetail($studioId){
         return "studio_detail?studio_id=$studioId";
     }
+    public static function getKeyRiderRecord($riderId){
+        return "rider_record?rider_id=$riderId";
+    }
+    public static function getKeySeriesMetadataBySeriesId($seriesId){
+        return "series_metadata_by_series_id?series_id=$seriesId";
+    }
 }
