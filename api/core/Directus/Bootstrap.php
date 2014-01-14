@@ -118,38 +118,49 @@ class Bootstrap {
     private static function zenddb() {
         self::requireConstants(array('DIRECTUS_ENV','DB_HOST','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
         $dbConfig = array(
-            'driver'    => 'Pdo_Mysql',
-            'host'      => DB_HOST,
-            'database'  => DB_NAME,
-            'username'  => DB_USER,
-            'password'  => DB_PASSWORD,
-            'charset'   => 'utf8',
-//            'options' => array(
-//                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-//            ),
-//            'driver_options' => array(
-//                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET CHARACTER SET utf8;",
-////                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-//            )
+            'driver' => 'Pdo_Mysql',
+            'host' => DB_HOST,
+            'database' => DB_NAME,
+            'username' => DB_USER,
+            'password' => DB_PASSWORD,
+            'charset' => 'utf8',
+            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
         );
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
-        $connection = $db->getDriver()->getConnection();
-        try { $connection->connect(); }
-        catch(\PDOException $e) {
-            echo "Database connection failed.<br />";
-            self::get('log')->fatal(print_r($e, true));
-            if('production' !== DIRECTUS_ENV) {
-                die(var_dump($e));
-            }
-            die;
-        }
-        $dbh = $connection->getResource();
-        $dbh->exec("SET CHARACTER SET utf8");
-        $dbh->query("SET NAMES utf8");
-
-//        $pdo = $db->getDriver()->getConnection()->getResource();
-//        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
         return $db;
+//        $dbConfig = array(
+//            'driver'    => 'Pdo_Mysql',
+//            'host'      => DB_HOST,
+//            'database'  => DB_NAME,
+//            'username'  => DB_USER,
+//            'password'  => DB_PASSWORD,
+//            'charset'   => 'utf8',
+////            'options' => array(
+////                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+////            ),
+////            'driver_options' => array(
+////                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET CHARACTER SET utf8;",
+//////                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+////            )
+//        );
+//        $db = new \Zend\Db\Adapter\Adapter($dbConfig);
+//        $connection = $db->getDriver()->getConnection();
+//        try { $connection->connect(); }
+//        catch(\PDOException $e) {
+//            echo "Database connection failed.<br />";
+//            self::get('log')->fatal(print_r($e, true));
+//            if('production' !== DIRECTUS_ENV) {
+//                die(var_dump($e));
+//            }
+//            die;
+//        }
+//        $dbh = $connection->getResource();
+//        $dbh->exec("SET CHARACTER SET utf8");
+//        $dbh->query("SET NAMES utf8");
+////        $pdo = $db->getDriver()->getConnection()->getResource();
+////        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+//        return $db;
     }
 
     /**
