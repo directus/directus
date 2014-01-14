@@ -159,8 +159,8 @@ class MemcacheProvider {
     public static function getKeyShopIndex(){
         return 'shop';
     }
-    public static function getKeyInstructors(){
-        return 'instructors';
+    public static function getKeyInstructors($regionId){
+        return "instructors?region_id=$regionId";
     }
     public static function getKeyStudios($regionId){
         return "studios?region_id=$regionId";
