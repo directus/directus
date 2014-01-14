@@ -118,7 +118,7 @@ class MemcacheProvider {
     public static function getKeyDirectusTables() {
         return 'directus_tables';
     }
-    public static function getKeyDirectusGrupPrivileges($userId) {
+    public static function getKeyDirectusGroupPrivileges($userId) {
         return 'directus_group_privileges?group_id=' . $userId;
     }
     public static function getKeySeriesDataByRiderId($riderId){
