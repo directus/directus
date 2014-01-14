@@ -15,6 +15,7 @@ class MemcacheProvider {
     const MEMCACHED_SERVER_CLOUD_2 = '166.78.77.1';
     const MEMCACHED_SERVER_CLOUD_3 = '166.78.77.2';
     const DISTRIBUTED = false;
+    const DEFAULT_CACHE_EXPIRE_SECONDS = 300;
 
     private $mc;
 
@@ -51,7 +52,7 @@ class MemcacheProvider {
 
     }
 
-    public function getOrCache($key, $functionReturningVal, $expire = 300){
+    public function getOrCache($key, $functionReturningVal, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS){
         if ($this->mc){
             $key = MEMCACHED_ENV_NAMESPACE . '/' . $key;
             $cacheReturn = $this->get($key);
@@ -117,7 +118,13 @@ class MemcacheProvider {
     public static function getKeyDirectusTables() {
         return 'directus_tables';
     }
-    public static function getKeyDirectusUserPrivileges($userId) {
-        return 'directus_user_privileges_' . $userId;
+    public static function getKeyDirectusGrupPrivileges($userId) {
+        return 'directus_group_privileges?group_id=' . $userId;
+    }
+    public static function getKeySeriesDataByRiderId($riderId){
+        return "series_data_by_rider_id?rider_id=$riderId";
+    }
+    public static function getKeyInstructorDetail($id){
+        return "instructor_detail?instructor_id=$id";
     }
 }
