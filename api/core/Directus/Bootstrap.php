@@ -123,22 +123,23 @@ class Bootstrap {
             'database'  => DB_NAME,
             'username'  => DB_USER,
             'password'  => DB_PASSWORD,
-            'charset'   => 'utf8'
+            'charset'   => 'utf8',
+            'options'   => array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'")
         );
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
-        $connection = $db->getDriver()->getConnection();
-        try { $connection->connect(); }
-        catch(\PDOException $e) {
-            echo "Database connection failed.<br />";
-            self::get('log')->fatal(print_r($e, true));
-            if('production' !== DIRECTUS_ENV) {
-                die(var_dump($e));
-            }
-            die;
-        }
-        $dbh = $connection->getResource();
-        $dbh->exec("SET CHARACTER SET utf8");
-        $dbh->query("SET NAMES utf8");
+//        $connection = $db->getDriver()->getConnection();
+//        try { $connection->connect(); }
+//        catch(\PDOException $e) {
+//            echo "Database connection failed.<br />";
+//            self::get('log')->fatal(print_r($e, true));
+//            if('production' !== DIRECTUS_ENV) {
+//                die(var_dump($e));
+//            }
+//            die;
+//        }
+//        $dbh = $connection->getResource();
+//        $dbh->exec("SET CHARACTER SET utf8");
+//        $dbh->query("SET NAMES utf8");
         return $db;
     }
 
