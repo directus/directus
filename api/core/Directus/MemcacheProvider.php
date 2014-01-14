@@ -97,7 +97,7 @@ class MemcacheProvider {
      * function and caches the result at the given key, and returns the retval of anonymous function
      *
      * @param string $key - Key to look up in cache
-     * @param function $functionReturningVal - Anonymous function to call, cache, and return retval unless retreived from memcached
+     * @param callable $functionReturningVal - Anonymous function to call, cache, and return retval unless retreived from memcached
      * @param int $expire - Key expire time in seconds, or can be set to a specific time by providing a unix timestamp
      * @return mixed - Returns retrieved data from cache or else returns the return value of passed-in anonymous function
      *
