@@ -124,12 +124,17 @@ class Bootstrap {
             'username'  => DB_USER,
             'password'  => DB_PASSWORD,
             'charset'   => 'utf8',
-//            'driver_options'   => array(
-//                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET CHARACTER SET utf8;",
+//            'options' => array(
 //                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-//            )
+//            ),
+            'driver_options' => array(
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET CHARACTER SET utf8;",
+//                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+            )
         );
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
+        $pdo = $db->getDriver()->getConnection()->getResource();
+        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
         return $db;
     }
 

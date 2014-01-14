@@ -348,7 +348,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeInsert($insert);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
-                throw new \RuntimeException("This query failed: " . $this->dumpSql($insert));
+                throw new \RuntimeException("This query failed: " . $this->dumpSql($insert), 0, $e);
             }
             // @todo send developer warning
             throw $e;
@@ -425,7 +425,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeUpdate($update);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
-                throw new \RuntimeException("This query failed: " . $this->dumpSql($update));
+                throw new \RuntimeException("This query failed: " . $this->dumpSql($update), 0, $e);
             }
             // @todo send developer warning
             throw $e;
@@ -494,7 +494,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeDelete($delete);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
-                throw new \RuntimeException("This query failed: " . $this->dumpSql($delete));
+                throw new \RuntimeException("This query failed: " . $this->dumpSql($delete), 0, $e);
             }
             // @todo send developer warning
             throw $e;
