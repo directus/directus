@@ -227,7 +227,6 @@ $currentUserInfo = getCurrentUserInfo($users);
 $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
 
-
 $data = array(
 	'nonces' => getNonces(),
 	'storage_adapters' => getStorageAdapters(),
