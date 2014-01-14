@@ -162,8 +162,14 @@ class Bootstrap {
     private static function acl() {
         $acl = new acl;
         $db = self::get('ZendDb');
+
         $DirectusTablesTableGateway = new DirectusTablesTableGateway($acl, $db);
-        $tableRecords = $DirectusTablesTableGateway->select()->toArray();
+        $getTables = function() use ($DirectusTablesTableGateway) {
+            return $DirectusTablesTableGateway->select()->toArray();
+        };
+
+        $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
+
         $magicOwnerColumnsByTable = array();
         foreach($tableRecords as $tableRecord) {
             if(!empty($tableRecord['magic_owner_column'])) {
@@ -179,7 +185,10 @@ class Bootstrap {
             $currentUser = $Users->find($currentUser['id']);
             if($currentUser) {
                 $Privileges = new DirectusPrivilegesTableGateway($acl, $db);
-                $groupPrivileges = $Privileges->fetchGroupPrivileges($currentUser['group']);
+                $getPrivileges = function() use ($groupId) {
+                    return (array) $Privileges->fetchGroupPrivileges($groupId);
+                };
+                $groupPrivileges = $Privileges->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($currentUser['group']), $getPrivileges, 1800);
                 $acl->setGroupPrivileges($groupPrivileges);
             }
         }
