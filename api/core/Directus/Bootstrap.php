@@ -124,7 +124,7 @@ class Bootstrap {
             'username'  => DB_USER,
             'password'  => DB_PASSWORD,
             'charset'   => 'utf8',
-            'options'   => array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'")
+            'driver_options'   => array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET CHARACTER SET utf8;")
         );
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
 //        $connection = $db->getDriver()->getConnection();
