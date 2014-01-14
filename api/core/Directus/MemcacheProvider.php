@@ -207,4 +207,16 @@ class MemcacheProvider {
     public static function getKeySeriesMetadataBySeriesId($seriesId){
         return "series_metadata_by_series_id?series_id=$seriesId";
     }
+    public static function getKeySeriesMetadataBySeriesSku($seriesSku){
+        return "series_metadata_by_series_sku?series_sku=$seriesSku";
+    }
+    public static function getKeyRiderSeriesMetadata($riderId){
+        return "rider_series_metadata?rider_id=$riderId";
+    }
+    public static function getKeyNonEmptyRiderSeries($riderId){
+        return "non_empty_rider_series?rider_id=$riderId";
+    }
+    public static function getKeyRiderSeriesByRegion($riderId, $includeNonWebBookable){
+        return "rider_series_by_region?rider_id=$riderId&include_non_web_bookable=" . ($includeNonWebBookable?"true":"false");
+    }
 }
