@@ -127,4 +127,10 @@ class MemcacheProvider {
     public static function getKeyInstructorDetail($id){
         return "instructor_detail?instructor_id=$id";
     }
+    public static function getKeyStudioRandomInstructors($studioId){
+        return "studio_random_instructors?studio_id=$studioId";
+    }
+    public static function getKeyDirectusStorageAdapters(){
+        return "directus_storage_adapters";
+    }
 }
