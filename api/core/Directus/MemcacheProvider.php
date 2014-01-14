@@ -219,4 +219,16 @@ class MemcacheProvider {
     public static function getKeyRiderSeriesByRegion($riderId, $includeNonWebBookable){
         return "rider_series_by_region?rider_id=$riderId&include_non_web_bookable=" . ($includeNonWebBookable?"true":"false");
     }
+    public static function getKeyProductPhysicalRecord($id) {
+        return "product_physical?id=$id";
+    }
+    public static function getKeyGiftCardLogicalProduct() {
+        return "gift_card_logical_product";
+    }
+    public static function getKeyCartFetchByRiderAndStudio($riderId, $studioId) {
+        return "cart_fetch_by_rider_and_studio?rider_id=$riderId&studio_id=$studioId";
+    }
+    public static function getKeyCartQuantityByRiderAndStudio($riderId, $studioId) {
+        return "cart_quantity_by_rider_and_studio?rider_id=$riderId&studio_id=$studioId";
+    }
 }
