@@ -118,4 +118,7 @@ class MemcacheProvider {
     public static function getKeySeriesDataByRiderId($riderId){
         return "series_data_by_rider_id?rider_id=$riderId";
     }
+    public static function getKeyInstructorDetail($id){
+        return "instructor_detail?instructor_id=$id";
+    }
 }
