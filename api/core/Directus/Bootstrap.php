@@ -133,6 +133,20 @@ class Bootstrap {
 //            )
         );
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
+        $connection = $db->getDriver()->getConnection();
+        try { $connection->connect(); }
+        catch(\PDOException $e) {
+            echo "Database connection failed.<br />";
+            self::get('log')->fatal(print_r($e, true));
+            if('production' !== DIRECTUS_ENV) {
+                die(var_dump($e));
+            }
+            die;
+        }
+        $dbh = $connection->getResource();
+        $dbh->exec("SET CHARACTER SET utf8");
+        $dbh->query("SET NAMES utf8");
+
 //        $pdo = $db->getDriver()->getConnection()->getResource();
 //        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
         return $db;
