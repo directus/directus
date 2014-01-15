@@ -75,13 +75,19 @@ function(app, Backbone) {
         return {model: model, classes: classes};
       });
 
-      return {
+      var tableData = {
         columns: this.collection.getColumns(),
         rows: rows,
         sortable: this.options.sort,
         selectable: this.options.selectable,
         deleteColumn: this.options.deleteColumn
       };
+
+      var blacklist = this.options.blacklist;
+
+      tableData.columns = _.difference(tableData.columns, blacklist);
+
+      return tableData;
     },
 
     drop: function() {
