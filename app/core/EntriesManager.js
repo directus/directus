@@ -29,7 +29,7 @@ define(function(require, exports, module) {
     mediaInstance = new EntriesCollection([], _.extend({
       rowsPerPage: rowsPerPage,
       url: apiURL + 'media',
-      filters: {columns_visible: ['name','title','size','user','date_uploaded', 'storage_adapter','type']}
+      filters: {columns_visible: ['name','title','size', 'type', 'user','date_uploaded', 'storage_adapter']}
     }, SchemaManager.getFullSchema('directus_media')));
 
     activityInstance = new EntriesCollection([], _.extend({

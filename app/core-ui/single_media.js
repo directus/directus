@@ -205,8 +205,6 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
 
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
-      console.log(thumbUrl);
-
       data = {
         isImage: isImage,
         name: this.options.name,
