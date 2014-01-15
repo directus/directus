@@ -69,8 +69,12 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
     },
 
     insertRow: function() {
+      var highLightIds = this.relatedCollection.map(function(model) {
+        return model.get('data').id;
+        //pluck('id');
+      });
       var collection = app.getEntries(this.relatedCollection.table.id);
-      var view = new this.modalTable({collection: collection, selectable: true, footer: false});
+      var view = new this.modalTable({collection: collection, selectable: true, footer: false, highlight: highLightIds});
       var modal = app.router.openModal(view, {stretch: true, title: 'Insert Item'});
 
       //please proxy this instead

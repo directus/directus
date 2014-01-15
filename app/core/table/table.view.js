@@ -75,7 +75,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist');
+        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight');
         this.insertView('table', new this.TableBody(options));
       }
 
