@@ -34,6 +34,7 @@ function(app, Backbone) {
     serialize: function() {
       var rowIdentifiers, activeState, models, rows;
       var activeColumns = this.collection.getFilter('active') || "1,2";
+      var highlightIds = this.options.highlight || [];
 
       rowIdentifiers = this.options.rowIdentifiers;
 
@@ -72,7 +73,9 @@ function(app, Backbone) {
 
       rows = _.map(models, function(model) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
-        return {model: model, classes: classes};
+        var highlight = _.contains(highlightIds,model.id);
+
+        return {model: model, classes: classes, highlight: highlight};
       });
 
       var tableData = {
