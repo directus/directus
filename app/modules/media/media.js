@@ -119,7 +119,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
     },
 
     afterRender: function() {
-      this.setView('#page-content', new DirectusTable({collection:this.collection, selectable: true, droppable: true, deleteOnly: true, hideColumnPreferences: true}));
+      this.setView('#page-content', new DirectusTable({collection:this.collection, selectable: true, droppable: true, deleteOnly: true, hideColumnPreferences: true, blacklist: ['storage_adapter']}));
       this.collection.fetch({reset: true});
     }
   });
