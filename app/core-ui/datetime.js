@@ -107,8 +107,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   Module.validate = function(value, options) {
     var m = moment(value);
 
-    console.log(value);
-
     if (m.isValid() || value === '' || value === null || value === undefined) {
       console.log(value === '');
       return;
@@ -121,7 +119,13 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
 
   //@todo make contextual date a ui
   Module.list = function(options) {
-    return options.value;
+    var value = options.value;
+    
+    if (options.settings.get('contextual_date_in_listview') === '1') {
+      value = moment(options.value).fromNow();
+    }
+
+    return value;
   };
 
   return Module;
