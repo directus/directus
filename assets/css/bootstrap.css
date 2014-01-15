@@ -58,12 +58,16 @@ sub {
 }
 img {
   /* Responsive images (ensure images don't scale beyond their parents) */
+
   max-width: 100%;
   /* Part 1: Set a maxium relative to the parent */
+
   width: auto\9;
   /* IE7-8 need help adjusting responsive images */
+
   height: auto;
   /* Part 2: Scale the height according to the width, otherwise you get stretching */
+
   vertical-align: middle;
   border: 0;
   -ms-interpolation-mode: bicubic;
@@ -946,6 +950,7 @@ input[type="color"]:focus,
   outline: 0;
   outline: thin dotted \9;
   /* IE6-9 */
+
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0,0,0,.3);
   -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0,0,0,.3);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0,0,0,.3);
@@ -968,8 +973,10 @@ select,
 input[type="file"] {
   height: 26px;
   /* In IE7, the height of the select element cannot be changed by height, only font-size */
+
   *margin-top: 4px;
   /* For IE7, add top margin to align select with labels */
+
   line-height: 26px;
 }
 select {
@@ -1392,6 +1399,7 @@ select:focus:required:invalid:focus {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
+
   *zoom: 1;
   vertical-align: middle;
   padding-left: 5px;
@@ -1535,6 +1543,7 @@ input.search-query {
   padding-left: 14px;
   padding-left: 4px \9;
   /* IE7-8 doesn't have border-radius, so don't indent the padding */
+
   margin-bottom: 0;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
@@ -1594,6 +1603,7 @@ input.search-query {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
+
   *zoom: 1;
   margin-bottom: 0;
   vertical-align: middle;
@@ -2235,8 +2245,7 @@ table th[class*="span"],
 .glyphicon-collapse-top:before            { content: "\e160"; }
 
 .glyphicon-settings:before                { content: "\e160"; }
-*/
-.dropup,
+*/.dropup,
 .dropdown {
   position: relative;
 }
@@ -2512,6 +2521,7 @@ button.close {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
+
   *zoom: 1;
   padding: 4px 12px;
   margin-bottom: 0;
@@ -2540,6 +2550,7 @@ button.close {
   background-color: #e6e6e6;
   *background-color: #d9d9d9;
   /* Buttons in IE7 don't get borders, so darken on hover */
+
   background-position: 0 -15px;
   -webkit-transition: background-position 0.1s linear;
   -moz-transition: background-position 0.1s linear;
@@ -2665,6 +2676,7 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #f89406;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-warning:hover,
@@ -2695,6 +2707,7 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #bd362f;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-danger:hover,
@@ -2725,6 +2738,7 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #51a351;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-success:hover,
@@ -2755,6 +2769,7 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #2f96b4;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-info:hover,
@@ -2785,6 +2800,7 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #1c1c1c;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .btn-inverse:hover,
@@ -2855,6 +2871,7 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
+
   *zoom: 1;
   font-size: 0;
   vertical-align: middle;
@@ -3027,6 +3044,7 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
+
   *zoom: 1;
 }
 .btn-group-vertical .btn {
@@ -3685,6 +3703,7 @@ input[type="submit"].btn.btn-mini {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #0f0f0f;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.075);
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.075);
@@ -3901,6 +3920,7 @@ input[type="submit"].btn.btn-mini {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #040404;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .navbar-inverse .btn-navbar:hover,
@@ -3929,6 +3949,7 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
+
   *zoom: 1;
   text-shadow: 0 1px 0 #ffffff;
 }
@@ -3946,6 +3967,7 @@ input[type="submit"].btn.btn-mini {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
+
   *zoom: 1;
   margin-left: 0;
   margin-bottom: 0;
@@ -4142,6 +4164,7 @@ input[type="submit"].btn.btn-mini {
   border: 1px solid rgba(0, 0, 0, 0.3);
   *border: 1px solid #999;
   /* IE6-7 */
+
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
@@ -5833,7 +5856,9 @@ html,
 body {
   height: 100%;
   /* overflow-x breaks the window.scroll event for some reason */
+
   /* overflow-x: hidden; */
+
 }
 ::selection {
   background-color: #dddddd;
@@ -5961,6 +5986,7 @@ a {
   height: auto !important;
   height: 100%;
   /* Negative indent footer by it's height */
+
   margin: 0 auto -40px;
 }
 #push,
@@ -6005,6 +6031,7 @@ h2 {
   width: auto;
   height: auto;
   */
+
   width: 50px;
   height: 50px;
 }
@@ -6496,7 +6523,9 @@ a:hover {
 .table-striped tbody tr:hover,
 .directus-table tbody tr:hover,
 .table-striped tbody tr.selected,
-.directus-table tbody tr.selected {
+.directus-table tbody tr.selected,
+.table-striped tbody tr.highlighted,
+.directus-table tbody tr.highlighted {
   background-color: #fffcd0 !important;
 }
 .table-striped tbody tr:last-child,
@@ -8078,9 +8107,6 @@ header {
   padding-top: 8px;
   width: 170px;
   /* .member-name */
-  /* .member-name */
-  /* .member-name */
-  /* .member-name */
 }
 #sidebar.extension-booker select {
   width: auto;
@@ -8207,8 +8233,7 @@ header {
   margin-left: 180px;
   margin-right: 190px;
 }
-/* .booking-seat-options */
-.options-bar {
+/* .booking-seat-options */.options-bar {
   font-size: 24px;
   height: 28px;
   margin-bottom: 20px;
@@ -8246,8 +8271,7 @@ header {
   margin-left: 6px;
   cursor: auto;
 }
-/* .booking-seat-options */
-.booking-session-seats {
+/* .booking-seat-options */.booking-session-seats {
   border: 1px solid #ececec;
   padding: 20px 0 10px;
 }
@@ -8376,10 +8400,6 @@ header {
   cursor: pointer;
   background-color: #FFF;
   color: #1c1c1c;
-  /* .customer-actions */
-  /* .customer-actions */
-  /* .customer-actions */
-  /* .customer-actions */
   /* .customer-actions */
 }
 .booking-session-seats .seat .customer-name,
@@ -8599,8 +8619,7 @@ header {
   text-transform: uppercase;
   font-weight: normal;
 }
-/* .booking-seat-options */
-.booking-extra-seats {
+/* .booking-seat-options */.booking-extra-seats {
   position: relative;
   background-color: #f4f4f4;
   border: 1px solid #ECECEC;
@@ -8649,10 +8668,6 @@ header {
   cursor: pointer;
   background-color: #FFF;
   color: #1c1c1c;
-  /* .customer-actions */
-  /* .customer-actions */
-  /* .customer-actions */
-  /* .customer-actions */
   /* .customer-actions */
 }
 .booking-extra-seats .seat .customer-name,
@@ -8849,8 +8864,7 @@ header {
   text-indent: -9999px;
   cursor: default;
 }
-/* .booking-seat-options */
-.booking-seat-guide {
+/* .booking-seat-options */.booking-seat-guide {
   position: relative;
   padding: 20px 0;
   *zoom: 1;
