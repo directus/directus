@@ -151,6 +151,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
       var timer;
       var $dropzone = this.$el.find('.ui-thumbnail');
       var model = this.mediaModel;
+      var self = this;
 
       $dropzone.on('dragover', function(e) {
         clearInterval(timer);
@@ -182,6 +183,10 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
             // Unset the model ID so that a new media record is created
             // (and the old media record isn't replaced w/ this data)
             item.id = undefined;
+            item.user = self.userId;
+
+            //console.log()
+
             model.set(item);
           });
         });
@@ -216,6 +221,9 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
     },
 
     initialize: function() {
+
+      this.userId = app.getCurrentUser().id;
+
       this.mediaModel = this.options.value;
       this.mediaModel.on('change', this.render, this);
       //this.collection = app.getEntries('directus_media');
