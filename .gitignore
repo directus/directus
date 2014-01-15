@@ -29,6 +29,7 @@ build_test.html
 build_test_release
 
 extensions/*
+ui/*
 
 utils
 seperator
