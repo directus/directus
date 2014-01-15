@@ -122,7 +122,14 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     var value = options.value;
     
     if (options.settings.get('contextual_date_in_listview') === '1') {
-      value = moment(options.value).fromNow();
+      var momentDate = moment(options.value);
+      if (momentDate.isValid()) {
+        value = momentDate.fromNow();
+      } else {
+        value = '-';
+      }
+
+      
     }
 
     return value;
