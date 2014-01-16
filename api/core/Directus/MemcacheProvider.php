@@ -231,4 +231,7 @@ class MemcacheProvider {
     public static function getKeyCartQuantityByRiderAndStudio($riderId, $studioId) {
         return "cart_quantity_by_rider_and_studio?rider_id=$riderId&studio_id=$studioId";
     }
+    public static function getKeyClassesByStudioAndDay($studioId, $date){
+        return "classes_by_studio_and_day?studio_id=$studioId&date=$date";
+    }
 }
