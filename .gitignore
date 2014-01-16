@@ -30,5 +30,8 @@ build_test_release
 
 extensions/*
 
+ui/*
+!ui/.gitkeep
+
 utils
 seperator
