@@ -28,7 +28,7 @@ define('DIRECTUS_PATH', '/directus/');
 define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/..'));
 
 //Memcached Server, operates on default 11211 port.
-define('MEMCACHED_SERVER', 'localhost');
+define('MEMCACHED_SERVER', '127.0.0.1');
 
 //Namespaced the memcached keys so branches/databases to not collide
 //options are prod, staging, testing, development
