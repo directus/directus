@@ -7,8 +7,5 @@
         "phpunit/phpunit": "3.7.*@dev",
         "rackspace/php-opencloud": "dev-master",
         "swiftmailer/swiftmailer": "@stable"
-    },
-    "autoload": {
-        "classmap": ["core/Directus/", "vendor/"]
     }
 }
