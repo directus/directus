@@ -63,6 +63,10 @@ define(function(require, exports, module) {
 
     var defaultOptions = _.extend(SchemaManager.getFullSchema(tableName), options);
 
+    if (defaultOptions.privileges === undefined) {
+      throw "You lack privileges for `"+ tableName +"`";
+    }
+
     var entries = new EntriesCollection([], _.extend({
       rowsPerPage: rowsPerPage
     }, defaultOptions));
