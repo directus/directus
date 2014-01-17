@@ -38,7 +38,7 @@ define(['app', 'backbone'],function(app, Backbone) {
         var item = {};
         item.value = value;
         item.key = key;
-        if (item.key === selectedValue) item.selected = true;
+        item.selected = (item.key == selectedValue);
         return item;
       });
 
