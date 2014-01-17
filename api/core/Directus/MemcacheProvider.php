@@ -234,4 +234,7 @@ class MemcacheProvider {
     public static function getKeyClassesByStudioAndDay($studioId, $date){
         return "classes_by_studio_and_day?studio_id=$studioId&date=$date";
     }
+    public static function getKeyUpcomingByStudio($studioId, $studioTz, $limit, $webAppVisOnly){
+        return "upcoming_by_studio?studio_id=$studioId&studio_tz=$studioTz&limit=$limit&web_app_viz=$webAppVisOnly";
+    }
 }
