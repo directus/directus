@@ -31,7 +31,7 @@ class MemcacheProvider {
     /**
      * Bool, if true, adds all 3 server addresses for distributed memcached setup rather than local pools per-server
      */
-    const DISTRIBUTED = false;
+    const DISTRIBUTED = true;
     /**
      * Default expire time for cache if not passes into a cache setter method
      */
