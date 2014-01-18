@@ -19,15 +19,15 @@ class MemcacheProvider {
     /**
      *  Cloud-1 address
      */
-    const MEMCACHED_SERVER_CLOUD_1 = '166.78.77.0';
+    const MEMCACHED_SERVER_CLOUD_1 = '10.176.99.201';
     /**
      * Cloud-2 address
      */
-    const MEMCACHED_SERVER_CLOUD_2 = '166.78.77.1';
+    const MEMCACHED_SERVER_CLOUD_2 = '10.176.99.17';
     /**
      * Cloud-3 address
      */
-    const MEMCACHED_SERVER_CLOUD_3 = '166.78.77.2';
+    const MEMCACHED_SERVER_CLOUD_3 = '10.176.98.151';
     /**
      * Bool, if true, adds all 3 server addresses for distributed memcached setup rather than local pools per-server
      */
