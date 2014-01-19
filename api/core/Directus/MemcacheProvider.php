@@ -271,4 +271,10 @@ class MemcacheProvider {
     public static function getKeyCommunityComments($id) {
         return "community_coomments?id=$id";
     }
+    public static function getKeyRiderBookmarkClassIds($riderId) {
+        return "rider_bookmark_class_ids?rider_id=$riderId";
+    }
+    public static function getKeyRiderFavoriteInstructorIds($riderId) {
+        return "rider_favorite_instructor_ids?rider_id=$riderId";
+    }
 }
