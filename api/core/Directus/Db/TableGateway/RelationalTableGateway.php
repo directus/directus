@@ -38,8 +38,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $identifierColumnName = $masterColumn['column_name'];
         else {
             $column = TableSchema::getFirstNonSystemColumn($schemaArray);
-            if($column)
+            if($column) {
                 $identifierColumnName = $column['column_name'];
+            }
         }
         // Yield the column contents
         $identifier = null;

@@ -14,6 +14,18 @@ return array(
 		'port' => 25,
 		'username' => '',
 		'password' => ''
-	)
+	),
+
+	'dbHooks' => array(
+	 	'postInsert' => function ($TableGateway, $record, $db, $acl) {
+
+	 	},
+	 	'postUpdate' => function ($TableGateway, $record, $db, $acl) {
+	 		$tableName = $TableGateway->getTable();
+	 		switch($tableName) {
+	 			// ...
+	 		}
+	 	}
+ 	)
 
 );

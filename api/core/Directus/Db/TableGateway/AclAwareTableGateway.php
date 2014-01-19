@@ -11,6 +11,7 @@ use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
+use Directus\Db\Hooks;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
 use Directus\Util\Date;
@@ -216,9 +217,13 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $Update->set($recordData);
             $Update->where(array('id' => $recordData['id']));
             $TableGateway->updateWith($Update);
+            // Post-update hook
+            Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
             $TableGateway->insert($recordData);
             $recordData['id'] = $TableGateway->getLastInsertValue();
+            // Post-insert hook
+            Hooks::runHook('postInsert', array($TableGateway, $recordData, $this->adapter, $this->acl));
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
