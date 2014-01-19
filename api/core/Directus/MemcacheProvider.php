@@ -240,4 +240,7 @@ class MemcacheProvider {
     public static function getKeyUpcomingByInstructor($instructorId, $limit, $webAppVisOnly){
         return "upcoming_by_instructor?instructor_id=$instructorId&limit=$limit&web_app_viz=$webAppVisOnly";
     }
+    public static function getKeySocialDataByInstructorId($instructorId) {
+        return "instructor_social_data?instructor_id=$instructorId";
+    }
 }
