@@ -237,4 +237,7 @@ class MemcacheProvider {
     public static function getKeyUpcomingByStudio($studioId, $studioTz, $limit, $webAppVisOnly){
         return "upcoming_by_studio?studio_id=$studioId&studio_tz=$studioTz&limit=$limit&web_app_viz=$webAppVisOnly";
     }
+    public static function getKeyUpcomingByInstructor($instructorId, $limit, $webAppVisOnly){
+        return "upcoming_by_instructor?instructor_id=$instructorId&limit=$limit&web_app_viz=$webAppVisOnly";
+    }
 }
