@@ -271,4 +271,7 @@ class MemcacheProvider {
     public static function getKeyCommunityComments($id) {
         return "community_coomments?id=$id";
     }
+    public static function getKeyUpcomingByInstructorGroupByDate($instructorId, $userId, $webAppVisibleClassesOnly){
+        return "upcoming_classes_by_instrutor_grouped_by_date?instructor_id=$instructorId&user_id=$userId&webapp_viz=$webAppVisibleClassesOnly";
+    }
 }
