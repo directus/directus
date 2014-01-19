@@ -141,6 +141,19 @@ class MemcacheProvider {
     }
 
     /**
+     * Shortcut for appending to a cached array.
+     */
+    public function appendToEntry($cacheKey, $value, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS) {
+        $set = array($value);
+        $entry = $this->get($cacheKey);
+        if($entry) {
+            $set = $entry;
+            $set[] = $value;
+        }
+        return $this->set($cacheKey, $set, MEMCACHE_COMPRESSED, $expire);
+    }
+
+    /**
      * Static key generation functions provided to enforce key consistency throughout
      * application and also serve as documentation of keys in use.
      *
@@ -242,5 +255,14 @@ class MemcacheProvider {
     }
     public static function getKeySocialDataByInstructorId($instructorId) {
         return "instructor_social_data?instructor_id=$instructorId";
+    }
+    public static function getKeyRoomsWithStudioTitles($roomIds) {
+        return "rooms_with_studio_titles?room_ids=" . implode(',', $roomIds);
+    }
+    public static function getKeyResolvedProductsByLogicalIds($logicalIds) {
+        return "resolved_products_by_logical_ids?logical_ids=" . implode(',', $logicalIds);
+    }
+    public static function getNamespaceResolvedProductsByLogicalIds() {
+        return "namespace_resolved_products_by_logical_ids";
     }
 }
