@@ -265,4 +265,10 @@ class MemcacheProvider {
     public static function getNamespaceResolvedProductsByLogicalIds() {
         return "namespace_resolved_products_by_logical_ids";
     }
+    public static function getKeyCommunityDetail($id) {
+        return "community_detail?id=$id";
+    }
+    public static function getKeyCommunityComments($id) {
+        return "community_coomments?id=$id";
+    }
 }
