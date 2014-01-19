@@ -29,6 +29,18 @@ class MemcacheProvider {
      */
     const MEMCACHED_SERVER_CLOUD_3 = '10.176.98.151';
     /**
+     * Cloud-4 address
+     */
+    const MEMCACHED_SERVER_CLOUD_4 = '10.209.130.18';
+    /**
+     * Cloud-5 address
+     */
+    const MEMCACHED_SERVER_CLOUD_5 = '10.209.133.36';
+    /**
+     * Cloud-6 address
+     */
+    const MEMCACHED_SERVER_CLOUD_6 = '10.209.132.172';
+    /**
      * Bool, if true, adds all 3 server addresses for distributed memcached setup rather than local pools per-server
      */
     const DISTRIBUTED = true;
@@ -55,6 +67,9 @@ class MemcacheProvider {
                 $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_1, 11211);
                 $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_2, 11211);
                 $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_3, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_4, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_5, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_6, 11211);
             }
         }
         else {
