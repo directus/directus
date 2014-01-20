@@ -169,6 +169,20 @@ class MemcacheProvider {
     }
 
     /**
+     * Shortcut for deleting all keys within a namespace key
+     */
+    public function deleteNamespaceKeys($namespaceKey) {
+        $keys = $this->get($namespaceKey);
+        if($keys) {
+            foreach($keys as $key) {
+                $this->delete($key);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Static key generation functions provided to enforce key consistency throughout
      * application and also serve as documentation of keys in use.
      *
