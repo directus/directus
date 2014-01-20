@@ -19,19 +19,31 @@ class MemcacheProvider {
     /**
      *  Cloud-1 address
      */
-    const MEMCACHED_SERVER_CLOUD_1 = '166.78.77.0';
+    const MEMCACHED_SERVER_CLOUD_1 = '10.176.99.201';
     /**
      * Cloud-2 address
      */
-    const MEMCACHED_SERVER_CLOUD_2 = '166.78.77.1';
+    const MEMCACHED_SERVER_CLOUD_2 = '10.176.99.17';
     /**
      * Cloud-3 address
      */
-    const MEMCACHED_SERVER_CLOUD_3 = '166.78.77.2';
+    const MEMCACHED_SERVER_CLOUD_3 = '10.176.98.151';
+    /**
+     * Cloud-4 address
+     */
+    const MEMCACHED_SERVER_CLOUD_4 = '10.209.130.18';
+    /**
+     * Cloud-5 address
+     */
+    const MEMCACHED_SERVER_CLOUD_5 = '10.209.133.36';
+    /**
+     * Cloud-6 address
+     */
+    const MEMCACHED_SERVER_CLOUD_6 = '10.209.132.172';
     /**
      * Bool, if true, adds all 3 server addresses for distributed memcached setup rather than local pools per-server
      */
-    const DISTRIBUTED = false;
+    const DISTRIBUTED = true;
     /**
      * Default expire time for cache if not passes into a cache setter method
      */
@@ -55,6 +67,9 @@ class MemcacheProvider {
                 $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_1, 11211);
                 $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_2, 11211);
                 $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_3, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_4, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_5, 11211);
+                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_6, 11211);
             }
         }
         else {
@@ -138,6 +153,19 @@ class MemcacheProvider {
             return $this->mc->flush();
         }
         return false;
+    }
+
+    /**
+     * Shortcut for appending to a cached array.
+     */
+    public function appendToEntry($cacheKey, $value, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS) {
+        $set = array($value);
+        $entry = $this->get($cacheKey);
+        if($entry) {
+            $set = $entry;
+            $set[] = $value;
+        }
+        return $this->set($cacheKey, $set, MEMCACHE_COMPRESSED, $expire);
     }
 
     /**
@@ -231,10 +259,40 @@ class MemcacheProvider {
     public static function getKeyCartQuantityByRiderAndStudio($riderId, $studioId) {
         return "cart_quantity_by_rider_and_studio?rider_id=$riderId&studio_id=$studioId";
     }
-    public static function getKeyClassesByStudioAndDay($studioId, $date){
-        return "classes_by_studio_and_day?studio_id=$studioId&date=$date";
+    public static function getKeyClassesByStudioAndDateRange($studioId, $dateStart, $dateEnd){
+        return "classes_by_studio_and_day?studio_id=$studioId&date_start=$dateStart&date_end=$dateEnd";
     }
     public static function getKeyUpcomingByStudio($studioId, $studioTz, $limit, $webAppVisOnly){
         return "upcoming_by_studio?studio_id=$studioId&studio_tz=$studioTz&limit=$limit&web_app_viz=$webAppVisOnly";
+    }
+    public static function getKeyUpcomingByInstructor($instructorId, $limit, $webAppVisOnly){
+        return "upcoming_by_instructor?instructor_id=$instructorId&limit=$limit&web_app_viz=$webAppVisOnly";
+    }
+    public static function getKeySocialDataByInstructorId($instructorId) {
+        return "instructor_social_data?instructor_id=$instructorId";
+    }
+    public static function getKeyRoomsWithStudioTitles($roomIds) {
+        return "rooms_with_studio_titles?room_ids=" . implode(',', $roomIds);
+    }
+    public static function getKeyResolvedProductsByLogicalIds($logicalIds) {
+        return "resolved_products_by_logical_ids?logical_ids=" . implode(',', $logicalIds);
+    }
+    public static function getNamespaceResolvedProductsByLogicalIds() {
+        return "namespace_resolved_products_by_logical_ids";
+    }
+    public static function getKeyCommunityDetail($id) {
+        return "community_detail?id=$id";
+    }
+    public static function getKeyCommunityComments($id) {
+        return "community_coomments?id=$id";
+    }
+    public static function getKeyRiderBookmarkClassIds($riderId) {
+        return "rider_bookmark_class_ids?rider_id=$riderId";
+    }
+    public static function getKeyRiderFavoriteInstructorIds($riderId) {
+        return "rider_favorite_instructor_ids?rider_id=$riderId";
+    }
+    public static function getKeyUpcomingByInstructorGroupByDate($instructorId, $userId, $webAppVisibleClassesOnly){
+        return "upcoming_classes_by_instrutor_grouped_by_date?instructor_id=$instructorId&user_id=$userId&webapp_viz=$webAppVisibleClassesOnly";
     }
 }
