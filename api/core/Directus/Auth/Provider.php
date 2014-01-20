@@ -68,7 +68,7 @@ class Provider {
      * @return boolean
      */
     public static function loggedIn() {
-        if("" === session_id()) {
+        if(php_sapi_name() != 'cli' && "" === session_id()) {
             session_start();
         }
         return isset($_SESSION[self::$SESSION_KEY]) && !empty($_SESSION[self::$SESSION_KEY]);
