@@ -172,7 +172,7 @@ class MemcacheProvider {
      * Shortcut for deleting all keys within a namespace key
      */
     public function deleteNamespaceKeys($namespaceKey) {
-        $keys = $this->get($cacheKey);
+        $keys = $this->get($namespaceKey);
         if($keys) {
             foreach($keys as $key) {
                 $this->delete($key);
