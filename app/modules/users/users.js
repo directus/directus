@@ -97,7 +97,8 @@ function(app, Backbone, Directus, SaveModule) {
     ),
 
     serialize: function() {
-      var rows = this.collection.map(function(model) {
+      var rows = this.collection.map(function(model) {      
+
         var data = {
           "id": model.get('id'),
           "cid": model.cid,
@@ -106,7 +107,7 @@ function(app, Backbone, Directus, SaveModule) {
           'last_name': model.get('last_name'),
           'email': model.get('email'),
           'position': model.get('position'),
-          'default_studio': model.get('default_studio'),
+          'default_studio': model.get('default_studio_id').get('title'),
           'last_access': model.get('last_access')
         };
 
