@@ -8,6 +8,14 @@
 
 return array(
 
+	'HTTP' => array(
+		'forceHttps' => false,
+		'isHttpsFn' => function () {
+			// Override this check for custom arrangements, e.g. SSL-termination @ load balancer
+			return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+		}
+	),
+
 	// Define this to send emails e.g. forgot password
 	'SMTP' => array(
 		'host' => '',
