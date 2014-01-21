@@ -7,13 +7,13 @@
   <title>directus</title>
 
   <!-- Application styles. -->
-  <link rel="shortcut icon" href="{{path}}favicon.ico">
+  <link rel="shortcut icon" href="{{path}}favicon.ico?bust={{cacheBuster}}">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="{{cssFilePath}}">
-  <link rel="stylesheet" href="{{path}}assets/css/alertify.core.css">
-  <link rel="stylesheet" href="{{path}}assets/css/alertify.default.css">
-  <script type="text/javascript" src="{{path}}assets/js/util/chromecheck.js"></script>
+  <link rel="stylesheet" href="{{cssFilePath}}?bust={{cacheBuster}}">
+  <link rel="stylesheet" href="{{path}}assets/css/alertify.core.css?bust={{cacheBuster}}">
+  <link rel="stylesheet" href="{{path}}assets/css/alertify.default.css?bust={{cacheBuster}}">
+  <script type="text/javascript" src="{{path}}assets/js/util/chromecheck.js?bust={{cacheBuster}}"></script>
 </head>
 
 <body>
@@ -57,8 +57,8 @@ window.directusData = {{data}};
 </script>
 
 <!-- Application source. -->
-<script data-main="{{path}}app/main" src="{{path}}assets/js/libs/require.js"></script>
-<!--<script src="{{path}}dist/release.js"></script>-->
+<script data-main="{{path}}app/main" src="{{path}}assets/js/libs/require.js?bust={{cacheBuster}}"></script>
+<!--<script src="{{path}}dist/release.js?bust={{cacheBuster}}"></script>-->
 
 </body>
 </html>
