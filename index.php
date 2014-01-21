@@ -232,8 +232,8 @@ if($forceHttps) {
 	$isHttpsFallbackFn = function () {
 		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 	};
-	$isHttpsFn = isset($config['HTTP']['forceHttps']['isHttpsFn']) ?
-		$config['HTTP']['forceHttps']['isHttpsFn'] : $isHttpsFallbackFn;
+	$isHttpsFn = isset($config['HTTP']['isHttpsFn']) ?
+		$config['HTTP']['isHttpsFn'] : $isHttpsFallbackFn;
 	if(!$isHttpsFn()) {
 		$host = 'https://' . $_SERVER['SERVER_NAME'];
 		if('80' != $_SERVER['SERVER_PORT']) {
