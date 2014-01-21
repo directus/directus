@@ -5,13 +5,12 @@ namespace Directus\Util;
 class Git {
 
     public static function getCloneHash($expectedGitDirectory) {
-        $gitCommitHash = null;
         $headFile = $expectedGitDirectory . '/HEAD';
         // Parent-level clone
         if(is_file($headFile)) {
             $headFileContents = file_get_contents($headFile);
             if(false === strpos($headFileContents, 'ref:')) {
-                return $gitCommitHash;
+                return $headFileContents;
             } else {
                 $branchPath = explode('ref:', $headFileContents);
                 $branchPath = trim(array_pop($branchPath));
