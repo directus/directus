@@ -221,6 +221,30 @@ function getCSSFilePath() {
 
 // ---------------------------------------------------------------------
 
+/**
+ * Optionally force HTTPS
+ */
+
+$config = Bootstrap::get('config');
+$forceHttps = isset($config['HTTP']) && isset($config['HTTP']['forceHttps'])
+	&& $config['HTTP']['forceHttps'];
+if($forceHttps) {
+	$isHttpsFallbackFn = function () {
+		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+	};
+	$isHttpsFn = isset($config['HTTP']['forceHttps']['isHttpsFn']) ?
+		$config['HTTP']['forceHttps']['isHttpsFn'] : $isHttpsFallbackFn;
+	if(!$isHttpsFn()) {
+		$host = 'https://' . $_SERVER['SERVER_NAME'];
+		if('80' != $_SERVER['SERVER_PORT']) {
+			$host .= ":" . $_SERVER['SERVER_PORT'];
+		}
+		$httpsUrl = $host . $_SERVER['REQUEST_URI'];
+		header('Location: ' . $httpsUrl);
+		exit;
+	}
+}
+
 $tableSchema = TableSchema::getTables();
 $users = getUsers();
 $currentUserInfo = getCurrentUserInfo($users);
