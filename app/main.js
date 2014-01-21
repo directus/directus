@@ -7,6 +7,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 require(["config"], function() {
+
   require([
     "app",
     'core/UIManager',
