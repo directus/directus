@@ -227,7 +227,12 @@ $currentUserInfo = getCurrentUserInfo($users);
 $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
 
+// Cache buster
+$git = __DIR__ . '/.git';
+$cacheBuster = Directus\Util\Git::getCloneHash($git);
+
 $data = array(
+	'cacheBuster' => $cacheBuster,
 	'nonces' => getNonces(),
 	'storage_adapters' => getStorageAdapters(),
 	'path' => DIRECTUS_PATH,
@@ -248,6 +253,7 @@ $data = array(
 );
 
 $templateVars = array(
+	'cacheBuster' => $cacheBuster,
 	'data' => json_encode($data),
 	'path' => DIRECTUS_PATH,
 	'customFooterHTML' => getCusomFooterHTML(),
