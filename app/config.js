@@ -1,5 +1,7 @@
 require.config({
 
+  urlArgs: 'bust=' + window.directusData.cacheBuster,
+
   //deps: ["main"],
 
   paths: {
