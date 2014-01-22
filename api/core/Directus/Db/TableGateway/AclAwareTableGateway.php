@@ -97,7 +97,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * HELPER FUNCTIONS
      */
 
-    protected function withKey($key, $resultSet) {
+    public function withKey($key, $resultSet) {
         $withKey = array();
         foreach($resultSet as $row) {
             $withKey[$row[$key]] = $row;
