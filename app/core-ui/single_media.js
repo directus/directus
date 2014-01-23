@@ -238,13 +238,15 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
   };
 
   Module.list = function(options) {
-    if (options.value !== undefined && options.value.has('name')) {
-      var url = app.makeMediaUrl(options.value, true);
-      var orientation = (parseInt(options.value.get('width'),10) > parseInt(options.value.get('height'),10)) ? 'landscape' : 'portrait';
-      return '<img src="'+url+'" class="'+orientation+' directus-thumbnail"/>';
-    } else {
-      return 'No file';
-    }
+    var model = options.model;
+    var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
+    var url = app.makeMediaUrl(model, true);
+    var isImage = _.contains(['image/jpeg','image/png'], model.get('type'));
+    var thumbUrl = isImage ? url : app.PATH + 'assets/img/document-100x120.png';
+
+    var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
+    
+    return img;    
   };
 
   return Module;
