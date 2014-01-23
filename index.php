@@ -245,15 +245,18 @@ if($forceHttps) {
 	}
 }
 
-$tableSchema = TableSchema::getTables();
 $users = getUsers();
 $currentUserInfo = getCurrentUserInfo($users);
-$tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
-$groupId = $currentUserInfo['group']['id'];
 
 // Cache buster
 $git = __DIR__ . '/.git';
 $cacheBuster = Directus\Util\Git::getCloneHash($git);
+
+$tableSchema = TableSchema::getTables($currentUserInfo['group']['id'], $cacheBuster);
+
+$tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
+$groupId = $currentUserInfo['group']['id'];
+
 
 $data = array(
 	'cacheBuster' => $cacheBuster,
