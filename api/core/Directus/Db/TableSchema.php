@@ -6,6 +6,7 @@ use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway;
+use Directus\MemcacheProvider;
 
 class TableSchema {
 
@@ -218,48 +219,50 @@ class TableSchema {
 
     /**
      * Get info about all tables
-     *
-     * @param $params
      */
-    public static function getTables($params=null) {
-        $return = array();
-        $db = Bootstrap::get('olddb');
-        $name = $db->db_name;
-        $sql = 'SELECT S.TABLE_NAME as id
-            FROM INFORMATION_SCHEMA.TABLES S
-            WHERE
-                S.TABLE_SCHEMA = :schema AND
-                (S.TABLE_NAME NOT LIKE "directus\_%" OR
-                S.TABLE_NAME = "directus_activity" OR
-                S.TABLE_NAME = "directus_media" OR
-                S.TABLE_NAME = "directus_messages" OR
-                S.TABLE_NAME = "directus_groups" OR
-                S.TABLE_NAME = "directus_users" OR
-                S.TABLE_NAME = "directus_messages_recipients"
-                )
-            GROUP BY S.TABLE_NAME
-            ORDER BY S.TABLE_NAME';
-        $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':schema', $name, \PDO::PARAM_STR);
-        $sth->execute();
-
-        $currentUser = Auth::getUserInfo();
-
+    public static function getTables($userGroupId, $versionHash) {
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
         $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
+        $getTablesFn = function () use ($Preferences) {
+            $return = array();
+            $db = Bootstrap::get('olddb');
+            $name = $db->db_name;
+            $sql = 'SELECT S.TABLE_NAME as id
+                FROM INFORMATION_SCHEMA.TABLES S
+                WHERE
+                    S.TABLE_SCHEMA = :schema AND
+                    (S.TABLE_NAME NOT LIKE "directus\_%" OR
+                    S.TABLE_NAME = "directus_activity" OR
+                    S.TABLE_NAME = "directus_media" OR
+                    S.TABLE_NAME = "directus_messages" OR
+                    S.TABLE_NAME = "directus_groups" OR
+                    S.TABLE_NAME = "directus_users" OR
+                    S.TABLE_NAME = "directus_messages_recipients"
+                    )
+                GROUP BY S.TABLE_NAME
+                ORDER BY S.TABLE_NAME';
+            $sth = $db->dbh->prepare($sql);
+            $sth->bindValue(':schema', $name, \PDO::PARAM_STR);
+            $sth->execute();
 
-        while($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
-            if(!self::canGroupViewTable($row['id'])) {
-                continue;
+            $currentUser = Auth::getUserInfo();
+
+            while($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+                if(!self::canGroupViewTable($row['id'])) {
+                    continue;
+                }
+                $tbl["schema"] = self::getTable($row['id']);
+                //$tbl["columns"] = $this->get_table($row['id']);
+                $tbl["preferences"] = $Preferences->fetchByUserAndTable($currentUser['id'], $row['id']);
+                // $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
+                $return[] = $tbl;
             }
-            $tbl["schema"] = self::getTable($row['id']);
-            //$tbl["columns"] = $this->get_table($row['id']);
-            $tbl["preferences"] = $Preferences->fetchByUserAndTable($currentUser['id'], $row['id']);
-            // $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
-            $return[] = $tbl;
-        }
-        return $return;
+            return $return;
+        };
+        $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);
+        $tables = $Preferences->memcache->getOrCache($cacheKey, $getTablesFn, 10800); // 3 hr cache
+        return $tables;
     }
 
     public static function canGroupViewTable($tableName) {
