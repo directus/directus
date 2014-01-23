@@ -309,4 +309,7 @@ class MemcacheProvider {
     public static function getKeyUpcomingByInstructorGroupByDate($instructorId, $userId, $webAppVisibleClassesOnly){
         return "upcoming_classes_by_instrutor_grouped_by_date?instructor_id=$instructorId&user_id=$userId&webapp_viz=$webAppVisibleClassesOnly";
     }
+    public static function getKeyDirectusGroupSchema($userGroupId, $versionHash){
+        return "directus_schema_by_group_and_version?group_id=$userGroupId&version=$versionHash";
+    }
 }
