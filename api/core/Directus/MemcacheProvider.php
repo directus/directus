@@ -273,8 +273,8 @@ class MemcacheProvider {
     public static function getKeyCartQuantityByRiderAndStudio($riderId, $studioId) {
         return "cart_quantity_by_rider_and_studio?rider_id=$riderId&studio_id=$studioId";
     }
-    public static function getKeyClassesByStudioAndDateRange($studioId, $dateStart, $dateEnd){
-        return "classes_by_studio_and_day?studio_id=$studioId&date_start=$dateStart&date_end=$dateEnd";
+    public static function getKeyClassesByStudioAndDateRange($studioId, $dateStart, $dateEnd, $webAppVisibleClassesOnly){
+        return "classes_by_studio_and_day?studio_id=$studioId&date_start=$dateStart&date_end=$dateEnd&web_app_visible_classes_only=$webAppVisibleClassesOnly";
     }
     public static function getKeyUpcomingByStudio($studioId, $studioTz, $limit, $webAppVisOnly){
         return "upcoming_by_studio?studio_id=$studioId&studio_tz=$studioTz&limit=$limit&web_app_viz=$webAppVisOnly";
