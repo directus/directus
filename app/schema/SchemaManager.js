@@ -32,7 +32,14 @@ define(function(require, exports, module) {
    * Collection of MySQL Tables
    */
   var TableCollection = DirectusCollection.extend({
-    model: TableModel
+    model: TableModel,
+
+    countVisible: function() {
+      // Visible models only
+      var models = this.filter(function(model) { return !model.get('hidden'); });    
+
+      return models.length;
+    }
   });
 
   /**
@@ -168,7 +175,7 @@ define(function(require, exports, module) {
     },
 
     countTables: function() {
-      return tableSchemas.tables.length;
+      return tableSchemas.tables.countVisible();
     },
 
     getFullSchema: function(tableName) {
