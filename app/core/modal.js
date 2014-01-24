@@ -39,6 +39,10 @@ function(app, Backbone) {
 
     afterRender: function() {
       this.setView('.modal-body', this.options.view);
+
+        if (this.options.showCancel) {
+            this.$backdrop.on('click', $.proxy(this.close, this));
+        }
     },
 
     constructor: function (options) {
@@ -51,7 +55,7 @@ function(app, Backbone) {
       Backbone.Layout.__super__.constructor.call(this, options);
 
       $('body').addClass('modal-open');
-      this.$backdrop = $('<div class="modal-backdrop"/>').appendTo(document.body).on('click', $.proxy(this.close, this));
+      this.$backdrop = $('<div class="modal-backdrop"/>').appendTo(document.body);
 
       if (this.options.stretch) {
         this.$el.addClass('stretch');
