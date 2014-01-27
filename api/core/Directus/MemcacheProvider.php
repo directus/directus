@@ -312,6 +312,12 @@ class MemcacheProvider {
     public static function getKeyDirectusGroupSchema($userGroupId, $versionHash){
         return "directus_schema_by_group_and_version?group_id=$userGroupId&version=$versionHash";
     }
+    public static function getKeyUpcomingRiderBookmarks($riderId){
+        return "upcoming_rider_bookmarks?rider_id=$riderId";
+    }
+    public static function getKeyMeSeriesForRider($riderId){
+        return "me_series_for_rider?rider_id=$riderId";
+    }
     public static function getKeyFetchUpcomingBookmarksByRider($riderId){
         return "fetch_upcoming_bookmarks_by_rider?rider_id=$riderId";
     }
