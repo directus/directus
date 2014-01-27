@@ -318,4 +318,7 @@ class MemcacheProvider {
     public static function getKeyRiderHistoryIncludingCancellations($riderId, $includeMissedSoul){
         return "series_api_rider_history_including_cancellations?rider_id=$riderId&includeMissedSoul=" . ($includeMissedSoul ? '1' : '0');
     }
+    public static function getKeyUrlMap() {
+        return "url_map";
+    }
 }
