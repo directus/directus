@@ -312,4 +312,10 @@ class MemcacheProvider {
     public static function getKeyDirectusGroupSchema($userGroupId, $versionHash){
         return "directus_schema_by_group_and_version?group_id=$userGroupId&version=$versionHash";
     }
+    public static function getKeyFetchUpcomingBookmarksByRider($riderId){
+        return "fetch_upcoming_bookmarks_by_rider?rider_id=$riderId";
+    }
+    public static function getKeyRiderHistoryIncludingCancellations($riderId, $includeMissedSoul){
+        return "series_api_rider_history_including_cancellations?rider_id=$riderId&includeMissedSoul=" . ($includeMissedSoul ? '1' : '0');
+    }
 }
