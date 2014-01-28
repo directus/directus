@@ -23,7 +23,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   ];
 
   var template = '<label>Change Password <span class="note">{{comment}}</span></label> \
-                 <input type="password" name="{{name}}" class="medium password-primary"/> \
+                 <input type="password" value="{{value}}" name="{{name}}" class="medium password-primary"/> \
                  <button class="btn btn-small btn-primary margin-left password-generate" type="button">Generate New</button> \
                  <button class="btn btn-small btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
                  <span class="password-text"></span> \
@@ -199,6 +199,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       return {
         name: this.options.name,
+        value: this.options.value,
         comment: this.options.schema.get('comment'),
         require_confirmation: (this.options.settings && this.options.settings.has('require_confirmation') && this.options.settings.get('require_confirmation') == '0') ? false : true
       };
