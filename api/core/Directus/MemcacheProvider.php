@@ -87,10 +87,8 @@ class MemcacheProvider {
      * @return bool - success/fail
      */
     public function set($key, $val, $compressionFlag,  $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS){
-        if ($this->mc) {
-            $setSuccess = $this->mc->set($key, $val, $compressionFlag,  $expire);
-            return $setSuccess;
-        }
+        $setSuccess = $this->mc->set($key, $val, $compressionFlag,  $expire);
+        return $setSuccess;
     }
 
     /**
@@ -100,11 +98,8 @@ class MemcacheProvider {
      * @return mixed - Cache return data, or false if nothing retrieved from cache
      */
     public function get($key){
-        if ($this->mc) {
-            $cacheReturn = $this->mc->get($key);
-            return $cacheReturn;
-        }
-
+        $cacheReturn = $this->mc->get($key);
+        return $cacheReturn;
     }
 
     /**
@@ -118,7 +113,7 @@ class MemcacheProvider {
      *
      */
     public function getOrCache($key, $functionReturningVal, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS){
-        if ($this->mc){
+        if ($this->mc && $this->mc->getStats()){
             $key = MEMCACHED_ENV_NAMESPACE . '/' . $key;
             $cacheReturn = $this->get($key);
             if (!$cacheReturn){
@@ -136,7 +131,7 @@ class MemcacheProvider {
      * @return bool - success or fail
      */
     public function delete($key){
-        if ($this->mc){
+        if ($this->mc && $this->mc->getStats()){
             $key = MEMCACHED_ENV_NAMESPACE . '/' . $key;
             return $this->mc->delete($key);
         }
@@ -149,7 +144,7 @@ class MemcacheProvider {
      * @return bool - success or fail
      */
     public function flush(){
-        if ($this->mc){
+        if ($this->mc && $this->mc->getStats()){
             return $this->mc->flush();
         }
         return false;
