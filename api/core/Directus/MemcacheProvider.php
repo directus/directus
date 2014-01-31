@@ -16,60 +16,47 @@ use \Memcache;
  */
 class MemcacheProvider {
 
+    const MEMCACHED_ENABLED = true;
     /**
-     *  Cloud-1 address
+     * Adds localhost memcached server only
      */
-    const MEMCACHED_SERVER_CLOUD_1 = '10.176.99.201';
-    /**
-     * Cloud-2 address
-     */
-    const MEMCACHED_SERVER_CLOUD_2 = '10.176.99.17';
-    /**
-     * Cloud-3 address
-     */
-    const MEMCACHED_SERVER_CLOUD_3 = '10.176.98.151';
-    /**
-     * Cloud-4 address
-     */
-    const MEMCACHED_SERVER_CLOUD_4 = '10.209.130.18';
-    /**
-     * Cloud-5 address
-     */
-    const MEMCACHED_SERVER_CLOUD_5 = '10.209.133.36';
-    /**
-     * Cloud-6 address
-     */
-    const MEMCACHED_SERVER_CLOUD_6 = '10.209.132.172';
-    /**
-     * Bool, if true, adds all 3 server addresses for distributed memcached setup rather than local pools per-server
-     */
-    const DISTRIBUTED = true;
+    const LOCAL = false;
     /**
      * Default expire time for cache if not passes into a cache setter method
      */
     const DEFAULT_CACHE_EXPIRE_SECONDS = 300;
 
+    private $memcachedServerAddresses = array(
+        'development' => array(
+            '10.209.128.55' //cloud-8
+        ),
+        'production' => array(
+            '10.176.98.151', //cloud-3
+            '10.209.130.18', //cloud-4
+            '10.209.133.36', //cloud-5
+            '10.209.132.172' //cloud-6
+        )
+    );
+
     /**
      * @var bool
      */
-    private $mc;
+    private $mc = false;
 
     /**
      * Instantiates memcache only if the extension is loaded and adds server(s) to the pool
      */
     public function __construct(){
-        if (extension_loaded('memcache')){
+        if (extension_loaded('memcache') && self::MEMCACHED_ENABLED){
             $this->mc = new Memcache();
-            if (!self::DISTRIBUTED){
-                $this->mc->addServer(MEMCACHED_SERVER, 11211);
+            if (self::LOCAL){
+                $this->mc->addServer('127.0.0.1', 11211);
             }
             else {
-                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_1, 11211);
-                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_2, 11211);
-                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_3, 11211);
-                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_4, 11211);
-                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_5, 11211);
-                $this->mc->addServer(self::MEMCACHED_SERVER_CLOUD_6, 11211);
+                $servers = $this->memcachedServerAddresses[SOULCYCLE_ENV];
+                foreach ($servers as $s){
+                    $this->mc->addserver($s, 11211);
+                }
             }
         }
         else {
