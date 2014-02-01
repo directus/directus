@@ -20,7 +20,7 @@ class MemcacheProvider {
     /**
      * Adds localhost memcached server only
      */
-    const LOCAL = false;
+    const LOCAL = true;
     /**
      * Default expire time for cache if not passes into a cache setter method
      */
@@ -308,5 +308,8 @@ class MemcacheProvider {
     }
     public static function getKeyUrlMap() {
         return "url_map";
+    }
+    public static function getKeyStudioById($id){
+        return "studio_by_id?studio_id=$id";
     }
 }
