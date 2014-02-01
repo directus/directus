@@ -20,7 +20,7 @@ class MemcacheProvider {
     /**
      * Adds localhost memcached server only
      */
-    const LOCAL = true;
+    const LOCAL = false;
     /**
      * Default expire time for cache if not passes into a cache setter method
      */
@@ -314,5 +314,8 @@ class MemcacheProvider {
     }
     public static function getKeyStudioWithRegionByClassId($classId){
         return "studio_with_region_by_class_id?class_id=$classId";
+    }
+    public static function getKeyStudioByRoom($roomId){
+        return "studio_by_room?room_id=$roomId";
     }
 }
