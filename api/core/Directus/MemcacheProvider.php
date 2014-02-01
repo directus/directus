@@ -312,4 +312,7 @@ class MemcacheProvider {
     public static function getKeyStudioById($id){
         return "studio_by_id?studio_id=$id";
     }
+    public static function getKeyStudioWithRegionByClassId($classId){
+        return "studio_with_region_by_class_id?class_id=$classId";
+    }
 }
