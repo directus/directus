@@ -4,6 +4,10 @@ date_default_timezone_set('America/New_York');
 
 define('API_VERSION', 1);
 
+if (!defined('SOULCYCLE_ENV')){
+    define('SOULCYCLE_ENV', 'development');
+}
+
 /**
  * DIRECTUS_ENV - Possible values:
  *
