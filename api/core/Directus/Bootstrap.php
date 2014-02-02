@@ -201,9 +201,12 @@ class Bootstrap {
 
         if(AuthProvider::loggedIn()) {
             $currentUser = AuthProvider::getUserInfo();
-
             $Users = new DirectusUsersTableGateway($acl, $db);
-            $currentUser = $Users->find($currentUser['id']);
+            $cacheFn = function () use ($currentUser, $Users) {
+                return $Users->find($currentUser['id']);
+            };
+            $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
+            $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
             if($currentUser) {
                 $Privileges = new DirectusPrivilegesTableGateway($acl, $db);
                 $getPrivileges = function() use ($currentUser, $Privileges) {
