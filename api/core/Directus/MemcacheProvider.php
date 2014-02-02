@@ -318,4 +318,10 @@ class MemcacheProvider {
     public static function getKeyStudioByRoom($roomId){
         return "studio_by_room?room_id=$roomId";
     }
+    public static function getKeyClassById($id, $webAppVisibleClassesOnly){
+        return "class_by_id?class_id=$id&webAppClassesOnly=" . ($webAppVisibleClassesOnly?"1":"0");
+    }
+    public static function getKeyClassTypeById($id){
+        return "class_type_by_id?class_type_id=$id";
+    }
 }
