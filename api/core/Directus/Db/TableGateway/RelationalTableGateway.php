@@ -1062,6 +1062,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     function countActiveOld($no_active=false) {
+
+        //qtryutn 
+        return array(
+            'active' => 0,
+            'inactive' => 0,
+            'trash' => 0
+        );
+
         $db = Bootstrap::get('olddb');
         $tbl_name = $this->table;
         $result = array('active'=>0);
