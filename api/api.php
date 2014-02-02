@@ -52,6 +52,7 @@ use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGatewa
 use Directus\Db\TableSchema;
 use Directus\Media;
 use Directus\Media\Upload;
+use Directus\MemcacheProvider;
 use Directus\Util;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
@@ -144,7 +145,12 @@ $acl = Bootstrap::get('acl');
 
 $DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
 Auth::setUserCacheRefreshProvider(function($userId) use ($DirectusUsersTableGateway) {
-    return $DirectusUsersTableGateway->find($userId);
+    $cacheFn = function () use ($userId, $DirectusUsersTableGateway) {
+        return $DirectusUsersTableGateway->find($userId);
+    };
+    $cacheKey = MemcacheProvider::getKeyDirectusUserFind($userId);
+    $user = $DirectusUsersTableGateway->memcache->getOrCache($cacheKey, $cacheFn, 10800);
+    return $user;
 });
 
 if(Auth::loggedIn()) {
@@ -231,8 +237,6 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
 
     // ------------------------------
 
-
-
     if(!$user) {
         return JsonView::render($response);
     }
@@ -249,8 +253,9 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
 })->name('auth_login');
 
 $app->get("/$v/auth/logout/?", function() use ($app) {
-    if(Auth::loggedIn())
+    if(Auth::loggedIn()) {
         Auth::logout();
+    }
     $app->redirect(DIRECTUS_PATH . "login.php");
 })->name('auth_logout');
 
@@ -263,7 +268,7 @@ $app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
 // debug helper
 $app->get("/$v/auth/session/?", function() use ($app) {
     if('production' === DIRECTUS_ENV) {
-        $app->halt('404');
+        return $app->halt('404');
     }
     JsonView::render($_SESSION);
 })->name('auth_session');
@@ -271,7 +276,7 @@ $app->get("/$v/auth/session/?", function() use ($app) {
 // debug helper
 $app->get("/$v/auth/clear-session/?", function() use ($app) {
     if('production' === DIRECTUS_ENV) {
-        $app->halt('404');
+        return $app->halt('404');
     }
     // Example #1 - http://php.net/manual/en/function.session-destroy.php
     $_SESSION = array();
