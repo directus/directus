@@ -103,8 +103,6 @@ class Provider {
         $userInfo = self::getUserInfo();
         return $userRefreshProvider($userInfo['id']);
 
-
-
         if(!isset($_SESSION[self::USER_RECORD_CACHE_SESSION_KEY])) {
             self::expireCachedUserRecord();
         }
