@@ -171,6 +171,9 @@ class MemcacheProvider {
      * @param $classId
      * @return string
      */
+    public static function getKeyDirectusUserFind($userId) {
+        return "directus_users?user_id=$userId";
+    }
     public static function getKeyWebappRoomMap($classId){
         return "class_reservations_arranged_by_seat_id?class_id=$classId";
     }
