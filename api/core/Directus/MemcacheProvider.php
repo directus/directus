@@ -324,4 +324,19 @@ class MemcacheProvider {
     public static function getKeyClassTypeById($id){
         return "class_type_by_id?class_type_id=$id";
     }
+    public static function getKeySeatById($id){
+        return "seat_by_id?seat_id=$id";
+    }
+    public static function getKeySeatQuantityByClass($id) {
+        return "seat_quantity_by_class?class_id=$id";
+    }
+    public static function getKeyFetchUpcomingReservationsByRider($riderId){
+        return "fetch_upcoming_reservations_by_rider?rider_id=$riderId";
+    }
+    public static function getKeyFetchAllSeriesWithIdKeys(){
+        return "fetch_all_series_with_id_keys";
+    }
+    public static function getKeyFetchAllRegionClassSeries(){
+        return "fetch_all_region_class_series";
+    }
 }
