@@ -345,4 +345,10 @@ class MemcacheProvider {
     public static function getKeyFetchAllRegionClassSeries(){
         return "fetch_all_region_class_series";
     }
+    public static function getKeySplashImage() {
+        return "homepage_splash_image";
+    }
+    public static function getKeyLargeSplashImage() {
+        return "homepage_large_splash_image";
+    }
 }
