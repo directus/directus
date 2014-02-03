@@ -351,4 +351,13 @@ class MemcacheProvider {
     public static function getKeyLargeSplashImage() {
         return "homepage_large_splash_image";
     }
+    public static function getKeyRiderFavoriteStudios($riderId) {
+        return "rider_favorite_studio_ids?rider_id=$riderId";
+    }
+    public static function getKeyDirectusCountMessages($uid) {
+        return "directus_count_messages?uid=$uid";
+    }
+    public static function getKeyDirectusMessagesNewerThan($maxId, $uid) {
+        return "directus_get_messages_newer_than?uid=$uid&maxId=$maxId";
+    }
 }
