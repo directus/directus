@@ -4,6 +4,7 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\MemcacheProvider;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -52,14 +53,18 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
     }
 
     public function countMessages($uid) {
-        $select = new Select($this->table);
-        $select
-            ->columns(array('id','read','count' => new Expression('COUNT(`id`)'),'max_id' => new Expression('MAX(`message_id`)')))
-            ->where->equalTo('recipient', $uid);
-        $select
-            ->group('read');
-
-        $result = $this->selectWith($select)->toArray();
+        $fetchFn = function () use ($uid) {
+            $select = new Select($this->table);
+            $select
+                ->columns(array('id','read','count' => new Expression('COUNT(`id`)'),'max_id' => new Expression('MAX(`message_id`)')))
+                ->where->equalTo('recipient', $uid);
+            $select
+                ->group('read');
+            $result = $this->selectWith($select)->toArray();
+            return $result;
+        };
+        $cacheKey = MemcacheProvider::getKeyDirectusCountMessages($uid);
+        $result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
 
         $count = array(
             'read'=> 0,
@@ -88,18 +93,22 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
     }
 
     public function getMessagesNewerThan($maxId, $currentUser) {
-        $select = new Select($this->getTable());
-        $select
-            ->columns(array('id','message_id'))
-            ->join('directus_messages', 'directus_messages_recipients.message_id = directus_messages.id',array('response_to'))
-            ->where
-                ->greaterThan('message_id', $maxId)
-                ->and
-                ->equalTo('recipient', $currentUser)
-                ->and
-                ->equalTo('read', 0);
-
-        $result = $this->selectWith($select)->toArray();
+        $fetchFn = function () use ($maxId, $currentUser) {
+            $select = new Select($this->getTable());
+            $select
+                ->columns(array('id','message_id'))
+                ->join('directus_messages', 'directus_messages_recipients.message_id = directus_messages.id',array('response_to'))
+                ->where
+                    ->greaterThan('message_id', $maxId)
+                    ->and
+                    ->equalTo('recipient', $currentUser)
+                    ->and
+                    ->equalTo('read', 0);
+            $result = $this->selectWith($select)->toArray();
+            return $result;
+        };
+        $cacheKey = MemcacheProvider::getKeyDirectusMessagesNewerThan($maxId, $currentUser);
+        $result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
 
         $messageThreads = array();
 
