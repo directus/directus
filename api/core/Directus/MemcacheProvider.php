@@ -28,7 +28,7 @@ class MemcacheProvider {
 
     private $memcachedServerAddresses = array(
         'development' => array(
-            '10.209.128.55' //cloud-8
+            '10.209.136.123' //mem-5
         ),
         'production' => array(
             '10.209.133.36', //cloud-5
