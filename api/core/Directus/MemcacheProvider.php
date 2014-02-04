@@ -16,11 +16,11 @@ use \Memcache;
  */
 class MemcacheProvider {
 
-    const MEMCACHED_ENABLED = true;
+    protected static $MEMCACHED_ENABLED = true;
     /**
      * Adds localhost memcached server only
      */
-    const LOCAL = false;
+    protected static $LOCAL = false;
     /**
      * Default expire time for cache if not passes into a cache setter method
      */
@@ -47,9 +47,16 @@ class MemcacheProvider {
      * Instantiates memcache only if the extension is loaded and adds server(s) to the pool
      */
     public function __construct(){
-        if (extension_loaded('memcache') && self::MEMCACHED_ENABLED){
+
+        if(isset($_SERVER['SERVER_NAME'])) {
+            if(false !== strpos($_SERVER['SERVER_NAME'], 'localhost')) {
+                self::$MEMCACHED_ENABLED = false;
+            }
+        }
+
+        if (extension_loaded('memcache') && self::$MEMCACHED_ENABLED){
             $this->mc = new Memcache();
-            if (self::LOCAL){
+            if (self::$LOCAL){
                 $this->mc->addServer('127.0.0.1', 11211);
             }
             else {
@@ -74,8 +81,10 @@ class MemcacheProvider {
      * @return bool - success/fail
      */
     public function set($key, $val, $compressionFlag,  $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS){
-        $setSuccess = $this->mc->set($key, $val, $compressionFlag,  $expire);
-        return $setSuccess;
+        if($this->mc) {
+            $setSuccess = $this->mc->set($key, $val, $compressionFlag,  $expire);
+            return $setSuccess;
+        }
     }
 
     /**
@@ -85,8 +94,10 @@ class MemcacheProvider {
      * @return mixed - Cache return data, or false if nothing retrieved from cache
      */
     public function get($key){
-        $cacheReturn = $this->mc->get($key);
-        return $cacheReturn;
+        if($this->mc) {
+            $cacheReturn = $this->mc->get($key);
+            return $cacheReturn;
+        }
     }
 
     /**
