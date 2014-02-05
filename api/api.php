@@ -311,7 +311,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     }
 
     $password = uniqid();
-    $appURL = HOST_URL;
+    $appURL = HOST_URL; // Took this out of the email body since it refers to the wrong URL (app, not directus)
 
     $emailBodyPlainText = <<<EMAILBODY
 Hey there,
@@ -319,10 +319,6 @@ Hey there,
 Here is a temporary password to login to Directus:
 
 $password
-
-You can log in here:
-
-$appURL
 
 Once you log in, you can change your password via the User Settings menu.
 
