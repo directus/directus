@@ -120,7 +120,7 @@ class Bootstrap {
             'host' => DB_HOST_SLAVE,
             'database' => DB_NAME,
             'username' => DB_USER_SLAVE,
-            'password' => DB_PASSWORD,
+            'password' => DB_PASSWORD_SLAVE,
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
