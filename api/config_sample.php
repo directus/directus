@@ -25,8 +25,25 @@ define('DB_USER',        '');
 define('DB_PASSWORD',    '');
 define('DB_PREFIX',      '');
 
+
+define('DB_HOST_SLAVE',        ''); //Leave undefined to fall back on master
+define('DB_USER_SLAVE',        '');
+define('DB_PASSWORD_SLAVE',    '');
+
 // Url path to Directus
 define('DIRECTUS_PATH', '/directus/');
+
+
+$host = 'www.soul-cycle.com'; // (Make it work for CLI)
+if(isset($_SERVER['SERVER_NAME'])) {
+    $host = $_SERVER['SERVER_NAME'];
+}
+
+define('ROOT_URL', '//' . $host);
+if (!defined('ROOT_URL_WITH_SCHEME')){
+    //Use this for emailing URLs(links, images etc) as some clients will trip on the scheme agnostic ROOT_URL
+    define('ROOT_URL_WITH_SCHEME', 'https://' . $host);
+}
 
 // Absolute path to application
 define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/..'));
