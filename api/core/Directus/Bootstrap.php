@@ -23,12 +23,16 @@ class Bootstrap {
      * doesn't yet exist.
      * @param  string $key  The name of the singleton / singleton factory function
      * @param  mixed  $arg An argument to be passed to the singleton factory function
+     * @param  bool $newInsnce return new instance rather than singleton instance (useful for long running scripts to get a new Db Conn)
      * @return mixed           The singleton with the specified name
      */
-    public static function get($key, $arg = null) {
+    public static function get($key, $arg = null, $newInstance = false) {
         $key = strtolower($key);
         if(!method_exists(__CLASS__, $key)) {
             throw new \InvalidArgumentException("No such factory function on " . __CLASS__ . ": $key");
+        }
+        if ($newInstance){
+            return call_user_func(__CLASS__."::$key", $arg);
         }
         if(!array_key_exists($key, self::$singletons)) {
             self::$singletons[$key] = call_user_func(__CLASS__."::$key", $arg);
