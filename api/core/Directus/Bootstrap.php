@@ -134,17 +134,17 @@ class Bootstrap {
     }
 
 
-    private static function zendDbSlaveWithWrite(){
+    private static function zendDbSlaveCron(){
         if (!defined('DB_HOST_SLAVE')){
             return self::zenddb();
         }
-        self::requireConstants(array('DIRECTUS_ENV','DB_HOST_SLAVE','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
+        self::requireConstants(array('DIRECTUS_ENV','DB_HOST_SLAVE','DB_NAME','DB_USER_SLAVE_CRON','DB_PASSWORD_SLAVE_CRON'), __FUNCTION__);
         $dbConfig = array(
             'driver' => 'Pdo_Mysql',
             'host' => DB_HOST_SLAVE,
             'database' => DB_NAME,
-            'username' => DB_USER,
-            'password' => DB_PASSWORD,
+            'username' => DB_USER_SLAVE_CRON,
+            'password' => DB_PASSWORD_SLAVE_CRON,
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
