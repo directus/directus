@@ -118,13 +118,33 @@ class Bootstrap {
         if (!defined('DB_HOST_SLAVE')){
             return self::zenddb();
         }
-        self::requireConstants(array('DIRECTUS_ENV','DB_HOST_SLAVE','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
+        self::requireConstants(array('DIRECTUS_ENV','DB_HOST_SLAVE','DB_NAME','DB_USER_SLAVE','DB_PASSWORD_SLAVE'), __FUNCTION__);
         $dbConfig = array(
             'driver' => 'Pdo_Mysql',
             'host' => DB_HOST_SLAVE,
             'database' => DB_NAME,
             'username' => DB_USER_SLAVE,
             'password' => DB_PASSWORD_SLAVE,
+            'charset' => 'utf8',
+            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+        );
+        $db = new \Zend\Db\Adapter\Adapter($dbConfig);
+        return $db;
+    }
+
+
+    private static function zendDbSlaveWithWrite(){
+        if (!defined('DB_HOST_SLAVE')){
+            return self::zenddb();
+        }
+        self::requireConstants(array('DIRECTUS_ENV','DB_HOST_SLAVE','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
+        $dbConfig = array(
+            'driver' => 'Pdo_Mysql',
+            'host' => DB_HOST_SLAVE,
+            'database' => DB_NAME,
+            'username' => DB_USER,
+            'password' => DB_PASSWORD,
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
