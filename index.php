@@ -252,7 +252,7 @@ $currentUserInfo = getCurrentUserInfo($users);
 $git = __DIR__ . '/.git';
 $cacheBuster = Directus\Util\Git::getCloneHash($git);
 
-$tableSchema = TableSchema::getTables($currentUserInfo['group']['id'], $cacheBuster);
+$tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cacheBuster);
 
 $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
