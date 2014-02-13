@@ -371,4 +371,7 @@ class MemcacheProvider {
     public static function getKeyDirectusMessagesNewerThan($maxId, $uid) {
         return "directus_get_messages_newer_than?uid=$uid&maxId=$maxId";
     }
+    public static function getKeyRoomsById() {
+        return "rooms_by_id";
+    }
 }
