@@ -54,22 +54,11 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         return $preferences;
     }
 
-    public function fetchByUserAndTable($user_id, $table) {
+    public function constructPreferences($user_id, $table, $preferences = null) {
         $db = Bootstrap::get('olddb');
-        $select = new Select($this->table);
-        $select->limit(1);
-        $select
-            ->where
-                ->equalTo('table_name', $table)
-                ->equalTo('user', $user_id);
-
-        $preferences = $this
-            ->selectWith($select)
-            ->current();
-
-        if($preferences) {
+        
+        if ($preferences) {
             $newPreferencesData = false;
-            $preferences = $preferences->toArray();
 
             // @todo enforce non-empty set
             if(empty($preferences['columns_visible'])) {
@@ -99,7 +88,85 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         $data = $this->applyDefaultPreferences($table, $data);
         // Insert to DB
         $id = $db->set_entry(self::$_tableName, $data);
+        
+
         return $data;
     }
+
+    public function fetchByUserAndTable($user_id, $table) {
+        $select = new Select($this->table);
+        $select->limit(1);
+        $select
+            ->where
+                ->equalTo('table_name', $table)
+                ->equalTo('user', $user_id);
+
+        $preferences = $this
+            ->selectWith($select)
+            ->current();
+
+        if($preferences) {
+            $preferences = $preferences->toArray();
+        }
+
+        return $this->constructPreferences($user_id, $table, $preferences);        
+    }
+
+    // @param $assoc return associative array with table_name as keys
+    public function fetchAllByUser($user_id, $assoc = false) {    
+        $db = Bootstrap::get('olddb');
+
+        $sql = 
+            'SELECT 
+                ST.table_name,
+                user,
+                columns_visible,
+                sort,
+                sort_order,
+                active
+            FROM 
+                INFORMATION_SCHEMA.TABLES ST 
+            LEFT JOIN 
+                directus_preferences ON (directus_preferences.table_name = ST.table_name AND directus_preferences.user = :user)
+            WHERE
+                ST.TABLE_SCHEMA = :schema
+            AND
+                ST.TABLE_NAME NOT IN (
+                    "directus_columns",
+                    "directus_ip_whitelist",
+                    "directus_preferences",
+                    "directus_privileges",
+                    "directus_settings",
+                    "directus_social_feeds",
+                    "directus_social_posts",
+                    "directus_storage_adapters",
+                    "directus_tables",
+                    "directus_tab_privileges",
+                    "directus_ui"       
+                )';
+
+        $sth = $db->dbh->prepare($sql);
+        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
+        $sth->bindValue(':user', $user_id, \PDO::PARAM_INT);
+        $sth->execute();
+
+        $preferences = array();
+
+        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+            $tableName = $row['table_name'];
+            
+            if (!isset($row['user'])) {
+                $row = null;
+            }
+            
+            $row = $this->constructPreferences($user_id, $tableName, $row);
+
+            $preferences[$tableName] = $row;
+        }
+
+        return $preferences;
+    }
+
+
 
 }
