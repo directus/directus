@@ -519,30 +519,47 @@ class TableSchema {
     //
     //---------------------------------------------------------------------------
 
+    
     public static function getAllSchemas($userGroupId, $versionHash) {
-        $db = Bootstrap::get('olddb');
-        $acl = Bootstrap::get('acl');
-        $ZendDb = Bootstrap::get('ZendDb');
-        $currentUser = Auth::getUserInfo();
+        $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);    
+            
+        $getPreferencesFn = function() {
+            $acl = Bootstrap::get('acl');
+            $ZendDb = Bootstrap::get('ZendDb');
+            $currentUser = Auth::getUserInfo();
+            $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);
+            // Components for building the full schema
+            $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
+        };
 
-        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);
+        $getSchemasFn = function () {
+            $tableSchemas = self::getTableSchemas();
+            $columnSchemas = self::getColumnSchemas();
 
-        // Components for building the full schema
-        $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
-        $tableSchemas = self::getTableSchemas();
-        $columnSchemas = self::getColumnSchemas();
+            // Nest column schemas in table schemas
+            foreach ($tableSchemas as &$table) {
+                $tableName = $table['id'];
+                $table['columns'] = array_values($columnSchemas[$tableName]);
+                $table = array(
+                    'schema' => $table,
+                );
+            }
 
-        // Nest column schemas in table schemas
-        foreach ($tableSchemas as &$table) {
-            $tableName = $table['id'];
-            $table['columns'] = array_values($columnSchemas[$tableName]);
-            $table = array(
-                'schema' => $table,
-                'preferences' => $preferences[$tableName]
-            );
+            return $tableSchemas;
+        };
+
+        // 3 hr cache
+        //$schemas = $Preferences->memcache->getOrCache($cacheKey, $getSchemasFn, 10800); 
+        $schemas = $getSchemasFn();
+
+        $preferences = $getPreferencesFn();
+
+        // Append preferences post cache
+        foreach ($schemas as &$table) {
+            $table['preferences'] = $preferences[$table['schema']['id']];
         }
 
-        return $tableSchemas;
+        return $schemas;
     }
 
     private static function getTableSchemas() {
