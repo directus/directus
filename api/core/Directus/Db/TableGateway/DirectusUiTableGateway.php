@@ -47,5 +47,20 @@ class DirectusUiTableGateway extends AclAwareTableGateway {
 
         return $ui_options;
     }
+    /**
+     *  Get ui options the exist both in directus_columns and directus_ui
+     *
+     */
+    public function fetchExisting() {
+        $select = new Select($this->table);
+        $select->join(
+            'directus_columns',
+            'directus_ui.column_name = directus_columns.column_name AND directus_ui.table_name = directus_columns.table_name AND directus_ui.ui_name = directus_columns.ui',
+            array(),
+            $select::JOIN_INNER
+        );
+
+        return $this->selectWith($select);
+    }
 
 }

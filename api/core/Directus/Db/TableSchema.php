@@ -6,6 +6,7 @@ use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway;
+use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\MemcacheProvider;
 
 class TableSchema {
@@ -479,7 +480,6 @@ class TableSchema {
 
             if (array_key_exists('table_related', $row)) {
                 $row['relationship'] = array();
-
                 $row['relationship']['type'] = $row['relationship_type'];
                 $row['relationship']['table_related'] = $row['table_related'];
 
@@ -514,6 +514,273 @@ class TableSchema {
             return $return[0];
         }
         return $return;
+    }
+
+    //
+    //---------------------------------------------------------------------------
+
+    public static function getAllSchemas($userGroupId, $versionHash) {
+        $db = Bootstrap::get('olddb');
+        $acl = Bootstrap::get('acl');
+        $ZendDb = Bootstrap::get('ZendDb');
+        $currentUser = Auth::getUserInfo();
+
+        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);
+
+        // Components for building the full schema
+        $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
+        $tableSchemas = self::getTableSchemas();
+        $columnSchemas = self::getColumnSchemas();
+
+        // Nest column schemas in table schemas
+        foreach ($tableSchemas as &$table) {
+            $tableName = $table['id'];
+            $table['columns'] = array_values($columnSchemas[$tableName]);
+            $table = array(
+                'schema' => $table,
+                'preferences' => $preferences[$tableName]
+            );
+        }
+
+        return $tableSchemas;
+    }
+
+    private static function getTableSchemas() {
+        $db = Bootstrap::get('olddb');
+        $sql = 
+            'SELECT
+                ST.TABLE_NAME as id,
+                ST.TABLE_NAME as table_name,
+                CREATE_TIME AS date_created,
+                TABLE_COMMENT AS comment,
+                ifnull(hidden,0) as hidden,
+                ifnull(single,0) as single,
+                inactive_by_default,
+                is_junction_table,
+                magic_owner_column,
+                footer,
+                TABLE_ROWS AS count 
+            FROM
+                INFORMATION_SCHEMA.TABLES ST
+            LEFT JOIN 
+                directus_tables DT ON (DT.table_name = ST.TABLE_NAME)
+            WHERE
+                ST.TABLE_SCHEMA = :schema 
+                AND
+                (
+                    ST.TABLE_NAME NOT IN (
+                        "directus_columns",
+                        "directus_ip_whitelist",
+                        "directus_preferences",
+                        "directus_privileges",
+                        "directus_settings",
+                        "directus_social_feeds",
+                        "directus_social_posts",
+                        "directus_storage_adapters",
+                        "directus_tables",
+                        "directus_tab_privileges",
+                        "directus_ui"       
+                    )
+                )   
+            GROUP BY ST.TABLE_NAME
+            ORDER BY ST.TABLE_NAME';
+
+        $sth = $db->dbh->prepare($sql);
+        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
+        $sth->execute();
+        $tables = array();
+
+        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+            $tables[] = self::formatTableRow($row);
+        }
+
+        return $tables;
+    }
+
+    private static function getColumnSchemas() {
+        $db = Bootstrap::get('olddb');
+        $acl = Bootstrap::get('acl');
+        $ZendDb = Bootstrap::get('ZendDb');
+
+        $sql = 
+            '(
+                SELECT
+                    C.table_name,
+                    C.column_name AS column_name,
+                    ifnull(sort, ORDINAL_POSITION) as sort,     
+                    UCASE(C.data_type) as type,
+                    CHARACTER_MAXIMUM_LENGTH as char_length,
+                    IS_NULLABLE as is_nullable,
+                    COLUMN_DEFAULT as default_value,
+                    ifnull(comment, COLUMN_COMMENT) as comment,
+                    ui,
+                    ifnull(system,0) as system,
+                    ifnull(master,0) as master,
+                    ifnull(hidden_list,0) as hidden_list,
+                    ifnull(hidden_input,0) as hidden_input,
+                    relationship_type,
+                    table_related,
+                    junction_table,
+                    junction_key_left,
+                    junction_key_right,
+                    ifnull(D.required,0) as required
+                FROM
+                    INFORMATION_SCHEMA.COLUMNS C
+                LEFT JOIN
+                    directus_columns AS D ON (C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name)
+                WHERE
+                    C.TABLE_SCHEMA = :schema
+
+            ) UNION ALL (
+
+                SELECT
+                    `table_name`,
+                    `column_name` AS column_name,
+                    sort,       
+                    UCASE(data_type) as type,
+                    NULL AS char_length,
+                    "NO" as is_nullable,
+                    NULL AS default_value,
+                    comment,
+                    ui,
+                    system,
+                    master,
+                    hidden_list,
+                    hidden_input,
+                    relationship_type,
+                    table_related,
+                    junction_table,
+                    junction_key_left,
+                    junction_key_right,
+                    DC.required
+                FROM
+                    `directus_columns` DC
+                WHERE
+                    `data_type` IN ("alias", "MANYTOMANY", "ONETOMANY")
+
+            ) ORDER BY `table_name`';
+
+        $sth = $db->dbh->prepare($sql);
+        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
+        $sth->execute();
+        
+        // Group columns by table name
+        $tables = array();
+
+        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+
+            $tableName = $row['table_name'];
+            
+            if (!array_key_exists($tableName, $tables)) {
+                $tables[$tableName] = array();
+            }
+
+            $row = self::formatColumnRow($row);
+            $tables[$tableName][$row['id']] = $row;
+        }
+
+        // UI's
+        $directusUiTableGateway = new DirectusUiTableGateway($acl, $ZendDb);
+        $uis = $directusUiTableGateway->fetchExisting()->toArray();
+
+        foreach ($uis as $ui) {
+            $uiTableName = $ui['table_name'];
+            $uiColumnName = $ui['column_name'];
+            
+            if (array_key_exists($uiTableName, $tables)) {
+                if (array_key_exists($uiColumnName, $tables[$uiTableName])) {
+                    $column = &$tables[$uiTableName][$uiColumnName];
+                    $column['options']['id'] = $ui['ui_name'];
+                    $column['options'][$ui['name']] = $ui['value'];
+                }
+            }
+
+        }
+
+        return $tables;
+    }
+
+    private static function formatTableRow($info) {
+        $info['hidden'] = (boolean) $info['hidden'];
+        $info['single'] = (boolean) $info['single'];
+        $info['footer'] = (boolean) $info['footer'];
+        $info['is_junction_table'] = (boolean) $info['is_junction_table'];
+        $info['inactive_by_default'] = (boolean) $info['inactive_by_default'];
+        return $info;
+    }
+
+    private static function formatColumnRow($row) {
+        $db = Bootstrap::get('olddb');
+        $columnName = $row['column_name'];
+
+        foreach ($row as $key => $value) {
+            if (is_null($value)) {
+                unset ($row[$key]);
+            }
+        }
+
+        unset($row['table_name']);
+
+        $row['id'] = $columnName;
+        $row['options'] = array();
+
+        if ($row['is_nullable'] == "NO") {
+            $row["required"] = true;
+        }
+
+        // Basic type casting. Should eventually be done with the schema
+        $row["required"] = (bool) $row['required'];
+        $row["system"] = (bool) $row["system"];
+        $row["master"] = (bool) $row["master"];
+        $row["hidden_list"] = (bool) $row["hidden_list"];
+        $row["hidden_input"] = (bool) $row["hidden_input"];
+        
+
+        //$row["is_writable"] = !in_array($row['id'], $writeFieldBlacklist);
+
+        if (array_key_exists('sort', $row)) {
+            $row["sort"] = (int)$row['sort'];
+        }
+
+        $hasMaster = $row["master"];
+
+        // Default UI types.
+        if (!isset($row["ui"])) {
+            $row['ui'] = $db->column_type_to_ui_type($row['type']);
+        }
+
+        // Defualts as system columns
+        if ($row["id"] == 'id' || $row["id"] == 'active' || $row["id"] == 'sort') {
+            $row["system"] = true;
+            $row["hidden"] = true;
+        }
+
+        if (array_key_exists('table_related', $row)) {
+            $row['relationship'] = array();
+            $row['relationship']['type'] = $row['relationship_type'];
+            $row['relationship']['table_related'] = $row['table_related'];
+
+            unset($row['relationship_type']);
+            unset($row['table_related']);
+
+            if (array_key_exists('junction_key_left', $row)) {
+                $row['relationship']['junction_key_left'] = $row['junction_key_left'];
+                unset($row['junction_key_left']);
+            }
+
+            if (array_key_exists('junction_key_right', $row)) {
+                $row['relationship']['junction_key_right'] = $row['junction_key_right'];
+                unset($row['junction_key_right']);
+            }
+
+            if (array_key_exists('junction_table', $row)) {
+                $row['relationship']['junction_table'] = $row['junction_table'];
+                unset($row['junction_table']);
+            }
+
+        }
+
+        return $row;
     }
 
 }
