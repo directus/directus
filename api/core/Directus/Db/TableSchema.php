@@ -522,12 +522,12 @@ class TableSchema {
     
     public static function getAllSchemas($userGroupId, $versionHash) {
         $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);    
-            
-        $getPreferencesFn = function() {
+        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);            
+        
+        $getPreferencesFn = function() use ($directusPreferencesTableGateway) {
             $acl = Bootstrap::get('acl');
             $ZendDb = Bootstrap::get('ZendDb');
             $currentUser = Auth::getUserInfo();
-            $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);
             // Components for building the full schema
             $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
         };
@@ -549,9 +549,7 @@ class TableSchema {
         };
 
         // 3 hr cache
-        //$schemas = $Preferences->memcache->getOrCache($cacheKey, $getSchemasFn, 10800); 
-        $schemas = $getSchemasFn();
-
+        $schemas = $directusPreferencesTableGateway->memcache->getOrCache($cacheKey, $getSchemasFn, 10800);
         $preferences = $getPreferencesFn();
 
         // Append preferences post cache
