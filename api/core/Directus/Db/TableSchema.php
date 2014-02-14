@@ -522,14 +522,14 @@ class TableSchema {
     
     public static function getAllSchemas($userGroupId, $versionHash) {
         $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);    
+        $acl = Bootstrap::get('acl');
+        $ZendDb = Bootstrap::get('ZendDb');
         $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);            
         
         $getPreferencesFn = function() use ($directusPreferencesTableGateway) {
-            $acl = Bootstrap::get('acl');
-            $ZendDb = Bootstrap::get('ZendDb');
             $currentUser = Auth::getUserInfo();
-            // Components for building the full schema
             $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
+            return $preferences;
         };
 
         $getSchemasFn = function () {
