@@ -154,8 +154,13 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
             $tableName = $row['table_name'];
+
+            // Skip the tables that the user doesn't have access too
+            if (!TableSchema::canGroupViewTable($tableName)) {
+                continue;
+            }
             
-            if (!isset($row['user'])) {
+            if (!isset($row['user'])) {            
                 $row = null;
             }
             
