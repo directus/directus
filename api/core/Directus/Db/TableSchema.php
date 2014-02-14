@@ -550,9 +550,9 @@ class TableSchema {
 
         // 3 hr cache
         $schemas = $directusPreferencesTableGateway->memcache->getOrCache($cacheKey, $getSchemasFn, 10800);
-        $preferences = $getPreferencesFn();
 
         // Append preferences post cache
+        $preferences = $getPreferencesFn();
         foreach ($schemas as &$table) {
             $table['preferences'] = $preferences[$table['schema']['id']];
         }
@@ -606,7 +606,10 @@ class TableSchema {
         $tables = array();
 
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
-            $tables[] = self::formatTableRow($row);
+            // Only include tables w ACL privileges
+            if(self::canGroupViewTable($row['table_name'])) {
+                $tables[] = self::formatTableRow($row);
+            }
         }
 
         return $tables;
@@ -681,17 +684,32 @@ class TableSchema {
         
         // Group columns by table name
         $tables = array();
+        $tableName = null;
 
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
-
             $tableName = $row['table_name'];
+            $columnName = $row['column_name'];
             
+            // Create nested array by table name
             if (!array_key_exists($tableName, $tables)) {
                 $tables[$tableName] = array();
             }
 
+            // @todo getTablePrivilegeList is called in excess, 
+            // should just be called when $tableName changes
+            $readFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_READ_BLACKLIST);
+            $writeFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_WRITE_BLACKLIST);
+
+            // Indicate if the column is blacklisted for writing
+            $row["is_writable"] = !in_array($columnName, $writeFieldBlacklist);
+
+            // Don't include a column that is blacklisted for reading
+            if (in_array($columnName, $readFieldBlacklist)) {
+                continue;
+            }
+
             $row = self::formatColumnRow($row);
-            $tables[$tableName][$row['id']] = $row;
+            $tables[$tableName][$columnName] = $row;
         }
 
         // UI's
@@ -702,7 +720,9 @@ class TableSchema {
             $uiTableName = $ui['table_name'];
             $uiColumnName = $ui['column_name'];
             
+            // Does the table for the UI settings still exist?
             if (array_key_exists($uiTableName, $tables)) {
+                // Does the column for the UI settings still exist?
                 if (array_key_exists($uiColumnName, $tables[$uiTableName])) {
                     $column = &$tables[$uiTableName][$uiColumnName];
                     $column['options']['id'] = $ui['ui_name'];
