@@ -60,6 +60,11 @@ define(function(require, exports, module) {
     getTotalCount: function() {
       var totalCount;
 
+      // There is no active column. Use total
+      if (!this.table.has('active')) {
+        return this.table.get('total');
+      }
+
       switch (this.getFilter('active')) {
         case '1,2':
           totalCount = this.table.get('active');
