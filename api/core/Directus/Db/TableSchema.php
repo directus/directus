@@ -524,7 +524,7 @@ class TableSchema {
         $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);    
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
-        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);            
+        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);         
         
         $getPreferencesFn = function() use ($directusPreferencesTableGateway) {
             $currentUser = Auth::getUserInfo();
@@ -533,8 +533,8 @@ class TableSchema {
         };
 
         $getSchemasFn = function () {
-            $tableSchemas = self::getTableSchemas();
-            $columnSchemas = self::getColumnSchemas();
+            $tableSchemas = TableSchema::getTableSchemas();
+            $columnSchemas = TableSchema::getColumnSchemas();
 
             // Nest column schemas in table schemas
             foreach ($tableSchemas as &$table) {
