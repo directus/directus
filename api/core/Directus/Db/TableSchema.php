@@ -560,7 +560,7 @@ class TableSchema {
         return $schemas;
     }
 
-    private static function getTableSchemas() {
+    public static function getTableSchemas() {
         $db = Bootstrap::get('olddb');
         $sql = 
             'SELECT
@@ -615,7 +615,7 @@ class TableSchema {
         return $tables;
     }
 
-    private static function getColumnSchemas() {
+    public static function getColumnSchemas() {
         $db = Bootstrap::get('olddb');
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
