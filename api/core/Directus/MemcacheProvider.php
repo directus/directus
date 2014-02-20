@@ -20,7 +20,7 @@ class MemcacheProvider {
     /**
      * Adds localhost memcached server only
      */
-    protected static $LOCAL = false;
+    protected static $LOCAL = true;
     /**
      * Default expire time for cache if not passes into a cache setter method
      */
@@ -373,5 +373,8 @@ class MemcacheProvider {
     }
     public static function getKeyRoomsById() {
         return "rooms_by_id";
+    }
+    public static function getClassMetaData($classId){
+        return "class_metadata?class_id?$classId";
     }
 }
