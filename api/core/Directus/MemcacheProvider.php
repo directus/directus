@@ -20,7 +20,7 @@ class MemcacheProvider {
     /**
      * Adds localhost memcached server only
      */
-    protected static $LOCAL = true;
+    protected static $LOCAL = false;
     /**
      * Default expire time for cache if not passes into a cache setter method
      */
