@@ -374,4 +374,7 @@ class MemcacheProvider {
     public static function getKeyRoomsById() {
         return "rooms_by_id";
     }
+    public static function getClassMetaData($classId){
+        return "class_metadata?class_id?$classId";
+    }
 }
