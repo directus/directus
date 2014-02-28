@@ -562,6 +562,13 @@ class TableSchema {
 
     public static function getTableSchemas() {
         $db = Bootstrap::get('olddb');
+        $config = Bootstrap::get('config');       
+        $blacklist = '""';
+        if (array_key_exists('tableBlacklist', $config)) {
+            $blacklist = $config['tableBlacklist'];
+            $blacklist = '"'.implode($blacklist, '","').'"';
+        }
+
         $sql = 
             'SELECT
                 ST.TABLE_NAME as id,
@@ -596,6 +603,8 @@ class TableSchema {
                         "directus_tab_privileges",
                         "directus_ui"       
                     )
+                    AND
+                    ST.TABLE_NAME NOT IN ('.$blacklist.')
                 )   
             GROUP BY ST.TABLE_NAME
             ORDER BY ST.TABLE_NAME';
