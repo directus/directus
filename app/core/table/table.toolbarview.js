@@ -67,12 +67,12 @@ function(app, Backbone) {
         if (e.which == 13) {
           var text = $('#table-filter').val();
           this.collection.setFilter('search', text);
+          this.collection.setFilter('currentPage', 0);
           this.collection.fetch();
           this.collection.trigger('search', text);
         }
       },
       'click .add-filter-row': function(e) {
-        console.log("clicked");
         var $filterRow = this.getFilterRow;
         $filterRow.clone(true).appendTo(".advanced-search-fields");
       }
