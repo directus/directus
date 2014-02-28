@@ -34,8 +34,7 @@ return array(
 	 			// ...
 	 		}
 	 	}
- 	)
-
+ 	),
 
 	// These tables will not be loaded in the directus schema
 	'tableBlacklist' => array(
