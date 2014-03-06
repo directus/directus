@@ -118,6 +118,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
         $sql = 
             'SELECT 
+                id,            
                 ST.table_name,
                 user,
                 columns_visible,
