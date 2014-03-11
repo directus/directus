@@ -649,23 +649,24 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
     if (isset($requestPayload['url']))
         unset($requestPayload['url']);
 
-    $currentUser = Auth::getUserInfo();
-
     $table = "directus_media";
+    $currentUser = Auth::getUserInfo();
+    $TableGateway = new TableGateway($acl, $table, $ZendDb);
+    $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
+    $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
+
+
     switch ($app->request()->getMethod()) {
         case "POST":
             $requestPayload['user'] = $currentUser['id'];
             $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
-            $params['id'] = $db->set_media($requestPayload);
+            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
+            $params['id'] = $newRecord['id'];
             break;
         case "PATCH":
             $requestPayload['id'] = $id;
         case "PUT":
             if (!is_null($id)) {
-                // $db->set_entries($table, $requestPayload);
-                $TableGateway = new TableGateway($acl, $table, $ZendDb);
-                $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-                $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
                 $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
                 break;
             }
