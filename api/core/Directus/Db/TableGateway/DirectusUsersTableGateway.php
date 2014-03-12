@@ -57,15 +57,6 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
         return $this->selectWith($select)->toArray();
     }
 
-    public function getUserByGroupAndStudio($groupId, $studioId){
-        $select = new Select(self::$_tableName);
-        $select
-            ->where
-                ->equalTo('default_studio_id', $studioId)
-                ->equalTo('group', $groupId);
-        return $this->selectWith($select);
-    }
-
     /**
      * Get either a Gravatar URL or complete image tag for a specified email address.
      *

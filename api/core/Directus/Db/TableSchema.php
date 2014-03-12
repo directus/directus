@@ -29,26 +29,6 @@ class TableSchema {
      * @var array
      */
     public static $many_to_one_column_name_to_table_related = array(
-        'region'            => 'regions',
-        'region_id'         => 'regions',
-        'room_id'           => 'rooms',
-        'instructor_id'     => 'instructors',
-        'class_type_id'     => 'classes',
-
-        // potentially ambiguous; there's also the product_categories table
-        // however this
-        'category'          => 'community_categories',
-
-        // potentially ambiguous; but as of yet this should point to riders and not
-        // to directus_users, since the only tables implementing this many-to-one
-        // column name are: waitlist, and community_comments, which seem to have
-        // nothing to do with directus_users
-        'user_id'           => 'riders',
-
-        'studio_id'         => 'studios',
-        'bike_id'           => 'bikes',
-        'complaint'         => 'bike_complaints',
-        'studio_id'         => 'studios',
         'group_id'          => 'directus_groups',
         'group'             => 'directus_groups',
 
