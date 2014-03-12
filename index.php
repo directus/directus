@@ -257,7 +257,6 @@ $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cach
 $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
 
-
 $data = array(
 	'cacheBuster' => $cacheBuster,
 	'nonces' => getNonces(),
