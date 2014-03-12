@@ -106,7 +106,7 @@ function getUsers() {
 			'table_name'=>'directus_users',
 			'perPage'=>1000, 
 			'active'=>1,
-			'columns_visible'=>array('active','avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'default_studio_id', 'last_access')
+			'columns_visible'=>array('active','avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
 		)
 	);
 }
