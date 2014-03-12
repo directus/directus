@@ -90,7 +90,6 @@ function(app, Backbone, Directus, SaveModule) {
       '<td>{{last_name}}</td>' +
       '<td>{{email}}</td>' +
       '<td>{{position}}</td>' +
-      '<td>{{default_studio}}</td>' +
       '<td>{{last_access}}</td>' +
       '</tr>' +
       '{{/rows}}'
@@ -107,7 +106,6 @@ function(app, Backbone, Directus, SaveModule) {
           'last_name': model.get('last_name'),
           'email': model.get('email'),
           'position': model.get('position'),
-          'default_studio': model.get('default_studio_id').get('title'),
           'last_access': model.get('last_access')
         };
 
