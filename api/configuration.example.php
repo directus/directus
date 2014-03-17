@@ -8,6 +8,10 @@
 
 return array(
 
+	'session' => array(
+		'prefix' =>  'directus6_'
+	),
+
 	'HTTP' => array(
 		'forceHttps' => false,
 		'isHttpsFn' => function () {
