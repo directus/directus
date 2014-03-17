@@ -2,9 +2,13 @@
 
 namespace Directus\Auth;
 
+use Directus\Bootstrap;
+
 class Provider {
 
     const USER_RECORD_CACHE_SESSION_KEY = 'auth_provider_user_record_cache';
+
+    protected static $prependedSessionKey = false;
 
     public static $userCacheRefreshProvider;
 
@@ -27,9 +31,25 @@ class Provider {
      */
     public static function setSessionKey($key) {
         self::$SESSION_KEY = $key;
+        self::$prependedSessionKey = false;
+        self::prependSessionKey();
+    }
+
+    protected static function prependSessionKey() {
+        if(self::$prependedSessionKey) {
+            return;
+        }
+        $config = Bootstrap::get('config');
+        if(!isset($config['session']) || !isset($config['session']['prefix']) || empty($config['session']['prefix'])) {
+            throw new \RuntimeException("You must define session.prefix in api/configuration.php - see example configuration file.");
+        }
+        self::$SESSION_KEY = $config['session']['prefix'] . self::$SESSION_KEY;
+        self::$prependedSessionKey = true;
+        var_dump(self::$SESSION_KEY);exit;
     }
 
     protected static function enforceUserIsAuthenticated() {
+        self::prependSessionKey();
         if(!self::loggedIn()) {
             throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when a user isn't authenticated.");
         }
@@ -44,6 +64,7 @@ class Provider {
      * @return boolean
      */
     public static function login($uid, $password, $salt, $passwordAttempt) {
+        self::prependSessionKey();
         $hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
         if($password === $hashedPasswordAttempt) {
             self::completeLogin($uid);
@@ -58,6 +79,7 @@ class Provider {
      * @throws  \Directus\Auth\UserIsntLoggedInException
      */
     public static function logout() {
+        self::prependSessionKey();
         self::enforceUserIsAuthenticated();
         self::expireCachedUserRecord();
         $_SESSION[self::$SESSION_KEY] = array();
@@ -68,6 +90,7 @@ class Provider {
      * @return boolean
      */
     public static function loggedIn() {
+        self::prependSessionKey();
         if(php_sapi_name() != 'cli' && "" === session_id()) {
             session_start();
         }
@@ -80,15 +103,18 @@ class Provider {
      * @throws  \Directus\Auth\UserIsntLoggedInException
      */
     public static function getUserInfo() {
+        self::prependSessionKey();
         self::enforceUserIsAuthenticated();
         return $_SESSION[self::$SESSION_KEY];
     }
 
     public static function expireCachedUserRecord() {
+        self::prependSessionKey();
         $_SESSION[self::USER_RECORD_CACHE_SESSION_KEY] = null;
     }
 
     public static function getUserRecord() {
+        self::prependSessionKey();
 
         self::enforceUserIsAuthenticated();
 
@@ -116,6 +142,7 @@ class Provider {
     }
 
     public static function setUserCacheRefreshProvider($callable) {
+        self::prependSessionKey();
         if(!is_callable($callable)) {
             throw new \InvalidArgumentException("Argument must be callable");
         }
@@ -129,6 +156,7 @@ class Provider {
      * @throws  \Directus\Auth\UserAlreadyLoggedInException
      */
     private static function completeLogin($uid) {
+        self::prependSessionKey();
         if(self::loggedIn()) {
             throw new UserAlreadyLoggedInException("Attempting to authenticate a user when a user is already authenticated.");
         }

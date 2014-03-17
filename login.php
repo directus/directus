@@ -5,7 +5,11 @@ require "api/config.php";
 /**
  * Temporary solution for disabling this page for logged in users.
  */
-require "api/core/Directus/Auth/Provider.php";
+
+// Composer Autoloader
+$loader = require 'api/vendor/autoload.php';
+$loader->add("Directus", dirname(__FILE__) . "/api/core/");
+
 if(\Directus\Auth\Provider::loggedIn()) {
     header('Location: ' . DIRECTUS_PATH );
     exit;
