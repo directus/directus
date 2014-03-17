@@ -45,7 +45,6 @@ class Provider {
         }
         self::$SESSION_KEY = $config['session']['prefix'] . self::$SESSION_KEY;
         self::$prependedSessionKey = true;
-        var_dump(self::$SESSION_KEY);exit;
     }
 
     protected static function enforceUserIsAuthenticated() {
