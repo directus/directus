@@ -561,6 +561,7 @@ class TableSchema {
                 is_junction_table,
                 magic_owner_column,
                 footer,
+                list_view,
                 TABLE_ROWS AS count 
             FROM
                 INFORMATION_SCHEMA.TABLES ST

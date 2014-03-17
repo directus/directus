@@ -12,6 +12,10 @@ AddType font/woff .woff
     RewriteRule ^extensions/([^/]+)/assets - [L,NC]
     RewriteRule ^extensions/([^/]+)/main.js - [L,NC]
 
+    RewriteRule ^listviews/([^/]+) - [L,NC]
+    RewriteRule ^listviews/([^/]+)/assets - [L,NC]
+    RewriteRule ^listviews/([^/]+)/ListView.js - [L,NC]
+
     # Media Thumbnails
     # - Cached thumbnail exists
     #RewriteCond %{REQUEST_URI} ^/thumbnail/(.+)$

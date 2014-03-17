@@ -12,10 +12,11 @@ define([
   'backbone',
   'core/directus',
   'core/panes/pane.revisionsview',
-  'core/panes/pane.saveview'
+  'core/panes/pane.saveview',
+  'core/ListViewManager'
 ],
 
-function(app, Backbone, Directus, RevisionsModule, SaveModule) {
+function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) {
 
   "use strict";
 
@@ -227,7 +228,10 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule) {
     },
 
     initialize: function() {
-      this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
+      //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
+      //ListViewManager
+      this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
+      //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
     }
 
   });

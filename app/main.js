@@ -21,10 +21,11 @@ require(["config"], function() {
     'modules/settings/collection',
     'core/ExtensionManager',
     'core/EntriesManager',
-    'core/idle'
+    'core/ListViewManager',
+    'core/idle',
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, Idle) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle) {
 
     "use strict";
 
@@ -74,11 +75,11 @@ require(["config"], function() {
 
     app.schemaManager = SchemaManager;
 
-
     // Load extenral UI / extensions
     $.when(
       UIManager.load(options.ui),
-      ExtensionManager.load(options.extensions)
+      ExtensionManager.load(options.extensions),
+      ListViewManager.load(options.listViews)
 
     ).done(function() {
 

@@ -318,4 +318,27 @@ class Bootstrap {
         return $uis;
     }
 
+
+    /**
+     * Scan for listviews.
+     * @return  array
+     */
+    private static function listViews() {
+        self::requireConstants('APPLICATION_PATH', __FUNCTION__);
+        $listViews = array();
+        $listViewsDirectory = APPLICATION_PATH . '/listviews/';
+        foreach (new \DirectoryIterator($listViewsDirectory) as $file) {
+            if($file->isDot()) {
+                continue;
+            }
+            $listViewName = $file->getFilename();
+            if(is_dir($listViewsDirectory . $listViewName)) {
+                $listViews[] = "listviews/$listViewName/ListView";
+            }
+        }
+        return $listViews;
+    }
+
+
+
 }

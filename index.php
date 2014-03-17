@@ -22,8 +22,8 @@ use Directus\Db\TableSchema;
 
 // No access, forward to login page
 if (!AuthProvider::loggedIn()) {
-	header('Location: ' . DIRECTUS_PATH . 'login.php');
-	die();
+    header('Location: ' . DIRECTUS_PATH . 'login.php');
+    die();
 }
 
 $acl = Bootstrap::get('acl');
@@ -31,192 +31,196 @@ $ZendDb = Bootstrap::get('ZendDb');
 $authenticatedUser = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : array();
 
 function getNonces() {
-	$requestNonceProvider = new RequestNonceProvider();
-	$nonces = array_merge($requestNonceProvider->getOptions(), array(
-		'pool' => $requestNonceProvider->getAllNonces()
-	));
-	return $nonces;
+    $requestNonceProvider = new RequestNonceProvider();
+    $nonces = array_merge($requestNonceProvider->getOptions(), array(
+        'pool' => $requestNonceProvider->getAllNonces()
+    ));
+    return $nonces;
 };
 
 function getStorageAdapters() {
-	global $ZendDb, $acl;
-	$DirectusStorageAdaptersTableGateway = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
-	$storageAdapters = $DirectusStorageAdaptersTableGateway->fetchAllByIdNoParams();
-	$adaptersByUniqueRole = array();
-	foreach($storageAdapters as $adapter) {
-		if(!empty($adapter['role'])) {
-			$storageAdapters[$adapter['role']] = $adapter;
-		}
-	}
-	return $storageAdapters;
+    global $ZendDb, $acl;
+    $DirectusStorageAdaptersTableGateway = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
+    $storageAdapters = $DirectusStorageAdaptersTableGateway->fetchAllByIdNoParams();
+    $adaptersByUniqueRole = array();
+    foreach($storageAdapters as $adapter) {
+        if(!empty($adapter['role'])) {
+            $storageAdapters[$adapter['role']] = $adapter;
+        }
+    }
+    return $storageAdapters;
 }
 
 function parseTables($tableSchema) {
-	$tables = array();
+    $tables = array();
 
-	foreach ($tableSchema as $table) {
-		$tableName = $table['schema']['id'];
+    foreach ($tableSchema as $table) {
+        $tableName = $table['schema']['id'];
 
-		//remove preferences
-		unset($table['preferences']);
+        //remove preferences
+        unset($table['preferences']);
 
-		//skip directus tables
-		if ('directus_' === substr($tableName,0,9) && 'directus_messages_recipients' !== $tableName) {
-			continue;
-		}
+        //skip directus tables
+        if ('directus_' === substr($tableName,0,9) && 'directus_messages_recipients' !== $tableName) {
+            continue;
+        }
 
-		$tables[] = $table;
-	}
+        $tables[] = $table;
+    }
 
-	return $tables;
+    return $tables;
 }
 
 function getExtendedUserColumns($tableSchema) {
-	$userColumns = array("activity", "avatar", "name", "id", "active", "first_name", "last_name", "email", "email_messages", "password", "salt", "token", "reset_token", "reset_expiration", "last_login", "last_page", "ip", "group");
+    $userColumns = array("activity", "avatar", "name", "id", "active", "first_name", "last_name", "email", "email_messages", "password", "salt", "token", "reset_token", "reset_expiration", "last_login", "last_page", "ip", "group");
 
-	$schema = array_filter($tableSchema, function($table) {
-		return $table['schema']['id'] === 'directus_users';
-	});
+    $schema = array_filter($tableSchema, function($table) {
+        return $table['schema']['id'] === 'directus_users';
+    });
 
-	$schema = reset($schema);
+    $schema = reset($schema);
 
-	$columns = array_filter($schema['schema']['columns'], function($column) use ($userColumns) {
-		return !in_array($column['id'], $userColumns);
-	});
+    $columns = array_filter($schema['schema']['columns'], function($column) use ($userColumns) {
+        return !in_array($column['id'], $userColumns);
+    });
 
-	return array_values($columns);
+    return array_values($columns);
 
 }
 
 function parsePreferences($tableSchema) {
-	$preferences = array();
+    $preferences = array();
 
-	foreach ($tableSchema as $table) {
-		$preferences[] = $table['preferences'];
-	}
+    foreach ($tableSchema as $table) {
+        $preferences[] = $table['preferences'];
+    }
 
-	return $preferences;
+    return $preferences;
 }
 
 function getUsers() {
-	global $ZendDb, $acl;
-	$tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
-	return $tableGateway->getEntries(
-		array(
-			'table_name'=>'directus_users',
-			'perPage'=>1000, 
-			'active'=>1,
-			'columns_visible'=>array('active','avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
-		)
-	);
+    global $ZendDb, $acl;
+    $tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
+    return $tableGateway->getEntries(
+        array(
+            'table_name'=>'directus_users',
+            'perPage'=>1000, 
+            'active'=>1,
+            'columns_visible'=>array('active','avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
+        )
+    );
 }
 
 function getCurrentUserInfo($users) {
-	global $authenticatedUser;
-	$data = array_filter($users['rows'], function ($item) use ($authenticatedUser) {
-    	return ($item['id'] == $authenticatedUser['id']);
-	});
-	return reset($data);
+    global $authenticatedUser;
+    $data = array_filter($users['rows'], function ($item) use ($authenticatedUser) {
+        return ($item['id'] == $authenticatedUser['id']);
+    });
+    return reset($data);
 }
 
 function getGroups() {
-	global $ZendDb, $acl;
-	$groups = new TableGateway($acl, 'directus_groups', $ZendDb);
-	return $groups->getEntries();
+    global $ZendDb, $acl;
+    $groups = new TableGateway($acl, 'directus_groups', $ZendDb);
+    return $groups->getEntries();
 }
 
 function getSettings() {
-	global $ZendDb, $acl;
-	$settings = new DirectusSettingsTableGateway($acl, $ZendDb);
-	$items = array();
-	foreach ($settings->fetchAll() as $key => $value) {
-		$value['id'] = $key;
-		$items[] = $value;
-	};
+    global $ZendDb, $acl;
+    $settings = new DirectusSettingsTableGateway($acl, $ZendDb);
+    $items = array();
+    foreach ($settings->fetchAll() as $key => $value) {
+        $value['id'] = $key;
+        $items[] = $value;
+    };
 
-	return $items;
+    return $items;
 }
 
 function getActiveMedia() {
-	global $ZendDb, $acl;
-	$tableGateway = new TableGateway($acl, 'directus_media', $ZendDb);
-	return $tableGateway->countActive();
+    global $ZendDb, $acl;
+    $tableGateway = new TableGateway($acl, 'directus_media', $ZendDb);
+    return $tableGateway->countActive();
 }
 
 function getTabPrivileges($groupId) {
-	global $ZendDb, $acl;
-	$tableGateway = new DirectusTabPrivilegesTableGateway($acl, $ZendDb);
-	return $tableGateway->fetchAllByGroup($groupId);
+    global $ZendDb, $acl;
+    $tableGateway = new DirectusTabPrivilegesTableGateway($acl, $ZendDb);
+    return $tableGateway->fetchAllByGroup($groupId);
 }
 
 function getInbox() {
-	global $ZendDb, $acl, $authenticatedUser;
-	$tableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
-	return $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
+    global $ZendDb, $acl, $authenticatedUser;
+    $tableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    return $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
 }
 
 // @todo: this is a quite sloppy and temporary solution
 // bake it into Bootstrap?
 function filterPermittedExtensions($extensions, $blacklist) {
 
-	$blacklistArray = explode(',', $blacklist);
+    $blacklistArray = explode(',', $blacklist);
 
-	$permittedExtensions = array_filter($extensions, function($item) use ($blacklistArray) {
-		//@todo: id's should be a bit more sophisticated than this
-		$path = explode('/', $item);
-		$extensionId = $path[1];
+    $permittedExtensions = array_filter($extensions, function($item) use ($blacklistArray) {
+        //@todo: id's should be a bit more sophisticated than this
+        $path = explode('/', $item);
+        $extensionId = $path[1];
 
-		return !in_array($extensionId, $blacklistArray);
-	});
+        return !in_array($extensionId, $blacklistArray);
+    });
 
-	return array_values($permittedExtensions);
+    return array_values($permittedExtensions);
 }
 
 function getExtensions($tabPrivileges) {
 
-	$extensions = array_values(Bootstrap::get('extensions'));
+    $extensions = array_values(Bootstrap::get('extensions'));
 
-	// filter out tabs that aren't visible
-	if (array_key_exists('tab_blacklist', $tabPrivileges)) {
-		$extensions = filterPermittedExtensions($extensions, $tabPrivileges['tab_blacklist']);
-	}
+    // filter out tabs that aren't visible
+    if (array_key_exists('tab_blacklist', $tabPrivileges)) {
+        $extensions = filterPermittedExtensions($extensions, $tabPrivileges['tab_blacklist']);
+    }
 
-	// Append relative path and filename for dynamic loading
-	foreach ($extensions as &$extension) {
-		$extension = DIRECTUS_PATH . $extension . '.js';
-	};
+    // Append relative path and filename for dynamic loading
+    foreach ($extensions as &$extension) {
+        $extension = DIRECTUS_PATH . $extension . '.js';
+    };
 
-	return $extensions;
+    return $extensions;
 }
 
 function getPrivileges($groupId) {
-	global $ZendDb, $acl;
-	$tableGateway = new DirectusPrivilegesTableGateway($acl, $ZendDb);
-	return $tableGateway->fetchGroupPrivilegesRaw($groupId);
+    global $ZendDb, $acl;
+    $tableGateway = new DirectusPrivilegesTableGateway($acl, $ZendDb);
+    return $tableGateway->fetchGroupPrivilegesRaw($groupId);
 }
 
 function getUI() {
-	$uis = array_values(Bootstrap::get('uis'));
-	// Add full path
-	foreach ($uis as &$ui) {
-		$ui = DIRECTUS_PATH . $ui . '.js';
-	}
+    $uis = array_values(Bootstrap::get('uis'));
+    // Add full path
+    foreach ($uis as &$ui) {
+        $ui = DIRECTUS_PATH . $ui . '.js';
+    }
 
-	return $uis;
+    return $uis;
+}
+
+function getListViews() {
+    return Bootstrap::get('listViews');
 }
 
 function getCusomFooterHTML() {
-	if(file_exists('./customFooterHTML.html')) {
-		return file_get_contents('./customFooterHTML.html');
-	}
-	return '';
+    if(file_exists('./customFooterHTML.html')) {
+        return file_get_contents('./customFooterHTML.html');
+    }
+    return '';
 }
 
 function getCSSFilePath() {
-	if(file_exists('./assets/css/custom.css')) {
-		return DIRECTUS_PATH . 'assets/css/custom.css';
-	}
-	return DIRECTUS_PATH . 'assets/css/index.css';
+    if(file_exists('./assets/css/custom.css')) {
+        return DIRECTUS_PATH . 'assets/css/custom.css';
+    }
+    return DIRECTUS_PATH . 'assets/css/index.css';
 }
 
 // ---------------------------------------------------------------------
@@ -227,22 +231,22 @@ function getCSSFilePath() {
 
 $config = Bootstrap::get('config');
 $forceHttps = isset($config['HTTP']) && isset($config['HTTP']['forceHttps'])
-	&& $config['HTTP']['forceHttps'];
+    && $config['HTTP']['forceHttps'];
 if($forceHttps) {
-	$isHttpsFallbackFn = function () {
-		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-	};
-	$isHttpsFn = isset($config['HTTP']['isHttpsFn']) ?
-		$config['HTTP']['isHttpsFn'] : $isHttpsFallbackFn;
-	if(!$isHttpsFn()) {
-		$host = 'https://' . $_SERVER['SERVER_NAME'];
-		if('80' != $_SERVER['SERVER_PORT']) {
-			$host .= ":" . $_SERVER['SERVER_PORT'];
-		}
-		$httpsUrl = $host . $_SERVER['REQUEST_URI'];
-		header('Location: ' . $httpsUrl);
-		exit;
-	}
+    $isHttpsFallbackFn = function () {
+        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+    };
+    $isHttpsFn = isset($config['HTTP']['isHttpsFn']) ?
+        $config['HTTP']['isHttpsFn'] : $isHttpsFallbackFn;
+    if(!$isHttpsFn()) {
+        $host = 'https://' . $_SERVER['SERVER_NAME'];
+        if('80' != $_SERVER['SERVER_PORT']) {
+            $host .= ":" . $_SERVER['SERVER_PORT'];
+        }
+        $httpsUrl = $host . $_SERVER['REQUEST_URI'];
+        header('Location: ' . $httpsUrl);
+        exit;
+    }
 }
 
 $users = getUsers();
@@ -258,32 +262,33 @@ $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
 
 $data = array(
-	'cacheBuster' => $cacheBuster,
-	'nonces' => getNonces(),
-	'storage_adapters' => getStorageAdapters(),
-	'path' => DIRECTUS_PATH,
-	'page' => '#tables',
-	'tables' => parseTables($tableSchema),
-	'preferences' => parsePreferences($tableSchema), //ok
-	'users' => $users,
-	'groups' => getGroups(),
-	'settings' => getSettings(),
-	'active_media' => getActiveMedia(),
-	'authenticatedUser' => $authenticatedUser,
-	'tab_privileges' => $tabPrivileges,
-	'extensions' => getExtensions($tabPrivileges),
-	'privileges' => getPrivileges($groupId),
-	'ui' => getUI(),
-	'messages' => getInbox(),
-	'extendedUserColumns' => getExtendedUserColumns($tableSchema)
+    'cacheBuster' => $cacheBuster,
+    'nonces' => getNonces(),
+    'storage_adapters' => getStorageAdapters(),
+    'path' => DIRECTUS_PATH,
+    'page' => '#tables',
+    'tables' => parseTables($tableSchema),
+    'preferences' => parsePreferences($tableSchema), //ok
+    'users' => $users,
+    'groups' => getGroups(),
+    'settings' => getSettings(),
+    'active_media' => getActiveMedia(),
+    'authenticatedUser' => $authenticatedUser,
+    'tab_privileges' => $tabPrivileges,
+    'extensions' => getExtensions($tabPrivileges),
+    'privileges' => getPrivileges($groupId),
+    'ui' => getUI(),
+    'listViews' => getListViews(),
+    'messages' => getInbox(),
+    'extendedUserColumns' => getExtendedUserColumns($tableSchema)
 );
 
 $templateVars = array(
-	'cacheBuster' => $cacheBuster,
-	'data' => json_encode($data),
-	'path' => DIRECTUS_PATH,
-	'customFooterHTML' => getCusomFooterHTML(),
-	'cssFilePath' => getCSSFilePath()
+    'cacheBuster' => $cacheBuster,
+    'data' => json_encode($data),
+    'path' => DIRECTUS_PATH,
+    'customFooterHTML' => getCusomFooterHTML(),
+    'cssFilePath' => getCSSFilePath()
 );
 
 echo template(file_get_contents('main.html'), $templateVars);
