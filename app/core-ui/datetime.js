@@ -99,7 +99,12 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     },
 
     initialize: function(options) {
-      this.value = moment(this.model.get(this.name));
+      var value = this.model.get(this.name);
+      if(undefined === value) {
+        this.value = moment('0000-00-00 00:00:00');
+      } else {
+        this.value = moment(value);
+      }
     }
 
   });
