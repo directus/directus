@@ -45,7 +45,8 @@ class MemcacheProvider {
             }
         }
 
-        if (extension_loaded('memcache') && self::$MEMCACHED_ENABLED){
+        $this->mc = false;
+        if (extension_loaded('memcache') && self::$MEMCACHED_ENABLED && count($this->memcachedServerAddresses[SOULCYCLE_ENV])){
             $this->mc = new Memcache();
             if (self::$LOCAL){
                 $this->mc->addServer('127.0.0.1', 11211);
@@ -56,9 +57,6 @@ class MemcacheProvider {
                     $this->mc->addserver($s, 11211);
                 }
             }
-        }
-        else {
-            $this->mc = false;
         }
     }
 
