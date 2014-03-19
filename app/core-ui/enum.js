@@ -29,7 +29,7 @@ define(['app', 'backbone'],function(app, Backbone) {
       var selectedValue = this.options.value;
 
       var enumText = this.options.schema.attributes.column_type;
-      enumText = enumText.substr(5,enumText.length-6); //Remove enum()
+      enumText = enumText.substr(5,enumText.length-6); //Remove enum() from string
       enumText = enumText.replace(/'/g, '');
       var enumArray = enumText.split(",");
 
