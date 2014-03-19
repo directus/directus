@@ -355,7 +355,8 @@ class TableSchema {
             junction_table,
             junction_key_left,
             junction_key_right,
-            ifnull(D.required,0) as required
+            ifnull(D.required,0) as required,
+            COLUMN_TYPE as column_type
         FROM
             INFORMATION_SCHEMA.COLUMNS C
         LEFT JOIN
@@ -388,7 +389,8 @@ class TableSchema {
             junction_table,
             junction_key_left,
             junction_key_right,
-            DC.required
+            DC.required,
+            NULL as column_type
         FROM
             `directus_columns` DC
         WHERE
@@ -631,7 +633,8 @@ class TableSchema {
                     junction_table,
                     junction_key_left,
                     junction_key_right,
-                    ifnull(D.required,0) as required
+                    ifnull(D.required,0) as required,
+                    COLUMN_TYPE as column_type
                 FROM
                     INFORMATION_SCHEMA.COLUMNS C
                 LEFT JOIN
@@ -660,7 +663,8 @@ class TableSchema {
                     junction_table,
                     junction_key_left,
                     junction_key_right,
-                    DC.required
+                    DC.required,
+                    NULL as column_type
                 FROM
                     `directus_columns` DC
                 WHERE
