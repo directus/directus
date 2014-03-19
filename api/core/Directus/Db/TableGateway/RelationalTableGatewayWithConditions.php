@@ -20,10 +20,39 @@ use Zend\Db\Sql\Where;
 class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
     public function applyParamsToTableEntriesSelect(array $params, Select $select, array $schema, $hasActiveColumn = false) {
-        $select->group('id')
+
+        $tableName = $this->getTable();
+
+        $select->group($tableName . '.id')
             ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
             ->limit($params['perPage'])
             ->offset($params['currentPage'] * $params['perPage']);
+
+        // Are we sorting on a relationship?
+        foreach($schema as $column) {
+            if($column['column_name'] != $params['orderBy']) {
+                continue;
+            }
+            // Must have defined table_related
+            if(!isset($column['relationship']) || !is_array($column['relationship']) || !isset($column['relationship']['table_related'])) {
+                break;
+            }
+            // Must have defined visible_column
+            if(!isset($column['options']) || !is_array($column['options']) || !isset($column['options']['visible_column'])) {
+                break;
+            }
+            $relatedTable = $column['relationship']['table_related'];
+            $visibleColumn = $column['options']['visible_column'];
+            $keyLeft = $params['table_name'] . "." . $params['orderBy'];
+            // @todo it's wrong to assume PKs are "id" but this is currently endemic to directus6
+            $keyRight = $relatedTable . ".id";
+            $joinedSortColumn = $relatedTable . "." . $visibleColumn;
+            $select
+                ->reset(Select::ORDER)
+                ->join($relatedTable, "$keyLeft = $keyRight", array(), Select::JOIN_LEFT)
+                ->order("$joinedSortColumn " . $params['orderDirection']);
+            break;
+        }
 
 
         // Note: be sure to explicitly check for null, because the value may be
@@ -41,9 +70,8 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             ->nest
                 ->expression('-1 = ?', $params['id'])
                 ->or
-                ->equalTo('id', $params['id'])
+                ->equalTo($tableName . '.id', $params['id'])
             ->unnest;
-
 
         // very very rudimentary ability to supply where conditions to fetch...
         // at the moment, only 'equalTo' and 'between' are supported... also, the 'total' key returned
