@@ -702,7 +702,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             break;
         case "POST":
             $requestPayload['user'] = $currentUser['id'];
-            $id = $db->insert_entry($table, $requestPayload);
+            $id = $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
             $params['id'] = $id;
             break;
     }

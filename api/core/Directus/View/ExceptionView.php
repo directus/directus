@@ -67,10 +67,14 @@ class ExceptionView {
         }
 
         $data = @json_encode($data);
-        if('production' !== DIRECTUS_ENV)
+        if('production' !== DIRECTUS_ENV) {
             $data = JsonView::format_json($data);
+        }
 
-        $app->halt($httpCode, $data);
+        http_response_code($httpCode);
+        header('Content-type: application/json');
+        echo $data;
+        exit;
     }
 
 }
