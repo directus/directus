@@ -12,8 +12,7 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
-                  <textarea rows="{{rows}}" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>{{value}}</textarea>';
+  var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label><select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">Select from below</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
 
   Module.id = 'enum';
   Module.dataTypes = ['ENUM','SET'];
@@ -27,14 +26,26 @@ define(['app', 'backbone'],function(app, Backbone) {
     template: Handlebars.compile(template),
 
     serialize: function() {
-      console.log(this.options.name, this.options.schema);
+      var selectedValue = this.options.value;
+
+      var enumText = this.options.schema.attributes.column_type;
+      enumText = enumText.substr(5,enumText.length-6); //Remove enum()
+      enumText = enumText.replace(/'/g, '');
+      var enumArray = enumText.split(",");
+
+      enumArray = _.map(enumArray, function(value) {
+        var item = {};
+        item.value = value;
+        item.selected = (item.value == selectedValue);
+        return item;
+      });
 
       return {
         value: this.options.value,
         name: this.options.name,
-        rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '5',
         comment: this.options.schema.get('comment'),
-        readonly: !this.options.canWrite
+        readonly: !this.options.canWrite,
+        options: enumArray
       };
     }
 
