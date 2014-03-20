@@ -17,7 +17,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
-    {id: 'height', ui: 'numeric', def: '10'},
+    {id: 'height', ui: 'numeric', def: '500'},
     {id: 'bold', ui: 'checkbox', def: '1'},
     {id: 'italic', ui: 'checkbox', def: '1'},
     {id: 'underline', ui: 'checkbox', def: '1'},
