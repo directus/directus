@@ -22,8 +22,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     {id: 'url', ui: 'textinput'}
   ];
 
-  var template = '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
-                  <input type="text" value="{{value}}" class="for_display_only" {{#if readonly}}readonly{{/if}}/> \
+  var template = '<input type="text" value="{{value}}" class="for_display_only" {{#if readonly}}readonly{{/if}}/> \
                   <style> \
                     .tt-hint {padding:6px 8px;} \
                     #edit_field_{{name}} .twitter-typeahead {\
@@ -59,7 +58,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   Module.Input = UIView.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     events: {},
 

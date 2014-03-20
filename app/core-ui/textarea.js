@@ -12,8 +12,7 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
-                  <textarea rows="{{rows}}" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>{{value}}</textarea>';
+  var template = '<textarea rows="{{rows}}" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>{{value}}</textarea>';
 
   Module.id = 'textarea';
   Module.dataTypes = ['TEXT', 'VARCHAR'];
@@ -24,7 +23,7 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

@@ -12,8 +12,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label>{{{capitalize name}}}<span class="note">{{comment}}</span></label> \
-                  <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
+  var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
 
   Module.id = 'numeric';
   Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR','DOUBLE'];
@@ -26,7 +25,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     template: Handlebars.compile(template),
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     events: {
       'keydown input': function(e) {

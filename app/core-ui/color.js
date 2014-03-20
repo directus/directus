@@ -29,8 +29,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'show_color_on_list', ui: 'checkbox'}
   ];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
-                  <style type="text/css"> \
+  var template =  '<style type="text/css"> \
                   input.color-box { \
                     margin-left: 10px; \
                     width: 60px; \
@@ -55,7 +54,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

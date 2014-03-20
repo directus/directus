@@ -19,8 +19,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a JSON object'}
   ];
 
-  var template = '<label style="margin-bottom: 7px;">{{{capitalize name}}} <span class="note">{{comment}}</span></label> \
-                  <style type="text/css"> \
+  var template = '<style type="text/css"> \
                   label.radiobuttons { \
                     font-weight:normal; \
                     display:inline; \
@@ -36,7 +35,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     template: Handlebars.compile(template),
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     serialize: function() {
       var options = _.map(this.options.settings.get('options').split(','), function(item) {

@@ -11,6 +11,13 @@
 </div>
 {{/if}}
 
+{{#if batchEdit}}
+<div class="btn-group btn-group-action active">
+  <button class="btn btn-small" title="Batch Edit" id="batch-edit">Batch Edit</button>
+</div>
+{{/if}}
+
+
 <div class="btn-group" id="visibility">
   {{#visibility}}
   {{#if this.active}}

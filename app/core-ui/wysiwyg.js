@@ -31,8 +31,7 @@ define(['app', 'backbone'], function(app, Backbone) {
        return new Handlebars.SafeString(text.string.replace(/\n/g, '<br/>'));
    });
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label>'+
-                  '<div class="btn-group btn-group-attached btn-group-action active">'+
+  var template =  '<div class="btn-group btn-group-attached btn-group-action active">'+
                     '{{#if bold}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b>B</b></button>{{/if}}'+
                     '{{#if italic}}<button type="button" class="btn btn-small btn-silver" data-tag="italic" rel="tooltip" data-placement="bottom" title="Italic"><i>I</i></button>{{/if}}'+
                     '{{#if underline}}<button type="button" class="btn btn-small btn-silver" data-tag="underline" rel="tooltip" data-placement="bottom" title="Underline"><u>U</u></button>{{/if}}'+
@@ -53,7 +52,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

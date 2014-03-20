@@ -22,8 +22,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'salt_field', ui: 'textinput', def: 'salt'}
   ];
 
-  var template = '<label>Change Password <span class="note">{{comment}}</span></label> \
-                 <input type="password" value="{{value}}" name="{{name}}" class="medium password-primary"/> \
+  var template = '<input type="password" value="{{value}}" name="{{name}}" class="medium password-primary"/> \
                  <button class="btn btn-small btn-primary margin-left password-generate" type="button">Generate New</button> \
                  <button class="btn btn-small btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
                  <span class="password-text"></span> \
@@ -36,7 +35,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

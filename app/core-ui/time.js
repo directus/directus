@@ -29,8 +29,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
     {id: 'include_seconds', ui: 'checkbox'}
   ];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
-                  <style type="text/css"> \
+  var template =  '<style type="text/css"> \
                   input.time { \
                     display: inline; \
                     display: -webkit-inline-flex; \
@@ -50,7 +49,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

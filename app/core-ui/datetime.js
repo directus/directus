@@ -14,8 +14,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
   ];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label> \
-                  <style type="text/css"> \
+  var template =  '<style type="text/css"> \
                   input.date { \
                     display: inline; \
                     display: -webkit-inline-flex; \
@@ -47,7 +46,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
 
   Module.Input = UIView.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

@@ -321,12 +321,15 @@ define(function(require, exports, module) {
       return this.structure;
     },
 
-    getNewInstance: function() {
-      return new EntriesModel({}, {
+    getNewInstance: function(options) {
+      options = options || {};
+      
+      return new EntriesModel({}, _.extend({
         structure: this.structure,
         table: this.table,
         privileges: this.privileges
-      });
+      }, options));
+    
     },
 
     getTable: function() {

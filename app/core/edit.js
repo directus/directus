@@ -5,6 +5,34 @@ define(function(require, exports, module) {
   var app = require('app');
   var UIManager = require('./UIManager');
 
+  var UIContainer = Backbone.Layout.extend({
+    
+    tagName: 'fieldset',
+
+    attributes: {
+      'class': 'batchcontainer'
+    },
+
+    template: 'uicontainer',
+
+    events: {
+      'click [name="batchedit"]': function() {
+        this.$('.fieldset-smoke').toggle();
+      }
+    },
+            
+    serialize: function() {
+      return {id: this.model.id, comment: this.model.get('comment'), batchEdit: this.options.batchEdit}
+    },
+
+    afterRender: function() {
+      if (this.model.isRequired()) {
+        this.$el.addClass('required');
+      }
+    }
+          
+  });
+
   var EditView = module.exports = Backbone.Layout.extend({
 
     tagName: "form",
@@ -31,13 +59,14 @@ define(function(require, exports, module) {
           }
           // Default `active` to 1 for new nested collection inserts.
           // @todo more correct way to do this?
-          this.model.set('active',1);
+          this.model.set('active', 1);
         }
 
         var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
 
         // Display:none; hidden fields
-        if (_.contains(this.hiddenFields, column.id)) {
+        var isHidden = _.contains(this.hiddenFields, column.id);
+        if (isHidden) {
           // return;
           view.$el.css({'display':'none'});
         }
@@ -49,7 +78,13 @@ define(function(require, exports, module) {
           view.$el.addClass('required');
         }
 
-        this.insertView(view);
+        if (!isHidden) {
+          var uiContainer = new UIContainer({model: column, batchEdit: this.options.batchIds !== undefined});
+          uiContainer.insertView(view);
+          this.insertView(uiContainer);
+        } else {
+          this.insertView(view);
+        }
 
       }, this);
     },
@@ -65,12 +100,14 @@ define(function(require, exports, module) {
       var $first = this.$el.find(':input:first:visible');
       $first.focus();
       $first.val($first.val());
+      
       // If this is a nested collection (to-Many) "Add" modal, preset & hide the parent foreign key.
       if(this.options.collectionAdd && !_.isEmpty(this.options.parentField)) {
         this.model.set(this.options.parentField.name, this.options.parentField.value);
         var $select = this.$el.find('[name=' + this.options.parentField.name + ']');
         $select.closest('fieldset').hide();
       }
+
     },
 
     data: function() {

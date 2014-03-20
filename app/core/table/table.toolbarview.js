@@ -18,7 +18,7 @@ function(app, Backbone) {
         var value = $(e.target).closest('button').attr('data-value');
         var collection = this.collection;
 
-        var $checked = $('td.check > input:checked');
+        var $checked = $('.select-row:checked');
         var expectedResponses = $checked.length;
 
         var success = function() {
@@ -43,16 +43,19 @@ function(app, Backbone) {
         this.collection.fetch();
         this.options.preferences.save({active: value});
       },
+      
       'click a.pag-next:not(.disabled)': function() {
         var page = this.collection.getFilter('currentPage') + 1;
         this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
+      
       'click a.pag-prev:not(.disabled)': function() {
         var page = this.collection.getFilter('currentPage') - 1;
         this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
+      
       'keydown': function(e) {
         if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
           this.collection.setFilter('currentPage', this.collection.filters.currentPage + 1);
@@ -63,6 +66,7 @@ function(app, Backbone) {
           this.collection.fetch();
         }
       },
+      
       'keypress #table-filter': function(e) {
         if (e.which == 13) {
           var text = $('#table-filter').val();
@@ -72,9 +76,21 @@ function(app, Backbone) {
           this.collection.trigger('search', text);
         }
       },
+      
       'click .add-filter-row': function(e) {
         var $filterRow = this.getFilterRow;
         $filterRow.clone(true).appendTo(".advanced-search-fields");
+      },
+
+      'click #batch-edit': function(e) {
+        var $checked = $('.select-row:checked');
+        var ids = $checked.map(function() {
+          return this.value;
+        }).toArray().join();
+
+        var route = Backbone.history.fragment.split('/');
+        route.push(ids);
+        app.router.go(route);
       }
     },
 
@@ -90,6 +106,7 @@ function(app, Backbone) {
       options.pagePrev = (this.collection.getFilter('currentPage') !== 0);
 
       options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
+      options.batchEdit = this.batchEdit;
 
       if (this.active) {
         options.visibility = _.map([
@@ -137,7 +154,8 @@ function(app, Backbone) {
       this.active = this.options.structure && this.options.structure.get('active') && !this.options.deleteOnly;
       //Show action buttons if there are selected models
       this.collection.on('select', function() {
-        this.actionButtons = Boolean($('td.check > input:checked').length);
+        this.actionButtons = Boolean($('.select-row:checked').length);
+        this.batchEdit = $('.select-row:checked').length > 1;
         this.render();
       }, this);
 

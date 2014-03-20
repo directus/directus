@@ -28,8 +28,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
     {id: 'readonly', ui: 'checkbox'}
   ];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label> \
-                  <style type="text/css"> \
+  var template =  '<style type="text/css"> \
                   input.date { \
                     display: inline; \
                     display: -webkit-inline-flex; \
@@ -46,7 +45,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

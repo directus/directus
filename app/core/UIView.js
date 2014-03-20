@@ -8,7 +8,7 @@ define(function(require, exports, module) {
 
   module.exports = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     name: null,
 

@@ -19,14 +19,13 @@ define(['app','backbone'], function(app, Backbone) {
     {id: 'force_lowercase', ui: 'checkbox', def: '1'}
   ];
 
-  var template = '<label>{{{capitalize name}}}  <span class="note">{{comment}}</span></label> \
-                 <input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}"> \
+  var template = '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}"> \
                  <input type="text" class="medium" id="tag-input"/><button class="btn btn-small btn-primary margin-left" type="button">Add</button> \
                  <div style="width:84%;">{{#tags}}<span class="label tag">{{this}}</span>{{/tags}}</div>';
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile( template),
 
