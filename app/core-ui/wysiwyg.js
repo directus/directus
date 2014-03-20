@@ -44,6 +44,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     '<button type="button" class="btn btn-small btn-silver" data-tag="unlink" rel="tooltip" data-placement="bottom" title="Unlink">Unlink</button>{{/if}}'+
                     '{{#if insertimage}}<button type="button" class="btn btn-small btn-silver" data-tag="insertimage" rel="tooltip" data-placement="bottom" title="Image">Image</button>{{/if}}'+
                                       '<button type="button" class="btn btn-small btn-silver" data-tag="insertHTML" rel="tooltip" data-placement="bottom" title="HTML">HTML</button>'+
+                                      '<button type="button" class="btn btn-small btn-silver" data-tag="clearHTML" rel="tooltip" data-placement="bottom" title="Remove Formatting">Remove Formatting</button>'+
                   '</div>'+
                   '<div class="force-editable" style="display:block; height:{{height}}px;" contenteditable="true" id="{{name}}">{{newlineToBr value}}</div>'+
                   '<input type="hidden" name="{{name}}" value="{{markupValue}}">';
@@ -67,6 +68,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
         if(tag == 'insertHTML'){
           value = prompt("Enter HTML", "");
+        }
+
+        if(tag == 'clearHTML') {
+          this.removeSelectedFormatting();
         }
 
         if(tag == 'createlink' || tag == 'insertimage'){
@@ -151,8 +156,39 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     initialize: function() {
       //
-    }
+    },
 
+    removeSelectedFormatting: function() {
+      var html = "";
+      var sel = window.getSelection();
+
+      if (sel.rangeCount) {
+          var container = document.createElement("div");
+          for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+              container.appendChild(sel.getRangeAt(i).cloneContents());
+          }
+          html = container.innerHTML;
+      }
+      console.log(html);
+      html = html.replace(/<(?:.|\n)*?>/gm, '');
+
+      var range = sel.getRangeAt(0);
+
+      range.deleteContents();
+
+      var div = document.createElement("div");
+      div.innerHTML = html;
+      var frag = document.createDocumentFragment(), child;
+      while ( (child = div.firstChild) ) {
+        frag.appendChild(child);
+      }
+
+      if(sel.anchorNode.parentNode != document.getElementById(this.options.name)) {
+        sel.anchorNode.parentNode.remove();
+      }
+
+      range.insertNode(frag);
+    }
   });
 
   Module.validate = function(value) {
