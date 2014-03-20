@@ -13,7 +13,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   var Module = {};
 
   Module.id = 'textinput';
-  Module.dataTypes = ['VARCHAR', 'DATE', 'TIME'];
+  Module.dataTypes = ['VARCHAR', 'DATE', 'TIME', 'ENUM'];
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
