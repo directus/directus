@@ -16,7 +16,7 @@ define(['app','backbone'], function(app, Backbone) {
   Module.dataTypes = ['BLOB','MEDIUMBLOB'];
 
   Module.Input = Backbone.Layout.extend({
-    tagName: 'fieldset',
+    tagName: 'div',
     initialize: function() {
       var image = document.createElement('img');
       image.src = 'data:image/png;base64,'+this.options.value;

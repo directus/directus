@@ -20,8 +20,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     //{id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
 
-  var template = '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
-                  <style type="text/css"> \
+  var template = '<style type="text/css"> \
                   label.radiobuttons { \
                     font-weight:normal; \
                     display:inline; \
@@ -43,7 +42,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   Module.Input = UIView.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     events: {
       'change select': function(e) {

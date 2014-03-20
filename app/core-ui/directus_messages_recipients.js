@@ -49,14 +49,13 @@ define(['app', 'backbone'], function(app, Backbone) {
                     background-color: black; \
                 }\
                 </style>\
-                <label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
                  <input type="text" id="directus_messages_recipients-input">\
                  <div style="width:84%; margin-top:5px" id="directus_messages_recipients-recipients">{{#tags}}<span class="label tag recipient-tag">{{this}}</span>{{/tags}}</div>\
                  <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

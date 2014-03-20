@@ -21,14 +21,13 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     {id: 'remove_button', ui: 'checkbox'}
   ];
 
-  var template = '<label>{{{capitalize title}}}</label> \
-      <div class="related-table"></div> \
-      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}} \
-      {{#if manyToMany}}{{#if canEdit}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}{{/if}}</div>';
+  var template = '<div class="related-table"></div> \
+                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}} \
+                  {{#if manyToMany}}{{#if canEdit}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}{{/if}}</div>';
 
   Module.Input = UIView.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
     template: Handlebars.compile(template),
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',

@@ -153,8 +153,10 @@ define(function(require, exports, module) {
       this.setTitle('Tables');
       this.tabs.setActive('tables');
 
-      var collection;
-      var model;
+      var isBatchEdit = (typeof id === 'string') && id.indexOf(',') !== -1,
+          collection,
+          model,
+          view;
 
       // see if the collection is cached...
       if (this.currentCollection !== undefined && this.currentCollection.table.id == tableName) {
@@ -167,9 +169,9 @@ define(function(require, exports, module) {
         return this.notFound();
       }
 
-      if (id === "new") {
+      if (id === "new" || isBatchEdit) {
         // Passing parse:true will setup relations
-        model = new collection.model({},{collection: collection, parse: true});
+        model = new collection.model({}, {collection: collection, parse: true});
 
       } else {
         model = collection.get(id);
@@ -178,7 +180,13 @@ define(function(require, exports, module) {
         }
       }
 
-      this.v.main.setView('#content', new Table.Views.Edit({model: model}));
+      if (isBatchEdit) {
+        view = new Table.Views.BatchEdit({model: model, batchIds: id.split(',')});
+      } else {
+        view = new Table.Views.Edit({model: model});
+      }
+
+      this.v.main.setView('#content', view);
       this.v.main.render();
     },
 

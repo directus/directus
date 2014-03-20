@@ -26,12 +26,11 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{note}}</span></label>' +
-                  '{{#columns}}<label><input type="checkbox" name="{{../name}}" value="{{columnName}}" {{#if selected}}checked{{/if}}>{{title}}</label>{{/columns}}';
+  var template =  '{{#columns}}<label><input type="checkbox" name="{{../name}}" value="{{columnName}}" {{#if selected}}checked{{/if}}>{{title}}</label>{{/columns}}';
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

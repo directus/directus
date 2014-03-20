@@ -6824,6 +6824,7 @@ table#directus-grouppermissions th.permissions {
   border: 1px solid #ededed;
 }
 .directus-form fieldset {
+  position: relative;
   border-bottom: 1px solid #ededed;
   border-top: 1px solid #ffffff;
   padding: 12px 20px 14px 20px;

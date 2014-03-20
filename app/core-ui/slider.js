@@ -30,8 +30,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'step', ui: 'numeric', comment: 'Specifies the allowed number intervals'}
   ];
 
-  var template =  '<label>{{capitalize name}} <span class="note">{{comment}}</span></label> \
-                  <style type="text/css"> \
+  var template =  '<style type="text/css"> \
                   span.slider-value { \
                     margin-left: 10px; \
                   } \
@@ -40,7 +39,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

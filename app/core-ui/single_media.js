@@ -30,8 +30,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
 
   //{{capitalize mediaModel.title}}
 
-  var template =  '<label>{{ capitalize name }} <span class="note">{{comment}}</span></label> \
-                  <style type="text/css"> \
+  var template =  '<style type="text/css"> \
                   div.ui-thumbnail { \
                     float: left; \
                     margin-top: 8px; \
@@ -104,7 +103,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

@@ -12,7 +12,7 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<label>{{{capitalize name}}} <span class="note">{{comment}}</span></label><select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">Select from below</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
+  var template = '<select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">Select from below</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
 
   Module.id = 'enum';
   Module.dataTypes = ['ENUM','SET'];
@@ -21,7 +21,7 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     template: Handlebars.compile(template),
 

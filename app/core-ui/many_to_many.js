@@ -33,7 +33,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
     },
 
     template: Handlebars.compile(
-      '<label>{{{capitalize title}}}</label>' +
       '<div class="related-table"></div>' +
       '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}' +
       '{{#if showChooseButton}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>'),

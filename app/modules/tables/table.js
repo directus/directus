@@ -37,6 +37,106 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
 
   });
 
+  Table.Views.BatchEdit = Backbone.Layout.extend({
+
+    template: 'page',
+
+    events: {
+      'click #save-form': 'save'
+    },
+
+    save: function() {
+      var model = this.model,
+          itemCount = this.batchIds.length,
+          failRequestCount = 0,
+          successRequestCount = 0;
+
+      if (!confirm('This will affect ' + itemCount + ' records. Continue?')) {
+        return;
+      }
+
+      // Serialize the entire form
+      var data = this.editView.data();
+      
+      // Get an attribute whitelist based on the checkboxes
+      var attrWhitelist = $("input[name='batchedit']:checked").map(function() {
+        return $(this).data('attr');
+      }).toArray();
+
+      // Set data to model inorder to include relationships etc
+      model.set(this.model.diff(data));
+
+      // Changed attributes based on whitelist
+      var changedAttributes = _.pick(model.toJSON(), attrWhitelist);
+
+      var checkIfDone = function() {
+        var totalRequest = successRequestCount + failRequestCount;
+        if (totalRequest === itemCount) {
+          var route = Backbone.history.fragment.split('/');
+          route.pop();
+          alert(successRequestCount + " items have been updated. " + failRequestCount + " items failed to update");
+          app.router.go(route);
+        }
+      }
+
+      var success = function() {
+        successRequestCount++;
+        checkIfDone();
+      }
+
+      var error = function() {
+        failRequestCount++;
+        checkIfDone(); 
+      }
+
+      // Save all batch id's
+      _.each(this.batchIds, function(id) {
+        var modelToUpdate = model.getNewInstance({collection: model.collection});
+        modelToUpdate.set({id: id});
+
+        modelToUpdate.save(changedAttributes, {
+          success: success,
+          error: error,
+          wait: true,
+          patch: true,
+          includeRelationships: true,
+          validate: false
+        });
+      });
+
+      console.log(changedAttributes);
+    },
+
+    serialize: function() {
+      var breadcrumbs = [{ title: 'Tables', anchor: '#tables'}],
+          title = 'Batch Edit ('+this.batchIds.length+')';
+      
+      breadcrumbs.push({ title: this.model.collection.table.id, anchor: '#tables/' + this.model.collection.table.id });
+      
+      return {
+        breadcrumbs: breadcrumbs,
+        title: title,
+        sidebar: true
+      };
+    },    
+
+    beforeRender: function() {
+      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: false}));
+    },
+
+    afterRender: function() {
+      this.setView('#page-content', this.editView);
+      this.editView.render();
+    },
+
+    initialize: function(options) {
+      this.batchIds = options.batchIds;
+      this.editView = new Directus.EditView({model: this.model, batchIds: options.batchIds});
+    }
+
+  });
+
+
   Table.Views.Edit = Backbone.Layout.extend({
 
     template: 'page',
@@ -47,7 +147,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       'click #save-form-add': 'save',
       'click #save-form-copy': 'save',
       'click #delete-form': 'deleteItem',
-      'keydown' : function(e) {
+      'keydown': function(e) {
         if (e.keyCode === 83 && e.metaKey) {
           this.save();
         }
@@ -138,7 +238,17 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
 
     serialize: function() {
       var breadcrumbs = [{ title: 'Tables', anchor: '#tables'}];
-      var title = (this.model.id) ? 'Editing Item' : 'Creating New Item';
+      var title;
+
+      if (this.model.id) {
+        title = 'Editing Item';
+      } else {
+        if (this.options.batchIds !== undefined) {
+          title = 'Batch Edit';
+        } else {
+          title = 'Creating New Item'; 
+        }        
+      }
 
       if (this.single) {
         title = this.model.collection.table.id;
@@ -153,7 +263,8 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
     },
 
     beforeRender: function() {
-      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: !this.single}));
+      var showDropDown = !this.single && !this.isBatchEdit;
+      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: showDropDown}));
     },
 
     afterRender: function() {
@@ -191,9 +302,10 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       app.affix();
     },
 
-    initialize: function() {
+    initialize: function(options) {
+      this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');
-      this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
+      this.editView = new Directus.EditView({model: this.model, ui: this.options.ui, batchIds: options.batchIds});
     }
   });
 
