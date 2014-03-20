@@ -21,30 +21,58 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'options', ui: 'textarea', options:{'rows': 25}  }
   ];
 
-  var select_list_template = '<label>{{capitalize name}}<span class="note">{{comment}}</span></label> \
-                              <select multiple name="{{name}}" {{#if readonly}}disabled{{/if}}> \
-                                  {{#options}} \
-                                      <option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option> \
-                                  {{/options}}</select>';
-
-  var cb_list_template = '<label>{{capitalize name}}<span class="note">{{comment}}</span></label> \
-                 <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
-                 <span class="label char-count hide">{{characters}}</span>';
+  var template = '<label>{{capitalize name}}<span class="note">{{comment}}</span></label> \
+                              {{#if cb_list}} \
+                                {{#options}} \
+                                        <input style="margin-top:1px;" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/> {{value}} \
+                                {{/options}}</select> \
+                              {{else}} \
+                                <select multiple> \
+                                    {{#options}} \
+                                        <option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option> \
+                                    {{/options}}</select> \
+                              {{/if}} \
+                              <input type="hidden" name="{{name}}">';
 
   Module.Input = Backbone.Layout.extend({
 
     tagName: 'fieldset',
 
-    template: Handlebars.compile(select_list_template),
+    template: Handlebars.compile(template),
+
+    events: {
+      'click select': function(e) {
+        var values = this.$el.find('select').val();
+        var out = "";
+        for (var i=0; i<values.length; i++) {
+          out += values[i] + this.options.settings.get('delimiter');
+        }
+
+        out = out.substr(0, out.length - 1);
+
+        this.$el.find('input').val(out);
+      },
+      'change input[type=checkbox]': function(e) {
+        var values = this.$el.find('input[type=checkbox]:checked');
+        var out = "";
+        for (var i=0; i<values.length; i++) {
+          out += $(values[i]).attr('name') + this.options.settings.get('delimiter');
+        }
+
+        out = out.substr(0, out.length - 1);
+
+        this.$el.find('input').val(out);
+      }
+    },
 
     serialize: function() {
       var value = this.options.value || '';
 
       var values = value.split(this.options.settings.get('delimiter'));
 
-      console.log(values);
-
       var options = this.options.settings.get('options');
+
+      var cb_list = this.options.settings.get('type') == "cb_list";
 
       if (_.isString(options)) {
         options = $.parseJSON(options);
@@ -58,12 +86,11 @@ define(['app', 'backbone'], function(app, Backbone) {
         return item;
       });
 
-      console.log(options);
-
       return {
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        options: options
+        options: options,
+        cb_list: cb_list
       };
     }
   });
