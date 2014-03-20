@@ -17,14 +17,15 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
-    {id: 'height', ui: 'numeric'},
+    {id: 'height', ui: 'numeric', def: '10'},
     {id: 'bold', ui: 'checkbox', def: '1'},
     {id: 'italic', ui: 'checkbox', def: '1'},
     {id: 'underline', ui: 'checkbox', def: '1'},
     {id: 'strikethrough', ui: 'checkbox', def: '1'},
     {id: 'rule', ui: 'checkbox', def: '1'},
     {id: 'createlink', ui: 'checkbox', def: '1'},
-    {id: 'insertimage', ui: 'checkbox', def: '1'}
+    {id: 'insertimage', ui: 'checkbox', def: '1'},
+    {id: 'plaintextpaste', ui: 'checkbox', def: '1'}
   ];
 
    Handlebars.registerHelper('newlineToBr', function(text){
@@ -90,6 +91,31 @@ define(['app', 'backbone'], function(app, Backbone) {
         var innerHtml = $(e.target).html();
         //innerHtml = String(innerHtml).replace(/"/g, '&quot;');
         this.$el.find('input').val(innerHtml);
+      },
+      'paste' : function(e) {
+        if(this.options.settings.get("plaintextpaste") != "on") {
+          return;
+        }
+
+        var active = document.activeElement;
+        var sel = window.getSelection();
+        var range;
+        if(sel.rangeCount) {
+          range = sel.getRangeAt(0);
+          range.deleteContents();
+        }
+
+        var textarea = document.createElement("textarea");
+        $(active).append("<textarea id='temparea'></textarea>");
+        var $temp = $('#temparea');
+        $temp.focus();
+        setTimeout(function() {
+          var html = $temp.val();
+          $temp.remove();
+          active.focus();
+          console.log(html);
+          range.insertNode(document.createTextNode(html));
+        }, 1);
       }
     },
 
