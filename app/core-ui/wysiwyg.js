@@ -162,32 +162,48 @@ define(['app', 'backbone'], function(app, Backbone) {
       var html = "";
       var sel = window.getSelection();
 
-      if (sel.rangeCount) {
-          var container = document.createElement("div");
-          for (var i = 0, len = sel.rangeCount; i < len; ++i) {
-              container.appendChild(sel.getRangeAt(i).cloneContents());
-          }
-          html = container.innerHTML;
-      }
-      console.log(html);
-      html = html.replace(/<(?:.|\n)*?>/gm, '');
-
-      var range = sel.getRangeAt(0);
-
-      range.deleteContents();
-
-      var div = document.createElement("div");
-      div.innerHTML = html;
-      var frag = document.createDocumentFragment(), child;
-      while ( (child = div.firstChild) ) {
-        frag.appendChild(child);
+      if(sel.isCollapsed) {
+        html = $(document.getElementById(this.options.name)).html().replace(/<(?:.|\n)*?>/gm, '');
+        $(document.getElementById(this.options.name)).html(html);
+        return;
       }
 
       if(sel.anchorNode.parentNode != document.getElementById(this.options.name)) {
+        html = sel.anchorNode.parentNode.innerHTML.replace(/<(?:.|\n)*?>/gm, '');
+        var container = document.createElement("div");
+        container.innerHTML = html;
+        sel.anchorNode.parentNode.parentNode.insertBefore(container, sel.anchorNode.parentNode);
         sel.anchorNode.parentNode.remove();
+      } else {
+        if (sel.rangeCount) {
+            var container = document.createElement("div");
+            for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+                container.appendChild(sel.getRangeAt(i).cloneContents());
+            }
+            html = container.innerHTML;
+        }
+
+        html = html.replace(/<(?:.|\n)*?>/gm, '');
+
+        var range = sel.getRangeAt(0);
+
+        range.deleteContents();
+
+        var div = document.createElement("div");
+        div.innerHTML = html;
+        var frag = document.createDocumentFragment(), child;
+        while ( (child = div.firstChild) ) {
+          frag.appendChild(child);
+        }
+
+        range.insertNode(frag);
       }
 
-      range.insertNode(frag);
+      if (window.getSelection().empty) {  // Chrome
+        window.getSelection().empty();
+      } else if (window.getSelection().removeAllRanges) {  // Firefox
+        window.getSelection().removeAllRanges();
+      }
     }
   });
 
