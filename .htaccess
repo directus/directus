@@ -16,6 +16,12 @@ AddType font/woff .woff
     RewriteRule ^listviews/([^/]+)/assets - [L,NC]
     RewriteRule ^listviews/([^/]+)/ListView.js - [L,NC]
 
+    # Media Proxy
+    # - Only define one of the URL segments /.../ here so that the request format
+    #   can be more flexibly maintained in the PHP/Slim router
+    RewriteCond %{REQUEST_URI} media/auth_proxy/([^/]+)/(.+)$
+    RewriteRule ^ /media/auth_proxy/index.php [L]
+
     # Media Thumbnails
     # - Cached thumbnail exists
     #RewriteCond %{REQUEST_URI} ^/thumbnail/(.+)$

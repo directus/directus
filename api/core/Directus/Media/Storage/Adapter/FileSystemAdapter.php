@@ -23,4 +23,9 @@ class FileSystemAdapter extends Adapter {
 		return $move;
 	}
 
+	public function getFileContents($fileName, $destination) {
+		$path = $this->joinPaths($destination, $fileName);
+		return file_get_contents($path);
+	}
+
 }

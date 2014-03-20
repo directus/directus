@@ -42,6 +42,14 @@ abstract class Adapter {
     protected abstract function fileExists($fileName, $destination);
 
     /**
+     * Can't make this abstract right off the bat since it will break the one CDN adapter we have right now
+     * @param  string $fileName
+     * @param  string $destination
+     * @return string               File contents
+     */
+    public abstract function getFileContents($fileName, $destination);
+
+    /**
      * @param  string $localFile      The local path of the source file.
      * @param  string $targetFileName The intended target file name.
      * @param  mixed $destination    The destination where we'll write the file. Varies depending on adapter
@@ -91,7 +99,7 @@ abstract class Adapter {
         return $info;
     }
 
-    protected function joinPaths($path, $file) {
+    public function joinPaths($path, $file) {
         $file = ltrim($file, '/');
         $path = rtrim($path, '/');
         return implode('/', array($path, $file));
