@@ -10,46 +10,67 @@
   <link rel="shortcut icon" href="{{path}}favicon.ico?bust={{cacheBuster}}">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Maven+Pro:400,500,700,900|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
   <link rel="stylesheet" href="{{cssFilePath}}?bust={{cacheBuster}}">
   <link rel="stylesheet" href="{{path}}assets/css/alertify.core.css?bust={{cacheBuster}}">
   <link rel="stylesheet" href="{{path}}assets/css/alertify.default.css?bust={{cacheBuster}}">
+
+  <!-- DAX CSS -->
+  <link rel="stylesheet" href="{{path}}assets/css/dax.css">
+  
   <script type="text/javascript" src="{{path}}assets/js/util/chromecheck.js?bust={{cacheBuster}}"></script>
 </head>
 
 <body>
 
+<!-- Initial load screen -->
 <div id="splash" style="position:absolute; left:0px; top:0px; right:0px; bottom:0px; background-color:#FFF; z-index:99999999; cursor:progress; background-image:url({{path}}assets/img/directus-logo-throbber.gif); background-repeat:no-repeat; background-position:center center;"></div>
 
-<!-- Main container. -->
-<div id="wrap">
-  <div id="main">
-    <div id="navbar"></div>
-    <div class="head">
-      <div id="tabs" class="container-fluid"></div>
-    </div>
-    <div id="content" class="container-fluid">
-      <!--<div id="alert">
-      <span class="glyphicon-repeat"></span>
-      Signing in
-      </div>-->
-    </div>
-    <div id="modal-container"></div>
+
+<!-- Main container. Get's attached to a Backbone View -->
+<div id="main">
+
+
+
+
+
+<!-- Sidebar template -->
+<header id="sidebar" class="font-primary">
+  <div id="mainLogoBox" class="primary-text-color">
+    <span class="icon icon-directus"
+    <img src="<?php echo $mainUrl ?>public/assets/images/logo.png"/>
   </div>
-  <div id="push"></div>
+  
+
+  <!-- This is essentially tabs -->
+  <div id="mainSidebar"></div>
+  <!-- This is essentially tabs END -->
+  
+
+
+  <nav id="featureSidebar">
+  </nav>
+  
+</header>
+
+  <div id="content"></div>
+  
+  <div id="modal-container"></div>
 </div>
 
-<div id="footer">
-	<div class="container-fluid">
-		Powered by <a href="http://www.getdirectus.com" target="get_directus">Directus (v5.1.b)</a>
-	</div>
-</div>
+<!-- ? -->
+<div id="push"></div>
 
+<!-- ? -->
 <div id="messages"></div>
 
+<!-- Loader -->
 <div class="blocker" id="loader" style="display:none;">
   <div id="alert"><span class="glyphicon-refresh"></span></div>
 </div>
 
+<!-- custom HTML can be injected here -->
 {{customFooterHTML}}
 
 <script>
@@ -58,7 +79,6 @@ window.directusData = {{data}};
 
 <!-- Application source. -->
 <script data-main="{{path}}app/main" src="{{path}}assets/js/libs/require.js?bust={{cacheBuster}}"></script>
-<!--<script src="{{path}}dist/release.js?bust={{cacheBuster}}"></script>-->
 
 </body>
 </html>

@@ -48,6 +48,8 @@ function(app, Backbone) {
   Tabs.View = Backbone.Layout.extend({
     template: "tabs",
 
+    tagName: "nav",
+
     serialize: function() {
       var tabs = this.collection.map(function(model) {
         var tab = model.toJSON();
