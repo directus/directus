@@ -18,7 +18,8 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    {id: 'validation_regex', ui: 'textinput', char_length:200},
+    {id: 'validation_type', ui: 'select', options: {options: {'bl':'Character Blacklist','wl':'Character Whitelist','rgx':'Regex'} }, def:'rgx'},
+    {id: 'validation_string', ui: 'textinput', char_length:200, comment: 'All Characters below will be enforced'},
     {id: 'validation_message', ui: 'textinput', char_length:200}
   ];
 
@@ -34,6 +35,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     events: {
       'focus input': function() { this.$el.find('.label').show(); },
       'input input': 'updateMaxLength',
+      'keypress input': 'validateString',
       'blur input': function() { this.$el.find('.label').hide(); }
     },
 
@@ -66,6 +68,21 @@ define(['app', 'backbone'], function(app, Backbone) {
         comment: this.options.schema.get('comment'),
         readonly: (this.options.settings.get('readonly') === "1" || !this.options.canWrite)
       };
+    },
+    validateString: function(e) {
+      var validationMessage = this.options.settings.get('validation_message') || app.DEFAULT_VALIDATION_MESSAGE;
+      switch(this.options.settings.get('validation_type')) {
+        case ('bl') :
+          var chars = this.options.settings.get('validation_string').split("");
+          return $.inArray(String.fromCharCode(e.which), chars) == -1;
+          break;
+        case ('wl') :
+          var chars = this.options.settings.get('validation_string').split("");
+          return $.inArray(String.fromCharCode(e.which), chars) != -1;
+          break;
+      }
+
+      return true;
     }
   });
 
@@ -74,11 +91,26 @@ define(['app', 'backbone'], function(app, Backbone) {
     if (options.schema.get('required') && _.isEmpty(value)) {
       return validationMessage;
     }
-    if (options.settings.has('validation_regex')) {
-      var regex = new RegExp(options.settings.get('validation_regex'));
-      if (!regex.test(value)) {
-        return validationMessage;
-      }
+
+    switch(options.settings.get('validation_type')) {
+      case ('wl') :
+        var Regex = new RegExp("^["+options.settings.get('validation_string')+"]+$");
+        if(!value.match(Regex)) {
+          return validationMessage;
+        }
+        break;
+      case ('bl') :
+        var chars = options.settings.get('validation_string').split("");
+        if(value.match(chars.join("|"))) {
+          return validationMessage;
+        }
+        break;
+      case ('rgx'):
+        var regex = new RegExp(options.settings.get('validation_string'));
+        if (!regex.test(value)) {
+          return validationMessage;
+        }
+        break;
     }
     //return 'HELL NO';
   };
