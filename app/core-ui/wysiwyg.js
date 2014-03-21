@@ -195,13 +195,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       if(sel.anchorNode.parentNode != document.getElementById(this.options.name)) {
         html = sel.anchorNode.parentNode.innerHTML.replace(/<(?:.|\n)*?>/gm, '');
-        var container = document.createElement("div");
+        var container = document.createElement("span");
         container.innerHTML = html;
         sel.anchorNode.parentNode.parentNode.insertBefore(container, sel.anchorNode.parentNode);
         sel.anchorNode.parentNode.remove();
       } else {
         if (sel.rangeCount) {
-            var container = document.createElement("div");
+            var container = document.createElement("span");
             for (var i = 0, len = sel.rangeCount; i < len; ++i) {
                 container.appendChild(sel.getRangeAt(i).cloneContents());
             }
@@ -214,7 +214,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
         range.deleteContents();
 
-        var div = document.createElement("div");
+        var div = document.createElement("span");
         div.innerHTML = html;
         var frag = document.createDocumentFragment(), child;
         while ( (child = div.firstChild) ) {
