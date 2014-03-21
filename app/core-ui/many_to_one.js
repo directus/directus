@@ -16,7 +16,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
-    {id: 'visible_column', ui: 'textinput', char_length: 64, required: true}
+    {id: 'value_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"}
     //{id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
 
@@ -58,7 +58,10 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     template: Handlebars.compile(template),
 
     serialize: function() {
-      var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column'));
+      var optionTemplate = function(){};
+      if(this.options.settings.has('value_template')) {
+        optionTemplate = Handlebars.compile(this.options.settings.get('value_template'));
+      }
       var data = this.collection.map(function(model) {
         var data = model.toJSON();
 
@@ -84,7 +87,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         canEdit: this.canEdit,
         name: this.options.name,
         data: data,
-        handleBarString: this.options.settings.get('visible_column'),
+        handleBarString: this.options.settings.get('value_template'),
         comment: this.options.schema.get('comment'),
         use_radio_buttons: (this.options.settings && this.options.settings.has('use_radio_buttons') && this.options.settings.get('use_radio_buttons') == '1') ? true : false
       };
@@ -126,7 +129,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   Module.list = function(options) {
     if (options.value === undefined) return '';
-    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
+    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('value_template'));
     return options.value;
   };
 
