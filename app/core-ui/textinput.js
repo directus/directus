@@ -33,7 +33,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     events: {
       'focus input': function() { this.$el.find('.label').show(); },
-      'keyup input': 'updateMaxLength',
+      'input input': 'updateMaxLength',
       'blur input': function() { this.$el.find('.label').hide(); }
     },
 
