@@ -58,10 +58,14 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     template: Handlebars.compile(template),
 
     serialize: function() {
+      var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column'));
       var data = this.collection.map(function(model) {
+        var data = model.toJSON();
+
+        var name = optionTemplate(data);
         return {
           id: model.id,
-          name: model.get(this.column),
+          name: name,
           selected: this.options.value !== undefined && (model.id === this.options.value.id)
         };
       }, this);
@@ -70,17 +74,17 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       if (this.options.value !== undefined && this.options.value.id && !data.length) {
         data = [{
           id: this.options.value.id,
-          name: this.options.value.get(this.column),
+          name: this.options.value,
           selected: true
         }];
       }
 
       data = _.sortBy(data, 'name');
-
       return {
         canEdit: this.canEdit,
         name: this.options.name,
         data: data,
+        handleBarString: this.options.settings.get('visible_column'),
         comment: this.options.schema.get('comment'),
         use_radio_buttons: (this.options.settings && this.options.settings.has('use_radio_buttons') && this.options.settings.get('use_radio_buttons') == '1') ? true : false
       };
@@ -91,7 +95,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       var relatedTable = this.columnSchema.relationship.get('table_related');
       var value = this.model.get(this.name);
 
-      this.column = this.columnSchema.options.get('visible_column');
       this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
