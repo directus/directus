@@ -107,8 +107,10 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             }
              $outer->unnest;
         }
-            
-        if(isset($params['search']) && !empty($params['search'])) {
+
+        if(isset($params['adv_search']) && !empty($params['adv_search'])) {
+          $select->where($params['adv_search']);
+        } else if(isset($params['search']) && !empty($params['search'])) {
             $params['search'] = "%" . $params['search'] . "%";
             $where = $select->where->nest;
             foreach ($schema as $col) {

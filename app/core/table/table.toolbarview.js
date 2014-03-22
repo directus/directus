@@ -104,7 +104,11 @@ function(app, Backbone) {
           };
         }).toArray();
 
-        this.collection.setFilter('adv_search', "id == 336");
+        var queryString = "";
+        var value;
+        while(value = searchSettings.pop()) {if(value.id && value.type && value.value) {queryString += value.id + value.type + value.value + ((searchSettings.length != 0) ? " AND " : ""); }}
+        console.log(queryString);
+        this.collection.setFilter('adv_search', queryString);
         this.collection.setFilter('currentPage', 0);
         this.collection.fetch();
         //this.collection.trigger('adv_search', "id == 336");
