@@ -43,19 +43,19 @@ function(app, Backbone) {
         this.collection.fetch();
         this.options.preferences.save({active: value});
       },
-      
+
       'click a.pag-next:not(.disabled)': function() {
         var page = this.collection.getFilter('currentPage') + 1;
         this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
-      
+
       'click a.pag-prev:not(.disabled)': function() {
         var page = this.collection.getFilter('currentPage') - 1;
         this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
-      
+
       'keydown': function(e) {
         if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
           this.collection.setFilter('currentPage', this.collection.filters.currentPage + 1);
@@ -66,7 +66,7 @@ function(app, Backbone) {
           this.collection.fetch();
         }
       },
-      
+
       'keypress #table-filter': function(e) {
         if (e.which == 13) {
           var text = $('#table-filter').val();
@@ -76,7 +76,7 @@ function(app, Backbone) {
           this.collection.trigger('search', text);
         }
       },
-      
+
       'click .add-filter-row': function(e) {
         var $filterRow = this.getFilterRow;
         $filterRow.clone(true).appendTo(".advanced-search-fields");
@@ -91,11 +91,29 @@ function(app, Backbone) {
         var route = Backbone.history.fragment.split('/');
         route.push(ids);
         app.router.go(route);
+      },
+
+      'click #advanced-filter-btn': function(e) {
+        var $filters = $('.advanced-search-fields-row');
+        var searchSettings = $filters.map(function() {
+          var $this = $(this);
+          return {
+            id: $this.find('.adv-search-col-id').val(),
+            type: $this.find('.adv-search-query-type').val(),
+            value: $this.find('input').val()
+          };
+        }).toArray();
+
+        this.collection.setFilter('adv_search', "id == 336");
+        this.collection.setFilter('currentPage', 0);
+        this.collection.fetch();
+        //this.collection.trigger('adv_search', "id == 336");
       }
     },
 
     serialize: function() {
 
+      var columns = this.options.collection.structure.pluck('id');
       var table = this.options.collection.table;
       var options = {};
 
@@ -121,6 +139,7 @@ function(app, Backbone) {
 
       options.filterText = this.collection.getFilter('search');
       options.filter = true;
+      options.tableColumns = columns;
       options.paginator = (options.pageNext || options.pagePrev);
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 

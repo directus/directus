@@ -53,23 +53,24 @@
     <span class="add-filter-row glyphicon-plus"></span>
     <div class="advanced-search-fields">
       <div class="advanced-search-fields-row">
-          <select name="" id="" class="medium">
-            <option value="asd">Table 1</option>
-            <option value="asd">Table 2</option>
-            <option value="asd">Table 3</option>
+          <select name="" id="" class="medium adv-search-col-id">
+            {{#tableColumns}}
+            <option value="{{this}}">{{this}}</option>
+            {{/tableColumns}}
           </select>
 
-          <select name="" id="" class="small">
-            <option value="asd">==</option>
-            <option value="asd">&lt;=</option>
-            <option value="asd">&gt;=</option>
-            <option value="asd">like</option>
+          <select name="" id="" class="small adv-search-query-type">
+            <option value="==">==</option>
+            <option value="<=">&lt;=</option>
+            <option value=">=">&gt;=</option>
+            <option value="like">like</option>
           </select>
           <input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="50" class="medium">
 
           <span class="glyphicon-remove remove-adv-row"></span>
       </div>
     </div>
+      <button class="btn btn-small" title="Do Search" id="advanced-filter-btn">Do Search</button>
   </div>
 </div>
 {{/if}}
