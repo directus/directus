@@ -98,15 +98,15 @@ function(app, Backbone) {
         var searchSettings = $filters.map(function() {
           var $this = $(this);
           return {
-            id: $this.find('.adv-search-col-id').val(),
+            id: "`" + $this.find('.adv-search-col-id').val() + "`",
             type: $this.find('.adv-search-query-type').val(),
-            value: $this.find('input').val()
+            value: "'" + $this.find('input').val() + "'"
           };
         }).toArray();
 
         var queryString = "";
         var value;
-        while(value = searchSettings.pop()) {if(value.id && value.type && value.value) {queryString += value.id + value.type + value.value + ((searchSettings.length != 0) ? " AND " : ""); }}
+        while(value = searchSettings.pop()) {queryString += value.id + value.type + value.value + ((searchSettings.length != 0) ? " AND " : ""); }
         console.log(queryString);
         this.collection.setFilter('adv_search', queryString);
         this.collection.setFilter('currentPage', 0);
