@@ -95,12 +95,13 @@ function(app, Backbone) {
 
       'click #advanced-filter-btn': function(e) {
         var $filters = $('.advanced-search-fields-row');
+        var that = this;
         var searchSettings = $filters.map(function() {
           var $this = $(this);
           return {
-            id: "`" + $this.find('.adv-search-col-id').val() + "`",
+            id: "`" + that.mysql_real_escape_string($this.find('.adv-search-col-id').val()) + "`",
             type: $this.find('.adv-search-query-type').val(),
-            value: "'" + $this.find('input').val() + "'"
+            value: "'" + that.mysql_real_escape_string($this.find('input').val()) + "'"
           };
         }).toArray();
 
@@ -150,6 +151,31 @@ function(app, Backbone) {
       options.visibilityButtons = options.actionButtons || options.deleteOnly;
 
       return options;
+    },
+
+    mysql_real_escape_string: function(str) {
+      return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
+          switch (char) {
+              case "\0":
+                  return "\\0";
+              case "\x08":
+                  return "\\b";
+              case "\x09":
+                  return "\\t";
+              case "\x1a":
+                  return "\\z";
+              case "\n":
+                  return "\\n";
+              case "\r":
+                  return "\\r";
+              case "\"":
+              case "'":
+              case "\\":
+              case "%":
+                  return "\\"+char; // prepends a backslash to backslash, percent,
+                                    // and double/single quotes
+          }
+      });
     },
 
     setFilterRow: function(){
