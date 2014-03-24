@@ -61,7 +61,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             $haystack = is_array($params['active'])
                 ? $params['active']
                 : explode(",", $params['active']);
-            $select->where->in('active', $haystack);
+            $select->where->in($params['table_name'].'.active', $haystack);
         }
 
         // Where
