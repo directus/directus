@@ -142,6 +142,7 @@ function(app, Backbone) {
       options.filterText = this.collection.getFilter('search');
       options.filter = true;
       options.tableColumns = this.options.collection.structure.pluck('id');
+      options.advSearchData = this.collection.getFilter('adv_search');
       options.paginator = (options.pageNext || options.pagePrev);
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 

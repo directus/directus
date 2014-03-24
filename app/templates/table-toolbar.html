@@ -52,23 +52,45 @@
     <h4 class="advanced-search-headline">Advanced Search</h4>
     <span class="add-filter-row glyphicon-plus"></span>
     <div class="advanced-search-fields">
-      <div class="advanced-search-fields-row">
-          <select name="" id="" class="medium adv-search-col-id">
-            {{#tableColumns}}
-            <option value="{{this}}">{{this}}</option>
-            {{/tableColumns}}
-          </select>
+      {{#unless advSearchData}}
+        <div class="advanced-search-fields-row">
+            <select name="" id="" class="medium adv-search-col-id">
+              {{#tableColumns}}
+              <option value="{{this}}">{{this}}</option>
+              {{/tableColumns}}
+            </select>
 
-          <select name="" id="" class="small adv-search-query-type">
-            <option value="=">==</option>
-            <option value="<=">&lt;=</option>
-            <option value=">=">&gt;=</option>
-            <option value="like">like</option>
-          </select>
-          <input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium">
+            <select name="" id="" class="small adv-search-query-type">
+              <option value="=">==</option>
+              <option value="<=">&lt;=</option>
+              <option value=">=">&gt;=</option>
+              <option value="like">like</option>
+            </select>
+            <input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium">
 
-          <span class="glyphicon-remove remove-adv-row"></span>
-      </div>
+            <span class="glyphicon-remove remove-adv-row"></span>
+        </div>
+      {{/unless}}
+      {{#advSearchData}}
+        <div class="advanced-search-fields-row">
+            <select name="" id="" class="medium adv-search-col-id">
+              {{#each ../tableColumns }}
+              <option value="{{this}}" >{{this}}</option>
+              {{/each}}
+            </select>
+
+            <select name="" id="" class="small adv-search-query-type">
+              <option value="=">==</option>
+              <option value="<=">&lt;=</option>
+              <option value=">=">&gt;=</option>
+              <option value="like">like</option>
+            </select>
+            <input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium" value="{{value}}">
+
+            <span class="glyphicon-remove remove-adv-row"></span>
+        </div>
+      {{/advSearchData}}
+
     </div>
       <button class="btn btn-small" title="Do Search" id="advanced-filter-btn">Do Search</button>
   </div>
