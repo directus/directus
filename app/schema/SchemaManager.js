@@ -36,7 +36,7 @@ define(function(require, exports, module) {
 
     countVisible: function() {
       // Visible models only
-      var models = this.filter(function(model) { return !model.get('hidden'); });    
+      var models = this.filter(function(model) { return !model.get('hidden'); });
 
       return models.length;
     }
@@ -147,7 +147,7 @@ define(function(require, exports, module) {
     // Registers user preferences for tables (sort, visible columns etc)
     registerPreferences: function(data) {
       _.each(data, function(preference) {
-        preferences[preference.table_name] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
+        preferences[preference.table_name + "_" + preference.title] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
       }, this);
     },
 
@@ -178,14 +178,16 @@ define(function(require, exports, module) {
       return tableSchemas.tables.countVisible();
     },
 
-    getFullSchema: function(tableName) {
+    getFullSchema: function(tableName, preferenceName) {
+      if(typeof(preferenceName)==='undefined') preferenceName = "default";
+
       if (!tableSchemas.tables.get(tableName)) {
         throw "Table `"+ tableName +"` does not exist";
       }
       return {
         table: tableSchemas.tables.get(tableName),
         structure: columnSchemas.tables[tableName],
-        preferences: preferences[tableName],
+        preferences: preferences[tableName + "_" + preferenceName],
         privileges: privileges[tableName]
       };
     },

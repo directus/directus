@@ -22,7 +22,8 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
     public static $defaultPreferencesValues = array(
         "sort"          => "id",
         "sort_order"    => "ASC",
-        "active"        => "1,2"
+        "active"        => "1,2",
+        "title"         => "default"
     );
 
     public static $defaultPreferencesValuesByTable = array(
@@ -56,7 +57,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
     public function constructPreferences($user_id, $table, $preferences = null) {
         $db = Bootstrap::get('olddb');
-        
+
         if ($preferences) {
             $newPreferencesData = false;
 
@@ -88,7 +89,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         $data = $this->applyDefaultPreferences($table, $data);
         // Insert to DB
         $id = $db->set_entry(self::$_tableName, $data);
-        
+
 
         return $data;
     }
@@ -109,25 +110,26 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             $preferences = $preferences->toArray();
         }
 
-        return $this->constructPreferences($user_id, $table, $preferences);        
+        return $this->constructPreferences($user_id, $table, $preferences);
     }
 
     // @param $assoc return associative array with table_name as keys
-    public function fetchAllByUser($user_id, $assoc = false) {    
+    public function fetchAllByUser($user_id, $assoc = false) {
         $db = Bootstrap::get('olddb');
 
-        $sql = 
-            'SELECT 
-                id,            
+        $sql =
+            'SELECT
+                id,
                 ST.table_name,
                 user,
                 columns_visible,
                 sort,
                 sort_order,
-                active
-            FROM 
-                INFORMATION_SCHEMA.TABLES ST 
-            LEFT JOIN 
+                active,
+                title
+            FROM
+                INFORMATION_SCHEMA.TABLES ST
+            LEFT JOIN
                 directus_preferences ON (directus_preferences.table_name = ST.table_name AND directus_preferences.user = :user)
             WHERE
                 ST.TABLE_SCHEMA = :schema
@@ -143,7 +145,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                     "directus_storage_adapters",
                     "directus_tables",
                     "directus_tab_privileges",
-                    "directus_ui"       
+                    "directus_ui"
                 )';
 
         $sth = $db->dbh->prepare($sql);
@@ -160,11 +162,11 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             if (!TableSchema::canGroupViewTable($tableName)) {
                 continue;
             }
-            
-            if (!isset($row['user'])) {            
+
+            if (!isset($row['user'])) {
                 $row = null;
             }
-            
+
             $row = $this->constructPreferences($user_id, $tableName, $row);
 
             $preferences[$tableName] = $row;

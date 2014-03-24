@@ -22,7 +22,9 @@ define(function(require, exports, module) {
     },
 
     getColumns: function() {
-      var columns = (this.filters.columns_visible !== undefined) ? this.filters.columns_visible : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      if(this.preferences) {
+        var columns = (this.filters.columns_visible !== undefined) ? this.filters.columns_visible : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      }
       return columns;
     },
 
@@ -102,7 +104,8 @@ define(function(require, exports, module) {
           this.filters[key] = value;
         }
       },this);
-      if (preferencesHasChanged) this.preferences.save();
+      console.log(this.preferences);
+      //if (preferencesHasChanged) this.preferences.save();
     },
 
     hasColumn: function(columnName) {
@@ -139,7 +142,7 @@ define(function(require, exports, module) {
         sort_order: 'ASC',
         active: '1,2'
       }, this.filters);
-
+      console.log(options.preferences);
       if (options.preferences) {
         this.preferences = options.preferences;
         this.preferences.on('change', function() { this.trigger('change'); }, this);
