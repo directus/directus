@@ -99,17 +99,15 @@ function(app, Backbone) {
         var searchSettings = $filters.map(function() {
           var $this = $(this);
           return {
-            id: "`" + that.mysql_real_escape_string($this.find('.adv-search-col-id').val()) + "`",
+            id: that.mysql_real_escape_string($this.find('.adv-search-col-id').val()),
             type: $this.find('.adv-search-query-type').val(),
-            value: "'" + that.mysql_real_escape_string($this.find('input').val()) + "'"
+            value: that.mysql_real_escape_string($this.find('input').val())
           };
         }).toArray();
 
         var queryString = "";
-        var value;
-        while(value = searchSettings.pop()) {queryString += value.id + value.type + value.value + ((searchSettings.length != 0) ? " AND " : ""); }
-        console.log(queryString);
-        this.collection.setFilter('adv_search', queryString);
+
+        this.collection.setFilter('adv_search', searchSettings);
         this.collection.setFilter('currentPage', 0);
         this.collection.fetch();
         //this.collection.trigger('adv_search', "id == 336");
@@ -117,8 +115,7 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-
-      var columns = this.options.collection.structure.pluck('id');
+      //@TODO: Cleanup with non-hacks
       var table = this.options.collection.table;
       var options = {};
 
@@ -144,7 +141,7 @@ function(app, Backbone) {
 
       options.filterText = this.collection.getFilter('search');
       options.filter = true;
-      options.tableColumns = columns;
+      options.tableColumns = this.options.collection.structure.pluck('id');
       options.paginator = (options.pageNext || options.pagePrev);
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 
@@ -154,6 +151,7 @@ function(app, Backbone) {
     },
 
     mysql_real_escape_string: function(str) {
+      if(!str) {return "";}
       return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
           switch (char) {
               case "\0":
