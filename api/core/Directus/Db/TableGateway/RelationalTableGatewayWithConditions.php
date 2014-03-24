@@ -133,21 +133,15 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               $jkeyleft = $junctionTable.'.'.$jkr;
               $jkeyright = $relatedTable.".id";
 
-              $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
-
-              $joinKeys = array();
-              foreach($relatedTableMetadata as $keys) {
-                $joinKeys[$relatedTable."_".$keys['id']] = $keys['id'];
-              }
-
 
               $select->join($junctionTable,
                   "$keyleft = $keyRight",
                   array())
               ->join($relatedTable,
                   "$jkeyleft = $jkeyright",
-                  $joinKeys);
+                  array());
 
+              $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
               $search_col['value'] = "%".$search_col['value']."%";
               $where = $select->where->nest;
               foreach ($relatedTableMetadata as $col) {
