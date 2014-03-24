@@ -104,8 +104,8 @@ define(function(require, exports, module) {
           this.filters[key] = value;
         }
       },this);
-      console.log(this.preferences);
-      //if (preferencesHasChanged) this.preferences.save();
+
+      if (preferencesHasChanged) this.preferences.save();
     },
 
     hasColumn: function(columnName) {
@@ -142,7 +142,7 @@ define(function(require, exports, module) {
         sort_order: 'ASC',
         active: '1,2'
       }, this.filters);
-      console.log(options.preferences);
+
       if (options.preferences) {
         this.preferences = options.preferences;
         this.preferences.on('change', function() { this.trigger('change'); }, this);

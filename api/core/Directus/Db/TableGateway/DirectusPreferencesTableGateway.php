@@ -23,7 +23,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         "sort"          => "id",
         "sort_order"    => "ASC",
         "active"        => "1,2",
-        "title"         => "default"
+        "title"         => null
     );
 
     public static $defaultPreferencesValuesByTable = array(

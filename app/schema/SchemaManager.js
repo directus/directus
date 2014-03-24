@@ -147,7 +147,12 @@ define(function(require, exports, module) {
     // Registers user preferences for tables (sort, visible columns etc)
     registerPreferences: function(data) {
       _.each(data, function(preference) {
-        preferences[preference.table_name + "_" + preference.title] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
+        var add = "";
+        if(preference.title != null)
+        {
+          add = "_" + preference.title;
+        }
+        preferences[preference.table_name + add] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
       }, this);
     },
 
@@ -178,16 +183,14 @@ define(function(require, exports, module) {
       return tableSchemas.tables.countVisible();
     },
 
-    getFullSchema: function(tableName, preferenceName) {
-      if(typeof(preferenceName)==='undefined') preferenceName = "default";
-
+    getFullSchema: function(tableName) {
       if (!tableSchemas.tables.get(tableName)) {
         throw "Table `"+ tableName +"` does not exist";
       }
       return {
         table: tableSchemas.tables.get(tableName),
         structure: columnSchemas.tables[tableName],
-        preferences: preferences[tableName + "_" + preferenceName],
+        preferences: preferences[tableName],
         privileges: privileges[tableName]
       };
     },
