@@ -22,7 +22,7 @@ define(function(require, exports, module) {
     },
 
     serialize: function() {
-      return {id: this.model.id, comment: this.model.get('comment'), batchEdit: this.options.batchEdit}
+      return {id: this.model.id, comment: this.model.get('comment'), batchEdit: this.options.batchEdit};
     },
 
     afterRender: function() {

@@ -74,7 +74,7 @@ function(app, Directus, PaneSaveView) {
         data.cid = model.cid;
         data.title = app.capitalize(data.table_name, '_', true);
 
-        permissions = (model.get('permissions') || '').split(','),
+        permissions = (model.get('permissions') || '').split(',');
 
         data.hasReadBlacklist = false;
         data.hasWriteBlacklist = false;

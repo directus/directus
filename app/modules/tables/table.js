@@ -77,17 +77,17 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
           alert(successRequestCount + " items have been updated. " + failRequestCount + " items failed to update");
           app.router.go(route);
         }
-      }
+      };
 
       var success = function() {
         successRequestCount++;
         checkIfDone();
-      }
+      };
 
       var error = function() {
         failRequestCount++;
-        checkIfDone();
-      }
+        checkIfDone(); 
+      };
 
       // Save all batch id's
       _.each(this.batchIds, function(id) {
@@ -169,7 +169,6 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       // hard-destroy model if there is no active column
       if (!this.model.has('active')){
         throw "This table does not have an active column and can therefore not be deleted";
-        return;
       }
 
       this.model.save({active: 0}, {success: success, patch: true, wait: true, validate: false});
