@@ -113,7 +113,13 @@ function(app, Backbone) {
         //this.collection.trigger('adv_search', "id == 336");
       },
       'click #fetch-pref-btn': function(e) {
-        this.options.preferences.fetch({newTitle: "Cool Preference"});
+        var that = this;
+        this.options.preferences.fetch({newTitle: "Cool Preference"},
+            function(model, e) {
+                console.log("Success!");
+                that.collection.fetch();
+            }
+        );
       }
     },
 
@@ -210,7 +216,11 @@ function(app, Backbone) {
         this.render();
       }, this);
 
-      this.options.preferences.on('sync', this.collection.fetch, this.collection);
+      this.listenTo(this.options.preferences,'change', function() {
+        console.log("Dertp");
+      });
+
+      //this.options.preferences.on('sync', this.collection.fetch, this.collection);
 
       //this.collection.on('visibility', this.render, this);
     }

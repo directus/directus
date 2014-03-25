@@ -5,11 +5,12 @@ define(function(require, exports, module) {
   var Backbone                = require("backbone");
 
   var PreferenceModel = module.exports = Backbone.Model.extend({
-      fetch: function(options) {
+      fetch: function(options, callback) {
         console.log(options);
         this.trigger('fetch', this);
         var args = {
-          data: $.param(options)
+          data: $.param(options),
+          success: callback
         };
         this.constructor.__super__.fetch.call(this, args);
       }
