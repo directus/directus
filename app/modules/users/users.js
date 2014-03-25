@@ -85,6 +85,22 @@ function(app, Backbone, Directus, SaveModule) {
       class: "cards row"
     },
 
+    events: {
+      'click li': function(e) {
+        var id = $(e.target).closest('li').attr('data-id');
+
+        var user = app.getCurrentUser();
+        var userGroup = user.get('group');
+
+        //@todo fix this so it respects ACL instead of being hardcoded
+        if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
+          return;
+        }
+
+        app.router.go('#users', id);
+      }
+    },
+
     template: Handlebars.compile(
       '{{#rows}}' +
       '<li class="card col-2 gutter-bottom" data-id="{{id}}" data-cid="{{cid}}">' +
@@ -141,25 +157,6 @@ function(app, Backbone, Directus, SaveModule) {
 
   });
 
-  var ListView = Directus.Table.extend({
-
-    TableBody: BodyView,
-
-    navigate: function(id) {
-      var user = app.getCurrentUser();
-      var userGroup = user.get('group');
-
-      //@todo fix this so it respects ACL instead of being hardcoded
-      if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
-        return;
-      }
-
-      app.router.go('#users', id);
-      //app.router.navigate('#users/' + id);
-      //app.router.setPage(Users.Views.Edit, {model: this.collection.get(id)});
-    }
-  });
-
   Users.Views.List = Backbone.Layout.extend({
 
     template: 'page',
@@ -186,7 +183,7 @@ function(app, Backbone, Directus, SaveModule) {
     },
 
     initialize: function() {
-      this.table = new ListView({collection:this.collection, toolbar: false, navigate: true, selectable:false, hideColumnPreferences: true, blacklist: ['group','active']});
+      this.table = new BodyView({collection:this.collection});
     }
   });
 
