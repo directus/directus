@@ -113,13 +113,11 @@ function(app, Backbone) {
         //this.collection.trigger('adv_search', "id == 336");
       },
       'click #fetch-pref-btn': function(e) {
-        var that = this;
-        this.options.preferences.fetch({newTitle: "Cool Preference"},
-            function(model, e) {
+        this.options.preferences.fetch({newTitle: "Cool Preference"},{
+            success: function(model, e) {
                 console.log("Success!");
-                that.collection.fetch();
             }
-        );
+        });
       }
     },
 
@@ -216,11 +214,11 @@ function(app, Backbone) {
         this.render();
       }, this);
 
-      this.listenTo(this.options.preferences,'change', function() {
-        console.log("Dertp");
+      //For Some reason calling collection.fetch directly breaks this.
+      var that = this;
+      this.options.preferences.on('change', function() {
+        that.collection.fetch();
       });
-
-      //this.options.preferences.on('sync', this.collection.fetch, this.collection);
 
       //this.collection.on('visibility', this.render, this);
     }
