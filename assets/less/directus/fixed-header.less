@@ -1,0 +1,195 @@
+////////////
+//  HEADER
+////////////
+#fixedHeader {
+  left: 0px;
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  z-index: 50;
+}
+
+.header1 {
+  .border-box;
+  background-color: @white;
+  border-bottom: 1px solid @lightGrey;
+  clear: both;
+  float: left;
+  margin-bottom: @smallPad;
+  padding-bottom: 30px;
+  padding-top: 30px;
+  width: 100%;
+  h1, ul {
+    margin: 0px;
+  }
+  h1 {
+    color: @mediumGrey;
+    float: left;
+    height: 38px;
+    text-transform: capitalize;
+    .icon {
+      display: inline-block;
+      font-size: 80px;
+      line-height: 30px;
+      margin: 0px 10px;
+      vertical-align: top;
+    }
+    .focused {
+      color: @darkGrey;
+    }
+  }
+  li {
+    float: left;
+    list-style: none;
+  }
+  .primary-row {
+    .tools {
+      margin-top: 5px;
+      &.left {
+        margin-left: 15px;
+      }
+      .simple-select {
+        margin-top: 4px;
+      }
+    }
+  }
+  .secondary-row {
+    color: @mediumGrey;
+    margin: 15px 0px -15px 0px;
+    &.filter-options {
+      display: none;
+    }
+    &.batch-actions {
+      display: none;
+      &.left {
+        li {
+          margin-left: @standardPad;
+          &.div-right {
+            padding-right: @standardPad;
+          }
+        }
+      }
+    }
+    li {
+      font-size: 12px;
+    }
+    .vertical-center {
+      margin-top: @smallPad;
+    }
+    .action {
+      color: @darkGrey;
+    }
+    .text-spacer {
+      padding: 0px @smallPad;
+    }
+    .tools {
+      li {
+        height: 22px;
+        padding-top: @smallPad;
+      }
+      .simple-select {
+        margin-top: -3px;
+      }
+    }
+    .filters {
+      padding: 0px;
+      li {
+        background-color: @mediumGrey;
+        color: @white;
+        margin: 8px 0px 7px @smallPad;
+        padding: 3px @smallPad;
+      }
+    }
+  }
+  .input-and-button {
+    &.active {
+      .large-circle {
+        .icon {
+          position: relative;
+          z-index: 2;
+        }
+        &:before {
+          .triangle-bottom(14px, 14px, @darkGrey);
+          bottom: -5px;
+          content: "";
+          display: block;
+          margin-left: 2px;
+          position: absolute;
+          z-index: 1;
+        }
+      }
+    }
+    &:hover, &.active {
+      input {
+        color: @darkGrey;
+      }
+      button {
+        background-color: @darkGrey;
+      }
+    }
+  }
+  .tools {
+    font-size: 18px;
+    position: relative;
+    li {
+      &.div-right {
+        border-right: solid 1px @lightGrey;
+        height: 32px;
+        padding-right: @smallPad;
+      }
+    }
+    &.left {
+      padding: 0px;
+      li {
+        margin-left: @smallPad;
+        &:first-child {
+          margin-left: 0px;
+        }
+      }
+    }
+    &.right {
+      li {
+        margin-right: @smallPad;
+        &:last-child {
+          margin-right: 0px;
+        }
+      }
+    }
+    button, input {
+      display: block;
+      float:right;
+    }
+    button {
+      border: none;
+    }
+    input {
+      border: none;
+      color: @mediumGrey;
+      margin-right: 10px;
+      margin-top: 5px;
+      text-align: right;
+    }
+    .tool-item {
+      background-color: @mediumGrey;
+      color: @white;
+      cursor: pointer;
+      &:hover {
+        background-color: @darkGrey;
+      }
+    }
+    .simple-select {
+      color: @mediumGrey;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .saved {
+      color: @addColor;
+      .simple-select {
+        color: @addColor;
+      }
+      .tool-item {
+        background-color: @addColor;
+      }
+    }
+  }
+}

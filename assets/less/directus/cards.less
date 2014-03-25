@@ -1,0 +1,107 @@
+.cards {
+  padding-left: 0px;
+  .card {
+    font-size: 12px;
+    list-style: none;
+    .header-image {
+      height: 200px;
+      position: relative;
+      width: 200px;
+      &:hover {
+        cursor: pointer;
+        .tool-item {
+          display: block;
+        }
+      }
+      .default-info {
+        border: solid 1px @lightGrey;
+        border-bottom: 0px;
+        font-size: 45px;
+        font-weight: 700;
+        height: 199px;
+        line-height: 190px;
+        text-align: center;
+      }
+      img {
+        display: block;
+      }
+      .tool-item {
+        background-color: @white;
+        bottom: 10px;
+        color: @darkGrey;
+        display: none;
+        position: absolute;
+        right: 10px;
+      }
+    }
+    &.active {
+      .header-image {
+        border-bottom-style: solid;
+        border-bottom-width: 3px;
+        margin-bottom: -7px;
+      }
+    }
+    .info {
+      border: solid 1px @lightGrey;
+      border-top: none;
+      margin-top: 4px;
+      .featured, .extra {
+        padding: 8px @standardPad 8px @standardPad;
+      }
+      .featured {
+        background-color: @lightGrey;
+        margin-top: -4px;
+      }
+      .extra {
+        li {
+          border-bottom: solid 1px @lightGrey;
+          list-style: none;
+          padding: 5px 17px 5px 0px;
+          position: relative;
+          &:last-child {
+            border-bottom: none;
+          }
+          .sub-line {
+            font-size: 10px;
+            margin-top: -5px;
+          }
+          .icon {
+            float: right;
+            font-size: 30px;
+            position: absolute;
+            right: 0px;
+            top: 10px;
+            line-height: 1px;
+            vertical-align: top;
+          }
+        }
+      }
+    }
+  }
+}
+        
+.feature-cards {
+  padding-left: 0px;
+  .feature-card {
+    background-color: @lightGrey;
+    list-style: none;
+    padding: @standardPad;
+    .left-col, .right-col {
+      float: left;
+    }
+    .left-col {
+      color: @white;
+      margin: 0px 10px 0px -10px;
+      text-align: center;
+      width: 40%;
+      .icon {
+        display: inline-block;
+        font-size: 270px;
+        line-height: 100px;
+      }
+    }
+    .right-col {
+      width: 60%;
+    }
+  }
+}

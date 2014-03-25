@@ -7,11 +7,12 @@ https://github.com/jrburke/r.js/blob/master/build/example.build.js
 grunt-contrib-requirejs
 https://npmjs.org/package/grunt-contrib-requirejs
 */
+'use strict';
 
 module.exports = function(grunt) {
 
-    'use strict';
-
+    require('load-grunt-tasks')(grunt);
+    
     grunt.initConfig({
 
         pkg: grunt.file.readJSON('package.json'),
@@ -26,7 +27,15 @@ module.exports = function(grunt) {
             multistr: true,
             onecase: true,
             sub: true,
-            predef: ['$', '_', 'Backbone', 'File', 'Handlebars', 'require']
+            globals: {
+              '$': true,
+              '_': true,
+              'Backbone': true,
+              'File': true,
+              'Handlebars': true,
+              'require': true
+            },
+            'reporter': require('jshint-stylish')
           },
           all: ['app/**/*.js']
         },
@@ -135,10 +144,34 @@ module.exports = function(grunt) {
               singleRun: true
             }
           }
+        },
+        less: {
+          options: {
+            compress: false,
+            sourceMap: false,
+            sourceMapFilename: 'public/assets/css/main.css.map',
+            sourceMapRootpath: '/directus-six-dax/'
+          },
+          development: {
+            files: {
+              'assets/css/directus.css' : 'assets/less/directus/_compile.less'
+            }
+          }
+        },
+        watch: {
+          lesssrc: {
+            files: ['assets/less/directus/**/*.less'],
+            tasks: ['less']
+          },
+          alljs: {
+            files: '<%= jshint.all %>',
+            tasks: [ 'jshint' ]
+          }
         }
     });
 
-    grunt.loadNpmTasks("grunt-contrib-clean");
+    /*
+grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks("grunt-contrib-handlebars");
@@ -147,12 +180,19 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks("grunt-karma");
     grunt.loadNpmTasks("grunt-karma-coveralls");
+*/
 
     grunt.registerTask('default', [
         'clean',
         'jshint',
         'handlebars',
         'requirejs',
-        'concat'
+        'concat',
+        'less'
+    ]);
+    
+    grunt.registerTask('auto', [
+        'default',
+        'watch'
     ]);
 }

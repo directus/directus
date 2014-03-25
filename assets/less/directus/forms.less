@@ -1,0 +1,184 @@
+////////////
+//  INPUTS
+////////////
+select {
+  cursor: pointer;
+}
+.standard-select {
+  position: relative;
+  .icon {
+    bottom: 0px;
+    line-height: 22px;
+    padding: 0px 6px 0px 0px;
+    pointer-events: none;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+  }
+  select {
+    .border-radius(0px, 0px, 0px, 0px);
+    background-color: @white;
+    border: solid 1px @lightGrey;
+    color: @darkGrey;
+    cursor: pointer;
+    padding: @extraSmallPad 25px @extraSmallPad @smallPad;
+    -webkit-appearance: none;
+  }
+}
+.simple-select {
+  position: relative;
+  .icon {
+    bottom: 0px;
+    display: block;
+    font-size: 200%;
+    line-height: 52%;
+    //padding: 0px @extraSmallPad 0px @extraSmallPad;
+    pointer-events: none;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+  }
+  select {
+    background: transparent;
+    border: none;
+    -webkit-appearance: none;
+    padding-right: 20px;
+  }
+}
+.custom-check input[type="checkbox"], .custom-check input[type="radio"],
+input[type="checkbox"].custom-check, input[type="radio"].custom-check {
+  display:none;
+  +label {
+    display: inline-block;
+    font-weight: 600;
+    margin-right: @smallPad;
+    position: relative;
+    vertical-align: bottom;
+    span {
+      background-color: @white;
+      border: solid 1px @lightGrey;
+      display:inline-block;
+      width:14px;
+      height:14px;
+      margin:0px @extraSmallPad 0 0;
+      vertical-align:middle;
+    }
+  }
+  &:checked {
+    +label {
+      span {
+        background-color: @darkGrey;
+        border-color: @darkGrey;
+      }
+      &:before {
+        .icon;
+        color: @white;
+        content: "\2713";
+        font-size: 29px;
+        left: 2px;
+        position: absolute;
+        top: -6px;
+      }
+    }
+  }
+}
+
+////////////
+//  CUSTOM FORMS
+////////////
+.two-column-form {
+  @labelWidth: 200px;
+  @maxFieldWidth: 700px;
+  h2 {
+    margin-bottom: @smallPad;
+  }
+  .fields {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    li {
+      position: relative;
+      margin-bottom: 1px;
+      width: 100%;
+    }
+    .label {
+      .border-box;
+      background-color: @lightGrey;
+      bottom: 0px;
+      color: @darkGrey;
+      font-weight: 500;
+      left: 0px;
+      padding: 25px @standardPad 25px @standardPad;
+      position: absolute;
+      text-align: right;
+      top: 0px;
+      width: @labelWidth;
+      label {
+        position: relative;
+        text-transform: capitalize;
+        top: -5px;
+      }
+    }
+    .field {
+      .clear-fix;
+      background-color: @extraLightGrey;
+      margin-left: @labelWidth;
+      padding: @standardPad;
+      position: relative;
+      input[type="text"], textarea {
+        .border-box;
+        border: solid 1px @lightGrey;
+        display: block;
+        max-width: @maxFieldWidth;
+        padding: @extraSmallPad;
+        width: 100%;
+      }
+      textarea {
+        min-height: 100px;
+        padding: @smallPad;
+        resize: vertical;
+      }
+      .standard-select {
+        float: left;
+      }
+      .file {
+        min-height: 100px;
+        max-width: @maxFieldWidth;
+        position: relative;
+        .thumbnail {
+          left: 0px;
+          position: absolute;
+          top: 0px;
+        }
+        .content {
+          margin-left: @standardPad + 100;
+          .row {
+            border-bottom: solid 1px @mediumGrey;
+            margin: 0px;
+            padding-bottom: @smallPad;
+            position: relative;
+            &:last-child {
+              border: none;
+              padding: @smallPad 0px 0px 0px;
+            }
+            .info {
+              margin-right: 120px;
+            }
+            .remove-media {
+              &:hover {
+                color: @deleteColor;
+              }
+              .icon {
+                display: inline-block;
+                line-height: 12px;
+                margin-right: @extraSmallPad;
+                vertical-align: top;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

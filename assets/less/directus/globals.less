@@ -1,0 +1,111 @@
+////////////
+//  DISPLAY
+////////////
+.hidden {
+  visibility: hidden;
+}
+
+////////////
+//  VISIBLE MIXINS
+////////////
+.clean-list {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.border-box {
+  box-sizing: border-box; /* css3 rec */
+	-moz-box-sizing: border-box; /* ff2 */
+	-ms-box-sizing: border-box; /* ie8 */
+	-webkit-box-sizing: border-box; /* safari3 */
+}
+
+.clear-fix {
+  &:after {
+    clear: both;
+    content: '';
+    display: block;
+    width: 100%;
+  }
+}
+
+////////////
+//  POSITIONING
+////////////
+.top-right {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+
+////////////
+//  BUTTONS
+////////////
+.large-circle {
+  .border-radius(50px, 50px, 50px, 50px);
+  background-color: @mediumGrey;
+  color: @white;
+  display: inline-block;
+  height: 32px;
+  padding: 0px;
+  position: relative;
+  text-align: center;
+  width: 32px;
+  .icon {
+    display: inline-block;
+    font-size: 46px;
+    margin-top: -8px;
+  }
+}
+.btn {
+  cursor: pointer;
+  padding: @smallPad;
+  &.dark-grey {
+    background-color: @darkGrey;
+    color: @white;
+  }
+}
+
+////////////
+//  TEXT
+////////////
+.italic {
+  font-style: italic;
+}
+.primary-info {
+  color: @darkGrey;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.secondary-info {
+  color: @mediumGrey;
+  font-size: 12px;
+  font-weight: 300;
+}
+.delete-color {
+  color: @deleteColor;
+}
+
+////////////
+//  CONTAINERS
+////////////
+.main-container {
+  .clear-fix;
+  margin-left: @standardSidebarWidth;
+  padding: 0px 80px;
+  position: relative;
+  right: 0px;
+}
+.content-body {
+  /* flex: 1; */
+  margin-bottom: 40px;
+  margin-top: 130px;
+}

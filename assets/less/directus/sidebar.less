@@ -1,0 +1,139 @@
+#sidebar {
+  background-color: @extraDarkGrey;
+  bottom: 0px;
+  color: @darkGrey;
+  float: left;
+  font-weight: 400;
+  height: 100%;
+  letter-spacing: 1px;
+  position: fixed;
+  top: 0px;
+  width: @standardSidebarWidth;
+  z-index: 100;
+  ul {
+    padding: 0px;
+    li {
+      list-style: none;
+      &:hover {
+        color: @white;
+        cursor: pointer;
+      }
+    }
+  }
+
+  #mainLogoBox {
+    background-color: rgba(255, 255, 255, .04);
+    border-bottom: 1px solid @lightGrey;
+    font-size: 40px;
+    height: 60px;
+    line-height: 90px;
+    padding: @standardPad 0px;
+    text-align: center;
+    .icon {
+      line-height: 36px;
+    }
+  }
+
+  #mainSidebar {
+    bottom: 290px;
+    overflow: auto;
+    position: absolute;
+    top: 101px;
+    width: 100%;
+    li {
+      font-size: 12px;
+      line-height: 13px;
+      margin-bottom: 10px;
+      padding: @smallPad @standardPad;
+      position: relative;
+      &.active {
+        border-left-width: 4px;
+        border-left-style: solid;
+        color: @white;
+        cursor: auto;
+        padding-left: 16px;
+        &:after {
+          .triangle-left(8px, 12px, @white);
+          content: "";
+          margin-top: -12px;
+          position: absolute;
+          right: 0px;
+          top: 50%;
+        }
+      }
+      .icon {
+        display: block;
+        float: left;
+        line-height: 5px;
+        margin-bottom: -2px;
+        margin-right: 10px;
+        text-align: right;
+        width: 25px;
+      }
+    }
+  }
+
+  #featureSidebar {
+    @featureSidebarItemMargin: 10px;
+    bottom: 0px;
+    padding: 0px @standardPad;
+    position: absolute;
+    .row {
+      margin-left: -@featureSidebarItemMargin;
+    }
+    li {
+      background-color: @mediumDarkGrey;
+      float: left;
+      height: 25px;
+      margin-bottom: @featureSidebarItemMargin;
+      margin-left: @featureSidebarItemMargin;
+      padding: 17px;
+      position: relative;
+      width: 25px;
+      &:hover {
+        background-color: @darkGrey;
+        &.has-image {
+          .icon {
+            display: block;
+          }
+          img {
+            opacity: .2;
+          }
+        }
+      }
+      &.has-image {
+        .icon {
+          display: none;
+        }
+      }
+      img {
+        display: block;
+        left: 0px;
+        position: absolute;
+        top: 0px;
+      }
+      .icon {
+        display: block;
+        font-size: 46px;
+        height: 25px;
+        line-height: 17px;
+        margin-right: 18px;
+        position: relative;
+        text-align: center;
+        width: 25px;
+        &.icon-thunder-cloud {
+          .animation(fadein, 1s);
+        }
+      }
+      .feature-nav-alert {
+        .border-radius(50%, 50%, 50%, 50%);
+        bottom: 5px;
+        display: block;
+        height: 10px;
+        position: absolute;
+        right: 5px;
+        width: 10px;
+      }
+    }
+  }
+}
