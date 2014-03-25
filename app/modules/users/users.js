@@ -110,7 +110,7 @@ function(app, Backbone, Directus, SaveModule) {
           '<div class="featured">' +
             '<div class="primary-info">' +
               '<div>{{first_name}}</div>' +
-              '<div>{{online}}</div>' +
+              '<div>{{last_name}}</div>' +
             '</div>' +
             '<div class="secondary-info">{{position}}</div>' +
           '</div>' +
