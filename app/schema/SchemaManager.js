@@ -7,7 +7,8 @@ define(function(require, exports, module) {
       ColumnsCollection  = require('./ColumnsCollection'),
       TableModel         = require('./TableModel'),
       UIModel            = require('./UIModel'),
-      DirectusCollection = require('core/collection');
+      DirectusCollection = require('core/collection'),
+      PreferenceModel    = require('core/PreferenceModel');
 
   // Static Schemas
   var directusSchemas = {
@@ -150,9 +151,9 @@ define(function(require, exports, module) {
         var add = "";
         if(preference.title != null)
         {
-          add = "_" + preference.title;
+          add = ":" + preference.title;
         }
-        preferences[preference.table_name + add] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
+        preferences[preference.table_name + add] = new PreferenceModel(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
       }, this);
     },
 

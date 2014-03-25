@@ -461,7 +461,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
     // }
 
     // any CREATE requests should md5 the email
-    if("directus_users" === $table && 
+    if("directus_users" === $table &&
        in_array($app->request()->getMethod(), array('POST')) &&
        array_key_exists('email',$requestPayload)
        ) {
@@ -499,7 +499,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     $params['table_name'] = $table;
 
     // any UPDATE requests should md5 the email
-    if("directus_users" === $table && 
+    if("directus_users" === $table &&
        in_array($app->request()->getMethod(), array('PUT', 'PATCH')) &&
        array_key_exists('email',$requestPayload)
        ) {
@@ -707,7 +707,13 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             break;
     }
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
-    $jsonResponse = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
+
+    if(isset($params['newTitle'])) {
+      $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
+      $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
+    } else {
+      $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table);
+    }
     JsonView::render($jsonResponse);
 })->via('GET','POST','PUT');
 

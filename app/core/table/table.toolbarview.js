@@ -111,6 +111,10 @@ function(app, Backbone) {
         this.collection.setFilter('currentPage', 0);
         this.collection.fetch();
         //this.collection.trigger('adv_search', "id == 336");
+      },
+      'click #fetch-pref-btn': function(e) {
+        this.options.preferences.fetch({newTitle: "Cool Preference"});
+        this.collection.fetch();
       }
     },
 
