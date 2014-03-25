@@ -1,0 +1,55 @@
+.triangle() {
+  border-style: solid;
+  height: 0px; 
+  width: 0px;
+}
+
+.triangle-left(@width, @height, @color) {
+  .triangle();
+  border-width: @height @width @height 0;
+  border-color: transparent @color transparent transparent;
+}
+.triangle-right(@width, @height, @color) {
+  .triangle();
+  border-width: @height 0 @height @width;
+  border-color: transparent transparent transparent @color;
+}
+.triangle-top(@width, @height, @color) {
+  .triangle();
+  border-width: 0 @width @height @width;
+  border-color:  transparent transparent @color transparent;
+}
+.triangle-bottom(@width, @height, @color) {
+  .triangle();
+  border-width: @height @width 0 @width;
+  border-color:  @color transparent transparent transparent;
+}
+
+
+.border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+  -webkit-border-top-right-radius: @topright;
+  -webkit-border-bottom-right-radius: @bottomright;
+  -webkit-border-bottom-left-radius: @bottomleft;
+  -webkit-border-top-left-radius: @topleft;
+  -moz-border-radius-topright: @topright;
+  -moz-border-radius-bottomright: @bottomright;
+  -moz-border-radius-bottomleft: @bottomleft;
+  -moz-border-radius-topleft: @topleft;
+  border-top-right-radius: @topright;
+  border-bottom-right-radius: @bottomright;
+  border-bottom-left-radius: @bottomleft;
+  border-top-left-radius: @topleft;
+  .background-clip(padding-box);
+}
+
+.background-clip(@argument: padding-box) {
+  -moz-background-clip: @argument;
+  -webkit-background-clip: @argument;
+  background-clip: @argument;
+}
+
+.animation (@name, @duration: 300ms, @delay: 0, @ease: ease) {
+	-webkit-animation: @name @duration @delay @ease;
+	-moz-animation:    @name @duration @delay @ease;
+	-ms-animation:     @name @duration @delay @ease;
+}

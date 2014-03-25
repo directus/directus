@@ -1,0 +1,23 @@
+@primaryColor: #89c33d; // Green
+@onPrimaryColor: #FFF;
+@onPrimaryInvert: #0f0f0f;
+
+.font-primary {
+  font-family: @openFont;
+}
+
+.primary-text-color {
+  color: @primaryColor !important;
+}
+
+.primary-border-color {
+  border-color: @primaryColor !important;
+}
+
+.primary-background {
+  background-color: @primaryColor !important;
+  color: @onPrimaryColor !important;
+  &.invert {
+    color: @onPrimaryInvert !important;
+  }
+}
