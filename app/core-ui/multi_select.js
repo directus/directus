@@ -21,8 +21,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'options', ui: 'textarea', options:{'rows': 25}  }
   ];
 
-  var template = '<label>{{capitalize name}}<span class="note">{{comment}}</span></label> \
-                              {{#if cb_list}} \
+  var template = '{{#if cb_list}} \
                                 {{#options}} \
                                         <input style="margin-top:1px;" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/> {{value}} \
                                 {{/options}}</select> \
@@ -36,7 +35,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
 
-    tagName: 'fieldset',
+    tagName: 'div',
 
     attributes: {
       'class': 'field'

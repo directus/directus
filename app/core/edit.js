@@ -93,7 +93,7 @@ define(function(require, exports, module) {
 
     constructor: function (options) {
       Backbone.Layout.__super__.constructor.call(this, options);
-      this.$el.addClass('form');
+      this.$el.addClass('two-column-form');
     },
 
     // Focus on first input
