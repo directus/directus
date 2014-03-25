@@ -103,14 +103,14 @@ function(app, Backbone, Directus, SaveModule) {
 
     template: Handlebars.compile(
       '{{#rows}}' +
-      '<li class="card col-2 gutter-bottom" data-id="{{id}}" data-cid="{{cid}}">' +
+      '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
         '<div class="header-image primary-border-color">' +
           '{{avatar}} <div class="tool-item large-circle"><span class="icon icon-pencil"></span></div></div>' +
         '<div class="info">' +
           '<div class="featured">' +
             '<div class="primary-info">' +
               '<div>{{first_name}}</div>' +
-              '<div>{{last_name}}</div>' +
+              '<div>{{online}}</div>' +
             '</div>' +
             '<div class="secondary-info">{{position}}</div>' +
           '</div>' +
@@ -135,12 +135,14 @@ function(app, Backbone, Directus, SaveModule) {
           'last_name': model.get('last_name'),
           'email': model.get('email'),
           'position': model.get('position'),
-          'last_access': model.get('last_access')
+          'address': model.get('address'),
+          'phone_number': model.get('phone'),
+          'online': (moment(model.get('last_access')).add('m', 5) > moment())
         };
 
         if (data.avatar !== null) {
             //@todo this is a hack, maybe change avatar so it only includes a hash?
-            var avatarSmall = data.avatar.replace('?s=100','?s=50');
+            var avatarSmall = data.avatar.replace('?s=100','?s=200');
             data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
         }
 
