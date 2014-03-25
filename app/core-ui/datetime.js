@@ -47,6 +47,9 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   Module.Input = UIView.extend({
 
     tagName: 'div',
+    attributes: {
+      'class': 'field'
+    },
 
     template: Handlebars.compile(template),
 
@@ -124,7 +127,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   //@todo make contextual date a ui
   Module.list = function(options) {
     var value = options.value;
-    
+
     if (options.settings.get('contextual_date_in_listview') === '1') {
       var momentDate = moment(options.value);
       if (momentDate.isValid()) {
@@ -133,7 +136,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
         value = '-';
       }
 
-      
+
     }
 
     return value;

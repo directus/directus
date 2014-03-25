@@ -57,7 +57,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
 
       // Serialize the entire form
       var data = this.editView.data();
-      
+
       // Get an attribute whitelist based on the checkboxes
       var attrWhitelist = $("input[name='batchedit']:checked").map(function() {
         return $(this).data('attr');
@@ -110,15 +110,15 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
     serialize: function() {
       var breadcrumbs = [{ title: 'Tables', anchor: '#tables'}],
           title = 'Batch Edit ('+this.batchIds.length+')';
-      
+
       breadcrumbs.push({ title: this.model.collection.table.id, anchor: '#tables/' + this.model.collection.table.id });
-      
+
       return {
         breadcrumbs: breadcrumbs,
         title: title,
         sidebar: true
       };
-    },    
+    },
 
     beforeRender: function() {
       this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: false}));
@@ -245,8 +245,8 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
         if (this.options.batchIds !== undefined) {
           title = 'Batch Edit';
         } else {
-          title = 'Creating New Item'; 
-        }        
+          title = 'Creating New Item';
+        }
       }
 
       if (this.single) {

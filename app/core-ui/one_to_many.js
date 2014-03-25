@@ -28,6 +28,11 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
   Module.Input = UIView.extend({
 
     tagName: 'div',
+
+    attributes: {
+      'class': 'field'
+    },
+
     template: Handlebars.compile(template),
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',

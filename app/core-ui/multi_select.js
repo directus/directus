@@ -38,6 +38,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     tagName: 'fieldset',
 
+    attributes: {
+      'class': 'field'
+    },
+
     template: Handlebars.compile(template),
 
     events: {

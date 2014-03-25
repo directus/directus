@@ -27,6 +27,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     tagName: 'div',
 
+    attributes: {
+      'class': 'field'
+    },
+
     events: {
       'keydown input': function(e) {
         if (!e.metaKey && !(e.which < 58 || (this.hasDecimals && e.which === 190))) {

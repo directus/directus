@@ -17,6 +17,9 @@ define(['app','backbone'], function(app, Backbone) {
 
   Module.Input = Backbone.Layout.extend({
     tagName: 'div',
+    attributes: {
+      'class': 'field'
+    },
     initialize: function() {
       var image = document.createElement('img');
       image.src = 'data:image/png;base64,'+this.options.value;

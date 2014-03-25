@@ -26,6 +26,10 @@ define(['app', 'backbone'],function(app, Backbone) {
 
     tagName: 'div',
 
+    attributes: {
+      'class': 'field'
+    },
+
     serialize: function() {
       var selectedValue = this.options.value;
       var options = this.options.settings.get('options');

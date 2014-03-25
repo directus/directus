@@ -55,7 +55,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.Input = Backbone.Layout.extend({
 
     tagName: 'div',
-
+    attributes: {
+      'class': 'field'
+    },
     template: Handlebars.compile(template),
 
     events: {
