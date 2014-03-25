@@ -1,11 +1,7 @@
-<ul class="nav nav-tabs">
+<ul>
 {{#tabs}}
-  <li class="{{#if active}}active{{/if}} {{#if extension}}extension{{/if}}">
-  	<a {{#unless hasErrors}}href="#{{id}}{{#if extension}}/{{/if}}"{{/unless}}>{{title}} {{#if count}}<div class="label hidden-phone">{{{number count}}}</div>{{/if}}{{#if hasErrors}}<img src="{{imagesPath}}skull-white-nonactive_tab.png">{{/if}}</a>
-  </li>
+<li class="{{#if active}}active primary-border-color{{/if}}">
+    <a {{#unless hasErrors}}href="#{{id}}{{#if extension}}/{{/if}}"{{/unless}}><span class="icon icon-database"></span>{{title}}</a>
+</li>
 {{/tabs}}
 </ul>
-<div id="more-tabs">
-	More »
-	<ul id="hidden-tabs"></ul>
-</div>

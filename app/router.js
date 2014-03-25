@@ -368,7 +368,15 @@ define(function(require, exports, module) {
       //Top
       var Navbar = Backbone.Layout.extend(
         {
+          
           template: "navbar",
+
+          tagName: 'ul',
+
+          attributes: {
+            'class': 'row'
+          },
+
           serialize: function() {
             return {
               user: user.toJSON(),
@@ -402,8 +410,8 @@ define(function(require, exports, module) {
         el: "#main",
 
         views: {
-          '#navbar': new Navbar({model: app.settings.get('global')}),
-          '#tabs': tabs
+          '#featureSidebar': new Navbar({model: app.settings.get('global')}),
+          '#mainSidebar': tabs
         }
 
       });
