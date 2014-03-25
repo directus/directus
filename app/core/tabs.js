@@ -20,6 +20,7 @@ function(app, Backbone) {
 
   Tabs.Collection = Backbone.Collection.extend({
     setActive: function(route) {
+
       var model = this.get(route);
       //deactive all tabs
       _.each(this.where({'active':true}),function(model) {
@@ -48,7 +49,11 @@ function(app, Backbone) {
   Tabs.View = Backbone.Layout.extend({
     template: "tabs",
 
-    tagName: "nav",
+    tagName: "ul",
+
+    attributes {
+
+    },
 
     serialize: function() {
       var tabs = this.collection.map(function(model) {

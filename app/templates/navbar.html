@@ -1,27 +1,7 @@
-<li id="mainSettingsButton"><a href="#settings"><span class="icon icon-cog"></span></a></li>
-<li class="hidden"><span class="icon"></span></li>
-<li id="mainAttachmentButton"><a href="#media"><span class="icon icon-attach"></span></a></li>
-<li id="mainUsersButton"><a href="#users"><span class="icon icon-users"></span></a></li>
-
-<li id="mainMessagesButton" class="has-alert">
-<a href="#messages"><span class="icon icon-chat"></span>
-<!--
-  - <span class="feature-nav-alert primary-background"></span> adds the 
-    green dot to any of the featured navs
--->
-<span class="feature-nav-alert primary-background"></span></a>
+<ul>
+{{#tabs}}
+<li class="{{#if active}}active primary-border-color{{/if}}">
+    <a {{#unless hasErrors}}href="#{{id}}{{#if extension}}/{{/if}}"{{/unless}}><span class="icon icon-database"></span>{{title}}</a>
 </li>
-<!--
-- .active & .primary-background must be turned on at the same time here
-- add .invert when the on primary color should be inverted  
-- .action should be added when a new action is happening
--->
-<li id="mainAlertsButton"><a href="#activity"><span class="icon icon-bell"></span></a></li>
-<li id="mainUserButton" class="has-image">
-<a href="#users/{{user.id}}"><img src="http://placehold.it/59x59" alt="" />
-<span class="icon icon-pencil"></span></a>
-</li>
-<!--
-- this glyphicon needs to be added to the entypo set
--->
-<li id="mainLogoutButton"><a href="#" class="sign-out" data-bypass><span class="icon icon-power-button"></span></a></li>
+{{/tabs}}
+</ul>

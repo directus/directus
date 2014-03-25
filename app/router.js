@@ -95,7 +95,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Tables');
-      this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
     },
@@ -343,7 +342,6 @@ define(function(require, exports, module) {
 
       //Fade out and remove splash
       $('#splash').fadeOut('fast').remove();
-
       this.tabs = options.tabs;
       this.extensions = {};
 
@@ -368,7 +366,7 @@ define(function(require, exports, module) {
       //Top
       var Navbar = Backbone.Layout.extend(
         {
-          
+
           template: "navbar",
 
           tagName: 'ul',
@@ -404,14 +402,14 @@ define(function(require, exports, module) {
       this.v = {};
 
       var tabs = new Tabs.View({collection: this.tabs});
-
+      //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({
 
         el: "#main",
 
         views: {
-          '#featureSidebar': new Navbar({model: app.settings.get('global')}),
-          '#mainSidebar': tabs
+          '#featureSidebar': tabs
+          //'#mainSidebar': tabs
         }
 
       });
