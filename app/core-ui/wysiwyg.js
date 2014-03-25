@@ -189,7 +189,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       if(sel.isCollapsed) {
         html = $(document.getElementById(this.options.name)).html().replace(/<(?!br\s*\/?)[^>]+>/g, '');
-        $(document.getElementById(this.options.name)).html(html);
+        $('div.force-editable').html(html);
+        this.$el.find('input').val(html);
         return;
       }
 
