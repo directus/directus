@@ -79,24 +79,37 @@ function(app, Backbone, Directus, SaveModule) {
 
   var BodyView = Backbone.Layout.extend({
 
-    tagName: 'tbody',
+    tagName: 'ul',
+
+    attributes: {
+      class: "cards row"
+    },
 
     template: Handlebars.compile(
       '{{#rows}}' +
-      '<tr data-id="{{id}}" data-cid="{{cid}}">' +
-      '<td class="status"></td>' +
-      '<td>{{avatar}}</td>' +
-      '<td>{{first_name}}</td>' +
-      '<td>{{last_name}}</td>' +
-      '<td>{{email}}</td>' +
-      '<td>{{position}}</td>' +
-      '<td>{{last_access}}</td>' +
-      '</tr>' +
+      '<li class="card col-2 gutter-bottom" data-id="{{id}}" data-cid="{{cid}}">' +
+        '<div class="header-image primary-border-color">' +
+          '{{avatar}} <div class="tool-item large-circle"><span class="icon icon-pencil"></span></div></div>' +
+        '<div class="info">' +
+          '<div class="featured">' +
+            '<div class="primary-info">' +
+              '<div>{{first_name}}</div>' +
+              '<div>{{last_name}}</div>' +
+            '</div>' +
+            '<div class="secondary-info">{{position}}</div>' +
+          '</div>' +
+          '<ul class="extra">' +
+            '<li>{{address}}<span class="icon icon-home"></span></li>' +
+            '<li>{{phone_number}}<span class="icon icon-phone"></span></li>' +
+            '<li>{{email}}<span class="icon icon-mail"></span></li>' +
+          '</ul>' +
+        '</div>' +
+      '</li>' +
       '{{/rows}}'
     ),
 
     serialize: function() {
-      var rows = this.collection.map(function(model) {      
+      var rows = this.collection.map(function(model) {
 
         var data = {
           "id": model.get('id'),
@@ -112,7 +125,7 @@ function(app, Backbone, Directus, SaveModule) {
         if (data.avatar !== null) {
             //@todo this is a hack, maybe change avatar so it only includes a hash?
             var avatarSmall = data.avatar.replace('?s=100','?s=50');
-            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="max-width:none!important;"/>');
+            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
         }
 
         return data;
