@@ -37,6 +37,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     tagName: 'div',
 
+    attributes: {
+      'class': 'field'
+    },
+
     serialize: function() {
       var options = _.map(this.options.settings.get('options').split(','), function(item) {
         return {

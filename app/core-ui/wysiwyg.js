@@ -55,6 +55,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     tagName: 'div',
 
+    attributes: {
+      'class': 'field'
+    },
+
     template: Handlebars.compile(template),
 
     events: {

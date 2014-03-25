@@ -60,6 +60,10 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
     tagName: 'div',
 
+    attributes: {
+      'class': 'field'
+    },
+
     events: {},
 
     template: Handlebars.compile(template),

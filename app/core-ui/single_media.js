@@ -105,6 +105,10 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
 
     tagName: 'div',
 
+    attributes: {
+      'class': 'field'
+    },
+
     template: Handlebars.compile(template),
 
     events: {
@@ -244,8 +248,8 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
     var thumbUrl = isImage ? url : app.PATH + 'assets/img/document-100x120.png';
 
     var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
-    
-    return img;    
+
+    return img;
   };
 
   return Module;
