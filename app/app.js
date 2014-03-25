@@ -114,7 +114,7 @@ define(function(require, exports, module) {
     },
 
     affix: function() {
-      var sidebarOffset = $('.container-sidebar').offset();
+      var sidebarOffset = $('#sidebar').offset();
       var navbarHeight = $('.navbar').height();
       var stickyHeight = parseInt(sidebarOffset.top,10) - parseInt(navbarHeight,10) - 20;
       var stuck = false;
@@ -123,11 +123,11 @@ define(function(require, exports, module) {
         if(!stuck && scrollTop >= stickyHeight){
           //console.log("stuck");
           stuck = true;
-          $(".container-sidebar").addClass('affix-sidebar');
+          $("#sidebar").addClass('affix-sidebar');
         } else if(stuck && scrollTop < stickyHeight){
           //console.log("unstuck");
           stuck = false;
-          $(".container-sidebar").removeClass('affix-sidebar');
+          $("#sidebar").removeClass('affix-sidebar');
         }
       });
     },

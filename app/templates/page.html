@@ -1,38 +1,31 @@
 <header id="fixedHeader">
-	<div class="main-container">
-  		<div class="header1">
-		
-		<h1 class="font-primary">
-		{{#each breadcrumbs}}
-			<a href="{{anchor}}">{{{capitalize title}}}</a> 
-			<span class="icon icon-chevron-small-right"></span> 
-		{{/each}} 
+    <div class="main-container">
+        <div class="header1">
 
-		{{{capitalize title}}}
-		</h1>
+        <h1 class="font-primary">
+        {{#each breadcrumbs}}
+            <a href="{{anchor}}">{{{capitalize title}}}</a>
+            <span class="icon icon-chevron-small-right"></span>
+        {{/each}}
 
-		{{#if buttonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
-  		</div>
-	</div>
+        {{{capitalize title}}}
+        </h1>
+
+        {{#if buttonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
+        </div>
+    </div>
 </header>
 
 
-
-<section class="main-container content-body font-secondary">
-
+<!--
 {{#if sidebar}}
+    <div class="container-sidebar" id="sidebar"></div>
+{{/if}}-->
 
-<div class="container-main" id="page-content"></div>
-<div class="container-sidebar" id="sidebar"></div>
-
-{{else}}
-<div id="page-content"></div>
-{{/if}}
-
-
-{{#if upload}}
-<input id="fileupload" type="file" name="files[]" data-url="http://localhost/directus6/server/api/1/media" multiple style="display:none;">
-{{/if}}
-
+<section class="main-container content-body font-secondary" id="page-content">
 
 </section>
+
+{{#if upload}}
+    <input id="fileupload" type="file" name="files[]" data-url="http://localhost/directus6/server/api/1/media" multiple style="display:none;">
+{{/if}}

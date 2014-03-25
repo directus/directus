@@ -27,11 +27,11 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
   // Rendered inside modal
   var NewColumn = Backbone.Layout.extend({
 
-    tagName: 'form',
+    tagName: 'div',
 
     template: 'settings-columns-add',
 
-    attributes: {'class':'directus-form'},
+    attributes: {'class':'form'},
 
     events: {
       'change select': function(e) {

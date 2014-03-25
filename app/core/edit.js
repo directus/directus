@@ -6,8 +6,8 @@ define(function(require, exports, module) {
   var UIManager = require('./UIManager');
 
   var UIContainer = Backbone.Layout.extend({
-    
-    tagName: 'fieldset',
+
+    tagName: 'li',
 
     attributes: {
       'class': 'batchcontainer'
@@ -20,7 +20,7 @@ define(function(require, exports, module) {
         this.$('.fieldset-smoke').toggle();
       }
     },
-            
+
     serialize: function() {
       return {id: this.model.id, comment: this.model.get('comment'), batchEdit: this.options.batchEdit}
     },
@@ -30,18 +30,20 @@ define(function(require, exports, module) {
         this.$el.addClass('required');
       }
     }
-          
+
   });
 
   var EditView = module.exports = Backbone.Layout.extend({
 
-    tagName: "form",
+    tagName: "div",
 
     hiddenFields: [
       'id',
       'active',
       'sort'
     ],
+
+    template: Handlebars.compile("<ul class='fields'></ul>"),
 
     beforeRender: function() {
 
@@ -81,9 +83,9 @@ define(function(require, exports, module) {
         if (!isHidden) {
           var uiContainer = new UIContainer({model: column, batchEdit: this.options.batchIds !== undefined});
           uiContainer.insertView(view);
-          this.insertView(uiContainer);
+          this.insertView('.fields',uiContainer);
         } else {
-          this.insertView(view);
+          this.insertView('.fields',view);
         }
 
       }, this);
@@ -91,8 +93,7 @@ define(function(require, exports, module) {
 
     constructor: function (options) {
       Backbone.Layout.__super__.constructor.call(this, options);
-      this.$el.addClass('directus-form');
-      this.$el.attr('id','directus-form');
+      this.$el.addClass('form');
     },
 
     // Focus on first input
@@ -100,7 +101,7 @@ define(function(require, exports, module) {
       var $first = this.$el.find(':input:first:visible');
       $first.focus();
       $first.val($first.val());
-      
+
       // If this is a nested collection (to-Many) "Add" modal, preset & hide the parent foreign key.
       if(this.options.collectionAdd && !_.isEmpty(this.options.parentField)) {
         this.model.set(this.options.parentField.name, this.options.parentField.value);
