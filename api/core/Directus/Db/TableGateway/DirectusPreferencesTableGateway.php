@@ -58,7 +58,6 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
     public function constructPreferences($user_id, $table, $preferences = null) {
         $db = Bootstrap::get('olddb');
-
         if ($preferences) {
             $newPreferencesData = false;
 
@@ -100,8 +99,15 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         $select
             ->where
                 ->equalTo('table_name', $table)
-                ->equalTo('user', $user_id)
+                ->equalTo('user', $user_id);
+
+        if($name) {
+            $select->where
                 ->equalTo('title', $name);
+        } else {
+            $select->where
+                ->isNull('title');
+        }
 
         $preferences = $this
             ->selectWith($select)

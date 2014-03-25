@@ -113,11 +113,7 @@ function(app, Backbone) {
         //this.collection.trigger('adv_search', "id == 336");
       },
       'click #fetch-pref-btn': function(e) {
-        this.options.preferences.fetch({newTitle: "Cool Preference"},{
-            success: function(model, e) {
-                console.log("Success!");
-            }
-        });
+        this.options.preferences.fetch({newTitle: "Cool Preference"});
       }
     },
 
@@ -214,7 +210,7 @@ function(app, Backbone) {
         this.render();
       }, this);
 
-      //For Some reason calling collection.fetch directly breaks this.
+      //For Some reason calling collection.fetch directly Breaks update.
       var that = this;
       this.options.preferences.on('change', function() {
         that.collection.fetch();
