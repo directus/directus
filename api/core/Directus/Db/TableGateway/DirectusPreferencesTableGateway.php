@@ -193,7 +193,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         $sql =
             'SELECT
                 id,
-                ST.table_name,
+                table_name,
                 user,
                 columns_visible,
                 sort,
@@ -201,28 +201,12 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                 active,
                 title
             FROM
-                INFORMATION_SCHEMA.TABLES ST
-            LEFT JOIN
-                directus_preferences ON (directus_preferences.table_name = ST.table_name AND directus_preferences.user = :user AND directus_preferences.title IS NOT NULL)
+                directus_preferences
             WHERE
-                ST.TABLE_SCHEMA = :schema
-            AND
-                ST.TABLE_NAME NOT IN (
-                    "directus_columns",
-                    "directus_ip_whitelist",
-                    "directus_preferences",
-                    "directus_privileges",
-                    "directus_settings",
-                    "directus_social_feeds",
-                    "directus_social_posts",
-                    "directus_storage_adapters",
-                    "directus_tables",
-                    "directus_tab_privileges",
-                    "directus_ui"
-                )';
+                title IS NOT NULL AND
+                directus_preferences.user = :user';
 
         $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
         $sth->bindValue(':user', $user_id, \PDO::PARAM_INT);
         $sth->execute();
 
@@ -239,10 +223,8 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                 $row = null;
             }
 
-            $row = $this->constructPreferences($user_id, $tableName, $row);
-            $preferences[$tableName] = $row;
+            $preferences[$tableName.":".$row['title']] = $row;
         }
-        print_r($preferences);die();
 
         return $preferences;
     }

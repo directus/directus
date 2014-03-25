@@ -114,7 +114,6 @@ function(app, Backbone) {
       },
       'click #fetch-pref-btn': function(e) {
         this.options.preferences.fetch({newTitle: "Cool Preference"});
-        this.collection.fetch();
       }
     },
 
@@ -210,6 +209,8 @@ function(app, Backbone) {
         this.batchEdit = $('.select-row:checked').length > 1;
         this.render();
       }, this);
+
+      this.options.preferences.on('sync', this.collection.fetch, this.collection);
 
       //this.collection.on('visibility', this.render, this);
     }
