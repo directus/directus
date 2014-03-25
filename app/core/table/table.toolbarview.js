@@ -26,7 +26,7 @@ function(app, Backbone) {
           if (expectedResponses === 0) {
             collection.trigger('visibility');
           }
-        }
+        };
 
         $checked.each(function() {
           var id = this.value;

@@ -11,7 +11,7 @@ define(function(require, exports, module) {
   var resetTimer = function(id, fn, ms) {
     clearTimeout(id);
     return setTimeout(fn, ms);
-  }
+  };
 
   Idle.interrupt = function() {
     clearTimeout(timerId);
@@ -21,19 +21,19 @@ define(function(require, exports, module) {
     }
 
     if (this.options.repeat) {
-      timerId = setTimeout(this.fn, this.ms);;
+      timerId = setTimeout(this.fn, this.ms);
     } else {
       self.unbindEvents();
     }
-  }
+  };
 
   Idle.bindEvents = function() {
     $(document).on(interruptionEvents, this.interrupt.bind(this));
-  }
+  };
 
   Idle.unbindEvents = function() {
     $(document).off(interruptionEvents, this.interrupt);
-  }
+  };
 
   Idle.start = function(options) {
     var self = this;
@@ -45,11 +45,11 @@ define(function(require, exports, module) {
       // stop listening to events after the callback
       self.unbindEvents();
       options.timeout();
-    }
+    };
 
     this.bindEvents();
 
     timerId = resetTimer(timerId, this.fn, this.ms);
-  }
+  };
 
 });

@@ -105,7 +105,7 @@ require(["config"], function() {
           repeat: true,
         });
 
-      }
+      };
 
       waitForForAvtivity();
 
@@ -138,7 +138,7 @@ require(["config"], function() {
       app.groups   = EntriesManager.getInstance('directus_groups');
 
       // Proxy to EntriesManager
-      app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); },
+      app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); };
 
       app.messages = new Messages.Collection([], _.extend({
         url: app.API_URL + 'messages/rows/'
@@ -259,7 +259,7 @@ require(["config"], function() {
         switch(xhr.status) {
           case 403:
             // var response = $.parseJSON(xhr.responseText);
-            var message = "You don't have permission to access this table. Please send this to IT:\n\n" + xhr.responseText;
+            message = "You don't have permission to access this table. Please send this to IT:\n\n" + xhr.responseText;
             app.trigger("alert:error", "Restricted Access", message, true);
             break;
           default:

@@ -34,7 +34,7 @@ define(function(require, exports, module) {
     },
 
     logOut: function() {
-      window.location.href = app.API_URL + "auth/logout"
+      window.location.href = app.API_URL + "auth/logout";
     },
 
     logErrorToServer: function(type, message, details) {
@@ -271,7 +271,8 @@ define(function(require, exports, module) {
       }, options));
 
       // Cache the refererence.
-      return this.layout = layout;
+      this.layout = layout;
+      return this.layout;
     }
 
   }, Backbone.Events, typetools);

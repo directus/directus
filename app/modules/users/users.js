@@ -34,7 +34,7 @@ function(app, Backbone, Directus, SaveModule) {
           error: function() { console.log('error',arguments); },
           patch: true,
           includeRelationships: true
-        }
+        };
 
         // @todo, fix EntriesCollection and get rid of this
         if (!model.isNew()) {

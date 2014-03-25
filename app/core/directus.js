@@ -46,7 +46,8 @@ function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Collecti
       // Every route needs to be prefixed
       _.each(this.routes, function(callback, path) {
         if (path) {
-          return routes[prefix + path] = callback;
+          routes[prefix + path] = callback;
+          return routes[prefix + path];
         }
 
         // If the path is "" just set to prefix, this is to comply

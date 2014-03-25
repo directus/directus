@@ -186,7 +186,8 @@ define(['app', 'backbone'], function(app, Backbone) {
     removeSelectedFormatting: function() {
       var html = "";
       var sel = window.getSelection();
-
+      var container;
+      
       if(sel.isCollapsed) {
         html = $(document.getElementById(this.options.name)).html().replace(/<(?!br\s*\/?)[^>]+>/g, '');
         $('div.force-editable').html(html);
@@ -196,13 +197,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       if(sel.anchorNode.parentNode != document.getElementById(this.options.name)) {
         html = sel.anchorNode.parentNode.innerHTML.replace(/<(?!br\s*\/?)[^>]+>/g, '');
-        var container = document.createElement("span");
+        container = document.createElement("span");
         container.innerHTML = html;
         sel.anchorNode.parentNode.parentNode.insertBefore(container, sel.anchorNode.parentNode);
         sel.anchorNode.parentNode.remove();
       } else {
         if (sel.rangeCount) {
-            var container = document.createElement("span");
+            container = document.createElement("span");
             for (var i = 0, len = sel.rangeCount; i < len; ++i) {
                 container.appendChild(sel.getRangeAt(i).cloneContents());
             }

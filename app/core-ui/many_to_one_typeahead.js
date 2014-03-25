@@ -79,7 +79,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         readonly: false,
         comment: this.options.schema.get('comment'),
         value: value
-      }
+      };
     },
 
     afterRender: function () {
@@ -93,7 +93,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         valueKey: this.visibleCoumn,
         template: Handlebars.compile('<div>'+template+'</div>'),
         remote: url,
-      })
+      });
 
       this.$('.for_display_only').on('typeahead:selected', function(e, datum) {
         var model = self.model.get(self.name);
