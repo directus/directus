@@ -1678,6 +1678,9 @@ input[type="radio"].custom-check:checked + label:before {
   top: 101px;
   width: 100%;
 }
+#sidebar #mainSidebar ul {
+  margin: 10px 0px;
+}
 #sidebar #mainSidebar li {
   font-size: 12px;
   line-height: 13px;
