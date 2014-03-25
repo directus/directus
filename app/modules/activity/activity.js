@@ -14,7 +14,13 @@ function(app, Backbone, Directus, Chart, Media) {
 
   var ListView = Backbone.Layout.extend({
 
-    template: 'messages-list',
+    tagName: "ul",
+
+    attributes: {
+      class: "group-list"
+    },
+
+    template: "activity-list",
 
     events: {
       'click tr': function(e) {
@@ -25,23 +31,22 @@ function(app, Backbone, Directus, Chart, Media) {
 
     serialize: function() {
       var data = this.collection.map(function(model) {
-        var data = model.toJSON();
-        var momentDate = moment(data.date_updated);
-        data.timestamp = parseInt(momentDate.format('X'));
-        data.niceDate = momentDate.fromNow();
-        data.read = model.getUnreadCount() === 0;
-        data.responsesLength = data.responses.length;
-        data.from = parseInt(data.from, 10);
-        //console.log(_.map(data.responses, 'from'));
+
+        var data = {
+          "table": model.get('table_name'),
+          "title": "Test TItle",
+          'time': moment(model.get('datetime')).format("h:mma"),
+          "timestamp": model.get('datetime')
+        };
         return data;
       });
 
       // Order the data by timestamp
       data = _.sortBy(data, function(item) {
-        return -item.timestamp;
+        return -moment(item.timestamp);
       });
 
-      return {messages: data};
+      return {activities: data};
     },
 
     initialize: function() {
