@@ -46,6 +46,9 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   Module.Input = Backbone.Layout.extend({
 
     tagName: 'div',
+    attributes: {
+      'class': 'field'
+    },
 
     template: Handlebars.compile(template),
 

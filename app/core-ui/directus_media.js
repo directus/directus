@@ -99,6 +99,10 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     tagName: 'div',
 
+    attributes: {
+      'class': 'field'
+    },
+
     events: {
       'click a[data-action=toggle-form]': function() {
         $('.upload-form').toggleClass('hide');

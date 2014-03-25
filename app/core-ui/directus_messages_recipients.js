@@ -17,7 +17,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = [];
   Module.variables = [];
 
-  var template = 
+  var template =
                 '<style type="text/css">\
                 #edit_field_{{name}} .twitter-typeahead {\
                   width:100%;\
@@ -56,6 +56,10 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.Input = Backbone.Layout.extend({
 
     tagName: 'div',
+
+    attributes: {
+      'class': 'field'
+    },
 
     template: Handlebars.compile(template),
 
