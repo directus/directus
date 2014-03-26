@@ -32,6 +32,12 @@ function(app, Backbone) {
 
     template: 'header/header',
 
+    tagName: 'div',
+
+    attributes: {
+      class: 'main-container'
+    },
+
     serialize: function() {
       var data = this.model.get('route');
 
