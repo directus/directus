@@ -96,6 +96,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Tables');
+      app.headerModel.setRoute("Tables");
       this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
@@ -118,6 +119,7 @@ define(function(require, exports, module) {
       } else {
         collection = EntriesManager.getInstance(tableName);
       }
+      app.headerModel.setRoute(collection.table.id, [{title: 'Tables', anchor: '#tables'}]);
 
       if (collection.table.get('single')) {
         if(collection.models.length) {

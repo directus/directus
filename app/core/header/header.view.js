@@ -33,15 +33,11 @@ function(app, Backbone) {
     template: 'header',
 
     serialize: function() {
-      /*var data = {
-        title: this.collection.table.id,
-        breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
-      };*/
       var data = this.model.get('route');
 
       if(data === undefined) {
         data = {
-          title: "Navbar"
+          title: "UNDEFINED! FIX ME!!!!"
         };
       }
       console.log(data);
