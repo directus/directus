@@ -91,7 +91,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Merge the M21 foreign keys into the recordData array
         $recordData = array_merge($recordData, $parentRecordWithForeignKeys);
 
-        $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);  
+        $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
         // If more than the record ID is present.
         $newRecordObject = null;
@@ -285,7 +285,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             $colUiType = $column['ui'];
 
-            $isManyToOne = (array_key_exists('relationship', $column) && 
+            $isManyToOne = (array_key_exists('relationship', $column) &&
                 $column['relationship']['type'] == 'MANYTOONE'
             );
 
@@ -318,7 +318,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             }
 
             /** One-to-Many, Many-to-Many */
-            elseif ($fieldIsCollectionAssociation) { 
+            elseif ($fieldIsCollectionAssociation) {
                 unset($parentRow[$colName]);
             }
         }
@@ -487,7 +487,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 ->equalTo('id', $params['id'])
             ->unnest;
 
-        if(isset($params['search']) && !empty($params['search'])) {
+        if(isset($params['adv_search']) && !empty($params['adv_search'])) {
+          $select->where($params['adv_search']);
+        } else if(isset($params['search']) && !empty($params['search'])) {
             $params['search'] = "%" . $params['search'] . "%";
             $where = $select->where->nest;
             foreach ($schema as $col) {
@@ -1063,7 +1065,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
     function countActiveOld($no_active=false) {
 
-        //qtryutn 
+        //qtryutn
         return array(
             'active' => 0,
             'inactive' => 0,

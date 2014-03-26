@@ -61,7 +61,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             $haystack = is_array($params['active'])
                 ? $params['active']
                 : explode(",", $params['active']);
-            $select->where->in('active', $haystack);
+            $select->where->in($params['table_name'].'.active', $haystack);
         }
 
         // Where
@@ -97,7 +97,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
                     } else {
                         $outer->equalTo($column, $val);
                     }
-                    
+
                 } else if ($type == 'between') {
                     $val1 = $whereCond['val1'];
                     $val2 = $whereCond['val2'];
@@ -107,8 +107,62 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             }
              $outer->unnest;
         }
-            
-        if(isset($params['search']) && !empty($params['search'])) {
+
+        if(isset($params['adv_search']) && !empty($params['adv_search'])) {
+          foreach ($params['adv_search'] as $search_col) {
+            $target = array();
+            foreach ($schema as $col) {
+              if($col['id'] == $search_col['id']) {
+                $target = $col;
+                break;
+              }
+            }
+            if(empty($target)) {
+              continue;
+            }
+
+            if(isset($target['relationship'])) {
+              $relatedTable = $target['relationship']['table_related'];
+              $junctionTable = $target['relationship']['junction_table'];
+              $jkl = $target['relationship']['junction_key_left'];
+              $jkr = $target['relationship']['junction_key_right'];
+
+              $keyleft = $params['table_name']. ".id";
+              $keyRight = $junctionTable.'.'.$jkl;
+
+              $jkeyleft = $junctionTable.'.'.$jkr;
+              $jkeyright = $relatedTable.".id";
+
+
+              $select->join($junctionTable,
+                  "$keyleft = $keyRight",
+                  array())
+              ->join($relatedTable,
+                  "$jkeyleft = $jkeyright",
+                  array());
+
+              $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
+              $search_col['value'] = "%".$search_col['value']."%";
+              $where = $select->where->nest;
+              foreach ($relatedTableMetadata as $col) {
+                if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
+                  $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
+                  $columnName = $relatedTable.".".$columnName;
+                  $like = new Predicate\Expression("LOWER($columnName) LIKE ?", strtolower($search_col['value']));
+                  $where->addPredicate($like, Predicate\Predicate::OP_OR);
+                }
+              }
+              $where->unnest;
+
+            } else {
+              if($search_col['type'] == "like") {
+                $select->where($search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue("%".$search_col['value']."%"));
+              } else {
+                $select->where($search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue($search_col['value']));
+              }
+            }
+          }
+        } else if(isset($params['search']) && !empty($params['search'])) {
             $params['search'] = "%" . $params['search'] . "%";
             $where = $select->where->nest;
             foreach ($schema as $col) {
