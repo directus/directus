@@ -190,7 +190,7 @@ define(function(require, exports, module) {
         app.headerModel.setRoute('Batch Edit ('+id.split(',').length+')', [{ title: 'Tables', anchor: '#tables'}]);
       } else {
         view = new Table.Views.Edit({model: model});
-        app.headerModel.setRoute(model.get('id') ? 'Editing Item' : 'Creating New Item', [{ title: 'Tables', anchor: '#tables'}]);
+        app.headerModel.setRoute(model.get('id') ? 'Editing Item' : 'Creating New Item', [{ title: 'Tables', anchor: '#tables'}, {title: tableName, anchor: "#tables/" + tableName}]);
       }
 
       this.v.main.setView('#content', view);
@@ -230,6 +230,7 @@ define(function(require, exports, module) {
       mediaView.addEditMedia(model, 'Editing media');
 
       this.setTitle('Media');
+      app.headerModel.setRoute("Media");
       this.tabs.setActive('media');
       this.v.main.setView('#content', mediaView);
       this.v.main.render();
@@ -273,6 +274,8 @@ define(function(require, exports, module) {
 
       this.setTitle('Settings');
       this.tabs.setActive('settings');
+
+      app.headerModel.setRoute(name, [{title: 'Settings', anchor: '#settings'}]);
 
       switch(name) {
         case 'tables':
@@ -319,6 +322,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Settings - Permissions');
+      app.headerModel.setRoute("Permissions", [{title: 'Settings', anchor: '#settings'}]);
       this.tabs.setActive('settings');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
       this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
@@ -327,6 +331,7 @@ define(function(require, exports, module) {
 
     messages: function(name) {
       this.tabs.setActive("messages");
+      app.headerModel.setRoute("Messages");
       this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
       this.v.main.render();
     },
@@ -334,6 +339,7 @@ define(function(require, exports, module) {
     message: function(id) {
       var model = app.messages.get(id);
       this.setTitle('Message');
+      app.headerModel.setRoute("View Message", {title: "Messages", anchor: "#messages"});
 
       if (model === undefined) {
         model = new app.messages.model({id: id}, {collection: app.messages, parse: true});
@@ -345,6 +351,7 @@ define(function(require, exports, module) {
     },
 
     newMessage: function() {
+      app.headerModel.setRoute("New Message", {title: "Messages", anchor: "#messages"});
       var model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages, parse: true});
       this.v.main.setView('#content', new Messages.Views.New({model: model}));
       this.v.main.render();
