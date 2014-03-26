@@ -1746,6 +1746,9 @@ input[type="radio"].custom-check:checked + label:before {
 #sidebar #featureSidebar li:hover.has-image img {
   opacity: .2;
 }
+#sidebar #featureSidebar li.active {
+  background-color: #fbfbfb;
+}
 #sidebar #featureSidebar li.has-image .icon {
   display: none;
 }
