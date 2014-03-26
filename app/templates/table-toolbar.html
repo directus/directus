@@ -60,8 +60,10 @@
             {{#if filter}}
               <li>
                 <span class="action" data-add-filter-row>Add Filter</span>
-                <span class="text-spacer">or</span>
-                <span class="action">Save Search</span><!-- @TODO This is currently dead -->
+                {{#if hasFilters}}
+                  <span class="text-spacer">or</span>
+                  <span class="action">Save Search</span><!-- @TODO This is currently dead -->
+                {{/if}}
               </li>
             {{/if}}
           </ul>
