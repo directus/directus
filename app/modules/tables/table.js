@@ -320,7 +320,9 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       };
 
       if (this.collection.hasPermission('add')) {
-        data.buttonTitle = 'Add New Item';
+        data.showAddButton = {
+          title: 'Add Table'
+        };
       }
 
       return data;

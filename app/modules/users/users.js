@@ -167,7 +167,9 @@ function(app, Backbone, Directus, SaveModule) {
       var data = {title: 'Users'};
 
       if (this.collection.hasPermission('add')) {
-        data.buttonTitle = 'Add New User';
+        data.showAddButton = {
+          title: 'Add User'
+        };
       }
 
       return data;
