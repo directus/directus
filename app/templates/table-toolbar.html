@@ -42,63 +42,55 @@
 </div>
 {{/if}}
 
-<div class="header1">
-  <div class="secondary-row row-plain filter-options" data-subheader-item="filter" data-default-subheader-item style="display:block">
-    <ul class="tools left">
-      <li class="div-right">
-        <span class="simple-select">
-          <span class="icon icon-triangle-down"></span>
-          <select name="status">
-            <option>Viewing All</option>
-            <option>Viewing All</option>
-            <option>Viewing All</option>
-          </select>
-        </span>
-      </li>
-      <li>
-        <a href="" class="action">Add Filter</a>
-        <span class="text-spacer">or</span>
-        <a href="" class="action">Save Search</a>
-      </li>
-    </ul>
-    {{#if filter}}
-      <!-- <input type="text" id="table-filter" placeholder="Filter" value="{{filterText}}"> -->
-      <!-- <input type="checkbox" class="advanced-search-trigger"> -->
-      <!-- <div class="advanced-search-menu"> -->
-        <!-- <h4 class="advanced-search-headline">Advanced Search</h4> -->
-          
-        <!--
-<div class="advanced-search-fields">
-          <div class="advanced-search-fields-row">
--->
-            <div class="filter-form">
+ 
+    
+<div class="header1"><!-- This is just to help styling while form is out of header -->
+  <div class="secondary-row row-plain filter-options">
+          <ul class="tools left">
+            <li class="div-right">
               <span class="simple-select">
                 <span class="icon icon-triangle-down"></span>
-                <select name="" id="" >
-                  <option value="asd">Table 1</option>
-                  <option value="asd">Table 2</option>
-                  <option value="asd">Table 3</option>
+                <select name="status">
+                  <option>Viewing All</option>
+                  <option>Viewing All</option>
+                  <option>Viewing All</option>
+                </select>
+              </span>
+            </li>
+            {{#if filter}}
+              <li>
+                <span class="action" data-add-filter-row>Add Filter</span>
+                <span class="text-spacer">or</span>
+                <span class="action">Save Search</span><!-- @TODO This is currently dead -->
+              </li>
+            {{/if}}
+          </ul>
+        {{#if filter}}
+          <ul id="advancedFilterList" class="filter-list advanced-search-fields">
+            <li class="advanced-search-fields-row filter-form">
+              <span class="simple-select">
+                <span class="icon icon-triangle-down"></span>
+                <select name="" id="" class="medium adv-search-col-id">
+                  {{#tableColumns}}
+                  <option value="{{this}}">{{this}}</option>
+                  {{/tableColumns}}
                 </select>
               </span>
               <span class="simple-select">
                 <span class="icon icon-triangle-down"></span>
-                <select name="" id="" class="small">
-                  <option value="asd">==</option>
-                  <option value="asd">&lt;=</option>
-                  <option value="asd">&gt;=</option>
-                  <option value="asd">like</option>
+                <select name="" id="" class="small adv-search-query-type">
+                  <option value="=">==</option>
+                  <option value="<=">&lt;=</option>
+                  <option value=">=">&gt;=</option>
+                  <option value="like">like</option>
                 </select>
               </span>
-              <input type="text" placeholder="Search Term..." name="keywords" id="advKeywords" maxlength="50" class="medium">
-              <!-- <span class="add-filter-row">Add</span> -->
-              <!-- <span class="glyphicon-remove remove-adv-row"></span> -->
-            </div>
-          <!--
-</div>
-        </div>
--->
-      <!-- </div> -->
-    {{/if}}
+              <input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium">
+              <span id="addFilterButton" class="action" >Add</span>
+                <!-- <span class="glyphicon-remove remove-adv-row"></span> -->
+            </li>
+          </ul>
+        {{/if}}
     <div class="vertical-center right pagination-number">{{#if uBound}} {{number lBound}}–{{number uBound}} of {{number totalCount}}{{/if}}</div>
   </div>
 </div>

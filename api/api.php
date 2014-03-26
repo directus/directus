@@ -716,7 +716,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
  * BOOKMARKS COLLECTION
  */
 
-$app->map("/$v/bookmarks(/:title)?", function($title = null) use ($db, $params, $app, $ZendDb, $acl, $requestPayload) {
+$app->map("/$v/bookmarks(/:title)/?", function($title = null) use ($db, $params, $app, $ZendDb, $acl, $requestPayload) {
   $currentUser = Auth::getUserInfo();
   $TableGateway = new TableGateway($acl, 'directus_bookmarks', $ZendDb);
   switch ($app->request()->getMethod()) {

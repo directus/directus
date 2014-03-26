@@ -57,15 +57,22 @@
     color: @mediumGrey;
     margin: 15px 0px -15px 0px;
     &.filter-options {
-      display: none;
+      .filter-list {
+        padding: 0px;
+      }
       .filter-form {
         float: left;
         margin-left: @smallPad;
         margin-top: 4px;
+        .action {
+          display: block;
+          float: left;
+          margin-left: 4px;
+          margin-top: @extraSmallPad;
+        }
       }
     }
     &.batch-actions {
-      display: none;
       &.left {
         li {
           margin-left: @standardPad;
@@ -83,6 +90,7 @@
     }
     .action {
       color: @darkGrey;
+      cursor: pointer;
     }
     .text-spacer {
       padding: 0px @smallPad;

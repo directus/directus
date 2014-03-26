@@ -43,19 +43,19 @@ function(app, Backbone) {
         this.collection.fetch();
         this.options.preferences.save({active: value});
       },
-      
+
       'click a.pag-next:not(.disabled)': function() {
         var page = this.collection.getFilter('currentPage') + 1;
         this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
-      
+
       'click a.pag-prev:not(.disabled)': function() {
         var page = this.collection.getFilter('currentPage') - 1;
         this.collection.filters.currentPage = page;
         this.collection.fetch();
       },
-      
+
       'keydown': function(e) {
         if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
           this.collection.setFilter('currentPage', this.collection.filters.currentPage + 1);
@@ -66,7 +66,7 @@ function(app, Backbone) {
           this.collection.fetch();
         }
       },
-      
+
       'keypress #table-filter': function(e) {
         if (e.which == 13) {
           var text = $('#table-filter').val();
@@ -76,8 +76,8 @@ function(app, Backbone) {
           this.collection.trigger('search', text);
         }
       },
-      
-      'click .add-filter-row': function(e) {
+
+      'click [data-add-filter-row]': function(e) {
         var $filterRow = this.getFilterRow;
         $filterRow.clone(true).appendTo(".advanced-search-fields");
       },
@@ -91,11 +91,40 @@ function(app, Backbone) {
         var route = Backbone.history.fragment.split('/');
         route.push(ids);
         app.router.go(route);
+      },
+
+      'click #addFilterButton': function(e) {
+        var $filters = $('.advanced-search-fields-row');
+        var that = this;
+        
+        var searchSettings = $filters.map(function() {
+          var $this = $(this);
+          var values = {
+            id: $this.find('.adv-search-col-id').val(),
+            type: $this.find('.adv-search-query-type').val(),
+            value: $this.find('input').val()
+          };
+          
+          //$('#advancedFilterList').append('<li>' + values.id + ' ' + values.type + ' ' + values.value + '</li>');
+          
+          return {
+            id: that.mysql_real_escape_string(values.id),
+            type: values.type,
+            value: that.mysql_real_escape_string(values.value)
+          };
+        }).toArray();
+        
+        var queryString = "";
+
+        this.collection.setFilter('adv_search', searchSettings);
+        this.collection.setFilter('currentPage', 0);
+        this.collection.fetch();
+        //this.collection.trigger('adv_search', "id == 336");
       }
     },
 
     serialize: function() {
-
+      //@TODO: Cleanup with non-hacks
       var table = this.options.collection.table;
       var options = {};
 
@@ -121,12 +150,40 @@ function(app, Backbone) {
 
       options.filterText = this.collection.getFilter('search');
       options.filter = true;
+      options.tableColumns = this.options.collection.structure.pluck('id');
+      options.advSearchData = this.collection.getFilter('adv_search');
       options.paginator = (options.pageNext || options.pagePrev);
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 
       options.visibilityButtons = options.actionButtons || options.deleteOnly;
 
       return options;
+    },
+
+    mysql_real_escape_string: function(str) {
+      if(!str) {return "";}
+      return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
+          switch (char) {
+              case "\0":
+                  return "\\0";
+              case "\x08":
+                  return "\\b";
+              case "\x09":
+                  return "\\t";
+              case "\x1a":
+                  return "\\z";
+              case "\n":
+                  return "\\n";
+              case "\r":
+                  return "\\r";
+              case "\"":
+              case "'":
+              case "\\":
+              case "%":
+                  return "\\"+char; // prepends a backslash to backslash, percent,
+                                    // and double/single quotes
+          }
+      });
     },
 
     setFilterRow: function(){

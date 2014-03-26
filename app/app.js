@@ -109,6 +109,10 @@ define(function(require, exports, module) {
       return user.get('group');
     },
 
+    getBookmarks: function() {
+      return app.bookmarks;
+    },
+
     deepClone: function(data) {
       return JSON.parse(JSON.stringify(data));
     },

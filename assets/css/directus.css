@@ -1909,16 +1909,19 @@ textarea {
   color: #cbcbcb;
   margin: 15px 0px -15px 0px;
 }
-.header1 .secondary-row.filter-options {
-  display: none;
+.header1 .secondary-row.filter-options .filter-list {
+  padding: 0px;
 }
 .header1 .secondary-row.filter-options .filter-form {
   float: left;
   margin-left: 10px;
   margin-top: 4px;
 }
-.header1 .secondary-row.batch-actions {
-  display: none;
+.header1 .secondary-row.filter-options .filter-form .action {
+  display: block;
+  float: left;
+  margin-left: 4px;
+  margin-top: 5px;
 }
 .header1 .secondary-row.batch-actions.left li {
   margin-left: 20px;
@@ -1934,6 +1937,7 @@ textarea {
 }
 .header1 .secondary-row .action {
   color: #5b5b5b;
+  cursor: pointer;
 }
 .header1 .secondary-row .text-spacer {
   padding: 0px 10px;

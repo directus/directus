@@ -346,7 +346,7 @@ define(function(require, exports, module) {
       //Fade out and remove splash
       $('#splash').fadeOut('fast').remove();
       this.tabs = options.tabs;
-      this.bookmarks = options.bookmarks;
+      this.bookmarks = app.getBookmarks();
       this.extensions = {};
 
       _.each(options.extensions, function(item) {
