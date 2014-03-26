@@ -39,6 +39,7 @@ use Directus\Bootstrap;
 use Directus\Db;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
+use Directus\Db\TableGateway\DirectusBookmarksTableGateway;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
@@ -461,7 +462,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
     // }
 
     // any CREATE requests should md5 the email
-    if("directus_users" === $table && 
+    if("directus_users" === $table &&
        in_array($app->request()->getMethod(), array('POST')) &&
        array_key_exists('email',$requestPayload)
        ) {
@@ -499,7 +500,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
     $params['table_name'] = $table;
 
     // any UPDATE requests should md5 the email
-    if("directus_users" === $table && 
+    if("directus_users" === $table &&
        in_array($app->request()->getMethod(), array('PUT', 'PATCH')) &&
        array_key_exists('email',$requestPayload)
        ) {
@@ -710,6 +711,33 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
     $jsonResponse = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
     JsonView::render($jsonResponse);
 })->via('GET','POST','PUT');
+
+/**
+ * BOOKMARKS COLLECTION
+ */
+
+$app->map("/$v/bookmarks(/:title)?", function($title = null) use ($db, $params, $app, $ZendDb, $acl, $requestPayload) {
+  $currentUser = Auth::getUserInfo();
+  $TableGateway = new TableGateway($acl, 'directus_bookmarks', $ZendDb);
+  switch ($app->request()->getMethod()) {
+    case "PUT":
+      $TableGateway->manageRecordUpdate('directus_bookmarks', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+      $title = $requestPayload['title'];
+      break;
+    case "POST":
+      $requestPayload['user'] = $currentUser['id'];
+      $id = $TableGateway->manageRecordUpdate('directus_bookmarks', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+      $params['id'] = $id;
+      $title = $requestPayload['title'];
+      break;
+    case "DELETE":
+      echo $db->delete('directus_bookmarks', $requestPayload['id']);
+      break;
+  }
+  $bookmarks = new DirectusBookmarksTableGateway($acl, $ZendDb);
+  $jsonResponse = $bookmarks->fetchByUserAndTitle($currentUser['id'], $title);
+  JsonView::render($jsonResponse);
+})->via('GET', 'POST', 'PUT', 'DELETE');
 
 /**
  * REVISIONS COLLECTION
