@@ -250,7 +250,7 @@ define(function(require, exports, module) {
 
       var model;
       this.setTitle('Users');
-      this.tabs.setActive('users';
+      this.tabs.setActive('users');
 
       if (id === "new") {
         model = new app.users.model({}, {collection: app.users, parse:true});
