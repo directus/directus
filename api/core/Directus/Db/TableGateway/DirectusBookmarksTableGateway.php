@@ -41,12 +41,12 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
       return $bookmark;
     }
 
-    public function fetchByUserAndTitle($user_id, $title) {
+    public function fetchByUserAndId($user_id, $id) {
         $select = new Select($this->table);
         $select->limit(1);
         $select
             ->where
-                ->equalTo('title', $title)
+                ->equalTo('id', $id)
                 ->equalTo('user', $user_id);
 
         $bookmarks = $this

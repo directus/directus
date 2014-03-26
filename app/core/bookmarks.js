@@ -19,6 +19,9 @@ function(app, Backbone) {
   var Bookmarks = {};
 
   Bookmarks.Collection = Backbone.Collection.extend({
+    initialize: function() {
+      this.url = app.API_URL + 'bookmarks/';
+    },
     setActive: function(route) {
       var model = this.get(route);
       //deactive all tabs
@@ -32,12 +35,14 @@ function(app, Backbone) {
     addNewBookmark: function(data) {
       data.user = data.user.toString();
       if(this.findWhere(data) === undefined) {
-        this.create(data, {url: app.API_URL + 'bookmarks/'});
+        this.create(data);
       }
+      console.log("ADded");
     },
     removeBookmark: function(data) {
       data.user = data.user.toString();
       var model = this.findWhere(data);
+      console.log(model);
       if(model !== undefined) {
         model.destroy();
         this.remove(model);

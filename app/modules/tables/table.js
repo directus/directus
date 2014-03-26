@@ -326,10 +326,8 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       }
 
       data.showBookmarkButton = {
-        active: this.bookmarked
+        active: this.isBookmarked
       };
-
-      console.log(data.showBookmarkButton);
 
       return data;
     },
@@ -346,20 +344,18 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
           icon_class: 'icon-star',
           user: app.getCurrentUser().get("id")
         };
-        if(this.bookmarked)
+        if(this.isBookmarked)
         {
           app.getBookmarks().addNewBookmark(data);
         } else {
           app.getBookmarks().removeBookmark(data);
         }
         this.isBookmarked = !this.isBookmarked;
-        this.render();
       }
     },
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      this.collection.fetch({reset: true});
     },
 
     initialize: function() {
@@ -367,7 +363,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       //ListViewManager
       this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
       //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
-      this.bookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
+      this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
     }
 
   });
