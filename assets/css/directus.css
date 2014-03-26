@@ -1505,6 +1505,9 @@ textarea {
   padding-left: 15px;
   width: 12px;
 }
+.table-striped tr .check-box label {
+  margin-right: 0px;
+}
 .cards {
   padding-left: 0px;
 }
