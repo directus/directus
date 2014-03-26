@@ -1736,12 +1736,11 @@ textarea {
 #sidebar #featureSidebar li {
   background-color: #313131;
   float: left;
-  height: 25px;
+  height: 59px;
   margin-bottom: 10px;
   margin-left: 10px;
-  padding: 17px;
   position: relative;
-  width: 25px;
+  width: 59px;
 }
 #sidebar #featureSidebar li:hover {
   background-color: #5b5b5b;
@@ -1751,6 +1750,10 @@ textarea {
 }
 #sidebar #featureSidebar li:hover.has-image img {
   opacity: .2;
+}
+#sidebar #featureSidebar li a {
+  display: block;
+  padding: 17px;
 }
 #sidebar #featureSidebar li.active {
   background-color: #fbfbfb;
