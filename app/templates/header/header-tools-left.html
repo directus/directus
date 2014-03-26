@@ -1,3 +1,4 @@
+{{#if list}}
 <ul class="tools left">
   <li class="input-and-button">
     {{#if buttonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
@@ -7,3 +8,21 @@
     {{#if showBookmarkButton}}<button class="tool-item large-circle {{#if showBookmarkButton.active}} active{{/if}}" id="bookmark" title="bookmark"><span class="icon icon-star"</button>{{/if}}
   </li>
 </ul>
+{{/if}}
+{{#if edit}}
+<li class="input-and-button saved">
+  <span for="status">
+    <span type="button" class="tool-item large-circle">
+      <span class="icon icon-check"></span>
+    </span>
+    <span class="simple-select">
+      <span class="icon icon-triangle-down"></span>
+      <select name="status">
+        <option>Save Changes</option>
+        <option>Save Changes</option>
+        <option>Save Changes</option>
+      </select>
+    </span>
+  </span>
+</li>
+{{/if}}

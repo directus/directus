@@ -10,10 +10,11 @@
 define([
   'app',
   'backbone',
-  'core/header/header.toolsleftview'
+  'core/header/header.toolsleftview',
+  'core/header/header.toolsrightview'
 ],
 
-function(app, Backbone, HeaderToolsLeftView) {
+function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView) {
 
   "use strict";
 
@@ -74,6 +75,11 @@ function(app, Backbone, HeaderToolsLeftView) {
           this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView(this.options));
         } else if(this.leftToolbar) {
           this.leftToolbar.remove();
+        }
+        if(this.options.rightToolbar) {
+          this.rightToolbar = this.setView('#tools-right-insert', new HeaderToolsRightView(this.options));
+        } else if(this.rightToolbar) {
+          this.rightToolbar.remove();
         }
       }
     }

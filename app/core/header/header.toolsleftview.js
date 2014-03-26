@@ -19,18 +19,30 @@ function(app, Backbone) {
 
     template: 'header/header-tools-left',
 
+    tagName: 'ul',
+
+    attributes: {
+      class: 'tools left'
+    },
+
     serialize: function() {
       var data = {};
 
-      if (this.collection && this.collection.hasPermission('add')) {
-        data.showAddButton = {
-          title: 'Add Table'
+      if(this.options.mode == "list") {
+        data.list = true;
+        if (this.collection && this.collection.hasPermission('add')) {
+          data.showAddButton = {
+            title: 'Add Table'
+          };
+        }
+
+        data.showBookmarkButton = {
+          active: this.isBookmarked
         };
+      } else if(this.options.mode == "edit") {
+        data.edit = true;
       }
 
-      data.showBookmarkButton = {
-        active: this.isBookmarked
-      };
       return data;
     },
 
@@ -58,9 +70,13 @@ function(app, Backbone) {
     },
     initialize: function(options) {
       this.options = options;
-      this.collection = options.collection;
-      if(this.collection) {
-        this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
+      if(options.mode == "list") {
+        this.collection = options.collection;
+        if(this.collection) {
+          this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
+        }
+      } else if(options.mode == "edit") {
+
       }
     }
   });

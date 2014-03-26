@@ -120,7 +120,7 @@ define(function(require, exports, module) {
       } else {
         collection = EntriesManager.getInstance(tableName);
       }
-      app.headerModel.setRoute(collection.table.id, [{title: 'Tables', anchor: '#tables'}], {leftToolbar: true, collection: collection});
+      app.headerModel.setRoute(collection.table.id, [{title: 'Tables', anchor: '#tables'}], {leftToolbar: true, collection: collection, mode: 'list'});
       if (collection.table.get('single')) {
         if(collection.models.length) {
           this.entry(tableName, collection.models[0].get('id'));
@@ -189,7 +189,8 @@ define(function(require, exports, module) {
         app.headerModel.setRoute('Batch Edit ('+id.split(',').length+')', [{ title: 'Tables', anchor: '#tables'}]);
       } else {
         view = new Table.Views.Edit({model: model});
-        app.headerModel.setRoute(model.get('id') ? 'Editing Item' : 'Creating New Item', [{ title: 'Tables', anchor: '#tables'}, {title: tableName, anchor: "#tables/" + tableName}]);
+        app.headerModel.setRoute(model.get('id') ? 'Editing Item' : 'Creating New Item', [{ title: 'Tables', anchor: '#tables'}, {title: tableName, anchor: "#tables/" + tableName}],
+          {leftToolbar: true, model: model, mode: 'edit', rightToolbar: true});
       }
 
       this.v.main.setView('#content', view);
