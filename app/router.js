@@ -209,6 +209,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Media');
+      app.headerModel.setRoute("Media");
       this.tabs.setActive('media');
       this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
       this.v.main.render();
@@ -233,6 +234,7 @@ define(function(require, exports, module) {
 
     users: function() {
       this.setTitle('Users');
+      app.headerModel.setRoute("Users");
       this.tabs.setActive('users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
@@ -298,6 +300,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Settings');
+      app.headerModel.setRoute("Settings");
       this.tabs.setActive('settings');
 
       this.v.main.setView('#content', new Settings.Table({model: SchemaManager.getTable(tableName)}));
