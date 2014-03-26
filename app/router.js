@@ -363,33 +363,42 @@ define(function(require, exports, module) {
 
       var user = app.getCurrentUser();
 
+      var tabs = new Tabs.View({collection: this.tabs});
+
       //Top
       var Navbar = Backbone.Layout.extend(
-        {
+      {
 
-          template: "navbar",
+        template: "navbar",
 
-          tagName: 'ul',
+        tagName: 'ul',
 
-          attributes: {
-            'class': 'row'
-          },
+        attributes: {
+          'class': 'row'
+        },
 
-          serialize: function() {
-            return {
-              user: user.toJSON(),
-              siteName: this.model.get('site_name'),
-              siteUrl: this.model.get('site_url'),
-              messageCounter: app.messages.unread
-            };
-          },
+        serialize: function() {
+          return {
+            siteUrl: this.model.get('site_url'),
+            messageCounter: app.messages.unread
+          };
+        },
 
-          events: {
-            'click .sign-out': function(e) {
-              e.preventDefault();
-              window.location.href = app.API_URL + "auth/logout";
-            }
-          }
+        events: {
+/*          'click #mainLogoBox': function(e) {
+            e.preventDefault();
+            window.location.href = app.API_URL + "auth/logout";
+          }*/
+        },
+
+        initialize: function(options) {
+
+          this.insertView('#featureSidebar', tabs);
+          //
+          //insertview
+        //'#mainSidebar': tabs
+        //'#featureSidebar': tabs
+        }
       });
 
       // Update unread message counter
@@ -401,15 +410,15 @@ define(function(require, exports, module) {
       //holds references to view instances
       this.v = {};
 
-      var tabs = new Tabs.View({collection: this.tabs});
+      var nav = new Navbar({model: app.settings.get('global')});
+
       //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({
 
         el: "#main",
 
         views: {
-          '#featureSidebar': tabs
-          //'#mainSidebar': tabs
+          '#sidebar': nav
         }
 
       });
