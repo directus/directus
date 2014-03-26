@@ -337,7 +337,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
         app.router.go('#tables/'+this.collection.table.id+'/new');
         //app.router.setPage(Table.Views.Edit, {model: model});
       },
-      'click #bookmark': function() {
+      'click #bookmark': function(e) {
         var data = {
           title: this.collection.table.id.toString(),
           url: Backbone.history.fragment,
@@ -350,13 +350,14 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
         } else {
           app.getBookmarks().removeBookmark(data);
         }
+        $('#bookmark').toggleClass('active');
         this.isBookmarked = !this.isBookmarked;
-        this.render();
       }
     },
 
     afterRender: function() {
       this.setView('#page-content', this.table);
+      this.collection.fetch({reset: true});
     },
 
     initialize: function() {
