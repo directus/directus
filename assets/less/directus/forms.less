@@ -26,6 +26,7 @@ select {
   }
 }
 .simple-select {
+  display: inline-block;
   position: relative;
   .icon {
     bottom: 0px;
@@ -92,6 +93,35 @@ input[type="text"], input[type="password"], textarea {
 ////////////
 //  CUSTOM FORMS
 ////////////
+.filter-form {
+  select, input[type="text"] {
+    .border-radius();
+    background-color: @lightGrey;
+    border: 0px;
+    margin: 0px 4px 0px 0px;
+    padding: 8px @smallPad;
+  }
+  select {
+    
+  }
+  input[type="text"] {
+    float: left;
+    width: auto;
+  }
+  .simple-select {
+    display: block;
+    float: left;
+    position: relative;
+    .icon {
+      color: @darkGrey;
+      line-height: 26px;
+      right: 9px;
+    }
+    select {
+      padding-right: 20px;
+    }
+  }
+}
 .two-column-form {
   @labelWidth: 200px;
   @maxFieldWidth: 700px;

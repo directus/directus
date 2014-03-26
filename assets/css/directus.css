@@ -1188,6 +1188,7 @@ select {
   -webkit-appearance: none;
 }
 .simple-select {
+  display: inline-block;
   position: relative;
 }
 .simple-select .icon {
@@ -1275,6 +1276,45 @@ textarea {
   display: block;
   padding: 5px;
   width: 100%;
+}
+.filter-form select,
+.filter-form input[type="text"] {
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  background-color: #ededed;
+  border: 0px;
+  margin: 0px 4px 0px 0px;
+  padding: 8px 10px;
+}
+.filter-form input[type="text"] {
+  float: left;
+  width: auto;
+}
+.filter-form .simple-select {
+  display: block;
+  float: left;
+  position: relative;
+}
+.filter-form .simple-select .icon {
+  color: #5b5b5b;
+  line-height: 26px;
+  right: 9px;
+}
+.filter-form .simple-select select {
+  padding-right: 20px;
 }
 .two-column-form h2 {
   margin-bottom: 10px;
@@ -1871,6 +1911,11 @@ textarea {
 }
 .header1 .secondary-row.filter-options {
   display: none;
+}
+.header1 .secondary-row.filter-options .filter-form {
+  float: left;
+  margin-left: 10px;
+  margin-top: 4px;
 }
 .header1 .secondary-row.batch-actions {
   display: none;
