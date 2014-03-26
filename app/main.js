@@ -39,6 +39,7 @@ require(["config"], function() {
       ui: [],
       active_media: {},
       users: {},
+      bookmarks: {},
       extensions: [],
       messages: {},
       me: { id: 7 },
@@ -206,7 +207,8 @@ require(["config"], function() {
 
       // Turn into collection
       tabs = new Tabs.Collection(tabs);
-      bookmarks = new Bookmarks.Collection(bookmarks);
+
+      app.bookmarks = new Bookmarks.Collection(bookmarks);
 
       //////////////////////////////////////////////////////////////////////////////
       //Override backbone sync for custom error handling
@@ -329,7 +331,7 @@ require(["config"], function() {
       });
 
 
-      app.router = new Router({extensions: extensions, tabs: tabs, tabPrivileges: options.tab_privileges, bookmarks: bookmarks});
+      app.router = new Router({extensions: extensions, tabs: tabs, tabPrivileges: options.tab_privileges});
 
       // Trigger the initial route and enable HTML5 History API support, set the
       // root folder to '/' by default.  Change in app.js.
