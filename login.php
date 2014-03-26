@@ -25,38 +25,49 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <title>directus</title>
   <!-- Application styles. -->
   <link rel="shortcut icon" href="favicon.ico">
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="assets/css/index.css">
   <style>
     body {background-image: url(assets/img/noise.gif); margin:0; padding:0;}
-    .login-panel { background-color:rgba(255,255,255,0.4); padding:20px; width:372px; box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05); position: absolute; left:50%; top:50%; margin-left:-208px; margin-top:-245px;}
-    .login-panel p.error { padding: 15px 10px 0; margin: 0; color: red; }
-    .login-panel p.message { padding: 15px 10px 0; margin: 0; color: green; }
-    input[type="text"], input[type="password"] {font-size:16px; width:360px; border:0;  margin-bottom:20px; height:30px; line-height:30px;} 
+    /* .login-panel { background-color:rgba(255,255,255,0.4); padding:20px; width:372px; box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05); position: absolute; left:50%; top:50%; margin-left:-208px; margin-top:-245px;} */
+    /* .login-panel p.error { padding: 15px 10px 0; margin: 0; color: red; } */
+    /* .login-panel p.message { padding: 15px 10px 0; margin: 0; color: green; } */
+    /*
+input[type="text"], input[type="password"] {font-size:16px; width:360px; border:0;  margin-bottom:20px; height:30px; line-height:30px;} 
     input[type="submit"], button { display:block; width:375px; }
-    label {margin-bottom:20px; font-weight:normal;}
-    h2 {font-size:26px; margin-bottom:20px; margin-top:0px;}
+*/
+    /* label {margin-bottom:20px; font-weight:normal;} */
+    /* h2 {font-size:26px; margin-bottom:20px; margin-top:0px;} */
   </style>
 </head>
 
-<body>
+<body class="font-primary">
+
 <!-- Main container. -->
-<form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post">
-<div class='login-panel'>
-  <h2>Welcome!</h2>
-  <input type="text" name="email" placeholder="Email" />
-  <input type="password" name="password" placeholder="Password" />
-  <!--<label class="checkbox">
-      <input type="checkbox" name="remember" /> Keep me logged in on this computer
-  </label>-->
-  <input type="submit" class="btn btn-primary" value="Sign in" />
-  <br />
-  <button id="forgot-password" class="btn btn-primary">Forgot Password</button>
-  <p class="error" style="display:none;"></p>
-  <p class="message" style="display:none;"></p>
-</div>
+<form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post" class="login-box">
+  <div class='login-panel'>
+    <p class="">
+    <input type="text" name="email" placeholder="Email Address" />
+    </p>
+    <p class="">
+      <input type="password" name="password" placeholder="Password" />
+      <button id="forgot-password" class="btn btn-primary"></button>
+    </p>
+    <!--<label class="checkbox">
+        <input type="checkbox" name="remember" /> Keep me logged in on this computer
+    </label>-->
+    
+    <p class="error" style="display:none;"></p>
+    <p class="message" style="display:none;"></p>
+  </div>
+  <button type="submit" class="btn btn-primary">Sign in</button>
+  <!-- <button id="forgot-password" class="btn btn-primary">Forgot Password</button> -->
 </form>
+
+<div class="left-corner-message">
+  <span class="icon icon-circled-info"></span>
+  logged out due to inactivity
+</div>
 <!-- Javascripts -->
 <script type="text/javascript" src="<?= DIRECTUS_PATH ?>assets/js/libs/jquery.js"></script>
 <script type="text/javascript">
@@ -114,8 +125,8 @@ $(function(){
   $('form').bind('submit', function(e){
     e.preventDefault();
     clear_messages();
-    var email = $.trim($(this).find('input[name=email]').val())
-      , password = $.trim($(this).find('input[name=password]').val());
+    var email = $.trim($(this).find('input[name=email]').val()), 
+        password = $.trim($(this).find('input[name=password]').val());
 
     if(email.length == 0 || password.length == 0) {
       return message("We need both!", true);

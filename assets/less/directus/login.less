@@ -1,0 +1,86 @@
+.login-box {
+  left:50%;
+  margin-left:-208px;
+  margin-top:-136px;
+  position: absolute;
+  top:50%;
+  width:372px;
+  button[type="submit"] {
+    border: none;
+    background: transparent;
+    color: @darkGrey;
+    font-size: 30px;
+    margin-top: @smallPad;
+    &:after {
+      .icon;
+      content: "\E4AE";
+      font-size: 50px;
+      line-height: 30px;
+      margin-left: @smallPad;
+    }
+  }
+}
+.login-panel {
+  background-color: @lightGrey;
+  box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05);
+  padding:20px;
+  position: relative;
+  &:after {
+    .triangle-bottom(12px, 12px, @lightGrey);
+    bottom: -12px;
+    content: "";
+    left: 50px;
+    position: absolute;
+  }
+  input {
+    padding: @smallPad;
+    width: 100%;
+    &:first-child {
+      margin-bottom: @smallPad;
+    }
+  }
+  p {
+    position: relative;
+    #forgot-password {
+      background: transparent;
+      border: none;
+      font-size: 11px;
+      padding: 0px;
+      position: absolute;
+      right: 5px;
+      top: 1px;
+      :hover {
+        &:after {
+          color: @darkGrey;
+        }
+      }
+      &:after {
+        .icon;
+        color: @lightGrey;
+        content: "\2753";
+        line-height: 25px;
+      }
+    }
+    &.error {
+      color: red;
+      margin: 0;
+      padding: 15px 10px 0;
+    }
+    &.message {
+      color: green;
+      margin: 0;
+      padding: 15px 10px 0;
+    }
+  }
+}
+.left-corner-message {
+  bottom: @standardPad;
+  color: @white;
+  font-style: italic;
+  left: @standardPad;
+  position: fixed;
+  .icon {
+    line-height: 11px;
+    margin-right: @smallPad;
+  }
+}
