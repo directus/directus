@@ -313,6 +313,25 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
 
     template: 'page',
 
+    serialize: function() {
+      var data = {
+        title: this.collection.table.id,
+        breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
+      };
+
+      if (this.collection.hasPermission('add')) {
+        data.showAddButton = {
+          title: 'Add Table'
+        };
+      }
+
+      data.showBookmarkButton = {
+        active: this.isBookmarked
+      };
+
+      return data;
+    },
+
     events: {
       'click #btn-top': function() {
         app.router.go('#tables/'+this.collection.table.id+'/new');

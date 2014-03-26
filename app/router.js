@@ -143,7 +143,7 @@ define(function(require, exports, module) {
       this.currentCollection = collection;
       this.bookmarks.setActive('tables');
       this.tabs.setActive('tables');
-      //this.v.main.setView('#content', new Table.Views.List({collection: collection}));
+      this.v.main.setView('#content', new Table.Views.List({collection: collection}));
       this.v.main.render();
     },
 
