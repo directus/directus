@@ -344,13 +344,14 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
           icon_class: 'icon-star',
           user: app.getCurrentUser().get("id")
         };
-        if(this.isBookmarked)
+        if(!this.isBookmarked)
         {
           app.getBookmarks().addNewBookmark(data);
         } else {
           app.getBookmarks().removeBookmark(data);
         }
         this.isBookmarked = !this.isBookmarked;
+        this.render();
       }
     },
 

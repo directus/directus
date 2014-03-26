@@ -37,12 +37,10 @@ function(app, Backbone) {
       if(this.findWhere(data) === undefined) {
         this.create(data);
       }
-      console.log("ADded");
     },
     removeBookmark: function(data) {
       data.user = data.user.toString();
       var model = this.findWhere(data);
-      console.log(model);
       if(model !== undefined) {
         model.destroy();
         this.remove(model);
