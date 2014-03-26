@@ -180,11 +180,14 @@ require(["config"], function() {
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Bookmarks
-      // Default directus bookmarks
+      ////////////////////////
+      var bookmarks = [];
 
-      var bookmarks = [
-        {id: "tables", title: "Tables", icon_class: "icon-database", url: "#tables"},
-      ];
+      var bookmarksData = window.directusData.bookmarks;
+      _.each(bookmarksData, function(item) {
+        bookmarks.push(item);
+      });
+
 
       var extensions = ExtensionManager.getIds();
 
