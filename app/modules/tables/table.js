@@ -327,7 +327,9 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
 
       data.showBookmarkButton = {
         active: this.bookmarked
-      }
+      };
+
+      console.log(data.showBookmarkButton);
 
       return data;
     },
@@ -339,12 +341,19 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       },
       'click #bookmark': function() {
         var data = {
-          title: this.collection.table.id,
+          title: this.collection.table.id.toString(),
           url: Backbone.history.fragment,
           icon_class: 'icon-star',
           user: app.getCurrentUser().get("id")
         };
-        app.getBookmarks().addNewBookmark(data);
+        if(this.bookmarked)
+        {
+          app.getBookmarks().addNewBookmark(data);
+        } else {
+          app.getBookmarks().removeBookmark(data);
+        }
+        this.isBookmarked = !this.isBookmarked;
+        this.render();
       }
     },
 
