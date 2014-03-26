@@ -82,7 +82,13 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     }
   }
 }
-
+input[type="text"], input[type="password"], textarea {
+  .border-box;
+  border: solid 1px @lightGrey;
+  display: block;
+  padding: @extraSmallPad;
+  width: 100%;
+}
 ////////////
 //  CUSTOM FORMS
 ////////////
@@ -127,12 +133,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
       padding: @standardPad;
       position: relative;
       input[type="text"], textarea {
-        .border-box;
-        border: solid 1px @lightGrey;
-        display: block;
         max-width: @maxFieldWidth;
-        padding: @extraSmallPad;
-        width: 100%;
       }
       textarea {
         min-height: 100px;

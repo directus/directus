@@ -26,6 +26,7 @@
   display: inline-block;
   font-family: 'Directus';
   font-size: 300%;
+  font-style: normal;
   letter-spacing: normal;
   line-height: 90%;
   text-transform: lowercase !important;
@@ -1247,6 +1248,7 @@ input[type="radio"].custom-check:checked + label:before {
   display: inline-block;
   font-family: 'Directus';
   font-size: 300%;
+  font-style: normal;
   letter-spacing: normal;
   line-height: 90%;
   text-transform: lowercase !important;
@@ -1257,6 +1259,22 @@ input[type="radio"].custom-check:checked + label:before {
   left: 2px;
   position: absolute;
   top: -6px;
+}
+input[type="text"],
+input[type="password"],
+textarea {
+  box-sizing: border-box;
+  /* css3 rec */
+  -moz-box-sizing: border-box;
+  /* ff2 */
+  -ms-box-sizing: border-box;
+  /* ie8 */
+  -webkit-box-sizing: border-box;
+  /* safari3 */
+  border: solid 1px #ededed;
+  display: block;
+  padding: 5px;
+  width: 100%;
 }
 .two-column-form h2 {
   margin-bottom: 10px;
@@ -1311,19 +1329,7 @@ input[type="radio"].custom-check:checked + label:before {
 }
 .two-column-form .fields .field input[type="text"],
 .two-column-form .fields .field textarea {
-  box-sizing: border-box;
-  /* css3 rec */
-  -moz-box-sizing: border-box;
-  /* ff2 */
-  -ms-box-sizing: border-box;
-  /* ie8 */
-  -webkit-box-sizing: border-box;
-  /* safari3 */
-  border: solid 1px #ededed;
-  display: block;
   max-width: 700px;
-  padding: 5px;
-  width: 100%;
 }
 .two-column-form .fields .field textarea {
   min-height: 100px;
@@ -1985,4 +1991,106 @@ input[type="radio"].custom-check:checked + label:before {
 }
 .header1 .tools .saved .tool-item {
   background-color: #7ac943;
+}
+.login-box {
+  left: 50%;
+  margin-left: -208px;
+  margin-top: -136px;
+  position: absolute;
+  top: 50%;
+  width: 372px;
+}
+.login-box button[type="submit"] {
+  border: none;
+  background: transparent;
+  color: #5b5b5b;
+  font-size: 30px;
+  margin-top: 10px;
+}
+.login-box button[type="submit"]:after {
+  display: inline-block;
+  font-family: 'Directus';
+  font-size: 300%;
+  font-style: normal;
+  letter-spacing: normal;
+  line-height: 90%;
+  text-transform: lowercase !important;
+  vertical-align: top;
+  content: "\E4AE";
+  font-size: 50px;
+  line-height: 30px;
+  margin-left: 10px;
+}
+.login-panel {
+  background-color: #ededed;
+  box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  position: relative;
+}
+.login-panel:after {
+  border-style: solid;
+  height: 0px;
+  width: 0px;
+  border-width: 12px 12px 0 12px;
+  border-color: #ededed transparent transparent transparent;
+  bottom: -12px;
+  content: "";
+  left: 50px;
+  position: absolute;
+}
+.login-panel input {
+  padding: 10px;
+  width: 100%;
+}
+.login-panel input:first-child {
+  margin-bottom: 10px;
+}
+.login-panel p {
+  position: relative;
+}
+.login-panel p #forgot-password {
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  padding: 0px;
+  position: absolute;
+  right: 5px;
+  top: 1px;
+}
+.login-panel p #forgot-password :hover:after {
+  color: #5b5b5b;
+}
+.login-panel p #forgot-password:after {
+  display: inline-block;
+  font-family: 'Directus';
+  font-size: 300%;
+  font-style: normal;
+  letter-spacing: normal;
+  line-height: 90%;
+  text-transform: lowercase !important;
+  vertical-align: top;
+  color: #ededed;
+  content: "\2753";
+  line-height: 25px;
+}
+.login-panel p.error {
+  color: red;
+  margin: 0;
+  padding: 15px 10px 0;
+}
+.login-panel p.message {
+  color: green;
+  margin: 0;
+  padding: 15px 10px 0;
+}
+.left-corner-message {
+  bottom: 20px;
+  color: #ffffff;
+  font-style: italic;
+  left: 20px;
+  position: fixed;
+}
+.left-corner-message .icon {
+  line-height: 11px;
+  margin-right: 10px;
 }
