@@ -15,6 +15,7 @@ require(["config"], function() {
     "backbone",
     "alerts",
     "core/tabs",
+    "core/bookmarks",
     'modules/messages/messages',
     'plugins/alertify',
     'schema/SchemaManager',
@@ -25,7 +26,7 @@ require(["config"], function() {
     'core/idle',
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle) {
 
     "use strict";
 
@@ -177,6 +178,14 @@ require(["config"], function() {
         {id: "logout", icon_class: "icon-power-button"}
       ];
 
+      ////////////////////////////////////////////////////////////////////////////////////
+      // Setup Bookmarks
+      // Default directus bookmarks
+
+      var bookmarks = [
+        {id: "tables", title: "Tables", icon_class: "icon-database"},
+      ];
+
       var extensions = ExtensionManager.getIds();
 
       // Add extensions to tabs
@@ -195,6 +204,7 @@ require(["config"], function() {
 
       // Turn into collection
       tabs = new Tabs.Collection(tabs);
+      bookmarks = new Bookmarks.Collection(bookmarks);
 
       //////////////////////////////////////////////////////////////////////////////
       //Override backbone sync for custom error handling
@@ -317,7 +327,7 @@ require(["config"], function() {
       });
 
 
-      app.router = new Router({extensions: extensions, tabs: tabs, tabPrivileges: options.tab_privileges});
+      app.router = new Router({extensions: extensions, tabs: tabs, tabPrivileges: options.tab_privileges, bookmarks: bookmarks});
 
       // Trigger the initial route and enable HTML5 History API support, set the
       // root folder to '/' by default.  Change in app.js.

@@ -13,6 +13,7 @@ define(function(require, exports, module) {
   var app              = require('app'),
       //Directus       = require('core/directus'),
       Tabs             = require('core/tabs'),
+      Bookmarks        = require('core/bookmarks'),
       SchemaManager    = require('schema/SchemaManager'),
       EntriesManager   = require('core/EntriesManager'),
       ExtensionManager = require('core/ExtensionManager'),
@@ -343,6 +344,7 @@ define(function(require, exports, module) {
       //Fade out and remove splash
       $('#splash').fadeOut('fast').remove();
       this.tabs = options.tabs;
+      this.bookmarks = options.bookmarks;
       this.extensions = {};
 
       _.each(options.extensions, function(item) {
@@ -365,6 +367,8 @@ define(function(require, exports, module) {
 
       var tabs = new Tabs.View({collection: this.tabs});
 
+      var bookmarks = new Bookmarks.View({collection: this.bookmarks});
+
       //Top
       var Navbar = Backbone.Layout.extend(
       {
@@ -381,6 +385,7 @@ define(function(require, exports, module) {
         },
         beforeRender: function() {
           this.insertView('#featureSidebar', tabs);
+          this.insertView('#mainSidebar', bookmarks);
         }
       });
 
