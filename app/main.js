@@ -180,11 +180,13 @@ require(["config"], function() {
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Bookmarks
-      // Default directus bookmarks
+      ////////////////////////
+      var bookmarks = [];
 
-      var bookmarks = [
-        {id: "tables", title: "Tables", icon_class: "icon-database", url: "#tables"},
-      ];
+      var bookmarksData = window.directusData.bookmarks;
+      _.each(bookmarksData, function(bookmark) {
+        bookmarks.push(new Backbone.Model(bookmark, {url: app.API_URL + 'bookmarks/'}));
+      });
 
       var extensions = ExtensionManager.getIds();
 
