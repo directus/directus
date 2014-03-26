@@ -396,12 +396,12 @@ define(function(require, exports, module) {
         $('.unread-messages-counter').html(app.messages.unread);
       });
 
+      app.headerModel = new Header.HeaderModel();
 
       //holds references to view instances
       this.v = {};
-
       var nav = new Navbar({model: app.settings.get('global')});
-      var header = new Header();
+      var header = new Header.HeaderView({model: app.headerModel});
 
       //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({

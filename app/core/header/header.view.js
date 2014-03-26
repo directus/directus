@@ -16,7 +16,19 @@ function(app, Backbone) {
 
   "use strict";
 
-  var HeaderView = Backbone.Layout.extend({
+  var Header = app.module();
+
+  Header.HeaderModel = Backbone.Model.extend({
+    setRoute: function(title, breadcrumbs) {
+      var data = {
+        title: title,
+        breadcrumbs: breadcrumbs
+      };
+      this.set({route: data});
+    }
+  });
+
+  Header.HeaderView = Backbone.Layout.extend({
 
     template: 'header',
 
@@ -25,18 +37,24 @@ function(app, Backbone) {
         title: this.collection.table.id,
         breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
       };*/
+      var data = this.model.get('route');
 
-      var data = {
-        title: "Navbar"
-      };
+      if(data === undefined) {
+        data = {
+          title: "Navbar"
+        };
+      }
+      console.log(data);
 
       return data;
     },
     initialize: function(options) {
       this.options = options;
+
+      this.model.on('change', this.render, this);
     }
 
   });
 
-  return HeaderView;
+  return Header;
 });
