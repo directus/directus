@@ -45,11 +45,14 @@ function(app, Backbone) {
         var bookmarks = model.toJSON();
         return bookmarks;
       });
-      console.log(bookmarks);
       return {bookmarks: bookmarks};
     },
     initialize: function() {
       this.collection.on('change sync', this.render, this);
+    },
+    setActive: function(route) {
+      this.collection.setActive(route);
+      this.render();
     }
 
   });

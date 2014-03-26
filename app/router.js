@@ -96,6 +96,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Tables');
+      this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
     },
@@ -140,7 +141,7 @@ define(function(require, exports, module) {
 
       // Cache collection for next route
       this.currentCollection = collection;
-
+      this.bookmarks.setActive('tables');
       this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
       this.v.main.render();
@@ -151,6 +152,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Tables');
+      this.bookmarks.setActive('tables');
       this.tabs.setActive('tables');
 
       var isBatchEdit = (typeof id === 'string') && id.indexOf(',') !== -1,
@@ -427,9 +429,11 @@ define(function(require, exports, module) {
         if(routeTokens.length > 1) {
           // Report the "last page" data to the API
           // @fixes https://github.com/RNGR/directus6/issues/199
+
           var user = app.getCurrentUser();
           var currentPath = window.location.pathname.substring(app.root.length);
           if(currentPath.length) {
+            bookmarks.setActive(currentPath);
 
             last_page = JSON.stringify({
               'path' : currentPath,
