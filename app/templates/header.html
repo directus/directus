@@ -1,0 +1,14 @@
+<div class="main-container">
+    <div class="header1">
+      <div class="primary-row row-plain">
+        <h1 class="font-primary">
+        {{#each breadcrumbs}}
+            <a href="{{anchor}}">{{{capitalize title}}}</a>
+            <span class="icon icon-chevron-small-right"></span>
+        {{/each}}
+
+        {{{capitalize title}}}
+        </h1>
+      </div>
+    </div>
+</div>

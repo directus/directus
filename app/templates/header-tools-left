@@ -1,0 +1,9 @@
+<ul class="tools left">
+  <li class="input-and-button">
+    {{#if buttonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
+    {{#if showAddButton}}<button class="tool-item large-circle" id="btn-top" title="{{showAddButton.title}}"><span class="icon icon-plus"</button>{{/if}}
+  </li>
+  <li class="input-and-button">
+    {{#if showBookmarkButton}}<button class="tool-item large-circle {{#if showBookmarkButton.active}} active{{/if}}" id="bookmark" title="bookmark"><span class="icon icon-star"</button>{{/if}}
+  </li>
+</ul>
