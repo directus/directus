@@ -325,6 +325,10 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
         };
       }
 
+      data.showBookmarkButton = {
+        active: this.bookmarked
+      }
+
       return data;
     },
 
@@ -354,6 +358,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       //ListViewManager
       this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
       //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
+      this.bookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
     }
 
   });

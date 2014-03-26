@@ -34,6 +34,12 @@ function(app, Backbone) {
       if(this.findWhere(data) === undefined) {
         this.create(data, {url: app.API_URL + 'bookmarks/'});
       }
+    },
+    isBookmarked: function(title) {
+      if(this.findWhere({'title':title})) {
+        return true;
+      }
+      return false;
     }
   });
 
