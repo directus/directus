@@ -9,22 +9,32 @@
 
 define([
   'app',
-  'backbone'
+  'backbone',
+  'core/header/header.toolsleftview'
 ],
 
-function(app, Backbone) {
+function(app, Backbone, HeaderToolsLeftView) {
 
   "use strict";
 
   var Header = app.module();
 
   Header.HeaderModel = Backbone.Model.extend({
-    setRoute: function(title, breadcrumbs) {
+    optionsMappings: {
+      'entries' : {
+        leftToolbar: true,
+      }
+    },
+    setRoute: function(title, breadcrumbs, options) {
       var data = {
         title: title,
         breadcrumbs: breadcrumbs
       };
       this.set({route: data});
+      if(options === undefined) {
+        options = {};
+      }
+      this.set({options: options});
     }
   });
 
@@ -52,9 +62,21 @@ function(app, Backbone) {
     initialize: function(options) {
       this.options = options;
 
-      this.model.on('change', this.render, this);
-    }
+      this.model.on('change', function() {
+        this.options = this.model.get('options');
+        this.render();
+      }, this);
+    },
 
+    beforeRender: function() {
+      if(this.options) {
+        if(this.options.leftToolbar) {
+          this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView(this.options));
+        } else if(this.leftToolbar) {
+          this.leftToolbar.remove();
+        }
+      }
+    }
   });
 
   return Header;

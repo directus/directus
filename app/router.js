@@ -120,8 +120,7 @@ define(function(require, exports, module) {
       } else {
         collection = EntriesManager.getInstance(tableName);
       }
-      app.headerModel.setRoute(collection.table.id, [{title: 'Tables', anchor: '#tables'}]);
-
+      app.headerModel.setRoute(collection.table.id, [{title: 'Tables', anchor: '#tables'}], {leftToolbar: true, collection: collection});
       if (collection.table.get('single')) {
         if(collection.models.length) {
           this.entry(tableName, collection.models[0].get('id'));

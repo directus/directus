@@ -20,7 +20,9 @@ function(app, Backbone) {
     template: 'header/header-tools-left',
 
     serialize: function() {
-      if (this.collection.hasPermission('add')) {
+      var data = {};
+
+      if (this.collection && this.collection.hasPermission('add')) {
         data.showAddButton = {
           title: 'Add Table'
         };
@@ -56,10 +58,13 @@ function(app, Backbone) {
       }
     },
     initialize: function(options) {
-      this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
+      this.options = options;
+      this.collection = options.collection;
+      if(this.collection) {
+        this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
+      }
     }
-
   });
 
-  return Table;
+  return HeaderToolsLeftView;
 });
