@@ -143,7 +143,6 @@ define(function(require, exports, module) {
       this.currentCollection = collection;
       this.bookmarks.setActive('tables');
       this.tabs.setActive('tables');
-      this.v.main.setView('#fixedHeader', new Header({collection: collection}));
       //this.v.main.setView('#content', new Table.Views.List({collection: collection}));
       this.v.main.render();
     },
@@ -402,6 +401,7 @@ define(function(require, exports, module) {
       this.v = {};
 
       var nav = new Navbar({model: app.settings.get('global')});
+      var header = new Header();
 
       //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({
@@ -409,7 +409,8 @@ define(function(require, exports, module) {
         el: "#main",
 
         views: {
-          '#sidebar': nav
+          '#sidebar': nav,
+          '#fixedHeader': header
         }
 
       });

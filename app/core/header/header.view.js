@@ -21,9 +21,13 @@ function(app, Backbone) {
     template: 'header',
 
     serialize: function() {
-      var data = {
+      /*var data = {
         title: this.collection.table.id,
         breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
+      };*/
+
+      var data = {
+        title: "Navbar"
       };
 
       return data;
