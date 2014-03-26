@@ -371,13 +371,10 @@ define(function(require, exports, module) {
 
         template: "navbar",
 
-        tagName: 'ul',
-
-        attributes: {
-          'class': 'row'
-        },
+        tagName: 'div',
 
         serialize: function() {
+          console.log("SErialize");
           return {
             siteUrl: this.model.get('site_url'),
             messageCounter: app.messages.unread
@@ -391,13 +388,8 @@ define(function(require, exports, module) {
           }*/
         },
 
-        initialize: function(options) {
-
+        beforeRender: function() {
           this.insertView('#featureSidebar', tabs);
-          //
-          //insertview
-        //'#mainSidebar': tabs
-        //'#featureSidebar': tabs
         }
       });
 
