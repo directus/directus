@@ -374,20 +374,11 @@ define(function(require, exports, module) {
         tagName: 'div',
 
         serialize: function() {
-          console.log("SErialize");
           return {
             siteUrl: this.model.get('site_url'),
             messageCounter: app.messages.unread
           };
         },
-
-        events: {
-/*          'click #mainLogoBox': function(e) {
-            e.preventDefault();
-            window.location.href = app.API_URL + "auth/logout";
-          }*/
-        },
-
         beforeRender: function() {
           this.insertView('#featureSidebar', tabs);
         }
