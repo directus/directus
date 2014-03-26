@@ -1418,6 +1418,10 @@ textarea {
   text-align: left;
   width: 100%;
 }
+.table-striped thead tr:hover {
+  background-color: transparent;
+  cursor: default;
+}
 .table-striped tr {
   color: #5b5b5b;
   font-weight: 400;
@@ -1428,12 +1432,10 @@ textarea {
 }
 .table-striped tr:hover {
   background-color: #fffbc4;
+  cursor: pointer;
 }
 .table-striped tr:hover .settings {
   display: block;
-}
-.table-striped tr:first-child {
-  background-color: transparent;
 }
 .table-striped tr:first-child th {
   padding-bottom: 10px;

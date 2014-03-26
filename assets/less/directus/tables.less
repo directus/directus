@@ -1,6 +1,14 @@
 .table-striped {
   text-align: left;
   width: 100%;
+  thead {
+    tr {
+      &:hover {
+        background-color: transparent;
+        cursor: default;
+      }
+    }
+  }
   tr {
     color: @darkGrey;
     font-weight: 400;
@@ -10,12 +18,12 @@
     }
     &:hover {
       background-color: @tableHoverYellow;
+      cursor: pointer;
       .settings {
         display: block;
       }
     }
     &:first-child {
-      background-color: transparent;
       th {
         padding-bottom: 10px;
         padding-top: 0px;
