@@ -1,7 +1,12 @@
 <tr>
   <th class="status">{{#unless hideColumnPreferences}}<a href="#" id="set-visible-columns"><span class="glyphicon-cogwheel"></span></a>{{/unless}}</th>
   {{#if sortable}}<th class="sort" data-id="sort"><span class="glyphicon-random"></span></th>{{/if}}
-  {{#if selectable}}<th class="check"><input type="checkbox"></th>{{/if}}
+  {{#if selectable}}
+    <th class="check">
+      <input class="custom-check" id="check-all" type="checkbox" />
+      <label for="check-all"><span></span></label>
+    </th>
+  {{/if}}
   {{#columns}}
     <th data-id="{{name}}">{{{capitalize name}}} {{#if orderBy}}{{#if desc}}▼{{else}}▲{{/if}}{{/if}}</th>
   {{/columns}}
