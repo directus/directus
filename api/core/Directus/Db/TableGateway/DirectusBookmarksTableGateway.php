@@ -23,7 +23,11 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
       'Tables' => array(
         "title"          => "Tables",
         "url"    => "tables",
-        "icon_class"        => "icon-database")
+        "icon_class"        => "icon-database"),
+      'Settings' => array(
+        "title"          => "Settings",
+        "url"    => "settings",
+        "icon_class"        => "icon-cog")
     );
 
     public function createDefaultBookmark($title, $bookmark) {
@@ -81,7 +85,7 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
 
         $bookmarks = array();
 
-        $defaultBookmarks = array('Tables');
+        $defaultBookmarks = array('Tables', 'Settings');
 
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
             $title = $row['title'];
@@ -94,7 +98,6 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
 
             $bookmarks[$title] = $row;
         }
-
         foreach($defaultBookmarks as $defaultBookmark) {
           $data = array(
             'user' => $user_id
