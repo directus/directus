@@ -1,30 +1,3 @@
-<header id="fixedHeader">
-    <div class="main-container">
-        <div class="header1">
-          <div class="primary-row row-plain">
-            <h1 class="font-primary">
-            {{#each breadcrumbs}}
-                <a href="{{anchor}}">{{{capitalize title}}}</a>
-                <span class="icon icon-chevron-small-right"></span>
-            {{/each}}
-
-            {{{capitalize title}}}
-            </h1>
-            <ul class="tools left">
-              <li class="input-and-button">
-                {{#if buttonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
-                {{#if showAddButton}}<button class="tool-item large-circle" id="btn-top" title="{{showAddButton.title}}"><span class="icon icon-plus"</button>{{/if}}
-              </li>
-              <li class="input-and-button">
-                {{#if showBookmarkButton}}<button class="tool-item large-circle {{#if showBookmarkButton.active}} active{{/if}}" id="bookmark" title="bookmark"><span class="icon icon-star"</button>{{/if}}
-              </li>
-            </ul>
-          </div>
-        </div>
-    </div>
-</header>
-
-
 <!--
 {{#if sidebar}}
     <div class="container-sidebar" id="sidebar"></div>

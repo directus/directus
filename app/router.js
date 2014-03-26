@@ -23,8 +23,8 @@ define(function(require, exports, module) {
       Media            = require('modules/media/media'),
       Users            = require('modules/users/users'),
       Messages         = require('modules/messages/messages'),
-      Modal            = require('core/modal');
-
+      Modal            = require('core/modal'),
+      Header           = require('core/header/header.view'),
       moment           = require('moment');
 
   var Router = Backbone.Router.extend({
@@ -143,7 +143,8 @@ define(function(require, exports, module) {
       this.currentCollection = collection;
       this.bookmarks.setActive('tables');
       this.tabs.setActive('tables');
-      this.v.main.setView('#content', new Table.Views.List({collection: collection}));
+      this.v.main.setView('#fixedHeader', new Header({collection: collection}));
+      //this.v.main.setView('#content', new Table.Views.List({collection: collection}));
       this.v.main.render();
     },
 

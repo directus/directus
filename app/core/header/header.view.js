@@ -34,5 +34,5 @@ function(app, Backbone) {
 
   });
 
-  return Table;
+  return HeaderView;
 });
