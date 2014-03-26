@@ -19,6 +19,9 @@ function(app, Backbone) {
   var Bookmarks = {};
 
   Bookmarks.Collection = Backbone.Collection.extend({
+    initialize: function() {
+      this.url = app.API_URL + 'bookmarks/';
+    },
     setActive: function(route) {
       var model = this.get(route);
       //deactive all tabs
@@ -32,7 +35,15 @@ function(app, Backbone) {
     addNewBookmark: function(data) {
       data.user = data.user.toString();
       if(this.findWhere(data) === undefined) {
-        this.create(data, {url: app.API_URL + 'bookmarks/'});
+        this.create(data);
+      }
+    },
+    removeBookmark: function(data) {
+      data.user = data.user.toString();
+      var model = this.findWhere(data);
+      if(model !== undefined) {
+        model.destroy();
+        this.remove(model);
       }
     },
     isBookmarked: function(title) {
@@ -64,6 +75,9 @@ function(app, Backbone) {
       this.collection.on('change sync', this.render, this);
       //For some reason need to do this and that....
       this.collection.on('add', function() {
+        that.render();
+      });
+      this.collection.on('remove', function() {
         that.render();
       });
     },

@@ -326,8 +326,8 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       }
 
       data.showBookmarkButton = {
-        active: this.bookmarked
-      }
+        active: this.isBookmarked
+      };
 
       return data;
     },
@@ -337,14 +337,21 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
         app.router.go('#tables/'+this.collection.table.id+'/new');
         //app.router.setPage(Table.Views.Edit, {model: model});
       },
-      'click #bookmark': function() {
+      'click #bookmark': function(e) {
         var data = {
-          title: this.collection.table.id,
+          title: this.collection.table.id.toString(),
           url: Backbone.history.fragment,
           icon_class: 'icon-star',
           user: app.getCurrentUser().get("id")
         };
-        app.getBookmarks().addNewBookmark(data);
+        if(!this.isBookmarked)
+        {
+          app.getBookmarks().addNewBookmark(data);
+        } else {
+          app.getBookmarks().removeBookmark(data);
+        }
+        $('#bookmark').toggleClass('active');
+        this.isBookmarked = !this.isBookmarked;
       }
     },
 
@@ -358,7 +365,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       //ListViewManager
       this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
       //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
-      this.bookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
+      this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
     }
 
   });
