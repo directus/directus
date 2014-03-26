@@ -40,7 +40,6 @@ function(app, Backbone) {
           title: "UNDEFINED! FIX ME!!!!"
         };
       }
-      console.log(data);
 
       return data;
     },

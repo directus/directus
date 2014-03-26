@@ -250,12 +250,14 @@ define(function(require, exports, module) {
 
       var model;
       this.setTitle('Users');
-      this.tabs.setActive('users/' + app.getCurrentUser().get("id"));
+      this.tabs.setActive('users/id');
 
       if (id === "new") {
         model = new app.users.model({}, {collection: app.users, parse:true});
+        app.headerModel.setRoute('New User', [{title: 'Users', anchor: '#users'}]);
       } else {
         model = app.users.get(id);
+        app.headerModel.setRoute(model.get('first_name') + ' ' + model.get('last_name'), [{title: 'Users', anchor: '#users'}]);
       }
       this.v.main.setView('#content', new Users.Views.Edit({model: model}));
       this.v.main.render();
