@@ -11,10 +11,11 @@ define([
   'app',
   'backbone',
   'core/header/header.toolsleftview',
-  'core/header/header.toolsrightview'
+  'core/header/header.toolsrightview',
+  'core/header/header.secondaryrowview'
 ],
 
-function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView) {
+function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSecondaryRowView) {
 
   "use strict";
 
@@ -80,6 +81,12 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView) {
           this.rightToolbar = this.setView('#tools-right-insert', new HeaderToolsRightView(this.options));
         } else if(this.rightToolbar) {
           this.rightToolbar.remove();
+        }
+        console.log(this.options.secondaryRow);
+        if(this.options.secondaryRow) {
+          this.secondaryRow = this.setView('#secondary-row-insert', new HeaderSecondaryRowView(this.options));
+        } else if(this.secondaryRow) {
+          this.secondaryRow.remove();
         }
       }
     }
