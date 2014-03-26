@@ -76,6 +76,7 @@ define(function(require, exports, module) {
 
     notFound: function() {
       this.setTitle('404');
+      app.headerModel.setRoute("404");
       this.v.main.setView('#content', new Backbone.Layout({template: Handlebars.compile('<h1>Not found</h1>')}));
       this.v.main.render();
     },
@@ -186,8 +187,10 @@ define(function(require, exports, module) {
 
       if (isBatchEdit) {
         view = new Table.Views.BatchEdit({model: model, batchIds: id.split(',')});
+        app.headerModel.setRoute('Batch Edit ('+id.split(',').length+')', [{ title: 'Tables', anchor: '#tables'}]);
       } else {
         view = new Table.Views.Edit({model: model});
+        app.headerModel.setRoute(model.get('id') ? 'Editing Item' : 'Creating New Item', [{ title: 'Tables', anchor: '#tables'}]);
       }
 
       this.v.main.setView('#content', view);
@@ -199,6 +202,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Activity');
+      app.headerModel.setRoute("Activity");
       this.tabs.setActive('activity');
       this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
       this.v.main.render();
