@@ -184,10 +184,9 @@ require(["config"], function() {
       var bookmarks = [];
 
       var bookmarksData = window.directusData.bookmarks;
-      _.each(bookmarksData, function(item) {
-        bookmarks.push(item);
+      _.each(bookmarksData, function(bookmark) {
+        bookmarks.push(new Backbone.Model(bookmark, {url: app.API_URL + 'bookmarks/'}));
       });
-
 
       var extensions = ExtensionManager.getIds();
 
