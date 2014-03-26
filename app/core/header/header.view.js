@@ -30,14 +30,20 @@ function(app, Backbone) {
 
   Header.HeaderView = Backbone.Layout.extend({
 
-    template: 'header',
+    template: 'header/header',
+
+    tagName: 'div',
+
+    attributes: {
+      class: 'main-container'
+    },
 
     serialize: function() {
       var data = this.model.get('route');
 
       if(data === undefined) {
         data = {
-          title: "UNDEFINED! FIX ME!!!!"
+          title: "Directus"
         };
       }
 

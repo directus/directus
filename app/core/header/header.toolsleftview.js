@@ -17,7 +17,7 @@ function(app, Backbone) {
 
   var HeaderToolsLeftView = Backbone.Layout.extend({
 
-    template: 'header-tools-left',
+    template: 'header/header-tools-left',
 
     serialize: function() {
       if (this.collection.hasPermission('add')) {
