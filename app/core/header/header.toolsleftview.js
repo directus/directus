@@ -31,7 +31,6 @@ function(app, Backbone) {
       data.showBookmarkButton = {
         active: this.isBookmarked
       };
-
       return data;
     },
 
