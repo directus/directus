@@ -1751,6 +1751,8 @@ input[type="radio"].custom-check:checked + label:before {
   left: 0px;
   position: absolute;
   top: 0px;
+  width: 59px;
+  height: 59px;
 }
 #sidebar #featureSidebar li .icon {
   display: block;
