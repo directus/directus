@@ -28,6 +28,9 @@ function(app, Backbone) {
 
       if (!model) { return; }
       model.set({'active':true});
+    },
+    addNewBookmark: function(data) {
+
     }
   });
 

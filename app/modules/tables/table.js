@@ -334,7 +334,13 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
         //app.router.setPage(Table.Views.Edit, {model: model});
       },
       'click #bookmark': function() {
-        console.log(this.collection.table);
+        var data = {
+          title: this.collection.table.id,
+          url: Backbone.history.fragment,
+          icon_class: 'icon-star',
+          user: app.getCurrentUser().get("id")
+        };
+        app.getBookmarks().addNewBookmark(data);
       }
     },
 
