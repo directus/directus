@@ -13,6 +13,7 @@ use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\DirectusStorageAdaptersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
+use Directus\Db\TableGateway\DirectusBookmarksTableGateway;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTabPrivilegesTableGateway;
@@ -104,7 +105,7 @@ function getUsers() {
     return $tableGateway->getEntries(
         array(
             'table_name'=>'directus_users',
-            'perPage'=>1000, 
+            'perPage'=>1000,
             'active'=>1,
             'columns_visible'=>array('active','avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
         )
@@ -117,6 +118,12 @@ function getCurrentUserInfo($users) {
         return ($item['id'] == $authenticatedUser['id']);
     });
     return reset($data);
+}
+
+function getBookmarks() {
+  global $ZendDb, $acl, $authenticatedUser;
+  $bookmarks = new DirectusBookmarksTableGateway($acl, $ZendDb);
+  return $bookmarks->fetchAllByUser($authenticatedUser['id']);
 }
 
 function getGroups() {
@@ -280,6 +287,7 @@ $data = array(
     'ui' => getUI(),
     'listViews' => getListViews(),
     'messages' => getInbox(),
+    'bookmarks' => getBookmarks(),
     'extendedUserColumns' => getExtendedUserColumns($tableSchema)
 );
 
