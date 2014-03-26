@@ -35,6 +35,14 @@ function(app, Backbone) {
         this.create(data, {url: app.API_URL + 'bookmarks/'});
       }
     },
+    removeBookmark: function(data) {
+      data.user = data.user.toString();
+      var model = this.findWhere(data);
+      if(model !== undefined) {
+        model.destroy();
+        this.remove(model);
+      }
+    },
     isBookmarked: function(title) {
       if(this.findWhere({'title':title})) {
         return true;
@@ -64,6 +72,9 @@ function(app, Backbone) {
       this.collection.on('change sync', this.render, this);
       //For some reason need to do this and that....
       this.collection.on('add', function() {
+        that.render();
+      });
+      this.collection.on('remove', function() {
         that.render();
       });
     },
