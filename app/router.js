@@ -246,7 +246,7 @@ define(function(require, exports, module) {
 
       var model;
       this.setTitle('Users');
-      this.tabs.setActive('users');
+      this.tabs.setActive('users/' + app.getCurrentUser().get("id"));
 
       if (id === "new") {
         model = new app.users.model({}, {collection: app.users, parse:true});
@@ -315,7 +315,7 @@ define(function(require, exports, module) {
     },
 
     messages: function(name) {
-      this.tabs.setActive();
+      this.tabs.setActive("messages");
       this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
       this.v.main.render();
     },
