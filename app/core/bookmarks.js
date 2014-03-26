@@ -28,20 +28,6 @@ function(app, Backbone) {
 
       if (!model) { return; }
       model.set({'active':true});
-    },
-
-    initialize: function() {
-      app.users.on('reset sync add', function() {
-        var userTab = this.get('users');
-        if (userTab) {
-          userTab.set({count: app.users.table.get('active')});
-        }
-      }, this);
-      if(undefined !== this.get('media')) {
-        app.media.on('reset sync add', function() {
-          this.get('media').set({count: app.media.table.get('active')});
-        }, this);
-      }
     }
   });
 
@@ -56,12 +42,12 @@ function(app, Backbone) {
 
     serialize: function() {
       var bookmarks = this.collection.map(function(model) {
-        var tab = model.toJSON();
-        return tab;
+        var bookmarks = model.toJSON();
+        return bookmarks;
       });
+      console.log(bookmarks);
       return {bookmarks: bookmarks};
     },
-
     initialize: function() {
       this.collection.on('change sync', this.render, this);
     }
