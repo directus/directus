@@ -183,7 +183,7 @@ require(["config"], function() {
       // Default directus bookmarks
 
       var bookmarks = [
-        {id: "tables", title: "Tables", icon_class: "icon-database"},
+        {url: "#tables", title: "Tables", icon_class: "icon-database"},
       ];
 
       var extensions = ExtensionManager.getIds();
