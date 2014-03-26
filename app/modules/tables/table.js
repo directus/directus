@@ -86,7 +86,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
 
       var error = function() {
         failRequestCount++;
-        checkIfDone(); 
+        checkIfDone();
       };
 
       // Save all batch id's
@@ -332,6 +332,9 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       'click #btn-top': function() {
         app.router.go('#tables/'+this.collection.table.id+'/new');
         //app.router.setPage(Table.Views.Edit, {model: model});
+      },
+      'click #bookmark': function() {
+        console.log(this.collection.table);
       }
     },
 
