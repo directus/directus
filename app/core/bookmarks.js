@@ -30,7 +30,10 @@ function(app, Backbone) {
       model.set({'active':true});
     },
     addNewBookmark: function(data) {
-
+      data.user = data.user.toString();
+      if(this.findWhere(data) === undefined) {
+        this.create(data, {url: app.API_URL + 'bookmarks/'});
+      }
     }
   });
 
@@ -51,7 +54,12 @@ function(app, Backbone) {
       return {bookmarks: bookmarks};
     },
     initialize: function() {
+      var that = this;
       this.collection.on('change sync', this.render, this);
+      //For some reason need to do this and that....
+      this.collection.on('add', function() {
+        that.render();
+      });
     },
     setActive: function(route) {
       this.collection.setActive(route);
