@@ -165,12 +165,16 @@ require(["config"], function() {
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Tabs
       // Default directus tabs
+
       var tabs = [
-        {title: "Activity", id: "activity", count: app.activity.table.get('active')},
-        {title: "Tables",   id: "tables",   count: SchemaManager.countTables() },
-        {title: "Media",    id: "media",    count: app.media.table.get('active')},
-        {title: "Users",    id: "users",    count: app.users.table.get('active')},
-        {title: "Settings", id: "settings"}
+        {id: "settings", icon_class: "icon-cog"},
+        {id: "blank",    hidden: true},
+        {id: "media",    icon_class: "icon-attach"},
+        {id: "users",    icon_class: "icon-users"},
+        {id: "messages", icon_class: "icon-chat"},
+        {id: "activity", icon_class: "icon-bell"},
+        {id: "user",     icon_class: "icon-pencil", avatar: app.getCurrentUser().get("avatar")},
+        {id: "log-out", icon_class: "icon-power-button"}
       ];
 
       var extensions = ExtensionManager.getIds();

@@ -51,14 +51,13 @@ function(app, Backbone) {
 
     tagName: "ul",
 
-    attributes {
-
+    attributes: {
+      class:"row"
     },
 
     serialize: function() {
       var tabs = this.collection.map(function(model) {
         var tab = model.toJSON();
-        tab.hasErrors = model.has('error');
         return tab;
       });
       return {tabs: tabs};
