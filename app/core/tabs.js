@@ -106,7 +106,12 @@ function(app, Backbone) {
       }
 
     },
-
+    events: {
+     'click a[href$="#logout"]': function(e) {
+        e.preventDefault();
+        window.location.href = app.API_URL + "auth/logout";
+      }
+    },
     afterRender: function() {
       this.checkTabs();
     },

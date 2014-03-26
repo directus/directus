@@ -174,7 +174,7 @@ require(["config"], function() {
         {id: "messages", icon_class: "icon-chat"},
         {id: "activity", icon_class: "icon-bell"},
         {id: "users/" + app.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.getCurrentUser().get("avatar")},
-        {id: "log-out", icon_class: "icon-power-button"}
+        {id: "logout", icon_class: "icon-power-button"}
       ];
 
       var extensions = ExtensionManager.getIds();
