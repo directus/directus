@@ -47,17 +47,17 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
           alert(successRequestCount + " items have been updated. " + failRequestCount + " items failed to update");
           app.router.go(route);
         }
-      }
+      };
 
       var success = function() {
         successRequestCount++;
         checkIfDone();
-      }
+      };
 
       var error = function() {
         failRequestCount++;
         checkIfDone(); 
-      }
+      };
 
       // Save all batch id's
       _.each(this.batchIds, function(id) {

@@ -32,19 +32,21 @@ define(['app', 'backbone'], function(app, Backbone) {
        return new Handlebars.SafeString(text.string.replace(/\n/g, '<br/>'));
    });
 
-  var template =  '<div class="btn-group btn-group-attached btn-group-action active">'+
-                    '{{#if bold}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b>B</b></button>{{/if}}'+
-                    '{{#if italic}}<button type="button" class="btn btn-small btn-silver" data-tag="italic" rel="tooltip" data-placement="bottom" title="Italic"><i>I</i></button>{{/if}}'+
-                    '{{#if underline}}<button type="button" class="btn btn-small btn-silver" data-tag="underline" rel="tooltip" data-placement="bottom" title="Underline"><u>U</u></button>{{/if}}'+
-                    '{{#if strikethrough}}<button type="button" class="btn btn-small btn-silver" data-tag="strikethrough" rel="tooltip" data-placement="bottom" title="Strikethrough"><s>S</s></button>{{/if}}'+
-                  '</div>'+
-                  '<div class="btn-group btn-group-attached btn-group-action active">'+
-                    '{{#if rule}}<button type="button" class="btn btn-small btn-silver" data-tag="inserthorizontalrule" rel="tooltip" data-placement="bottom" title="HR">HR</button>{{/if}}'+
-                    '{{#if createlink}}<button type="button" class="btn btn-small btn-silver" data-tag="createlink" rel="tooltip" data-placement="bottom" title="Link">Link</button>'+
-                    '<button type="button" class="btn btn-small btn-silver" data-tag="unlink" rel="tooltip" data-placement="bottom" title="Unlink">Unlink</button>{{/if}}'+
-                    '{{#if insertimage}}<button type="button" class="btn btn-small btn-silver" data-tag="insertimage" rel="tooltip" data-placement="bottom" title="Image">Image</button>{{/if}}'+
-                                      '<button type="button" class="btn btn-small btn-silver" data-tag="insertHTML" rel="tooltip" data-placement="bottom" title="HTML">HTML</button>'+
-                                      '<button type="button" class="btn btn-small btn-silver" data-tag="clearHTML" rel="tooltip" data-placement="bottom" title="Remove Formatting">Remove Formatting</button>'+
+  var template =  '<div class="btn-toolbar">'+
+                    '<div class="btn-group btn-white btn-group-attached btn-group-action active">'+
+                      '{{#if bold}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b>B</b></button>{{/if}}'+
+                      '{{#if italic}}<button type="button" class="btn btn-small btn-silver" data-tag="italic" rel="tooltip" data-placement="bottom" title="Italic"><i>I</i></button>{{/if}}'+
+                      '{{#if underline}}<button type="button" class="btn btn-small btn-silver" data-tag="underline" rel="tooltip" data-placement="bottom" title="Underline"><u>U</u></button>{{/if}}'+
+                      '{{#if strikethrough}}<button type="button" class="btn btn-small btn-silver" data-tag="strikethrough" rel="tooltip" data-placement="bottom" title="Strikethrough"><s>S</s></button>{{/if}}'+
+                    '</div>'+
+                    '<div class="btn-group btn-white btn-group-attached btn-group-action active">'+
+                      '{{#if rule}}<button type="button" class="btn btn-small btn-silver" data-tag="inserthorizontalrule" rel="tooltip" data-placement="bottom" title="HR">HR</button>{{/if}}'+
+                      '{{#if createlink}}<button type="button" class="btn btn-small btn-silver" data-tag="createlink" rel="tooltip" data-placement="bottom" title="Link">Link</button>'+
+                      '<button type="button" class="btn btn-small btn-silver" data-tag="unlink" rel="tooltip" data-placement="bottom" title="Unlink">Unlink</button>{{/if}}'+
+                      '{{#if insertimage}}<button type="button" class="btn btn-small btn-silver" data-tag="insertimage" rel="tooltip" data-placement="bottom" title="Image">Image</button>{{/if}}'+
+                                        '<button type="button" class="btn btn-small btn-silver" data-tag="insertHTML" rel="tooltip" data-placement="bottom" title="HTML">HTML</button>'+
+                                        '<button type="button" class="btn btn-small btn-silver" data-tag="clearHTML" rel="tooltip" data-placement="bottom" title="Remove Formatting">Remove Formatting</button>'+
+                    '</div>'+
                   '</div>'+
                   '<div class="force-editable" style="display:block; height:{{height}}px;" contenteditable="true" id="{{name}}">{{newlineToBr value}}</div>'+
                   '<input type="hidden" name="{{name}}" value="{{markupValue}}">';
