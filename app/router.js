@@ -421,7 +421,6 @@ define(function(require, exports, module) {
 
 
       this.bind("all", function(route, router){
-        // console.log('route change',route,router);
         var last_page;
         var routeTokens = route.split(':');
         if(routeTokens.length > 1) {

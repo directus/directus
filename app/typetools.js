@@ -32,14 +32,6 @@ define(["plugins/jquery.timeago"], function() {
 
       var output = _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
 
-      // var output2 = output;
-      // output.toLowerCase();
-      // output = (output + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
-      //   return $1.toUpperCase();
-      // });
-      // output.trim();
-      // output = output.replace(new RegExp("!\s+!", "g")," ");
-
       // Replace all custom capitalization here
       _.each(typetools.caseSpecial, function(correctCase) {
         output = output.replace(new RegExp("\\b"+correctCase+"\\b", "gi"), correctCase);

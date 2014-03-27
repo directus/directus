@@ -23,7 +23,7 @@ define(function(require, exports, module) {
     if (this.options.repeat) {
       timerId = setTimeout(this.fn, this.ms);
     } else {
-      self.unbindEvents();
+      this.unbindEvents();
     }
   };
 

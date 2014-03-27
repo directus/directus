@@ -8,13 +8,14 @@
 
 
 define([
+  'app',
   'modules/tables/views/BatchEditView',
   'modules/tables/views/EditView',
   'modules/tables/views/TablesView',
-  'modules/tables/views/TableView',
+  'modules/tables/views/TableView'
 ],
 
-function(BatchEditView, EditView, TablesView, TableView) {
+function(app, BatchEditView, EditView, TablesView, TableView) {
 
   "use strict";
 

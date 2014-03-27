@@ -23,7 +23,7 @@ require(["config"], function() {
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
-    'core/idle',
+    'core/idle'
   ],
 
   function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle) {
@@ -87,7 +87,7 @@ require(["config"], function() {
 
     ).done(function() {
 
-      var autoLogoutMinutes = parseInt(app.settings.get('global').get('cms_user_auto_sign_out') || 60);
+      var autoLogoutMinutes = parseInt(app.settings.get('global').get('cms_user_auto_sign_out') || 60, 10);
 
       var waitForForAvtivity = function() {
         console.log('minutes until automatic logout:', autoLogoutMinutes);
@@ -106,7 +106,7 @@ require(["config"], function() {
 
           },
           delay: autoLogoutMinutes * 60 * 1000,
-          repeat: true,
+          repeat: true
         });
 
       };
