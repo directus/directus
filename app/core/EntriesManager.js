@@ -4,7 +4,8 @@ define(function(require, exports, module) {
 
   var SchemaManager      = require('./../schema/SchemaManager'),
       EntriesCollection  = require('./entries/EntriesCollection'),
-      UsersCollection    = require('modules/users/UsersCollection');
+      UsersCollection    = require('modules/users/UsersCollection'),
+      MediaCollection    = require('modules/media/MediaCollection');
 
   // Contains collections that should be persistent
   var usersInstance;
