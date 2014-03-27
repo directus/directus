@@ -46,6 +46,8 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
 
     tagName: 'div',
 
+    lastHeaderHeight: 0,
+    
     attributes: {
       class: 'main-container'
     },
@@ -89,6 +91,27 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
           this.secondaryRow.remove();
         }
       }
+    },
+    
+    afterRender: function() {
+      var that = this;
+      
+      $(window).on('resize', function() {
+        that.setMarginToHeaderHeight();
+      });
+      
+      this.setMarginToHeaderHeight();
+    },
+    
+    setMarginToHeaderHeight: function() {
+      var $mainBody = $('#content .content-body'),
+          startScrollTop = $mainBody.scrollTop(),
+          newHeaderHeight = this.$('.header1').outerHeight(),
+          headerHeightDifference = newHeaderHeight - this.lastHeaderHeight;
+      
+      $mainBody.css('margin-top', newHeaderHeight + 'px').scrollTop(startScrollTop + headerHeightDifference);
+      
+      this.lastHeaderHeight = newHeaderHeight;
     }
   });
 
