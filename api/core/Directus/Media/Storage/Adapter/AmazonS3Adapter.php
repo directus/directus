@@ -2,38 +2,37 @@
 
 namespace Directus\Media\Storage\Adapter;
 
-use OpenCloud\Rackspace;
+use Aws\S3\S3Client;
 
-class RackspaceOpenCloudAdapter extends Adapter {
+class AmazonS3Adapter extends Adapter {
 
-    protected static $classDependencies = array("\\OpenCloud\\Rackspace");
-    
-    protected static $requiredParams = array('api_user','api_key','region','endpoint');
+    protected static $classDependencies = array("\\Aws\\S3\\S3Client");
+
+    protected static $requiredParams = array('api_key','api_secret','bucket');
 
     /**
-     * @var \OpenCloud\Rackspace
+     * @var \Aws\S3\S3Client;
      */
-    protected $conn;
-    protected $ostore;
-    protected $container;
+    protected $client;
 
     public function __construct(array $params = array()) {
         parent::__construct($params);
-        $this->conn = new Rackspace($params['endpoint'], array(
-            'username' => $params['api_user'],
-            'apiKey' => $params['api_key']
+        $this->client = S3Client::factory(array(
+            'key'    => $params['api_key'],
+            'secret' => $params['api_secret']
         ));
-        $this->conn->SetDefaults('ObjectStore', 'cloudFiles', $params['region']);
-        try {
-            $this->ostore = $this->conn->ObjectStore();
-        } catch(\OpenCloud\Common\Exceptions\HttpError $e) {
-            // @todo
-            throw $e;
-        }
     }
 
     protected function getObjectList() {
         $objects = array();
+        $iterator = $client->getIterator('ListObjects', array(
+            'Bucket' => $this->params['bucket']
+        ));
+        foreach ($iterator as $object) {
+            var_dump($object);
+            $objects[] = $object['Key'];
+        }
+        exit;
         $list = $this->container->ObjectList();
         while ($item = $list->Next()) {
             $objects[$item->name] = array(

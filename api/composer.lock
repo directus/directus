@@ -3,20 +3,271 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "fea3be514185c90883f4872ed4a685d1",
+    "hash": "d1d419d302546613fc49e8dfc665a659",
     "packages": [
         {
-            "name": "mynetx/codebird-php",
-            "version": "dev-master",
+            "name": "amazonwebservices/aws-sdk-for-php",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mynetx/codebird-php.git",
-                "reference": "d2e63df8e4bcd0e70b45b56285d156a74178e67c"
+                "url": "https://github.com/amazonwebservices/aws-sdk-for-php.git",
+                "reference": "65d6bc82d6e0cd095709c342a23c749dc2f3a012"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mynetx/codebird-php/zipball/d2e63df8e4bcd0e70b45b56285d156a74178e67c",
-                "reference": "d2e63df8e4bcd0e70b45b56285d156a74178e67c",
+                "url": "https://api.github.com/repos/amazonwebservices/aws-sdk-for-php/zipball/65d6bc82d6e0cd095709c342a23c749dc2f3a012",
+                "reference": "65d6bc82d6e0cd095709c342a23c749dc2f3a012",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "You should consider upgrading to version 2 of the AWS SDK for PHP"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "authentication/",
+                    "extensions/",
+                    "lib/",
+                    "services/",
+                    "utilities/",
+                    "sdk.class.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Amazon Web Services",
+                    "homepage": "http://aws.amazon.com"
+                }
+            ],
+            "description": "AWS SDK for PHP",
+            "homepage": "http://aws.amazon.com/sdkforphp/",
+            "keywords": [
+                "amazon",
+                "aws",
+                "dynamodb",
+                "ec2",
+                "s3",
+                "sdk"
+            ],
+            "time": "2013-03-15 19:43:06"
+        },
+        {
+            "name": "guzzle/common",
+            "version": "v3.8.1",
+            "target-dir": "Guzzle/Common",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/common.git",
+                "reference": "67f6c3fd04bae387d47c2a673fa623ed8f4189bb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/common/zipball/67f6c3fd04bae387d47c2a673fa623ed8f4189bb",
+                "reference": "67f6c3fd04bae387d47c2a673fa623ed8f4189bb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/event-dispatcher": ">=2.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle\\Common": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Common libraries used by Guzzle",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "collection",
+                "common",
+                "event",
+                "exception"
+            ],
+            "time": "2014-01-28 22:29:15"
+        },
+        {
+            "name": "guzzle/http",
+            "version": "v3.8.1",
+            "target-dir": "Guzzle/Http",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/http.git",
+                "reference": "565fd64be16d91c840f497c5de76f86d54a822d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/http/zipball/565fd64be16d91c840f497c5de76f86d54a822d8",
+                "reference": "565fd64be16d91c840f497c5de76f86d54a822d8",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/common": "self.version",
+                "guzzle/parser": "self.version",
+                "guzzle/stream": "self.version",
+                "php": ">=5.3.2"
+            },
+            "suggest": {
+                "ext-curl": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle\\Http": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "HTTP libraries used by Guzzle",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "Guzzle",
+                "client",
+                "curl",
+                "http",
+                "http client"
+            ],
+            "time": "2014-01-23 18:23:29"
+        },
+        {
+            "name": "guzzle/parser",
+            "version": "v3.8.1",
+            "target-dir": "Guzzle/Parser",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/parser.git",
+                "reference": "3f52387052f2e4ef083145a0f73c3654aa14e086"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/parser/zipball/3f52387052f2e4ef083145a0f73c3654aa14e086",
+                "reference": "3f52387052f2e4ef083145a0f73c3654aa14e086",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle\\Parser": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Interchangeable parsers used by Guzzle",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "URI Template",
+                "cookie",
+                "http",
+                "message",
+                "url"
+            ],
+            "time": "2013-10-24 00:04:09"
+        },
+        {
+            "name": "guzzle/stream",
+            "version": "v3.8.1",
+            "target-dir": "Guzzle/Stream",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/stream.git",
+                "reference": "fa8af730ca714861c0001cfba64aaecc5f21bb96"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/stream/zipball/fa8af730ca714861c0001cfba64aaecc5f21bb96",
+                "reference": "fa8af730ca714861c0001cfba64aaecc5f21bb96",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/common": "self.version",
+                "php": ">=5.3.2"
+            },
+            "suggest": {
+                "guzzle/http": "To convert Guzzle request objects to PHP streams"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle\\Stream": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Guzzle stream wrapper component",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "Guzzle",
+                "component",
+                "stream"
+            ],
+            "time": "2014-01-28 22:14:17"
+        },
+        {
+            "name": "jublonet/codebird-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jublonet/codebird-php.git",
+                "reference": "8ea20cf7c42701e372c9d1badfcee4505b798d03"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jublonet/codebird-php/zipball/8ea20cf7c42701e372c9d1badfcee4505b798d03",
+                "reference": "8ea20cf7c42701e372c9d1badfcee4505b798d03",
                 "shasum": ""
             },
             "type": "library",
@@ -30,20 +281,20 @@
                 "GPL-3.0"
             ],
             "description": "A Twitter library in PHP.",
-            "time": "2013-06-23 17:31:09"
+            "time": "2014-01-20 14:31:17"
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "1.2.12",
+            "version": "1.2.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "1.2.12"
+                "reference": "466e7cd2554b4e264c9e3f31216d25ac0e5f3d94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/1.2.12",
-                "reference": "1.2.12",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/466e7cd2554b4e264c9e3f31216d25ac0e5f3d94",
+                "reference": "466e7cd2554b4e264c9e3f31216d25ac0e5f3d94",
                 "shasum": ""
             },
             "require": {
@@ -91,20 +342,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2013-07-06 06:26:16"
+            "time": "2013-09-10 08:14:32"
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "1.3.3",
+            "version": "1.3.4",
             "source": {
                 "type": "git",
-                "url": "git://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "1.3.3"
+                "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
+                "reference": "acd690379117b042d1c8af1fafd61bde001bf6bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sebastianbergmann/php-file-iterator/zipball/1.3.3",
-                "reference": "1.3.3",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/acd690379117b042d1c8af1fafd61bde001bf6bb",
+                "reference": "acd690379117b042d1c8af1fafd61bde001bf6bb",
                 "shasum": ""
             },
             "require": {
@@ -131,25 +382,25 @@
                 }
             ],
             "description": "FilterIterator implementation that filters files based on a list of suffixes.",
-            "homepage": "http://www.phpunit.de/",
+            "homepage": "https://github.com/sebastianbergmann/php-file-iterator/",
             "keywords": [
                 "filesystem",
                 "iterator"
             ],
-            "time": "2012-10-11 04:44:38"
+            "time": "2013-10-10 15:34:57"
         },
         {
             "name": "phpunit/php-text-template",
             "version": "1.1.4",
             "source": {
                 "type": "git",
-                "url": "git://github.com/sebastianbergmann/php-text-template.git",
-                "reference": "1.1.4"
+                "url": "https://github.com/sebastianbergmann/php-text-template.git",
+                "reference": "5180896f51c5b3648ac946b05f9ec02be78a0b23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sebastianbergmann/php-text-template/zipball/1.1.4",
-                "reference": "1.1.4",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-text-template/zipball/5180896f51c5b3648ac946b05f9ec02be78a0b23",
+                "reference": "5180896f51c5b3648ac946b05f9ec02be78a0b23",
                 "shasum": ""
             },
             "require": {
@@ -180,20 +431,20 @@
             "keywords": [
                 "template"
             ],
-            "time": "2012-10-31 11:15:28"
+            "time": "2012-10-31 18:15:28"
         },
         {
             "name": "phpunit/php-timer",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
-                "url": "git://github.com/sebastianbergmann/php-timer.git",
-                "reference": "1.0.4"
+                "url": "https://github.com/sebastianbergmann/php-timer.git",
+                "reference": "19689d4354b295ee3d8c54b4f42c3efb69cbc17c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sebastianbergmann/php-timer/zipball/1.0.4",
-                "reference": "1.0.4",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/19689d4354b295ee3d8c54b4f42c3efb69cbc17c",
+                "reference": "19689d4354b295ee3d8c54b4f42c3efb69cbc17c",
                 "shasum": ""
             },
             "require": {
@@ -220,24 +471,24 @@
                 }
             ],
             "description": "Utility class for timing",
-            "homepage": "http://www.phpunit.de/",
+            "homepage": "https://github.com/sebastianbergmann/php-timer/",
             "keywords": [
                 "timer"
             ],
-            "time": "2012-10-11 04:45:58"
+            "time": "2013-08-02 07:42:54"
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "1.1.5",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
-                "url": "git://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "1.1.5"
+                "url": "https://github.com/sebastianbergmann/php-token-stream.git",
+                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sebastianbergmann/php-token-stream/zipball/1.1.5",
-                "reference": "1.1.5",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/ad4e1e23ae01b483c16f600ff1bebec184588e32",
+                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32",
                 "shasum": ""
             },
             "require": {
@@ -245,6 +496,11 @@
                 "php": ">=5.3.3"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
             "autoload": {
                 "classmap": [
                     "PHP/"
@@ -265,11 +521,11 @@
                 }
             ],
             "description": "Wrapper around PHP's tokenizer extension.",
-            "homepage": "http://www.phpunit.de/",
+            "homepage": "https://github.com/sebastianbergmann/php-token-stream/",
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2012-10-11 04:47:14"
+            "time": "2014-03-03 05:10:30"
         },
         {
             "name": "phpunit/phpunit",
@@ -277,12 +533,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3.7.22"
+                "reference": "619f9179d6d30be8fc7333b5eaba9132dbaa8142"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3.7.22",
-                "reference": "3.7.22",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/619f9179d6d30be8fc7333b5eaba9132dbaa8142",
+                "reference": "619f9179d6d30be8fc7333b5eaba9132dbaa8142",
                 "shasum": ""
             },
             "require": {
@@ -292,20 +548,20 @@
                 "ext-spl": "*",
                 "php": ">=5.3.3",
                 "phpunit/php-code-coverage": "~1.2.1",
-                "phpunit/php-file-iterator": ">=1.3.1",
-                "phpunit/php-text-template": ">=1.1.1",
-                "phpunit/php-timer": "~1.0.2",
+                "phpunit/php-file-iterator": "~1.3.1",
+                "phpunit/php-text-template": "~1.1.1",
+                "phpunit/php-timer": "~1.0.4",
                 "phpunit/phpunit-mock-objects": "~1.2.0",
                 "symfony/yaml": "~2.0"
             },
             "require-dev": {
-                "pear-pear/pear": "1.9.4"
+                "pear-pear.php.net/pear": "1.9.4"
             },
             "suggest": {
                 "ext-json": "*",
                 "ext-simplexml": "*",
                 "ext-tokenizer": "*",
-                "phpunit/php-invoker": ">=1.1.0,<1.2.0"
+                "phpunit/php-invoker": "~1.1"
             },
             "bin": [
                 "composer/bin/phpunit"
@@ -343,20 +599,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2013-07-06 06:29:15"
+            "time": "2014-03-26 11:35:32"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
             "version": "1.2.3",
             "source": {
                 "type": "git",
-                "url": "git://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "1.2.3"
+                "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
+                "reference": "5794e3c5c5ba0fb037b11d8151add2a07fa82875"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sebastianbergmann/phpunit-mock-objects/archive/1.2.3.zip",
-                "reference": "1.2.3",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/5794e3c5c5ba0fb037b11d8151add2a07fa82875",
+                "reference": "5794e3c5c5ba0fb037b11d8151add2a07fa82875",
                 "shasum": ""
             },
             "require": {
@@ -400,23 +656,31 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rackspace/php-opencloud.git",
-                "reference": "b4a1c234e62d88a8857e96a52661cf54026f15d2"
+                "reference": "cb661f9dbb85c138022cdb7dda5cac639b3094da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rackspace/php-opencloud/zipball/b4a1c234e62d88a8857e96a52661cf54026f15d2",
-                "reference": "b4a1c234e62d88a8857e96a52661cf54026f15d2",
+                "url": "https://api.github.com/repos/rackspace/php-opencloud/zipball/cb661f9dbb85c138022cdb7dda5cac639b3094da",
+                "reference": "cb661f9dbb85c138022cdb7dda5cac639b3094da",
                 "shasum": ""
             },
             "require": {
-                "ext-curl": "*",
-                "php": ">=5.3.0"
+                "guzzle/http": "3.8.*@dev",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "guzzle/guzzle": "dev-master",
+                "psr/log": "1.0.*",
+                "satooshi/php-coveralls": "0.6.*@dev"
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "lib/"
-                ]
+                "psr-0": {
+                    "OpenCloud": [
+                        "lib/",
+                        "tests/"
+                    ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -429,15 +693,19 @@
                 },
                 {
                     "name": "Jamie Hannaford",
-                    "email": "jamie@limetree.org"
+                    "email": "jamie.hannaford@rackspace.com",
+                    "homepage": "https://github.com/jamiehannaford"
                 }
             ],
-            "description": "Rackspace open cloud php library",
+            "description": "PHP SDK for Rackspace/OpenStack APIs",
             "keywords": [
-                "cloudfiles",
-                "opencloud"
+                "Openstack",
+                "nova",
+                "opencloud",
+                "rackspace",
+                "swift"
             ],
-            "time": "2013-07-12 22:38:22"
+            "time": "2014-03-07 17:02:47"
         },
         {
             "name": "slim/extras",
@@ -446,12 +714,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/codeguy/Slim-Extras.git",
-                "reference": "83615926d0500dd8805907d8b778c9fe61970572"
+                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/83615926d0500dd8805907d8b778c9fe61970572",
-                "reference": "83615926d0500dd8805907d8b778c9fe61970572",
+                "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/5bceb3658f77a2b237f5b70ac02a0834fed871f9",
+                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9",
                 "shasum": ""
             },
             "require": {
@@ -488,7 +756,7 @@
                 "middleware",
                 "templating"
             ],
-            "time": "2013-02-28 23:49:02"
+            "time": "2013-05-24 13:41:59"
         },
         {
             "name": "slim/slim",
@@ -496,16 +764,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/codeguy/Slim.git",
-                "reference": "2.2.0"
+                "reference": "3a2ac723f17b5d81607287ff28575d38b9fbc70e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim/zipball/2.2.0",
-                "reference": "2.2.0",
+                "url": "https://api.github.com/repos/codeguy/Slim/zipball/3a2ac723f17b5d81607287ff28575d38b9fbc70e",
+                "reference": "3a2ac723f17b5d81607287ff28575d38b9fbc70e",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-mcrypt": "Required for HTTP cookie encryption"
             },
             "type": "library",
             "autoload": {
@@ -531,20 +802,20 @@
                 "rest",
                 "router"
             ],
-            "time": "2012-12-13 02:15:50"
+            "time": "2014-02-16 18:18:25"
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.0.3",
+            "version": "v5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "32edc3b0de0fdc1b10f5c4912e8677b3f411a230"
+                "reference": "748c01c1144713ac0118396935d10b6ceec91b68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/32edc3b0de0fdc1b10f5c4912e8677b3f411a230",
-                "reference": "32edc3b0de0fdc1b10f5c4912e8677b3f411a230",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/748c01c1144713ac0118396935d10b6ceec91b68",
+                "reference": "748c01c1144713ac0118396935d10b6ceec91b68",
                 "shasum": ""
             },
             "require": {
@@ -568,7 +839,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Chris Corbyn"
@@ -580,21 +853,77 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2013-12-03 13:33:24"
+            "time": "2014-03-18 09:03:27"
+        },
+        {
+            "name": "symfony/event-dispatcher",
+            "version": "v2.4.2",
+            "target-dir": "Symfony/Component/EventDispatcher",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/EventDispatcher.git",
+                "reference": "4708b8cd41984a5ba29fe7dd40716f7f761ac501"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/4708b8cd41984a5ba29fe7dd40716f7f761ac501",
+                "reference": "4708b8cd41984a5ba29fe7dd40716f7f761ac501",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/dependency-injection": "~2.0"
+            },
+            "suggest": {
+                "symfony/dependency-injection": "",
+                "symfony/http-kernel": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\EventDispatcher\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony EventDispatcher Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-02-11 13:52:09"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.1",
+            "version": "v2.4.2",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "v2.3.1"
+                "reference": "bb6ddaf8956139d1b8c360b4b713ed0138e876b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/v2.3.1",
-                "reference": "v2.3.1",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/bb6ddaf8956139d1b8c360b4b713ed0138e876b3",
+                "reference": "bb6ddaf8956139d1b8c360b4b713ed0138e876b3",
                 "shasum": ""
             },
             "require": {
@@ -603,7 +932,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -618,7 +947,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Symfony Community",
@@ -627,34 +958,34 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-05-10 18:12:13"
+            "time": "2014-01-07 13:28:54"
         },
         {
             "name": "zendframework/zend-db",
-            "version": "dev-master",
+            "version": "2.1.6",
             "target-dir": "Zend/Db",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendDb.git",
-                "reference": "b92aee26321f46e457feb58117699a1d0876d2fb"
+                "reference": "2b4ca5895e3291912039f6357b8e82882aebd2d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendDb/zipball/b92aee26321f46e457feb58117699a1d0876d2fb",
-                "reference": "b92aee26321f46e457feb58117699a1d0876d2fb",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendDb/zipball/2b4ca5895e3291912039f6357b8e82882aebd2d9",
+                "reference": "2b4ca5895e3291912039f6357b8e82882aebd2d9",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "suggest": {
-                "zendframework/zend-stdlib": "dev-master"
+                "zendframework/zend-stdlib": "2.1.6"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
@@ -670,7 +1001,7 @@
                 "db",
                 "zf2"
             ],
-            "time": "2013-03-29 18:03:19"
+            "time": "2014-03-04 17:00:12"
         }
     ],
     "packages-dev": [
@@ -684,7 +1015,7 @@
         "slim/slim": 20,
         "slim/extras": 20,
         "zendframework/zend-db": 20,
-        "mynetx/codebird-php": 20,
+        "jublonet/codebird-php": 20,
         "phpunit/phpunit": 20,
         "rackspace/php-opencloud": 20,
         "swiftmailer/swiftmailer": 0

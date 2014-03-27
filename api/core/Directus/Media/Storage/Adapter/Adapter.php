@@ -4,14 +4,36 @@ namespace Directus\Media\Storage\Adapter;
 
 abstract class Adapter {
 
+    /**
+     * These will reflect the json-decoded table column `directus_storage_adapters`.`params`
+     * @var array
+     */
+    protected $params = array();
+
+    /**
+     * Most storage adapters will depend on certain metadata which is unique to that
+     * service, namely API credentials. Specify those parameter names here.
+     * @var array
+     */
+    protected static $requiredParams = array();
+
+    /**
+     * Most storage adapters will depend upon the presence of some class dependencies.
+     * Specify their fully-qualified namespaced class names in this array.
+     * e.g.
+     *     array("\\Aws\\S3\\S3Client"); // or...
+     *     array("\\OpenCloud\\Rackspace");
+     * @var array
+     */
+    protected static $classDependencies = array();
+
     // @todo define via install config
     protected $allowedFormats = array('image/jpeg','image/gif', 'image/png', 'application/pdf');
     protected $imageFormats = array('image/jpeg','image/gif', 'image/png');
 
-    protected $params = array();
-    protected static $requiredParams = array();
-
     public function __construct(array $params = array()) {
+        $this->params = $params;
+        // Enforce required adapter parameters
         if(!empty(static::$requiredParams)) {
             $missingParamKeys = array_diff_key(static::$requiredParams, array_keys($params));
             if(count($missingParamKeys)) {
@@ -19,7 +41,12 @@ abstract class Adapter {
                  . " parameters to be defined (missing " . implode(",", $missingParamKeys) . ")");
             }
         }
-        $this->params = $params;
+        // Enforce presence of required class dependencies
+        foreach($classDependencies as $className) {
+            if(!class_exists($className)) {
+                throw new \RuntimeException("Missing dependency $className");
+            }
+        }
     }
 
     /**
