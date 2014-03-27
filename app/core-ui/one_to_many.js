@@ -127,7 +127,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     afterRender: function() {
-      console.log('after render');
       this.setView('.related-table', this.nestedTableView).render();
     },
 

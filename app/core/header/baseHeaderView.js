@@ -40,7 +40,7 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
     }
   });
 
-  Header.HeaderView = Backbone.Layout.extend({
+  return Backbone.Layout.extend({
 
     template: 'header/header',
 
@@ -98,6 +98,4 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
       this.lastHeaderHeight = newHeaderHeight;
     }
   });
-
-  return Header;
 });

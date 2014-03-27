@@ -1,14 +1,20 @@
 define([
   "app",
-  "backbone"
+  "backbone",
+  "core/header/baseHeaderView"
 ],
-
-function(app, Backbone) {
+function(app, Backbone, HeaderView) {
 
   return Backbone.Layout.extend({
 
-    template: 'page'
+    template: 'basePage',
 
+    headerOptions: {
+
+    },
+
+    beforeRender: function() {
+      this.setView('#fixedHeader', new Header.HeaderView(headerOptions));
+    }
   });
-
 });

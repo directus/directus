@@ -28,8 +28,6 @@ function(app, Backbone) {
     serialize: function() {
       var data = this.options.toolOptions;
 
-      console.log(data);
-
       return data;
     }
   });

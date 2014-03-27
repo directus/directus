@@ -24,7 +24,6 @@ define(function(require, exports, module) {
       Users            = require('modules/users/users'),
       Messages         = require('modules/messages/messages'),
       Modal            = require('core/modal'),
-      Header           = require('core/header/header.view'),
       moment           = require('moment');
 
   var Router = Backbone.Router.extend({
@@ -76,7 +75,6 @@ define(function(require, exports, module) {
 
     notFound: function() {
       this.setTitle('404');
-      app.headerModel.setRoute("404");
       this.v.main.setView('#content', new Backbone.Layout({template: Handlebars.compile('<h1>Not found</h1>')}));
       this.v.main.render();
     },
@@ -97,7 +95,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Tables');
-      app.headerModel.setRoute("Tables");
       this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
@@ -120,7 +117,6 @@ define(function(require, exports, module) {
       } else {
         collection = EntriesManager.getInstance(tableName);
       }
-      app.headerModel.setRoute(collection.table.id, [{title: 'Tables', anchor: '#tables'}], {leftToolbar: true, collection: collection, mode: 'list', canSearch: true, rightToolbar: true, secondaryRow: true});
       if (collection.table.get('single')) {
         if(collection.models.length) {
           this.entry(tableName, collection.models[0].get('id'));
@@ -186,11 +182,8 @@ define(function(require, exports, module) {
 
       if (isBatchEdit) {
         view = new Table.Views.BatchEdit({model: model, batchIds: id.split(',')});
-        app.headerModel.setRoute('Batch Edit ('+id.split(',').length+')', [{ title: 'Tables', anchor: '#tables'}]);
       } else {
         view = new Table.Views.Edit({model: model});
-        app.headerModel.setRoute(model.get('id') ? 'Editing Item' : 'Creating New Item', [{ title: 'Tables', anchor: '#tables'}, {title: tableName, anchor: "#tables/" + tableName}],
-          {leftToolbar: true, model: model, mode: 'edit', rightToolbar: true});
       }
 
       this.v.main.setView('#content', view);
@@ -202,7 +195,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Activity');
-      app.headerModel.setRoute("Activity");
       this.tabs.setActive('activity');
       this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
       this.v.main.render();
@@ -213,7 +205,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Media');
-      app.headerModel.setRoute("Media");
       this.tabs.setActive('media');
       this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
       this.v.main.render();
@@ -230,7 +221,6 @@ define(function(require, exports, module) {
       mediaView.addEditMedia(model, 'Editing media');
 
       this.setTitle('Media');
-      app.headerModel.setRoute("Media");
       this.tabs.setActive('media');
       this.v.main.setView('#content', mediaView);
       this.v.main.render();
@@ -239,10 +229,6 @@ define(function(require, exports, module) {
 
     users: function() {
       this.setTitle('Users');
-      app.headerModel.setRoute("Users",[], {
-        leftToolbar: {addBtn: true},
-        rightToolbar: {canSearch: true, showList: true, showGrid: {active: true}}
-      });
       this.tabs.setActive('users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
@@ -262,10 +248,8 @@ define(function(require, exports, module) {
 
       if (id === "new") {
         model = new app.users.model({}, {collection: app.users, parse:true});
-        app.headerModel.setRoute('New User', [{title: 'Users', anchor: '#users'}]);
       } else {
         model = app.users.get(id);
-        app.headerModel.setRoute(model.get('first_name') + ' ' + model.get('last_name'), [{title: 'Users', anchor: '#users'}]);
       }
       this.v.main.setView('#content', new Users.Views.Edit({model: model}));
       this.v.main.render();
@@ -277,8 +261,6 @@ define(function(require, exports, module) {
 
       this.setTitle('Settings');
       this.tabs.setActive('settings');
-
-      app.headerModel.setRoute(name, [{title: 'Settings', anchor: '#settings'}]);
 
       switch(name) {
         case 'tables':
@@ -312,7 +294,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Settings');
-      app.headerModel.setRoute("Settings");
       this.tabs.setActive('settings');
 
       this.v.main.setView('#content', new Settings.Table({model: SchemaManager.getTable(tableName)}));
@@ -325,7 +306,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Settings - Permissions');
-      app.headerModel.setRoute("Permissions", [{title: 'Settings', anchor: '#settings'}]);
       this.tabs.setActive('settings');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
       this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
@@ -334,7 +314,6 @@ define(function(require, exports, module) {
 
     messages: function(name) {
       this.tabs.setActive("messages");
-      app.headerModel.setRoute("Messages");
       this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
       this.v.main.render();
     },
@@ -342,7 +321,6 @@ define(function(require, exports, module) {
     message: function(id) {
       var model = app.messages.get(id);
       this.setTitle('Message');
-      app.headerModel.setRoute("View Message", {title: "Messages", anchor: "#messages"});
 
       if (model === undefined) {
         model = new app.messages.model({id: id}, {collection: app.messages, parse: true});
@@ -354,8 +332,6 @@ define(function(require, exports, module) {
     },
 
     newMessage: function() {
-
-      app.headerModel.setRoute("New Message", {title: "Messages", anchor: "#messages"});
 
       var model = new app.messages.model({from: app.users.getCurrentUser().id}, {collection: app.messages, parse: true});
 
@@ -420,12 +396,9 @@ define(function(require, exports, module) {
         $('.unread-messages-counter').html(app.messages.unread);
       });
 
-      app.headerModel = new Header.HeaderModel();
-
       //holds references to view instances
       this.v = {};
       var nav = new Navbar({model: app.settings.get('global')});
-      var header = new Header.HeaderView({model: app.headerModel});
 
       //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({
@@ -433,8 +406,7 @@ define(function(require, exports, module) {
         el: "#main",
 
         views: {
-          '#sidebar': nav,
-          '#fixedHeader': header
+          '#sidebar': nav
         }
 
       });

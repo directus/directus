@@ -43,7 +43,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
       // hard-destroy model if there is no active column
       if (!this.model.has('active')){
         throw "This table does not have an active column and can therefore not be deleted";
-        return;
       }
 
       this.model.save({active: 0}, {success: success, patch: true, wait: true, validate: false});
@@ -120,8 +119,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
         if (this.options.batchIds !== undefined) {
           title = 'Batch Edit';
         } else {
-          title = 'Creating New Item'; 
-        }        
+          title = 'Creating New Item';
+        }
       }
 
       if (this.single) {
