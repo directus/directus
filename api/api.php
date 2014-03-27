@@ -94,6 +94,12 @@ $authAndNonceRouteWhitelist = array(
     "debug_acl_poc",
 );
 
+// var_dump($app->request()->getRootUri());
+// var_dump($app->request()->getResourceUri());
+// var_dump($_GET['run_api_router']);
+// var_dump(API_VERSION);
+// die('die');
+
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist) {
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();

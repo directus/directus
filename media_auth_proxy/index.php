@@ -1,13 +1,13 @@
 <?php
 
 // Composer Autoloader
-$loader = require '../../api/vendor/autoload.php';
-$loader->add("Directus", dirname(__FILE__) . "/../../api/core/");
+$loader = require '../api/vendor/autoload.php';
+$loader->add("Directus", dirname(__FILE__) . "/../api/core/");
 
 // Non-autoload components
-require dirname(__FILE__) . '/../../api/config.php';
-require dirname(__FILE__) . '/../../api/core/db.php';
-require dirname(__FILE__) . '/../../api/core/functions.php';
+require dirname(__FILE__) . '/../api/config.php';
+require dirname(__FILE__) . '/../api/core/db.php';
+require dirname(__FILE__) . '/../api/core/functions.php';
 
 // Define directus environment
 defined('DIRECTUS_ENV')
@@ -114,13 +114,11 @@ $app->get("/:id/:format/:filename", function($id, $format, $filename) use ($app,
     }
     $StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
     $storage = $StorageAdapters->find($media['storage_adapter']);
-    $params = @json_decode($storage['params']);
+    $params = @json_decode($storage['params'], true);
     $params = empty($params) ? array() : $params;
-    $MediaStorage = \Directus\Media\Storage\Storage::getStorage($storage['adapter_name'], $params);
-    $fullPath = $MediaStorage->joinPaths($storage['destination'], $media['name']);
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mimeType = $finfo->file($fullPath);
-    header('Content-type: ' . $mimeType);
+    $storage['params'] = $params;
+    $MediaStorage = \Directus\Media\Storage\Storage::getStorage($storage);
+    header('Content-type: ' . $media['type']);
     echo $MediaStorage->getFileContents($media['name'], $storage['destination']);
     exit; // Prevent Slim from overriding our headers
 })->conditions(array('id' => '\d+'))
