@@ -1268,17 +1268,19 @@ button {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   background-color: #5b5b5b;
-  border: none;
+  border: solid 1px #5b5b5b;
   color: #ffffff;
   cursor: pointer;
-  padding: 10px;
+  padding: 5px 10px;
   text-transform: uppercase;
 }
 .btn:hover {
   background-color: #313131;
+  border-color: #252525;
 }
 .btn.active {
   background-color: #252525;
+  border-color: #252525;
 }
 .btn.btn-white {
   color: #5b5b5b;
@@ -1406,7 +1408,7 @@ input[type="radio"].custom-check:checked + label:before {
 input[type="text"],
 input[type="password"],
 textarea,
-.wysiwyg {
+.input {
   box-sizing: border-box;
   /* css3 rec */
   -moz-box-sizing: border-box;
@@ -1422,13 +1424,7 @@ textarea,
   width: 100%;
 }
 .wysiwyg .btn-toolbar {
-  background-color: #cbcbcb;
-  margin: -5px 0px 0px -5px;
-  padding: 5px;
-  width: 100%;
-}
-.wysiwyg .force-editable {
-  padding: 5px;
+  margin-bottom: 5px;
 }
 .filter-form select,
 .filter-form input[type="text"] {
