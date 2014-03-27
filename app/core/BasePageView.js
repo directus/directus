@@ -28,23 +28,9 @@ function(app, Backbone, BaseHeaderView) {
     },
 
     beforeRender: function() {
-      var leftWidgets = this.leftToolbar();
-      var rightWidgets = this.rightToolbar();
-      var secondaryRow = this.secondaryRow();
-
-      leftWidgets = [1,2,3,4];
-
-      leftWidgets.forEach(function(widget) {
-        console.log(widget);
-      });
-
-      rightWidgets.forEach(function(widget) {
-
-      });
-
-      secondaryRow.forEach(function(widget) {
-
-      });
+      this.headerOptions.leftWidgets = this.leftToolbar();
+      this.headerOptions.rightWidgets = this.rightToolbar();
+      this.headerOptions.secondaryWidgets = this.secondaryRow();
 
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       this.setView('#fixedHeader', this.headerView);

@@ -17,7 +17,9 @@ function(app, Backbone, BasePageView, ListViewManager) {
     },
 
     leftToolbar: function() {
-      return [];
+      return [
+        new widgets.
+      ];
     },
 
     rightToolbar: function() {
