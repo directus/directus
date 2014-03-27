@@ -7,11 +7,11 @@ function(EditUserView, ListUsers) {
 
   'use strict';
 
-  var Users = app.module();
+  var users = app.module();
 
-  Users.Views.Edit = EditUserView;
-  Users.Views.List = ListUsers;
+  users.Views.Edit = EditUserView;
+  users.Views.List = ListUsers;
 
-  return Users;
+  return users;
 
 });
