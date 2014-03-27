@@ -3,10 +3,11 @@ define([
   'backbone',
   'core/directus',
   'modules/activity/chart',
-  "modules/media/media"
+  "modules/media/media",
+  'core/BasePageView'
 ],
 
-function(app, Backbone, Directus, Chart, Media) {
+function(app, Backbone, Directus, Chart, Media, BasePageView) {
 
   "use strict";
 
@@ -55,9 +56,7 @@ function(app, Backbone, Directus, Chart, Media) {
 
   });
 
-  Dashboard.Views.List = Backbone.Layout.extend({
-
-    template: 'page',
+  Dashboard.Views.List = BasePageView.extend({
 
     events: {
       'click a[data-action=media]': function(e) {

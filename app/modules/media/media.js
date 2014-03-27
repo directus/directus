@@ -3,10 +3,11 @@ define([
   'backbone',
   'core/modal',
   'core/edit',
-  'core/table/table.view'
+  'core/table/table.view',
+  'core/BasePageView'
 ],
 
-function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
+function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable, BasePageView) {
 
   "use strict";
 
@@ -48,9 +49,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
     }
   });
 
-  Media.Views.List = Backbone.Layout.extend({
-
-    template: 'page',
+  Media.Views.List = BasePageView.extend({
 
     events: {
       'click #btn-top': function() {
