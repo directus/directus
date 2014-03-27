@@ -28,7 +28,6 @@ function(app, Backbone) {
       _.each(this.where({'active':true}),function(model) {
         model.unset('active',{silent: true});
       });
-
       if (!model) { return; }
       model.set({'active':true});
     },

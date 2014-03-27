@@ -22,9 +22,10 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
   var Header = app.module();
 
   Header.HeaderModel = Backbone.Model.extend({
-    optionsMappings: {
-      'entries' : {
-        leftToolbar: true,
+    defaults: {
+      options: {},
+      route: {
+        title: "Directus"
       }
     },
     setRoute: function(title, breadcrumbs, options) {
@@ -32,11 +33,10 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
         title: title,
         breadcrumbs: breadcrumbs
       };
-      this.set({route: data});
       if(options === undefined) {
         options = {};
       }
-      this.set({options: options});
+      this.set({options: options, route: data});
     }
   });
 
@@ -53,43 +53,31 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
     serialize: function() {
       var data = this.model.get('route');
 
-      if(data === undefined) {
-        data = {
-          title: "Directus"
-        };
-      }
-
       return data;
     },
-    initialize: function(options) {
-      this.options = options;
-
-      this.model.on('change', function() {
-        this.options = this.model.get('options');
-        this.render();
-      }, this);
-    },
-
     beforeRender: function() {
-      if(this.options) {
-        if(this.options.leftToolbar) {
+        var options = this.model.get('options');
+          console.log(options);
+        if(options.leftToolbar) {
           this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView(this.options));
         } else if(this.leftToolbar) {
           this.leftToolbar.remove();
         }
-        if(this.options.rightToolbar) {
+
+
+
+        if(options.rightToolbar) {
           this.rightToolbar = this.setView('#tools-right-insert', new HeaderToolsRightView(this.options));
         } else if(this.rightToolbar) {
           this.rightToolbar.remove();
         }
 
-        if(this.options.secondaryRow) {
+        if(options.secondaryRow) {
           this.secondaryRow = this.setView('#secondary-row-insert', new HeaderSecondaryRowView(this.options));
         } else if(this.secondaryRow) {
           this.secondaryRow.remove();
         }
       }
-    }
   });
 
   return Header;

@@ -53,7 +53,7 @@ function(app, Backbone) {
       },
       'click #bookmark': function(e) {
         var data = {
-          title: this.collection.table.id.toString(),
+          title: this.collection.table.id,
           url: Backbone.history.fragment,
           icon_class: 'icon-star',
           user: app.getCurrentUser().get("id")
@@ -69,9 +69,7 @@ function(app, Backbone) {
       }
     },
     initialize: function(options) {
-      this.options = options;
       if(options.mode == "list") {
-        this.collection = options.collection;
         if(this.collection) {
           this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
         }
