@@ -29,7 +29,7 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
 
     tagName: 'div',
 
-    template: 'settings-columns-add',
+    template: 'modules/settings/settings-columns-add',
 
     attributes: {'class':'form'},
 
@@ -89,7 +89,7 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
 
     tagName: 'form',
 
-    template: 'settings-columns',
+    template: 'modules/settings/settings-columns',
 
     events: {
       'click button[data-action=ui]': 'editUI',
@@ -233,7 +233,7 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
   });
 
   var TableModule = Backbone.Layout.extend({
-    template: 'module-table-settings',
+    template: 'modules/settings/module-table-settings',
     attributes: {'class': 'directus-module'},
     serialize: function() {
       return {
@@ -297,7 +297,7 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
 
   var Tables = Backbone.Layout.extend({
 
-    template: 'settings-tables',
+    template: 'modules/settings/settings-tables',
 
     events: {
       'click td': function(e) {

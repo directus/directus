@@ -9,31 +9,31 @@ function(app, Backbone) {
   "use strict";
 
   var FilterModel = Backbone.Model.extend({
-    
+
     hasFilters: function() {
       return this.get('filterCount') > 0;
     },
-    
+
     addFilter: function(id, type, value) {
       var filters = this.filters,
           filterCount = this.filterCount;
-          
+
       filters['id_'+_.uniqueId()] = {
         id: id,
         type: type,
         value: value
       };
-      
+
       this.set({
         filters: filters,
         filterCount: filterCount + 1
       });
     },
-    
+
     removeFilter: function(uniqueId) {
       var filters = this.filters,
           filterCount = this.filterCount;
-      
+
       if(filters['id_'+uniqueId]) {
         delete filters['id_'+uniqueId];
         this.set({
@@ -42,17 +42,17 @@ function(app, Backbone) {
         });
       }
     },
-    
+
     initialize: function() {
       this.filterCount = 0;
       this.filters = {};
     }
-    
+
   });
 
   var TableToolbarView = Backbone.Layout.extend({
 
-    template: 'table-toolbar',
+    template: 'tables/table-toolbar',
 
     events: {
 
@@ -138,7 +138,7 @@ function(app, Backbone) {
       'click #addFilterButton': function(e) {
         var $filters = $('.advanced-search-fields-row');
         var that = this;
-        
+
         var searchSettings = $filters.map(function() {
           var $this = $(this);
           var values = {
@@ -146,18 +146,18 @@ function(app, Backbone) {
             type: $this.find('.adv-search-query-type').val(),
             value: $this.find('input').val()
           };
-          
+
           // @DAX Uncoment this once toolbar has been moved to header
           //that.filterModel.addFilter(values.id, values.type, values.value);
           //$('#advancedFilterList').append('<li>' + values.id + ' ' + values.type + ' ' + values.value + '</li>');
-          
+
           return {
             id: that.mysql_real_escape_string(values.id),
             type: values.type,
             value: that.mysql_real_escape_string(values.value)
           };
         }).toArray();
-        
+
         var queryString = "";
 
         this.collection.setFilter('adv_search', searchSettings);
@@ -171,7 +171,7 @@ function(app, Backbone) {
       //@TODO: Cleanup with non-hacks
       var table = this.options.collection.table;
       var options = {};
-      
+
       options.totalCount = this.collection.getTotalCount();
       options.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, options.totalCount);
       options.uBound = Math.min(options.totalCount, options.lBound + this.collection.getFilter('perPage') - 1);
@@ -191,7 +191,7 @@ function(app, Backbone) {
             return obj;
         }, this);
       }
-      
+
       // @DAX Uncoment this once toolbar has been moved to header
       //options.hasFilters = this.filterModel.hasFilters();
       options.filterText = this.collection.getFilter('search');
@@ -202,7 +202,7 @@ function(app, Backbone) {
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 
       options.visibilityButtons = options.actionButtons || options.deleteOnly;
-      
+
       return options;
     },
 
@@ -263,16 +263,16 @@ function(app, Backbone) {
       }, this);
 
       this.filterModel = new FilterModel();
-      
+
       // @DAX Uncoment this once toolbar has been moved to header
       //this.filterModel.on('change', function() {
       //  this.render();
       //}, this);
-      
+
       //this.collection.on('visibility', this.render, this);
     }
   });
-  
+
   return TableToolbarView;
 
 });

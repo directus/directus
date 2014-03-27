@@ -12,7 +12,7 @@ function(app, Backbone) {
 
     tagName: 'tbody',
 
-    template: 'table-body',
+    template: 'tables/table-body',
 
     events: {
       'change td.check > input': 'select',

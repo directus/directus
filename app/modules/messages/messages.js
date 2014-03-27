@@ -28,7 +28,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, B
     getUnreadCount: function() {
       var unread = this.get('read') == 1 ? 0 : 1;
 
-      var unreadResponses = this.get('responses').reduce(function(memo, model){ 
+      var unreadResponses = this.get('responses').reduce(function(memo, model){
         var unread = model.get('read') == 1 ? 0 : 1;
         return memo + unread;
       }, 0);
@@ -112,7 +112,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, B
 
     maxRecipients: 10,
 
-    template: 'messages-reading',
+    template: 'modules/messages/messages-reading',
 
     events: {
       'click #messages-response-button': function() {
@@ -173,7 +173,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, B
 
   var ListView = Backbone.Layout.extend({
 
-    template: 'messages-list',
+    template: 'modules/messages/messages-list',
 
     events: {
       'click tr': function(e) {

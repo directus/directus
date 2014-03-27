@@ -12,7 +12,7 @@ function(app, Backbone, Directus) {
 
     tagName: 'div',
 
-    template: 'activity-chart',
+    template: 'modules/activity/activity-chart',
 
     attributes: {'class':'activity-module'},
 
