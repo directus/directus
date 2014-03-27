@@ -92,13 +92,16 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
       // Save all batch id's
       _.each(this.batchIds, function(id) {
         var modelToUpdate = model.getNewInstance({collection: model.collection});
-        modelToUpdate.set({id: id});
+        modelToUpdate.set(_.extend(
+          {id: id}, 
+          changedAttributes
+        ), {parse: true});
 
-        modelToUpdate.save(changedAttributes, {
+        modelToUpdate.save({}, {
           success: success,
           error: error,
           wait: true,
-          patch: true,
+          //patch: true,
           includeRelationships: true,
           validate: false
         });
