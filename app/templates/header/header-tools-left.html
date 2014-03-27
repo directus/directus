@@ -1,10 +1,12 @@
 <ul class="tools left">
   <li class="input-and-button">
-    {{#if addButtonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
-    {{#if addBtn}}<button class="tool-item large-circle" id="btn-top" title="{{addButtonTitle}}"><span class="icon icon-plus"</button>{{/if}}
+    {{#if showAddBtn}}
+      {{#if showAddBtn.title}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
+      {{#if showAddBtn.button}}<button class="tool-item large-circle" id="addBtn" title="{{showAddBtn.button.title}}"><span class="icon icon-plus"</button>{{/if}}
+    {{/if}}
   </li>
-  {{#if showBookmarkButton}}
-  <li class="input-and-button {{#if showBookmarkButton.active}}active{{/if}}">
+  {{#if showBookmarkBtn}}
+  <li class="input-and-button {{#if showBookmarkBtn.active}}active{{/if}}">
     <button class="tool-item large-circle" id="bookmark" title="bookmark"><span class="icon icon-star"</button>
   </li>
   {{/if}}

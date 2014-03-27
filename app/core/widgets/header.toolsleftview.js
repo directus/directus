@@ -25,27 +25,6 @@ function(app, Backbone) {
       class: 'tools left'
     },
 
-    serialize: function() {
-      var data = this.options.toolOptions;
-
-/*
-      if(this.toolOptions.mode == "list") {
-        data.list = true;
-        if (this.collection && this.collection.hasPermission('add')) {
-          data.showAddButton = {
-            title: 'Add Table'
-          };
-        }
-
-        data.showBookmarkButton = {
-          active: this.isBookmarked
-        };
-      } else if(this.toolOptions.mode == "edit") {
-        data.edit = true;
-      }*/
-      return data;
-    },
-
     events: {
       'click #btn-top': function() {
         app.router.go('#tables/'+this.collection.table.id+'/new');

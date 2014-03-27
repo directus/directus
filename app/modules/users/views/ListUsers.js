@@ -98,12 +98,16 @@ function(app, Backbone, Directus, BasePageView) {
         title: "Users"
       },
       leftToolbar: {
-        addBtn: true
+        showAddBtn: {
+          button: {
+            title: "Add User"
+          }
+        }
       }
     },
 
     events: {
-      'click #btn-top': function() {
+      'click #addBtn': function() {
         app.router.go('#users','new');
       }
     },
