@@ -18,7 +18,7 @@ function(app, Directus) {
 
   var Groups = Backbone.Layout.extend({
 
-    template: 'settings-groups',
+    template: 'modules/settings/settings-groups',
 
     events: {
       'click td': function(e) {
