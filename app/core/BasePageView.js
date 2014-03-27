@@ -3,7 +3,7 @@ define([
   "backbone",
   "core/header/baseHeaderView"
 ],
-function(app, Backbone, HeaderView) {
+function(app, Backbone, BaseHeaderView) {
 
   return Backbone.Layout.extend({
 
@@ -14,7 +14,8 @@ function(app, Backbone, HeaderView) {
     },
 
     beforeRender: function() {
-      this.setView('#fixedHeader', new Header.HeaderView(headerOptions));
+      console.log("Insert");
+      this.setView('#fixedHeader', new BaseHeaderView(this.headerOptions));
     }
   });
 });

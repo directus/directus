@@ -53,12 +53,12 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
     },
 
     serialize: function() {
-      var data = this.model.get('route');
+      var data = {};
 
       return data;
     },
     beforeRender: function() {
-      var options = this.model.get('options');
+      var options = {};
       if(options.leftToolbar) {
         this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView({toolOptions: options.leftToolbar}));
       } else if(this.leftToolbar) {
