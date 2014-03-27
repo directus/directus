@@ -65,12 +65,13 @@
   }
 }
 .btn {
+  .border-radius(4px, 4px, 4px, 4px);
+  background-color: @darkGrey;
+  border: none;
+  color: @white;
   cursor: pointer;
   padding: @smallPad;
-  &.dark-grey {
-    background-color: @darkGrey;
-    color: @white;
-  }
+  text-transform: uppercase;
 }
 
 ////////////
@@ -111,6 +112,8 @@
   padding-top: @standardPad;
 }
 
-body {
-  margin:0;
+.overlay {
+  h3 {
+    display: none;
+  }
 }

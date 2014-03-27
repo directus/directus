@@ -1009,6 +1009,9 @@ body {
   height: 100%;
   width: 100%;
 }
+body {
+  margin: 0;
+}
 h1,
 h2,
 h3,
@@ -1105,12 +1108,27 @@ button {
   margin-top: -8px;
 }
 .btn {
+  -webkit-border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  -webkit-border-top-left-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  -moz-border-radius-bottomright: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  -moz-border-radius-topleft: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  background-color: #5b5b5b;
+  border: none;
+  color: #ffffff;
   cursor: pointer;
   padding: 10px;
-}
-.btn.dark-grey {
-  background-color: #5b5b5b;
-  color: #ffffff;
+  text-transform: uppercase;
 }
 .italic {
   font-style: italic;
@@ -1147,8 +1165,8 @@ button {
   margin-top: 130px;
   padding-top: 20px;
 }
-body {
-  margin: 0;
+.overlay h3 {
+  display: none;
 }
 select {
   cursor: pointer;
