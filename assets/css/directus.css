@@ -1405,8 +1405,7 @@ input[type="radio"].custom-check:checked + label:before {
   position: absolute;
   top: -6px;
 }
-input[type="text"],
-input[type="password"],
+input,
 textarea,
 .input {
   box-sizing: border-box;
