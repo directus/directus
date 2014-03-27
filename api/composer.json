@@ -7,6 +7,7 @@
         "phpunit/phpunit": "3.7.*@dev",
         "rackspace/php-opencloud": "dev-master",
         "amazonwebservices/aws-sdk-for-php": "1.6.2",
-        "swiftmailer/swiftmailer": "@stable"
+        "swiftmailer/swiftmailer": "@stable",
+        "aws/aws-sdk-php": "2.6.*@dev"
     }
 }
