@@ -79,10 +79,13 @@
   #featureSidebar {
     @featureSidebarItemMargin: 10px;
     bottom: 0px;
-    padding: 0px @standardPad;
+    padding: 0px @standardPad @standardPad @standardPad;
     position: absolute;
     .row {
       margin-left: -@featureSidebarItemMargin;
+    }
+    ul {
+      margin-bottom: -@featureSidebarItemMargin;
     }
     li {
       background-color: @mediumDarkGrey;

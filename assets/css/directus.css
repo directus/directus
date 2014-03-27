@@ -1145,6 +1145,7 @@ button {
   /* flex: 1; */
   margin-bottom: 40px;
   margin-top: 130px;
+  padding-top: 20px;
 }
 body {
   margin: 0;
@@ -1778,11 +1779,14 @@ textarea {
 }
 #sidebar #featureSidebar {
   bottom: 0px;
-  padding: 0px 20px;
+  padding: 0px 20px 20px 20px;
   position: absolute;
 }
 #sidebar #featureSidebar .row {
   margin-left: -10px;
+}
+#sidebar #featureSidebar ul {
+  margin-bottom: -10px;
 }
 #sidebar #featureSidebar li {
   background-color: #313131;
