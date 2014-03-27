@@ -96,16 +96,13 @@ function(app, Backbone, Directus, BasePageView) {
     headerOptions: {
       route: {
         title: "Users"
-      },
-      leftToolbar: {
-        showAddBtn: {
-          button: {
-            title: "Add User"
-          }
-        }
       }
     },
-
+    leftToolbar: function() {
+      return [
+        new Widgets.AddWidget({button: true});
+      ];
+    }
     events: {
       'click #addBtn': function() {
         app.router.go('#users','new');
