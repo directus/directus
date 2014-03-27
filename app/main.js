@@ -67,6 +67,7 @@ require(["config"], function() {
     app.API_URL = options.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;
+    app.authenticatedUserId = window.directusData.authenticatedUser;
 
     // This needs elegance
     app.settings = new SettingsCollection(options.settings, {parse: true});

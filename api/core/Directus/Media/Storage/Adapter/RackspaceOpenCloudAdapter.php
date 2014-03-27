@@ -6,6 +6,8 @@ use OpenCloud\Rackspace;
 
 class RackspaceOpenCloudAdapter extends Adapter {
 
+    protected static $requiredClasses = array("\\OpenCloud\\Rackspace");
+    
     protected static $requiredParams = array('api_user','api_key','region','endpoint');
 
     /**
@@ -15,16 +17,13 @@ class RackspaceOpenCloudAdapter extends Adapter {
     protected $ostore;
     protected $container;
 
-    public function __construct(array $params = array()) {
-        parent::__construct($params);
-        if(!class_exists("\\OpenCloud\\Rackspace")) {
-            throw new \RuntimeException("Missing dependency \\OpenCloud\\Rackspace");
-        }
-        $this->conn = new Rackspace($params['endpoint'], array(
-            'username' => $params['api_user'],
-            'apiKey' => $params['api_key']
+    public function __construct(array $settings = array()) {
+        parent::__construct($settings);
+        $this->conn = new Rackspace($settings['params']['endpoint'], array(
+            'username' => $settings['params']['api_user'],
+            'apiKey' => $settings['params']['api_key']
         ));
-        $this->conn->SetDefaults('ObjectStore', 'cloudFiles', $params['region']);
+        $this->conn->SetDefaults('ObjectStore', 'cloudFiles', $settings['params']['region']);
         try {
             $this->ostore = $this->conn->ObjectStore();
         } catch(\OpenCloud\Common\Exceptions\HttpError $e) {

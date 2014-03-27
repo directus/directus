@@ -12,8 +12,6 @@ function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
 
   var Media = app.module();
 
-
-
   Media.Views.Edit = DirectusModal.extend({
 
     afterRender: function() {
@@ -85,33 +83,6 @@ function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
           app.router.navigate('#media');
         });
       }
-
-      /*
-      var view = new Directus.EditView({model: model});
-      var modal = app.router.openModal(view, {stretch: true, title: title});
-      var isNew = model.isNew();
-      if (!isNew) {
-        app.router.navigate('#media/'+model.id);
-        modal.on('close', function() {
-          app.router.navigate('#media');
-        });
-      }
-      var collection = this.collection;
-      view.render();
-      modal.save = function() {
-        var file = $('input[name=file]')[0].files[0];
-        var data = view.data();
-        if (file !== undefined) {
-          data = _.extend(data, {file: file});
-        }
-        model.save(data, {success:function() {
-          if (isNew) {
-            collection.add(model);
-          }
-          modal.close();
-        }});
-      };
-      */
     },
 
     serialize: function() {
@@ -125,4 +96,5 @@ function(app, Backbone, DirectusModal, DirectusEdit, DirectusTable) {
   });
 
   return Media;
+
 });
