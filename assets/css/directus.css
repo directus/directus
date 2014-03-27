@@ -23,7 +23,6 @@
   /* Legacy iOS */
 }
 .icon {
-  -webkit-font-smoothing: antialiased !important;
   display: inline-block;
   font-family: 'Directus';
   font-size: 300%;
@@ -1011,6 +1010,7 @@ body {
   width: 100%;
 }
 body {
+  -webkit-font-smoothing: antialiased !important;
   margin: 0;
 }
 h1,
@@ -1391,7 +1391,6 @@ input[type="radio"].custom-check:checked + label span {
 .custom-check input[type="radio"]:checked + label:before,
 input[type="checkbox"].custom-check:checked + label:before,
 input[type="radio"].custom-check:checked + label:before {
-  -webkit-font-smoothing: antialiased !important;
   display: inline-block;
   font-family: 'Directus';
   font-size: 300%;
@@ -2221,7 +2220,6 @@ textarea,
   margin-top: 10px;
 }
 .login-box button[type="submit"]:after {
-  -webkit-font-smoothing: antialiased !important;
   display: inline-block;
   font-family: 'Directus';
   font-size: 300%;
@@ -2275,7 +2273,6 @@ textarea,
   color: #5b5b5b;
 }
 .login-panel p #forgot-password:after {
-  -webkit-font-smoothing: antialiased !important;
   display: inline-block;
   font-family: 'Directus';
   font-size: 300%;
