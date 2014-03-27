@@ -27,7 +27,7 @@ function(app, Backbone) {
       var activeModel;
       _.each(this.models,function(model) {
         model.unset('active',{silent: true});
-        if(route.indexOf(model.get('url')) != -1) {
+        if(model.get('url') == route || (model.get('url') == 'tables' && route.indexOf(model.get('url')) != -1)) {
           activeModel = model;
         }
       });

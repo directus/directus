@@ -117,7 +117,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, m
       'click #messages-response-button': function() {
         var collection = this.model.get('responses');
         var Model = collection.model;
-        var myId = app.getCurrentUser().get('id');
+        var myId = app.users.getCurrentUser().get('id');
         var recipients = _.map(this.model.get('recipients').split(','), function(id) {
           return '0_' + id;
         });
@@ -125,7 +125,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, m
         recipients.push('0_'+this.model.get('from'));
 
         var attrs = {
-          'from': app.getCurrentUser().get('id'),
+          'from': app.users.getCurrentUser().get('id'),
           'subject': '',
           'recipients': recipients.join(','),
           'datetime': (new Date()).toISOString(),

@@ -26,8 +26,9 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      var data = {};
+      var data = this.options.toolOptions;
 
+/*
       if(this.toolOptions.mode == "list") {
         data.list = true;
         if (this.collection && this.collection.hasPermission('add')) {
@@ -41,8 +42,7 @@ function(app, Backbone) {
         };
       } else if(this.toolOptions.mode == "edit") {
         data.edit = true;
-      }
-
+      }*/
       return data;
     },
 
@@ -56,7 +56,7 @@ function(app, Backbone) {
           title: this.collection.table.id,
           url: Backbone.history.fragment,
           icon_class: 'icon-star',
-          user: app.getCurrentUser().get("id")
+          user: app.users.getCurrentUser().get("id")
         };
         if(!this.isBookmarked)
         {
@@ -66,16 +66,6 @@ function(app, Backbone) {
         }
         $('#bookmark').parent().toggleClass('active');
         this.isBookmarked = !this.isBookmarked;
-      }
-    },
-    initialize: function(options) {
-      this.toolOptions = options;
-      if(options.mode == "list") {
-        if(this.collection) {
-          this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
-        }
-      } else if(options.mode == "edit") {
-
       }
     }
   });

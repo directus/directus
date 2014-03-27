@@ -38,7 +38,7 @@ define(function(require, exports, module) {
     },
 
     logErrorToServer: function(type, message, details) {
-      var user = app.getCurrentUser(), email = 'n/a';
+      var user = app.users.getCurrentUser(), email = 'n/a';
 
       if (user) {
         email = user.get('email');
@@ -66,27 +66,6 @@ define(function(require, exports, module) {
       return !isNaN(parseFloat(n)) && isFinite(n);
     },
 
-    makeMediaUrl: function(mediaModel, thumbnail) {
-      var storageAdapters = window.directusData.storage_adapters,
-          adapterId,
-          storageAdapter;
-
-      if(thumbnail) {
-        adapterId = 'THUMBNAIL';
-        if(!storageAdapters.hasOwnProperty(adapterId)) {
-          throw new Error("Cannot find default thumbnail storage_adapter using key: " + adapterId);
-        }
-      } else {
-        adapterId = mediaModel.get('storage_adapter');
-        if(!storageAdapters.hasOwnProperty(adapterId)) {
-          throw new Error("Media record's storage_adapter FK value maps to an undefined directus_storage_adapters record: " + adapterId);
-        }
-      }
-      storageAdapter = storageAdapters[adapterId];
-      var url = storageAdapter.url + mediaModel.get('name');
-      return url;
-    },
-
     evaluateExpression: function(a, operator, b) {
       switch (operator) {
         case '==':
@@ -96,17 +75,8 @@ define(function(require, exports, module) {
       }
     },
 
-    // Returns undefined is users aren't loaded yet
-    // @todo: Make sure users are loaded as early as possible
-    getCurrentUser: function() {
-       var authenticatedUser = window.directusData.authenticatedUser;
-       if (!app.users) return undefined;
-       var user = app.users.get(authenticatedUser.id);
-       return user;
-    },
-
     getCurrentGroup: function() {
-      var user = app.getCurrentUser();
+      var user = app.users.getCurrentUser();
       return user.get('group');
     },
 
@@ -135,16 +105,8 @@ define(function(require, exports, module) {
           $("#sidebar").removeClass('affix-sidebar');
         }
       });
-    },
-
-    dateDaysFromNow: function(days) {
-      var today = new Date();
-      return new Date(today.getTime() + days * 24 * 60 * 60 * 1000);
-    },
-
-    summarizeArray: function(array) {
-      return _.reduce(array, function(memo, num){ return memo + parseInt(num,10); }, 0);
     }
+
   };
 
   app.sendFiles = function(files, callback) {

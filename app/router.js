@@ -239,14 +239,17 @@ define(function(require, exports, module) {
 
     users: function() {
       this.setTitle('Users');
-      app.headerModel.setRoute("Users");
+      app.headerModel.setRoute("Users",[], {
+        leftToolbar: {addBtn: true},
+        rightToolbar: {canSearch: true, showList: true, showGrid: {active: true}}
+      });
       this.tabs.setActive('users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
     },
 
     user: function(id) {
-      var user = app.getCurrentUser();
+      var user = app.users.getCurrentUser();
       var userGroup = user.get('group');
 
       if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
@@ -351,8 +354,11 @@ define(function(require, exports, module) {
     },
 
     newMessage: function() {
+
       app.headerModel.setRoute("New Message", {title: "Messages", anchor: "#messages"});
-      var model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages, parse: true});
+
+      var model = new app.messages.model({from: app.users.getCurrentUser().id}, {collection: app.messages, parse: true});
+
       this.v.main.setView('#content', new Messages.Views.New({model: model}));
       this.v.main.render();
     },
@@ -383,7 +389,7 @@ define(function(require, exports, module) {
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
 
-      var user = app.getCurrentUser();
+      var user = app.users.getCurrentUser();
 
       var tabs = new Tabs.View({collection: this.tabs});
 
@@ -450,7 +456,8 @@ define(function(require, exports, module) {
           // Report the "last page" data to the API
           // @fixes https://github.com/RNGR/directus6/issues/199
 
-          var user = app.getCurrentUser();
+          var user = app.users.getCurrentUser();
+
           var currentPath = window.location.pathname.substring(app.root.length);
           if(currentPath.length) {
             bookmarks.setActive(currentPath);

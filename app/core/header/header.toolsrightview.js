@@ -26,15 +26,9 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      var data = {};
+      var data = this.options.toolOptions;
 
-      if(this.options.canSearch) {
-        data.search = true;
-      }
-
-      if(this.options.mode == "edit") {
-        data.edit = true;
-      }
+      console.log(data);
 
       return data;
     }

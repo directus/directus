@@ -345,7 +345,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
           title: this.collection.table.id.toString(),
           url: Backbone.history.fragment,
           icon_class: 'icon-star',
-          user: app.getCurrentUser().get("id")
+          user: app.users.getCurrentUser().get("id")
         };
         if(!this.isBookmarked)
         {
