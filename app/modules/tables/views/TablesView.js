@@ -9,10 +9,10 @@ function(app, Backbone, Directus, BasePageView) {
 
   return BasePageView.extend({
 
-    serialize: {title: 'Tables'},
-
     headerOptions: {
-      title: "Tables"
+      route: {
+        title: "Tables"
+      }
     },
 
     beforeRender: function() {
