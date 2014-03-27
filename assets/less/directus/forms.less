@@ -83,12 +83,27 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     }
   }
 }
-input[type="text"], input[type="password"], textarea {
+input[type="text"], 
+input[type="password"], 
+textarea,
+.wysiwyg {
   .border-box;
+  background-color: @white;
   border: solid 1px @lightGrey;
   display: block;
   padding: @extraSmallPad;
   width: 100%;
+}
+.wysiwyg {
+  .btn-toolbar {
+    background-color: @mediumGrey;
+    margin: -@extraSmallPad 0px 0px -@extraSmallPad;
+    padding: @extraSmallPad;
+    width: 100%;
+  }
+  .force-editable {
+    padding: @extraSmallPad;
+  }
 }
 ////////////
 //  CUSTOM FORMS

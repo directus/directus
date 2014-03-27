@@ -1405,7 +1405,8 @@ input[type="radio"].custom-check:checked + label:before {
 }
 input[type="text"],
 input[type="password"],
-textarea {
+textarea,
+.wysiwyg {
   box-sizing: border-box;
   /* css3 rec */
   -moz-box-sizing: border-box;
@@ -1414,10 +1415,20 @@ textarea {
   /* ie8 */
   -webkit-box-sizing: border-box;
   /* safari3 */
+  background-color: #ffffff;
   border: solid 1px #ededed;
   display: block;
   padding: 5px;
   width: 100%;
+}
+.wysiwyg .btn-toolbar {
+  background-color: #cbcbcb;
+  margin: -5px 0px 0px -5px;
+  padding: 5px;
+  width: 100%;
+}
+.wysiwyg .force-editable {
+  padding: 5px;
 }
 .filter-form select,
 .filter-form input[type="text"] {
