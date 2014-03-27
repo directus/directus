@@ -1,4 +1,3 @@
-
 define([
   'app',
   'backbone',
@@ -8,12 +7,16 @@ define([
   'core/BasePageView'
 ],
 
-
-
-
 function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
 
   return BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Editing Item'
+      },
+      leftToolbar: true,
+      rightToolbar: true
+    },
 
     events: {
       'click #save-form': 'save',
@@ -119,8 +122,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
         if (this.options.batchIds !== undefined) {
           title = 'Batch Edit';
         } else {
-          title = 'Creating New Item'; 
-        }        
+          title = 'Creating New Item';
+        }
       }
 
       if (this.single) {
@@ -133,11 +136,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
         title: title,
         sidebar: true
       };
-    },
-
-    beforeRender: function() {
-      var showDropDown = !this.single && !this.isBatchEdit;
-      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: showDropDown}));
     },
 
     afterRender: function() {
@@ -179,6 +177,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
       this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui, batchIds: options.batchIds});
+      this.headerOptions.route = {title: this.model.get('id') ? 'Editing Item' : 'Creating New Item', breadcrumbs:[{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}]};
     }
   });
 

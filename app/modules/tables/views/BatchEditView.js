@@ -1,4 +1,3 @@
-
 define([
   'app',
   'backbone',
@@ -27,7 +26,7 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
 
       // Serialize the entire form
       var data = this.editView.data();
-      
+
       // Get an attribute whitelist based on the checkboxes
       var attrWhitelist = $("input[name='batchedit']:checked").map(function() {
         return $(this).data('attr');
@@ -56,14 +55,14 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
 
       var error = function() {
         failRequestCount++;
-        checkIfDone(); 
+        checkIfDone();
       };
 
       // Save all batch id's
       _.each(this.batchIds, function(id) {
         var modelToUpdate = model.getNewInstance({collection: model.collection});
         modelToUpdate.set(_.extend(
-          {id: id}, 
+          {id: id},
           changedAttributes
         ), {parse: true});
 
@@ -78,23 +77,6 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
       });
 
       console.log(changedAttributes);
-    },
-
-    serialize: function() {
-      var breadcrumbs = [{ title: 'Tables', anchor: '#tables'}],
-          title = 'Batch Edit ('+this.batchIds.length+')';
-      
-      breadcrumbs.push({ title: this.model.collection.table.id, anchor: '#tables/' + this.model.collection.table.id });
-      
-      return {
-        breadcrumbs: breadcrumbs,
-        title: title,
-        sidebar: true
-      };
-    },    
-
-    beforeRender: function() {
-      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: false}));
     },
 
     afterRender: function() {

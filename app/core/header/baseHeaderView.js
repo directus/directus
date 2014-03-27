@@ -19,28 +19,7 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
 
   "use strict";
 
-  var Header = app.module();
-
-  Header.HeaderModel = Backbone.Model.extend({
-    defaults: {
-      options: {},
-      route: {
-        title: "Directus"
-      }
-    },
-    setRoute: function(title, breadcrumbs, options) {
-      var data = {
-        title: title,
-        breadcrumbs: breadcrumbs
-      };
-      if(options === undefined) {
-        options = {};
-      }
-      this.set({options: options, route: data});
-    }
-  });
-
-  Header.HeaderView = Backbone.Layout.extend({
+  return Backbone.Layout.extend({
 
     template: 'header/header',
 
@@ -53,12 +32,11 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
     },
 
     serialize: function() {
-      var data = this.model.get('route');
-
+      var data = this.options.headerOptions;
       return data;
     },
     beforeRender: function() {
-      var options = this.model.get('options');
+      var options = {};
       if(options.leftToolbar) {
         this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView({toolOptions: options.leftToolbar}));
       } else if(this.leftToolbar) {
@@ -98,6 +76,4 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
       this.lastHeaderHeight = newHeaderHeight;
     }
   });
-
-  return Header;
 });
