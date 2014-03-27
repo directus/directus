@@ -718,22 +718,20 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
 
 $app->map("/$v/bookmarks(/:id)/?", function($id = null) use ($db, $params, $app, $ZendDb, $acl, $requestPayload) {
   $currentUser = Auth::getUserInfo();
-  $TableGateway = new TableGateway($acl, 'directus_bookmarks', $ZendDb);
+  $bookmarks = new DirectusBookmarksTableGateway($acl, $ZendDb);
   switch ($app->request()->getMethod()) {
     case "PUT":
-      $TableGateway->manageRecordUpdate('directus_bookmarks', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+      $bookmarks->updateBookmark($requestPayload);
       $id = $requestPayload['id'];
       break;
     case "POST":
       $requestPayload['user'] = $currentUser['id'];
-      $id = $TableGateway->manageRecordUpdate('directus_bookmarks', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
-      $id = $id['id'];
+      $id = $bookmarks->insertBookmark($requestPayload);
       break;
     case "DELETE":
       echo $db->delete('directus_bookmarks', $id);
       return;
   }
-  $bookmarks = new DirectusBookmarksTableGateway($acl, $ZendDb);
   $jsonResponse = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
   JsonView::render($jsonResponse);
 })->via('GET', 'POST', 'PUT', 'DELETE');

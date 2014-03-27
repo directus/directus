@@ -10,6 +10,8 @@ use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Insert;
+use Zend\Db\Sql\Update;
 
 class DirectusBookmarksTableGateway extends AclAwareTableGateway {
 
@@ -39,6 +41,19 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
         }
       }
       return $bookmark;
+    }
+
+    public function updateBookmark($payload) {
+      $update = new Update($this->table);
+      $update->set($payload);
+      $this->updateWith($update);
+    }
+
+    public function insertBookmark($payload) {
+      $insert = new Insert($this->table);
+      $insert->values($payload);
+      $this->insertWith($insert);
+      return $this->lastInsertValue;
     }
 
     public function fetchByUserAndId($user_id, $id) {
