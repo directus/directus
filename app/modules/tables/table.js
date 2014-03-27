@@ -13,10 +13,11 @@ define([
   'core/directus',
   'core/panes/pane.revisionsview',
   'core/panes/pane.saveview',
-  'core/ListViewManager'
+  'core/ListViewManager',
+  'core/BasePageView'
 ],
 
-function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) {
+function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager, BasePageView) {
 
   "use strict";
 
@@ -24,22 +25,17 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
 
   Table.Views = {};
 
-  Table.Views.Tables = Backbone.Layout.extend({
+  Table.Views.Tables = BasePageView.extend({
 
-    template: "page",
-
-    serialize: { title: 'Tables' },
+    serialize: {title: 'Tables'},
 
     beforeRender: function() {
       this.setView('#page-content', new Directus.TableSimple({collection: this.collection, template: 'tables'}));
-      //this.setView('#page-content', new Directus.Table({collection: this.options.list, columns: ['title'], filter: {hidden: false, is_junction_table: false}, navigate: true, toolbar: false}));
     }
 
   });
 
-  Table.Views.BatchEdit = Backbone.Layout.extend({
-
-    template: 'page',
+  Table.Views.BatchEdit = BasePageView.extend({
 
     events: {
       'click #save-form': 'save'
@@ -140,9 +136,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
   });
 
 
-  Table.Views.Edit = Backbone.Layout.extend({
-
-    template: 'page',
+  Table.Views.Edit = BasePageView.extend({
 
     events: {
       'click #save-form': 'save',
@@ -313,9 +307,7 @@ function(app, Backbone, Directus, RevisionsModule, SaveModule, ListViewManager) 
   });
 
   //This should probably be DRY:er. Add pattern to core?
-  Table.Views.List = Backbone.Layout.extend({
-
-    template: 'page',
+  Table.Views.List = BasePageView.extend({
 
     serialize: function() {
       var data = {
