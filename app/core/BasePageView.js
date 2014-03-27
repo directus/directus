@@ -10,12 +10,13 @@ function(app, Backbone, BaseHeaderView) {
     template: 'basePage',
 
     headerOptions: {
-
+      route: {
+        title: "Directus"
+      }
     },
 
     beforeRender: function() {
-      console.log("Insert");
-      this.setView('#fixedHeader', new BaseHeaderView(this.headerOptions));
+      this.setView('#fixedHeader', new BaseHeaderView({headerOptions: this.headerOptions}));
     }
   });
 });

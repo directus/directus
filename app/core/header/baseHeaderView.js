@@ -19,27 +19,6 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
 
   "use strict";
 
-  var Header = app.module();
-
-  Header.HeaderModel = Backbone.Model.extend({
-    defaults: {
-      options: {},
-      route: {
-        title: "Directus"
-      }
-    },
-    setRoute: function(title, breadcrumbs, options) {
-      var data = {
-        title: title,
-        breadcrumbs: breadcrumbs
-      };
-      if(options === undefined) {
-        options = {};
-      }
-      this.set({options: options, route: data});
-    }
-  });
-
   return Backbone.Layout.extend({
 
     template: 'header/header',
@@ -53,8 +32,8 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
     },
 
     serialize: function() {
-      var data = {};
-
+      var data = this.options.headerOptions;
+      console.log(data);
       return data;
     },
     beforeRender: function() {
