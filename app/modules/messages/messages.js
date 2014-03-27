@@ -13,7 +13,7 @@ define([
   'core/panes/pane.saveview',
   'core/entries/EntriesCollection',
   'core/entries/EntriesModel',
-  'core/BasePageView'
+  'core/BasePageView',
   'moment'
 ],
 
