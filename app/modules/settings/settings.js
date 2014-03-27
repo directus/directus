@@ -12,7 +12,7 @@ define([
   'backbone',
   'core/directus',
   'modules/settings/tables',
-  'modules/settings/global',
+  'modules/settings/GlobalSettingsView',
   'modules/settings/about',
   'modules/settings/permissions',
   'modules/settings/system',
