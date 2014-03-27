@@ -24,12 +24,17 @@ function(app, Backbone) {
     },
     setActive: function(route) {
       //deactive all tabs
+      var activeModel;
       _.each(this.models,function(model) {
         model.unset('active',{silent: true});
         if(route.indexOf(model.get('url')) != -1) {
-          model.set({'active':true});
+          activeModel = model;
         }
       });
+
+      if(activeModel) {
+        activeModel.set({'active':true});
+      }
     },
     addNewBookmark: function(data) {
       data.user = data.user.toString();
