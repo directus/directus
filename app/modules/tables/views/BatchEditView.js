@@ -10,6 +10,15 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
 
   return BasePageView.extend({
 
+    headerOptions: {
+      route: {
+        title: 'Batch Edit'
+      },
+      leftToolbar: true,
+      rightToolbar: true
+    },
+
+
     events: {
       'click #save-form': 'save'
     },
@@ -87,6 +96,7 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
     initialize: function(options) {
       this.batchIds = options.batchIds;
       this.editView = new Directus.EditView({model: this.model, batchIds: options.batchIds});
+      this.headerOptions.route = {title: "Batch Edit (" + this.batchIds.length + ")", breadcrumbs:[{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}]};
     }
 
   });
