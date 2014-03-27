@@ -5,38 +5,41 @@
     margin: 0px;
     padding: 0px;
   }
-  
   .group {
-    .group-item {
-      .clear-fix;
-      //background-color: @extraLightGrey;
-      border-bottom: solid 1px @lightGrey;
-      margin: 0px;
-      padding: @smallPad+1 @standardPad @smallPad @standardPad;
-      > .icon {
-        font-size: 38px;
-        line-height: 5px;
-        margin-right: @standardPad;
-        margin-top: 3px;
+    
+  }
+  .group-item {
+    .clear-fix;
+    //background-color: @extraLightGrey;
+    border-bottom: solid 1px @lightGrey;
+    margin: 0px;
+    padding: @smallPad+1 @standardPad @smallPad @standardPad;
+    &.big-item {
+      padding: @standardPad;
+    }
+    > .icon {
+      font-size: 38px;
+      line-height: 5px;
+      margin-right: @standardPad;
+      margin-top: 3px;
+    }
+    .stack {
+      color: @darkGrey;
+      height: 17px;
+      .icon {
+        color: @mediumGrey;
+        display: inline-block;
+        font-size: 32px;
+        line-height: 14px;
+        margin: 0px 10px;
+        vertical-align: top;
       }
-      .stack {
-        color: @darkGrey;
-        height: 17px;
-        .icon {
-          color: @mediumGrey;
-          display: inline-block;
-          font-size: 32px;
-          line-height: 14px;
-          margin: 0px 10px;
-          vertical-align: top;
-        }
-        .stack-item {
-          color: @mediumGrey;
-        }
-      }
-      .time {
+      .stack-item {
         color: @mediumGrey;
       }
+    }
+    .time {
+      color: @mediumGrey;
     }
   }
 }

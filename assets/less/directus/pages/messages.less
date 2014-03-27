@@ -1,0 +1,51 @@
+.message {
+  .clear-fix;
+  color: @darkGrey;
+  display: block;
+  float: none;
+  position: relative;
+  .check-box {
+    bottom: 0px;
+    position: absolute;
+    top: 0px;
+    input + label {
+      margin-top: -11px;
+      position: absolute;
+      top: 50%;
+    }
+  }
+  .content {
+    margin-left: 40px;
+    .users {
+      font-style: italic;
+    }
+    .title {
+      font-weight: 600;
+    }
+    .subject {
+      color: @mediumGrey;
+    }
+  }
+  .right-info {
+    margin-top: 17px;
+    .icon {
+      color: @mediumGrey;
+      line-height: 10px;
+      padding-right: 10px;
+    }
+    .date {
+    
+    }
+  }
+  &.unread {
+    background-color: @extraLightGrey;
+    .content {
+      .title {
+        font-weight: 700;
+      }
+    }
+    .date {
+      font-weight: 600;
+    }
+  }
+}

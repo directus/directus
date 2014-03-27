@@ -1621,28 +1621,31 @@ textarea {
   margin: 0px;
   padding: 0px;
 }
-.group-list .group .group-item {
+.group-list .group-item {
   border-bottom: solid 1px #ededed;
   margin: 0px;
   padding: 11px 20px 10px 20px;
 }
-.group-list .group .group-item:after {
+.group-list .group-item:after {
   clear: both;
   content: '';
   display: block;
   width: 100%;
 }
-.group-list .group .group-item > .icon {
+.group-list .group-item.big-item {
+  padding: 20px;
+}
+.group-list .group-item > .icon {
   font-size: 38px;
   line-height: 5px;
   margin-right: 20px;
   margin-top: 3px;
 }
-.group-list .group .group-item .stack {
+.group-list .group-item .stack {
   color: #5b5b5b;
   height: 17px;
 }
-.group-list .group .group-item .stack .icon {
+.group-list .group-item .stack .icon {
   color: #cbcbcb;
   display: inline-block;
   font-size: 32px;
@@ -1650,10 +1653,10 @@ textarea {
   margin: 0px 10px;
   vertical-align: top;
 }
-.group-list .group .group-item .stack .stack-item {
+.group-list .group-item .stack .stack-item {
   color: #cbcbcb;
 }
-.group-list .group .group-item .time {
+.group-list .group-item .time {
   color: #cbcbcb;
 }
 .alerts {
@@ -2153,4 +2156,55 @@ textarea {
 .left-corner-message .icon {
   line-height: 11px;
   margin-right: 10px;
+}
+.message {
+  color: #5b5b5b;
+  display: block;
+  float: none;
+  position: relative;
+}
+.message:after {
+  clear: both;
+  content: '';
+  display: block;
+  width: 100%;
+}
+.message .check-box {
+  bottom: 0px;
+  position: absolute;
+  top: 0px;
+}
+.message .check-box input + label {
+  margin-top: -11px;
+  position: absolute;
+  top: 50%;
+}
+.message .content {
+  margin-left: 40px;
+}
+.message .content .users {
+  font-style: italic;
+}
+.message .content .title {
+  font-weight: 600;
+}
+.message .content .subject {
+  color: #cbcbcb;
+}
+.message .right-info {
+  margin-top: 17px;
+}
+.message .right-info .icon {
+  color: #cbcbcb;
+  line-height: 10px;
+  padding-right: 10px;
+}
+.message.unread {
+  background-color: #fbfbfb;
+}
+.message.unread .content .title {
+  font-weight: 700;
+}
+.message.unread .date {
+  font-weight: 600;
 }

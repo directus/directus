@@ -1,3 +1,27 @@
+<ul class="group-list">
+  {{#each messages}}
+  <li class="group-item big-item message" data-id="{{id}}">
+    <div class="check-box left">
+      <input class="custom-check" id="check{{ id }}" type="checkbox" />
+      <label for="check{{ id }}"><span></span></label>
+    </div>
+    <div class="content left">
+      <div class="users">Dax, Ben, Jason (+3 more)</div>
+      <div class="title">This is a title how does it look</div>
+      <div class="subject">{{subject}}</div>
+    </div>
+    <div class="right-info right">
+      <span class="icon icon-attach"></span>
+      <span class="date" title="{{date_updated}}">{{niceDate}}</span>
+    </div>
+  </li>
+  {{/each}}
+</ul>
+
+<!--
+
+OLD CODE LIVES HERE. LEAVING IT HERE FOR NOW IN CASE IT'S HELPFUL...
+
 <table class="table table-striped directus-table" id="messages-list">
 <colgroup>
 	<col class="status"></col>
@@ -21,3 +45,5 @@
 	#messages-list tr.new td.status {background-color: #80B838;}
 
 </style>
+-->
+
