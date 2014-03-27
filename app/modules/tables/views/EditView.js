@@ -112,32 +112,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
 
     },
 
-    serialize: function() {
-      var breadcrumbs = [{ title: 'Tables', anchor: '#tables'}];
-      var title;
-
-      if (this.model.id) {
-        title = 'Editing Item';
-      } else {
-        if (this.options.batchIds !== undefined) {
-          title = 'Batch Edit';
-        } else {
-          title = 'Creating New Item';
-        }
-      }
-
-      if (this.single) {
-        title = this.model.collection.table.id;
-      } else {
-        breadcrumbs.push({ title: this.model.collection.table.id, anchor: '#tables/' + this.model.collection.table.id });
-      }
-      return {
-        breadcrumbs: breadcrumbs,
-        title: title,
-        sidebar: true
-      };
-    },
-
     afterRender: function() {
       this.setView('#page-content', this.editView);
       //Don't fetch if the model is new!

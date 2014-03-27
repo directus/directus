@@ -18,13 +18,6 @@ function(app, Backbone, BaseHeaderView) {
     beforeRender: function() {
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       this.setView('#fixedHeader', this.headerView);
-      console.log(this.headerOptions);
-    },
-
-    updateHeaderOptions: function(options) {
-      this.headerOptions = options;
-      this.headerView.options.headerOptions = options;
-      this.headerView.render();
     }
   });
 });
