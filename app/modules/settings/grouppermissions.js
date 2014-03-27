@@ -28,7 +28,7 @@ function(app, Directus, PaneSaveView) {
 
   GroupPermissions.Permissions = Backbone.Layout.extend({
 
-    template: 'settings-grouppermissions',
+    template: 'modules/settings/settings-grouppermissions',
 
     events: {
       'click td > span': function(e) {

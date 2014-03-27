@@ -96,6 +96,9 @@ function(app, Backbone, Directus, BasePageView) {
     headerOptions: {
       route: {
         title: "Users"
+      },
+      leftToolbar: {
+        addBtn: true
       }
     },
 

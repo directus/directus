@@ -36,7 +36,8 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
       return data;
     },
     beforeRender: function() {
-      var options = {};
+      var options = this.options.headerOptions;
+
       if(options.leftToolbar) {
         this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView({toolOptions: options.leftToolbar}));
       } else if(this.leftToolbar) {
