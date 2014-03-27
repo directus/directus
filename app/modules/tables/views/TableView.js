@@ -60,7 +60,7 @@ function(app, Backbone, BasePageView, ListViewManager) {
         active: this.isBookmarked
       };
 
-      this.headerOptions.leftToolbar.push(new PaginatorView({collection: this.collection}))
+      this.headerOptions.leftToolbar.push(new PaginatorView({collection: this.collection}));
     }
 
   });

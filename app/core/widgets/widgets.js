@@ -8,6 +8,6 @@ function(PaginatorView, addWidget) {
   return {
     paginator: PaginatorView,
     AddWidget: addWidget
-  }
+  };
 
 });
