@@ -23,7 +23,7 @@ function(app, Directus) {
       breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
     },
     afterRender: function() {
-      var view = new Backbone.Layout({template: 'settings-system'});
+      var view = new Backbone.Layout({template: 'modules/settings/settings-system'});
       this.setView('#page-content', view);
       view.render();
     }
