@@ -2,19 +2,18 @@ define([
   "app",
   "backbone",
   "core/directus",
-  'core/panes/pane.saveview'
+  'core/panes/pane.saveview',
+  'core/BasePageView'
 ],
 
-function(app, Backbone, Directus, SaveModule) {
+function(app, Backbone, Directus, SaveModule, BasePageView) {
 
   "use strict";
 
   var Users = app.module();
 
 
-  Users.Views.Edit = Backbone.Layout.extend({
-
-    template: 'page',
+  Users.Views.Edit = BasePageView.extend({
 
     events: {
       'click #save-form': function(e) {
@@ -178,10 +177,7 @@ function(app, Backbone, Directus, SaveModule) {
     }
   });
 
-
-  Users.Views.List = Backbone.Layout.extend({
-
-    template: 'page',
+  Users.Views.List = BasePageView.extend({
 
     serialize: function() {
       var data = {title: 'Users'};

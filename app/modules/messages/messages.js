@@ -13,10 +13,11 @@ define([
   'core/panes/pane.saveview',
   'core/entries/EntriesCollection',
   'core/entries/EntriesModel',
+  'core/BasePageView',
   'moment'
 ],
 
-function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, moment) {
+function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, BasePageView, moment) {
 
   "use strict";
 
@@ -209,9 +210,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, m
   });
 
 
-  Messages.Views.Read = Backbone.Layout.extend({
-
-    template: 'page',
+  Messages.Views.Read = BasePageView.extend({
 
     serialize: function() {
       return {title: this.model.get('subject'), breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
@@ -227,9 +226,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, m
 
   });
 
-  Messages.Views.New = Backbone.Layout.extend({
-
-    template: 'page',
+  Messages.Views.New = BasePageView.extend({
 
     events: {
       'click #save-form': function(e) {
@@ -275,9 +272,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, m
 
   });
 
-  Messages.Views.List = Backbone.Layout.extend({
-
-    template: 'page',
+  Messages.Views.List = BasePageView.extend({
 
     events: {
       'click #btn-top': function() {
