@@ -58,25 +58,24 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
       return data;
     },
     beforeRender: function() {
-        var options = this.model.get('options');
+      var options = this.model.get('options');
 
-        if(options.leftToolbar) {
-          this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView(this.options));
-        } else if(this.leftToolbar) {
-          this.leftToolbar.remove();
-        }
+      if(options.leftToolbar) {
+        this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView(this.options));
+      } else if(this.leftToolbar) {
+        this.leftToolbar.remove();
+      }
 
-        if(options.rightToolbar) {
-          this.rightToolbar = this.setView('#tools-right-insert', new HeaderToolsRightView(this.options));
-        } else if(this.rightToolbar) {
-          this.rightToolbar.remove();
-        }
+      if(options.rightToolbar) {
+        this.rightToolbar = this.setView('#tools-right-insert', new HeaderToolsRightView(this.options));
+      } else if(this.rightToolbar) {
+        this.rightToolbar.remove();
+      }
 
-        if(options.secondaryRow) {
-          this.secondaryRow = this.setView('#secondary-row-insert', new HeaderSecondaryRowView(this.options));
-        } else if(this.secondaryRow) {
-          this.secondaryRow.remove();
-        }
+      if(options.secondaryRow) {
+        this.secondaryRow = this.setView('#secondary-row-insert', new HeaderSecondaryRowView(this.options));
+      } else if(this.secondaryRow) {
+        this.secondaryRow.remove();
       }
     },
     afterRender: function() {
