@@ -188,13 +188,14 @@ define(['app', 'backbone'], function(app, Backbone) {
       var sel = window.getSelection();
 
       if(sel.isCollapsed) {
-        html = $(document.getElementById(this.options.name)).html().replace(/<(?:.|\n)*?>/gm, '');
-        $(document.getElementById(this.options.name)).html(html);
+        html = $(document.getElementById(this.options.name)).html().replace(/<(?!br\s*\/?)[^>]+>/g, '');
+        $('div.force-editable').html(html);
+        this.$el.find('input').val(html);
         return;
       }
 
       if(sel.anchorNode.parentNode != document.getElementById(this.options.name)) {
-        html = sel.anchorNode.parentNode.innerHTML.replace(/<(?:.|\n)*?>/gm, '');
+        html = sel.anchorNode.parentNode.innerHTML.replace(/<(?!br\s*\/?)[^>]+>/g, '');
         var container = document.createElement("span");
         container.innerHTML = html;
         sel.anchorNode.parentNode.parentNode.insertBefore(container, sel.anchorNode.parentNode);
@@ -208,7 +209,7 @@ define(['app', 'backbone'], function(app, Backbone) {
             html = container.innerHTML;
         }
 
-        html = html.replace(/<(?:.|\n)*?>/gm, '');
+        html = html.replace(/<(?!br\s*\/?)[^>]+>/g, '');
 
         var range = sel.getRangeAt(0);
 
@@ -229,6 +230,8 @@ define(['app', 'backbone'], function(app, Backbone) {
       } else if (window.getSelection().removeAllRanges) {  // Firefox
         window.getSelection().removeAllRanges();
       }
+
+      this.$el.find('input').val($('div.force-editable').html());
     }
   });
 
@@ -237,7 +240,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    return (options.value) ? options.value.toString().replace(/<(?!br\s*\/?)[^>]+>/g, '').substr(0,100) : '';
   };
 
   return Module;
