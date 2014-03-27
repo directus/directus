@@ -23,7 +23,7 @@ function(app, Backbone) {
       this.url = app.API_URL + 'bookmarks/';
     },
     setActive: function(route) {
-      var model = this.get(route);
+      var model = this.findWhere({url: route});
       //deactive all tabs
       _.each(this.where({'active':true}),function(model) {
         model.unset('active',{silent: true});
@@ -46,7 +46,7 @@ function(app, Backbone) {
       }
     },
     isBookmarked: function(title) {
-      if(this.findWhere({'title':title})) {
+      if(this.findWhere({'title':title}) !== undefined) {
         return true;
       }
       return false;
