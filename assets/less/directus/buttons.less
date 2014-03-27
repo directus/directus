@@ -41,6 +41,8 @@
     .border-radius(0px, 0px, 0px, 0px);
     border-left: solid 1px @lightGrey;
     border-right-width: 0px;
+    display: block;
+    float: left;
     &:first-child {
       .border-radius(0px, 0px, 4px, 4px);
       border-left-width: 0px;
@@ -48,6 +50,14 @@
     &:last-child {
       .border-radius(4px, 4px, 0px, 0px);
       border-right-width: 1px;
+    }
+    &.btn-round {
+      &:first-child {
+        .border-radius(0px, 0px, 50%, 50%);
+      }
+      &:last-child {
+        .border-radius(50%, 50%, 0px, 0px);
+      }
     }
   }
 }
@@ -69,5 +79,14 @@
   }
   &.btn-white {
     .btn-white;
+  }
+  &.btn-round {
+    .border-radius(50%, 50%, 50%, 50%);
+    border: 0px;
+    padding: @smallPad;
+  }
+  .icon {
+    font-size: 400%;
+    line-height: 20%;
   }
 }
