@@ -1,4 +1,4 @@
-{{#if search}}
+{{#if canSearch}}
 <li class="input-and-button">
   <button type="button" class="tool-item large-circle">
     <span class="icon icon-search"></span>
@@ -7,8 +7,24 @@
 </li>
 {{/if}}
 
-{{#if edit}}
-<li class="input-and-button active">
+{{#if showList}}
+<li class="input-and-button{{#if showList.active}} active{{/if}}">
+  <button type="button" class="tool-item large-circle">
+    <span class="icon icon-list"></span>
+  </button>
+</li>
+{{/if}}
+
+{{#if showGrid}}
+<li class="input-and-button{{#if showGrid.active}} active{{/if}}">
+  <button type="button" class="tool-item large-circle">
+    <span class="icon icon-layout"></span>
+  </button>
+</li>
+{{/if}}
+
+{{#if showEdit}}
+<li class="input-and-button{{#if showEdit.active}} active{{/if}}">
   <button type="button" class="tool-item large-circle">
     <span class="icon icon-pencil"></span>
   </button>

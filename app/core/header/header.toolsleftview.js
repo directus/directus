@@ -26,9 +26,7 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      var data = {};
-
-      data = this.toolOptions;
+      var data = this.options.toolOptions;
 
 /*
       if(this.toolOptions.mode == "list") {
@@ -69,9 +67,6 @@ function(app, Backbone) {
         $('#bookmark').parent().toggleClass('active');
         this.isBookmarked = !this.isBookmarked;
       }
-    },
-    initialize: function(options) {
-      this.toolOptions = options.toolOptions;
     }
   });
 

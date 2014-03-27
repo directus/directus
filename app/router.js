@@ -239,7 +239,10 @@ define(function(require, exports, module) {
 
     users: function() {
       this.setTitle('Users');
-      app.headerModel.setRoute("Users",[], {leftToolbar: {addBtn: true}});
+      app.headerModel.setRoute("Users",[], {
+        leftToolbar: {addBtn: true},
+        rightToolbar: {canSearch: true, showList: true, showGrid: {active: true}}
+      });
       this.tabs.setActive('users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
