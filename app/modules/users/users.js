@@ -89,7 +89,7 @@ function(app, Backbone, Directus, SaveModule) {
       'click li': function(e) {
         var id = $(e.target).closest('li').attr('data-id');
 
-        var user = app.getCurrentUser();
+        var user = app.users.getCurrentUser();
         var userGroup = user.get('group');
 
         //@todo fix this so it respects ACL instead of being hardcoded

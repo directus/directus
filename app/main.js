@@ -177,7 +177,7 @@ require(["config"], function() {
         {id: "users",    icon_class: "icon-users"},
         {id: "messages", icon_class: "icon-chat"},
         {id: "activity", icon_class: "icon-bell"},
-        {id: "users/" + app.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.getCurrentUser().get("avatar")},
+        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar")},
         {id: "logout", icon_class: "icon-power-button"}
       ];
 

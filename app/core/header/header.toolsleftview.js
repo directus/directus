@@ -56,7 +56,7 @@ function(app, Backbone) {
           title: this.collection.table.id,
           url: Backbone.history.fragment,
           icon_class: 'icon-star',
-          user: app.getCurrentUser().get("id")
+          user: app.users.getCurrentUser().get("id")
         };
         if(!this.isBookmarked)
         {
