@@ -39,7 +39,6 @@ define(function(require, exports, module) {
 
     logErrorToServer: function(type, message, details) {
       var user = app.users.getCurrentUser(), email = 'n/a';
-      var user = app.users.getCurrentUser(), email = 'n/a';
 
       if (user) {
         email = user.get('email');
