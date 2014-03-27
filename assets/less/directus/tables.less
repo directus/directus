@@ -5,11 +5,40 @@
     tr {
       background-color: @extraLightGrey;
       &:hover {
-        background-color: transparent;
+        background-color: @extraLightGrey;
         cursor: default;
       }
       th {
-        padding: @smallPad 0px;
+        color: @mediumGrey;
+        font-size: 13px;
+        font-weight: 600;
+        padding: @smallPad;
+        position: relative;
+        &.asc, &.desc {
+          .sorter {
+            display: inline-block;
+            padding-right: 20px;
+            position: relative;
+            &:before {
+              content: '';
+              position: absolute;
+              right: 0px;
+              top: 7px;
+            }
+          }
+        }
+        &.asc .sorter:before {
+          .triangle-bottom(6px, 6px, @mediumGrey);
+        }
+        &.desc .sorter:before {
+          .triangle-top(6px, 6px, @mediumGrey);
+        }
+        .icon {
+          display: inline-block;
+          height: 0px;
+          line-height: 12px;
+          vertical-align: top;
+        }
       }
     }
   }
@@ -34,42 +63,6 @@
     th, td {
       padding-left: 10px;
       padding-right: 10px;
-    }
-    th {
-      color: @mediumGrey;
-      font-size: 13px;
-      font-weight: 600;
-      padding-bottom: 6px;
-      padding-top: 5px;
-      position: relative;
-      &:last-child {
-        padding-right: 30px;
-      }
-      &.asc, &.desc {
-        .sorter {
-          display: inline-block;
-          padding-right: 20px;
-          position: relative;
-          &:before {
-            content: '';
-            position: absolute;
-            right: 0px;
-            top: 7px;
-          }
-        }
-      }
-      &.asc .sorter:before {
-        .triangle-bottom(6px, 6px, @mediumGrey);
-      }
-      &.desc .sorter:before {
-        .triangle-top(6px, 6px, @mediumGrey);
-      }
-      .icon {
-        display: inline-block;
-        height: 0px;
-        line-height: 12px;
-        vertical-align: top;
-      }
     }
     td {
       vertical-align: middle;

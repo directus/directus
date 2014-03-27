@@ -1423,11 +1423,48 @@ textarea {
   background-color: #fbfbfb;
 }
 .table-striped thead tr:hover {
-  background-color: transparent;
+  background-color: #fbfbfb;
   cursor: default;
 }
 .table-striped thead tr th {
-  padding: 10px 0px;
+  color: #cbcbcb;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px;
+  position: relative;
+}
+.table-striped thead tr th.asc .sorter,
+.table-striped thead tr th.desc .sorter {
+  display: inline-block;
+  padding-right: 20px;
+  position: relative;
+}
+.table-striped thead tr th.asc .sorter:before,
+.table-striped thead tr th.desc .sorter:before {
+  content: '';
+  position: absolute;
+  right: 0px;
+  top: 7px;
+}
+.table-striped thead tr th.asc .sorter:before {
+  border-style: solid;
+  height: 0px;
+  width: 0px;
+  border-width: 6px 6px 0 6px;
+  border-color: #cbcbcb transparent transparent transparent;
+}
+.table-striped thead tr th.desc .sorter:before {
+  border-style: solid;
+  height: 0px;
+  width: 0px;
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent #cbcbcb transparent;
+}
+.table-striped thead tr th .icon {
+  display: inline-block;
+  height: 0px;
+  line-height: 12px;
+  vertical-align: top;
 }
 .table-striped tr {
   border-bottom: solid 1px #fbfbfb;
@@ -1452,50 +1489,6 @@ textarea {
 .table-striped tr td {
   padding-left: 10px;
   padding-right: 10px;
-}
-.table-striped tr th {
-  color: #cbcbcb;
-  font-size: 13px;
-  font-weight: 600;
-  padding-bottom: 6px;
-  padding-top: 5px;
-  position: relative;
-}
-.table-striped tr th:last-child {
-  padding-right: 30px;
-}
-.table-striped tr th.asc .sorter,
-.table-striped tr th.desc .sorter {
-  display: inline-block;
-  padding-right: 20px;
-  position: relative;
-}
-.table-striped tr th.asc .sorter:before,
-.table-striped tr th.desc .sorter:before {
-  content: '';
-  position: absolute;
-  right: 0px;
-  top: 7px;
-}
-.table-striped tr th.asc .sorter:before {
-  border-style: solid;
-  height: 0px;
-  width: 0px;
-  border-width: 6px 6px 0 6px;
-  border-color: #cbcbcb transparent transparent transparent;
-}
-.table-striped tr th.desc .sorter:before {
-  border-style: solid;
-  height: 0px;
-  width: 0px;
-  border-width: 0 6px 6px 6px;
-  border-color: transparent transparent #cbcbcb transparent;
-}
-.table-striped tr th .icon {
-  display: inline-block;
-  height: 0px;
-  line-height: 12px;
-  vertical-align: top;
 }
 .table-striped tr td {
   vertical-align: middle;
