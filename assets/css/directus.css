@@ -1647,7 +1647,7 @@ textarea {
   height: 17px;
 }
 .group-list .group-item .stack .icon {
-  color: #cbcbcb;
+  color: #ededed;
   display: inline-block;
   font-size: 32px;
   line-height: 14px;
@@ -1898,11 +1898,15 @@ textarea {
   text-transform: capitalize;
 }
 .header1 h1 .icon {
+  color: #ededed;
   display: inline-block;
   font-size: 80px;
   line-height: 30px;
   margin: 0px 10px;
   vertical-align: top;
+}
+.header1 h1 .endnode {
+  color: #5b5b5b;
 }
 .header1 h1 .focused {
   color: #5b5b5b;
