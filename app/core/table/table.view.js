@@ -16,7 +16,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
     tagname: 'div',
     attributes: {'class':'directus-table-container'},
-    template: 'table',
+    template: 'tables/table',
 
     TableBody: TableBody,
 

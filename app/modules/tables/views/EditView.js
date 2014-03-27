@@ -141,7 +141,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
 
       if (this.model.id !== undefined) {
         this.insertView('#sidebar', new RevisionsModule({baseURL: this.model.url()}));
-        this.insertView('#sidebar', new Backbone.Layout({template: 'module-messages', attributes: {'class': 'directus-module'}}));
+        this.insertView('#sidebar', new Backbone.Layout({template: 'modules/messages/module-messages', attributes: {'class': 'directus-module'}}));
       }
 
       app.affix();
@@ -151,7 +151,9 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
       this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui, batchIds: options.batchIds});
-      this.headerOptions.route = {title: this.model.get('id') ? 'Editing Item' : 'Creating New Item', breadcrumbs:[{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}]};
+
+      this.headerOptions.route.title = this.model.get('id') ? 'Editing Item' : 'Creating New Item';
+      this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
     }
   });
 

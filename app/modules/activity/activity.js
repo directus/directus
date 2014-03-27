@@ -21,7 +21,7 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
       class: "group-list"
     },
 
-    template: "activity-list",
+    template: "modules/activity/activity-list",
 
     events: {
       'click tr': function(e) {

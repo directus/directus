@@ -37,7 +37,7 @@ function(app, Backbone, Directus, Tables, Global, About, Permissions, System, Gr
   Settings.About = About;
 
   Settings.Main = Backbone.Layout.extend({
-    template: 'settings'
+    template: 'modules/settings/settings'
   });
 
   return Settings;

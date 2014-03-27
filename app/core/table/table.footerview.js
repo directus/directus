@@ -10,7 +10,7 @@ function(app, Backbone) {
 
   var TableFooterView = Backbone.Layout.extend({
     tagName: 'tfoot',
-    template: 'table-foot',
+    template: 'tables/table-foot',
 
     functions: {},
 

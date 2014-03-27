@@ -10,7 +10,7 @@ function(app, Backbone) {
 
   var TableHeadView = Backbone.Layout.extend({
 
-    template: 'table-head',
+    template: 'tables/table-head',
 
     tagName: 'thead',
 
@@ -20,7 +20,7 @@ function(app, Backbone) {
         $('td.check > input').attr('checked', ($(e.target).attr('checked') !== undefined)).trigger('change');
         this.collection.trigger('select');
       },
-      
+
       'click th:not(.check)': function(e) {
         var column = $(e.target).attr('data-id');
         var order = this.collection.getOrder();
@@ -110,7 +110,7 @@ function(app, Backbone) {
             });
           },
 
-          template: 'table-set-columns',
+          template: 'tables/table-set-columns',
 
           serialize: function() {
             return this.options.data;
