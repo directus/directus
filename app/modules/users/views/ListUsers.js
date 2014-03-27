@@ -80,7 +80,6 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         }
 
         return data;
-
       });
 
       return {rows: rows};
@@ -101,7 +100,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
     leftToolbar: function() {
       return [
-        new Widgets.AddWidget({button: true})
+        new Widgets.AddWidget({widgetOptions: {button: {title: 'Add User'}}})
       ];
     },
     events: {

@@ -9,13 +9,10 @@
 
 define([
   'app',
-  'backbone',
-  'core/header/header.toolsleftview',
-  'core/header/header.toolsrightview',
-  'core/header/header.secondaryrowview'
+  'backbone'
 ],
 
-function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSecondaryRowView) {
+function(app, Backbone) {
 
   "use strict";
 
@@ -39,9 +36,11 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
       var options = this.options.headerOptions;
 
       var that = this;
-      options.leftToolbar.forEach(function(widget) {
-        that.insertView('#tools-left-insert', widget);
-      });
+      if(options.leftToolbar) {
+        options.leftToolbar.forEach(function(widget) {
+          that.insertView('#tools-left-insert', widget);
+        });
+      }
     },
     afterRender: function() {
       var that = this;

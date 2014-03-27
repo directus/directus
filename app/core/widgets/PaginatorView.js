@@ -8,7 +8,7 @@ function(app, Backbone) {
   "use strict";
 
   Backbone.Layout.extend({
-    
+
     template: Handlebars.compile('<a href="#" class="prev">Prev</a> <a href="#" class="next">Next</a>'),
 
     events: {
@@ -21,7 +21,7 @@ function(app, Backbone) {
         console.log('go next');
       }
 
-    }
+    },
 
     serialize: function() {
 

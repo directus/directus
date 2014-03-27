@@ -1,6 +1,20 @@
 <!-- Header template -->
 <header id="fixedHeader">
-
+  <div class="header1">
+    <div class="primary-row row-plain">
+      <h1 class="font-primary">
+        {{#if route}}
+          {{#each route.breadcrumbs}}
+              <a href="{{anchor}}" class="" >{{{capitalize title}}}</a>
+              <span class="icon icon-chevron-small-right"></span>
+          {{/each}}
+          <span class="endnode">{{{capitalize route.title}}}</span>
+        {{/if}}
+      </h1>
+      <ul class="tools left" id="tools-left-insert"></ul>
+    </div>
+    <ul class="tools right" id="secondary-row-insert"></ul>
+  </div>
 </header>
 
 <section class="main-container content-body" id="page-content">
