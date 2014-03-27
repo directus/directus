@@ -1,8 +1,7 @@
-{{#if list}}
 <ul class="tools left">
   <li class="input-and-button">
-    {{#if buttonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
-    {{#if showAddButton}}<button class="tool-item large-circle" id="btn-top" title="{{showAddButton.title}}"><span class="icon icon-plus"</button>{{/if}}
+    {{#if addButtonTitle}}<button class="btn btn-primary btn-top" id="btn-top">{{buttonTitle}}</button>{{/if}}
+    {{#if addBtn}}<button class="tool-item large-circle" id="btn-top" title="{{addButtonTitle}}"><span class="icon icon-plus"</button>{{/if}}
   </li>
   {{#if showBookmarkButton}}
   <li class="input-and-button {{#if showBookmarkButton.active}}active{{/if}}">
@@ -10,7 +9,8 @@
   </li>
   {{/if}}
 </ul>
-{{/if}}
+
+<!--
 {{#if edit}}
 <li class="input-and-button saved">
   <span for="status">
@@ -27,4 +27,4 @@
     </span>
   </span>
 </li>
-{{/if}}
+{{/if}}-->

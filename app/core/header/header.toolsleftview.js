@@ -28,6 +28,9 @@ function(app, Backbone) {
     serialize: function() {
       var data = {};
 
+      data = this.toolOptions;
+
+/*
       if(this.toolOptions.mode == "list") {
         data.list = true;
         if (this.collection && this.collection.hasPermission('add')) {
@@ -41,8 +44,7 @@ function(app, Backbone) {
         };
       } else if(this.toolOptions.mode == "edit") {
         data.edit = true;
-      }
-
+      }*/
       return data;
     },
 
@@ -69,14 +71,7 @@ function(app, Backbone) {
       }
     },
     initialize: function(options) {
-      this.toolOptions = options;
-      if(options.mode == "list") {
-        if(this.collection) {
-          this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
-        }
-      } else if(options.mode == "edit") {
-
-      }
+      this.toolOptions = options.toolOptions;
     }
   });
 
