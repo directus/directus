@@ -82,7 +82,7 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
         } else if(this.rightToolbar) {
           this.rightToolbar.remove();
         }
-        console.log(this.options.secondaryRow);
+
         if(this.options.secondaryRow) {
           this.secondaryRow = this.setView('#secondary-row-insert', new HeaderSecondaryRowView(this.options));
         } else if(this.secondaryRow) {
