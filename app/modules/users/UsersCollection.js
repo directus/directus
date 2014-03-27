@@ -11,6 +11,11 @@ function(app, Backbone, EntriesCollection, UsersModel) {
 
     model: UsersModel,
 
+    getCurrentUser: function() {
+      var authenticatedUser = app.authenticatedUserId;
+      return this.get(authenticatedUser.id);
+    },
+
     initialize: function() {
       EntriesCollection.prototype.initialize.apply(this, arguments);
     }

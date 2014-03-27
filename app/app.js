@@ -68,8 +68,9 @@ define(function(require, exports, module) {
 
     makeMediaUrl: function(mediaModel, thumbnail) {
       var storageAdapters = window.directusData.storage_adapters,
-        adapterId,
-        storageAdapter;
+          adapterId,
+          storageAdapter;
+
       if(thumbnail) {
         adapterId = 'THUMBNAIL';
         if(!storageAdapters.hasOwnProperty(adapterId)) {
