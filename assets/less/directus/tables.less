@@ -3,30 +3,26 @@
   width: 100%;
   thead {
     tr {
+      background-color: @extraLightGrey;
       &:hover {
         background-color: transparent;
         cursor: default;
       }
+      th {
+        padding: @smallPad 0px;
+      }
     }
   }
   tr {
+    border-bottom: solid 1px @extraLightGrey;
     color: @darkGrey;
     font-weight: 400;
     font-size: 12px;
-    &:nth-child(even) {
-      background-color: @extraLightGrey;
-    }
     &:hover {
       background-color: @tableHoverYellow;
       cursor: pointer;
       .settings {
         display: block;
-      }
-    }
-    &:first-child {
-      th {
-        padding-bottom: 10px;
-        padding-top: 0px;
       }
     }
     &.featured {

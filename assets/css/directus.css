@@ -1418,17 +1418,21 @@ textarea {
   text-align: left;
   width: 100%;
 }
+.table-striped thead tr {
+  background-color: #fbfbfb;
+}
 .table-striped thead tr:hover {
   background-color: transparent;
   cursor: default;
 }
+.table-striped thead tr th {
+  padding: 10px 0px;
+}
 .table-striped tr {
+  border-bottom: solid 1px #fbfbfb;
   color: #5b5b5b;
   font-weight: 400;
   font-size: 12px;
-}
-.table-striped tr:nth-child(even) {
-  background-color: #fbfbfb;
 }
 .table-striped tr:hover {
   background-color: #fffbc4;
@@ -1436,10 +1440,6 @@ textarea {
 }
 .table-striped tr:hover .settings {
   display: block;
-}
-.table-striped tr:first-child th {
-  padding-bottom: 10px;
-  padding-top: 0px;
 }
 .table-striped tr.featured {
   font-weight: 700;
@@ -1622,8 +1622,8 @@ textarea {
   padding: 0px;
 }
 .group-list .group .group-item {
-  background-color: #fbfbfb;
-  margin: 5px 0px;
+  border-bottom: solid 1px #ededed;
+  margin: 0px;
   padding: 11px 20px 10px 20px;
 }
 .group-list .group .group-item:after {
@@ -1649,6 +1649,9 @@ textarea {
   line-height: 14px;
   margin: 0px 10px;
   vertical-align: top;
+}
+.group-list .group .group-item .stack .stack-item {
+  color: #cbcbcb;
 }
 .group-list .group .group-item .time {
   color: #cbcbcb;

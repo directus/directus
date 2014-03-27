@@ -9,8 +9,9 @@
   .group {
     .group-item {
       .clear-fix;
-      background-color: @extraLightGrey;
-      margin: @extraSmallPad 0px;
+      //background-color: @extraLightGrey;
+      border-bottom: solid 1px @lightGrey;
+      margin: 0px;
       padding: @smallPad+1 @standardPad @smallPad @standardPad;
       > .icon {
         font-size: 38px;
@@ -28,6 +29,9 @@
           line-height: 14px;
           margin: 0px 10px;
           vertical-align: top;
+        }
+        .stack-item {
+          color: @mediumGrey;
         }
       }
       .time {
