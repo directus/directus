@@ -45,6 +45,22 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       'click #addBtn': function() {
         app.router.go('#tables/'+this.collection.table.id+'/new');
         //app.router.setPage(Table.Views.Edit, {model: model});
+      },
+      'click #bookmarkBtn': function(e) {
+        var data = {
+          title: this.collection.table.id,
+          url: Backbone.history.fragment,
+          icon_class: 'icon-star',
+          user: app.users.getCurrentUser().get("id")
+        };
+        if(!this.isBookmarked)
+        {
+          app.getBookmarks().addNewBookmark(data);
+        } else {
+          app.getBookmarks().removeBookmark(data);
+        }
+        $('#bookmarkBtn').parent().toggleClass('active');
+        this.isBookmarked = !this.isBookmarked;
       }
     },
 
