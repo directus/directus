@@ -16,7 +16,14 @@ function(app, Backbone, BaseHeaderView) {
     },
 
     beforeRender: function() {
-      this.setView('#fixedHeader', new BaseHeaderView({headerOptions: this.headerOptions}));
+      this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
+      this.setView('#fixedHeader', this.headerView);
+    },
+
+    updateHeaderOptions: function(options) {
+      this.headerOptions = options;
+      this.headerView.options.headerOptions = options;
+      this.headerView.render();
     }
   });
 });

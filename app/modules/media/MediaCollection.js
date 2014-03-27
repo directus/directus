@@ -13,7 +13,6 @@ function(app, Backbone, EntriesCollection, MediaModel) {
 
     initialize: function() {
       EntriesCollection.prototype.initialize.apply(this, arguments);
-      console.log('init media collection');
     }
 
   });

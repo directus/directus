@@ -33,7 +33,6 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
 
     serialize: function() {
       var data = this.options.headerOptions;
-      console.log(data);
       return data;
     },
     beforeRender: function() {

@@ -10,6 +10,12 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
 
   return BasePageView.extend({
 
+    headerOptions: {
+      route: {
+        title: "Directus"
+      }
+    },
+
     events: {
       'click #save-form': 'save'
     },
