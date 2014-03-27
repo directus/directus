@@ -21,10 +21,14 @@ function(app, Backbone) {
     serialize: function() {
       var rows = this.collection.getRows();
 
+      var bookmarks = app.getBookmarks();
+
       // Check permissions
       // @todo: filter this on the backend and get rid of this
       rows = _.filter(rows, function(row) {
         var privileges = app.schemaManager.getPrivileges(row.table_name);
+
+        row.bookmarked = bookmarks.findWhere({'title':row.id}) !== undefined;
 
         // filter out tables without privileges
         if (typeof privileges === "undefined" || privileges === undefined || privileges === null) return false;
@@ -36,7 +40,6 @@ function(app, Backbone) {
 
         return _.contains(permissions, 'view');
       });
-
       return {rows: rows, columns: this.collection.getColumns()};
     }
 

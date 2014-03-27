@@ -28,7 +28,7 @@ function(app, Backbone) {
     serialize: function() {
       var data = {};
 
-      if(this.options.mode == "list") {
+      if(this.toolOptions.mode == "list") {
         data.list = true;
         if (this.collection && this.collection.hasPermission('add')) {
           data.showAddButton = {
@@ -39,7 +39,7 @@ function(app, Backbone) {
         data.showBookmarkButton = {
           active: this.isBookmarked
         };
-      } else if(this.options.mode == "edit") {
+      } else if(this.toolOptions.mode == "edit") {
         data.edit = true;
       }
 
@@ -69,6 +69,7 @@ function(app, Backbone) {
       }
     },
     initialize: function(options) {
+      this.toolOptions = options;
       if(options.mode == "list") {
         if(this.collection) {
           this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);

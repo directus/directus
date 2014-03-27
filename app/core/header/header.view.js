@@ -59,21 +59,20 @@ function(app, Backbone, HeaderToolsLeftView, HeaderToolsRightView, HeaderSeconda
     },
     beforeRender: function() {
       var options = this.model.get('options');
-
       if(options.leftToolbar) {
-        this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView(this.options));
+        this.leftToolbar = this.setView('#tools-left-insert', new HeaderToolsLeftView(options));
       } else if(this.leftToolbar) {
         this.leftToolbar.remove();
       }
 
       if(options.rightToolbar) {
-        this.rightToolbar = this.setView('#tools-right-insert', new HeaderToolsRightView(this.options));
+        this.rightToolbar = this.setView('#tools-right-insert', new HeaderToolsRightView(options));
       } else if(this.rightToolbar) {
         this.rightToolbar.remove();
       }
 
       if(options.secondaryRow) {
-        this.secondaryRow = this.setView('#secondary-row-insert', new HeaderSecondaryRowView(this.options));
+        this.secondaryRow = this.setView('#secondary-row-insert', new HeaderSecondaryRowView(options));
       } else if(this.secondaryRow) {
         this.secondaryRow.remove();
       }
