@@ -1,4 +1,3 @@
-
 define([
   'app',
   'backbone',
@@ -7,9 +6,6 @@ define([
   'core/directus',
   'core/BasePageView'
 ],
-
-
-
 
 function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
 
