@@ -28,7 +28,7 @@ define(function(require, exports, module) {
       filters: {columns_visible: ['active', 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access'], active:1}
     }, SchemaManager.getFullSchema('directus_users')));
 
-    mediaInstance = new EntriesCollection([], _.extend({
+    mediaInstance = new MediaCollection([], _.extend({
       rowsPerPage: rowsPerPage,
       url: apiURL + 'media',
       filters: {columns_visible: ['name','title','size', 'type', 'user','date_uploaded', 'storage_adapter']}

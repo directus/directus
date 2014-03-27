@@ -131,7 +131,7 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
 
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
-            item.user = app.getCurrentUser().id;
+            item.user = app.users.getCurrentUser().id;
             item.active = 1;
             //item.title = app.capitalize(item.name);
 

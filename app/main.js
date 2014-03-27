@@ -66,6 +66,7 @@ require(["config"], function() {
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;
     app.authenticatedUserId = window.directusData.authenticatedUser;
+    app.storageAdapters = window.directusData.storage_adapters;
 
     // This needs elegance
     app.settings = new SettingsCollection(options.settings, {parse: true});

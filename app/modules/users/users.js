@@ -133,7 +133,7 @@ function(app, Backbone, Directus, SaveModule) {
     TableBody: BodyView,
 
     navigate: function(id) {
-      var user = app.getCurrentUser();
+      var user = app.users.getCurrentUser();
       var userGroup = user.get('group');
 
       //@todo fix this so it respects ACL instead of being hardcoded

@@ -169,7 +169,10 @@ define(function(require, exports, module) {
               data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
             }
 
-            attributes[id] = new EntriesModel(data, {collection: EntriesManager.getInstance(tableRelated)});
+            var collectionRelated = EntriesManager.getInstance(tableRelated);
+            var ModelRelated = collectionRelated.model;
+
+            attributes[id] = new ModelRelated(data, {collection: collectionRelated});
 
             break;
         }
@@ -246,7 +249,7 @@ define(function(require, exports, module) {
 
     // returns true or false
     isMine: function() {
-      var myId = parseInt(app.getCurrentUser().id,10),
+      var myId = parseInt(app.users.getCurrentUser().id,10),
           magicOwnerColumn = this.collection.table.get('magic_owner_column'),
           magicOwnerId = this.get(magicOwnerColumn);
 

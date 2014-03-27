@@ -62,7 +62,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var data = {},
           userId,
           model = this.model,
-          authenticatedUser = app.getCurrentUser();
+          authenticatedUser = app.users.getCurrentUser();
 
       data = model.toJSON();
       if (!model.has('id')) {
@@ -87,8 +87,8 @@ define(['app', 'backbone'], function(app, Backbone) {
       if(storageAdapter !== null &&
          storageAdapter !== undefined &&
          storageAdapter !== '') {
-          data.url = app.makeMediaUrl(model, false);
-          data.thumbUrl = app.makeMediaUrl(model, true);
+          data.url = model.makeMediaUrl(false);
+          data.thumbUrl = model.makeMediaUrl(true);
       }
 
       data.name = model.get('name');
@@ -123,7 +123,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.list = function(options) {
     var model = options.model;
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var url = app.makeMediaUrl(model, true);
+    var url = model.makeMediaUrl(true);
     var isImage = _.contains(['image/jpeg','image/png'], model.get('type'));
     var thumbUrl = isImage ? url : app.PATH + 'assets/img/document-100x120.png';
 

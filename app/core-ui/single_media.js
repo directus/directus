@@ -195,8 +195,8 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
     },
 
     serialize: function() {
-      var url = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel, true) : null;
-      var link = this.mediaModel.has('name') ? app.makeMediaUrl(this.mediaModel) : null;
+      var url = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl(true) : null;
+      var link = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl() : null;
       var data = this.mediaModel.toJSON();
       var isImage = _.contains(['image/jpeg','image/png'], this.mediaModel.get('type'));
 
@@ -219,7 +219,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
 
     initialize: function() {
 
-      this.userId = app.getCurrentUser().id;
+      this.userId = app.users.getCurrentUser().id;
 
       this.mediaModel = this.options.value;
       this.mediaModel.on('change', this.render, this);
@@ -239,7 +239,7 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
   Module.list = function(options) {
     var model = options.model;
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var url = app.makeMediaUrl(model, true);
+    var url = model.makeMediaUrl(true);
     var isImage = _.contains(['image/jpeg','image/png'], model.get('type'));
     var thumbUrl = isImage ? url : app.PATH + 'assets/img/document-100x120.png';
 

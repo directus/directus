@@ -332,7 +332,7 @@ define(function(require, exports, module) {
     },
 
     newMessage: function() {
-      var model = new app.messages.model({from: app.getCurrentUser().id}, {collection: app.messages, parse: true});
+      var model = new app.messages.model({from: app.users.getCurrentUser().id}, {collection: app.messages, parse: true});
       this.v.main.setView('#content', new Messages.Views.New({model: model}));
       this.v.main.render();
     },
@@ -363,7 +363,7 @@ define(function(require, exports, module) {
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
 
-      var user = app.getCurrentUser();
+      var user = app.users.getCurrentUser();
 
       //Top
       var Navbar = Backbone.Layout.extend(
@@ -424,7 +424,7 @@ define(function(require, exports, module) {
         if(routeTokens.length > 1) {
           // Report the "last page" data to the API
           // @fixes https://github.com/RNGR/directus6/issues/199
-          var user = app.getCurrentUser();
+          var user = app.users.getCurrentUser();
           var currentPath = window.location.pathname.substring(app.root.length);
           if(currentPath.length) {
 
