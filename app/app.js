@@ -104,11 +104,6 @@ define(function(require, exports, module) {
       });
     },
 
-    dateDaysFromNow: function(days) {
-      var today = new Date();
-      return new Date(today.getTime() + days * 24 * 60 * 60 * 1000);
-    },
-
     summarizeArray: function(array) {
       return _.reduce(array, function(memo, num){ return memo + parseInt(num,10); }, 0);
     }
