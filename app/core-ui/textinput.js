@@ -71,15 +71,16 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
     validateString: function(e) {
       var validationMessage = this.options.settings.get('validation_message') || app.DEFAULT_VALIDATION_MESSAGE;
+      var chars;
+
       switch(this.options.settings.get('validation_type')) {
         case ('bl') :
-          var chars = this.options.settings.get('validation_string').split("");
+          chars = this.options.settings.get('validation_string').split("");
           return $.inArray(String.fromCharCode(e.which), chars) == -1;
-          break;
+
         case ('wl') :
-          var chars = this.options.settings.get('validation_string').split("");
+          chars = this.options.settings.get('validation_string').split("");
           return $.inArray(String.fromCharCode(e.which), chars) != -1;
-          break;
       }
 
       return true;

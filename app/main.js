@@ -22,7 +22,7 @@ require(["config"], function() {
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
-    'core/idle',
+    'core/idle'
   ],
 
   function(app, UIManager, Router, Backbone, alerts, Tabs, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle) {
@@ -85,7 +85,7 @@ require(["config"], function() {
 
     ).done(function() {
 
-      var autoLogoutMinutes = parseInt(app.settings.get('global').get('cms_user_auto_sign_out') || 60);
+      var autoLogoutMinutes = parseInt(app.settings.get('global').get('cms_user_auto_sign_out') || 60, 10);
 
       var waitForForAvtivity = function() {
         console.log('minutes until automatic logout:', autoLogoutMinutes);
@@ -104,10 +104,10 @@ require(["config"], function() {
 
           },
           delay: autoLogoutMinutes * 60 * 1000,
-          repeat: true,
+          repeat: true
         });
 
-      }
+      };
 
       waitForForAvtivity();
 
@@ -261,7 +261,7 @@ require(["config"], function() {
         switch(xhr.status) {
           case 403:
             // var response = $.parseJSON(xhr.responseText);
-            var message = "You don't have permission to access this table. Please send this to IT:\n\n" + xhr.responseText;
+            message = "You don't have permission to access this table. Please send this to IT:\n\n" + xhr.responseText;
             app.trigger("alert:error", "Restricted Access", message, true);
             break;
           default:

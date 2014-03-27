@@ -156,7 +156,7 @@ define(function(require, exports, module) {
         url: this.url,
         filters: this.filters,
         preferences: this.preferences
-      }
+      };
 
       if (options.omit) {
         entriesOptions = _.omit(entriesOptions, options.omit);

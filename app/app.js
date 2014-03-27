@@ -34,11 +34,10 @@ define(function(require, exports, module) {
     },
 
     logOut: function() {
-      window.location.href = app.API_URL + "auth/logout"
+      window.location.href = app.API_URL + "auth/logout";
     },
 
     logErrorToServer: function(type, message, details) {
-      var user = app.users.getCurrentUser(), email = 'n/a';
       var user = app.users.getCurrentUser(), email = 'n/a';
 
       if (user) {

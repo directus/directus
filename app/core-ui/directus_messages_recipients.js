@@ -143,7 +143,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
         local: datums,
 
-        template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar">{{name}}</div>'),
+        template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar">{{name}}</div>')
 /*
         highlighter: function (item) {
           var id = item.split(':')[0];

@@ -39,7 +39,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
       // hard-destroy model if there is no active column
       if (!this.model.has('active')){
         throw "This table does not have an active column and can therefore not be deleted";
-        return;
       }
 
       this.model.save({active: 0}, {success: success, patch: true, wait: true, validate: false});

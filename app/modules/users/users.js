@@ -1,9 +1,10 @@
 define([
+  'app',
   'modules/users/views/EditUserView',
   'modules/users/views/ListUsers'
 ],
 
-function(EditUserView, ListUsers) {
+function(app, EditUserView, ListUsers) {
 
   'use strict';
 
