@@ -10,6 +10,13 @@ define([
 function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
 
   return BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Editing Item'
+      },
+      leftToolbar: true,
+      rightToolbar: true
+    },
 
     events: {
       'click #save-form': 'save',
@@ -131,11 +138,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
       };
     },
 
-    beforeRender: function() {
-      var showDropDown = !this.single && !this.isBatchEdit;
-      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: showDropDown}));
-    },
-
     afterRender: function() {
       this.setView('#page-content', this.editView);
       //Don't fetch if the model is new!
@@ -175,6 +177,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
       this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui, batchIds: options.batchIds});
+      this.headerOptions.route = {title: this.model.get('id') ? 'Editing Item' : 'Creating New Item', breadcrumbs:[{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}]};
     }
   });
 

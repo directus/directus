@@ -18,6 +18,7 @@ function(app, Backbone, BaseHeaderView) {
     beforeRender: function() {
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       this.setView('#fixedHeader', this.headerView);
+      console.log(this.headerOptions);
     },
 
     updateHeaderOptions: function(options) {

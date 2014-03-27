@@ -10,12 +10,6 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
 
   return BasePageView.extend({
 
-    headerOptions: {
-      route: {
-        title: "Directus"
-      }
-    },
-
     events: {
       'click #save-form': 'save'
     },
@@ -83,23 +77,6 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
       });
 
       console.log(changedAttributes);
-    },
-
-    serialize: function() {
-      var breadcrumbs = [{ title: 'Tables', anchor: '#tables'}],
-          title = 'Batch Edit ('+this.batchIds.length+')';
-
-      breadcrumbs.push({ title: this.model.collection.table.id, anchor: '#tables/' + this.model.collection.table.id });
-
-      return {
-        breadcrumbs: breadcrumbs,
-        title: title,
-        sidebar: true
-      };
-    },
-
-    beforeRender: function() {
-      this.insertView('#sidebar', new SaveModule({model: this.model, single: this.single, showDropDown: false}));
     },
 
     afterRender: function() {
