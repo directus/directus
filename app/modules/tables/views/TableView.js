@@ -2,10 +2,11 @@ define([
   'app',
   'backbone',
   'core/BasePageView',
-  'core/ListViewManager'
+  'core/ListViewManager',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, BasePageView, ListViewManager) {
+function(app, Backbone, BasePageView, ListViewManager, widgets) {
 
   return BasePageView.extend({
 
@@ -21,7 +22,9 @@ function(app, Backbone, BasePageView, ListViewManager) {
     },
 
     rightToolbar: function() {
-      return [];
+      return [
+        new widgets.Paginator()
+      ];
     },
 
     secondaryRow: function() {

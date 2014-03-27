@@ -1,7 +1,7 @@
 define([
   "app",
   "backbone",
-  "core/header/baseHeaderView"
+  "core/widgets/baseHeaderView"
 ],
 function(app, Backbone, BaseHeaderView) {
 
