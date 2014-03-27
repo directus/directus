@@ -2,7 +2,7 @@ define([
   'app',
   'backbone',
   'core/modal',
-  'core/edit',
+  'core/edit'
 ],
 
 function(app, Backbone, DirectusModal, DirectusEdit) {

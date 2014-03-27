@@ -1,9 +1,10 @@
 define([
+  'app',
   'modules/media/views/EditMediaView',
-  'modules/media/views/MediaTableView',
+  'modules/media/views/MediaTableView'
 ],
 
-function(EditMediaView, MediaTableView) {
+function(app, EditMediaView, MediaTableView) {
 
   "use strict";
 

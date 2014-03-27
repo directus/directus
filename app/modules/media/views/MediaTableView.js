@@ -4,10 +4,11 @@ define([
   'core/modal',
   'core/edit',
   'core/BasePageView',
-  'core/table/table.view'
+  'core/table/table.view',
+  'modules/media/views/EditMediaView'
 ],
 
-function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable) {
+function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable, EditMediaView) {
 
   return BasePageView.extend({
 
@@ -34,7 +35,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
     },
 
     addEditMedia: function(model, title) {
-      var modal = new Media.Views.Edit({model: model, stretch: true, title: title});
+      var modal = new EditMediaView({model: model, stretch: true, title: title});
       app.router.v.messages.insertView(modal).render();
       if (!model.isNew()) {
         app.router.navigate('#media/'+model.id);

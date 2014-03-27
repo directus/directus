@@ -6,8 +6,15 @@ define([
 ],
 
 function(app, Backbone, BasePageView, ListViewManager) {
-  
+
   return BasePageView.extend({
+
+    headerOptions: {
+      route: {
+        title: 'Table View',
+        breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
+      }
+    },
 
     serialize: function() {
       var data = {
@@ -39,6 +46,7 @@ function(app, Backbone, BasePageView, ListViewManager) {
       //ListViewManager
       this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
       //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
+      this.headerOptions.route.title = this.collection.table.id;
     }
 
   });

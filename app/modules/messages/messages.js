@@ -186,7 +186,7 @@ function(app, Backbone, Directus, SaveModule, EntriesCollection, EntriesModel, B
       var data = this.collection.map(function(model) {
         var data = model.toJSON();
         var momentDate = moment(data.date_updated);
-        data.timestamp = parseInt(momentDate.format('X'));
+        data.timestamp = parseInt(momentDate.format('X'), 10);
         data.niceDate = momentDate.fromNow();
         data.read = model.getUnreadCount() === 0;
         data.responsesLength = data.responses.length;
