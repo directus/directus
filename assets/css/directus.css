@@ -1963,11 +1963,11 @@ textarea {
   margin: 8px 0px 7px 10px;
   padding: 3px 10px;
 }
-.header1 .input-and-button.active .large-circle .icon {
+.header1 .input-and-button.point.point .large-circle .icon {
   position: relative;
   z-index: 2;
 }
-.header1 .input-and-button.active .large-circle:before {
+.header1 .input-and-button.point.point .large-circle:before {
   border-style: solid;
   height: 0px;
   width: 0px;

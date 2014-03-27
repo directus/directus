@@ -64,7 +64,7 @@ function(app, Backbone) {
         } else {
           app.getBookmarks().removeBookmark(data);
         }
-        $('#bookmark').toggleClass('active');
+        $('#bookmark').parent().toggleClass('active');
         this.isBookmarked = !this.isBookmarked;
       }
     },

@@ -115,20 +115,22 @@
     }
   }
   .input-and-button {
-    &.active {
-      .large-circle {
-        .icon {
-          position: relative;
-          z-index: 2;
-        }
-        &:before {
-          .triangle-bottom(14px, 14px, @darkGrey);
-          bottom: -5px;
-          content: "";
-          display: block;
-          margin-left: 2px;
-          position: absolute;
-          z-index: 1;
+    &.point {
+      &.point {
+        .large-circle {
+          .icon {
+            position: relative;
+            z-index: 2;
+          }
+          &:before {
+            .triangle-bottom(14px, 14px, @darkGrey);
+            bottom: -5px;
+            content: "";
+            display: block;
+            margin-left: 2px;
+            position: absolute;
+            z-index: 1;
+          }
         }
       }
     }
