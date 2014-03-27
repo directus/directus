@@ -15,8 +15,9 @@ function(app, Backbone, Directus, BasePageView) {
       title: "Tables"
     },
 
-    afterRender: function() {
+    beforeRender: function() {
       this.setView('#page-content', new Directus.TableSimple({collection: this.collection, template: 'tables'}));
+      BasePageView.prototype.beforeRender.call(this);
     }
 
   });

@@ -13,6 +13,13 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
 
   return BasePageView.extend({
 
+    headerOptions: {
+      route: {
+        title: 'Edit User',
+        breadcrumbs: [{ title: 'Users', anchor: '#users'}]
+      }
+    },
+
     events: {
       'click #save-form': function(e) {
         var data = $('form').serializeObject();
@@ -48,21 +55,6 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
       }
     },
 
-    serialize: function() {
-      var breadcrumbs = [{ title: 'Users', anchor: '#users'}];
-      var title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : 'New User';
-
-      return {
-        breadcrumbs: breadcrumbs,
-        title: title,
-        sidebar: true
-      };
-    },
-
-    beforeRender: function() {
-      this.setView('#sidebar', new SaveModule({model: this.model}));
-    },
-
     afterRender: function() {
       var editView = new Directus.EditView({model: this.model});
       this.setView('#page-content', editView);
@@ -71,6 +63,10 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
       } else {
         editView.render();
       }
+    },
+
+    initialize: function(options) {
+      this.headerOptions.route.title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : 'New User';
     }
   });
 
