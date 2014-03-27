@@ -3,7 +3,8 @@ define(function(require, exports, module) {
   "use strict";
 
   var SchemaManager      = require('./../schema/SchemaManager'),
-      EntriesCollection  = require('./entries/EntriesCollection');
+      EntriesCollection  = require('./entries/EntriesCollection'),
+      UsersCollection    = require('modules/users/UsersCollection');
 
   // Contains collections that should be persistent
   var usersInstance;
@@ -20,7 +21,7 @@ define(function(require, exports, module) {
     rowsPerPage = options.rowsPerPage;
 
     // Setup Directus Users
-    usersInstance = new EntriesCollection([], _.extend({
+    usersInstance = new UsersCollection([], _.extend({
       rowsPerPage: 3000,
       url: apiURL + 'tables/directus_users/rows',
       filters: {columns_visible: ['active', 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access'], active:1}
