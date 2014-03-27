@@ -21,10 +21,6 @@ function(app, Backbone, BaseHeaderView) {
       return [];
     },
 
-    serialize :function() {
-      return this.headerOptions;
-    },
-
     headerOptions: {
       route: {
         title: "Directus"
@@ -32,14 +28,9 @@ function(app, Backbone, BaseHeaderView) {
     },
 
     beforeRender: function() {
-      var leftToolbar = this.leftToolbar();
-      var rightToolbar = this.rightToolbar();
-      var secondaryToolbar = this.secondaryRow();
-
-      var that = this;
-      leftToolbar.forEach(function(widget) {
-        that.insertView('#tools-left-insert', widget);
-      });
+      this.headerOptions.leftToolbar = this.leftToolbar();
+      this.headerOptions.rightToolbar = this.rightToolbar();
+      this.headerOptions.secondaryRow = this.secondaryRow();
 
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       this.setView('#fixedHeader', this.headerView);
