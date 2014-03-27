@@ -54,16 +54,18 @@
 .btn {
   .border-radius(4px, 4px, 4px, 4px);
   background-color: @darkGrey;
-  border: none;
+  border: solid 1px @darkGrey;
   color: @white;
   cursor: pointer;
-  padding: @smallPad;
+  padding: @extraSmallPad @smallPad;
   text-transform: uppercase;
   &:hover {
     background-color: @mediumDarkGrey;
+    border-color: @extraDarkGrey;
   }
   &.active {
     background-color: @extraDarkGrey;
+    border-color: @extraDarkGrey;
   }
   &.btn-white {
     .btn-white;

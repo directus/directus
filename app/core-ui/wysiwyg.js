@@ -49,7 +49,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                                           '<button type="button" class="btn btn-small btn-silver" data-tag="clearHTML" rel="tooltip" data-placement="bottom" title="Remove Formatting">Remove Formatting</button>'+
                       '</div>'+
                     '</div>'+
-                    '<div class="force-editable" style="display:block; height:{{height}}px;" contenteditable="true" id="{{name}}">{{newlineToBr value}}</div>'+
+                    '<div class="input force-editable" style="display:block; height:{{height}}px;" contenteditable="true" id="{{name}}">{{newlineToBr value}}</div>'+
                     '<input type="hidden" name="{{name}}" value="{{markupValue}}">'+
                   '</div>';
 
