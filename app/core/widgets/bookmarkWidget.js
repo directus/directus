@@ -1,53 +1,26 @@
-//  header.toolsleftview.js
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-
 define([
-  'app',
   'backbone'
 ],
-function(app, Backbone) {
+function(Backbone) {
 
   "use strict";
 
-  var HeaderToolsLeftView = Backbone.Layout.extend({
+  return Backbone.Layout.extend({
+    template: Handlebars.compile('<button class="tool-item large-circle" id="bookmark" title="bookmark"><span class="icon icon-star"></span></button>'),
 
-    template: 'header/header-tools-left',
-
-    tagName: 'ul',
-
+    tagName: 'li',
     attributes: {
-      class: 'tools left'
+      'class': 'input-and-button'
     },
 
-    events: {
-      'click #btn-top': function() {
-        app.router.go('#tables/'+this.collection.table.id+'/new');
-        //app.router.setPage(Table.Views.Edit, {model: model});
-      },
-      'click #bookmark': function(e) {
-        var data = {
-          title: this.collection.table.id,
-          url: Backbone.history.fragment,
-          icon_class: 'icon-star',
-          user: app.users.getCurrentUser().get("id")
-        };
-        if(!this.isBookmarked)
-        {
-          app.getBookmarks().addNewBookmark(data);
-        } else {
-          app.getBookmarks().removeBookmark(data);
-        }
-        $('#bookmark').parent().toggleClass('active');
-        this.isBookmarked = !this.isBookmarked;
+    serialize: function() {
+      return this.options.widgetOptions;
+    },
+
+    afterRender: function() {
+      if(this.options.widgetOptions.active) {
+        $(this.el).addClass('active');
       }
     }
   });
-
-  return HeaderToolsLeftView;
 });

@@ -1,13 +1,15 @@
 define([
   'core/widgets/PaginatorView',
-  'core/widgets/addWidget'
+  'core/widgets/addWidget',
+  'core/widgets/bookmarkWidget'
 ],
 
-function(PaginatorView, addWidget) {
+function(PaginatorView, addWidget, bookmarkWidget) {
 
   return {
     paginator: PaginatorView,
-    AddWidget: addWidget
+    AddWidget: addWidget,
+    BookmarkWidget: bookmarkWidget
   };
 
 });

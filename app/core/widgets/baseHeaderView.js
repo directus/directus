@@ -38,6 +38,19 @@ function(app, Backbone) {
       var that = this;
       if(options.leftToolbar) {
         options.leftToolbar.forEach(function(widget) {
+          console.log(widget);
+          that.insertView('#tools-left-insert', widget);
+        });
+      }
+
+      if(options.rightToolbar) {
+        options.rightToolbar.forEach(function(widget) {
+          that.insertView('#tools-left-insert', widget);
+        });
+      }
+
+      if(options.secondaryToolbar) {
+        options.secondaryToolbar.forEach(function(widget) {
           that.insertView('#tools-left-insert', widget);
         });
       }

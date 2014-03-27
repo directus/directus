@@ -2,10 +2,11 @@ define([
   'app',
   'backbone',
   'core/BasePageView',
-  'core/ListViewManager'
+  'core/ListViewManager',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, BasePageView, ListViewManager) {
+function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
   return BasePageView.extend({
 
@@ -14,6 +15,17 @@ function(app, Backbone, BasePageView, ListViewManager) {
         title: 'Table View',
         breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
       },
+    },
+
+    leftToolbar: function() {
+      var widgets = [
+        new Widgets.BookmarkWidget({widgetOptions: {active: this.isBookmarked}})
+      ];
+
+      if (this.collection.hasPermission('add')) {
+        widgets.push(new Widgets.AddWidget({widgetOptions: {button: {title: 'New Entry'}}}));
+      }
+      return  widgets;
     },
 
     serialize: function() {
@@ -48,19 +60,7 @@ function(app, Backbone, BasePageView, ListViewManager) {
       //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
       this.headerOptions.route.title = this.collection.table.id;
 
-      if (this.collection.hasPermission('add')) {
-        this.headerOptions.leftToolbar.addBtn = {
-          title: 'Add Table'
-        };
-      }
-
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
-
-      this.headerOptions.leftToolbar.showBookmarkBtn = {
-        active: this.isBookmarked
-      };
-
-      this.headerOptions.leftToolbar.push(new PaginatorView({collection: this.collection}));
     }
 
   });
