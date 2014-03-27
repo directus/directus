@@ -102,11 +102,8 @@ define(function(require, exports, module) {
           $(".container-sidebar").removeClass('affix-sidebar');
         }
       });
-    },
-
-    summarizeArray: function(array) {
-      return _.reduce(array, function(memo, num){ return memo + parseInt(num,10); }, 0);
     }
+
   };
 
   app.sendFiles = function(files, callback) {
