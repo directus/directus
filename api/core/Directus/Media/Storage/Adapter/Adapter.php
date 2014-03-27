@@ -5,10 +5,10 @@ namespace Directus\Media\Storage\Adapter;
 abstract class Adapter {
 
     /**
-     * These will reflect the json-decoded table column `directus_storage_adapters`.`params`
+     * The array representation of the corresponding row in directus_storage_adapters
      * @var array
      */
-    protected $params = array();
+    protected $settings = array();
 
     /**
      * Most storage adapters will depend on certain metadata which is unique to that
@@ -25,24 +25,28 @@ abstract class Adapter {
      *     array("\\OpenCloud\\Rackspace");
      * @var array
      */
-    protected static $classDependencies = array();
+    protected static $requiredClasses = array();
 
     // @todo define via install config
     protected $allowedFormats = array('image/jpeg','image/gif', 'image/png', 'application/pdf');
     protected $imageFormats = array('image/jpeg','image/gif', 'image/png');
 
-    public function __construct(array $params = array()) {
-        $this->params = $params;
+    /**
+     * @param array $settings One record of directus_storage_adapters, where $settings['params'] is
+     *                        an array (e.g. json_decode'd)
+     */
+    public function __construct(array $settings = array()) {
+        $this->settings = $settings;
         // Enforce required adapter parameters
         if(!empty(static::$requiredParams)) {
-            $missingParamKeys = array_diff_key(static::$requiredParams, array_keys($params));
+            $missingParamKeys = array_diff_key(static::$requiredParams, array_keys($this->settings['params']));
             if(count($missingParamKeys)) {
                 throw new \RuntimeException(__CLASS__ . " requires " . count(static::$requiredParams)
                  . " parameters to be defined (missing " . implode(",", $missingParamKeys) . ")");
             }
         }
         // Enforce presence of required class dependencies
-        foreach($classDependencies as $className) {
+        foreach(static::$requiredClasses as $className) {
             if(!class_exists($className)) {
                 throw new \RuntimeException("Missing dependency $className");
             }

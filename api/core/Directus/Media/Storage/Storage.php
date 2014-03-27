@@ -37,24 +37,24 @@ class Storage {
         if(count($storage) !== count($adapterRoles)) {
             throw new \RuntimeException(__CLASS__ . ' expects adapter settings for these default adapter roles: ' . implode(',', $adapterRoles));
         }
-        $this->MediaStorage = self::getStorage($storage['DEFAULT']['adapter_name'], $storage['DEFAULT']['params']);
-        $this->ThumbnailStorage = self::getStorage($storage['THUMBNAIL']['adapter_name'], $storage['THUMBNAIL']['params']);
+        $this->MediaStorage = self::getStorage($storage['DEFAULT']);
+        $this->ThumbnailStorage = self::getStorage($storage['THUMBNAIL']);
         $this->storageAdaptersByRole = $storage;
     }
 
     /**
-     * @param  string $adapterName
-     * @param  array $adapterParams
+     * @param  array $adapterSettings
      * @return \Directus\Media\Storage\Adapter\Adapter
      */
-    public static function getStorage($adapterName, array $adapterParams) {
-        $cacheKey = $adapterName . serialize($adapterParams);
+    public static function getStorage(array $adapterSettings) {
+        $adapterName = $adapterSettings['adapter_name'];
+        $cacheKey = $adapterName . serialize($adapterSettings['params']);
         if(!isset(self::$storages[$cacheKey])) {
 			$adapterClass = self::ADAPTER_NAMESPACE . "\\$adapterName";
 			if(!class_exists($adapterClass)) {
 				throw new \RuntimeException("No such adapter class: $adapterClass");
 			}
-            self::$storages[$cacheKey] = new $adapterClass($adapterParams);
+            self::$storages[$cacheKey] = new $adapterClass($adapterSettings);
         }
         return self::$storages[$cacheKey];
     }

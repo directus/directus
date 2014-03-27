@@ -3,77 +3,68 @@
 namespace Directus\Media\Storage\Adapter;
 
 use Aws\S3\S3Client;
+use Aws\S3\Enum\CannedAcl;
 
 class AmazonS3Adapter extends Adapter {
 
-    protected static $classDependencies = array("\\Aws\\S3\\S3Client");
 
-    protected static $requiredParams = array('api_key','api_secret','bucket');
+    protected static $requiredClasses = array("\\Aws\\S3\\S3Client");
+
+    protected static $requiredParams = array('api_key','api_secret');
 
     /**
      * @var \Aws\S3\S3Client;
      */
     protected $client;
 
-    public function __construct(array $params = array()) {
-        parent::__construct($params);
+    public function __construct(array $settings = array()) {
+        parent::__construct($settings);
         $this->client = S3Client::factory(array(
-            'key'    => $params['api_key'],
-            'secret' => $params['api_secret']
+            'key'    => $settings['params']['api_key'],
+            'secret' => $settings['params']['api_secret']
         ));
     }
 
     protected function getObjectList() {
         $objects = array();
-        $iterator = $client->getIterator('ListObjects', array(
-            'Bucket' => $this->params['bucket']
+        $iterator = $this->client->getIterator('ListObjects', array(
+            'Bucket' => $this->settings['destination']
         ));
         foreach ($iterator as $object) {
-            var_dump($object);
-            $objects[] = $object['Key'];
-        }
-        exit;
-        $list = $this->container->ObjectList();
-        while ($item = $list->Next()) {
-            $objects[$item->name] = array(
-                'content_type' => $item->content_type,
-                'bytes' => $item->bytes,
-                'cdn-url' => $item->PublicUrl()
-            );
+            $objects[$object['Key']] = $object;
         }
         return $objects;
     }
 
-    protected function setContainer($name) {
-        if(is_null($this->container) || $name !== $this->container->name) {
-            try {
-                $this->container = $this->ostore->Container($name);
-            } catch(\OpenCloud\Common\Exceptions\HttpError $e) {
-                // @todo
-                throw $e;
-            }
-        }
+    public function getFileContents($fileName, $destination) {
+        $result = $this->client->getObject(array(
+            'Bucket' => $destination,
+            'Key'    => $fileName
+        ));
+        return $result['Body'];
     }
 
     protected function fileExists($fileName, $destination) {
-        $this->setContainer($destination);
         $objects = $this->getObjectList();
         return array_key_exists($fileName, $objects);
     }
 
     protected function writeFile($localFile, $targetFileName, $destination) {
-        $this->setContainer($destination);
-        try {
-            $object = $this->container->DataObject();
-            $object->name = $targetFileName;
-            $object->SetData(file_get_contents($localFile));
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $object->content_type = finfo_file($finfo, $localFile);
-            $object->Create();
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
+        $acl = (1 == $this->settings['public']) ? CannedAcl::PUBLIC_READ : CannedAcl::PRIVATE_ACCESS;
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($localFile);
+        $result = $this->client->putObject(array(
+            'Bucket'      => $destination,
+            'Key'         => $targetFileName,
+            'SourceFile'  => $localFile,
+            'ACL'         => $acl,
+            'ContentType' => $mimeType
+        ));
+        $this->client->waitUntilObjectExists(array(
+            'Bucket'     => $destination,
+            'Key'        => $targetFileName,
+        ));
+        return true;
     }
 
 }
