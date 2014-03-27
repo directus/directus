@@ -159,6 +159,26 @@ function(app, Backbone, Directus, SaveModule) {
 
   });
 
+  var ListView = Directus.Table.extend({
+
+    TableBody: BodyView,
+
+    navigate: function(id) {
+      var user = app.users.getCurrentUser();
+      var userGroup = user.get('group');
+
+      //@todo fix this so it respects ACL instead of being hardcoded
+      if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
+        return;
+      }
+
+      app.router.go('#users', id);
+      //app.router.navigate('#users/' + id);
+      //app.router.setPage(Users.Views.Edit, {model: this.collection.get(id)});
+    }
+  });
+
+
   Users.Views.List = Backbone.Layout.extend({
 
     template: 'page',

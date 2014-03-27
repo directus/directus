@@ -104,13 +104,13 @@ define(["plugins/jquery.timeago"], function() {
     ],
 
     actionMap: {
-      'ADD': 'added',
+      'ADD':    'added',
       'DELETE': 'deleted',
       'UPDATE': 'updated'
     },
 
     prepositionMap: {
-      'ADD': 'to',
+      'ADD':    'to',
       'DELETE': 'from',
       'UPDATE': 'within'
     },
