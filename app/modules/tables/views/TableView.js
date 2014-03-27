@@ -16,23 +16,6 @@ function(app, Backbone, BasePageView, ListViewManager) {
       },
     },
 
-    leftToolbar: function() {
-      return [
-        new widgets.
-      ];
-    },
-
-    rightToolbar: function() {
-      return [];
-    },
-
-    secondaryRow: function() {
-      return [
-        new YadaYada()
-      ];
-    },
-
-
     serialize: function() {
       var data = {
         title: this.collection.table.id,

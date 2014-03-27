@@ -2,10 +2,11 @@ define([
   "app",
   "backbone",
   "core/directus",
-  'core/BasePageView'
+  'core/BasePageView',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, BasePageView) {
+function(app, Backbone, Directus, BasePageView, Widgets) {
 
   "use strict";
 
@@ -100,9 +101,9 @@ function(app, Backbone, Directus, BasePageView) {
     },
     leftToolbar: function() {
       return [
-        new Widgets.AddWidget({button: true});
+        new Widgets.AddWidget({button: true})
       ];
-    }
+    },
     events: {
       'click #addBtn': function() {
         app.router.go('#users','new');
