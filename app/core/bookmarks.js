@@ -23,13 +23,13 @@ function(app, Backbone) {
       this.url = app.API_URL + 'bookmarks/';
     },
     setActive: function(route) {
-      var model = this.findWhere({url: route});
       //deactive all tabs
-      _.each(this.where({'active':true}),function(model) {
+      _.each(this.models,function(model) {
         model.unset('active',{silent: true});
+        if(route.indexOf(model.get('url')) != -1) {
+          model.set({'active':true});
+        }
       });
-      if (!model) { return; }
-      model.set({'active':true});
     },
     addNewBookmark: function(data) {
       data.user = data.user.toString();
@@ -71,9 +71,9 @@ function(app, Backbone) {
     },
     initialize: function() {
       var that = this;
-      this.collection.on('change sync', this.render, this);
       //For some reason need to do this and that....
       this.collection.on('add', function() {
+        that.collection.setActive(Backbone.history.fragment);
         that.render();
       });
       this.collection.on('remove', function() {
