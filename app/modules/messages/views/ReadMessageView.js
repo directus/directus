@@ -10,7 +10,7 @@ function(app, Backbone, BasePageView) {
 
     maxRecipients: 10,
 
-    template: 'messages-reading',
+    template: 'modules/messages/messages-reading',
 
     events: {
       'click #messages-response-button': function() {
@@ -70,17 +70,21 @@ function(app, Backbone, BasePageView) {
   });
 
   return BasePageView.extend({
-
-    serialize: function() {
-      return {title: this.model.get('subject'), breadcrumbs: [{title: 'Messages', anchor: '#messages'}]};
+    headerOptions: {
+      route: {
+        title: "Read",
+        breadcrumbs: [{title: 'Messages', anchor: '#messages'}]
+      }
     },
-
     afterRender: function() {
       var readView = new ReadView({model: this.model});
       this.setView('#page-content', readView);
       if (this.model.has('message')) {
         readView.render();
       }
+    },
+    initialize: function() {
+      this.headerOptions.route.title = this.model.get('subject');
     }
   });
 });
