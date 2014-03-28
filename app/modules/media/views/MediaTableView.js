@@ -39,13 +39,13 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
       '{{#rows}}' +
       '<li class="card col-2 gutter-bottom" data-id="{{id}}" data-cid="{{cid}}">' +
         '<div class="header-image">' +
-          '<div class="default-info">PDF</div>' +
+          '{{{thumbnail}}}' +
           '<div class="tool-item large-circle"><span class="icon icon-pencil"></span></div>' +
         '</div>' +
         '<div class="info">' +
           '<div class="featured">' +
             '<div class="primary-info">{{title}}</div>' +
-            '<div class="secondary-info">666x666 | {{size}} | {{type}}</div>' +
+            '<div class="secondary-info">{{dimensions}} | {{bytesToSize size}} | {{uppercase type}}</div>' +
             '<div class="secondary-info italic">{{date_uploaded}}</div>' +
           '</div>' +
         '</div>' +
@@ -58,13 +58,20 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         var data = {
           "id": model.get('id'),
           "cid": model.cid,
-          'thumbnail': model.get('name'),
           'title': model.get('title'),
           'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
           'size': model.get('size'),
-          'type': model.get('type')
+          'type': model.get('type').split('/').pop(),
+          'dimensions': model.get('width') + "x" + model.get('height')
         };
 
+        var type = model.get('type').substring(0, model.get('type').indexOf('/'));
+        if(type == 'image') {
+          data.thumbnail = '<img src="'+model.makeMediaUrl(true)+'">';
+        } else {
+          data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
+        }
+        console.log(data.thumbnail);
         return data;
       });
       return {rows: rows};
