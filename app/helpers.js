@@ -29,6 +29,10 @@ require([
     return app.capitalize(string);
   });
 
+  Handlebars.registerHelper('uppercase', function(string) {
+    return string.toUpperCase();
+  });
+
   Handlebars.registerHelper('bytesToSize', function(bytes) {
     return app.bytesToSize(bytes, 0);
   });
