@@ -5,10 +5,11 @@ define([
   'core/edit',
   'core/BasePageView',
   'core/table/table.view',
+  'core/widgets/widgets',
   'modules/media/views/EditMediaView'
 ],
 
-function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable, EditMediaView) {
+function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable, Widgets, EditMediaView) {
 
   var BodyView = Backbone.Layout.extend({
 
@@ -82,10 +83,40 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         title: "Media"
       }
     },
+    leftToolbar: function() {
+      return [
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}})
+      ];
+    },
+    rightToolbar: function() {
+      return [
+        new Widgets.SearchWidget(),
+        new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
+        new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
+      ];
+    },
     events: {
-      'click #btn-top': function() {
+      'click #addBtn': function() {
         var model = new this.collection.model({},{collection: this.collection});
         this.addEditMedia(model, 'Add New Media');
+      },
+      'click #gridBtn': function() {
+        if(this.viewList) {
+          this.viewList = false;
+          $('#listBtn').parent().removeClass('active');
+          $('#gridBtn').parent().addClass('active');
+          this.table = new BodyView({collection:this.collection});
+          this.render();
+        }
+      },
+      'click #listBtn': function() {
+        if(!this.viewList) {
+          this.viewList = true;
+          $('#listBtn').parent().addClass('active');
+          $('#gridBtn').parent().removeClass('active');
+          this.table = new DirectusTable({collection:this.collection, selectable: true, droppable: true, deleteOnly: true, hideColumnPreferences: true, blacklist: ['storage_adapter']});
+          this.render();
+        }
       },
       'fileuploadprogress #fileupload': function(e, data) {
         console.log('progress...', data);
@@ -114,13 +145,12 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         });
       }
     },
-
     afterRender: function() {
       this.setView('#page-content', this.table);
-      //this.setView('#page-content', new DirectusTable({collection:this.collection, selectable: true, droppable: true, deleteOnly: true, hideColumnPreferences: true, blacklist: ['storage_adapter']}));
-      this.collection.fetch({reset: true});
+      this.collection.fetch();
     },
     initialize: function() {
+      this.viewList = false;
       this.table = new BodyView({collection:this.collection});
     }
   });
