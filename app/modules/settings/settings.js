@@ -11,12 +11,12 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'modules/settings/tables',
-  'modules/settings/GlobalSettingsView',
-  'modules/settings/about',
-  'modules/settings/permissions',
-  'modules/settings/system',
-  'modules/settings/grouppermissions'
+  'modules/settings/views/TablesView',
+  'modules/settings/views/GlobalSettingsView',
+  'modules/settings/views/AboutView',
+  'modules/settings/views/PermissionsView',
+  'modules/settings/views/SystemView',
+  'modules/settings/views/GroupPermissionsView'
 ],
 
 function(app, Backbone, Directus, Tables, Global, About, Permissions, System, GroupPermissions) {

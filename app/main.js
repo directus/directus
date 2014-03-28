@@ -18,7 +18,7 @@ require(["config"], function() {
     'modules/messages/messages',
     'plugins/alertify',
     'schema/SchemaManager',
-    'modules/settings/collection',
+    'modules/settings/SettingsCollection',
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
