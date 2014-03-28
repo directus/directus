@@ -19,7 +19,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
     leftToolbar: function() {
       var widgets = [
-        new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: '#bookmarkBtn', iconClass: 'icon-star'}})
+        new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}})
       ];
 
       if (this.collection.hasPermission('add')) {
@@ -46,7 +46,8 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
         app.router.go('#tables/'+this.collection.table.id+'/new');
         //app.router.setPage(Table.Views.Edit, {model: model});
       },
-      'click #bookmarkBtn': function(e) {
+      'click #bookmarkBtn': function() {
+        console.log("Clicked");
         var data = {
           title: this.collection.table.id,
           url: Backbone.history.fragment,
