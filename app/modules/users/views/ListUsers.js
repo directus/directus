@@ -91,9 +91,61 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
   });
 
+  var ListBodyView = Backbone.Layout.extend({
+
+    tagName: 'tbody',
+
+    template: Handlebars.compile(
+      '{{#rows}}' +
+      '<tr data-id="{{id}}" data-cid="{{cid}}">' +
+      '<td class="status"></td>' +
+      '<td>{{avatar}}</td>' +
+      '<td>{{first_name}}</td>' +
+      '<td>{{last_name}}</td>' +
+      '<td>{{email}}</td>' +
+      '<td>{{position}}</td>' +
+      '<td>{{last_access}}</td>' +
+      '</tr>' +
+      '{{/rows}}'
+    ),
+
+    serialize: function() {
+      var rows = this.collection.map(function(model) {
+
+        var data = {
+          "id": model.get('id'),
+          "cid": model.cid,
+          'avatar': model.get('avatar'),
+          'first_name': model.get('first_name'),
+          'last_name': model.get('last_name'),
+          'email': model.get('email'),
+          'position': model.get('position'),
+          'last_access': model.get('last_access')
+        };
+
+        if (data.avatar !== null) {
+            //@todo this is a hack, maybe change avatar so it only includes a hash?
+            var avatarSmall = data.avatar.replace('?s=100','?s=50');
+            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="max-width:none!important;"/>');
+        }
+
+        return data;
+
+      });
+
+      return {rows: rows};
+    },
+
+    initialize: function(options) {
+      this.collection.on('sort', this.render, this);
+    }
+
+  });
+
+
   var ListView = Directus.Table.extend({
 
-    TableBody: BodyView,
+    TableBody: ListBodyView,
 
     navigate: function(id) {
       var user = app.users.getCurrentUser();
@@ -124,7 +176,6 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     rightToolbar: function() {
       return [
         new Widgets.SearchWidget(),
-        new Widgets.ListWidget({widgetOptions: {active: this.viewList}}),
         new Widgets.GridWidget({widgetOptions: {active: !this.viewList}})
       ];
     },
