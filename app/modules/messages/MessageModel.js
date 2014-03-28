@@ -5,7 +5,7 @@ define([
 ],
 
 function(app, Backbone, EntriesModel) {
-  Messages.Model = EntriesModel.extend({
+  return EntriesModel.extend({
 
     getUnreadCount: function() {
       var unread = this.get('read') == 1 ? 0 : 1;

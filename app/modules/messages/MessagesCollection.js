@@ -7,7 +7,7 @@ define([
 
 function(app, Backbone, EntriesCollection, MessageModel) {
 
-  Messages.Collection = EntriesCollection.extend({
+  return EntriesCollection.extend({
 
     model: MessageModel,
 
