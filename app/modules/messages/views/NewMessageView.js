@@ -1,4 +1,12 @@
-  Messages.Views.New = BasePageView.extend({
+define([
+  'app',
+  'backbone',
+  'core/BasePageView'
+],
+
+function(app, Backbone, BasePageView) {
+
+  return BasePageView.extend({
 
     events: {
       'click #save-form': function(e) {
@@ -43,3 +51,4 @@
     }
 
   });
+}
