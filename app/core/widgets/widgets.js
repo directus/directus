@@ -1,19 +1,17 @@
 define([
   'core/widgets/PaginatorView',
-  'core/widgets/bookmarkWidget',
-  'core/widgets/buttonWidget',
-  'core/widgets/searchWidget',
-  'core/widgets/saveWidget'
+  'core/widgets/ButtonWidget',
+  'core/widgets/SearchWidget',
+  'core/widgets/SaveWidget'
 ],
 
-function(PaginatorView, bookmarkWidget, buttonWidget, searchWidget, saveWidget) {
+function(PaginatorView, ButtonWidget, SearchWidget, SaveWidget) {
 
   return {
-    paginator: PaginatorView,
-    BookmarkWidget: bookmarkWidget,
-    ButtonWidget: buttonWidget,
-    SearchWidget: searchWidget,
-    SaveWidget: saveWidget
+    PaginatorWidget: PaginatorView,
+    ButtonWidget: ButtonWidget,
+    SearchWidget: SearchWidget,
+    SaveWidget: SaveWidget
   };
 
 });

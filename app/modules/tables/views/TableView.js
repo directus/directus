@@ -19,7 +19,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
     leftToolbar: function() {
       var widgets = [
-        new Widgets.BookmarkWidget({widgetOptions: {active: this.isBookmarked}})
+        new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: '#bookmarkBtn', iconClass: 'icon-star'}})
       ];
 
       if (this.collection.hasPermission('add')) {
