@@ -55,4 +55,4 @@ function(app, Backbone, EntriesCollection, MessageModel) {
       EntriesCollection.prototype.fetch.call(this, options);
     }
   });
-}
+});

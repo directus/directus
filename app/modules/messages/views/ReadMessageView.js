@@ -83,4 +83,4 @@ function(app, Backbone, BasePageView) {
       }
     }
   });
-}
+});

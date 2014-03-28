@@ -39,4 +39,4 @@ function(app, Backbone, EntriesModel) {
     }
 
   });
-}
+});

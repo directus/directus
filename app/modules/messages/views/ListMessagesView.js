@@ -66,4 +66,4 @@ function(app, Backbone, BasePageView) {
       //this.collection.fetch();
     }
   });
-}
+});
