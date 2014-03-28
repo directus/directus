@@ -170,14 +170,14 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
     leftToolbar: function() {
       return [
-        new Widgets.AddWidget({widgetOptions: {button: {title: 'Add User'}}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}})
       ];
     },
     rightToolbar: function() {
       return [
         new Widgets.SearchWidget(),
-        new Widgets.ListWidget({widgetOptions: {active: this.viewList}}),
-        new Widgets.GridWidget({widgetOptions: {active: !this.viewList}})
+        new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
+        new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
       ];
     },
     events: {

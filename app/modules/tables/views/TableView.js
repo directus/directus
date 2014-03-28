@@ -23,7 +23,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       ];
 
       if (this.collection.hasPermission('add')) {
-        widgets.push(new Widgets.AddWidget({widgetOptions: {button: {title: 'New Entry'}}}));
+        widgets.push(new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}}));
       }
       return  widgets;
     },
