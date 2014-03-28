@@ -12,8 +12,8 @@ function(app, Backbone, BasePageView, Widgets) {
     template: 'modules/messages/messages-list',
 
     events: {
-      'click tr': function(e) {
-        var id = $(e.target).closest('tr').attr('data-id');
+      'click .message': function(e) {
+        var id = $(e.target).closest('.message').attr('data-id');
         app.router.go('#messages', id);
       }
     },
