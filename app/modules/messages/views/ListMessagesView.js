@@ -23,7 +23,7 @@ function(app, Backbone, BasePageView, Widgets) {
         var data = model.toJSON();
         var momentDate = moment(data.date_updated);
         data.timestamp = parseInt(momentDate.format('X'), 10);
-        data.niceDate = momentDate.fromNow();
+        data.niceDate = moment().diff(momentDate, 'days') > 1 ? momentDate.format('MMMM D') : momentDate.fromNow();
         data.read = model.getUnreadCount() === 0;
         data.responsesLength = data.responses.length;
         data.from = parseInt(data.from, 10);
