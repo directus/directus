@@ -6,7 +6,7 @@ define([
 
 function(app, Backbone, BasePageView) {
 
-  return Backbone.Layout.extend({
+  var ListView = Backbone.Layout.extend({
 
     template: 'messages-list',
 
