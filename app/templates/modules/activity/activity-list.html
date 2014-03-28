@@ -1,7 +1,8 @@
-<li class="group gutter-bottom">
-<ul>
-
 {{#each activities}}
+<li class="group gutter-bottom">
+  {{title}}
+<ul>
+{{#each data}}
 <li class="group-item">
   <div class="left icon icon-pencil color"></div>
   <div class="left stack">
@@ -12,6 +13,6 @@
   <div class="right time">{{time}}</div>
 </li>
 {{/each}}
-
 </ul>
 </li>
+{{/each}}

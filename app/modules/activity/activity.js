@@ -39,6 +39,9 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           'time': moment(model.get('datetime')).format("h:mma"),
           "timestamp": model.get('datetime')
         };
+
+
+
         return data;
       });
 
@@ -46,6 +49,26 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
       data = _.sortBy(data, function(item) {
         return -moment(item.timestamp);
       });
+
+      var groupedData = [];
+
+      data.forEach(function(group) {
+        var date = moment(group.timestamp).format('MMMM-D-YYYY');
+        if(!groupedData[date]) {
+          //If Today Have it say Today
+          if(date == moment().format('MMMM-D-YYYY')) {
+            groupedData[date] = {title: "Today", data: []};
+          } else {
+            groupedData[date] = {title: moment(group.timestamp).format('MMMM D, YYYY') + " - " + moment(group.timestamp).fromNow(), data: []};
+          }
+        }
+        groupedData[date].data.push(group);
+      });
+      data = [];
+
+      for(var group in groupedData) {
+        data.push(groupedData[group]);
+      }
 
       return {activities: data};
     },
