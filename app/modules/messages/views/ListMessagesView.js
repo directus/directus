@@ -27,6 +27,30 @@ function(app, Backbone, BasePageView, Widgets) {
         data.read = model.getUnreadCount() === 0;
         data.responsesLength = data.responses.length;
         data.from = parseInt(data.from, 10);
+
+        var recipients = data.recipients.split(',');
+
+        data.recipients = [];
+        var extra = 0;
+
+        for(var i=0; i<recipients.length; i++) {
+          if(i > 2) {
+            extra = recipients.length - i;
+            break;
+          }
+
+          var user = app.users.get(recipients[i]);
+          if (user !== undefined) {
+            data.recipients.push(user.get('first_name'));
+          }
+        }
+
+        data.recipients = data.recipients.join(", ");
+
+        if(extra) {
+          data.recipients += " (+"+extra+" more)";
+        }
+
         //console.log(_.map(data.responses, 'from'));
         return data;
       });
