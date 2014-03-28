@@ -16,8 +16,6 @@ function(app, Backbone, Directus) {
 
   "use strict";
 
-  var SettingsGlobal = app.module();
-
   var Global = Backbone.Layout.extend({
 
     template: 'page',
