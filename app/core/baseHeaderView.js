@@ -38,7 +38,6 @@ function(app, Backbone) {
       var that = this;
       if(options.leftToolbar) {
         options.leftToolbar.forEach(function(widget) {
-          console.log(widget);
           that.insertView('#tools-left-insert', widget);
         });
       }

@@ -20,6 +20,12 @@ function(Backbone) {
 
     serialize: function() {
       return this.options.widgetOptions;
+    },
+
+    afterRender: function() {
+      if(this.options.widgetOptions && this.options.widgetOptions.active) {
+        $(this.el).addClass('active');
+      }
     }
   });
 });

@@ -91,6 +91,24 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
   });
 
+  var ListView = Directus.Table.extend({
+
+    TableBody: BodyView,
+
+    navigate: function(id) {
+      var user = app.users.getCurrentUser();
+      var userGroup = user.get('group');
+
+      //@todo fix this so it respects ACL instead of being hardcoded
+      if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
+        return;
+      }
+
+      app.router.go('#users', id);
+    }
+  });
+
+
   var View = BasePageView.extend({
 
     headerOptions: {
@@ -106,13 +124,31 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     rightToolbar: function() {
       return [
         new Widgets.SearchWidget(),
-        new Widgets.ListWidget(),
-        new Widgets.GridWidget()
+        new Widgets.ListWidget({widgetOptions: {active: this.viewList}}),
+        new Widgets.GridWidget({widgetOptions: {active: !this.viewList}})
       ];
     },
     events: {
       'click #addBtn': function() {
         app.router.go('#users','new');
+      },
+      'click #gridBtn': function() {
+        if(this.viewList) {
+          this.viewList = false;
+          $('#listBtn').parent().removeClass('active');
+          $('#gridBtn').parent().addClass('active');
+          this.table = new BodyView({collection:this.collection});
+          this.render();
+        }
+      },
+      'click #listBtn': function() {
+        if(!this.viewList) {
+          this.viewList = true;
+          $('#listBtn').parent().addClass('active');
+          $('#gridBtn').parent().removeClass('active');
+          this.table = new ListView({collection:this.collection});
+          this.render();
+        }
       }
     },
 
@@ -122,6 +158,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     initialize: function() {
+      this.viewList = false;
       this.table = new BodyView({collection:this.collection});
     }
   });

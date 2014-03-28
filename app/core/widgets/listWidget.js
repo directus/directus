@@ -7,7 +7,7 @@ function(Backbone) {
 
   return Backbone.Layout.extend({
     template: Handlebars.compile(' \
-      <button type="button" class="tool-item large-circle"> \
+      <button type="button" id="listBtn" class="tool-item large-circle"> \
         <span class="icon icon-list"></span> \
       </button>'
     ),
@@ -19,6 +19,12 @@ function(Backbone) {
 
     serialize: function() {
       return this.options.widgetOptions;
+    },
+
+    afterRender: function() {
+      if(this.options.widgetOptions && this.options.widgetOptions.active) {
+        $(this.el).addClass('active');
+      }
     }
   });
 });

@@ -18,7 +18,7 @@ function(Backbone) {
     },
 
     afterRender: function() {
-      if(this.options.widgetOptions.active) {
+      if(this.options.widgetOptions && this.options.widgetOptions.active) {
         $(this.el).addClass('active');
       }
     }
