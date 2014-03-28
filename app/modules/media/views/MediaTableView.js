@@ -6,83 +6,11 @@ define([
   'core/BasePageView',
   'core/table/table.view',
   'core/widgets/widgets',
-  'modules/media/views/EditMediaView'
+  'modules/media/views/EditMediaView',
+  'modules/media/views/MediaCardView'
 ],
 
-function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable, Widgets, EditMediaView) {
-
-  var BodyView = Backbone.Layout.extend({
-
-    tagName: 'ul',
-
-    attributes: {
-      class: "cards row"
-    },
-
-    events: {
-      'click li': function(e) {
-        var id = $(e.target).closest('li').attr('data-id');
-
-        var user = app.users.getCurrentUser();
-        var userGroup = user.get('group');
-
-        //@todo fix this so it respects ACL instead of being hardcoded
-        if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
-          return;
-        }
-
-        app.router.go('#users', id);
-      }
-    },
-
-    template: Handlebars.compile(
-      '{{#rows}}' +
-      '<li class="card col-2 gutter-bottom" data-id="{{id}}" data-cid="{{cid}}">' +
-        '<div class="header-image">' +
-          '{{{thumbnail}}}' +
-          '<div class="tool-item large-circle"><span class="icon icon-pencil"></span></div>' +
-        '</div>' +
-        '<div class="info">' +
-          '<div class="featured">' +
-            '<div class="primary-info">{{title}}</div>' +
-            '<div class="secondary-info">{{dimensions}} | {{bytesToSize size}} | {{uppercase type}}</div>' +
-            '<div class="secondary-info italic">{{date_uploaded}}</div>' +
-          '</div>' +
-        '</div>' +
-      '</li>' +
-      '{{/rows}}'
-    ),
-
-    serialize: function() {
-      var rows = this.collection.map(function(model) {
-        var data = {
-          "id": model.get('id'),
-          "cid": model.cid,
-          'title': model.get('title'),
-          'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
-          'size': model.get('size'),
-          'type': model.get('type').split('/').pop(),
-          'dimensions': model.get('width') + "x" + model.get('height')
-        };
-
-        var type = model.get('type').substring(0, model.get('type').indexOf('/'));
-        if(type == 'image') {
-          data.thumbnail = '<img src="'+model.makeMediaUrl(true)+'">';
-        } else {
-          data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
-        }
-        console.log(data.thumbnail);
-        return data;
-      });
-      return {rows: rows};
-    },
-
-    initialize: function(options) {
-      this.collection.on('sort', this.render, this);
-      this.collection.on('sync', this.render, this);
-    }
-
-  });
+function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable, Widgets, EditMediaView, MediaCardView) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -112,7 +40,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
           this.viewList = false;
           $('#listBtn').parent().removeClass('active');
           $('#gridBtn').parent().addClass('active');
-          this.table = new BodyView({collection:this.collection});
+          this.table = new MediaCardView({collection:this.collection});
           this.render();
         }
       },
@@ -158,7 +86,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
     },
     initialize: function() {
       this.viewList = false;
-      this.table = new BodyView({collection:this.collection});
+      this.table = new MediaCardView({collection:this.collection});
     }
   });
 

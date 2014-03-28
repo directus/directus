@@ -1,0 +1,15 @@
+{{#rows}}
+<li class="card col-2 gutter-bottom" data-id="{{id}}" data-cid="{{cid}}">
+  <div class="header-image">
+    {{{thumbnail}}}
+    <div class="tool-item large-circle"><span class="icon icon-pencil"></span></div>
+  </div>
+  <div class="info">
+    <div class="featured">
+      <div class="primary-info">{{title}}</div>
+      <div class="secondary-info">{{dimensions}} | {{bytesToSize size}} | {{uppercase type}}</div>
+      <div class="secondary-info italic">{{date_uploaded}}</div>
+    </div>
+  </div>
+</li>
+{{/rows}}
