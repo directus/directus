@@ -20,7 +20,6 @@ function(app, Backbone, BasePageView) {
         var recipients = _.map(this.model.get('recipients').split(','), function(id) {
           return '0_' + id;
         });
-
         recipients.push('0_'+this.model.get('from'));
 
         var attrs = {
