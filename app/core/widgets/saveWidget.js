@@ -12,7 +12,6 @@ function(Backbone) {
           <span class="icon icon-check"></span> \
         </span> \
         <span class="simple-select"> \
-          <span class="icon icon-triangle-down"></span> \
           {{#if isUpToDate}} \
             All Changes Saved \
           {{else}} \
