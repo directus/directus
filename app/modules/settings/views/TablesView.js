@@ -247,9 +247,13 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
     }
   });
 
-  SettingsTables.Views.Table = Backbone.Layout.extend({
-
-    template: 'page',
+  SettingsTables.Views.Table = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Classes',
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables+Inputs', anchor: '#settings/tables'}]
+      }
+    },
 
     events: {
       'click #save-form': 'saveColumns'
@@ -280,8 +284,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
     },
 
     beforeRender: function() {
-      this.insertView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, showDropdown: false, showDelete: false, canEdit: true, buttonText: 'Save'}}));
-      this.insertView('#sidebar', new TableModule({model: this.model}));
+      BasePageView.prototype.beforeRender.call(this);
     },
 
     afterRender: function() {
@@ -335,7 +338,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
   SettingsTables.Views.List = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Tables',
+        title: 'Tables+Inputs',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
     },

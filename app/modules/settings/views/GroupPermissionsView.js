@@ -146,8 +146,10 @@ function(app, Backbone, BasePageView, PaneSaveView) {
       var view = new GroupPermissions.Permissions({collection: this.collection});
       this.setView('#page-content', view);
       this.collection.fetch();
-      this.headerOptions.route.title = this.options.title;
       //this.insertView('#sidebar', new PaneSaveView({model: this.model, single: this.single}));
+    },
+    initialize: function() {
+      this.headerOptions.route.title = this.options.title;
     }
 
   });
