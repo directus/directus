@@ -4,36 +4,29 @@ define([
   'core/panes/pane.saveview',
   'core/panes/pane.revisionsview',
   'core/directus',
-  'core/BasePageView'
+  'core/BasePageView',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
+function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
     headerOptions: {
       route: {
         title: 'Editing Item'
-      },
-      leftToolbar: true,
-      rightToolbar: true
+      }
     },
 
     events: {
-      'click #save-form': 'save',
-      'click #save-form-stay': 'save',
-      'click #save-form-add': 'save',
-      'click #save-form-copy': 'save',
-      'click #delete-form': 'deleteItem',
-      'keydown': function(e) {
-        if (e.keyCode === 83 && e.metaKey) {
-          this.save();
-        }
-      },
-      'click #save-form-cancel': function() {
-        var route = Backbone.history.fragment.split('/');
-        route.pop();
-        app.router.go(route);
-      }
+      'change input, select, textarea': 'checkDiff',
+      'keyup input, textarea': 'checkDiff'
+    },
+
+    checkDiff: function(e) {
+      var diff = this.model.diff(this.editView.data());
+      delete diff.id;
+
+      this.saveWidget.setSaved(_.isEmpty(diff));
     },
 
     deleteItem: function(e) {
@@ -49,9 +42,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
       }
 
       this.model.save({active: 0}, {success: success, patch: true, wait: true, validate: false});
-
-      //this.model.set({active: 0});
-      //this.model.save({success: success});
     },
 
     save: function(e) {
@@ -114,18 +104,16 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
 
     afterRender: function() {
       this.setView('#page-content', this.editView);
-      //Don't fetch if the model is new!
-      if (this.model.has('id')) {
 
-        //@todo what is going on here?
+      //Fetch Model if Exists
+      if (this.model.has('id')) {
         this.model.fetch({
           dontTrackChanges: true,
           error: function(model, XMLHttpRequest) {
+            //If Cant Find Model Then Open New Entry Page
             if(404 === XMLHttpRequest.status) {
               var route = Backbone.history.fragment;
-              // if(route.charAt(route.length-1) == "/") {
-              //     route = route.slice(0, -1)
-              // }
+
               route = route.split('/');
               if(route.slice(-2)[0] !== "tables") {
                 route.pop();
@@ -138,13 +126,13 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView) {
       } else {
         this.editView.render();
       }
+    },
 
-      if (this.model.id !== undefined) {
-        this.insertView('#sidebar', new RevisionsModule({baseURL: this.model.url()}));
-        this.insertView('#sidebar', new Backbone.Layout({template: 'modules/messages/module-messages', attributes: {'class': 'directus-module'}}));
-      }
-
-      app.affix();
+    leftToolbar: function() {
+      this.saveWidget = new Widgets.SaveWidget();
+      return [
+        this.saveWidget
+      ];
     },
 
     initialize: function(options) {

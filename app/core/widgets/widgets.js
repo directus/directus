@@ -5,10 +5,11 @@ define([
   'core/widgets/listWidget',
   'core/widgets/gridWidget',
   'core/widgets/searchWidget',
-  'core/widgets/editWidget'
+  'core/widgets/editWidget',
+  'core/widgets/saveWidget'
 ],
 
-function(PaginatorView, addWidget, bookmarkWidget, listWidget, gridWidget, searchWidget, editWidget) {
+function(PaginatorView, addWidget, bookmarkWidget, listWidget, gridWidget, searchWidget, editWidget, saveWidget) {
 
   return {
     paginator: PaginatorView,
@@ -17,7 +18,8 @@ function(PaginatorView, addWidget, bookmarkWidget, listWidget, gridWidget, searc
     ListWidget: listWidget,
     GridWidget: gridWidget,
     SearchWidget: searchWidget,
-    EditWidget: editWidget
+    EditWidget: editWidget,
+    SaveWidget: saveWidget
   };
 
 });

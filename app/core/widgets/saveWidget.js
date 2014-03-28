@@ -7,17 +7,17 @@ function(Backbone) {
 
   return Backbone.Layout.extend({
     template: Handlebars.compile(' \
-      <span for="status"> \
+      <span for="status" {{#unless isUpToDate}} class="saved"{{/unless}}> \
         <span type="button" class="tool-item large-circle"> \
           <span class="icon icon-check"></span> \
         </span> \
         <span class="simple-select"> \
           <span class="icon icon-triangle-down"></span> \
-          <select name="status"> \
-            <option>Save Changes</option> \
-            <option>Save Changes</option> \
-            <option>Save Changes</option> \
-          </select> \
+          {{#if isUpToDate}} \
+            All Changes Saved \
+          {{else}} \
+            Save Changes \
+          {{/if}} \
         </span> \
       </span>'
     ),
@@ -26,9 +26,17 @@ function(Backbone) {
     attributes: {
       'class': 'input-and-button'
     },
-
     serialize: function() {
       return this.options.widgetOptions;
+    },
+    setSaved: function(isSaved) {
+      this.options.widgetOptions.isUpToDate = isSaved;
+      this.render();
+    },
+    initialize: function(options) {
+      if(!options.widgetOptions) {
+        this.options.widgetOptions = {isUpToDate: true};
+      }
     }
   });
 });
