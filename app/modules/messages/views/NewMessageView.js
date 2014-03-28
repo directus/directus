@@ -2,14 +2,18 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'core/BasePageView',
-  'core/panes/pane.saveview'
+  'core/BasePageView'
 ],
 
-function(app, Backbone, Directus, BasePageView, SaveModule) {
+function(app, Backbone, Directus, BasePageView) {
 
   return BasePageView.extend({
-
+    headerOptions: {
+      route: {
+        title: "Compose",
+        breadcrumbs: [{title: 'Messages', anchor: '#messages'}]
+      }
+    },
     events: {
       'click #save-form': function(e) {
         var data = this.editView.data();
@@ -28,22 +32,6 @@ function(app, Backbone, Directus, BasePageView, SaveModule) {
         route.pop();
         app.router.go(route);
       }
-    },
-
-    serialize: function() {
-      return {
-        title: 'Compose',
-        sidebar: true,
-        breadcrumbs: [{ title: 'Messages', anchor: '#messages'}]
-      };
-    },
-
-    beforeRender: function() {
-      this.setView('#sidebar', new SaveModule({
-        model: this.model,
-        buttonText: 'Send Message',
-        single: true
-      }));
     },
 
     afterRender: function() {
