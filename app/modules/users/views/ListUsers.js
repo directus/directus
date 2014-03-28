@@ -176,6 +176,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     rightToolbar: function() {
       return [
         new Widgets.SearchWidget(),
+        new Widgets.ListWidget({widgetOptions: {active: this.viewList}}),
         new Widgets.GridWidget({widgetOptions: {active: !this.viewList}})
       ];
     },
