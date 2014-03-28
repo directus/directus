@@ -9,11 +9,11 @@
 define([
   'app',
   'backbone',
-  'core/directus',
+  'core/BasePageView',
   'core/panes/pane.saveview'
 ],
 
-function(app, Directus, PaneSaveView) {
+function(app, Backbone, BasePageView, PaneSaveView) {
 
   "use strict";
 
@@ -26,7 +26,12 @@ function(app, Directus, PaneSaveView) {
 
   });
 
-  GroupPermissions.Permissions = Backbone.Layout.extend({
+  GroupPermissions.Permissions = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Settings'
+      },
+    },
 
     template: 'modules/settings/settings-grouppermissions',
 
@@ -130,21 +135,18 @@ function(app, Directus, PaneSaveView) {
 
   });
 
-  GroupPermissions.Page = Backbone.Layout.extend({
-
-    template: 'page',
-
-    serialize: function() {
-      return {
-        title: this.options.title,
+  GroupPermissions.Page = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Settings',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
-      };
+      },
     },
-
     afterRender: function() {
       var view = new GroupPermissions.Permissions({collection: this.collection});
       this.setView('#page-content', view);
       this.collection.fetch();
+      this.headerOptions.route.title = this.options.title;
       //this.insertView('#sidebar', new PaneSaveView({model: this.model, single: this.single}));
     }
 

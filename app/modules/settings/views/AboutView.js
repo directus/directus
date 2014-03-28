@@ -9,18 +9,19 @@
 define([
   'app',
   'backbone',
-  'core/directus'
+  'core/BasePageView'
 ],
 
-function(app, Directus) {
+function(app, Backbone, BasePageView) {
 
   "use strict";
 
-  var About = Backbone.Layout.extend({
-    template: 'page',
-    serialize: {
-      title: 'About',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+  var About = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'About',
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+      },
     },
     afterRender: function() {
       var view = new Backbone.Layout({template: 'modules/settings/settings-about'});

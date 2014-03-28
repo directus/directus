@@ -9,14 +9,19 @@
 define([
   'app',
   'backbone',
-  'core/directus'
+  'core/BasePageView'
 ],
 
-function(app, Directus) {
+function(app, Backbone, BasePageView) {
 
   "use strict";
 
-  var Groups = Backbone.Layout.extend({
+  var Groups = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Settings'
+      },
+    },
 
     template: 'modules/settings/settings-groups',
 

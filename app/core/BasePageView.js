@@ -28,6 +28,7 @@ function(app, Backbone, BaseHeaderView) {
     },
 
     beforeRender: function() {
+      console.log(this.headerOptions);
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();
       this.headerOptions.secondaryRow = this.secondaryRow();

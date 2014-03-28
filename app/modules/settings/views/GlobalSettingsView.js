@@ -9,25 +9,20 @@
 define([
   'app',
   'backbone',
-  'core/directus'
+  'core/directus',
+  'core/BasePageView'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, Directus, BasePageView) {
 
   "use strict";
 
-  var Global = Backbone.Layout.extend({
-
-    template: 'page',
-
-    serialize: function() {
-      return {
-        breadcrumbs: [
-          { title: 'Settings', anchor: '#settings'}
-        ],
-        title: this.options.title,
-        sidebar: true
-      };
+  var Global = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Settings',
+        breadcrumbs: [{ title: 'Settings', anchor: '#settings'}]
+      },
     },
 
     events: {
@@ -48,6 +43,7 @@ function(app, Backbone, Directus) {
 
     initialize: function(options) {
       this.editView = new Directus.EditView({model: this.model, structure: options.structure});
+      this.headerOptions.route.title = this.options.title;
     }
 
   });

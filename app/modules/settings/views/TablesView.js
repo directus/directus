@@ -11,13 +11,14 @@ define([
   'app',
   'backbone',
   'core/directus',
+  'core/BasePageView',
   'schema/ColumnModel',
   'core/UIManager',
   'jquery-ui'
 
 ],
 
-function(app, Backbone, Directus, ColumnModel, UIManager) {
+function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
 
   "use strict";
 
@@ -331,15 +332,12 @@ function(app, Backbone, Directus, ColumnModel, UIManager) {
 
   });
 
-  SettingsTables.Views.List = Backbone.Layout.extend({
-
-    template: 'page',
-
-    serialize: function() {
-      return {
+  SettingsTables.Views.List = BasePageView.extend({
+    headerOptions: {
+      route: {
         title: 'Tables',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
-      };
+      },
     },
 
     beforeRender: function() {
