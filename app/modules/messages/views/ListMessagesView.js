@@ -1,14 +1,15 @@
 define([
   'app',
   'backbone',
-  'core/BasePageView'
+  'core/BasePageView',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, BasePageView) {
+function(app, Backbone, BasePageView, Widgets) {
 
   var ListView = Backbone.Layout.extend({
 
-    template: 'messages-list',
+    template: 'modules/messages/messages-list',
 
     events: {
       'click tr': function(e) {
@@ -46,8 +47,24 @@ function(app, Backbone, BasePageView) {
 
   return BasePageView.extend({
 
+    headerOptions: {
+      route: {
+        title: "Messages"
+      }
+    },
+    leftToolbar: function() {
+      return [
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}})
+      ];
+    },
+    rightToolbar: function() {
+      return [
+        new Widgets.SearchWidget()
+      ];
+    },
+
     events: {
-      'click #btn-top': function() {
+      'click #addBtn': function() {
         app.router.go('#messages','new');
       }
     },
@@ -62,8 +79,7 @@ function(app, Backbone, BasePageView) {
     beforeRender: function() {
       var view = new ListView({collection: this.collection});
       this.setView('#page-content', view);
-
-      //this.collection.fetch();
+      BasePageView.prototype.beforeRender.call(this);
     }
   });
 });
