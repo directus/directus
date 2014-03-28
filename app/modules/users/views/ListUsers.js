@@ -103,6 +103,13 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         new Widgets.AddWidget({widgetOptions: {button: {title: 'Add User'}}})
       ];
     },
+    rightToolbar: function() {
+      return [
+        new Widgets.SearchWidget(),
+        new Widgets.ListWidget(),
+        new Widgets.GridWidget()
+      ];
+    },
     events: {
       'click #addBtn': function() {
         app.router.go('#users','new');

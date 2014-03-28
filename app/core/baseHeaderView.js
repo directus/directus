@@ -45,13 +45,13 @@ function(app, Backbone) {
 
       if(options.rightToolbar) {
         options.rightToolbar.forEach(function(widget) {
-          that.insertView('#tools-left-insert', widget);
+          that.insertView('#tools-right-insert', widget);
         });
       }
 
       if(options.secondaryToolbar) {
         options.secondaryToolbar.forEach(function(widget) {
-          that.insertView('#tools-left-insert', widget);
+          that.insertView('#secondary-row-insert', widget);
         });
       }
     },
