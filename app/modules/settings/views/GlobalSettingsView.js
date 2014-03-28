@@ -38,7 +38,7 @@ function(app, Backbone, Directus, BasePageView) {
 
     beforeRender: function() {
       this.setView('#page-content', this.editView);
-      this.setView('#sidebar', new Backbone.Layout({template: 'module-save', attributes: {'class': 'directus-module'}, serialize: {showActive: false, buttonText: 'Save', showDropdown: false, showDelete: false, canEdit:true}}));
+      BasePageView.prototype.beforeRender.call(this);
     },
 
     initialize: function(options) {

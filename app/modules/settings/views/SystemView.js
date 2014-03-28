@@ -19,7 +19,8 @@ function(app, Backbone, BasePageView) {
   var System = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Settings'
+        title: 'System',
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
     },
     afterRender: function() {

@@ -342,6 +342,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
 
     beforeRender: function() {
       this.setView('#page-content', new Tables({collection: this.collection}));
+      BasePageView.prototype.beforeRender.call(this);
     }
   });
 

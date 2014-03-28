@@ -16,13 +16,7 @@ function(app, Backbone, BasePageView) {
 
   "use strict";
 
-  var Groups = BasePageView.extend({
-    headerOptions: {
-      route: {
-        title: 'Settings'
-      },
-    },
-
+  var Groups =  Backbone.Layout.extend({
     template: 'modules/settings/settings-groups',
 
     events: {
@@ -38,14 +32,16 @@ function(app, Backbone, BasePageView) {
 
   });
 
-  var Permissions = Backbone.Layout.extend({
-    template: 'page',
-    serialize: {
-      title: 'Permissions',
-      breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+  var Permissions = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Permissions',
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+      },
     },
     beforeRender: function() {
       this.setView('#page-content', new Groups({collection: this.collection}));
+      BasePageView.prototype.beforeRender.call(this);
     }
   });
 
