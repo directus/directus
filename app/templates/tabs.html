@@ -3,6 +3,7 @@
     <a href="#{{id}}">
       {{#if avatar}}<img src="{{avatar}}" alt>{{/if}}
       <span class="icon {{icon_class}}"></span>
+      {{#if unread}}<span class="feature-nav-alert primary-background"></span>{{/if}}
     </a>
 </li>
 {{/tabs}}

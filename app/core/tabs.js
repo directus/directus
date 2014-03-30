@@ -29,12 +29,6 @@ function(app, Backbone) {
 
       if (!model) { return; }
       model.set({'active':true});
-    },
-
-    initialize: function() {
-      app.messages.on('reset sync add', function() {
-        console.log(app.messages.unread);
-      }, this);
     }
   });
 
@@ -63,7 +57,15 @@ function(app, Backbone) {
     },
 
     initialize: function() {
-      this.collection.on('change sync', this.render, this);
+      this.collection.on('change', this.render, this);
+
+      app.messages.on('reset sync add', function() {
+        var messagesTab = this.collection.get('messages');
+        if(messagesTab) {
+          messagesTab.set({unread: (app.messages.unread > 0)});
+        }
+        this.render();
+      }, this);
     }
 
   });

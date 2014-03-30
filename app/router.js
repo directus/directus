@@ -366,7 +366,6 @@ define(function(require, exports, module) {
       }, this);
 
       var user = app.users.getCurrentUser();
-
       var tabs = new Tabs.View({collection: this.tabs});
 
       var bookmarks = new Bookmarks.View({collection: this.bookmarks});

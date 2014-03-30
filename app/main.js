@@ -175,7 +175,7 @@ require(["config"], function() {
         {id: "blank",    hidden: true},
         {id: "media",    icon_class: "icon-attach"},
         {id: "users",    icon_class: "icon-users"},
-        {id: "messages", icon_class: "icon-chat"},
+        {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
         {id: "activity", icon_class: "icon-bell"},
         {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar")},
         {id: "logout", icon_class: "icon-power-button"}
