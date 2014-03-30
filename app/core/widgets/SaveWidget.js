@@ -18,6 +18,13 @@ function(Backbone) {
             Save Changes \
           {{/if}} \
         </span> \
+        <span class="icon icon-triangle-down"></span> \
+        <select id="saveSelect" name="status"> \
+          <option selected></option> \
+          <option value="save-form-stay">Save And Stay</option> \
+          <option value="save-form-add">Save And Add</option> \
+          <option value="save-form-copy">Save As Copy</option> \
+        </select> \
       </span>'
     ),
 

@@ -20,7 +20,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'click .saved': 'save'
+      'click .saved': 'save',
+      'change #saveSelect': 'save'
     },
 
     checkDiff: function(e) {
@@ -46,8 +47,10 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     },
 
     save: function(e) {
-      var action = (e !== undefined) ? e.target.id : 'save-form-stay';
-      var active = $('input[name=active]:checked').val();
+      var action = 'save-form-leave';
+      if(e.target.options !== undefined) {
+        action = $(e.target.options[e.target.selectedIndex]).val();
+      }
       var data = this.editView.data();
       var model = this.model;
       var isNew = this.model.isNew();
@@ -82,11 +85,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         collection.add(model);
         console.log(model);
       }
-
-      if (active !== undefined) {
-        data.active = active;
-      }
-
 
       // patch only the changed values
       model.save(model.diff(data), {
