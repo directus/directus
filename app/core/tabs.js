@@ -32,17 +32,9 @@ function(app, Backbone) {
     },
 
     initialize: function() {
-      app.users.on('reset sync add', function() {
-        var userTab = this.get('users');
-        if (userTab) {
-          userTab.set({count: app.users.table.get('active')});
-        }
+      app.messages.on('reset sync add', function() {
+        console.log(app.messages.unread);
       }, this);
-      if(undefined !== this.get('media')) {
-        app.media.on('reset sync add', function() {
-          this.get('media').set({count: app.media.table.get('active')});
-        }, this);
-      }
     }
   });
 
@@ -72,8 +64,6 @@ function(app, Backbone) {
 
     initialize: function() {
       this.collection.on('change sync', this.render, this);
-
-      console.log(app.messages.unread);
     }
 
   });
