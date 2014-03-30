@@ -63,66 +63,17 @@ function(app, Backbone) {
       return {tabs: tabs};
     },
 
-    // Check if tabs are hidden and puts them into a dropdown
-    checkTabs: function() {
-      var total = 80, // 40+40 for padding
-          tab_width = 0,
-          cutoff = false,
-          visible_count = 0,
-          tabs = [],
-          window_width = $(window).width();
-
-      // Get individual tab widths
-      $('#tabs ul.nav-tabs li').each(function(index) {
-        tabs[index] = $(this).width();
-        tab_width += $(this).width();
-      });
-
-      if((tab_width+total) > window_width){
-        total += 30;
-        $('#more-tabs').show();
-        $('#tabs').addClass('more-padding');
-      } else {
-        $('#more-tabs').hide();
-        $('#tabs').removeClass('more-padding');
-      }
-
-      // Clear the dropdown
-      $("#hidden-tabs").empty();
-
-      // Find tabs that fit
-      for (var i = 0; i < tabs.length; i++) {
-        total += tabs[i];
-        if(total > window_width){
-          cutoff = i;
-
-          // Add hidden tabs to dropdown
-          for (var j = cutoff; j < tabs.length; j++) {
-            $('#tabs ul.nav-tabs li:eq('+j+')').clone().appendTo("#hidden-tabs");
-          }
-
-          break;
-        }
-      }
-
-    },
     events: {
      'click a[href$="#logout"]': function(e) {
         e.preventDefault();
         window.location.href = app.API_URL + "auth/logout";
       }
     },
-    afterRender: function() {
-      this.checkTabs();
-    },
 
     initialize: function() {
       this.collection.on('change sync', this.render, this);
 
-      var that = this;
-      window.onresize = function(event) {
-        that.checkTabs();
-      };
+      console.log(app.messages.unread);
     }
 
   });
