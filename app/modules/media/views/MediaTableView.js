@@ -15,7 +15,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
   return BasePageView.extend({
     headerOptions: {
       route: {
-        title: "Media"
+        title: "Files"
       }
     },
     leftToolbar: function() {
