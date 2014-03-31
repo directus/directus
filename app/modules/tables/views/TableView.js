@@ -64,13 +64,15 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
         var value = $(e.target).val();
         this.collection.setFilter({currentPage: 0, active: value});
         this.collection.fetch();
-        this.options.preferences.save({active: value});
+        this.collection.preferences.save({active: value});
       },
     },
 
     afterRender: function() {
       this.setView('#page-content', this.table);
       this.collection.fetch({reset: true});
+
+      $('#visibilitySelect').val(this.collection.preferences.get('active'));
     },
 
     initialize: function() {
