@@ -14,12 +14,10 @@ define([
   'core/BasePageView',
   'schema/ColumnModel',
   'core/UIManager',
-  'jquery-ui'
-
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
-
+function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -90,6 +88,10 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
 
     tagName: 'form',
 
+    attributes: {
+      id: "table-settings"
+    },
+
     template: 'modules/settings/settings-columns',
 
     events: {
@@ -139,8 +141,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
       data[attr] = value;
 
       model.set(data);
-
-      console.log(model);
     },
 
     sort: function() {
@@ -255,8 +255,18 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
       }
     },
 
+    leftToolbar: function() {
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true, isUpToDate: true}});
+      return [
+        this.saveWidget
+      ];
+    },
+
     events: {
-      'click #save-form': 'saveColumns'
+      'change select,input': function(e) {
+        this.saveWidget.setSaved(false); //Temporarily Just Set it to save once something is changed.
+      },
+      'click .saved': 'saveColumns'
     },
 
     saveColumns: function(e) {
@@ -283,10 +293,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
       return data;
     },
 
-    beforeRender: function() {
-      BasePageView.prototype.beforeRender.call(this);
-    },
-
     afterRender: function() {
       this.setView('#page-content', this.columns);
       this.collection.fetch();
@@ -295,7 +301,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager) {
     initialize: function() {
       this.collection = this.model.columns;
       this.columns = new Columns({collection: this.collection});
-      //this.collection.on('change', this.render, this);
     }
   });
 
