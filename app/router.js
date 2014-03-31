@@ -92,6 +92,11 @@ define(function(require, exports, module) {
       this.v.main.insertView('#content', view).render();
     },
 
+    removeOverlayPage: function(view) {
+      view.remove();
+      console.log(this.v.main.getViews('#content').last());
+    },
+
     setPage: function(View, options) {
       this.v.main.setView('#content', new View(options)).render();
     },

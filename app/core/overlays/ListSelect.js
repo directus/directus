@@ -22,8 +22,9 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     events: {
-      'click #addBtn': function() {
-      },
+      'click #removeOverlay': function() {
+        app.router.removeOverlayPage(this);
+      }
     },
 
     afterRender: function() {
@@ -34,8 +35,16 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     initialize: function() {
       this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
 
-      this.table.events = {
+      var that = this;
 
+      this.table.events = {
+        'click tbody td': function(e) {
+          var $target = $(e.target);
+          if ($target.is("input")) return;
+          var $checkbox = $target.closest('tr').find('td.check > input');
+          $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
+          that.save();
+        }
       };
 
       this.headerOptions.route.title = this.collection.table.id;
