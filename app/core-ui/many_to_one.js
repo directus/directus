@@ -129,7 +129,8 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   Module.list = function(options) {
     if (options.value === undefined) return '';
-    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('value_template'));
+    var displayTemplate = Handlebars.compile(options.settings.get('value_template'));
+    if (options.value instanceof Backbone.Model) return displayTemplate(options.value.attributes);
     return options.value;
   };
 
