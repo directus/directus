@@ -28,8 +28,6 @@ function(app, Backbone, BaseHeaderView) {
 
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       this.setView('#fixedHeader', this.headerView);
-    },
-    initialize: function() {
     }
   });
 });
