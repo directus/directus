@@ -284,15 +284,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
       }});
     },
 
-    serialize: function() {
-      var data = {
-        title: this.model.id,
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables', anchor: '#settings/tables'}],
-        sidebar: true
-      };
-      return data;
-    },
-
     afterRender: function() {
       this.setView('#page-content', this.columns);
       this.collection.fetch();
@@ -301,6 +292,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
     initialize: function() {
       this.collection = this.model.columns;
       this.columns = new Columns({collection: this.collection});
+      this.headerOptions.route.title = this.model.id;
     }
   });
 
