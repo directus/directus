@@ -79,13 +79,13 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       //please proxy this instead
       var me = this;
 
-      modal.save = function() {
+      view.save = function() {
         _.each(view.selection(), function(id) {
           var data = collection.get(id).toJSON();
           me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
         }, this);
         me.relatedCollection.trigger('add');
-        modal.close();
+        app.router.removeOverlayPage(this);
       };
 
       collection.fetch();
@@ -122,17 +122,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', this.nestedTableView.render, this);
-
-      this.modalTable = TableView.extend({
-        events: {
-          'click tbody td': function(e) {
-            var $target = $(e.target);
-            if ($target.is("input")) return;
-            var $checkbox = $target.closest('tr').find('td.check > input');
-            $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
-          }
-        }
-      });
     }
 
   });

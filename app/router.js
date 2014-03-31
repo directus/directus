@@ -87,7 +87,6 @@ define(function(require, exports, module) {
 
     overlayPage: function(view) {
       this.v.main.getViews('#content').each(function(view) {
-        console.log(view);
         view.$el.hide();
       });
       this.v.main.insertView('#content', view).render();
