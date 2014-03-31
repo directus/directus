@@ -21,14 +21,22 @@ function(Backbone) {
       'class': 'div-right'
     },
 
+    events: {
+      'change #visibilitySelect': function(e) {
+        var value = $(e.target).val();
+        this.collection.setFilter({currentPage: 0, active: value});
+        this.collection.fetch();
+        this.collection.preferences.save({active: value});
+      },
+    },
+
+
     serialize: function() {
       return this.options.widgetOptions;
     },
 
     afterRender: function() {
-      if(this.options.widgetOptions && this.options.widgetOptions.active) {
-        $(this.el).addClass('active');
-      }
+      $('#visibilitySelect').val(this.collection.preferences.get('active'));
     }
   });
 });
