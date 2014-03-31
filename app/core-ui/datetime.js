@@ -115,7 +115,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     var m = moment(value);
 
     if (m.isValid() || value === '' || value === null || value === undefined) {
-      console.log(value === '');
       return;
     }
 

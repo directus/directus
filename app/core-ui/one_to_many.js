@@ -84,7 +84,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       view.save = function() {
         model.set(model.diff(view.editView.data()));
-        console.log(model);
         app.router.removeOverlayPage(this);
       };
 
