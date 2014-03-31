@@ -1,14 +1,14 @@
 define([
-  'core/widgets/PaginatorView',
+  'core/widgets/PaginatorWidget',
   'core/widgets/ButtonWidget',
   'core/widgets/SearchWidget',
   'core/widgets/SaveWidget'
 ],
 
-function(PaginatorView, ButtonWidget, SearchWidget, SaveWidget) {
+function(PaginatorWidget, ButtonWidget, SearchWidget, SaveWidget) {
 
   return {
-    PaginatorWidget: PaginatorView,
+    PaginatorWidget: PaginatorWidget,
     ButtonWidget: ButtonWidget,
     SearchWidget: SearchWidget,
     SaveWidget: SaveWidget

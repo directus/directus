@@ -2263,6 +2263,9 @@ textarea,
 .header1 .tools .saved .tool-item {
   background-color: #7ac943;
 }
+.header1 .tools .disabled {
+  opacity: 0.1;
+}
 .login-box {
   left: 50%;
   margin-left: -208px;

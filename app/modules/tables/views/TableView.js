@@ -28,10 +28,16 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       return  widgets;
     },
 
+    rightToolbar: function() {
+      console.log(this.collection);
+      return [
+        new Widgets.PaginatorWidget({collection: this.collection})
+      ];
+    },
+
     events: {
       'click #addBtn': function() {
         app.router.go('#tables/'+this.collection.table.id+'/new');
-        //app.router.setPage(Table.Views.Edit, {model: model});
       },
       'click #bookmarkBtn': function() {
         console.log("Clicked");
@@ -58,10 +64,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     initialize: function() {
-      //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
-      //ListViewManager
       this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
-      //this.table = new Directus.Table({collection: this.collection, navigate: true, maxColumns: 8});
       this.headerOptions.route.title = this.collection.table.id;
 
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
