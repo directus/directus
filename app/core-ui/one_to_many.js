@@ -65,15 +65,27 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     editModel: function(model) {
-      var EditView = require("core/edit");
+      var EditView = require("modules/tables/views/EditView");
       var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({model: model, hiddenFields: [columnName], inModal: true});
-      var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
+      var view = new EditView({model: model, hiddenFields: [columnName]});
+      view.headerOptions.route.isOverlay = true;
+      view.headerOptions.basicSave = true;
 
-      modal.save = function() {
-        model.set(model.diff(view.data()));
+      view.events = {
+        'click .saved': function() {
+          this.save();
+        },
+        'click #removeOverlay': function() {
+          app.router.removeOverlayPage(this);
+        }
+      };
+
+      app.router.overlayPage(view);
+
+      view.save = function() {
+        model.set(model.diff(view.editView.data()));
         console.log(model);
-        modal.close();
+        app.router.removeOverlayPage(this);
       };
 
       // Fetch first time to get the nested tables

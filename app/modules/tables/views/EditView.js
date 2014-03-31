@@ -28,7 +28,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       var diff = this.model.diff(this.editView.data());
       delete diff.id;
 
-      this.saveWidget.setSaved(_.isEmpty(diff));
+      //this.saveWidget.setSaved(_.isEmpty(diff));
     },
 
     deleteItem: function(e) {
@@ -128,7 +128,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     },
 
     leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget();
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave}});
+      this.saveWidget.setSaved(false);
       return [
         this.saveWidget
       ];

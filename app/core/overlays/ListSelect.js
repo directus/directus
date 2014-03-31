@@ -42,7 +42,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     initialize: function() {
-      this.table = ListViewManager.getInstance({collection: this.collection, maxColumns: 8, selectable: true});
+      this.table = ListViewManager.getInstance({collection: this.collection, selectable: true});
 
       var that = this;
 
