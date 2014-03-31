@@ -68,7 +68,9 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       var EditView = require("modules/tables/views/EditView");
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var view = new EditView({model: model, hiddenFields: [columnName]});
+
       view.headerOptions.route.isOverlay = true;
+      view.headerOptions.route.breadcrumbs = [];
       view.headerOptions.basicSave = true;
 
       view.events = {

@@ -21,12 +21,6 @@ function(app, Backbone, BaseHeaderView) {
       return [];
     },
 
-    headerOptions: {
-      route: {
-        title: "Directus"
-      }
-    },
-
     beforeRender: function() {
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();
@@ -34,6 +28,8 @@ function(app, Backbone, BaseHeaderView) {
 
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       this.setView('#fixedHeader', this.headerView);
+    },
+    initialize: function() {
     }
   });
 });

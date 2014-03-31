@@ -29,7 +29,6 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     rightToolbar: function() {
-      console.log(this.collection);
       return [
         new Widgets.PaginatorWidget({collection: this.collection})
       ];
@@ -40,7 +39,6 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
         app.router.go('#tables/'+this.collection.table.id+'/new');
       },
       'click #bookmarkBtn': function() {
-        console.log("Clicked");
         var data = {
           title: this.collection.table.id,
           url: Backbone.history.fragment,

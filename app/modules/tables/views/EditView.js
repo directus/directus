@@ -11,17 +11,20 @@ define([
 function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
-    headerOptions: {
-      route: {
-        title: 'Editing Item'
-      }
-    },
-
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
       'click .saved': 'save',
       'change #saveSelect': 'save'
+    },
+
+    getHeaderOptions: function() {
+      return {
+        route: {
+          title: 'Editing Item',
+          isOverlay: false
+        }
+      };
     },
 
     checkDiff: function(e) {
@@ -136,10 +139,12 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     },
 
     initialize: function(options) {
+      this.headerOptions = this.getHeaderOptions();
       this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui, batchIds: options.batchIds});
-
+      this.headerOptions.route.isOverlay = false;
+      this.headerOptions.basicSave = false;
       this.headerOptions.route.title = this.model.get('id') ? 'Editing Item' : 'Creating New Item';
       this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
     }

@@ -94,7 +94,8 @@ define(function(require, exports, module) {
 
     removeOverlayPage: function(view) {
       view.remove(); //Remove Overlay Page
-      this.v.main.getViews('#content').last()._wrapped.$el.show(); //Show the view on top of stack
+      var vieww = this.v.main.getViews('#content').last()._wrapped;
+      vieww.$el.show();
     },
 
     setPage: function(View, options) {
