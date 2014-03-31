@@ -86,18 +86,6 @@ function(app, Backbone) {
         this.options.preferences.save({active: value});
       },
 
-      'click a.pag-next:not(.disabled)': function() {
-        var page = this.collection.getFilter('currentPage') + 1;
-        this.collection.filters.currentPage = page;
-        this.collection.fetch();
-      },
-
-      'click a.pag-prev:not(.disabled)': function() {
-        var page = this.collection.getFilter('currentPage') - 1;
-        this.collection.filters.currentPage = page;
-        this.collection.fetch();
-      },
-
       'keydown': function(e) {
         if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
           this.collection.setFilter('currentPage', this.collection.filters.currentPage + 1);
@@ -172,11 +160,8 @@ function(app, Backbone) {
       var table = this.options.collection.table;
       var options = {};
 
-      options.totalCount = this.collection.getTotalCount();
       options.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, options.totalCount);
       options.uBound = Math.min(options.totalCount, options.lBound + this.collection.getFilter('perPage') - 1);
-      options.pageNext = (this.collection.getFilter('currentPage') + 1 < (options.totalCount / this.collection.getFilter('perPage') ) );
-      options.pagePrev = (this.collection.getFilter('currentPage') !== 0);
 
       options.actionButtons = (this.actionButtons && this.active); //(this.options.table.selection.length > 0);
       options.batchEdit = this.batchEdit;
@@ -198,7 +183,6 @@ function(app, Backbone) {
       options.filter = true;
       options.tableColumns = this.options.collection.structure.pluck('id');
       options.advSearchData = this.collection.getFilter('adv_search');
-      options.paginator = (options.pageNext || options.pagePrev);
       options.deleteOnly = this.options.deleteOnly && this.actionButtons;
 
       options.visibilityButtons = options.actionButtons || options.deleteOnly;
