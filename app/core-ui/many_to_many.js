@@ -80,7 +80,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       var me = this;
 
       view.save = function() {
-        _.each(view.selection(), function(id) {
+        console.log("save");
+        _.each(view.table.selection(), function(id) {
           var data = collection.get(id).toJSON();
           me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
         }, this);

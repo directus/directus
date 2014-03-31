@@ -18,13 +18,22 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     leftToolbar: function() {
-      return  [];
+      return  [
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}})
+      ];
     },
 
     events: {
       'click #removeOverlay': function() {
         app.router.removeOverlayPage(this);
+      },
+      'click #addBtn': function() {
+        this.save();
       }
+    },
+
+    save: function() {
+      console.log("Save");
     },
 
     afterRender: function() {
@@ -33,7 +42,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     initialize: function() {
-      this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
+      this.table = ListViewManager.getInstance({collection: this.collection, maxColumns: 8, selectable: true});
 
       var that = this;
 
@@ -43,7 +52,6 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
           if ($target.is("input")) return;
           var $checkbox = $target.closest('tr').find('td.check > input');
           $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
-          that.save();
         }
       };
 
