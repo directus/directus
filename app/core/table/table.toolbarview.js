@@ -79,13 +79,6 @@ function(app, Backbone) {
 
       },
 
-      'click #visibility .dropdown-menu li > a': function(e) {
-        var value = $(e.target).attr('data-value');
-        this.collection.setFilter({currentPage: 0, active: value});
-        this.collection.fetch();
-        this.options.preferences.save({active: value});
-      },
-
       'keydown': function(e) {
         if (e.keyCode === 39 && (this.collection.getFilter('currentPage') + 1 < (this.collection.total / this.collection.getFilter('perPage')))) {
           this.collection.setFilter('currentPage', this.collection.filters.currentPage + 1);

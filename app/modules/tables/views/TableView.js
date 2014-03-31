@@ -34,6 +34,12 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       ];
     },
 
+    secondaryRow: function() {
+      return [
+        new Widgets.VisibilityWidget()
+      ];
+    },
+
     events: {
       'click #addBtn': function() {
         app.router.go('#tables/'+this.collection.table.id+'/new');
@@ -53,7 +59,13 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
         }
         $('#bookmarkBtn').parent().toggleClass('active');
         this.isBookmarked = !this.isBookmarked;
-      }
+      },
+      'change #visibilitySelect': function(e) {
+        var value = $(e.target).val();
+        this.collection.setFilter({currentPage: 0, active: value});
+        this.collection.fetch();
+        this.options.preferences.save({active: value});
+      },
     },
 
     afterRender: function() {

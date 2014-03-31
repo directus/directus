@@ -48,8 +48,8 @@ function(app, Backbone) {
         });
       }
 
-      if(options.secondaryToolbar) {
-        options.secondaryToolbar.forEach(function(widget) {
+      if(options.secondaryRow) {
+        options.secondaryRow.forEach(function(widget) {
           that.insertView('#secondary-row-insert', widget);
         });
       }

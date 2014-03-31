@@ -17,46 +17,9 @@
 </div>
 {{/if}}
 
-
-<div class="btn-group" id="visibility">
-  {{#visibility}}
-  {{#if this.active}}
-    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-      Viewing {{text}}
-      <span class="caret"></span>
-    </a>
-  {{/if}}
-  {{/visibility}}
-
-  <ul class="dropdown-menu">
-    {{#visibility}}
-      {{#unless active}}<li><a data-value="{{value}}">View {{text}} ({{count}})</a></li>{{/unless}}
-    {{/visibility}}
-  </ul>
-</div>
-
-{{#if paginator}}
-<div class="btn-group">
-  <a class="btn btn-round {{#unless pagePrev}}disabled{{/unless}} pag-prev"><span class="icon icon-triangle-left"></span></a>
-  <a class="btn btn-round {{#unless pageNext}}disabled{{/unless}} pag-next"><span class="icon icon-triangle-right"></span></a>
-</div>
-{{/if}}
-
- 
-    
 <div class="header1"><!-- This is just to help styling while form is out of header -->
   <div class="secondary-row row-plain filter-options">
           <ul class="tools left">
-            <li class="div-right">
-              <span class="simple-select">
-                <span class="icon icon-triangle-down"></span>
-                <select name="status">
-                  <option>Viewing All</option>
-                  <option>Viewing All</option>
-                  <option>Viewing All</option>
-                </select>
-              </span>
-            </li>
             {{#if filter}}
               <li>
                 <span class="action" data-add-filter-row>Add Filter</span>
