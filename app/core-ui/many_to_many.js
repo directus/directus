@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], function(app, Backbone, Onetomany, TableView) {
+define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, Backbone, Onetomany, TableView, Overlays) {
 
   "use strict";
 
@@ -73,8 +73,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view'], func
         //pluck('id');
       });
       var collection = app.getEntries(this.relatedCollection.table.id);
-      var view = new this.modalTable({collection: collection, selectable: true, footer: false, highlight: highLightIds});
-      var modal = app.router.openModal(view, {stretch: true, title: 'Insert Item'});
+      var view = new Overlays.ListSelect({collection: collection});
+      app.router.overlayPage(view);
 
       //please proxy this instead
       var me = this;

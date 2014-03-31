@@ -13,19 +13,12 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     headerOptions: {
       route: {
         title: 'Table View',
-        breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
+        isOverlay: true
       },
     },
 
     leftToolbar: function() {
-      var widgets = [
-        new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}})
-      ];
-
-      if (this.collection.hasPermission('add')) {
-        widgets.push(new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}}));
-      }
-      return  widgets;
+      return  [];
     },
 
     events: {

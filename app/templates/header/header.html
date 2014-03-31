@@ -2,10 +2,15 @@
   <div class="primary-row row-plain">
     <h1 class="font-primary">
       {{#if route}}
-        {{#each route.breadcrumbs}}
-            <a href="{{anchor}}" class="" >{{{capitalize title}}}</a>
-            <span class="icon icon-chevron-small-right"></span>
-        {{/each}}
+        {{#if route.isOverlay}}
+          <span class="icon icon-circled-left" id="removeOverlay"></span>
+          <span class="icon icon-chevron-small-right"></span>
+        {{else}}
+          {{#each route.breadcrumbs}}
+              <a href="{{anchor}}" class="" >{{{capitalize title}}}</a>
+              <span class="icon icon-chevron-small-right"></span>
+          {{/each}}
+        {{/if}}
         <span class="endnode">{{{capitalize route.title}}}</span>
       {{/if}}
     </h1>
