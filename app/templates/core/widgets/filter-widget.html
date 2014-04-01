@@ -2,10 +2,6 @@
   <div class="left">
     {{#unless addFilter}}
     <span class="action vertical-center" data-add-filter-row>Add Filter</span>
-    {{#if filters}}
-      <span class="text-spacer vertical-center">or</span>
-      <span class="action vertical-center">Save Search</span>
-    {{/if}}
     {{/unless}}
   </div>
   {{#if addFilter}}
@@ -34,7 +30,7 @@
   </ul>
   {{/if}}
   {{#filters}}
-    <span style="background-color:grey;color:white;">{{id}}{{type}}{{value}}</span>
+    <span style="background-color:grey;color:white;padding:5px;border-radius:5px;margin-left:10px">{{id}} {{type}} {{value}}</span>
   {{/filters}}
   <!-- <div class="vertical-center right pagination-number">501–1,000 of 3,508</div>  -->
 <!-- </div> -->
