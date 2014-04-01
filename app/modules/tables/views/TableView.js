@@ -33,14 +33,21 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
         new Widgets.PaginatorWidget({collection: this.collection})
       ];
     },
-
-    secondaryRow: function() {
+    
+    leftSecondaryToolbar: function() {
       this.selectedAction = new Widgets.SelectionActionWidget();
       this.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
-      this.selectedAction = new Widgets.FilterWidget({collection: this.collection});
+      this.filterWidget = new Widgets.FilterWidget({collection: this.collection});
       return [
-        ,
-
+        this.visibilityWidget,
+        this.filterWidget
+      ];
+    },
+    
+    rightSecondaryToolbar: function() {
+      this.paginationCountWidget = new Widgets.PaginationCountWidget();
+      return [
+        this.paginationCountWidget
       ];
     },
 

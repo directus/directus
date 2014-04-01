@@ -7,7 +7,7 @@ function(app, Backbone) {
   "use strict";
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile('<span class="simple-select"> \
+    template: Handlebars.compile('<span class="simple-select vertical-center"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status"> \
         <option value="1,2">View All</option> \
@@ -17,9 +17,9 @@ function(app, Backbone) {
       </select> \
     </span>'),
 
-    tagName: 'li',
+    tagName: 'div',
     attributes: {
-      'class': 'div-right'
+      'class': 'tool div-right'
     },
 
     events: {

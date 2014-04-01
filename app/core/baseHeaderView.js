@@ -47,10 +47,16 @@ function(app, Backbone) {
           that.insertView('#tools-right-insert', widget);
         });
       }
-
-      if(options.secondaryRow) {
-        options.secondaryRow.forEach(function(widget) {
-          that.insertView('#secondary-row-insert', widget);
+      
+      if(options.leftSecondaryToolbar) {
+        options.leftSecondaryToolbar.forEach(function(widget) {
+          that.insertView('#tools-secondary-left-insert', widget);
+        });
+      }
+      
+      if(options.rightSecondaryToolbar) {
+        options.rightSecondaryToolbar.forEach(function(widget) {
+          that.insertView('#tools-secondary-right-insert', widget);
         });
       }
     },

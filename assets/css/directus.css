@@ -1353,7 +1353,7 @@ button {
 }
 .btn .icon {
   font-size: 400%;
-  line-height: 20%;
+  line-height: 15%;
 }
 select {
   cursor: pointer;
@@ -1423,6 +1423,7 @@ input[type="radio"].custom-check {
 .custom-check input[type="radio"] + label,
 input[type="checkbox"].custom-check + label,
 input[type="radio"].custom-check + label {
+  cursor: pointer;
   display: inline-block;
   font-weight: 600;
   margin-right: 10px;
@@ -2117,68 +2118,6 @@ textarea,
   float: left;
   list-style: none;
 }
-.header1 .primary-row .tools {
-  margin-top: 5px;
-}
-.header1 .primary-row .tools.left {
-  margin-left: 15px;
-}
-.header1 .primary-row .tools .simple-select {
-  margin-top: 4px;
-}
-.header1 .secondary-row {
-  color: #cbcbcb;
-  margin: 15px 0px -15px 0px;
-}
-.header1 .secondary-row.filter-options .filter-list {
-  padding: 0px;
-}
-.header1 .secondary-row.filter-options .filter-form {
-  float: left;
-  margin-left: 10px;
-  margin-top: 4px;
-}
-.header1 .secondary-row.filter-options .filter-form .action {
-  display: block;
-  float: left;
-  margin-left: 4px;
-  margin-top: 5px;
-}
-.header1 .secondary-row.batch-actions.left li {
-  margin-left: 20px;
-}
-.header1 .secondary-row.batch-actions.left li.div-right {
-  padding-right: 20px;
-}
-.header1 .secondary-row li {
-  font-size: 12px;
-}
-.header1 .secondary-row .vertical-center {
-  margin-top: 10px;
-}
-.header1 .secondary-row .action {
-  color: #5b5b5b;
-  cursor: pointer;
-}
-.header1 .secondary-row .text-spacer {
-  padding: 0px 10px;
-}
-.header1 .secondary-row .tools li {
-  height: 22px;
-  padding-top: 10px;
-}
-.header1 .secondary-row .tools .simple-select {
-  margin-top: -3px;
-}
-.header1 .secondary-row .filters {
-  padding: 0px;
-}
-.header1 .secondary-row .filters li {
-  background-color: #cbcbcb;
-  color: #ffffff;
-  margin: 8px 0px 7px 10px;
-  padding: 3px 10px;
-}
 .header1 .input-and-button.point.point .large-circle .icon {
   position: relative;
   z-index: 2;
@@ -2208,30 +2147,25 @@ textarea,
   font-size: 18px;
   position: relative;
 }
-.header1 .tools li.div-right {
-  border-right: solid 1px #ededed;
-  height: 32px;
-  padding-right: 10px;
-}
 .header1 .tools.left {
   padding: 0px;
 }
-.header1 .tools.left li {
+.header1 .tools.left .tool {
+  float: left;
   margin-left: 10px;
 }
-.header1 .tools.left li:first-child {
+.header1 .tools.left .tool:first-child {
   margin-left: 0px;
 }
-.header1 .tools.right li {
+.header1 .tools.right .tool {
   margin-right: 10px;
 }
-.header1 .tools.right li:last-child {
+.header1 .tools.right .tool:last-child {
   margin-right: 0px;
 }
 .header1 .tools button,
 .header1 .tools input {
   display: block;
-  float: right;
 }
 .header1 .tools button {
   border: none;
@@ -2239,9 +2173,11 @@ textarea,
 .header1 .tools input {
   border: none;
   color: #cbcbcb;
-  margin-right: 10px;
-  margin-top: 5px;
-  text-align: right;
+}
+.header1 .tools .tool.div-right {
+  border-right: solid 1px #ededed;
+  height: 32px;
+  padding-right: 10px;
 }
 .header1 .tools .tool-item {
   background-color: #cbcbcb;
@@ -2267,6 +2203,85 @@ textarea,
 }
 .header1 .tools .disabled {
   opacity: 0.1;
+}
+.header1 .primary-row .tools {
+  margin-top: 5px;
+}
+.header1 .primary-row .tools.left {
+  margin-left: 15px;
+}
+.header1 .primary-row .tools.right button,
+.header1 .primary-row .tools.right input {
+  display: block;
+  float: right;
+}
+.header1 .primary-row .tools .btn-round {
+  padding: 4px;
+}
+.header1 .primary-row .tools .simple-select {
+  margin-top: 4px;
+}
+.header1 .primary-row .tools input {
+  margin-right: 10px;
+  margin-top: 5px;
+  text-align: right;
+}
+.header1 .secondary-row {
+  color: #cbcbcb;
+  margin: 15px 0px -15px 0px;
+}
+.header1 .secondary-row.filter-options .filter-list {
+  padding: 0px;
+}
+.header1 .secondary-row.filter-options .filter-form {
+  float: left;
+  margin-left: 10px;
+}
+.header1 .secondary-row.filter-options .filter-form input {
+  display: inline-block;
+}
+.header1 .secondary-row.filter-options .filter-form .action {
+  display: block;
+  float: left;
+  margin-left: 4px;
+}
+.header1 .secondary-row.filter-options .filter-form .simple-select {
+  margin-top: 0px;
+}
+.header1 .secondary-row.batch-actions.left li {
+  margin-left: 20px;
+}
+.header1 .secondary-row.batch-actions.left li.div-right {
+  padding-right: 20px;
+}
+.header1 .secondary-row li {
+  font-size: 12px;
+}
+.header1 .secondary-row .vertical-center {
+  margin-top: 10px;
+}
+.header1 .secondary-row .vertical-center {
+  margin-top: 7px;
+}
+.header1 .secondary-row .action {
+  display: inline-block;
+  color: #5b5b5b;
+  cursor: pointer;
+}
+.header1 .secondary-row .text-spacer {
+  padding: 0px 10px;
+}
+.header1 .secondary-row .tools {
+  font-size: 12px;
+}
+.header1 .secondary-row .filters {
+  padding: 0px;
+}
+.header1 .secondary-row .filters li {
+  background-color: #cbcbcb;
+  color: #ffffff;
+  margin: 8px 0px 7px 10px;
+  padding: 3px 10px;
 }
 .login-box {
   left: 50%;
