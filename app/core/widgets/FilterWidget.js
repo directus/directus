@@ -7,11 +7,11 @@ function(app, Backbone) {
   "use strict";
 
   return Backbone.Layout.extend({
-  
+
     template: 'core/widgets/filter-widget',
 
     tagName: 'div',
-    
+
     attributes: {
       class: 'tool'
     },
@@ -45,18 +45,23 @@ function(app, Backbone) {
         this.collection.setFilter('adv_search', searchSettings);
         this.collection.setFilter('currentPage', 0);
         this.collection.fetch();
-        //this.collection.trigger('adv_search', "id == 336");
+        this.options.filterOptions.filters.push(searchSettings[0]);
+        this.options.filterOptions.addFilter = false;
+        this.render();
       },
       'click [data-add-filter-row]': function(e) {
-        var $filterRow = this.getFilterRow;
-        $filterRow.clone(true).appendTo(".advanced-search-fields");
+        //var $filterRow = this.getFilterRow;
+        //$filterRow.clone(true).appendTo(".advanced-search-fields");
+        this.options.filterOptions.addFilter = true;
+        this.render();
       }
     },
 
 
     serialize: function() {
-      var data = {};
+      var data = this.options.filterOptions;
       data.tableColumns = this.collection.structure.pluck('id');
+      console.log(data);
       return data;
     },
 
@@ -100,5 +105,9 @@ function(app, Backbone) {
     afterRender: function() {
       this.setFilterRow();
     },
+
+    initialize: function() {
+      this.options.filterOptions = {filters:[]};
+    }
   });
 });

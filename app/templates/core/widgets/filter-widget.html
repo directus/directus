@@ -1,33 +1,40 @@
 <!-- <div class="secondary-row row-plain filter-options">  -->
-  <div class="left"> 
-    <span class="action vertical-center" data-add-filter-row>Add Filter</span> 
-    {{#if hasFilters}} 
-      <span class="text-spacer vertical-center">or</span> 
-      <span class="action vertical-center">Save Search</span> 
+  <div class="left">
+    {{#unless addFilter}}
+    <span class="action vertical-center" data-add-filter-row>Add Filter</span>
+    {{#if filters}}
+      <span class="text-spacer vertical-center">or</span>
+      <span class="action vertical-center">Save Search</span>
     {{/if}}
-  </div> 
-  <ul id="advancedFilterList" class="filter-list advanced-search-fields left"> 
-    <li class="advanced-search-fields-row filter-form"> 
-      <span class="simple-select"> 
-        <span class="icon icon-triangle-down"></span> 
-        <select name="" id="" class="medium adv-search-col-id"> 
-          {{#tableColumns}} 
-          <option value="{{this}}">{{this}}</option> 
-          {{/tableColumns}} 
-        </select> 
-      </span> 
-      <span class="simple-select"> 
-        <span class="icon icon-triangle-down"></span> 
-        <select name="" id="" class="small adv-search-query-type"> 
-          <option value="=">==</option> 
-          <option value="<=">&lt;=</option> 
-          <option value=">=">&gt;=</option> 
-          <option value="like">like</option> 
-        </select> 
-      </span> 
-      <input type="text" placeh older="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium" placeholder="Keywords"> 
-      <span id="addFilterButton" class="action vertical-center" >Add</span> 
-    </li> 
-  </ul> 
+    {{/unless}}
+  </div>
+  {{#if addFilter}}
+  <ul id="advancedFilterList" class="filter-list advanced-search-fields left">
+    <li class="advanced-search-fields-row filter-form">
+      <span class="simple-select">
+        <span class="icon icon-triangle-down"></span>
+        <select name="" id="" class="medium adv-search-col-id">
+          {{#tableColumns}}
+          <option value="{{this}}">{{this}}</option>
+          {{/tableColumns}}
+        </select>
+      </span>
+      <span class="simple-select">
+        <span class="icon icon-triangle-down"></span>
+        <select name="" id="" class="small adv-search-query-type">
+          <option value="=">==</option>
+          <option value="<=">&lt;=</option>
+          <option value=">=">&gt;=</option>
+          <option value="like">like</option>
+        </select>
+      </span>
+      <input type="text" placeh older="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium" placeholder="Keywords">
+      <span id="addFilterButton" class="action vertical-center" >Add</span>
+    </li>
+  </ul>
+  {{/if}}
+  {{#filters}}
+    <span style="background-color:grey;color:white;">{{id}}{{type}}{{value}}</span>
+  {{/filters}}
   <!-- <div class="vertical-center right pagination-number">501–1,000 of 3,508</div>  -->
 <!-- </div> -->
