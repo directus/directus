@@ -1006,7 +1006,6 @@ body {
   background-color: #ffffff;
   color: #5b5b5b;
   font-size: 12px;
-  height: 100%;
   width: 100%;
 }
 body {
@@ -1145,6 +1144,9 @@ button {
 }
 .overlay h3 {
   display: none;
+}
+.remove-header-margin {
+  margin-top: -20px;
 }
 .btn-toolbar {
   clear: both;
