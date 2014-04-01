@@ -4,10 +4,11 @@ define([
   'core/widgets/SearchWidget',
   'core/widgets/SaveWidget',
   'core/widgets/VisibilityWidget',
-  'core/widgets/FilterWidget'
+  'core/widgets/FilterWidget',
+  'core/widgets/SelectionActionWidget'
 ],
 
-function(PaginatorWidget, ButtonWidget, SearchWidget, SaveWidget, VisibilityWidget, FilterWidget) {
+function(PaginatorWidget, ButtonWidget, SearchWidget, SaveWidget, VisibilityWidget, FilterWidget, SelectionActionWidget) {
 
   return {
     PaginatorWidget: PaginatorWidget,
@@ -15,7 +16,8 @@ function(PaginatorWidget, ButtonWidget, SearchWidget, SaveWidget, VisibilityWidg
     SearchWidget: SearchWidget,
     SaveWidget: SaveWidget,
     VisibilityWidget: VisibilityWidget,
-    FilterWidget: FilterWidget
+    FilterWidget: FilterWidget,
+    SelectionActionWidget: SelectionActionWidget
   };
 
 });
