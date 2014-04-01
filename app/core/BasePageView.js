@@ -17,14 +17,19 @@ function(app, Backbone, BaseHeaderView) {
       return [];
     },
 
-    secondaryRow: function() {
+    leftSecondaryToolbar: function() {
       return [];
     },
-
+    
+    rightSecondaryToolbar: function() {
+      return [];
+    },
+    
     beforeRender: function() {
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();
-      this.headerOptions.secondaryRow = this.secondaryRow();
+      this.headerOptions.leftSecondaryToolbar = this.leftSecondaryToolbar();
+      this.headerOptions.rightSecondaryToolbar = this.rightSecondaryToolbar();
 
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       this.setView('#fixedHeader', this.headerView);

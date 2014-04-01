@@ -7,50 +7,13 @@ function(app, Backbone) {
   "use strict";
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile(' \
-        <div class="secondary-row row-plain filter-options"> \
-          <ul class="tools left"> \
-            {{#unless singleFilter}} \
-            <li><span class="action" data-add-filter-row>Add Filter</span> \
-            {{/unless}} \
-              {{#if hasFilters}} \
-                <span class="text-spacer">or</span> \
-                <span class="action">Save Search</span> \
-              {{/if}} \
-            </li> \
-          </ul> \
-          {{#if showFilters}} \
-          <ul style="float:left" id="advancedFilterList" class="filter-list advanced-search-fields"> \
-            <li class="advanced-search-fields-row filter-form"> \
-              <span class="simple-select"> \
-                <span class="icon icon-triangle-down"></span> \
-                <select name="" id="" class="medium adv-search-col-id"> \
-                  {{#tableColumns}} \
-                  <option value="{{this}}">{{this}}</option> \
-                  {{/tableColumns}} \
-                </select> \
-              </span> \
-              <span class="simple-select"> \
-                <span class="icon icon-triangle-down"></span> \
-                <select name="" id="" class="small adv-search-query-type"> \
-                  <option value="=">==</option> \
-                  <option value="<=">&lt;=</option> \
-                  <option value=">=">&gt;=</option> \
-                  <option value="like">like</option> \
-                </select> \
-              </span> \
-              <input type="text" placeh older="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium"> \
-              <span id="addFilterButton" class="action" >Add</span> \
-            </li> \
-          </ul> \
-          {{/if}} \
-          <div class="vertical-center right pagination-number"></div> \
-        </div>'),
+  
+    template: 'core/widgets/filter-widget',
 
-    tagName: 'span',
-
+    tagName: 'div',
+    
     attributes: {
-      style: "float:left"
+      class: 'tool'
     },
 
     events: {
