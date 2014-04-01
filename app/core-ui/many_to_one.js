@@ -134,7 +134,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       var displayTemplate = Handlebars.compile(options.settings.get('visible_column_template'));
       if (options.value instanceof Backbone.Model) return displayTemplate(options.value.attributes);
     }
-    console.log(options.settings.get('visible_column'));
     if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
     return options.value;
   };
