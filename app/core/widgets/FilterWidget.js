@@ -1,7 +1,8 @@
 define([
+  'app',
   'backbone'
 ],
-function(Backbone) {
+function(app, Backbone) {
 
   "use strict";
 
@@ -14,7 +15,7 @@ function(Backbone) {
               {{/if}} \
             </li> \
           </ul> \
-          <ul id="advancedFilterList" class="filter-list advanced-search-fields"> \
+          <ul style="float:left" id="advancedFilterList" class="filter-list advanced-search-fields"> \
             <li class="advanced-search-fields-row filter-form"> \
               <span class="simple-select"> \
                 <span class="icon icon-triangle-down"></span> \
@@ -41,6 +42,10 @@ function(Backbone) {
           </div>'),
 
     tagName: 'span',
+
+    attributes: {
+      style: "float:left"
+    },
 
     events: {
       'click #addFilterButton': function(e) {
@@ -86,7 +91,7 @@ function(Backbone) {
       return data;
     },
 
-        mysql_real_escape_string: function(str) {
+    mysql_real_escape_string: function(str) {
       if(!str) {return "";}
       return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
           switch (char) {

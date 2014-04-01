@@ -1,7 +1,8 @@
 define([
+  'app',
   'backbone'
 ],
-function(Backbone) {
+function(app, Backbone) {
 
   "use strict";
 
