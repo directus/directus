@@ -36,7 +36,8 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
     secondaryRow: function() {
       return [
-        new Widgets.VisibilityWidget({collection: this.collection})
+        new Widgets.VisibilityWidget({collection: this.collection}),
+        new Widgets.FilterWidget({collection: this.collection})
       ];
     },
 
@@ -68,7 +69,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     initialize: function() {
-      this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8});
+      this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8, toolbar: false});
       this.headerOptions.route.title = this.collection.table.id;
 
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
