@@ -1564,6 +1564,7 @@ textarea,
   position: relative;
   text-transform: capitalize;
   top: -5px;
+  font-weight: 600;
 }
 .two-column-form .fields .field {
   background-color: #fbfbfb;
@@ -1637,6 +1638,7 @@ textarea,
 }
 .table-striped thead tr th {
   color: #cbcbcb;
+  border-bottom: 1px solid #ededed;
   font-size: 13px;
   font-weight: 600;
   padding: 10px;
@@ -1947,7 +1949,6 @@ textarea,
 #sidebar #mainSidebar li {
   font-size: 12px;
   line-height: 13px;
-  margin-bottom: 10px;
   padding: 10px 20px;
   position: relative;
 }
