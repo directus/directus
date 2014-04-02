@@ -41,10 +41,29 @@ function(app, Backbone, PreferenceModel) {
           this.collection.preferences.save({active: value});
         } else if($target.attr('data-snapshot-create') !== undefined && $target.attr('data-snapshot-create') !== false) {
           var name = prompt("Please enter a name for your Snapshot");
+          var that = this;
+          //Check for Duplicate
+          this.options.widgetOptions.snapshots.forEach(function(snapshot) {
+            if(name == snapshot) {
+              alert('A Snapshot With that name already exists!');
+              return;
+            }
+          });
+
+          if(name == null || name == "") {
+            alert('Please Fill In a Valid Name');
+            return;
+          }
+
           this.options.widgetOptions.snapshots.push(name);
+
+          //Save id so it can be reset after render
           this.defaultId = this.collection.preferences.get('id');
+          //Unset Id so that it creates new Preference
           this.collection.preferences.unset('id');
+
           this.collection.preferences.set({title: name});
+
           this.collection.preferences.save();
         } else if($target.attr('data-snapshot') !== undefined && $target.attr('data-snapshot') !== false) {
           this.collection.preferences.fetch({newTitle: $target.val()});
@@ -58,8 +77,8 @@ function(app, Backbone, PreferenceModel) {
 
     afterRender: function() {
       if(this.collection.preferences.get('title') != null) {
-        this.collection.preferences.set({title:null, id: this.defaultId});
         $('#visibilitySelect').val(this.collection.preferences.get('title'));
+        this.collection.preferences.set({title:null, id: this.defaultId});
       } else {
         $('#visibilitySelect').val(this.collection.preferences.get('active'));
       }
