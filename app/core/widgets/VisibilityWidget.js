@@ -47,13 +47,19 @@ function(app, Backbone, PreferenceModel) {
       'click #saveSnapshotBtn': function(e) {
         var name = prompt("Please enter a name for your Snapshot");
         var that = this;
+        var exists = false;
         //Check for Duplicate
         this.options.widgetOptions.snapshots.forEach(function(snapshot) {
           if(name == snapshot) {
             alert('A Snapshot With that name already exists!');
+            exists = true;
             return;
           }
         });
+
+        if(exists) {
+          return;
+        }
 
         if(name === null || name === "") {
           alert('Please Fill In a Valid Name');
