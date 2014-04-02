@@ -51,7 +51,7 @@ input[type="text"], input[type="password"] {font-size:16px; width:360px; border:
     </p>
     <p class="">
       <input type="password" name="password" placeholder="Password" />
-      <button id="forgot-password" class="btn btn-primary"></button>
+      <span id="forgot-password" class="btn btn-primary"></span>
     </p>
     <!--<label class="checkbox">
         <input type="checkbox" name="remember" /> Keep me logged in on this computer
@@ -92,7 +92,7 @@ $(function(){
     $login_message.hide();
   }
 
-  $('button#forgot-password').bind('click', function(e){
+  $('#forgot-password').bind('click', function(e){
     e.preventDefault();
     clear_messages();
     var $form = $(this).closest('form'),
@@ -101,25 +101,27 @@ $(function(){
       message("Please enter a valid email address.", true);
       return false;
     }
-    $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/forgot-password' ?>', {
-      data: { email: email },
-      dataType: 'json',
-      type: 'POST',
-      success: function(data, textStatus, jqXHR) {
-        if(!data.success) {
-          var errorMessage = "Oops an error occurred!";
-          if(data.message) {
-              errorMessage = data.message;
+    if(confirm('Are you sure you want to reset your password?')) {
+      $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/forgot-password' ?>', {
+        data: { email: email },
+        dataType: 'json',
+        type: 'POST',
+        success: function(data, textStatus, jqXHR) {
+          if(!data.success) {
+            var errorMessage = "Oops an error occurred!";
+            if(data.message) {
+                errorMessage = data.message;
+            }
+            message(errorMessage, true);
+            return;
           }
-          message(errorMessage, true);
-          return;
+          message("We sent a temporary password to your email address.")
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          message("Server error occurred. (" + textStatus + ")", true);
         }
-        message("We sent a temporary password to your email address.")
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        message("Server error occurred. (" + textStatus + ")", true);
-      }
-    });
+      });
+    }
   });
 
   $('form').bind('submit', function(e){
