@@ -152,7 +152,8 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                 sort,
                 sort_order,
                 active,
-                title
+                title,
+                search_string
             FROM
                 INFORMATION_SCHEMA.TABLES ST
             LEFT JOIN

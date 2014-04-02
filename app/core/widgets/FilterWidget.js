@@ -116,25 +116,29 @@ function(app, Backbone) {
       this.setFilterRow();
     },
 
+    updateFiltersFromPreference: function() {
+      this.options.filterOptions.filters = [];
+
+      var search = this.collection.preferences.get('search_string');
+
+      if(search !== null && search !== undefined) {
+        search = decodeURIComponent(search).replace('\\,', '%21').split(",");
+        var that = this;
+        search.forEach(function(filter) {
+          filter = filter.replace('\\:', '%20');
+          filter = filter.split(':');
+          that.options.filterOptions.filters.push({id: filter[0].replace('%20',':'), type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')});
+        });
+      }
+      this.updateFilters();
+    },
+
     initialize: function() {
       this.options.filterOptions = {filters:[]};
 
-      this.collection.preferences.on('sync', function() {
-        this.options.filterOptions.filters = [];
+      this.updateFiltersFromPreference();
 
-        var search = this.collection.preferences.get('search_string');
-
-        if(search !== null && search !== undefined) {
-          search = decodeURIComponent(search).replace('\\,', '%21').split(",");
-          var that = this;
-          search.forEach(function(filter) {
-            filter = filter.replace('\\:', '%20');
-            filter = filter.split(':');
-            that.options.filterOptions.filters.push({id: filter[0].replace('%20',':'), type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')});
-          });
-        }
-        this.updateFilters();
-      }, this);
+      this.collection.preferences.on('sync', this.updateFiltersFromPreference, this);
     }
   });
 });
