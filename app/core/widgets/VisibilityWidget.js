@@ -50,7 +50,7 @@ function(app, Backbone, PreferenceModel) {
             }
           });
 
-          if(name == null || name == "") {
+          if(name === null || name === "") {
             alert('Please Fill In a Valid Name');
             return;
           }
@@ -76,7 +76,7 @@ function(app, Backbone, PreferenceModel) {
     },
 
     afterRender: function() {
-      if(this.collection.preferences.get('title') != null) {
+      if(this.collection.preferences.get('title') !== null) {
         $('#visibilitySelect').val(this.collection.preferences.get('title'));
         this.collection.preferences.set({title:null, id: this.defaultId});
       } else {
