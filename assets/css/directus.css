@@ -1032,7 +1032,7 @@ h4 {
   font-size: 16px;
 }
 p {
-  margin: 15px 0px;
+  margin: 10px 0px;
 }
 a {
   color: inherit;
@@ -1155,7 +1155,7 @@ button {
 .btn-toolbar {
   clear: both;
   float: none;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .btn-toolbar:after {
   clear: both;
@@ -1165,7 +1165,7 @@ button {
 }
 .btn-toolbar .btn-group {
   float: left;
-  margin-right: 10px;
+  margin-right: 5px;
 }
 .btn-toolbar .btn-group:last-child {
   margin-right: 0px;
@@ -1314,7 +1314,7 @@ button {
   border: solid 1px #7d7d7d;
   color: #ffffff;
   cursor: pointer;
-  padding: 10px 15px;
+  padding: 5px 10px;
   text-transform: uppercase;
 }
 .btn:hover {
@@ -1353,7 +1353,7 @@ button {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 0px;
-  padding: 15px;
+  padding: 10px;
 }
 .btn .icon {
   font-size: 400%;
@@ -1394,7 +1394,7 @@ select {
   border: solid 1px #ededed;
   color: #7d7d7d;
   cursor: pointer;
-  padding: 10px 25px 10px 15px;
+  padding: 5px 25px 5px 10px;
   -webkit-appearance: none;
 }
 .simple-select {
@@ -1431,7 +1431,7 @@ input[type="radio"].custom-check + label {
   cursor: pointer;
   display: inline-block;
   font-weight: 600;
-  margin-right: 15px;
+  margin-right: 10px;
   position: relative;
   vertical-align: bottom;
 }
@@ -1444,7 +1444,7 @@ input[type="radio"].custom-check + label span {
   display: inline-block;
   width: 14px;
   height: 14px;
-  margin: 0px 10px 0 0;
+  margin: 0px 5px 0 0;
   vertical-align: middle;
 }
 .custom-check input[type="checkbox"]:checked + label span,
@@ -1487,11 +1487,11 @@ textarea,
   background-color: #ffffff;
   border: solid 1px #ededed;
   display: block;
-  padding: 10px;
+  padding: 5px;
   width: 100%;
 }
 .wysiwyg .btn-toolbar {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .filter-form select,
 .filter-form input[type="text"] {
@@ -1513,7 +1513,7 @@ textarea,
   background-color: #ededed;
   border: 0px;
   margin: 0px 4px 0px 0px;
-  padding: 8px 15px;
+  padding: 8px 10px;
 }
 .filter-form input[type="text"] {
   float: left;
@@ -1534,7 +1534,7 @@ textarea,
   outline: none;
 }
 .two-column-form h2 {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .two-column-form .fields {
   list-style: none;
@@ -1591,7 +1591,7 @@ textarea,
 }
 .two-column-form .fields .field textarea {
   min-height: 100px;
-  padding: 15px;
+  padding: 10px;
   resize: vertical;
 }
 .two-column-form .fields .field .standard-select {
@@ -1613,12 +1613,12 @@ textarea,
 .two-column-form .fields .field .file .content .row {
   border-bottom: solid 1px #cbcbcb;
   margin: 0px;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
   position: relative;
 }
 .two-column-form .fields .field .file .content .row:last-child {
   border: none;
-  padding: 15px 0px 0px 0px;
+  padding: 10px 0px 0px 0px;
 }
 .two-column-form .fields .field .file .content .row .info {
   margin-right: 120px;
@@ -1629,7 +1629,7 @@ textarea,
 .two-column-form .fields .field .file .content .row .remove-media .icon {
   display: inline-block;
   line-height: 12px;
-  margin-right: 10px;
+  margin-right: 5px;
   vertical-align: top;
 }
 .table-striped {
@@ -1648,7 +1648,7 @@ textarea,
   border-bottom: 1px solid #ededed;
   font-size: 13px;
   font-weight: 600;
-  padding: 15px;
+  padding: 10px;
   position: relative;
 }
 .table-striped thead tr th.asc .sorter,
@@ -1836,7 +1836,7 @@ textarea,
 .group-list .group-item {
   border-bottom: solid 1px #ededed;
   margin: 0px;
-  padding: 16px 20px 15px 20px;
+  padding: 11px 20px 10px 20px;
 }
 .group-list .group-item:after {
   clear: both;
@@ -1884,7 +1884,7 @@ textarea,
 .alerts .alert {
   background-color: #ededed;
   color: #ffffff;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   padding: 20px;
 }
 .alerts .alert:last-child {
@@ -1951,13 +1951,13 @@ textarea,
   width: 100%;
 }
 #sidebar #mainSidebar ul {
-  margin: 15px 0px;
+  margin: 10px 0px;
 }
 #sidebar #mainSidebar li a {
   display: block;
   font-size: 12px;
   line-height: 13px;
-  padding: 15px 20px;
+  padding: 10px 20px;
   position: relative;
 }
 #sidebar #mainSidebar li.active {
@@ -2095,7 +2095,7 @@ textarea,
   border-bottom: 1px solid #ededed;
   clear: both;
   float: left;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   padding-bottom: 20px;
   padding-top: 30px;
   width: 100%;
@@ -2162,28 +2162,34 @@ textarea,
 }
 .header1 .tools.left .tool {
   float: left;
-  margin-left: 15px;
+  margin-left: 10px;
 }
 .header1 .tools.left .tool:first-child {
   margin-left: 0px;
 }
+.header1 .tools.left .tool .action {
+  margin-left: 10px;
+}
+.header1 .tools.left .tool .action:first-child {
+  margin-left: 0px;
+}
 .header1 .tools.left.big-space .tool {
-  margin-left: 30px;
+  margin-left: 35px;
 }
 .header1 .tools.left.big-space .tool:first-child {
   margin-left: 0px;
 }
 .header1 .tools.left.big-space .tool.div-right {
-  padding-right: 30px;
+  padding-right: 35px;
 }
 .header1 .tools.right .tool {
-  margin-right: 15px;
+  margin-right: 10px;
 }
 .header1 .tools.right .tool:last-child {
   margin-right: 0px;
 }
 .header1 .tools.right.big-space .tool {
-  margin-right: 30px;
+  margin-right: 35px;
 }
 .header1 .tools.right.big-space .tool:last-child {
   margin-left: 0px;
@@ -2202,7 +2208,7 @@ textarea,
 .header1 .tools .tool.div-right {
   border-right: solid 1px #ededed;
   height: 32px;
-  padding-right: 15px;
+  padding-right: 10px;
 }
 .header1 .tools .tool-item {
   background-color: #cbcbcb;
@@ -2260,7 +2266,7 @@ textarea,
 }
 .header1 .secondary-row.filter-options .filter-form {
   float: left;
-  margin-left: 15px;
+  margin-left: 10px;
 }
 .header1 .secondary-row.filter-options .filter-form input {
   display: inline-block;
@@ -2297,7 +2303,7 @@ textarea,
   color: #cbcbcb;
 }
 .header1 .secondary-row .text-spacer {
-  padding: 0px 15px;
+  padding: 0px 10px;
 }
 .header1 .secondary-row .tools {
   font-size: 12px;
@@ -2311,8 +2317,8 @@ textarea,
 .header1 .secondary-row .filters li {
   background-color: #cbcbcb;
   color: #ffffff;
-  margin: 8px 0px 7px 15px;
-  padding: 3px 15px;
+  margin: 5px 0px 7px 10px;
+  padding: 3px 10px;
 }
 .login-box {
   left: 50%;
@@ -2327,7 +2333,7 @@ textarea,
   background: transparent;
   color: #7d7d7d;
   font-size: 30px;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 .login-box button[type="submit"]:after {
   display: inline-block;
@@ -2341,7 +2347,7 @@ textarea,
   content: "\E4AE";
   font-size: 50px;
   line-height: 30px;
-  margin-left: 15px;
+  margin-left: 10px;
 }
 .login-panel {
   background-color: #ededed;
@@ -2361,11 +2367,11 @@ textarea,
   position: absolute;
 }
 .login-panel input {
-  padding: 15px;
+  padding: 10px;
   width: 100%;
 }
 .login-panel input:first-child {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .login-panel p {
   position: relative;
@@ -2414,7 +2420,7 @@ textarea,
 }
 .left-corner-message .icon {
   line-height: 11px;
-  margin-right: 15px;
+  margin-right: 10px;
 }
 .message {
   color: #7d7d7d;

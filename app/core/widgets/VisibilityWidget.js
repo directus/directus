@@ -8,7 +8,8 @@ function(app, Backbone, PreferenceModel) {
   "use strict";
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile('<span class="simple-select vertical-center"> \
+    template: Handlebars.compile('\
+    <div class="simple-select vertical-center left"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status"> \
         <optgroup label="Status"> \
@@ -23,8 +24,8 @@ function(app, Backbone, PreferenceModel) {
           {{/snapshots}} \
         </optgroup> \
       </select> \
-    </span> \
-    <span class="action vertical-center" id="saveSnapshotBtn">Save Snapshot</span>'),
+    </div> \
+    <div class="action vertical-center left" id="saveSnapshotBtn">Save Snapshot</div>'),
 
     tagName: 'div',
     attributes: {
