@@ -61,7 +61,6 @@ function(app, Backbone) {
     serialize: function() {
       var data = this.options.filterOptions;
       data.tableColumns = this.collection.structure.pluck('id');
-      console.log(data);
       return data;
     },
 

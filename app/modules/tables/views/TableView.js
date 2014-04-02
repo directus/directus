@@ -33,7 +33,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
         new Widgets.PaginatorWidget({collection: this.collection})
       ];
     },
-    
+
     leftSecondaryToolbar: function() {
       this.selectedAction = new Widgets.SelectionActionWidget();
       this.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
@@ -43,7 +43,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
         this.filterWidget
       ];
     },
-    
+
     rightSecondaryToolbar: function() {
       this.paginationCountWidget = new Widgets.PaginationCountWidget();
       return [

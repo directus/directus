@@ -1,8 +1,9 @@
 define([
   'app',
-  'backbone'
+  'backbone',
+  'core/PreferenceModel'
 ],
-function(app, Backbone) {
+function(app, Backbone, PreferenceModel) {
 
   "use strict";
 
@@ -17,6 +18,9 @@ function(app, Backbone) {
           <option data-status value="0">View Trash</option> \
         </optgroup> \
         <optgroup label="Snapshots"> \
+          {{#snapshots}} \
+          <option data-snapshot-create value="{{this}}">{{this}}</option> \
+          {{/snapshots}} \
           <option data-snapshot-create value="-1">Create Snapshot</option> \
         </optgroup> \
       </select> \
@@ -37,20 +41,41 @@ function(app, Backbone) {
           this.collection.preferences.save({active: value});
         } else if($target.attr('data-snapshot-create') !== undefined && $target.attr('data-snapshot-create') !== false) {
           var name = prompt("Please enter a name for your Snapshot");
-          console.log(name);
+          this.options.widgetOptions.snapshots.push(name);
+          this.collection.preferences.unset('id');
+          this.collection.preferences.set({title: name});
+          this.collection.preferences.save();
         } else if($target.attr('data-snapshot') !== undefined && $target.attr('data-snapshot') !== false) {
-
+          console.log("Snapshot Picked")
         }
       },
     },
 
-
     serialize: function() {
+      console.log(this.options.widgetOptions);
       return this.options.widgetOptions;
     },
 
     afterRender: function() {
       $('#visibilitySelect').val(this.collection.preferences.get('active'));
+    },
+    initialize: function() {
+      var that = this;
+      this.collection.preferences.on('sync', function() {
+        that.collection.fetch();
+      });
+
+      var activeTable = this.collection.table.id;
+
+      this.options.widgetOptions = {snapshots: []};
+
+      var that = this;
+      $.get(app.API_URL + "preferences/" + activeTable, null, function(data) {
+        data.forEach(function(preference){
+          that.options.widgetOptions.snapshots.push(preference.title);
+        });
+        that.render();
+      });
     }
   });
 });

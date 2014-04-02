@@ -501,13 +501,13 @@ class TableSchema {
     //
     //---------------------------------------------------------------------------
 
-    
+
     public static function getAllSchemas($userGroupId, $versionHash) {
-        $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);    
+        $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
-        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);         
-        
+        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);
+
         $getPreferencesFn = function() use ($directusPreferencesTableGateway) {
             $currentUser = Auth::getUserInfo();
             $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
@@ -544,14 +544,14 @@ class TableSchema {
 
     public static function getTableSchemas() {
         $db = Bootstrap::get('olddb');
-        $config = Bootstrap::get('config');       
+        $config = Bootstrap::get('config');
         $blacklist = '""';
         if (array_key_exists('tableBlacklist', $config)) {
             $blacklist = $config['tableBlacklist'];
             $blacklist = '"'.implode($blacklist, '","').'"';
         }
 
-        $sql = 
+        $sql =
             'SELECT
                 ST.TABLE_NAME as id,
                 ST.TABLE_NAME as table_name,
@@ -564,13 +564,13 @@ class TableSchema {
                 magic_owner_column,
                 footer,
                 list_view,
-                TABLE_ROWS AS count 
+                TABLE_ROWS AS count
             FROM
                 INFORMATION_SCHEMA.TABLES ST
-            LEFT JOIN 
+            LEFT JOIN
                 directus_tables DT ON (DT.table_name = ST.TABLE_NAME)
             WHERE
-                ST.TABLE_SCHEMA = :schema 
+                ST.TABLE_SCHEMA = :schema
                 AND
                 (
                     ST.TABLE_NAME NOT IN (
@@ -584,11 +584,11 @@ class TableSchema {
                         "directus_storage_adapters",
                         "directus_tables",
                         "directus_tab_privileges",
-                        "directus_ui"       
+                        "directus_ui"
                     )
                     AND
                     ST.TABLE_NAME NOT IN ('.$blacklist.')
-                )   
+                )
             GROUP BY ST.TABLE_NAME
             ORDER BY ST.TABLE_NAME';
 
@@ -612,12 +612,12 @@ class TableSchema {
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
 
-        $sql = 
+        $sql =
             '(
                 SELECT
                     C.table_name,
                     C.column_name AS column_name,
-                    ifnull(sort, ORDINAL_POSITION) as sort,     
+                    ifnull(sort, ORDINAL_POSITION) as sort,
                     UCASE(C.data_type) as type,
                     CHARACTER_MAXIMUM_LENGTH as char_length,
                     IS_NULLABLE as is_nullable,
@@ -647,7 +647,7 @@ class TableSchema {
                 SELECT
                     `table_name`,
                     `column_name` AS column_name,
-                    sort,       
+                    sort,
                     UCASE(data_type) as type,
                     NULL AS char_length,
                     "NO" as is_nullable,
@@ -675,7 +675,7 @@ class TableSchema {
         $sth = $db->dbh->prepare($sql);
         $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
         $sth->execute();
-        
+
         // Group columns by table name
         $tables = array();
         $tableName = null;
@@ -683,13 +683,13 @@ class TableSchema {
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
             $tableName = $row['table_name'];
             $columnName = $row['column_name'];
-            
+
             // Create nested array by table name
             if (!array_key_exists($tableName, $tables)) {
                 $tables[$tableName] = array();
             }
 
-            // @todo getTablePrivilegeList is called in excess, 
+            // @todo getTablePrivilegeList is called in excess,
             // should just be called when $tableName changes
             $readFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_READ_BLACKLIST);
             $writeFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_WRITE_BLACKLIST);
@@ -713,7 +713,7 @@ class TableSchema {
         foreach ($uis as $ui) {
             $uiTableName = $ui['table_name'];
             $uiColumnName = $ui['column_name'];
-            
+
             // Does the table for the UI settings still exist?
             if (array_key_exists($uiTableName, $tables)) {
                 // Does the column for the UI settings still exist?
@@ -763,7 +763,7 @@ class TableSchema {
         $row["master"] = (bool) $row["master"];
         $row["hidden_list"] = (bool) $row["hidden_list"];
         $row["hidden_input"] = (bool) $row["hidden_input"];
-        
+
 
         //$row["is_writable"] = !in_array($row['id'], $writeFieldBlacklist);
 

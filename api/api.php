@@ -714,6 +714,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             break;
     }
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
+
     if(isset($params['newTitle'])) {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
         $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
@@ -722,6 +723,14 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
     }
     JsonView::render($jsonResponse);
 })->via('GET','POST','PUT');
+
+$app->get("/$v/preferences/:table", function($table) use ($db, $app, $ZendDb, $acl) {
+  $currentUser = Auth::getUserInfo();
+  $params['table_name'] = $table;
+  $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
+  $jsonResponse = $Preferences->fetchSavedPreferencesByUserAndTable($currentUser['id'], $table);
+  JsonView::render($jsonResponse);
+});
 
 /**
  * BOOKMARKS COLLECTION
