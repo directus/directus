@@ -35,7 +35,6 @@ function(app, Backbone) {
     initialize: function() {
       this.options.widgetOptions = {};
 
-
       this.collection.on('sync add remove', function() {
         this.options.totalCount = this.collection.getTotalCount();
         this.options.widgetOptions.pageNext = (this.collection.getFilter('currentPage') + 1 < (this.options.totalCount / this.collection.getFilter('perPage') ) );

@@ -21,10 +21,10 @@ function(app, Backbone, PreferenceModel) {
           {{#snapshots}} \
           <option data-snapshot value="{{this}}">{{this}}</option> \
           {{/snapshots}} \
-          <option data-snapshot-create value="-1">Create Snapshot</option> \
         </optgroup> \
       </select> \
-    </span>'),
+    </span> \
+    <span class="action vertical-center" id="saveSnapshotBtn">Save Snapshot</span>'),
 
     tagName: 'div',
     attributes: {
@@ -39,36 +39,44 @@ function(app, Backbone, PreferenceModel) {
           this.collection.setFilter({currentPage: 0, active: value});
           this.collection.fetch();
           this.collection.preferences.save({active: value});
-        } else if($target.attr('data-snapshot-create') !== undefined && $target.attr('data-snapshot-create') !== false) {
-          var name = prompt("Please enter a name for your Snapshot");
-          var that = this;
-          //Check for Duplicate
-          this.options.widgetOptions.snapshots.forEach(function(snapshot) {
-            if(name == snapshot) {
-              alert('A Snapshot With that name already exists!');
-              return;
-            }
-          });
-
-          if(name === null || name === "") {
-            alert('Please Fill In a Valid Name');
-            return;
-          }
-
-          this.options.widgetOptions.snapshots.push(name);
-
-          //Save id so it can be reset after render
-          this.defaultId = this.collection.preferences.get('id');
-          //Unset Id so that it creates new Preference
-          this.collection.preferences.unset('id');
-
-          this.collection.preferences.set({title: name});
-
-          this.collection.preferences.save();
         } else if($target.attr('data-snapshot') !== undefined && $target.attr('data-snapshot') !== false) {
+          this.defaultId = this.collection.preferences.get('id');
           this.collection.preferences.fetch({newTitle: $target.val()});
         }
       },
+      'click #saveSnapshotBtn': function(e) {
+        var name = prompt("Please enter a name for your Snapshot");
+        var that = this;
+        var exists = false;
+        //Check for Duplicate
+        this.options.widgetOptions.snapshots.forEach(function(snapshot) {
+          if(name == snapshot) {
+            alert('A Snapshot With that name already exists!');
+            exists = true;
+            return;
+          }
+        });
+
+        if(exists) {
+          return;
+        }
+
+        if(name === null || name === "") {
+          alert('Please Fill In a Valid Name');
+          return;
+        }
+
+        this.options.widgetOptions.snapshots.push(name);
+
+        //Save id so it can be reset after render
+        this.defaultId = this.collection.preferences.get('id');
+        //Unset Id so that it creates new Preference
+        this.collection.preferences.unset('id');
+
+        this.collection.preferences.set({title: name});
+
+        this.collection.preferences.save();
+      }
     },
 
     serialize: function() {
