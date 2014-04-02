@@ -44,9 +44,9 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
           new Widgets.SelectionActionWidget({collection: this.collection})
         ]
       };
-      
+
       this.leftSecondaryCurrentState = _.isUndefined(this.leftSecondaryCurrentState) ? 'default' : this.leftSecondaryCurrentState;
-      
+
       return states[this.leftSecondaryCurrentState];
     },
 
@@ -91,17 +91,21 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       this.collection.on('select', function() {
         this.actionButtons = Boolean($('.select-row:checked').length);
         this.batchEdit = $('.select-row:checked').length > 1;
-        if(this.actionButtons || this.batchEdit ) {
-          this.leftSecondaryCurrentState = 'actions';
-          this.reRender();
+        if(this.actionButtons || this.batchEdit) {
+          if(this.leftSecondaryCurrentState != 'actions') {
+            this.leftSecondaryCurrentState = 'actions';
+            this.reRender();
+          }
         }
         else {
-          this.leftSecondaryCurrentState = 'default';
-          this.reRender();
+          if(this.leftSecondaryCurrentState != 'default') {
+            this.leftSecondaryCurrentState = 'default';
+            this.reRender();
+          }
         }
         //this.render();
       }, this);
-      
+
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
     }
 
