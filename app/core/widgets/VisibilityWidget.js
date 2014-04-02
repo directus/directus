@@ -19,7 +19,7 @@ function(app, Backbone, PreferenceModel) {
         </optgroup> \
         <optgroup label="Snapshots"> \
           {{#snapshots}} \
-          <option data-snapshot-create value="{{this}}">{{this}}</option> \
+          <option data-snapshot value="{{this}}">{{this}}</option> \
           {{/snapshots}} \
           <option data-snapshot-create value="-1">Create Snapshot</option> \
         </optgroup> \
@@ -46,13 +46,12 @@ function(app, Backbone, PreferenceModel) {
           this.collection.preferences.set({title: name});
           this.collection.preferences.save();
         } else if($target.attr('data-snapshot') !== undefined && $target.attr('data-snapshot') !== false) {
-          console.log("Snapshot Picked")
+          this.collection.preferences.fetch({newTitle: $target.val()});
         }
       },
     },
 
     serialize: function() {
-      console.log(this.options.widgetOptions);
       return this.options.widgetOptions;
     },
 
@@ -60,10 +59,10 @@ function(app, Backbone, PreferenceModel) {
       $('#visibilitySelect').val(this.collection.preferences.get('active'));
     },
     initialize: function() {
-      var that = this;
       this.collection.preferences.on('sync', function() {
-        that.collection.fetch();
-      });
+        this.collection.fetch();
+        this.render();
+      }, this);
 
       var activeTable = this.collection.table.id;
 
