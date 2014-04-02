@@ -12,7 +12,9 @@ function(app, Backbone) {
         <li class="tool"><span class="action">Active</span></li> \
         <li class="tool"><span class="action inactive">Draft</span></li> \
         <li class="tool div-right"><span class="action delete">Delete</span></li> \
+        {{#if batchEdit}} \
         <li class="tool"><span class="action">Batch Edit</span></li> \
+        {{/if}} \
       </ul> \
     '),
 
@@ -24,11 +26,17 @@ function(app, Backbone) {
     serialize: function() {
       return this.options.widgetOptions;
     },
-
-    afterRender: function() {
-      if(this.options.widgetOptions && this.options.widgetOptions.active) {
-        $(this.el).addClass('active');
+    initialize: function() {
+      if(!this.options.widgetOptions) {
+        this.options.widgetOptions = {};
       }
+      this.collection.on('select', function() {
+        var batchEdit = $('.select-row:checked').length > 1;
+        if(this.options.widgetOptions.batchEdit != batchEdit) {
+          this.options.widgetOptions.batchEdit = batchEdit;
+          this.render();
+        }
+      }, this);
     }
   });
 });
