@@ -45,7 +45,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     rightSecondaryToolbar: function() {
-      this.paginationCountWidget = new Widgets.PaginationCountWidget();
+      this.paginationCountWidget = new Widgets.PaginationCountWidget({collection: this.collection});
       return [
         this.paginationCountWidget
       ];
