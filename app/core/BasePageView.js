@@ -12,7 +12,7 @@ function(app, Backbone, BaseHeaderView) {
     chooseView: function(viewSet, viewName) {
       return _.isUndefined(viewName) ? viewSet : viewSet[viewName];
     },
-    
+
     leftToolbar: function() {
       return [];
     },
@@ -24,26 +24,25 @@ function(app, Backbone, BaseHeaderView) {
     leftSecondaryToolbar: function() {
       return [];
     },
-    
+
     rightSecondaryToolbar: function() {
       return [];
     },
-    
+
     initToolbar: function() {
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();
       this.headerOptions.leftSecondaryToolbar = this.leftSecondaryToolbar();
       this.headerOptions.rightSecondaryToolbar = this.rightSecondaryToolbar();
-      
+
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       this.setView('#fixedHeader', this.headerView);
-      this.headerView.render();
     },
-    
+
     reRender: function() {
       this.initToolbar();
     },
-    
+
     beforeRender: function() {
       this.initToolbar();
     }
