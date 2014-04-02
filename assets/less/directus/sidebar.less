@@ -44,23 +44,28 @@
       margin: @smallPad 0px;
     }
     li {
-      font-size: 12px;
-      line-height: 13px;
-      padding: @smallPad @standardPad;
-      position: relative;
+      a {
+        display: block;
+        font-size: 12px;
+        line-height: 13px;
+        padding: @smallPad @standardPad;
+        position: relative;
+      }
       &.active {
         border-left-width: 4px;
         border-left-style: solid;
-        color: @white;
-        cursor: auto;
-        padding-left: 16px;
-        &:after {
-          .triangle-left(8px, 12px, @white);
-          content: "";
-          margin-top: -12px;
-          position: absolute;
-          right: 0px;
-          top: 50%;
+        a {
+          color: @white;
+          cursor: auto;
+          padding-left: 16px;
+          &:after {
+            .triangle-left(8px, 12px, @white);
+            content: "";
+            margin-top: -12px;
+            position: absolute;
+            right: 0px;
+            top: 50%;
+          }
         }
       }
       .icon {

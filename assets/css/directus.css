@@ -1953,7 +1953,8 @@ textarea,
 #sidebar #mainSidebar ul {
   margin: 10px 0px;
 }
-#sidebar #mainSidebar li {
+#sidebar #mainSidebar li a {
+  display: block;
   font-size: 12px;
   line-height: 13px;
   padding: 10px 20px;
@@ -1962,11 +1963,13 @@ textarea,
 #sidebar #mainSidebar li.active {
   border-left-width: 4px;
   border-left-style: solid;
+}
+#sidebar #mainSidebar li.active a {
   color: #ffffff;
   cursor: auto;
   padding-left: 16px;
 }
-#sidebar #mainSidebar li.active:after {
+#sidebar #mainSidebar li.active a:after {
   border-style: solid;
   height: 0px;
   width: 0px;
