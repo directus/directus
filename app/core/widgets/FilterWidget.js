@@ -40,25 +40,29 @@ function(app, Backbone) {
           };
         }).toArray();
 
-        var queryString = "";
-
-        this.collection.setFilter('adv_search', searchSettings);
-        this.collection.setFilter('currentPage', 0);
-        this.collection.fetch();
         this.options.filterOptions.filters.push(searchSettings[0]);
+
+        this.updateFilters();
         this.saveFilterString();
-        this.options.filterOptions.addFilter = false;
-        this.render();
       },
       'click [data-add-filter-row]': function(e) {
         this.options.filterOptions.addFilter = true;
         this.render();
       }
     },
+
+    updateFilters: function() {
+      this.collection.setFilter('adv_search', this.options.filterOptions.filters);
+      this.collection.setFilter('currentPage', 0);
+      this.collection.fetch();
+      this.options.filterOptions.addFilter = false;
+      this.render();
+    },
+
     saveFilterString: function() {
       var string = [];
       this.options.filterOptions.filters.forEach(function(search) {
-        string.push(search.id + search.type + search.value.replace(',','\\,'));
+        string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + search.value.replace(':','\\:').replace(',','\\,'));
       });
 
       string = encodeURIComponent(string.join());
@@ -114,6 +118,23 @@ function(app, Backbone) {
 
     initialize: function() {
       this.options.filterOptions = {filters:[]};
+
+      this.collection.preferences.on('sync', function() {
+        this.options.filterOptions.filters = [];
+
+        var search = this.collection.preferences.get('search_string');
+
+        if(search !== null && search !== undefined) {
+          search = decodeURIComponent(search).replace('\\,', '%21').split(",");
+          var that = this;
+          search.forEach(function(filter) {
+            filter = filter.replace('\\:', '%20');
+            filter = filter.split(':');
+            that.options.filterOptions.filters.push({id: filter[0].replace('%20',':'), type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')});
+          });
+        }
+        this.updateFilters();
+      }, this);
     }
   });
 });
