@@ -46,17 +46,24 @@ function(app, Backbone) {
         this.collection.setFilter('currentPage', 0);
         this.collection.fetch();
         this.options.filterOptions.filters.push(searchSettings[0]);
+        this.saveFilterString();
         this.options.filterOptions.addFilter = false;
         this.render();
       },
       'click [data-add-filter-row]': function(e) {
-        //var $filterRow = this.getFilterRow;
-        //$filterRow.clone(true).appendTo(".advanced-search-fields");
         this.options.filterOptions.addFilter = true;
         this.render();
       }
     },
+    saveFilterString: function() {
+      var string = [];
+      this.options.filterOptions.filters.forEach(function(search) {
+        string.push(search.id + search.type + search.value.replace(',','\\,'));
+      });
 
+      string = encodeURIComponent(string.join());
+      this.collection.preferences.save({search_string: string});
+    },
 
     serialize: function() {
       var data = this.options.filterOptions;
