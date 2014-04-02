@@ -7,7 +7,8 @@ define(function(require, exports, module) {
       ColumnsCollection  = require('./ColumnsCollection'),
       TableModel         = require('./TableModel'),
       UIModel            = require('./UIModel'),
-      DirectusCollection = require('core/collection');
+      DirectusCollection = require('core/collection'),
+      PreferenceModel    = require('core/PreferenceModel');
 
   // Static Schemas
   var directusSchemas = {
@@ -36,7 +37,7 @@ define(function(require, exports, module) {
 
     countVisible: function() {
       // Visible models only
-      var models = this.filter(function(model) { return !model.get('hidden'); });    
+      var models = this.filter(function(model) { return !model.get('hidden'); });
 
       return models.length;
     }
@@ -147,7 +148,12 @@ define(function(require, exports, module) {
     // Registers user preferences for tables (sort, visible columns etc)
     registerPreferences: function(data) {
       _.each(data, function(preference) {
-        preferences[preference.table_name] = new Backbone.Model(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
+        var add = "";
+        if(preference.title != null)
+        {
+          add = ":" + preference.title;
+        }
+        preferences[preference.table_name + add] = new PreferenceModel(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
       }, this);
     },
 

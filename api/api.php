@@ -714,7 +714,12 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             break;
     }
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
-    $jsonResponse = $Preferences->fetchByUserAndTable($currentUser['id'], $table);
+    if(isset($params['newTitle'])) {
+        $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
+        $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
+    } else {
+        $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table);
+    }
     JsonView::render($jsonResponse);
 })->via('GET','POST','PUT');
 
