@@ -8,12 +8,11 @@ function(app, Backbone) {
 
   return Backbone.Layout.extend({
     template: Handlebars.compile(' \
-      <ul class="tools left"> \
-        <li><span class="action">Active</span></li> \
-        <li><span class="action">Draft</span></li> \
-        <li><span class="action">Delete</span></li> \
-        <hr></hr> \
-        <li><span class="action">Batch Edit</span></li> \
+      <ul class="tools left big-space"> \
+        <li class="tool"><span class="action">Active</span></li> \
+        <li class="tool"><span class="action inactive">Draft</span></li> \
+        <li class="tool div-right"><span class="action delete">Delete</span></li> \
+        <li class="tool"><span class="action">Batch Edit</span></li> \
       </ul> \
     '),
 
