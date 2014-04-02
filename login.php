@@ -28,7 +28,13 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="assets/css/index.css">
   <style>
-    body {background-image: url(assets/img/noise.gif); margin:0; padding:0;}
+    html,body {
+      background-image: url("assets/img/noise.gif"); 
+      margin:0; 
+      padding:0;
+      height: 100%;
+      width: 100%;
+    }
     /* .login-panel { background-color:rgba(255,255,255,0.4); padding:20px; width:372px; box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05); position: absolute; left:50%; top:50%; margin-left:-208px; margin-top:-245px;} */
     /* .login-panel p.error { padding: 15px 10px 0; margin: 0; color: red; } */
     /* .login-panel p.message { padding: 15px 10px 0; margin: 0; color: green; } */
@@ -51,7 +57,7 @@ input[type="text"], input[type="password"] {font-size:16px; width:360px; border:
     </p>
     <p class="">
       <input type="password" name="password" placeholder="Password" />
-      <button id="forgot-password" class="btn btn-primary"></button>
+      <span id="forgot-password" class="btn btn-primary"></span>
     </p>
     <!--<label class="checkbox">
         <input type="checkbox" name="remember" /> Keep me logged in on this computer
@@ -92,7 +98,7 @@ $(function(){
     $login_message.hide();
   }
 
-  $('button#forgot-password').bind('click', function(e){
+  $('#forgot-password').bind('click', function(e){
     e.preventDefault();
     clear_messages();
     var $form = $(this).closest('form'),
@@ -101,25 +107,27 @@ $(function(){
       message("Please enter a valid email address.", true);
       return false;
     }
-    $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/forgot-password' ?>', {
-      data: { email: email },
-      dataType: 'json',
-      type: 'POST',
-      success: function(data, textStatus, jqXHR) {
-        if(!data.success) {
-          var errorMessage = "Oops an error occurred!";
-          if(data.message) {
-              errorMessage = data.message;
+    if(confirm('Are you sure you want to reset your password?')) {
+      $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/forgot-password' ?>', {
+        data: { email: email },
+        dataType: 'json',
+        type: 'POST',
+        success: function(data, textStatus, jqXHR) {
+          if(!data.success) {
+            var errorMessage = "Oops an error occurred!";
+            if(data.message) {
+                errorMessage = data.message;
+            }
+            message(errorMessage, true);
+            return;
           }
-          message(errorMessage, true);
-          return;
+          message("We sent a temporary password to your email address.")
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          message("Server error occurred. (" + textStatus + ")", true);
         }
-        message("We sent a temporary password to your email address.")
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        message("Server error occurred. (" + textStatus + ")", true);
-      }
-    });
+      });
+    }
   });
 
   $('form').bind('submit', function(e){
