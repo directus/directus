@@ -233,11 +233,13 @@ function(app, Backbone) {
       //Does the table have the active column?
       this.active = this.options.structure && this.options.structure.get('active') && !this.options.deleteOnly;
       //Show action buttons if there are selected models
-      this.collection.on('select', function() {
+      /*
+this.collection.on('select', function() {
         this.actionButtons = Boolean($('.select-row:checked').length);
         this.batchEdit = $('.select-row:checked').length > 1;
         this.render();
       }, this);
+*/
 
       this.filterModel = new FilterModel();
 
