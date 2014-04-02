@@ -148,7 +148,7 @@ module.exports = function(grunt) {
         less: {
           options: {
             compress: false,
-            sourceMap: false,
+            sourceMap: true,
             sourceMapFilename: 'public/assets/css/main.css.map',
             sourceMapRootpath: '/directus-six-dax/'
           },
