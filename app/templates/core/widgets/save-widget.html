@@ -1,0 +1,24 @@
+<span class="select-and-circle {{#unless isUpToDate}}saved-success{{/unless}}">
+  <span id="save">
+    <span class="tool-item large-circle"> 
+      <span class="icon icon-check"></span> 
+    </span> 
+    <span class="simple-select"> 
+      {{#if isUpToDate}} 
+        All Changes Saved 
+      {{else}} 
+        Save Changes 
+      {{/if}} 
+    </span>
+  </span>
+  {{#unless basicSave}}
+    <label for="status" class="icon-select icon icon-triangle-down"> 
+      <select id="saveSelect" name="status"> 
+        <option selected></option> 
+        <option value="save-form-stay">Save And Stay</option> 
+        <option value="save-form-add">Save And Add</option> 
+        <option value="save-form-copy">Save As Copy</option> 
+      </select>
+    </label>
+  {{/unless}} 
+</span>
