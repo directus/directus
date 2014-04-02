@@ -38,7 +38,6 @@ function(app, Backbone, PreferenceModel) {
         if($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
           var value = $(e.target).val();
           this.collection.setFilter({currentPage: 0, active: value});
-          this.collection.fetch();
           this.collection.preferences.save({active: value});
         } else if($target.attr('data-snapshot') !== undefined && $target.attr('data-snapshot') !== false) {
           this.defaultId = this.collection.preferences.get('id');
