@@ -95,6 +95,10 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
           this.leftSecondaryCurrentState = 'actions';
           this.reRender();
         }
+        else {
+          this.leftSecondaryCurrentState = 'default';
+          this.reRender();
+        }
         //this.render();
       }, this);
       
