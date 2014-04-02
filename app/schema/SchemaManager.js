@@ -149,7 +149,7 @@ define(function(require, exports, module) {
     registerPreferences: function(data) {
       _.each(data, function(preference) {
         var add = "";
-        if(preference.title != null)
+        if(preference.title !== null)
         {
           add = ":" + preference.title;
         }
