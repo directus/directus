@@ -6,10 +6,11 @@ define([
   'core/widgets/SaveWidget',
   'core/widgets/VisibilityWidget',
   'core/widgets/FilterWidget',
-  'core/widgets/SelectionActionWidget'
+  'core/widgets/SelectionActionWidget',
+  'core/widgets/SelectedCountWidget'
 ],
 
-function(PaginatorWidget, PaginationCountWidget, ButtonWidget, SearchWidget, SaveWidget, VisibilityWidget, FilterWidget, SelectionActionWidget) {
+function(PaginatorWidget, PaginationCountWidget, ButtonWidget, SearchWidget, SaveWidget, VisibilityWidget, FilterWidget, SelectionActionWidget, SelectedCountWidget) {
 
   return {
     PaginatorWidget: PaginatorWidget,
@@ -19,7 +20,8 @@ function(PaginatorWidget, PaginationCountWidget, ButtonWidget, SearchWidget, Sav
     SaveWidget: SaveWidget,
     VisibilityWidget: VisibilityWidget,
     FilterWidget: FilterWidget,
-    SelectionActionWidget: SelectionActionWidget
+    SelectionActionWidget: SelectionActionWidget,
+    SelectedCountWidget: SelectedCountWidget
   };
 
 });

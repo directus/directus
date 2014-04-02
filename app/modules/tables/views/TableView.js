@@ -51,10 +51,15 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     rightSecondaryToolbar: function() {
-      this.paginationCountWidget = new Widgets.PaginationCountWidget({collection: this.collection});
-      return [
-        this.paginationCountWidget
-      ];
+      var states = {
+        'default' : [
+          new Widgets.PaginationCountWidget({collection: this.collection})
+        ],
+        'actions' : [
+          new Widgets.SelectedCountWidget({collection: this.collection})
+        ]
+      };
+      return states[this.leftSecondaryCurrentState];
     },
 
     events: {
