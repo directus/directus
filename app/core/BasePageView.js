@@ -41,6 +41,7 @@ function(app, Backbone, BaseHeaderView) {
 
     reRender: function() {
       this.initToolbar();
+      this.headerView.render();
     },
 
     beforeRender: function() {

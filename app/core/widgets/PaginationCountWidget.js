@@ -20,17 +20,19 @@ function(app, Backbone) {
       return this.options.widgetOptions;
     },
 
+    updateCount: function() {
+      var data = {};
+      data.totalCount = this.collection.getTotalCount();
+      data.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, data.totalCount);
+      data.uBound = Math.min(data.totalCount, data.lBound + this.collection.getFilter('perPage') - 1);
+      this.options.widgetOptions = data;
+      this.render();
+    },
+
     initialize: function() {
       this.options.widgetOptions = {};
-
-      this.collection.on('sync add remove', function() {
-        var data = {};
-        data.totalCount = this.collection.getTotalCount();
-        data.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, data.totalCount);
-        data.uBound = Math.min(data.totalCount, data.lBound + this.collection.getFilter('perPage') - 1);
-        this.options.widgetOptions = data;
-        this.render();
-      }, this);
+      this.updateCount();
+      this.collection.on('sync add remove', this.updateCount, this);
     }
   });
 });
