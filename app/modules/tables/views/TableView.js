@@ -106,6 +106,13 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
         //this.render();
       }, this);
 
+      this.collection.on('sort', function() {
+        if(this.leftSecondaryCurrentState != 'default') {
+          this.leftSecondaryCurrentState = 'default';
+          this.reRender();
+        }
+      }, this);
+
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
     }
 
