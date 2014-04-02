@@ -28,7 +28,13 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="assets/css/index.css">
   <style>
-    body {background-image: url(assets/img/noise.gif); margin:0; padding:0;}
+    html,body {
+      background-image: url("assets/img/noise.gif"); 
+      margin:0; 
+      padding:0;
+      height: 100%;
+      width: 100%;
+    }
     /* .login-panel { background-color:rgba(255,255,255,0.4); padding:20px; width:372px; box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05); position: absolute; left:50%; top:50%; margin-left:-208px; margin-top:-245px;} */
     /* .login-panel p.error { padding: 15px 10px 0; margin: 0; color: red; } */
     /* .login-panel p.message { padding: 15px 10px 0; margin: 0; color: green; } */
