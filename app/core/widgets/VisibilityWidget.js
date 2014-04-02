@@ -42,6 +42,7 @@ function(app, Backbone, PreferenceModel) {
         } else if($target.attr('data-snapshot-create') !== undefined && $target.attr('data-snapshot-create') !== false) {
           var name = prompt("Please enter a name for your Snapshot");
           this.options.widgetOptions.snapshots.push(name);
+          this.defaultId = this.collection.preferences.get('id');
           this.collection.preferences.unset('id');
           this.collection.preferences.set({title: name});
           this.collection.preferences.save();
@@ -56,7 +57,12 @@ function(app, Backbone, PreferenceModel) {
     },
 
     afterRender: function() {
-      $('#visibilitySelect').val(this.collection.preferences.get('active'));
+      if(this.collection.preferences.get('title') != null) {
+        this.collection.preferences.set({title:null, id: this.defaultId});
+        $('#visibilitySelect').val(this.collection.preferences.get('title'));
+      } else {
+        $('#visibilitySelect').val(this.collection.preferences.get('active'));
+      }
     },
     initialize: function() {
       this.collection.preferences.on('sync', function() {
