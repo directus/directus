@@ -7,35 +7,30 @@ function(app, Backbone) {
   "use strict";
 
   return Backbone.Layout.extend({
-  
-    template: Handlebars.compile('{{currentRange}} of {{total}}'),
+
+    template: Handlebars.compile('{{#if lBound}}{{number lBound}}–{{number uBound}} of {{number totalCount}}{{/if}}'),
 
     tagName: 'div',
-    
+
     attributes: {
       class: 'tool vertical-center pagination-number'
     },
 
-    events: {
-      'click [data-add-filter-row]': function(e) {
-      
-      }
-    },
-
-
     serialize: function() {
-      var data = {
-        currentRange: '501–1,000',
-        total: '3,508'
-      };
-      
-      return data;
+      return this.options.widgetOptions;
     },
 
-    getFilterRow: "adv search fields row object",
+    initialize: function() {
+      this.options.widgetOptions = {};
 
-    afterRender: function() {
-    
-    },
+      this.collection.on('sync add remove', function() {
+        var data = {};
+        data.totalCount = this.collection.getTotalCount();
+        data.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, data.totalCount);
+        data.uBound = Math.min(data.totalCount, data.lBound + this.collection.getFilter('perPage') - 1);
+        this.options.widgetOptions = data;
+        this.render();
+      }, this);
+    }
   });
 });
