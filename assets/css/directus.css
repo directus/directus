@@ -1004,7 +1004,7 @@
 html,
 body {
   background-color: #ffffff;
-  color: #7d7d7d;
+  color: #5b5b5b;
   font-size: 12px;
   width: 100%;
 }
@@ -1111,7 +1111,7 @@ button {
   font-style: italic;
 }
 .primary-info {
-  color: #7d7d7d;
+  color: #5b5b5b;
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 5px;
@@ -1171,7 +1171,7 @@ button {
   margin-right: 0px;
 }
 .btn-group.btn-white .btn {
-  color: #7d7d7d;
+  color: #5b5b5b;
   background-color: #ffffff;
   border: solid 1px #ededed;
   border-right-width: 0px;
@@ -1310,8 +1310,8 @@ button {
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background-color: #7d7d7d;
-  border: solid 1px #7d7d7d;
+  background-color: #5b5b5b;
+  border: solid 1px #5b5b5b;
   color: #ffffff;
   cursor: pointer;
   padding: 5px 10px;
@@ -1326,7 +1326,7 @@ button {
   border-color: #252525;
 }
 .btn.btn-white {
-  color: #7d7d7d;
+  color: #5b5b5b;
   background-color: #ffffff;
   border: solid 1px #ededed;
 }
@@ -1408,7 +1408,7 @@ select {
   background-clip: padding-box;
   background-color: #ffffff;
   border: solid 1px #ededed;
-  color: #7d7d7d;
+  color: #5b5b5b;
   cursor: pointer;
   padding: 5px 25px 5px 10px;
   -webkit-appearance: none;
@@ -1467,8 +1467,8 @@ input[type="radio"].custom-check + label span {
 .custom-check input[type="radio"]:checked + label span,
 input[type="checkbox"].custom-check:checked + label span,
 input[type="radio"].custom-check:checked + label span {
-  background-color: #7d7d7d;
-  border-color: #7d7d7d;
+  background-color: #5b5b5b;
+  border-color: #5b5b5b;
 }
 .custom-check input[type="checkbox"]:checked + label:before,
 .custom-check input[type="radio"]:checked + label:before,
@@ -1541,7 +1541,7 @@ textarea,
   position: relative;
 }
 .filter-form .simple-select .icon {
-  color: #7d7d7d;
+  color: #5b5b5b;
   line-height: 26px;
   right: 9px;
 }
@@ -1574,7 +1574,7 @@ textarea,
   /* safari3 */
   background-color: #ededed;
   bottom: 0px;
-  color: #7d7d7d;
+  color: #5b5b5b;
   font-weight: 500;
   left: 0px;
   padding: 25px 20px 25px 20px;
@@ -1702,7 +1702,7 @@ textarea,
 }
 .table-striped tr {
   border-bottom: solid 1px #f4f4f4;
-  color: #7d7d7d;
+  color: #5b5b5b;
   font-weight: 400;
   font-size: 12px;
 }
@@ -1769,7 +1769,7 @@ textarea,
 .cards .card .header-image .tool-item {
   background-color: #ffffff;
   bottom: 10px;
-  color: #7d7d7d;
+  color: #5b5b5b;
   display: none;
   position: absolute;
   right: 10px;
@@ -1870,7 +1870,7 @@ textarea,
   margin-top: 3px;
 }
 .group-list .group-item .stack {
-  color: #7d7d7d;
+  color: #5b5b5b;
   height: 17px;
 }
 .group-list .group-item .stack .icon {
@@ -1927,7 +1927,7 @@ textarea,
 #sidebar {
   background-color: #252525;
   bottom: 0px;
-  color: #7d7d7d;
+  color: #5b5b5b;
   float: left;
   font-weight: 400;
   height: 100%;
@@ -2027,7 +2027,7 @@ textarea,
   width: 59px;
 }
 #sidebar #featureSidebar li:hover {
-  background-color: #7d7d7d;
+  background-color: #5b5b5b;
 }
 #sidebar #featureSidebar li:hover.has-image .icon {
   display: block;
@@ -2135,10 +2135,10 @@ textarea,
   vertical-align: top;
 }
 .header1 h1 .endnode {
-  color: #7d7d7d;
+  color: #5b5b5b;
 }
 .header1 h1 .focused {
-  color: #7d7d7d;
+  color: #5b5b5b;
 }
 .header1 li {
   float: left;
@@ -2153,7 +2153,7 @@ textarea,
   height: 0px;
   width: 0px;
   border-width: 14px 14px 0 14px;
-  border-color: #7d7d7d transparent transparent transparent;
+  border-color: #5b5b5b transparent transparent transparent;
   bottom: -5px;
   content: "";
   display: block;
@@ -2163,11 +2163,11 @@ textarea,
 }
 .header1 .input-and-button:hover input,
 .header1 .input-and-button.active input {
-  color: #7d7d7d;
+  color: #5b5b5b;
 }
 .header1 .input-and-button:hover button,
 .header1 .input-and-button.active button {
-  background-color: #7d7d7d;
+  background-color: #5b5b5b;
 }
 .header1 .tools {
   font-size: 18px;
@@ -2232,7 +2232,7 @@ textarea,
   cursor: pointer;
 }
 .header1 .tools .tool-item:hover {
-  background-color: #7d7d7d;
+  background-color: #5b5b5b;
 }
 .header1 .tools .simple-select {
   color: #cbcbcb;
@@ -2312,7 +2312,7 @@ textarea,
 }
 .header1 .secondary-row .action {
   display: inline-block;
-  color: #7d7d7d;
+  color: #5b5b5b;
   cursor: pointer;
 }
 .header1 .secondary-row .action.delete {
@@ -2350,7 +2350,7 @@ textarea,
 .login-box button[type="submit"] {
   border: none;
   background: transparent;
-  color: #7d7d7d;
+  color: #5b5b5b;
   font-size: 30px;
   margin-top: 10px;
 }
@@ -2405,7 +2405,7 @@ textarea,
   top: 1px;
 }
 .login-panel p #forgot-password :hover:after {
-  color: #7d7d7d;
+  color: #5b5b5b;
 }
 .login-panel p #forgot-password:after {
   display: inline-block;
@@ -2442,7 +2442,7 @@ textarea,
   margin-right: 10px;
 }
 .message {
-  color: #7d7d7d;
+  color: #5b5b5b;
   display: block;
   float: none;
   position: relative;
