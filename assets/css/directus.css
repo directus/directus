@@ -1362,6 +1362,22 @@ button {
 select {
   cursor: pointer;
 }
+.icon-select {
+  position: relative;
+}
+.icon-select select {
+  background: transparent;
+  border: 0px;
+  bottom: 0px;
+  left: 0px;
+  font-size: 12px;
+  opacity: 0;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 20px;
+  -webkit-appearance: none;
+}
 .standard-select {
   position: relative;
 }
@@ -2223,13 +2239,13 @@ textarea,
   display: inline-block;
   vertical-align: middle;
 }
-.header1 .tools .saved {
+.header1 .tools .saved-success {
   color: #7ac943;
 }
-.header1 .tools .saved .simple-select {
+.header1 .tools .saved-success .simple-select {
   color: #7ac943;
 }
-.header1 .tools .saved .tool-item {
+.header1 .tools .saved-success .tool-item {
   background-color: #7ac943;
 }
 .header1 .tools .disabled {
@@ -2248,6 +2264,9 @@ textarea,
 }
 .header1 .primary-row .tools .btn-round {
   padding: 4px;
+}
+.header1 .primary-row .tools .select-and-circle label.icon {
+  line-height: 50%;
 }
 .header1 .primary-row .tools .simple-select {
   margin-top: 4px;
