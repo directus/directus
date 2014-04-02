@@ -1004,7 +1004,7 @@
 html,
 body {
   background-color: #ffffff;
-  color: #5b5b5b;
+  color: #7d7d7d;
   font-size: 12px;
   width: 100%;
 }
@@ -1111,7 +1111,7 @@ button {
   font-style: italic;
 }
 .primary-info {
-  color: #5b5b5b;
+  color: #7d7d7d;
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 5px;
@@ -1148,6 +1148,10 @@ button {
 .remove-header-margin {
   margin-top: -20px;
 }
+.nothing-here {
+  text-align: center;
+  margin-top: 100px;
+}
 .btn-toolbar {
   clear: both;
   float: none;
@@ -1167,7 +1171,7 @@ button {
   margin-right: 0px;
 }
 .btn-group.btn-white .btn {
-  color: #5b5b5b;
+  color: #7d7d7d;
   background-color: #ffffff;
   border: solid 1px #ededed;
   border-right-width: 0px;
@@ -1306,8 +1310,8 @@ button {
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background-color: #5b5b5b;
-  border: solid 1px #5b5b5b;
+  background-color: #7d7d7d;
+  border: solid 1px #7d7d7d;
   color: #ffffff;
   cursor: pointer;
   padding: 5px 10px;
@@ -1322,7 +1326,7 @@ button {
   border-color: #252525;
 }
 .btn.btn-white {
-  color: #5b5b5b;
+  color: #7d7d7d;
   background-color: #ffffff;
   border: solid 1px #ededed;
 }
@@ -1388,7 +1392,7 @@ select {
   background-clip: padding-box;
   background-color: #ffffff;
   border: solid 1px #ededed;
-  color: #5b5b5b;
+  color: #7d7d7d;
   cursor: pointer;
   padding: 5px 25px 5px 10px;
   -webkit-appearance: none;
@@ -1412,6 +1416,7 @@ select {
   border: none;
   -webkit-appearance: none;
   padding-right: 20px;
+  outline: none;
 }
 .custom-check input[type="checkbox"],
 .custom-check input[type="radio"],
@@ -1446,8 +1451,8 @@ input[type="radio"].custom-check + label span {
 .custom-check input[type="radio"]:checked + label span,
 input[type="checkbox"].custom-check:checked + label span,
 input[type="radio"].custom-check:checked + label span {
-  background-color: #5b5b5b;
-  border-color: #5b5b5b;
+  background-color: #7d7d7d;
+  border-color: #7d7d7d;
 }
 .custom-check input[type="checkbox"]:checked + label:before,
 .custom-check input[type="radio"]:checked + label:before,
@@ -1520,12 +1525,13 @@ textarea,
   position: relative;
 }
 .filter-form .simple-select .icon {
-  color: #5b5b5b;
+  color: #7d7d7d;
   line-height: 26px;
   right: 9px;
 }
 .filter-form .simple-select select {
   padding-right: 20px;
+  outline: none;
 }
 .two-column-form h2 {
   margin-bottom: 10px;
@@ -1552,7 +1558,7 @@ textarea,
   /* safari3 */
   background-color: #ededed;
   bottom: 0px;
-  color: #5b5b5b;
+  color: #7d7d7d;
   font-weight: 500;
   left: 0px;
   padding: 25px 20px 25px 20px;
@@ -1568,7 +1574,7 @@ textarea,
   font-weight: 600;
 }
 .two-column-form .fields .field {
-  background-color: #fbfbfb;
+  background-color: #f4f4f4;
   margin-left: 200px;
   padding: 20px;
   position: relative;
@@ -1631,10 +1637,10 @@ textarea,
   width: 100%;
 }
 .table-striped thead tr {
-  background-color: #fbfbfb;
+  background-color: #f4f4f4;
 }
 .table-striped thead tr:hover {
-  background-color: #fbfbfb;
+  background-color: #f4f4f4;
   cursor: default;
 }
 .table-striped thead tr th {
@@ -1679,8 +1685,8 @@ textarea,
   vertical-align: top;
 }
 .table-striped tr {
-  border-bottom: solid 1px #fbfbfb;
-  color: #5b5b5b;
+  border-bottom: solid 1px #f4f4f4;
+  color: #7d7d7d;
   font-weight: 400;
   font-size: 12px;
 }
@@ -1747,7 +1753,7 @@ textarea,
 .cards .card .header-image .tool-item {
   background-color: #ffffff;
   bottom: 10px;
-  color: #5b5b5b;
+  color: #7d7d7d;
   display: none;
   position: absolute;
   right: 10px;
@@ -1848,7 +1854,7 @@ textarea,
   margin-top: 3px;
 }
 .group-list .group-item .stack {
-  color: #5b5b5b;
+  color: #7d7d7d;
   height: 17px;
 }
 .group-list .group-item .stack .icon {
@@ -1905,7 +1911,7 @@ textarea,
 #sidebar {
   background-color: #252525;
   bottom: 0px;
-  color: #5b5b5b;
+  color: #7d7d7d;
   float: left;
   font-weight: 400;
   height: 100%;
@@ -2002,7 +2008,7 @@ textarea,
   width: 59px;
 }
 #sidebar #featureSidebar li:hover {
-  background-color: #5b5b5b;
+  background-color: #7d7d7d;
 }
 #sidebar #featureSidebar li:hover.has-image .icon {
   display: block;
@@ -2015,7 +2021,7 @@ textarea,
   padding: 17px;
 }
 #sidebar #featureSidebar li.active {
-  background-color: #fbfbfb;
+  background-color: #f4f4f4;
 }
 #sidebar #featureSidebar li.has-image .icon {
   display: none;
@@ -2110,10 +2116,10 @@ textarea,
   vertical-align: top;
 }
 .header1 h1 .endnode {
-  color: #5b5b5b;
+  color: #7d7d7d;
 }
 .header1 h1 .focused {
-  color: #5b5b5b;
+  color: #7d7d7d;
 }
 .header1 li {
   float: left;
@@ -2128,7 +2134,7 @@ textarea,
   height: 0px;
   width: 0px;
   border-width: 14px 14px 0 14px;
-  border-color: #5b5b5b transparent transparent transparent;
+  border-color: #7d7d7d transparent transparent transparent;
   bottom: -5px;
   content: "";
   display: block;
@@ -2138,11 +2144,11 @@ textarea,
 }
 .header1 .input-and-button:hover input,
 .header1 .input-and-button.active input {
-  color: #5b5b5b;
+  color: #7d7d7d;
 }
 .header1 .input-and-button:hover button,
 .header1 .input-and-button.active button {
-  background-color: #5b5b5b;
+  background-color: #7d7d7d;
 }
 .header1 .tools {
   font-size: 18px;
@@ -2186,7 +2192,7 @@ textarea,
   cursor: pointer;
 }
 .header1 .tools .tool-item:hover {
-  background-color: #5b5b5b;
+  background-color: #7d7d7d;
 }
 .header1 .tools .simple-select {
   color: #cbcbcb;
@@ -2266,7 +2272,7 @@ textarea,
 }
 .header1 .secondary-row .action {
   display: inline-block;
-  color: #5b5b5b;
+  color: #7d7d7d;
   cursor: pointer;
 }
 .header1 .secondary-row .text-spacer {
@@ -2295,7 +2301,7 @@ textarea,
 .login-box button[type="submit"] {
   border: none;
   background: transparent;
-  color: #5b5b5b;
+  color: #7d7d7d;
   font-size: 30px;
   margin-top: 10px;
 }
@@ -2350,7 +2356,7 @@ textarea,
   top: 1px;
 }
 .login-panel p #forgot-password :hover:after {
-  color: #5b5b5b;
+  color: #7d7d7d;
 }
 .login-panel p #forgot-password:after {
   display: inline-block;
@@ -2387,7 +2393,7 @@ textarea,
   margin-right: 10px;
 }
 .message {
-  color: #5b5b5b;
+  color: #7d7d7d;
   display: block;
   float: none;
   position: relative;
@@ -2429,7 +2435,7 @@ textarea,
   padding-right: 10px;
 }
 .message.unread {
-  background-color: #fbfbfb;
+  background-color: #f4f4f4;
 }
 .message.unread .content .title {
   font-weight: 700;

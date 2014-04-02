@@ -2,7 +2,7 @@
 
 <div class="directus-toolbar"></div>
 
-<table class="table table-striped directus-table" id="{{id}}">
+<table class="table table-striped directus-table remove-header-margin" id="{{id}}">
 <colgroup>
 	<col class="col-status">
 	{{#if sortable}}<col class="col-sort">{{/if}}
@@ -15,9 +15,9 @@
 </table>
 
 {{#if showEmptyMessage}}
-<div class="nothing-here">
+<div class="nothing-here secondary-info">
 <h1>There doesn't seem to be anything here</h1>
-Try clicking the "Add New Item" button
+Add a new item
 </div>
 {{/if}}
 
