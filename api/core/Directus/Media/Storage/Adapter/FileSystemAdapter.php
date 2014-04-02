@@ -4,7 +4,7 @@ namespace Directus\Media\Storage\Adapter;
 
 class FileSystemAdapter extends Adapter {
 
-	protected function fileExists($fileName, $destination) {
+	public function fileExists($fileName, $destination) {
 		$path = $this->joinPaths($destination, $fileName);
 		return file_exists($path);
 	}

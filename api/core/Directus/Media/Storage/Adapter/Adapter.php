@@ -70,7 +70,7 @@ abstract class Adapter {
      * implementation. 
      * @return bool
      */
-    protected abstract function fileExists($fileName, $destination);
+    public abstract function fileExists($fileName, $destination);
 
     /**
      * Can't make this abstract right off the bat since it will break the one CDN adapter we have right now
@@ -79,6 +79,10 @@ abstract class Adapter {
      * @return string               File contents
      */
     public abstract function getFileContents($fileName, $destination);
+
+    public function getSettings() {
+        return $this->settings;
+    }
 
     /**
      * @param  string $localFile      The local path of the source file.
