@@ -322,7 +322,7 @@ class MySQL {
      *
      *  @param $tbl_name
      */
-    function get_table_preferences($user_id, $tbl_name) {
+    function get_table_preferences($user_id, $tbl_name, $pref_title = "default") {
         $return = array();
         $sql = 'SELECT PREFERENCES.*
             FROM directus_preferences PREFERENCES
@@ -331,6 +331,17 @@ class MySQL {
         $sth = $this->dbh->prepare($sql);
         $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
         $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $sth->bindValue(':title', 'default', PDO::PARAM_STR);
+        $sth->execute();
+
+        if ($sth->rowCount()) {
+            return $sth->fetch(PDO::FETCH_ASSOC);
+        }
+
+        $sth = $this->dbh->prepare($sql);
+        $sth->bindValue(':table_name', $tbl_name, PDO::PARAM_STR);
+        $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $sth->bindValue(':title', 'default', PDO::PARAM_STR);
         $sth->execute();
         // A preference exists, return it.
         if ($sth->rowCount()) {
@@ -359,7 +370,8 @@ class MySQL {
                 'table_name' => $tbl_name,
                 'sort' => 'id',
                 'sort_order' => 'asc',
-                'active' => '1,2'
+                'active' => '1,2',
+                'title' => 'default'
             );
             // Insert to DB
             $id = $this->set_entry('directus_preferences', $data);

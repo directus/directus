@@ -10,6 +10,7 @@ use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Update;
 
 class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
@@ -22,7 +23,8 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
     public static $defaultPreferencesValues = array(
         "sort"          => "id",
         "sort_order"    => "ASC",
-        "active"        => "1,2"
+        "active"        => "1,2",
+        "title"         => null
     );
 
     public static $defaultPreferencesValuesByTable = array(
@@ -56,7 +58,6 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
     public function constructPreferences($user_id, $table, $preferences = null) {
         $db = Bootstrap::get('olddb');
-        
         if ($preferences) {
             $newPreferencesData = false;
 
@@ -88,18 +89,25 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         $data = $this->applyDefaultPreferences($table, $data);
         // Insert to DB
         $id = $db->set_entry(self::$_tableName, $data);
-        
 
         return $data;
     }
 
-    public function fetchByUserAndTable($user_id, $table) {
+    public function fetchByUserAndTableAndTitle($user_id, $table, $name = null) {
         $select = new Select($this->table);
         $select->limit(1);
         $select
             ->where
                 ->equalTo('table_name', $table)
                 ->equalTo('user', $user_id);
+
+        if($name) {
+            $select->where
+                ->equalTo('title', $name);
+        } else {
+            $select->where
+                ->isNull('title');
+        }
 
         $preferences = $this
             ->selectWith($select)
@@ -109,26 +117,41 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             $preferences = $preferences->toArray();
         }
 
-        return $this->constructPreferences($user_id, $table, $preferences);        
+        return $this->constructPreferences($user_id, $table, $preferences);
+    }
+
+    public function updateDefaultByName($user_id, $table, $data) {
+        $update = new Update($this->table);
+        unset($data['id']);
+        unset($data['title']);
+        unset($data['table_name']);
+        unset($data['user']);
+        $update->set($data)
+                ->where
+                  ->equalTo('table_name', $table)
+                  ->equalTo('user', $user_id)
+                  ->isNull('title');
+        $this->updateWith($update);
     }
 
     // @param $assoc return associative array with table_name as keys
-    public function fetchAllByUser($user_id, $assoc = false) {    
+    public function fetchAllByUser($user_id, $assoc = false) {
         $db = Bootstrap::get('olddb');
 
-        $sql = 
-            'SELECT 
-                id,            
+        $sql =
+            'SELECT
+                id,
                 ST.table_name,
                 user,
                 columns_visible,
                 sort,
                 sort_order,
-                active
-            FROM 
-                INFORMATION_SCHEMA.TABLES ST 
-            LEFT JOIN 
-                directus_preferences ON (directus_preferences.table_name = ST.table_name AND directus_preferences.user = :user)
+                active,
+                title
+            FROM
+                INFORMATION_SCHEMA.TABLES ST
+            LEFT JOIN
+                directus_preferences ON (directus_preferences.table_name = ST.table_name AND directus_preferences.user = :user AND directus_preferences.title IS NULL)
             WHERE
                 ST.TABLE_SCHEMA = :schema
             AND
@@ -143,7 +166,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                     "directus_storage_adapters",
                     "directus_tables",
                     "directus_tab_privileges",
-                    "directus_ui"       
+                    "directus_ui"
                 )';
 
         $sth = $db->dbh->prepare($sql);
@@ -153,6 +176,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
         $preferences = array();
 
+        //Get Default Preferences
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
             $tableName = $row['table_name'];
 
@@ -160,14 +184,52 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             if (!TableSchema::canGroupViewTable($tableName)) {
                 continue;
             }
-            
-            if (!isset($row['user'])) {            
+
+            if (!isset($row['user'])) {
                 $row = null;
             }
-            
-            $row = $this->constructPreferences($user_id, $tableName, $row);
 
+            $row = $this->constructPreferences($user_id, $tableName, $row);
             $preferences[$tableName] = $row;
+        }
+
+        //-------Get Aditional Preferences--------
+
+        //@TODO: Not so Copy-Pasta
+        $sql =
+            'SELECT
+                id,
+                table_name,
+                user,
+                columns_visible,
+                sort,
+                sort_order,
+                active,
+                title
+            FROM
+                directus_preferences
+            WHERE
+                title IS NOT NULL AND
+                directus_preferences.user = :user';
+
+        $sth = $db->dbh->prepare($sql);
+        $sth->bindValue(':user', $user_id, \PDO::PARAM_INT);
+        $sth->execute();
+
+        //Get Default Preferences
+        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+            $tableName = $row['table_name'];
+
+            // Honor ACL. Skip the tables that the user doesn't have access too
+            if (!TableSchema::canGroupViewTable($tableName)) {
+                continue;
+            }
+
+            if (!isset($row['user'])) {
+                $row = null;
+            }
+
+            $preferences[$tableName.":".$row['title']] = $row;
         }
 
         return $preferences;
