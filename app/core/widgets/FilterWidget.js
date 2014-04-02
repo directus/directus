@@ -127,7 +127,9 @@ function(app, Backbone) {
         search.forEach(function(filter) {
           filter = filter.replace('\\:', '%20');
           filter = filter.split(':');
-          that.options.filterOptions.filters.push({id: filter[0].replace('%20',':'), type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')});
+          if(filter.length == 3) {
+            that.options.filterOptions.filters.push({id: filter[0].replace('%20',':'), type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')});
+          }
         });
       }
       this.updateFilters();
@@ -135,9 +137,7 @@ function(app, Backbone) {
 
     initialize: function() {
       this.options.filterOptions = {filters:[]};
-
       this.updateFiltersFromPreference();
-
       this.collection.preferences.on('sync', this.updateFiltersFromPreference, this);
     }
   });
