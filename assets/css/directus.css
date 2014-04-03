@@ -1804,6 +1804,10 @@ select:focus,
 .cards .card .info .featured {
   margin-top: -4px;
 }
+.cards .card .info .primary-info {
+  height: 1em;
+  overflow: hidden;
+}
 .cards .card .info .extra li {
   border-bottom: solid 1px #ededed;
   list-style: none;
