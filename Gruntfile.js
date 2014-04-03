@@ -27,6 +27,7 @@ module.exports = function(grunt) {
             multistr: true,
             onecase: true,
             sub: true,
+            expr: true,
             globals: {
               '$': true,
               '_': true,

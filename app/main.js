@@ -23,10 +23,11 @@ require(["config"], function() {
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
-    'core/idle'
+    'core/idle',
+    'tool-tips'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip) {
 
     "use strict";
 
@@ -368,7 +369,10 @@ require(["config"], function() {
         var windowScroll = Math.max(Math.min($(window).scrollTop(), 100), 0) / 100;
         $('#header-shadow').css({ opacity: windowScroll });
       });
-
+      
+      var toolTip = new ToolTip();
+      toolTip.render();
+      
     });
 
   });
