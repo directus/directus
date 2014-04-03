@@ -39,7 +39,6 @@ define(function(require, exports, module) {
 
     hiddenFields: [
       'id',
-      'active',
       'sort'
     ],
 
@@ -56,12 +55,12 @@ define(function(require, exports, module) {
 
         // Skip `active` for non-nested Insert forms
         if('active' == column.id) {
-          if(!this.options.collectionAdd) {
+          if(this.options.collectionAdd) {
+            this.model.set('active', 1);
             return;
           }
           // Default `active` to 1 for new nested collection inserts.
           // @todo more correct way to do this?
-          this.model.set('active', 1);
         }
 
         var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
@@ -120,7 +119,6 @@ define(function(require, exports, module) {
           obj[key] = value.join(',');
         }
       });
-
       return whiteListedData;
     },
 
