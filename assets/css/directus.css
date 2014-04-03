@@ -1421,6 +1421,9 @@ select {
   padding: 0 20px 0 0;
   outline: none;
 }
+.simple-select select:focus {
+  border: none;
+}
 .custom-check input[type="checkbox"],
 .custom-check input[type="radio"],
 input[type="checkbox"].custom-check,
@@ -1753,6 +1756,14 @@ select:focus,
 .table-striped tr .check-box label {
   margin-right: 0px;
 }
+.set-columns label {
+  display: block;
+}
+.set-columns label input {
+  display: inline-block;
+  width: auto;
+  margin-right: 10px;
+}
 .cards {
   padding-left: 0px;
 }
@@ -1969,6 +1980,7 @@ select:focus,
 #sidebar #mainLogoBox {
   background-color: rgba(255, 255, 255, 0.04);
   border-bottom: 1px solid #313131;
+  height: 100px;
 }
 #sidebar .directusLogo {
   height: 60px;
