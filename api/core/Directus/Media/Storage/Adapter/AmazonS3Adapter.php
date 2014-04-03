@@ -44,7 +44,7 @@ class AmazonS3Adapter extends Adapter {
         return $result['Body'];
     }
 
-    protected function fileExists($fileName, $destination) {
+    public function fileExists($fileName, $destination) {
         $objects = $this->getObjectList();
         return array_key_exists($fileName, $objects);
     }

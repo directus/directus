@@ -16,7 +16,8 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
-    {id: 'value_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"}
+    {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: "Enter Visible Column Name"},
+    {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"}
     //{id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
 
@@ -63,8 +64,8 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
     serialize: function() {
       var optionTemplate = function(){};
-      if(this.options.settings.has('value_template')) {
-        optionTemplate = Handlebars.compile(this.options.settings.get('value_template'));
+      if(this.options.settings.has('visible_column_template')) {
+        optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
       }
       var data = this.collection.map(function(model) {
         var data = model.toJSON();
@@ -133,7 +134,11 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   Module.list = function(options) {
     if (options.value === undefined) return '';
-    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('value_template'));
+    if(options.settings.get('visible_column_template') !== undefined) {
+      var displayTemplate = Handlebars.compile(options.settings.get('visible_column_template'));
+      if (options.value instanceof Backbone.Model) return displayTemplate(options.value.attributes);
+    }
+    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
     return options.value;
   };
 

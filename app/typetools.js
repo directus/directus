@@ -72,8 +72,7 @@ define(["plugins/jquery.timeago"], function() {
       'DateTime',
       'RNGR',
       'CC',
-      'CCV',
-      'SoulCycle'
+      'CCV'
     ],
 
     // Conjunctions and prepositions should be lowercase

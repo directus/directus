@@ -43,11 +43,25 @@ class Storage {
     }
 
     /**
+     * @param  string $string Potentially valid JSON.
+     * @return array
+     */
+    public static function jsonDecodeIfPossible($string) {
+        if(!empty($string) && $decoded = json_decode($string, true)) {
+            return $decoded;
+        }
+        return array();
+    }
+
+    /**
      * @param  array $adapterSettings
      * @return \Directus\Media\Storage\Adapter\Adapter
      */
-    public static function getStorage(array $adapterSettings) {
+    public static function getStorage(array &$adapterSettings) {
         $adapterName = $adapterSettings['adapter_name'];
+        if(!is_array($adapterSettings['params'])) {
+            $adapterSettings['params'] = self::jsonDecodeIfPossible($adapterSettings['params']);
+        }
         $cacheKey = $adapterName . serialize($adapterSettings['params']);
         if(!isset(self::$storages[$cacheKey])) {
 			$adapterClass = self::ADAPTER_NAMESPACE . "\\$adapterName";

@@ -56,7 +56,7 @@ class RackspaceOpenCloudAdapter extends Adapter {
         }
     }
 
-    protected function fileExists($fileName, $destination) {
+    public function fileExists($fileName, $destination) {
         $this->setContainer($destination);
         $objects = $this->getObjectList();
         return array_key_exists($fileName, $objects);
