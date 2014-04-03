@@ -1958,13 +1958,15 @@ select:focus,
 #sidebar #mainLogoBox {
   background-color: rgba(255, 255, 255, 0.04);
   border-bottom: 1px solid #313131;
-  font-size: 40px;
-  height: 60px;
-  line-height: 90px;
-  padding: 20px 0px;
-  text-align: center;
 }
-#sidebar #mainLogoBox .icon {
+#sidebar .directusLogo {
+  height: 60px;
+  padding: 20px 0px;
+  line-height: 90px;
+  text-align: center;
+  font-size: 40px;
+}
+#sidebar .directusLogo .icon {
   line-height: 36px;
 }
 #sidebar #mainSidebar {
