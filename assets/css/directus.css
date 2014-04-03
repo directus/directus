@@ -1548,14 +1548,16 @@ select:focus,
   margin-bottom: 10px;
 }
 .two-column-form .fields {
+  display: table;
   list-style: none;
   margin: 0px;
   padding: 0px;
   width: 100%;
 }
 .two-column-form .fields li {
-  position: relative;
+  display: table-row;
   margin-bottom: 1px;
+  position: relative;
   width: 100%;
 }
 .two-column-form .fields .label {
@@ -1568,15 +1570,19 @@ select:focus,
   -webkit-box-sizing: border-box;
   /* safari3 */
   background-color: #ededed;
-  bottom: 0px;
+  border-bottom: solid 1px #ffffff;
   color: #5b5b5b;
+  display: table-cell;
   font-weight: 500;
-  left: 0px;
   padding: 25px 20px 25px 20px;
-  position: absolute;
   text-align: right;
-  top: 0px;
   width: 200px;
+}
+.two-column-form .fields .label:after {
+  clear: both;
+  content: '';
+  display: block;
+  width: 100%;
 }
 .two-column-form .fields .label label {
   position: relative;
@@ -1586,7 +1592,8 @@ select:focus,
 }
 .two-column-form .fields .field {
   background-color: #f4f4f4;
-  margin-left: 200px;
+  border-bottom: solid 1px #ffffff;
+  display: table-cell;
   padding: 20px;
   position: relative;
 }
