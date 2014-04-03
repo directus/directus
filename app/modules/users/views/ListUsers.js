@@ -98,7 +98,6 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     template: Handlebars.compile(
       '{{#rows}}' +
       '<tr data-id="{{id}}" data-cid="{{cid}}">' +
-      '<td class="status"></td>' +
       '<td>{{avatar}}</td>' +
       '<td>{{first_name}}</td>' +
       '<td>{{last_name}}</td>' +
@@ -198,7 +197,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           this.viewList = true;
           $('#listBtn').parent().addClass('active');
           $('#gridBtn').parent().removeClass('active');
-          this.table = new ListView({collection:this.collection});
+          this.table = new ListView({collection:this.collection, selectable: false});
           this.render();
         }
       }
