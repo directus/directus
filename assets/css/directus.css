@@ -1664,7 +1664,7 @@ select:focus,
 .table-striped thead tr th {
   color: #cbcbcb;
   border-bottom: 1px solid #ededed;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   padding: 10px;
   position: relative;
@@ -2196,7 +2196,6 @@ select:focus,
   background-color: #5b5b5b;
 }
 .header1 .tools {
-  font-size: 18px;
   position: relative;
 }
 .header1 .tools.left {
@@ -2216,13 +2215,16 @@ select:focus,
   margin-left: 0px;
 }
 .header1 .tools.left.big-space .tool {
-  margin-left: 35px;
+  margin-left: 20px;
 }
 .header1 .tools.left.big-space .tool:first-child {
   margin-left: 0px;
 }
 .header1 .tools.left.big-space .tool.div-right {
-  padding-right: 35px;
+  padding-right: 20px;
+}
+.header1 .tools.left.big-space .tool.div-left {
+  padding-left: 20px;
 }
 .header1 .tools.right .tool {
   margin-right: 10px;
@@ -2231,7 +2233,7 @@ select:focus,
   margin-right: 0px;
 }
 .header1 .tools.right.big-space .tool {
-  margin-right: 35px;
+  margin-right: 20px;
 }
 .header1 .tools.right.big-space .tool:last-child {
   margin-left: 0px;
@@ -2251,6 +2253,11 @@ select:focus,
   border-right: solid 1px #ededed;
   height: 32px;
   padding-right: 10px;
+}
+.header1 .tools .tool.div-left {
+  border-left: solid 1px #ededed;
+  height: 32px;
+  padding-left: 10px;
 }
 .header1 .tools .tool-item {
   background-color: #cbcbcb;
@@ -2301,9 +2308,11 @@ select:focus,
   margin-right: 10px;
   margin-top: 5px;
   text-align: right;
+  width: auto;
 }
 .header1 .secondary-row {
   color: #cbcbcb;
+  font-weight: 600;
   margin: 15px 0px -15px 0px;
 }
 .header1 .secondary-row.filter-options .filter-list {
@@ -2329,6 +2338,9 @@ select:focus,
 }
 .header1 .secondary-row.batch-actions.left li.div-right {
   padding-right: 20px;
+}
+.header1 .secondary-row.batch-actions.left li.div-left {
+  padding-left: 20px;
 }
 .header1 .secondary-row li {
   font-size: 12px;
@@ -2360,10 +2372,29 @@ select:focus,
   padding: 0px;
 }
 .header1 .secondary-row .filters li {
+  cursor: pointer;
   background-color: #cbcbcb;
   color: #ffffff;
   margin: 5px 0px 7px 10px;
   padding: 3px 10px;
+  -webkit-border-top-right-radius: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  -webkit-border-bottom-left-radius: 2px;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-topright: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-topleft: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+.header1 .secondary-row .filters li:hover {
+  background-color: #c1272d;
 }
 .login-box {
   left: 50%;
@@ -2494,6 +2525,7 @@ select:focus,
 }
 .message .content .users {
   font-style: italic;
+  font-weight: 400;
 }
 .message .content .title {
   font-weight: 600;
