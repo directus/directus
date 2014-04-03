@@ -394,7 +394,8 @@ define(function(require, exports, module) {
         serialize: function() {
           return {
             siteUrl: this.model.get('site_url'),
-            messageCounter: app.messages.unread
+            messageCounter: app.messages.unread,
+            cms_thumbnail_url: this.model.get('cms_thumbnail_url')
           };
         },
         beforeRender: function() {
