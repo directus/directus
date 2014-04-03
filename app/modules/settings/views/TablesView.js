@@ -266,7 +266,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
       'change select,input': function(e) {
         this.saveWidget.setSaved(false); //Temporarily Just Set it to save once something is changed.
       },
-      'click .saved': 'saveColumns'
+      'click .saved-success': 'saveColumns'
     },
 
     saveColumns: function(e) {

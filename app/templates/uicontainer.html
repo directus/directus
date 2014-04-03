@@ -1,11 +1,11 @@
+<div class="label">
+	<label>{{capitalize id}} <span class="note">{{comment}}</span></label>
+
+	{{#if batchEdit}}
+		<label class="batch-edit-on">Edit <input type="checkbox" data-attr="{{id}}" name="batchedit"></label>
+	{{/if}}
+</div>
 
 {{#if batchEdit}}
-	<div class="fieldset-smoke" style="position:absolute; top:0px; left:0px; right:0px; bottom:0px; background-color:rgba(0,0,0,0.05); z-index:1;"></div>
-	<label style="position:absolute; top:10px; right:10px; z-index:2"><input type="checkbox" data-attr="{{id}}" name="batchedit"> Edit</label>
+	<div class="fieldset-smoke"></div>
 {{/if}}
-
-
-<div class="label"><label>{{capitalize id}} <span class="note">{{comment}}</span></label></div>
-
-
-

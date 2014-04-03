@@ -44,12 +44,12 @@
     }
     #set-visible-columns {
       position: absolute;
-      top: 12px;
-      right: 20px;
-      font-size:16px;
+      top: 10px;
+      right: 10px;
+      font-size:13px;
       display: none;
       color:@mediumGrey;
-      &:hover {color: @tableHoverYellow; }
+      &:hover {color: @darkGrey; }
     }
   }
   thead:hover #set-visible-columns { display: block; }
@@ -86,6 +86,17 @@
       label {
         margin-right: 0px;
       }
+    }
+  }
+}
+
+.set-columns {
+  label {
+    display: block;
+    input {
+      display: inline-block;
+      width: auto;
+      margin-right: @smallPad;
     }
   }
 }

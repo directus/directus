@@ -59,8 +59,13 @@ select {
     background: transparent;
     border: none;
     -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased !important;
+    font-weight: 600;
     padding: 0 20px 0 0;
     outline: none;
+    &:focus {
+      border: none;
+    }
   }
 }
 .custom-check input[type="checkbox"], .custom-check input[type="radio"],
@@ -171,6 +176,15 @@ select,
       position: relative;
       width: 100%;
     }
+    .fieldset-smoke {
+      position:absolute;
+      top:0px;
+      left:0px;
+      right:0px;
+      bottom:0px;
+      background-color:rgba(255,255,255,0.5);
+      z-index:1;
+    }
     .label {
       .border-box;
       .clear-fix;
@@ -187,6 +201,16 @@ select,
         text-transform: capitalize;
         top: -5px;
         font-weight: 600;
+      }
+      .batch-edit-on {
+        font-weight: 700;
+        display: block;
+        z-index: 2;
+        input {
+          display: inline-block;
+          width: auto;
+        }
+
       }
     }
     .field {
