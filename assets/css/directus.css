@@ -988,6 +988,54 @@
     opacity: 1;
   }
 }
+@-webkit-keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-moz-keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-ms-keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-o-keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
 html,
 body {
   background-color: #ffffff;
@@ -1710,14 +1758,14 @@ select:focus,
 }
 .table-striped thead #set-visible-columns {
   position: absolute;
-  top: 12px;
-  right: 20px;
-  font-size: 16px;
+  top: 10px;
+  right: 10px;
+  font-size: 13px;
   display: none;
   color: #cbcbcb;
 }
 .table-striped thead #set-visible-columns:hover {
-  color: #fffbc4;
+  color: #5b5b5b;
 }
 .table-striped thead:hover #set-visible-columns {
   display: block;
@@ -2099,9 +2147,16 @@ select:focus,
   width: 25px;
 }
 #sidebar #featureSidebar li .icon.icon-thunder-cloud {
-  -webkit-animation: fadein 1s 0 ease;
-  -moz-animation: fadein 1s 0 ease;
-  -ms-animation: fadein 1s 0 ease;
+  -webkit-animation: fadeout 1s 0 ease;
+  -moz-animation: fadeout 1s 0 ease;
+  -ms-animation: fadeout 1s 0 ease;
+}
+#sidebar #featureSidebar li .icon.icon-cycle {
+  -webkit-animation-name: rotate;
+  -webkit-animation-duration: 1.5s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  color: #ffffff;
 }
 #sidebar #featureSidebar li .feature-nav-alert {
   -webkit-border-top-right-radius: 50%;

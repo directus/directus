@@ -144,7 +144,14 @@
         text-align: center;
         width: 25px;
         &.icon-thunder-cloud {
-          .animation(fadein, 1s);
+          .animation(fadeout, 1s);
+        }
+        &.icon-cycle {
+          -webkit-animation-name:             rotate;
+          -webkit-animation-duration:         1.5s;
+          -webkit-animation-iteration-count:  infinite;
+          -webkit-animation-timing-function: linear;
+          color: @white;
         }
       }
       .feature-nav-alert {
