@@ -56,6 +56,19 @@
 <!-- custom HTML can be injected here -->
 {{customFooterHTML}}
 
+<style>
+    .primary-text-color {
+      color: {{cms_color}} !important;
+    }
+    .primary-border-color {
+      border-color: {{cms_color}} !important;
+    }
+    .primary-background {
+      background-color: {{cms_color}} !important;
+      color: #ffffff !important;
+    }
+</style>
+
 <script>
 window.directusData = {{data}};
 </script>

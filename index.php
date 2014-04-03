@@ -296,7 +296,12 @@ $templateVars = array(
     'data' => json_encode($data),
     'path' => DIRECTUS_PATH,
     'customFooterHTML' => getCusomFooterHTML(),
-    'cssFilePath' => getCSSFilePath()
+    'cssFilePath' => getCSSFilePath(),
+    'cms_color' => '#89c33d'
 );
+
+if(isset($data['settings']) && isset($data['settings'][0]) && isset($data['settings'][0]['cms_color'])) {
+  $templateVars['cms_color'] = $data['settings'][0]['cms_color'];
+}
 
 echo template(file_get_contents('main.html'), $templateVars);

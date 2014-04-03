@@ -10,10 +10,11 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'core/BasePageView'
+  'core/BasePageView',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, BasePageView) {
+function(app, Backbone, Directus, BasePageView, Widgets) {
 
   "use strict";
 
@@ -25,15 +26,25 @@ function(app, Backbone, Directus, BasePageView) {
       },
     },
 
+    leftToolbar: function() {
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
+      this.saveWidget.setSaved(true);
+      return [
+        this.saveWidget
+      ];
+    },
+
     events: {
-      'click #save-form': function() {
+      'click .saved-success': function() {
         var data = this.editView.data();
         var success = function() { app.router.go('settings'); };
         this.model.save(data, {success: success});
       },
-      'click #save-form-cancel': function() {
-        app.router.go('settings');
-      }
+      'change input, select, textarea': 'checkDiff',
+      'keyup input, textarea': 'checkDiff'
+    },
+    checkDiff: function(e) {
+      this.saveWidget.setSaved(false);
     },
 
     beforeRender: function() {
