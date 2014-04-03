@@ -42,7 +42,17 @@
         }
       }
     }
+    #set-visible-columns {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size:16px;
+      display: none;
+      color:@mediumGrey;
+      &:hover {color: @tableHoverYellow; }
+    }
   }
+  thead:hover #set-visible-columns { display: block; }
   tr {
     border-bottom: solid 1px @extraLightGrey;
     color: @darkGrey;
@@ -77,6 +87,5 @@
         margin-right: 0px;
       }
     }
-
   }
 }
