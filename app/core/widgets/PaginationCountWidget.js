@@ -8,7 +8,7 @@ function(app, Backbone) {
 
   return Backbone.Layout.extend({
 
-    template: Handlebars.compile('{{#if lBound}}{{number lBound}}–{{number uBound}} of {{number totalCount}}{{/if}}'),
+    template: Handlebars.compile('{{#if lBound}}{{number lBound}}–{{number uBound}} of {{number totalCount}}{{else}}No Items Found{{/if}}'),
 
     tagName: 'div',
 
