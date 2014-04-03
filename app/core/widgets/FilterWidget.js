@@ -48,6 +48,12 @@ function(app, Backbone) {
       'click [data-add-filter-row]': function(e) {
         this.options.filterOptions.addFilter = true;
         this.render();
+      },
+      'click .filters li': function(e) {
+        var index = $(e.target).index();
+        this.options.filterOptions.filters.splice(index, 1);
+        this.updateFilters();
+        this.saveFilterString();
       }
     },
 
