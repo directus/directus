@@ -74,7 +74,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       view.headerOptions.basicSave = true;
 
       view.events = {
-        'click .saved': function() {
+        'click .saved-success': function() {
           this.save();
         },
         'click #removeOverlay': function() {
