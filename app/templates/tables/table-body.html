@@ -1,6 +1,5 @@
 {{#each rows}}
 	<tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="{{{activeMap model}}} {{#classes}}{{this}} {{/classes}} {{#if highlight}}highlighted{{/if}}">
-		<td class="status"></td>
 		{{#if ../sortable}}<td class="sort"><span class="glyphicon-show-lines"></span></td>{{/if}}
 		{{#if ../selectable}}
 		  <td class="check check-box">
