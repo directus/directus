@@ -1491,6 +1491,7 @@ input[type="radio"].custom-check:checked + label:before {
 }
 input,
 textarea,
+select,
 .input {
   box-sizing: border-box;
   /* css3 rec */
@@ -1505,6 +1506,13 @@ textarea,
   display: block;
   padding: 5px;
   width: 100%;
+  outline: none;
+}
+input:focus,
+textarea:focus,
+select:focus,
+.input:focus {
+  border: solid 1px #cbcbcb;
 }
 .wysiwyg .btn-toolbar {
   margin-bottom: 5px;
@@ -1602,13 +1610,17 @@ textarea,
   width: 100%;
 }
 .two-column-form .fields .field input[type="text"],
-.two-column-form .fields .field textarea {
+.two-column-form .fields .field textarea,
+.two-column-form .fields .field .input {
   max-width: 700px;
 }
 .two-column-form .fields .field textarea {
   min-height: 100px;
   padding: 10px;
   resize: vertical;
+}
+.two-column-form .fields .field select {
+  max-width: 200px;
 }
 .two-column-form .fields .field .standard-select {
   float: left;
@@ -2098,7 +2110,19 @@ textarea,
   top: 0px;
   z-index: 50;
 }
+#header-shadow {
+  position: absolute;
+  bottom: -10px;
+  height: 10px;
+  width: 100%;
+  z-index: 50;
+  /* Switch to mixin */
+  background: -webkit-linear-gradient(top, rgba(91, 91, 91, 0.1) 0%, rgba(91, 91, 91, 0) 100%);
+  opacity: 0.0;
+  pointer-events: none;
+}
 .header1 {
+  position: relative;
   box-sizing: border-box;
   /* css3 rec */
   -moz-box-sizing: border-box;

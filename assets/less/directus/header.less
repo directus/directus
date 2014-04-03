@@ -9,7 +9,20 @@
   z-index: 50;
 }
 
+#header-shadow {
+  position: absolute;
+  bottom: -10px;
+  height: 10px;
+  width: 100%;
+  z-index: 50;
+  /* Switch to mixin */
+  background: -webkit-linear-gradient(top, fade(@darkGrey, 10%) 0%,fade(@darkGrey, 0%) 100%);
+  opacity: 0.0;
+  pointer-events: none;
+}
+
 .header1 {
+  position: relative;
   .border-box;
   background-color: @white;
   border-bottom: 1px solid @lightGrey;
