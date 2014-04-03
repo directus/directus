@@ -35,31 +35,37 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     leftSecondaryToolbar: function() {
-      var states = {
-        'default' : [
-          new Widgets.VisibilityWidget({collection: this.collection}),
-          new Widgets.FilterWidget({collection: this.collection})
-        ],
-        'actions' : [
-          new Widgets.SelectionActionWidget({collection: this.collection})
-        ]
-      };
-
       this.leftSecondaryCurrentState = _.isUndefined(this.leftSecondaryCurrentState) ? 'default' : this.leftSecondaryCurrentState;
 
-      return states[this.leftSecondaryCurrentState];
+      switch(this.leftSecondaryCurrentState) {
+        case 'default':
+          return [
+            new Widgets.VisibilityWidget({collection: this.collection}),
+            new Widgets.FilterWidget({collection: this.collection})
+          ];
+        case 'actions':
+          return [
+            new Widgets.SelectionActionWidget({collection: this.collection})
+          ];
+      }
+
+      return [];
     },
 
     rightSecondaryToolbar: function() {
-      var states = {
-        'default' : [
-          new Widgets.PaginationCountWidget({collection: this.collection})
-        ],
-        'actions' : [
-          new Widgets.SelectedCountWidget({collection: this.collection})
-        ]
-      };
-      return states[this.leftSecondaryCurrentState];
+
+      switch(this.leftSecondaryCurrentState) {
+        case 'default':
+          return [
+            new Widgets.PaginationCountWidget({collection: this.collection})
+          ];
+        case 'actions':
+          return [
+            new Widgets.SelectedCountWidget({collection: this.collection})
+          ];
+      }
+
+      return [];
     },
 
     events: {
