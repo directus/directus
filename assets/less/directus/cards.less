@@ -7,6 +7,8 @@
       height: 200px;
       position: relative;
       width: 200px;
+      background-color: @lightGrey;
+      text-align: center;
       &:hover {
         cursor: pointer;
         .tool-item {
@@ -23,7 +25,7 @@
         text-align: center;
       }
       img {
-        display: block;
+        // display: block; // This inhibits centering of images
       }
       .tool-item {
         background-color: @white;
@@ -49,7 +51,6 @@
         padding: 8px @standardPad 8px @standardPad;
       }
       .featured {
-        background-color: @lightGrey;
         margin-top: -4px;
       }
       .extra {
@@ -79,7 +80,7 @@
     }
   }
 }
-        
+
 .feature-cards {
   padding-left: 0px;
   .feature-card {

@@ -1119,7 +1119,7 @@ button {
 .secondary-info {
   color: #cbcbcb;
   font-size: 12px;
-  font-weight: 300;
+  font-weight: 600;
 }
 .delete-color {
   color: #c1272d;
@@ -1759,6 +1759,8 @@ select:focus,
   height: 200px;
   position: relative;
   width: 200px;
+  background-color: #ededed;
+  text-align: center;
 }
 .cards .card .header-image:hover {
   cursor: pointer;
@@ -1774,9 +1776,6 @@ select:focus,
   height: 199px;
   line-height: 190px;
   text-align: center;
-}
-.cards .card .header-image img {
-  display: block;
 }
 .cards .card .header-image .tool-item {
   background-color: #ffffff;
@@ -1801,7 +1800,6 @@ select:focus,
   padding: 8px 20px 8px 20px;
 }
 .cards .card .info .featured {
-  background-color: #ededed;
   margin-top: -4px;
 }
 .cards .card .info .extra li {
