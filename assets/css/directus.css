@@ -1819,7 +1819,7 @@ select:focus,
   margin-top: -4px;
 }
 .cards .card .info .primary-info {
-  height: 1em;
+  height: 1.5em;
   overflow: hidden;
 }
 .cards .card .info .extra li {
