@@ -25,6 +25,17 @@ function(app, Backbone) {
       data.totalCount = this.collection.getTotalCount();
       data.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, data.totalCount);
       data.uBound = Math.min(data.totalCount, data.lBound + this.collection.getFilter('perPage') - 1);
+
+      if(this.collection.length != (data.uBound - data.lBound) + 1) {
+        if(this.collection.length < this.collection.getFilter('perPage')) {
+          data.totalCount = this.collection.length;
+        } else {
+          data.totalCount = "Many";
+        }
+        data.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, data.totalCount);
+        data.uBound = Math.min(data.totalCount, data.lBound + this.collection.getFilter('perPage') - 1);
+      }
+
       this.options.widgetOptions = data;
       this.render();
     },
@@ -32,7 +43,7 @@ function(app, Backbone) {
     initialize: function() {
       this.options.widgetOptions = {};
       this.updateCount();
-      this.collection.on('sync add remove', this.updateCount, this);
+      this.collection.on('sync', this.updateCount, this);
     }
   });
 });
