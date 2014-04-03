@@ -1431,7 +1431,7 @@ select {
   background: transparent;
   border: none;
   -webkit-appearance: none;
-  padding-right: 20px;
+  padding: 0 20px 0 0;
   outline: none;
 }
 .custom-check input[type="checkbox"],
@@ -2309,10 +2309,11 @@ select:focus,
   padding: 4px;
 }
 .header1 .primary-row .tools .select-and-circle label.icon {
-  line-height: 50%;
+  line-height: 70%;
 }
 .header1 .primary-row .tools .simple-select {
-  margin-top: 4px;
+  margin-bottom: -11px;
+  margin-left: 10px;
 }
 .header1 .primary-row .tools input {
   margin-right: 10px;
