@@ -36,6 +36,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     padding-top: 2px; \
                     padding-bottom: 2px; \
                     height: 24px; \
+                    display: inline-block; \
                   } \
                   input.color-text.invalid { \
                     border-color: #EB2A49; \
