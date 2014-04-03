@@ -53,14 +53,12 @@ define(function(require, exports, module) {
           return;
         }
 
-        // Skip `active` for non-nested Insert forms
         if('active' == column.id) {
           if(this.options.collectionAdd) {
             this.model.set('active', 1);
-            return;
           }
-          // Default `active` to 1 for new nested collection inserts.
-          // @todo more correct way to do this?
+
+
         }
 
         var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
