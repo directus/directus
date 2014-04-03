@@ -108,8 +108,16 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       var relatedSchema = relatedCollection.structure;
       var junctionStructure = relatedCollection.junctionStructure;
 
-      //@TODO: Have this not fetch entire collection.
-      //relatedCollection.nestedCollection.fetch({includeFilters: false});
+      var ids = [];
+
+      relatedCollection.each(function(model) {
+        ids.push(model.get('data').id);
+      });
+
+      if(ids.length > 0) {
+        //@TODO: Have this not fetch entire collection.
+        relatedCollection.nestedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}});
+      }
 
       this.nestedTableView = new TableView({
         collection: relatedCollection,
@@ -124,6 +132,15 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       });
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', this.nestedTableView.render, this);
+      this.listenTo(relatedCollection.nestedCollection, 'sync', function() {
+        var that = this;
+        //@TODO: Make this not suck
+        this.relatedCollection.each(function(model) {
+          model.get('data').set({image: that.relatedCollection.nestedCollection.get(model.get('data').id).get('image')});
+        });
+
+        this.nestedTableView.render();
+      }, this);
     }
 
   });
