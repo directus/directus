@@ -1418,6 +1418,8 @@ select {
   background: transparent;
   border: none;
   -webkit-appearance: none;
+  -webkit-font-smoothing: antialiased !important;
+  font-weight: 600;
   padding: 0 20px 0 0;
   outline: none;
 }
