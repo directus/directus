@@ -160,19 +160,20 @@ select,
   }
 }
 .two-column-form {
-  @labelWidth: 200px;
   @maxFieldWidth: 700px;
   h2 {
     margin-bottom: @smallPad;
   }
   .fields {
+    display: table;
     list-style: none;
     margin: 0px;
     padding: 0px;
     width: 100%;
     li {
-      position: relative;
+      display: table-row;
       margin-bottom: 1px;
+      position: relative;
       width: 100%;
     }
     .fieldset-smoke {
@@ -186,16 +187,15 @@ select,
     }
     .label {
       .border-box;
+      .clear-fix;
       background-color: @lightGrey;
-      bottom: 0px;
+      border-bottom: solid 1px @white;
       color: @darkGrey;
+      display: table-cell;
       font-weight: 500;
-      left: 0px;
       padding: 25px @standardPad 25px @standardPad;
-      position: absolute;
       text-align: right;
-      top: 0px;
-      width: @labelWidth;
+      width: 200px;
       label {
         position: relative;
         text-transform: capitalize;
@@ -216,7 +216,8 @@ select,
     .field {
       .clear-fix;
       background-color: @extraLightGrey;
-      margin-left: @labelWidth;
+      border-bottom: solid 1px @white;
+      display: table-cell;
       padding: @standardPad;
       position: relative;
       input[type="text"], textarea, .input {
