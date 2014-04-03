@@ -52,7 +52,15 @@
       &:hover {color: @darkGrey; }
     }
   }
-  thead:hover #set-visible-columns { display: block; }
+  .visible-columns-cell {
+    width: 0;
+    display: table;
+  }
+  thead:hover #set-visible-columns {
+    display: block;
+    background-color: @extraLightGrey;
+    padding-left: 10px;
+  }
   tr {
     border-bottom: solid 1px @extraLightGrey;
     color: @darkGrey;
