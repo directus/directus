@@ -11,9 +11,9 @@ function(app, Backbone) {
       <ul class="tools left big-space"> \
         <li class="tool"><span data-value="1" class="action actionBtn">Active</span></li> \
         <li class="tool"><span data-value="2" class="action actionBtn inactive">Draft</span></li> \
-        <li class="tool div-right"><span data-value="0" class="action actionBtn delete">Delete</span></li> \
+        <li class="tool"><span data-value="0" class="action actionBtn delete">Delete</span></li> \
         {{#if batchEdit}} \
-        <li class="tool"><span id="batchEditBtn" class="action">Batch Edit</span></li> \
+        <li class="tool div-left"><span id="batchEditBtn" class="action">Batch Edit</span></li> \
         {{/if}} \
       </ul> \
     '),

@@ -107,12 +107,15 @@
       }
       &.big-space {
         .tool {
-          margin-left: @extraLargePad;
+          margin-left: @standardPad;
           &:first-child {
             margin-left: 0px;
           }
           &.div-right {
-            padding-right: @extraLargePad;
+            padding-right: @standardPad;
+          }
+          &.div-left {
+            padding-left: @standardPad;
           }
         }
       }
@@ -126,7 +129,7 @@
       }
       &.big-space {
         .tool {
-          margin-right: @extraLargePad;
+          margin-right: @standardPad;
           &:last-child {
             margin-left: 0px;
           }
@@ -148,6 +151,11 @@
         border-right: solid 1px @lightGrey;
         height: 32px;
         padding-right: @smallPad;
+      }
+      &.div-left {
+        border-left: solid 1px @lightGrey;
+        height: 32px;
+        padding-left: @smallPad;
       }
     }
     .tool-item {
@@ -241,6 +249,9 @@
           &.div-right {
             padding-right: @standardPad;
           }
+          &.div-left {
+            padding-left: @standardPad;
+          }
         }
       }
     }
@@ -273,10 +284,15 @@
     .filters {
       padding: 0px;
       li {
+        cursor: pointer;
         background-color: @mediumGrey;
         color: @white;
         margin: @extraSmallPad 0px 7px @smallPad;
         padding: 3px @smallPad;
+        .border-radius(2px, 2px, 2px, 2px);
+        &:hover {
+          background-color: @deleteColor;
+        }
       }
     }
   }
