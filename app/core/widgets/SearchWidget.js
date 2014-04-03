@@ -16,7 +16,7 @@ function(app, Backbone) {
 
     tagName: 'li',
     attributes: {
-      'class': 'input-and-button'
+      'class': 'tool input-and-button'
     },
 
     serialize: function() {

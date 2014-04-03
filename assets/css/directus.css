@@ -1674,7 +1674,7 @@ select:focus,
 .table-striped thead tr th {
   color: #cbcbcb;
   border-bottom: 1px solid #ededed;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   padding: 10px;
   position: relative;
@@ -2192,7 +2192,6 @@ select:focus,
   background-color: #5b5b5b;
 }
 .header1 .tools {
-  font-size: 18px;
   position: relative;
 }
 .header1 .tools.left {
@@ -2297,9 +2296,11 @@ select:focus,
   margin-right: 10px;
   margin-top: 5px;
   text-align: right;
+  width: auto;
 }
 .header1 .secondary-row {
   color: #cbcbcb;
+  font-weight: 600;
   margin: 15px 0px -15px 0px;
 }
 .header1 .secondary-row.filter-options .filter-list {
@@ -2490,6 +2491,7 @@ select:focus,
 }
 .message .content .users {
   font-style: italic;
+  font-weight: 400;
 }
 .message .content .title {
   font-weight: 600;
