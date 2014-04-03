@@ -1758,14 +1758,14 @@ select:focus,
 }
 .table-striped thead #set-visible-columns {
   position: absolute;
-  top: 12px;
-  right: 20px;
-  font-size: 16px;
+  top: 10px;
+  right: 10px;
+  font-size: 13px;
   display: none;
   color: #cbcbcb;
 }
 .table-striped thead #set-visible-columns:hover {
-  color: #fffbc4;
+  color: #5b5b5b;
 }
 .table-striped thead:hover #set-visible-columns {
   display: block;
