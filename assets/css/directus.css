@@ -1,3 +1,6 @@
+.font-primary {
+  font-family: 'Open Sans', sans-serif;
+}
 @font-face {
   font-family: 'Directus';
   src: url('../fonts/directus/directus-regular.eot');
