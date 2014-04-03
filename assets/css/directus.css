@@ -1712,6 +1712,20 @@ select:focus,
   line-height: 12px;
   vertical-align: top;
 }
+.table-striped thead #set-visible-columns {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  font-size: 16px;
+  display: none;
+  color: #cbcbcb;
+}
+.table-striped thead #set-visible-columns:hover {
+  color: #fffbc4;
+}
+.table-striped thead:hover #set-visible-columns {
+  display: block;
+}
 .table-striped tr {
   border-bottom: solid 1px #f4f4f4;
   color: #5b5b5b;
