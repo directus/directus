@@ -1785,8 +1785,14 @@ select:focus,
 .table-striped thead #set-visible-columns:hover {
   color: #5b5b5b;
 }
+.table-striped .visible-columns-cell {
+  width: 0;
+  display: table;
+}
 .table-striped thead:hover #set-visible-columns {
   display: block;
+  background-color: #f4f4f4;
+  padding-left: 10px;
 }
 .table-striped tr {
   border-bottom: solid 1px #f4f4f4;
