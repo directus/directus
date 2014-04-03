@@ -29,6 +29,10 @@ function(app, Backbone, BaseHeaderView) {
       return [];
     },
 
+    headerOptions: {
+
+    },
+
     initToolbar: function() {
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();

@@ -242,6 +242,12 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
 
   Module.list = function(options) {
     var model = options.model;
+
+    //@TODO: Have this not be hardcoded
+    if(!model.get('type') && model.get('image') instanceof Backbone.Model) {
+      model = model.get('image');
+    }
+
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
     var isImage = _.contains(['image/jpeg','image/png'], model.get('type'));
     var thumbUrl = isImage ? model.makeMediaUrl(true) : app.PATH + 'assets/img/document-100x120.png';

@@ -104,10 +104,12 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       this.showChooseButton = this.columnSchema.options.get('choose_button') === "1";
       this.showAddButton = this.columnSchema.options.get('add_button') === "1";
 
-
       var relatedCollection = this.model.get(this.name);
       var relatedSchema = relatedCollection.structure;
       var junctionStructure = relatedCollection.junctionStructure;
+
+      //@TODO: Have this not fetch entire collection.
+      relatedCollection.nestedCollection.fetch();
 
       this.nestedTableView = new TableView({
         collection: relatedCollection,
@@ -120,7 +122,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         hideEmptyMessage: true,
         hasSort: junctionStructure.get('sort') !== undefined
       });
-
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', this.nestedTableView.render, this);
     }
