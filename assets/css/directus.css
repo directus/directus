@@ -1597,6 +1597,7 @@ select:focus,
 .two-column-form .fields .field textarea,
 .two-column-form .fields .field .input {
   max-width: 700px;
+  display: inline-block;
 }
 .two-column-form .fields .field textarea {
   min-height: 100px;
@@ -1604,6 +1605,9 @@ select:focus,
   resize: vertical;
 }
 .two-column-form .fields .field select {
+  max-width: 200px;
+}
+.two-column-form .fields .field input.small {
   max-width: 200px;
 }
 .two-column-form .fields .field .standard-select {

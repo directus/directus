@@ -197,6 +197,7 @@ select,
       position: relative;
       input[type="text"], textarea, .input {
         max-width: @maxFieldWidth;
+        display: inline-block;
       }
       textarea {
         min-height: 100px;
@@ -204,6 +205,9 @@ select,
         resize: vertical;
       }
       select {
+        max-width: 200px;
+      }
+      input.small {
         max-width: 200px;
       }
       .standard-select {
