@@ -12,10 +12,14 @@ define(['app','backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<input style="margin-top:1px;" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}}/> Active \
-                  <input style="margin-top:1px;" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}}/> Draft \
-                  <span id="delete">Delete</span> \
-                  <input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
+  var template = '<div class="custom-check"> \
+    <input value="1" id="check1" name="status" type="radio" {{#if active}}checked{{/if}}> \
+    <label for="check1"><span></span>Active</label> \
+    <input value="2" id="check2" name="status" type="radio" {{#if inactive}}checked{{/if}}> \
+    <label for="check2"><span></span>Inactive</label> \
+    <input value="0" id="check3" name="status" type="radio" {{#if deleted}}checked{{/if}}> \
+    <label for="check3"><span></span>Deleted</label> \
+  <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';
 
   Module.id = 'system';
   Module.dataTypes = ['TINYINT'];
@@ -31,34 +35,32 @@ define(['app','backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'change input[type=checkbox]': function(e) {
-        var val = (this.$el.find('input[type=checkbox]:checked').val() === undefined) ? 0 : 1;
-        this.$el.find('input[type=hidden]').val(val);
+      'change input[type=radio]': function(e) {
+        this.$el.find('input[type=hidden]').val($(e.target).val());
       }
     },
 
     serialize: function() {
+      var data = {};
       var value = this.options.value;
 
-      // Get default value if there is one...
-      if (value === undefined && this.options.schema.has('def')) {
-        value = this.options.schema.get('def');
+      switch(value) {
+        case 1:
+          data.active = true;
+          break;
+        case 2:
+          data.inactive = true;
+          break;
+        case 0:
+          data.deleted = true;
+          break;
       }
 
-      var selected = (parseInt(value,10) === 1) ? true : false;
+      data.value = value;
+      data.name = this.options.name;
 
-      if (
-        this.options.model.isNew() &&
-        this.options.schema.has('default_value')) {
-          selected = parseInt(this.options.schema.get('default_value'),10) === 1;
-      }
 
-      return {
-        name: this.options.name,
-        selected: selected,
-        comment: this.options.schema.get('comment'),
-        readonly: !this.options.canWrite
-      };
+      return data;
     }
 
   });
