@@ -103,6 +103,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
 }
 input,
 textarea,
+select,
 .input {
   .border-box;
   background-color: @white;
@@ -110,6 +111,10 @@ textarea,
   display: block;
   padding: @extraSmallPad;
   width: 100%;
+  outline: none;
+  &:focus {
+    border: solid 1px @mediumGrey;
+  }
 }
 .wysiwyg {
   .btn-toolbar {
@@ -190,13 +195,16 @@ textarea,
       margin-left: @labelWidth;
       padding: @standardPad;
       position: relative;
-      input[type="text"], textarea {
+      input[type="text"], textarea, .input {
         max-width: @maxFieldWidth;
       }
       textarea {
         min-height: 100px;
         padding: @smallPad;
         resize: vertical;
+      }
+      select {
+        max-width: 200px;
       }
       .standard-select {
         float: left;

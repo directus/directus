@@ -363,9 +363,11 @@ require(["config"], function() {
 
           Backbone.history.navigate(href.attr, true);
         }
+      }).on('scroll', function(){
+        // Fade in header shadow based on scroll position
+        var windowScroll = Math.max(Math.min($(window).scrollTop(), 100), 0) / 100;
+        $('#header-shadow').css({ opacity: windowScroll });
       });
-
-
 
     });
 
