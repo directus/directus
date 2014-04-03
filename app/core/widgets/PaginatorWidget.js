@@ -36,6 +36,13 @@ function(app, Backbone) {
       this.options.totalCount = this.collection.getTotalCount();
       this.options.widgetOptions.pageNext = (this.collection.getFilter('currentPage') + 1 < (this.options.totalCount / this.collection.getFilter('perPage') ) );
       this.options.widgetOptions.pagePrev = (this.collection.getFilter('currentPage') !== 0);
+
+
+      if(this.collection.length != this.collection.getFilter('perPage')) {
+        this.options.widgetOptions.pageNext = false;
+      }
+
+
       this.render();
     },
 
