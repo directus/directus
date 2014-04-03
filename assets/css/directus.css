@@ -1142,6 +1142,9 @@ button {
   font-size: 40px;
   margin-top: -8px;
 }
+.large-circle .icon.icon-check {
+  font-size: 46px;
+}
 .large-circle .icon.icon-star,
 .large-circle .icon.icon-search {
   font-size: 33px;

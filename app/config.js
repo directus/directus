@@ -7,7 +7,7 @@ require.config({
   paths: {
 
     // Libraries.
-    "jquery":     "../assets/bower/jquery/dist/jquery.min",
+    "jquery":     "../assets/js/libs/jquery",
     "underscore": "../assets/js/libs/underscore",
     "backbone":   "../assets/js/libs/backbone",
     "handlebars": "../assets/js/libs/handlebars",
