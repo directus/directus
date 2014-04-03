@@ -1,11 +1,13 @@
 define([
-  'core/overlays/ListSelect'
+  'core/overlays/ListSelect',
+  'core/overlays/VisibleColumnSelect'
 ],
 
-function(ListSelect) {
+function(ListSelect, VisibleColumnSelect) {
 
   return {
-    ListSelect: ListSelect
+    ListSelect: ListSelect,
+    VisibleColumnSelect: VisibleColumnSelect
   };
 
 });
