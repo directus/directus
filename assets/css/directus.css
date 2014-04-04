@@ -1674,7 +1674,6 @@ select:focus,
   -webkit-box-sizing: border-box;
   /* safari3 */
   background-color: #ededed;
-  border-bottom: solid 1px #ffffff;
   color: #5b5b5b;
   font-weight: 500;
   padding: 25px 20px 25px 20px;
@@ -1705,7 +1704,6 @@ select:focus,
 }
 .two-column-form .fields .field {
   background-color: #f4f4f4;
-  border-bottom: solid 1px #ffffff;
   padding: 20px;
   position: relative;
 }
