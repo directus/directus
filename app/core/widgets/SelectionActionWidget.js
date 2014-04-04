@@ -27,6 +27,12 @@ function(app, Backbone) {
       'click .actionBtn': function(e) {
         var value = $(e.target).closest('span').attr('data-value');
 
+        if(value == 0) {
+          if(!confirm("Are you sure? This item will be removed from the system.")) {
+            return;
+          }
+        }
+
         var collection = this.collection;
 
         var $checked = $('.select-row:checked');
@@ -42,7 +48,7 @@ function(app, Backbone) {
 
         $checked.each(function() {
           var id = this.value;
-          console.log(id);
+
           var model = collection.get(id);
           model.save({active: value}, {silent: true, patch:true, validate:false, success: success});
         });
