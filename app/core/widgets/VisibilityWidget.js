@@ -12,11 +12,15 @@ function(app, Backbone, PreferenceModel) {
     <div class="simple-select vertical-center left"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status"> \
+        {{#if hasActiveColumn}} \
         <optgroup label="Status"> \
           <option data-status value="1,2">View All</option> \
           <option data-status value="1">View Active</option> \
           <option data-status value="2">View Inactive</option> \
         </optgroup> \
+        {{else}} \
+        <option>Select a Snapshot</options> \
+        {{/if}} \
         <optgroup label="Snapshots"> \
           {{#snapshots}} \
           <option data-snapshot value="{{this}}">{{this}}</option> \
@@ -85,12 +89,17 @@ function(app, Backbone, PreferenceModel) {
 
         var data = {
           title: this.snapshotData.title,
-          url: Backbone.history.fragment + "/?pref_title=blah",
+          url: Backbone.history.fragment + "/pref/" + this.snapshotData.title,
           icon_class: 'icon-search',
           user: app.users.getCurrentUser().get("id")
         };
-
-        app.getBookmarks().addNewBookmark(data);
+        if(app.getBookmarks().isBookmarked(data.title)) {
+          app.getBookmarks().removeBookmark(data);
+          $('#pinSnapshotBtn').html("Pin Snapshot");
+        } else {
+          app.getBookmarks().addNewBookmark(data);
+          $('#pinSnapshotBtn').html("Unpin Snapshot");
+        }
       },
       'click #deleteSnapshotBtn': function(e) {
         if(this.snapshotData.id) {
@@ -116,9 +125,16 @@ function(app, Backbone, PreferenceModel) {
         $('#visibilitySelect').val(this.collection.preferences.get('title'));
         this.snapshotData = {id: this.collection.preferences.get('id'), title: this.collection.preferences.get('title')};
         $('.snapshotOption').show();
+        if(app.getBookmarks().isBookmarked(this.snapshotData.title)) {
+          $('#pinSnapshotBtn').html("Unpin Snapshot");
+        } else {
+          $('#pinSnapshotBtn').html("Pin Snapshot");
+        }
         this.collection.preferences.set({title:null, id: this.defaultId});
       } else {
-        $('#visibilitySelect').val(this.collection.preferences.get('active'));
+        if(this.options.widgetOptions.hasActiveColumn) {
+          $('#visibilitySelect').val(this.collection.preferences.get('active'));
+        }
       }
     },
     initialize: function() {
@@ -130,6 +146,10 @@ function(app, Backbone, PreferenceModel) {
       var activeTable = this.collection.table.id;
 
       this.options.widgetOptions = {snapshots: []};
+
+      if(this.collection.table.columns.get('active')) {
+        this.options.widgetOptions.hasActiveColumn = true;
+      }
 
       var that = this;
       $.get(app.API_URL + "preferences/" + activeTable, null, function(data) {

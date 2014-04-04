@@ -305,7 +305,8 @@ define(function(require, exports, module) {
           "id": "many_to_one",
           "table_related": "directus_groups",
           // "related_table": "directus_groups",
-          "visible_column": "name"
+          "visible_column": "name",
+          "visible_column_template": "{{name}}"
         },
         "relationship":{
           "type":"MANYTOONE",

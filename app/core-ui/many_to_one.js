@@ -55,8 +55,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         var selectedId = parseInt($(e.target).find(':selected').val(),10);
         model.clear();
         model.set({id: selectedId});
-
-        console.log(model.toJSON());
       }
     },
 
@@ -67,6 +65,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       if(this.options.settings.has('visible_column_template')) {
         optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
       }
+
       var data = this.collection.map(function(model) {
         var data = model.toJSON();
 
@@ -86,7 +85,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
           selected: true
         }];
       }
-
       data = _.sortBy(data, 'name');
       return {
         canEdit: this.canEdit,

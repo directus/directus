@@ -78,6 +78,11 @@ function(app, Backbone) {
     serialize: function() {
       var data = this.options.filterOptions;
       data.tableColumns = this.collection.structure.pluck('id');
+      data.tableColumns.sort(function(a, b) {
+        if(a < b) return -1;
+        if(a > b) return 1;
+        return 0;
+      });
       return data;
     },
 

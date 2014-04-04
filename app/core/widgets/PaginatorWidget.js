@@ -9,10 +9,10 @@ function(app, Backbone) {
 
   return Backbone.Layout.extend({
 
-    template: Handlebars.compile('<div class="btn-group"> \
+    template: Handlebars.compile('{{#unless hidePages}}<div class="btn-group"> \
   <a class="btn btn-round {{#unless pagePrev}}disabled{{/unless}} pag-prev"><span class="icon icon-triangle-left"></span></a> \
   <a class="btn btn-round {{#unless pageNext}}disabled{{/unless}} pag-next"><span class="icon icon-triangle-right"></span></a> \
-</div>'),
+</div>{{/unless}}'),
 
     events: {
       'click a.pag-next:not(.disabled)': function() {
@@ -42,6 +42,11 @@ function(app, Backbone) {
         this.options.widgetOptions.pageNext = false;
       }
 
+      if(!this.options.widgetOptions.pageNext && !this.options.widgetOptions.pagePrev) {
+        this.options.widgetOptions.hidePages = true;
+      } else {
+        this.options.widgetOptions.hidePages = false;
+      }
 
       this.render();
     },
