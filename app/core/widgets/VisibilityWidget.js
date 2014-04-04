@@ -12,11 +12,15 @@ function(app, Backbone, PreferenceModel) {
     <div class="simple-select vertical-center left"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status"> \
+        {{#if hasActiveColumn}} \
         <optgroup label="Status"> \
           <option data-status value="1,2">View All</option> \
           <option data-status value="1">View Active</option> \
           <option data-status value="2">View Inactive</option> \
         </optgroup> \
+        {{else}} \
+        <option>Select a Snapshot</options> \
+        {{/if}} \
         <optgroup label="Snapshots"> \
           {{#snapshots}} \
           <option data-snapshot value="{{this}}">{{this}}</option> \
@@ -128,7 +132,9 @@ function(app, Backbone, PreferenceModel) {
         }
         this.collection.preferences.set({title:null, id: this.defaultId});
       } else {
-        $('#visibilitySelect').val(this.collection.preferences.get('active'));
+        if(this.options.widgetOptions.hasActiveColumn) {
+          $('#visibilitySelect').val(this.collection.preferences.get('active'));
+        }
       }
     },
     initialize: function() {
@@ -140,6 +146,10 @@ function(app, Backbone, PreferenceModel) {
       var activeTable = this.collection.table.id;
 
       this.options.widgetOptions = {snapshots: []};
+
+      if(this.collection.table.columns.get('active')) {
+        this.options.widgetOptions.hasActiveColumn = true;
+      }
 
       var that = this;
       $.get(app.API_URL + "preferences/" + activeTable, null, function(data) {
