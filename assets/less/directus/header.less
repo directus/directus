@@ -32,6 +32,7 @@
   padding-bottom: 20px;
   padding-top: 30px;
   width: 100%;
+  min-height: 100px;
   h1, ul {
     margin: 0px;
   }
@@ -180,6 +181,7 @@
       color: @mediumGrey;
       display: inline-block;
       vertical-align: middle;
+      font-weight: 600;
     }
     .saved-success {
       color: @addColor;
@@ -242,7 +244,6 @@
     color: @mediumGrey;
     font-weight: 600;
     margin: 10px 0px -15px 0px;
-    height: 32px;
     overflow: hidden;
     &.filter-options {
       .filter-list {
@@ -306,6 +307,9 @@
       font-size: 12px;
       .action {
         margin-top: @textActionMarginTop;
+      }
+      .tool {
+        height: 32px; // TODO: This keeps the secondary toolbar height in check...
       }
     }
     .filters {

@@ -2367,6 +2367,7 @@ select:focus,
   padding-bottom: 20px;
   padding-top: 30px;
   width: 100%;
+  min-height: 100px;
 }
 .header1 h1,
 .header1 ul {
@@ -2507,6 +2508,7 @@ select:focus,
   color: #cccccc;
   display: inline-block;
   vertical-align: middle;
+  font-weight: 600;
 }
 .header1 .tools .saved-success {
   color: #7ac943;
@@ -2557,7 +2559,6 @@ select:focus,
   color: #cccccc;
   font-weight: 600;
   margin: 10px 0px -15px 0px;
-  height: 32px;
   overflow: hidden;
 }
 .header1 .secondary-row.filter-options .filter-list {
@@ -2617,6 +2618,9 @@ select:focus,
 }
 .header1 .secondary-row .tools .action {
   margin-top: 7px;
+}
+.header1 .secondary-row .tools .tool {
+  height: 32px;
 }
 .header1 .secondary-row .filters {
   padding: 0px;
