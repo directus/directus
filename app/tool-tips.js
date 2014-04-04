@@ -43,10 +43,9 @@ define([
             //console.log('init called');
 
             $toolTips.each(function(index, value) {
-                var $toolTip = jQuery(this),
+                var $toolTip = $(this),
                     toolSelector = $toolTip.data("tool-tip-for"),
                     $ttTarget = $(toolSelector),
-                    tipTimer,
                     $pointer;
 
                 $toolTip.append('<span class="' + tipPointerClass + '"></span>');
@@ -61,36 +60,21 @@ define([
                 $toolTip.data("height") ? $toolTip.width($toolTip.data("height")) : null;
                 offsetPointer($pointer, $toolTip);
 
-                //console.log($ttTarget);
-
-                $(document).on("mouseenter", $ttTarget.selector,  function() {
-                    //console.log($ttTarget.selector);
-                    tipTimer = setTimeout(function() {
-                      console.log($ttTarget.selector);
-                        //console.log('show tip', $ttTarget, this);
-                        positionToolTip((function() { return $ttTarget.selector; })(), $toolTip);
-                        $toolTip.show();
-                    }, 500);
-                }).on("mouseleave", $ttTarget.selector, function() {
-                    clearTimeout(tipTimer);
-                    $toolTip.hide();
-                });
-
-                // $ttTarget.hover(
-                //   function(e) {
-                //     tipTimer = setTimeout(function() {
-                //       console.log('show tip');
-                //       positionToolTip($ttTarget, $toolTip);
-                //       $toolTip.show();
-                //     }, 500);
-                //   },
-                //   function() {
-                //     console.log('hide tip');
-                //     clearTimeout(tipTimer);
-                //     $toolTip.hide();
-                //   }
-                // );
-
+                // Use IIFE to capture $ttTarget
+                (function() {
+                  var tipTimer;
+                  
+                  $(document).on("mouseenter", $ttTarget.selector,  function() {
+                      tipTimer = setTimeout(function() {
+                        console.log($ttTarget.selector);
+                          positionToolTip($ttTarget.selector, $toolTip);
+                          $toolTip.show();
+                      }, 500);
+                  }).on("mouseleave click", $ttTarget.selector, function() {
+                      clearTimeout(tipTimer);
+                      $toolTip.hide();
+                  });
+                })();
 
             });
         }
@@ -130,8 +114,7 @@ define([
         function positionToolTip(ttTarget, $toolTip) {
             var elementOffset, cssOptions, toolTipPointerSize;
             //console.log($ttTarget, $toolTip);
-            var $ttTarget = jQuery(ttTarget);
-            //var $toolTip = jQuery(toolTip);
+            var $ttTarget = _.isString(ttTarget) ? $(ttTarget) : ttTarget;
             
             function horizontalCenter() {
                 return (($ttTarget.outerWidth() - $toolTip.outerWidth()) / 2) + elementOffset.left + $toolTip.data("offset-x");
@@ -170,7 +153,6 @@ define([
                 }
                 cssOptions.top += $toolTip.data("nudge-y");
                 cssOptions.left += $toolTip.data("nudge-x");
-                console.log(cssOptions);
                 $toolTip.css(cssOptions);
             } else {
                 $toolTip.hide();
