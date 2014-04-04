@@ -150,7 +150,7 @@ module.exports = function(grunt) {
           options: {
             compress: false,
             sourceMap: true,
-            sourceMapFilename: 'public/assets/css/main.css.map',
+            sourceMapFilename: 'assets/css/main.css.map',
             sourceMapRootpath: '/directus-six-dax/'
           },
           development: {
