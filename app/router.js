@@ -106,6 +106,8 @@ define(function(require, exports, module) {
       if (_.contains(this.tabBlacklist,'tables'))
         return this.notFound();
 
+      this.navigate('/tables'); //If going to / rewrite to tables
+
       this.setTitle('Tables');
       this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
