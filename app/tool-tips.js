@@ -4,24 +4,24 @@ define([
 ], function(app, Backbone) {
 
   "use strict";
-  
+
   var tipManager;
-  
+
   // Default Error View
   var ToolTip = Backbone.Layout.extend({
 
         showDetails: false,
-        
+
         el: '#tool-tips',
-        
+
         template: 'tool-tips',
-        
+
         afterRender: function() {
           tipManager.init();
         }
 
      });
-     
+
      tipManager = (function() {
         var tipsOn = false,
             tipPointerClass = 'tool-tip-pointer',
@@ -39,9 +39,9 @@ define([
             //$helpButton = $helpButton || $(".global-help");
             $toolTips = $("[data-tool-tip-for]");
             $elementsToToggle = $('[data-tool-tip-toggle-class]');
-            
+
             console.log('init called');
-            
+
             $toolTips.each(function() {
                 var $toolTip = $(this),
                     toolSelector = $toolTip.data("tool-tip-for"),
@@ -60,22 +60,37 @@ define([
                 $toolTip.data("width") ? $toolTip.width($toolTip.data("width")) : null;
                 $toolTip.data("height") ? $toolTip.width($toolTip.data("height")) : null;
                 offsetPointer($pointer, $toolTip);
-                
+
                 console.log($ttTarget);
-                $ttTarget.hover(
-                  function(e) {
+
+                $(document).on("mouseenter", $ttTarget, function() {
                     tipTimer = setTimeout(function() {
-                      console.log('show tip');
-                      positionToolTip($ttTarget, $toolTip);
-                      $toolTip.show();
+                        console.log('show tip', $ttTarget, this);
+                        positionToolTip($ttTarget, $toolTip);
+                        $toolTip.show();
                     }, 500);
-                  },
-                  function() {
-                    console.log('hide tip');
+                }).on("mouseleave", $ttTarget, function() {
+                    console.log('hide tip', $ttTarget, this);
                     clearTimeout(tipTimer);
                     $toolTip.hide();
-                  }
-                );
+                });
+
+                // $ttTarget.hover(
+                //   function(e) {
+                //     tipTimer = setTimeout(function() {
+                //       console.log('show tip');
+                //       positionToolTip($ttTarget, $toolTip);
+                //       $toolTip.show();
+                //     }, 500);
+                //   },
+                //   function() {
+                //     console.log('hide tip');
+                //     clearTimeout(tipTimer);
+                //     $toolTip.hide();
+                //   }
+                // );
+
+
             });
         }
 
@@ -110,7 +125,7 @@ define([
                 $pointer.css('margin-top', parseInt($pointer.css('margin-top'), 10) - $toolTip.data("offset-y"));
             }
         }
-            
+
         function positionToolTip($ttTarget, $toolTip) {
             var elementOffset, cssOptions, toolTipPointerSize;
 
@@ -162,6 +177,6 @@ define([
           init: initToolTips
         };
     })();
-    
+
     return ToolTip;
 });
