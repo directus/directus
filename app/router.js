@@ -86,16 +86,40 @@ define(function(require, exports, module) {
     },
 
     overlayPage: function(view) {
+      if(this.v.main.getViews('#content')._wrapped.length <= 1) {
+        this.baseRouteSave = Backbone.history.fragment;
+      }
+
       this.v.main.getViews('#content').each(function(view) {
         view.$el.hide();
       });
       this.v.main.insertView('#content', view).render();
+
+      var that=this;
+      this.oldLoadUrlFunction = Backbone.History.prototype.loadUrl;
+      Backbone.History.prototype.loadUrl = function() {
+        if(that.baseRouteSave == this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?")) {
+          return that.oldLoadUrlFunction.apply(this, arguments);
+        } else {
+          this.navigate(that.baseRouteSave);
+          that.navigate(that.baseRouteSave);
+          return true;
+        }
+      };
     },
 
     removeOverlayPage: function(view) {
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last()._wrapped;
       vieww.$el.show();
+
+      console.log(this.v.main.getViews('#content')._wrapped.length);
+
+      if(this.v.main.getViews('#content')._wrapped.length <= 1) {
+        Backbone.History.prototype.loadUrl = this.oldLoadUrlFunction;
+        this.navigate(this.baseRouteSave);
+        this.baseRouteSave = undefined;
+      }
     },
 
     setPage: function(View, options) {
