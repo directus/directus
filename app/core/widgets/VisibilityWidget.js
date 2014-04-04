@@ -85,12 +85,17 @@ function(app, Backbone, PreferenceModel) {
 
         var data = {
           title: this.snapshotData.title,
-          url: Backbone.history.fragment + "/?pref_title=blah",
+          url: Backbone.history.fragment + "/pref/" + this.snapshotData.title,
           icon_class: 'icon-search',
           user: app.users.getCurrentUser().get("id")
         };
-
-        app.getBookmarks().addNewBookmark(data);
+        if(app.getBookmarks().isBookmarked(data.title)) {
+          app.getBookmarks().removeBookmark(data);
+          $('#pinSnapshotBtn').html("Pin Snapshot");
+        } else {
+          app.getBookmarks().addNewBookmark(data);
+          $('#pinSnapshotBtn').html("Unpin Snapshot");
+        }
       },
       'click #deleteSnapshotBtn': function(e) {
         if(this.snapshotData.id) {
@@ -116,6 +121,11 @@ function(app, Backbone, PreferenceModel) {
         $('#visibilitySelect').val(this.collection.preferences.get('title'));
         this.snapshotData = {id: this.collection.preferences.get('id'), title: this.collection.preferences.get('title')};
         $('.snapshotOption').show();
+        if(app.getBookmarks().isBookmarked(this.snapshotData.title)) {
+          $('#pinSnapshotBtn').html("Unpin Snapshot");
+        } else {
+          $('#pinSnapshotBtn').html("Pin Snapshot");
+        }
         this.collection.preferences.set({title:null, id: this.defaultId});
       } else {
         $('#visibilitySelect').val(this.collection.preferences.get('active'));
