@@ -77,6 +77,20 @@ function(app, Backbone, PreferenceModel) {
         this.collection.preferences.set({title: name});
 
         this.collection.preferences.save();
+      },
+      'click #pinSnapshotBtn': function(e) {
+
+      },
+      'click #deleteSnapshotBtn': function(e) {
+        if(this.snapshotData.id) {
+          var user = this.collection.preferences.get('user');
+          var that = this;
+          this.collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({id:this.snapshotData.id, user: user}),success: function() {
+            $('#visibilitySelect').val(that.collection.preferences.get('active'));
+            that.options.widgetOptions.snapshots.splice(that.snapshotData.title);
+            that.snapshotData = {};
+          }});
+        }
       }
     },
 
@@ -88,7 +102,7 @@ function(app, Backbone, PreferenceModel) {
       $('.snapshotOption').hide();
       if(this.collection.preferences.get('title') !== null) {
         $('#visibilitySelect').val(this.collection.preferences.get('title'));
-        this.snapshotId = this.collection.preferences.get('id');
+        this.snapshotData = {id: this.collection.preferences.get('id'), title: this.collection.preferences.get('title')};
         $('.snapshotOption').show();
         this.collection.preferences.set({title:null, id: this.defaultId});
       } else {

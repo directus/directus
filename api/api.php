@@ -712,6 +712,12 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             $id = $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
             $params['id'] = $id;
             break;
+        case "DELETE":
+            if($requestPayload['user'] != $currentUser['id']) {
+              return;
+            }
+            echo $db->delete('directus_preferences', $requestPayload['id']);
+            return;
     }
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
 
@@ -722,7 +728,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table);
     }
     JsonView::render($jsonResponse);
-})->via('GET','POST','PUT');
+})->via('GET','POST','PUT', 'DELETE');
 
 $app->get("/$v/preferences/:table", function($table) use ($db, $app, $ZendDb, $acl) {
   $currentUser = Auth::getUserInfo();
