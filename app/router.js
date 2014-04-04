@@ -28,7 +28,7 @@ define(function(require, exports, module) {
   var Router = Backbone.Router.extend({
 
     routes: {
-      "":                               "index",
+      "":                               "tables",
       "tables":                         "tables",
       "tables/:name(/pref/:pref)":      "entries",
       "tables/:name/:id":               "entry",
