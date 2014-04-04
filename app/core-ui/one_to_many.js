@@ -159,6 +159,15 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       var relatedCollection = this.model.get(this.name);
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
 
+      var ids = [];
+
+      ids = relatedCollection.pluck('id');
+
+      if(ids.length > 0) {
+        //@TODO: Have this not fetch entire collection.
+        relatedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}});
+      }
+
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
       this.showAddButton = this.columnSchema.options.get('add_button') === "1";
 
@@ -183,6 +192,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       this.listenTo(relatedCollection, 'change add remove', this.nestedTableView.render, this);
 
       this.relatedCollection = relatedCollection;
+
 
       //console.log(options);
 /*
