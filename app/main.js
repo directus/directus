@@ -167,6 +167,18 @@ require(["config"], function() {
 
       app.messages.startPolling();
 
+
+      ////////////////////////////////////////////////////////////////////////////////////
+      // Bind Progress Functions To App
+
+      app.showProgressNotification = function(message) {
+        alerts.showProgressNotification(message);
+      };
+
+      app.hideProgressNotification = function() {
+        alerts.hideProgressNotification();
+      };
+
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Tabs
       // Default directus tabs
@@ -369,10 +381,10 @@ require(["config"], function() {
         var windowScroll = Math.max(Math.min($(window).scrollTop(), 100), 0) / 100;
         $('#header-shadow').css({ opacity: windowScroll });
       });
-      
+
       var toolTip = new ToolTip();
       toolTip.render();
-      
+
     });
 
   });
