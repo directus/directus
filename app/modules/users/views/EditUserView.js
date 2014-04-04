@@ -22,38 +22,65 @@ function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
     },
 
     events: {
-      'click #save-form': function(e) {
-        var data = $('form').serializeObject();
-        var model = this.model;
-        data.active = $('input[name=active]:checked').val();
+      'click .saved-success': 'save',
+      'change #saveSelect': 'save'
+    },
 
-        //Dont include empty passwords!
-        if (data.password === "") {
-          delete data.password;
-        }
-
-        var diff = model.diff(data);
-
-        var options = {
-          success: function() { app.router.go('#users'); },
-          error: function() { console.log('error',arguments); },
-          patch: true,
-          includeRelationships: true
-        };
-
-        // @todo, fix EntriesCollection and get rid of this
-        if (!model.isNew()) {
-          options.ignoreWriteFieldBlacklisted = true;
-        }
-
-        model.save(diff, options);
-      },
-
-      'click #delete-form': function(e) {
-        this.model.save({active: 0}, {success: function() {
-          app.router.go('#users');
-        }, patch: true});
+    save: function(e) {
+      var action = 'save-form-leave';
+      if(e.target.options !== undefined) {
+        action = $(e.target.options[e.target.selectedIndex]).val();
       }
+      var data =  $('form').serializeObject();
+      var model = this.model;
+      var isNew = this.model.isNew();
+      var collection = this.model.collection;
+      var success;
+
+      if (data.password === "") {
+        delete data.password;
+      }
+
+
+      if (action === 'save-form-stay') {
+        success = function(model, response, options) {
+          var route = Backbone.history.fragment.split('/');
+          route.pop();
+          route.push(model.get('id'));
+          app.router.go(route);
+        };
+      } else {
+        success = function(model, response, options) {
+          console.log("Success");
+          var route = Backbone.history.fragment.split('/');
+          route.pop();
+          if (action === 'save-form-add') {
+            // Trick the router to refresh this page when we are dealing with new items
+            if (isNew) app.router.navigate("#", {trigger: false, replace: true});
+            route.push('new');
+          }
+          app.router.go(route);
+        };
+      }
+
+      if (action === 'save-form-copy') {
+        console.log('cloning...');
+        var clone = model.toJSON();
+        delete clone.id;
+        model = new collection.model(clone, {collection: collection, parse: true});
+        collection.add(model);
+      }
+
+      // patch only the changed values
+      model.save(model.diff(data), {
+        success: success,
+        error: function(model, xhr, options) {
+          console.log('err');
+        },
+        wait: true,
+        patch: true,
+        includeRelationships: true
+      });
     },
 
     leftToolbar: function() {
