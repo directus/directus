@@ -185,16 +185,19 @@ select,
       background-color:rgba(255,255,255,0.5);
       z-index:1;
     }
+    .label, .field {
+      display: table-cell;
+    }
     .label {
       .border-box;
       .clear-fix;
       background-color: @lightGrey;
       border-bottom: solid 1px @white;
       color: @darkGrey;
-      display: table-cell;
       font-weight: 500;
       padding: 25px @standardPad 25px @standardPad;
       text-align: right;
+      vertical-align: top;
       width: 200px;
       label {
         position: relative;
@@ -217,7 +220,6 @@ select,
       .clear-fix;
       background-color: @extraLightGrey;
       border-bottom: solid 1px @white;
-      display: table-cell;
       padding: @standardPad;
       position: relative;
       input[type="text"], textarea, .input {
