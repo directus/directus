@@ -1,6 +1,6 @@
 .login-box {
   left:50%;
-  margin-left:-208px;
+  margin-left: -186px;
   margin-top:-136px;
   position: absolute;
   top:50%;
@@ -21,12 +21,13 @@
   }
 }
 .login-panel {
-  background-color: @lightGrey;
-  box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05);
+  background-color: fade(@white, 25%);
+  //box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05);
+  .border-radius(@baseRadius, @baseRadius, @baseRadius, @baseRadius);
   padding:20px;
   position: relative;
   &:after {
-    .triangle-bottom(12px, 12px, @lightGrey);
+    .triangle-bottom(12px, 12px, fade(@white, 25%));
     bottom: -12px;
     content: "";
     left: 50px;
@@ -35,6 +36,9 @@
   input {
     padding: @smallPad;
     width: 100%;
+    border-color: @white;
+    color: @darkGrey;
+    .border-radius(@baseRadius, @baseRadius, @baseRadius, @baseRadius);
     &:first-child {
       margin-bottom: @smallPad;
     }
@@ -49,7 +53,7 @@
       position: absolute;
       right: 5px;
       top: 1px;
-      :hover {
+      &:hover {
         &:after {
           color: @darkGrey;
         }
@@ -62,25 +66,15 @@
       }
     }
     &.error {
-      color: red;
+      color: @deleteColor;
+      font-weight: 600;
       margin: 0;
-      padding: 15px 10px 0;
+      padding: 10px 0 0 10px;
     }
     &.message {
       color: green;
       margin: 0;
       padding: 15px 10px 0;
     }
-  }
-}
-.left-corner-message {
-  bottom: @standardPad;
-  color: @white;
-  font-style: italic;
-  left: @standardPad;
-  position: fixed;
-  .icon {
-    line-height: 11px;
-    margin-right: @smallPad;
   }
 }

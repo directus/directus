@@ -1128,7 +1128,7 @@ button {
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background-color: #cbcbcb;
+  background-color: #cccccc;
   color: #ffffff;
   display: inline-block;
   height: 32px;
@@ -1159,7 +1159,7 @@ button {
   margin-bottom: 5px;
 }
 .secondary-info {
-  color: #cbcbcb;
+  color: #cccccc;
   font-size: 12px;
   font-weight: 600;
 }
@@ -1201,19 +1201,19 @@ button {
   width: 50px;
 }
 ::-webkit-input-placeholder {
-  color: #cbcbcb;
+  color: #cccccc;
   -webkit-font-smoothing: antialiased;
 }
 :-moz-placeholder {
-  color: #cbcbcb;
+  color: #cccccc;
   -webkit-font-smoothing: antialiased;
 }
 ::-moz-placeholder {
-  color: #cbcbcb;
+  color: #cccccc;
   -webkit-font-smoothing: antialiased;
 }
 :-ms-input-placeholder {
-  color: #cbcbcb;
+  color: #cccccc;
   -webkit-font-smoothing: antialiased;
 }
 .btn-toolbar {
@@ -1244,7 +1244,7 @@ button {
   background-color: #ededed;
 }
 .btn-group.btn-white .btn.active {
-  background-color: #cbcbcb;
+  background-color: #cccccc;
 }
 .btn-group.btn-white .btn:first-child {
   -webkit-border-top-right-radius: 0px;
@@ -1374,8 +1374,8 @@ button {
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background-color: #cbcbcb;
-  border: solid 1px #cbcbcb;
+  background-color: #cccccc;
+  border: solid 1px #cccccc;
   color: #ffffff;
   cursor: pointer;
   padding: 5px 10px;
@@ -1398,7 +1398,7 @@ button {
   background-color: #ededed;
 }
 .btn.btn-white.active {
-  background-color: #cbcbcb;
+  background-color: #cccccc;
 }
 .btn.btn-round {
   -webkit-border-top-right-radius: 50%;
@@ -1581,7 +1581,7 @@ input:focus,
 textarea:focus,
 select:focus,
 .input:focus {
-  border: solid 1px #cbcbcb;
+  border: solid 1px #cccccc;
 }
 .wysiwyg .btn-toolbar {
   margin-bottom: 5px;
@@ -1737,7 +1737,7 @@ select:focus,
   margin-left: 120px;
 }
 .two-column-form .fields .field .file .content .row {
-  border-bottom: solid 1px #cbcbcb;
+  border-bottom: solid 1px #cccccc;
   margin: 0px;
   padding-bottom: 10px;
   position: relative;
@@ -1770,7 +1770,7 @@ select:focus,
   cursor: default;
 }
 .table-striped thead tr th {
-  color: #cbcbcb;
+  color: #cccccc;
   border-bottom: 1px solid #ededed;
   font-size: 12px;
   font-weight: 600;
@@ -1795,14 +1795,14 @@ select:focus,
   height: 0px;
   width: 0px;
   border-width: 6px 6px 0 6px;
-  border-color: #cbcbcb transparent transparent transparent;
+  border-color: #cccccc transparent transparent transparent;
 }
 .table-striped thead tr th.desc .sorter:before {
   border-style: solid;
   height: 0px;
   width: 0px;
   border-width: 0 6px 6px 6px;
-  border-color: transparent transparent #cbcbcb transparent;
+  border-color: transparent transparent #cccccc transparent;
 }
 .table-striped thead tr th .icon {
   display: inline-block;
@@ -1816,7 +1816,7 @@ select:focus,
   right: 10px;
   font-size: 13px;
   display: none;
-  color: #cbcbcb;
+  color: #cccccc;
 }
 .table-striped thead #set-visible-columns:hover {
   color: #5b5b5b;
@@ -1984,7 +1984,7 @@ select:focus,
   width: 60%;
 }
 .group-list {
-  color: #cbcbcb;
+  color: #cccccc;
 }
 .group-list,
 .group-list ul {
@@ -2025,10 +2025,10 @@ select:focus,
   vertical-align: top;
 }
 .group-list .group-item .stack .stack-item {
-  color: #cbcbcb;
+  color: #cccccc;
 }
 .group-list .group-item .time {
-  color: #cbcbcb;
+  color: #cccccc;
 }
 .alerts {
   list-style: none;
@@ -2342,7 +2342,7 @@ select:focus,
   margin: 0px;
 }
 .header1 h1 {
-  color: #cbcbcb;
+  color: #cccccc;
   float: left;
   height: 38px;
   text-transform: capitalize;
@@ -2354,6 +2354,10 @@ select:focus,
   line-height: 30px;
   margin: 0px 10px;
   vertical-align: top;
+  cursor: pointer;
+}
+.header1 h1 .icon:hover {
+  color: #cccccc;
 }
 .header1 h1 .endnode {
   color: #5b5b5b;
@@ -2442,7 +2446,7 @@ select:focus,
 }
 .header1 .tools input {
   border: none;
-  color: #cbcbcb;
+  color: #cccccc;
 }
 .header1 .tools .tool.div-right {
   border-right: solid 1px #ededed;
@@ -2455,7 +2459,7 @@ select:focus,
   padding-left: 10px;
 }
 .header1 .tools .tool-item {
-  background-color: #cbcbcb;
+  background-color: #cccccc;
   color: #ffffff;
   cursor: pointer;
 }
@@ -2463,7 +2467,7 @@ select:focus,
   background-color: #5b5b5b;
 }
 .header1 .tools .simple-select {
-  color: #cbcbcb;
+  color: #cccccc;
   display: inline-block;
   vertical-align: middle;
 }
@@ -2507,7 +2511,7 @@ select:focus,
   width: auto;
 }
 .header1 .secondary-row {
-  color: #cbcbcb;
+  color: #cccccc;
   font-weight: 600;
   margin: 10px 0px -15px 0px;
   height: 32px;
@@ -2560,7 +2564,7 @@ select:focus,
   color: #c1272d;
 }
 .header1 .secondary-row .action.inactive {
-  color: #cbcbcb;
+  color: #cccccc;
 }
 .header1 .secondary-row .text-spacer {
   padding: 0px 10px;
@@ -2576,7 +2580,7 @@ select:focus,
 }
 .header1 .secondary-row .filters li {
   cursor: pointer;
-  background-color: #cbcbcb;
+  background-color: #cccccc;
   color: #ffffff;
   margin: 5px 0px 7px 10px;
   padding: 3px 10px;
@@ -2601,7 +2605,7 @@ select:focus,
 }
 .login-box {
   left: 50%;
-  margin-left: -208px;
+  margin-left: -186px;
   margin-top: -136px;
   position: absolute;
   top: 50%;
@@ -2629,8 +2633,22 @@ select:focus,
   margin-left: 10px;
 }
 .login-panel {
-  background-color: #ededed;
-  box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.25);
+  -webkit-border-top-right-radius: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  -webkit-border-bottom-left-radius: 2px;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-topright: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-topleft: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
   padding: 20px;
   position: relative;
 }
@@ -2639,7 +2657,7 @@ select:focus,
   height: 0px;
   width: 0px;
   border-width: 12px 12px 0 12px;
-  border-color: #ededed transparent transparent transparent;
+  border-color: rgba(255, 255, 255, 0.25) transparent transparent transparent;
   bottom: -12px;
   content: "";
   left: 50px;
@@ -2648,6 +2666,23 @@ select:focus,
 .login-panel input {
   padding: 10px;
   width: 100%;
+  border-color: #ffffff;
+  color: #5b5b5b;
+  -webkit-border-top-right-radius: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  -webkit-border-bottom-left-radius: 2px;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-topright: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-topleft: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
 .login-panel input:first-child {
   margin-bottom: 10px;
@@ -2664,7 +2699,7 @@ select:focus,
   right: 5px;
   top: 1px;
 }
-.login-panel p #forgot-password :hover:after {
+.login-panel p #forgot-password:hover:after {
   color: #5b5b5b;
 }
 .login-panel p #forgot-password:after {
@@ -2681,25 +2716,15 @@ select:focus,
   line-height: 25px;
 }
 .login-panel p.error {
-  color: red;
+  color: #c1272d;
+  font-weight: 600;
   margin: 0;
-  padding: 15px 10px 0;
+  padding: 10px 0 0 10px;
 }
 .login-panel p.message {
   color: green;
   margin: 0;
   padding: 15px 10px 0;
-}
-.left-corner-message {
-  bottom: 20px;
-  color: #ffffff;
-  font-style: italic;
-  left: 20px;
-  position: fixed;
-}
-.left-corner-message .icon {
-  line-height: 11px;
-  margin-right: 10px;
 }
 .message {
   color: #5b5b5b;
@@ -2734,13 +2759,13 @@ select:focus,
   font-weight: 600;
 }
 .message .content .subject {
-  color: #cbcbcb;
+  color: #cccccc;
 }
 .message .right-info {
   margin-top: 17px;
 }
 .message .right-info .icon {
-  color: #cbcbcb;
+  color: #cccccc;
   line-height: 10px;
   padding-right: 10px;
 }

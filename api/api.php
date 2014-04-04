@@ -209,7 +209,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
 $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonceProvider) {
 
     $response = array(
-        'message' => "Wrong username/password.",
+        'message' => "Wrong username/password",
         'success' => false,
         'all_nonces' => $requestNonceProvider->getAllNonces()
     );

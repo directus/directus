@@ -29,8 +29,8 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <link rel="stylesheet" href="assets/css/index.css">
   <style>
     html,body {
-      background-image: url("assets/img/noise.gif"); 
-      margin:0; 
+      background-color: #cccccc;
+      margin:0;
       padding:0;
       height: 100%;
       width: 100%;
@@ -50,19 +50,18 @@ input[type="text"], input[type="password"] {font-size:16px; width:360px; border:
 <body class="font-primary">
 
 <!-- Main container. -->
-<form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post" class="login-box">
+<form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post" class="login-box" autocomplete="off">
   <div class='login-panel'>
     <p class="">
-    <input type="text" name="email" placeholder="Email Address" />
+    <input type="text" name="email" placeholder="Email Address" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
     </p>
     <p class="">
-      <input type="password" name="password" placeholder="Password" />
+      <input type="password" name="password" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
       <span id="forgot-password" class="btn btn-primary"></span>
     </p>
     <!--<label class="checkbox">
         <input type="checkbox" name="remember" /> Keep me logged in on this computer
     </label>-->
-    
     <p class="error" style="display:none;"></p>
     <p class="message" style="display:none;"></p>
   </div>
@@ -70,10 +69,6 @@ input[type="text"], input[type="password"] {font-size:16px; width:360px; border:
   <!-- <button id="forgot-password" class="btn btn-primary">Forgot Password</button> -->
 </form>
 
-<div class="left-corner-message">
-  <span class="icon icon-circled-info"></span>
-  logged out due to inactivity
-</div>
 <!-- Javascripts -->
 <script type="text/javascript" src="<?= DIRECTUS_PATH ?>assets/js/libs/jquery.js"></script>
 <script type="text/javascript">
@@ -104,7 +99,7 @@ $(function(){
     var $form = $(this).closest('form'),
         email = $.trim($form.find('input[name=email]').val());
     if(email.length == 0) {
-      message("Please enter a valid email address.", true);
+      message("Please enter a valid email address", true);
       return false;
     }
     if(confirm('Are you sure you want to reset your password?')) {
@@ -121,10 +116,10 @@ $(function(){
             message(errorMessage, true);
             return;
           }
-          message("We sent a temporary password to your email address.")
+          message("Temporary password sent to your email address")
         },
         error: function(jqXHR, textStatus, errorThrown) {
-          message("Server error occurred. (" + textStatus + ")", true);
+          message("Server error occurred (" + textStatus + ")", true);
         }
       });
     }
@@ -166,7 +161,7 @@ $(function(){
 
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        message("Server error occurred. (" + textStatus + ")", true);
+        message("Server error occurred (" + textStatus + ")", true);
       }
     });
   });
