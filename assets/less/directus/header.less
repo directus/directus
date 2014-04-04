@@ -222,7 +222,9 @@
     @textActionMarginTop: 7px;
     color: @mediumGrey;
     font-weight: 600;
-    margin: 15px 0px -15px 0px;
+    margin: 10px 0px -15px 0px;
+    height: 32px;
+    overflow: hidden;
     &.filter-options {
       .filter-list {
         padding: 0px;
@@ -230,8 +232,13 @@
       .filter-form {
         float: left;
         margin-left: @smallPad;
+        .simple-select {
+          margin-right: @extraSmallPad;
+          max-width: 150px;
+        }
         input {
           display: inline-block;
+          max-width: 150px;
         }
         .action {
           display: block;

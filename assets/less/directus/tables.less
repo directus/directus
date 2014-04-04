@@ -77,7 +77,12 @@
       font-weight: 700;
     }
     &.inactive {
-      color: @lightGrey;
+      td {
+        opacity: 0.25;
+      }
+      td.check {
+        opacity: 1.0;
+      }
     }
     th, td {
       padding-left: 10px;

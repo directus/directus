@@ -1194,6 +1194,28 @@ button {
   text-align: center;
   margin-top: 100px;
 }
+.media-thumb .img.portrait {
+  height: 50px;
+}
+.media-thumb .img.landscape {
+  width: 50px;
+}
+::-webkit-input-placeholder {
+  color: #cbcbcb;
+  -webkit-font-smoothing: antialiased;
+}
+:-moz-placeholder {
+  color: #cbcbcb;
+  -webkit-font-smoothing: antialiased;
+}
+::-moz-placeholder {
+  color: #cbcbcb;
+  -webkit-font-smoothing: antialiased;
+}
+:-ms-input-placeholder {
+  color: #cbcbcb;
+  -webkit-font-smoothing: antialiased;
+}
 .btn-toolbar {
   clear: both;
   float: none;
@@ -1824,8 +1846,11 @@ select:focus,
 .table-striped tr.featured {
   font-weight: 700;
 }
-.table-striped tr.inactive {
-  color: #ededed;
+.table-striped tr.inactive td {
+  opacity: 0.25;
+}
+.table-striped tr.inactive td.check {
+  opacity: 1.0;
 }
 .table-striped tr th,
 .table-striped tr td {
@@ -2127,7 +2152,7 @@ select:focus,
   height: 100px;
 }
 #sidebar .directusLogo {
-  height: 60px;
+  height: 60px !important;
   padding: 20px 0px;
   line-height: 90px;
   text-align: center;
@@ -2484,7 +2509,9 @@ select:focus,
 .header1 .secondary-row {
   color: #cbcbcb;
   font-weight: 600;
-  margin: 15px 0px -15px 0px;
+  margin: 10px 0px -15px 0px;
+  height: 32px;
+  overflow: hidden;
 }
 .header1 .secondary-row.filter-options .filter-list {
   padding: 0px;
@@ -2493,8 +2520,13 @@ select:focus,
   float: left;
   margin-left: 10px;
 }
+.header1 .secondary-row.filter-options .filter-form .simple-select {
+  margin-right: 5px;
+  max-width: 150px;
+}
 .header1 .secondary-row.filter-options .filter-form input {
   display: inline-block;
+  max-width: 150px;
 }
 .header1 .secondary-row.filter-options .filter-form .action {
   display: block;
