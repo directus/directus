@@ -6,7 +6,6 @@ define(function(require, exports, module) {
 
   var PreferenceModel = module.exports = Backbone.Model.extend({
       fetch: function(options) {
-        console.log(options);
         this.trigger('fetch', this);
         var args = {
           data: $.param(options)

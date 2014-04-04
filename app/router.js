@@ -30,7 +30,7 @@ define(function(require, exports, module) {
     routes: {
       "":                               "index",
       "tables":                         "tables",
-      "tables/:name":                   "entries",
+      "tables/:name(/pref/:pref)":      "entries",
       "tables/:name/:id":               "entry",
       "activity":                       "activity",
       "media":                          "media",
@@ -112,11 +112,10 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    entries: function(tableName) {
+    entries: function(tableName, pref) {
       if (_.contains(this.tabBlacklist,'tables'))
         return this.notFound();
 
-      this.setTitle('Tables');
       var collection;
 
       if (!SchemaManager.getTable(tableName)) {
@@ -129,6 +128,9 @@ define(function(require, exports, module) {
       } else {
         collection = EntriesManager.getInstance(tableName);
       }
+
+
+
       if (collection.table.get('single')) {
         if(collection.models.length) {
           this.entry(tableName, collection.models[0].get('id'));
@@ -147,6 +149,11 @@ define(function(require, exports, module) {
           collection.fetch();
         }
         return;
+      }
+
+      if(pref) {
+        this.loadedPreference = pref;
+        this.navigate("/tables/" + tableName);
       }
 
       // Cache collection for next route

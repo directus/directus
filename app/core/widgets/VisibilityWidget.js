@@ -79,16 +79,28 @@ function(app, Backbone, PreferenceModel) {
         this.collection.preferences.save();
       },
       'click #pinSnapshotBtn': function(e) {
+        if(!this.snapshotData) {
+          return;
+        }
 
+        var data = {
+          title: this.snapshotData.title,
+          url: Backbone.history.fragment + "/?pref_title=blah",
+          icon_class: 'icon-search',
+          user: app.users.getCurrentUser().get("id")
+        };
+
+        app.getBookmarks().addNewBookmark(data);
       },
       'click #deleteSnapshotBtn': function(e) {
         if(this.snapshotData.id) {
-          var user = this.collection.preferences.get('user');
+          var user = app.users.getCurrentUser().get("id");
           var that = this;
           this.collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({id:this.snapshotData.id, user: user}),success: function() {
             $('#visibilitySelect').val(that.collection.preferences.get('active'));
             that.options.widgetOptions.snapshots.splice(that.snapshotData.title);
-            that.snapshotData = {};
+            app.getBookmarks().removeBookmark({title: that.snapshotData.title, icon_class: 'icon-search', user: user});
+            that.snapshotData = null;
           }});
         }
       }
@@ -126,6 +138,12 @@ function(app, Backbone, PreferenceModel) {
         });
         that.render();
       });
+
+      if(app.router.loadedPreference) {
+        this.defaultId = this.collection.preferences.get('id');
+        this.collection.preferences.fetch({newTitle: app.router.loadedPreference});
+        app.router.loadedPreference = undefined;
+      }
     }
   });
 });
