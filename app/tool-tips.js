@@ -40,10 +40,10 @@ define([
             $toolTips = $("[data-tool-tip-for]");
             $elementsToToggle = $('[data-tool-tip-toggle-class]');
 
-            console.log('init called');
+            //console.log('init called');
 
-            $toolTips.each(function() {
-                var $toolTip = $(this),
+            $toolTips.each(function(index, value) {
+                var $toolTip = jQuery(this),
                     toolSelector = $toolTip.data("tool-tip-for"),
                     $ttTarget = $(toolSelector),
                     tipTimer,
@@ -61,16 +61,17 @@ define([
                 $toolTip.data("height") ? $toolTip.width($toolTip.data("height")) : null;
                 offsetPointer($pointer, $toolTip);
 
-                console.log($ttTarget);
+                //console.log($ttTarget);
 
-                $(document).on("mouseenter", $ttTarget, function() {
+                $(document).on("mouseenter", $ttTarget.selector,  function() {
+                    //console.log($ttTarget.selector);
                     tipTimer = setTimeout(function() {
-                        console.log('show tip', $ttTarget, this);
-                        positionToolTip($ttTarget, $toolTip);
+                      console.log($ttTarget.selector);
+                        //console.log('show tip', $ttTarget, this);
+                        positionToolTip((function() { return $ttTarget.selector; })(), $toolTip);
                         $toolTip.show();
                     }, 500);
-                }).on("mouseleave", $ttTarget, function() {
-                    console.log('hide tip', $ttTarget, this);
+                }).on("mouseleave", $ttTarget.selector, function() {
                     clearTimeout(tipTimer);
                     $toolTip.hide();
                 });
@@ -126,9 +127,12 @@ define([
             }
         }
 
-        function positionToolTip($ttTarget, $toolTip) {
+        function positionToolTip(ttTarget, $toolTip) {
             var elementOffset, cssOptions, toolTipPointerSize;
-
+            //console.log($ttTarget, $toolTip);
+            var $ttTarget = jQuery(ttTarget);
+            //var $toolTip = jQuery(toolTip);
+            
             function horizontalCenter() {
                 return (($ttTarget.outerWidth() - $toolTip.outerWidth()) / 2) + elementOffset.left + $toolTip.data("offset-x");
             }
