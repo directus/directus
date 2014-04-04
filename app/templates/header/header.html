@@ -5,11 +5,11 @@
       {{#if route}}
         {{#if route.isOverlay}}
           <span class="icon icon-circled-left" id="removeOverlay"></span>
-          <span class="icon icon-chevron-small-right"></span>
+          <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
         {{else}}
           {{#each route.breadcrumbs}}
               <a href="{{anchor}}" class="" >{{{capitalize title}}}</a>
-              <span class="icon icon-chevron-small-right"></span>
+              <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
           {{/each}}
         {{/if}}
         <span class="endnode">{{{capitalize route.title}}}</span>
