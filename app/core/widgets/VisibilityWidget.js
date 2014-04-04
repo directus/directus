@@ -16,7 +16,6 @@ function(app, Backbone, PreferenceModel) {
           <option data-status value="1,2">View All</option> \
           <option data-status value="1">View Active</option> \
           <option data-status value="2">View Inactive</option> \
-          <option data-status value="0">View Trash</option> \
         </optgroup> \
         <optgroup label="Snapshots"> \
           {{#snapshots}} \
