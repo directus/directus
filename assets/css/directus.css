@@ -938,6 +938,9 @@
 .gutter-bottom {
   margin-bottom: 20px;
 }
+.gutter-bottom-big {
+  margin-bottom: 40px;
+}
 /*
 .fade-in() {
   from {
@@ -1188,7 +1191,7 @@ button {
   display: none;
 }
 .remove-header-margin {
-  margin-top: -20px;
+  margin-top: -20px !important;
 }
 .nothing-here {
   text-align: center;
@@ -1810,6 +1813,9 @@ select:focus,
   line-height: 12px;
   vertical-align: top;
 }
+.table-striped thead tr th:hover {
+  color: #5b5b5b;
+}
 .table-striped thead #set-visible-columns {
   position: absolute;
   top: 10px;
@@ -2082,7 +2088,7 @@ select:focus,
   background-color: #7ac943;
   padding: 7px 10px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 14px;
   word-spacing: 1px;
   z-index: 1000;
@@ -2279,6 +2285,21 @@ select:focus,
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
   color: #ffffff;
+}
+#sidebar #featureSidebar li .icon.icon-attach {
+  margin-left: -5px;
+}
+#sidebar #featureSidebar li .icon.icon-users {
+  margin-left: -5px;
+}
+#sidebar #featureSidebar li .icon.icon-chat {
+  margin-left: -5px;
+}
+#sidebar #featureSidebar li .icon.icon-bell {
+  margin-left: -1px;
+}
+#sidebar #featureSidebar li .icon.icon-power-button {
+  margin-top: -2px;
 }
 #sidebar #featureSidebar li .feature-nav-alert {
   -webkit-border-top-right-radius: 50%;
