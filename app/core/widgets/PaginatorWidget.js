@@ -41,8 +41,11 @@ function(app, Backbone) {
       if(this.collection.length != this.collection.getFilter('perPage')) {
         this.options.widgetOptions.pageNext = false;
       }
+
       if(!this.options.widgetOptions.pageNext && !this.options.widgetOptions.pagePrev) {
         this.options.widgetOptions.hidePages = true;
+      } else {
+        this.options.widgetOptions.hidePages = false;
       }
 
       this.render();
