@@ -24,7 +24,9 @@ function(app, Backbone, PreferenceModel) {
         </optgroup> \
       </select> \
     </div> \
-    <div class="action vertical-center left" id="saveSnapshotBtn">Save Snapshot</div>'),
+    <div class="action vertical-center left" id="saveSnapshotBtn">Save Snapshot</div> \
+    <div style="display:none" class="action vertical-center left snapshotOption" id="pinSnapshotBtn">Pin Snapshot</div> \
+    <div style="display:none" class="action vertical-center left snapshotOption" id="deleteSnapshotBtn">Delete Snapshot</div>'),
 
     tagName: 'div',
     attributes: {
@@ -83,8 +85,11 @@ function(app, Backbone, PreferenceModel) {
     },
 
     afterRender: function() {
+      $('.snapshotOption').hide();
       if(this.collection.preferences.get('title') !== null) {
         $('#visibilitySelect').val(this.collection.preferences.get('title'));
+        this.snapshotId = this.collection.preferences.get('id');
+        $('.snapshotOption').show();
         this.collection.preferences.set({title:null, id: this.defaultId});
       } else {
         $('#visibilitySelect').val(this.collection.preferences.get('active'));
