@@ -3,10 +3,11 @@ define([
   "backbone",
   "core/directus",
   'core/panes/pane.saveview',
-  'core/BasePageView'
+  'core/BasePageView',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, SaveModule, BasePageView) {
+function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
 
   "use strict";
 
@@ -53,6 +54,14 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
           app.router.go('#users');
         }, patch: true});
       }
+    },
+
+    leftToolbar: function() {
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave}});
+      this.saveWidget.setSaved(false);
+      return [
+        this.saveWidget
+      ];
     },
 
     afterRender: function() {
