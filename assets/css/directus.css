@@ -1374,8 +1374,8 @@ button {
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background-color: #5b5b5b;
-  border: solid 1px #5b5b5b;
+  background-color: #cbcbcb;
+  border: solid 1px #cbcbcb;
   color: #ffffff;
   cursor: pointer;
   padding: 5px 10px;
@@ -1421,7 +1421,7 @@ button {
 }
 .btn .icon {
   font-size: 400%;
-  line-height: 15%;
+  line-height: 16%;
 }
 select {
   cursor: pointer;
