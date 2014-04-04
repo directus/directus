@@ -1630,14 +1630,12 @@ select:focus,
   margin-bottom: 10px;
 }
 .two-column-form .fields {
-  display: table;
   list-style: none;
   margin: 0px;
   padding: 0px;
   width: 100%;
 }
 .two-column-form .fields li {
-  display: table-row;
   margin-bottom: 1px;
   position: relative;
   width: 100%;
@@ -1651,8 +1649,16 @@ select:focus,
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1;
 }
-.two-column-form .fields .label,
-.two-column-form .fields .field {
+.two-column-form .fields .table {
+  display: table;
+  position: relative;
+  width: 100%;
+}
+.two-column-form .fields .table .trow {
+  display: table-row;
+}
+.two-column-form .fields .table .trow .label,
+.two-column-form .fields .table .trow .field {
   display: table-cell;
 }
 .two-column-form .fields .label {
