@@ -79,8 +79,9 @@ define(function(require, exports, module) {
 
         if (!isHidden) {
           var uiContainer = new UIContainer({model: column, batchEdit: this.options.batchIds !== undefined});
-          uiContainer.insertView(view);
-          this.insertView('.fields',uiContainer);
+          uiContainer.insertView('.trow', view);
+          this.insertView('.fields', uiContainer);
+          console.log(uiContainer.$el);
         } else {
           this.insertView('.fields',view);
         }

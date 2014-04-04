@@ -165,13 +165,11 @@ select,
     margin-bottom: @smallPad;
   }
   .fields {
-    display: table;
     list-style: none;
     margin: 0px;
     padding: 0px;
     width: 100%;
     li {
-      display: table-row;
       margin-bottom: 1px;
       position: relative;
       width: 100%;
@@ -185,8 +183,16 @@ select,
       background-color:rgba(255,255,255,0.5);
       z-index:1;
     }
-    .label, .field {
-      display: table-cell;
+    .table {
+      display: table;
+      position: relative;
+      width: 100%;
+      .trow {
+        display: table-row;
+        .label, .field {
+          display: table-cell;
+        }
+      }
     }
     .label {
       .border-box;
