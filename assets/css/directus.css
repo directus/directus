@@ -2257,10 +2257,12 @@ select:focus,
 }
 #sidebar #featureSidebar li .icon {
   display: block;
-  font-size: 46px;
+  font-size: 60px;
   height: 25px;
   line-height: 17px;
+  margin-left: -3px;
   margin-right: 18px;
+  margin-top: -1px;
   position: relative;
   text-align: center;
   width: 25px;
