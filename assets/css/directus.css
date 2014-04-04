@@ -1651,6 +1651,10 @@ select:focus,
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1;
 }
+.two-column-form .fields .label,
+.two-column-form .fields .field {
+  display: table-cell;
+}
 .two-column-form .fields .label {
   box-sizing: border-box;
   /* css3 rec */
@@ -1663,10 +1667,10 @@ select:focus,
   background-color: #ededed;
   border-bottom: solid 1px #ffffff;
   color: #5b5b5b;
-  display: table-cell;
   font-weight: 500;
   padding: 25px 20px 25px 20px;
   text-align: right;
+  vertical-align: top;
   width: 200px;
 }
 .two-column-form .fields .label:after {
@@ -1693,7 +1697,6 @@ select:focus,
 .two-column-form .fields .field {
   background-color: #f4f4f4;
   border-bottom: solid 1px #ffffff;
-  display: table-cell;
   padding: 20px;
   position: relative;
 }
