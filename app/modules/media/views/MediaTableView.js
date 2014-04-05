@@ -32,8 +32,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
     },
     events: {
       'click #addBtn': function() {
-        var model = new this.collection.model({},{collection: this.collection});
-        this.addEditMedia(model, 'Add New Media');
+        app.router.go('#media','new');
       },
       'click #gridBtn': function() {
         if(this.viewList) {

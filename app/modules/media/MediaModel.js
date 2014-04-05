@@ -7,16 +7,16 @@ define([
 function(app, Backbone, EntriesModel) {
 
   var MediaModel = EntriesModel.extend({
-    
+
     initialize: function() {
       EntriesModel.prototype.initialize.apply(this, arguments);
     },
 
-    makeMediaUrl: function(thumbnail) {      
+    makeMediaUrl: function(thumbnail) {
       var storageAdapters = app.storageAdapters,
           adapterId,
           storageAdapter;
-
+      console.log(this);
       if(thumbnail) {
         adapterId = 'THUMBNAIL';
         if(!storageAdapters.hasOwnProperty(adapterId)) {
@@ -36,7 +36,7 @@ function(app, Backbone, EntriesModel) {
     constructor: function MediaModel(data, options) {
       MediaModel.__super__.constructor.call(this, data, options);
     }
-  
+
   });
 
   return MediaModel;
