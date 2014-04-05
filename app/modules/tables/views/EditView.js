@@ -150,6 +150,4 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
     }
   });
-
-
 });

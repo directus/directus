@@ -81,7 +81,6 @@ define(function(require, exports, module) {
           var uiContainer = new UIContainer({model: column, batchEdit: this.options.batchIds !== undefined});
           uiContainer.insertView('.trow', view);
           this.insertView('.fields', uiContainer);
-          console.log(uiContainer.$el);
         } else {
           this.insertView('.fields',view);
         }

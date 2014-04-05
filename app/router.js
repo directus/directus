@@ -258,19 +258,19 @@ define(function(require, exports, module) {
 
     mediaItem: function(id) {
       var mediaView = new Media.Views.List({collection: app.media});
-      var model = app.media.get(id);
-
-      if (model === undefined) {
-        model = new app.media.model({id: id}, {collection: app.media});
-      }
-
-      mediaView.addEditMedia(model, 'Editing media');
+      var model;
 
       this.setTitle('Media');
       this.tabs.setActive('media');
-      this.v.main.setView('#content', mediaView);
-      this.v.main.render();
 
+      if (id === "new") {
+        model = new app.media.model({}, {collection: app.media});
+      } else {
+        model = app.media.get(id);
+      }
+
+      this.v.main.setView('#content', new Media.Views.Edit({model: model}));
+      this.v.main.render();
     },
 
     users: function() {

@@ -26,7 +26,7 @@ function(app, Backbone, Widgets) {
           return;
         }
 
-        app.router.go('#users', id);
+        app.router.go('#media', id);
       }
     },
 

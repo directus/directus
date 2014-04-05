@@ -105,7 +105,4 @@ function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
       this.headerOptions.route.title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : 'New User';
     }
   });
-
-
-
 });

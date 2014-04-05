@@ -14,5 +14,4 @@ function(app, EditMediaView, MediaTableView) {
   media.Views.List = MediaTableView;
 
   return media;
-
 });
