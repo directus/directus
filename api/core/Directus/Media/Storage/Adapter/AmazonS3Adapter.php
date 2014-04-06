@@ -49,6 +49,10 @@ class AmazonS3Adapter extends Adapter {
         return array_key_exists($fileName, $objects);
     }
 
+    public function acceptFile($localFile, $targetFileName, $destination) {
+      $this->writeFile($localFile, $targetFileName, $destination);
+    }
+
     protected function writeFile($localFile, $targetFileName, $destination) {
         $acl = (1 == $this->settings['public']) ? CannedAcl::PUBLIC_READ : CannedAcl::PRIVATE_ACCESS;
         $finfo = new \finfo(FILEINFO_MIME_TYPE);

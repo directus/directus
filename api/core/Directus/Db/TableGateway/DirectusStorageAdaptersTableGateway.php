@@ -50,6 +50,7 @@ class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway {
         if(!$row) {
             return false;
         }
+        $row = $row->toArray();
         // The adapter's `params` column is JSON serialized.
         $row['params'] = $this->jsonDecodeIfPossible($row['params']);
         return $row;
