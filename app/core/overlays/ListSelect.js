@@ -19,7 +19,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-check"}})
       ];
     },
 
