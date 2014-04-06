@@ -152,9 +152,6 @@ $app->get("/archive/:resolution/:id/:filename", function($resolution, $id, $file
     }
     $StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
     $storage = $StorageAdapters->fetchOneByKey('platnum_archive');
-    $params = @json_decode($storage['params'], true);
-    $params = empty($params) ? array() : $params;
-    $storage['params'] = $params;
     $MediaStorage = \Directus\Media\Storage\Storage::getStorage($storage);
     header('Content-type: ' . $media['type']);
     echo $MediaStorage->getFileContents($media['name'], $storage['destination'].'/'.$resolution);
