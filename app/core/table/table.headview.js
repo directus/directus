@@ -20,7 +20,7 @@ function(app, Backbone) {
         this.collection.trigger('select');
       },
 
-      'click th:not(.check)': function(e) {
+      'click th:not(.check, .visible-columns-cell)': function(e) {
         var column = $(e.target).attr('data-id');
         var order = this.collection.getOrder();
 
@@ -38,6 +38,12 @@ function(app, Backbone) {
       },
 
       'click #set-visible-columns': function() {
+        if(this.visibleColumnsView) {
+          this.visibleColumnsView = null;
+          this.removeView('#visible_columns_entry');
+          return;
+        }
+
         var structure = this.options.collection.structure;
         var preferences = this.collection.preferences;
         var collection = this.collection;
@@ -91,6 +97,12 @@ function(app, Backbone) {
               } else {
                 this.enableNonSelected();
               }
+            },
+            'click #saveVisibleColumnsBtn': function() {
+              this.save();
+            },
+            'click #cancelVisibleColumnsBtn': function() {
+              this.cancelSelection();
             }
           },
 
@@ -112,27 +124,39 @@ function(app, Backbone) {
           template: 'tables/table-set-columns',
 
           serialize: function() {
-            console.log(this.options.data);
             return this.options.data;
           }
 
         });
-        var Overlays = require('core/overlays/overlays');
-        var newview = new Overlays.VisibleColumnSelect({collection: collection, contentView: new View({data: data}), data: data});
 
-        app.router.overlayPage(newview);
+        this.visibleColumnsView = new View({data: data});
 
-        newview.save = function() {
+        var that = this;
+
+        this.visibleColumnsView.cancelSelection = function() {
+          that.visibleColumnsView = null;
+          this.remove();
+        };
+
+        this.visibleColumnsView.save = function() {
           var data = this.$el.find('form').serializeObject();
           var string = _.isArray(data.columns_visible) ? data.columns_visible.join(',') : data.columns_visible;
           var that = this;
           preferences.save({'columns_visible': string},{
             success: function() {
               collection.trigger('visibility');
-              app.router.removeOverlayPage(that);
+              that.cancelSelection();
             }
           });
         };
+
+        this.render();
+      }
+    },
+
+    beforeRender: function() {
+      if(this.visibleColumnsView) {
+        this.setView('#visible_columns_entry', this.visibleColumnsView);
       }
     },
 
