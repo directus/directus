@@ -85,7 +85,7 @@ $app->hook('slim.before.dispatch', function() use ($app) {
     }
 });
 
-$app->get("/:id/:format/:filename", function($id, $format, $filename) use ($app, $acl, $ZendDb) {
+$app->get("/:id/:format(/:filename)", function($id, $format, $filename) use ($app, $acl, $ZendDb) {
     $notFound = function () {
         http_response_code(404);
         echo "<h1>404 Not found</h1>";
@@ -123,40 +123,5 @@ $app->get("/:id/:format/:filename", function($id, $format, $filename) use ($app,
     exit; // Prevent Slim from overriding our headers
 })->conditions(array('id' => '\d+'))
   ->name('media_proxy_file');
-
-
-//Platnum Specific
-$app->get("/archive/:resolution/:id/:filename", function($resolution, $id, $filename) use ($app, $acl, $ZendDb) {
-    $notFound = function () {
-      http_response_code(404);
-      echo "<h1>404 Not found</h1>";
-      exit;
-    };
-
-    $DirectusMedia = new TableGateway('directus_media', $ZendDb);
-    $media = $DirectusMedia->select(function ($select) use ($id) {
-        $select->where->equalTo('id', $id);
-        $select->limit(1);
-    });
-    if(0 == $media->count()) {
-        return $notFound();
-    }
-    $media = $media->current();
-    if($filename != $media['name']) {
-        $correctUrl = $app->urlFor('archive_media_proxy_file', array(
-            'resolution' => $resolution,
-            'id' => $id,
-            'filename' => $media['name']
-        ));
-        return $app->redirect($correctUrl);
-    }
-    $StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
-    $storage = $StorageAdapters->fetchOneByKey('platnum_archive');
-    $MediaStorage = \Directus\Media\Storage\Storage::getStorage($storage);
-    header('Content-type: ' . $media['type']);
-    echo $MediaStorage->getFileContents($media['name'], $storage['destination'].'/'.$resolution);
-    exit; // Prevent Slim from overriding our headers
-})->conditions(array('id' => '\d+'))
-  ->name('archive_media_proxy_file');
 
 $app->run();
