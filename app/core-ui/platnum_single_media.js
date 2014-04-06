@@ -98,9 +98,9 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
                     <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove media</button> \
                     <ul> \
                       <li><a target="_blank" id="assetUrl" href="{{link}}">Original Asset URL</a></li> \
-                      <li><a target="_blank" id="archiveHighUrl">Link 1</a></li> \
-                      <li><a target="_blank" id="archiveMedUrl">Link 2</a></li> \
-                      <li><a target="_blank" id="archiveLowUrl">Link 3</a></li> \
+                      <li><a target="_blank" id="archiveHighUrl" href="{{archiveLinks.high}}">High Archive Link</a></li> \
+                      <li><a target="_blank" id="archiveMedUrl" href="{{archiveLinks.medium}}">Medium Archive Link</a></li> \
+                      <li><a target="_blank" id="archiveLowUrl" href="{{archiveLinks.small}}">Low Archive Link</a></li> \
                     </ul> \
                   </div> \
                   {{else}} \
@@ -214,6 +214,12 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
       var link = app.PATH + 'media_auth_proxy/' + this.mediaModel.get('id') + '/original/0';
+
+      var archiveLinks = {};
+      archiveLinks.high = app.PATH + "media_auth_proxy/archive/high/" + this.mediaModel.get('id') + "/0";
+      archiveLinks.medium = app.PATH + "media_auth_proxy/archive/medium/" + this.mediaModel.get('id') + "/0";
+      archiveLinks.small = app.PATH + "media_auth_proxy/archive/small/" + this.mediaModel.get('id') + "/0";
+
       console.log(link);
 
       data = {
@@ -224,7 +230,8 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
         comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
         mediaModel: data,
-        link: link
+        link: link,
+        archiveLinks: archiveLinks
       };
       return data;
     },
