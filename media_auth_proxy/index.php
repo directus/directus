@@ -91,10 +91,6 @@ $app->get("/:id/:format(/:filename)", function($id, $format, $filename) use ($ap
         echo "<h1>404 Not found</h1>";
         exit;
     };
-    // May eventually route thumbnails here as well
-    if($format !== 'original') {
-        return $notFound();
-    }
     $DirectusMedia = new TableGateway('directus_media', $ZendDb);
     $media = $DirectusMedia->select(function ($select) use ($id) {
         $select->where->equalTo('id', $id);
