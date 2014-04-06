@@ -120,4 +120,9 @@ $app->get("/:id/:format(/:filename)", function($id, $format, $filename) use ($ap
 })->conditions(array('id' => '\d+'))
   ->name('media_proxy_file');
 
+foreach (glob("client_auth_proxies/*.php") as $filename)
+{
+    require_once $filename;
+}
+
 $app->run();
