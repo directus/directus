@@ -255,6 +255,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
         $set = array('last_login' => new Expression('NOW()'));
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
+        $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
+        $Activity->recordLogin($user['id']);
     }
     JsonView::render($response);
 })->name('auth_login');

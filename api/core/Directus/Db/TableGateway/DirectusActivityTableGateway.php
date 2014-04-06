@@ -10,6 +10,7 @@ use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Insert;
 
 class DirectusActivityTableGateway extends RelationalTableGateway {
 
@@ -18,10 +19,12 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
     const TYPE_MEDIA    = "MEDIA";
     const TYPE_SETTINGS = "SETTINGS";
     const TYPE_UI       = "UI";
+    const TYPE_LOGIN    = "LOGIN";
 
     // Populates directus_activity.action
     const ACTION_ADD    = "ADD";
     const ACTION_UPDATE = "UPDATE";
+    const ACTION_LOGIN = "LOGIN";
 
     public static $_tableName = "directus_activity";
 
@@ -112,4 +115,20 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
         return $result;
     }
 
+    public function recordLogin($userid) {
+      $logData = array(
+          'type'              => self::TYPE_LOGIN,
+          'table_name'        => 'directus_users',
+          'action'            => self::ACTION_LOGIN,
+          'user'              => $userid,
+          'datetime'          => gmdate('Y-m-d H:i:s'),
+          'parent_id'         => null
+      );
+
+      $insert = new Insert($this->getTable());
+      $insert
+        ->values($logData);
+
+      $this->insertWith($insert);
+    }
 }
