@@ -39,3 +39,6 @@ seperator
 
 /listviews/*
 !listviews/.gitkeep
+
+media_auth_proxy/client_auth_proxies/*
+!media_auth_proxy/client_auth_proxies/.gitkeep
