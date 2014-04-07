@@ -24,13 +24,10 @@ define(function(require, exports, module) {
 
     lockScreen: function() {
       this.noScroll = true;
-      //$('body').append('<div class="modal-backdrop" style="background-color:transparent!important;"/>');
-      //$('body').append('<div style="position: absolute; left: 0px; top: 0px; right:0px; bottom:0px; background-color:#000; z-index:999999999; opacity:0.5; border: 1px solid #000;"></div>');
     },
 
     unlockScreen: function() {
       this.noScroll = false;
-      //$('.modal-backdrop').remove();
     },
 
     logOut: function() {

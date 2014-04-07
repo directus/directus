@@ -31,15 +31,14 @@ define([
   });
 
   var showProgressNotification = function(message) {
-    //$('#alert-message').text(message);
-    $('body').css('cursor', 'progress!important');
-    $('#loader').show();
+    $('a[href$="#activity"] span').removeClass('icon-bell').addClass('icon-cycle');
+    app.activityInProgress = true;
     app.lockScreen();
   };
 
   var hideProgressNotification = function() {
-    $('#loader').fadeOut('fast');
-    $('body').css('cursor', 'default');
+    $('a[href$="#activity"] span').addClass('icon-bell').removeClass('icon-cycle');
+    app.activityInProgress = false;
     app.unlockScreen();
   };
 

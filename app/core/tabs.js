@@ -60,10 +60,17 @@ function(app, Backbone) {
       }
     },
 
+    afterRender: function() {
+      //If we are  showing notification, make sure to show it
+      if(app.activityInProgress) {
+        $('a[href$="#activity"] span').removeClass('icon-bell').addClass('icon-cycle');
+      }
+    },
+
     initialize: function() {
       this.collection.on('change', this.render, this);
 
-      app.messages.on('reset sync add', function() {
+      app.messages.on('sync change add', function() {
         var messagesTab = this.collection.get('messages');
         if(messagesTab) {
           messagesTab.set({unread: (app.messages.unread > 0)});
