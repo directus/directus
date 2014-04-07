@@ -256,7 +256,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
     },
 
     leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true, isUpToDate: true}});
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
       return [
         this.saveWidget
       ];
