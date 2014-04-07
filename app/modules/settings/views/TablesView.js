@@ -77,10 +77,54 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
       return options;
     },
 
+    save: function() {
+      var data = view.$el.serializeObject();
+      this.model.clear({silent: true});
+      var that = this;
+      this.model.save(data,{success: function() {
+        app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
+        collection.add(that.model);
+        collection.trigger('change');
+      }});
+    },
+
     initialize: function() {
       this.model.on('change', this.render, this);
     }
+  });
 
+  var EditColumn = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'UI Settings',
+        isOverlay: true
+      }
+    },
+
+    leftToolbar: function() {
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
+      return [
+        this.saveWidget
+      ];
+    },
+
+    events: {
+      'click .saved-success': function() {
+        this.save();
+      },
+      'click #removeOverlay': function() {
+        app.router.removeOverlayPage(this);
+      }
+    },
+    save: function() {
+      console.log("Save");
+    },
+    afterRender: function() {
+      this.setView('#page-content', this.table);
+    },
+    initialize: function(options) {
+      this.table = new Directus.EditView({model: this.model, structure: this.options.schema});
+    }
   });
 
   //
@@ -105,17 +149,8 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
       //@todo: link real col
       var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: this.collection});
       var view = new NewColumn({model: model});
-      var modal = app.router.openModal(view, {title: 'Add new column', stretch: true});
+      app.router.overlayPage(view); //, {title: 'Add new column', stretch: true}
       view.render();
-      modal.save = function() {
-        var data = view.$el.serializeObject();
-        model.clear({silent: true});
-        model.save(data,{success: function() {
-          modal.close();
-          collection.add(model);
-          collection.trigger('change');
-        }});
-      };
     },
 
     // Updates the models when user interacts with the form.
@@ -159,11 +194,11 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
       var column = this.collection.get(id);
       var model = column.options;
       var schema = app.schemaManager.getColumns('ui', model.id);
-      var view = new Directus.EditView({model: model, structure: schema});
-      var modal = app.router.openModal(view, {title: 'UI Settings', stretch: true});
-      modal.save = function() {
-        model.save(view.data(), {success: function() {
-          modal.close();
+      var view = new EditColumn({model: model, schema: schema});
+      app.router.overlayPage(view);
+      view.save = function() {
+        model.save(view.table.data(), {success: function() {
+          app.router.removeOverlayPage(view); //, {title: 'Add new column', stretch: true}
         }});
       };
       model.fetch();
