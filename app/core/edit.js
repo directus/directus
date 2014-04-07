@@ -93,10 +93,16 @@ define(function(require, exports, module) {
       var i = 1;
       if(grouping) {
         grouping.split('^').forEach(function(group) {
-          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_' + i}}));
+          var title = "";
+          if(group.indexOf(':') != -1) {
+            title = group.substring(0, group.indexOf(':'));
+            group = group.substring(group.indexOf(':') + 1);
+          }
+          var compileString = "<span>" + title + "</span><div></div>";
+          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
           group.split(',').forEach(function(subgroup) {
             if(views[subgroup] !== undefined) {
-              that.insertView('#grouping_' + i, views[subgroup]);
+              that.insertView('#grouping_' + i + ' div', views[subgroup]);
             }
           });
           i++;
