@@ -45,6 +45,7 @@ define(function(require, exports, module) {
     template: Handlebars.compile("<ul class='fields'></ul>"),
 
     beforeRender: function() {
+      var views = {};
 
       this.structure.each(function(column) {
 
@@ -80,12 +81,31 @@ define(function(require, exports, module) {
         if (!isHidden) {
           var uiContainer = new UIContainer({model: column, batchEdit: this.options.batchIds !== undefined});
           uiContainer.insertView('.trow', view);
-          this.insertView('.fields', uiContainer);
+          views[column.id] = uiContainer;
         } else {
           this.insertView('.fields',view);
         }
-
       }, this);
+      console.log(views);
+
+      var grouping = this.model.table.get('column_groupings');
+      var that = this;
+      var i = 1;
+      if(grouping) {
+        grouping.split('^').forEach(function(group) {
+          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_' + i}}));
+          group.split(',').forEach(function(subgroup) {
+            if(views[subgroup] !== undefined) {
+              that.insertView('#grouping_' + i, views[subgroup]);
+            }
+          });
+          i++;
+        });
+      } else {
+        for(var key in views) {
+          that.insertView('.fields', views[key]);
+        }
+      }
     },
 
     constructor: function (options) {

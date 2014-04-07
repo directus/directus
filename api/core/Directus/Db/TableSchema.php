@@ -564,6 +564,7 @@ class TableSchema {
                 magic_owner_column,
                 footer,
                 list_view,
+                column_groupings,
                 TABLE_ROWS AS count
             FROM
                 INFORMATION_SCHEMA.TABLES ST
