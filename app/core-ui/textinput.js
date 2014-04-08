@@ -18,12 +18,13 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+    {id: 'placeholder_text', ui: 'textinput', char_length:200},
     {id: 'validation_type', ui: 'select', options: {options: {'bl':'Character Blacklist','wl':'Character Whitelist','rgx':'Regex'} }, def:'rgx'},
     {id: 'validation_string', ui: 'textinput', char_length:200, comment: 'All Characters below will be enforced'},
     {id: 'validation_message', ui: 'textinput', char_length:200}
   ];
 
-  var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
+  var template = '<input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
                 // <span class="label char-count hide">{{characters}}</span>';
 
   Module.Input = Backbone.Layout.extend({
@@ -70,7 +71,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         maxLength: length,
         characters: length - value.toString().length,
         comment: this.options.schema.get('comment'),
-        readonly: (this.options.settings.get('readonly') === "1" || !this.options.canWrite)
+        readonly: ((this.options.settings && this.options.settings.get('readonly') === "1") || !this.options.canWrite),
+        placeholder: (this.options.settings) ? this.options.settings.get('placeholder_text') : ''
       };
     },
     validateString: function(e) {
