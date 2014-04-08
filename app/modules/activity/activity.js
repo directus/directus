@@ -40,7 +40,25 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           "timestamp": model.get('datetime')
         };
 
+        switch(model.get('action')) {
+          case 'LOGIN':
+            data.action_login = true;
+            break;
+          case 'UPDATE':
+            data.action_edit = true;
+            break;
+          case 'ADD':
+            data.action_add = true;
+            break;
+          case 'DELETE':
+            data.action_delete = true;
+            break;
+        }
 
+        if(data.action_login) {
+          data.table = "login";
+          data.user = model.get('user');
+        }
 
         return data;
       });

@@ -4,11 +4,26 @@
 <ul>
 {{#each data}}
 <li class="group-item">
+  {{#if action_add}}
+  <div class="left icon icon-plus color"></div>
+  {{/if}}
+  {{#if action_edit}}
   <div class="left icon icon-pencil color"></div>
+  {{/if}}
+  {{#if action_delete}}
+  <div class="left icon icon-cross color"></div>
+  {{/if}}
+  {{#if action_login}}
+  <div class="left icon icon-key color"></div>
+  {{/if}}
   <div class="left stack">
-    <span class="stack-item">{{table}}</span>
+    <span class="stack-item">{{capitalize table}}</span>
     <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
-    {{title}}
+    {{#if user}}
+      {{userFirstAndLastName user}}
+    {{else}}
+      {{capitalize title}}
+    {{/if}}
   </div>
   <div class="right time">{{time}}</div>
 </li>
