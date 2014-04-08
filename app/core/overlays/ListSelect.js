@@ -23,6 +23,12 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       ];
     },
 
+    rightToolbar: function() {
+      return [
+        new Widgets.PaginatorWidget({collection: this.collection})
+      ];
+    },
+
     events: {
       'click #removeOverlay': function() {
         app.router.removeOverlayPage(this);
