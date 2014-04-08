@@ -39,7 +39,7 @@ if(\Directus\Auth\Provider::loggedIn()) {
     /* .login-panel p.error { padding: 15px 10px 0; margin: 0; color: red; } */
     /* .login-panel p.message { padding: 15px 10px 0; margin: 0; color: green; } */
     /*
-input[type="text"], input[type="password"] {font-size:16px; width:360px; border:0;  margin-bottom:20px; height:30px; line-height:30px;} 
+input[type="text"], input[type="password"] {font-size:16px; width:360px; border:0;  margin-bottom:20px; height:30px; line-height:30px;}
     input[type="submit"], button { display:block; width:375px; }
 */
     /* label {margin-bottom:20px; font-weight:normal;} */
@@ -88,6 +88,8 @@ $(function(){
     }
   }
 
+  <?php if(isset($_GET['inactive'])) {echo 'message("Logged out due to inactivity", true);';}?>
+
   function clear_messages() {
     $login_error.hide();
     $login_message.hide();
@@ -128,7 +130,7 @@ $(function(){
   $('form').bind('submit', function(e){
     e.preventDefault();
     clear_messages();
-    var email = $.trim($(this).find('input[name=email]').val()), 
+    var email = $.trim($(this).find('input[name=email]').val()),
         password = $.trim($(this).find('input[name=password]').val());
 
     if(email.length == 0 || password.length == 0) {

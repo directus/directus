@@ -99,7 +99,9 @@ require(["config"], function() {
 
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
-              timeout: app.logOut,
+              timeout: function() {
+                app.logOut(true);
+              },
               interrupt: waitForForAvtivity,
               delay: 10000,
               repeat: false

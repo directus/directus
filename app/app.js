@@ -30,8 +30,10 @@ define(function(require, exports, module) {
       this.noScroll = false;
     },
 
-    logOut: function() {
-      window.location.href = app.API_URL + "auth/logout";
+    //bInactive true if logged out because inactive
+    logOut: function(bInactive) {
+      //if binactive pass url parameter
+      window.location.href = app.API_URL + "auth/logout" + bInactive ? '?inactive=1' : '';
     },
 
     logErrorToServer: function(type, message, details) {
