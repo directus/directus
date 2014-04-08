@@ -26,7 +26,11 @@
     {{#if user}}
       {{userFirstAndLastName user}}
     {{else}}
-      {{capitalize title}}
+      {{#if title}}
+        {{capitalize title}}
+      {{else}}
+        <span class="null">Empty</span>
+      {{/if}}
     {{/if}}
   </div>
   <div class="right time">{{time}}</div>

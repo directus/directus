@@ -36,7 +36,6 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
       var data = this.collection.map(function(model) {
         var data = {
           "table": model.get('table_name'),
-          "title": "Entry",
           'time': moment(model.get('datetime')).format("h:mma"),
           "timestamp": model.get('datetime')
         };
