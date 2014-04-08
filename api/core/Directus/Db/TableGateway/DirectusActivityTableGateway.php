@@ -58,7 +58,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
         $hasActiveColumn = $this->schemaHasActiveColumn($tableSchemaArray);
         $params = $this->applyDefaultEntriesSelectParams($params);
 
-        $columns = array('id','identifier','action','table_name','row_id','user','datetime','type');
+        $columns = array('id','identifier','action','table_name','row_id','user','datetime','type', 'delta');
         $select->columns($columns);
             // ->order('id DESC');
         $select
