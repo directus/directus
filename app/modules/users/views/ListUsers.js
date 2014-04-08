@@ -48,9 +48,9 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
             '<div class="secondary-info">{{position}}</div>' +
           '</div>' +
           '<ul class="extra">' +
-            '<li>{{address}}<span class="icon icon-home"></span></li>' +
-            '<li>{{phone_number}}<span class="icon icon-phone"></span></li>' +
-            '<li>{{email}}<span class="icon icon-mail"></span></li>' +
+            '{{#if address}}<li>{{address}}<span class="icon icon-home"></span></li>{{/if}}' +
+            '{{#if phone_number}}<li>{{phone_number}}<span class="icon icon-phone"></span></li>{{/if}}' +
+            '{{#if email}}<li>{{email}}<span class="icon icon-mail"></span></li>{{/if}}' +
           '</ul>' +
         '</div>' +
       '</li>' +
