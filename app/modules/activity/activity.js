@@ -61,6 +61,19 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           data.user = model.get('user');
         }
 
+        //If table is media set to clip
+        if(data.table == "directus_media") {
+          data.is_media = true;
+          data.title = JSON.parse(model.get('data'))['name'];
+        }
+
+        //If table is media set to clip
+        if(data.table == "directus_ui") {
+          data.is_media = true;
+          console.log(model);
+          data.title = model.get('identifier').substring(0, model.get('identifier').indexOf(','));
+        }
+
         if(tables.get(model.get('table_name'))) {
           var primary_column = tables.get(model.get('table_name')).get('primary_column');
           if(primary_column) {
