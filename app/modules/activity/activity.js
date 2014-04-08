@@ -70,7 +70,6 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
         //If table is media set to clip
         if(data.table == "directus_ui") {
           data.is_media = true;
-          console.log(model);
           data.title = model.get('identifier').substring(0, model.get('identifier').indexOf(','));
         }
 

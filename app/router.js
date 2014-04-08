@@ -99,6 +99,7 @@ define(function(require, exports, module) {
       this.oldLoadUrlFunction = Backbone.History.prototype.loadUrl;
       Backbone.History.prototype.loadUrl = function() {
         if(that.baseRouteSave == this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?")) {
+          Backbone.History.prototype.loadUrl = that.oldLoadUrlFunction;
           return that.oldLoadUrlFunction.apply(this, arguments);
         } else {
           this.navigate(that.baseRouteSave);
@@ -112,8 +113,6 @@ define(function(require, exports, module) {
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last()._wrapped;
       vieww.$el.show();
-
-      console.log(this.v.main.getViews('#content')._wrapped.length);
 
       if(this.v.main.getViews('#content')._wrapped.length <= 1) {
         Backbone.History.prototype.loadUrl = this.oldLoadUrlFunction;
