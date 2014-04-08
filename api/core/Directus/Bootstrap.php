@@ -309,7 +309,7 @@ class Bootstrap {
         $uis = array();
         $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uiDirectory), \RecursiveIteratorIterator::SELF_FIRST);
         foreach($objects as $name => $object){
-            if("ui.js" == basename($name)) {
+            if("js" == pathinfo($name, PATHINFO_EXTENSION)) {
                 $uiPath = substr($name, strlen(APPLICATION_PATH) + 1);
                 $uiName = basename(dirname($name));
                 $uis[$uiName] = substr($uiPath, 0, -3);
