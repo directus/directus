@@ -192,49 +192,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       this.listenTo(relatedCollection, 'change add remove', this.nestedTableView.render, this);
 
       this.relatedCollection = relatedCollection;
-
-
-      //console.log(options);
-/*
-      //var schema = options.schema | console.log(options.model);
-      this.related = {};
-      this.related.table = app.schemaManager.getTable(options.schema.relationship.get('table_related'));
-      this.related.schema = app.schemaManager.getColumns('tables', options.schema.relationship.get('table_related'));
-      this.related.entries = options.value;
-
-      this.related.tableOptions = {
-        collection: this.related.entries,
-        toolbar: false,
-        selectable: false,
-        sortable: false,
-        footer: false,
-        saveAfterDrop: false,
-        deleteColumn: true,
-        hideEmptyMessage: true
-      };
-
-      // Since this initialize function can be used for both many-many
-      // and one-many relationships we need some extra stuff for one-many deletes
-      if (this.options.settings.id === "one_to_many") {
-        var columnName = this.options.schema.relationship.get('junction_key_right');
-        this.related.tableOptions.deleteColumn = (this.related.schema.get(columnName).get('is_nullable') === "YES");
-
-        this.related.tableOptions.filters = {
-          booleanOperator: '&&',
-          expressions: [
-            {column: columnName, operator: '===', value: this.model.id}
-          ]
-        };
-      }
-
-      this.table = TableView.extend({});
-
-      this.view = new this.table(this.related.tableOptions);
-
-      this.related.entries.on('change add remove', function() {
-        this.view.render();
-      }, this);
-    */
     }
 
   });
