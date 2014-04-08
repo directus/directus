@@ -16,7 +16,7 @@ function(app, Backbone, EntriesModel) {
       var storageAdapters = app.storageAdapters,
           adapterId,
           storageAdapter;
-      console.log(this);
+
       if(thumbnail) {
         adapterId = 'THUMBNAIL';
         if(!storageAdapters.hasOwnProperty(adapterId)) {

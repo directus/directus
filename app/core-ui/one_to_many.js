@@ -90,11 +90,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       };
 
       // Fetch first time to get the nested tables
-      if (!model.hasChanged() && !model.isNew()) {
-        model.fetch();
-      } else {
-        view.render();
-      }
+      model.fetch();
     },
 
     addModel: function(model) {
