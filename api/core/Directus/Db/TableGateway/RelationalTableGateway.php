@@ -216,6 +216,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 // Produce log if something changed.
                 if($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
                     $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
+                    //If we are updating and active is being set to 0 then we are deleting
+                    if(!$recordIsNew && array_key_exists('active', $deltaRecordData)) {
+                      if($deltaRecordData['active'] == "0") {
+                        $logEntryAction = DirectusActivityTableGateway::ACTION_DELETE;
+                      }
+                    }
                     // Save parent log entry
                     $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, "directus_activity", $this->adapter);
                     $logData = array(

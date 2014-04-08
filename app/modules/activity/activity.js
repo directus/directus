@@ -55,15 +55,6 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
             break;
         }
 
-        //Check to see if we deleted based off delta and is an update
-        if(model.get('delta')) {
-          var delta = JSON.parse(model.get('delta'));
-          if(delta.active && delta.active == "0" && model.get('action') == "UPDATE") {
-            data.action_delete = true;
-            data.action_edit = false;
-          }
-        }
-
         if(data.action_login) {
           data.table = "login";
           data.user = model.get('user');
