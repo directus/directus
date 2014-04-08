@@ -51,6 +51,10 @@ function(app, Backbone, PreferenceModel) {
       },
       'click #saveSnapshotBtn': function(e) {
         var name = prompt("Please enter a name for your Snapshot");
+        if(name == null) {
+          return;
+        }
+
         var that = this;
         var exists = false;
         //Check for Duplicate
