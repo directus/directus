@@ -31,11 +31,12 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
     },
 
     serialize: function() {
-      var data = this.collection.map(function(model) {
+      var tables = app.schemaManager.getTables();
 
+      var data = this.collection.map(function(model) {
         var data = {
           "table": model.get('table_name'),
-          "title": "Test TItle",
+          "title": "Entry",
           'time': moment(model.get('datetime')).format("h:mma"),
           "timestamp": model.get('datetime')
         };
@@ -58,6 +59,16 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
         if(data.action_login) {
           data.table = "login";
           data.user = model.get('user');
+        }
+
+        if(tables.get(model.get('table_name'))) {
+          var primary_column = tables.get(model.get('table_name')).get('primary_column');
+          if(primary_column) {
+            var modelData = JSON.parse(model.get('data'));
+            if(modelData[primary_column]) {
+              data.title = modelData[primary_column];
+            }
+          }
         }
 
         return data;

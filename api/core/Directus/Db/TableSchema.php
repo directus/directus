@@ -565,6 +565,7 @@ class TableSchema {
                 footer,
                 list_view,
                 column_groupings,
+                primary_column,
                 TABLE_ROWS AS count
             FROM
                 INFORMATION_SCHEMA.TABLES ST

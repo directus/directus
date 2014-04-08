@@ -132,6 +132,7 @@ class MySQL {
             is_junction_table,
             magic_owner_column,
             footer,
+            primary_column,
             TABLE_ROWS AS count
             FROM INFORMATION_SCHEMA.TABLES T
             LEFT JOIN directus_tables DT ON (DT.table_name = T.TABLE_NAME)

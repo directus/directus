@@ -193,14 +193,14 @@ class DB extends MySQL {
     }
 
     function set_table_settings($data) {
-
         $table_settings = array(
             'table_name' => $data['table_name'],
             'hidden' => (int)$data['hidden'],
             'single' => (int)$data['single'],
             'inactive_by_default' => (int)$data['inactive_by_default'],
             'is_junction_table' => (int)$data['is_junction_table'],
-            'footer' => (int)$data['footer']
+            'footer' => (int)$data['footer'],
+            'primary_column' => $data['primary_column']
         );
 
         $this->set_entry('directus_tables', $table_settings);

@@ -106,7 +106,6 @@ define(function(require, exports, module) {
 
     register: function(namespace, tables) {
       _.each(tables, function(options) {
-
         var tableName = options.schema.id;
 
         if (tableSchemas[namespace].get(tableName)) {
@@ -172,7 +171,7 @@ define(function(require, exports, module) {
       return tableSchemas.tables.get(tableName);
     },
 
-    getTables: function(tableName) {
+    getTables: function() {
       return tableSchemas.tables;
     },
 
