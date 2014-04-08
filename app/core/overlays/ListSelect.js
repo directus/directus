@@ -41,23 +41,31 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       this.collection.fetch({reset: true});
     },
 
-    initialize: function() {
-      this.table = ListViewManager.getInstance({collection: this.collection, selectable: true});
+    itemClicked: function(e) {
+      var $target = $(e.target);
+      var $checkbox = $target.closest('tr').find('td.check > input');
+      $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
+    },
+
+    initialize: function(options) {
+
+      //Default to true
+      if(options.selectable === undefined) {
+        options.selectable = true;
+      }
+
+      this.table = ListViewManager.getInstance({collection: this.collection, selectable: options.selectable});
 
       var that = this;
 
       this.table.events = {
         'click tbody td': function(e) {
-          var $target = $(e.target);
-          if ($target.is("input")) return;
-          var $checkbox = $target.closest('tr').find('td.check > input');
-          $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
+          that.itemClicked(e);
         }
       };
 
       this.headerOptions.route.title = this.collection.table.id;
     }
-
   });
 
 });

@@ -15,7 +15,7 @@
 // options.name       String            Field name
 
 
-define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, TableView) {
+define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], function(app, Backbone, TableView, Overlays) {
 
   "use strict";
 
@@ -125,14 +125,21 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
       var collection = app.media;
       var model;
       var mediaModel = this.mediaModel;
-      var view = new TableView({collection: collection, selectable: false, footer: false, navigate: true});
-      view.navigate = function(id) {
+
+      var view = new Overlays.ListSelect({collection: collection, selectable: false});
+      app.router.overlayPage(view);
+
+      //please proxy this instead
+      var me = this;
+
+      view.itemClicked = function(e) {
+        var id = $(e.target).closest('tr').attr('data-id');
         model = collection.get(id);
         mediaModel.clear({silent: true});
         mediaModel.set(model.toJSON());
-        modal.close();
+        app.router.removeOverlayPage(this);
       };
-      var modal = app.router.openModal(view, {stretch: true, title: 'Insert Media'});
+
       collection.fetch();
     },
 
