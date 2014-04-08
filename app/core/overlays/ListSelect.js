@@ -29,6 +29,19 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       ];
     },
 
+    leftSecondaryToolbar: function() {
+      return [
+        new Widgets.FilterWidget({collection: this.collection})
+      ];
+    },
+
+    rightSecondaryToolbar: function() {
+      return [
+        new Widgets.PaginationCountWidget({collection: this.collection})
+      ];
+    },
+
+
     events: {
       'click #removeOverlay': function() {
         app.router.removeOverlayPage(this);
