@@ -712,7 +712,6 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
         case "POST":
             $requestPayload['user'] = $currentUser['id'];
             $id = $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
-            $params['id'] = $id;
             break;
         case "DELETE":
             if($requestPayload['user'] != $currentUser['id']) {
@@ -722,6 +721,11 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             return;
     }
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
+
+    //If Title is set then return this version
+    if(isset($requestPayload['title'])) {
+      $params['newTitle'] = $requestPayload['title'];
+    }
 
     if(isset($params['newTitle'])) {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
