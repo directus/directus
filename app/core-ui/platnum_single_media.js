@@ -213,12 +213,17 @@ define(['app', 'backbone', 'core/table/table.view'], function(app, Backbone, Tab
 
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
-      var link = app.PATH + 'media_auth_proxy/' + this.mediaModel.get('id') + '/original/0';
+      //var link = app.PATH + 'media_auth_proxy/' + this.mediaModel.get('id') + '/original/0';
+      var link = 'http://directus.platnum.co/media_auth_proxy/' + this.mediaModel.get('id') + '/original/0';
 
       var archiveLinks = {};
-      archiveLinks.high = app.PATH + "media_auth_proxy/archive/high/" + this.mediaModel.get('id') + "/0";
+      /*archiveLinks.high = app.PATH + "media_auth_proxy/archive/high/" + this.mediaModel.get('id') + "/0";
       archiveLinks.medium = app.PATH + "media_auth_proxy/archive/medium/" + this.mediaModel.get('id') + "/0";
-      archiveLinks.small = app.PATH + "media_auth_proxy/archive/small/" + this.mediaModel.get('id') + "/0";
+      archiveLinks.small = app.PATH + "media_auth_proxy/archive/small/" + this.mediaModel.get('id') + "/0";*/
+
+      archiveLinks.high = "http://directus.platnum.co/media_auth_proxy/archive/high/" + this.mediaModel.get('id') + "/0";
+      archiveLinks.medium = "http://directus.platnum.co/media_auth_proxy/archive/medium/" + this.mediaModel.get('id') + "/0";
+      archiveLinks.small = "http://directus.platnum.co/media_auth_proxy/archive/small/" + this.mediaModel.get('id') + "/0";
 
       console.log(link);
 
