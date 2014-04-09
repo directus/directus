@@ -133,7 +133,7 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
         var model = new app.media.model({id: id}, {collection: app.media});
         var modal = new Media.Views.Edit({model: model, stretch: true});
         app.router.v.messages.insertView(modal).render();
-        app.router.navigate('#media/'+model.id);
+        app.router.navigate('#files/'+model.id);
         modal.on('close', function() {
           app.router.navigate('#activity');
         });

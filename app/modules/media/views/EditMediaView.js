@@ -116,8 +116,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
 
     headerOptions: {
       route: {
-        title: 'Edit Media',
-        breadcrumbs: [{ title: 'Media', anchor: '#media'}],
+        title: 'Edit File',
+        breadcrumbs: [{ title: 'Files', anchor: '#files'}],
         isOverlay: false
       },
       basicSave: false,
@@ -126,7 +126,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
 
     initialize: function(options) {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
-      this.headerOptions.route.title = this.model.get('id') ? 'Editing Media Item' : 'Creating New Media Item';
+      this.headerOptions.route.title = this.model.get('id') ? 'Editing File' : 'Uploading New File';
       this.collection = app.media;
     }
   });

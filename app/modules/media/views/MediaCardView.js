@@ -26,7 +26,7 @@ function(app, Backbone, Widgets) {
           return;
         }
 
-        app.router.go('#media', id);
+        app.router.go('#files', id);
       }
     },
 

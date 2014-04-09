@@ -188,7 +188,7 @@ require(["config"], function() {
       var tabs = [
         {id: "settings", icon_class: "icon-cog"},
         {id: "blank",    hidden: true},
-        {id: "media",    icon_class: "icon-attach"},
+        {id: "files",    icon_class: "icon-attach"},
         {id: "users",    icon_class: "icon-users"},
         {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
         {id: "activity", icon_class: "icon-bell"},

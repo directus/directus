@@ -32,7 +32,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
     },
     events: {
       'click #addBtn': function() {
-        app.router.go('#media','new');
+        app.router.go('#files','new');
       },
       'click #gridBtn': function() {
         if(this.viewList) {
@@ -73,9 +73,9 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
       var modal = new EditMediaView({model: model, stretch: true, title: title});
       app.router.v.messages.insertView(modal).render();
       if (!model.isNew()) {
-        app.router.navigate('#media/'+model.id);
+        app.router.navigate('#files/'+model.id);
         modal.on('close', function() {
-          app.router.navigate('#media');
+          app.router.navigate('#files');
         });
       }
     },
