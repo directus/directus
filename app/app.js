@@ -33,7 +33,7 @@ define(function(require, exports, module) {
     //bInactive true if logged out because inactive
     logOut: function(bInactive) {
       //if binactive pass url parameter
-      window.location.href = app.API_URL + "auth/logout" + bInactive ? '?inactive=1' : '';
+      window.location.href = app.API_URL + "auth/logout" + bInactive ? '/inactive' : '';
     },
 
     logErrorToServer: function(type, message, details) {

@@ -261,11 +261,15 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     JsonView::render($response);
 })->name('auth_login');
 
-$app->get("/$v/auth/logout/?", function() use ($app) {
+$app->get("/$v/auth/logout(/:inactive)", function($inactive) use ($app) {
     if(Auth::loggedIn()) {
         Auth::logout();
     }
-    $app->redirect(DIRECTUS_PATH . "login.php");
+    if($inactive) {
+      $app->redirect(DIRECTUS_PATH . "login.php?inactive=1");
+    } else {
+      $app->redirect(DIRECTUS_PATH . "login.php");
+    }
 })->name('auth_logout');
 
 $app->get("/$v/auth/nonces/?", function() use ($app, $requestNonceProvider) {
