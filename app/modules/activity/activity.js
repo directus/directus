@@ -76,9 +76,10 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           var primary_column = tables.get(model.get('table_name')).get('primary_column');
           if(primary_column) {
             var modelData = JSON.parse(model.get('data'));
-            if(modelData[primary_column]) {
-              data.title = modelData[primary_column];
-            }
+
+            var template = Handlebars.compile(primary_column);
+            data.title = template(modelData);
+
           }
         }
 
