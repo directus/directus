@@ -200,7 +200,7 @@ select,
       background-color: @lightGrey;
       color: @darkGrey;
       font-weight: 500;
-      padding: 25px @standardPad 25px @standardPad;
+      padding: 30px @standardPad @standardPad @standardPad;
       text-align: right;
       vertical-align: top;
       width: 200px;
@@ -209,6 +209,12 @@ select,
         text-transform: capitalize;
         top: -5px;
         font-weight: 600;
+        .note {
+          display: block;
+          color: @mediumGrey;
+          font-style: italic;
+          font-size: 11px;
+        }
       }
       .batch-edit-on {
         font-weight: 700;

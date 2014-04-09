@@ -1159,7 +1159,6 @@ button {
   color: #5b5b5b;
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 5px;
 }
 .secondary-info {
   color: #cccccc;
@@ -1676,7 +1675,7 @@ select:focus,
   background-color: #ededed;
   color: #5b5b5b;
   font-weight: 500;
-  padding: 25px 20px 25px 20px;
+  padding: 30px 20px 20px 20px;
   text-align: right;
   vertical-align: top;
   width: 200px;
@@ -1692,6 +1691,12 @@ select:focus,
   text-transform: capitalize;
   top: -5px;
   font-weight: 600;
+}
+.two-column-form .fields .label label .note {
+  display: block;
+  color: #cccccc;
+  font-style: italic;
+  font-size: 11px;
 }
 .two-column-form .fields .label .batch-edit-on {
   font-weight: 700;
@@ -1881,6 +1886,31 @@ select:focus,
 }
 .table-striped tr .check-box label {
   margin-right: 0px;
+}
+.set-columns {
+  overflow: hidden;
+  display: block;
+  position: absolute;
+  right: -2px;
+  top: 38px;
+  width: 200px;
+  background-color: #ffffff;
+  color: #5b5b5b;
+  border: 1px solid #cccccc;
+}
+.set-columns fieldset {
+  max-height: 300px;
+  overflow: scroll;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 1px solid #ededed;
+  margin-bottom: 50px;
+}
+.set-columns .btn-row {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
 }
 .set-columns label {
   display: block;
@@ -2543,10 +2573,10 @@ select:focus,
   padding: 8px;
 }
 .header1 .primary-row .tools .select-and-circle label.icon {
-  line-height: 70%;
+  line-height: 80%;
 }
 .header1 .primary-row .tools .simple-select {
-  margin-bottom: -11px;
+  margin-bottom: -13px;
   margin-left: 10px;
 }
 .header1 .primary-row .tools input {

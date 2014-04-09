@@ -107,6 +107,29 @@
 }
 
 .set-columns {
+  overflow: hidden;
+  display: block;
+  position: absolute;
+  right: -2px;
+  top: 38px;
+  width: 200px;
+  background-color: @white;
+  color: @darkGrey;
+  border: 1px solid @mediumGrey;
+  fieldset {
+    max-height: 300px;
+    overflow: scroll;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid @lightGrey;
+    margin-bottom: 50px;
+  }
+  .btn-row {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
   label {
     display: block;
     input {

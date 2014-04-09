@@ -1,11 +1,11 @@
-<form class="directus-form set-columns" style="overflow: hidden; display:block; position:absolute;right:50px;top:40px;width:200px;background-color:orange">
+<form class="directus-form set-columns">
 <fieldset>
 {{#columns}}
 	<label class="checkbox"><input name="columns_visible" type="checkbox" value="{{name}}" {{#if isForeign}}data-foreign="true"{{/if}} {{#if visible}}checked{{/if}} {{#if disabled}}disabled{{/if}}>{{capitalize name}}</label>
 {{/columns}}
+</fieldset>
 <div class="btn-row">
 	<button class="btn btn-small btn-primary" id="saveVisibleColumnsBtn" type="button">Save</button>
 	<button class="btn btn-small" id="cancelVisibleColumnsBtn" type="button">Cancel</button>
 </div>
-</fieldset>
 </form>

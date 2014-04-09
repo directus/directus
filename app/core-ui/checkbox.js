@@ -12,7 +12,7 @@ define(['app','backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<input style="margin-top:1px;" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}}/> \
+  var template = '<input style="margin-top:7px;" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}}/> \
                   <input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
 
   Module.id = 'checkbox';
