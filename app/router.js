@@ -249,8 +249,8 @@ define(function(require, exports, module) {
       if (_.contains(this.tabBlacklist,'media'))
         return this.notFound();
 
-      this.setTitle('Media');
-      this.tabs.setActive('media');
+      this.setTitle('Files');
+      this.tabs.setActive('files');
       this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
       this.v.main.render();
     },
@@ -259,8 +259,8 @@ define(function(require, exports, module) {
       var mediaView = new Media.Views.List({collection: app.media});
       var model;
 
-      this.setTitle('Media');
-      this.tabs.setActive('media');
+      this.setTitle('File');
+      this.tabs.setActive('files');
 
       if (id === "new") {
         model = new app.media.model({}, {collection: app.media});
