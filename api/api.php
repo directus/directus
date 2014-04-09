@@ -261,7 +261,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     JsonView::render($response);
 })->name('auth_login');
 
-$app->get("/$v/auth/logout(/:inactive)", function($inactive) use ($app) {
+$app->get("/$v/auth/logout(/:inactive)", function($inactive = null) use ($app) {
     if(Auth::loggedIn()) {
         Auth::logout();
     }
