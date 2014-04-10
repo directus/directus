@@ -486,14 +486,18 @@ define(function(require, exports, module) {
               'param' : router
             });
 
-            user.save({'last_page': last_page, 'last_access': moment().format('YYYY-MM-DD HH:mm')}, {
-              patch: true,
-              global: false,
-              silent: true,
-              wait: true,
-              validate: false,
-              url: user.url() + "?skip_activity_log=1"
-            });
+            //If we went to logout route dont save.
+            if(currentPath != "logout") {
+              user.save({'last_page': last_page, 'last_access': moment().format('YYYY-MM-DD HH:mm')}, {
+                patch: true,
+                global: false,
+                silent: true,
+                wait: true,
+                validate: false,
+                url: user.url() + "?skip_activity_log=1"
+              });
+            }
+
 
           } else {
             // If theere's no path in the location (i.e. the user just logged in),
