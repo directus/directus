@@ -81,12 +81,7 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
 
     afterRender: function() {
       var now = new Date().getTime();
-      console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
-      //app.trigger('load');
-    },
-
-    cleanup: function() {
-      //app.trigger('load');
+      //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
     },
 
     initializeDrop: function() {

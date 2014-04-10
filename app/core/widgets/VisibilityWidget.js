@@ -142,10 +142,12 @@ function(app, Backbone, PreferenceModel) {
       }
     },
     initialize: function() {
-      this.collection.preferences.on('sync', function() {
+      this.listenTo(this.collection.preferences, 'sync', function() {
         this.collection.fetch();
-        this.render();
-      }, this);
+        if(this.preferencesLoaded) {
+          this.render();
+        }
+      });
 
       var activeTable = this.collection.table.id;
 
@@ -161,12 +163,12 @@ function(app, Backbone, PreferenceModel) {
           that.options.widgetOptions.snapshots.push(preference.title);
         });
         that.render();
+        that.preferencesLoaded = true;
       });
 
       if(app.router.loadedPreference) {
         this.defaultId = this.collection.preferences.get('id');
         this.collection.preferences.fetch({newTitle: app.router.loadedPreference});
-        app.router.loadedPreference = undefined;
       }
     }
   });

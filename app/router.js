@@ -176,9 +176,19 @@ define(function(require, exports, module) {
         return;
       }
 
+      //Clear loaded preference if navigating to new entries
+      if(this.lastRoute != "tables/" + tableName && this.loadedPreference) {
+        this.loadedPreference = undefined;
+      }
+
       if(pref) {
-        this.loadedPreference = pref;
         this.navigate("/tables/" + tableName);
+
+        if(this.lastRoute == "tables/" + tableName && this.loadedPreference == pref) {
+          return;
+        }
+
+        this.loadedPreference = pref;
       }
 
       // Cache collection for next route
@@ -468,6 +478,7 @@ define(function(require, exports, module) {
 
 
       this.bind("all", function(route, router){
+        this.lastRoute = window.location.pathname.substring(app.root.length);
         var last_page;
         var routeTokens = route.split(':');
         if(routeTokens.length > 1) {
