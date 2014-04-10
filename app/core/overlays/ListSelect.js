@@ -63,7 +63,12 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     itemClicked: function(e) {
       var $target = $(e.target);
       var $checkbox = $target.closest('tr').find('td.check > input');
-      $checkbox.attr('checked', $checkbox.attr('checked') === undefined);
+
+      if($checkbox.prop('checked')) {
+        $checkbox.prop('checked', false);
+      } else {
+        $checkbox.prop('checked', true);
+      }
     },
 
     initialize: function(options) {
