@@ -175,6 +175,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         footer: false,
         saveAfterDrop: false,
         deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES") && this.canEdit && this.showRemoveButton,
+        hideColumnPreferences: true,
         hideEmptyMessage: true,
         filters: {
           booleanOperator: '&&',

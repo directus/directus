@@ -128,6 +128,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         saveAfterDrop: false,
         deleteColumn: this.showRemoveButton,
         hideEmptyMessage: true,
+        hideColumnPreferences: true,
         hasSort: junctionStructure.get('sort') !== undefined
       });
       this.relatedCollection = relatedCollection;
