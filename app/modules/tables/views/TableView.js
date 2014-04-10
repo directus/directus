@@ -100,6 +100,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       this.headerOptions.route.title = this.collection.table.id;
 
       this.collection.on('select', function() {
+
         this.actionButtons = Boolean($('.select-row:checked').length);
         this.batchEdit = $('.select-row:checked').length > 1;
         if(this.actionButtons || this.batchEdit) {
@@ -114,7 +115,6 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
             this.reRender();
           }
         }
-        //this.render();
       }, this);
 
       this.collection.on('sort', function() {

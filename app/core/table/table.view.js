@@ -1,14 +1,13 @@
 define([
   "app",
   "backbone",
-  "core/table/table.toolbarview",
   "core/table/table.headview",
   "core/table/table.bodyview",
   "core/table/table.footerview",
   "jquery-ui"
 ],
 
-function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
+function(app, Backbone, TableHead, TableBody, TableFooter) {
 
   "use strict";
 
@@ -62,11 +61,6 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
     beforeRender: function() {
       var options;
       this.startRenderTime = new Date().getTime();
-
-      if (this.options.toolbar) {
-        options = _.pick(this.options, 'collection', 'structure', 'table', 'preferences', 'deleteOnly');
-        this.setView('.directus-toolbar', new Toolbar(options));
-      }
 
       if (this.tableHead) {
         options = this.options;
@@ -172,11 +166,6 @@ function(app, Backbone, Toolbar, TableHead, TableBody, TableFooter) {
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;
       this.options.table = this.options.table || this.collection.table;
-
-      // Default values
-      if (this.options.toolbar === undefined) {
-        this.options.toolbar = true;
-      }
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;
