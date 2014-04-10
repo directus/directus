@@ -2421,6 +2421,9 @@ select:focus,
 .header1 h1 .icon:hover {
   color: #cccccc;
 }
+.header1 h1 .icon#removeOverlay {
+  margin: 0;
+}
 .header1 h1 .icon.breadcrumb-delimiter {
   cursor: auto;
 }
