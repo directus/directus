@@ -75,9 +75,6 @@ define(function(require, exports, module) {
           view.$el.css({'display':'none'});
         }
 
-        // @todo: move this to UI
-        view.$el.attr('id', 'edit_field_'+column.id);
-
         if (column.isRequired()) {
           view.$el.addClass('required');
         }
@@ -179,11 +176,13 @@ define(function(require, exports, module) {
       // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {
         //Get rid of all errors
-        this.$el.find('.error').remove();
+        this.$el.find('.error_text').remove();
+        this.$el.find('.error').removeClass('error');
         _.each(errors, function(item) {
           var $fieldset = $('#edit_field_' + item.attr);
-          if ($fieldset.find('.error').length < 1) {
-            $fieldset.append('<span class="error">'+item.message+'</span>');
+          $fieldset.addClass('error');
+          if ($fieldset.find('.error_text').length < 1) {
+            $fieldset.append('<span class="error_text">'+item.message+'</span>');
           }
         });
       }, this);

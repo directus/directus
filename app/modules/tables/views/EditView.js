@@ -50,7 +50,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     },
 
     save: function(e) {
-      console.log("Save");
       var action = 'save-form-leave';
       if(e.target.options !== undefined) {
         action = $(e.target.options[e.target.selectedIndex]).val();
