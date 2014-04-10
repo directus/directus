@@ -87,9 +87,9 @@ define(function(require, exports, module) {
         }
       }, this);
 
+      var that = this;
       if(this.model.table) {
         var grouping = this.model.table.get('column_groupings');
-        var that = this;
         var i = 1;
         if(grouping) {
           grouping.split('^').forEach(function(group) {
@@ -111,7 +111,6 @@ define(function(require, exports, module) {
         }
       }
 
-      var that = this;
       for(var key in views) {
         that.insertView('.fields', views[key]);
       }
