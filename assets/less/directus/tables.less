@@ -1,6 +1,14 @@
 .table-striped {
   text-align: left;
   width: 100%;
+  .visible-columns-cell:hover,
+  .sortable-column:hover {
+    color: @darkGrey;
+    cursor: pointer;
+  }
+  .sortable-column {
+    min-width: 100px;
+  }
   thead {
     tr {
       background-color: @extraLightGrey;
@@ -39,9 +47,6 @@
           height: 0px;
           line-height: 12px;
           vertical-align: top;
-        }
-        &:hover {
-          color: @darkGrey;
         }
       }
     }
@@ -105,7 +110,22 @@
     }
   }
 }
-
+.related-table {
+  margin-top: 20px;
+  thead {
+    &:hover #set-visible-columns {
+      background-color: @mediumGrey;
+      color: @white;
+    }
+    tr th {
+      background-color: @mediumGrey;
+      color: @white;
+      &:hover {
+        background-color: @mediumGrey;
+      }
+    }
+  }
+}
 .set-columns {
   overflow: hidden;
   display: block;
@@ -116,6 +136,7 @@
   background-color: @white;
   color: @darkGrey;
   border: 1px solid @mediumGrey;
+  z-index: 1;
   fieldset {
     max-height: 300px;
     overflow: scroll;

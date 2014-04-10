@@ -1115,6 +1115,9 @@ button {
 .right {
   float: right;
 }
+.margin-left-small {
+  margin-left: 10px;
+}
 .large-circle {
   -webkit-border-top-right-radius: 50px;
   -webkit-border-bottom-right-radius: 50px;
@@ -1168,6 +1171,12 @@ button {
 .delete-color {
   color: #c1272d;
 }
+.add-color {
+  color: #7ac943;
+}
+.bold {
+  font-weight: 600;
+}
 .main-container {
   margin-left: 170px;
   padding: 0px 80px;
@@ -1201,6 +1210,12 @@ button {
 }
 .media-thumb .img.landscape {
   width: 50px;
+}
+.hide {
+  display: none;
+}
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
 }
 ::-webkit-input-placeholder {
   color: #cccccc;
@@ -1505,6 +1520,9 @@ select {
 .simple-select select:focus {
   border: none;
 }
+#edit_field_active div.custom-check {
+  margin-top: 4px;
+}
 .custom-check input[type="checkbox"],
 .custom-check input[type="radio"],
 input[type="checkbox"].custom-check,
@@ -1627,6 +1645,12 @@ select:focus,
 .filter-form .simple-select select {
   padding-right: 20px;
   outline: none;
+}
+.two-column-form .medium {
+  width: 300px;
+}
+.two-column-form .small {
+  width: 150px;
 }
 .two-column-form h2 {
   margin-bottom: 10px;
@@ -1777,6 +1801,14 @@ select:focus,
   text-align: left;
   width: 100%;
 }
+.table-striped .visible-columns-cell:hover,
+.table-striped .sortable-column:hover {
+  color: #5b5b5b;
+  cursor: pointer;
+}
+.table-striped .sortable-column {
+  min-width: 100px;
+}
 .table-striped thead tr {
   background-color: #f4f4f4;
 }
@@ -1824,9 +1856,6 @@ select:focus,
   height: 0px;
   line-height: 12px;
   vertical-align: top;
-}
-.table-striped thead tr th:hover {
-  color: #5b5b5b;
 }
 .table-striped thead #set-visible-columns {
   position: absolute;
@@ -1887,6 +1916,20 @@ select:focus,
 .table-striped tr .check-box label {
   margin-right: 0px;
 }
+.related-table {
+  margin-top: 20px;
+}
+.related-table thead:hover #set-visible-columns {
+  background-color: #cccccc;
+  color: #ffffff;
+}
+.related-table thead tr th {
+  background-color: #cccccc;
+  color: #ffffff;
+}
+.related-table thead tr th:hover {
+  background-color: #cccccc;
+}
 .set-columns {
   overflow: hidden;
   display: block;
@@ -1897,6 +1940,7 @@ select:focus,
   background-color: #ffffff;
   color: #5b5b5b;
   border: 1px solid #cccccc;
+  z-index: 1;
 }
 .set-columns fieldset {
   max-height: 300px;
@@ -1957,6 +2001,9 @@ select:focus,
   position: absolute;
   right: 10px;
 }
+.cards .card .header-image .tool-item .icon-pencil {
+  margin-top: -6px;
+}
 .cards .card.active .header-image {
   border-bottom-style: solid;
   border-bottom-width: 3px;
@@ -2007,6 +2054,7 @@ select:focus,
   background-color: #ededed;
   list-style: none;
   padding: 20px;
+  height: 160px;
 }
 .feature-cards .feature-card .left-col,
 .feature-cards .feature-card .right-col {

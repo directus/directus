@@ -68,6 +68,9 @@ select {
     }
   }
 }
+#edit_field_active div.custom-check {
+  margin-top: 4px;
+}
 .custom-check input[type="checkbox"], .custom-check input[type="radio"],
 input[type="checkbox"].custom-check, input[type="radio"].custom-check {
   display:none;
@@ -137,9 +140,6 @@ select,
     margin: 0px 4px 0px 0px;
     padding: 8px @smallPad;
   }
-  select {
-    
-  }
   input[type="text"] {
     float: left;
     width: auto;
@@ -161,6 +161,12 @@ select,
 }
 .two-column-form {
   @maxFieldWidth: 700px;
+  .medium {
+    width: 300px;
+  }
+  .small {
+    width: 150px;
+  }
   h2 {
     margin-bottom: @smallPad;
   }
