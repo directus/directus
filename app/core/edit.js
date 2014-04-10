@@ -59,7 +59,11 @@ define(function(require, exports, module) {
             this.model.set('active', 1);
           }
 
-
+          //Set this to be first field in edit table by modifiying groupings.
+          if(this.model.table && this.model.table.get('column_groupings')) {
+            var columnGrouping = this.model.table.get('column_groupings');
+            this.model.table.set({'column_groupings': 'active^' + columnGrouping});
+          }
         }
 
         var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
@@ -88,31 +92,34 @@ define(function(require, exports, module) {
       }, this);
 
       var that = this;
-      if(this.model.table) {
+      if(this.model.table && this.model.table.get('column_groupings')) {
         var grouping = this.model.table.get('column_groupings');
         var i = 1;
-        if(grouping) {
-          grouping.split('^').forEach(function(group) {
-            var title = "";
-            if(group.indexOf(':') != -1) {
-              title = group.substring(0, group.indexOf(':'));
-              group = group.substring(group.indexOf(':') + 1);
+        grouping.split('^').forEach(function(group) {
+          var title = "";
+          if(group.indexOf(':') != -1) {
+            title = group.substring(0, group.indexOf(':'));
+            group = group.substring(group.indexOf(':') + 1);
+          }
+          var compileString = "<span>" + title + "</span><div></div>";
+          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
+          group.split(',').forEach(function(subgroup) {
+            if(views[subgroup] !== undefined) {
+              that.insertView('#grouping_' + i + ' div', views[subgroup]);
             }
-            var compileString = "<span>" + title + "</span><div></div>";
-            that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
-            group.split(',').forEach(function(subgroup) {
-              if(views[subgroup] !== undefined) {
-                that.insertView('#grouping_' + i + ' div', views[subgroup]);
-              }
-            });
-            i++;
           });
-          return;
+          i++;
+        });
+      } else {
+        if(views['active']) {
+          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_0'}}));
+          this.insertView('#grouping_0', views['active']);
+          delete views['active'];
         }
-      }
 
-      for(var key in views) {
-        that.insertView('.fields', views[key]);
+        for(var key in views) {
+          that.insertView('.fields', views[key]);
+        }
       }
     },
 

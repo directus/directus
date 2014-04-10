@@ -47,6 +47,14 @@ define(function(require, exports, module) {
    */
   var uis = {};
 
+  /**
+   * @private
+   * Holds all Sytem fields and mapped UI
+   */
+  var system_fields = {
+    'active': {'ui':'system'}
+  };
+
   // Attach all methods to the UIManager prototype.
   module.exports = {
 
@@ -74,6 +82,10 @@ define(function(require, exports, module) {
         schema = structure.get(attr);
       }
       var uiId = schema.get('ui');
+
+      if(system_fields[attr] !== undefined) {
+        uiId = system_fields[attr].ui;
+      }
 
       return this._getUI(uiId);
     },
@@ -179,6 +191,7 @@ define(function(require, exports, module) {
       options.collection = options.collection || options.model.collection;
       options.canWrite = typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
       options.settings = options.schema.options;
+
 
       var UI = this._getModelUI(model, attr, options.schema);
 
