@@ -7,7 +7,7 @@
     </th>
   {{/if}}
   {{#columns}}
-    <th data-id="{{name}}">{{{capitalize name}}} {{#if orderBy}}{{#if desc}}▼{{else}}▲{{/if}}{{/if}}</th>
+    <th class="sortable-column" data-id="{{name}}">{{{capitalize name}}} {{#if orderBy}}{{#if desc}}▼{{else}}▲{{/if}}{{/if}}</th>
   {{/columns}}
   {{#if deleteColumn}}<th class="delete"></th>{{/if}}
   <th class="visible-columns-cell">

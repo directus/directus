@@ -22,15 +22,16 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'salt_field', ui: 'textinput', def: 'salt'}
   ];
 
-  var template = '<input type="password" value="{{value}}" name="{{name}}" class="medium password-primary"/> \
-                 <button class="btn btn-small btn-primary margin-left password-generate" type="button">Generate New</button> \
-                 <button class="btn btn-small btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
+  var template = '<input type="password" value="{{value}}" name="{{name}}" class="medium password-primary" style="display:block;margin-bottom:10px;" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
                  <span class="password-text"></span> \
                  {{#if require_confirmation}} \
-                 <label style="margin-top:12px">Confirm Password</label> \
-                 <input type="password" value="{{value}}" class="medium password-confirm"/> \
+                 <input type="password" value="{{value}}" class="medium password-confirm" style="display:block;margin-bottom:10px;" placeholder="Confirm Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
                  {{/if}} \
-                 <span class="label encrypted hide">ENCRYPTED</span> \
+                 <div style="display:block;"> \
+                 <button class="btn btn-small btn-primary margin-left password-generate" style="margin-right:10px;" type="button">Generate New</button> \
+                 <button class="btn btn-small btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
+                 <span class="placard encrypted hide add-color margin-left-small bold">Encrypted!</span> \
+                 </div> \
                  ';
 
   Module.Input = Backbone.Layout.extend({

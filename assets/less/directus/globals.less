@@ -44,6 +44,9 @@
 .right {
   float: right;
 }
+.margin-left-small {
+  margin-left: @smallPad;
+}
 
 ////////////
 //  BUTTONS
@@ -91,6 +94,12 @@
 .delete-color {
   color: @deleteColor;
 }
+.add-color {
+  color: @addColor;
+}
+.bold {
+  font-weight: 600;
+}
 
 ////////////
 //  CONTAINERS
@@ -129,6 +138,12 @@
   .img.landscape { width: 50px; }
 }
 
+.hide {
+  display: none;
+}
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
 ::-webkit-input-placeholder {
     color: @mediumGrey;
     -webkit-font-smoothing: antialiased;
