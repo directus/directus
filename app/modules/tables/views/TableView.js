@@ -45,7 +45,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
           ];
         case 'actions':
           return [
-            new Widgets.SelectionActionWidget({collection: this.collection})
+            new Widgets.SelectionActionWidget({collection: this.collection, widgetOptions: {batchEdit: this.batchEdit}})
           ];
       }
 
@@ -101,8 +101,10 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
       this.collection.on('select', function() {
 
+
         this.actionButtons = Boolean($('.select-row:checked').length);
         this.batchEdit = $('.select-row:checked').length > 1;
+
         if(this.actionButtons || this.batchEdit) {
           if(this.leftSecondaryCurrentState != 'actions') {
             this.leftSecondaryCurrentState = 'actions';
