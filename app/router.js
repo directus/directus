@@ -88,6 +88,7 @@ define(function(require, exports, module) {
     overlayPage: function(view) {
       if(this.v.main.getViews('#content')._wrapped.length <= 1) {
         this.baseRouteSave = Backbone.history.fragment;
+        this.oldLoadUrlFunction = Backbone.History.prototype.loadUrl;
       }
 
       this.v.main.getViews('#content').each(function(view) {
@@ -96,7 +97,6 @@ define(function(require, exports, module) {
       this.v.main.insertView('#content', view).render();
 
       var that=this;
-      this.oldLoadUrlFunction = Backbone.History.prototype.loadUrl;
       Backbone.History.prototype.loadUrl = function() {
         if(that.baseRouteSave == this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?")) {
           Backbone.History.prototype.loadUrl = that.oldLoadUrlFunction;

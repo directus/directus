@@ -128,8 +128,8 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         data[columnName] = id;
         model.set(data);
         if (model.isValid()) {
-          collection.add(model, {nest: true});
           app.router.removeOverlayPage(this);
+          collection.add(model, {nest: true});
         }
       };
     },
