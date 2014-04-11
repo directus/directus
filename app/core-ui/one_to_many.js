@@ -94,35 +94,44 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     addModel: function(model) {
-      var EditView = require("core/edit");
-      var collection = this.relatedCollection;
 
+      var EditView = require("modules/tables/views/EditView");
+      var collection = this.relatedCollection;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var id = this.model.id;
-
       var view = new EditView({
         model: model,
         collectionAdd: true,
-        inModal: true,
+        hiddenFields: [columnName],
         parentField: {
           name: columnName,
           value: id
+      }});
+
+      view.headerOptions.route.isOverlay = true;
+      view.headerOptions.route.breadcrumbs = [];
+      view.headerOptions.basicSave = true;
+
+      view.events = {
+        'click .saved-success': function() {
+          this.save();
+        },
+        'click #removeOverlay': function() {
+          app.router.removeOverlayPage(this);
         }
-      });
+      };
 
-      var modal = app.router.openModal(view, {stretch: true, title: 'Add'});
+      app.router.overlayPage(view);
 
-      modal.save = function() {
-        var data = view.data();
+      view.save = function() {
+        var data = view.editView.data();
         data[columnName] = id;
         model.set(data);
         if (model.isValid()) {
           collection.add(model, {nest: true});
-          modal.close();
+          app.router.removeOverlayPage(this);
         }
       };
-
-      view.render();
     },
 
     serialize: function() {
