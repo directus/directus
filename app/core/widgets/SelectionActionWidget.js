@@ -34,15 +34,26 @@ function(app, Backbone) {
         }
 
         var collection = this.collection;
+        var active = collection.getFilter('active');
 
         var $checked = $('.select-row:checked');
         var expectedResponses = $checked.length;
+
+
+        if(!isNaN(active)) {
+          var startCount = collection.where({'active': parseInt(active)}).length;
+        }
 
         var success = function() {
           expectedResponses--;
           if (expectedResponses === 0) {
             collection.trigger('visibility');
             collection.trigger('select');
+            if(startCount) {
+              if(collection.where({'active': parseInt(active)}).length != startCount) {
+                collection.updateActiveCount(startCount - collection.where({'active': parseInt(active)}).length);
+              }
+            }
           }
         };
 

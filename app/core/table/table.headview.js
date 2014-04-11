@@ -16,7 +16,7 @@ function(app, Backbone) {
     events: {
 
       'click th.check > input': function(e) {
-        $('td.check > input').attr('checked', ($('#check-all:checked').val() !== undefined)).trigger('change');
+        $('td.check > input').prop('checked', $('#check-all:checked').prop('checked') !== undefined).trigger('changed');
         this.collection.trigger('select');
       },
 

@@ -87,6 +87,24 @@ define(function(require, exports, module) {
 
     },
 
+    updateActiveCount: function(diff) {
+      if(!this.table.has('active')) {
+        return;
+      }
+
+      switch (this.getFilter('active')) {
+        case '1':
+          this.table.set({'active': this.table.get('active') - diff});
+          break;
+        case '2':
+          this.table.set({'inactive': this.table.get('inactive') - diff});
+          break;
+        case '0':
+          this.table.set({'trash': this.table.get('trash') - diff});
+          break;
+      }
+    },
+
     setFilter: function(key, value, options) {
       var attrs, preferencesHasChanged = false;
       if (key === null || typeof key === 'object') {

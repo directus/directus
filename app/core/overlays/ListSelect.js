@@ -14,7 +14,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       route: {
         title: 'Table View',
         isOverlay: true
-      },
+      }
     },
 
     leftToolbar: function() {

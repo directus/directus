@@ -18,12 +18,19 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     leftToolbar: function() {
+      if(!this.widgets.bookmarkWidget) {
+        this.widgets.bookmarkWidget = new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}});
+      }
       var widgets = [
-        new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}})
+        this.widgets.bookmarkWidget
       ];
 
       if (this.collection.hasPermission('add')) {
-        widgets.push(new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}}));
+        if(!this.widgets.addWidget) {
+          this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}});
+        }
+
+        widgets.push(this.widgets.addWidget);
       }
       return  widgets;
     },
@@ -39,13 +46,24 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
       switch(this.leftSecondaryCurrentState) {
         case 'default':
+          if(!this.widgets.visibilityWidget) {
+            this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
+          }
+
+          if(!this.widgets.filterWidget) {
+            this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
+          }
+
           return [
-            new Widgets.VisibilityWidget({collection: this.collection}),
-            new Widgets.FilterWidget({collection: this.collection})
+            this.widgets.visibilityWidget,
+            this.widgets.filterWidget
           ];
         case 'actions':
+          if(!this.widgets.selectionActionWidget) {
+            this.widgets.selectionActionWidget = new Widgets.SelectionActionWidget({collection: this.collection, widgetOptions: {batchEdit: this.batchEdit}});
+          }
           return [
-            new Widgets.SelectionActionWidget({collection: this.collection})
+            this.widgets.selectionActionWidget
           ];
       }
 
@@ -96,13 +114,17 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     initialize: function() {
+      this.widgets = {};
+
       this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8, toolbar: true});
       this.headerOptions.route.title = this.collection.table.id;
 
       this.collection.on('select', function() {
 
+
         this.actionButtons = Boolean($('.select-row:checked').length);
         this.batchEdit = $('.select-row:checked').length > 1;
+
         if(this.actionButtons || this.batchEdit) {
           if(this.leftSecondaryCurrentState != 'actions') {
             this.leftSecondaryCurrentState = 'actions';
