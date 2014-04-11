@@ -169,7 +169,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.nestedTableView = new TableView({
         collection: relatedCollection,
-        toolbar: false,
         selectable: false,
         sortable: false,
         footer: false,
@@ -177,6 +176,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES") && this.canEdit && this.showRemoveButton,
         hideColumnPreferences: true,
         hideEmptyMessage: true,
+        tableHead: false,
         filters: {
           booleanOperator: '&&',
           expressions: [
@@ -186,7 +186,15 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         }
       });
 
-      this.listenTo(relatedCollection, 'change add remove', this.nestedTableView.render, this);
+      this.listenTo(relatedCollection, 'change add remove', function() {
+        //Check if any rendered objects in collection to show or hide header
+        if(this.relatedCollection.filter(function(d){return d.get('active') !== 0}).length > 0) {
+          this.nestedTableView.tableHead = true
+        } else {
+          this.nestedTableView.tableHead = false
+        }
+        this.nestedTableView.render();
+      }, this);
 
       this.relatedCollection = relatedCollection;
     }

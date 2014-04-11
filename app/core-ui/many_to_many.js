@@ -125,14 +125,25 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         selectable: false,
         sortable: false,
         footer: false,
+        tableHead: false,
         saveAfterDrop: false,
         deleteColumn: this.showRemoveButton,
         hideEmptyMessage: true,
         hideColumnPreferences: true,
         hasSort: junctionStructure.get('sort') !== undefined
       });
+
       this.relatedCollection = relatedCollection;
-      this.listenTo(relatedCollection, 'change add remove', this.nestedTableView.render, this);
+      this.listenTo(relatedCollection, 'change add remove', function() {
+        //Check if any rendered objects in collection to show or hide header
+        if(this.relatedCollection.filter(function(d){return d.get('active') !== 0}).length > 0) {
+          this.nestedTableView.tableHead = true
+        } else {
+          this.nestedTableView.tableHead = false
+        }
+        this.nestedTableView.render();
+      }, this);
+
       this.listenTo(relatedCollection.nestedCollection, 'sync', function() {
         var that = this;
         //@TODO: Make this not suck

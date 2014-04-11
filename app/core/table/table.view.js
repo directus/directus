@@ -67,7 +67,6 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
         this.insertView('table', new TableHead(options));
       }
 
-
       if (this.collection.length > 0) {
         options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight');
         this.insertView('table', new this.TableBody(options));

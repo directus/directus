@@ -48,6 +48,7 @@ function(app, Backbone) {
         }
       });
 
+
       //Evaluate filter object
       var expressions = this.options.filters.expressions;
       var booleanOperator = this.options.filters.booleanOperator || 'AND';
