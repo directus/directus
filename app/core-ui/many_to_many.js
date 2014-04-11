@@ -34,8 +34,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
     template: Handlebars.compile(
       '<div class="related-table"></div>' +
-      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}' +
-      '{{#if showChooseButton}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>'),
+      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary margin-top-small" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}' +
+      '{{#if showChooseButton}}<button class="btn btn-small btn-primary margin-top-small" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>'),
 
     addRow: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));

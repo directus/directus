@@ -1118,6 +1118,9 @@ button {
 .margin-left-small {
   margin-left: 10px;
 }
+.margin-top-small {
+  margin-top: 10px;
+}
 .large-circle {
   -webkit-border-top-right-radius: 50px;
   -webkit-border-bottom-right-radius: 50px;
@@ -1877,6 +1880,9 @@ select:focus,
   background-color: #f4f4f4;
   padding-left: 10px;
 }
+.table-striped tbody {
+  background-color: #ffffff;
+}
 .table-striped tr {
   border-bottom: solid 1px #f4f4f4;
   color: #5b5b5b;
@@ -1920,15 +1926,15 @@ select:focus,
   margin-top: 20px;
 }
 .related-table thead:hover #set-visible-columns {
-  background-color: #cccccc;
-  color: #ffffff;
+  background-color: #ededed;
+  color: #5b5b5b;
 }
 .related-table thead tr th {
-  background-color: #cccccc;
-  color: #ffffff;
+  background-color: #ededed;
+  color: #5b5b5b;
 }
 .related-table thead tr th:hover {
-  background-color: #cccccc;
+  background-color: #ededed;
 }
 .set-columns {
   overflow: hidden;
