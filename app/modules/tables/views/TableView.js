@@ -19,7 +19,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
     leftToolbar: function() {
       if(!this.widgets.bookmarkWidget) {
-        this.widgets.bookmarkWidget = new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}})
+        this.widgets.bookmarkWidget = new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}});
       }
       var widgets = [
         this.widgets.bookmarkWidget
@@ -51,7 +51,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
           }
 
           if(!this.widgets.filterWidget) {
-            this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection})
+            this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
           }
 
           return [
@@ -60,7 +60,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
           ];
         case 'actions':
           if(!this.widgets.selectionActionWidget) {
-            this.widgets.selectionActionWidget = new Widgets.SelectionActionWidget({collection: this.collection, widgetOptions: {batchEdit: this.batchEdit}})
+            this.widgets.selectionActionWidget = new Widgets.SelectionActionWidget({collection: this.collection, widgetOptions: {batchEdit: this.batchEdit}});
           }
           return [
             this.widgets.selectionActionWidget

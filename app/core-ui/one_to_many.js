@@ -188,10 +188,10 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.listenTo(relatedCollection, 'change add remove', function() {
         //Check if any rendered objects in collection to show or hide header
-        if(this.relatedCollection.filter(function(d){return d.get('active') !== 0}).length > 0) {
-          this.nestedTableView.tableHead = true
+        if(this.relatedCollection.filter(function(d){return d.get('active') !== 0;}).length > 0) {
+          this.nestedTableView.tableHead = true;
         } else {
-          this.nestedTableView.tableHead = false
+          this.nestedTableView.tableHead = false;
         }
         this.nestedTableView.render();
       }, this);
