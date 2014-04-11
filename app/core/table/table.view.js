@@ -153,7 +153,6 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       });
 
       this.listenTo(collection, 'visibility', function() {
-        console.log('visibility', arguments);
         this.render();
       });
 

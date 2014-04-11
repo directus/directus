@@ -26,7 +26,7 @@ function(app, Backbone) {
       data.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, data.totalCount);
       data.uBound = Math.min(data.totalCount, data.lBound + this.collection.getFilter('perPage') - 1);
 
-      if(this.collection.length != (data.uBound - data.lBound) + 1) {
+      if(this.collection.length < (data.uBound - data.lBound) + 1) {
         if(this.collection.length < this.collection.getFilter('perPage')) {
           data.totalCount = this.collection.length;
         } else {
