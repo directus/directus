@@ -215,8 +215,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
           row.requiredDisabled = true;
         }
 
-        row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables');
-
+        row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables') && ui[row.ui].variables.length > 0;
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
         row.relationship = "";
@@ -348,7 +347,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
     serialize: function() {
 
       var rows = this.collection.filter(function(model) {
-
         //Filter out _directus tables
         if (model.id.substring(0,9) === 'directus_') return false;
 
