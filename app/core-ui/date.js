@@ -32,7 +32,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   input.date { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 110px; \
+                    width: 132px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
