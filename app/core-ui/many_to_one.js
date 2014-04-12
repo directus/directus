@@ -97,8 +97,13 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     },
 
     initialize: function(options) {
+      var relatedTable
       // @todo display warning on UI & gracefully fail if the next value is undefined
-      var relatedTable = this.columnSchema.relationship.get('table_related');
+      if(this.columnSchema.relationship) {
+        relatedTable = this.columnSchema.relationship.get('table_related');
+      } else {
+        console.log("Something is misconfigured in the ui settings!");
+      }
       var value = this.model.get(this.name);
 
       this.canEdit = this.model.canEdit(this.name);
