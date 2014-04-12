@@ -62,7 +62,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
       }
 
-      if(this.options.settings.get("readonly")) {
+      if(this.options.settings.get("readonly") == true) {
         this.canEdit = false;
       }
 
