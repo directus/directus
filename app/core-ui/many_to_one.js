@@ -16,6 +16,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
   Module.dataTypes = ['INT'];
 
   Module.variables = [
+    {id: 'readonly', ui: 'checkbox'},
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: "Enter Visible Column Name"},
     {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"}
     //{id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
@@ -29,15 +30,10 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
                     padding: 4px; \
                   } \
                   </style> \
-                  {{#if use_radio_buttons}} \
-                  {{#data}}<input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{id}}" id="radio-{{id}}" {{#if selected}}checked{{/if}}> \
-                  <label class="radiobuttons" for="radio-{{id}}">{{name}}</label>{{/data}} \
-                  {{else}} \
                   <select {{#unless canEdit}}disabled{{/unless}}> \
                   <option value="">Select from below</option> \
                   {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
-                  </select> \
-                  {{/if}}';
+                  </select>';
 
   //name="{{name}}"
 
@@ -64,6 +60,10 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       var optionTemplate = function(){};
       if(this.options.settings.has('visible_column_template')) {
         optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
+      }
+
+      if(this.options.settings.get("readonly")) {
+        this.canEdit = false;
       }
 
       var data = this.collection.map(function(model) {
