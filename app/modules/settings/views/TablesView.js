@@ -14,10 +14,11 @@ define([
   'core/BasePageView',
   'schema/ColumnModel',
   'core/UIManager',
-  'core/widgets/widgets'
+  'core/widgets/widgets',
+  'schema/SchemaManager'
 ],
 
-function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets) {
+function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets, SchemaManager) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -338,9 +339,30 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets)
     template: 'modules/settings/settings-tables',
 
     events: {
+      'click td span': function(e) {
+        e.stopImmediatePropagation();
+        var attr = $(e.target).closest('td').attr('data-attribute');
+
+        this.toggleTableAttribute(SchemaManager.getTable($(e.target).closest('tr').attr('data-id')), attr, $(e.target));
+      },
       'click td': function(e) {
         var tableName = $(e.target).closest('tr').attr('data-id');
         app.router.go(['settings','tables',tableName]);
+      }
+    },
+
+    toggleTableAttribute: function(tableModel, attr, element) {
+      var data = {};
+      data[attr] = !tableModel.get(attr);
+      tableModel.save(data);
+      if(element.hasClass('green')) {
+        element.addClass('gray');
+        element.removeClass('green');
+        element.html('✖');
+      } else {
+        element.addClass('green');
+        element.removeClass('gray');
+        element.html('✔');
       }
     },
 

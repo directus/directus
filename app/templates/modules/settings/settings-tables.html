@@ -13,11 +13,11 @@
   {{#rows}}
   <tr data-id="{{table_name}}">
   	<td>{{{capitalize table_name}}}</td>
-	<td>{{#if hidden}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
-	<td>{{#if single}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
-	<td>{{#if inactive_by_default}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
-	<td>{{#if is_junction_table}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
-	<td>{{#if footer}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td data-attribute="hidden">{{#if hidden}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td data-attribute="single">{{#if single}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td data-attribute="inactive_by_default">{{#if inactive_by_default}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td data-attribute="is_junction_table">{{#if is_junction_table}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
+	<td data-attribute="footer">{{#if footer}}<span class="green">✔</span>{{else}}<span class="gray">✖</span>{{/if}}</td>
   </tr>
   {{/rows}}
 </tbody>
