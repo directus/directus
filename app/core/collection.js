@@ -90,6 +90,11 @@ function(app, Backbone) {
       //useless without filters...
       if (!this.filters) return;
 
+      //If we have nested collection pass this reorder down
+      if(this.nestedCollection) {
+        this.nestedCollection.setOrder(column, sortOrder, options);
+      }
+
       if (column === undefined) {
         this.setFilter({sort:'id', sort_order: 'ASC'});
       } else {
