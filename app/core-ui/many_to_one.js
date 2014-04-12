@@ -102,7 +102,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       if(this.columnSchema.relationship) {
         relatedTable = this.columnSchema.relationship.get('table_related');
       } else {
-        console.log("Something is misconfigured in the ui settings!");
+        console.log("Column is misconfigured in directus_columns! : " + this.name);
       }
       var value = this.model.get(this.name);
 
