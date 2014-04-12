@@ -248,12 +248,11 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
 
   Module.list = function(options) {
     var model = options.model;
-
     //@TODO: Have this not be hardcoded
-    if(!model.get('type') && model.get('image') instanceof Backbone.Model) {
-      model = model.get('image');
+    if(!model.get('type') && model.get(options.schema.id) instanceof Backbone.Model) {
+      model = model.get(options.schema.id);
     }
-
+    console.log(model);
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
     var isImage = _.contains(['image/jpeg','image/png'], model.get('type'));
     var thumbUrl = isImage ? model.makeMediaUrl(true) : app.PATH + 'assets/img/document-100x120.png';
