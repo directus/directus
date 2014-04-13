@@ -276,6 +276,9 @@ define(function(require, exports, module) {
         model = new app.media.model({}, {collection: app.media});
       } else {
         model = app.media.get(id);
+        if (model === undefined) {
+          model = new app.media.model({id: id}, {collection: app.media, parse: true});
+        }
       }
 
       this.v.main.setView('#content', new Media.Views.Edit({model: model}));
