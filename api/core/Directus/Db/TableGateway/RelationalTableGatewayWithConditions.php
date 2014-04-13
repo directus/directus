@@ -134,24 +134,32 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             }
 
             if(isset($target['relationship'])) {
+
               $relatedTable = $target['relationship']['table_related'];
-              $junctionTable = $target['relationship']['junction_table'];
-              $jkl = $target['relationship']['junction_key_left'];
-              $jkr = $target['relationship']['junction_key_right'];
 
-              $keyleft = $params['table_name']. ".id";
-              $keyRight = $junctionTable.'.'.$jkl;
+              if($target['relationship']['type'] == "MANYTOMANY") {
+                $junctionTable = $target['relationship']['junction_table'];
+                $jkl = $target['relationship']['junction_key_left'];
+                $jkr = $target['relationship']['junction_key_right'];
 
-              $jkeyleft = $junctionTable.'.'.$jkr;
-              $jkeyright = $relatedTable.".id";
+                $keyleft = $params['table_name']. ".id";
+                $keyRight = $junctionTable.'.'.$jkl;
+
+                $jkeyleft = $junctionTable.'.'.$jkr;
+                $jkeyright = $relatedTable.".id";
 
 
-              $select->join($junctionTable,
-                  "$keyleft = $keyRight",
-                  array())
-              ->join($relatedTable,
-                  "$jkeyleft = $jkeyright",
+                $select->join($junctionTable,
+                    "$keyleft = $keyRight",
+                    array())
+                ->join($relatedTable,
+                    "$jkeyleft = $jkeyright",
+                    array());
+              } else {
+                $select->join($relatedTable,
+                  $target['column_name']." = ".$relatedTable.".id",
                   array());
+              }
 
               $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
               $search_col['value'] = "%".$search_col['value']."%";
