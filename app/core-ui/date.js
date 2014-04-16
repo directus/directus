@@ -85,8 +85,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   };
 
   Module.list = function(options) {
-    var template = Handlebars.compile('{{contextualDate date}}');
-    return template({date: options.value});
+    return moment(options.value).format('DD-MMM-YYYY');
   };
 
   return Module;
