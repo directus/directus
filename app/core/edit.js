@@ -59,12 +59,13 @@ define(function(require, exports, module) {
             this.model.set('active', 1);
           }
           if(this.model.isNew()) {
-            if(this.model.table && this.model.table.get('inactive_by_default')) {
+            if(this.model.table && this.model.table.get('inactive_by_default') == 1) {
               this.model.set('active', 2);
             } else {
               this.model.set('active', 1);
             }
           }
+
 
           //Set this to be first field in edit table by modifiying groupings.
           if(this.model.table && this.model.table.get('column_groupings')) {
