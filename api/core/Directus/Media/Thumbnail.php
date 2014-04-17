@@ -21,19 +21,21 @@ class Thumbnail {
         }
         $w = imagesx($img);
         $h = imagesy($img);
+        $x1 = 0; // used for crops
+        $y1 = 0; // used for crops
         $aspectRatio = $w / $h;
 
         if($cropEnabled) {
-          $centerX = round($w / 2);
-          $centerY = round($h / 2);
-          $cropWidthHalf  = round($thumbnailSize / 2);
-          $cropHeightHalf = round($thumbnailSize / 2);
-          $x1 = max(0, $centerX - $cropWidthHalf);
-          $y1 = max(0, $centerY - $cropHeightHalf);
-          $x2 = min($w, $centerX + $cropWidthHalf);
-          $y2 = min($h, $centerY + $cropHeightHalf);
-          $newW = $x2 - $x1;
-          $newH = $y2 - $y1;
+            // crop to center of image
+            if($aspectRatio <= 1){
+                $newW = $thumbnailSize;
+                $newH = $h*($thumbnailSize/$w);
+                $y1 = -1 * (($newH - $thumbnailSize)/2);
+            } else {
+                $newH = $thumbnailSize;
+                $newW = $w*($thumbnailSize/$h);
+                $x1 = -1 * (($newW - $thumbnailSize)/2);
+            }
         } else {
           // portrait (or square) mode, maximize height
           if ($aspectRatio <= 1) {
@@ -47,7 +49,11 @@ class Thumbnail {
           }
         }
 
-        $imgResized = imagecreatetruecolor($newW, $newH);
+        if($cropEnabled) {
+            $imgResized = imagecreatetruecolor($thumbnailSize, $thumbnailSize);
+        } else {
+            $imgResized = imagecreatetruecolor($newW, $newH);
+        }
 
         // Preserve transperancy for gifs and pngs
         if ($format == 'gif' || $format == 'png') {
@@ -57,11 +63,8 @@ class Thumbnail {
             imagefilledrectangle($imgResized, 0, 0, $newW, $newH, $transparent);
         }
 
-        if($cropEnabled) {
-          imagecopy($imgResized, $img, 0, 0, $x1, $y1, $newW, $newH);
-        } else {
-          imagecopyresampled($imgResized, $img, 0, 0, 0, 0, $newW, $newH, $w, $h);
-        }
+        imagecopyresampled($imgResized, $img, $x1, $y1, 0, 0, $newW, $newH, $w, $h);
+
         imagedestroy($img);
         return $imgResized;
 	}

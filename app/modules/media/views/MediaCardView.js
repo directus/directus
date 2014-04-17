@@ -56,6 +56,7 @@ function(app, Backbone, Widgets) {
     },
 
     initialize: function(options) {
+      this.collection.setOrder('date_uploaded', 'DESC');
       this.collection.on('sort', this.render, this);
       this.collection.on('sync', this.render, this);
     }

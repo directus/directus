@@ -2112,6 +2112,7 @@ select:focus,
   border: solid 1px #ededed;
   border-top: none;
   margin-top: 4px;
+  min-height: 100px;
 }
 .cards .card .info .featured,
 .cards .card .info .extra {
