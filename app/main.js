@@ -186,7 +186,6 @@ require(["config"], function() {
       // Default directus tabs
 
       var tabs = [
-        {id: "settings", icon_class: "icon-cog"},
         {id: "blank",    hidden: true},
         {id: "files",    icon_class: "icon-attach"},
         {id: "users",    icon_class: "icon-users"},
@@ -195,6 +194,10 @@ require(["config"], function() {
         {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar")},
         {id: "logout", icon_class: "icon-power-button"}
       ];
+
+      if(app.users.getCurrentUser().get('group').id == 0) {
+        tabs.unshift({id: "settings", icon_class: "icon-cog"});
+      }
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Bookmarks
