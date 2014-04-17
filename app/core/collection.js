@@ -83,6 +83,14 @@ function(app, Backbone) {
         }
         value = row.id;
       }
+
+      //Check if date
+      if(typeof value === "string") {
+        if(Date.parse(value) !== NaN) {
+          return new Date(value).getTime();
+        }
+      }
+
       return value;
     },
 
