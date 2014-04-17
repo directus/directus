@@ -55,6 +55,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     font-weight: 600; \
                     line-height: 100px; \
                   } \
+                  div.ui-thumbnail.empty.dragover, \
                   div.ui-thumbnail.empty:hover { \
                     background-color: #fefefe; \
                     border: 2px dashed #cccccc; \
