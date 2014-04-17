@@ -17,34 +17,7 @@ function(app, Backbone) {
     },
 
     events: {
-      'click #addFilterButton': function(e) {
-        var $filters = $('.advanced-search-fields-row');
-        var that = this;
-
-        var searchSettings = $filters.map(function() {
-          var $this = $(this);
-          var values = {
-            id: $this.find('.adv-search-col-id').val(),
-            type: $this.find('.adv-search-query-type').val(),
-            value: $this.find('input').val()
-          };
-
-          // @DAX Uncoment this once toolbar has been moved to header
-          //that.filterModel.addFilter(values.id, values.type, values.value);
-          //$('#advancedFilterList').append('<li>' + values.id + ' ' + values.type + ' ' + values.value + '</li>');
-
-          return {
-            id: that.mysql_real_escape_string(values.id),
-            type: values.type,
-            value: that.mysql_real_escape_string(values.value)
-          };
-        }).toArray();
-
-        this.options.filterOptions.filters.push(searchSettings[0]);
-
-        this.updateFilters();
-        this.saveFilterString();
-      },
+      'click #addFilterButton': 'addNewFilter',
       'click [data-add-filter-row]': function(e) {
         this.options.filterOptions.addFilter = true;
         this.render();
@@ -54,7 +27,39 @@ function(app, Backbone) {
         this.options.filterOptions.filters.splice(index, 1);
         this.updateFilters();
         this.saveFilterString();
+      },
+      'keydown input': function(e) {
+        if (e.keyCode == 13) { this.addNewFilter(); }
       }
+    },
+
+    addNewFilter: function() {
+      var $filters = $('.advanced-search-fields-row');
+      var that = this;
+
+      var searchSettings = $filters.map(function() {
+        var $this = $(this);
+        var values = {
+          id: $this.find('.adv-search-col-id').val(),
+          type: $this.find('.adv-search-query-type').val(),
+          value: $this.find('input').val()
+        };
+
+        // @DAX Uncoment this once toolbar has been moved to header
+        //that.filterModel.addFilter(values.id, values.type, values.value);
+        //$('#advancedFilterList').append('<li>' + values.id + ' ' + values.type + ' ' + values.value + '</li>');
+
+        return {
+          id: that.mysql_real_escape_string(values.id),
+          type: values.type,
+          value: that.mysql_real_escape_string(values.value)
+        };
+      }).toArray();
+
+      this.options.filterOptions.filters.push(searchSettings[0]);
+
+      this.updateFilters();
+      this.saveFilterString();
     },
 
     updateFilters: function() {
