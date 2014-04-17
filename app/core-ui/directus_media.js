@@ -16,8 +16,8 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.system = true;
 
     var template = '{{#if url}} \
-                    <fieldset class="media-modal"> \
-                      <div style="margin-right:10px;float:left;height:auto;width:50px;"> \
+                    <fieldset class="directus-media-ui"> \
+                      <div class="media-container"> \
                         <a href="{{url}}" target="_blank"> \
                           {{#if isPDF }} \
                           <em>PDF Icon Here</em> \
@@ -27,16 +27,16 @@ define(['app', 'backbone'], function(app, Backbone) {
                         </a> \
                       </div> \
                       <div style="line-height:20px"> \
-                        <strong> \
-                        <a href="{{url}}" target="_blank">{{name}}</a><br> \
-                        Uploaded by <a href="#users/{{user}}">{{userFirstName}}</a> {{{contextualDate date_uploaded}}} \
-                        </strong><br> \
-                      <em>{{#unless isPDF}}{{width}} x {{height}} - {{/unless}}{{{bytesToSize size}}}</em><br> \
+                        <strong><a href="{{url}}" target="_blank">{{name}}</a></strong><br> \
+                        <em>Uploaded by <a href="#users/{{user}}">{{userFirstName}}</a> {{{contextualDate date_uploaded}}}<br> \
+                        {{#unless isPDF}}{{width}} x {{height}} - {{/unless}}{{{bytesToSize size}}}</em><br> \
                       </div> \
                       <ul class="media-actions"> \
                         {{#unless isPDF }} \
+                        <!-- \
                         <li class="purple"><span class="glyphicon-crop"></span>Crop</li> \
                         <li class="blue"><span class="glyphicon-repeat"></span>Rotate</li> \
+                        --> \
                         {{/unless}} \
                         <li class="green" data-action="swap"><span class="glyphicon-random"></span>Swap</li> \
                         <li class="red"><span class="glyphicon-remove"></span>Delete</li> \
