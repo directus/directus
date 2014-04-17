@@ -2719,6 +2719,8 @@ select:focus,
 .header1 .tools input {
   border: none;
   color: #cccccc;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .header1 .tools .tool.div-right {
   border-right: solid 1px #ededed;
