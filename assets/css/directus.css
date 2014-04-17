@@ -1164,6 +1164,32 @@ button {
 .large-circle .icon.icon-paper-plane {
   margin-left: -2px;
 }
+.tag {
+  display: inline-block;
+  cursor: pointer;
+  background-color: #cccccc;
+  color: #ffffff;
+  margin: 10px 10px 0 0;
+  padding: 3px 10px;
+  -webkit-border-top-right-radius: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  -webkit-border-bottom-left-radius: 2px;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-topright: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-topleft: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+.tag:hover {
+  background-color: #c1272d;
+}
 .italic {
   font-style: italic;
 }
@@ -1179,6 +1205,9 @@ button {
 }
 .delete-color {
   color: #c1272d;
+}
+.medium-grey-color {
+  color: #cccccc;
 }
 .add-color {
   color: #7ac943;
@@ -1434,7 +1463,7 @@ input:-webkit-autofill {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   background-color: #cccccc;
-  border: solid 1px #cccccc;
+  border: none;
   color: #ffffff;
   cursor: pointer;
   padding: 5px 10px;
@@ -2031,6 +2060,7 @@ select:focus,
   list-style: none;
 }
 .cards .card .header-image {
+  overflow: hidden;
   height: 200px;
   position: relative;
   width: 200px;
@@ -2655,6 +2685,7 @@ select:focus,
   display: inline-block;
   vertical-align: middle;
   font-weight: 600;
+  cursor: pointer;
 }
 .header1 .tools .saved-success {
   color: #7ac943;
@@ -2772,10 +2803,11 @@ select:focus,
   padding: 0px;
 }
 .header1 .secondary-row .filters li {
+  display: inline-block;
   cursor: pointer;
   background-color: #cccccc;
   color: #ffffff;
-  margin: 5px 0px 7px 10px;
+  margin: 10px 10px 0 0;
   padding: 3px 10px;
   -webkit-border-top-right-radius: 2px;
   -webkit-border-bottom-right-radius: 2px;
@@ -2792,6 +2824,7 @@ select:focus,
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+  margin: 5px 0px 7px 10px;
 }
 .header1 .secondary-row .filters li:hover {
   background-color: #c1272d;

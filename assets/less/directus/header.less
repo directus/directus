@@ -185,6 +185,7 @@
       display: inline-block;
       vertical-align: middle;
       font-weight: 600;
+      cursor: pointer;
     }
     .saved-success {
       color: @addColor;
@@ -318,15 +319,8 @@
     .filters {
       padding: 0px;
       li {
-        cursor: pointer;
-        background-color: @mediumGrey;
-        color: @white;
+        .tag;
         margin: @extraSmallPad 0px 7px @smallPad;
-        padding: 3px @smallPad;
-        .border-radius(2px, 2px, 2px, 2px);
-        &:hover {
-          background-color: @deleteColor;
-        }
       }
     }
   }

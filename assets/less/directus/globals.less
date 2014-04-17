@@ -83,6 +83,18 @@
     }
   }
 }
+.tag {
+  display: inline-block;
+  cursor: pointer;
+  background-color: @mediumGrey;
+  color: @white;
+  margin: @smallPad @smallPad 0 0;
+  padding: 3px @smallPad;
+  .border-radius(2px, 2px, 2px, 2px);
+  &:hover {
+    background-color: @deleteColor;
+  }
+}
 
 ////////////
 //  TEXT
@@ -102,6 +114,9 @@
 }
 .delete-color {
   color: @deleteColor;
+}
+.medium-grey-color {
+  color: @mediumGrey;
 }
 .add-color {
   color: @addColor;
