@@ -2,10 +2,11 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'core/BasePageView'
+  'core/BasePageView',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, BasePageView) {
+function(app, Backbone, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -14,8 +15,14 @@ function(app, Backbone, Directus, BasePageView) {
         breadcrumbs: [{title: 'Messages', anchor: '#messages'}]
       }
     },
+
+    leftToolbar: function() {
+      return  [
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-paper-plane"}})
+      ];
+    },
     events: {
-      'click #save-form': function(e) {
+      'click #addBtn': function(e) {
         var data = this.editView.data();
 
         data.read = "1";
@@ -26,11 +33,6 @@ function(app, Backbone, Directus, BasePageView) {
         }});
 
         this.model.collection.add(this.model);
-      },
-      'click #save-form-cancel': function() {
-        var route = Backbone.history.fragment.split('/');
-        route.pop();
-        app.router.go(route);
       }
     },
 
