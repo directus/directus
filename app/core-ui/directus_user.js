@@ -32,7 +32,7 @@ define(['app','backbone'], function(app, Backbone) {
   };
 
   Module.Input = Backbone.Layout.extend({
-    tagName: 'fieldset',
+    tagName: 'div',
 
     attributes: {
       'class': 'field'
