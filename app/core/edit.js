@@ -49,7 +49,7 @@ define(function(require, exports, module) {
 
       this.structure.each(function(column) {
 
-        // Skip ID & active
+        // Skip ID
         if('id' == column.id) {
           return;
         }
@@ -57,6 +57,13 @@ define(function(require, exports, module) {
         if('active' == column.id) {
           if(this.options.collectionAdd) {
             this.model.set('active', 1);
+          }
+          if(this.model.isNew()) {
+            if(this.model.table && this.model.table.get('inactive_by_default')) {
+              this.model.set('active', 2);
+            } else {
+              this.model.set('active', 1);
+            }
           }
 
           //Set this to be first field in edit table by modifiying groupings.
