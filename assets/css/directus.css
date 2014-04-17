@@ -2125,6 +2125,9 @@ select:focus,
   height: 1.5em;
   overflow: hidden;
 }
+.cards .card .info .extra {
+  padding-top: 0;
+}
 .cards .card .info .extra li {
   border-bottom: solid 1px #ededed;
   list-style: none;

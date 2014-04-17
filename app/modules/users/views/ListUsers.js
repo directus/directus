@@ -45,12 +45,12 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
               '<div>{{first_name}}</div>' +
               '<div>{{last_name}}</div>' +
             '</div>' +
-            '<div class="secondary-info">{{position}}</div>' +
+            '<div class="secondary-info">{{#if position}}{{position}}{{else}}<span class="secondary-info">--</span>{{/if}}</div>' +
           '</div>' +
           '<ul class="extra">' +
-            '{{#if address}}<li>{{address}}<span class="icon icon-home"></span></li>{{/if}}' +
-            '{{#if phone_number}}<li>{{phone_number}}<span class="icon icon-phone"></span></li>{{/if}}' +
-            '{{#if email}}<li>{{email}}<span class="icon icon-mail"></span></li>{{/if}}' +
+            '<li>{{#if location}}{{location}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-home"></span></li>' +
+            '<li>{{#if phone}}{{phone}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-phone"></span></li>' +
+            '<li>{{#if email}}{{email}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-mail"></span></li>' +
           '</ul>' +
         '</div>' +
       '</li>' +
@@ -68,8 +68,8 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           'last_name': model.get('last_name'),
           'email': model.get('email'),
           'position': model.get('position'),
-          'address': model.get('address'),
-          'phone_number': model.get('phone'),
+          'location': model.get('location'),
+          'phone': model.get('phone'),
           'online': (moment(model.get('last_access')).add('m', 5) > moment())
         };
         var avatarSmall = data.avatar;

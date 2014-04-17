@@ -25,7 +25,7 @@ define(function(require, exports, module) {
     usersInstance = new UsersCollection([], _.extend({
       rowsPerPage: 3000,
       url: apiURL + 'tables/directus_users/rows',
-      filters: {columns_visible: ['avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'address', 'phone', 'last_access'], active:1}
+      filters: {columns_visible: ['avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'location', 'phone', 'last_access'], active:1}
     }, SchemaManager.getFullSchema('directus_users')));
 
     mediaInstance = new MediaCollection([], _.extend({
