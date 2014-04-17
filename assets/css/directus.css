@@ -1121,6 +1121,9 @@ button {
 .margin-top-small {
   margin-top: 10px;
 }
+.margin-bottom-small {
+  margin-bottom: 10px;
+}
 .large-circle {
   -webkit-border-top-right-radius: 50px;
   -webkit-border-bottom-right-radius: 50px;
@@ -1523,7 +1526,7 @@ select {
 .simple-select select:focus {
   border: none;
 }
-#edit_field_active div.custom-check {
+.two-column-form div.custom-check {
   margin-top: 4px;
 }
 .custom-check input[type="checkbox"],
@@ -1608,6 +1611,20 @@ select:focus,
 }
 .wysiwyg .btn-toolbar {
   margin-bottom: 5px;
+}
+.directus-media-ui {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.directus-media-ui .media-container {
+  margin-right: 20px;
+  float: left;
+  height: auto;
+  width: 200px;
+}
+.directus-media-ui .media-container img {
+  width: 100%;
 }
 .filter-form select,
 .filter-form input[type="text"] {
