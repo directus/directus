@@ -131,7 +131,8 @@ VALUES
 	(5,'media','thumbnail_storage_adapter','FileSystemAdapter'),
 	(6,'media','thumbnail_storage_destination',NULL),
 	(7,'media','thumbnail_size','200'),
-	(8,'media','thumbnail_quality','80');
+  (8,'media','thumbnail_quality','80'),
+	(8,'media','thumbnail_crop_enabled','1');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;

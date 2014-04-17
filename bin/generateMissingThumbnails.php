@@ -24,7 +24,7 @@ $acl = \Directus\Bootstrap::get('acl');
 $Settings = new DirectusSettingsTableGateway($acl, $db);
 $mediaSettings = $Settings->fetchCollection('media', array(
     'storage_adapter','storage_destination','thumbnail_storage_adapter',
-    'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality'
+    'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
 ));
 
 $StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $db);
@@ -84,7 +84,7 @@ foreach($mediaRecords as $media) {
 	}
     // Generate thumbnail
     $localFile = $storageAdapter->joinPaths($adapterSettings['destination'], $media['name']);
-    $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $mediaSettings['thumbnail_size']);
+    $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $mediaSettings['thumbnail_size'], $mediaSettings['thumbnail_crop_enabled']);
     $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
     Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $mediaSettings['thumbnail_quality']);
     $fileData = $thumbnailStorageAdapter->acceptFile($thumbnailTempName, $media['name'], $thumbnailStorageAdapterSettings['destination']);

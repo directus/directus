@@ -28,7 +28,7 @@ class Storage {
         $Settings = new DirectusSettingsTableGateway($this->acl, $this->adapter);
         $this->mediaSettings = $Settings->fetchCollection('media', array(
             'storage_adapter','storage_destination','thumbnail_storage_adapter',
-            'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality'
+            'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
         ));
         // Initialize Storage Adapters
         $StorageAdapters = new DirectusStorageAdaptersTableGateway($this->acl, $this->adapter);
@@ -81,7 +81,7 @@ class Storage {
         $thumbnailTempName = null;
         $info = pathinfo($targetFileName);
         if(in_array($info['extension'], array('jpg','jpeg','png','gif'))) {
-            $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $settings['thumbnail_size']);
+            $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
             $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
             Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $settings['thumbnail_quality']);
         }

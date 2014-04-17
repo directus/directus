@@ -53,6 +53,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     initialize: function(options) {
+      console.log(this.model);
       this.editView = new Directus.EditView({model: this.model, structure: options.structure});
       this.headerOptions.route.title = this.options.title;
     }
