@@ -3,10 +3,11 @@ define([
   'backbone',
   'core/directus',
   'core/panes/pane.saveview',
-  'core/BasePageView'
+  'core/BasePageView',
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, SaveModule, BasePageView) {
+function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
 
   return BasePageView.extend({
 
@@ -18,9 +19,16 @@ function(app, Backbone, Directus, SaveModule, BasePageView) {
       rightToolbar: true
     },
 
+    leftToolbar: function() {
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
+      this.saveWidget.setSaved(false);
+      return [
+        this.saveWidget
+      ];
+    },
 
     events: {
-      'click #save-form': 'save'
+      'click .saved-success': 'save'
     },
 
     save: function() {
