@@ -1,8 +1,5 @@
-<strong>{{userFull from}}</strong>
-<div style="float:right;">{{contextualDate datetime}}</div>
-<div style="margin-left:38px; overflow: auto;">
-    to
-    {{#if collapseRecipients}}
+<div class="message-recipients">
+    <b>To:</b> {{#if collapseRecipients}}
         <a href="#" id="messages-show-recipients">{{recipientsCount}} Repcepients</a>
         <div id="messages-recipients" style="display:none">
             {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
@@ -11,21 +8,27 @@
         {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
     {{/if}}
 
-    <br><br>
-    <div style="max-width:700px;">{{message}}</div>
-
     </div>
 
-{{#each responses}}
-<strong>{{userFull from}}</strong>
-<div style="float:right;">{{contextualDate datetime}}</div>
-<div style="margin-left:38px; overflow: auto;">
-    <br/>
-    <div style="max-width:700px;">{{message}}</div>
+<div class="message-response">
+    <span class="message-datetime">{{contextualDate datetime}}</span>
+    <b>{{userFull from}}</b><br>
+    <div class="message-body">
+        {{{nl2br message}}}
+    </div>
 </div>
+
+{{#each responses}}
+    <div class="message-response">
+        <span class="message-datetime">{{contextualDate datetime}}</span>
+        <b>{{userFull from}}</b><br>
+        <div class="message-body">
+            {{{nl2br message}}}
+        </div>
+    </div>
 {{/each}}
 
-<div style="margin-left:38px;">
-<textarea rows="7" style="width:700px; margin-bottom:10px" id="messages-response"></textarea>
-<p><button class="btn btn-primary" id="messages-response-button">Reply</button></p>
+<div class="message-reply">
+    <textarea rows="7" style="width:700px; margin-bottom:10px" id="messages-response"></textarea>
+    <p><button class="btn btn-primary" id="messages-response-button">Reply</button></p>
 </div>

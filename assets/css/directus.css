@@ -1242,6 +1242,39 @@ input:-webkit-autofill {
   color: #cccccc;
   -webkit-font-smoothing: antialiased;
 }
+.avatar {
+  height: 30px;
+  float: left;
+  margin-right: 10px;
+}
+.avatar-name {
+  float: left;
+  margin-top: 6px;
+}
+.message-recipients {
+  background-color: #f4f4f4;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.message-response {
+  padding-top: 10px;
+  min-height: 50px;
+  border-bottom: 1px solid #ededed;
+}
+.message-response .message-body {
+  clear: both;
+  margin-top: 20px;
+  padding: 20px 0 30px 0;
+  max-width: 600px;
+}
+.message-datetime {
+  float: right;
+  font-style: italic;
+  margin-top: 6px;
+}
+.message-reply {
+  margin-top: 20px;
+}
 .btn-toolbar {
   clear: both;
   float: none;
@@ -2891,12 +2924,16 @@ select:focus,
   display: block;
   float: none;
   position: relative;
+  cursor: pointer;
 }
 .message:after {
   clear: both;
   content: '';
   display: block;
   width: 100%;
+}
+.message:hover {
+  background-color: #fffbc4;
 }
 .message .check-box {
   bottom: 0px;
