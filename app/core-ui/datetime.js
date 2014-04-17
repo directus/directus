@@ -32,13 +32,10 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   input.seconds { \
                     width: 100px !important; \
                   } \
-                  a.now { \
-                    \
-                  } \
                   </style> \
                   <input type="date" {{#if readonly}}disabled{{/if}} class="date" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
                   <input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" {{#if hasDate}}value="{{valueTime}}"{{/if}}> \
-                  <a class="now">Now</a> \
+                  <a class="now secondary-info">Now</a> \
                   <input class="merged" type="hidden" {{#if hasDate}}value="{{valueMerged}}"{{/if}} name="{{name}}" id="{{name}}">';
 
   //var format = 'ddd, DD MMM YYYY HH:mm:ss';
