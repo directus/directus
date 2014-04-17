@@ -14,6 +14,7 @@
   font-family: 'Directus';
   font-size: 300%;
   font-style: normal;
+  font-weight: 100 !important;
   letter-spacing: normal;
   line-height: 90%;
   text-transform: lowercase !important;
@@ -1044,6 +1045,7 @@ body {
   background-color: #ffffff;
   color: #5b5b5b;
   font-size: 12px;
+  font-weight: 600;
   width: 100%;
 }
 body {
@@ -1202,6 +1204,12 @@ button {
   color: #cccccc;
   font-size: 12px;
   font-weight: 600;
+}
+a.secondary-info {
+  cursor: pointer;
+}
+a.secondary-info:hover {
+  color: #5b5b5b;
 }
 .delete-color {
   color: #c1272d;
@@ -1638,6 +1646,7 @@ input[type="radio"].custom-check:checked + label:before {
   font-family: 'Directus';
   font-size: 300%;
   font-style: normal;
+  font-weight: 100 !important;
   letter-spacing: normal;
   line-height: 90%;
   text-transform: lowercase !important;
@@ -1820,6 +1829,7 @@ select:focus,
   background-color: #f4f4f4;
   padding: 20px;
   position: relative;
+  font-weight: 400;
 }
 .two-column-form .fields .field:after {
   clear: both;
@@ -2207,9 +2217,6 @@ select:focus,
 .group-list .group-item .stack .stack-item {
   color: #cccccc;
 }
-.group-list .group-item .time {
-  color: #cccccc;
-}
 .alerts {
   list-style: none;
   margin: 0px;
@@ -2310,7 +2317,6 @@ select:focus,
   bottom: 0px;
   color: #5b5b5b;
   float: left;
-  font-weight: 400;
   height: 100%;
   letter-spacing: 1px;
   position: fixed;
@@ -2720,11 +2726,12 @@ select:focus,
   padding: 8px;
 }
 .header1 .primary-row .tools .select-and-circle label.icon {
-  line-height: 80%;
+  line-height: 85%;
 }
 .header1 .primary-row .tools .simple-select {
   margin-bottom: -13px;
-  margin-left: 10px;
+  margin-left: 5px;
+  font-weight: 700;
 }
 .header1 .primary-row .tools input {
   margin-right: 10px;
@@ -2849,6 +2856,7 @@ select:focus,
   font-family: 'Directus';
   font-size: 300%;
   font-style: normal;
+  font-weight: 100 !important;
   letter-spacing: normal;
   line-height: 90%;
   text-transform: lowercase !important;
@@ -2933,6 +2941,7 @@ select:focus,
   font-family: 'Directus';
   font-size: 300%;
   font-style: normal;
+  font-weight: 100 !important;
   letter-spacing: normal;
   line-height: 90%;
   text-transform: lowercase !important;

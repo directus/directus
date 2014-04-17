@@ -36,12 +36,9 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
-                  a.now { \
-                    \
-                  } \
                   </style> \
                   <input type="date" class="date" {{#if readonly}}disabled{{/if}} name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
-                  <a class="now">Now</a>';
+                  <a class="now secondary-info">Now</a>';
 
   Module.Input = Backbone.Layout.extend({
 
