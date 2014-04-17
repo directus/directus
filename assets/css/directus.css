@@ -1296,7 +1296,7 @@ input:-webkit-autofill {
   position: absolute;
   width: 100px;
   height: 100px;
-  background-color: #5b5b5b;
+  background-color: #ededed;
   top: 50%;
   left: 50%;
   margin-top: -50px;
@@ -2170,7 +2170,6 @@ select:focus,
   margin-top: -4px;
 }
 .cards .card .info .primary-info {
-  height: 1.5em;
   overflow: hidden;
 }
 .cards .card .info .extra {
@@ -2181,6 +2180,9 @@ select:focus,
   list-style: none;
   padding: 5px 17px 5px 0px;
   position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .cards .card .info .extra li:last-child {
   border-bottom: none;
@@ -2741,7 +2743,7 @@ select:focus,
   background-color: #5b5b5b;
 }
 .header1 .tools .simple-select {
-  color: #cccccc;
+  color: #5b5b5b;
   display: inline-block;
   vertical-align: middle;
   font-weight: 600;
