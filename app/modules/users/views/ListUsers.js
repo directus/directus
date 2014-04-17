@@ -72,11 +72,12 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           'phone_number': model.get('phone'),
           'online': (moment(model.get('last_access')).add('m', 5) > moment())
         };
+        var avatarSmall = data.avatar;
 
-        if(!data.avatar) {
-          var avatarSmall = app.PATH + 'assets/img/missing-directus-avatar.png';
+        if(!avatarSmall) {
+          avatarSmall = app.PATH + 'assets/img/missing-directus-avatar.png';
         } else {
-          var avatarSmall = data.avatar.replace('?s=100','?s=200');
+          avatarSmall = avatarSmall.replace('?s=100','?s=200');
         }
 
         data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
