@@ -20,7 +20,7 @@ define(function(require, exports, module) {
         "type":"ALIAS",
         "is_nullable":"NO",
         "sort":-1,
-        "ui":"directus_media",
+        "ui":"directus_fancy_media",
         "system":false,
         "master":false,
         "hidden_list":false,
@@ -33,7 +33,7 @@ define(function(require, exports, module) {
         "type":"VARCHAR",
         "is_nullable":"YES",
         "sort":-1,
-        "ui":"directus_media",
+        "ui":"directus_fancy_media",
         "system":true,
         "master":false,
         "hidden_list":false,
@@ -84,7 +84,7 @@ define(function(require, exports, module) {
         "hidden_list":false,
         "hidden_input":true,
         "required":false,
-        "ui":"directus_media"
+        "ui":"directus_fancy_media"
       },
       {
         "id":"title",
