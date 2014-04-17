@@ -250,7 +250,7 @@ define(function(require, exports, module) {
     // returns true or false
     isMine: function() {
       var myId = parseInt(app.users.getCurrentUser().id,10),
-          magicOwnerColumn = this.collection.table.get('magic_owner_column'),
+          magicOwnerColumn = (this.collection != null) ? this.collection.table.get('magic_owner_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
 
       return myId === magicOwnerId;
@@ -326,13 +326,13 @@ define(function(require, exports, module) {
 
     getNewInstance: function(options) {
       options = options || {};
-      
+
       return new EntriesModel({}, _.extend({
         structure: this.structure,
         table: this.table,
         privileges: this.privileges
       }, options));
-    
+
     },
 
     getTable: function() {
