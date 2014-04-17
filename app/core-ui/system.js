@@ -23,10 +23,11 @@ define(['app','backbone'], function(app, Backbone) {
     <label for="check3"><span></span>Deleted</label> \
   <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';*/
 
-  var template = '<input type="radio" name="status" value="1" {{#if active}}checked{{/if}}>Active<br> \
-                  <input type="radio" name="status" value="2" {{#if inactive}}checked{{/if}}>Inactive<br> \
-                  <input type="radio" name="status" value="0" {{#if deleted}}checked{{/if}}>Deleted \
-                  <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';
+  var template = '<div style="margin-top:4px;"> \
+                  <label style="margin-right:30px;"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" value="1" {{#if active}}checked{{/if}}>Active</label> \
+                  <label style="margin-right:30px;"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" value="2" {{#if inactive}}checked{{/if}}>Inactive</label> \
+                  <label style="margin-right:30px;"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" value="0" {{#if deleted}}checked{{/if}}>Deleted</label> \
+                  </div>';
 
   Module.id = 'system';
   Module.dataTypes = ['TINYINT'];

@@ -62,7 +62,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
       }
 
-      if(this.options.settings.get("readonly") == true) {
+      if(this.options.settings.get("readonly") === true) {
         this.canEdit = false;
       }
 
@@ -97,7 +97,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     },
 
     initialize: function(options) {
-      var relatedTable
+      var relatedTable;
       // @todo display warning on UI & gracefully fail if the next value is undefined
       if(this.columnSchema.relationship) {
         relatedTable = this.columnSchema.relationship.get('table_related');

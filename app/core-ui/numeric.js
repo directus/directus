@@ -54,7 +54,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var value = '';
       if(!isNaN(this.options.value)) {
         value = this.options.value;
-      };
+      }
 
       // Fill in default value
       if (

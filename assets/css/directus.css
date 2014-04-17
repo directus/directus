@@ -1161,6 +1161,9 @@ button {
 .large-circle .icon.icon-search {
   font-size: 33px;
 }
+.large-circle .icon.icon-paper-plane {
+  margin-left: -2px;
+}
 .italic {
   font-style: italic;
 }
@@ -2188,6 +2191,7 @@ select:focus,
   position: absolute;
   right: 0px;
   top: 0px;
+  display: none;
 }
 [data-tool-tip-for] {
   display: none;
