@@ -105,7 +105,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           id: item.id,
           uid: DIRECTUS_USERS + '_' + item.id,
           name: item.get('first_name') + ' ' + item.get('last_name'),
-          avatar: item.get('avatar'),
+          avatar: item.get('avatar') ? item.get('avatar') : app.PATH + 'assets/img/missing-directus-avatar.png',
           type: DIRECTUS_USERS
         };
       });

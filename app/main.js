@@ -192,7 +192,7 @@ require(["config"], function() {
         {id: "users",    icon_class: "icon-users"},
         {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
         {id: "activity", icon_class: "icon-bell"},
-        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar")},
+        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar") ? app.users.getCurrentUser().get("avatar") : app.PATH + 'assets/img/missing-directus-avatar.png'},
         {id: "logout", icon_class: "icon-power-button"}
       ];
 

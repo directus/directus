@@ -73,11 +73,13 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           'online': (moment(model.get('last_access')).add('m', 5) > moment())
         };
 
-        if (data.avatar !== null) {
-            //@todo this is a hack, maybe change avatar so it only includes a hash?
-            var avatarSmall = data.avatar.replace('?s=100','?s=200');
-            data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
+        if(!data.avatar) {
+          var avatarSmall = app.PATH + 'assets/img/missing-directus-avatar.png';
+        } else {
+          var avatarSmall = data.avatar.replace('?s=100','?s=200');
         }
+
+        data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
 
         return data;
       });
