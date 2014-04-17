@@ -250,7 +250,7 @@ define(function(require, exports, module) {
     // returns true or false
     isMine: function() {
       var myId = parseInt(app.users.getCurrentUser().id,10),
-          magicOwnerColumn = (this.collection != null) ? this.collection.table.get('magic_owner_column') : null,
+          magicOwnerColumn = (this.collection !== null) ? this.collection.table.get('magic_owner_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
 
       return myId === magicOwnerId;
