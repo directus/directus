@@ -52,9 +52,9 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var value = '';
-      if(!isNaN(this.options.value) {
+      if(!isNaN(this.options.value)) {
         value = this.options.value;
-      });
+      };
 
       // Fill in default value
       if (
