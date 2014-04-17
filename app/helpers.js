@@ -29,6 +29,10 @@ require([
     return app.capitalize(string);
   });
 
+  Handlebars.registerHelper('nl2br', function(string) {
+    return (string + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
+  });
+
   Handlebars.registerHelper('uppercase', function(string) {
     return string.toUpperCase();
   });
@@ -38,13 +42,12 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    if(date === undefined || date === null || typeof date === 'string' || isNaN(date.getTime()) ) {
+    if(date === undefined || date === null) {
       //throw new Error('The date is not in a correct date format');
       return '-';
     }
-    date = date.toISOString();
     //date = (date.substr(-1).toLowerCase() == 'z') ? date : date + 'z';
-    return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + app.contextualDate(date) + '</div>');
+    return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + moment(date).fromNow() + '</div>');
   });
 
   Handlebars.registerHelper('avatarSmall', function(userId) {
@@ -114,7 +117,7 @@ require([
 
   Handlebars.registerHelper('userFull', function(userId) {
     var user = app.users.get(userId);
-    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'"  class="avatar"/>'+user.get('first_name')+' '+user.get('last_name'));
+    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'"  class="avatar"/><span class="avatar-name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
   });
 
   Handlebars.registerHelper('userFirstAndLastName', function(userId) {
