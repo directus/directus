@@ -260,6 +260,10 @@ define(function(require, exports, module) {
     // bigedit = edit others
     // edit = edit your own
     canEdit: function(attribute) {
+      //@TODO: Actually Fix this Issue
+      if(!this.collection) {
+        return false;
+      }
       var iAmTheOwner         = this.isMine(),
           privileges          = this.collection.privileges,
           bigeditPermission   = this.collection.hasPermission('bigedit'),
