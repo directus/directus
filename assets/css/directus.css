@@ -2030,7 +2030,7 @@ select:focus,
   font-size: 12px;
 }
 .table-striped tr:hover {
-  background-color: #fffbc4;
+  background-color: #fffddd;
   cursor: pointer;
 }
 .table-striped tr:hover .settings {
@@ -3031,7 +3031,7 @@ select:focus,
   width: 100%;
 }
 .message:hover {
-  background-color: #fffbc4;
+  background-color: #fffddd;
 }
 .message .check-box {
   bottom: 0px;

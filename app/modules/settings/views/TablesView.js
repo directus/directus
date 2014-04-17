@@ -355,13 +355,13 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       var data = {};
       data[attr] = !tableModel.get(attr);
       tableModel.save(data);
-      if(element.hasClass('green')) {
-        element.addClass('gray');
-        element.removeClass('green');
+      if(element.hasClass('add-color')) {
+        element.addClass('delete-color');
+        element.removeClass('add-color');
         element.html('✖');
       } else {
-        element.addClass('green');
-        element.removeClass('gray');
+        element.addClass('add-color');
+        element.removeClass('delete-color');
         element.html('✔');
       }
     },
