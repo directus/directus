@@ -123,7 +123,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         collection: relatedCollection,
         toolbar: false,
         selectable: false,
-        sortable: false,
+        sortable: true,
         footer: false,
         tableHead: false,
         saveAfterDrop: false,
@@ -145,14 +145,25 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       }, this);
 
       this.listenTo(relatedCollection.nestedCollection, 'sync', function() {
-        var that = this;
-        //@TODO: Make this not suck
+        var models = this.relatedCollection.nestedCollection.filter(function(model) {
+          return ids.indexOf(model.id) != -1;
+        });
+        var  i = 0;
         this.relatedCollection.each(function(model) {
-          model.get('data').set({image: that.relatedCollection.nestedCollection.get(model.get('data').id).get('image')});
+          if(i < models.length) {
+            model.get('data').set(models[i].attributes);
+          }
+          i++;
         });
 
         this.nestedTableView.render();
       }, this);
+
+      if(ids.length > 0) {
+        this.listenTo(relatedCollection.nestedCollection, 'sort', function() {
+          this.relatedCollection.nestedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}, reset:true});
+        });
+      }
     }
 
   });

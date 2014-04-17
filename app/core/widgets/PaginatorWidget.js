@@ -49,13 +49,12 @@ function(app, Backbone) {
       }
 
       this.render();
-      document.body.scrollTop = document.documentElement.scrollTop = 0;
     },
 
     initialize: function() {
       this.options.widgetOptions = {};
       this.updatePaginator();
-      this.collection.on('sync', this.updatePaginator, this);
+      this.collection.on('sync', function() {this.updatePaginator();document.body.scrollTop = document.documentElement.scrollTop = 0;}, this);
     }
 
   });

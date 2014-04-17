@@ -12,14 +12,21 @@ define(['app','backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<div class="custom-check"> \
+
+  //Temporarily disable styling since breaks this ui when in overlay
+  /*var template = '<div class="custom-check"> \
     <input value="1" id="check1" name="status" type="radio" {{#if active}}checked{{/if}}> \
     <label for="check1"><span></span>Active</label> \
     <input value="2" id="check2" name="status" type="radio" {{#if inactive}}checked{{/if}}> \
     <label for="check2"><span></span>Inactive</label> \
     <input value="0" id="check3" name="status" type="radio" {{#if deleted}}checked{{/if}}> \
     <label for="check3"><span></span>Deleted</label> \
-  <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';
+  <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';*/
+
+  var template = '<input type="radio" name="status" value="1" {{#if active}}checked{{/if}}>Active<br> \
+                  <input type="radio" name="status" value="2" {{#if inactive}}checked{{/if}}>Inactive<br> \
+                  <input type="radio" name="status" value="0" {{#if deleted}}checked{{/if}}>Deleted \
+                  <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';
 
   Module.id = 'system';
   Module.dataTypes = ['TINYINT'];

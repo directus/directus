@@ -32,7 +32,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   input.date { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 110px; \
+                    width: 132px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
@@ -85,8 +85,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   };
 
   Module.list = function(options) {
-    var template = Handlebars.compile('{{contextualDate date}}');
-    return template({date: options.value});
+    return moment(options.value).format('DD-MMM-YYYY');
   };
 
   return Module;

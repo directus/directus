@@ -121,7 +121,6 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
       this.collection.on('select', function() {
 
-
         this.actionButtons = Boolean($('.select-row:checked').length);
         this.batchEdit = $('.select-row:checked').length > 1;
 
