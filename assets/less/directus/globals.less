@@ -97,7 +97,7 @@
 }
 
 ////////////
-//  TEXT
+//  TEXT AND COLOR
 ////////////
 .italic {
   font-style: italic;
@@ -129,6 +129,9 @@ a.secondary-info {
 }
 .bold {
   font-weight: 600;
+}
+.add-color-background {
+  background-color: @addColor !important;
 }
 
 ////////////
@@ -206,10 +209,10 @@ input:-webkit-autofill {
 .message-recipients {
   background-color: @extraLightGrey;
   padding: @standardPad;
-  margin-bottom: @standardPad;
+  //margin-bottom: @standardPad;
 }
 .message-response {
-  padding-top: @smallPad;
+  padding-top: @standardPad;
   min-height: 50px;
   border-bottom: 1px solid @lightGrey;
   .message-body {
@@ -221,7 +224,6 @@ input:-webkit-autofill {
 }
 .message-datetime {
   float: right;
-  font-style: italic;
   margin-top: 6px;
 }
 .message-reply {

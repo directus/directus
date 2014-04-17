@@ -78,7 +78,7 @@ function(app, Backbone, BasePageView, Widgets) {
     },
     leftToolbar: function() {
       return [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
       ];
     },
     rightToolbar: function() {

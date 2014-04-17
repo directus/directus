@@ -18,7 +18,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-paper-plane"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-paper-plane", buttonClass: "add-color-background"}})
       ];
     },
     events: {
