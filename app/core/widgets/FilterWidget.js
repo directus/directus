@@ -30,6 +30,10 @@ function(app, Backbone) {
       },
       'keydown input': function(e) {
         if (e.keyCode == 13) { this.addNewFilter(); }
+      },
+      'click #cancelFilterButton': function(e) {
+        this.options.filterOptions.addFilter = false;
+        this.render();
       }
     },
 
@@ -44,10 +48,6 @@ function(app, Backbone) {
           type: $this.find('.adv-search-query-type').val(),
           value: $this.find('input').val()
         };
-
-        // @DAX Uncoment this once toolbar has been moved to header
-        //that.filterModel.addFilter(values.id, values.type, values.value);
-        //$('#advancedFilterList').append('<li>' + values.id + ' ' + values.type + ' ' + values.value + '</li>');
 
         return {
           id: that.mysql_real_escape_string(values.id),
