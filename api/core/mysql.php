@@ -691,7 +691,7 @@ class MySQL {
                 /** Gravatar icon URL */
                 $item['avatar'] = null;
                 if(!empty($item['email']))
-                    $item['avatar'] = Db\Users::get_gravatar($item['email'], Db\Users::GRAVATAR_SIZE, 'identicon');
+                    $item['avatar'] = Db\Users::get_avatar($item['email'], Db\Users::GRAVATAR_SIZE, 'identicon');
             }
         }
         $cols = array_keys(reset($data));

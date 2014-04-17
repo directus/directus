@@ -28,7 +28,7 @@ define(['app','backbone'], function(app, Backbone) {
       var user = app.users.get(options.value);
       if(user) {
         this.$el.append('<img src="'+user.get('avatar')+'" class="avatar" />');
-      } 
+      }
     }
   });
 

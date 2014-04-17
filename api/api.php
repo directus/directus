@@ -478,7 +478,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
        in_array($app->request()->getMethod(), array('POST')) &&
        array_key_exists('email',$requestPayload)
        ) {
-        $avatar = DirectusUsersTableGateway::get_gravatar($requestPayload['email']);
+        $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
         $requestPayload['avatar'] = $avatar;
     }
 
@@ -516,7 +516,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
        in_array($app->request()->getMethod(), array('PUT', 'PATCH')) &&
        array_key_exists('email',$requestPayload)
        ) {
-        $avatar = DirectusUsersTableGateway::get_gravatar($requestPayload['email']);
+        $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
         $requestPayload['avatar'] = $avatar;
     }
 
