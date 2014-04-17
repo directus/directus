@@ -86,7 +86,7 @@ function(app, Backbone) {
 
       //Check if date
       if(typeof value === "string") {
-        if(Date.parse(value) !== NaN) {
+        if(!isNaN(Date.parse(value))) {
           return new Date(value).getTime();
         }
       }
