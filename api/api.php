@@ -644,12 +644,16 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
             // $Transfer = new Media\Transfer();
             $Storage = new Media\Storage\Storage();
             // $fileData = $Transfer->acceptFile($thumbnailTempName, $targetFileName);
-            $fileData = $Storage->acceptFile($thumbnailTempName, $targetFileName);
+            $fileData = array('caption'=>'','tags'=>'','location'=>'');
+            $fileData = array_merge($fileData, $Storage->acceptFile($thumbnailTempName, $targetFileName));
             $requestPayload = array_merge($requestPayload, array(
                 'type' => 'embed/youtube',
                 'embed_id' => $videoId,
                 'name' => $fileData['name'],
                 'title' => $fileData['title'],
+                'tags' => $fileData['tags'],
+                'caption' => $fileData['caption'],
+                'location' => $fileData['location'],
                 'charset' => $fileData['charset'],
                 'size' => $fileData['size'],
                 'width' => $fileData['width'],
@@ -837,11 +841,15 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
     $result = array();
     foreach ($_FILES as $file) {
         // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
-        $fileData = $Storage->acceptFile($file['tmp_name'], $file['name']);
+        $fileData = array('caption'=>'','tags'=>'','location'=>'');
+        $fileData = array_merge($fileData, $Storage->acceptFile($file['tmp_name'], $file['name']));
         $result[] = array(
             'type' => $fileData['type'],
             'name' => $fileData['name'],
             'title' => $fileData['title'],
+            'tags' => $fileData['tags'],
+            'caption' => $fileData['caption'],
+            'location' => $fileData['location'],
             'charset' => $fileData['charset'],
             'size' => $fileData['size'],
             'width' => $fileData['width'],

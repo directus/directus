@@ -141,6 +141,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         var model = this.model;
         app.sendFiles(file, function(data) {
           model.set(data[0]);
+          model.trigger('sync');
         });
       },
       'click .ui-thumbnail-dropzone': function(e) {
@@ -186,6 +187,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         }
         app.sendFiles(e.dataTransfer.files, function(data) {
           model.set(data[0]);
+          model.trigger('sync');
         });
         $dropzone.removeClass('dragover');
       }, this);
