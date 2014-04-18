@@ -1,2 +1,0 @@
-ALTER TABLE  `directus_activity` ADD  `delta` TEXT NOT NULL AFTER  `data`;
-ALTER TABLE  `directus_activity` ADD  `parent_changed` TINYINT( 1 ) NOT NULL COMMENT  'Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)' AFTER  `parent_id`;

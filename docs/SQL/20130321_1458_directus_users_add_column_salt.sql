@@ -1,1 +1,0 @@
-ALTER TABLE  `directus_users` ADD  `salt` VARCHAR( 255 ) NOT NULL AFTER  `password`;
