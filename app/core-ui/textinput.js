@@ -24,8 +24,8 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'validation_message', ui: 'textinput', char_length:200}
   ];
 
-  var template = '<input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
-                // <span class="label char-count hide">{{characters}}</span>';
+  var template = '<div class="char-count-container"><input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
+                  <span class="char-count hide">{{characters}}</span></div>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -38,15 +38,15 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'focus input': function() { this.$el.find('.label').show(); },
+      'focus input': function() { this.$el.find('.char-count').show(); },
       'input input': 'updateMaxLength',
       'keypress input': 'validateString',
-      'blur input': function() { this.$el.find('.label').hide(); }
+      'blur input': function() { this.$el.find('.char-count').hide(); }
     },
 
     updateMaxLength: function(e) {
       var length = this.options.schema.get('char_length') - e.target.value.length;
-      this.$el.find('.label').html(length);
+      this.$el.find('.char-count').html(length);
     },
 
     afterRender: function() {
