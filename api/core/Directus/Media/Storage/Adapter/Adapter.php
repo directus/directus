@@ -58,7 +58,7 @@ abstract class Adapter {
      * @param  string $localFile      The local path of the source file.
      * @param  string $targetFileName The intended target file name.
      * @param  mixed $destination    The destination where we'll write the file. Varies depending on adapter
-     * implementation. 
+     * implementation.
      * @return [type]                 [description]
      */
     protected abstract function writeFile($localFile, $targetFileName, $destination);
@@ -67,7 +67,7 @@ abstract class Adapter {
      * Does the specified file exist in the target location?
      * @param  string $fileName      The file we're checking for.
      * @param  mixed $destination    The destination where we'll check for this file. Varies depending on adapter
-     * implementation. 
+     * implementation.
      * @return bool
      */
     public abstract function fileExists($fileName, $destination);
@@ -116,6 +116,7 @@ abstract class Adapter {
         if($typeTokens[0] == 'image') {
             $meta = array();
             $size = getimagesize($filepath, $meta);
+
             $info['width'] = $size[0];
             $info['height'] = $size[1];
             if (isset($meta["APP13"])) {
