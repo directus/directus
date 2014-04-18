@@ -52,6 +52,9 @@
           line-height: 12px;
           vertical-align: top;
         }
+        &.sort {
+          font-size: 10px;
+        }
       }
     }
     #set-visible-columns {
@@ -75,6 +78,20 @@
   }
   tbody {
     background-color: @white;
+    .sort {
+      color: @lightGrey;
+      font-size: 10px;
+      width: 5px;
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-right: 0;
+      &:hover {
+        color: @mediumGrey;
+      }
+      .icon {
+        margin-top: -4px;
+      }
+    }
   }
   tr {
     -webkit-font-smoothing: auto;

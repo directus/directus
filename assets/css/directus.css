@@ -2042,6 +2042,9 @@ select:focus,
   line-height: 12px;
   vertical-align: top;
 }
+.table-striped thead tr th.sort {
+  font-size: 10px;
+}
 .table-striped thead #set-visible-columns {
   position: absolute;
   top: 10px;
@@ -2064,6 +2067,20 @@ select:focus,
 }
 .table-striped tbody {
   background-color: #ffffff;
+}
+.table-striped tbody .sort {
+  color: #ededed;
+  font-size: 10px;
+  width: 5px;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+.table-striped tbody .sort:hover {
+  color: #cccccc;
+}
+.table-striped tbody .sort .icon {
+  margin-top: -4px;
 }
 .table-striped tr {
   -webkit-font-smoothing: auto;

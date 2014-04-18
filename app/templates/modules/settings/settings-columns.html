@@ -1,7 +1,7 @@
 <table class="table table-striped directus-table" id="directus_columns">
 <thead>
 <tr>
-    <th class="sort"><span class="glyphicon-random"></span></th>
+    <th class="sort"><span class="icon icon-list"></span></th>
     <th class="field-field">Field</th>
     <th class="field-input_type">Input Type</th>
     <th class="field-hidden">Hidden</th>
@@ -13,7 +13,7 @@
 <tbody>
   {{#rows}}
   <tr class="{{#if alias}}alias{{/if}}{{#if system}}system{{/if}}" data-id="{{id}}">
-    <td class="sort">{{#unless system}}<span class="glyphicon-show-lines"></span>{{/unless}}</td>
+    <td class="sort">{{#unless system}}<span class="icon icon-list"></span>{{/unless}}</td>
     <td><span title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
     {{#if system}}
     <td colspan="5"><em>This is a system field</em></td>

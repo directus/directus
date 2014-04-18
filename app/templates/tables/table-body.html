@@ -1,6 +1,6 @@
 {{#each rows}}
 	<tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="{{{activeMap model}}} {{#classes}}{{this}} {{/classes}} {{#if highlight}}highlighted{{/if}}">
-		{{#if ../sortable}}<td class="sort"><span class="glyphicon-show-lines"></span></td>{{/if}}
+		{{#if ../sortable}}<td class="sort"><span class="icon icon-list"></span></td>{{/if}}
 		{{#if ../selectable}}
 		  <td class="check check-box">
 		    <input class="custom-check select-row" id="check{{ model.id }}" type="checkbox" value="{{model.id}}" />
