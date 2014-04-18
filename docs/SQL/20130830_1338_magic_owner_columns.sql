@@ -1,1 +1,0 @@
-UPDATE `directus_tables` SET  `magic_owner_column` =  'user' WHERE  `directus_tables`.`table_name` =  'directus_media';

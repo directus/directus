@@ -1,6 +1,0 @@
-{
-  "name": "Directus",
-  "version": "0.0.1",
-  "directory" : "assets/bower",
-  "devDependencies": {}
-}

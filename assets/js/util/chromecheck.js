@@ -1,8 +1,10 @@
 (function () {
 
-  var isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+  var ua = window.navigator.userAgent;
+  var msie = ua.indexOf("MSIE ");
 
-  if (!isChrome) {
+
+  if (msie >= 0) {
     alert('For best performance, we recommend that you use Directus with Google Chrome.');
   }
 

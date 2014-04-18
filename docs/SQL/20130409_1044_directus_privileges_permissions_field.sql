@@ -1,2 +1,0 @@
-ALTER TABLE  `directus_privileges` ADD  `permissions` VARCHAR( 500 ) NULL AFTER  `table_name`;
-ALTER TABLE  `directus_privileges` CHANGE  `permissions`  `permissions` VARCHAR( 500 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL COMMENT  'Table-level permissions (insert, delete, etc.)';

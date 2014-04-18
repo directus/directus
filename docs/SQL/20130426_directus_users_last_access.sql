@@ -1,1 +1,0 @@
-ALTER TABLE  `directus_users` ADD  `last_access` DATETIME NULL DEFAULT NULL AFTER  `last_login`;
