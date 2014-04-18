@@ -12,7 +12,6 @@ require.config({
     "backbone":   "../assets/js/libs/backbone",
     "handlebars": "../assets/js/libs/handlebars",
     "jquery-ui":  "../assets/js/libs/jquery-ui",
-    "almond":     "../assets/js/libs/almond",
     "moment":     "../assets/js/libs/moment.min",
 
     // JavaScript folders.
