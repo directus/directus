@@ -2088,6 +2088,14 @@ select:focus,
 .related-table thead tr th:hover {
   background-color: #ededed;
 }
+.related-table .table-striped tr td.delete {
+  text-align: right;
+  width: 15px;
+  font-size: 16px;
+}
+.related-table .table-striped tr td.delete:hover {
+  color: #c1272d;
+}
 .set-columns {
   overflow: hidden;
   display: block;

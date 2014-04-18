@@ -33,6 +33,10 @@ function(app, Backbone, BasePageView, PaneSaveView) {
       },
     },
 
+    attributes: {
+      class: "remove-header-margin",
+    },
+
     template: 'modules/settings/settings-grouppermissions',
 
     events: {
@@ -53,15 +57,15 @@ function(app, Backbone, BasePageView, PaneSaveView) {
     },
 
     toggleIcon: function($span) {
-        $span.toggleClass('directus-glyphicon-check')
-             .toggleClass('directus-glyphicon-remove');
+        $span.toggleClass('add-color')
+             .toggleClass('delete-color');
     },
 
     parseTablePermissions: function($tr) {
       var cid, id, permissions;
 
       permissions = $tr.children()
-                       .has('span.directus-glyphicon-check')
+                       .has('span.add-color')
                        .map(function() { return $(this).data('value'); })
                        .get()
                        .join();
