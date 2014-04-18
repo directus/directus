@@ -121,7 +121,13 @@ a.secondary-info {
 .delete-color {
   color: @deleteColor;
 }
+.dark-grey-color {
+  color: @darkGrey;
+}
 .medium-grey-color {
+  color: @mediumGrey;
+}
+.light-grey-color {
   color: @mediumGrey;
 }
 .add-color {
@@ -129,9 +135,13 @@ a.secondary-info {
 }
 .bold {
   font-weight: 600;
+  -webkit-font-smoothing: antialiased;
 }
 .add-color-background {
   background-color: @addColor !important;
+}
+.border-top {
+  border-top: 1px solid @lightGrey;
 }
 
 ////////////
@@ -148,29 +158,20 @@ a.secondary-info {
   /* flex: 1; */
   margin-bottom: 40px;
   margin-top: 130px;
-  padding-top: @standardPad;
 }
-
 .overlay {
   h3 {
     display: none;
   }
 }
-
-.remove-header-margin {
-  margin-top: -20px !important;
-}
-
 .nothing-here {
   text-align: center;
   margin-top: 100px;
 }
-
 .media-thumb {
   .img.portrait { height: 50px; }
   .img.landscape { width: 50px; }
 }
-
 .hide {
   display: none;
 }

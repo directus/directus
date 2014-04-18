@@ -1214,7 +1214,13 @@ a.secondary-info:hover {
 .delete-color {
   color: #c1272d;
 }
+.dark-grey-color {
+  color: #5b5b5b;
+}
 .medium-grey-color {
+  color: #cccccc;
+}
+.light-grey-color {
   color: #cccccc;
 }
 .add-color {
@@ -1222,9 +1228,13 @@ a.secondary-info:hover {
 }
 .bold {
   font-weight: 600;
+  -webkit-font-smoothing: antialiased;
 }
 .add-color-background {
   background-color: #7ac943 !important;
+}
+.border-top {
+  border-top: 1px solid #ededed;
 }
 .main-container {
   margin-left: 170px;
@@ -1242,13 +1252,9 @@ a.secondary-info:hover {
   /* flex: 1; */
   margin-bottom: 40px;
   margin-top: 130px;
-  padding-top: 20px;
 }
 .overlay h3 {
   display: none;
-}
-.remove-header-margin {
-  margin-top: -20px !important;
 }
 .nothing-here {
   text-align: center;
@@ -1736,6 +1742,7 @@ select,
   padding: 5px;
   width: 100%;
   outline: none;
+  resize: none;
 }
 input:focus,
 textarea:focus,
@@ -1852,7 +1859,7 @@ select:focus,
   /* safari3 */
   background-color: #ededed;
   color: #5b5b5b;
-  font-weight: 500;
+  font-weight: 400;
   padding: 30px 20px 20px 20px;
   text-align: right;
   vertical-align: top;
@@ -1903,10 +1910,16 @@ select:focus,
   max-width: 700px;
   display: inline-block;
 }
+.two-column-form .fields .field .force-editable {
+  line-height: 20px;
+  padding: 10px;
+  -webkit-font-smoothing: auto;
+}
 .two-column-form .fields .field textarea {
   min-height: 100px;
   padding: 10px;
   resize: vertical;
+  line-height: 20px;
 }
 .two-column-form .fields .field select {
   max-width: 200px;
@@ -1952,6 +1965,9 @@ select:focus,
   margin-right: 5px;
   vertical-align: top;
 }
+.directus-table-container {
+  overflow: hidden;
+}
 .table-striped {
   text-align: left;
   width: 100%;
@@ -1965,6 +1981,7 @@ select:focus,
   min-width: 100px;
 }
 .table-striped thead tr {
+  -webkit-font-smoothing: antialiased;
   background-color: #f4f4f4;
 }
 .table-striped thead tr:hover {
@@ -1973,7 +1990,6 @@ select:focus,
 }
 .table-striped thead tr th {
   color: #cccccc;
-  border-bottom: 1px solid #ededed;
   font-size: 12px;
   font-weight: 600;
   padding: 10px;
@@ -2036,6 +2052,7 @@ select:focus,
   background-color: #ffffff;
 }
 .table-striped tr {
+  -webkit-font-smoothing: auto;
   border-bottom: solid 1px #f4f4f4;
   color: #5b5b5b;
   font-weight: 400;
@@ -2050,6 +2067,7 @@ select:focus,
 }
 .table-striped tr.featured {
   font-weight: 700;
+  -webkit-font-smoothing: antialiased;
 }
 .table-striped tr.inactive td {
   opacity: 0.25;
@@ -2066,6 +2084,7 @@ select:focus,
   vertical-align: middle;
   padding-bottom: 6px;
   padding-top: 5px;
+  white-space: nowrap;
 }
 .table-striped tr .check-box {
   padding-left: 15px;
@@ -2256,6 +2275,9 @@ select:focus,
   margin: 0px;
   padding: 0px;
 }
+.group-list ul {
+  margin-top: 10px;
+}
 .group-list .group-item {
   border-bottom: solid 1px #ededed;
   margin: 0px;
@@ -2397,6 +2419,7 @@ select:focus,
   top: 0px;
   width: 170px;
   z-index: 100;
+  -webkit-font-smoothing: antialiased;
 }
 #sidebar ul {
   padding: 0px;
@@ -2613,7 +2636,6 @@ select:focus,
   -webkit-box-sizing: border-box;
   /* safari3 */
   background-color: #ffffff;
-  border-bottom: 1px solid #ededed;
   clear: both;
   float: left;
   margin-bottom: 10px;
@@ -2763,7 +2785,6 @@ select:focus,
   background-color: #5b5b5b;
 }
 .header1 .tools .simple-select {
-  color: #5b5b5b;
   display: inline-block;
   vertical-align: middle;
   font-weight: 600;

@@ -12,10 +12,6 @@ function(app, Backbone, BasePageView) {
 
     template: 'modules/messages/messages-reading',
 
-    attributes: {
-      class: "remove-header-margin"
-    },
-
     events: {
       'click #messages-response-button': function() {
         var collection = this.model.get('responses');

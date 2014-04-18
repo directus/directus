@@ -83,7 +83,7 @@ function(app, Backbone, BasePageView, Widgets) {
     },
     rightToolbar: function() {
       return [
-        new Widgets.SearchWidget()
+        //new Widgets.SearchWidget()
       ];
     },
 

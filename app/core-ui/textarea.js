@@ -35,7 +35,7 @@ define(['app', 'backbone'],function(app, Backbone) {
       return {
         value: this.options.value,
         name: this.options.name,
-        rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '5',
+        rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '12',
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite
       };

@@ -9,7 +9,7 @@ function(app, Backbone, PreferenceModel) {
 
   return Backbone.Layout.extend({
     template: Handlebars.compile('\
-    <div class="simple-select vertical-center left"> \
+    <div class="simple-select dark-grey-color vertical-center left"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status"> \
         {{#if hasActiveColumn}} \

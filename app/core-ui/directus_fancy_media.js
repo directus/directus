@@ -78,10 +78,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </div> \
                   <div class="ui-img-details"> \
                     <i>{{mediaModel.title}}</i><br> \
-                    <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose media</button> \
+                    <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                   </div> \
                   {{/if}} \
-                  <div style="{{#if url}}display:none;{{/if}}" id="mediaDropArea" class="ui-thumbnail empty ui-thumbnail-dropzone">Drag media here, or click for existing</div> \
+                  <div style="{{#if url}}display:none;{{/if}}" id="mediaDropArea" class="ui-thumbnail empty ui-thumbnail-dropzone">Drag files here, or click for existing</div> \
                   <input style="display:none" id="fileAddInput" type="file" class="large" />';
 
   Module.Input = Backbone.Layout.extend({

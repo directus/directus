@@ -132,6 +132,7 @@ select,
   padding: @extraSmallPad;
   width: 100%;
   outline: none;
+  resize: none;
   &:focus {
     border: solid 1px @mediumGrey;
   }
@@ -231,7 +232,7 @@ select,
       .clear-fix;
       background-color: @lightGrey;
       color: @darkGrey;
-      font-weight: 500;
+      font-weight: 400;
       padding: 30px @standardPad @standardPad @standardPad;
       text-align: right;
       vertical-align: top;
@@ -269,10 +270,16 @@ select,
         max-width: @maxFieldWidth;
         display: inline-block;
       }
+      .force-editable {
+        line-height: 20px;
+        padding: 10px;
+        -webkit-font-smoothing: auto;
+      }
       textarea {
         min-height: 100px;
         padding: @smallPad;
         resize: vertical;
+        line-height: 20px;
       }
       select {
         max-width: 200px;

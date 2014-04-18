@@ -89,17 +89,17 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-media"> \
-                    <img src="{{thumbUrl}}"> \
+                    <a href="{{link}}" class="title" target="single_media"><img src="{{thumbUrl}}"></a> \
                   </div> \
                   <div class="ui-img-details"> \
                     <a href="{{link}}" class="title" target="single_media">{{mediaModel.title}}</a><br> \
                     Uploaded by {{userName user}} {{contextualDate mediaModel.date_uploaded}}<br> \
                     <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{bytesToSize mediaModel.size}}</i><br> \
-                    <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose media</button> \
-                    <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove media</button> \
+                    <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
+                    <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove file</button> \
                   </div> \
                   {{else}} \
-                  <div class="ui-thumbnail empty ui-thumbnail-dropzone">Drag media here, or click for existing</div> \
+                  <div class="ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click for existing</div> \
                   {{/if}}';
 
   Module.Input = Backbone.Layout.extend({

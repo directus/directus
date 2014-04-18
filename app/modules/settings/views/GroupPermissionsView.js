@@ -33,10 +33,6 @@ function(app, Backbone, BasePageView, PaneSaveView) {
       },
     },
 
-    attributes: {
-      class: "remove-header-margin",
-    },
-
     template: 'modules/settings/settings-grouppermissions',
 
     events: {

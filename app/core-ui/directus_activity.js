@@ -32,7 +32,7 @@ define(['app','backbone'], function(app, Backbone) {
 
     switch (type) {
       case 'MEDIA':
-        returnStr = '<a href="#" data-action="media" data-id="'+model.get('row_id')+'">' + identifier + '</a> has been ' + app.actionMap[action] + ' ' + app.prepositionMap[action] + ' <a href="#files">Media</a>';
+        returnStr = '<a href="#" data-action="media" data-id="'+model.get('row_id')+'">' + identifier + '</a> has been ' + app.actionMap[action] + ' ' + app.prepositionMap[action] + ' <a href="#files">Files</a>';
         break;
       case 'SETTINGS':
         returnStr = 'The settings have been updated';
