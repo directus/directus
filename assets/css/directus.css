@@ -1586,6 +1586,18 @@ select {
   width: 20px;
   -webkit-appearance: none;
 }
+.char-count-container {
+  position: relative;
+  display: inline-block;
+  max-width: 700px;
+  width: 100%;
+}
+.char-count-container .char-count {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  color: #cccccc;
+}
 .standard-select {
   position: relative;
 }
@@ -2075,6 +2087,14 @@ select:focus,
 }
 .related-table thead tr th:hover {
   background-color: #ededed;
+}
+.related-table .table-striped tr td.delete {
+  text-align: right;
+  width: 15px;
+  font-size: 16px;
+}
+.related-table .table-striped tr td.delete:hover {
+  color: #c1272d;
 }
 .set-columns {
   overflow: hidden;

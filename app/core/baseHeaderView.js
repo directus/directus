@@ -73,7 +73,7 @@ function(app, Backbone) {
     setMarginToHeaderHeight: function() {
       var $mainBody = $('#content .content-body'),
           startScrollTop = $mainBody.scrollTop(),
-          newHeaderHeight = this.$('.header1').outerHeight(),
+          newHeaderHeight = $('.header1').outerHeight(),
           headerHeightDifference = newHeaderHeight - this.lastHeaderHeight;
 
       $mainBody.css('margin-top', newHeaderHeight + 'px').scrollTop(startScrollTop + headerHeightDifference);
