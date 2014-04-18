@@ -123,8 +123,6 @@ define(function(require, exports, module) {
         return item;
       });
 
-      console.log(responseData);
-
       callback.apply(this, [responseData]);
     };
 

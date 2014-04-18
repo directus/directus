@@ -121,6 +121,7 @@ abstract class Adapter {
             $info['height'] = $size[1];
             if (isset($meta["APP13"])) {
                 $iptc = iptcparse($meta["APP13"]);
+
                 if (isset($iptc['2#120'])) {
                     $info['caption'] = $iptc['2#120'][0];
                 }
@@ -128,8 +129,19 @@ abstract class Adapter {
                     $info['title'] = $iptc['2#005'][0];
                 }
                 if (isset($iptc['2#025'])) {
-                    $info['tags'] = implode($iptc['2#025'], ',');
+                    $info['tags'] = implode(',', $iptc['2#025']);
                 }
+                $location = array();
+                if(isset($iptc['2#090']) && $iptc['2#090'][0] != '') {
+                  $location[] = $iptc['2#090'][0];
+                }
+                if(isset($iptc["2#095"][0]) && $iptc['2#095'][0] != '') {
+                  $location[] = $iptc['2#095'][0];
+                }
+                if(isset($iptc["2#101"]) && $iptc['2#101'][0] != '') {
+                  $location[] = $iptc['2#101'][0];
+                }
+                $info['location'] = implode(', ', $location);
             }
         }
         return $info;
