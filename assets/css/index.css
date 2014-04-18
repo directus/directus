@@ -8,8 +8,7 @@
  *
  */
 
-/*@import "../vendor/bootstrap.css";*/
-/*@import "bootstrap.css";*/
+@import "normalize.css";
 @import "directus.css";
 
 
