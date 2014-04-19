@@ -159,6 +159,10 @@ define(['app', 'backbone'], function(app, Backbone) {
       },
       'click .swap-method-btn': function() {
         this.$el.find('.swap-method').toggleClass('hide');
+
+        if(this.$el.find('#urlInput').is(':visible')) {
+          this.$el.find('#urlInput').focus();
+        }
       },
       'click #retriveUrlBtn': function(e) {
         var url = this.$el.find('#urlInput').val();

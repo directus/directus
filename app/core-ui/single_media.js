@@ -131,6 +131,10 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       'click .has-media': 'edit',
       'click .swap-method-btn': function() {
         this.$el.find('.swap-method').toggleClass('hide');
+
+        if(this.$el.find('#urlInput').is(':visible')) {
+          this.$el.find('#urlInput').focus();
+        }
       },
       'click #retriveUrlBtn': function(e) {
         var url = this.$el.find('#urlInput').val();
