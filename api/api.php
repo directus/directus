@@ -351,7 +351,7 @@ EMAILBODY;
             'success' => false
         ));
     }
-
+/*
     $message = Swift_Message::newInstance('You reset your Directus password')
       ->setFrom(array('noreply@getdirectus.com' => 'Directus'))
       ->setTo(array($user['email']))
@@ -359,7 +359,13 @@ EMAILBODY;
 
     $mailer = Bootstrap::get('mailer');
     $result = $mailer->send($message);
+*/
+    $headers = 'From: directus@directus.com' . "\r\n" .
+    'Reply-To: directus@directus.com' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
 
+    mail($user['email'], 'You Reset Your Directus Password', $emailBodyPlainText, $headers);
+    $result = 1;
     $success = ($result === 1);
     return JsonView::render(array(
         'success' => $success
