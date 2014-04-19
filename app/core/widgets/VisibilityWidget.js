@@ -27,6 +27,7 @@ function(app, Backbone, PreferenceModel) {
           {{/snapshots}} \
         </optgroup> \
       </select> \
+      <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
     </div> \
     <div class="action vertical-center left" id="saveSnapshotBtn">Save Snapshot</div> \
     <div style="display:none" class="action vertical-center left snapshotOption" id="pinSnapshotBtn">Pin Snapshot</div> \
@@ -140,6 +141,10 @@ function(app, Backbone, PreferenceModel) {
           $('#visibilitySelect').val(this.collection.preferences.get('active'));
         }
       }
+
+      var sel = this.$el.find('#visibilitySelect');
+      this.$el.find('#templateOption').text( sel.find(":selected").text() );
+      sel.width( this.$el.find('#template').width() * 1.03 );
     },
     initialize: function() {
       this.listenTo(this.collection.preferences, 'sync', function() {
