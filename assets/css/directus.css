@@ -1686,6 +1686,9 @@ select {
 .two-column-form div.custom-check {
   margin-top: 4px;
 }
+.two-column-form div.custom-check.with-sort {
+  padding-left: 0;
+}
 .custom-check input[type="checkbox"],
 .custom-check input[type="radio"],
 input[type="checkbox"].custom-check,
@@ -2134,6 +2137,9 @@ select:focus,
 .table-striped tr .check-box {
   padding-left: 15px;
   width: 12px;
+}
+.table-striped tr .check-box.with-sort {
+  padding-left: 0;
 }
 .table-striped tr .check-box label {
   margin-right: 0px;
