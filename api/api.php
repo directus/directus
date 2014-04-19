@@ -632,40 +632,6 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
     if(!is_null($id))
         $params['id'] = $id;
 
-    // A URL is specified. Upload the file
-    if (isset($requestPayload['url']) && !empty($requestPayload['url'])) {
-        $videoId = Media\Youtube::getYouTubeIdFromUrl($requestPayload['url']);
-        if($videoId) {
-            // Fetch video thumbnail
-            $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusYoutubeThumbnail');
-            Media\Youtube::writeThumbnail($videoId, $thumbnailTempName);
-            // Upload video thumbnail
-            $targetFileName = "$videoId.jpg";
-            // $Transfer = new Media\Transfer();
-            $Storage = new Media\Storage\Storage();
-            // $fileData = $Transfer->acceptFile($thumbnailTempName, $targetFileName);
-            $fileData = array('caption'=>'','tags'=>'','location'=>'');
-            $fileData = array_merge($fileData, $Storage->acceptFile($thumbnailTempName, $targetFileName));
-            $requestPayload = array_merge($requestPayload, array(
-                'type' => 'embed/youtube',
-                'embed_id' => $videoId,
-                'name' => $fileData['name'],
-                'title' => $fileData['title'],
-                'tags' => $fileData['tags'],
-                'caption' => $fileData['caption'],
-                'location' => $fileData['location'],
-                'charset' => $fileData['charset'],
-                'size' => $fileData['size'],
-                'width' => $fileData['width'],
-                'height' => $fileData['height'],
-                'date_uploaded' => $fileData['date_uploaded']
-            ));
-        }
-    }
-
-    if (isset($requestPayload['url']))
-        unset($requestPayload['url']);
-
     $table = "directus_media";
     $currentUser = Auth::getUserInfo();
     $TableGateway = new TableGateway($acl, $table, $ZendDb);

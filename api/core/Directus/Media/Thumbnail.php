@@ -16,9 +16,10 @@ class Thumbnail {
             case 'png':
                 $img = imagecreatefrompng($localPath);
                 break;
-			default:
-				return false;
+			      default:
+				      return false;
         }
+
         $w = imagesx($img);
         $h = imagesy($img);
         $x1 = 0; // used for crops

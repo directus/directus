@@ -118,7 +118,7 @@ class Storage {
           }
 
           $fileData['url'] = $video_id;
-          $fileData['type'] = 'youtube';
+          $fileData['type'] = 'embed/youtube';
           $fileData['height'] = 340;
           $fileData['width'] = 560;
 
@@ -130,20 +130,19 @@ class Storage {
           $content = curl_exec($ch);
           curl_close($ch);
 
-          // Get thumbnail
-          $ch = curl_init('http://img.youtube.com/vi/' . $video_id . '/0.jpg');
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          $data = curl_exec($ch);
-          curl_close($ch);
-
-          $mediaAdapter = $this->storageAdaptersByRole['THUMBNAIL'];
-          $finalPath = file_put_contents($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg", $data);
           $mediaAdapter = $this->storageAdaptersByRole['DEFAULT'];
-          $finalPath = file_put_contents($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg", $data);
-          $fileData['name'] = basename($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg");
+          $fileData['name'] = "youtube_" . $video_id . ".jpg";
           $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
           $fileData['storage_adapter'] = $mediaAdapter['id'];
           $fileData['charset'] = '';
+
+          $img = Thumbnail::generateThumbnail('http://img.youtube.com/vi/' . $video_id . '/0.jpg', 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
+          $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+          Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
+          if(!is_null($thumbnailTempName)) {
+            $thumbnailDestination = $this->storageAdaptersByRole['THUMBNAIL']['destination'];
+            $this->ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name'], $thumbnailDestination);
+          }
 
           if ($content !== false) {
             $fileData['title'] = $this->get_string_between($content,"<title type='text'>","</title>");
