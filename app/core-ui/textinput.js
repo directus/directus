@@ -38,10 +38,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     template: Handlebars.compile(template),
 
     events: {
-      'focus input': function() { this.$el.find('.char-count').show(); },
+      'focus input': function() { this.$el.find('.char-count').removeClass('hide'); },
       'input input': 'updateMaxLength',
       'keypress input': 'validateString',
-      'blur input': function() { this.$el.find('.char-count').hide(); }
+      'blur input': function() { this.$el.find('.char-count').addClass('hide'); }
     },
 
     updateMaxLength: function(e) {
