@@ -274,7 +274,7 @@ define(function(require, exports, module) {
         "system":true,
         "master":false,
         "hidden_list":true,
-        "hidden_input":true,
+        "hidden_input":false,
         "required":false
       },
       {

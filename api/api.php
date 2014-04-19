@@ -648,10 +648,26 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
 
     switch ($app->request()->getMethod()) {
         case "POST":
+            $Storage = new Media\Storage\Storage();
+
+            //Save Temp Thumbnail name for use after media record save
+            $thumbnailName = "THUMB_".$requestPayload['name'];
+
+            //Save the file in TEMP Storage Adapter to Designated StorageAdapter
+            $requestPayload['name'] = $Storage->saveFile($requestPayload['name'], $requestPayload['storage_adapter']);
+
             $requestPayload['user'] = $currentUser['id'];
             $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
             $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
             $params['id'] = $newRecord['id'];
+
+            //Save Temp Thumbnail to Thumbnail SA using media id: $params['id']
+            $tempLocation = $Storage->storageAdaptersByRole['TEMP']['destination'];
+            if(file_exists($tempLocation.$thumbnailName)) {
+              $ext = pathinfo($requestPayload['name'], PATHINFO_EXTENSION);
+              $thumbnailDestination = $Storage->storageAdaptersByRole['THUMBNAIL']['destination'];
+              $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $params['id'].".".$ext, $thumbnailDestination);
+            }
             break;
         case "PATCH":
             $requestPayload['id'] = $id;

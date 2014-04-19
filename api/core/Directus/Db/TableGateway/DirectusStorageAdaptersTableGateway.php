@@ -56,6 +56,20 @@ class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway {
         return $row;
     }
 
+    public function fetchOneById($id) {
+        $select = new Select(self::$_tableName);
+        $select->limit(1);
+        $select->where->equalTo('id', $id);
+        $row = $this->selectWith($select)->current();
+        if(!$row) {
+            return false;
+        }
+        $row = $row->toArray();
+        // The adapter's `params` column is JSON serialized.
+        $row['params'] = $this->jsonDecodeIfPossible($row['params']);
+        return $row;
+    }
+
     /**
      * Used by Directus front-controller to expose the storage adapters to the front-end. For this reason we exclude
      * the `params` field which can contain private information, such as API usernames and secret keys.

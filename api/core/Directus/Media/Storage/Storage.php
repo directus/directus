@@ -32,7 +32,7 @@ class Storage {
         ));
         // Initialize Storage Adapters
         $StorageAdapters = new DirectusStorageAdaptersTableGateway($this->acl, $this->adapter);
-        $adapterRoles = array('DEFAULT','THUMBNAIL');
+        $adapterRoles = array('DEFAULT','THUMBNAIL', 'TEMP');
         $storage = $StorageAdapters->fetchByUniqueRoles($adapterRoles);
         if(count($storage) !== count($adapterRoles)) {
             throw new \RuntimeException(__CLASS__ . ' expects adapter settings for these default adapter roles: ' . implode(',', $adapterRoles));
@@ -77,6 +77,7 @@ class Storage {
         $settings = $this->mediaSettings;
         $fileData = $this->MediaStorage->getUploadInfo($localFile);
 
+
         // Generate thumbnail if image
         $thumbnailTempName = null;
         $info = pathinfo($targetFileName);
@@ -87,17 +88,17 @@ class Storage {
         }
 
         // Push original file
-        $mediaAdapter = $this->storageAdaptersByRole['DEFAULT'];
+        $mediaAdapter = $this->storageAdaptersByRole['TEMP'];
         $finalPath = $this->MediaStorage->acceptFile($localFile, $targetFileName, $mediaAdapter['destination']);
         $fileData['name'] = basename($finalPath);
         $fileData['title'] = Formatting::fileNameToFileTitle($fileData['name']);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
         $fileData['storage_adapter'] = $mediaAdapter['id'];
 
-        // Push thumbnail file if applicable (if image)
+
+        // Push thumbnail file if applicable (if image) with prefix THUMB_
         if(!is_null($thumbnailTempName)) {
-            $thumbnailDestination = $this->storageAdaptersByRole['THUMBNAIL']['destination'];
-            $this->ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name'], $thumbnailDestination);
+            $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);
         }
 
         return $fileData;
@@ -210,6 +211,26 @@ class Storage {
         }
 
         return $fileData;
+    }
+
+    public function saveFile($fileName, $destStorageAdapterId) {
+        $settings = $this->mediaSettings;
+        $finalName = null;
+        $StorageAdapters = new DirectusStorageAdaptersTableGateway($this->acl, $this->adapter);
+
+        //If desired Storage Adapter Exists...
+        $mediaAdapter = $StorageAdapters->fetchOneById($destStorageAdapterId);
+        if($mediaAdapter) {
+          //Get Temp File Path from Temp StorageAdapter
+          $tempLocation = $this->storageAdaptersByRole['TEMP']['destination'];
+          //Try to accept file into new fella
+          $finalPath = $this->MediaStorage->acceptFile($tempLocation.$fileName, $fileName, $mediaAdapter['destination']);
+          $finalName = basename($finalPath);
+        } else {
+          die("ERROR! No Storage Adapter found with Designated ID: ".$destStorageAdapterId);
+        }
+
+        return $finalName;
     }
 
     private function get_string_between($string, $start, $end){

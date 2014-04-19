@@ -133,7 +133,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       data.orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
 
       if(model.has('type')) {
-        console.log(model.get('type'));
         if(model.get('type') == 'embed/youtube') {
           data.youtube = model.get('url');
         } else if(model.get('type') == 'embed/vimeo') {
@@ -224,6 +223,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           return;
         }
         app.sendFiles(e.dataTransfer.files, function(data) {
+          console.log(data);
           model.set(data[0]);
           model.trigger('sync');
         });
