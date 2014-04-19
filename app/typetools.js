@@ -120,8 +120,9 @@ define(["plugins/jquery.timeago"], function() {
 
     seconds_convert: function (s) {
       var m = Math.floor(s/60); //Get remaining minutes
-      s -= m*60;
-      return (m < 10 ? '0'+m : m)+":"+(s < 10 ? '0'+s : s); //zero padding on minutes and seconds
+      s = s%60;
+      s = (s < 10) ? '0' + s : s;
+      return m+":"+s; //zero padding on minutes and seconds
     },
 
     contextualDate: function(value) {
