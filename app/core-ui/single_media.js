@@ -245,7 +245,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       var data = this.mediaModel.toJSON();
       var isImage = _.contains(['image/jpeg','image/png'], this.mediaModel.get('type'));
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
-      console.log(this.mediaModel);
 
       if(data.type) {
         if(data.type == 'embed/youtube') {
