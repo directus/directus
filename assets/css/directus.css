@@ -1305,6 +1305,17 @@ input:-webkit-autofill {
   z-index: 99999999;
   cursor: progress;
 }
+#loader {
+  position: fixed;
+  left: 170px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 49;
+  cursor: progress;
+  display: none;
+}
 .spinner {
   position: absolute;
   width: 100px;
