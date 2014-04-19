@@ -47,8 +47,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
       var readonly = false;
-      console.log(value);
-      console.log(this.options.model.isNew());
+
       // Fill in default value
       if (this.options.model.isNew() && app.settings.get('media').get('media_title_naming') == "media_id") {
         value = "This Items Title Will Automatically Become This Items ID When it is saved.";
