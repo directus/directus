@@ -71,6 +71,12 @@ define(['app', 'backbone'], function(app, Backbone) {
                     margin-top: 8px; \
                     margin-right: 10px; \
                   } \
+                  .swap-method-btn { \
+                    display:block; \
+                    clear: both; \
+                    padding-top: 5px; \
+                    cursor: pointer; \
+                  } \
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-media"> \
@@ -87,8 +93,8 @@ define(['app', 'backbone'], function(app, Backbone) {
                   {{/if}} \
                   <div style="{{#if url}}display:none;{{/if}}" id="mediaDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag files here, or click for existing</div> \
                   <input style="display:none" id="fileAddInput" type="file" class="large" /> \
-                  <input id="urlInput" type="text" class="hide swap-method large" /><button class="hide swap-method btn btn-small btn-primary margin-left" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <div class="swap-method swap-method-btn">Or use a URL</div><div class="hide swap-method swap-method-btn">Or Upload a local File</div>';
+                  <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or upload a local file</div>';
 
   Module.Input = Backbone.Layout.extend({
 

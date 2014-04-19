@@ -19,7 +19,7 @@ define(function(require, exports, module) {
         "column_name":"item",
         "type":"ALIAS",
         "is_nullable":"NO",
-        "comment":"The CMS will pull meta information from any pictures you upload. Paste YouTube or Vimeo links to embed videos",
+        "comment":"",
         "sort":-1,
         "ui":"directus_fancy_media",
         "system":false,
