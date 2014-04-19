@@ -36,7 +36,7 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
       var data = this.collection.map(function(model) {
         var data = {
           "table": model.get('table_name'),
-          'time': moment(model.get('datetime')).format("h:mma"),
+          'time': moment(model.get('datetime')).fromNow(),
           "timestamp": model.get('datetime')
         };
 
@@ -100,7 +100,7 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           if(date == moment().format('MMMM-D-YYYY')) {
             groupedData[date] = {title: "Today", data: []};
           } else {
-            groupedData[date] = {title: moment(group.timestamp).format('MMMM D, YYYY') + " - " + moment(group.timestamp).fromNow(), data: []};
+            groupedData[date] = {title: moment(group.timestamp).format('MMMM D, YYYY'), data: []};
           }
         }
         groupedData[date].data.push(group);

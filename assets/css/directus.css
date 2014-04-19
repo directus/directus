@@ -1242,6 +1242,11 @@ a.secondary-info:hover {
 .border-top {
   border-top: 1px solid #ededed;
 }
+.big-label-text {
+  font-size: 40px;
+  font-weight: 800;
+  color: #ededed;
+}
 .main-container {
   margin-left: 170px;
   padding: 0px 80px;
