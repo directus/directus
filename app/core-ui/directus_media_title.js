@@ -19,8 +19,8 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }}
   ];
 
-  var template = '<div class="char-count-container"><input type="text value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}"/> \
-                  <span class="char-count hide">{{characters}}</span></div>';
+  var template = '{{#unless readonly}}<div class="char-count-container"><input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
+                  <span class="char-count hide">{{characters}}</span></div>{{else}}<span>{{value}}</span>{{/unless}}';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -46,12 +46,13 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
-
+      var readonly = false;
+      console.log(value);
+      console.log(this.options.model.isNew());
       // Fill in default value
-      if ( !value &&
-        this.options.model.isNew() &&
-        this.options.schema.has('default_value')) {
-          value = this.options.schema.get('default_value');
+      if (this.options.model.isNew() && app.settings.get('media').get('media_title_naming') == "media_id") {
+        value = "This Items Title Will Automatically Become This Items ID When it is saved.";
+        readonly = true;
       }
 
       return {
@@ -60,7 +61,8 @@ define(['app', 'backbone'], function(app, Backbone) {
         name: this.options.name,
         maxLength: length,
         characters: length - value.toString().length,
-        comment: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment'),
+        readonly: readonly
       };
     }
   });

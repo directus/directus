@@ -233,7 +233,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               $thumbnailName = "THUMB_".$recordData['name'];
 
               //If we are using Media ID, Dont save until after insert
-              if($Storage->getMediaSettings()['media_naming'] != "media_id") {
+              if($Storage->getMediaSettings()['media_file_naming'] != "media_id") {
                 //Save the file in TEMP Storage Adapter to Designated StorageAdapter
                 $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
               }
@@ -244,12 +244,21 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
             if($tableName == "directus_media") {
               $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
-
+              $updateArray = array();
               //If using MediaId saving, then update record and set name to id
-              if($Storage->getMediaSettings()['media_naming'] == "media_id") {
+              if($Storage->getMediaSettings()['media_file_naming'] == "media_id") {
                 $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext);
+                $updateArray['id'] = $recordData['id'];
+              }
+
+              //If we are using media_id titles, then set title to id
+              if($Storage->getMediaSettings()['media_title_naming'] == "media_id") {
+                $updateArray['title'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT);
+              }
+
+              if(!empty($updateArray)) {
                 $Update = new Update($tableName);
-                $Update->set(array('name' => $newName));
+                $Update->set($updateArray);
                 $Update->where(array('id' => $recordData['id']));
                 $TableGateway->updateWith($Update);
               }

@@ -71,7 +71,8 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
 
         $whiteList = array(
             'media' => array(
-                    'media_naming',
+                    'media_file_naming',
+                    'media_title_naming',
                     'allowed_thumbnails',
                     'thumbnail_quality',
                     'thumbnail_crop_enabled'
