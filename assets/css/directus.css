@@ -2099,6 +2099,9 @@ select:focus,
 .table-striped tbody {
   background-color: #ffffff;
 }
+.table-striped tbody .secondary-info {
+  -webkit-font-smoothing: antialiased;
+}
 .table-striped tbody .sort {
   color: #ededed;
   font-size: 10px;
@@ -2235,6 +2238,13 @@ select:focus,
 .cards .card .header-image:hover .tool-item {
   display: block;
 }
+.cards .card .header-image .embed-icon {
+  color: #ffffff;
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  z-index: 2;
+}
 .cards .card .header-image .default-info {
   border: solid 1px #ededed;
   border-bottom: 0px;
@@ -2251,6 +2261,7 @@ select:focus,
   display: none;
   position: absolute;
   right: 10px;
+  z-index: 3;
 }
 .cards .card .header-image .tool-item .icon-pencil {
   margin-top: -6px;
