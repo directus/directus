@@ -131,7 +131,7 @@ class Storage {
           $content = curl_exec($ch);
           curl_close($ch);
 
-          $mediaAdapter = $this->storageAdaptersByRole['DEFAULT'];
+          $mediaAdapter = $this->storageAdaptersByRole['TEMP'];
           $fileData['name'] = "youtube_" . $video_id . ".jpg";
           $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
           $fileData['storage_adapter'] = $mediaAdapter['id'];
@@ -141,8 +141,7 @@ class Storage {
           $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
           Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
           if(!is_null($thumbnailTempName)) {
-            $thumbnailDestination = $this->storageAdaptersByRole['THUMBNAIL']['destination'];
-            $this->ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name'], $thumbnailDestination);
+            $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);
           }
 
           if ($content !== false) {
@@ -171,7 +170,7 @@ class Storage {
           $fileData['url'] = $video_id;
           $fileData['type'] = 'embed/vimeo';
 
-          $mediaAdapter = $this->storageAdaptersByRole['DEFAULT'];
+          $mediaAdapter = $this->storageAdaptersByRole['TEMP'];
           $fileData['name'] = "vimeo_" . $video_id . ".jpg";
           $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
           $fileData['storage_adapter'] = $mediaAdapter['id'];
@@ -199,8 +198,7 @@ class Storage {
             $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
             Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
             if(!is_null($thumbnailTempName)) {
-              $thumbnailDestination = $this->storageAdaptersByRole['THUMBNAIL']['destination'];
-              $this->ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name'], $thumbnailDestination);
+              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);
             }
           } else {
             // Unable to get Vimeo details
@@ -224,8 +222,13 @@ class Storage {
           //Get Temp File Path from Temp StorageAdapter
           $tempLocation = $this->storageAdaptersByRole['TEMP']['destination'];
           //Try to accept file into new fella
-          $finalPath = $this->MediaStorage->acceptFile($tempLocation.$fileName, $fileName, $mediaAdapter['destination']);
-          $finalName = basename($finalPath);
+          if(file_exists($tempLocation.$fileName)) {
+            $finalPath = $this->MediaStorage->acceptFile($tempLocation.$fileName, $fileName, $mediaAdapter['destination']);
+            $finalName = basename($finalPath);
+          } else{
+            $finalName = $fileName;
+          }
+
         } else {
           die("ERROR! No Storage Adapter found with Designated ID: ".$destStorageAdapterId);
         }
