@@ -95,9 +95,9 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-media"> \
-                    {{#if mediaModel.youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/{{mediaModel.youtube}}" frameborder="0" allowfullscreen></iframe></fieldset> \
+                    {{#if mediaModel.youtube}}<iframe width="300" height="200" src="http://www.youtube.com/embed/{{mediaModel.youtube}}" frameborder="0" allowfullscreen></iframe> \
                     {{else}} \
-                      {{#if mediaModel.vimeo}} <iframe src="//player.vimeo.com/video/{{mediaModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                      {{#if mediaModel.vimeo}} <iframe src="//player.vimeo.com/video/{{mediaModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
                       {{else}}<a href="{{link}}" class="title" target="single_media"><img src="{{thumbUrl}}"></a>{{/if}} \
                     {{/if}} \
                   </div> \
@@ -294,7 +294,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       model = model.get(options.schema.id);
     }
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var isImage = _.contains(['image/jpeg','image/png'], model.get('type'));
+    var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
     var thumbUrl = isImage ? model.makeMediaUrl(true) : app.PATH + 'assets/img/document-100x120.png';
 
     var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';

@@ -233,7 +233,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     var model = options.model;
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
     var url = model.makeMediaUrl(true);
-    var isImage = _.contains(['image/jpeg','image/png'], model.get('type'));
+    var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
     var thumbUrl = isImage ? url : app.PATH + 'assets/img/document-100x120.png';
 
     var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
