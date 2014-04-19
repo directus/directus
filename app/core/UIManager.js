@@ -6,7 +6,6 @@ define(function(require, exports, module) {
   var defaultUis = ([
     require('core-ui/textinput'),
     require('core-ui/directus_columns'),
-    require('core-ui/directus_media'),
     require('core-ui/checkbox'),
     require('core-ui/color'),
     require('core-ui/numeric'),
@@ -38,7 +37,8 @@ define(function(require, exports, module) {
     require('core-ui/enum'),
     require('core-ui/multi_select'),
     require('core-ui/system'),
-    require('core-ui/directus_fancy_media')
+    require('core-ui/directus_fancy_media'),
+    require('core-ui/directus_media_title')
   ]);
 
   var jQuery = require('jquery');
