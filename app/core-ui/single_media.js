@@ -93,7 +93,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   </div> \
                   <div class="ui-img-details"> \
                     <a href="{{link}}" class="title" target="single_media">{{mediaModel.title}}</a><br> \
-                    Uploaded by {{userName user}} {{contextualDate mediaModel.date_uploaded}}<br> \
+                    Uploaded by {{userName mediaModel.user}} {{contextualDate mediaModel.date_uploaded}}<br> \
                     <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{bytesToSize mediaModel.size}}</i><br> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                     <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove file</button> \
@@ -210,8 +210,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       var link = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl() : null;
       var data = this.mediaModel.toJSON();
       var isImage = _.contains(['image/jpeg','image/png'], this.mediaModel.get('type'));
-
-      data.date_uploaded = new Date(data.date_uploaded, this.mediaModel);
 
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
