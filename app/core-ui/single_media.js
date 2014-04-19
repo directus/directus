@@ -104,7 +104,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   <div class="ui-img-details"> \
                     <a href="{{link}}" class="title" target="single_media">{{mediaModel.title}}</a><br> \
                     Uploaded by {{userName mediaModel.user}} {{contextualDate mediaModel.date_uploaded}}<br> \
-                    <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{bytesToSize mediaModel.size}}</i><br> \
+                    <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{mediaModel.size}}</i><br> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                     <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove file</button> \
                   </div> \
@@ -253,9 +253,15 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       if(data.type) {
         if(data.type == 'embed/youtube') {
           data.youtube = data.url;
+          data.size = app.seconds_convert(data.size);
         } else if(data.type == 'embed/vimeo') {
           data.vimeo = data.url;
+          data.size = app.seconds_convert(data.size);
+        } else {
+          data.size = app.bytesToSize(data.size, 0);
         }
+      } else {
+        data.size = app.bytesToSize(data.size, 0);
       }
 
       data = {
