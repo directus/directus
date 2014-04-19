@@ -1,7 +1,7 @@
 <tr>
   {{#if sortable}}<th class="sort" data-id="sort"><span class="icon icon-shuffle"></span></th>{{/if}}
   {{#if selectable}}
-    <th class="check check-box">
+    <th class="check check-box{{#if sortable}} with-sort{{/if}}">
       <input class="custom-check" id="check-all" type="checkbox" />
       <label for="check-all"><span></span></label>
     </th>
