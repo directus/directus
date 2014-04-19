@@ -146,12 +146,165 @@ define(function(require, exports, module) {
         }
       },
       {
+        "id":"phone",
+        "column_name":"phone",
+        "type":"VARCHAR",
+        "char_length":"255",
+        "is_nullable":"NO",
+        "default_value":"",
+        "comment":"",
+        "sort":10,
+        "ui":"textinput",
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "options": {
+          "size": "medium"
+        }
+      },
+      {
+        "id":"location",
+        "column_name":"location",
+        "type":"VARCHAR",
+        "char_length":"255",
+        "is_nullable":"NO",
+        "default_value":"",
+        "comment":"",
+        "sort":11,
+        "ui":"textinput",
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "options": {
+          "size": "medium"
+        }
+      },
+      {
+        "id":"address",
+        "column_name":"address",
+        "type":"VARCHAR",
+        "char_length":"255",
+        "is_nullable":"NO",
+        "default_value":"",
+        "comment":"",
+        "sort":12,
+        "ui":"textinput",
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "options": {
+          "size": "medium"
+        }
+      },
+      {
+        "id":"city",
+        "column_name":"city",
+        "type":"VARCHAR",
+        "char_length":"255",
+        "is_nullable":"NO",
+        "default_value":"",
+        "comment":"",
+        "sort":13,
+        "ui":"textinput",
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "options": {
+          "size": "medium"
+        }
+      },
+      {
+        "id":"state",
+        "column_name":"state",
+        "type":"VARCHAR",
+        "char_length":"255",
+        "is_nullable":"NO",
+        "default_value":"",
+        "comment":"",
+        "sort":14,
+        "ui":"textinput",
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "options": {
+          "size": "small"
+        }
+      },
+      {
+        "id":"zip",
+        "column_name":"zip",
+        "type":"VARCHAR",
+        "char_length":"255",
+        "is_nullable":"NO",
+        "default_value":"",
+        "comment":"",
+        "sort":15,
+        "ui":"textinput",
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "options": {
+          "size": "small"
+        }
+      },
+      {
+        "id":"position",
+        "column_name":"position",
+        "type":"VARCHAR",
+        "char_length":"255",
+        "is_nullable":"NO",
+        "default_value":"",
+        "comment":"",
+        "sort":9,
+        "ui":"textinput",
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "required":false,
+        "options": {
+          "size": "medium"
+        }
+      },
+      {
+        "id":"last_access",
+        "column_name":"last_access",
+        "type":"DATETIME",
+        "is_nullable":"YES",
+        "default_value":"0000-00-00 00:00:00",
+        "comment":"",
+        "sort":16,
+        "system":false,
+        "master":false,
+        "hidden_list":false,
+        "hidden_input":true,
+        "required":false,
+        "ui":"datetime"
+      },
+
+
+
+
+
+      {
         "id":"email_messages",
         "column_name":"email_messages",
         "type":"TINYINT",
         "is_nullable":"NO",
         "default_value":"1",
-        "comment":"",
+        "comment":"CMS messages will also be sent to email address above",
         "sort":6,
         "system":false,
         "master":false,
@@ -167,7 +320,7 @@ define(function(require, exports, module) {
         "char_length":"255",
         "is_nullable":"NO",
         "default_value":"",
-        "comment":"",
+        "comment":"Once encrypted, no one can access your password. Forgotten passwords must be reset",
         "sort":7,
         "system":true,
         "master":false,
@@ -293,8 +446,8 @@ define(function(require, exports, module) {
         "column_name":"group",
         "type":"INT",
         "is_nullable":"YES",
-        "comment":"",
-        "sort":15,
+        "comment":"Determines this user's access",
+        "sort":8,
         "system":false,
         "master":false,
         "hidden_list":false,

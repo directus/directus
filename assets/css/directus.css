@@ -20,6 +20,7 @@
   line-height: 90%;
   text-transform: lowercase !important;
   vertical-align: top;
+  -webkit-font-smoothing: antialiased !important;
 }
 .icon-pencil.color:before {
   color: #3fa9f5;
@@ -1206,7 +1207,7 @@ button {
   font-weight: 600;
 }
 .secondary-info {
-  color: #cccccc;
+  color: #cccccc !important;
   font-size: 12px;
   font-weight: 600;
 }
@@ -1723,6 +1724,7 @@ input[type="radio"].custom-check:checked + label:before {
   line-height: 90%;
   text-transform: lowercase !important;
   vertical-align: top;
+  -webkit-font-smoothing: antialiased !important;
   color: #ffffff;
   content: "\2713";
   font-size: 29px;
@@ -1937,6 +1939,7 @@ select:focus,
 }
 .two-column-form .fields .field select {
   max-width: 200px;
+  margin-top: 2px;
 }
 .two-column-form .fields .field input.small {
   max-width: 200px;
@@ -2994,6 +2997,7 @@ select:focus,
   line-height: 90%;
   text-transform: lowercase !important;
   vertical-align: top;
+  -webkit-font-smoothing: antialiased !important;
   content: "\E4AE";
   font-size: 50px;
   line-height: 30px;
@@ -3079,6 +3083,7 @@ select:focus,
   line-height: 90%;
   text-transform: lowercase !important;
   vertical-align: top;
+  -webkit-font-smoothing: antialiased !important;
   color: #ededed;
   content: "\2753";
   line-height: 25px;
