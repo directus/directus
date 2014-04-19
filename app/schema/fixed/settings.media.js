@@ -5,7 +5,12 @@ define(function(require, exports, module) {
   var SettingsMediaSchema = module.exports;
 
   SettingsMediaSchema.structure = [
-    {id: 'media_naming', ui: 'select', char_length: 255, options: {allow_null: false, options: '{ \
+    {id: 'media_file_naming', ui: 'select', char_length: 255, options: {allow_null: false, options: '{ \
+        "file_name":"File Name", \
+        "media_id":"Media ID" \
+      }'}
+    },
+    {id: 'media_title_naming', ui: 'select', char_length: 255, options: {allow_null: false, options: '{ \
         "file_name":"File Name", \
         "media_id":"Media ID" \
       }'}
