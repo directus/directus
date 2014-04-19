@@ -80,9 +80,9 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-media"> \
-                    {{#if youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe></fieldset> \
+                    {{#if youtube}}<iframe width="300" height="200" src="http://www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe> \
                     {{else}} \
-                      {{#if vimeo}} <iframe src="//player.vimeo.com/video/{{vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                      {{#if vimeo}} <iframe src="//player.vimeo.com/video/{{vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
                       {{else}}<img src="{{thumbUrl}}">{{/if}} \
                     {{/if}} \
                   </div> \
