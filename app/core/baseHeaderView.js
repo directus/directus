@@ -76,8 +76,10 @@ function(app, Backbone) {
           newHeaderHeight = $('.header1').outerHeight(),
           headerHeightDifference = newHeaderHeight - this.lastHeaderHeight;
 
-      $mainBody.css('margin-top', newHeaderHeight + 'px').scrollTop(startScrollTop + headerHeightDifference);
-      this.lastHeaderHeight = newHeaderHeight;
+      if(newHeaderHeight > 0){
+        $mainBody.css('margin-top', newHeaderHeight + 'px').scrollTop(startScrollTop + headerHeightDifference);
+        this.lastHeaderHeight = newHeaderHeight;
+      }
     }
   });
 });
