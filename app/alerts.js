@@ -33,13 +33,13 @@ define([
   var showProgressNotification = function(message) {
     $('a[href$="#activity"] span').removeClass('icon-bell').addClass('icon-cycle');
     app.activityInProgress = true;
-    $('#loader').fadeIn(200);
+    $('#loader').show();
     //app.lockScreen();
   };
 
   var hideProgressNotification = function() {
     $('a[href$="#activity"] span').addClass('icon-bell').removeClass('icon-cycle');
-    $('#loader').fadeOut(200);
+    $('#loader').hide();
     app.activityInProgress = false;
     //app.unlockScreen();
   };
