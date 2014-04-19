@@ -55,8 +55,10 @@ function(app, Backbone, Widgets) {
         if(type == "embed") {
           data.size = app.seconds_convert(data.size);
           data.dimensions = "";
+          data.embed = true;
         } else {
           data.size = app.bytesToSize(data.size, 0);
+          data.embed = false;
         }
 
         return data;
