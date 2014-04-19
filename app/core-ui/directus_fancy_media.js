@@ -81,8 +81,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                   </div> \
                   {{/if}} \
-                  <div style="{{#if url}}display:none;{{/if}}" id="mediaDropArea" class="ui-thumbnail empty ui-thumbnail-dropzone">Drag files here, or click for existing</div> \
-                  <input style="display:none" id="fileAddInput" type="file" class="large" />';
+                  <div style="{{#if url}}display:none;{{/if}}" id="mediaDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag files here, or click for existing</div> \
+                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
+                  <input id="urlInput" type="text" class="hide swap-method large" /><button class="hide swap-method btn btn-small btn-primary margin-left" id="retriveUrlBtn" type="button">Retrieve</button> \
+                  <div class="swap-method swap-method-btn">Or use a URL</div><div class="hide swap-method swap-method-btn">Or Upload a local File</div>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -135,6 +137,19 @@ define(['app', 'backbone'], function(app, Backbone) {
       },
       'click li[data-action=swap]': function() {
         //this.$el.find('#swap-file').toggleClass('hide');
+      },
+      'click .swap-method-btn': function() {
+        this.$el.find('.swap-method').toggleClass('hide');
+      },
+      'click #retriveUrlBtn': function(e) {
+        var url = this.$el.find('#urlInput').val();
+        var model = this.model;
+
+        app.sendLink(url, function(data) {
+          console.log(data);
+          model.set(data[0]);
+          model.trigger('sync');
+        });
       },
       'change input[type=file]': function(e) {
         var file = $(e.target)[0].files[0];

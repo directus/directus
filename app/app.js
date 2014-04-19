@@ -127,7 +127,6 @@ define(function(require, exports, module) {
     };
 
     if (files instanceof File) files = [files];
-
     _.each(files, function(file, i) {
       formData.append('file'+i, file);
     });
@@ -141,6 +140,31 @@ define(function(require, exports, module) {
       cache: false,
       contentType: false,
       processData: false,
+      success: success,
+      error: function(err1, err2, err3) {
+        app.trigger('alert','upload failed', arguments);
+        //console.log('ERRRRRROOOORRR!!', err1, err2, err3);
+      }
+    });
+  };
+
+  app.sendLink = function(link, callback) {
+    var success = function(responseData) {
+      //Parse response date
+      responseData = _.map(responseData, function(item) {
+        item.date_uploaded = new Date(item.date_uploaded);
+        return item;
+      });
+
+      callback.apply(this, [responseData]);
+    };
+
+    $.ajax({
+      url: app.API_URL + 'upload/link',
+      type: 'POST',
+      data: {
+        'link': link
+      },
       success: success,
       error: function(err1, err2, err3) {
         app.trigger('alert','upload failed', arguments);
