@@ -2162,7 +2162,7 @@ select:focus,
   margin-right: 0px;
 }
 .related-table {
-  margin-top: 20px;
+  margin-bottom: 10px;
 }
 .related-table thead:hover #set-visible-columns {
   background-color: #ededed;
