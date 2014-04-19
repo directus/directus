@@ -86,10 +86,20 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     margin-top: 8px; \
                     margin-right: 10px; \
                   } \
+                  .swap-method-btn { \
+                    display:block; \
+                    clear: both; \
+                    padding-top: 5px; \
+                    cursor: pointer; \
+                  } \
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-media"> \
-                    <a href="{{link}}" class="title" target="single_media"><img src="{{thumbUrl}}"></a> \
+                    {{#if mediaModel.youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/{{mediaModel.youtube}}" frameborder="0" allowfullscreen></iframe></fieldset> \
+                    {{else}} \
+                      {{#if mediaModel.vimeo}} <iframe src="//player.vimeo.com/video/{{mediaModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                      {{else}}<a href="{{link}}" class="title" target="single_media"><img src="{{thumbUrl}}"></a>{{/if}} \
+                    {{/if}} \
                   </div> \
                   <div class="ui-img-details"> \
                     <a href="{{link}}" class="title" target="single_media">{{mediaModel.title}}</a><br> \
@@ -99,7 +109,10 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove file</button> \
                   </div> \
                   {{else}} \
-                  <div class="ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click for existing</div> \
+                  <div class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click for existing</div> \
+                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
+                  <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a Media Item</div> \
                   {{/if}}';
 
   Module.Input = Backbone.Layout.extend({
@@ -115,7 +128,29 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
     events: {
       'click button[data-action="remove-single-media"]': 'removeMedia',
       'click button[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
-      'click .has-media': 'edit'
+      'click .has-media': 'edit',
+      'click .swap-method-btn': function() {
+        this.$el.find('.swap-method').toggleClass('hide');
+      },
+      'click #retriveUrlBtn': function(e) {
+        var url = this.$el.find('#urlInput').val();
+        var model = this.model;
+        var model = this.mediaModel;
+        app.sendLink(url, function(data) {
+          console.log(data);
+          _.each(data, function(item) {
+            item.active = 1;
+            // Unset the model ID so that a new media record is created
+            // (and the old media record isn't replaced w/ this data)
+            item.id = undefined;
+            item.user = self.userId;
+
+            //console.log()
+
+            model.set(item);
+          });
+        });
+      }
     },
 
     removeMedia: function(e) {
@@ -126,7 +161,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       var collection = app.media;
       var model;
       var mediaModel = this.mediaModel;
-
       var view = new Overlays.ListSelect({collection: collection, selectable: false});
       app.router.overlayPage(view);
       //please proxy this instead
@@ -210,8 +244,16 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       var link = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl() : null;
       var data = this.mediaModel.toJSON();
       var isImage = _.contains(['image/jpeg','image/png'], this.mediaModel.get('type'));
-
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
+      console.log(this.mediaModel);
+
+      if(data.type) {
+        if(data.type == 'embed/youtube') {
+          data.youtube = data.url;
+        } else if(data.type == 'embed/vimeo') {
+          data.vimeo = data.url;
+        }
+      }
 
       data = {
         isImage: isImage,
