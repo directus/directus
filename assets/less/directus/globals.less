@@ -148,6 +148,15 @@ a.secondary-info {
   font-weight: 800;
   color: @lightGrey;
 }
+img.grayscale {
+  filter: url(filters.svg#grayscale); // Firefox 3.5+ TODO: (NEEDS DYNAMIC PATH)
+  filter: gray; // IE6-9
+  -webkit-filter: grayscale(1); // Google Chrome, Safari 6+ & Opera 15+
+  &:hover {
+    filter: none;
+    -webkit-filter: grayscale(0);
+  }
+}
 
 ////////////
 //  CONTAINERS
