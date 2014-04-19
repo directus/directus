@@ -42,7 +42,7 @@ function(app, Backbone, Widgets) {
           'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
           'size': model.get('size'),
           'type': model.get('type').split('/').pop(),
-          'dimensions': model.get('width') + "x" + model.get('height')
+          'dimensions': model.get('width') + "×" + model.get('height')
         };
 
         var type = model.get('type').substring(0, model.get('type').indexOf('/'));

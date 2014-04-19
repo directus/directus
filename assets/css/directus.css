@@ -1247,6 +1247,15 @@ a.secondary-info:hover {
   font-weight: 800;
   color: #ededed;
 }
+img.grayscale {
+  filter: url(filters.svg#grayscale);
+  filter: gray;
+  -webkit-filter: grayscale(1);
+}
+img.grayscale:hover {
+  filter: none;
+  -webkit-filter: grayscale(0);
+}
 .main-container {
   margin-left: 170px;
   padding: 0px 80px;
