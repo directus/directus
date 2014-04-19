@@ -220,8 +220,36 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             // Post-update hook
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
+            //If we are adding a new directus_media Item, We need to do that logic
+            if($tableName == "directus_media") {
+              $Storage = new \Directus\Media\Storage\Storage();
+
+              //If trying to save to temp, force to default
+              if($Storage->storageAdaptersByRole['TEMP']['id'] == $recordData['storage_adapter']) {
+                $recordData['storage_adapter'] = $Storage->storageAdaptersByRole['DEFAULT']['id'];
+              }
+
+              //Save Temp Thumbnail name for use after media record save
+              $thumbnailName = "THUMB_".$recordData['name'];
+
+              //Save the file in TEMP Storage Adapter to Designated StorageAdapter
+              $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
+
+            }
+
             $TableGateway->insert($recordData);
             $recordData['id'] = $TableGateway->getLastInsertValue();
+
+            if($tableName == "directus_media") {
+              //Save Temp Thumbnail to Thumbnail SA using media id: $params['id']
+              $tempLocation = $Storage->storageAdaptersByRole['TEMP']['destination'];
+              if(file_exists($tempLocation.$thumbnailName)) {
+                $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
+                $thumbnailDestination = $Storage->storageAdaptersByRole['THUMBNAIL']['destination'];
+                $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $recordData['id'].".".$ext, $thumbnailDestination);
+              }
+            }
+
             // Post-insert hook
             Hooks::runHook('postInsert', array($TableGateway, $recordData, $this->adapter, $this->acl));
         }

@@ -281,5 +281,4 @@ class Upload {
         file_put_contents($tmp_name, $data);
         return $tmp_name;
     }
-
 }
