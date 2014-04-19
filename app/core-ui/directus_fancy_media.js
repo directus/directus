@@ -80,7 +80,11 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-media"> \
-                    <img src="{{thumbUrl}}"> \
+                    {{#if youtube}}<fieldset><iframe width="720" height="400" src="http://www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe></fieldset> \
+                    {{else}} \
+                      {{#if vimeo}} <iframe src="//player.vimeo.com/video/{{vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                      {{else}}<img src="{{thumbUrl}}">{{/if}} \
+                    {{/if}} \
                   </div> \
                   <div class="ui-img-details"> \
                     <i>{{mediaModel.title}}</i><br> \
@@ -127,6 +131,15 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       data.name = model.get('name');
       data.orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
+
+      if(model.has('type')) {
+        console.log(model.get('type'));
+        if(model.get('type') == 'embed/youtube') {
+          data.youtube = model.get('url');
+        } else if(model.get('type') == 'embed/vimeo') {
+          data.vimeo = model.get('url');
+        }
+      }
 
       return data;
     },

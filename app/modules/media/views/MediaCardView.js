@@ -46,11 +46,18 @@ function(app, Backbone, Widgets) {
         };
 
         var type = model.get('type').substring(0, model.get('type').indexOf('/'));
-        if(type == 'image') {
+        if(type == 'image' || type == 'embed') {
           data.thumbnail = '<img src="'+model.makeMediaUrl(true)+'">';
         } else {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
         }
+
+        if(type == "embed") {
+          data.size = app.seconds_convert(data.size);
+        } else {
+          data.size = app.bytesToSize(data.size, 0);
+        }
+
         return data;
       });
       return {rows: rows};

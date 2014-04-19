@@ -118,7 +118,7 @@ class Storage {
           }
 
           $fileData['url'] = $video_id;
-          $fileData['type'] = 'youtube';
+          $fileData['type'] = 'embed/youtube';
           $fileData['height'] = 340;
           $fileData['width'] = 560;
 
@@ -130,20 +130,19 @@ class Storage {
           $content = curl_exec($ch);
           curl_close($ch);
 
-          // Get thumbnail
-          $ch = curl_init('http://img.youtube.com/vi/' . $video_id . '/0.jpg');
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          $data = curl_exec($ch);
-          curl_close($ch);
-
-          $mediaAdapter = $this->storageAdaptersByRole['THUMBNAIL'];
-          $finalPath = file_put_contents($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg", $data);
           $mediaAdapter = $this->storageAdaptersByRole['DEFAULT'];
-          $finalPath = file_put_contents($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg", $data);
-          $fileData['name'] = basename($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg");
+          $fileData['name'] = "youtube_" . $video_id . ".jpg";
           $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
           $fileData['storage_adapter'] = $mediaAdapter['id'];
           $fileData['charset'] = '';
+
+          $img = Thumbnail::generateThumbnail('http://img.youtube.com/vi/' . $video_id . '/0.jpg', 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
+          $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+          Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
+          if(!is_null($thumbnailTempName)) {
+            $thumbnailDestination = $this->storageAdaptersByRole['THUMBNAIL']['destination'];
+            $this->ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name'], $thumbnailDestination);
+          }
 
           if ($content !== false) {
             $fileData['title'] = $this->get_string_between($content,"<title type='text'>","</title>");
@@ -157,6 +156,56 @@ class Storage {
             // an error happened
             $fileData['title'] = "Unable to Retrieve YouTube Title";
             $fileData['size'] = 0;
+          }
+        } else if(strpos($link,'vimeo.com') !== false) {
+        // Get ID from URL
+          preg_match('/vimeo\.com\/([0-9]{1,10})/', $link, $matches);
+          $video_id = $matches[1];
+
+          // Can't find the video ID
+          if($video_id === FALSE){
+            die("Vimeo video ID not detected. Please paste the whole URL.");
+          }
+
+          $fileData['url'] = $video_id;
+          $fileData['type'] = 'embed/vimeo';
+
+          $mediaAdapter = $this->storageAdaptersByRole['DEFAULT'];
+          $fileData['name'] = "vimeo_" . $video_id . ".jpg";
+          $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
+          $fileData['storage_adapter'] = $mediaAdapter['id'];
+          $fileData['charset'] = '';
+
+          // Get Data
+          $url = 'http://vimeo.com/api/v2/video/' . $video_id . '.php';
+          $ch = curl_init($url);
+          curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+          curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 0);
+          $content = curl_exec($ch);
+          curl_close($ch);
+          $array = unserialize(trim($content));
+
+          if($content !== false) {
+            $fileData['title'] = $array[0]['title'];
+            $fileData['caption'] = strip_tags($array[0]['description']);
+            $fileData['size'] = $array[0]['duration'];
+            $fileData['height'] = $array[0]['height'];
+            $fileData['width'] = $array[0]['width'];
+            $fileData['tags'] = $array[0]['tags'];
+            $vimeo_thumb = $array[0]['thumbnail_large'];
+
+            $img = Thumbnail::generateThumbnail($vimeo_thumb, 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
+            $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+            Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
+            if(!is_null($thumbnailTempName)) {
+              $thumbnailDestination = $this->storageAdaptersByRole['THUMBNAIL']['destination'];
+              $this->ThumbnailStorage->acceptFile($thumbnailTempName, $fileData['name'], $thumbnailDestination);
+            }
+          } else {
+            // Unable to get Vimeo details
+            $fileData['title'] = "Unable to Retrieve Vimeo Title";
+            $fileData['height'] = 340;
+            $fileData['width'] = 560;
           }
         }
 
