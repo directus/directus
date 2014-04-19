@@ -12,12 +12,13 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">Select from below</option>{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
+  var template = '<select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">Select from below</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
 
   Module.id = 'select';
   Module.dataTypes = ['VARCHAR', 'INT'];
   Module.variables = [
-    {id: 'options', ui: 'textarea', options:{'rows': 25}  }
+    {id: 'options', ui: 'textarea', options:{'rows': 25}  },
+    {id: 'allow_null', ui: 'checkbox'}
   ];
 
   Module.Input = Backbone.Layout.extend({
@@ -50,7 +51,8 @@ define(['app', 'backbone'],function(app, Backbone) {
         options: options,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        readonly: !this.options.canWrite
+        readonly: !this.options.canWrite,
+        allow_null: this.options.settings.get('allow_null')
       };
     }
 
