@@ -211,7 +211,7 @@ class Storage {
         return $fileData;
     }
 
-    public function saveFile($fileName, $destStorageAdapterId) {
+    public function saveFile($fileName, $destStorageAdapterId, $newName = null) {
         $settings = $this->mediaSettings;
         $finalName = null;
         $StorageAdapters = new DirectusStorageAdaptersTableGateway($this->acl, $this->adapter);
@@ -223,7 +223,8 @@ class Storage {
           $tempLocation = $this->storageAdaptersByRole['TEMP']['destination'];
           //Try to accept file into new fella
           if(file_exists($tempLocation.$fileName)) {
-            $finalPath = $this->MediaStorage->acceptFile($tempLocation.$fileName, $fileName, $mediaAdapter['destination']);
+            $destName = ($newName == null) ? $fileName : $newName;
+            $finalPath = $this->MediaStorage->acceptFile($tempLocation.$fileName, $destName, $mediaAdapter['destination']);
             $finalName = basename($finalPath);
           } else{
             $finalName = $fileName;
@@ -243,6 +244,10 @@ class Storage {
       $ini += strlen($start);
       $len = strpos($string,$end,$ini) - $ini;
       return substr($string,$ini,$len);
+    }
+
+    public function getMediaSettings() {
+      return $this->mediaSettings;
     }
 }
 

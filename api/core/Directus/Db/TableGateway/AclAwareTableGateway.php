@@ -232,19 +232,31 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               //Save Temp Thumbnail name for use after media record save
               $thumbnailName = "THUMB_".$recordData['name'];
 
-              //Save the file in TEMP Storage Adapter to Designated StorageAdapter
-              $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
-
+              //If we are using Media ID, Dont save until after insert
+              if($Storage->getMediaSettings()['media_naming'] != "media_id") {
+                //Save the file in TEMP Storage Adapter to Designated StorageAdapter
+                $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
+              }
             }
 
             $TableGateway->insert($recordData);
             $recordData['id'] = $TableGateway->getLastInsertValue();
 
             if($tableName == "directus_media") {
+              $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
+
+              //If using MediaId saving, then update record and set name to id
+              if($Storage->getMediaSettings()['media_naming'] == "media_id") {
+                $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext);
+                $Update = new Update($tableName);
+                $Update->set(array('name' => $newName));
+                $Update->where(array('id' => $recordData['id']));
+                $TableGateway->updateWith($Update);
+              }
+
               //Save Temp Thumbnail to Thumbnail SA using media id: $params['id']
               $tempLocation = $Storage->storageAdaptersByRole['TEMP']['destination'];
               if(file_exists($tempLocation.$thumbnailName)) {
-                $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
                 $thumbnailDestination = $Storage->storageAdaptersByRole['THUMBNAIL']['destination'];
                 $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $recordData['id'].".".$ext, $thumbnailDestination);
               }
