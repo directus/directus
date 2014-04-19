@@ -861,6 +861,33 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
     JsonView::render($result);
 });
 
+$app->post("/$v/upload/link/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+    // $Transfer = new Media\Transfer();
+    $Storage = new Media\Storage\Storage();
+    $result = array();
+    if(isset($_POST['link'])) {
+        // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
+        $fileData = array('caption'=>'','tags'=>'','location'=>'');
+        $fileData = array_merge($fileData, $Storage->acceptLink($_POST['link']));
+        $result[] = array(
+            'type' => $fileData['type'],
+            'name' => $fileData['name'],
+            'title' => $fileData['title'],
+            'tags' => $fileData['tags'],
+            'caption' => $fileData['caption'],
+            'location' => $fileData['location'],
+            'charset' => $fileData['charset'],
+            'size' => $fileData['size'],
+            'width' => $fileData['width'],
+            'height' => $fileData['height'],
+            'url' => $fileData['url'],
+            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            'storage_adapter' => $fileData['storage_adapter']
+        );
+    }
+    JsonView::render($result);
+});
+
 $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
 

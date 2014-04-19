@@ -103,4 +103,74 @@ class Storage {
         return $fileData;
     }
 
+    public function acceptLink($link) {
+        $settings = $this->mediaSettings;
+        $fileData = array();
+
+        if (strpos($link,'youtube.com') !== false) {
+          // Get ID from URL
+          parse_str(parse_url($link, PHP_URL_QUERY), $array_of_vars);
+          $video_id = $array_of_vars['v'];
+
+          // Can't find the video ID
+          if($video_id === FALSE){
+            die("YouTube video ID not detected. Please paste the whole URL.");
+          }
+
+          $fileData['url'] = $video_id;
+          $fileData['type'] = 'youtube';
+          $fileData['height'] = 340;
+          $fileData['width'] = 560;
+
+          // Get Data
+          $url = "http://gdata.youtube.com/feeds/api/videos/". $video_id;
+          $ch = curl_init($url);
+          curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+          curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 0);
+          $content = curl_exec($ch);
+          curl_close($ch);
+
+          // Get thumbnail
+          $ch = curl_init('http://img.youtube.com/vi/' . $video_id . '/0.jpg');
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+          $data = curl_exec($ch);
+          curl_close($ch);
+
+          $mediaAdapter = $this->storageAdaptersByRole['THUMBNAIL'];
+          $finalPath = file_put_contents($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg", $data);
+          $mediaAdapter = $this->storageAdaptersByRole['DEFAULT'];
+          $finalPath = file_put_contents($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg", $data);
+          $fileData['name'] = basename($mediaAdapter['destination']."/youtube_" . $video_id . ".jpg");
+          $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
+          $fileData['storage_adapter'] = $mediaAdapter['id'];
+          $fileData['charset'] = '';
+
+          if ($content !== false) {
+            $fileData['title'] = $this->get_string_between($content,"<title type='text'>","</title>");
+
+            // Not pretty hack to get duration
+            $pos_1 = strpos($content, "yt:duration seconds=") + 21;
+            $fileData['size'] = substr($content,$pos_1,10);
+            $fileData['size'] = preg_replace("/[^0-9]/", "", $fileData['size'] );
+
+          } else {
+            // an error happened
+            $fileData['title'] = "Unable to Retrieve YouTube Title";
+            $fileData['size'] = 0;
+          }
+        }
+
+        return $fileData;
+    }
+
+    private function get_string_between($string, $start, $end){
+      $string = " ".$string;
+      $ini = strpos($string,$start);
+      if ($ini == 0) return "";
+      $ini += strlen($start);
+      $len = strpos($string,$end,$ini) - $ini;
+      return substr($string,$ini,$len);
+    }
 }
+
+
