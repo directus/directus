@@ -365,8 +365,9 @@ EMAILBODY;
     'X-Mailer: PHP/' . phpversion();
 
     mail($user['email'], 'You Reset Your Directus Password', $emailBodyPlainText, $headers);
-    $result = 1;
-    $success = ($result === 1);
+    //$result = 1;
+    //$success = ($result === 1);
+    $success = true;
     return JsonView::render(array(
         'success' => $success
     ));
