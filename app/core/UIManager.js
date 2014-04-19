@@ -168,10 +168,14 @@ define(function(require, exports, module) {
 
       // If there is no UI, return just text
       if (UI === undefined) {
-        return model.get(attr);
+        var attr = model.get(attr);
+        if(!attr || attr = "") {
+          attr = '<span class="secondary-info">--</span>';
+        }
+        return attr;
       }
 
-      return UI.list({
+      var list = UI.list({
           model: model,
           collection: collection,
           settings: schema.options,
@@ -179,6 +183,12 @@ define(function(require, exports, module) {
           value: model.get(attr),
           tagName: 'td'
       });
+
+      if(list == "") {
+        list = '<span class="secondary-info">--</span>'
+      }
+
+      return list;
     },
 
     // Finds the UI for the provided model/attribute and
