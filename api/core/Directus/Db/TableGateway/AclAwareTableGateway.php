@@ -225,7 +225,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               $Storage = new \Directus\Media\Storage\Storage();
 
               //If trying to save to temp, force to default
-              if($Storage->storageAdaptersByRole['TEMP']['id'] == $recordData['storage_adapter']) {
+              if((!isset($recordData['storage_adapter']) || $recordData['storage_adapter'] == '') || $Storage->storageAdaptersByRole['TEMP']['id'] == $recordData['storage_adapter']) {
                 $recordData['storage_adapter'] = $Storage->storageAdaptersByRole['DEFAULT']['id'];
               }
 
