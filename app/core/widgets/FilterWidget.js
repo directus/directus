@@ -16,6 +16,11 @@ function(app, Backbone) {
       class: 'tool'
     },
 
+    dataTypeMappings: {
+      default: '<input type="text" placeh older="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium" placeholder="Keywords">',
+      date: '<input type="date" style="float: left;width: auto;background-color:#ededed" class="date medium" name="keywords" id="advKeywords">'
+    },
+
     events: {
       'click #addFilterButton': 'addNewFilter',
       'click [data-add-filter-row]': function(e) {
@@ -34,7 +39,32 @@ function(app, Backbone) {
       'click #cancelFilterButton': function(e) {
         this.options.filterOptions.addFilter = false;
         this.render();
+      },
+      'change .adv-search-col-id': function(e) {
+        var selectedVal = $(e.target).val();
+        this.updateFilterDataType(selectedVal);
       }
+    },
+
+    updateFilterDataType: function(selectedColumn) {
+      if(!selectedColumn || !this.collection.structure.get(selectedColumn)) {
+        return;
+      }
+
+      var columnModelType = this.collection.structure.get(selectedColumn).get('column_type');
+      var newInput;
+
+      for(var type in this.dataTypeMappings) {
+        if(type == columnModelType) {
+          newInput = this.dataTypeMappings[type];
+        }
+      }
+
+      if(!newInput) {
+        newInput = this.dataTypeMappings['default'];
+      }
+
+      this.$el.find('#dataTypeInsert').html(newInput);
     },
 
     addNewFilter: function() {
@@ -130,6 +160,7 @@ function(app, Backbone) {
 
     afterRender: function() {
       this.setFilterRow();
+      this.updateFilterDataType(this.$el.find('.adv-search-col-id').val());
     },
 
     updateFiltersFromPreference: function() {
