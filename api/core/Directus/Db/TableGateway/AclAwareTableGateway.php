@@ -249,11 +249,13 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               if($Storage->getMediaSettings()['media_file_naming'] == "media_id") {
                 $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext);
                 $updateArray['name'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext;
+                $recordData['name'] = $updateArray['name'];
               }
 
               //If we are using media_id titles, then set title to id
               if($Storage->getMediaSettings()['media_title_naming'] == "media_id") {
                 $updateArray['title'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT);
+                $recordData['title'] = $updateArray['title'];
               }
 
               if(!empty($updateArray)) {
