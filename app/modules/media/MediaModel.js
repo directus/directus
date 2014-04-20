@@ -25,11 +25,15 @@ function(app, Backbone, EntriesModel) {
         }
 
         storageAdapter = storageAdapters[adapterId];
-        url = storageAdapter.url + this.get('id') + "." + this.get('name').split('.').pop();;
+        if(this.get('name')) {
+          url = storageAdapter.url + this.get('id') + "." + this.get('name').split('.').pop();;
+        }
 
         //If Temp SA and Thumbnail do Special logic
-        if(storageAdapters[this.get('storage_adapter')].role == "TEMP" && thumbnail) {
-          url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name');
+        if(this.get('storage_adapter')) {
+          if(storageAdapters[this.get('storage_adapter')].role == "TEMP" && thumbnail) {
+            url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name');
+          }
         }
       } else {
         adapterId = this.get('storage_adapter');
