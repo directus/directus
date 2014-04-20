@@ -311,7 +311,7 @@ class Bootstrap {
         foreach($objects as $name => $object){
             if("js" == pathinfo($name, PATHINFO_EXTENSION)) {
                 $uiPath = substr($name, strlen(APPLICATION_PATH) + 1);
-                $uiName = basename(dirname($name));
+                $uiName = basename($name);
                 $uis[$uiName] = substr($uiPath, 0, -3);
             }
         }
