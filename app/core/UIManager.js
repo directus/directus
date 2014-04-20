@@ -169,7 +169,7 @@ define(function(require, exports, module) {
       // If there is no UI, return just text
       if (UI === undefined) {
         var attr = model.get(attr);
-        if(!attr || attr = "") {
+        if(!attr || attr == "") {
           attr = '<span class="secondary-info">--</span>';
         }
         return attr;
