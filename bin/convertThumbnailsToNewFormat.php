@@ -34,7 +34,6 @@ $storageAdaptersById = $StorageAdapters->fetchAllWithIdKeys();
 foreach($storageAdaptersById as $id => $storageAdapter) {
 	$storageAdaptersById[$id] = \Directus\Media\Storage\Storage::getStorage($storageAdapter);
 }
-
 out("\nLoaded " . count($storageAdaptersById) . " storage adapters.");
 
 $DirectusMedia = new TableGateway('directus_media', $db);
@@ -69,15 +68,15 @@ $statistics = array(
 );
 
 foreach($mediaRecords as $media) {
-	$adapterSettings = $tempStorageAdapter->getSettings();
+	$adapterSettings = $tempStorageAdapterSettings;
 	if(!$tempStorageAdapter->fileExists($media['name'], $adapterSettings['destination'])) {
-		out("Skipping media record #" . $media['id'] . " -- adapter can't locate original file.");
+		out("Skipping media record #" . $media['id'] . " -- adapter can't locate original file.\n");
 		$statistics['failure']++;
 		continue;
 	}
   $info = pathinfo($media['name']);
   if(!in_array($info['extension'], $supportedExtensions)) {
-		out("Skipping media record #" . $media['id'] . " -- the following extension is unsupported: " . $info['extension']);
+		out("Skipping media record #" . $media['id'] . " -- the following extension is unsupported: " . $info['extension']."\n");
 		$statistics['failure']++;
 		continue;
   }
@@ -86,7 +85,7 @@ foreach($mediaRecords as $media) {
 		continue;
 	}
   // Generate thumbnail
-  $localFile = $storageAdapter->joinPaths($adapterSettings['destination'], $media['name']);
+  $localFile = $tempStorageAdapter->joinPaths($adapterSettings['destination'], $media['name']);
   $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $mediaSettings['thumbnail_size'], $mediaSettings['thumbnail_crop_enabled']);
   $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
   Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $mediaSettings['thumbnail_quality']);
