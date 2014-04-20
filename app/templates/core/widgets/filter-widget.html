@@ -24,7 +24,16 @@
           <option value=">=">&gt;=</option>
         </select>
       </span>
-      <span id="dataTypeInsert"></span>
+      <span id="dataTypeInsert" class="simple-select dark-grey-color">
+        {{#if relatedEntries}}
+          <span class="icon icon-triangle-down"></span>
+          <select name="keywords" id="advKeywords" class="medium">
+          {{#relatedEntries}}
+            <option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
+          {{/relatedEntries}}
+          </select>
+        {{/if}}
+      </span>
       <span id="addFilterButton" class="action vertical-center" >Add</span>
       <span id="cancelFilterButton" class="action vertical-center secondary-info" >Cancel</span>
     </li>

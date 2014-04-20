@@ -1,8 +1,9 @@
 define([
   'app',
-  'backbone'
+  'backbone',
+  'core/EntriesManager'
 ],
-function(app, Backbone) {
+function(app, Backbone, EntriesManager) {
 
   "use strict";
 
@@ -16,9 +17,9 @@ function(app, Backbone) {
       class: 'tool'
     },
 
-    dataTypeMappings: {
-      default: '<input type="text" placeh older="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium" placeholder="Keywords">',
-      date: '<input type="date" style="float: left;width: auto;background-color:#ededed" class="date medium" name="keywords" id="advKeywords">'
+    filterUIMappings: {
+      default: '<input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium" placeholder="Keywords">',
+      date: '<input type="date" style="float: left;width: auto;background-color:#ededed" class="date medium" name="keywords" id="advKeywords">',
     },
 
     events: {
@@ -51,19 +52,36 @@ function(app, Backbone) {
         return;
       }
 
-      var columnModelType = this.collection.structure.get(selectedColumn).get('column_type');
+      var columnModel = this.collection.structure.get(selectedColumn);
+      this.columnModel = columnModel;
+      var columnModelType = columnModel.get('type');
       var newInput;
 
-      for(var type in this.dataTypeMappings) {
-        if(type == columnModelType) {
-          newInput = this.dataTypeMappings[type];
+      //Special Handling for Relationship
+      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
+        //If we already are up to date with the model then return
+        if(this.relatedCollection && this.relatedCollection.table.id == columnModel.relationship.get('table_related')) {
+          return;
         }
+        //Get Related Column Collection
+        this.relatedCollection = EntriesManager.getInstance(columnModel.relationship.get('table_related'));
+
+        this.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+        this.listenTo(this.relatedCollection, 'sync', this.render);
+        return;
+      } else {
+        this.relatedCollection = null;
       }
 
-      if(!newInput) {
-        newInput = this.dataTypeMappings['default'];
+      switch(columnModelType) {
+        case 'DATE':
+        case 'DATETIME':
+          newInput = this.filterUIMappings.date;
+          break;
+        default:
+          newInput = this.filterUIMappings.default;
+          break;
       }
-
       this.$el.find('#dataTypeInsert').html(newInput);
     },
 
@@ -73,10 +91,11 @@ function(app, Backbone) {
 
       var searchSettings = $filters.map(function() {
         var $this = $(this);
+
         var values = {
           id: $this.find('.adv-search-col-id').val(),
           type: $this.find('.adv-search-query-type').val(),
-          value: $this.find('input').val()
+          value: $this.find('#advKeywords').val()
         };
 
         return {
@@ -118,6 +137,17 @@ function(app, Backbone) {
         if(a > b) return 1;
         return 0;
       });
+
+      if(this.relatedCollection) {
+        data.relatedEntries = [];
+        var visibleColumn = this.columnModel.options.get('visible_column');
+        var displayTemplate = Handlebars.compile(this.columnModel.options.get('visible_column_template'));
+
+        this.relatedCollection.each(function(model) {
+          data.relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
+        });
+      }
+
       return data;
     },
 

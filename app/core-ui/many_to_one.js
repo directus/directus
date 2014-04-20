@@ -102,10 +102,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       if(this.columnSchema.relationship) {
         relatedTable = this.columnSchema.relationship.get('table_related');
       } else {
-        console.log("Column is misconfigured in directus_columns! : " + this.name);
+        console.error("Column is misconfigured in directus_columns! : " + this.name);
       }
       var value = this.model.get(this.name);
-
       this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
