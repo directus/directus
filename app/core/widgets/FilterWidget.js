@@ -56,13 +56,15 @@ function(app, Backbone, EntriesManager) {
       this.columnModel = columnModel;
       var columnModelType = columnModel.get('type');
       var newInput;
-
       //Special Handling for Relationship
       if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
         //If we already are up to date with the model then return
         if(this.relatedCollection && this.relatedCollection.table.id == columnModel.relationship.get('table_related')) {
           return;
         }
+
+        this.savedValue = selectedColumn;
+
         //Get Related Column Collection
         this.relatedCollection = EntriesManager.getInstance(columnModel.relationship.get('table_related'));
 
@@ -71,6 +73,7 @@ function(app, Backbone, EntriesManager) {
         return;
       } else {
         this.relatedCollection = null;
+        this.savedValue = null;
       }
 
       switch(columnModelType) {
@@ -131,6 +134,7 @@ function(app, Backbone, EntriesManager) {
 
     serialize: function() {
       var data = this.options.filterOptions;
+
       data.tableColumns = this.collection.structure.pluck('id');
       data.tableColumns.sort(function(a, b) {
         if(a < b) return -1;
@@ -146,6 +150,7 @@ function(app, Backbone, EntriesManager) {
         this.relatedCollection.each(function(model) {
           data.relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
         });
+
       }
 
       return data;
@@ -189,6 +194,10 @@ function(app, Backbone, EntriesManager) {
     getFilterRow: "adv search fields row object",
 
     afterRender: function() {
+      if(this.savedValue) {
+        this.$el.find('.adv-search-col-id').val(this.savedValue);
+      }
+
       this.setFilterRow();
       this.updateFilterDataType(this.$el.find('.adv-search-col-id').val());
     },
