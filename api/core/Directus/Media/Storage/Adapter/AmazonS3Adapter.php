@@ -54,21 +54,26 @@ class AmazonS3Adapter extends Adapter {
     }
 
     protected function writeFile($localFile, $targetFileName, $destination) {
-        $acl = (1 == $this->settings['public']) ? CannedAcl::PUBLIC_READ : CannedAcl::PRIVATE_ACCESS;
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mimeType = $finfo->file($localFile);
-        $result = $this->client->putObject(array(
-            'Bucket'      => $destination,
-            'Key'         => $targetFileName,
-            'SourceFile'  => $localFile,
-            'ACL'         => $acl,
-            'ContentType' => $mimeType
-        ));
-        $this->client->waitUntilObjectExists(array(
-            'Bucket'     => $destination,
-            'Key'        => $targetFileName,
-        ));
+      if($this->client->doesObjectExist($destination, $targetFileName)) {
+        print_r("\nFile Already Uploaded!");
         return true;
+      }
+
+      $acl = (1 == $this->settings['public']) ? CannedAcl::PUBLIC_READ : CannedAcl::PRIVATE_ACCESS;
+      $finfo = new \finfo(FILEINFO_MIME_TYPE);
+      $mimeType = $finfo->file($localFile);
+      $result = $this->client->putObject(array(
+          'Bucket'      => $destination,
+          'Key'         => $targetFileName,
+          'SourceFile'  => $localFile,
+          'ACL'         => $acl,
+          'ContentType' => $mimeType
+      ));
+      $this->client->waitUntilObjectExists(array(
+          'Bucket'     => $destination,
+          'Key'        => $targetFileName,
+      ));
+      return true;
     }
 
 }
