@@ -5,7 +5,6 @@ define([
 ],
 
 function(app, Backbone, EntriesModel) {
-
   var MediaModel = EntriesModel.extend({
 
     initialize: function() {

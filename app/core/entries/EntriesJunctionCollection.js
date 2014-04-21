@@ -4,7 +4,8 @@ define(function(require, exports, module) {
 
   var app               = require('app'),
       Backbone          = require('backbone'),
-      Collection        = require('core/collection');
+      Collection        = require('core/collection'),
+      EntriesManager    = require('core/EntriesManager');
 
   //@todo: Try merging this with entries.collection.js
   var NestedCollection = module.exports = Collection.extend({
@@ -108,7 +109,7 @@ define(function(require, exports, module) {
         options.url = app.API_URL + 'media';
       }
 
-      this.nestedCollection = new EntriesCollection({}, options);
+      this.nestedCollection = EntriesManager.getInstance(this.table.id, {});
 
       this.nestedCollection.on('change', function() {
         this.trigger('change');

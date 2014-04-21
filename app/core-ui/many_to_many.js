@@ -20,7 +20,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
     {id: 'add_button', ui: 'checkbox'},
     {id: 'choose_button', ui: 'checkbox'},
     {id: 'remove_button', ui: 'checkbox'}
-
   ];
 
   Module.Input = Onetomany.Input.extend({
@@ -90,7 +89,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       var me = this;
 
       view.save = function() {
-        console.log("save");
         _.each(view.table.selection(), function(id) {
           var data = collection.get(id).toJSON();
           me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
@@ -103,7 +101,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
     },
 
     initialize: function(options) {
-
       if (!this.columnSchema.relationship ||
            'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
         throw "The column " + this.columnSchema.id + " need to have a relationship of the type MANYTOMANY inorder to use the one_to_many ui";

@@ -235,6 +235,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.list = function(options) {
     var model = options.model;
+
+    //Force model To be a Media Model
+    var MediaModel = require('modules/media/MediaModel');
+    if(!(model instanceof MediaModel)) {
+      model = new MediaModel(model.attributes, {collection: model.collection});
+    }
+
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
     var url = model.makeMediaUrl(true);
     var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
