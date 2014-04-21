@@ -1,9 +1,8 @@
 define([
   'app',
-  'backbone',
-  'core/EntriesManager'
+  'backbone'
 ],
-function(app, Backbone, EntriesManager) {
+function(app, Backbone) {
 
   "use strict";
 
@@ -66,7 +65,7 @@ function(app, Backbone, EntriesManager) {
         this.savedValue = selectedColumn;
 
         //Get Related Column Collection
-        this.relatedCollection = EntriesManager.getInstance(columnModel.relationship.get('table_related'));
+        this.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
         this.relatedCollection.fetch({includeFilters: false, data: {active:1}});
         this.listenTo(this.relatedCollection, 'sync', this.render);
