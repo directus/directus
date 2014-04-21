@@ -51,20 +51,30 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
     },
 
     addModel: function(model) {
-      var EditView = require("core/edit");
-      var modal;
+      var EditView = require("modules/tables/views/EditView");
       var collection = this.relatedCollection;
       var view = new EditView({model: model, inModal: true});
+      view.headerOptions.route.isOverlay = true;
+      view.headerOptions.route.breadcrumbs = [];
+      view.headerOptions.basicSave = true;
 
-      modal = app.router.openModal(view, {stretch: true, title: 'Add'});
-
-      modal.save = function() {
-        model.set(view.data());
-        collection.add(model,{nest: true});
-        this.close();
+      view.events = {
+        'click .saved-success': function() {
+          this.save();
+        },
+        'click #removeOverlay': function() {
+          app.router.removeOverlayPage(this);
+        }
       };
 
-      view.render();
+
+      app.router.overlayPage(view);
+
+      view.save = function() {
+        model.set(view.editView.data());
+        collection.add(model,{nest: true});
+        app.router.removeOverlayPage(this);
+      };
     },
 
     insertRow: function() {
