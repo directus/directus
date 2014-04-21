@@ -148,13 +148,13 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
                 $jkeyleft = $junctionTable.'.'.$jkr;
                 $jkeyright = $relatedTable.".id";
 
-
+                /*
                 $select->join($junctionTable,
                     "$keyleft = $keyRight",
                     array())
                 ->join($relatedTable,
                     "$jkeyleft = $jkeyright",
-                    array());
+                    array());*/
               } else {
                 $select->join($relatedTable,
                   $target['column_name']." = ".$relatedTable.".id",
