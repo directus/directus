@@ -107,9 +107,11 @@ define(function(require, exports, module) {
       if (this.table.id === 'directus_media') {
         this.droppable = true;
         options.url = app.API_URL + 'media';
+        this.nestedCollection = new EntriesManager.MediaCollection({}, options);
+      } else {
+        this.nestedCollection = new EntriesCollection({}, options);
       }
 
-      this.nestedCollection = EntriesManager.getInstance(this.table.id, {});
 
       this.nestedCollection.on('change', function() {
         this.trigger('change');

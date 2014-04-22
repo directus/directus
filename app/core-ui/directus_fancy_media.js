@@ -168,7 +168,6 @@ define(['app', 'backbone'], function(app, Backbone) {
         var model = this.model;
 
         app.sendLink(url, function(data) {
-          console.log(data);
           model.set(data[0]);
           model.trigger('sync');
         });
@@ -223,7 +222,6 @@ define(['app', 'backbone'], function(app, Backbone) {
           return;
         }
         app.sendFiles(e.dataTransfer.files, function(data) {
-          console.log(data);
           model.set(data[0]);
           model.trigger('sync');
         });
