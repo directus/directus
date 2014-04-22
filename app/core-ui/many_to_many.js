@@ -168,7 +168,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
       if(ids.length > 0) {
         this.listenTo(relatedCollection.nestedCollection, 'sort', function() {
-          this.relatedCollection.nestedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}, reset:true});
+          //this.relatedCollection.nestedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}, reset:true});
         });
       }
     }
