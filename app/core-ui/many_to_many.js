@@ -90,8 +90,10 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
       view.save = function() {
         _.each(view.table.selection(), function(id) {
-          var data = collection.get(id).toJSON();
-          me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
+          if(!isNaN(id)) {
+            var data = collection.get(id).toJSON();
+            me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
+          }
         }, this);
         me.relatedCollection.trigger('add');
         app.router.removeOverlayPage(this);
