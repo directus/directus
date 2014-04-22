@@ -80,4 +80,6 @@ define(function(require, exports, module) {
   module.exports.getInstance = getInstance;
   module.exports.setup = setup;
 
+  module.exports.MediaCollection = MediaCollection;
+
 });

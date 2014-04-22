@@ -14,7 +14,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'click .saved-success': 'save',
+      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'save',
       'change #saveSelect': 'save'
     },
 

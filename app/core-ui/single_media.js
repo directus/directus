@@ -182,17 +182,31 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
     },
 
     edit: function() {
-      var EditView = require("core/edit");
+      var EditView = require("modules/tables/views/EditView");
       var model = this.mediaModel;
       var view = new EditView({model: model});
-      var modal = app.router.openModal(view, {stretch: true, title: 'Edit'});
-      view.render();
+      view.headerOptions.route.isOverlay = true;
+      view.headerOptions.route.breadcrumbs = [];
+      view.headerOptions.basicSave = true;
 
-      modal.save = function() {
-        var data = view.data();
-        model.set(data);
-        modal.close();
+      view.events = {
+        'click .saved-success': function() {
+          this.save();
+        },
+        'click #removeOverlay': function() {
+          app.router.removeOverlayPage(this);
+        }
       };
+
+      app.router.overlayPage(view);
+
+      view.save = function() {
+        model.set(model.diff(view.editView.data()));
+        app.router.removeOverlayPage(this);
+      };
+
+      // Fetch first time to get the nested tables
+      model.fetch();
     },
 
     afterRender: function() {

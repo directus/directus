@@ -168,7 +168,6 @@ define(['app', 'backbone'], function(app, Backbone) {
         var model = this.model;
 
         app.sendLink(url, function(data) {
-          console.log(data);
           model.set(data[0]);
           model.trigger('sync');
         });
@@ -190,6 +189,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     initialize: function() {
+      var MediaModel = require('modules/media/MediaModel');
+      if(!(this.model instanceof MediaModel)) {
+        this.model = new MediaModel(this.model.attributes, {collection: this.collection});
+      }
       this.model.on('change', this.render, this);
     },
     afterRender: function() {
@@ -223,7 +226,6 @@ define(['app', 'backbone'], function(app, Backbone) {
           return;
         }
         app.sendFiles(e.dataTransfer.files, function(data) {
-          console.log(data);
           model.set(data[0]);
           model.trigger('sync');
         });
@@ -235,6 +237,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.list = function(options) {
     var model = options.model;
+
+    //Force model To be a Media Model
+    var MediaModel = require('modules/media/MediaModel');
+    if(!(model instanceof MediaModel)) {
+      model = new MediaModel(model.attributes, {collection: model.collection});
+    }
+
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
     var url = model.makeMediaUrl(true);
     var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));

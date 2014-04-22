@@ -4,7 +4,8 @@ define(function(require, exports, module) {
 
   var app               = require('app'),
       Backbone          = require('backbone'),
-      Collection        = require('core/collection');
+      Collection        = require('core/collection'),
+      EntriesManager    = require('core/EntriesManager');
 
   //@todo: Try merging this with entries.collection.js
   var NestedCollection = module.exports = Collection.extend({
@@ -106,9 +107,11 @@ define(function(require, exports, module) {
       if (this.table.id === 'directus_media') {
         this.droppable = true;
         options.url = app.API_URL + 'media';
+        this.nestedCollection = new EntriesManager.MediaCollection({}, options);
+      } else {
+        this.nestedCollection = new EntriesCollection({}, options);
       }
 
-      this.nestedCollection = new EntriesCollection({}, options);
 
       this.nestedCollection.on('change', function() {
         this.trigger('change');
