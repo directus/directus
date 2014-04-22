@@ -190,8 +190,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     initialize: function() {
       var MediaModel = require('modules/media/MediaModel');
-      if(!(model instanceof MediaModel)) {
-        model = new MediaModel(model.attributes, {collection: model.collection});
+      if(!(this.model instanceof MediaModel)) {
+        this.model = new MediaModel(this.model.attributes, {collection: this.collection});
       }
       this.model.on('change', this.render, this);
     },
