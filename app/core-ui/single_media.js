@@ -58,7 +58,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   div.ui-thumbnail.empty.dragover, \
                   div.ui-thumbnail.empty:hover { \
                     background-color: #fefefe; \
-                    border: 2px dashed #cccccc; \
+                    border: 2px dashed #bbbbbb; \
                     cursor: pointer; \
                   } \
                   div.ui-thumbnail img { \
