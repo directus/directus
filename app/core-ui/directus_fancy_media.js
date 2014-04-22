@@ -43,7 +43,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   div.ui-thumbnail.empty.dragover, \
                   div.ui-thumbnail.empty:hover { \
                     background-color: #fefefe; \
-                    border: 2px dashed #bbbbbb; \
+                    border: 2px dashed #cccccc; \
                     cursor: pointer; \
                   } \
                   div.ui-thumbnail img { \
