@@ -16,23 +16,33 @@
       list-style: none;
       &:hover {
         color: @white;
+        background-color: @mediumDarkGrey;
         cursor: pointer;
       }
     }
   }
 
   #mainLogoBox {
-    background-color: rgba(255, 255, 255, .04);
+    background-color: @extraDarkGrey;
     border-bottom: 1px solid @mediumDarkGrey;
     height: 100px;
   }
 
   .directusLogo {
+    -webkit-transition: all 400ms ease-in-out;
+    -moz-transition: all 400ms ease-in-out;
+    -o-transition: all 400ms ease-in-out;
+    transition: all 400ms ease-in-out;
+
     height: 60px !important;
     padding: @standardPad 0px;
     line-height: 90px;
     text-align: center;
     font-size: 40px;
+    color: @darkGrey;
+    &:hover {
+      color: @mediumGrey;
+    }
     .icon {
       line-height: 36px;
     }
@@ -44,6 +54,7 @@
     position: absolute;
     top: 101px;
     width: 100%;
+    color: @mediumGrey;
     ul {
       margin: @smallPad 0px;
     }
@@ -57,11 +68,12 @@
       }
       &.active {
         border-left-width: 4px;
-        border-left-style: solid;
+        //border-left-style: solid;
+        background-color: @darkGrey;
         a {
           color: @white;
           cursor: auto;
-          padding-left: 16px;
+          //padding-left: 16px;
           &:after {
             .triangle-left(8px, 12px, @white);
             content: "";
@@ -119,7 +131,7 @@
         padding: 17px;
       }
       &.active {
-        background-color: @extraLightGrey;
+        background-color: @darkGrey !important;
       }
       &.has-image {
         .icon {

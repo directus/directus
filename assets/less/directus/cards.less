@@ -69,6 +69,7 @@
       .primary-info {
         //height: 1.5em;
         overflow: hidden;
+        height: 48px;
       }
       .extra {
         padding-top: 0;
@@ -109,6 +110,10 @@
     list-style: none;
     padding: @standardPad;
     height: 160px;
+    overflow: hidden;
+    &:hover .icon {
+      color: @mediumGrey;
+    }
     .left-col, .right-col {
       float: left;
     }

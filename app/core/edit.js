@@ -184,13 +184,13 @@ define(function(require, exports, module) {
       // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {
         //Get rid of all errors
-        this.$el.find('.error_text').remove();
+        this.$el.find('.error-color').remove();
         this.$el.find('.error').removeClass('error');
         _.each(errors, function(item) {
           var $fieldset = $('#edit_field_' + item.attr);
           $fieldset.addClass('error');
-          if ($fieldset.find('.error_text').length < 1) {
-            $fieldset.append('<span class="error_text">'+item.message+'</span>');
+          if ($fieldset.find('.error-color').length < 1) {
+            $fieldset.append('<span class="error-color">'+item.message+'</span>');
           }
         });
       }, this);

@@ -29,7 +29,7 @@ if(\Directus\Auth\Provider::loggedIn()) {
   <link rel="stylesheet" href="assets/css/index.css">
   <style>
     html,body {
-      background-color: #cccccc;
+      background-color: #bbbbbb;
       margin:0;
       padding:0;
       height: 100%;
