@@ -972,8 +972,7 @@ $app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPa
 $app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
     // $Transfer = new Media\Transfer();
 
-    $url = 'http://dev.rngr.org/directus_error_logger/';
-
+  print_r($requestPayload);die();
     $data = array(
         'server_addr'   =>$_SERVER['SERVER_ADDR'],
         'server_port'   =>$_SERVER['SERVER_PORT'],

@@ -71,6 +71,26 @@ require(["config"], function() {
     app.authenticatedUserId = window.directusData.authenticatedUser;
     app.storageAdapters = window.directusData.storage_adapters;
 
+    $.xhrPool = []; // array of uncompleted requests
+    $.xhrPool.abortAll = function() { // our abort function
+        $(this).each(function(idx, jqXHR) {
+            jqXHR.abort();
+        });
+        $.xhrPool.length = 0
+    };
+
+    $.ajaxSetup({
+        beforeSend: function(jqXHR) { // before jQuery send the request we will push it to our array
+            $.xhrPool.push(jqXHR);
+        },
+        complete: function(jqXHR) { // when some of the requests completed it will splice from the array
+            var index = $.xhrPool.indexOf(jqXHR);
+            if (index > -1) {
+                $.xhrPool.splice(index, 1);
+            }
+        }
+    });
+
     // This needs elegance
     app.settings = new SettingsCollection(options.settings, {parse: true});
     app.settings.url = app.API_URL + 'settings';
@@ -294,7 +314,9 @@ require(["config"], function() {
       // Capture sync errors...
       $(document).ajaxError(function(e, xhr) {
         var type, message, details;
-
+        if(xhr.statusText == "abort") {
+          return;
+        }
         switch(xhr.status) {
           case 403:
             // var response = $.parseJSON(xhr.responseText);

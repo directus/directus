@@ -143,6 +143,8 @@ define(function(require, exports, module) {
 
       var collection;
 
+      $.xhrPool.abortAll();
+
       if (!SchemaManager.getTable(tableName)) {
         return this.notFound();
       }
