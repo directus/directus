@@ -1217,7 +1217,8 @@ a.secondary-info {
 a.secondary-info:hover {
   color: #5b5b5b;
 }
-.delete-color {
+.delete-color,
+.error-color {
   color: #c1272d;
 }
 .dark-grey-color {
@@ -1903,7 +1904,7 @@ select:focus,
 
   background-color: #ededed;
   color: #5b5b5b;
-  font-weight: 400;
+  font-weight: 600;
   padding: 30px 20px 20px 20px;
   text-align: right;
   vertical-align: top;
@@ -2287,6 +2288,7 @@ select:focus,
 }
 .cards .card .info .primary-info {
   overflow: hidden;
+  height: 48px;
 }
 .cards .card .info .extra {
   padding-top: 0;
@@ -2324,6 +2326,10 @@ select:focus,
   list-style: none;
   padding: 20px;
   height: 160px;
+  overflow: hidden;
+}
+.feature-cards .feature-card:hover .icon {
+  color: #bbbbbb;
 }
 .feature-cards .feature-card .left-col,
 .feature-cards .feature-card .right-col {
@@ -2506,19 +2512,28 @@ select:focus,
 }
 #sidebar ul li:hover {
   color: #ffffff;
+  background-color: #313131;
   cursor: pointer;
 }
 #sidebar #mainLogoBox {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: #252525;
   border-bottom: 1px solid #313131;
   height: 100px;
 }
 #sidebar .directusLogo {
+  -webkit-transition: all 400ms ease-in-out;
+  -moz-transition: all 400ms ease-in-out;
+  -o-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out;
   height: 60px !important;
   padding: 20px 0px;
   line-height: 90px;
   text-align: center;
   font-size: 40px;
+  color: #5b5b5b;
+}
+#sidebar .directusLogo:hover {
+  color: #bbbbbb;
 }
 #sidebar .directusLogo .icon {
   line-height: 36px;
@@ -2529,6 +2544,7 @@ select:focus,
   position: absolute;
   top: 101px;
   width: 100%;
+  color: #bbbbbb;
 }
 #sidebar #mainSidebar ul {
   margin: 10px 0px;
@@ -2542,12 +2558,11 @@ select:focus,
 }
 #sidebar #mainSidebar li.active {
   border-left-width: 4px;
-  border-left-style: solid;
+  background-color: #5b5b5b;
 }
 #sidebar #mainSidebar li.active a {
   color: #ffffff;
   cursor: auto;
-  padding-left: 16px;
 }
 #sidebar #mainSidebar li.active a:after {
   border-style: solid;
@@ -2604,7 +2619,7 @@ select:focus,
   padding: 17px;
 }
 #sidebar #featureSidebar li.active {
-  background-color: #f4f4f4;
+  background-color: #5b5b5b !important;
 }
 #sidebar #featureSidebar li.has-image .icon {
   display: none;
