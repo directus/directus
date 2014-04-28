@@ -827,7 +827,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
             'size' => $fileData['size'],
             'width' => $fileData['width'],
             'height' => $fileData['height'],
-            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            'date_uploaded' => $fileData['date_uploaded'],
             'storage_adapter' => $fileData['storage_adapter']
         );
     }
@@ -854,7 +854,7 @@ $app->post("/$v/upload/link/?", function () use ($db, $params, $requestPayload, 
             'width' => $fileData['width'],
             'height' => $fileData['height'],
             'url' => $fileData['url'],
-            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            'date_uploaded' => $fileData['date_uploaded'],
             'storage_adapter' => $fileData['storage_adapter']
         );
     }
