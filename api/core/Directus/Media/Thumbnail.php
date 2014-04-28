@@ -18,7 +18,7 @@ class Thumbnail {
                 break;
             case 'tif':
               if(extension_loaded('imagick')) {
-                $image = new Imagick($localPath);
+                $image = new \Imagick($localPath);
                 $image->setImageFormat('jpeg');
                 $tempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
                 $image->writeImage($tempName);
