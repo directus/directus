@@ -16,6 +16,14 @@ class Thumbnail {
             case 'png':
                 $img = imagecreatefrompng($localPath);
                 break;
+            case 'tif':
+              if(extension_loaded('imagick')) {
+                $image = new Imagick($localPath);
+                $image->setImageFormat('jpg');
+                $img = imagecreatefromstring($image->getImageBlob());
+              } else {
+                return false;
+              }
 			      default:
 				      return false;
         }

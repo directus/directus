@@ -81,7 +81,7 @@ class Storage {
         // Generate thumbnail if image
         $thumbnailTempName = null;
         $info = pathinfo($targetFileName);
-        if(in_array($info['extension'], array('jpg','jpeg','png','gif'))) {
+        if(in_array($info['extension'], array('jpg','jpeg','png','gif','tif'))) {
             $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
             $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
             Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $settings['thumbnail_quality']);
