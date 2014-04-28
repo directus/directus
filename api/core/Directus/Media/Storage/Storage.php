@@ -98,7 +98,12 @@ class Storage {
 
         // Push thumbnail file if applicable (if image) with prefix THUMB_
         if(!is_null($thumbnailTempName)) {
-            $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);
+            $info = pathinfo($fileData['name']);
+            if( in_array($info['extension'], array('tif'))) {
+              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$info['filename'].'.jpg', $mediaAdapter['destination']);
+            } else {
+              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);
+            }
         }
 
         return $fileData;

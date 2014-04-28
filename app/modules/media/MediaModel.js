@@ -31,7 +31,11 @@ function(app, Backbone, EntriesModel) {
         //If Temp SA and Thumbnail do Special logic
         if(this.get('storage_adapter')) {
           if(storageAdapters[this.get('storage_adapter')].role == "TEMP" && thumbnail) {
-            url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name');
+            if(this.get('name').split('.').pop() == 'tif') {
+              url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name').replace(/\.[^/.]+$/, "") + ".jpg";
+            } else {
+              url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name');
+            }
           }
         }
       } else {
