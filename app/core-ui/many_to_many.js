@@ -90,10 +90,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
       view.save = function() {
         _.each(view.table.selection(), function(id) {
-          if(!isNaN(id)) {
-            var data = collection.get(id).toJSON();
-            me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
-          }
+          var data = collection.get(id).toJSON();
+          me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
         }, this);
         me.relatedCollection.trigger('add');
         app.router.removeOverlayPage(this);
@@ -135,12 +133,15 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         sortable: true,
         footer: false,
         tableHead: false,
-        saveAfterDrop: false,
+        saveAfterDrop: true,
         deleteColumn: this.showRemoveButton,
         hideEmptyMessage: true,
         hideColumnPreferences: true,
         hasSort: junctionStructure.get('sort') !== undefined
       });
+      if(this.columnSchema.has('sort')) {
+        relatedCollection.setOrder('sort','ASC');
+      }
 
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', function() {

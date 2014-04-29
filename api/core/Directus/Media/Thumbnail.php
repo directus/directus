@@ -16,6 +16,16 @@ class Thumbnail {
             case 'png':
                 $img = imagecreatefrompng($localPath);
                 break;
+            case 'tif':
+              if(extension_loaded('imagick')) {
+                $image = new \Imagick($localPath);
+                $image->setImageFormat('jpeg');
+                $tempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+                $image->writeImage($tempName);
+                $img = imagecreatefromjpeg($tempName);
+              } else {
+                return false;
+              }
 			      default:
 				      return false;
         }

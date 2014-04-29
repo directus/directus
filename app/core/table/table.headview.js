@@ -141,13 +141,16 @@ function(app, Backbone) {
         this.visibleColumnsView.save = function() {
           var data = this.$el.find('form').serializeObject();
           var string = _.isArray(data.columns_visible) ? data.columns_visible.join(',') : data.columns_visible;
-          var that = this;
+          var that2 = this;
+
           preferences.save({'columns_visible': string},{
             success: function() {
               collection.trigger('visibility');
-              that.cancelSelection();
+              that2.cancelSelection();
             }
           });
+
+          that.collection.filters.columns_visible = data.columns_visible;
         };
 
         this.render();
@@ -176,6 +179,10 @@ function(app, Backbone) {
 
     initialize: function() {
       this.maxColumns = this.options.maxColumns || 8;
+      if(this.collection.preferences) {
+        this.collection.filters.columns_visible = this.collection.preferences.get('columns_visible').split(',');
+      }
+
       this.collection.on('sort', this.render, this);
     }
 

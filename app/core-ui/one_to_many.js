@@ -179,9 +179,9 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         selectable: false,
-        sortable: false,
+        sortable: true,
         footer: false,
-        saveAfterDrop: false,
+        saveAfterDrop: true,
         deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES") && this.canEdit && this.showRemoveButton,
         hideColumnPreferences: true,
         hideEmptyMessage: true,
@@ -194,6 +194,10 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
           ]
         }
       });
+
+      if(this.columnSchema.has('sort')) {
+        relatedCollection.setOrder('sort','ASC');
+      }
 
       this.listenTo(relatedCollection, 'change add remove', function() {
         //Check if any rendered objects in collection to show or hide header

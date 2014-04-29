@@ -230,7 +230,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               }
 
               //Save Temp Thumbnail name for use after media record save
-              $thumbnailName = "THUMB_".$recordData['name'];
+              $info = pathinfo($recordData['name']);
+              if( in_array($info['extension'], array('tif'))) {
+                $thumbnailName = "THUMB_".$recordData['filename'].'.jpg';
+              } else {
+                $thumbnailName = "THUMB_".$recordData['name'];
+              }
 
               //If we are using Media ID, Dont save until after insert
               if($Storage->getMediaSettings()['media_file_naming'] != "media_id") {
