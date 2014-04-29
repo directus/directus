@@ -100,7 +100,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         this.$el.find('input').val(innerHtml);
       },
       'paste' : function(e) {
-        if(this.options.settings.get("plaintextpaste") != "on") {
+        if(this.options.settings.get("plaintextpaste") != "on" &&this.options.settings.get("plaintextpaste") != "1") {
           return;
         }
 
@@ -198,7 +198,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       if(sel.isCollapsed) {
         html = $(document.getElementById(this.options.name)).html().replace(/<(?!br\s*\/?)[^>]+>/g, '');
-        $('div.force-editable').html(html);
+        this.$el.find('div.force-editable').html(html);
         this.$el.find('input').val(html);
         return;
       }
