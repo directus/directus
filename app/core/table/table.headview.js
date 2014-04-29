@@ -179,8 +179,9 @@ function(app, Backbone) {
 
     initialize: function() {
       this.maxColumns = this.options.maxColumns || 8;
-
-      this.collection.filters.columns_visible = this.collection.preferences.get('columns_visible').split(',');
+      if(this.collection.preferences) {
+        this.collection.filters.columns_visible = this.collection.preferences.get('columns_visible').split(',');
+      }
 
       this.collection.on('sort', this.render, this);
     }

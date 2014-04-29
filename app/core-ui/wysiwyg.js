@@ -58,7 +58,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.Input = Backbone.Layout.extend({
 
     tagName: 'div',
-    
+
     attributes: {
       'class': 'field'
     },
@@ -195,7 +195,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var html = "";
       var sel = window.getSelection();
       var container;
-      
+
       if(sel.isCollapsed) {
         html = $(document.getElementById(this.options.name)).html().replace(/<(?!br\s*\/?)[^>]+>/g, '');
         $('div.force-editable').html(html);
