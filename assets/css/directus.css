@@ -1961,6 +1961,17 @@ select:focus,
   padding: 10px;
   -webkit-font-smoothing: auto;
 }
+.two-column-form .fields .field .force-editable a {
+  text-decoration: underline;
+  color: #7ac943;
+}
+.two-column-form .fields .field .force-editable img:hover {
+  border: 1px dotted #bbbbbb;
+  margin-left: -1px;
+  margin-top: -1px;
+  margin-right: -1px;
+  margin-bottom: -1px;
+}
 .two-column-form .fields .field textarea {
   min-height: 100px;
   padding: 10px;

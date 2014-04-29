@@ -278,6 +278,19 @@ select,
         line-height: 20px;
         padding: 10px;
         -webkit-font-smoothing: auto;
+        a {
+          text-decoration: underline;
+          color: @addColor;
+        }
+        img {
+          &:hover {
+            border: 1px dotted @mediumGrey;
+            margin-left: -1px;
+            margin-top: -1px;
+            margin-right: -1px;
+            margin-bottom: -1px;
+          }
+        }
       }
       textarea {
         min-height: 100px;
