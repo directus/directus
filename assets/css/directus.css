@@ -1322,14 +1322,18 @@ input:-webkit-autofill {
 }
 #loader {
   position: fixed;
-  left: 170px;
+  left: 0;
   top: 0;
   right: 0;
   bottom: 0;
+  z-index: 99999999;
+  display: none;
+}
+#loader_page {
+  left: 170px;
   background-color: rgba(255, 255, 255, 0.9);
   z-index: 49;
   cursor: progress;
-  display: none;
 }
 .spinner {
   position: absolute;

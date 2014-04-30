@@ -224,14 +224,19 @@ input:-webkit-autofill {
 }
 #loader {
   position: fixed;
-  left: 170px;
+  left: 0;
   top: 0;
   right: 0;
   bottom: 0;
+  z-index: 99999999;
+  display: none;
+}
+
+#loader_page {
+  left: 170px;
   background-color: fade(@white, 90%);
   z-index: 49;
   cursor: progress;
-  display: none;
 }
 .spinner {
   position: absolute;
