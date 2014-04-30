@@ -21,11 +21,6 @@ function(app, Backbone, Widgets) {
         var user = app.users.getCurrentUser();
         var userGroup = user.get('group');
 
-        //@todo fix this so it respects ACL instead of being hardcoded
-        if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
-          return;
-        }
-
         app.router.go('#files', id);
       }
     },
