@@ -61,13 +61,13 @@ function(app, Backbone) {
       }
     },
     afterRender: function() {
-      var that = this;
-
-      $(window).on('resize', function() {
-        that.setMarginToHeaderHeight();
-      });
+      $(window).bind('resize.app', _.bind(this.setMarginToHeaderHeight, this));
 
       this.setMarginToHeaderHeight();
+    },
+
+    cleanup: function() {
+      $(window).unbind("resize.app");
     },
 
     setMarginToHeaderHeight: function() {

@@ -193,7 +193,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       if(!(this.model instanceof MediaModel)) {
         this.model = new MediaModel(this.model.attributes, {collection: this.collection});
       }
-      this.model.on('change', this.render, this);
+      this.listenTo(this.model, 'change', render);
     },
     afterRender: function() {
       var timer;
