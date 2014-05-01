@@ -17,6 +17,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
+    {id: 'show_inactive', ui: 'checkbox', def: '0'},
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: "Enter Visible Column Name"},
     {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"}
     //{id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
@@ -108,8 +109,12 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
+      var active = 1;
+      if(this.options.settings.get('show_inactive') == '1') {
+        active = '1,2';
+      }
       // FILTER HERE!
-      this.collection.fetch({includeFilters: false, data: {active:1}});
+      this.collection.fetch({includeFilters: false, data: {active:active}});
       //this.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }
