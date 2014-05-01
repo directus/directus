@@ -91,7 +91,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                   </div> \
                   {{/if}} \
-                  <div style="{{#if url}}display:none;{{/if}}" id="mediaDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag files here, or click for existing</div> \
+                  <div style="{{#if url}}display:none;{{/if}}" id="mediaDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click to choose</div> \
                   <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
                   <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or upload a local file</div>';
