@@ -7,9 +7,10 @@
 			<th class="permissions">Alter</th>
 			<th class="permissions">Bigdelete</th>
 			<th class="permissions">Bigedit</th>
+      <th class="permissions">Bigview</th>
 			<th class="permissions">Delete</th>
 			<th class="permissions">Edit</th>
-			<th class="permissions">View</th>
+      <th class="permissions">View</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -34,6 +35,10 @@
 				{{#if bigedit}}<span class="add-color">✔</span>{{/if}}
 				{{#unless bigedit}}<span class="delete-color">✖</span>{{/unless}}
 			</td>
+      <td data-value="bigview">
+        {{#if bigview}}<span class="add-color">✔</span>{{/if}}
+        {{#unless bigview}}<span class="delete-color">✖</span>{{/unless}}
+      </td>
 			<td data-value="delete">
 				{{#if delete}}<span class="add-color">✔</span>{{/if}}
 				{{#unless delete}}<span class="delete-color">✖</span>{{/unless}}

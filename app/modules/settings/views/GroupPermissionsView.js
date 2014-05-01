@@ -92,7 +92,8 @@ function(app, Backbone, BasePageView, PaneSaveView) {
           'delete': false,
           'bigdelete': false,
           'alter': false,
-          'view': false
+          'view': false,
+          'bigview': false
         };
 
         _.each(permissions, function(property) {
