@@ -496,8 +496,6 @@ define(function(require, exports, module) {
           if(currentPath.length) {
             bookmarks.setActive(currentPath);
 
-            app.trigger('load');
-
             last_page = JSON.stringify({
               'path' : currentPath,
               'route' : route.substring(6),
