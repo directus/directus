@@ -69,6 +69,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $TableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
         }
 
+        $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
+
+        if($recordIsNew) {
+          $cmsOwnerColumnName = $this->acl->getCmsOwnerColumnByTable($tableName);
+          if($cmsOwnerColumnName) {
+            $recordData[$cmsOwnerColumnName] = $currentUser['id'];
+          }
+        }
+
         $thisIsNested = ($activityEntryMode == self::ACTIVITY_ENTRY_MODE_CHILD);
 
         // Recursive functions will change this value (by reference) as necessary
@@ -90,8 +99,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Merge the M21 foreign keys into the recordData array
         $recordData = array_merge($recordData, $parentRecordWithForeignKeys);
-
-        $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
         // If more than the record ID is present.
         $newRecordObject = null;
@@ -560,6 +567,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $select->columns($columnNames);
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
+
+        $currentUserId = null;
+        $currentUser = AuthProvider::getUserInfo();
+        $currentUserId = intval($currentUser['id']);
+
+        $cmsOwnerId = $this->acl->getCmsOwnerColumnByTable($this->table);
+
+        //If we have user field and do not have big view privileges but have view then only show entries we created
+        if($cmsOwnerId && !$this->acl->hasTablePrivilege($this->table, 'bigview') && $this->acl->hasTablePrivilege($this->table, 'view')) {
+          $select->where->equalTo($cmsOwnerId, $currentUserId);
+        }
 
         // $logger->info($this->dumpSql($select));
 
