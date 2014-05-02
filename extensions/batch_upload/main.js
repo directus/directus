@@ -161,6 +161,7 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
       // Save all batch id's
       this.batchView.mediaModels.each(function(image) {
         var modelToUpdate =  model.getNewInstance({collection: model.collection});
+        modelToUpdate.set({active: 2});
         modelToUpdate.set(_.extend(
           {image: image},
           changedAttributes
