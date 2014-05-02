@@ -4,7 +4,7 @@ define([
   'core/directus',
   'core/BasePageView',
   'core/EntriesManager',
-  'core/widgets/widgets'
+  'core/widgets/widgets',
 ],
 
 function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
@@ -15,6 +15,8 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
     title: 'Batch Upload'
   };
 
+  var MediaModelsCollection = Backbone.Collection.extend({});
+
   var BatchContainerView = Backbone.Layout.extend({
     prefix: 'extensions/batch_upload/templates/',
     template: 'batch-upload',
@@ -22,9 +24,78 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
     afterRender: function() {
       this.setView('#upload-content', this.editView);
       this.editView.render();
+
+      var timer;
+      var $dropzone = this.$el.find('.batch-ui-thumbnail');
+      var model = this.model;
+      var self = this;
+
+      $dropzone.on('dragover', function(e) {
+        clearInterval(timer);
+        e.stopPropagation();
+        e.preventDefault();
+        $dropzone.addClass('dragover');
+      });
+
+      $dropzone.on('dragleave', function(e) {
+        clearInterval(timer);
+        timer = setInterval(function(){
+          $dropzone.removeClass('dragover');
+          clearInterval(timer);
+        },50);
+      });
+
+      // Since data transfer is not supported by jquery...
+      // XHR2, FormData
+      $dropzone[0].ondrop = _.bind(function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var that = this;
+
+        app.sendFiles(e.dataTransfer.files, function(data) {
+
+          _.each(data, function(item) {
+            item.active = 1;
+            // Unset the model ID so that a new media record is created
+            // (and the old media record isn't replaced w/ this data)
+            item.id = undefined;
+            item.user = app.users.getCurrentUser().id;
+
+            var collection = EntriesManager.getInstance('directus_media');
+
+            var model = new collection.model(item, {collection:collection});
+
+            that.mediaModels.add(model);
+          });
+
+          that.mediaModels.trigger('sync');
+        });
+        $dropzone.removeClass('dragover');
+      }, this);
     },
+
+    serialize: function() {
+      var models = [];
+
+      var url;
+
+      this.mediaModels.forEach(function(model) {
+        if(model.get('name').split('.').pop() == 'tif') {
+          url = app.storageAdapters['TEMP'].url + "THUMB_" + model.get('name').replace(/\.[^/.]+$/, "") + ".jpg";
+        } else {
+          url = app.storageAdapters['TEMP'].url + "THUMB_" + model.get('name');
+        }
+        model.set({url:url});
+        models.push(model.attributes);
+      });
+
+      return {data: models};
+    },
+
     initialize: function(options) {
       this.editView = new Directus.EditView({model: this.model, batchIds: [1,2]});
+      this.mediaModels = new MediaModelsCollection();
+      this.listenTo(this.mediaModels, 'sync', this.render);
     }
   });
 
@@ -53,10 +124,11 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
     save: function() {
       var model = this.model,
           failRequestCount = 0,
-          successRequestCount = 0;
+          successRequestCount = 0,
+          itemCount = this.batchView.mediaModels.length;
 
       // Serialize the entire form
-      var data = this.editView.data();
+      var data = this.batchView.editView.data();
 
       // Get an attribute whitelist based on the checkboxes
       var attrWhitelist = $("input[name='batchedit']:checked").map(function() {
@@ -87,14 +159,15 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
         checkIfDone();
       };
 
-/*
       // Save all batch id's
-      _.each(this.batchIds, function(id) {
-        var modelToUpdate = model.getNewInstance({collection: model.collection});
+      this.batchView.mediaModels.each(function(image) {
+        var modelToUpdate =  model.getNewInstance({collection: model.collection});
         modelToUpdate.set(_.extend(
-          {id: id},
+          {image: image},
           changedAttributes
         ), {parse: true});
+
+        modelToUpdate.url = model.collection.url;
 
         modelToUpdate.save({}, {
           success: success,
@@ -104,9 +177,7 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
           includeRelationships: true,
           validate: false
         });
-      });*/
-
-      console.log(changedAttributes);
+      });
     },
     afterRender: function() {
       this.setView('#page-content', this.batchView);
@@ -124,10 +195,10 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
 
     index: function() {
       var collection = EntriesManager.getInstance('images');
-      var model = new collection.model({}, {collection: collection, parse: true});
+      this.model = new collection.model({}, {collection: collection, parse: true});
 
-      var view = new View({model: model});
-      app.router.v.main.setView('#content', view);
+      this.view = new View({model: this.model});
+      app.router.v.main.setView('#content', this.view);
       app.router.v.main.render();
     },
 

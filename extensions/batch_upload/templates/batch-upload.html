@@ -63,12 +63,17 @@
           margin-right: 10px;
         }
       </style>
-        <div class="ui-thumbnail empty ui-thumbnail-dropzone">Drag media here, or click for existing</div>
+        <div class="ui-thumbnail empty ui-thumbnail-dropzone batch-ui-thumbnail">Drag media here, or click for existing</div>
     </div>
   </div></div>
-  <div class="fieldset-smoke"></div>
 </li>
 </ul></span>
+
+{{#each data}}
+<div class="ui-thumbnail has-media">
+  <img src="{{url}}">
+</div>
+{{/each}}
 <br/>
 <br/>
 <br/>
