@@ -144,8 +144,7 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
       var checkIfDone = function() {
         var totalRequest = successRequestCount + failRequestCount;
         if (totalRequest === itemCount) {
-          alert(successRequestCount + " items have been updated. " + failRequestCount + " items failed to update");
-          app.router.go('/');
+          app.router.go('/tables/images');
         }
       };
 
