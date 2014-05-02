@@ -30,7 +30,6 @@ build_test.html
 build_test_release
 
 extensions/*
-!extensions/batch_upload/
 
 ui/*
 !ui/.gitkeep
