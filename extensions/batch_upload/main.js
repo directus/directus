@@ -93,7 +93,7 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
     },
 
     initialize: function(options) {
-      this.editView = new Directus.EditView({model: this.model, batchIds: [1,2]});
+      this.editView = new Directus.EditView({model: this.model, batchIds: [1,2], hiddenFields: ['image']});
       this.mediaModels = new MediaModelsCollection();
       this.listenTo(this.mediaModels, 'sync', this.render);
     }
