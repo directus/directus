@@ -58,7 +58,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                       </div> \
                     {{/if}} \
                   </div> \
-                  <form><textarea id="wysihtml5-textarea-{{name}}" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}} autofocus></textarea></form> \
+                  <textarea id="wysihtml5-textarea-{{name}}" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}} autofocus></textarea> \
                   <input type="hidden" name="{{name}}" value="{{markupValue}}">';
 
   Module.Input = Backbone.Layout.extend({
