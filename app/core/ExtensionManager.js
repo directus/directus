@@ -36,6 +36,10 @@ define(function(require, exports, module) {
 
     getIds: function() {
       return _.keys(extensions);
+    },
+
+    getInfo: function(id) {
+      return extensions[id];
     }
 
   };

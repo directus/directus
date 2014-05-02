@@ -234,7 +234,12 @@ require(["config"], function() {
 
       // Add extensions to tabs
       _.each(extensions, function(item) {
-        tabs.push({title: app.capitalize(item), id: item, extension: true});
+        item = ExtensionManager.getInfo(item);
+        bookmarks.push(new Backbone.Model({
+          icon_class: item.icon,
+          title: item.title,
+          url: item.id
+        }));
       });
 
       // Grab tab permissions from DB
