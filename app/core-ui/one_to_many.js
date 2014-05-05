@@ -195,7 +195,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       });
 
       if(this.columnSchema.has('sort')) {
-        relatedCollection.setOrder('sort','ASC');
+        //relatedCollection.setOrder('sort','ASC');
       }
 
       this.listenTo(relatedCollection, 'change add remove', function() {
