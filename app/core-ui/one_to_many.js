@@ -169,7 +169,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       if(ids.length > 0) {
         //@TODO: Have this not fetch entire collection.
-        //relatedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}});
+        relatedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}});
       }
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
