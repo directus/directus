@@ -22,8 +22,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
   ];
 
   var template = '<div class="related-table"></div> \
-                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}} \
-                  {{#if manyToMany}}{{#if canEdit}}<button class="btn btn-small btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}{{/if}}</div>';
+                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}';
 
   Module.Input = UIView.extend({
 
@@ -170,7 +169,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       if(ids.length > 0) {
         //@TODO: Have this not fetch entire collection.
-        relatedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}});
+        //relatedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}});
       }
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
