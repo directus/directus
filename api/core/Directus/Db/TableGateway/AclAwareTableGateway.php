@@ -232,7 +232,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               //Save Temp Thumbnail name for use after media record save
               $info = pathinfo($recordData['name']);
               if( in_array($info['extension'], array('tif'))) {
-                $thumbnailName = "THUMB_".$recordData['filename'].'.jpg';
+                $thumbnailName = "THUMB_".$info['filename'].'.jpg';
               } else {
                 $thumbnailName = "THUMB_".$recordData['name'];
               }
@@ -274,6 +274,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               $tempLocation = $Storage->storageAdaptersByRole['TEMP']['destination'];
               if(file_exists($tempLocation.$thumbnailName)) {
                 $thumbnailDestination = $Storage->storageAdaptersByRole['THUMBNAIL']['destination'];
+                if(in_array($ext, array('tif'))) {
+                  $ext = 'jpg';
+                }
                 $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $recordData['id'].".".$ext, $thumbnailDestination);
               }
             }

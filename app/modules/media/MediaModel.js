@@ -25,7 +25,11 @@ function(app, Backbone, EntriesModel) {
 
         storageAdapter = storageAdapters[adapterId];
         if(this.get('name')) {
-          url = storageAdapter.url + this.get('id') + "." + this.get('name').split('.').pop();;
+          if(this.get('name').split('.').pop() == 'tif') {
+            url = storageAdapter.url + this.get('id') + ".jpg";
+          } else {
+            url = storageAdapter.url + this.get('id') + "." + this.get('name').split('.').pop();
+          }
         }
 
         //If Temp SA and Thumbnail do Special logic

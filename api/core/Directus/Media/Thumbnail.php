@@ -26,9 +26,11 @@ class Thumbnail {
               } else {
                 return false;
               }
+              break;
 			      default:
 				      return false;
         }
+
 
         $w = imagesx($img);
         $h = imagesy($img);
@@ -91,6 +93,9 @@ class Thumbnail {
                 break;
             case 'png':
                 return imagepng($img, $path);
+                break;
+            case 'tif':
+                return imagejpeg($img, $path, $quality);
                 break;
         }
         return false;
