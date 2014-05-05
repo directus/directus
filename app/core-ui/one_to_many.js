@@ -169,7 +169,8 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       if(ids.length > 0) {
         //@TODO: Have this not fetch entire collection.
-        relatedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}});
+        relatedCollection.setFilter({ids: ids.join(',')});
+        relatedCollection.fetch();
       }
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
@@ -195,7 +196,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       });
 
       if(this.columnSchema.has('sort')) {
-        //relatedCollection.setOrder('sort','ASC');
+        relatedCollection.setOrder('sort','ASC',{silent: true});
       }
 
       this.listenTo(relatedCollection, 'change add remove', function() {

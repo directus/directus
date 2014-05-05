@@ -99,7 +99,6 @@ function(app, Backbone) {
       this.$('tr').each(function(i) {
         collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
       });
-      console.log(this.options.saveAfterDrop);
 
       if (this.options.saveAfterDrop) {
         collection.save({columns:['id','sort']});

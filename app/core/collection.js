@@ -109,7 +109,7 @@ function(app, Backbone) {
         this.setFilter({sort: column, sort_order: sortOrder});
       }
 
-      if (this.filters.perPage < this.table.get('total')) {
+      if (this.filters.perPage >= this.table.get('total')) {
         this.fetch();
       } else {
         this.sort(options);

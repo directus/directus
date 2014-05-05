@@ -566,6 +566,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $select->columns($columnNames);
 
+        if(array_key_exists('ids', $params)) {
+          $select->where('id IN ('.$params['ids'].')');
+        }
+
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
 
         $currentUserId = null;
