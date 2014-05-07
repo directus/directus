@@ -71,7 +71,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
-        if($recordIsNew) {
+        //Dont do for directus users since id is pk
+        if($recordIsNew && $tableName != 'directus_users') {
           $cmsOwnerColumnName = $this->acl->getCmsOwnerColumnByTable($tableName);
           if($cmsOwnerColumnName) {
             $recordData[$cmsOwnerColumnName] = $currentUser['id'];
