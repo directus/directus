@@ -261,7 +261,10 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       var url = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl(true) : null;
       var link = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl() : null;
       var data = this.mediaModel.toJSON();
-      var isImage = _.contains(['image/jpeg','image/png'], this.mediaModel.get('type'));
+      var type = model.get('type').substring(0, model.get('type').indexOf('/'));
+      var subtype = model.get('type').split('/').pop();
+
+      var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
       if(data.type) {
