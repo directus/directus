@@ -30,7 +30,10 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'h3', ui: 'checkbox', def: '1'},
     {id: 'h4', ui: 'checkbox', def: '1'},
     {id: 'h5', ui: 'checkbox', def: '1'},
-    {id: 'h6', ui: 'checkbox', def: '1'}
+    {id: 'h6', ui: 'checkbox', def: '1'},
+    {id: 'blockquote', ui: 'checkbox', def: '1'},
+    {id: 'ul', ui: 'checkbox', def: '1'},
+    {id: 'ol', ui: 'checkbox', def: '1'}
   ];
 
    Handlebars.registerHelper('newlineToBr', function(text){
@@ -45,12 +48,17 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
                     {{#if strikethrough}}<button data-wysihtml5-command="strikethrough" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Strikethrough"><s>S</s></button>{{/if}} \
                   </div> \
                   <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
-                    {{#if h1}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" type="button" class="btn btn-small btn-silver" data-tag="H1" rel="tooltip" data-placement="bottom" title="Bold">H1</button>{{/if}} \
-                    {{#if h2}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" type="button" class="btn btn-small btn-silver" data-tag="H2" rel="tooltip" data-placement="bottom" title="Bold">H2</button>{{/if}} \
-                    {{#if h3}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" type="button" class="btn btn-small btn-silver" data-tag="H3" rel="tooltip" data-placement="bottom" title="Bold">H3</button>{{/if}} \
-                    {{#if h4}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" type="button" class="btn btn-small btn-silver" data-tag="H4" rel="tooltip" data-placement="bottom" title="Bold">H4</button>{{/if}} \
-                    {{#if h5}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" type="button" class="btn btn-small btn-silver" data-tag="H5" rel="tooltip" data-placement="bottom" title="Bold">H5</button>{{/if}} \
-                    {{#if h6}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" type="button" class="btn btn-small btn-silver" data-tag="H6" rel="tooltip" data-placement="bottom" title="Bold">H6</button>{{/if}} \
+                    {{#if h1}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" type="button" class="btn btn-small btn-silver" data-tag="H1" rel="tooltip" data-placement="bottom" title="H1">H1</button>{{/if}} \
+                    {{#if h2}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" type="button" class="btn btn-small btn-silver" data-tag="H2" rel="tooltip" data-placement="bottom" title="H2">H2</button>{{/if}} \
+                    {{#if h3}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" type="button" class="btn btn-small btn-silver" data-tag="H3" rel="tooltip" data-placement="bottom" title="H3">H3</button>{{/if}} \
+                    {{#if h4}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" type="button" class="btn btn-small btn-silver" data-tag="H4" rel="tooltip" data-placement="bottom" title="H4">H4</button>{{/if}} \
+                    {{#if h5}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" type="button" class="btn btn-small btn-silver" data-tag="H5" rel="tooltip" data-placement="bottom" title="H5">H5</button>{{/if}} \
+                    {{#if h6}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" type="button" class="btn btn-small btn-silver" data-tag="H6" rel="tooltip" data-placement="bottom" title="H6">H6</button>{{/if}} \
+                    {{#if blockquote}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote" type="button" class="btn btn-small btn-silver" data-tag="Quote" rel="tooltip" data-placement="bottom" title="Quote">Quote</button>{{/if}} \
+                  </div> \
+                  <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
+                    {{#if ul}}<button data-wysihtml5-command="insertUnorderedList" type="button" class="btn btn-small btn-silver" data-tag="UL" rel="tooltip" data-placement="bottom" title="UL">UL</button>{{/if}} \
+                    {{#if ol}}<button data-wysihtml5-command="insertOrderedList" type="button" class="btn btn-small btn-silver" data-tag="OL" rel="tooltip" data-placement="bottom" title="OL">OL</button>{{/if}} \
                   </div> \
                   <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
                     {{#if rule}} \
@@ -106,6 +114,9 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
         h4: (this.options.settings && this.options.settings.has('h4')) ? this.options.settings.get('h4') : true,
         h5: (this.options.settings && this.options.settings.has('h5')) ? this.options.settings.get('h5') : true,
         h6: (this.options.settings && this.options.settings.has('h6')) ? this.options.settings.get('h6') : true,
+        blockquote: (this.options.settings && this.options.settings.has('blockquote')) ? this.options.settings.get('blockquote') : true,
+        ul: (this.options.settings && this.options.settings.has('ul')) ? this.options.settings.get('ul') : true,
+        ol: (this.options.settings && this.options.settings.has('ol')) ? this.options.settings.get('ol') : true,
         createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink') : true,
         insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage') : true,
         markupValue: String(value).replace(/"/g, '&quot;'),
@@ -132,7 +143,7 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
       var that = this;
       this.editor = new wysihtml5.Editor("wysihtml5-textarea-" + this.options.name, { // id of textarea element
         toolbar:      "wysihtml5-toolbar-" + this.options.name, // id of toolbar element
-        stylesheets: "wysiwyg.css",
+        stylesheets: app.PATH + "assets/css/wysiwyg.css",
         parserRules:  wysihtml5ParserRules // defined in parser rules set
       });
       var value = this.options.value || '';
