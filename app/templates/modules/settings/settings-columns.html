@@ -4,9 +4,9 @@
     <th class="sort"><span class="icon icon-list"></span></th>
     <th class="field-field">Field</th>
     <th class="field-input_type">Input Type</th>
-    <th class="field-hidden">Hidden</th>
-    <th class="field-required">Required</th>
-    <th class="field-master">Primary</th>
+    <th class="field-hidden" style="width:50px;">Hidden</th>
+    <th class="field-required" style="width:50px;">Required</th>
+    <th class="field-master" style="width:50px;">Primary</th>
     <th class="field-note">Note</th>
 </tr>
 </thead>
@@ -16,17 +16,17 @@
     <td class="sort">{{#unless system}}<span class="icon icon-list"></span>{{/unless}}</td>
     <td><span title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
     {{#if system}}
-    <td colspan="5"><em>This is a system field</em></td>
+    <td colspan="5"><em class="light-grey-color">This is a system field</em></td>
     {{else}}
     <td>
-      <select name="ui" id="ui" data-id="{{id}}">
+      <select name="ui" id="ui" data-id="{{id}}" class="input-selector">
         {{#types}}
         <option {{#if isActive}}selected{{/if}} value="{{id}}">{{{capitalize id}}}</option>
         {{/types}}
       </select>
       {{#if uiHasVariables}}
-        <button class="glyphicon-settings btn btn-link" type="button" data-action="ui" data-id="{{id}}"></button>
-        {{#unless valid}}<span style="color:#EB2A49; font-weight:bold; font-style:normal">!</span>{{/unless}}
+        <span class="icon icon-cog open-ui-options" data-action="ui" data-id="{{id}}"></span>
+        {{#unless valid}}<span class="icon icon-warning"></span>{{/unless}}
       {{/if}}
     </td>
     <td>

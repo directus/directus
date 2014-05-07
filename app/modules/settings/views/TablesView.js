@@ -140,7 +140,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     template: 'modules/settings/settings-columns',
 
     events: {
-      'click button[data-action=ui]': 'editUI',
+      'click span[data-action=ui]': 'editUI',
       'change select,input': 'bindForm',
       'click button[data-action=new-field]': 'newField'
     },

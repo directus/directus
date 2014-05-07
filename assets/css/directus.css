@@ -2045,6 +2045,17 @@ select:focus,
 .directus-table-container {
   overflow: hidden;
 }
+#directus_columns .input-selector {
+  width: 150px;
+  display: inline-block;
+}
+#directus_columns .open-ui-options {
+  margin-left: 4px;
+  margin-top: -9px;
+}
+#directus_columns .open-ui-options:hover {
+  color: #000000;
+}
 .table-striped {
   text-align: left;
   width: 100%;
