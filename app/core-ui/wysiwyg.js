@@ -94,7 +94,7 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
       var value = this.options.value || '';
 
       return {
-        height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '100',
+        height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '500',
         bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold') : true,
         italic: (this.options.settings && this.options.settings.has('italic')) ? this.options.settings.get('italic') : true,
         underline: (this.options.settings && this.options.settings.has('underline')) ? this.options.settings.get('underline') : true,
