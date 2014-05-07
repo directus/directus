@@ -37,7 +37,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     template: Handlebars.compile(
       '{{#rows}}' +
       '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
-        '<div class="header-image primary-border-color">' +
+        '<div class="header-image add-color-border">' +
           '{{avatar}} <div class="tool-item large-circle"><span class="icon icon-pencil"></span></div></div>' +
         '<div class="info">' +
           '<div class="featured">' +

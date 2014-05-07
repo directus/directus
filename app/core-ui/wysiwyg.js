@@ -22,7 +22,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'italic', ui: 'checkbox', def: '1'},
     {id: 'underline', ui: 'checkbox', def: '1'},
     {id: 'strikethrough', ui: 'checkbox', def: '1'},
-    //{id: 'rule', ui: 'checkbox', def: '1'},
+    {id: 'rule', ui: 'checkbox', def: '1'},
     {id: 'createlink', ui: 'checkbox', def: '1'},
     {id: 'insertimage', ui: 'checkbox', def: '1'}
   ];
@@ -31,35 +31,27 @@ define(['app', 'backbone'], function(app, Backbone) {
        return new Handlebars.SafeString(text.string.replace(/\n/g, '<br/>'));
    });
 
-  var template =  '<div id="wysihtml5-toolbar-{{name}}" style="display: none;"> \
-                    {{#if bold}}<a data-wysihtml5-command="bold">bold</a>{{/if}} \
-                    {{#if italic}}<a data-wysihtml5-command="italic">italic</a>{{/if}} \
-                    {{#if underline}}<a data-wysihtml5-command="underline">underline</a>{{/if}} \
-                    {{#if strikethrough}}<a data-wysihtml5-command="strikethrough">strikethrough</a>{{/if}} \
+var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="display: none;"> \
+                  <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
+                    {{#if bold}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b><a data-wysihtml5-command="bold">B</a></b></button>{{/if}} \
+                    {{#if italic}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Italic"><i><a data-wysihtml5-command="italic">I</a></i></button>{{/if}} \
+                    {{#if underline}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Underline"><u><a data-wysihtml5-command="underline">U</a></u></button>{{/if}} \
+                    {{#if strikethrough}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Strikethrough"><s><a data-wysihtml5-command="strikethrough">S</a></s></button>{{/if}} \
+                  </div> \
+                  <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
+                    {{#if rule}} \
+                      <button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Rule"><a data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>">HR</a></button> \
+                    {{/if}} \
                     {{#if createlink}} \
-                      <a data-wysihtml5-command="createLink">insert link</a> \
-                      <div data-wysihtml5-dialog="createLink" style="display: none;"> \
-                        <label> \
-                          Link: \
-                          <input data-wysihtml5-dialog-field="href" value="http://" class="text"> \
-                        </label> \
-                        <a data-wysihtml5-dialog-action="save">OK</a> <a data-wysihtml5-dialog-action="cancel">Cancel</a> \
-                      </div> \
+                    <button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link"><a data-wysihtml5-command="createLink" data-wysihtml5-command-value="http://www.google.com">LINK</a></button> \
                     {{/if}} \
                     {{#if insertimage}} \
-                      <a data-wysihtml5-command="insertImage">insert image</a> \
-                      <div data-wysihtml5-dialog="insertImage"  style="display: none;"> \
-                        <label> \
-                          Image: \
-                          <input data-wysihtml5-dialog-field="src" value="http://"> \
-                        </label> \
-                        <a data-wysihtml5-dialog-action="save">OK</a> \
-                        <a data-wysihtml5-dialog-action="cancel">Cancel</a> \
-                      </div> \
+                      <button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image"><a data-wysihtml5-command="insertImage">IMAGE</a></button> \
                     {{/if}} \
                   </div> \
-                  <textarea id="wysihtml5-textarea-{{name}}" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}} autofocus></textarea> \
-                  <input type="hidden" name="{{name}}" value="{{markupValue}}">';
+                </div> \
+                <textarea id="wysihtml5-textarea-{{name}}" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}} autofocus></textarea> \
+                <input type="hidden" name="{{name}}" value="{{markupValue}}">';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -220,9 +212,10 @@ var wysihtml5ParserRules = {
                 "align": "align_text"
             }
         },
-        "strike": {
-            "remove": 1
-        },
+        "strike": 1,
+        // "strike": {
+        //     "remove": 1
+        // },
         "form": {
             "rename_tag": "div"
         },
@@ -323,7 +316,7 @@ var wysihtml5ParserRules = {
         "abbr": {
             "rename_tag": "span"
         },
-        "u": {},
+        "u": 1,
         "bgsound": {
             "remove": 1
         },
@@ -355,9 +348,10 @@ var wysihtml5ParserRules = {
         "dd": {
             "rename_tag": "div"
         },
-        "s": {
-            "rename_tag": "span"
-        },
+        "s": 1,
+        // "s": {
+        //     "rename_tag": "span"
+        // },
         "li": {},
         "td": {
             "check_attributes": {
