@@ -2099,6 +2099,9 @@ select:focus,
   border-width: 0 6px 6px 6px;
   border-color: transparent transparent #bbbbbb transparent;
 }
+.table-striped thead tr th.permissions {
+  width: 10%;
+}
 .table-striped thead tr th .icon {
   display: inline-block;
   height: 0px;

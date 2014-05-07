@@ -24,7 +24,13 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'strikethrough', ui: 'checkbox', def: '1'},
     {id: 'rule', ui: 'checkbox', def: '1'},
     {id: 'createlink', ui: 'checkbox', def: '1'},
-    {id: 'insertimage', ui: 'checkbox', def: '1'}
+    {id: 'insertimage', ui: 'checkbox', def: '1'},
+    {id: 'h1', ui: 'checkbox', def: '1'},
+    {id: 'h2', ui: 'checkbox', def: '1'},
+    {id: 'h3', ui: 'checkbox', def: '1'},
+    {id: 'h4', ui: 'checkbox', def: '1'},
+    {id: 'h5', ui: 'checkbox', def: '1'},
+    {id: 'h6', ui: 'checkbox', def: '1'}
   ];
 
    Handlebars.registerHelper('newlineToBr', function(text){
@@ -33,20 +39,28 @@ define(['app', 'backbone'], function(app, Backbone) {
 
 var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="display: none;"> \
                   <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
-                    {{#if bold}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b><a data-wysihtml5-command="bold">B</a></b></button>{{/if}} \
-                    {{#if italic}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Italic"><i><a data-wysihtml5-command="italic">I</a></i></button>{{/if}} \
-                    {{#if underline}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Underline"><u><a data-wysihtml5-command="underline">U</a></u></button>{{/if}} \
-                    {{#if strikethrough}}<button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Strikethrough"><s><a data-wysihtml5-command="strikethrough">S</a></s></button>{{/if}} \
+                    {{#if bold}}<button data-wysihtml5-command="bold" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b>B</b></button>{{/if}} \
+                    {{#if italic}}<button data-wysihtml5-command="italic" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Italic"><i>I</i></button>{{/if}} \
+                    {{#if underline}}<button data-wysihtml5-command="underline" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Underline"><u>U</u></button>{{/if}} \
+                    {{#if strikethrough}}<button data-wysihtml5-command="strikethrough" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Strikethrough"><s>S</s></button>{{/if}} \
+                  </div> \
+                  <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
+                    {{#if h1}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" type="button" class="btn btn-small btn-silver" data-tag="H1" rel="tooltip" data-placement="bottom" title="Bold">H1</button>{{/if}} \
+                    {{#if h2}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" type="button" class="btn btn-small btn-silver" data-tag="H2" rel="tooltip" data-placement="bottom" title="Bold">H2</button>{{/if}} \
+                    {{#if h3}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" type="button" class="btn btn-small btn-silver" data-tag="H3" rel="tooltip" data-placement="bottom" title="Bold">H3</button>{{/if}} \
+                    {{#if h4}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" type="button" class="btn btn-small btn-silver" data-tag="H4" rel="tooltip" data-placement="bottom" title="Bold">H4</button>{{/if}} \
+                    {{#if h5}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" type="button" class="btn btn-small btn-silver" data-tag="H5" rel="tooltip" data-placement="bottom" title="Bold">H5</button>{{/if}} \
+                    {{#if h6}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" type="button" class="btn btn-small btn-silver" data-tag="H6" rel="tooltip" data-placement="bottom" title="Bold">H6</button>{{/if}} \
                   </div> \
                   <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
                     {{#if rule}} \
-                      <button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Rule"><a data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>">HR</a></button> \
+                      <button data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Rule">HR</button> \
                     {{/if}} \
                     {{#if createlink}} \
-                    <button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link"><a data-wysihtml5-command="createLink" data-wysihtml5-command-value="http://www.google.com">LINK</a></button> \
+                    <button data-wysihtml5-command="createLink" data-wysihtml5-command-value="http://www.google.com" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">LINK</button> \
                     {{/if}} \
                     {{#if insertimage}} \
-                      <button type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image"><a data-wysihtml5-command="insertImage">IMAGE</a></button> \
+                      <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">IMAGE</button> \
                     {{/if}} \
                   </div> \
                 </div> \
@@ -86,6 +100,12 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
         underline: (this.options.settings && this.options.settings.has('underline')) ? this.options.settings.get('underline') : true,
         strikethrough: (this.options.settings && this.options.settings.has('strikethrough')) ? this.options.settings.get('strikethrough') : true,
         rule: (this.options.settings && this.options.settings.has('rule')) ? this.options.settings.get('rule') : true,
+        h1: (this.options.settings && this.options.settings.has('h1')) ? this.options.settings.get('h1') : true,
+        h2: (this.options.settings && this.options.settings.has('h2')) ? this.options.settings.get('h2') : true,
+        h3: (this.options.settings && this.options.settings.has('h3')) ? this.options.settings.get('h3') : true,
+        h4: (this.options.settings && this.options.settings.has('h4')) ? this.options.settings.get('h4') : true,
+        h5: (this.options.settings && this.options.settings.has('h5')) ? this.options.settings.get('h5') : true,
+        h6: (this.options.settings && this.options.settings.has('h6')) ? this.options.settings.get('h6') : true,
         createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink') : true,
         insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage') : true,
         markupValue: String(value).replace(/"/g, '&quot;'),
@@ -112,6 +132,7 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
       var that = this;
       this.editor = new wysihtml5.Editor("wysihtml5-textarea-" + this.options.name, { // id of textarea element
         toolbar:      "wysihtml5-toolbar-" + this.options.name, // id of toolbar element
+        stylesheets: "wysiwyg.css",
         parserRules:  wysihtml5ParserRules // defined in parser rules set
       });
       var value = this.options.value || '';
