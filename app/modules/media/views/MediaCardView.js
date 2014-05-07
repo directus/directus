@@ -41,7 +41,9 @@ function(app, Backbone, Widgets) {
         };
 
         var type = model.get('type').substring(0, model.get('type').indexOf('/'));
-        if(type == 'image' || type == 'embed') {
+        var subtype = model.get('type').split('/').pop();
+
+        if(type == 'image' || type == 'embed' || subtype == "pdf") {
           data.thumbnail = '<img src="'+model.makeMediaUrl(true)+'">';
         } else {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';

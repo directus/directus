@@ -20,7 +20,8 @@ class Thumbnail {
             case 'psd':
             case 'tif':
               if(extension_loaded('imagick')) {
-                $image = new \Imagick($localPath);
+                $image = new \Imagick();
+                $image->readImage($localPath);
                 $image->setIteratorIndex(0);
                 $image->setImageFormat('jpeg');
                 $tempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
