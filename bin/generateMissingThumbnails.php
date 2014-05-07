@@ -62,6 +62,7 @@ foreach($mediaRecords as $media) {
 	}
 	$storageAdapter = $storageAdaptersById[$media['storage_adapter']];
 	$adapterSettings = $storageAdapter->getSettings();
+  $info = pathinfo($media['name']);
 	if('FileSystemAdapter' != $adapterSettings['adapter_name']) {
 		out("Skipping media record #" . $media['id'] . " using storage adapter #" . $adapterSettings['id'] . " -- only FileSystemAdapter is currently supported by this script.");
 		$statistics['failure']++;
@@ -72,13 +73,12 @@ foreach($mediaRecords as $media) {
 		$statistics['failure']++;
 		continue;
 	}
-    $info = pathinfo($media['name']);
     if(!in_array($info['extension'], $supportedExtensions)) {
 		out("Skipping media record #" . $media['id'] . " -- the following extension is unsupported: " . $info['extension']);
 		$statistics['failure']++;
 		continue;
     }
-	if($thumbnailStorageAdapter->fileExists($media['name'], $thumbnailStorageAdapterSettings['destination'])) {
+	if($thumbnailStorageAdapter->fileExists($media['id'].".".$info['extension'], $thumbnailStorageAdapterSettings['destination'])) {
 		$statistics['exists']++;
 		continue;
 	}
@@ -87,7 +87,7 @@ foreach($mediaRecords as $media) {
     $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $mediaSettings['thumbnail_size'], $mediaSettings['thumbnail_crop_enabled']);
     $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
     Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $mediaSettings['thumbnail_quality']);
-    $fileData = $thumbnailStorageAdapter->acceptFile($thumbnailTempName, $media['name'], $thumbnailStorageAdapterSettings['destination']);
+    $fileData = $thumbnailStorageAdapter->acceptFile($thumbnailTempName, $media['id'].'.'.$info['extension'], $thumbnailStorageAdapterSettings['destination']);
     $statistics['success']++;
 }
 

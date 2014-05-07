@@ -16,9 +16,12 @@ class Thumbnail {
             case 'png':
                 $img = imagecreatefrompng($localPath);
                 break;
+            case 'pdf':
+            case 'psd':
             case 'tif':
               if(extension_loaded('imagick')) {
                 $image = new \Imagick($localPath);
+                $image->setIteratorIndex(0);
                 $image->setImageFormat('jpeg');
                 $tempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
                 $image->writeImage($tempName);
@@ -30,7 +33,6 @@ class Thumbnail {
 			      default:
 				      return false;
         }
-
 
         $w = imagesx($img);
         $h = imagesy($img);
@@ -94,6 +96,8 @@ class Thumbnail {
             case 'png':
                 return imagepng($img, $path);
                 break;
+            case 'pdf':
+            case 'psd':
             case 'tif':
                 return imagejpeg($img, $path, $quality);
                 break;

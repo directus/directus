@@ -80,7 +80,7 @@ function(app, Backbone, Directus, BasePageView, EntriesManager, Widgets) {
       var url;
 
       this.mediaModels.forEach(function(model) {
-        if(model.get('name').split('.').pop() == 'tif') {
+        if($.inArray(model.get('name').split('.').pop(),['tif', 'psd', 'pdf']) > -1) {
           url = app.storageAdapters['TEMP'].url + "THUMB_" + model.get('name').replace(/\.[^/.]+$/, "") + ".jpg";
         } else {
           url = app.storageAdapters['TEMP'].url + "THUMB_" + model.get('name');
