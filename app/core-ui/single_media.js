@@ -261,8 +261,8 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       var url = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl(true) : null;
       var link = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl() : null;
       var data = this.mediaModel.toJSON();
-      var type = model.get('type').substring(0, model.get('type').indexOf('/'));
-      var subtype = model.get('type').split('/').pop();
+      var type = this.mediaModel.has('type') ? this.mediaModel.get('type').substring(0, this.mediaModel.get('type').indexOf('/')) : '';
+      var subtype = this.mediaModel.has('type') ? this.mediaModel.get('type').split('/').pop() : '';
 
       var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
@@ -280,7 +280,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       } else {
         data.size = app.bytesToSize(data.size, 0);
       }
-
       data = {
         isImage: isImage,
         name: this.options.name,
@@ -320,7 +319,10 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       model = model.get(options.schema.id);
     }
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
+    var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
+    var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
+
+    var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
     var thumbUrl = isImage ? model.makeMediaUrl(true) : app.PATH + 'assets/img/document-100x120.png';
 
     var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
