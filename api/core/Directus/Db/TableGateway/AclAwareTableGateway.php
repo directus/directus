@@ -406,7 +406,25 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         if(!$this->acl->hasTablePrivilege($insertTable, 'bigedit')) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             // $rawColumns = $this->extractRawColumnNames($insertState['columns']);
+
+            //@TODO: Clean up this hacky way of forcing active column to == 2 if write table blacklisted active
+            $isInactive = false;
+            if(in_array("active", $insertState['columns'])) {
+              //If inactive by default and active blacklisted
+              if(in_array('active', $this->acl->getTablePrivilegeList($insertTable, Acl::FIELD_WRITE_BLACKLIST))) {
+                if(TableSchema::getTable($insertState['table'])['inactive_by_default']) {
+                  $isInactive = true;
+                }
+                //Unset active columns so it can bypass Blacklist check (and uses table default)
+                $insertState['columns'] = array_diff($insertState['columns'], array('active'));
+              }
+            }
             $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
+
+            //If forcing to inactive, make it inactive
+            if($isInactive) {
+              $insertState['columns']['active'] = 2;
+            }
         }
 
         try {
