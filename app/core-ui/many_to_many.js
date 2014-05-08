@@ -123,7 +123,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
       if(ids.length > 0) {
         //@TODO: Have this not fetch entire collection.
-        relatedCollection.nestedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}});
+        //relatedCollection.nestedCollection.setFilter({ids: ids.join(',')});
+        //relatedCollection.nestedCollection.fetch();
       }
 
       this.nestedTableView = new TableView({
