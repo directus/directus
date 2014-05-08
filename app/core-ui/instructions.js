@@ -83,7 +83,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.list = function(options) {
     var instructions = (options.settings && options.settings.has('instructions'))? options.settings.get('instructions') : "...";
-    return instructions;
+    var regex = /(<([^>]+)>)/ig;
+    return instructions.replace(regex, "");
   };
 
   return Module;
