@@ -25,15 +25,15 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'rule', ui: 'checkbox', def: '1'},
     {id: 'createlink', ui: 'checkbox', def: '1'},
     {id: 'insertimage', ui: 'checkbox', def: '1'},
-    {id: 'h1', ui: 'checkbox', def: '1'},
-    {id: 'h2', ui: 'checkbox', def: '1'},
-    {id: 'h3', ui: 'checkbox', def: '1'},
-    {id: 'h4', ui: 'checkbox', def: '1'},
-    {id: 'h5', ui: 'checkbox', def: '1'},
-    {id: 'h6', ui: 'checkbox', def: '1'},
+    {id: 'h1', ui: 'checkbox', def: '0'},
+    {id: 'h2', ui: 'checkbox', def: '0'},
+    {id: 'h3', ui: 'checkbox', def: '0'},
+    {id: 'h4', ui: 'checkbox', def: '0'},
+    {id: 'h5', ui: 'checkbox', def: '0'},
+    {id: 'h6', ui: 'checkbox', def: '0'},
     {id: 'blockquote', ui: 'checkbox', def: '1'},
-    {id: 'ul', ui: 'checkbox', def: '1'},
-    {id: 'ol', ui: 'checkbox', def: '1'}
+    {id: 'ul', ui: 'checkbox', def: '0'},
+    {id: 'ol', ui: 'checkbox', def: '0'}
   ];
 
    Handlebars.registerHelper('newlineToBr', function(text){
