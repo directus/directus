@@ -30,7 +30,7 @@ define('DB_PASSWORD_SLAVE',    '');
 define('DIRECTUS_PATH', '/directus/');
 
 
-$host = 'www.soul-cycle.com'; // (Make it work for CLI)
+$host = 'www.example.com'; // (Make it work for CLI)
 if(isset($_SERVER['SERVER_NAME'])) {
     $host = $_SERVER['SERVER_NAME'];
 }
