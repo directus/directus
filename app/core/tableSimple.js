@@ -36,9 +36,9 @@ function(app, Backbone) {
 
         var permissions = privileges.get('permissions').split(',');
 
-        // only return tables with view permissions
+        // only return tables with list permissions
 
-        return _.contains(permissions, 'view');
+        return _.contains(permissions, 'list');
       });
       return {rows: rows, columns: this.collection.getColumns()};
     }
