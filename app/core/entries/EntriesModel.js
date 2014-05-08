@@ -268,9 +268,10 @@ define(function(require, exports, module) {
           privileges          = this.collection.privileges,
           bigeditPermission   = this.collection.hasPermission('bigedit'),
           editPermission      = this.collection.hasPermission('edit'),
-          columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute);
+          columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute),
+          isNew               = !this.has('id');
 
-      return (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
+      return isNew || (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
     },
 
     getWriteFieldBlacklist: function() {
