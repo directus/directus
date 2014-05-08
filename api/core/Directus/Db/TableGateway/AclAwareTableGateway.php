@@ -275,7 +275,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               $tempLocation = $Storage->storageAdaptersByRole['TEMP']['destination'];
               if(file_exists($tempLocation.$thumbnailName)) {
                 $thumbnailDestination = $Storage->storageAdaptersByRole['THUMBNAIL']['destination'];
-                if(in_array($ext, $imagickExtensions)) {
+                if(in_array($ext, $this->imagickExtensions)) {
                   $ext = 'jpg';
                 }
                 $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $recordData['id'].".".$ext, $thumbnailDestination);
