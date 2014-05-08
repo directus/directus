@@ -97,7 +97,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   <div class="ui-thumbnail has-media"> \
                     {{#if mediaModel.youtube}}<iframe width="300" height="200" src="http://www.youtube.com/embed/{{mediaModel.youtube}}" frameborder="0" allowfullscreen></iframe> \
                     {{else}} \
-                      {{#if mediaModel.vimeo}} <iframe src="//player.vimeo.com/video/{{mediaModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                      {{#if mediaModel.vimeo}} <iframe src="//player.vimeo.com/video/{{mediaModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
                       {{else}}<a href="{{link}}" class="title" target="single_media"><img src="{{thumbUrl}}"></a>{{/if}} \
                     {{/if}} \
                   </div> \
