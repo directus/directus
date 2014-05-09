@@ -46,13 +46,13 @@ class MemcacheProvider {
         }
 
         $this->mc = false;
-        if (extension_loaded('memcache') && self::$MEMCACHED_ENABLED && count($this->memcachedServerAddresses[SOULCYCLE_ENV])){
+        if (extension_loaded('memcache') && self::$MEMCACHED_ENABLED && count($this->memcachedServerAddresses[DIRECTUS_ENV])){
             $this->mc = new Memcache();
             if (self::$LOCAL){
                 $this->mc->addServer('127.0.0.1', 11211);
             }
             else {
-                $servers = $this->memcachedServerAddresses[SOULCYCLE_ENV];
+                $servers = $this->memcachedServerAddresses[DIRECTUS_ENV];
                 foreach ($servers as $s){
                     $this->mc->addserver($s, 11211);
                 }

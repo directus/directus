@@ -255,7 +255,7 @@ class TableSchema {
         return false;
     }
 
-    protected static function getTable($tbl_name) {
+    public static function getTable($tbl_name) {
         $db = Bootstrap::get('olddb');
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');

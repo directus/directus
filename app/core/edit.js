@@ -53,6 +53,10 @@ define(function(require, exports, module) {
         if('id' == column.id) {
           return;
         }
+        //Skip magic owner column if we dont have bigedit
+        if(this.model.table && this.model.table.get('magic_owner_column') == column.id && !this.model.collection.hasPermission('bigedit')) {
+          return;
+        }
 
         if('active' == column.id) {
           if(this.options.collectionAdd) {
@@ -65,7 +69,6 @@ define(function(require, exports, module) {
               this.model.set('active', 1);
             }
           }
-
 
           //Set this to be first field in edit table by modifiying groupings.
           if(this.model.table && this.model.table.get('column_groupings')) {
@@ -151,12 +154,16 @@ define(function(require, exports, module) {
     data: function() {
       var data = this.$el.serializeObject();
       var whiteListedData = _.pick(data, this.visibleFields);
+      if(this.model.getWriteFieldBlacklist) {
+        whiteListedData = _.omit(whiteListedData, this.model.getWriteFieldBlacklist())
+      }
       // check if any of the listed data has multiple values, then serialize it to string
       _.each(whiteListedData, function(value, key, obj) {
         if (_.isArray(value)) {
           obj[key] = value.join(',');
         }
       });
+
       return whiteListedData;
     },
 

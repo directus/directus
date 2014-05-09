@@ -253,6 +253,11 @@ define(function(require, exports, module) {
           magicOwnerColumn = (this.collection !== null) ? this.collection.table.get('magic_owner_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
 
+      //If magecownerid is model, grab the id instead
+      if(magicOwnerId instanceof Backbone.Model) {
+        magicOwnerId = magicOwnerId.get('id');
+      }
+
       return myId === magicOwnerId;
     },
 
@@ -268,9 +273,10 @@ define(function(require, exports, module) {
           privileges          = this.collection.privileges,
           bigeditPermission   = this.collection.hasPermission('bigedit'),
           editPermission      = this.collection.hasPermission('edit'),
-          columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute);
+          columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute),
+          isNew               = !this.has('id');
 
-      return (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
+      return (isNew && !columnIsBlacklisted) || (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
     },
 
     getWriteFieldBlacklist: function() {

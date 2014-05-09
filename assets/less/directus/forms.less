@@ -129,6 +129,7 @@ textarea,
 select,
 .input {
   .border-box;
+  .transition;
   background-color: @white;
   border: solid 1px @lightGrey;
   display: block;
@@ -137,7 +138,10 @@ select,
   outline: none;
   resize: none;
   &:focus {
-    border: solid 1px @mediumGrey;
+    border: solid 1px @addColor;
+  }
+  &:hover {
+    border: solid 1px @addColor;
   }
 }
 .wysiwyg {
