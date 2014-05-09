@@ -14,7 +14,7 @@ function out($string) {
 	echo "$string\n";
 }
 
-$supportedExtensions = array('jpg','jpeg','png','gif');
+$supportedExtensions = array('jpg','jpeg','png','gif', 'psd', 'psf', 'tif');
 
 out("Running script with the following supported extensions: " . implode(", ", $supportedExtensions));
 
