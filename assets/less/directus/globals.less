@@ -55,6 +55,64 @@
 }
 
 ////////////
+//  Alerts
+////////////
+
+.directus-alert-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 440px;
+  min-height: 90px;
+  margin-left: -250px;
+  margin-top: -170px;
+  padding: 30px 30px 30px 30px;
+  background-color: @white;
+  color: @mediumDarkGrey;
+  font-size: 14px;
+  font-weight: 600;
+  .border-radius(3px, 3px, 3px, 3px);
+  box-shadow: 0 0 20px fade(@mediumDarkGrey, 30%);
+  -webkit-font-smoothing: antialiased;
+  .directus-alert-modal-message {
+    padding-bottom: 20px;
+  }
+  input {
+    background-color: @extraLightGrey;
+    border: none;
+    padding: 10px 10px 10px 10px;
+    &:focus {
+      border: none;
+    }
+  }
+  .directus-alert-modal-buttons {
+    margin-top: 20px;
+    text-align: right;
+    button {
+      padding: 10px 15px 10px 15px;
+      text-align: center;
+      color: @white;
+      background-color: @mediumGrey;
+      border: none;
+      .border-radius(3px, 3px, 3px, 3px);
+      margin-left: 20px;
+      min-width: 120px;
+      font-weight: 600;
+      -webkit-font-smoothing: antialiased;
+      &:hover {
+        background-color: darken(@mediumGrey, 5%);
+      }
+      &.primary {
+        background-color: @addColor;
+        &:hover {
+          background-color: darken(@addColor, 5%);
+        }
+      }
+    }
+  }
+}
+
+////////////
 //  BUTTONS
 ////////////
 .large-circle {
