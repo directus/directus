@@ -1,6 +1,17 @@
 .font-primary {
   font-family: 'Open Sans', sans-serif;
 }
+.clearfix {
+  zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
 @font-face {
   font-family: 'Directus';
   src: url('../fonts/directus/directus-regular.eot');
@@ -1132,6 +1143,87 @@ button {
 .margin-bottom-small {
   margin-bottom: 10px;
 }
+.directus-alert-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 440px;
+  min-height: 90px;
+  margin-left: -250px;
+  margin-top: -170px;
+  padding: 30px 30px 30px 30px;
+  background-color: #ffffff;
+  color: #313131;
+  font-size: 14px;
+  font-weight: 600;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  box-shadow: 0 0 20px rgba(49, 49, 49, 0.3);
+  -webkit-font-smoothing: antialiased;
+}
+.directus-alert-modal .directus-alert-modal-message {
+  padding-bottom: 20px;
+}
+.directus-alert-modal input {
+  background-color: #f4f4f4;
+  border: none;
+  padding: 10px 10px 10px 10px;
+}
+.directus-alert-modal input:focus {
+  border: none;
+}
+.directus-alert-modal .directus-alert-modal-buttons {
+  margin-top: 20px;
+  text-align: right;
+}
+.directus-alert-modal .directus-alert-modal-buttons button {
+  padding: 10px 15px 10px 15px;
+  text-align: center;
+  color: #ffffff;
+  background-color: #bbbbbb;
+  border: none;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  margin-left: 20px;
+  min-width: 120px;
+  font-weight: 600;
+  -webkit-font-smoothing: antialiased;
+}
+.directus-alert-modal .directus-alert-modal-buttons button:hover {
+  background-color: #aeaeae;
+}
+.directus-alert-modal .directus-alert-modal-buttons button.primary {
+  background-color: #7ac943;
+}
+.directus-alert-modal .directus-alert-modal-buttons button.primary:hover {
+  background-color: #6dbc36;
+}
 .large-circle {
   -webkit-border-top-right-radius: 50px;
   -webkit-border-bottom-right-radius: 50px;
@@ -1561,18 +1653,18 @@ input:-webkit-autofill {
   background-clip: padding-box;
 }
 .btn {
-  -webkit-border-top-right-radius: 4px;
-  -webkit-border-bottom-right-radius: 4px;
-  -webkit-border-bottom-left-radius: 4px;
-  -webkit-border-top-left-radius: 4px;
-  -moz-border-radius-topright: 4px;
-  -moz-border-radius-bottomright: 4px;
-  -moz-border-radius-bottomleft: 4px;
-  -moz-border-radius-topleft: 4px;
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border-top-left-radius: 4px;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
@@ -1580,7 +1672,7 @@ input:-webkit-autofill {
   border: none;
   color: #ffffff;
   cursor: pointer;
-  padding: 5px 10px;
+  padding: 5px 20px;
   text-transform: uppercase;
 }
 .btn:hover {
@@ -1796,6 +1888,11 @@ select,
   -webkit-box-sizing: border-box;
   /* safari3 */
 
+  -webkit-transition: all 100ms linear;
+  -moz-transition: all 100ms linear;
+  -o-transition: all 100ms linear;
+  -ms-transition: all 100ms linear;
+  transition: all 100ms linear;
   background-color: #ffffff;
   border: solid 1px #ededed;
   display: block;
@@ -1808,7 +1905,13 @@ input:focus,
 textarea:focus,
 select:focus,
 .input:focus {
-  border: solid 1px #bbbbbb;
+  border: solid 1px #7ac943;
+}
+input:hover,
+textarea:hover,
+select:hover,
+.input:hover {
+  border: solid 1px #7ac943;
 }
 .wysiwyg .btn-toolbar {
   margin-bottom: 5px;
