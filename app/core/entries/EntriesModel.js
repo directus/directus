@@ -271,7 +271,7 @@ define(function(require, exports, module) {
           columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute),
           isNew               = !this.has('id');
 
-      return isNew || (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
+      return (isNew && !columnIsBlacklisted) || (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
     },
 
     getWriteFieldBlacklist: function() {

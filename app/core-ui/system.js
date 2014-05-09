@@ -24,9 +24,9 @@ define(['app','backbone'], function(app, Backbone) {
   <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';*/
 
   var template = '<div style="margin-top:4px;"> \
-                  <label style="margin-right:40px;" class="bold"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" value="1" {{#if active}}checked{{/if}}>Active</label> \
-                  <label style="margin-right:40px;" class="bold medium-grey-color"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" value="2" {{#if inactive}}checked{{/if}}>Inactive</label> \
-                  <label style="margin-right:40px;" class="bold delete-color"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" value="0" {{#if deleted}}checked{{/if}}>Deleted</label> \
+                  <label style="margin-right:40px;" class="bold"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" value="1" {{#if readonly}}disabled{{/if}} {{#if active}}checked{{/if}}>Active</label> \
+                  <label style="margin-right:40px;" class="bold medium-grey-color"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" {{#if readonly}}disabled{{/if}} name="{{name}}" value="2" {{#if inactive}}checked{{/if}}>Inactive</label> \
+                  <label style="margin-right:40px;" class="bold delete-color"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" {{#if readonly}}disabled{{/if}} value="0" {{#if deleted}}checked{{/if}}>Deleted</label> \
                   </div>';
 
   Module.id = 'system';
@@ -67,6 +67,8 @@ define(['app','backbone'], function(app, Backbone) {
       data.value = value;
       data.name = this.options.name;
 
+      console.log(this.options.canWrite);
+      data.readonly = !this.options.canWrite;
 
       return data;
     }
