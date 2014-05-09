@@ -67,7 +67,6 @@ define(['app','backbone'], function(app, Backbone) {
       data.value = value;
       data.name = this.options.name;
 
-      console.log(this.options.canWrite);
       data.readonly = !this.options.canWrite;
 
       return data;

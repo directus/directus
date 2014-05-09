@@ -253,6 +253,11 @@ define(function(require, exports, module) {
           magicOwnerColumn = (this.collection !== null) ? this.collection.table.get('magic_owner_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
 
+      //If magecownerid is model, grab the id instead
+      if(magicOwnerId instanceof Backbone.Model) {
+        magicOwnerId = magicOwnerId.get('id');
+      }
+
       return myId === magicOwnerId;
     },
 
