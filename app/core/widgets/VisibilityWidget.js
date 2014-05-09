@@ -49,6 +49,13 @@ function(app, Backbone, PreferenceModel) {
           this.defaultId = this.collection.preferences.get('id');
           this.collection.preferences.fetch({newTitle: $target.val()});
         }
+
+        this.listenToOnce(this.collection.preferences, 'sync', function() {
+          this.collection.fetch();
+          if(this.preferencesLoaded) {
+            this.render();
+          }
+        });
       },
       'click #saveSnapshotBtn': function(e) {
         var name = prompt("Please enter a name for your Snapshot");
@@ -86,6 +93,14 @@ function(app, Backbone, PreferenceModel) {
         this.collection.preferences.set({title: name});
 
         this.collection.preferences.save();
+
+        this.listenToOnce(this.collection.preferences, 'sync', function() {
+          this.collection.fetch();
+          if(this.preferencesLoaded) {
+            this.render();
+          }
+        });
+
       },
       'click #pinSnapshotBtn': function(e) {
         if(!this.snapshotData) {
@@ -147,13 +162,6 @@ function(app, Backbone, PreferenceModel) {
       sel.width( this.$el.find('#template').width() * 1.03 );
     },
     initialize: function() {
-      this.listenTo(this.collection.preferences, 'sync', function() {
-        this.collection.fetch();
-        if(this.preferencesLoaded) {
-          this.render();
-        }
-      });
-
       var activeTable = this.collection.table.id;
 
       this.options.widgetOptions = {snapshots: []};

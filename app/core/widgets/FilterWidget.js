@@ -31,6 +31,7 @@ function(app, Backbone) {
         var index = $(e.target).index();
         this.options.filterOptions.filters.splice(index, 1);
         this.updateFilters();
+        this.collection.fetch();
         this.saveFilterString();
       },
       'keydown input': function(e) {
@@ -110,13 +111,13 @@ function(app, Backbone) {
       this.options.filterOptions.filters.push(searchSettings[0]);
 
       this.updateFilters();
+      this.collection.fetch();
       this.saveFilterString();
     },
 
     updateFilters: function() {
       this.collection.setFilter('adv_search', this.options.filterOptions.filters);
       this.collection.setFilter('currentPage', 0);
-      this.collection.fetch();
       this.options.filterOptions.addFilter = false;
       this.render();
     },
@@ -223,7 +224,7 @@ function(app, Backbone) {
     initialize: function() {
       this.options.filterOptions = {filters:[]};
       this.updateFiltersFromPreference();
-      this.collection.preferences.on('sync', this.updateFiltersFromPreference, this);
+      this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
     }
   });
 });
