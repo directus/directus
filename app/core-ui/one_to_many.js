@@ -168,9 +168,17 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       ids = relatedCollection.pluck('id');
 
       if(ids.length > 0) {
-        //@TODO: Have this not fetch entire collection.
-        relatedCollection.setFilter({ids: ids.join(',')});
-        relatedCollection.fetch();
+
+        //Make sure column we are joining on is respected
+        var filters = relatedCollection.filters;
+        if(filters.columns_visible) {
+          filters.columns_visible.push(joinColumn);
+        } else {
+          filters.columns_visible = [joinColumn];
+        }
+        filters.ids = ids.join(',');
+
+        relatedCollection.fetch({includeFilters: false, data: filters});
       }
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
@@ -199,7 +207,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         relatedCollection.setOrder('sort','ASC',{silent: true});
       }
 
-      this.listenTo(relatedCollection, 'change add remove', function() {
+      this.listenTo(relatedCollection, 'change', function() {
         //Check if any rendered objects in collection to show or hide header
         if(this.relatedCollection.filter(function(d){return d.get('active') !== 0;}).length > 0) {
           this.nestedTableView.tableHead = true;
