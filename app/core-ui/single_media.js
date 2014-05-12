@@ -112,7 +112,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   <div class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click for existing</div> \
                   <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a Media Item</div> \
+                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div> \
                   {{/if}}';
 
   Module.Input = Backbone.Layout.extend({

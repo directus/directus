@@ -1143,6 +1143,12 @@ button {
 .margin-bottom-small {
   margin-bottom: 10px;
 }
+.margin-right-small {
+  margin-right: 10px;
+}
+.margin-right {
+  margin-right: 20px;
+}
 .directus-alert-modal {
   position: fixed;
   top: 50%;
@@ -1672,16 +1678,16 @@ input:-webkit-autofill {
   border: none;
   color: #ffffff;
   cursor: pointer;
-  padding: 5px 20px;
-  text-transform: uppercase;
+  padding: 10px 15px 10px 15px;
 }
 .btn:hover {
-  background-color: #313131;
-  border-color: #252525;
+  background-color: #aeaeae;
+}
+.btn:active {
+  background-color: #959595;
 }
 .btn.active {
   background-color: #252525;
-  border-color: #252525;
 }
 .btn.btn-white {
   color: #5b5b5b;
@@ -1712,6 +1718,9 @@ input:-webkit-autofill {
   background-clip: padding-box;
   border: 0px;
   padding: 10px;
+}
+.btn.btn-small {
+  padding: 5px 15px 5px 15px;
 }
 .btn .icon {
   font-size: 400%;
@@ -1901,16 +1910,16 @@ select,
   outline: none;
   resize: none;
 }
-input:focus,
-textarea:focus,
-select:focus,
-.input:focus {
-  border: solid 1px #7ac943;
-}
 input:hover,
 textarea:hover,
 select:hover,
 .input:hover {
+  border: solid 1px #bbbbbb;
+}
+input:focus,
+textarea:focus,
+select:focus,
+.input:focus {
   border: solid 1px #7ac943;
 }
 .wysiwyg .btn-toolbar {
@@ -2325,7 +2334,7 @@ select:hover,
   background-color: #ededed;
 }
 .related-table .table-striped tr td.delete {
-  text-align: right;
+  text-align: left;
   width: 15px;
   font-size: 16px;
 }

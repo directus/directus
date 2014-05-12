@@ -67,15 +67,16 @@
   border: none;
   color: @white;
   cursor: pointer;
-  padding: @extraSmallPad @gutterWidth;
-  text-transform: uppercase;
+  padding: 10px 15px 10px 15px;
+  //text-transform: uppercase;
   &:hover {
-    background-color: @mediumDarkGrey;
-    border-color: @extraDarkGrey;
+    background-color: darken(@mediumGrey, 5%);
+  }
+  &:active {
+    background-color: darken(@mediumGrey, 15%);
   }
   &.active {
     background-color: @extraDarkGrey;
-    border-color: @extraDarkGrey;
   }
   &.btn-white {
     .btn-white;
@@ -84,6 +85,9 @@
     .border-radius(50%, 50%, 50%, 50%);
     border: 0px;
     padding: @smallPad;
+  }
+  &.btn-small {
+    padding: 5px 15px 5px 15px;
   }
   .icon {
     font-size: 400%;
