@@ -1958,6 +1958,9 @@ select:focus,
 .directus-media-ui .media-container img {
   width: 100%;
 }
+.status-group label {
+  cursor: pointer;
+}
 .filter-form select,
 .filter-form input[type="text"] {
   -webkit-border-top-right-radius: 0;
