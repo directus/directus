@@ -124,6 +124,7 @@ var template = '<style type="text/css"> \
                     {{/if}} \
                   </div> \
                 </div> \
+                <div style="display:none;z-index:998;position:absolute;width:100%;height:100%;top:-5px;left:-5px;" id="iframe_blocker"></div> \
                 <textarea id="wysihtml5-textarea-{{name}}" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}} autofocus></textarea> \
                 <input type="hidden" name="{{name}}" class="hidden_input" value="{{markupValue}}">';
 
@@ -190,58 +191,6 @@ var template = '<style type="text/css"> \
 
     afterRender: function() {
       if (this.options.settings.get("readonly") === "on") this.editor.readonly();
-
-      var timer;
-      var $dropzone = this.$el.find('.ui-thumbnail');
-      var self = this;
-      var model = new app.media.model({}, {collection: app.media});
-      console.log(model);
-      $dropzone.on('dragover', function(e) {
-        clearInterval(timer);
-        e.stopPropagation();
-        e.preventDefault();
-        $dropzone.addClass('dragover');
-      });
-
-      $dropzone.on('dragleave', function(e) {
-        clearInterval(timer);
-        timer = setInterval(function(){
-          $dropzone.removeClass('dragover');
-          clearInterval(timer);
-        },50);
-      });
-
-      // Since data transfer is not supported by jquery...
-      // XHR2, FormData
-      $dropzone[0].ondrop = _.bind(function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        if (e.dataTransfer.files.length > 1) {
-          alert('One file only please');
-          return;
-        }
-
-        app.sendFiles(e.dataTransfer.files, function(data) {
-          _.each(data, function(item) {
-            item.active = 1;
-            // Unset the model ID so that a new media record is created
-            // (and the old media record isn't replaced w/ this data)
-            item.id = undefined;
-            item.user = self.userId;
-
-            //console.log()
-
-            model.save(item, {success: function(e) {
-              console.log(e);
-              var url = model.makeMediaUrl(false);
-              self.$el.find('.ui-thumbnail').remove();
-              self.$el.find('#media_holder').html('<img src="'+url+'">');
-              self.$el.find('#fileAddInput').val(url);
-            }});
-          });
-        });
-        $dropzone.removeClass('dragover');
-      }, this);
     },
 
     initEditor: function() {
@@ -255,6 +204,63 @@ var template = '<style type="text/css"> \
       this.editor.setValue(String(value).replace(/"/g, '&quot;'));
       this.editor.on('change', function() {
         that.textChanged(that);
+      });
+
+      var timer;
+      var $dropzone = this.$el;
+      var self = this;
+      var model = new app.media.model({}, {collection: app.media});
+      $dropzone.on('dragover', function(e) {
+        self.$el.find('#iframe_blocker').show();
+        clearInterval(timer);
+        e.stopPropagation();
+        e.preventDefault();
+        $dropzone.addClass('dragover');
+      });
+
+      $dropzone.on('dragleave', function(e) {
+        clearInterval(timer);
+        timer = setInterval(function(){
+          self.$el.find('#iframe_blocker').hide();
+          $dropzone.removeClass('dragover');
+          clearInterval(timer);
+        },50);
+      });
+
+
+      $dropzone[0].ondrop = _.bind(function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        self.$el.find('#iframe_blocker').hide();
+        if (e.dataTransfer.files.length > 1) {
+          alert('One file only please');
+          return;
+        }
+
+        app.sendFiles(e.dataTransfer.files, function(data) {
+          _.each(data, function(item) {
+            item.active = 1;
+            item.id = undefined;
+            item.user = self.userId;
+
+            model.save(item, {success: function(e) {
+              console.log(e);
+              var url = model.makeMediaUrl(false);
+              self.$el.find('.ui-thumbnail').remove();
+              self.$el.find('#media_holder').html('<img src="'+url+'">');
+              self.$el.find('#fileAddInput').val(url);
+              try {
+                self.editor.composer.commands.exec("insertImage", { src: url, alt: model.get('name')});
+              } catch( e) {}
+
+            }});
+          });
+        });
+        $dropzone.removeClass('dragover');
+      }, this);
+
+      this.$el.find('.wysihtml5-sandbox').contents().find('body').on('dragover', function(e) {
+        self.$el.find('#iframe_blocker').show();
       });
     }
   });
