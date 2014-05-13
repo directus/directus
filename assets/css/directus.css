@@ -1700,10 +1700,10 @@ input:-webkit-autofill {
   padding: 10px 15px 10px 15px;
 }
 .btn:hover {
-  background-color: #aeaeae;
+  background-color: #a2a2a2;
 }
 .btn:active {
-  background-color: #959595;
+  background-color: #888888;
 }
 .btn.active {
   background-color: #252525;
@@ -1739,7 +1739,7 @@ input:-webkit-autofill {
   padding: 10px;
 }
 .btn.btn-small {
-  padding: 5px 15px 5px 15px;
+  padding: 5px 10px 5px 10px;
 }
 .btn .icon {
   font-size: 400%;
