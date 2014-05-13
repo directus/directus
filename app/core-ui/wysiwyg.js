@@ -40,7 +40,42 @@ define(['app', 'backbone'], function(app, Backbone) {
        return new Handlebars.SafeString(text.string.replace(/\n/g, '<br/>'));
    });
 
-var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="display: none;"> \
+var template = '<style type="text/css"> \
+                  div.ui-thumbnail { \
+                    float: left; \
+                    margin-top: 8px; \
+                    max-height: 200px; \
+                    padding: 10px; \
+                    background-color: #ffffff; \
+                    border: 1px solid #ededed; \
+                    -webkit-border-radius:3px; \
+                    -moz-border-radius:3px; \
+                    border-radius:3px; \
+                    color: #ededed; \
+                    text-align: center; \
+                    cursor: pointer; \
+                  } \
+                  div.ui-thumbnail.empty { \
+                    width: 300px; \
+                    height: 100px; \
+                    background-color: #ffffff; \
+                    border: 2px dashed #ededed; \
+                    padding: 9px; \
+                    font-size: 16px; \
+                    font-weight: 600; \
+                    line-height: 100px; \
+                  } \
+                  div.ui-thumbnail.empty.dragover, \
+                  div.ui-thumbnail.empty:hover { \
+                    background-color: #fefefe; \
+                    border: 2px dashed #cccccc; \
+                    cursor: pointer; \
+                  } \
+                  div.ui-thumbnail img { \
+                    max-height: 200px; \
+                  } \
+                  </style> \
+                  <div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="display: none;"> \
                   <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
                     {{#if bold}}<button data-wysihtml5-command="bold" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b>B</b></button>{{/if}} \
                     {{#if italic}}<button data-wysihtml5-command="italic" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Italic"><i>I</i></button>{{/if}} \
@@ -66,8 +101,8 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
                     {{/if}} \
                     {{#if createlink}} \
                     <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">LINK</button> \
-                    <div data-wysihtml5-dialog="createLink" style="display: none;" class="directus-alert-modal"> \
-                      <div class="directus-alert-modal-message">Would you like to delete this item?</div> \
+                    <div data-wysihtml5-dialog="createLink" style="display: none;z-index:999" class="directus-alert-modal"> \
+                      <div class="directus-alert-modal-message">Please Insert a Link?</div> \
                       <input type="text" data-wysihtml5-dialog-field="href" value="http://"> \
                       <div class="directus-alert-modal-buttons"> \
                         <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
@@ -77,6 +112,15 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
                     {{/if}} \
                     {{#if insertimage}} \
                       <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">IMAGE</button> \
+                      <div data-wysihtml5-dialog="insertImage" style="display: none;z-index:999" class="directus-alert-modal"> \
+                        <div class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click for existing</div> \
+                        <span id="media_holder"></span> \
+                        <input data-wysihtml5-dialog-field="src" id="fileAddInput" type="hidden" /> \
+                        <div class="directus-alert-modal-buttons"> \
+                          <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
+                          <button data-wysihtml5-dialog-action="save" type="button" class="primary">OK</button> \
+                        </div> \
+                      </div> \
                     {{/if}} \
                   </div> \
                 </div> \
@@ -99,10 +143,6 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
 
     textChanged: function(view) {
       view.$('.hidden_input').val(view.editor.getValue());
-    },
-
-    afterRender: function() {
-      if (this.options.settings.get("readonly") === "on") this.editor.readonly();
     },
 
     serialize: function() {
@@ -137,6 +177,7 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
 
     initialize: function() {
       var that = this;
+      this.userId = app.users.getCurrentUser().id;
 
       $.ajax({
         url: "//cdn.jsdelivr.net/wysihtml5/0.3.0/wysihtml5-0.3.0.min.js",
@@ -145,6 +186,62 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
           that.initEditor();
         }
       });
+    },
+
+    afterRender: function() {
+      if (this.options.settings.get("readonly") === "on") this.editor.readonly();
+
+      var timer;
+      var $dropzone = this.$el.find('.ui-thumbnail');
+      var self = this;
+      var model = new app.media.model({}, {collection: app.media});
+      console.log(model);
+      $dropzone.on('dragover', function(e) {
+        clearInterval(timer);
+        e.stopPropagation();
+        e.preventDefault();
+        $dropzone.addClass('dragover');
+      });
+
+      $dropzone.on('dragleave', function(e) {
+        clearInterval(timer);
+        timer = setInterval(function(){
+          $dropzone.removeClass('dragover');
+          clearInterval(timer);
+        },50);
+      });
+
+      // Since data transfer is not supported by jquery...
+      // XHR2, FormData
+      $dropzone[0].ondrop = _.bind(function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (e.dataTransfer.files.length > 1) {
+          alert('One file only please');
+          return;
+        }
+
+        app.sendFiles(e.dataTransfer.files, function(data) {
+          _.each(data, function(item) {
+            item.active = 1;
+            // Unset the model ID so that a new media record is created
+            // (and the old media record isn't replaced w/ this data)
+            item.id = undefined;
+            item.user = self.userId;
+
+            //console.log()
+
+            model.save(item, {success: function(e) {
+              console.log(e);
+              var url = model.makeMediaUrl(false);
+              self.$el.find('.ui-thumbnail').remove();
+              self.$el.find('#media_holder').html('<img src="'+url+'">');
+              self.$el.find('#fileAddInput').val(url);
+            }});
+          });
+        });
+        $dropzone.removeClass('dragover');
+      }, this);
     },
 
     initEditor: function() {
