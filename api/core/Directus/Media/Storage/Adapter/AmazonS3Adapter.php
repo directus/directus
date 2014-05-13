@@ -53,10 +53,12 @@ class AmazonS3Adapter extends Adapter {
       $this->writeFile($localFile, $targetFileName, $destination);
     }
 
-    protected function writeFile($localFile, $targetFileName, $destination) {
-      if($this->client->doesObjectExist($destination, $targetFileName)) {
-        print_r("\nFile Already Uploaded!");
-        return true;
+    protected function writeFile($localFile, $targetFileName, $destination, $allowOverwrite = true) {
+      if(!$allowOverwrite) {
+        if($this->client->doesObjectExist($destination, $targetFileName)) {
+          print_r("\nFile Already Uploaded!");
+          return true;
+        }
       }
 
       $acl = (1 == $this->settings['public']) ? CannedAcl::PUBLIC_READ : CannedAcl::PRIVATE_ACCESS;
