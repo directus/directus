@@ -52,9 +52,17 @@
 
 <!-- Loader -->
 <div class="invisible-blocker" id="page_loader" style="display:none;">
-  <div class="spinner" style="background-color:#5b5b5b;color:#5b5b5b;"></div>
+  <div class="spinner"></div>
   <div class="blocker" id="loader_page">
-    <div id="alert"><span class="glyphicon-refresh"></span></div>
+    <!--<div id="alert"><span class="glyphicon-refresh"></span></div>-->
+  </div>
+  <div class="directus-alert-modal hide">
+    <div class="directus-alert-modal-message">Your alert text goes here...</div>
+    <!-- <input type="text" placeholder="Enter text here..."> -->
+    <div class="directus-alert-modal-buttons">
+      <button type="button" >Cancel</button>
+      <button type="button" class="primary">OK</button>
+    </div>
   </div>
 </div>
 

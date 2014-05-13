@@ -64,6 +64,21 @@
 //  Alerts
 ////////////
 
+body.smokescreen:after {
+    content: "";
+    display: block;
+    position: fixed; /* could also be absolute */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 109;
+    background-color: rgba(255,255,255,0.7);
+    cursor: wait;
+}
+
 .directus-alert-modal {
   position: fixed;
   top: 50%;
@@ -77,6 +92,7 @@
   color: @mediumDarkGrey;
   font-size: 14px;
   font-weight: 600;
+  z-index: 110;
   .border-radius(3px, 3px, 3px, 3px);
   box-shadow: 0 0 20px fade(@mediumDarkGrey, 30%);
   -webkit-font-smoothing: antialiased;
@@ -286,7 +302,7 @@ input:-webkit-autofill {
   right: 0;
   bottom: 0;
   background-color: @mediumGrey;
-  z-index: 99999999;
+  z-index: 109;
   cursor: progress;
 }
 #loader {
@@ -295,7 +311,7 @@ input:-webkit-autofill {
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 99999999;
+  z-index: 109;
   display: none;
 }
 
@@ -305,30 +321,33 @@ input:-webkit-autofill {
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 99999999;
+  z-index: 109;
 }
 
 #loader_page {
-  left: 170px;
+  //left: 170px;
+  left: 0;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.9);
-  z-index: 49;
+  z-index: 109;
   cursor: progress;
 }
 .spinner {
   position: absolute;
   width: 100px;
   height: 100px;
-  background-color: @lightGrey;
+  color: @mediumGrey;
+  background-color: @mediumGrey;
   top: 50%;
   left: 50%;
   margin-top: -50px;
   margin-left: -50px;
   -webkit-animation: rotateplane 1.2s infinite ease-in-out;
   animation: rotateplane 1.2s infinite ease-in-out;
+  z-index: 110;
 }
 
 @-webkit-keyframes rotateplane {

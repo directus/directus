@@ -1149,6 +1149,22 @@ button {
 .margin-right {
   margin-right: 20px;
 }
+body.smokescreen:after {
+  content: "";
+  display: block;
+  position: fixed;
+  /* could also be absolute */
+
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 109;
+  background-color: rgba(255, 255, 255, 0.7);
+  cursor: wait;
+}
 .directus-alert-modal {
   position: fixed;
   top: 50%;
@@ -1162,6 +1178,7 @@ button {
   color: #313131;
   font-size: 14px;
   font-weight: 600;
+  z-index: 110;
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -webkit-border-bottom-left-radius: 3px;
@@ -1418,7 +1435,7 @@ input:-webkit-autofill {
   right: 0;
   bottom: 0;
   background-color: #bbbbbb;
-  z-index: 99999999;
+  z-index: 109;
   cursor: progress;
 }
 #loader {
@@ -1427,7 +1444,7 @@ input:-webkit-autofill {
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 99999999;
+  z-index: 109;
   display: none;
 }
 .invisible-blocker {
@@ -1436,29 +1453,31 @@ input:-webkit-autofill {
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 99999999;
+  z-index: 109;
 }
 #loader_page {
-  left: 170px;
+  left: 0;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.9);
-  z-index: 49;
+  z-index: 109;
   cursor: progress;
 }
 .spinner {
   position: absolute;
   width: 100px;
   height: 100px;
-  background-color: #ededed;
+  color: #bbbbbb;
+  background-color: #bbbbbb;
   top: 50%;
   left: 50%;
   margin-top: -50px;
   margin-left: -50px;
   -webkit-animation: rotateplane 1.2s infinite ease-in-out;
   animation: rotateplane 1.2s infinite ease-in-out;
+  z-index: 110;
 }
 @-webkit-keyframes rotateplane {
   0% {
