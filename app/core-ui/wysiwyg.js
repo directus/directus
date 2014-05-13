@@ -66,13 +66,14 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
                     {{/if}} \
                     {{#if createlink}} \
                     <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">LINK</button> \
-                      <div data-wysihtml5-dialog="createLink" style="display: none;"> \
-                        <label> \
-                          Link: \
-                          <input data-wysihtml5-dialog-field="href" value="http://"> \
-                        </label> \
-                        <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel">Cancel</a> \
+                    <div data-wysihtml5-dialog="createLink" style="display: none;" class="directus-alert-modal"> \
+                      <div class="directus-alert-modal-message">Would you like to delete this item?</div> \
+                      <input type="text" data-wysihtml5-dialog-field="href" value="http://"> \
+                      <div class="directus-alert-modal-buttons"> \
+                        <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
+                        <button data-wysihtml5-dialog-action="save" type="button" class="primary">OK</button> \
                       </div> \
+                    </div> \
                     {{/if}} \
                     {{#if insertimage}} \
                       <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">IMAGE</button> \
