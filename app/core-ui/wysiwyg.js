@@ -65,7 +65,14 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
                       <button data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Rule">HR</button> \
                     {{/if}} \
                     {{#if createlink}} \
-                    <button data-wysihtml5-command="createLink" data-wysihtml5-command-value="http://www.google.com" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">LINK</button> \
+                    <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">LINK</button> \
+                      <div data-wysihtml5-dialog="createLink" style="display: none;"> \
+                        <label> \
+                          Link: \
+                          <input data-wysihtml5-dialog-field="href" value="http://"> \
+                        </label> \
+                        <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel">Cancel</a> \
+                      </div> \
                     {{/if}} \
                     {{#if insertimage}} \
                       <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">IMAGE</button> \
@@ -73,7 +80,7 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
                   </div> \
                 </div> \
                 <textarea id="wysihtml5-textarea-{{name}}" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}} autofocus></textarea> \
-                <input type="hidden" name="{{name}}" value="{{markupValue}}">';
+                <input type="hidden" name="{{name}}" class="hidden_input" value="{{markupValue}}">';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -90,7 +97,7 @@ var template = '<div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="
     },
 
     textChanged: function(view) {
-      view.$('input').val(view.editor.getValue());
+      view.$('.hidden_input').val(view.editor.getValue());
     },
 
     afterRender: function() {
@@ -210,34 +217,6 @@ var wysihtml5ParserRules = {
         "wysiwyg-text-align-left": 1,
         "wysiwyg-text-align-right": 1
     },
-    /**
-     * Tag list
-     *
-     * The following options are available:
-     *
-     *    - add_class:        converts and deletes the given HTML4 attribute (align, clear, ...) via the given method to a css class
-     *                        The following methods are implemented in wysihtml5.dom.parse:
-     *                          - align_text:  converts align attribute values (right/left/center/justify) to their corresponding css class "wysiwyg-text-align-*")
-     *                            <p align="center">foo</p> ... becomes ... <p> class="wysiwyg-text-align-center">foo</p>
-     *                          - clear_br:    converts clear attribute values left/right/all/both to their corresponding css class "wysiwyg-clear-*"
-     *                            <br clear="all"> ... becomes ... <br class="wysiwyg-clear-both">
-     *                          - align_img:    converts align attribute values (right/left) on <img> to their corresponding css class "wysiwyg-float-*"
-     *
-     *    - remove:             removes the element and its content
-     *
-     *    - rename_tag:         renames the element to the given tag
-     *
-     *    - set_class:          adds the given class to the element (note: make sure that the class is in the "classes" white list above)
-     *
-     *    - set_attributes:     sets/overrides the given attributes
-     *
-     *    - check_attributes:   checks the given HTML attribute via the given method
-     *                            - url:            allows only valid urls (starting with http:// or https://)
-     *                            - src:            allows something like "/foobar.jpg", "http://google.com", ...
-     *                            - href:           allows something like "mailto:bert@foo.com", "http://google.com", "/foobar.jpg"
-     *                            - alt:            strips unwanted characters. if the attribute is not set, then it gets set (to ensure valid and compatible HTML)
-     *                            - numbers:  ensures that the attribute only contains numeric characters
-     */
     "tags": {
         "tr": {
             "add_class": {
