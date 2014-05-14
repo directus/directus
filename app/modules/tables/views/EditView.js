@@ -101,8 +101,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         patch: true,
         includeRelationships: true
       });
-
-
+      this.$el.find('#saveSelect').val('');
     },
 
     afterRender: function() {
