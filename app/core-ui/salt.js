@@ -19,7 +19,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.variables = [
   ];
 
-  var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
+  var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="medium" {{#if readonly}}readonly{{/if}}/> \
                  <span class="label char-count hide">{{characters}}</span>';
 
   Module.Input = Backbone.Layout.extend({

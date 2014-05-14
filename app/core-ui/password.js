@@ -28,8 +28,8 @@ define(['app', 'backbone'], function(app, Backbone) {
                  <input type="password" value="{{value}}" class="medium password-confirm" style="display:block;margin-bottom:10px;" placeholder="Confirm Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
                  {{/if}} \
                  <div style="display:block;"> \
-                 <button class="btn btn-small btn-primary margin-left password-generate" style="margin-right:10px;" type="button">Generate New</button> \
-                 <button class="btn btn-small btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
+                 <button class="btn btn-primary margin-left password-generate" style="margin-right:10px;" type="button">Generate New</button> \
+                 <button class="btn btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
                  <span class="placard encrypted hide add-color margin-left-small bold">Encrypted!</span> \
                  </div> \
                  ';

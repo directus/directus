@@ -100,7 +100,7 @@ var template = '<style type="text/css"> \
                       <button data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Rule">HR</button> \
                     {{/if}} \
                     {{#if createlink}} \
-                    <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">LINK</button> \
+                    <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">Link</button> \
                     <div data-wysihtml5-dialog="createLink" style="display: none;z-index:108" class="directus-alert-modal"> \
                       <div class="directus-alert-modal-message">Please Insert a Link?</div> \
                       <input type="text" data-wysihtml5-dialog-field="href" value="http://"> \
@@ -111,7 +111,7 @@ var template = '<style type="text/css"> \
                     </div> \
                     {{/if}} \
                     {{#if insertimage}} \
-                      <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">IMAGE</button> \
+                      <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">Image</button> \
                       <div data-wysihtml5-dialog="insertImage" style="display: none;z-index:108" class="directus-alert-modal"> \
                         <button id="existingFileButton" type="button">Choose Existing File</button> \
                         <input id="fileAddInput" type="file" class="large" /> \

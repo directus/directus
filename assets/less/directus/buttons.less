@@ -5,7 +5,7 @@
   &:hover {
     background-color: @lightGrey
   }
-  &.active {
+  &.active, &.wysihtml5-command-active {
     background-color: @mediumGrey;
   }
 }
@@ -68,6 +68,7 @@
   color: @white;
   cursor: pointer;
   padding: 10px 15px 10px 15px;
+  letter-spacing: 0.8px;
   //text-transform: uppercase;
   &:hover {
     background-color: darken(@mediumGrey, 10%);

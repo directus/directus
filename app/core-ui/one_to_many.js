@@ -22,7 +22,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
   ];
 
   var template = '<div class="related-table"></div> \
-                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-small btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}';
+                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}';
 
   Module.Input = UIView.extend({
 

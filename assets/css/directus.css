@@ -1562,7 +1562,8 @@ input:-webkit-autofill {
 .btn-group.btn-white .btn:hover {
   background-color: #ededed;
 }
-.btn-group.btn-white .btn.active {
+.btn-group.btn-white .btn.active,
+.btn-group.btn-white .btn.wysihtml5-command-active {
   background-color: #bbbbbb;
 }
 .btn-group.btn-white .btn:first-child {
@@ -1698,6 +1699,7 @@ input:-webkit-autofill {
   color: #ffffff;
   cursor: pointer;
   padding: 10px 15px 10px 15px;
+  letter-spacing: 0.8px;
 }
 .btn:hover {
   background-color: #a2a2a2;
@@ -1716,7 +1718,8 @@ input:-webkit-autofill {
 .btn.btn-white:hover {
   background-color: #ededed;
 }
-.btn.btn-white.active {
+.btn.btn-white.active,
+.btn.btn-white.wysihtml5-command-active {
   background-color: #bbbbbb;
 }
 .btn.btn-round {
@@ -1900,6 +1903,12 @@ input[type="radio"].custom-check:checked + label:before {
   position: absolute;
   top: -6px;
 }
+input[type="radio"] {
+  display: inline-block;
+  width: auto;
+  margin-right: 10px;
+  cursor: pointer;
+}
 input,
 textarea,
 select,
@@ -1925,7 +1934,6 @@ select,
   border: solid 1px #ededed;
   display: block;
   padding: 5px;
-  width: 100%;
   outline: none;
   resize: none;
 }
@@ -2017,7 +2025,7 @@ select:focus,
   width: 300px;
 }
 .two-column-form .small {
-  width: 150px;
+  width: 100px;
 }
 .two-column-form h2 {
   margin-bottom: 10px;
@@ -2120,6 +2128,7 @@ select:focus,
 .two-column-form .fields .field .input {
   max-width: 700px;
   display: inline-block;
+  width: 100%;
 }
 .two-column-form .fields .field .force-editable {
   line-height: 20px;
@@ -2146,9 +2155,17 @@ select:focus,
 .two-column-form .fields .field select {
   max-width: 200px;
   margin-top: 2px;
+  height: 30px;
+  width: 100%;
+}
+.two-column-form .fields .field select[multiple] {
+  height: auto;
 }
 .two-column-form .fields .field input.small {
-  max-width: 200px;
+  max-width: 100px;
+}
+.two-column-form .fields .field input.medium {
+  max-width: 300px;
 }
 .two-column-form .fields .field .standard-select {
   float: left;
@@ -2355,6 +2372,8 @@ select:focus,
 }
 .related-table {
   margin-bottom: 10px;
+  max-height: 800px;
+  overflow: scroll;
 }
 .related-table thead:hover #set-visible-columns {
   background-color: #ededed;
