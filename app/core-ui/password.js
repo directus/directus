@@ -228,7 +228,6 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.validate = function(value,options) {
     var $el = $('input[name="' + options.schema.id + '"]').parent();
     var data = $el.data();
-    console.log(data);
     var password = $el.find('input.password-primary').val(),
         confirm = $el.find('input.password-confirm').val();
 
@@ -238,11 +237,9 @@ define(['app', 'backbone'], function(app, Backbone) {
     if(password !== confirm) {
       return "Passwords must match.";
     }
-    if(!$el.data().isAPIHashed) {
+    if(!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
       return "You Must Hash Your Password";
     }
-
-    console.log($el.data());
   };
 
   Module.list = function(options) {
