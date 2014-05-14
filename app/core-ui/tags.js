@@ -13,7 +13,7 @@ define(['app','backbone'], function(app, Backbone) {
   var Module = {};
 
   Module.id = 'tags';
-  Module.dataTypes = ['VARCHAR','CHAR'];
+  Module.dataTypes = ['TEXT','VARCHAR','CHAR'];
 
   Module.variables = [
     {id: 'force_lowercase', ui: 'checkbox', def: '1'}
