@@ -114,6 +114,7 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
     },
 
     initialize: function() {
+      this.collection.setFilter({adv_search:''});
       this.collection.on('sync', this.render, this);
     }
 
