@@ -24,8 +24,10 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       this.model = options.model;
       this.activity = app.activity;
 
-      this.activity.setFilter({adv_search: 'table_name = "' + this.model.collection.table.id + '" AND row_id = ' + this.model.get('id')});
-      this.activity.fetch();
+      if(!this.model.isNew()) {
+        this.activity.setFilter({adv_search: 'table_name = "' + this.model.collection.table.id + '" AND row_id = ' + this.model.get('id')});
+        this.activity.fetch();
+      }
 
       this.listenTo(this.activity, 'sync', function() {
         this.render();
@@ -84,8 +86,10 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
   var EditView = Backbone.Layout.extend({
     template: Handlebars.compile('<div id="editFormEntry"></div><div id="historyFormEntry"></div>'),
     afterRender: function() {
-      this.setView("#editFormEntry", this.editView);
-      this.setView("#historyFormEntry", this.historyView);
+      this.insertView("#editFormEntry", this.editView);
+      this.insertView("#historyFormEntry", this.historyView);
+
+      this.editView.render();
     },
     data: function() {
       return this.editView.data();
