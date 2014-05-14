@@ -22,16 +22,16 @@ define(['app', 'backbone'], function(app, Backbone) {
   ];
 
   var template = '{{#if cb_list}} \
-                                {{#options}} \
-                                        <input style="margin-top:1px;" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/> {{value}} \
-                                {{/options}}</select> \
-                              {{else}} \
-                                <select multiple> \
-                                    {{#options}} \
-                                        <option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option> \
-                                    {{/options}}</select> \
-                              {{/if}} \
-                              <input type="hidden" name="{{name}}">';
+                    {{#options}} \
+                            <input style="margin-top:1px;" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/> {{value}} \
+                    {{/options}}</select> \
+                  {{else}} \
+                    <select multiple> \
+                        {{#options}} \
+                            <option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option> \
+                        {{/options}}</select> \
+                  {{/if}} \
+                  <input type="hidden" name="{{name}}">';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -45,27 +45,34 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     events: {
       'click select': function(e) {
+        this.updateValue(true);
+      },
+      'change input[type=checkbox]': function(e) {
+        this.updateValue(false);
+      }
+    },
+
+    updateValue: function(select) {
+      if(select) {
         var values = this.$el.find('select').val();
         var out = "";
         for (var i=0; i<values.length; i++) {
           out += values[i] + this.options.settings.get('delimiter');
         }
-
-        out = out.substr(0, out.length - 1);
-
-        this.$el.find('input').val(out);
-      },
-      'change input[type=checkbox]': function(e) {
+      } else {
         var values = this.$el.find('input[type=checkbox]:checked');
         var out = "";
         for (var i=0; i<values.length; i++) {
           out += $(values[i]).attr('name') + this.options.settings.get('delimiter');
         }
-
-        out = out.substr(0, out.length - 1);
-
-        this.$el.find('input').val(out);
       }
+
+      out = out.substr(0, out.length - 1);
+      this.$el.find('input').val(out);
+    },
+
+    afterRender: function() {
+      this.updateValue(!(this.options.settings.get('type') == "cb_list"));
     },
 
     serialize: function() {
