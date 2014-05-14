@@ -41,7 +41,7 @@ define(['app','backbone'], function(app, Backbone) {
         }
       }
       var activity_time = options.model.get('last_access');
-      return '<a href="#'+last_page.path+'" title="'+activity_time+'">'+page_summary+' '+$.timeago(activity_time)+'</a>';
+      return '<a href="#'+last_page.path+'" title="'+activity_time+'">'+page_summary+' '+moment(activity_time).fromNow()+'</a>';
     } else {
       return '<a href="#">Never logged in</a>';
     }

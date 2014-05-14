@@ -44,7 +44,6 @@ require.config({
       exports: '_'
     },
 
-    "plugins/jquery.timeago": ["jquery"],
     "plugins/backbone.layoutmanager": ["backbone"],
     "plugins/bootstrap-dropdown": ["jquery"],
     "plugins/typeahead": ["jquery"],

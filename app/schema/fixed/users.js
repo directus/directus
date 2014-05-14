@@ -17,18 +17,6 @@ define(function(require, exports, module) {
     "url": "api/1/tables/directus_users/",
     "columns": [
       {
-        "id":"activity",
-        "column_name":"activity",
-        "type":"ALIAS",
-        "is_nullable":"NO",
-        "ui":"directus_user_activity",
-        "system":false,
-        "master":false,
-        "hidden_list":false,
-        "hidden_input":true,
-        "required":false
-      },
-      {
         "id":"avatar",
         "column_name":"avatar",
         "type":"VARCHAR",
@@ -293,11 +281,6 @@ define(function(require, exports, module) {
         "required":false,
         "ui":"datetime"
       },
-
-
-
-
-
       {
         "id":"email_messages",
         "column_name":"email_messages",
