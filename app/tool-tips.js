@@ -63,10 +63,10 @@ define([
                 // Use IIFE to capture $ttTarget
                 (function() {
                   var tipTimer;
-                  
+
                   $(document).on("mouseenter", $ttTarget.selector,  function() {
                       tipTimer = setTimeout(function() {
-                        console.log($ttTarget.selector);
+                        //console.log($ttTarget.selector);
                           positionToolTip($ttTarget.selector, $toolTip);
                           $toolTip.show();
                       }, 500);
@@ -115,7 +115,7 @@ define([
             var elementOffset, cssOptions, toolTipPointerSize;
             //console.log($ttTarget, $toolTip);
             var $ttTarget = _.isString(ttTarget) ? $(ttTarget) : ttTarget;
-            
+
             function horizontalCenter() {
                 return (($ttTarget.outerWidth() - $toolTip.outerWidth()) / 2) + elementOffset.left + $toolTip.data("offset-x");
             }
