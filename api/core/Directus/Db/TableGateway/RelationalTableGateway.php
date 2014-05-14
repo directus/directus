@@ -62,7 +62,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
 
-        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = AuthProvider::getUserRecord();
 
         $TableGateway = $this;
         if($tableName !== $this->table) {
@@ -76,6 +76,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
           $cmsOwnerColumnName = $this->acl->getCmsOwnerColumnByTable($tableName);
           if($cmsOwnerColumnName) {
             $recordData[$cmsOwnerColumnName] = $currentUser['id'];
+          }
+        }
+
+        //Dont let non-admins make admins
+        if($tableName == 'directus_users' && $currentUser['group'] != 0) {
+          if(isset($recordData['group']) && $recordData['group']['id'] == 0) {
+            unset($recordData['group']);
           }
         }
 
