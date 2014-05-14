@@ -175,7 +175,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       }
 
       data[attr] = value;
-
       model.set(data);
     },
 
@@ -194,6 +193,8 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
       var model = column.options;
+      model.set({id: column.get('ui')});
+
       var schema = app.schemaManager.getColumns('ui', model.id);
       var view = new EditColumn({model: model, schema: schema});
       app.router.overlayPage(view);
@@ -207,6 +208,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
     serialize: function() {
       var ui = UIManager.getAllSettings({returnObject: true});
+
+      if(!this.collection.where({master: true}).length) {
+        if(this.collection.where({system: false}).length) {
+          this.collection.where({system: false})[0].set({master:true});
+        }
+      }
 
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
@@ -250,6 +257,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         });
         return row;
       });
+
       return {rows: rows};
     },
 

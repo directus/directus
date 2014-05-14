@@ -89,6 +89,10 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   };
 
   Module.list = function(options) {
+    if(!options.value) {
+      return "-";
+    }
+
     var include_seconds = (options.settings && options.settings.has('include_seconds') && options.settings.get('include_seconds') == '1')? true : false;
 
     var d = new Date();

@@ -92,7 +92,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
       data.name = this.name;
       data.note = this.columnSchema.get('comment');
       data.readonly = (this.options.settings && this.options.settings.has('readonly')) ? this.options.settings.get('readonly')!==0 : false;
-      console.log("readonly",data.readonly);
       return data;
     },
 

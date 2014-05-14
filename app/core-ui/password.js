@@ -23,6 +23,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   ];
 
   var template = '<input type="password" value="{{value}}" name="{{name}}" class="medium password-primary" style="display:block;margin-bottom:10px;" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
+                 <input type="password" id="password_fake" class="hidden" autocomplete="off" style="display: none;"> \
                  <span class="password-text"></span> \
                  {{#if require_confirmation}} \
                  <input type="password" value="{{value}}" class="medium password-confirm" style="display:block;margin-bottom:10px;" placeholder="Confirm Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
@@ -54,43 +55,15 @@ define(['app', 'backbone'], function(app, Backbone) {
           changeTargetClass = $confirm.length ? 'password-confirm' : 'password-primary';
 
       var eventsHash = {
-
-        'focus input.password-primary' : function(e) {
-          if(this.$el.data('isAPIHashed')) {
-            var that = this;
-            this.$el.find('input[type=password]').each(function(e) {
-              var val = $(this).val();
-              if(!_.isEmpty(val)) {
-                $(this).data('oldVal', val);
-                $(this).val('');
-                that.$el.data('wasAPIHashed', that.$el.data('isAPIHashed'));
-                that.$el.find('.encrypted').addClass('hide');
-                $confirm.removeAttr('disabled');
-              }
-            });
-          }
-        },
-
-        'blur input.password-primary' : function(e) {
-          if(!_.isEmpty($.trim($(e.target).val()))) {
-            this.$el.data('wasAPIHashed', this.$el.data('isAPIHashed'));
-            this.$el.data('isAPIHashed', false);
-            this.$el.find('input[type=password]').data('oldVal', undefined);
-            return;
-          }
-          var that = this;
-          this.$el.find('input[type=password]').each(function(e) {
-            var val = $(this).val();
-            if(_.isEmpty(val) && $(this).data('oldVal')) {
-              $(this).val($(this).data('oldVal'));
-              that.$el.data('isAPIHashed', true);
-              that.$el.data('wasAPIHashed', false);
-              that.$el.find('.encrypted').removeClass('hide');
-              if($confirm.length) {
-                $confirm.attr('disabled','disabled');
-              }
+        'keydown input.password-primary': function(e) {
+          if($confirm.length) {
+            if(this.$el.data('wasAPIHashed') || this.$el.data('isAPIHashed')) {
+              $confirm.val("");
+              $confirm.removeAttr('disabled');
+              this.$el.data('wasAPIHashed', false);
+              this.$el.data('isAPIHashed', false);
             }
-          });
+          }
         },
 
         'click .password-generate' : function(e) {
@@ -130,7 +103,29 @@ define(['app', 'backbone'], function(app, Backbone) {
             e.preventDefault();
             return false;
           }
-        }
+        },
+
+        'blur input.password-primary' : function(e) {
+          if(!_.isEmpty($.trim($(e.target).val()))) {
+            this.$el.data('wasAPIHashed', this.$el.data('isAPIHashed'));
+            this.$el.data('isAPIHashed', false);
+            this.$el.find('input[type=password]').data('oldVal', undefined);
+            return;
+          }
+          var that = this;
+          this.$el.find('input[type=password]').each(function(e) {
+            var val = $(this).val();
+            if(_.isEmpty(val) && $(this).data('oldVal')) {
+              $(this).val($(this).data('oldVal'));
+              that.$el.data('isAPIHashed', true);
+              that.$el.data('wasAPIHashed', false);
+              that.$el.find('.encrypted').removeClass('hide');
+              if($confirm.length) {
+                $confirm.attr('disabled','disabled');
+              }
+            }
+          });
+        },
       };
 
       eventsHash['change input.' + changeTargetClass] = function(e) {
@@ -150,7 +145,13 @@ define(['app', 'backbone'], function(app, Backbone) {
           }
         }, this);
 
-        // @todo run UI validation (e.g. for matching passwords)
+        if($confirm.length) {
+          if(primaryPass !== $confirm.val()) {
+            alert("Passwords do not Match!");
+            return false;
+          }
+        }
+
         var hashParams = {password:primaryPass};
         var saltField = this.options.settings.has('salt_field') ? this.options.settings.get('salt_field') : false;
         if(saltField) {
@@ -158,7 +159,8 @@ define(['app', 'backbone'], function(app, Backbone) {
           if($saltInput.length) {
             hashParams.salt = $.trim($saltInput.val());
             if(_.isEmpty(hashParams.salt)) {
-              // @todo throw alert that the salt needs definition
+              alert("Salt is not Defined! (Malformed Table Setup)");
+              return false;
             }
           }
         }
@@ -197,7 +199,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     initialize: function() {
       this.$el.data('isAPIHashed', false);
-      this.$el.data('wasAPIHashed', false);
+      this.$el.data('wasAPIHashed', true);
     },
 
     serialize: function() {
@@ -224,15 +226,20 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.validate = function(value,options) {
+    var $el = $('input[name="' + options.schema.id + '"]').parent();
+    var data = $el.data();
+    var password = $el.find('input.password-primary').val(),
+        confirm = $el.find('input.password-confirm').val();
 
-    // need access to peer element somehow.
-
-    // var $el = this.Input.$el,
-    //     password = $el.find('input.password-primary'),
-    //     confirm = $el.find('input.password-confirm');
-    // if(password !== confirm) {
-    //   return "Passwords must match.";
-    // }
+    if(!password && options.schema.get('required')) {
+      return "You Must Specify a Password";
+    }
+    if(password !== confirm) {
+      return "Passwords must match.";
+    }
+    if(!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
+      return "You Must Hash Your Password";
+    }
   };
 
   Module.list = function(options) {

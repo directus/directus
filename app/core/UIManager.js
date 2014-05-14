@@ -84,6 +84,9 @@ define(function(require, exports, module) {
         var structure = model.getStructure();
         schema = structure.get(attr);
       }
+      if(schema === undefined) {
+        throw "Cannot Find Schema for: '" + attr + "' Check Your Preferences!";
+      }
       var uiId = schema.get('ui');
 
       if(system_fields[attr] !== undefined) {

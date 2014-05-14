@@ -59,13 +59,14 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
-
       if (action === 'save-form-stay') {
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');
-          route.pop();
-          route.push(model.get('id'));
-          app.router.go(route);
+          if(!model.table.get('single')) {
+            route.pop();
+            route.push(model.get('id'));
+            app.router.go(route);
+          }
         };
       } else {
         success = function(model, response, options) {
@@ -100,8 +101,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         patch: true,
         includeRelationships: true
       });
-
-
+      this.$el.find('#saveSelect').val('');
     },
 
     afterRender: function() {
@@ -145,8 +145,13 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       this.editView = new Directus.EditView(options);
       this.headerOptions.route.isOverlay = false;
       this.headerOptions.basicSave = false;
-      this.headerOptions.route.title = this.model.get('id') ? 'Editing Item' : 'Creating New Item';
-      this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
+      if(this.single) {
+        this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;
+        this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}];
+      } else {
+        this.headerOptions.route.title = this.model.get('id') ? 'Editing Item' : 'Creating New Item';
+        this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
+      }
     }
   });
 });

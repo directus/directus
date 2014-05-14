@@ -1,5 +1,5 @@
 //@todo: Make vanilla-js (not a require module) and move to vendor folder
-define(["plugins/jquery.timeago"], function() {
+define([], function() {
 
   "use strict";
 
@@ -131,7 +131,7 @@ define(["plugins/jquery.timeago"], function() {
       }
       //@todo: convert value to correct timezone
       value = (value.substr(-1).toLowerCase() == 'z') ? value : value + 'z';
-      return $.timeago(value);
+      return moment(value).fromNow();
     },
 
     dateYYYYMMDD: function(date) {
