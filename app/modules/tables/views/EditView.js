@@ -59,13 +59,14 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
-
       if (action === 'save-form-stay') {
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');
-          route.pop();
-          route.push(model.get('id'));
-          app.router.go(route);
+          if(!model.table.get('single')) {
+            route.pop();
+            route.push(model.get('id'));
+            app.router.go(route);
+          }
         };
       } else {
         success = function(model, response, options) {
