@@ -37,7 +37,8 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
         var data = {
           "table": model.get('table_name'),
           'time': moment(model.get('datetime')).fromNow(),
-          "timestamp": model.get('datetime')
+          "timestamp": model.get('datetime'),
+          "user": model.get('user')
         };
 
         switch(model.get('action')) {
@@ -79,7 +80,6 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
 
             var template = Handlebars.compile(primary_column);
             data.title = template(modelData);
-
           }
         }
 
@@ -146,13 +146,13 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
     },
 
     afterRender: function() {
-      this.insertView('#page-content', this.chart);
+      //this.insertView('#page-content', this.chart);
       this.insertView('#page-content', this.table);
       this.collection.fetch();
     },
 
     initialize: function() {
-      this.chart = new Chart({collection: this.collection});
+      //this.chart = new Chart({collection: this.collection});
       this.table = new ListView({collection: this.collection});
     }
 
