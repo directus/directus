@@ -147,11 +147,13 @@ class TableSchema {
             ON (D.column_name = S.column_name AND D.table_name = S.table_name)
             WHERE
                 S.table_name = :table_name AND
+                S.table_schema = :table_schema AND
                 S.column_name NOT IN (:field_read_blacklist)';
 
         $db = Bootstrap::get('olddb');
         $sth = $db->dbh->prepare($sql);
         $sth->bindValue(':table_name', $table, \PDO::PARAM_STR);
+        $sth->bindValue(':table_schema', DB_NAME, \PDO::PARAM_STR);
         $sth->bindValue(':field_read_blacklist', $readFieldBlacklist, \PDO::PARAM_STR);
         $sth->execute();
 

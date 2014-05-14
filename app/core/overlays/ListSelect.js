@@ -57,7 +57,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      this.collection.fetch({reset: true});
+      this.collection.fetch({includeFilters: false, reset: true});
     },
 
     itemClicked: function(e) {
