@@ -72,7 +72,9 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     afterRender: function() {
-      this.updateValue(!(this.options.settings.get('type') == "cb_list"));
+      if(this.options.value) {
+        this.updateValue(!(this.options.settings.get('type') == "cb_list"));
+      }
     },
 
     serialize: function() {
