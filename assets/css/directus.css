@@ -1935,6 +1935,18 @@ select:hover,
 .input:hover {
   border: solid 1px #bbbbbb;
 }
+input:disabled,
+textarea:disabled,
+select:disabled,
+.input:disabled {
+  color: #bbbbbb;
+}
+input:disabled:hover,
+textarea:disabled:hover,
+select:disabled:hover,
+.input:disabled:hover {
+  border: solid 1px #ededed;
+}
 input:focus,
 textarea:focus,
 select:focus,
@@ -2733,6 +2745,9 @@ select:focus,
   line-height: 13px;
   padding: 10px 20px;
   position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #sidebar #mainSidebar li.active {
   border-left-width: 4px;

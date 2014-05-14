@@ -35,7 +35,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   </style> \
                   <input type="date" {{#if readonly}}disabled{{/if}} class="date" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
                   <input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" {{#if hasDate}}value="{{valueTime}}"{{/if}}> \
-                  <a class="now secondary-info">Now</a> \
+                  {{#unless readonly}}<a class="now secondary-info">Now</a>{{/unless}} \
                   <input class="merged" type="hidden" {{#if hasDate}}value="{{valueMerged}}"{{/if}} name="{{name}}" id="{{name}}">';
 
   //var format = 'ddd, DD MMM YYYY HH:mm:ss';
@@ -91,9 +91,8 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
       data.valueMerged = date.format(format);
       data.name = this.name;
       data.note = this.columnSchema.get('comment');
-
-      data.readonly = !this.options.canWrite;
-
+      data.readonly = (this.options.settings && this.options.settings.has('readonly')) ? this.options.settings.get('readonly')!==0 : false;
+      console.log("readonly",data.readonly);
       return data;
     },
 
@@ -115,8 +114,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
       return;
     }
 
-    console.log(value);
-
     return "Not a valid date";
   };
 
@@ -131,8 +128,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
       } else {
         value = '-';
       }
-
-
     }
 
     return value;
