@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Overlays) {
 
   "use strict";
 
@@ -101,7 +101,7 @@ var template = '<style type="text/css"> \
                     {{/if}} \
                     {{#if createlink}} \
                     <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">LINK</button> \
-                    <div data-wysihtml5-dialog="createLink" style="display: none;z-index:999" class="directus-alert-modal"> \
+                    <div data-wysihtml5-dialog="createLink" style="display: none;z-index:108" class="directus-alert-modal"> \
                       <div class="directus-alert-modal-message">Please Insert a Link?</div> \
                       <input type="text" data-wysihtml5-dialog-field="href" value="http://"> \
                       <div class="directus-alert-modal-buttons"> \
@@ -112,13 +112,13 @@ var template = '<style type="text/css"> \
                     {{/if}} \
                     {{#if insertimage}} \
                       <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">IMAGE</button> \
-                      <div data-wysihtml5-dialog="insertImage" style="display: none;z-index:999" class="directus-alert-modal"> \
-                        <div class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click for existing</div> \
-                        <span id="media_holder"></span> \
-                        <input data-wysihtml5-dialog-field="src" id="fileAddInput" type="hidden" /> \
+                      <div data-wysihtml5-dialog="insertImage" style="display: none;z-index:108" class="directus-alert-modal"> \
+                        <button id="existingFileButton" type="button">Choose Existing File</button> \
+                        <input id="fileAddInput" type="file" class="large" /> \
+                        <input type="text" data-wysihtml5-dialog-field="src" id="insertImageInput" value="http://"> \
                         <div class="directus-alert-modal-buttons"> \
                           <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
-                          <button data-wysihtml5-dialog-action="save" type="button" class="primary">OK</button> \
+                          <button data-wysihtml5-dialog-action="save" id="insertImageButton" type="button" class="primary">OK</button> \
                         </div> \
                       </div> \
                     {{/if}} \
@@ -139,7 +139,46 @@ var template = '<style type="text/css"> \
     template: Handlebars.compile(template),
 
     events: {
-      'input textarea' : 'textChanged'
+      'input textarea' : 'textChanged',
+      'change input[type=file]': function(e) {
+        var file = $(e.target)[0].files[0];
+        var self = this;
+        var model = new app.media.model({}, {collection: app.media});
+        app.sendFiles(file, function(data) {
+          _.each(data, function(item) {
+            item.active = 1;
+            item.id = undefined;
+            item.user = self.userId;
+
+            model.save(item, {success: function(e) {
+              var url = model.makeMediaUrl(false);
+              self.$el.find('#insertImageInput').val(url);
+              self.$el.find('input[type=file]').val("");
+              self.$el.find('#insertImageButton').click();
+            }});
+          });
+        });
+      },
+      'click #existingFileButton': function(e) {
+        var collection = app.media;
+        var model;
+        var mediaModel = new app.media.model({}, {collection: collection});
+        var view = new Overlays.ListSelect({collection: collection, selectable: false});
+        app.router.overlayPage(view);
+
+        var self = this;
+
+        view.itemClicked = function(e) {
+          var id = $(e.target).closest('tr').attr('data-id');
+          model = collection.get(id);
+          app.router.removeOverlayPage(this);
+          var url = model.makeMediaUrl(false);
+          self.$el.find('#insertImageInput').val(url);
+          self.$el.find('#insertImageButton').click();
+        };
+
+        collection.fetch();
+      }
     },
 
     textChanged: function(view) {
@@ -246,9 +285,6 @@ var template = '<style type="text/css"> \
             model.save(item, {success: function(e) {
               console.log(e);
               var url = model.makeMediaUrl(false);
-              self.$el.find('.ui-thumbnail').remove();
-              self.$el.find('#media_holder').html('<img src="'+url+'">');
-              self.$el.find('#fileAddInput').val(url);
               try {
                 self.editor.composer.commands.exec("insertImage", { src: url, alt: model.get('name')});
               } catch( e) {}
