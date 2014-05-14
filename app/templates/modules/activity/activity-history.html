@@ -1,0 +1,42 @@
+{{#each activities}}
+<li class="group gutter-bottom-big">
+  <span class="big-label-text">{{title}}</span>
+<ul class="border-top">
+{{#each data}}
+<li class="group-item">
+  <div class="left">{{userAvatar user}}</div>
+  {{#if action_add}}
+  {{#if is_media}}
+    <div class="left icon icon-attach"></div>
+    {{else}}
+    <div class="left icon icon-plus color"></div>
+    {{/if}}
+  {{/if}}
+  {{#if action_edit}}
+    <div class="left icon icon-pencil color"></div>
+  {{/if}}
+  {{#if action_delete}}
+  <div class="left icon icon-cross color"></div>
+  {{/if}}
+  {{#if action_login}}
+  <div class="left icon icon-key color"></div>
+  {{/if}}
+  <div class="left stack">
+    <span class="stack-item">{{capitalize table}}</span>
+    <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
+    {{#if user}}
+      {{userFirstAndLastName user}}
+    {{else}}
+      {{#if title}}
+        {{capitalize title}}
+      {{else}}
+        <span class="null">Empty</span>
+      {{/if}}
+    {{/if}}
+  </div>
+  <div class="right secondary-info">{{time}}</div>
+</li>
+{{/each}}
+</ul>
+</li>
+{{/each}}
