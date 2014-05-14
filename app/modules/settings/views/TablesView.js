@@ -165,7 +165,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       if (e.target.type === 'checkbox' || e.target.type === 'radio') {
         value = $(e.target).is(':checked') ? 1 : 0;
       }
-
+      console.log(attr);
       //Unset previous master
       if (attr === 'master') {
         var master = this.collection.where({master: true});
