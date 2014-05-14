@@ -275,7 +275,7 @@ var template = '<style type="text/css"> \
           alert('One file only please');
           return;
         }
-
+        this.editor.focus();
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
             item.active = 1;
