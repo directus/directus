@@ -167,6 +167,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       var mediaModel = this.mediaModel;
       var view = new Overlays.ListSelect({collection: collection, selectable: false});
       app.router.overlayPage(view);
+
       //please proxy this instead
       var me = this;
 
@@ -177,8 +178,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         mediaModel.set(model.toJSON());
         app.router.removeOverlayPage(this);
       };
-
-      collection.fetch();
     },
 
     edit: function() {

@@ -165,7 +165,6 @@ var template = '<style type="text/css"> \
         var mediaModel = new app.media.model({}, {collection: collection});
         var view = new Overlays.ListSelect({collection: collection, selectable: false});
         app.router.overlayPage(view);
-
         var self = this;
 
         view.itemClicked = function(e) {
@@ -176,8 +175,6 @@ var template = '<style type="text/css"> \
           self.$el.find('#insertImageInput').val(url);
           self.$el.find('#insertImageButton').click();
         };
-
-        collection.fetch();
       }
     },
 
