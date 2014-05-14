@@ -23,15 +23,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     //{id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
   ];
 
-  var template = '<style type="text/css"> \
-                  label.radiobuttons { \
-                    font-weight:normal; \
-                    display:inline; \
-                    margin-right: 10px; \
-                    padding: 4px; \
-                  } \
-                  </style> \
-                  <select {{#unless canEdit}}disabled{{/unless}}> \
+  var template = '<select {{#unless canEdit}}disabled{{/unless}}> \
                   <option value="">Select from below</option> \
                   {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
                   </select>';

@@ -124,6 +124,12 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     }
   }
 }
+input[type="radio"] {
+  display: inline-block;
+  width: auto;
+  margin-right: 10px;
+  cursor: pointer;
+}
 input,
 textarea,
 select,
@@ -134,7 +140,7 @@ select,
   border: solid 1px @lightGrey;
   display: block;
   padding: @extraSmallPad;
-  width: 100%;
+  //width: 100%;
   outline: none;
   resize: none;
   &:hover {
@@ -208,7 +214,7 @@ select,
     width: 300px;
   }
   .small {
-    width: 150px;
+    width: 100px;
   }
   h2 {
     margin-bottom: @smallPad;
@@ -286,6 +292,7 @@ select,
       input[type="text"], textarea, .input {
         max-width: @maxFieldWidth;
         display: inline-block;
+        width: 100%;
       }
       .force-editable {
         line-height: 20px;
@@ -314,9 +321,17 @@ select,
       select {
         max-width: 200px;
         margin-top: 2px;
+        height: 30px;
+        width: 100%;
+      }
+      select[multiple] {
+        height: auto;
       }
       input.small {
-        max-width: 200px;
+        max-width: 100px;
+      }
+      input.medium {
+        max-width: 300px;
       }
       .standard-select {
         float: left;

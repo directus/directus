@@ -105,8 +105,8 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     <a href="{{link}}" class="title" target="single_media">{{mediaModel.title}}</a><br> \
                     Uploaded by {{userName mediaModel.user}} {{contextualDate mediaModel.date_uploaded}}<br> \
                     <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{mediaModel.size}}</i><br> \
-                    <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose File</button> \
-                    <button class="btn btn-small btn-primary btn-right" data-action="remove-single-media" type="button">Remove File</button> \
+                    <button class="btn btn-primary btn-right" data-action="swap" type="button">Choose File</button> \
+                    <button class="btn btn-primary btn-right" data-action="remove-single-media" type="button">Remove File</button> \
                   </div> \
                   {{else}} \
                   <div class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click for existing</div> \

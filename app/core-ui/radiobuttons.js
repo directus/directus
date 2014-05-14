@@ -21,15 +21,19 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var template = '<style type="text/css"> \
                   label.radiobuttons { \
-                    font-weight:normal; \
                     display:inline; \
-                    margin-right: 10px; \
-                    padding: 4px; \
+                    margin-right: 20px; \
+                    padding: 4px 0 0 0; \
+                    font-weight: 600; \
+                    font-size: 12px; \
+                    cursor: pointer; \
                   } \
                   </style> \
+                  <div style="margin-top:4px;"> \
                   {{#options}} \
                     <input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{value}}" id="radio-{{value}}" {{#if selected}}checked{{/if}}><label class="radiobuttons" for="radio-{{value}}">{{value}}</label> \
-                  {{/options}}';
+                  {{/options}} \
+                  </div>';
 
   Module.Input = Backbone.Layout.extend({
 
