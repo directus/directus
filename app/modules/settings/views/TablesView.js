@@ -175,7 +175,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       }
 
       data[attr] = value;
-
       model.set(data);
     },
 
@@ -194,6 +193,8 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
       var model = column.options;
+      model.set({id: column.get('ui')});
+
       var schema = app.schemaManager.getColumns('ui', model.id);
       var view = new EditColumn({model: model, schema: schema});
       app.router.overlayPage(view);
