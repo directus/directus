@@ -10,6 +10,95 @@ define([
 
 function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Widgets) {
 
+  var HistoryView = Backbone.Layout.extend({
+    tagName: "ul",
+
+    attributes: {
+      class: "group-list"
+    },
+
+    template: "modules/activity/activity-history",
+
+    initialize: function(options) {
+      //Get Activity
+      this.model = options.model;
+      this.activity = app.activity;
+
+      this.activity.setFilter({adv_search: 'table_name = "' + this.model.collection.table.id + '" AND row_id = ' + this.model.get('id')});
+      this.activity.fetch();
+
+      this.listenTo(this.activity, 'sync', function() {
+        this.render();
+      });
+    },
+    serialize: function() {
+      var data = this.activity.map(function(model) {
+        var data = {
+          "table": model.get('table_name'),
+          'time': moment(model.get('datetime')).fromNow(),
+          "timestamp": model.get('datetime'),
+          "user": model.get('user')
+        };
+
+        switch(model.get('action')) {
+          case 'UPDATE':
+            data.action_edit = true;
+            break;
+          case 'ADD':
+            data.action_add = true;
+            break;
+        }
+
+        return data;
+      });
+
+      // Order the data by timestamp
+      data = _.sortBy(data, function(item) {
+        return -moment(item.timestamp);
+      });
+
+      var groupedData = [];
+
+      data.forEach(function(group) {
+        var date = moment(group.timestamp).format('MMMM-D-YYYY');
+        if(!groupedData[date]) {
+          //If Today Have it say Today
+          if(date == moment().format('MMMM-D-YYYY')) {
+            groupedData[date] = {title: "Today", data: []};
+          } else {
+            groupedData[date] = {title: moment(group.timestamp).format('MMMM D, YYYY'), data: []};
+          }
+        }
+        groupedData[date].data.push(group);
+      });
+      data = [];
+
+      for(var group in groupedData) {
+        data.push(groupedData[group]);
+      }
+
+      return {activities: data};
+    }
+  });
+
+  var EditView = Backbone.Layout.extend({
+    template: Handlebars.compile('<div id="editFormEntry"></div><div id="historyFormEntry"></div>'),
+    afterRender: function() {
+      this.setView("#editFormEntry", this.editView);
+      this.setView("#historyFormEntry", this.historyView);
+    },
+    data: function() {
+      return this.editView.data();
+    },
+    initialize: function(options) {
+      this.editView = new Directus.EditView(options);
+      this.historyView = new HistoryView(options);
+    },
+    serialize: function() {
+      return {};
+    }
+  });
+
   return BasePageView.extend({
     events: {
       'change input, select, textarea': 'checkDiff',
@@ -125,9 +214,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
             }
           }
         });
-      } else {
-        this.editView.render();
       }
+      this.editView.render();
     },
 
     leftToolbar: function() {
@@ -142,7 +230,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       this.headerOptions = this.getHeaderOptions();
       this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');
-      this.editView = new Directus.EditView(options);
+      this.editView = new EditView(options);
       this.headerOptions.route.isOverlay = false;
       this.headerOptions.basicSave = false;
       if(this.single) {

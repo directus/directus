@@ -48,7 +48,6 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
     }
 
     public function fetchFeed($params = null) {
-
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
 
@@ -64,13 +63,15 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
             // ->order('id DESC');
         $select
             ->where
+              ->nest
                 ->isNull('parent_id')
                 ->OR
-                ->equalTo('type', 'MEDIA');
+                ->equalTo('type', 'MEDIA')
+              ->unnest;
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $tableSchemaArray, $hasActiveColumn);
 
-        // die($this->dumpSql($select));
+        //die($this->dumpSql($select));
 
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
