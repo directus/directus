@@ -309,7 +309,7 @@ define(function(require, exports, module) {
         "master":false,
         "hidden_list":true,
         "hidden_input":false,
-        "required":false,
+        "required":true,
         "ui":"password",
         "options": {
           "salt_field":"salt"
@@ -440,7 +440,6 @@ define(function(require, exports, module) {
         "options": {
           "id": "many_to_one",
           "table_related": "directus_groups",
-          // "related_table": "directus_groups",
           "visible_column": "name",
           "visible_column_template": "{{name}}"
         },

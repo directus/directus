@@ -37,11 +37,6 @@ function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
       var collection = this.model.collection;
       var success;
 
-      if (data.password === "") {
-        delete data.password;
-      }
-
-
       if (action === 'save-form-stay') {
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');

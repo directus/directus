@@ -231,7 +231,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     var password = $el.find('input.password-primary').val(),
         confirm = $el.find('input.password-confirm').val();
 
-    if(!password) {
+    if(!password && options.schema.get('required')) {
       return "You Must Specify a Password";
     }
     if(password !== confirm) {
