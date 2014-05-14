@@ -38,6 +38,7 @@ define(function(require, exports, module) {
     require('core-ui/enum'),
     require('core-ui/multi_select'),
     require('core-ui/system'),
+    require('core-ui/user'),
     require('core-ui/directus_fancy_media'),
     require('core-ui/directus_media_title')
   ]);
