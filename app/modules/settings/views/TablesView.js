@@ -208,6 +208,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     serialize: function() {
       var ui = UIManager.getAllSettings({returnObject: true});
 
+      if(!this.collection.where({master: true}).length) {
+        if(this.collection.where({system: false}).length) {
+          this.collection.where({system: false})[0].set({master:true});
+        }
+      }
+
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
 
@@ -250,6 +256,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         });
         return row;
       });
+
       return {rows: rows};
     },
 
