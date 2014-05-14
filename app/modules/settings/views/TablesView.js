@@ -165,7 +165,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       if (e.target.type === 'checkbox' || e.target.type === 'radio') {
         value = $(e.target).is(':checked') ? 1 : 0;
       }
-
+      console.log(attr);
       //Unset previous master
       if (attr === 'master') {
         var master = this.collection.where({master: true});
@@ -207,6 +207,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
     serialize: function() {
       var ui = UIManager.getAllSettings({returnObject: true});
+
+      if(!this.collection.where({master: true}).length) {
+        if(this.collection.where({system: false}).length) {
+          this.collection.where({system: false})[0].set({master:true});
+        }
+      }
 
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
@@ -250,6 +256,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         });
         return row;
       });
+
       return {rows: rows};
     },
 
