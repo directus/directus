@@ -106,7 +106,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         break;
       case ('bl') :
         var chars = options.settings.get('validation_string').split("");
-        if(value.match(chars.join("|"))) {
+        if(chars.length > 0 && value.match(chars.join("|"))) {
           return validationMessage;
         }
         break;
