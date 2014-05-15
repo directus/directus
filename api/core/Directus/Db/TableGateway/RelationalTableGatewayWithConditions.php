@@ -119,7 +119,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
         if(isset($params['adv_where'])) {
           $select->where($params['adv_where']);
         }
-
         if(isset($params['adv_search']) && !empty($params['adv_search'])) {
           foreach ($params['adv_search'] as $search_col) {
             $target = array();

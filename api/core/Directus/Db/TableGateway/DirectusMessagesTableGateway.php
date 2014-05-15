@@ -186,6 +186,15 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         $result = $messagesRecipientsTableGateway->countMessages($uid);
         $result['rows'] = $this->fetchMessagesInbox($uid, $messageIds);
         return $result;
+    }
 
+    public function fetchComments($commentMetadata) {
+      $select = new Select($this->table);
+      $select
+        ->where->equalTo('comment_metadata', $commentMetadata);
+
+      $result = $this->selectWith($select)->toArray();
+
+      return $result;
     }
 }

@@ -5,33 +5,15 @@
 {{#each data}}
 <li class="group-item">
   <div class="left">{{userAvatar user_avatar}}</div>
-  {{#if action_add}}
-  {{#if is_media}}
-    <div class="left icon icon-attach"></div>
-    {{else}}
-    <div class="left icon icon-plus color"></div>
-    {{/if}}
-  {{/if}}
-  {{#if action_edit}}
-    <div class="left icon icon-pencil color"></div>
-  {{/if}}
-  {{#if action_delete}}
-  <div class="left icon icon-cross color"></div>
-  {{/if}}
-  {{#if action_login}}
-  <div class="left icon icon-key color"></div>
-  {{/if}}
+  <div class="left icon {{icon}} color"></div>
+
   <div class="left stack">
     <span class="stack-item">{{capitalize table}}</span>
     <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
-    {{#if user}}
-      {{userFirstAndLastName user}}
+    {{#if title}}
+      {{capitalize title}}
     {{else}}
-      {{#if title}}
-        {{capitalize title}}
-      {{else}}
-        <span class="null">Empty</span>
-      {{/if}}
+      <span class="null">Empty</span>
     {{/if}}
   </div>
   <div class="right secondary-info">{{time}}</div>
