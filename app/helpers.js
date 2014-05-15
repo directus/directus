@@ -89,7 +89,7 @@ require([
   });
 
   Handlebars.registerHelper('userShort', function(userId) {
-    if (!_.isNumber(userId) || _.isNaN(userId)) return;
+    if (_.isNaN(userId)) return;
     var user = app.users.get(userId);
     if (user === undefined) return 'Unknown User';
     var firstName = user.get('first_name').toLowerCase();

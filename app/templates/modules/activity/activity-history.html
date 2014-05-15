@@ -1,76 +1,26 @@
-{{#each activities}}
-<li class="group gutter-bottom-big">
-  <span class="big-label-text">{{title}}</span>
-<ul class="border-top">
-{{#each data}}
-<li class="group-item">
-  <div class="left">{{userAvatar user_avatar}}</div>
-  {{#if action_add}}
-  {{#if is_media}}
-    <div class="left icon icon-attach"></div>
-    {{else}}
-    <div class="left icon icon-plus color"></div>
-    {{/if}}
-  {{/if}}
-  {{#if action_edit}}
-    <div class="left icon icon-pencil color"></div>
-  {{/if}}
-  {{#if action_delete}}
-  <div class="left icon icon-cross color"></div>
-  {{/if}}
-  {{#if action_login}}
-  <div class="left icon icon-key color"></div>
-  {{/if}}
-  <div class="left stack">
-    <span class="stack-item">{{capitalize table}}</span>
-    <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
-    {{#if user}}
-      {{userFirstAndLastName user}}
-    {{else}}
-      {{#if title}}
-        {{capitalize title}}
-      {{else}}
-        <span class="null">Empty</span>
-      {{/if}}
-    {{/if}}
-  </div>
-  <div class="right secondary-info">{{time}}</div>
-</li>
-{{/each}}
-</ul>
-</li>
-{{/each}}
-
-
 <div class="activity-history">
   <ul>
     <li>
-      <img src="http://www.gravatar.com/avatar/48fceb6ccd67c349357675190f8bf99b?s=100&amp;d=identicon&amp;r=g" class="avatar">
+      {{userAvatar current_user}}
       <div class="activity-comment">
         <textarea placeholder="Type your comment here..."></textarea>
       </div>
     </li>
+
+    {{#each activities}}
     <li>
-      <div class="activity_icon edit"><div class="icon icon-pencil"></div></div>
-      Ben edited this item...
-      <div class="right secondary-info">3 days ago</div>
+      {{#if isComment}}
+        {{userAvatar user_avatar}}
+        <div class="activity-comment">
+          {{title}}
+          <div class="comment-datetime">{{time}}</div>
+        </div>
+      {{else}}
+        <div class="activity_icon edit"><div class="icon {{icon}}"></div></div>
+        {{userShort user_avatar}} {{#if add}}added{{else}}edited{{/if}} this item...
+        <div class="right secondary-info">{{time}}</div>
+      {{/if}}
     </li>
-    <li>
-      <img src="http://www.gravatar.com/avatar/48fceb6ccd67c349357675190f8bf99b?s=100&amp;d=identicon&amp;r=g" class="avatar">
-      <div class="activity-comment">
-        I agree!
-        <div class="comment-datetime">3 days ago</div>
-      </div>
-    </li>
-    <li>
-      <div class="activity_icon edit"><div class="icon icon-pencil"></div></div>
-      Ben edited this item...
-      <div class="right secondary-info">3 days ago</div>
-    </li>
-    <li>
-      <div class="activity_icon edit"><div class="icon icon-pencil"></div></div>
-      Ben edited this item...
-      <div class="right secondary-info">3 days ago</div>
-    </li>
+    {{/each}}
   </ul>
 </div>

@@ -63,6 +63,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
             data.icon = "icon-pencil";
             break;
           case 'ADD':
+            data.add = true;
             data.icon = "icon-plus";
             break;
         }
@@ -78,7 +79,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
           "user_avatar": model.get('from')
         };
 
-        data.icon = "icon-chat";
+        data.isComment = true;
         data.title = model.get("subject");
 
         return data;
