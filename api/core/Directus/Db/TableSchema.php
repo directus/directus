@@ -274,7 +274,10 @@ class TableSchema {
             ifnull(single,0) as single,
             inactive_by_default,
             is_junction_table,
-            magic_owner_column,
+            user_create_column,
+            user_update_column,
+            date_create_column,
+            date_update_column,
             footer,
             TABLE_ROWS AS count
             FROM INFORMATION_SCHEMA.TABLES T
@@ -563,7 +566,10 @@ class TableSchema {
                 ifnull(single,0) as single,
                 inactive_by_default,
                 is_junction_table,
-                magic_owner_column,
+                user_create_column,
+                user_update_column,
+                date_create_column,
+                date_update_column,
                 footer,
                 list_view,
                 column_groupings,
