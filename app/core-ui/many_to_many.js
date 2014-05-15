@@ -140,7 +140,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         hideColumnPreferences: true,
         hasSort: junctionStructure.get('sort') !== undefined
       });
-      if(this.columnSchema.has('sort')) {
+
+      if(junctionStructure.get('sort') !== undefined) {
         relatedCollection.setOrder('sort','ASC');
       }
 
