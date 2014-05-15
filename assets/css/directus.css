@@ -1202,7 +1202,7 @@ body.smokescreen:after {
 }
 .directus-alert-modal input {
   background-color: #f4f4f4;
-  border: none;
+  border: none !important;
   padding: 10px 10px 10px 10px;
 }
 .directus-alert-modal input:focus {
