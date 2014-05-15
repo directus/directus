@@ -84,7 +84,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
             break;
           case 'ADD':
             data.add = true;
-            data.icon = "icon-plus";
+            data.icon = "icon-check";
             break;
         }
         return data;
