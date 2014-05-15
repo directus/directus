@@ -121,6 +121,10 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     afterRender: function() {
       this.insertView("#editFormEntry", this.editView);
       this.insertView("#historyFormEntry", this.historyView);
+
+      if(this.model.isNew()) {
+        this.editView.render();
+      }
     },
     data: function() {
       return this.editView.data();
