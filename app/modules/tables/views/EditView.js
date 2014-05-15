@@ -19,6 +19,27 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
 
     template: "modules/activity/activity-history",
 
+    events: {
+      'click #sendCommentBtn': function(e) {
+        var model = new app.messages.model({from: app.authenticatedUserId.id}, {collection: this.comments, parse: true});
+        var subject = "Item " + this.model.get('id') + " from " + app.capitalize(this.model.collection.table.id);
+        if(this.model.collection.table.get('primary_column') && this.model.has(this.model.collection.table.get('primary_column'))) {
+          subject = this.model.get(this.model.collection.table.get('primary_column'));
+        }
+        var date = new Date();
+        model.set({datetime: date, subject: subject, message:this.$el.find('#commentTextarea').val(), comment_metadata: this.model.collection.table.id + ":" + this.model.get('id')})
+        model.unset("responses");
+
+        this.listenToOnce(model, 'sync', function(e) {
+          console.log(e);
+          this.comments.add(model);
+          this.render();
+        });
+        this.$el.find('#sendCommentBtn').prop('disabled', true);
+        model.save();
+      }
+    },
+
     initialize: function(options) {
       //Get Activity
       this.model = options.model;
@@ -42,7 +63,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       });
 
       this.listenTo(this.comments, 'sync', function() {
-        console.log(this.comments);
         if(otherFetched) {
           this.render();
         }
@@ -71,16 +91,17 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       });
 
       var comments = this.comments.map(function(model) {
-        console.log(model.get('datetime'));
+        var date = new Date(model.get('datetime') + ' UTC');
+
         var data = {
           "table": "Comment",
-          "timestamp": model.get('datetime'),
-          "time": moment(model.get('datetime')).fromNow(),
+          "timestamp": date,
+          "time": moment(date).fromNow(),
           "user_avatar": model.get('from')
         };
 
         data.isComment = true;
-        data.title = model.get("subject");
+        data.title = model.get("message");
 
         return data;
       });
@@ -90,8 +111,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       data = _.sortBy(data, function(item) {
         return -moment(item.timestamp);
       });
-
-      return {activities: data};
+      console.log();
+      return {activities: data, current_user: app.authenticatedUserId};
     }
   });
 
