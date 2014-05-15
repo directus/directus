@@ -39,7 +39,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
           "table": model.get('table_name'),
           'time': moment(model.get('datetime')).fromNow(),
           "timestamp": model.get('datetime'),
-          "user": model.get('user')
+          "user_avatar": model.get('user')
         };
 
         switch(model.get('action')) {
