@@ -113,9 +113,9 @@ var template = '<style type="text/css"> \
                     {{#if insertimage}} \
                       <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">Image</button> \
                       <div data-wysihtml5-dialog="insertImage" style="display: none;z-index:108" class="directus-alert-modal"> \
-                        <button id="existingFileButton" type="button">Choose Existing File</button> \
-                        <input id="fileAddInput" type="file" class="large" /> \
-                        <input type="text" data-wysihtml5-dialog-field="src" id="insertImageInput" value="http://"> \
+                        <div><button id="existingFileButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing File</button></div> \
+                        <div style="position:relative;margin-bottom:10px;width:100%;background-color:#F4F4F4;text-align:center;font-weight:600;padding-top:10px;padding-bottom:10px;">Choose From Computer<input id="fileAddInput" type="file" class="large" style="position:absolute;top:0;left:0;cursor:pointer;opacity:0.0;width:100%;height:100%;z-index:9;" /></div> \
+                        <div><input type="text" data-wysihtml5-dialog-field="src" id="insertImageInput" value="http://" style="font-weight:600;"></div> \
                         <div class="directus-alert-modal-buttons"> \
                           <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
                           <button data-wysihtml5-dialog-action="save" id="insertImageButton" type="button" class="primary">OK</button> \
