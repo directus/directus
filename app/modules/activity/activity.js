@@ -38,7 +38,7 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           "table": model.get('table_name'),
           'time': moment(model.get('datetime')).fromNow(),
           "timestamp": model.get('datetime'),
-          "user": model.get('user')
+          "user_avatar": model.get('user')
         };
 
         switch(model.get('action')) {
@@ -82,7 +82,6 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
             data.title = template(modelData);
           }
         }
-
         return data;
       });
 
@@ -115,6 +114,7 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
     },
 
     initialize: function() {
+      this.collection.setFilter({adv_search:''});
       this.collection.on('sync', this.render, this);
     }
 
