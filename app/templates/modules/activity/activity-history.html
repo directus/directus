@@ -17,7 +17,7 @@
           <div class="comment-datetime">{{time}}</div>
         </div>
       {{else}}
-        <div class="activity_icon edit"><div class="icon {{icon}}"></div></div>
+        <div class="activity_icon {{#if add}}add{{else}}edit{{/if}}"><div class="icon {{icon}}"></div></div>
         {{userName user_avatar}} {{#if add}}added{{else}}edited{{/if}} this item...
         <div class="right secondary-info">{{time}}</div>
       {{/if}}
