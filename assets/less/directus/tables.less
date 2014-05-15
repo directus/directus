@@ -225,7 +225,7 @@
 
 
 
-.activity-history {
+.history-container {
   background-color: @extraLightGrey;
   padding: @standardPad;
   color: @darkGrey;
@@ -237,7 +237,7 @@
       border-bottom: 1px solid @white;
       margin-bottom: @standardPad;
       min-height: 30px;
-      padding-left: 40px;
+      padding-left: 50px;
       &:last-child {
         padding-bottom: 0;
         border-bottom: none;
@@ -248,19 +248,26 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
       }
-      .activity-comment {
+      .history-datetime {
+        color: @mediumGrey;
+        position: absolute;
+        top: 10px;
+        right: 0;
+      }
+      .history-comment {
         position: relative;
         display: inline-block;
-        padding: 10px;
+        padding: 12px 10px 10px 10px;
         background-color: @white;
         .border-radius(3px, 3px, 3px, 3px);
         max-width: 700px;
         min-width: 300px;
-        margin-left: 20px;
+        margin-left: 10px;
         height: auto;
+        min-height: 18px;
         &:after {
           content:"";
           position:absolute;
@@ -272,32 +279,40 @@
           /* reduce the damage in FF3.0 */
           display:block;
           width:0;
-          top:15px;
-          left:-20px; /* value = - border-left-width - border-right-width */
+          top:10px;
+          left:-10px; /* value = - border-left-width - border-right-width */
           bottom:auto;
-          border-width:0 20px 20px 0; /* vary these values to change the angle of the vertex */
+          border-width: 10px 10px 10px 0; /* vary these values to change the angle of the vertex */
           border-color:transparent @white;
         }
-        .comment-datetime {
-          text-align: right;
-          color: @mediumGrey;
-          font-style: italic;
+        #sendCommentBtn {
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
         }
         textarea {
           border: none;
           width: 100%;
-          height: 100%;
+          min-height: 70px;
         }
       }
-      .activity_icon {
+      .history-text {
+        padding-top: 10px;
+      }
+      .history-icon {
         position: absolute;
         top: 0;
         left: 0;
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
         color: @white;
         &.add {
           background-color: @addColor;
+          .icon {
+            position: absolute;
+            top: 0;
+            left: 13px;
+          }
         }
         &.edit {
           background-color: @editColor;
@@ -309,9 +324,19 @@
         }
         &.delete {
           background-color: @deleteColor;
+          .icon {
+            position: absolute;
+            top: -4px;
+            left: 6px;
+          }
         }
         &.attach {
           background-color: @attachColor;
+          .icon {
+            position: absolute;
+            top: -4px;
+            left: 6px;
+          }
         }
       }
     }

@@ -1,10 +1,10 @@
-<div class="activity-history">
+<div class="history-container">
   <ul>
     <li>
       {{userAvatar current_user}}
-      <div class="activity-comment">
+      <div class="history-comment">
         <textarea id="commentTextarea" placeholder="Type your comment here..."></textarea>
-        <button id="sendCommentBtn">Submit</button>
+        <button id="sendCommentBtn" class="btn btn-small">Submit</button>
       </div>
     </li>
 
@@ -12,15 +12,14 @@
     <li>
       {{#if isComment}}
         {{userAvatar user_avatar}}
-        <div class="activity-comment">
+        <div class="history-comment">
           {{title}}
-          <div class="comment-datetime">{{time}}</div>
         </div>
       {{else}}
-        <div class="activity_icon {{#if add}}add{{else}}edit{{/if}}"><div class="icon {{icon}}"></div></div>
-        {{userName user_avatar}} {{#if add}}added{{else}}edited{{/if}} this item...
-        <div class="right secondary-info">{{time}}</div>
+        <div class="history-icon {{#if add}}add{{else}}edit{{/if}}"><div class="icon {{icon}}"></div></div>
+        <div class="history-text">{{userName user_avatar}} {{#if add}}added{{else}}edited{{/if}} this item...</div>
       {{/if}}
+      <div class="history-datetime">{{time}}</div>
     </li>
     {{/each}}
   </ul>
