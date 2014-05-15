@@ -2450,6 +2450,121 @@ select:focus,
   width: auto;
   margin-right: 10px;
 }
+.activity-history {
+  background-color: #f4f4f4;
+  padding: 20px;
+  color: #5b5b5b;
+}
+.activity-history ul {
+  margin: 0 !important;
+}
+.activity-history ul li {
+  position: relative;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ffffff;
+  margin-bottom: 20px;
+  min-height: 30px;
+  padding-left: 40px;
+}
+.activity-history ul li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.activity-history ul li .avatar {
+  float: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+}
+.activity-history ul li .activity-comment {
+  position: relative;
+  display: inline-block;
+  padding: 10px;
+  background-color: #ffffff;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  max-width: 700px;
+  min-width: 300px;
+  margin-left: 20px;
+  height: auto;
+}
+.activity-history ul li .activity-comment:after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  /* value = - border-top-width - border-bottom-width */
+
+  left: 50px;
+  /* controls horizontal position */
+
+  border-width: 40px 0 0 40px;
+  border-style: solid;
+  border-color: #ffffff transparent;
+  /* reduce the damage in FF3.0 */
+
+  display: block;
+  width: 0;
+  top: 15px;
+  left: -20px;
+  /* value = - border-left-width - border-right-width */
+
+  bottom: auto;
+  border-width: 0 20px 20px 0;
+  /* vary these values to change the angle of the vertex */
+
+  border-color: transparent #ffffff;
+}
+.activity-history ul li .activity-comment .comment-datetime {
+  text-align: right;
+  color: #bbbbbb;
+  font-style: italic;
+}
+.activity-history ul li .activity-comment textarea {
+  border: none;
+  width: 100%;
+  height: 100%;
+}
+.activity-history ul li .activity_icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  color: #ffffff;
+}
+.activity-history ul li .activity_icon.add {
+  background-color: #7ac943;
+}
+.activity-history ul li .activity_icon.edit {
+  background-color: #3fa9f5;
+}
+.activity-history ul li .activity_icon.edit .icon {
+  position: absolute;
+  top: -4px;
+  left: 6px;
+}
+.activity-history ul li .activity_icon.delete {
+  background-color: #c1272d;
+}
+.activity-history ul li .activity_icon.attach {
+  background-color: #ff7bac;
+}
 .cards {
   padding-left: 0px;
 }

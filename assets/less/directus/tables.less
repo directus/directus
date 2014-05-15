@@ -220,3 +220,100 @@
     }
   }
 }
+
+
+
+
+
+.activity-history {
+  background-color: @extraLightGrey;
+  padding: @standardPad;
+  color: @darkGrey;
+  ul {
+    margin: 0 !important;
+    li {
+      position: relative;
+      padding-bottom: @standardPad;
+      border-bottom: 1px solid @white;
+      margin-bottom: @standardPad;
+      min-height: 30px;
+      padding-left: 40px;
+      &:last-child {
+        padding-bottom: 0;
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+      .avatar {
+        float: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 30px;
+        height: 30px;
+      }
+      .activity-comment {
+        position: relative;
+        display: inline-block;
+        padding: 10px;
+        background-color: @white;
+        .border-radius(3px, 3px, 3px, 3px);
+        max-width: 700px;
+        min-width: 300px;
+        margin-left: 20px;
+        height: auto;
+        &:after {
+          content:"";
+          position:absolute;
+          bottom:-20px; /* value = - border-top-width - border-bottom-width */
+          left:50px; /* controls horizontal position */
+          border-width:40px 0 0 40px; /* vary these values to change the angle of the vertex */
+          border-style:solid;
+          border-color: @white transparent;
+          /* reduce the damage in FF3.0 */
+          display:block;
+          width:0;
+          top:15px;
+          left:-20px; /* value = - border-left-width - border-right-width */
+          bottom:auto;
+          border-width:0 20px 20px 0; /* vary these values to change the angle of the vertex */
+          border-color:transparent @white;
+        }
+        .comment-datetime {
+          text-align: right;
+          color: @mediumGrey;
+          font-style: italic;
+        }
+        textarea {
+          border: none;
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .activity_icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 30px;
+        height: 30px;
+        color: @white;
+        &.add {
+          background-color: @addColor;
+        }
+        &.edit {
+          background-color: @editColor;
+          .icon {
+            position: absolute;
+            top: -4px;
+            left: 6px;
+          }
+        }
+        &.delete {
+          background-color: @deleteColor;
+        }
+        &.attach {
+          background-color: @attachColor;
+        }
+      }
+    }
+  }
+}
