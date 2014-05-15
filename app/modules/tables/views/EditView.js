@@ -23,14 +23,30 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       //Get Activity
       this.model = options.model;
       this.activity = app.activity;
+      this.comments = new Directus.EntriesCollection({}, {table: app.messages.table, structure: app.messages.structure});
 
       if(!this.model.isNew()) {
         this.activity.setFilter({adv_search: 'table_name = "' + this.model.collection.table.id + '" AND row_id = ' + this.model.get('id')});
         this.activity.fetch();
+        this.comments.setFilter({adv_where: 'comment_metadata = "' + this.model.collection.table.id + ":" + this.model.get('id') + '"'});
+        this.comments.fetch();
       }
 
+      var otherFetched = false;
+
       this.listenTo(this.activity, 'sync', function() {
-        this.render();
+        if(otherFetched) {
+          this.render();
+        }
+        otherFetched = true;
+      });
+
+      this.listenTo(this.comments, 'sync', function() {
+        console.log(this.comments);
+        if(otherFetched) {
+          this.render();
+        }
+        otherFetched = true;
       });
     },
     serialize: function() {
@@ -44,40 +60,35 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
 
         switch(model.get('action')) {
           case 'UPDATE':
-            data.action_edit = true;
+            data.icon = "icon-pencil";
             break;
           case 'ADD':
-            data.action_add = true;
+            data.icon = "icon-plus";
             break;
         }
+        return data;
+      });
+
+      var comments = this.comments.map(function(model) {
+        console.log(model.get('datetime'));
+        var data = {
+          "table": "Comment",
+          "timestamp": model.get('datetime'),
+          "time": moment(model.get('datetime')).fromNow(),
+          "user_avatar": model.get('from')
+        };
+
+        data.icon = "icon-chat";
+        data.title = model.get("subject");
 
         return data;
       });
 
+      data = data.concat(comments);
       // Order the data by timestamp
       data = _.sortBy(data, function(item) {
         return -moment(item.timestamp);
       });
-
-      var groupedData = [];
-
-      data.forEach(function(group) {
-        var date = moment(group.timestamp).format('MMMM-D-YYYY');
-        if(!groupedData[date]) {
-          //If Today Have it say Today
-          if(date == moment().format('MMMM-D-YYYY')) {
-            groupedData[date] = {title: "Today", data: []};
-          } else {
-            groupedData[date] = {title: moment(group.timestamp).format('MMMM D, YYYY'), data: []};
-          }
-        }
-        groupedData[date].data.push(group);
-      });
-      data = [];
-
-      for(var group in groupedData) {
-        data.push(groupedData[group]);
-      }
 
       return {activities: data};
     }
