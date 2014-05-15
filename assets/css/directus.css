@@ -2431,6 +2431,9 @@ select:focus,
   width: auto;
   margin-right: 10px;
 }
+.history-header {
+  margin: 20px 0 10px 0;
+}
 .history-container {
   background-color: #f4f4f4;
   padding: 20px;
