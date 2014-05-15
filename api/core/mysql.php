@@ -130,7 +130,7 @@ class MySQL {
             ifnull(single,0) as single,
             inactive_by_default,
             is_junction_table,
-            magic_owner_column,
+            user_create_column,
             footer,
             primary_column,
             TABLE_ROWS AS count

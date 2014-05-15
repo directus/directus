@@ -235,8 +235,8 @@ class Bootstrap {
 
         $magicOwnerColumnsByTable = array();
         foreach($tableRecords as $tableRecord) {
-            if(!empty($tableRecord['magic_owner_column'])) {
-                $magicOwnerColumnsByTable[$tableRecord['table_name']] = $tableRecord['magic_owner_column'];
+            if(!empty($tableRecord['user_create_column'])) {
+                $magicOwnerColumnsByTable[$tableRecord['table_name']] = $tableRecord['user_create_column'];
             }
         }
         $acl::$cms_owner_columns_by_table = $magicOwnerColumnsByTable;

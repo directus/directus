@@ -54,9 +54,11 @@ define(function(require, exports, module) {
           return;
         }
         //Skip magic owner column if we dont have bigedit
-        if(this.model.table && this.model.table.get('magic_owner_column') == column.id && !this.model.collection.hasPermission('bigedit')) {
+        if(this.model.table && this.model.table.get('user_create_column') == column.id && !this.model.collection.hasPermission('bigedit')) {
           return;
         }
+
+
 
         if('active' == column.id) {
           if(this.options.collectionAdd) {
