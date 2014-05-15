@@ -90,26 +90,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         return -moment(item.timestamp);
       });
 
-      var groupedData = [];
-
-      data.forEach(function(group) {
-        var date = moment(group.timestamp).format('MMMM-D-YYYY');
-        if(!groupedData[date]) {
-          //If Today Have it say Today
-          if(date == moment().format('MMMM-D-YYYY')) {
-            groupedData[date] = {title: "Today", data: []};
-          } else {
-            groupedData[date] = {title: moment(group.timestamp).format('MMMM D, YYYY'), data: []};
-          }
-        }
-        groupedData[date].data.push(group);
-      });
-      data = [];
-
-      for(var group in groupedData) {
-        data.push(groupedData[group]);
-      }
-
       return {activities: data};
     }
   });

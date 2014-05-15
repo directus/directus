@@ -1,8 +1,4 @@
 {{#each activities}}
-<li class="group gutter-bottom-big">
-  <span class="big-label-text">{{title}}</span>
-<ul class="border-top">
-{{#each data}}
 <li class="group-item">
   <div class="left">{{userAvatar user_avatar}}</div>
   <div class="left icon {{icon}} color"></div>
@@ -17,8 +13,5 @@
     {{/if}}
   </div>
   <div class="right secondary-info">{{time}}</div>
-</li>
-{{/each}}
-</ul>
 </li>
 {{/each}}
