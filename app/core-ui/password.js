@@ -234,12 +234,16 @@ define(['app', 'backbone'], function(app, Backbone) {
     if(!password && options.schema.get('required')) {
       return "You Must Specify a Password";
     }
-    if(password !== confirm) {
-      return "Passwords must match.";
+
+    if(password) {
+      if(password !== confirm) {
+        return "Passwords must match.";
+      }
+      if(!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
+        return "You Must Hash Your Password";
+      }
     }
-    if(!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
-      return "You Must Hash Your Password";
-    }
+
   };
 
   Module.list = function(options) {
