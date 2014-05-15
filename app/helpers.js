@@ -69,7 +69,7 @@ require([
 
   // Should be combined with userShort below with param: "show_avatar" [true,false]
   Handlebars.registerHelper('userName', function(userId) {
-    if (!_.isNumber(userId) || _.isNaN(userId)) return;
+    if (_.isNaN(userId)) return;
     var user = app.users.get(userId);
     if (user === undefined) return unknowUserMessage;// return undefined;
     var firstName = user.get('first_name').toLowerCase();
