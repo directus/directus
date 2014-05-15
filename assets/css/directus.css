@@ -1098,28 +1098,6 @@ button {
 .hidden {
   visibility: hidden;
 }
-::-webkit-input-placeholder {
-  /* WebKit browsers */
-
-  -webkit-font-smoothing: antialiased;
-}
-:-moz-placeholder {
-  /* Mozilla Firefox 4 to 18 */
-
-  -webkit-font-smoothing: antialiased;
-  opacity: 1;
-}
-::-moz-placeholder {
-  /* Mozilla Firefox 19+ */
-
-  -webkit-font-smoothing: antialiased;
-  opacity: 1;
-}
-:-ms-input-placeholder {
-  /* Internet Explorer 10+ */
-
-  -webkit-font-smoothing: antialiased;
-}
 .clean-list {
   list-style: none;
   margin: 0px;
@@ -1436,19 +1414,21 @@ input:-webkit-autofill {
 }
 ::-webkit-input-placeholder {
   color: #bbbbbb;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased !important;
 }
 :-moz-placeholder {
   color: #bbbbbb;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased !important;
+  opacity: 1;
 }
 ::-moz-placeholder {
   color: #bbbbbb;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased !important;
+  opacity: 1;
 }
 :-ms-input-placeholder {
   color: #bbbbbb;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased !important;
 }
 #splash {
   position: absolute;
@@ -1721,7 +1701,8 @@ input:-webkit-autofill {
   color: #ffffff;
   cursor: pointer;
   padding: 10px 15px 10px 15px;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.4px;
+  font-weight: 500;
 }
 .btn:hover {
   background-color: #a2a2a2;
@@ -2450,39 +2431,45 @@ select:focus,
   width: auto;
   margin-right: 10px;
 }
-.activity-history {
+.history-container {
   background-color: #f4f4f4;
   padding: 20px;
   color: #5b5b5b;
 }
-.activity-history ul {
+.history-container ul {
   margin: 0 !important;
 }
-.activity-history ul li {
+.history-container ul li {
   position: relative;
   padding-bottom: 20px;
   border-bottom: 1px solid #ffffff;
   margin-bottom: 20px;
   min-height: 30px;
-  padding-left: 40px;
+  padding-left: 50px;
 }
-.activity-history ul li:last-child {
+.history-container ul li:last-child {
   padding-bottom: 0;
   border-bottom: none;
   margin-bottom: 0;
 }
-.activity-history ul li .avatar {
+.history-container ul li .avatar {
   float: none;
   position: absolute;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
 }
-.activity-history ul li .activity-comment {
+.history-container ul li .history-datetime {
+  color: #bbbbbb;
+  position: absolute;
+  top: 10px;
+  right: 0;
+}
+.history-container ul li .history-comment {
   position: relative;
   display: inline-block;
-  padding: 10px;
+  padding: 12px 10px 10px 10px;
   background-color: #ffffff;
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
@@ -2501,10 +2488,11 @@ select:focus,
   background-clip: padding-box;
   max-width: 700px;
   min-width: 300px;
-  margin-left: 20px;
+  margin-left: 10px;
   height: auto;
+  min-height: 18px;
 }
-.activity-history ul li .activity-comment:after {
+.history-container ul li .history-comment:after {
   content: "";
   position: absolute;
   bottom: -20px;
@@ -2520,50 +2508,68 @@ select:focus,
 
   display: block;
   width: 0;
-  top: 15px;
-  left: -20px;
+  top: 10px;
+  left: -10px;
   /* value = - border-left-width - border-right-width */
 
   bottom: auto;
-  border-width: 0 20px 20px 0;
+  border-width: 10px 10px 10px 0;
   /* vary these values to change the angle of the vertex */
 
   border-color: transparent #ffffff;
 }
-.activity-history ul li .activity-comment .comment-datetime {
-  text-align: right;
-  color: #bbbbbb;
-  font-style: italic;
+.history-container ul li .history-comment #sendCommentBtn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
 }
-.activity-history ul li .activity-comment textarea {
+.history-container ul li .history-comment textarea {
   border: none;
   width: 100%;
-  height: 100%;
+  min-height: 70px;
 }
-.activity-history ul li .activity_icon {
+.history-container ul li .history-text {
+  padding-top: 10px;
+}
+.history-container ul li .history-icon {
   position: absolute;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   color: #ffffff;
 }
-.activity-history ul li .activity_icon.add {
+.history-container ul li .history-icon.add {
   background-color: #7ac943;
 }
-.activity-history ul li .activity_icon.edit {
+.history-container ul li .history-icon.add .icon {
+  position: absolute;
+  top: 0;
+  left: 13px;
+}
+.history-container ul li .history-icon.edit {
   background-color: #3fa9f5;
 }
-.activity-history ul li .activity_icon.edit .icon {
+.history-container ul li .history-icon.edit .icon {
   position: absolute;
   top: -4px;
   left: 6px;
 }
-.activity-history ul li .activity_icon.delete {
+.history-container ul li .history-icon.delete {
   background-color: #c1272d;
 }
-.activity-history ul li .activity_icon.attach {
+.history-container ul li .history-icon.delete .icon {
+  position: absolute;
+  top: -4px;
+  left: 6px;
+}
+.history-container ul li .history-icon.attach {
   background-color: #ff7bac;
+}
+.history-container ul li .history-icon.attach .icon {
+  position: absolute;
+  top: -4px;
+  left: 6px;
 }
 .cards {
   padding-left: 0px;

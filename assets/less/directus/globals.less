@@ -4,20 +4,6 @@
 .hidden {
   visibility: hidden;
 }
-::-webkit-input-placeholder { /* WebKit browsers */
-    -webkit-font-smoothing: antialiased;
-}
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-    -webkit-font-smoothing: antialiased;
-    opacity:  1;
-}
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-    -webkit-font-smoothing: antialiased;
-    opacity:  1;
-}
-:-ms-input-placeholder { /* Internet Explorer 10+ */
-    -webkit-font-smoothing: antialiased;
-}
 ////////////
 //  VISIBLE MIXINS
 ////////////
@@ -290,19 +276,21 @@ input:-webkit-autofill {
 }
 ::-webkit-input-placeholder {
     color: @mediumGrey;
-    -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased !important;
 }
 :-moz-placeholder {
     color: @mediumGrey;
-    -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased !important;
+    opacity: 1;
 }
 ::-moz-placeholder {
     color: @mediumGrey;
-    -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased !important;
+    opacity: 1;
 }
 :-ms-input-placeholder {
     color: @mediumGrey;
-    -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased !important;
 }
 
 ////////////
