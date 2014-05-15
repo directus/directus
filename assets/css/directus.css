@@ -2548,31 +2548,31 @@ select:focus,
 .history-container ul li .history-icon.add .icon {
   position: absolute;
   top: 0;
-  left: 13px;
+  left: 12px;
 }
 .history-container ul li .history-icon.edit {
   background-color: #3fa9f5;
 }
 .history-container ul li .history-icon.edit .icon {
   position: absolute;
-  top: -4px;
-  left: 6px;
+  top: 0;
+  left: 11px;
 }
 .history-container ul li .history-icon.delete {
   background-color: #c1272d;
 }
 .history-container ul li .history-icon.delete .icon {
   position: absolute;
-  top: -4px;
-  left: 6px;
+  top: 0;
+  left: 11px;
 }
 .history-container ul li .history-icon.attach {
   background-color: #ff7bac;
 }
 .history-container ul li .history-icon.attach .icon {
   position: absolute;
-  top: -4px;
-  left: 6px;
+  top: 0;
+  left: 11px;
 }
 .cards {
   padding-left: 0px;
