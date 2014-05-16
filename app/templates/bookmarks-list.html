@@ -15,12 +15,6 @@
 </div>
 
 <div class="extensions-sidebar">
-  <li title="Extensions">
-    <a>
-      <span class="icon icon-star"></span>
-      Extensions
-    </a>
-  </li>
   {{#bookmarks.extension}}
   <li class="{{#if active}}active add-color-border{{/if}}" title="{{capitalize title}}">
       <a href="{{url}}">
@@ -31,6 +25,7 @@
   {{/bookmarks.extension}}
 </div>
 
+{{#if bookmarks.search}}
 <div class="searches-sidebar">
   <li title="Searches">
     <a>
@@ -47,6 +42,7 @@
   </li>
   {{/bookmarks.search}}
 </div>
+{{/if}}
 
 <div class="other-sidebar">
   {{#bookmarks.other}}
