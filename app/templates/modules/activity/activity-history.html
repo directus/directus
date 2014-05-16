@@ -1,7 +1,7 @@
 <div class="history-header"><span class="big-label-text">Item History</span></div>
 <div class="history-container">
   <ul>
-    <li>
+    <li class="history-add-comment">
       {{userAvatar current_user}}
       <div class="history-comment">
         <textarea id="commentTextarea" placeholder="Type your comment here..."></textarea>
@@ -14,7 +14,7 @@
       {{#if isComment}}
         {{userAvatar user_avatar}}
         <div class="history-comment">
-          {{title}}
+          {{{nl2br title}}}
         </div>
       {{else}}
         <div class="history-icon {{#if add}}add{{else}}edit{{/if}}"><div class="icon {{icon}}"></div></div>

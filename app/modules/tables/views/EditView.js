@@ -70,6 +70,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       });
     },
     serialize: function() {
+      console.log("test");
       var data = this.activity.map(function(model) {
         var data = {
           "table": model.get('table_name'),
@@ -111,8 +112,12 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       data = _.sortBy(data, function(item) {
         return -moment(item.timestamp);
       });
-      console.log();
-      return {activities: data, current_user: app.authenticatedUserId};
+
+      dataPreview = data.splice(0, 3);
+      if(data.length > 3){
+        dataRemainder = data.splice(3);
+      }
+      return {activities: data, activitiesPreview: dataPreview, activitiesRemainder: dataRemainder, current_user: app.authenticatedUserId};
     }
   });
 

@@ -2442,6 +2442,12 @@ select:focus,
 .history-container ul {
   margin: 0 !important;
 }
+.history-container ul .history-add-comment {
+  padding-right: 180px;
+}
+.history-container ul .history-add-comment .history-comment {
+  width: 100%;
+}
 .history-container ul li {
   position: relative;
   padding-bottom: 20px;
@@ -2449,6 +2455,7 @@ select:focus,
   margin-bottom: 20px;
   min-height: 30px;
   padding-left: 50px;
+  padding-right: 150px;
 }
 .history-container ul li:last-child {
   padding-bottom: 0;
@@ -2489,8 +2496,7 @@ select:focus,
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  max-width: 700px;
-  min-width: 300px;
+  max-width: 500px;
   margin-left: 10px;
   height: auto;
   min-height: 18px;
@@ -2629,7 +2635,7 @@ select:focus,
   margin-bottom: -7px;
 }
 .cards .card .info {
-  border: solid 1px #ededed;
+  background-color: #f4f4f4;
   border-top: none;
   margin-top: 4px;
   min-height: 100px;
@@ -2649,7 +2655,7 @@ select:focus,
   padding-top: 0;
 }
 .cards .card .info .extra li {
-  border-bottom: solid 1px #ededed;
+  border-bottom: solid 1px #ffffff;
   list-style: none;
   padding: 5px 17px 5px 0px;
   position: relative;
@@ -2906,9 +2912,9 @@ select:focus,
 }
 #sidebar #mainSidebar li a {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 13px;
-  padding: 10px 20px;
+  padding: 8px 12px 8px 8px;
   position: relative;
   white-space: nowrap;
   overflow: hidden;
@@ -3480,11 +3486,11 @@ select:focus,
 .login-panel p #forgot-password {
   background: transparent;
   border: none;
-  font-size: 11px;
+  font-size: 12px;
   padding: 0px;
   position: absolute;
-  right: 5px;
-  top: 1px;
+  right: 10px;
+  top: 3px;
 }
 .login-panel p #forgot-password:hover:after {
   color: #5b5b5b;

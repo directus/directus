@@ -19,9 +19,8 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     events: {
-      'click li': function(e) {
-        var id = $(e.target).closest('li').attr('data-id');
-
+      'click .header-image': function(e) {
+        var id = $(e.target).closest('li.card').attr('data-id');
         var user = app.users.getCurrentUser();
         var userGroup = user.get('group');
 
@@ -50,7 +49,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           '<ul class="extra">' +
             '<li title="{{location}}">{{#if location}}{{location}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-home"></span></li>' +
             '<li title="{{phone}}">{{#if phone}}{{phone}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-phone"></span></li>' +
-            '<li title="{{email}}">{{#if email}}{{email}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-mail"></span></li>' +
+            '<li title="{{email}}">{{#if email}}<a href="mailto:{{email}}">{{email}}</a>{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-mail"></span></li>' +
           '</ul>' +
         '</div>' +
       '</li>' +
@@ -178,8 +177,8 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     rightToolbar: function() {
       return [
         //new Widgets.SearchWidget(),
-        new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
-        new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
+        //new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
+        //new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
       ];
     },
     events: {
