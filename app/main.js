@@ -222,8 +222,20 @@ require(["config"], function() {
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Bookmarks
-      ////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////////
       var bookmarks = [];
+
+      options.tables.forEach(function(table) {
+        table = table.schema;
+        if(!table.hidden) {
+          bookmarks.push(new Backbone.Model({
+            icon_class: '',
+            title: app.capitalize(table.table_name),
+            url: 'tables/' + table.table_name,
+            section: 'table'
+          }));
+        }
+      });
 
       var bookmarksData = window.directusData.bookmarks;
       _.each(bookmarksData, function(bookmark) {

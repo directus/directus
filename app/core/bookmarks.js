@@ -77,7 +77,13 @@ function(app, Backbone) {
         }
       });
 
-      return {bookmarks: bookmarks};
+      var data = {bookmarks: bookmarks};
+
+      if(Backbone.history.fragment == "tables") {
+        data.tablesActive = true;
+      }
+
+      return data;
     },
     initialize: function() {
       var that = this;
