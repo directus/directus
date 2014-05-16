@@ -68,10 +68,15 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      var bookmarks = this.collection.map(function(model) {
-        var bookmarks = model.toJSON();
-        return bookmarks;
+      var bookmarks = {table:[],search:[],extension:[],other:[]};
+
+      this.collection.each(function(model) {
+        var bookmark = model.toJSON();
+        if(bookmarks[bookmark.section]) {
+          bookmarks[bookmark.section].push(bookmark);
+        }
       });
+
       return {bookmarks: bookmarks};
     },
     initialize: function() {

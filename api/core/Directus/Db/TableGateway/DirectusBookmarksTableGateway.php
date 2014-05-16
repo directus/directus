@@ -22,15 +22,30 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
     }
 
     public static $defaultBookmarksValues = array(
-      'Tables' => array(
-        "title"          => "Tables",
-        "url"    => "tables",
-        "icon_class"        => "icon-database")
+      'Users' => array(
+        "title"          => "Users",
+        "url"    => "users",
+        "icon_class"        => "icon-users",
+        "section" => "other"),
+      'Files' => array(
+        "title" => "Files",
+        "url" => "files",
+        "icon_class" => "icon-attach",
+        "section" => "other"),
+      'Messages' => array(
+        "title" => "Messages",
+        "url" => "messages",
+        "icon_class" => "icon-chat",
+        "section" => "other"),
+      'Activity' => array(
+        "title" => "Activity",
+        "url" => "activity",
+        "icon_class" => "icon-bell",
+        "section" => "other"),
     );
 
     public function createDefaultBookmark($title, $bookmark) {
         // Global default values
-
       if(isset(self::$defaultBookmarksValues[$title])) {
         foreach(self::$defaultBookmarksValues[$title] as $field => $defaultValue) {
           if(!isset($bookmark[$field]) || ("0" !== $bookmark[$field] && empty($bookmark[$field]))) {
@@ -84,7 +99,8 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
                 user,
                 title,
                 url,
-                icon_class
+                icon_class,
+                section
             FROM
                 directus_bookmarks
             WHERE
