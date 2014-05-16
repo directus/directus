@@ -230,6 +230,15 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model(bookmark));
       });
 
+      if(app.users.getCurrentUser().get('group').id === 0) {
+        bookmarks.push(new Backbone.Model({
+          icon_class: "icon-cog",
+          title: "Settings",
+          url: "settings",
+          section: 'other'
+        }));
+      }
+
       var extensions = ExtensionManager.getIds();
 
       // Add extensions to tabs
