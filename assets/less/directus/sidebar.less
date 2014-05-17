@@ -16,7 +16,7 @@
       list-style: none;
       &:hover {
         color: @white;
-        background-color: @mediumDarkGrey;
+        //background-color: @mediumDarkGrey;
         cursor: pointer;
       }
     }
@@ -24,7 +24,7 @@
 
   #mainLogoBox {
     background-color: @extraDarkGrey;
-    border-bottom: 1px solid @mediumDarkGrey;
+    //border-bottom: 1px solid @mediumDarkGrey;
     height: 100px;
   }
 
@@ -49,14 +49,22 @@
   }
 
   #mainSidebar {
-    bottom: 298px;
+    bottom: 100px;
     overflow: auto;
     position: absolute;
     top: 101px;
     width: 100%;
     color: @mediumGrey;
+    .sidebar-section, .sidebar-extension {
+      border-top: 1px solid @mediumDarkGrey;
+      margin-bottom: 10px;
+      padding-top: 10px;
+    }
+    .sidebar-subitem a {
+      padding-left: 43px;
+    }
     ul {
-      margin: @smallPad 0px;
+      margin: 0 0 @smallPad 0;
     }
     li {
       a {
@@ -72,7 +80,7 @@
       &.active {
         border-left-width: 4px;
         //border-left-style: solid;
-        background-color: @darkGrey;
+        //background-color: @darkGrey;
         a {
           color: @white;
           cursor: auto;

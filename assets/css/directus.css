@@ -2873,12 +2873,10 @@ select:focus,
 }
 #sidebar ul li:hover {
   color: #ffffff;
-  background-color: #313131;
   cursor: pointer;
 }
 #sidebar #mainLogoBox {
   background-color: #252525;
-  border-bottom: 1px solid #313131;
   height: 100px;
 }
 #sidebar .directusLogo {
@@ -2900,15 +2898,24 @@ select:focus,
   line-height: 36px;
 }
 #sidebar #mainSidebar {
-  bottom: 298px;
+  bottom: 100px;
   overflow: auto;
   position: absolute;
   top: 101px;
   width: 100%;
   color: #bbbbbb;
 }
+#sidebar #mainSidebar .sidebar-section,
+#sidebar #mainSidebar .sidebar-extension {
+  border-top: 1px solid #313131;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+#sidebar #mainSidebar .sidebar-subitem a {
+  padding-left: 43px;
+}
 #sidebar #mainSidebar ul {
-  margin: 10px 0px;
+  margin: 0 0 10px 0;
 }
 #sidebar #mainSidebar li a {
   display: block;
@@ -2922,7 +2929,6 @@ select:focus,
 }
 #sidebar #mainSidebar li.active {
   border-left-width: 4px;
-  background-color: #5b5b5b;
 }
 #sidebar #mainSidebar li.active a {
   color: #ffffff;

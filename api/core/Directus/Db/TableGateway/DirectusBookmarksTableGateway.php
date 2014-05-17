@@ -22,10 +22,10 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
     }
 
     public static $defaultBookmarksValues = array(
-      'Users' => array(
-        "title"          => "Users",
-        "url"    => "users",
-        "icon_class"        => "icon-users",
+      'Activity' => array(
+        "title" => "Activity",
+        "url" => "activity",
+        "icon_class" => "icon-bell",
         "section" => "other"),
       'Files' => array(
         "title" => "Files",
@@ -37,11 +37,11 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
         "url" => "messages",
         "icon_class" => "icon-chat",
         "section" => "other"),
-      'Activity' => array(
-        "title" => "Activity",
-        "url" => "activity",
-        "icon_class" => "icon-bell",
-        "section" => "other"),
+      'Users' => array(
+        "title"          => "Users",
+        "url"    => "users",
+        "icon_class"        => "icon-users",
+        "section" => "other")
     );
 
     public function createDefaultBookmark($title, $bookmark) {
