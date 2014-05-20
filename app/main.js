@@ -206,12 +206,12 @@ require(["config"], function() {
       // Default directus tabs
 
       var tabs = [
-        (app.users.getCurrentUser().get('group').id === 0) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
-        {id: "blank",    hidden: true},
-        {id: "files",    icon_class: "icon-attach"},
-        {id: "users",    icon_class: "icon-users"},
-        {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
-        {id: "activity", icon_class: "icon-bell"},
+        // (app.users.getCurrentUser().get('group').id === 0) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
+        // {id: "blank",    hidden: true},
+        // {id: "files",    icon_class: "icon-attach"},
+        // {id: "users",    icon_class: "icon-users"},
+        // {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
+        // {id: "activity", icon_class: "icon-bell"},
         {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar") ? app.users.getCurrentUser().get("avatar") : app.PATH + 'assets/img/missing-directus-avatar.png'},
         {id: "logout", icon_class: "icon-power-button"}
       ];
@@ -222,13 +222,34 @@ require(["config"], function() {
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Bookmarks
-      ////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////////
       var bookmarks = [];
+
+      options.tables.forEach(function(table) {
+        table = table.schema;
+        if(!table.hidden) {
+          bookmarks.push(new Backbone.Model({
+            icon_class: '',
+            title: app.capitalize(table.table_name),
+            url: 'tables/' + table.table_name,
+            section: 'table'
+          }));
+        }
+      });
 
       var bookmarksData = window.directusData.bookmarks;
       _.each(bookmarksData, function(bookmark) {
         bookmarks.push(new Backbone.Model(bookmark));
       });
+
+      if(app.users.getCurrentUser().get('group').id === 0) {
+        bookmarks.push(new Backbone.Model({
+          icon_class: "icon-cog",
+          title: "Settings",
+          url: "settings",
+          section: 'other'
+        }));
+      }
 
       var extensions = ExtensionManager.getIds();
 
@@ -238,7 +259,8 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model({
           icon_class: item.icon,
           title: item.title,
-          url: item.id
+          url: item.id,
+          section: 'extension'
         }));
       });
 

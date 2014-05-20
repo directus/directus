@@ -111,7 +111,8 @@ function(app, Backbone, PreferenceModel) {
           title: this.snapshotData.title,
           url: Backbone.history.fragment + "/pref/" + this.snapshotData.title,
           icon_class: 'icon-search',
-          user: app.users.getCurrentUser().get("id")
+          user: app.users.getCurrentUser().get("id"),
+          section: 'search'
         };
         if(app.getBookmarks().isBookmarked(data.title)) {
           app.getBookmarks().removeBookmark(data);

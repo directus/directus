@@ -232,6 +232,12 @@
   color: @darkGrey;
   ul {
     margin: 0 !important;
+    .history-add-comment {
+      padding-right: 180px;
+      .history-comment {
+        width: 100%;
+      }
+    }
     li {
       position: relative;
       padding-bottom: @standardPad;
@@ -239,6 +245,7 @@
       margin-bottom: @standardPad;
       min-height: 30px;
       padding-left: 50px;
+      padding-right: 150px;
       &:last-child {
         padding-bottom: 0;
         border-bottom: none;
@@ -264,8 +271,8 @@
         padding: 12px 10px 10px 10px;
         background-color: @white;
         .border-radius(3px, 3px, 3px, 3px);
-        max-width: 700px;
-        min-width: 300px;
+        max-width: 500px;
+        //min-width: 300px;
         margin-left: 10px;
         height: auto;
         min-height: 18px;
