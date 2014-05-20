@@ -1538,6 +1538,57 @@ input:-webkit-autofill {
 .message-reply {
   margin-top: 20px;
 }
+.twitter-typeahead {
+  display: block;
+  width: 300px;
+}
+.tt-suggestions {
+  background-color: #ffffff;
+  border: 1px solid #ededed;
+}
+.tt-suggestions .tt-suggestion {
+  display: inline-block;
+  width: 100%;
+}
+.tt-suggestions .tt-suggestion.tt-is-under-cursor {
+  background-color: #fffddd;
+}
+.tt-suggestions .tt-suggestion img {
+  vertical-align: middle;
+}
+.tt-suggestions .tt-suggestion .recipient-name {
+  display: inline-block;
+  top: 6px;
+  position: relative;
+  margin-right: 10px;
+}
+.message-recipient {
+  line-height: 0px;
+  overflow: auto;
+  display: inline-block;
+  border-radius: 2px;
+  background-color: #bbbbbb;
+  color: #ffffff;
+  margin-right: 10px;
+  margin-top: 10px;
+  font-weight: 600;
+  padding-right: 10px;
+  cursor: pointer;
+}
+.message-recipient:hover {
+  background-color: #c1272d;
+}
+.message-recipient img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.message-recipient .recipient-name {
+  display: inline-block;
+  top: 1px;
+  position: relative;
+}
 .btn-toolbar {
   clear: both;
   float: none;

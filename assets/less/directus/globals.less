@@ -404,3 +404,57 @@ input:-webkit-autofill {
 .message-reply {
   margin-top: @standardPad;
 }
+
+
+.twitter-typeahead {
+  display: block;
+  width: 300px;
+}
+.tt-suggestions {
+  background-color: @white;
+  border: 1px solid @lightGrey;
+  .tt-suggestion {
+    display: inline-block;
+    width: 100%;
+    &.tt-is-under-cursor {
+      background-color: @tableHoverYellow;
+    }
+    img {
+      vertical-align: middle;
+    }
+    .recipient-name {
+      display: inline-block;
+      top: 6px;
+      position: relative;
+      margin-right: 10px;
+    }
+  }
+}
+
+.message-recipient {
+  line-height: 0px;
+  overflow: auto;
+  display: inline-block;
+  border-radius: 2px;
+  background-color: @mediumGrey;
+  color: @white;
+  margin-right: @smallPad;
+  margin-top: @smallPad;
+  font-weight: 600;
+  padding-right: @smallPad;
+  cursor: pointer;
+  &:hover {
+    background-color: @deleteColor;
+  }
+  img {
+    width: 30px;
+    height: 30px;
+    margin-right: @smallPad;
+    vertical-align: middle;
+  }
+  .recipient-name {
+    display: inline-block;
+    top: 1px;
+    position: relative;
+  }
+}
