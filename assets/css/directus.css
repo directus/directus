@@ -2433,6 +2433,15 @@ select:focus,
   width: auto;
   margin-right: 10px;
 }
+.activity-page li {
+  padding-left: 90px !important;
+}
+.activity-page li .avatar {
+  left: 40px !important;
+}
+.activity-page li:first-child .history-icon {
+  top: 0 !important;
+}
 .view-entire-history {
   padding-top: 30px;
   text-align: center;
@@ -2467,6 +2476,12 @@ select:focus,
   padding-top: 0;
   border-top: none;
   margin-top: 0;
+}
+.history-container ul li:first-child .avatar {
+  top: 0;
+}
+.history-container ul li:first-child .history-datetime {
+  top: 10px;
 }
 .history-container ul li .avatar {
   float: none;
@@ -2568,8 +2583,8 @@ select:focus,
 }
 .history-container ul li .history-icon.edit .icon {
   position: absolute;
-  top: 0;
-  left: 11px;
+  top: 1px;
+  left: 12px;
 }
 .history-container ul li .history-icon.delete {
   background-color: #c1272d;
@@ -2584,8 +2599,16 @@ select:focus,
 }
 .history-container ul li .history-icon.attach .icon {
   position: absolute;
-  top: 0;
-  left: 11px;
+  top: 1px;
+  left: 10px;
+}
+.history-container ul li .history-icon.login {
+  background-color: #5b5b5b;
+}
+.history-container ul li .history-icon.login .icon {
+  position: absolute;
+  top: 1px;
+  left: 12px;
 }
 .cards {
   padding-left: 0px;

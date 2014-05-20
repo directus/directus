@@ -220,7 +220,17 @@
     }
   }
 }
-
+.activity-page li {
+  padding-left: 90px !important;
+  .avatar {
+    left: 40px !important;
+  }
+  &:first-child {
+    .history-icon {
+      top: 0 !important;
+    }
+  }
+}
 
 .view-entire-history {
   padding-top: 30px;
@@ -253,6 +263,12 @@
         padding-top: 0;
         border-top: none;
         margin-top: 0;
+        .avatar {
+          top: 0;
+        }
+        .history-datetime {
+          top: 10px;
+        }
       }
       .avatar {
         float: none;
@@ -330,8 +346,8 @@
           background-color: @editColor;
           .icon {
             position: absolute;
-            top: 0;
-            left: 11px;
+            top: 1px;
+            left: 12px;
           }
         }
         &.delete {
@@ -346,8 +362,16 @@
           background-color: @attachColor;
           .icon {
             position: absolute;
-            top: 0;
-            left: 11px;
+            top: 1px;
+            left: 10px;
+          }
+        }
+        &.login {
+          background-color: @loginColor;
+          .icon {
+            position: absolute;
+            top: 1px;
+            left: 12px;
           }
         }
       }

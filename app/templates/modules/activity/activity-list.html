@@ -1,42 +1,42 @@
 {{#each activities}}
-<li class="group gutter-bottom-big">
-  <span class="big-label-text">{{title}}</span>
-<ul class="border-top">
-{{#each data}}
-<li class="group-item">
-  <div class="left">{{userAvatar user_avatar}}</div>
-  {{#if action_add}}
-  {{#if is_media}}
-    <div class="left icon icon-attach"></div>
-    {{else}}
-    <div class="left icon icon-plus color"></div>
-    {{/if}}
-  {{/if}}
-  {{#if action_edit}}
-    <div class="left icon icon-pencil color"></div>
-  {{/if}}
-  {{#if action_delete}}
-  <div class="left icon icon-cross color"></div>
-  {{/if}}
-  {{#if action_login}}
-  <div class="left icon icon-key color"></div>
-  {{/if}}
-  <div class="left stack">
-    <span class="stack-item">{{capitalize table}}</span>
-    <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
-    {{#if user}}
-      {{userFirstAndLastName user}}
-    {{else}}
-      {{#if title}}
-        {{capitalize title}}
+<li class="group gutter-bottom-big activity-page">
+
+  <div class="history-header"><span class="big-label-text">{{title}}</div>
+
+  <div class="history-container">
+    <ul>
+    {{#each data}}
+    <li>
+      {{userAvatar user_avatar}}
+
+      {{#if action_add}}
+      {{#if is_media}}
+      <div class="history-icon attach"><div class="icon icon-attach"></div></div>
+      <div class="history-text">{{userName user_avatar}} uploaded a file: <span class="light-grey-color">{{capitalize title}}</span></div>
       {{else}}
-        <span class="null">Empty</span>
+      <div class="history-icon add"><div class="icon icon-check"></div></div>
+      <div class="history-text">{{userName user_avatar}} created an item within {{capitalize table}}</div>
       {{/if}}
-    {{/if}}
+      {{/if}}
+      {{#if action_edit}}
+      <div class="history-icon edit"><div class="icon icon-pencil"></div></div>
+      <div class="history-text">{{userName user_avatar}} edited an item within {{capitalize table}}</div>
+      {{/if}}
+      {{#if action_delete}}
+      <div class="history-icon delete"><div class="icon icon-trash"></div></div>
+      <div class="history-text">{{userName user_avatar}} deleted an item from {{capitalize table}}</div>
+      {{/if}}
+      {{#if action_login}}
+      <div class="history-icon login"><div class="icon icon-key"></div></div>
+      <div class="history-text">{{userName user_avatar}} logged in</div>
+      {{/if}}
+
+      <!-- {{userFirstAndLastName user}} -->
+
+      <div class="history-datetime">{{time}}</div>
+    </li>
+    {{/each}}
+    </ul>
   </div>
-  <div class="right secondary-info">{{time}}</div>
-</li>
-{{/each}}
-</ul>
 </li>
 {{/each}}
