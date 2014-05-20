@@ -24,6 +24,11 @@ function(app, Backbone) {
     },
     setActive: function(route) {
       //deactive all tabs
+      var splitRoute = route.split('/');
+      if(splitRoute.length > 2) {
+        route = splitRoute[0] + '/' + splitRoute[1];
+      }
+
       var activeModel;
       _.each(this.models,function(model) {
         model.unset('active',{silent: true});

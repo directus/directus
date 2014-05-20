@@ -194,7 +194,6 @@ define(function(require, exports, module) {
 
       // Cache collection for next route
       this.currentCollection = collection;
-      this.bookmarks.setActive('tables');
       this.tabs.setActive('tables');
 
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
@@ -206,7 +205,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle('Tables');
-      this.bookmarks.setActive('tables');
       this.tabs.setActive('tables');
 
       var isBatchEdit = (typeof id === 'string') && id.indexOf(',') !== -1,
