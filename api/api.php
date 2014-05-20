@@ -685,12 +685,18 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
 $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
+    $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
     $TableGateway = new TableGateway($acl, 'directus_preferences', $ZendDb);
     switch ($app->request()->getMethod()) {
         case "PUT":
             $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
             break;
         case "POST":
+            //If Already exists and not saving with title, then updateit!
+            $existing = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, isset($params['newTitle']) ? $params['newTitle'] : null);
+            if(!empty($existing)) {
+              $requestPayload['id'] = $existing['id'];
+            }
             $requestPayload['user'] = $currentUser['id'];
             $id = $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
             break;
@@ -701,7 +707,6 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             echo $db->delete('directus_preferences', $requestPayload['id']);
             return;
     }
-    $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
 
     //If Title is set then return this version
     if(isset($requestPayload['title'])) {
