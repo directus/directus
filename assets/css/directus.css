@@ -1290,6 +1290,7 @@ body.smokescreen:after {
 .tag {
   display: inline-block;
   cursor: pointer;
+  font-weight: 600;
   background-color: #bbbbbb;
   color: #ffffff;
   margin: 10px 10px 0 0;
@@ -1702,7 +1703,8 @@ input:-webkit-autofill {
   cursor: pointer;
   padding: 10px 15px 10px 15px;
   letter-spacing: 0.4px;
-  font-weight: 500;
+  font-weight: 600;
+  -webkit-font-smoothing: antialiased !important;
 }
 .btn:hover {
   background-color: #a2a2a2;
@@ -2376,7 +2378,7 @@ select:focus,
 .related-table {
   margin-bottom: 10px;
   max-height: 800px;
-  overflow: scroll;
+  overflow: auto;
 }
 .related-table thead:hover #set-visible-columns {
   background-color: #ededed;
@@ -2431,6 +2433,10 @@ select:focus,
   width: auto;
   margin-right: 10px;
 }
+.view-entire-history {
+  padding-top: 30px;
+  text-align: center;
+}
 .history-header {
   margin: 20px 0 10px 0;
 }
@@ -2450,22 +2456,22 @@ select:focus,
 }
 .history-container ul li {
   position: relative;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #ffffff;
-  margin-bottom: 20px;
-  min-height: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ffffff;
+  margin-top: 20px;
+  min-height: 40px;
   padding-left: 50px;
   padding-right: 150px;
 }
-.history-container ul li:last-child {
-  padding-bottom: 0;
-  border-bottom: none;
-  margin-bottom: 0;
+.history-container ul li:first-child {
+  padding-top: 0;
+  border-top: none;
+  margin-top: 0;
 }
 .history-container ul li .avatar {
   float: none;
   position: absolute;
-  top: 0;
+  top: 20px;
   left: 0;
   width: 40px;
   height: 40px;
@@ -2473,7 +2479,7 @@ select:focus,
 .history-container ul li .history-datetime {
   color: #bbbbbb;
   position: absolute;
-  top: 10px;
+  top: 30px;
   right: 0;
 }
 .history-container ul li .history-comment {
@@ -2536,13 +2542,14 @@ select:focus,
   border: none;
   width: 100%;
   min-height: 70px;
+  -webkit-font-smoothing: antialiased !important;
 }
 .history-container ul li .history-text {
   padding-top: 10px;
 }
 .history-container ul li .history-icon {
   position: absolute;
-  top: 0;
+  top: 20px;
   left: 0;
   width: 40px;
   height: 40px;
@@ -2919,9 +2926,9 @@ select:focus,
 }
 #sidebar #mainSidebar li a {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 13px;
-  padding: 8px 12px 8px 8px;
+  padding: 10px 12px 10px 10px;
   position: relative;
   white-space: nowrap;
   overflow: hidden;
@@ -2929,6 +2936,7 @@ select:focus,
 }
 #sidebar #mainSidebar li.active {
   border-left-width: 4px;
+  background-color: #313131;
 }
 #sidebar #mainSidebar li.active a {
   color: #ffffff;
@@ -2938,10 +2946,10 @@ select:focus,
   border-style: solid;
   height: 0px;
   width: 0px;
-  border-width: 12px 8px 12px 0;
+  border-width: 16px 8px 16px 0;
   border-color: transparent #ffffff transparent transparent;
   content: "";
-  margin-top: -12px;
+  margin-top: -16px;
   position: absolute;
   right: 0px;
   top: 50%;
@@ -2949,7 +2957,7 @@ select:focus,
 #sidebar #mainSidebar li .icon {
   display: block;
   float: left;
-  line-height: 5px;
+  line-height: 7px;
   margin-bottom: -2px;
   margin-right: 10px;
   text-align: right;
@@ -3376,6 +3384,7 @@ select:focus,
 .header1 .secondary-row .filters li {
   display: inline-block;
   cursor: pointer;
+  font-weight: 600;
   background-color: #bbbbbb;
   color: #ffffff;
   margin: 10px 10px 0 0;

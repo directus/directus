@@ -111,7 +111,7 @@ require(["config"], function() {
       var autoLogoutMinutes = parseInt(app.settings.get('global').get('cms_user_auto_sign_out') || 60, 10);
 
       var waitForForAvtivity = function() {
-        console.log('minutes until automatic logout:', autoLogoutMinutes);
+        //console.log('minutes until automatic logout:', autoLogoutMinutes);
 
         Idle.start({
           timeout: function() {

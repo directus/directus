@@ -37,6 +37,11 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         });
         this.$el.find('#sendCommentBtn').prop('disabled', true);
         model.save();
+      },
+      'click .view-entire-history': function(e) {
+        $('.history-container li.hide').removeClass('hide');
+        $('.view-entire-history').remove();
+        //$(e.target).remove();
       }
     },
 
@@ -70,7 +75,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       });
     },
     serialize: function() {
-      console.log("test");
       var data = this.activity.map(function(model) {
         var data = {
           "table": model.get('table_name'),
@@ -113,11 +117,16 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         return -moment(item.timestamp);
       });
 
-      dataPreview = data.splice(0, 3);
-      if(data.length > 3){
-        dataRemainder = data.splice(3);
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          data[key].hidden = (key >= 5)? 'hide' : 'preview';
+        }
       }
-      return {activities: data, activitiesPreview: dataPreview, activitiesRemainder: dataRemainder, current_user: app.authenticatedUserId};
+
+      var preview = (data.length > 5)? true : false;
+      var additionalCount = data.length - 5;
+
+      return {activities: data, preview: preview, additionalCount: additionalCount, current_user: app.authenticatedUserId};
     }
   });
 

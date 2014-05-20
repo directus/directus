@@ -69,9 +69,9 @@
     li {
       a {
         display: block;
-        font-size: 11px;
+        font-size: 12px;
         line-height: 13px;
-        padding: 8px 12px 8px 8px;
+        padding: 10px 12px 10px 10px;
         position: relative;
         white-space: nowrap;
         overflow: hidden;
@@ -80,15 +80,15 @@
       &.active {
         border-left-width: 4px;
         //border-left-style: solid;
-        //background-color: @darkGrey;
+        background-color: @mediumDarkGrey;
         a {
           color: @white;
           cursor: auto;
           //padding-left: 16px;
           &:after {
-            .triangle-left(8px, 12px, @white);
+            .triangle-left(8px, 16px, @white);
             content: "";
-            margin-top: -12px;
+            margin-top: -16px;
             position: absolute;
             right: 0px;
             top: 50%;
@@ -98,7 +98,7 @@
       .icon {
         display: block;
         float: left;
-        line-height: 5px;
+        line-height: 7px;
         margin-bottom: -2px;
         margin-right: 10px;
         text-align: right;

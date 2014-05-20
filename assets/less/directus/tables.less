@@ -163,7 +163,7 @@
 .related-table {
   margin-bottom: @smallPad;
   max-height: 800px;
-  overflow: scroll;
+  overflow: auto;
   thead {
     &:hover #set-visible-columns {
       background-color: @lightGrey;
@@ -222,7 +222,10 @@
 }
 
 
-
+.view-entire-history {
+  padding-top: 30px;
+  text-align: center;
+}
 .history-header {
   margin: 20px 0 10px 0;
 }
@@ -240,21 +243,21 @@
     }
     li {
       position: relative;
-      padding-bottom: @standardPad;
-      border-bottom: 1px solid @white;
-      margin-bottom: @standardPad;
-      min-height: 30px;
+      padding-top: @standardPad;
+      border-top: 1px solid @white;
+      margin-top: @standardPad;
+      min-height: 40px;
       padding-left: 50px;
       padding-right: 150px;
-      &:last-child {
-        padding-bottom: 0;
-        border-bottom: none;
-        margin-bottom: 0;
+      &:first-child {
+        padding-top: 0;
+        border-top: none;
+        margin-top: 0;
       }
       .avatar {
         float: none;
         position: absolute;
-        top: 0;
+        top: 20px;
         left: 0;
         width: 40px;
         height: 40px;
@@ -262,7 +265,7 @@
       .history-datetime {
         color: @mediumGrey;
         position: absolute;
-        top: 10px;
+        top: 30px;
         right: 0;
       }
       .history-comment {
@@ -302,6 +305,7 @@
           border: none;
           width: 100%;
           min-height: 70px;
+          -webkit-font-smoothing: antialiased !important;
         }
       }
       .history-text {
@@ -309,7 +313,7 @@
       }
       .history-icon {
         position: absolute;
-        top: 0;
+        top: 20px;
         left: 0;
         width: 40px;
         height: 40px;
