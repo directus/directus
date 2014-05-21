@@ -1,6 +1,6 @@
 <ul class="general-container selectable">
   {{#each messages}}
-  <li class="message unread" data-id="{{id}}">
+  <li class="message {{#unless read}}unread{{/unless}}" data-id="{{id}}">
     <div class="check-box">
       <input class="custom-check" id="check{{ id }}" type="checkbox" />
       <label for="check{{ id }}"><span></span></label>
