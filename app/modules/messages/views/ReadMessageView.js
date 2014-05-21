@@ -55,6 +55,8 @@ function(app, Backbone, BasePageView) {
       data.collapseRecipients = data.recipients.length > this.maxRecipients;
       data.current_user = app.authenticatedUserId;
 
+      data.responses = data.responses.reverse();
+
       data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
       return data;
     },

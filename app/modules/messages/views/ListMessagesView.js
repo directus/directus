@@ -28,7 +28,11 @@ function(app, Backbone, BasePageView, Widgets) {
         data.responsesLength = data.responses.length;
         data.from = parseInt(data.from, 10);
 
-        var recipients = data.recipients.split(',');
+        if(data.recipients) {
+          var recipients = data.recipients.split(',');
+        } else {
+          var recipients = [];
+        }
 
         data.recipients = [];
         var extra = 0;
