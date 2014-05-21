@@ -50,7 +50,7 @@ function(app, Backbone) {
       'change .filter_ui': function(e) {
         var data = {
           id: this.mysql_real_escape_string($(e.target).parent().parent().find('.filterColumnName').attr('data-filter-id')),
-          type: 'LIKE',
+          type: 'like',
           value: this.mysql_real_escape_string($(e.target).val())
         };
 
