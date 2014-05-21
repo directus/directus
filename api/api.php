@@ -958,7 +958,7 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
       $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
       $user = $usersTableGateway->findOneBy('id', $recipient);
 
-      if(isset($user) && isset($user->email_messages) && $user->email_messages == 1) {
+      if(isset($user) && $user['email_messages'] == 1) {
         mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
       }
     }
