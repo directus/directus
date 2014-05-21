@@ -950,6 +950,19 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
 
+    $headers = 'From: directus@directus.com' . "\r\n" .
+    'Reply-To: directus@directus.com' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+
+    foreach($userRecipients as $recipient) {
+      $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+      $user = $usersTableGateway->findOneBy('id', $recipient);
+
+      if(isset($user) && $user['email_messages'] == 1) {
+        mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
+      }
+    }
+
     // could this be replaced?
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
     //$message = $messagesTableGateway->fetchMessage($id);
