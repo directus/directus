@@ -35,6 +35,12 @@ define(['app', 'backbone'], function(app, Backbone) {
       'click .message-recipient': function(e) {
         var targetId = $(e.target).closest('.message-recipient').data('id');
         delete this.recipients[targetId];
+
+        if(this.deletedDatums[targetId]) {
+          this.datums.push(this.deletedDatums[targetId]);
+          delete this.deletedDatums[targetId];
+        }
+
         this.renderTags();
       }
     },
@@ -61,6 +67,15 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       this.$el.find('#directus_messages_recipients-form').val(_.keys(this.recipients));
       $el.html(elArray.join(''));
+
+      this.$('#directus_messages_recipients-input').typeahead('destroy');
+
+      this.$('#directus_messages_recipients-input').typeahead({
+        limit: 5,
+        local: this.datums,
+        template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar"><span class="recipient-name">{{name}}</span></div>')
+      });
+
     },
 
     afterRender: function() {
@@ -68,7 +83,14 @@ define(['app', 'backbone'], function(app, Backbone) {
       var DIRECTUS_GROUPS = 1;
       var me = this;
 
-      var users = app.users.map(function(item) {
+      var users = app.users.filter(function(item) {
+        if(item.get('id') == app.authenticatedUserId.id) {
+          return false;
+        }
+        return true;
+      });
+
+      users = users.map(function(item) {
         return {
           id: item.id,
           uid: DIRECTUS_USERS + '_' + item.id,
@@ -92,8 +114,9 @@ define(['app', 'backbone'], function(app, Backbone) {
       var keywordsMap = {};
       var keywords = [];
       var datums = [];
+      this.deletedDatums = [];
 
-       _.each(usersAndGroups, function(item) {
+      _.each(usersAndGroups, function(item) {
         var uid = item.uid;
 
         datums.push({
@@ -108,6 +131,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         keywords.push(uid+': '+item.name);
        });
 
+      this.datums = datums;
 
       this.$("#directus_messages_recipients-input").typeahead({
 
@@ -132,7 +156,16 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       this.$('#directus_messages_recipients-input').on('typeahead:selected', function (object, datum) {
         me.recipients[datum.id] = datum;
+        me.datums = _.filter(me.datums, function(item) {
+          if(item == datum) {
+            me.deletedDatums[item.id] = item;
+            return false;
+          }
+          return true;
+        });
         me.renderTags();
+
+
       });
 
     },
