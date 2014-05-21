@@ -2,7 +2,7 @@
   <li class="{{#if tablesActive}}active{{/if}}" title="Tables">
     <a href="tables">
       <span class="icon icon-database"></span>
-      Tables
+      <span class="sidebar-label">Tables</span>
     </a>
   </li>
   {{#bookmarks.table}}
@@ -20,7 +20,7 @@
   <li class="{{#if active}}active{{/if}} sidebar-extension" title="{{capitalize title}}">
       <a href="{{url}}">
         <span class="icon {{icon_class}}"></span>
-        {{capitalize title}}
+        <span class="sidebar-label">{{capitalize title}}</span>
       </a>
   </li>
   {{/bookmarks.extension}}
@@ -32,7 +32,7 @@
   <li title="Searches">
     <a>
       <span class="icon icon-search"></span>
-      Searches
+      <span class="sidebar-label">Searches</span>
     </a>
   </li>
   {{#bookmarks.search}}
@@ -52,7 +52,7 @@
   <li class="{{#if active}}active{{/if}}" title="{{capitalize title}}">
       <a href="{{url}}">
         <span class="icon {{icon_class}}"></span>
-        {{capitalize title}}
+        <span class="sidebar-label">{{capitalize title}}</span>
       </a>
   </li>
   {{/bookmarks.other}}
