@@ -38,6 +38,21 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         this.$el.find('#messages-response-button').prop('disabled', true);
         model.save();
       },
+      'click .history-follow': function(e) {
+        console.log(app.users.getCurrentUser());
+        /*var data = {};
+        data[attr] = !tableModel.get(attr);
+        tableModel.save(data);
+        if(element.hasClass('add-color')) {
+          element.addClass('delete-color');
+          element.removeClass('add-color');
+          element.html('✕');
+        } else {
+          element.addClass('add-color');
+          element.removeClass('delete-color');
+          element.html('✔');
+        }*/
+      },
       'click .view-entire-history': function(e) {
         $('.history-container li.hide').removeClass('hide');
         $('.view-entire-history').remove();

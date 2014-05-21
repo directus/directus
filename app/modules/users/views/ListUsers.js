@@ -170,9 +170,13 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       }
     },
     leftToolbar: function() {
-      return [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
-      ];
+      console.log(app.users.getCurrentUser());
+      if(app.users.getCurrentUser().get('group').id == 0) {
+        return [
+          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
+        ];
+      }
+      return [];
     },
     rightToolbar: function() {
       return [
