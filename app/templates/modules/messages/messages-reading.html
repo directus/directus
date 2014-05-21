@@ -1,34 +1,42 @@
-<div class="message-recipients">
+<div class="message-recipients" style="margin-bottom:20px;">
     <b>To:</b> {{#if collapseRecipients}}
-        <a href="#" id="messages-show-recipients">{{recipientsCount}} Repcepients</a>
-        <div id="messages-recipients" style="display:none">
-            {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
-        </div>
+    <a href="#" id="messages-show-recipients">{{recipientsCount}} Repcepients</a>
+    <div id="messages-recipients" style="display:none">
+        {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
+    </div>
     {{else}}
         {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
     {{/if}}
-
-    </div>
-
-<div class="message-response">
-    <span class="message-datetime secondary-info">{{contextualDate datetime}}</span>
-    <b>{{userFull from}}</b><br>
-    <div class="message-body">
-        {{{nl2br message}}}
-    </div>
 </div>
 
-{{#each responses}}
-    <div class="message-response">
-        <span class="message-datetime secondary-info">{{contextualDate datetime}}</span>
-        <b>{{userFull from}}</b><br>
-        <div class="message-body">
+
+<div class="history-container">
+  <ul>
+    <li class="history-add-comment">
+      {{userAvatar current_user}}
+      <div class="history-comment">
+        <textarea id="messages-response" placeholder="Leave a reply..."></textarea>
+        <button id="messages-response-button" class="btn btn-small">Submit</button>
+      </div>
+    </li>
+
+    {{#each responses}}
+    <li>
+        {{userAvatar from}}
+        <div class="history-comment">
             {{{nl2br message}}}
         </div>
-    </div>
-{{/each}}
+        <div class="history-datetime">{{contextualDate datetime}}</div>
+    </li>
+    {{/each}}
 
-<div class="message-reply">
-    <textarea rows="7" style="width:700px; margin-bottom:10px" id="messages-response"></textarea>
-    <p><button class="btn btn-primary" id="messages-response-button">Reply</button></p>
+    <li>
+        {{userAvatar from}}
+        <!--{{userFull from}}-->
+        <div class="history-comment">
+            {{{nl2br message}}}
+        </div>
+        <div class="history-datetime">{{contextualDate datetime}}</div>
+    </li>
+  </ul>
 </div>

@@ -1,26 +1,23 @@
-<ul class="group-list border-top">
+<ul class="general-container selectable">
   {{#each messages}}
-  <li class="group-item big-item message" data-id="{{id}}">
-    <div class="check-box left">
+  <li class="message unread" data-id="{{id}}">
+    <div class="check-box">
       <input class="custom-check" id="check{{ id }}" type="checkbox" />
       <label for="check{{ id }}"><span></span></label>
     </div>
-    <div class="content left">
+    <div class="message-content">
       <div class="users">{{recipients}}</div>
       <div class="title">{{subject}}</div>
       <div class="subject">{{message}}</div>
     </div>
-    <div class="right-info right">
-      <!--<span class="icon icon-attach"></span>-->
-      <span class="date secondary-info" title="{{date_updated}}">{{niceDate}}</span>
-    </div>
+    <span class="general-datetime" title="{{date_updated}}">{{niceDate}}</span>
   </li>
   {{/each}}
-
-  {{#unless messages}}
-    <div class="nothing-here secondary-info">
-    <h1>There doesn't seem to be anything here</h1>
-    Maybe send someone a message?
-    </div>
-  {{/unless}}
 </ul>
+
+{{#unless messages}}
+<div class="nothing-here secondary-info">
+  <h1>There doesn't seem to be anything here</h1>
+  Maybe send someone a message?
+</div>
+{{/unless}}

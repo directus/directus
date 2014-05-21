@@ -56,9 +56,8 @@
     width: 100%;
     color: @mediumGrey;
     .sidebar-section, .sidebar-extension {
-      border-top: 1px solid @mediumDarkGrey;
       margin-bottom: 10px;
-      padding-top: 10px;
+      margin-top: 10px;
     }
     .sidebar-subitem a {
       padding-left: 43px;
@@ -67,6 +66,10 @@
       margin: 0 0 @smallPad 0;
     }
     li {
+      &.hr {
+        margin: 10px 0 10px 0;
+        border-top: 1px solid @mediumDarkGrey;
+      }
       a {
         display: block;
         font-size: 12px;

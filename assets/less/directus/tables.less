@@ -245,6 +245,8 @@
   color: @darkGrey;
   ul {
     margin: 0 !important;
+    padding: 0;
+    list-style: none;
     .history-add-comment {
       padding-right: 180px;
       .history-comment {
@@ -312,7 +314,7 @@
           border-width: 10px 10px 10px 0; /* vary these values to change the angle of the vertex */
           border-color:transparent @white;
         }
-        #sendCommentBtn {
+        #messages-response-button {
           position: absolute;
           right: 10px;
           bottom: 10px;
@@ -322,6 +324,15 @@
           width: 100%;
           min-height: 70px;
           -webkit-font-smoothing: antialiased !important;
+        }
+      }
+      .history-follow {
+        .secondary-info;
+        margin-left: 10px;
+        margin-top: 10px;
+        input {
+          display: inline-block;
+          margin-right: 10px;
         }
       }
       .history-text {

@@ -20,7 +20,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     template: "modules/activity/activity-history",
 
     events: {
-      'click #sendCommentBtn': function(e) {
+      'click #messages-response-button': function(e) {
         var model = new app.messages.model({from: app.authenticatedUserId.id}, {collection: this.comments, parse: true});
         var subject = "Item " + this.model.get('id') + " from " + app.capitalize(this.model.collection.table.id);
         if(this.model.collection.table.get('primary_column') && this.model.has(this.model.collection.table.get('primary_column'))) {
@@ -35,7 +35,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
           this.comments.add(model);
           this.render();
         });
-        this.$el.find('#sendCommentBtn').prop('disabled', true);
+        this.$el.find('#messages-response-button').prop('disabled', true);
         model.save();
       },
       'click .view-entire-history': function(e) {

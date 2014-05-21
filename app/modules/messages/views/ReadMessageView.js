@@ -53,6 +53,7 @@ function(app, Backbone, BasePageView) {
       data.recipients = data.recipients.split(',');
       data.recipientsCount = data.recipients.length;
       data.collapseRecipients = data.recipients.length > this.maxRecipients;
+      data.current_user = app.authenticatedUserId;
 
       data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
       return data;

@@ -1,12 +1,12 @@
 <div class="sidebar-section tables-sidebar">
-  <li class="{{#if tablesActive}}active add-color-border{{/if}}" title="Tables">
+  <li class="{{#if tablesActive}}active{{/if}}" title="Tables">
     <a href="tables">
       <span class="icon icon-database"></span>
       Tables
     </a>
   </li>
   {{#bookmarks.table}}
-  <li class="{{#if active}}active add-color-border{{/if}} sidebar-subitem" title="{{capitalize title}}">
+  <li class="{{#if active}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
         {{capitalize title}}
       </a>
@@ -16,7 +16,8 @@
 
 <div class="extensions-sidebar">
   {{#bookmarks.extension}}
-  <li class="{{#if active}}active add-color-border{{/if}} sidebar-extension" title="{{capitalize title}}">
+  <li class="hr"></li>
+  <li class="{{#if active}}active{{/if}} sidebar-extension" title="{{capitalize title}}">
       <a href="{{url}}">
         <span class="icon {{icon_class}}"></span>
         {{capitalize title}}
@@ -26,6 +27,7 @@
 </div>
 
 {{#if bookmarks.search}}
+<li class="hr"></li>
 <div class="sidebar-section searches-sidebar">
   <li title="Searches">
     <a>
@@ -34,7 +36,7 @@
     </a>
   </li>
   {{#bookmarks.search}}
-  <li class="{{#if active}}active add-color-border{{/if}} sidebar-subitem" title="{{capitalize title}}">
+  <li class="{{#if active}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
         <span class="icon"></span>
         {{capitalize title}}
@@ -44,9 +46,10 @@
 </div>
 {{/if}}
 
+<li class="hr"></li>
 <div class="sidebar-section other-sidebar">
   {{#bookmarks.other}}
-  <li class="{{#if active}}active add-color-border{{/if}}" title="{{capitalize title}}">
+  <li class="{{#if active}}active{{/if}}" title="{{capitalize title}}">
       <a href="{{url}}">
         <span class="icon {{icon_class}}"></span>
         {{capitalize title}}

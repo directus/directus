@@ -2507,6 +2507,8 @@ select:focus,
 }
 .history-container ul {
   margin: 0 !important;
+  padding: 0;
+  list-style: none;
 }
 .history-container ul .history-add-comment {
   padding-right: 180px;
@@ -2599,7 +2601,7 @@ select:focus,
 
   border-color: transparent #ffffff;
 }
-.history-container ul li .history-comment #sendCommentBtn {
+.history-container ul li .history-comment #messages-response-button {
   position: absolute;
   right: 10px;
   bottom: 10px;
@@ -2609,6 +2611,17 @@ select:focus,
   width: 100%;
   min-height: 70px;
   -webkit-font-smoothing: antialiased !important;
+}
+.history-container ul li .history-follow {
+  color: #bbbbbb !important;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+.history-container ul li .history-follow input {
+  display: inline-block;
+  margin-right: 10px;
 }
 .history-container ul li .history-text {
   padding-top: 10px;
@@ -2988,15 +3001,18 @@ select:focus,
 }
 #sidebar #mainSidebar .sidebar-section,
 #sidebar #mainSidebar .sidebar-extension {
-  border-top: 1px solid #313131;
   margin-bottom: 10px;
-  padding-top: 10px;
+  margin-top: 10px;
 }
 #sidebar #mainSidebar .sidebar-subitem a {
   padding-left: 43px;
 }
 #sidebar #mainSidebar ul {
   margin: 0 0 10px 0;
+}
+#sidebar #mainSidebar li.hr {
+  margin: 10px 0 10px 0;
+  border-top: 1px solid #313131;
 }
 #sidebar #mainSidebar li a {
   display: block;
@@ -3610,59 +3626,115 @@ select:focus,
   margin: 0;
   padding: 15px 10px 0;
 }
-.message {
+.message .message-content {
+  margin-left: 40px;
+}
+.message .message-content .users {
+  font-style: italic;
+  font-weight: 600;
+}
+.message .message-content .title {
+  font-weight: 600;
+}
+.message .message-content .subject {
+  color: #bbbbbb;
+}
+.message.unread .message-content .title {
+  font-weight: 700;
+}
+.message.unread .general-datetime {
+  font-weight: 700;
   color: #5b5b5b;
-  display: block;
-  float: none;
-  position: relative;
+}
+ul.general-container {
+  background-color: #f4f4f4;
+  color: #5b5b5b;
+  padding: 0;
+}
+ul.general-container.selectable li:hover {
+  background-color: #fffddd;
   cursor: pointer;
 }
-.message:after {
-  clear: both;
-  content: '';
-  display: block;
-  width: 100%;
+ul.general-container li {
+  position: relative;
+  padding: 20px;
+  border-top: 1px solid #ffffff;
+  min-height: 40px;
+  padding-right: 150px;
+  list-style: none;
 }
-.message:hover {
-  background-color: #fffddd;
+ul.general-container li:first-child {
+  border-top: none;
 }
-.message .check-box {
+ul.general-container li .check-box {
   bottom: 0px;
   position: absolute;
   top: 0px;
 }
-.message .check-box input + label {
+ul.general-container li .check-box input + label {
   margin-top: -11px;
   position: absolute;
   top: 50%;
 }
-.message .content {
-  margin-left: 40px;
+ul.general-container li .avatar {
+  float: none;
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 40px;
+  height: 40px;
 }
-.message .content .users {
-  font-style: italic;
-  font-weight: 400;
-}
-.message .content .title {
-  font-weight: 600;
-}
-.message .content .subject {
+ul.general-container li .general-datetime {
   color: #bbbbbb;
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
-.message .right-info {
-  margin-top: 17px;
+ul.general-container li .general-icon {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  color: #ffffff;
 }
-.message .right-info .icon {
-  color: #bbbbbb;
-  line-height: 10px;
-  padding-right: 10px;
+ul.general-container li .general-icon.add {
+  background-color: #7ac943;
 }
-.message.unread {
-  background-color: #f4f4f4;
+ul.general-container li .general-icon.add .icon {
+  position: absolute;
+  top: 0;
+  left: 12px;
 }
-.message.unread .content .title {
-  font-weight: 700;
+ul.general-container li .general-icon.edit {
+  background-color: #3fa9f5;
 }
-.message.unread .date {
-  font-weight: 600;
+ul.general-container li .general-icon.edit .icon {
+  position: absolute;
+  top: 1px;
+  left: 12px;
+}
+ul.general-container li .general-icon.delete {
+  background-color: #c1272d;
+}
+ul.general-container li .general-icon.delete .icon {
+  position: absolute;
+  top: 0;
+  left: 11px;
+}
+ul.general-container li .general-icon.attach {
+  background-color: #ff7bac;
+}
+ul.general-container li .general-icon.attach .icon {
+  position: absolute;
+  top: 1px;
+  left: 10px;
+}
+ul.general-container li .general-icon.login {
+  background-color: #5b5b5b;
+}
+ul.general-container li .general-icon.login .icon {
+  position: absolute;
+  top: 1px;
+  left: 12px;
 }
