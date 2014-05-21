@@ -50,6 +50,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     template: Handlebars.compile(template),
 
     serialize: function() {
+
       var optionTemplate = function(){};
       if(this.options.settings.has('visible_column_template')) {
         optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));

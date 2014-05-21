@@ -151,6 +151,7 @@ function(app, Backbone) {
           data.relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
         });
 
+        data.relatedEntries = _.sortBy(data.relatedEntries, 'visible_column_template');
       }
 
       return data;
