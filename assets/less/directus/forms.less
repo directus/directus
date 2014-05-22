@@ -184,6 +184,21 @@ select,
 ////////////
 //  CUSTOM FORMS
 ////////////
+
+.simple-select.simple-gray {
+  margin-top: 0;
+  .icon {
+    top: 8px;
+  }
+  select {
+    .border-radius();
+    background-color: @lightGrey;
+    border: 0px;
+    margin: 0px 4px 0px 0px;
+    padding: 8px @smallPad;
+  }
+}
+
 .filter-form {
   select, input[type="text"] {
     .border-radius();
