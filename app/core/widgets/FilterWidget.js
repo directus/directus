@@ -17,37 +17,52 @@ function(app, Backbone) {
     },
 
     filterUIMappings: {
-      default: '<input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium" placeholder="Keywords">',
-      date: '<input type="date" style="float: left;width: auto;background-color:#ededed" class="date medium" name="keywords" id="advKeywords">',
+      default: '<input type="text" value="{{value}}" placeholder="Keywords..." name="keywords" maxlength="255" class="medium filter_ui" placeholder="Keywords">',
+      date: '<input type="date" value="{{value}}" style="float: left;width: auto;background-color:#ededed" class="date medium filter_ui" name="keywords" id="advKeywords">',
     },
 
     events: {
-      'click #addFilterButton': 'addNewFilter',
-      'click [data-add-filter-row]': function(e) {
-        this.options.filterOptions.addFilter = true;
-        this.render();
-      },
       'click .filters li': function(e) {
-        var index = $(e.target).index();
+        /*var index = $(e.target).index();
         this.options.filterOptions.filters.splice(index, 1);
         this.updateFilters();
         this.collection.fetch();
-        this.saveFilterString();
+        this.saveFilterString();*/
       },
-      'keydown input': function(e) {
-        if (e.keyCode == 13) { this.addNewFilter(); }
-      },
-      'click #cancelFilterButton': function(e) {
-        this.options.filterOptions.addFilter = false;
+      'click .removeFilterClass':function(e) {
+        var index = $(e.target).parent().index();
+        var title = $(e.target).parent().find('.filterColumnName').attr('data-filter-id');
+        this.options.filters.splice(index, 1);
+        this.options.filterOptions.filters.splice(index, 1);
+
+        this.updateFilters();
+        this.collection.fetch();
+        //this.saveFilterString();
         this.render();
       },
       'change .adv-search-col-id': function(e) {
         var selectedVal = $(e.target).val();
-        this.updateFilterDataType(selectedVal);
+
+        if(selectedVal != "") {
+          this.addNewFilter(selectedVal);
+        }
+      },
+      'change .filter_ui': function(e) {
+        var data = {
+          id: this.mysql_real_escape_string($(e.target).parent().parent().find('.filterColumnName').attr('data-filter-id')),
+          type: 'like',
+          value: this.mysql_real_escape_string($(e.target).val())
+        };
+
+        this.options.filterOptions.filters[$(e.target).parent().index()] = data;
+
+        this.updateFilters();
+        this.collection.fetch();
+        //this.saveFilterString();
       }
     },
 
-    updateFilterDataType: function(selectedColumn) {
+    getFilterDataType: function(selectedColumn) {
       if(!selectedColumn || !this.collection.structure.get(selectedColumn)) {
         return;
       }
@@ -85,55 +100,26 @@ function(app, Backbone) {
           newInput = this.filterUIMappings.default;
           break;
       }
-      this.$el.find('#dataTypeInsert').html(newInput);
+
+      return newInput;
     },
 
-    addNewFilter: function() {
+    addNewFilter: function(selectedColumn) {
       var $filters = $('.advanced-search-fields-row');
       var that = this;
+      var data = {};
 
-      var searchSettings = $filters.map(function() {
-        var $this = $(this);
+      data.columnName = selectedColumn;
+      data.filter_ui = this.getFilterDataType(selectedColumn);
 
-        var values = {
-          id: $this.find('.adv-search-col-id').val(),
-          type: $this.find('.adv-search-query-type').val(),
-          value: $this.find('#advKeywords').val()
-        };
-
-        return {
-          id: that.mysql_real_escape_string(values.id),
-          type: values.type,
-          value: that.mysql_real_escape_string(values.value)
-        };
-      }).toArray();
-
-      this.options.filterOptions.filters.push(searchSettings[0]);
-
-      this.updateFilters();
-      this.collection.fetch();
-      this.saveFilterString();
-    },
-
-    updateFilters: function() {
-      this.collection.setFilter('adv_search', this.options.filterOptions.filters);
-      this.collection.setFilter('currentPage', 0);
-      this.options.filterOptions.addFilter = false;
+      this.options.filters.push(data);
+      this.options.filterOptions.filters.push({});
       this.render();
     },
 
-    saveFilterString: function() {
-      var string = [];
-      this.options.filterOptions.filters.forEach(function(search) {
-        string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + search.value.replace(':','\\:').replace(',','\\,'));
-      });
-
-      string = encodeURIComponent(string.join());
-      this.collection.preferences.save({search_string: string});
-    },
-
     serialize: function() {
-      var data = this.options.filterOptions;
+      var data = {};
+      data.filters = this.options.filters;
 
       data.tableColumns = this.collection.structure.pluck('id');
       data.tableColumns.sort(function(a, b) {
@@ -141,7 +127,15 @@ function(app, Backbone) {
         if(a > b) return 1;
         return 0;
       });
+      var that = this;
+      var i=0;
+      _.each(this.options.filterOptions.filters, function(item) {
+        var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
+        data.filters[i].filter_ui = template({value: item.value});
+        i++;
+      });
 
+/*
       if(this.relatedCollection) {
         data.relatedEntries = [];
         var visibleColumn = this.columnModel.options.get('visible_column');
@@ -152,8 +146,18 @@ function(app, Backbone) {
         });
 
       }
+*/
 
       return data;
+    },
+
+    afterRender: function() {
+    /*  if(this.savedValue) {
+        this.$el.find('.adv-search-col-id').val(this.savedValue);
+      }
+
+      this.setFilterRow();
+      //this.updateFilterDataType(this.$el.find('.adv-search-col-id').val());*/
     },
 
     mysql_real_escape_string: function(str) {
@@ -182,6 +186,23 @@ function(app, Backbone) {
       });
     },
 
+    updateFilters: function() {
+      console.log(this.options.filterOptions.filters);
+      this.collection.setFilter('adv_search', this.options.filterOptions.filters);
+      this.collection.setFilter('currentPage', 0);
+      //this.render();
+    },
+
+    saveFilterString: function() {
+      var string = [];
+      this.options.filterOptions.filters.forEach(function(search) {
+        string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + search.value.replace(':','\\:').replace(',','\\,'));
+      });
+
+      string = encodeURIComponent(string.join());
+      this.collection.preferences.save({search_string: string});
+    },
+
     setFilterRow: function(){
       var $advSearchFieldRow = $(".advanced-search-fields-row");
       var $advSearchFields = $(".advanced-search-fields");
@@ -192,15 +213,6 @@ function(app, Backbone) {
     },
 
     getFilterRow: "adv search fields row object",
-
-    afterRender: function() {
-      if(this.savedValue) {
-        this.$el.find('.adv-search-col-id').val(this.savedValue);
-      }
-
-      this.setFilterRow();
-      this.updateFilterDataType(this.$el.find('.adv-search-col-id').val());
-    },
 
     updateFiltersFromPreference: function() {
       this.options.filterOptions.filters = [];
@@ -223,8 +235,9 @@ function(app, Backbone) {
 
     initialize: function() {
       this.options.filterOptions = {filters:[]};
-      this.updateFiltersFromPreference();
-      this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
+      this.options.filters = [];
+      //this.updateFiltersFromPreference();
+      //this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
     }
   });
 });
