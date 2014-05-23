@@ -76,7 +76,7 @@ require(["config"], function() {
         $(this).each(function(idx, jqXHR) {
             jqXHR.abort();
         });
-        $.xhrPool.length = 0
+        $.xhrPool.length = 0;
     };
 
     $.ajaxSetup({
@@ -200,6 +200,8 @@ require(["config"], function() {
       app.hideProgressNotification = function() {
         alerts.hideProgressNotification();
       };
+
+      $('#page-blocker').hide();
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Tabs

@@ -1431,25 +1431,6 @@ input:-webkit-autofill {
   color: #bbbbbb;
   -webkit-font-smoothing: antialiased !important;
 }
-#splash {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #bbbbbb;
-  z-index: 109;
-  cursor: progress;
-}
-#loader {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 109;
-  display: none;
-}
 .invisible-blocker {
   position: fixed;
   left: 0;
@@ -1458,26 +1439,31 @@ input:-webkit-autofill {
   bottom: 0;
   z-index: 109;
 }
-#loader_page {
-  left: 0;
+body.initial-load #page-blocker-smoke {
+  opacity: 0.8;
+}
+#page-blocker-smoke {
+  left: 170px;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: #ffffff;
   z-index: 109;
   cursor: progress;
+  -webkit-transition: opacity 400ms ease-in-out;
+  -moz-transition: opacity 400ms ease-in-out;
+  -o-transition: opacity 400ms ease-in-out;
+  transition: opacity 400ms ease-in-out;
 }
 .spinner {
-  position: absolute;
-  width: 100px;
-  height: 100px;
+  position: fixed;
+  width: 60px;
+  height: 60px;
   color: #bbbbbb;
-  background-color: #bbbbbb;
-  top: 50%;
-  left: 50%;
-  margin-top: -50px;
-  margin-left: -50px;
+  background-color: #5b5b5b;
+  bottom: 20px;
+  right: 20px;
   -webkit-animation: rotateplane 1.2s infinite ease-in-out;
   animation: rotateplane 1.2s infinite ease-in-out;
   z-index: 110;
@@ -3050,6 +3036,9 @@ select:focus,
   border-width: 6px 10px 6px 0px;
   border-color: transparent #7ac943 transparent transparent;
 }
+body.initial-load #sidebar {
+  left: 0;
+}
 #sidebar {
   background-color: #252525;
   bottom: 0px;
@@ -3058,10 +3047,15 @@ select:focus,
   height: 100%;
   letter-spacing: 1px;
   position: fixed;
-  top: 0px;
+  top: 0;
+  left: -170px;
   width: 170px;
   z-index: 100;
   -webkit-font-smoothing: antialiased;
+  -webkit-transition: left 400ms ease-in-out;
+  -moz-transition: left 400ms ease-in-out;
+  -o-transition: left 400ms ease-in-out;
+  transition: left 400ms ease-in-out;
 }
 #sidebar ul {
   padding: 0px;
@@ -3731,6 +3725,9 @@ select:focus,
   }
   .feature-cards .feature-card .right-col {
     width: 70%;
+  }
+  #page-blocker-smoke {
+    left: 60px;
   }
 }
 .login-box {
