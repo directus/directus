@@ -1363,7 +1363,7 @@ a.secondary-info:hover {
   border-top: 1px solid #ededed;
 }
 .big-label-text {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 100;
   color: #bbbbbb;
 }
@@ -1392,7 +1392,7 @@ img.grayscale:hover {
   /* flex: 1; */
 
   margin-bottom: 40px;
-  margin-top: 130px;
+  margin-top: 80px;
 }
 .overlay h3 {
   display: none;
@@ -2870,29 +2870,29 @@ select:focus,
   background-color: #ededed;
   list-style: none;
   padding: 20px;
-  height: 160px;
+  height: 100px;
   overflow: hidden;
+  position: relative;
 }
 .feature-cards .feature-card:hover .icon {
   color: #bbbbbb;
 }
-.feature-cards .feature-card .left-col,
-.feature-cards .feature-card .right-col {
-  float: left;
-}
 .feature-cards .feature-card .left-col {
   color: #ffffff;
-  margin: 0px 10px 0px -10px;
   text-align: center;
-  width: 40%;
+  width: 180px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .feature-cards .feature-card .left-col .icon {
   display: inline-block;
-  font-size: 270px;
+  font-size: 200px;
   line-height: 100px;
 }
 .feature-cards .feature-card .right-col {
-  width: 60%;
+  max-width: 400px;
+  margin-left: 160px;
 }
 .group-list {
   color: #bbbbbb;
@@ -3286,7 +3286,6 @@ body.initial-load #sidebar {
   pointer-events: none;
 }
 .header1 {
-  position: relative;
   box-sizing: border-box;
   /* css3 rec */
 
@@ -3299,14 +3298,14 @@ body.initial-load #sidebar {
   -webkit-box-sizing: border-box;
   /* safari3 */
 
+  position: relative;
   background-color: #ffffff;
   clear: both;
   float: left;
-  margin-bottom: 10px;
-  padding-bottom: 20px;
-  padding-top: 30px;
+  padding-top: 20px;
+  padding-bottom: 5px;
   width: 100%;
-  min-height: 100px;
+  min-height: 80px;
 }
 .header1 h1,
 .header1 ul {
@@ -3317,12 +3316,13 @@ body.initial-load #sidebar {
   float: left;
   height: 38px;
   text-transform: capitalize;
+  font-size: 28px;
 }
 .header1 h1 .icon {
   color: #ededed;
   display: inline-block;
-  font-size: 80px;
-  line-height: 30px;
+  font-size: 70px;
+  line-height: 32px;
   margin: 0px 10px;
   vertical-align: top;
   cursor: pointer;
@@ -3503,7 +3503,7 @@ body.initial-load #sidebar {
 .header1 .secondary-row {
   color: #bbbbbb;
   font-weight: 600;
-  margin: 10px 0px -15px 0px;
+  margin: 15px 0 0 0;
 }
 .header1 .secondary-row.filter-options .filter-list {
   padding: 0px;
@@ -3542,6 +3542,9 @@ body.initial-load #sidebar {
 }
 .header1 .secondary-row .vertical-center {
   margin-top: 7px;
+}
+.header1 .secondary-row .pagination-number {
+  margin-top: 11px;
 }
 .header1 .secondary-row .action {
   display: inline-block;
@@ -3714,17 +3717,26 @@ body.initial-load #sidebar {
     left: 0 !important;
   }
   .feature-cards .feature-card {
-    width: 250px;
+    height: 60px;
   }
   .feature-cards .feature-card .left-col {
-    width: 30%;
+    width: 100px;
   }
   .feature-cards .feature-card .left-col .icon {
     font-size: 100px;
-    line-height: 130px;
+    line-height: 80px;
   }
   .feature-cards .feature-card .right-col {
-    width: 70%;
+    margin-left: 80px;
+  }
+  .feature-cards .feature-card .right-col h2 {
+    margin-top: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .feature-cards .feature-card .right-col p {
+    display: none;
   }
   #page-blocker-smoke {
     left: 60px;

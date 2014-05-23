@@ -110,16 +110,26 @@
 	}
 
 	.feature-cards .feature-card {
-		width: 250px;
+		height: 60px;
 		.left-col {
-			width: 30%;
+			width: 100px;
 			.icon {
 				font-size: 100px;
-				line-height: 130px;
+				line-height: 80px;
 			}
 		}
 		.right-col {
-			width: 70%;
+			//width: 70%;
+			margin-left: 80px;
+			h2 {
+				margin-top: 10px;
+				white-space:nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+			p {
+				display: none;
+			}
 		}
 	}
 

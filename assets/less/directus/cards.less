@@ -110,27 +110,28 @@
     background-color: @lightGrey;
     list-style: none;
     padding: @standardPad;
-    height: 160px;
+    height: 100px;
     overflow: hidden;
+    position: relative;
     &:hover .icon {
       color: @mediumGrey;
     }
-    .left-col, .right-col {
-      float: left;
-    }
     .left-col {
       color: @white;
-      margin: 0px 10px 0px -10px;
       text-align: center;
-      width: 40%;
+      width: 180px;
+      position: absolute;
+      top: 0;
+      left: 0;
       .icon {
         display: inline-block;
-        font-size: 270px;
+        font-size: 200px;
         line-height: 100px;
       }
     }
     .right-col {
-      width: 60%;
+      max-width: 400px;
+      margin-left: 160px;
     }
   }
 }
