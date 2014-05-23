@@ -335,6 +335,7 @@
         padding: 3px;
         color: @mediumGrey;
         overflow: visible;
+        height: 27px;
         .filter-name {
           position: absolute;
           top: -12px;
@@ -358,6 +359,9 @@
           width: 120px;
           background-color: @extraLightGrey;
           color: @darkGrey;
+          &[type="checkbox"] {
+            width: 50px;
+          }
         }
       }
     }

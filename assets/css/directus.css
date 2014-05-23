@@ -3583,6 +3583,7 @@ body.initial-load #sidebar {
   padding: 3px;
   color: #bbbbbb;
   overflow: visible;
+  height: 27px;
 }
 .header1 .secondary-row .filters li .filter-name {
   position: absolute;
@@ -3606,6 +3607,9 @@ body.initial-load #sidebar {
   width: 120px;
   background-color: #f4f4f4;
   color: #5b5b5b;
+}
+.header1 .secondary-row .filters li input[type="checkbox"] {
+  width: 50px;
 }
 @media only screen and (max-width: 800px) {
   #sidebar {

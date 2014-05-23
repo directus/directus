@@ -17,9 +17,9 @@ function(app, Backbone) {
     },
 
     filterUIMappings: {
-      default: '<input type="text" value="{{value}}" placeholder="Filter..." name="keywords" maxlength="100" class="medium filter_ui">',
-      date: '<input type="date" value="{{value}}" class="date medium filter_ui" name="keywords" id="advKeywords">',
-      checkbox: '<input type="checkbox" {{#if value}}checked{{/if}} class="date medium filter_ui" name="keywords" id="advKeywords">'
+      default: '<input type="text" value="{{value}}" placeholder="Filter..." name="keywords" maxlength="100" class="filter_ui">',
+      date: '<input type="date" value="{{value}}" class="date filter_ui" name="keywords" id="advKeywords">',
+      checkbox: '<input type="checkbox" {{#if value}}checked{{/if}} class="filter_ui" name="keywords" id="advKeywords">'
     },
 
     events: {
