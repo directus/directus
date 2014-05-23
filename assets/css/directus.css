@@ -3711,6 +3711,9 @@ body.initial-load #sidebar {
   .history-container ul .history-add-comment {
     padding-right: 20px;
   }
+  .history-container ul li {
+    padding-right: 70px;
+  }
   .activity-page li .avatar {
     top: 40px !important;
     left: 0 !important;
