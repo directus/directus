@@ -50,7 +50,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         } else {
           element.addClass('add-color');
           element.removeClass('delete-color');
-          element.html('✔');
+          element.html('◯');
         }*/
       },
       'click .view-entire-history': function(e) {
