@@ -1,3 +1,7 @@
+body.initial-load #sidebar {
+  left: 0;
+}
+
 #sidebar {
   background-color: @extraDarkGrey;
   bottom: 0px;
@@ -6,10 +10,15 @@
   height: 100%;
   letter-spacing: 1px;
   position: fixed;
-  top: 0px;
+  top: 0;
+  left: -170px;
   width: @standardSidebarWidth;
   z-index: 100;
   -webkit-font-smoothing: antialiased;
+  -webkit-transition: left 400ms ease-in-out;
+  -moz-transition: left 400ms ease-in-out;
+  -o-transition: left 400ms ease-in-out;
+  transition: left 400ms ease-in-out;
   ul {
     padding: 0px;
     li {
@@ -40,6 +49,7 @@
     text-align: center;
     font-size: 40px;
     color: @darkGrey;
+    border-bottom: 1px solid @mediumDarkGrey;
     &:hover {
       color: @mediumGrey;
     }
@@ -157,8 +167,8 @@
         left: 0px;
         position: absolute;
         top: 0px;
-        width:59px;
-        height:59px;
+        width: 100%;
+        height: 100%;
       }
       .icon {
         display: block;

@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1.0">
   <title>directus</title>
 
@@ -20,41 +22,10 @@
 
 <body class="font-primary">
 
-<!-- Initial load screen -->
-<div id="splash">
+<!-- Loader and Alerts -->
+<div class="invisible-blocker" id="page-blocker">
   <div class="spinner"></div>
-</div>
-
-<!-- Main container. Get's attached to a Backbone View -->
-<div id="main">
-
-  <!-- Sidebar template -->
-  <header id="sidebar" class="font-primary">
-
-  </header>
-
-  <!-- Loader overlay -->
-  <div id="loader">
-    <div class="spinner"></div>
-  </div>
-
-  <div id="content"></div>
-
-  <div id="modal-container"></div>
-
-</div>
-
-<!-- ? -->
-<div id="push"></div>
-
-<!-- ? -->
-<div id="messages"></div>
-
-<!-- Loader -->
-<div class="invisible-blocker" id="page_loader" style="display:none;">
-  <div class="spinner"></div>
-  <div class="blocker" id="loader_page">
-    <!--<div id="alert"><span class="glyphicon-refresh"></span></div>-->
+  <div class="blocker" id="page-blocker-smoke">
   </div>
   <div class="directus-alert-modal hide">
     <div class="directus-alert-modal-message">Your alert text goes here...</div>
@@ -66,6 +37,21 @@
   </div>
 </div>
 
+<!-- Main container. Get's attached to a Backbone View -->
+<div id="main">
+
+  <!-- Sidebar template -->
+  <header id="sidebar" class="font-primary">
+
+  </header>
+
+  <div id="content"></div>
+  <div id="modal-container"></div>
+
+</div>
+
+<div id="push"></div>
+<div id="messages"></div>
 <div id="tool-tips"></div>
 
 <!-- custom HTML can be injected here -->

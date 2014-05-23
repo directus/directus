@@ -227,7 +227,7 @@ a.secondary-info {
   border-top: 1px solid @lightGrey;
 }
 .big-label-text {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 100;
   color: @mediumGrey;
 }
@@ -254,7 +254,7 @@ img.grayscale {
 .content-body {
   /* flex: 1; */
   margin-bottom: 40px;
-  margin-top: 130px;
+  margin-top: 80px;
 }
 .overlay {
   h3 {
@@ -297,25 +297,6 @@ input:-webkit-autofill {
 ////////////
 //  OTHER
 ////////////
-#splash {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: @mediumGrey;
-  z-index: 109;
-  cursor: progress;
-}
-#loader {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 109;
-  display: none;
-}
 
 .invisible-blocker {
   position: fixed;
@@ -325,28 +306,36 @@ input:-webkit-autofill {
   bottom: 0;
   z-index: 109;
 }
-
-#loader_page {
-  //left: 170px;
-  left: 0;
+body.initial-load {
+  #page-blocker-smoke {
+    opacity: 0.8;
+  }
+}
+#page-blocker-smoke {
+  left: 170px;
+  //left: 0;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: @white;
   z-index: 109;
   cursor: progress;
+  -webkit-transition: opacity 400ms ease-in-out;
+  -moz-transition: opacity 400ms ease-in-out;
+  -o-transition: opacity 400ms ease-in-out;
+  transition: opacity 400ms ease-in-out;
 }
 .spinner {
-  position: absolute;
-  width: 100px;
-  height: 100px;
+  position: fixed;
+  width: 60px;
+  height: 60px;
   color: @mediumGrey;
-  background-color: @mediumGrey;
-  top: 50%;
-  left: 50%;
-  margin-top: -50px;
-  margin-left: -50px;
+  background-color: @darkGrey;
+  bottom: 20px;
+  right: 20px;
+  // margin-top: -50px;
+  // margin-left: -50px;
   -webkit-animation: rotateplane 1.2s infinite ease-in-out;
   animation: rotateplane 1.2s infinite ease-in-out;
   z-index: 110;
@@ -371,6 +360,11 @@ input:-webkit-autofill {
   }
 }
 
+input[type="date"]::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+}
 
 .avatar {
   height: 30px;

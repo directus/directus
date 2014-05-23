@@ -22,17 +22,15 @@
 }
 
 .header1 {
-  position: relative;
   .border-box;
+  position: relative;
   background-color: @white;
-  // border-bottom: 1px solid @lightGrey;
   clear: both;
   float: left;
-  margin-bottom: @smallPad;
-  padding-bottom: 20px;
-  padding-top: 30px;
+  padding-top: 20px;
+  padding-bottom: 5px;
   width: 100%;
-  min-height: 100px;
+  min-height: 80px;
   h1, ul {
     margin: 0px;
   }
@@ -41,11 +39,12 @@
     float: left;
     height: 38px;
     text-transform: capitalize;
+    font-size: 28px;
     .icon {
       color: @lightGrey;
       display: inline-block;
-      font-size: 80px;
-      line-height: 30px;
+      font-size: 70px;
+      line-height: 32px;
       margin: 0px 10px;
       vertical-align: top;
       cursor: pointer;
@@ -249,8 +248,8 @@
     @textActionMarginTop: 7px;
     color: @mediumGrey;
     font-weight: 600;
-    margin: 10px 0px -15px 0px;
-    overflow: hidden;
+    margin: 15px 0 0 0;
+    //overflow: hidden;
     &.filter-options {
       .filter-list {
         padding: 0px;
@@ -295,6 +294,9 @@
     .vertical-center {
       margin-top: @textActionMarginTop;
     }
+    .pagination-number {
+      margin-top: 11px;
+    }
     .action {
       display: inline-block;
       color: @darkGrey;
@@ -321,8 +323,39 @@
     .filters {
       padding: 0px;
       li {
-        .tag;
-        margin: @extraSmallPad 0px 7px @smallPad;
+        display: inline-block;
+        font-weight: 600;
+        background-color: @extraLightGrey;
+        .border-radius(2px, 2px, 2px, 2px);
+        position: relative;
+        margin: 0 10px 0 0;
+        padding: 3px;
+        color: @mediumGrey;
+        overflow: visible;
+        .filter-name {
+          position: absolute;
+          top: -12px;
+          left: 0px;
+          color: @mediumGrey;
+          font-size: 9px;
+          text-transform: uppercase;
+          //display: none;
+        }
+        .filter-remove {
+          color: @mediumGrey;
+          top: 5px;
+          position: relative;
+          margin: 0 6px 0 3px;
+          cursor: pointer;
+          &:hover {
+            color: @deleteColor;
+          }
+        }
+        input {
+          width: 120px;
+          background-color: @extraLightGrey;
+          color: @darkGrey;
+        }
       }
     }
   }

@@ -1,0 +1,142 @@
+
+//////////////////////////////////////////////////////////////////////////////
+// Small Desktop
+
+@media only screen and (max-width : 800px) {
+	#sidebar {
+		width: 60px;
+		.directusLogo {
+			height: 50px !important;
+			font-size: 30px;
+			padding: 10px 0px;
+		}
+		// Hide sub-items in sidebar
+		.sidebar-subitem {
+			display: none;
+		}
+		.sidebar-label {
+			display: none;
+		}
+		#mainSidebar {
+			top: 81px;
+			.sidebar-extension,
+			.sidebar-section {
+				margin: 0;
+			}
+			li {
+				height: 35px;
+				&.hr {
+					display: none;
+				}
+				a {
+					height: 12px;
+				}
+				.icon {
+					font-size: 400%;
+					margin-left: 5px;
+				}
+			}
+		}
+		#featureSidebar {
+			padding: 0px 10px 10px 10px;
+			li {
+				width: 40px;
+				height: 40px;
+				.icon {
+					font-size: 40px;
+					line-height: 3px;
+					margin-left: -9px;
+				}
+			}
+		}
+	}
+	.main-container {
+		margin-left: 60px;
+		padding: 0px 20px;
+		.header1 {
+			padding-top: 20px;
+			padding-bottom: 10px;
+			min-height: 60px;
+			margin-bottom: 0;
+			h1 {
+				font-size: 24px;
+				.breadcrumb-delimiter {
+					line-height: 20px;
+					margin: 0px 5px;
+				}
+			}
+			.primary-row .tools {
+				margin-top: 0;
+			}
+			.pagination-number {
+				display: none;
+			}
+			#save .simple-select {
+				display: none;
+			}
+			.secondary-row {
+				display: none;
+			}
+			#tools-right-insert {
+				display: none;
+			}
+		}
+	}
+	.content-body {
+		margin-top: 70px !important;
+	}
+
+	.two-column-form {
+		.fields {
+			.field {
+				padding: 20px 10px 20px 10px;
+			}
+			.label {
+				width: 100px;
+				padding: 30px 10px 20px 10px;
+			}
+		}
+	}
+	// Edge Cases
+	//////////////////////////////////////////////////////////////////////////////
+
+	.history-container ul .history-add-comment {
+		padding-right: 20px;
+	}
+
+	.activity-page li .avatar {
+		top: 40px !important;
+		left: 0 !important;
+	}
+
+	.feature-cards .feature-card {
+		height: 60px;
+		.left-col {
+			width: 100px;
+			.icon {
+				font-size: 100px;
+				line-height: 80px;
+			}
+		}
+		.right-col {
+			//width: 70%;
+			margin-left: 80px;
+			h2 {
+				margin-top: 10px;
+				white-space:nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+			p {
+				display: none;
+			}
+		}
+	}
+
+	#page-blocker-smoke {
+		left: 60px;
+	}
+
+}
+
+//////////////////////////////////////////////////////////////////////////////

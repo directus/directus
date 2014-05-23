@@ -401,7 +401,7 @@ define(function(require, exports, module) {
       this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
 
       //Fade out and remove splash
-      $('#splash').fadeOut('fast').remove();
+      $('body').addClass('initial-load');
       this.tabs = options.tabs;
       this.bookmarks = app.getBookmarks();
       this.extensions = {};

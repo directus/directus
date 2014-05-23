@@ -64,7 +64,7 @@ select {
     //padding: 0px @extraSmallPad 0px @extraSmallPad;
     pointer-events: none;
     position: absolute;
-    right: 0px;
+    right: 10px;
     top: 0px;
   }
   select {
@@ -76,6 +76,9 @@ select {
     padding: 0 20px 0 0;
     outline: none;
     &:focus {
+      border: none;
+    }
+    &:hover {
       border: none;
     }
   }
@@ -181,6 +184,21 @@ select,
 ////////////
 //  CUSTOM FORMS
 ////////////
+
+.simple-select.simple-gray {
+  margin-top: 0;
+  .icon {
+    top: 8px;
+  }
+  select {
+    .border-radius();
+    background-color: @lightGrey;
+    border: 0px;
+    margin: 0px 4px 0px 0px;
+    padding: 8px @smallPad;
+  }
+}
+
 .filter-form {
   select, input[type="text"] {
     .border-radius();
@@ -199,7 +217,7 @@ select,
     position: relative;
     .icon {
       color: @darkGrey;
-      line-height: 26px;
+      line-height: 28px;
       right: 9px;
     }
     select {
