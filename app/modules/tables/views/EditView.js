@@ -21,6 +21,10 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
 
     events: {
       'click #messages-response-button': function(e) {
+        if(this.$el.find('#commentTextarea').val() === "") {
+          return;
+        }
+
         var model = new app.messages.model({from: app.authenticatedUserId.id}, {collection: this.comments, parse: true});
         var subject = "Item " + this.model.get('id') + " from " + app.capitalize(this.model.collection.table.id);
         if(this.model.collection.table.get('primary_column') && this.model.has(this.model.collection.table.get('primary_column'))) {

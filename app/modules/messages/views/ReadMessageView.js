@@ -17,6 +17,11 @@ function(app, Backbone, BasePageView) {
         var collection = this.model.get('responses');
         var Model = collection.model;
         var myId = app.users.getCurrentUser().get('id');
+
+        if($('#messages-response').val() === "") {
+          return;
+        }
+
         var recipients = _.map(this.model.get('recipients').split(','), function(id) {
           return '0_' + id;
         });
@@ -24,7 +29,7 @@ function(app, Backbone, BasePageView) {
 
         var attrs = {
           'from': app.users.getCurrentUser().get('id'),
-          'subject': '',
+          'subject': 'RE: ' + this.model.get('subject'),
           'recipients': recipients.join(','),
           'datetime': (new Date()).toISOString(),
           'response_to': this.model.id,
