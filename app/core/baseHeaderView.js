@@ -30,6 +30,11 @@ function(app, Backbone) {
 
     serialize: function() {
       var data = this.options.headerOptions;
+
+      if(this.options.headerOptions.route.breadcrumbs) {
+        data.route.lastBreadcrumbAnchor = this.options.headerOptions.route.breadcrumbs[this.options.headerOptions.route.breadcrumbs.length-1].anchor;
+      }
+
       return data;
     },
     beforeRender: function() {

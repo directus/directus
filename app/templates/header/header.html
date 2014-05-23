@@ -7,6 +7,12 @@
           <span class="icon icon-circled-left" id="removeOverlay"></span>
           <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
         {{else}}
+          {{#if route.lastBreadcrumbAnchor}}
+          <a href="{{route.lastBreadcrumbAnchor}}">
+            <span class="icon icon-circled-left" id="removeOverlay"></span>
+            <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
+          </a>
+          {{/if}}
           {{#each route.breadcrumbs}}
               <a href="{{anchor}}" class="" >{{{capitalize title}}}</a>
               <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
