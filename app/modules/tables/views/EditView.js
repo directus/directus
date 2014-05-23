@@ -216,6 +216,13 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         action = $(e.target.options[e.target.selectedIndex]).val();
       }
       var data = this.editView.data();
+
+      if(data.active && data.active == 0) {
+        if(!confirm("Are you sure you wish to delete this item?")) {
+          return;
+        }
+      }
+
       var model = this.model;
       var isNew = this.model.isNew();
       var collection = this.model.collection;
