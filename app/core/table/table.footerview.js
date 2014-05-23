@@ -56,6 +56,7 @@ function(app, Backbone) {
           isNumeric: this.collection.structure.get(value).get('ui') === 'numeric',
           selectedFunction: this.functions.hasOwnProperty(value) ? this.functions[value] : 'SUM'
         };
+        col.otherFunctions = _.without(['MIN', 'MAX', 'AVG', 'SUM'], col.selectedFunction);
         if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), col.selectedFunction);
         return col;
       }, this);

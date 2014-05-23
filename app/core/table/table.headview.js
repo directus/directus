@@ -151,6 +151,7 @@ function(app, Backbone) {
           });
 
           that.collection.filters.columns_visible = data.columns_visible;
+          that.collection.fetch();
         };
 
         this.render();

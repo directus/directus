@@ -21,6 +21,10 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
 
     events: {
       'click #messages-response-button': function(e) {
+        if(this.$el.find('#commentTextarea').val() === "") {
+          return;
+        }
+
         var model = new app.messages.model({from: app.authenticatedUserId.id}, {collection: this.comments, parse: true});
         var subject = "Item " + this.model.get('id') + " from " + app.capitalize(this.model.collection.table.id);
         if(this.model.collection.table.get('primary_column') && this.model.has(this.model.collection.table.get('primary_column'))) {
@@ -212,6 +216,13 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         action = $(e.target.options[e.target.selectedIndex]).val();
       }
       var data = this.editView.data();
+
+      if(data.active && data.active == 0) {
+        if(!confirm("Are you sure you wish to delete this item?")) {
+          return;
+        }
+      }
+
       var model = this.model;
       var isNew = this.model.isNew();
       var collection = this.model.collection;
