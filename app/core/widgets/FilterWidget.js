@@ -50,7 +50,7 @@ function(app, Backbone) {
       },
       'change .filter_ui': function(e) {
         var data = {
-          id: this.mysql_real_escape_string($(e.target).parent().parent().find('.filterColumnName').attr('data-filter-id')),
+          id: '`' + this.mysql_real_escape_string($(e.target).parent().parent().find('.filterColumnName').attr('data-filter-id')) + '`',
           type: 'like',
           value: this.mysql_real_escape_string($(e.target).val())
         };
@@ -62,10 +62,8 @@ function(app, Backbone) {
             data.value = 0;
           }
         }
-        console.log(data.value);
 
-        this.options.filterOptions.filters[$(e.target).parent().index()] = data;
-
+        this.options.filterOptions.filters[$(e.target).parent().parent().index()] = data;
         this.updateFilters();
         this.collection.fetch();
         //this.saveFilterString();
