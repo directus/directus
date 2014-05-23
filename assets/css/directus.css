@@ -3701,6 +3701,9 @@ body.initial-load #sidebar {
   .two-column-form .fields .field {
     padding: 20px 10px 20px 10px;
   }
+  .two-column-form .fields .field .medium {
+    width: auto;
+  }
   .two-column-form .fields .label {
     width: 100px;
     padding: 30px 10px 20px 10px;
