@@ -2572,7 +2572,7 @@ select:focus,
   text-align: center;
 }
 .history-header {
-  margin: 20px 0 10px 0;
+  margin: 40px 0 10px 0;
 }
 .history-container {
   background-color: #f4f4f4;
@@ -3029,7 +3029,7 @@ body.initial-load #sidebar {
   color: #5b5b5b;
   float: left;
   height: 100%;
-  letter-spacing: 1px;
+  letter-spacing: 0.4px;
   position: fixed;
   top: 0;
   left: -170px;
