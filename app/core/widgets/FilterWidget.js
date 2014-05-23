@@ -17,8 +17,8 @@ function(app, Backbone) {
     },
 
     filterUIMappings: {
-      default: '<input type="text" value="{{value}}" placeholder="Keywords..." name="keywords" maxlength="255" class="medium filter_ui" placeholder="Keywords">',
-      date: '<input type="date" value="{{value}}" style="float: left;width: auto;background-color:#ededed" class="date medium filter_ui" name="keywords" id="advKeywords">',
+      default: '<input type="text" value="{{value}}" placeholder="Filter..." name="keywords" maxlength="100" class="medium filter_ui">',
+      date: '<input type="date" value="{{value}}" class="date medium filter_ui" name="keywords" id="advKeywords">',
     },
 
     events: {

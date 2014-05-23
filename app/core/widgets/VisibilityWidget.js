@@ -29,13 +29,20 @@ function(app, Backbone, PreferenceModel) {
       </select> \
       <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
     </div> \
-    <div class="action vertical-center left" id="saveSnapshotBtn">Save Snapshot</div> \
-    <div style="display:none" class="action vertical-center left snapshotOption" id="pinSnapshotBtn">Pin Snapshot</div> \
-    <div style="display:none" class="action vertical-center left snapshotOption" id="deleteSnapshotBtn">Delete Snapshot</div>'),
+    <div class="simple-select dark-grey-color simple-gray left"> \
+      <span class="icon icon-triangle-down"></span> \
+      <select id="visibilitySelect" name="status"> \
+        <option selected="selected" disabled="disabled">Options</option> \
+        <option value="Save Snapshot" id="saveSnapshotBtn">Save Snapshot</option> \
+        <option style="display:none" class="snapshotOption" value="Pin Snapshot" id="pinSnapshotBtn">Pin Snapshot</option> \
+        <option style="display:none" class="snapshotOption" value="Delete Snapshot" id="deleteSnapshotBtn">Delete Snapshot</option> \
+      </select> \
+      <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
+    </div>'),
 
     tagName: 'div',
     attributes: {
-      'class': 'tool div-right'
+      'class': 'tool'
     },
 
     events: {
@@ -160,7 +167,7 @@ function(app, Backbone, PreferenceModel) {
 
       var sel = this.$el.find('#visibilitySelect');
       this.$el.find('#templateOption').text( sel.find(":selected").text() );
-      sel.width( this.$el.find('#template').width() * 1.03 );
+      sel.width( this.$el.find('#template').width() * 1.03 + 10 ); // +10 is for arrow on right
     },
     initialize: function() {
       var activeTable = this.collection.table.id;

@@ -1507,6 +1507,12 @@ input:-webkit-autofill {
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
   }
 }
+input[type="date"]::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+
+  -webkit-appearance: none;
+  margin: 0;
+}
 .avatar {
   height: 30px;
   float: left;
@@ -2100,7 +2106,7 @@ select:focus,
 }
 .filter-form .simple-select .icon {
   color: #5b5b5b;
-  line-height: 26px;
+  line-height: 28px;
   right: 9px;
 }
 .filter-form .simple-select select {
@@ -2410,6 +2416,74 @@ select:focus,
 }
 .table-striped tbody .sort .icon {
   margin-top: -4px;
+}
+.table-striped tfoot tr {
+  border-bottom: none;
+  height: 100px;
+}
+.table-striped tfoot tr:hover {
+  background-color: initial;
+  cursor: auto;
+}
+.table-striped tfoot tr td {
+  vertical-align: top;
+  padding-left: 0;
+}
+.table-striped tfoot tr .footer-function {
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  color: #bbbbbb;
+  background-color: #ededed;
+  width: 72px;
+  text-align: center;
+  padding: 7px 5px 5px 5px;
+  position: relative;
+}
+.table-striped tfoot tr .footer-function .method {
+  font-weight: 600;
+  font-size: 11px;
+}
+.table-striped tfoot tr .footer-function ul {
+  padding: 0;
+  font-weight: 600;
+  font-size: 11px;
+}
+.table-striped tfoot tr .footer-function span.value {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 14px;
+  color: #313131;
+}
+.table-striped tfoot tr .footer-function li {
+  color: #bbbbbb;
+}
+.table-striped tfoot tr .footer-function li:hover {
+  color: #313131;
+}
+.table-striped tfoot tr .footer-function:after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 10px;
+  border-style: solid;
+  border-width: 0 5px 5px;
+  border-color: #ededed transparent;
+  display: block;
+  width: 0;
+  z-index: 1;
 }
 .table-striped tr {
   -webkit-font-smoothing: auto;
@@ -3436,7 +3510,6 @@ select:focus,
   color: #bbbbbb;
   font-weight: 600;
   margin: 10px 0px -15px 0px;
-  overflow: hidden;
 }
 .header1 .secondary-row.filter-options .filter-list {
   padding: 0px;
@@ -3504,12 +3577,8 @@ select:focus,
 }
 .header1 .secondary-row .filters li {
   display: inline-block;
-  cursor: pointer;
   font-weight: 600;
-  background-color: #bbbbbb;
-  color: #ffffff;
-  margin: 10px 10px 0 0;
-  padding: 3px 10px;
+  background-color: #f4f4f4;
   -webkit-border-top-right-radius: 2px;
   -webkit-border-bottom-right-radius: 2px;
   -webkit-border-bottom-left-radius: 2px;
@@ -3525,12 +3594,36 @@ select:focus,
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  margin: 5px 0px 7px 10px;
+  position: relative;
+  margin: 0 10px 0 0;
+  padding: 3px;
+  color: #bbbbbb;
+  overflow: visible;
 }
-.header1 .secondary-row .filters li:hover {
-  background-color: #c1272d;
+.header1 .secondary-row .filters li .filter-name {
+  position: absolute;
+  top: -12px;
+  left: 0px;
+  color: #bbbbbb;
+  font-size: 9px;
+  text-transform: uppercase;
 }
-@media only screen and (max-height: 700px), screen and (max-width: 1280px) {
+.header1 .secondary-row .filters li .filter-remove {
+  color: #bbbbbb;
+  top: 5px;
+  position: relative;
+  margin: 0 6px 0 3px;
+  cursor: pointer;
+}
+.header1 .secondary-row .filters li .filter-remove:hover {
+  color: #c1272d;
+}
+.header1 .secondary-row .filters li input {
+  width: 120px;
+  background-color: #f4f4f4;
+  color: #5b5b5b;
+}
+@media only screen and (max-width: 800px) {
   #sidebar {
     width: 60px;
   }
@@ -3583,8 +3676,9 @@ select:focus,
   }
   .main-container .header1 {
     padding-top: 20px;
-    padding-bottom: 0;
+    padding-bottom: 10px;
     min-height: 60px;
+    margin-bottom: 0;
   }
   .main-container .header1 h1 {
     font-size: 24px;

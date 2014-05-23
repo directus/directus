@@ -250,7 +250,7 @@
     color: @mediumGrey;
     font-weight: 600;
     margin: 10px 0px -15px 0px;
-    overflow: hidden;
+    //overflow: hidden;
     &.filter-options {
       .filter-list {
         padding: 0px;
@@ -321,8 +321,39 @@
     .filters {
       padding: 0px;
       li {
-        .tag;
-        margin: @extraSmallPad 0px 7px @smallPad;
+        display: inline-block;
+        font-weight: 600;
+        background-color: @extraLightGrey;
+        .border-radius(2px, 2px, 2px, 2px);
+        position: relative;
+        margin: 0 10px 0 0;
+        padding: 3px;
+        color: @mediumGrey;
+        overflow: visible;
+        .filter-name {
+          position: absolute;
+          top: -12px;
+          left: 0px;
+          color: @mediumGrey;
+          font-size: 9px;
+          text-transform: uppercase;
+          //display: none;
+        }
+        .filter-remove {
+          color: @mediumGrey;
+          top: 5px;
+          position: relative;
+          margin: 0 6px 0 3px;
+          cursor: pointer;
+          &:hover {
+            color: @deleteColor;
+          }
+        }
+        input {
+          width: 120px;
+          background-color: @extraLightGrey;
+          color: @darkGrey;
+        }
       }
     }
   }

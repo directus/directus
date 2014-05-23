@@ -371,6 +371,11 @@ input:-webkit-autofill {
   }
 }
 
+input[type="date"]::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+}
 
 .avatar {
   height: 30px;

@@ -1,5 +1,4 @@
 <tr>
-<td></td>
 {{#if sortable}}<td></td>{{/if}}
 {{#if selectable}}<td></td>{{/if}}
 {{#columns}}
@@ -7,8 +6,8 @@
   {{#if isNumeric}}
   <div class="footer-function" data-column="{{title}}">
     <span class="value">{{value}}</span>
-    <span>{{selectedFunction}}</span>
-    <ul style="list-style:none;margin:0;cursor:pointer;" class="collapse footer-function-options">
+    <span class="method">{{selectedFunction}}</span>
+    <ul style="list-style:none;margin:0;cursor:pointer;" class="hide footer-function-options">
       <li>AVG</li>
       <li>MIN</li>
       <li>MAX</li>

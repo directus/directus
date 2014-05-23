@@ -1,4 +1,4 @@
-@media only screen and (max-height: 700px), screen and (max-width: 800px) {
+@media only screen and (max-width: 800px) {
   #sidebar {
     width: 60px;
   }
@@ -51,8 +51,9 @@
   }
   .main-container .header1 {
     padding-top: 20px;
-    padding-bottom: 0;
+    padding-bottom: 10px;
     min-height: 60px;
+    margin-bottom: 0;
   }
   .main-container .header1 h1 {
     font-size: 24px;

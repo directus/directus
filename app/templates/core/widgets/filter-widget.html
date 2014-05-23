@@ -17,10 +17,10 @@
 
   <ul class="filters left">
   {{#filters}}
-    <li style="width:250px">
+    <li>
       <span style="float:left">{{{filter_ui}}}</span>
-      <span class="filterColumnName" data-filter-id="{{columnName}}">{{capitalize columnName}}</span>
-      <span class="removeFilterClass action vertical-center secondary-info" style="color:black">X</span>
+      <span class="filterColumnName filter-name" data-filter-id="{{columnName}}">{{capitalize columnName}}</span>
+      <span class="removeFilterClass filter-remove">✕</span>
     </li>
   {{/filters}}
   </ul>
