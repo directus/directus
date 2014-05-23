@@ -19,6 +19,7 @@ function(app, Backbone) {
     filterUIMappings: {
       default: '<input type="text" value="{{value}}" placeholder="Filter..." name="keywords" maxlength="100" class="medium filter_ui">',
       date: '<input type="date" value="{{value}}" class="date medium filter_ui" name="keywords" id="advKeywords">',
+      checkbox: '<input type="checkbox" {{#if value}}checked{{/if}} class="date medium filter_ui" name="keywords" id="advKeywords">'
     },
 
     events: {
@@ -53,6 +54,15 @@ function(app, Backbone) {
           type: 'like',
           value: this.mysql_real_escape_string($(e.target).val())
         };
+
+        if($(e.target).is(':checkbox')) {
+          if($(e.target).prop('checked')) {
+            data.value = 1;
+          } else {
+            data.value = 0;
+          }
+        }
+        console.log(data.value);
 
         this.options.filterOptions.filters[$(e.target).parent().index()] = data;
 
@@ -95,6 +105,9 @@ function(app, Backbone) {
         case 'DATE':
         case 'DATETIME':
           newInput = this.filterUIMappings.date;
+          break;
+        case 'TINYINT':
+          newInput = this.filterUIMappings.checkbox;
           break;
         default:
           newInput = this.filterUIMappings.default;
