@@ -3609,7 +3609,9 @@ body.initial-load #sidebar {
   color: #5b5b5b;
 }
 .header1 .secondary-row .filters li input[type="checkbox"] {
-  width: 50px;
+  width: 30px;
+  margin-top: 7px;
+  margin-left: 7px;
 }
 @media only screen and (max-width: 800px) {
   #sidebar {
