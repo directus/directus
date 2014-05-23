@@ -201,7 +201,7 @@ require(["config"], function() {
         alerts.hideProgressNotification();
       };
 
-      $('#page-blocker').hide();
+      $('#page-blocker').fadeOut(500);
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Tabs

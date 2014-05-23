@@ -40,7 +40,7 @@ define([
   var hideProgressNotification = function() {
     $('a[href$="#activity"] span').addClass('icon-bell').removeClass('icon-cycle');
     app.activityInProgress = false;
-    $('#page-blocker').hide();
+    $('#page-blocker').fadeOut(100);
     //app.unlockScreen();
   };
 
