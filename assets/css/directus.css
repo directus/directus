@@ -3291,6 +3291,9 @@ body.initial-load #sidebar {
   width: 100%;
   min-height: 80px;
 }
+.header1 .navigation-back {
+  display: none;
+}
 .header1 h1,
 .header1 ul {
   margin: 0px;
@@ -3661,12 +3664,21 @@ body.initial-load #sidebar {
     min-height: 60px;
     margin-bottom: 0;
   }
+  .main-container .header1 .navigation-back {
+    display: inline-block;
+  }
+  .main-container .header1 .navigation-breadcrumb {
+    display: none;
+  }
   .main-container .header1 h1 {
     font-size: 24px;
   }
   .main-container .header1 h1 .breadcrumb-delimiter {
     line-height: 20px;
     margin: 0px 5px;
+  }
+  .main-container .header1 h1 .icon {
+    line-height: 22px;
   }
   .main-container .header1 .primary-row .tools {
     margin-top: 0;
