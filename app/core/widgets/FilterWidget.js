@@ -50,7 +50,7 @@ function(app, Backbone) {
       },
       'change .filter_ui': function(e) {
         var data = {
-          id: '`' + this.mysql_real_escape_string($(e.target).parent().parent().find('.filterColumnName').attr('data-filter-id')) + '`',
+          id: this.mysql_real_escape_string($(e.target).parent().parent().find('.filterColumnName').attr('data-filter-id')),
           type: 'like',
           value: this.mysql_real_escape_string($(e.target).val())
         };
@@ -164,6 +164,9 @@ function(app, Backbone) {
     },
 
     afterRender: function() {
+      console.log($('.filter-ui'));
+      $('.filter-ui').last().find('input').focus();
+
     /*  if(this.savedValue) {
         this.$el.find('.adv-search-col-id').val(this.savedValue);
       }
