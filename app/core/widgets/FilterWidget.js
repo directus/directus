@@ -164,7 +164,6 @@ function(app, Backbone) {
     },
 
     afterRender: function() {
-      console.log($('.filter-ui'));
       $('.filter-ui').last().find('input').focus();
 
     /*  if(this.savedValue) {

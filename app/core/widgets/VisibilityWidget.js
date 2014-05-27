@@ -31,7 +31,7 @@ function(app, Backbone, PreferenceModel) {
     </div> \
     <div class="simple-select dark-grey-color simple-gray left"> \
       <span class="icon icon-triangle-down"></span> \
-      <select id="visibilitySelect" name="status"> \
+      <select id="optionsSelect" name="status"> \
         <option selected="selected" disabled="disabled">Options</option> \
         <option value="Save Snapshot" id="saveSnapshotBtn">Save Snapshot</option> \
         <option style="display:none" class="snapshotOption" value="Pin Snapshot" id="pinSnapshotBtn">Pin Snapshot</option> \
@@ -64,82 +64,101 @@ function(app, Backbone, PreferenceModel) {
           }
         });
       },
-      'click #saveSnapshotBtn': function(e) {
-        var name = prompt("Please enter a name for your Snapshot");
-        if(name === null) {
-          return;
+      'change #optionsSelect': function(e) {
+        var selectedAttr = $(e.target).find(":selected").attr('id');
+        switch(selectedAttr) {
+          case 'saveSnapshotBtn':
+            this.saveSnapshot();
+            break;
+          case 'pinSnapshotBtn':
+            this.pinSnapshot();
+            break;
+          case 'deleteSnapshotBtn':
+            this.deleteSnapshot();
+            break;
         }
 
+        $(e.target).find('option').attr("selected", false);
+        $($(e.target).find('option').get(0)).attr('selected', true);
+      }
+    },
+
+    saveSnapshot: function() {
+      var name = prompt("Please enter a name for your Snapshot");
+      if(name === null) {
+        return;
+      }
+
+      var that = this;
+      var exists = false;
+      //Check for Duplicate
+      this.options.widgetOptions.snapshots.forEach(function(snapshot) {
+        if(name == snapshot) {
+          alert('A Snapshot With that name already exists!');
+          exists = true;
+          return;
+        }
+      });
+
+      if(exists) {
+        return;
+      }
+
+      if(name === null || name === "") {
+        alert('Please Fill In a Valid Name');
+        return;
+      }
+
+      this.options.widgetOptions.snapshots.push(name);
+
+      //Save id so it can be reset after render
+      this.defaultId = this.collection.preferences.get('id');
+      //Unset Id so that it creates new Preference
+      this.collection.preferences.unset('id');
+
+      this.collection.preferences.set({title: name});
+
+      this.collection.preferences.save();
+
+      this.listenToOnce(this.collection.preferences, 'sync', function() {
+        this.collection.fetch();
+        if(this.preferencesLoaded) {
+          this.render();
+        }
+      });
+    },
+
+    pinSnapshot: function() {
+      if(!this.snapshotData) {
+        return;
+      }
+
+      var data = {
+        title: this.snapshotData.title,
+        url: Backbone.history.fragment + "/pref/" + this.snapshotData.title,
+        icon_class: 'icon-search',
+        user: app.users.getCurrentUser().get("id"),
+        section: 'search'
+      };
+      if(app.getBookmarks().isBookmarked(data.title)) {
+        app.getBookmarks().removeBookmark(data);
+        $('#pinSnapshotBtn').html("Pin Snapshot");
+      } else {
+        app.getBookmarks().addNewBookmark(data);
+        $('#pinSnapshotBtn').html("Unpin Snapshot");
+      }
+    },
+
+    deleteSnapshot: function() {
+      if(this.snapshotData.id) {
+        var user = app.users.getCurrentUser().get("id");
         var that = this;
-        var exists = false;
-        //Check for Duplicate
-        this.options.widgetOptions.snapshots.forEach(function(snapshot) {
-          if(name == snapshot) {
-            alert('A Snapshot With that name already exists!');
-            exists = true;
-            return;
-          }
-        });
-
-        if(exists) {
-          return;
-        }
-
-        if(name === null || name === "") {
-          alert('Please Fill In a Valid Name');
-          return;
-        }
-
-        this.options.widgetOptions.snapshots.push(name);
-
-        //Save id so it can be reset after render
-        this.defaultId = this.collection.preferences.get('id');
-        //Unset Id so that it creates new Preference
-        this.collection.preferences.unset('id');
-
-        this.collection.preferences.set({title: name});
-
-        this.collection.preferences.save();
-
-        this.listenToOnce(this.collection.preferences, 'sync', function() {
-          this.collection.fetch();
-          if(this.preferencesLoaded) {
-            this.render();
-          }
-        });
-
-      },
-      'click #pinSnapshotBtn': function(e) {
-        if(!this.snapshotData) {
-          return;
-        }
-
-        var data = {
-          title: this.snapshotData.title,
-          url: Backbone.history.fragment + "/pref/" + this.snapshotData.title,
-          icon_class: 'icon-search',
-          user: app.users.getCurrentUser().get("id"),
-          section: 'search'
-        };
-        if(app.getBookmarks().isBookmarked(data.title)) {
-          app.getBookmarks().removeBookmark(data);
-          $('#pinSnapshotBtn').html("Pin Snapshot");
-        } else {
-          app.getBookmarks().addNewBookmark(data);
-          $('#pinSnapshotBtn').html("Unpin Snapshot");
-        }
-      },
-      'click #deleteSnapshotBtn': function(e) {
-        if(this.snapshotData.id) {
-          var user = app.users.getCurrentUser().get("id");
-          var that = this;
-          this.collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({id:this.snapshotData.id, user: user}),success: function() {
-            $('#visibilitySelect').val(that.collection.preferences.get('active'));
-            that.options.widgetOptions.snapshots.splice(that.snapshotData.title, 1);
-            app.getBookmarks().removeBookmark({title: that.snapshotData.title, icon_class: 'icon-search', user: user});
-            that.snapshotData = null;
-          }});
-        }
+        this.collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({id:this.snapshotData.id, user: user}),success: function() {
+          $('#visibilitySelect').val(that.collection.preferences.get('active'));
+          that.options.widgetOptions.snapshots.splice(that.snapshotData.title, 1);
+          app.getBookmarks().removeBookmark({title: that.snapshotData.title, icon_class: 'icon-search', user: user});
+          that.snapshotData = null;
+        }});
       }
     },
 
