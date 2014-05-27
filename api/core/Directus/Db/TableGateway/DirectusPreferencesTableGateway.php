@@ -131,6 +131,9 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         unset($data['title']);
         unset($data['table_name']);
         unset($data['user']);
+        if(!isset($data) || $data == false) {
+          $data = array();
+        }
         $update->set($data)
                 ->where
                   ->equalTo('table_name', $table)
