@@ -35,6 +35,9 @@ function(app, Backbone) {
         data.lBound = Math.min(this.collection.getFilter('currentPage') * this.collection.getFilter('perPage') + 1, data.totalCount);
         data.uBound = Math.min(data.totalCount, data.lBound + this.collection.getFilter('perPage') - 1);
       }
+      if(this.collection.length >= this.collection.getFilter('perPage') && this.collection.filters.adv_search && this.collection.filters.adv_search.length > 0) {
+        data.totalCount = "Many";
+      }
 
       this.options.widgetOptions = data;
       this.render();
