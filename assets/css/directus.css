@@ -1565,6 +1565,10 @@ input[type="date"]::-webkit-inner-spin-button {
   top: 1px;
   position: relative;
 }
+.settings-column-name {
+  font-weight: 600;
+  -webkit-font-smoothing: antialiased;
+}
 .btn-toolbar {
   clear: both;
   float: none;
