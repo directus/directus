@@ -18,7 +18,17 @@
   <ul class="filters left">
   {{#filters}}
     <li>
-      <span class="filter-ui" style="float:left">{{{filter_ui}}}</span>
+      {{#if relatedEntries}}
+        <span class="icon icon-triangle-down"></span>
+        <select name="keywords" id="advKeywords" class="medium filter_uidnr">
+        {{#relatedEntries}}
+          <option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
+        {{/relatedEntries}}
+        </select>
+      {{else}}
+      {{value}}
+        <span class="filter-ui" data-value="{{value}}" style="float:left">{{{filter_ui}}}</span>
+      {{/if}}
       <span class="filterColumnName filter-name" data-filter-id="{{columnName}}">{{capitalize columnName}}</span>
       <span class="removeFilterClass filter-remove">✕</span>
     </li>

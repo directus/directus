@@ -23,18 +23,10 @@ function(app, Backbone) {
     },
 
     events: {
-      'click .filters li': function(e) {
-        /*var index = $(e.target).index();
-        this.options.filterOptions.filters.splice(index, 1);
-        this.updateFilters();
-        this.collection.fetch();
-        this.saveFilterString();*/
-      },
       'click .removeFilterClass':function(e) {
         var index = $(e.target).parent().index();
         var title = $(e.target).parent().find('.filterColumnName').attr('data-filter-id');
         this.options.filters.splice(index, 1);
-        this.options.filterOptions.filters.splice(index, 1);
 
         this.updateFilters();
         this.collection.fetch();
@@ -62,8 +54,7 @@ function(app, Backbone) {
             data.value = 0;
           }
         }
-
-        this.options.filterOptions.filters[$(e.target).parent().parent().index()] = data;
+        this.options.filters[$(e.target).closest('li').index()].filterData = data;
         this.updateFilters();
         this.collection.fetch();
         //this.saveFilterString();
@@ -75,6 +66,7 @@ function(app, Backbone) {
         return;
       }
 
+      var columnModel = this.collection.structure.get(selectedColumn);
       var columnModelType = columnModel.get('type');
       var newInput;
 
@@ -104,6 +96,7 @@ function(app, Backbone) {
       if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
         var columnModel = this.collection.structure.get(selectedColumn);
         //Get Related Column Collection
+        data.columnModel = columnModel;
         data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
         data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
@@ -113,7 +106,6 @@ function(app, Backbone) {
       }
 
       this.options.filters.push(data);
-      this.options.filterOptions.filters.push({});
       this.render();
     },
 
@@ -129,25 +121,27 @@ function(app, Backbone) {
       });
       var that = this;
       var i=0;
-      _.each(this.options.filterOptions.filters, function(item) {
-        var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
-        data.filters[i].filter_ui = template({value: item.value});
+      _.each(this.options.filters, function(item) {
+        if(item.relatedCollection) {
+          data.filters[i].relatedEntries = [];
+          var visibleColumn = item.columnModel.options.get('visible_column');
+          var displayTemplate = Handlebars.compile(item.columnModel.options.get('visible_column_template'));
+          item.relatedCollection.each(function(model) {
+            data.filters[i].relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
+          });
+
+          data.filters[i].relatedEntries = _.sortBy(data.filters[i].relatedEntries, 'visible_column_template');
+        } else {
+          var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
+          if(item.filterData) {
+            data.filters[i].filter_ui = template({value: item.filterData.value});
+          } else {
+            data.filters[i].filter_ui = template({});
+          }
+        }
+
         i++;
       });
-
-/*
-      if(this.relatedCollection) {
-        data.relatedEntries = [];
-        var visibleColumn = this.columnModel.options.get('visible_column');
-        var displayTemplate = Handlebars.compile(this.columnModel.options.get('visible_column_template'));
-
-        this.relatedCollection.each(function(model) {
-          data.relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
-        });
-
-        data.relatedEntries = _.sortBy(data.relatedEntries, 'visible_column_template');
-      }
-*/
 
       return data;
     },
@@ -190,8 +184,11 @@ function(app, Backbone) {
     },
 
     updateFilters: function() {
-      console.log(this.options.filterOptions.filters);
-      this.collection.setFilter('adv_search', this.options.filterOptions.filters);
+      var filters = this.options.filters.map(function(item) {
+        return item.filterData;
+      });
+
+      this.collection.setFilter('adv_search', filters);
       this.collection.setFilter('currentPage', 0);
       //this.render();
     },
@@ -237,7 +234,6 @@ function(app, Backbone) {
     },
 
     initialize: function() {
-      this.options.filterOptions = {filters:[]};
       this.options.filters = [];
       //this.updateFiltersFromPreference();
       //this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
