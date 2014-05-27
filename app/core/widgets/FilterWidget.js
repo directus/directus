@@ -75,29 +75,8 @@ function(app, Backbone) {
         return;
       }
 
-      var columnModel = this.collection.structure.get(selectedColumn);
-      this.columnModel = columnModel;
       var columnModelType = columnModel.get('type');
       var newInput;
-      //Special Handling for Relationship
-      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
-        //If we already are up to date with the model then return
-        if(this.relatedCollection && this.relatedCollection.table.id == columnModel.relationship.get('table_related')) {
-          return;
-        }
-
-        this.savedValue = selectedColumn;
-
-        //Get Related Column Collection
-        this.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
-
-        this.relatedCollection.fetch({includeFilters: false, data: {active:1}});
-        this.listenTo(this.relatedCollection, 'sync', this.render);
-        return;
-      } else {
-        this.relatedCollection = null;
-        this.savedValue = null;
-      }
 
       switch(columnModelType) {
         case 'DATE':
@@ -121,7 +100,17 @@ function(app, Backbone) {
       var data = {};
 
       data.columnName = selectedColumn;
-      data.filter_ui = this.getFilterDataType(selectedColumn);
+
+      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
+        var columnModel = this.collection.structure.get(selectedColumn);
+        //Get Related Column Collection
+        data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
+
+        data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+        this.listenTo(data.relatedCollection, 'sync', this.render);
+      } else {
+        data.filter_ui = this.getFilterDataType(selectedColumn);
+      }
 
       this.options.filters.push(data);
       this.options.filterOptions.filters.push({});
