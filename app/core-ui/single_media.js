@@ -31,48 +31,64 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
   //{{capitalize mediaModel.title}}
 
   var template =  '<style type="text/css"> \
-                  div.ui-thumbnail { \
+                  div.single-image-thumbnail { \
                     float: left; \
-                    margin-top: 8px; \
                     max-height: 200px; \
-                    padding: 10px; \
                     background-color: #ffffff; \
-                    border: 1px solid #ededed; \
-                    -webkit-border-radius:3px; \
-                    -moz-border-radius:3px; \
-                    border-radius:3px; \
                     color: #ededed; \
                     text-align: center; \
                     cursor: pointer; \
                   } \
-                  div.ui-thumbnail.empty { \
-                    width: 300px; \
-                    height: 100px; \
+                  div.single-image-thumbnail.empty { \
+                    width: 160px; \
+                    height: 160px; \
                     background-color: #ffffff; \
-                    border: 2px dashed #ededed; \
-                    padding: 9px; \
-                    font-size: 16px; \
+                    font-size: 12px; \
                     font-weight: 600; \
-                    line-height: 100px; \
+                    line-height: 14px; \
+                    color: #bbbbbb; \
                   } \
-                  div.ui-thumbnail.empty.dragover, \
-                  div.ui-thumbnail.empty:hover { \
-                    background-color: #fefefe; \
-                    border: 2px dashed #cccccc; \
-                    cursor: pointer; \
-                  } \
-                  div.ui-thumbnail img { \
-                    max-height: 200px; \
-                  } \
-                  div.ui-img-details { \
-                    float: left; \
-                    position: relative; \
-                    margin-top: 15px; \
-                    margin-left: 10px; \
+                  div.single-image-thumbnail.empty span { \
+                    margin-top: 0; \
+                    display: inline-block; \
                     line-height: 18px; \
                   } \
+                  div.single-image-thumbnail.empty span div.icon { \
+                    display: block; \
+                    font-size: 100px; \
+                    line-height: 90px; \
+                  } \
+                  div.single-image-thumbnail.empty.dragover, \
+                  div.single-image-thumbnail.empty:hover { \
+                    background-color: #BBBBBB; \
+                    color: #ffffff; \
+                    cursor: pointer; \
+                  } \
+                  div.single-image-thumbnail img { \
+                    max-width: 160px; \
+                    display: block; \
+                  } \
+                  div.ui-img-details { \
+                    height: 120px; \
+                    width: 220px; \
+                    float: left; \
+                    position: relative; \
+                    line-height: 18px; \
+                    padding:20px; \
+                    background-color: #ffffff; \
+                  } \
+                  div.ui-img-details .btn { \
+                    position: absolute; \
+                    bottom: 20px; \
+                    left: 20px; \
+                  } \
                   div.ui-img-details a.title { \
-                    font-size: 18px; \
+                    font-size: 16px; \
+                    height: 20px; \
+                    overflow: hidden; \
+                    display: block; \
+                    text-overflow: ellipsis; \
+                    white-space: nowrap; \
                   } \
                   div.ui-img-details div { \
                     display: inline; \
@@ -81,6 +97,8 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     font-weight: 400; \
                     font-style: italic; \
                     color: #ccc; \
+                    margin-top: 5px; \
+                    display: block; \
                   } \
                   button.btn-right { \
                     margin-top: 8px; \
@@ -92,9 +110,28 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     padding-top: 5px; \
                     cursor: pointer; \
                   } \
+                  .single-image-actions { \
+                    margin: 2px 20px 0 20px; \
+                    float: left; \
+                    width: 160px; \
+                    text-align: center; \
+                    font-size: 12px; \
+                    color: #bbbbbb; \
+                  } \
+                  .single-image-actions .btn { \
+                    margin: 0; \
+                    display: block; \
+                    margin-top: 10px; \
+                    width: 100%; \
+                  } \
+                  .single-image-actions .btn .icon { \
+                    font-size: 300%; \
+                    line-height: 20%; \
+                    margin-right: 3px; \
+                  } \
                   </style> \
                   {{#if url}} \
-                  <div class="ui-thumbnail has-media"> \
+                  <div class="single-image-thumbnail has-media"> \
                     {{#if mediaModel.youtube}}<iframe width="300" height="200" src="http://www.youtube.com/embed/{{mediaModel.youtube}}" frameborder="0" allowfullscreen></iframe> \
                     {{else}} \
                       {{#if mediaModel.vimeo}} <iframe src="//player.vimeo.com/video/{{mediaModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
@@ -102,18 +139,23 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     {{/if}} \
                   </div> \
                   <div class="ui-img-details"> \
-                    <a href="{{link}}" class="title" target="single_media">{{mediaModel.title}}</a><br> \
-                    Uploaded by {{userName mediaModel.user}} {{contextualDate mediaModel.date_uploaded}}<br> \
-                    <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{mediaModel.size}}</i><br> \
-                    <button class="btn btn-primary btn-right" data-action="swap" type="button">Choose File</button> \
-                    <button class="btn btn-primary btn-right" data-action="remove-single-media" type="button">Remove File</button> \
+                    <a href="{{link}}" class="title" target="single_media" title="{{mediaModel.title}}">{{mediaModel.title}}</a> \
+                    <!--Uploaded by {{userName mediaModel.user}} {{contextualDate mediaModel.date_uploaded}}<br> --> \
+                    <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{mediaModel.size}} - {{mediaModel.type}}</i><br> \
+                    <button class="btn btn-primary" data-action="remove-single-media" type="button">Remove File</button> \
                   </div> \
                   {{else}} \
-                  <div class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click for existing</div> \
-                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
+                  <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
+                  <!--<input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div> \
-                  {{/if}}';
+                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
+                  {{/if}} \
+                  <div class="single-image-actions"> \
+                    <div class="single-image-text">OR UPLOAD FROM</div> \
+                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-upload"></span> Your Computer</button> \
+                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-link"></span> External URL</button> \
+                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-attach"></span> Directus Files</button> \
+                  </div>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -210,7 +252,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
 
     afterRender: function() {
       var timer;
-      var $dropzone = this.$el.find('.ui-thumbnail');
+      var $dropzone = this.$el.find('.single-image-thumbnail');
       var model = this.mediaModel;
       var self = this;
 
