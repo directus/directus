@@ -29,16 +29,7 @@ function(app, Backbone, PreferenceModel) {
       </select> \
       <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
     </div> \
-    <div class="simple-select dark-grey-color simple-gray left"> \
-      <span class="icon icon-triangle-down"></span> \
-      <select id="optionsSelect" name="status"> \
-        <option selected="selected" disabled="disabled">Options</option> \
-        <option value="Save Snapshot" id="saveSnapshotBtn">Save Snapshot</option> \
-        <option style="display:none" class="snapshotOption" value="Pin Snapshot" id="pinSnapshotBtn">Pin Snapshot</option> \
-        <option style="display:none" class="snapshotOption" value="Delete Snapshot" id="deleteSnapshotBtn">Delete Snapshot</option> \
-      </select> \
-      <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
-    </div>'),
+    <div class="action vertical-center left snapshotOption" id="saveSnapshotBtn">Save Snapshot</div>'),
 
     tagName: 'div',
     attributes: {
@@ -56,31 +47,15 @@ function(app, Backbone, PreferenceModel) {
           this.defaultId = this.collection.preferences.get('id');
           this.collection.preferences.fetch({newTitle: $target.val()});
         }
-
-        this.listenToOnce(this.collection.preferences, 'sync', function() {
+        this.stopListening(this.collection.preferences);
+        this.listenTo(this.collection.preferences, 'sync', function() {
           this.collection.fetch();
           if(this.preferencesLoaded) {
             this.render();
           }
         });
       },
-      'change #optionsSelect': function(e) {
-        var selectedAttr = $(e.target).find(":selected").attr('id');
-        switch(selectedAttr) {
-          case 'saveSnapshotBtn':
-            this.saveSnapshot();
-            break;
-          case 'pinSnapshotBtn':
-            this.pinSnapshot();
-            break;
-          case 'deleteSnapshotBtn':
-            this.deleteSnapshot();
-            break;
-        }
-
-        $(e.target).find('option').attr("selected", false);
-        $($(e.target).find('option').get(0)).attr('selected', true);
-      }
+      'click #saveSnapshotBtn': 'saveSnapshot',
     },
 
     saveSnapshot: function() {
@@ -119,8 +94,8 @@ function(app, Backbone, PreferenceModel) {
       this.collection.preferences.set({title: name});
 
       this.collection.preferences.save();
-
-      this.listenToOnce(this.collection.preferences, 'sync', function() {
+      this.pinSnapshot(name);
+      this.listenToOnce(this.collection.preferences, 'change', function() {
         this.collection.fetch();
         if(this.preferencesLoaded) {
           this.render();
@@ -128,24 +103,17 @@ function(app, Backbone, PreferenceModel) {
       });
     },
 
-    pinSnapshot: function() {
-      if(!this.snapshotData) {
-        return;
-      }
+    pinSnapshot: function(title) {
 
       var data = {
-        title: this.snapshotData.title,
-        url: Backbone.history.fragment + "/pref/" + this.snapshotData.title,
+        title: title,
+        url: Backbone.history.fragment + "/pref/" + title,
         icon_class: 'icon-search',
         user: app.users.getCurrentUser().get("id"),
         section: 'search'
       };
-      if(app.getBookmarks().isBookmarked(data.title)) {
-        app.getBookmarks().removeBookmark(data);
-        $('#pinSnapshotBtn').html("Pin Snapshot");
-      } else {
+      if(!app.getBookmarks().isBookmarked(data.title)) {
         app.getBookmarks().addNewBookmark(data);
-        $('#pinSnapshotBtn').html("Unpin Snapshot");
       }
     },
 
@@ -167,16 +135,10 @@ function(app, Backbone, PreferenceModel) {
     },
 
     afterRender: function() {
-      $('.snapshotOption').hide();
+      console.log(this.collection.preferences.get('title'));
       if(this.collection.preferences.get('title') !== null) {
         $('#visibilitySelect').val(this.collection.preferences.get('title'));
         this.snapshotData = {id: this.collection.preferences.get('id'), title: this.collection.preferences.get('title')};
-        $('.snapshotOption').show();
-        if(app.getBookmarks().isBookmarked(this.snapshotData.title)) {
-          $('#pinSnapshotBtn').html("Unpin Snapshot");
-        } else {
-          $('#pinSnapshotBtn').html("Pin Snapshot");
-        }
         this.collection.preferences.set({title:null, id: this.defaultId});
       } else {
         if(this.options.widgetOptions.hasActiveColumn) {
@@ -189,6 +151,12 @@ function(app, Backbone, PreferenceModel) {
       sel.width( this.$el.find('#template').width() * 1.03 + 10 ); // +10 is for arrow on right
     },
     initialize: function() {
+      this.listenTo(this.collection.preferences, 'change', function() {
+        if(this.preferencesLoaded) {
+          //this.render();
+        }
+      });
+
       var activeTable = this.collection.table.id;
 
       this.options.widgetOptions = {snapshots: []};
