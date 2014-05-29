@@ -120,6 +120,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
           $select->where($params['adv_where']);
         }
         if(isset($params['adv_search']) && !empty($params['adv_search'])) {
+          $i = 0;
           foreach ($params['adv_search'] as $search_col) {
             $target = array();
             foreach ($schema as $col) {
@@ -135,6 +136,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             if(isset($target['relationship'])) {
 
               $relatedTable = $target['relationship']['table_related'];
+              $relatedAliasName = $relatedTable."_".$i;
 
               if($target['relationship']['type'] == "MANYTOMANY") {
                 $junctionTable = $target['relationship']['junction_table'];
@@ -145,19 +147,22 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
                 $keyRight = $junctionTable.'.'.$jkl;
 
                 $jkeyleft = $junctionTable.'.'.$jkr;
-                $jkeyright = $relatedTable.".id";
+                $jkeyright = $relatedAliasName.".id";
 
-                /*
+
                 $select->join($junctionTable,
                     "$keyleft = $keyRight",
-                    array())
-                ->join($relatedTable,
+                    array(),
+                    Select::JOIN_INNER)
+                ->join(array($relatedAliasName => $relatedTable),
                     "$jkeyleft = $jkeyright",
-                    array());*/
+                    array(),
+                    Select::JOIN_INNER);
               } else {
-                $select->join($relatedTable,
-                  $target['column_name']." = ".$relatedTable.".id",
-                  array());
+                $select->join(array($relatedAliasName => $relatedTable),
+                  $tableName.'.'.$target['column_name']." = ".$relatedAliasName.".id",
+                  array(),
+                  Select::JOIN_INNER);
               }
 
               $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
@@ -166,7 +171,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               foreach ($relatedTableMetadata as $col) {
                 if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
                   $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
-                  $columnName = $relatedTable.".".$columnName;
+                  $columnName = $relatedAliasName.".".$columnName;
                   $like = new Predicate\Expression("LOWER($columnName) LIKE ?", strtolower($search_col['value']));
                   $where->addPredicate($like, Predicate\Predicate::OP_OR);
                 }
@@ -180,6 +185,8 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
                 $select->where($search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue($search_col['value']));
               }
             }
+
+            $i++;
           }
         } else if(isset($params['search']) && !empty($params['search'])) {
             $params['search'] = "%" . $params['search'] . "%";
