@@ -180,9 +180,9 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
             } else {
               if($search_col['type'] == "like") {
-                $select->where($search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue("%".$search_col['value']."%"));
+                $select->where($tableName.'.'.$search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue("%".$search_col['value']."%"));
               } else {
-                $select->where($search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue($search_col['value']));
+                $select->where($tableName.'.'.$search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue($search_col['value']));
               }
             }
 

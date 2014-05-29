@@ -35,14 +35,13 @@ function(app, Backbone) {
       },
       'change .adv-search-col-id': function(e) {
         var selectedVal = $(e.target).val();
-
         if(selectedVal != "") {
           this.addNewFilter(selectedVal);
         }
       },
       'change .filter_ui': function(e) {
         var data = {
-          id: this.mysql_real_escape_string($(e.target).parent().parent().find('.filterColumnName').attr('data-filter-id')),
+          id: this.mysql_real_escape_string($(e.target).closest('li').find('.filterColumnName').attr('data-filter-id')),
           type: 'like',
           value: this.mysql_real_escape_string($(e.target).val())
         };
@@ -104,7 +103,7 @@ function(app, Backbone) {
       } else {
         data.filter_ui = this.getFilterDataType(selectedColumn);
       }
-
+      console.log(data);
       this.options.filters.push(data);
       this.render();
     },
@@ -184,9 +183,12 @@ function(app, Backbone) {
     },
 
     updateFilters: function() {
+      console.log(this.options.filters);
       var filters = this.options.filters.map(function(item) {
         return item.filterData;
       });
+
+      console.log(filters);
 
       this.collection.setFilter('adv_search', filters);
       this.collection.setFilter('currentPage', 0);
