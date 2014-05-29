@@ -30,7 +30,7 @@ function(app, Backbone) {
 
         this.updateFilters();
         this.collection.fetch();
-        //this.saveFilterString();
+        this.saveFilterString();
         this.render();
       },
       'change .adv-search-col-id': function(e) {
@@ -56,7 +56,7 @@ function(app, Backbone) {
         this.options.filters[$(e.target).closest('li').index()].filterData = data;
         this.updateFilters();
         this.collection.fetch();
-        //this.saveFilterString();
+        this.saveFilterString();
       }
     },
 
@@ -103,7 +103,6 @@ function(app, Backbone) {
       } else {
         data.filter_ui = this.getFilterDataType(selectedColumn);
       }
-      console.log(data);
       this.options.filters.push(data);
       this.render();
     },
@@ -183,12 +182,9 @@ function(app, Backbone) {
     },
 
     updateFilters: function() {
-      console.log(this.options.filters);
       var filters = this.options.filters.map(function(item) {
         return item.filterData;
       });
-
-      console.log(filters);
 
       this.collection.setFilter('adv_search', filters);
       this.collection.setFilter('currentPage', 0);
@@ -197,11 +193,17 @@ function(app, Backbone) {
 
     saveFilterString: function() {
       var string = [];
-      this.options.filterOptions.filters.forEach(function(search) {
+
+      var filters = this.options.filters.map(function(item) {
+        return item.filterData;
+      });
+
+      filters.forEach(function(search) {
         string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + search.value.replace(':','\\:').replace(',','\\,'));
       });
 
       string = encodeURIComponent(string.join());
+      console.log(string);
       this.collection.preferences.save({search_string: string});
     },
 
@@ -217,8 +219,7 @@ function(app, Backbone) {
     getFilterRow: "adv search fields row object",
 
     updateFiltersFromPreference: function() {
-      this.options.filterOptions.filters = [];
-
+      this.options.filters = [];
       var search = this.collection.preferences.get('search_string');
 
       if(search !== null && search !== undefined) {
@@ -227,17 +228,38 @@ function(app, Backbone) {
         search.forEach(function(filter) {
           filter = filter.replace('\\:', '%20');
           filter = filter.split(':');
+
           if(filter.length == 3) {
-            that.options.filterOptions.filters.push({id: filter[0].replace('%20',':'), type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')});
+            var data = {};
+            var selectedColumn = filter[0].replace('%20',':');
+
+            data.columnName = selectedColumn;
+
+            if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
+              var columnModel = that.collection.structure.get(selectedColumn);
+              //Get Related Column Collection
+              data.columnModel = columnModel;
+              data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
+
+              data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+              that.listenTo(data.relatedCollection, 'sync', that.render);
+            } else {
+              data.filter_ui = that.getFilterDataType(selectedColumn);
+            }
+
+            data.filterData = {id: selectedColumn, type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')};
+
+            that.options.filters.push(data);
           }
         });
       }
       this.updateFilters();
+      this.render();
     },
 
     initialize: function() {
       this.options.filters = [];
-      //this.updateFiltersFromPreference();
+      this.updateFiltersFromPreference();
       //this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
     }
   });
