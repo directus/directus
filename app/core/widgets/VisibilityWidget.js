@@ -136,8 +136,10 @@ function(app, Backbone, PreferenceModel) {
 
     afterRender: function() {
       console.log(this.collection.preferences.get('title'));
-      if(this.collection.preferences.get('title') !== null) {
-        $('#visibilitySelect').val(this.collection.preferences.get('title'));
+      if(this.collection.preferences.get('title') !== null || this.snapshotData) {
+        if(this.collection.preferences.get('title') !== null) {
+          $('#visibilitySelect').val(this.collection.preferences.get('title'));
+        }
         this.snapshotData = {id: this.collection.preferences.get('id'), title: this.collection.preferences.get('title')};
         this.collection.preferences.set({title:null, id: this.defaultId});
       } else {
@@ -151,12 +153,6 @@ function(app, Backbone, PreferenceModel) {
       sel.width( this.$el.find('#template').width() * 1.03 + 10 ); // +10 is for arrow on right
     },
     initialize: function() {
-      this.listenTo(this.collection.preferences, 'change', function() {
-        if(this.preferencesLoaded) {
-          //this.render();
-        }
-      });
-
       var activeTable = this.collection.table.id;
 
       this.options.widgetOptions = {snapshots: []};

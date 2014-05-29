@@ -45,7 +45,7 @@ function(app, Backbone) {
           type: 'like',
           value: this.mysql_real_escape_string($(e.target).val())
         };
-
+        console.log("Change");
         if($(e.target).is(':checkbox')) {
           if($(e.target).prop('checked')) {
             data.value = 1;
@@ -254,13 +254,14 @@ function(app, Backbone) {
         });
       }
       this.updateFilters();
+      this.collection.fetch();
       this.render();
     },
 
     initialize: function() {
       this.options.filters = [];
       this.updateFiltersFromPreference();
-      //this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
+      this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
     }
   });
 });

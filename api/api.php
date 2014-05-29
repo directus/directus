@@ -693,7 +693,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             break;
         case "POST":
             //If Already exists and not saving with title, then updateit!
-            $existing = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, isset($params['newTitle']) ? $params['newTitle'] : null);
+            $existing = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, isset($requestPayload['title']) ? $requestPayload['title'] : null);
             if(!empty($existing)) {
               $requestPayload['id'] = $existing['id'];
             }
