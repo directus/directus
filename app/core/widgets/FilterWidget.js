@@ -45,7 +45,7 @@ function(app, Backbone) {
           type: 'like',
           value: this.mysql_real_escape_string($(e.target).val())
         };
-        console.log("Change");
+
         if($(e.target).is(':checkbox')) {
           if($(e.target).prop('checked')) {
             data.value = 1;
@@ -53,6 +53,7 @@ function(app, Backbone) {
             data.value = 0;
           }
         }
+        this.selfChanged = true;
         this.options.filters[$(e.target).closest('li').index()].filterData = data;
         this.updateFilters();
         this.collection.fetch();
@@ -146,6 +147,13 @@ function(app, Backbone) {
 
     afterRender: function() {
       $('.filter-ui').last().find('input').focus();
+      var that = this;
+      _.each(this.options.filters, function(item) {
+        if(item.relatedCollection) {
+          console.log()
+          that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
+        }
+      });
 
     /*  if(this.savedValue) {
         this.$el.find('.adv-search-col-id').val(this.savedValue);
@@ -203,7 +211,6 @@ function(app, Backbone) {
       });
 
       string = encodeURIComponent(string.join());
-      console.log(string);
       this.collection.preferences.save({search_string: string});
     },
 
@@ -261,7 +268,7 @@ function(app, Backbone) {
     initialize: function() {
       this.options.filters = [];
       this.updateFiltersFromPreference();
-      this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
+      this.collection.preferences.on('sync', function() { this.updateFiltersFromPreference();}, this);
     }
   });
 });

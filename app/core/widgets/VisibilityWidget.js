@@ -135,7 +135,6 @@ function(app, Backbone, PreferenceModel) {
     },
 
     afterRender: function() {
-      console.log(this.collection.preferences.get('title'));
       if(this.collection.preferences.get('title') !== null || this.snapshotData) {
         if(this.collection.preferences.get('title') !== null) {
           $('#visibilitySelect').val(this.collection.preferences.get('title'));
