@@ -17,14 +17,18 @@
 
   <ul class="filters left">
   {{#filters}}
-    <li>
+    <li class="filter-form">
       {{#if relatedEntries}}
-        <span class="icon icon-triangle-down"></span>
-        <select name="keywords" id="advKeywords" class="medium filter_ui">
-        {{#relatedEntries}}
-          <option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
-        {{/relatedEntries}}
-        </select>
+
+
+        <span class="simple-select dark-grey-color">
+          <span class="icon icon-triangle-down"></span>
+          <select name="keywords" id="advKeywords" class="medium filter_ui">
+          {{#relatedEntries}}
+            <option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
+          {{/relatedEntries}}
+          </select>
+        </span>
       {{else}}
         <span class="filter-ui" data-value="{{value}}" style="float:left">{{{filter_ui}}}</span>
       {{/if}}
