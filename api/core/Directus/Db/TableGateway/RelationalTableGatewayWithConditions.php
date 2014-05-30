@@ -169,11 +169,13 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               $search_col['value'] = "%".$search_col['value']."%";
               $where = $select->where->nest;
               foreach ($relatedTableMetadata as $col) {
-                if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
-                  $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
-                  $columnName = $relatedAliasName.".".$columnName;
-                  $like = new Predicate\Expression("LOWER($columnName) LIKE ?", strtolower($search_col['value']));
-                  $where->addPredicate($like, Predicate\Predicate::OP_OR);
+                if($col['id'] == $target['options']['visible_column']) {
+                  if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
+                    $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
+                    $columnName = $relatedAliasName.".".$columnName;
+                    $like = new Predicate\Expression("LOWER($columnName) LIKE ?", $search_col['value']);
+                    $where->addPredicate($like, Predicate\Predicate::OP_OR);
+                  }
                 }
               }
               $where->unnest;
