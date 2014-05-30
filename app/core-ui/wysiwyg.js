@@ -303,7 +303,7 @@ var template = '<style type="text/css"> \
   };
 
   Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?!br\s*\/?)[^>]+>/g, '').substr(0,100) : '';
+    return (options.value) ? options.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0,100) : '';
   };
 
   return Module;
