@@ -93,14 +93,18 @@ function(app, Backbone) {
 
       data.columnName = selectedColumn;
 
-      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
+      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
         var columnModel = this.collection.structure.get(selectedColumn);
-        //Get Related Column Collection
-        data.columnModel = columnModel;
-        data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
+        if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') != "dropdown") {
+          data.filter_ui = this.getFilterDataType(selectedColumn);
+        } else {
+          //Get Related Column Collection
+          data.columnModel = columnModel;
+          data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-        data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
-        this.listenTo(data.relatedCollection, 'sync', this.render);
+          data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+          this.listenTo(data.relatedCollection, 'sync', this.render);
+        }
       } else {
         data.filter_ui = this.getFilterDataType(selectedColumn);
       }
@@ -123,7 +127,11 @@ function(app, Backbone) {
       _.each(this.options.filters, function(item) {
         if(item.relatedCollection) {
           data.filters[i].relatedEntries = [];
-          var visibleColumn = item.columnModel.options.get('visible_column');
+          if(item.columnModel.options.has('filter_column')) {
+            var visibleColumn = item.columnModel.options.get('filter_column');
+          } else {
+            var visibleColumn = item.columnModel.options.get('visible_column');
+          }
           var displayTemplate = Handlebars.compile(item.columnModel.options.get('visible_column_template'));
           item.relatedCollection.each(function(model) {
             data.filters[i].relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
@@ -150,8 +158,9 @@ function(app, Backbone) {
       var that = this;
       _.each(this.options.filters, function(item) {
         if(item.relatedCollection) {
-          console.log()
-          that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
+          if(item.filterData) {
+            that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
+          }
         }
       });
 
@@ -242,7 +251,7 @@ function(app, Backbone) {
 
             data.columnName = selectedColumn;
 
-            if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
+            if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
               var columnModel = that.collection.structure.get(selectedColumn);
               //Get Related Column Collection
               data.columnModel = columnModel;
@@ -250,7 +259,7 @@ function(app, Backbone) {
 
               data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
               that.listenTo(data.relatedCollection, 'sync', that.render);
-            } else {
+            } else if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
               data.filter_ui = that.getFilterDataType(selectedColumn);
             }
 

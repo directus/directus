@@ -19,7 +19,10 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
     {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
     {id: 'add_button', ui: 'checkbox'},
     {id: 'choose_button', ui: 'checkbox'},
-    {id: 'remove_button', ui: 'checkbox'}
+    {id: 'remove_button', ui: 'checkbox'},
+    {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
+    {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"},
+    {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"}
   ];
 
   Module.Input = Onetomany.Input.extend({
