@@ -1,6 +1,7 @@
 define([
-  "app"
-], function(app) {
+  "app",
+  'plugins/alertify'
+], function(app, alertify) {
 
   "use strict";
 
@@ -49,6 +50,7 @@ define([
   app.on('load', hideProgressNotification);
 
   app.on('alert:error', function(message, details, showDetails) {
+    alertify.error(message);
 /*      showDetails = showDetails || false;
       $('#loader').hide();
       var view = new ErrorView({message: message, details: details});
