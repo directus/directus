@@ -1861,7 +1861,7 @@ select {
   line-height: 52%;
   pointer-events: none;
   position: absolute;
-  right: 10px;
+  right: 7px;
   top: 0px;
 }
 .simple-select select {
@@ -2044,7 +2044,6 @@ select:focus,
   background-clip: padding-box;
   background-color: #ededed;
   border: 0px;
-  margin: 0px 4px 0px 0px;
   padding: 8px 10px;
 }
 .two-column-form .medium {
@@ -3619,6 +3618,18 @@ body.initial-load #sidebar {
 }
 .header1 .secondary-row .tools .action {
   margin-top: 7px;
+}
+.header1 .secondary-row .tools .snapshotOption {
+  background-color: #ededed;
+  width: 34px;
+  height: 33px;
+  margin-left: 10px;
+  color: #5b5b5b;
+  text-align: center;
+  cursor: pointer;
+}
+.header1 .secondary-row .tools .snapshotOption .icon {
+  line-height: 75%;
 }
 .header1 .secondary-row .tools .tool {
   height: 32px;

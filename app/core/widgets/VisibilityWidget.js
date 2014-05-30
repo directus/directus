@@ -29,7 +29,7 @@ function(app, Backbone, PreferenceModel) {
       </select> \
       <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
     </div> \
-    <div class="action vertical-center left snapshotOption" id="saveSnapshotBtn">Save Snapshot</div>'),
+    <div class="left snapshotOption" id="saveSnapshotBtn"><span class="icon icon-camera"></span></div>'),
 
     tagName: 'div',
     attributes: {
