@@ -270,7 +270,7 @@ function(app, Backbone) {
         });
       }
       this.updateFilters();
-      this.collection.fetch();
+      //this.collection.fetch();
       this.render();
     },
 
