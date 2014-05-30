@@ -172,7 +172,8 @@ require(["config"], function() {
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
-        alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
+        console.log("Error polling Messages");
+        //alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
       });
 
       app.messages.on('sync', function(collection, object) {

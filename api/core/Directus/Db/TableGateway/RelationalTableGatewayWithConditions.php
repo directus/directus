@@ -168,12 +168,21 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
               $search_col['value'] = "%".$search_col['value']."%";
               $where = $select->where->nest;
+
+              if(isset($target['options']['filter_column'])) {
+                $targetCol = $target['options']['filter_column'];
+              } else {
+                $targetCol = $target['options']['visible_column'];
+              }
+
               foreach ($relatedTableMetadata as $col) {
-                if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
-                  $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
-                  $columnName = $relatedAliasName.".".$columnName;
-                  $like = new Predicate\Expression("LOWER($columnName) LIKE ?", strtolower($search_col['value']));
-                  $where->addPredicate($like, Predicate\Predicate::OP_OR);
+                if($col['id'] == $targetCol) {
+                  if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
+                    $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
+                    $columnName = $relatedAliasName.".".$columnName;
+                    $like = new Predicate\Expression("LOWER($columnName) LIKE ?", $search_col['value']);
+                    $where->addPredicate($like, Predicate\Predicate::OP_OR);
+                  }
                 }
               }
               $where->unnest;
