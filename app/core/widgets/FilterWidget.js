@@ -108,6 +108,7 @@ function(app, Backbone) {
       } else {
         data.filter_ui = this.getFilterDataType(selectedColumn);
       }
+      data.filterData = {id: selectedColumn, type: 'like', value:''};
       this.options.filters.push(data);
       this.render();
     },
@@ -115,7 +116,6 @@ function(app, Backbone) {
     serialize: function() {
       var data = {};
       data.filters = this.options.filters;
-
       data.tableColumns = this.collection.structure.pluck('id');
       data.tableColumns.sort(function(a, b) {
         if(a < b) return -1;
@@ -216,7 +216,9 @@ function(app, Backbone) {
       });
 
       filters.forEach(function(search) {
-        string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + search.value.replace(':','\\:').replace(',','\\,'));
+        if(search) {
+          string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + search.value.replace(':','\\:').replace(',','\\,'));
+        }
       });
 
       string = encodeURIComponent(string.join());
