@@ -280,7 +280,7 @@ var template = '<style type="text/css"> \
             item.user = self.userId;
 
             model.save(item, {success: function(e) {
-              console.log(e);
+              //console.log(e);
               var url = model.makeMediaUrl(false);
               try {
                 self.editor.composer.commands.exec("insertImage", { src: url, alt: model.get('name')});
