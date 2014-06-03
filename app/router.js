@@ -195,7 +195,7 @@ define(function(require, exports, module) {
       // Cache collection for next route
       this.currentCollection = collection;
       this.tabs.setActive('tables');
-      this.setTitle(app.settings.get('global').get('site_name') + ' | ' + tableName);
+      this.setTitle(app.settings.get('global').get('site_name') + ' | ' + app.capitalize(tableName));
 
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
       this.v.main.render();
