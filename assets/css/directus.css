@@ -3073,7 +3073,7 @@ body.initial-load #sidebar {
   display: block;
   font-size: 12px;
   line-height: 13px;
-  padding: 8px 12px 8px 10px;
+  padding: 7px 12px 8px 10px;
   position: relative;
   white-space: nowrap;
   overflow: hidden;
@@ -3091,10 +3091,10 @@ body.initial-load #sidebar {
   border-style: solid;
   height: 0px;
   width: 0px;
-  border-width: 16px 8px 16px 0;
+  border-width: 12px 6px 12px 0;
   border-color: transparent #ffffff transparent transparent;
   content: "";
-  margin-top: -16px;
+  margin-top: -12px;
   position: absolute;
   right: 0px;
   top: 50%;
