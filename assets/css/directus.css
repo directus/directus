@@ -2704,6 +2704,14 @@ select:focus,
   top: 0;
   left: 11px;
 }
+.history-container ul li .history-icon.message {
+  background-color: #662d91;
+}
+.history-container ul li .history-icon.message .icon {
+  position: absolute;
+  top: 1px;
+  left: 10px;
+}
 .history-container ul li .history-icon.attach {
   background-color: #ff7bac;
 }
@@ -3664,9 +3672,12 @@ body.initial-load #sidebar {
     width: 60px;
   }
   #sidebar .directusLogo {
-    height: 50px !important;
-    font-size: 30px;
-    padding: 10px 0px;
+    height: 55px !important;
+    font-size: 22px;
+    padding: 5px 0 0 0;
+  }
+  #sidebar #mainLogoBox {
+    height: auto;
   }
   #sidebar .sidebar-subitem {
     display: none;
@@ -4021,6 +4032,14 @@ ul.general-container li .general-icon.delete .icon {
   position: absolute;
   top: 0;
   left: 11px;
+}
+ul.general-container li .general-icon.message {
+  background-color: #662d91;
+}
+ul.general-container li .general-icon.message .icon {
+  position: absolute;
+  top: 1px;
+  left: 10px;
 }
 ul.general-container li .general-icon.attach {
   background-color: #ff7bac;
