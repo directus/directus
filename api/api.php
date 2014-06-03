@@ -704,7 +704,18 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             if($requestPayload['user'] != $currentUser['id']) {
               return;
             }
-            echo $db->delete('directus_preferences', $requestPayload['id']);
+
+            if(isset($requestPayload['id'])) {
+              echo $db->delete('directus_preferences', $requestPayload['id']);
+            } else if(isset($requestPayload['title']) && isset($requestPayload['table_name'])) {
+              $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $requestPayload['table_name'], $requestPayload['title']);
+              if($jsonResponse['id']) {
+                echo $db->delete('directus_preferences', $jsonResponse['id']);
+              } else {
+                echo 1;
+              }
+            }
+
             return;
     }
 

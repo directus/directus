@@ -88,19 +88,6 @@ function(app, Backbone, PreferenceModel) {
       }
     },
 
-    deleteSnapshot: function() {
-      if(this.snapshotData.id) {
-        var user = app.users.getCurrentUser().get("id");
-        var that = this;
-        this.collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({id:this.snapshotData.id, user: user}),success: function() {
-          $('#visibilitySelect').val(that.collection.preferences.get('active'));
-          that.options.widgetOptions.snapshots.splice(that.snapshotData.title, 1);
-          app.getBookmarks().removeBookmark({title: that.snapshotData.title, icon_class: 'icon-search', user: user});
-          that.snapshotData = null;
-        }});
-      }
-    },
-
     serialize: function() {
       return this.options.widgetOptions;
     },

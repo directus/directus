@@ -9,10 +9,11 @@
 
 define([
   "app",
-  "backbone"
+  "backbone",
+  "core/EntriesManager"
 ],
 
-function(app, Backbone) {
+function(app, Backbone, EntriesManager) {
 
   "use strict";
 
@@ -72,6 +73,28 @@ function(app, Backbone) {
       class:"row"
     },
 
+    events: {
+      'click .remove-snapshot': function(e) {
+        e.stopPropagation();
+        var url = $(e.target).parent().attr('href');
+        if(url) {
+          var urlArray = url.split('/');
+          var title = urlArray.pop();
+          urlArray.pop();
+          var table = urlArray.pop();
+          if(title && table) {
+            var user = app.users.getCurrentUser().get("id");
+            var collection = EntriesManager.getInstance(table);
+            collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({title:title, table_name: table, user: user}),success: function() {
+              app.getBookmarks().removeBookmark({title: title, icon_class: 'icon-search', user: user});
+            }});
+          }
+        }
+
+        return false;
+      }
+    },
+
     serialize: function() {
       var bookmarks = {table:[],search:[],extension:[],other:[]};
 
@@ -93,12 +116,12 @@ function(app, Backbone) {
     initialize: function() {
       var that = this;
       //For some reason need to do this and that....
-      this.listenTo(this.collection, 'add', function() {
+      this.collection.on('add', function() {
         that.collection.setActive(Backbone.history.fragment);
         that.render();
       });
 
-      this.listenTo(this.collection, 'remove', function() {
+      this.collection.on('remove', function() {
         that.render();
       });
 
