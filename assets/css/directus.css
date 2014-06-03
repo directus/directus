@@ -3103,6 +3103,20 @@ body.initial-load #sidebar {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#sidebar #mainSidebar li a .remove-snapshot {
+  float: right;
+  color: #bbbbbb;
+  opacity: 0;
+  -webkit-font-smoothing: antialiased !important;
+  font-weight: 400;
+  padding: 0 3px 0 3px;
+}
+#sidebar #mainSidebar li a .remove-snapshot:hover {
+  color: #c1272d;
+}
+#sidebar #mainSidebar li a:hover .remove-snapshot {
+  opacity: 1.0;
+}
 #sidebar #mainSidebar li.active {
   border-left-width: 4px;
   background-color: #313131;

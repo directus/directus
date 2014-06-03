@@ -99,7 +99,23 @@ body.initial-load #sidebar {
         position: relative;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis
+        text-overflow: ellipsis;
+        .remove-snapshot {
+          float: right;
+          color: @mediumGrey;
+          opacity: 0;
+          -webkit-font-smoothing: antialiased !important;
+          font-weight: 400;
+          padding: 0 3px 0 3px;
+          &:hover {
+            color: @deleteColor;
+          }
+        }
+        &:hover {
+          .remove-snapshot {
+            opacity: 1.0;
+          }
+        }
       }
       &.active {
         border-left-width: 4px;
