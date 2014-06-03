@@ -31,7 +31,7 @@ function(app, Backbone, BasePageView) {
           'from': app.users.getCurrentUser().get('id'),
           'subject': 'RE: ' + this.model.get('subject'),
           'recipients': recipients.join(','),
-          'datetime': (new Date()).toISOString(),
+          'datetime': new Date(),
           'response_to': this.model.id,
           'message': $('#messages-response').val(),
           'responses': []
@@ -60,6 +60,10 @@ function(app, Backbone, BasePageView) {
       data.recipientsCount = data.recipients.length;
       data.collapseRecipients = data.recipients.length > this.maxRecipients;
       data.current_user = app.authenticatedUserId;
+
+      _.each(data.responses, function(data) {
+        data.datetime += ' UTC';
+      });
 
       data.responses = data.responses.reverse();
 

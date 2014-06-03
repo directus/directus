@@ -19,13 +19,13 @@
           <div class="history-text">{{userName user_avatar}} Sent a New Message: <span class="light-grey-color">{{capitalize title}}</span></div>
         {{else}}
           <div class="history-icon add"><div class="icon icon-check"></div></div>
-          <div class="history-text">{{userName user_avatar}} created an item within {{capitalize table}}</div>
+          <div class="history-text">{{userName user_avatar}} created an item within <a href="{{link}}">{{capitalize table}}</a></div>
         {{/if}}
       {{/if}}
       {{/if}}
       {{#if action_edit}}
       <div class="history-icon edit"><div class="icon icon-pencil"></div></div>
-      <div class="history-text">{{userName user_avatar}} edited an item within {{capitalize table}}</div>
+      <div class="history-text">{{userName user_avatar}} edited an item within {{#if link}}<a href="{{link}}">{{capitalize table}}</a>{{else}}{{capitalize table}}{{/if}}</div>
       {{/if}}
       {{#if action_delete}}
       <div class="history-icon delete"><div class="icon icon-trash"></div></div>

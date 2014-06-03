@@ -78,6 +78,9 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           data.is_message = true;
           data.title = model.get('identifier');
         }
+        if(model.get('row_id') > 0) {
+          data.link = app.root + "tables/" + data.table + "/" + model.get('row_id');
+        }
 
         if(tables.get(model.get('table_name'))) {
           var primary_column = tables.get(model.get('table_name')).get('primary_column');
