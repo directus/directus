@@ -227,16 +227,18 @@ require(["config"], function() {
       // Setup Bookmarks
       ////////////////////////////////////////////////////////////////////////////////////
       var bookmarks = [];
-
       options.tables.forEach(function(table) {
         table = table.schema;
-        if(!table.hidden) {
-          bookmarks.push(new Backbone.Model({
-            icon_class: '',
-            title: app.capitalize(table.table_name),
-            url: 'tables/' + table.table_name,
-            section: 'table'
-          }));
+        var permissions = SchemaManager.getPrivileges(table.table_name).get('permissions').split(',');
+        if(permissions.indexOf('view') !== -1 || permissions.indexOf('bigview') !== -1) {
+          if(!table.hidden) {
+            bookmarks.push(new Backbone.Model({
+              icon_class: '',
+              title: app.capitalize(table.table_name),
+              url: 'tables/' + table.table_name,
+              section: 'table'
+            }));
+          }
         }
       });
 
