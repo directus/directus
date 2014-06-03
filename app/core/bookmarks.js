@@ -93,13 +93,34 @@ function(app, Backbone) {
     initialize: function() {
       var that = this;
       //For some reason need to do this and that....
-      this.collection.on('add', function() {
+      this.listenTo(this.collection, 'add', function() {
         that.collection.setActive(Backbone.history.fragment);
         that.render();
       });
-      this.collection.on('remove', function() {
+
+      this.listenTo(this.collection, 'remove', function() {
         that.render();
       });
+
+      var messageModel = this.collection.where({url: 'messages'});
+      if(messageModel) {
+        messageModel = messageModel[0];
+        if(messageModel) {
+          messageModel.set({unread: app.messages.unread > 0}, {silent: true});
+          this.render();
+        }
+      }
+
+      app.messages.on('sync change add', function() {
+        var messageModel = this.collection.where({url: 'messages'});
+        if(messageModel) {
+          messageModel = messageModel[0];
+          if(messageModel) {
+            messageModel.set({unread: app.messages.unread > 0}, {silent: true});
+            this.render();
+          }
+        }
+      }, this);
     },
     setActive: function(route) {
       this.collection.setActive(route);

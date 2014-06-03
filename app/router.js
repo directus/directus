@@ -453,11 +453,6 @@ define(function(require, exports, module) {
         keep: true
       });
 
-      // Update unread message counter
-      app.messages.on('sync', function(collection, model) {
-        $('.unread-messages-counter').html(app.messages.unread);
-      });
-
       //holds references to view instances
       this.v = {};
       var nav = new Navbar({model: app.settings.get('global')});
