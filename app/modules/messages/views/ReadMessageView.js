@@ -31,7 +31,7 @@ function(app, Backbone, BasePageView) {
           'from': app.users.getCurrentUser().get('id'),
           'subject': 'RE: ' + this.model.get('subject'),
           'recipients': recipients.join(','),
-          'datetime': new Date(),
+          'datetime': new Date().toISOString(),
           'response_to': this.model.id,
           'message': $('#messages-response').val(),
           'responses': []
