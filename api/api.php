@@ -412,7 +412,7 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendD
     return JsonView::render($response);
 });
 
-$app->map("/$v/privileges/:grupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
@@ -426,7 +426,7 @@ $app->map("/$v/privileges/:grupId/", function ($groupId) use ($db, $acl, $ZendDb
     return JsonView::render($response);
 })->via('POST');
 
-$app->map("/$v/privileges/:grupId/:privilegeId", function ($groupId, $privilegeId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilegeId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 

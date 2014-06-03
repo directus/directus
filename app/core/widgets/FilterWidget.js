@@ -217,7 +217,7 @@ function(app, Backbone) {
 
       filters.forEach(function(search) {
         if(search) {
-          string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + search.value.replace(':','\\:').replace(',','\\,'));
+          string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + String(search.value).replace(':','\\:').replace(',','\\,'));
         }
       });
 
