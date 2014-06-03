@@ -1360,6 +1360,11 @@ img.grayscale:hover {
   filter: none;
   -webkit-filter: grayscale(0);
 }
+.ellipses {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .main-container {
   margin-left: 170px;
   padding: 0px 80px;
