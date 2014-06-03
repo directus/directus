@@ -141,6 +141,10 @@ function(app, Backbone) {
         } else {
           var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
           if(item.filterData) {
+            //Used for Checkboxes since they return 0 string
+            if(item.filterData.value == "0") {
+              item.filterData = 0;
+            }
             data.filters[i].filter_ui = template({value: item.filterData.value});
           } else {
             data.filters[i].filter_ui = template({});

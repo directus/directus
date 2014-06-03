@@ -76,6 +76,7 @@ function(app, Backbone, EntriesManager) {
     events: {
       'click .remove-snapshot': function(e) {
         e.stopPropagation();
+
         var url = $(e.target).parent().attr('href');
         if(url) {
           var urlArray = url.split('/');
@@ -83,6 +84,9 @@ function(app, Backbone, EntriesManager) {
           urlArray.pop();
           var table = urlArray.pop();
           if(title && table) {
+            if(!confirm("Are you sure you wish to delete the snapshot: " + title)) {
+              return false;
+            }
             var user = app.users.getCurrentUser().get("id");
             var collection = EntriesManager.getInstance(table);
             collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({title:title, table_name: table, user: user}),success: function() {
