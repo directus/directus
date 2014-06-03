@@ -64,7 +64,7 @@ require(["config"], function() {
 
     // Setup global variables
     app.root = options.path;
-    app.DEFAULT_VALIDATION_MESSAGE = 'The data you entered is not valid';
+    app.DEFAULT_VALIDATION_MESSAGE = 'Invalid content...';
     app.API_URL = options.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;

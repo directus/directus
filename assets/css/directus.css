@@ -3680,7 +3680,7 @@ body.initial-load #sidebar {
     height: auto;
   }
   #sidebar .unread-color {
-    margin-left: -5px;
+    margin-left: -4px;
   }
   #sidebar .sidebar-subitem {
     display: none;
