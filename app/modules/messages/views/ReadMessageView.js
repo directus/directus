@@ -55,6 +55,7 @@ function(app, Backbone, BasePageView) {
 
     serialize: function() {
       var data = this.model.toJSON();
+      data.datetime += ' UTC';
       data.recipients = data.recipients.split(',');
       data.recipientsCount = data.recipients.length;
       data.collapseRecipients = data.recipients.length > this.maxRecipients;

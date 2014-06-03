@@ -35,7 +35,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
                 'from' => $from,
                 'subject' => $payload['subject'],
                 'message' => $payload['message'],
-                'datetime' => new Expression('NOW()'),
+                'datetime' => gmdate("Y-m-d H:i:s"),
                 'response_to' => $payload['response_to']
                 ));
         $rows = $this->insertWith($insert);

@@ -47,6 +47,11 @@ class DB extends MySQL {
             $identifier = $data['title'];
         }
 
+        if($tbl_name == 'directus_messages')
+        {
+          $identifier = $data['subject'];
+        }
+
         $currentUser = AuthProvider::getUserInfo();
 
         return $this->set_entry('directus_activity', array(
