@@ -3679,6 +3679,9 @@ body.initial-load #sidebar {
   #sidebar #mainLogoBox {
     height: auto;
   }
+  #sidebar .unread-color {
+    margin-left: -5px;
+  }
   #sidebar .sidebar-subitem {
     display: none;
   }
@@ -3686,14 +3689,15 @@ body.initial-load #sidebar {
     display: none;
   }
   #sidebar #mainSidebar {
-    top: 81px;
+    top: 70px;
   }
   #sidebar #mainSidebar .sidebar-extension,
   #sidebar #mainSidebar .sidebar-section {
     margin: 0;
   }
   #sidebar #mainSidebar li {
-    height: 35px;
+    height: 31px;
+    margin-bottom: 4px;
   }
   #sidebar #mainSidebar li.hr {
     display: none;
