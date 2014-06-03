@@ -229,6 +229,8 @@ require(["config"], function() {
       var bookmarks = [];
       options.tables.forEach(function(table) {
         table = table.schema;
+
+        if(SchemaManager.getPrivileges(table.table_name) && SchemaManager.getPrivileges(table.table_name).get('permissions')) {
         var permissions = SchemaManager.getPrivileges(table.table_name).get('permissions').split(',');
         if(permissions.indexOf('view') !== -1 || permissions.indexOf('bigview') !== -1) {
           if(!table.hidden) {
@@ -239,6 +241,7 @@ require(["config"], function() {
               section: 'table'
             }));
           }
+        }
         }
       });
 
