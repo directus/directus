@@ -88,14 +88,20 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       var groupedData = [];
 
       rows.forEach(function(group) {
-        if(!groupedData[group.group_id]) {
-          groupedData[group.group_id] = {title: group.group_name, rows: []};
+        if(!groupedData["group_" + group.group_id]) {
+          groupedData["group_" + group.group_id] = {title: group.group_name, rows: []};
         }
-        groupedData[group.group_id].rows.push(group);
-
+        groupedData["group_" + group.group_id].rows.push(group);
       });
 
-      return {groups: groupedData};
+      var data = [];
+
+      for(var group in groupedData) {
+        data.push(groupedData[group]);
+      }
+
+
+      return {groups: data};
     },
 
     initialize: function(options) {
