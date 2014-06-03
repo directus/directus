@@ -13,7 +13,7 @@ function(app, Backbone, PreferenceModel) {
     {{#if hasActiveColumn}} \
     <div class="simple-select dark-grey-color simple-gray left"> \
       <span class="icon icon-triangle-down"></span> \
-      <select id="visibilitySelect" name="status"> \
+      <select id="visibilitySelect" name="status" class="change-visibility"> \
         <optgroup label="Status"> \
           <option data-status value="1,2">View All</option> \
           <option data-status value="1">View Active</option> \
@@ -110,9 +110,10 @@ function(app, Backbone, PreferenceModel) {
         $('#visibilitySelect').val(this.collection.preferences.get('active'));
       }
 
-      var sel = this.$el.find('#visibilitySelect');
-      this.$el.find('#templateOption').text( sel.find(":selected").text() );
-      sel.width( this.$el.find('#template').width() * 1.03 + 10 ); // +10 is for arrow on right
+      // Adjust dropdown width dynamically
+      // var sel = this.$el.find('#visibilitySelect');
+      // this.$el.find('#templateOption').text( sel.find(":selected").text() );
+      // sel.width( this.$el.find('#template').width() * 1.03 + 10 ); // +10 is for arrow on right
     },
     initialize: function() {
       var activeTable = this.collection.table.id;
