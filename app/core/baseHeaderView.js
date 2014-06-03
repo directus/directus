@@ -68,6 +68,11 @@ function(app, Backbone) {
     afterRender: function() {
       $(window).bind('resize.app', _.bind(this.setMarginToHeaderHeight, this));
 
+      var secondaryToolbarWidgetCount = this.$el.find('#tools-secondary-left-insert').children().length + this.$el.find('#tools-secondary-right-insert').children().length;
+      if(secondaryToolbarWidgetCount > 0) {
+        this.$el.find('.secondary-row').addClass('has-tools');
+      }
+
       this.setMarginToHeaderHeight();
     },
 
