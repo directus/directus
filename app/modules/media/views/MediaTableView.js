@@ -30,6 +30,15 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
       ];
     },
+
+    leftSecondaryToolbar: function() {
+      if(!this.widgets.filterWidget) {
+        this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
+      }
+
+      return [this.widgets.filterWidget];
+    },
+
     events: {
       'click #addBtn': function() {
         app.router.go('#files','new');
@@ -86,6 +95,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
     initialize: function() {
       this.viewList = false;
       this.table = new MediaCardView({collection:this.collection});
+      this.widgets = [];
     }
   });
 
