@@ -12,11 +12,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
   var BodyView = Backbone.Layout.extend({
 
-    tagName: 'ul',
-
-    attributes: {
-      class: "cards row"
-    },
+    tagName: 'span',
 
     events: {
       'click .header-image': function(e) {
@@ -34,6 +30,9 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     template: Handlebars.compile(
+      '{{#groups}}' +
+      '<div class="section-header"><span class="big-label-text">{{title}}</div>' +
+      '<ul class="cards row">' +
       '{{#rows}}' +
       '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
         '<div class="header-image add-color-border">' +
@@ -53,12 +52,11 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           '</ul>' +
         '</div>' +
       '</li>' +
-      '{{/rows}}'
+      '{{/rows}}</ul>{{/groups}}'
     ),
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
-
         var data = {
           "id": model.get('id'),
           "cid": model.cid,
@@ -69,8 +67,11 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           'position': model.get('position'),
           'location': model.get('location'),
           'phone': model.get('phone'),
-          'online': (moment(model.get('last_access')).add('m', 5) > moment())
+          'online': (moment(model.get('last_access')).add('m', 5) > moment()),
+          'group_id': model.get('group').id,
+          'group_name': model.get('group').get('name')
         };
+
         var avatarSmall = data.avatar;
 
         if(!avatarSmall) {
@@ -84,7 +85,17 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         return data;
       });
 
-      return {rows: rows};
+      var groupedData = [];
+
+      rows.forEach(function(group) {
+        if(!groupedData[group.group_id]) {
+          groupedData[group.group_id] = {title: group.group_name, rows: []};
+        }
+        groupedData[group.group_id].rows.push(group);
+
+      });
+
+      return {groups: groupedData};
     },
 
     initialize: function(options) {
@@ -170,7 +181,6 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       }
     },
     leftToolbar: function() {
-      console.log(app.users.getCurrentUser());
       if(app.users.getCurrentUser().get('group').id == 0) {
         return [
           new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
