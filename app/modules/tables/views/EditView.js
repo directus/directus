@@ -27,15 +27,12 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
 
         var model = new app.messages.model({from: app.authenticatedUserId.id}, {collection: this.comments, parse: true});
         var subject = "Item " + this.model.get('id') + " from " + app.capitalize(this.model.collection.table.id);
-        if(this.model.collection.table.get('primary_column') && this.model.has(this.model.collection.table.get('primary_column'))) {
-          subject = this.model.get(this.model.collection.table.get('primary_column'));
-        }
+
         var date = new Date();
         model.set({datetime: date, subject: subject, message:this.$el.find('#commentTextarea').val(), comment_metadata: this.model.collection.table.id + ":" + this.model.get('id')})
         model.unset("responses");
 
         this.listenToOnce(model, 'sync', function(e) {
-          console.log(e);
           this.comments.add(model);
           this.render();
         });
