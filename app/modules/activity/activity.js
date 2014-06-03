@@ -73,6 +73,12 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           data.title = model.get('identifier').substring(0, model.get('identifier').indexOf(','));
         }
 
+        //If table is Messages set to message
+        if(data.table == "directus_messages") {
+          data.is_message = true;
+          data.title = model.get('identifier');
+        }
+
         if(tables.get(model.get('table_name'))) {
           var primary_column = tables.get(model.get('table_name')).get('primary_column');
           if(primary_column) {
