@@ -52,8 +52,9 @@ define(['app', 'backbone'], function(app, Backbone) {
                   div.ui-img-details { \
                     float: left; \
                     position: relative; \
-                    margin-top: 15px; \
-                    margin-left: 10px; \
+                    width: 100%; \
+                    margin-top: 0; \
+                    margin-left: 0; \
                     line-height: 18px; \
                   } \
                   div.ui-img-details a.title { \
@@ -87,7 +88,6 @@ define(['app', 'backbone'], function(app, Backbone) {
                     {{/if}} \
                   </div> \
                   <div class="ui-img-details"> \
-                    <i>{{mediaModel.title}}</i><br> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                   </div> \
                   {{/if}} \
