@@ -26,8 +26,8 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
     rightToolbar: function() {
       return [
         //new Widgets.SearchWidget(),
-        new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
-        new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
+        //new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
+        //new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
       ];
     },
 

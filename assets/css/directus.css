@@ -3279,6 +3279,12 @@ body.initial-load #sidebar {
   opacity: 0.0;
   pointer-events: none;
 }
+.has-toolbar .secondary-row {
+  min-height: 34px;
+}
+.has-toolbar .content-body {
+  margin-top: 120px;
+}
 .header1 {
   box-sizing: border-box;
   /* css3 rec */
