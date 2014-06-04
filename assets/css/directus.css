@@ -3085,6 +3085,8 @@ body.initial-load #sidebar {
 }
 #sidebar #mainSidebar .sidebar-subitem a {
   padding-left: 43px;
+  padding-right: 30px;
+  position: relative;
 }
 #sidebar #mainSidebar ul {
   margin: 0 0 10px 0;
@@ -3104,7 +3106,9 @@ body.initial-load #sidebar {
   text-overflow: ellipsis;
 }
 #sidebar #mainSidebar li a .remove-snapshot {
-  float: right;
+  position: absolute;
+  top: 7px;
+  right: 10px;
   color: #bbbbbb;
   opacity: 0;
   -webkit-font-smoothing: antialiased !important;

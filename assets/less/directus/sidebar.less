@@ -82,6 +82,8 @@ body.initial-load #sidebar {
     }
     .sidebar-subitem a {
       padding-left: 43px;
+      padding-right: 30px;
+      position: relative;
     }
     ul {
       margin: 0 0 @smallPad 0;
@@ -101,7 +103,9 @@ body.initial-load #sidebar {
         overflow: hidden;
         text-overflow: ellipsis;
         .remove-snapshot {
-          float: right;
+          position: absolute;
+          top: 7px;
+          right: 10px;
           color: @mediumGrey;
           opacity: 0;
           -webkit-font-smoothing: antialiased !important;
