@@ -165,7 +165,7 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       }
 
       if (this.options.sort === undefined) {
-        this.options.sort = collection.hasColumn('sort') && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('sort');
+        this.options.sort = collection.hasColumn('sort') && collection.hasPermission && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('sort');
       }
 
       if (this.options.selectable === undefined) {
