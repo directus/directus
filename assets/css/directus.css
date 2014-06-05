@@ -2725,10 +2725,12 @@ select:focus,
   top: 1px;
   left: 5px;
 }
-.history-container ul li .history-icon.message {
+.history-container ul li .history-icon.message,
+.history-container ul li .history-icon.comment {
   background-color: #a63c96;
 }
-.history-container ul li .history-icon.message .icon {
+.history-container ul li .history-icon.message .icon,
+.history-container ul li .history-icon.comment .icon {
   top: 2px;
   left: 4px;
 }

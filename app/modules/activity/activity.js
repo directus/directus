@@ -72,19 +72,25 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
 
         //If table is media set to clip
         if(data.table == "directus_ui") {
-          data.is_media = true;
+          data.is_system = true;
           data.title = model.get('identifier').substring(0, model.get('identifier').indexOf(','));
         }
 
         //If table is Messages set to message
         if(data.table == "directus_messages") {
           if(JSON.parse(model.get('data')).response_to) {
+            data.is_reply = true;
             data.link = "messages/" + JSON.parse(model.get('data')).response_to;
           } else {
-            if(!app.messages.get(model.get('row_id'))) {
-              data.hidden = true;
+            if(model.get('type') == "MESSAGE") {
+              if(!app.messages.get(model.get('row_id'))) {
+                data.hidden = true;
+              } else {
+                data.link = "messages/" + model.get('row_id');
+              }
             } else {
-              data.link = "messages/" + model.get('row_id');
+              data.is_comment = true;
+              data.link = "activity";
             }
           }
 
