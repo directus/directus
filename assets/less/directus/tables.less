@@ -438,12 +438,18 @@
             left: 5px;
           }
         }
-        &.message,
-        &.comment {
+        &.message {
           background-color: @messageColor;
           .icon {
             top: 2px;
             left: 4px;
+          }
+        }
+        &.comment {
+          background-color: @messageColor;
+          .icon {
+            top: 1px;
+            left: 5px;
           }
         }
         &.attach {
@@ -458,6 +464,13 @@
           .icon {
             top: 1px;
             left: 5px;
+          }
+        }
+        &.system {
+          background-color: @systemColor;
+          .icon {
+            top: 1px;
+            left: 4px;
           }
         }
       }
