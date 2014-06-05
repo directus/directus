@@ -40,7 +40,8 @@ define(function(require, exports, module) {
     require('core-ui/system'),
     require('core-ui/user'),
     require('core-ui/directus_fancy_media'),
-    require('core-ui/directus_media_title')
+    require('core-ui/directus_media_title'),
+    require('core-ui/map')
   ]);
 
   var jQuery = require('jquery');
