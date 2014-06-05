@@ -27,7 +27,7 @@ function(app, Backbone) {
       'click .actionBtn': function(e) {
         var value = $(e.target).closest('span').attr('data-value');
 
-        if(value === 0) {
+        if(value == 0) {
           if(!confirm("Are you sure? This item will be removed from the system.")) {
             return;
           }
