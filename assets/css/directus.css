@@ -2496,6 +2496,10 @@ select:focus,
 .related-table .table-striped tr td.delete:hover {
   color: #c1272d;
 }
+.related-table .visible-columns-cell {
+  width: 0;
+  display: none;
+}
 .set-columns {
   overflow: hidden;
   display: block;
