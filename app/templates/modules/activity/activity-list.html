@@ -16,7 +16,7 @@
         {{else}}
           {{#if is_message}}
             <div class="history-icon {{#if is_comment}}comment{{else}}message{{/if}}"><div class="icon {{#if is_comment}}icon-quote{{else}}icon-comment{{/if}}"></div></div>
-            <div class="history-text">{{userName user_avatar}} {{#if is_comment}}commented on an item{{else}}{{#if isNew}}sent a new{{else}}replied to a{{/if}} message{{/if}}: <a href="{{link}}"><span class="light-grey-color">{{capitalize title}}</span></a></div>
+            <div class="history-text">{{userName user_avatar}} {{#if is_comment}}commented on an item{{else}}{{#if isNew}}sent a new{{else}}replied to a{{/if}} message{{/if}}{{#if link}}: <a href="{{link}}"><span class="light-grey-color">{{capitalize title}}</span></a>{{/if}}</div>
           {{else}}
             <div class="history-icon add"><div class="icon icon-check"></div></div>
             <div class="history-text">{{userName user_avatar}} created an item within <a href="{{link}}">{{capitalize table}}</a></div>

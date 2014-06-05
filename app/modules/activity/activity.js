@@ -64,6 +64,10 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           data.user = model.get('user');
         }
 
+        if(model.get('row_id') > 0) {
+          data.link = "tables/" + data.table + "/" + model.get('row_id');
+        }
+
         //If table is media set to clip
         if(data.table == "directus_media") {
           data.is_media = true;
@@ -90,19 +94,27 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
               }
             } else {
               data.is_comment = true;
-              data.link = "activity";
+              data.link = false;
+              if(JSON.parse(model.get('data')).comment_metadata) {
+                var metadata = JSON.parse(model.get('data')).comment_metadata.split(':');
+                if(metadata) {
+                  var itemId = metadata.pop();
+                  var table = metadata.pop();
+
+                  data.link = "tables/" + table + "/" + itemId;
+                  data.title = table;
+                }
+              }
             }
           }
 
           data.is_message = true;
-          data.title = model.get('identifier');
+          if(!data.title) {
+            data.title = model.get('identifier');
+          }
           if(model.get('action') == "ADD") {
             data.isNew = true;
           }
-        }
-
-        if(model.get('row_id') > 0 && !data.link) {
-          data.link = "tables/" + data.table + "/" + model.get('row_id');
         }
 
         if(tables.get(model.get('table_name'))) {
