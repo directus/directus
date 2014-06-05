@@ -75,6 +75,9 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
 
         //If table is Messages set to message
         if(data.table == "directus_messages") {
+          if(!app.messages.get(model.get('row_id'))) {
+            data.hidden = true;
+          }
           data.is_message = true;
           data.title = model.get('identifier');
         }
@@ -92,6 +95,11 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           }
         }
         return data;
+      });
+
+      //Filter out data that is set to hidden
+      data = _.filter(data, function(item) {
+        return !item.hidden;
       });
 
       // Order the data by timestamp
