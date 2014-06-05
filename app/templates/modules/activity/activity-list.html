@@ -24,8 +24,13 @@
         {{/if}}
       {{/if}}
       {{#if action_edit}}
-      <div class="history-icon edit"><div class="icon icon-pencil"></div></div>
-      <div class="history-text">{{userName user_avatar}} edited an item within {{#if link}}<a href="{{link}}">{{capitalize table}}</a>{{else}}{{capitalize table}}{{/if}}</div>
+        {{#if is_system}}
+        <div class="history-icon system"><div class="icon icon-cog"></div></div>
+        <div class="history-text">{{userName user_avatar}} made a system {{capitalize table}} change</div>
+        {{else}}
+        <div class="history-icon edit"><div class="icon icon-pencil"></div></div>
+        <div class="history-text">{{userName user_avatar}} edited an item within {{#if link}}<a href="{{link}}">{{capitalize table}}</a>{{else}}{{capitalize table}}{{/if}}</div>
+        {{/if}}
       {{/if}}
       {{#if action_delete}}
       <div class="history-icon delete"><div class="icon icon-trash"></div></div>
