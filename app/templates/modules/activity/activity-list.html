@@ -10,18 +10,18 @@
       {{userAvatar user_avatar}}
 
       {{#if action_add}}
-      {{#if is_media}}
-      <div class="history-icon attach"><div class="icon icon-attach"></div></div>
-      <div class="history-text">{{userName user_avatar}} uploaded a file: <span class="light-grey-color">{{capitalize title}}</span></div>
-      {{else}}
-        {{#if is_message}}
-          <div class="history-icon message"><div class="icon icon-comment"></div></div>
-          <div class="history-text">{{userName user_avatar}} Sent a New Message: <a href="{{link}}"><span class="light-grey-color">{{capitalize title}}</span></a></div>
+        {{#if is_media}}
+        <div class="history-icon attach"><div class="icon icon-attach"></div></div>
+        <div class="history-text">{{userName user_avatar}} uploaded a file: <a href="{{link}}"><span class="light-grey-color">{{capitalize title}}</span></a></div>
         {{else}}
-          <div class="history-icon add"><div class="icon icon-check"></div></div>
-          <div class="history-text">{{userName user_avatar}} created an item within <a href="{{link}}">{{capitalize table}}</a></div>
+          {{#if is_message}}
+            <div class="history-icon message"><div class="icon icon-comment"></div></div>
+            <div class="history-text">{{userName user_avatar}} {{#if isNew}}Sent a New{{else}}Replied to a{{/if}} Message: <a href="{{link}}"><span class="light-grey-color">{{capitalize title}}</span></a></div>
+          {{else}}
+            <div class="history-icon add"><div class="icon icon-check"></div></div>
+            <div class="history-text">{{userName user_avatar}} created an item within <a href="{{link}}">{{capitalize table}}</a></div>
+          {{/if}}
         {{/if}}
-      {{/if}}
       {{/if}}
       {{#if action_edit}}
       <div class="history-icon edit"><div class="icon icon-pencil"></div></div>

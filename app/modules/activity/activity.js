@@ -54,6 +54,9 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           case 'DELETE':
             data.action_delete = true;
             break;
+          case 'REPLY':
+            data.action_add = true;
+            break;
         }
 
         if(data.action_login) {
@@ -75,14 +78,25 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
 
         //If table is Messages set to message
         if(data.table == "directus_messages") {
-          if(!app.messages.get(model.get('row_id'))) {
-            data.hidden = true;
+          if(JSON.parse(model.get('data')).response_to) {
+            data.link = "messages/" + JSON.parse(model.get('data')).response_to;
+          } else {
+            if(!app.messages.get(model.get('row_id'))) {
+              data.hidden = true;
+            } else {
+              data.link = "messages/" + model.get('row_id');
+            }
           }
+
           data.is_message = true;
           data.title = model.get('identifier');
+          if(model.get('action') == "ADD") {
+            data.isNew = true;
+          }
         }
-        if(model.get('row_id') > 0) {
-          data.link = app.root + "tables/" + data.table + "/" + model.get('row_id');
+
+        if(model.get('row_id') > 0 && !data.link) {
+          data.link = "tables/" + data.table + "/" + model.get('row_id');
         }
 
         if(tables.get(model.get('table_name'))) {

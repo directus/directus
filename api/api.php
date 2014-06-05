@@ -961,6 +961,12 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
 
+    if($id) {
+      $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
+      $requestPayload['id'] = $id;
+      $Activity->recordMessage($requestPayload, $currentUser['id']);
+    }
+
     $headers = 'From: directus@directus.com' . "\r\n" .
     'Reply-To: directus@directus.com' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
