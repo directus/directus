@@ -202,7 +202,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     'data'          => json_encode($fullRecordData),
                     'delta'         => json_encode($deltaRecordData),
                     'row_id'        => $rowId,
-                    'identifier'    => null
+                    'identifier'    => null,
+                    'logged_ip'         =>$_SERVER['REMOTE_ADDR']
                 );
                 if($recordIsNew) {
                     /**
@@ -250,7 +251,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         'delta'             => json_encode($deltaRecordData),
                         'parent_changed'    => (int) $parentRecordChanged,
                         'identifier'        => $recordIdentifier,
-                        'row_id'            => $rowId
+                        'row_id'            => $rowId,
+                        'logged_ip'         =>$_SERVER['REMOTE_ADDR']
                     );
                     $parentLogEntry->populate($logData, false);
                     $parentLogEntry->save();
