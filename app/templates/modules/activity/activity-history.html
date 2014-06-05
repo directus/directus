@@ -18,6 +18,7 @@
           {{{nl2br title}}}
         </div>
       {{else}}
+        {{userAvatar user_avatar}}
         <div class="history-icon {{#if add}}add{{else}}edit{{/if}}"><div class="icon {{icon}}"></div></div>
         <div class="history-text">{{userName user_avatar}} {{#if add}}created{{else}}edited{{/if}} this item...</div>
       {{/if}}
