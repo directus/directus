@@ -2531,13 +2531,10 @@ select:focus,
   margin-right: 10px;
 }
 .activity-page li {
-  padding-left: 90px !important;
-}
-.activity-page li .avatar {
-  left: 40px !important;
+  padding-left: 60px !important;
 }
 .activity-page li:first-child .history-icon {
-  top: 0 !important;
+  top: 24px !important;
 }
 .view-entire-history {
   padding-top: 30px;
@@ -2672,61 +2669,78 @@ select:focus,
 .history-container ul li .history-text {
   padding-top: 10px;
 }
+.history-container ul li .history-text a {
+  color: #bbbbbb;
+}
 .history-container ul li .history-icon {
   position: absolute;
-  top: 20px;
-  left: 0;
-  width: 40px;
-  height: 40px;
+  top: 44px;
+  left: 24px;
+  width: 20px;
+  height: 20px;
   color: #ffffff;
+  -webkit-border-top-right-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-top-left-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-topleft: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+.history-container ul li .history-icon .icon {
+  font-size: 200%;
+  line-height: 60%;
+  position: absolute;
 }
 .history-container ul li .history-icon.add {
   background-color: #7ac943;
 }
 .history-container ul li .history-icon.add .icon {
-  position: absolute;
-  top: 0;
-  left: 12px;
+  top: 1px;
+  left: 5px;
 }
 .history-container ul li .history-icon.edit {
   background-color: #3fa9f5;
 }
 .history-container ul li .history-icon.edit .icon {
-  position: absolute;
   top: 1px;
-  left: 12px;
+  left: 5px;
 }
 .history-container ul li .history-icon.delete {
   background-color: #c1272d;
 }
 .history-container ul li .history-icon.delete .icon {
-  position: absolute;
-  top: 0;
-  left: 11px;
+  top: 1px;
+  left: 5px;
 }
 .history-container ul li .history-icon.message {
-  background-color: #662d91;
+  background-color: #a63c96;
 }
 .history-container ul li .history-icon.message .icon {
-  position: absolute;
-  top: 1px;
-  left: 10px;
+  top: 2px;
+  left: 4px;
 }
 .history-container ul li .history-icon.attach {
   background-color: #ff7bac;
 }
 .history-container ul li .history-icon.attach .icon {
-  position: absolute;
   top: 1px;
-  left: 10px;
+  left: 4px;
 }
 .history-container ul li .history-icon.login {
   background-color: #5b5b5b;
 }
 .history-container ul li .history-icon.login .icon {
-  position: absolute;
   top: 1px;
-  left: 12px;
+  left: 5px;
 }
 .cards {
   padding-left: 0px;
@@ -3805,10 +3819,6 @@ body.initial-load #sidebar {
   .history-container ul li {
     padding-right: 70px;
   }
-  .activity-page li .avatar {
-    top: 40px !important;
-    left: 0 !important;
-  }
   .feature-cards .feature-card {
     height: 60px;
   }
@@ -4062,7 +4072,7 @@ ul.general-container li .general-icon.delete .icon {
   left: 11px;
 }
 ul.general-container li .general-icon.message {
-  background-color: #662d91;
+  background-color: #a63c96;
 }
 ul.general-container li .general-icon.message .icon {
   position: absolute;
