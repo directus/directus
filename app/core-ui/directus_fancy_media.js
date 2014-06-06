@@ -80,6 +80,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   } \
                   </style> \
                   {{#if url}} \
+                  <a target="_BLANK" href="{{url}}"> \
                   <div class="ui-thumbnail has-media"> \
                     {{#if youtube}}<iframe width="300" height="200" src="http://www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe> \
                     {{else}} \
@@ -87,6 +88,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                       {{else}}<img src="{{thumbUrl}}">{{/if}} \
                     {{/if}} \
                   </div> \
+                  </a> \
                   <div class="ui-img-details"> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                   </div> \
