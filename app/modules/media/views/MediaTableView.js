@@ -163,8 +163,8 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         }
       }, function(e) {
         $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').show();
-        $('li[data-cid=' + fileInfo.model.cid + ']').find('.default-loading').removeClass('icon-3-dots');
-        $('li[data-cid=' + fileInfo.model.cid + ']').find('.default-loading').addClass('icon-upload-cloud');
+        $('li[data-cid=' + fileInfo.model.cid + ']').find('.default-loading .icon').removeClass('icon-3-dots');
+        $('li[data-cid=' + fileInfo.model.cid + ']').find('.default-loading .icon').addClass('icon-upload-cloud');
         $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').width(((e.loaded / e.total) * 100) + "%");
       });
     },
