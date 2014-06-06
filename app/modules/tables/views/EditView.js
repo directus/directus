@@ -100,12 +100,21 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         };
 
         switch(model.get('action')) {
+          case 'DELETE':
+            data.icon = "icon-trash";
+            data.color = "delete";
+            data.action_text = "deleted this item";
+            break;
           case 'UPDATE':
             data.icon = "icon-pencil";
+            data.color = "edit";
+            data.action_text = "edited this item";
             break;
           case 'ADD':
             data.add = true;
             data.icon = "icon-check";
+            data.color = "add";
+            data.action_text = "created this item";
             break;
         }
         return data;
