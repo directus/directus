@@ -163,6 +163,8 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         }
       }, function(e) {
         $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').show();
+        $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').removeClass('icon-3-dots');
+        $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').addClass('icon-upload-cloud');
         $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').width(((e.loaded / e.total) * 100) + "%");
       });
     },
