@@ -60,37 +60,106 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
           this.table = new DirectusTable({collection:this.collection, selectable: true, droppable: true, deleteOnly: true, hideColumnPreferences: true, blacklist: ['storage_adapter']});
           this.render();
         }
-      },
-      'fileuploadprogress #fileupload': function(e, data) {
-        console.log('progress...', data);
-      },
-      'fileuploaddone #fileupload': function(e, data) {
-        console.log('done');
-        this.collection.fetch();
-      },
-      'fileuploadfail #fileupload': function (e, data) {
-        console.log('faiiilll!!!', e, data);
-      },
-      'click td:not(.check)': function(e) {
-        var cid = $(e.target).closest('tr').attr('data-cid');
-        var model = this.collection.get(cid);
-        this.addEditMedia(model, 'Editing Media');
-      }
-    },
-
-    addEditMedia: function(model, title) {
-      var modal = new EditMediaView({model: model, stretch: true, title: title});
-      app.router.v.messages.insertView(modal).render();
-      if (!model.isNew()) {
-        app.router.navigate('#files/'+model.id);
-        modal.on('close', function() {
-          app.router.navigate('#files');
-        });
       }
     },
     afterRender: function() {
       this.setView('#page-content', this.table);
       this.collection.fetch();
+      if (window.File && window.FileList && window.FileReader) {
+        //this.initFileDrop();
+      }
+
+      var that = this;
+
+      this.dragoverListener = function(e) {
+        that.$el.find('.external-drop-indicator').show();;
+      }
+
+      window.addEventListener('dragover', this.dragoverListener, false);
+
+      this.dragleaveListener = function() {
+        that.$el.find('.external-drop-indicator').hide();;
+      }
+
+      window.addEventListener('dragleave', this.dragleaveListener, false);
+
+      this.dropListener = function(e) {
+        that.$el.find('.external-drop-indicator').fadeOut(500);
+        console.log('drop');
+        that.processDroppedImages(e)
+      };
+
+      window.addEventListener('drop', this.dropListener, false);
+    },
+    remove: function() {
+      window.removeEventListener('drop', this.dropListener, false);
+      window.removeEventListener('dragleave', this.dragleaveListener, false);
+      window.removeEventListener('dragover', this.dragoverListener, false);
+
+      $(document).off('ajaxStart.directus');
+      $(document).on('ajaxStart.directus', function() {
+        app.trigger('progress');
+      });
+    },
+    processDroppedImages: function(e) {
+      if(! this.uploadInProgress) {
+        this.uploadInProgress = true;
+        this.uploadFiles = [];
+
+        var that = this;
+        _.each(e.dataTransfer.files, function(file) {
+          var  model = new that.collection.model({active: 2, title: file.name, size: file.size, type: file.type, }, {collection: that.collection, parse: true});
+          that.collection.add(model);
+          that.uploadFiles.push({model: model, fileInfo: file});
+        });
+        this.collection.trigger('sync');
+        this.uploadNextImage();
+      }
+    },
+    uploadNextImage: function() {
+      if(this.uploadFiles.length <= 0) {
+        this.uploadInProgress = false;
+        return;
+      }
+
+      var that = this;
+      var fileInfo = this.uploadFiles[0];
+
+      $(document).off('ajaxStart.directus');
+
+      app.sendFiles([fileInfo.fileInfo], function(data) {
+        if(typeof(data[0]) == 'object') {
+          fileInfo.model.save(data[0], {
+            success: function() {
+              $(document).on('ajaxStart.directus', function() {
+                app.trigger('progress');
+              });
+            },
+            error: function() {
+              $(document).on('ajaxStart.directus', function() {
+                app.trigger('progress');
+              });
+
+              that.collection.remove(fileInfo.model);
+              that.collection.trigger('sync');
+            },
+            wait: true,
+            patch: true,
+            includeRelationships: true
+          });
+          that.collection.trigger('sync');
+          that.uploadFiles.shift();
+          that.uploadNextImage();
+        } else {
+          $(document).on('ajaxStart.directus', function() {
+            app.trigger('progress');
+          });
+          that.collection.remove(fileInfo.model);
+          that.collection.trigger('sync');
+          that.uploadFiles.shift();
+          that.uploadNextImage();
+        }
+      });
     },
     initialize: function() {
       this.viewList = false;

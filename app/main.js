@@ -338,11 +338,11 @@ require(["config"], function() {
       }, this));
 
       //@todo: move these event handlers to alerts.js
-      $(document).ajaxStart(function(e) {
+      $(document).on('ajaxStart.directus', function(e) {
         app.trigger('progress');
       });
 
-      $(document).ajaxStop(function(e) {
+      $(document).on('ajaxStop.directus', function(e) {
         app.trigger('load');
       });
 
