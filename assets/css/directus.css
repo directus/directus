@@ -1483,25 +1483,45 @@ body.initial-load #page-blocker-smoke {
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
   }
 }
+.pulsate {
+  -webkit-animation: pulsate 2s ease-out;
+  -webkit-animation-iteration-count: infinite;
+  opacity: 0.6;
+}
+@-webkit-keyframes pulsate {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1.0;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
 .external-drop-indicator {
+  -webkit-animation: pulsate 2s ease-out;
+  -webkit-animation-iteration-count: infinite;
+  opacity: 0.6;
   position: fixed;
   background-color: #7ac943;
   z-index: 1000;
 }
 .external-drop-indicator.top {
   top: 0px;
-  left: 170px;
+  left: 176px;
   right: 0;
   height: 6px;
 }
 .external-drop-indicator.bottom {
   bottom: 0px;
   right: 6px;
-  left: 170px;
+  left: 176px;
   height: 6px;
 }
 .external-drop-indicator.left {
-  bottom: 6px;
+  bottom: 0;
+  top: 0;
   left: 170px;
   height: 100%;
   width: 6px;
@@ -2826,6 +2846,21 @@ select:focus,
   line-height: 190px;
   text-align: center;
 }
+.cards .card .header-image .default-loading {
+  border: solid 1px #ededed;
+  border-bottom: 0px;
+  font-size: 45px;
+  font-weight: 700;
+  height: 199px;
+  line-height: 190px;
+  text-align: center;
+}
+.cards .card .header-image .default-loading .icon {
+  -webkit-animation: pulsate 2s ease-out;
+  -webkit-animation-iteration-count: infinite;
+  opacity: 0.6;
+  line-height: 130%;
+}
 .cards .card .header-image .tool-item {
   background-color: #ffffff;
   bottom: 10px;
@@ -3127,17 +3162,6 @@ body.initial-load #sidebar {
   -webkit-animation: pulsate 2s ease-out;
   -webkit-animation-iteration-count: infinite;
   opacity: 0.6;
-}
-@-webkit-keyframes pulsate {
-  0% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1.0;
-  }
-  100% {
-    opacity: 0.6;
-  }
 }
 #sidebar #mainSidebar {
   bottom: 100px;

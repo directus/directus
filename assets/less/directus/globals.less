@@ -350,25 +350,39 @@ body.initial-load {
   }
 }
 
+.pulsate {
+  -webkit-animation: pulsate 2s ease-out;
+  -webkit-animation-iteration-count: infinite;
+  opacity: 0.6;
+}
+
+@-webkit-keyframes pulsate {
+  0% {opacity: 0.6;}
+  50% {opacity: 1.0;}
+  100% {opacity: 0.6;}
+}
+
 .external-drop-indicator {
+  .pulsate;
   position: fixed;
   background-color: @addColor;
   z-index: 1000;
 }
 .external-drop-indicator.top {
   top: 0px;
-  left: 170px;
+  left: 176px;
   right: 0;
   height:6px;
 }
 .external-drop-indicator.bottom {
   bottom: 0px;
   right: 6px;
-  left: 170px;
+  left: 176px;
   height:6px;
 }
 .external-drop-indicator.left {
-  bottom: 6px;
+  bottom: 0;
+  top: 0;
   left: 170px;
   height: 100%;
   width:6px;

@@ -49,6 +49,11 @@ function(app, Backbone, Widgets) {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
         }
 
+        // While loading
+        if(!data.id){
+          data.thumbnail = '<div class="default-loading"><span class="icon icon-three-dots"></span></div>';
+        }
+
         if(type == "embed") {
           data.size = app.seconds_convert(data.size);
           data.dimensions = "";
