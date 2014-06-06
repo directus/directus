@@ -225,7 +225,7 @@ img.grayscale {
     -webkit-filter: grayscale(0);
   }
 }
-.ellipses {
+.ellipsis {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -348,6 +348,36 @@ body.initial-load {
     transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
   }
+}
+
+.external-drop-indicator {
+  position: fixed;
+  background-color: @addColor;
+  z-index: 1000;
+}
+.external-drop-indicator.top {
+  top: 0px;
+  left: 170px;
+  right: 0;
+  height:6px;
+}
+.external-drop-indicator.bottom {
+  bottom: 0px;
+  right: 6px;
+  left: 170px;
+  height:6px;
+}
+.external-drop-indicator.left {
+  bottom: 6px;
+  left: 170px;
+  height: 100%;
+  width:6px;
+}
+.external-drop-indicator.right {
+  top: 6px;
+  right: 0px;
+  height: 100%;
+  width:6px;
 }
 
 input[type="date"]::-webkit-inner-spin-button {

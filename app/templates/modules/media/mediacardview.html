@@ -9,8 +9,8 @@
   <div class="info">
     <div class="featured">
       <div class="primary-info">{{title_short}}</div>
-      <div class="secondary-info">{{#if dimensions}}{{dimensions}}, {{/if}}{{size}}, {{uppercase type}}</div>
-      <div class="secondary-info italic">{{date_uploaded}}</div>
+      <div class="secondary-info ellipsis">{{#if dimensions}}{{dimensions}}, {{/if}}{{size}}, {{uppercase type}}</div>
+      <div class="secondary-info ellipsis italic">{{date_uploaded}}</div>
     </div>
   </div>
 </li>
@@ -23,7 +23,7 @@
   </div>
 {{/unless}}
 
-<div style="opacity: 0.6; display: none;" class="external-drop-indicator top"></div>
-<div style="opacity: 0.6; display: none;" class="external-drop-indicator left"></div>
-<div style="opacity: 0.6; display: none;" class="external-drop-indicator right"></div>
-<div style="opacity: 0.6; display: none;" class="external-drop-indicator bottom"></div>
+<div style="display: none;" class="external-drop-indicator top"></div>
+<div style="display: none;" class="external-drop-indicator left"></div>
+<div style="display: none;" class="external-drop-indicator right"></div>
+<div style="display: none;" class="external-drop-indicator bottom"></div>
