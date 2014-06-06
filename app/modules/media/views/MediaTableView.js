@@ -102,17 +102,19 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
       });
     },
     processDroppedImages: function(e) {
+      if(!this.uploadFiles) {
+        this.uploadFiles = [];
+      }
+
+      var that = this;
+      _.each(e.dataTransfer.files, function(file) {
+        var  model = new that.collection.model({active: 2, title: file.name, size: file.size, type: file.type, }, {collection: that.collection, parse: true});
+        that.collection.add(model);
+        that.uploadFiles.push({model: model, fileInfo: file});
+      });
+      this.collection.trigger('sync');
       if(! this.uploadInProgress) {
         this.uploadInProgress = true;
-        this.uploadFiles = [];
-
-        var that = this;
-        _.each(e.dataTransfer.files, function(file) {
-          var  model = new that.collection.model({active: 2, title: file.name, size: file.size, type: file.type, }, {collection: that.collection, parse: true});
-          that.collection.add(model);
-          that.uploadFiles.push({model: model, fileInfo: file});
-        });
-        this.collection.trigger('sync');
         this.uploadNextImage();
       }
     },
@@ -127,7 +129,6 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
 
       $(document).off('ajaxStart.directus');
 
-      $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').show();
       app.sendFiles([fileInfo.fileInfo], function(data) {
         if(typeof(data[0]) == 'object') {
           fileInfo.model.save(data[0], {
@@ -161,6 +162,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
           that.uploadNextImage();
         }
       }, function(e) {
+        $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').show();
         $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').width(((e.loaded / e.total) * 100) + "%");
       });
     },

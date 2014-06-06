@@ -80,13 +80,23 @@ define(['app', 'backbone'], function(app, Backbone) {
                   } \
                   </style> \
                   {{#if url}} \
+                  <a target="_BLANK" href="{{url}}"> \
                   <div class="ui-thumbnail has-media"> \
-                    {{#if youtube}}<iframe width="300" height="200" src="http://www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe> \
+                    {{#if thumbUrl}} \
+                      {{#if youtube}} \
+                        <iframe width="300" height="200" src="http://www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe> \
+                      {{else}} \
+                        {{#if vimeo}} \
+                          <iframe src="//player.vimeo.com/video/{{vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                        {{else}} \
+                          <img src="{{thumbUrl}}"> \
+                        {{/if}} \
+                      {{/if}} \
                     {{else}} \
-                      {{#if vimeo}} <iframe src="//player.vimeo.com/video/{{vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
-                      {{else}}<img src="{{thumbUrl}}">{{/if}} \
+                      <div class="default-info">{{type}}</div> \
                     {{/if}} \
                   </div> \
+                  </a> \
                   <div class="ui-img-details"> \
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                   </div> \
@@ -127,6 +137,15 @@ define(['app', 'backbone'], function(app, Backbone) {
          storageAdapter !== '') {
           data.url = model.makeMediaUrl(false);
           data.thumbUrl = model.makeMediaUrl(true);
+      }
+
+      var type = model.get('type').substring(0, model.get('type').indexOf('/'));
+      var subtype = model.get('type').split('/').pop();
+
+      //If we shouldnt show thumbnail, set thumbUrl to null
+      if(type != 'image' && type != 'embed' && subtype != "pdf") {
+        data.thumbUrl = null;
+        data.type = subtype.toUpperCase();
       }
 
       data.name = model.get('name');
