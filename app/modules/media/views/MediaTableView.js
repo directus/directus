@@ -127,6 +127,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
 
       $(document).off('ajaxStart.directus');
 
+      $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').show();
       app.sendFiles([fileInfo.fileInfo], function(data) {
         if(typeof(data[0]) == 'object') {
           fileInfo.model.save(data[0], {
@@ -159,6 +160,8 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
           that.uploadFiles.shift();
           that.uploadNextImage();
         }
+      }, function(e) {
+        $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').width(((e.loaded / e.total) * 100) + "%");
       });
     },
     initialize: function() {

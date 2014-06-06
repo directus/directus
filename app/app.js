@@ -112,7 +112,7 @@ define(function(require, exports, module) {
 
   };
 
-  app.sendFiles = function(files, callback) {
+  app.sendFiles = function(files, callback, progressCallback) {
     var formData = new FormData();
 
     var success = function(responseData) {
@@ -144,7 +144,14 @@ define(function(require, exports, module) {
       error: function(err1, err2, err3) {
         app.trigger('alert','upload failed', arguments);
         //console.log('ERRRRRROOOORRR!!', err1, err2, err3);
-      }
+      },
+      xhr: function() {  // custom xhr
+        var myXhr = $.ajaxSettings.xhr();
+        if(myXhr.upload && progressCallback){ // check if upload property exists
+          myXhr.upload.addEventListener('progress',progressCallback, false); // for handling the progress of the upload
+        }
+        return myXhr;
+      },
     });
   };
 

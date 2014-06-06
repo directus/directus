@@ -4144,3 +4144,13 @@ ul.general-container li .general-icon.login .icon {
   height: 100%;
   width:6px;
 }
+
+.media-card-progress {
+  position: absolute;
+  background-color: #7ac943;
+  z-index: 1000;
+
+  bottom:0px;
+  height:4px;
+  width:100%;
+}
