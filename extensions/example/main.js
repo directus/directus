@@ -9,7 +9,7 @@ function(app, Backbone, Directus, BasePageView) {
 
   var Extension = {
     id: 'example_extension/',
-    icon: 'icon-upload',
+    icon: 'icon-folder',
     title: 'Example Extension'
   };
 
