@@ -139,19 +139,19 @@ define(['app', 'backbone'], function(app, Backbone) {
           data.thumbUrl = model.makeMediaUrl(true);
       }
 
-      var type = model.get('type').substring(0, model.get('type').indexOf('/'));
-      var subtype = model.get('type').split('/').pop();
-
-      //If we shouldnt show thumbnail, set thumbUrl to null
-      if(type != 'image' && type != 'embed' && subtype != "pdf") {
-        data.thumbUrl = null;
-        data.type = subtype.toUpperCase();
-      }
-
       data.name = model.get('name');
       data.orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
 
       if(model.has('type')) {
+        var type = model.get('type').substring(0, model.get('type').indexOf('/'));
+        var subtype = model.get('type').split('/').pop();
+
+        //If we shouldnt show thumbnail, set thumbUrl to null
+        if(type != 'image' && type != 'embed' && subtype != "pdf") {
+          data.thumbUrl = null;
+          data.type = subtype.toUpperCase();
+        }
+
         if(model.get('type') == 'embed/youtube') {
           data.youtube = model.get('url');
         } else if(model.get('type') == 'embed/vimeo') {
