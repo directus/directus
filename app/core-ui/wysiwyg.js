@@ -163,6 +163,7 @@ var template = '<style type="text/css"> \
         var collection = app.media;
         var model;
         var mediaModel = new app.media.model({}, {collection: collection});
+        collection.fetch();
         var view = new Overlays.ListSelect({collection: collection, selectable: false});
         app.router.overlayPage(view);
         var self = this;
