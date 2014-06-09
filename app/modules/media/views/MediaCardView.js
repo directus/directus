@@ -36,7 +36,7 @@ function(app, Backbone, Widgets) {
           'title_short': (model.get('title').length > 28)? model.get('title').substr(0,25) + "..." : model.get('title'),
           'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
           'size': model.get('size'),
-          'type': model.get('type').split('/').pop(),
+          'type': (model.has('type')) ? model.get('type').split('/').pop() : '',
           'dimensions': model.get('width') + "×" + model.get('height')
         };
 
@@ -47,6 +47,11 @@ function(app, Backbone, Widgets) {
           data.thumbnail = '<img src="'+model.makeMediaUrl(true)+'">';
         } else {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
+        }
+
+        // While loading
+        if(!data.id){
+          data.thumbnail = '<div class="default-loading"><span class="icon icon-three-dots"></span></div>';
         }
 
         if(type == "embed") {

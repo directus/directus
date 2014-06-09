@@ -69,14 +69,6 @@ function(app, Backbone) {
 
     initialize: function() {
       this.collection.on('change', this.render, this);
-
-      app.messages.on('sync change add', function() {
-        var messagesTab = this.collection.get('messages');
-        if(messagesTab) {
-          messagesTab.set({unread: (app.messages.unread > 0)});
-        }
-        this.render();
-      }, this);
     }
 
   });

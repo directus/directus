@@ -54,11 +54,18 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           case 'DELETE':
             data.action_delete = true;
             break;
+          case 'REPLY':
+            data.action_add = true;
+            break;
         }
 
         if(data.action_login) {
           data.table = "login";
           data.user = model.get('user');
+        }
+
+        if(model.get('row_id') > 0) {
+          data.link = "tables/" + data.table + "/" + model.get('row_id');
         }
 
         //If table is media set to clip
@@ -69,8 +76,45 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
 
         //If table is media set to clip
         if(data.table == "directus_ui") {
-          data.is_media = true;
+          data.is_system = true;
           data.title = model.get('identifier').substring(0, model.get('identifier').indexOf(','));
+        }
+
+        //If table is Messages set to message
+        if(data.table == "directus_messages") {
+          if(JSON.parse(model.get('data')).response_to) {
+            data.is_reply = true;
+            data.link = "messages/" + JSON.parse(model.get('data')).response_to;
+          } else {
+            if(model.get('type') == "MESSAGE") {
+              if(!app.messages.get(model.get('row_id'))) {
+                data.hidden = true;
+              } else {
+                data.link = "messages/" + model.get('row_id');
+              }
+            } else {
+              data.is_comment = true;
+              data.link = false;
+              if(JSON.parse(model.get('data')).comment_metadata) {
+                var metadata = JSON.parse(model.get('data')).comment_metadata.split(':');
+                if(metadata) {
+                  var itemId = metadata.pop();
+                  var table = metadata.pop();
+
+                  data.link = "tables/" + table + "/" + itemId;
+                  data.title = table;
+                }
+              }
+            }
+          }
+
+          data.is_message = true;
+          if(!data.title) {
+            data.title = model.get('identifier');
+          }
+          if(model.get('action') == "ADD") {
+            data.isNew = true;
+          }
         }
 
         if(tables.get(model.get('table_name'))) {
@@ -83,6 +127,11 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           }
         }
         return data;
+      });
+
+      //Filter out data that is set to hidden
+      data = _.filter(data, function(item) {
+        return !item.hidden;
       });
 
       // Order the data by timestamp

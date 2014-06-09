@@ -50,7 +50,7 @@ define(function(require, exports, module) {
       // very wierd hot-fix to hardcode the user table to always show active=1
       // @todo make sure that preferences and filters follow the rules!
       if ('directus_users' === this.table.id) {
-        console.warn('Active users only');
+        // console.warn('Active users only');
         result.active = "1";
       }
 

@@ -14,7 +14,7 @@
   {{#rows}}
   <tr class="{{#if alias}}alias{{/if}}{{#if system}}system{{/if}}" data-id="{{id}}">
     <td class="sort">{{#unless system}}<span class="icon icon-list"></span>{{/unless}}</td>
-    <td><span title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
+    <td><span class="settings-column-name" title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
     {{#if system}}
     <td colspan="5"><em class="light-grey-color">This is a system field</em></td>
     {{else}}

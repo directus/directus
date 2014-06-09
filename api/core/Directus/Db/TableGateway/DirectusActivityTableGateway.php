@@ -20,6 +20,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
     const TYPE_SETTINGS = "SETTINGS";
     const TYPE_UI       = "UI";
     const TYPE_LOGIN    = "LOGIN";
+    const TYPE_MESSAGE    = "MESSAGE";
 
     // Populates directus_activity.action
     const ACTION_ADD    = "ADD";
@@ -124,10 +125,40 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
           'action'            => self::ACTION_LOGIN,
           'user'              => $userid,
           'datetime'          => gmdate('Y-m-d H:i:s'),
-          'parent_id'         => null
+          'parent_id'         => null,
+          'logged_ip'         =>$_SERVER['REMOTE_ADDR']
       );
 
       $insert = new Insert($this->getTable());
+      $insert
+        ->values($logData);
+
+      $this->insertWith($insert);
+    }
+
+    public function recordMessage($data, $userId) {
+      if(isset($data['response_to']) && $data['response_to'] > 0) {
+        $action = "REPLY";
+      } else {
+        $action = "ADD";
+      }
+
+      $logData = array(
+          'type'              => self::TYPE_MESSAGE,
+          'table_name'        => 'directus_messages',
+          'action'            => $action,
+          'user'              => $userId,
+          'datetime'          => gmdate('Y-m-d H:i:s'),
+          'parent_id'         => null,
+          'data'              => json_encode($data),
+          'delta'             => "[]",
+          'identifier'        => $data['subject'],
+          'row_id'            => $data['id'],
+          'logged_ip'         =>$_SERVER['REMOTE_ADDR']
+      );
+
+      $insert = new Insert($this->getTable());
+
       $insert
         ->values($logData);
 

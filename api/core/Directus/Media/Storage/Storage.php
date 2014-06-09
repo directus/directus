@@ -83,8 +83,10 @@ class Storage {
         $info = pathinfo($targetFileName);
         if(in_array($info['extension'], array('jpg','jpeg','png','gif','tif', 'psd', 'pdf'))) {
             $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
-            $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-            Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $settings['thumbnail_quality']);
+            if($img) {
+              $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+              Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $settings['thumbnail_quality']);
+            }
         }
 
         // Push original file

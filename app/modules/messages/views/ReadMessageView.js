@@ -17,6 +17,11 @@ function(app, Backbone, BasePageView) {
         var collection = this.model.get('responses');
         var Model = collection.model;
         var myId = app.users.getCurrentUser().get('id');
+
+        if($('#messages-response').val() === "") {
+          return;
+        }
+
         var recipients = _.map(this.model.get('recipients').split(','), function(id) {
           return '0_' + id;
         });
@@ -24,9 +29,9 @@ function(app, Backbone, BasePageView) {
 
         var attrs = {
           'from': app.users.getCurrentUser().get('id'),
-          'subject': '',
+          'subject': 'RE: ' + this.model.get('subject'),
           'recipients': recipients.join(','),
-          'datetime': (new Date()).toISOString(),
+          'datetime': new Date().toISOString(),
           'response_to': this.model.id,
           'message': $('#messages-response').val(),
           'responses': []
@@ -50,9 +55,17 @@ function(app, Backbone, BasePageView) {
 
     serialize: function() {
       var data = this.model.toJSON();
+      data.datetime += ' UTC';
       data.recipients = data.recipients.split(',');
       data.recipientsCount = data.recipients.length;
       data.collapseRecipients = data.recipients.length > this.maxRecipients;
+      data.current_user = app.authenticatedUserId;
+
+      _.each(data.responses, function(data) {
+        data.datetime += ' UTC';
+      });
+
+      data.responses = data.responses.reverse();
 
       data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
       return data;

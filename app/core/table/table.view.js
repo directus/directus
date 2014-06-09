@@ -165,11 +165,11 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       }
 
       if (this.options.sort === undefined) {
-        this.options.sort = collection.hasColumn('sort') && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('sort');
+        this.options.sort = collection.hasColumn('sort') && collection.hasPermission && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('sort');
       }
 
       if (this.options.selectable === undefined) {
-        this.options.selectable = collection.hasColumn('active') && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('active');
+        this.options.selectable = true;
       }
 
       this.saveAfterDrop = this.options.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;

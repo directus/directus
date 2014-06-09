@@ -9,10 +9,11 @@
 
 define([
   "app",
-  "backbone"
+  "backbone",
+  "core/EntriesManager"
 ],
 
-function(app, Backbone) {
+function(app, Backbone, EntriesManager) {
 
   "use strict";
 
@@ -24,6 +25,11 @@ function(app, Backbone) {
     },
     setActive: function(route) {
       //deactive all tabs
+      var splitRoute = route.split('/');
+      if(splitRoute.length > 2) {
+        route = splitRoute[0] + '/' + splitRoute[1];
+      }
+
       var activeModel;
       _.each(this.models,function(model) {
         model.unset('active',{silent: true});
@@ -67,12 +73,49 @@ function(app, Backbone) {
       class:"row"
     },
 
+    events: {
+      'click .remove-snapshot': function(e) {
+        e.stopPropagation();
+
+        var url = $(e.target).parent().attr('href');
+        if(url) {
+          var urlArray = url.split('/');
+          var title = urlArray.pop();
+          urlArray.pop();
+          var table = urlArray.pop();
+          if(title && table) {
+            if(!confirm("Are you sure you wish to delete the snapshot: " + title)) {
+              return false;
+            }
+            var user = app.users.getCurrentUser().get("id");
+            var collection = EntriesManager.getInstance(table);
+            collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({title:title, table_name: table, user: user}),success: function() {
+              app.getBookmarks().removeBookmark({title: title, icon_class: 'icon-search', user: user});
+            }});
+          }
+        }
+
+        return false;
+      }
+    },
+
     serialize: function() {
-      var bookmarks = this.collection.map(function(model) {
-        var bookmarks = model.toJSON();
-        return bookmarks;
+      var bookmarks = {table:[],search:[],extension:[],other:[]};
+
+      this.collection.each(function(model) {
+        var bookmark = model.toJSON();
+        if(bookmarks[bookmark.section]) {
+          bookmarks[bookmark.section].push(bookmark);
+        }
       });
-      return {bookmarks: bookmarks};
+
+      var data = {bookmarks: bookmarks};
+
+      if(Backbone.history.fragment == "tables") {
+        data.tablesActive = true;
+      }
+
+      return data;
     },
     initialize: function() {
       var that = this;
@@ -81,9 +124,30 @@ function(app, Backbone) {
         that.collection.setActive(Backbone.history.fragment);
         that.render();
       });
+
       this.collection.on('remove', function() {
         that.render();
       });
+
+      var messageModel = this.collection.where({url: 'messages'});
+      if(messageModel) {
+        messageModel = messageModel[0];
+        if(messageModel) {
+          messageModel.set({unread: app.messages.unread > 0}, {silent: true});
+          this.render();
+        }
+      }
+
+      app.messages.on('sync change add', function() {
+        var messageModel = this.collection.where({url: 'messages'});
+        if(messageModel) {
+          messageModel = messageModel[0];
+          if(messageModel) {
+            messageModel.set({unread: app.messages.unread > 0}, {silent: true});
+            this.render();
+          }
+        }
+      }, this);
     },
     setActive: function(route) {
       this.collection.setActive(route);

@@ -66,9 +66,14 @@ function(app, Backbone) {
       }
     },
     afterRender: function() {
-      $(window).bind('resize.app', _.bind(this.setMarginToHeaderHeight, this));
+      //$(window).bind('resize.app', _.bind(this.setMarginToHeaderHeight, this));
 
-      this.setMarginToHeaderHeight();
+      var secondaryToolbarWidgetCount = this.$el.find('#tools-secondary-left-insert').children().length + this.$el.find('#tools-secondary-right-insert').children().length;
+      if(secondaryToolbarWidgetCount > 0) {
+        this.$el.parent().parent().addClass('has-toolbar');
+      }
+
+      //this.setMarginToHeaderHeight();
     },
 
     cleanup: function() {

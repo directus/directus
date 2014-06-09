@@ -24,10 +24,10 @@ function(app, Backbone) {
         $target.next('p').html(value);
       },
       'mouseover .footer-function': function(e) {
-        $(e.target).closest('.footer-function').find('ul').removeClass('collapse');
+        $(e.target).closest('.footer-function').find('ul').removeClass('hide');
       },
       'mouseout .footer-function': function(e) {
-        $(e.target).closest('.footer-function').find('ul').addClass('collapse');
+        $(e.target).closest('.footer-function').find('ul').addClass('hide');
       },
       'click .footer-function li': function(e) {
         this.functions[$(e.target).closest('.footer-function').attr('data-column')] = $(e.target).text();
@@ -39,13 +39,13 @@ function(app, Backbone) {
       var sum = _.reduce(set, function(memo, num){ return memo + num; }, 0);
       switch(operation) {
         case 'MIN':
-          return _.min(set);
+          return String(_.min(set)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         case 'MAX':
-          return _.max(set);
+          return String(_.max(set)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         case 'AVG':
-          return Math.round(100 * sum / set.length) / 100;
+          return String(Math.round(100 * sum / set.length) / 100).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         case 'SUM':
-          return sum;
+          return String(sum).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
     },
 
@@ -56,6 +56,7 @@ function(app, Backbone) {
           isNumeric: this.collection.structure.get(value).get('ui') === 'numeric',
           selectedFunction: this.functions.hasOwnProperty(value) ? this.functions[value] : 'SUM'
         };
+        col.otherFunctions = _.without(['MIN', 'MAX', 'AVG', 'SUM'], col.selectedFunction);
         if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), col.selectedFunction);
         return col;
       }, this);

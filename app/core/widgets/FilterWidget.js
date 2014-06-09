@@ -17,144 +17,163 @@ function(app, Backbone) {
     },
 
     filterUIMappings: {
-      default: '<input type="text" placeholder="Keywords..." name="keywords" id="advKeywords" maxlength="255" class="medium" placeholder="Keywords">',
-      date: '<input type="date" style="float: left;width: auto;background-color:#ededed" class="date medium" name="keywords" id="advKeywords">',
+      default: '<input type="text" value="{{value}}" placeholder="Filter..." name="keywords" maxlength="100" class="filter_ui">',
+      date: '<input type="date" value="{{value}}" class="date filter_ui" name="keywords" id="advKeywords">',
+      checkbox: '<input type="checkbox" {{#if value}}checked{{/if}} class="filter_ui" name="keywords" id="advKeywords">'
     },
 
     events: {
-      'click #addFilterButton': 'addNewFilter',
-      'click [data-add-filter-row]': function(e) {
-        this.options.filterOptions.addFilter = true;
-        this.render();
-      },
-      'click .filters li': function(e) {
-        var index = $(e.target).index();
-        this.options.filterOptions.filters.splice(index, 1);
+      'click .removeFilterClass':function(e) {
+        var index = $(e.target).parent().index();
+        var title = $(e.target).parent().find('.filterColumnName').attr('data-filter-id');
+        this.options.filters.splice(index, 1);
+
         this.updateFilters();
         this.collection.fetch();
         this.saveFilterString();
-      },
-      'keydown input': function(e) {
-        if (e.keyCode == 13) { this.addNewFilter(); }
-      },
-      'click #cancelFilterButton': function(e) {
-        this.options.filterOptions.addFilter = false;
         this.render();
       },
       'change .adv-search-col-id': function(e) {
         var selectedVal = $(e.target).val();
-        this.updateFilterDataType(selectedVal);
+        if(selectedVal != "") {
+          this.addNewFilter(selectedVal);
+        }
+      },
+      'change .filter_ui': function(e) {
+        var data = {
+          id: this.mysql_real_escape_string($(e.target).closest('li').find('.filterColumnName').attr('data-filter-id')),
+          type: 'like',
+          value: this.mysql_real_escape_string($(e.target).val())
+        };
+
+        if($(e.target).is(':checkbox')) {
+          if($(e.target).prop('checked')) {
+            data.value = 1;
+          } else {
+            data.value = 0;
+          }
+        }
+        this.selfChanged = true;
+        this.options.filters[$(e.target).closest('li').index()].filterData = data;
+        this.updateFilters();
+        this.collection.fetch();
+        this.saveFilterString();
       }
     },
 
-    updateFilterDataType: function(selectedColumn) {
+    getFilterDataType: function(selectedColumn) {
       if(!selectedColumn || !this.collection.structure.get(selectedColumn)) {
         return;
       }
 
       var columnModel = this.collection.structure.get(selectedColumn);
-      this.columnModel = columnModel;
       var columnModelType = columnModel.get('type');
       var newInput;
-      //Special Handling for Relationship
-      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one") {
-        //If we already are up to date with the model then return
-        if(this.relatedCollection && this.relatedCollection.table.id == columnModel.relationship.get('table_related')) {
-          return;
-        }
-
-        this.savedValue = selectedColumn;
-
-        //Get Related Column Collection
-        this.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
-
-        this.relatedCollection.fetch({includeFilters: false, data: {active:1}});
-        this.listenTo(this.relatedCollection, 'sync', this.render);
-        return;
-      } else {
-        this.relatedCollection = null;
-        this.savedValue = null;
-      }
 
       switch(columnModelType) {
         case 'DATE':
         case 'DATETIME':
           newInput = this.filterUIMappings.date;
           break;
+        case 'TINYINT':
+          newInput = this.filterUIMappings.checkbox;
+          break;
         default:
           newInput = this.filterUIMappings.default;
           break;
       }
-      this.$el.find('#dataTypeInsert').html(newInput);
+
+      return newInput;
     },
 
-    addNewFilter: function() {
+    addNewFilter: function(selectedColumn) {
       var $filters = $('.advanced-search-fields-row');
       var that = this;
+      var data = {};
 
-      var searchSettings = $filters.map(function() {
-        var $this = $(this);
+      data.columnName = selectedColumn;
 
-        var values = {
-          id: $this.find('.adv-search-col-id').val(),
-          type: $this.find('.adv-search-query-type').val(),
-          value: $this.find('#advKeywords').val()
-        };
+      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
+        var columnModel = this.collection.structure.get(selectedColumn);
+        if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') != "dropdown") {
+          data.filter_ui = this.getFilterDataType(selectedColumn);
+        } else {
+          //Get Related Column Collection
+          data.columnModel = columnModel;
+          data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-        return {
-          id: that.mysql_real_escape_string(values.id),
-          type: values.type,
-          value: that.mysql_real_escape_string(values.value)
-        };
-      }).toArray();
-
-      this.options.filterOptions.filters.push(searchSettings[0]);
-
-      this.updateFilters();
-      this.collection.fetch();
-      this.saveFilterString();
-    },
-
-    updateFilters: function() {
-      this.collection.setFilter('adv_search', this.options.filterOptions.filters);
-      this.collection.setFilter('currentPage', 0);
-      this.options.filterOptions.addFilter = false;
+          data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+          this.listenTo(data.relatedCollection, 'sync', this.render);
+        }
+      } else {
+        data.filter_ui = this.getFilterDataType(selectedColumn);
+      }
+      data.filterData = {id: selectedColumn, type: 'like', value:''};
+      this.options.filters.push(data);
       this.render();
     },
 
-    saveFilterString: function() {
-      var string = [];
-      this.options.filterOptions.filters.forEach(function(search) {
-        string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + search.value.replace(':','\\:').replace(',','\\,'));
-      });
-
-      string = encodeURIComponent(string.join());
-      this.collection.preferences.save({search_string: string});
-    },
-
     serialize: function() {
-      var data = this.options.filterOptions;
-
+      var data = {};
+      data.filters = this.options.filters;
       data.tableColumns = this.collection.structure.pluck('id');
       data.tableColumns.sort(function(a, b) {
         if(a < b) return -1;
         if(a > b) return 1;
         return 0;
       });
+      var that = this;
+      var i=0;
+      _.each(this.options.filters, function(item) {
+        if(item.relatedCollection) {
+          data.filters[i].relatedEntries = [];
+          if(item.columnModel.options.has('filter_column')) {
+            var visibleColumn = item.columnModel.options.get('filter_column');
+          } else {
+            var visibleColumn = item.columnModel.options.get('visible_column');
+          }
+          var displayTemplate = Handlebars.compile(item.columnModel.options.get('visible_column_template'));
+          item.relatedCollection.each(function(model) {
+            data.filters[i].relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
+          });
 
-      if(this.relatedCollection) {
-        data.relatedEntries = [];
-        var visibleColumn = this.columnModel.options.get('visible_column');
-        var displayTemplate = Handlebars.compile(this.columnModel.options.get('visible_column_template'));
+          data.filters[i].relatedEntries = _.sortBy(data.filters[i].relatedEntries, 'visible_column_template');
+        } else {
+          var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
+          if(item.filterData) {
+            //Used for Checkboxes since they return 0 string
+            if(item.filterData.value == "0") {
+              item.filterData = 0;
+            }
+            data.filters[i].filter_ui = template({value: item.filterData.value});
+          } else {
+            data.filters[i].filter_ui = template({});
+          }
+        }
 
-        this.relatedCollection.each(function(model) {
-          data.relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
-        });
-
-        data.relatedEntries = _.sortBy(data.relatedEntries, 'visible_column_template');
-      }
+        i++;
+      });
 
       return data;
+    },
+
+    afterRender: function() {
+      $('.filter-ui').last().find('input').focus();
+      var that = this;
+      _.each(this.options.filters, function(item) {
+        if(item.relatedCollection) {
+          if(item.filterData) {
+            that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
+          }
+        }
+      });
+
+    /*  if(this.savedValue) {
+        this.$el.find('.adv-search-col-id').val(this.savedValue);
+      }
+
+      this.setFilterRow();
+      //this.updateFilterDataType(this.$el.find('.adv-search-col-id').val());*/
     },
 
     mysql_real_escape_string: function(str) {
@@ -183,6 +202,33 @@ function(app, Backbone) {
       });
     },
 
+    updateFilters: function() {
+      var filters = this.options.filters.map(function(item) {
+        return item.filterData;
+      });
+
+      this.collection.setFilter('adv_search', filters);
+      this.collection.setFilter('currentPage', 0);
+      //this.render();
+    },
+
+    saveFilterString: function() {
+      var string = [];
+
+      var filters = this.options.filters.map(function(item) {
+        return item.filterData;
+      });
+
+      filters.forEach(function(search) {
+        if(search) {
+          string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + String(search.value).replace(':','\\:').replace(',','\\,'));
+        }
+      });
+
+      string = encodeURIComponent(string.join());
+      this.collection.preferences.save({search_string: string});
+    },
+
     setFilterRow: function(){
       var $advSearchFieldRow = $(".advanced-search-fields-row");
       var $advSearchFields = $(".advanced-search-fields");
@@ -194,18 +240,8 @@ function(app, Backbone) {
 
     getFilterRow: "adv search fields row object",
 
-    afterRender: function() {
-      if(this.savedValue) {
-        this.$el.find('.adv-search-col-id').val(this.savedValue);
-      }
-
-      this.setFilterRow();
-      this.updateFilterDataType(this.$el.find('.adv-search-col-id').val());
-    },
-
     updateFiltersFromPreference: function() {
-      this.options.filterOptions.filters = [];
-
+      this.options.filters = [];
       var search = this.collection.preferences.get('search_string');
 
       if(search !== null && search !== undefined) {
@@ -214,18 +250,40 @@ function(app, Backbone) {
         search.forEach(function(filter) {
           filter = filter.replace('\\:', '%20');
           filter = filter.split(':');
+
           if(filter.length == 3) {
-            that.options.filterOptions.filters.push({id: filter[0].replace('%20',':'), type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')});
+            var data = {};
+            var selectedColumn = filter[0].replace('%20',':');
+
+            data.columnName = selectedColumn;
+
+            if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
+              var columnModel = that.collection.structure.get(selectedColumn);
+              //Get Related Column Collection
+              data.columnModel = columnModel;
+              data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
+
+              data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+              that.listenTo(data.relatedCollection, 'sync', that.render);
+            } else if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
+              data.filter_ui = that.getFilterDataType(selectedColumn);
+            }
+
+            data.filterData = {id: selectedColumn, type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')};
+
+            that.options.filters.push(data);
           }
         });
       }
       this.updateFilters();
+      //this.collection.fetch();
+      this.render();
     },
 
     initialize: function() {
-      this.options.filterOptions = {filters:[]};
+      this.options.filters = [];
       this.updateFiltersFromPreference();
-      this.collection.preferences.on('sync', function() {this.updateFiltersFromPreference(); /*this.collection.fetch();*/}, this);
+      this.collection.preferences.on('sync', function() { this.updateFiltersFromPreference();}, this);
     }
   });
 });

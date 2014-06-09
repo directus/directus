@@ -113,6 +113,62 @@
       }
     }
   }
+  tfoot {
+    tr {
+      border-bottom: none;
+      height: 100px;
+      &:hover {
+        background-color: initial;
+        cursor: auto;
+      }
+      td {
+        vertical-align: top;
+        padding-left: 0;
+      }
+      .footer-function {
+        .method {
+          font-weight: 600;
+          font-size: 11px;
+        }
+        ul {
+          padding:0;
+          font-weight: 600;
+          font-size: 11px;
+        }
+        .border-radius(3px, 3px, 3px, 3px);
+        span.value {
+          display:block;
+          margin-bottom:2px;
+          font-size:14px;
+          color: @mediumDarkGrey;
+        }
+        li {
+          color: @mediumGrey;
+        }
+        li:hover {
+          color: @mediumDarkGrey;
+        }
+        color: @mediumGrey;
+        background-color:@lightGrey;
+        width:72px;
+        text-align:center;
+        padding: 7px 5px 5px 5px;
+        position:relative;
+      }
+      .footer-function:after {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 10px;
+        border-style: solid;
+        border-width: 0 5px 5px;
+        border-color: @lightGrey transparent;
+        display: block;
+        width: 0;
+        z-index: 1;
+      }
+    }
+  }
   tr {
     -webkit-font-smoothing: auto;
     border-bottom: solid 1px @extraLightGrey;
@@ -147,6 +203,9 @@
       padding-bottom: 6px;
       padding-top: 5px;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 400px;
     }
     .check-box {
       padding-left: 15px;
@@ -163,7 +222,7 @@
 .related-table {
   margin-bottom: @smallPad;
   max-height: 800px;
-  overflow: scroll;
+  overflow: auto;
   thead {
     &:hover #set-visible-columns {
       background-color: @lightGrey;
@@ -184,6 +243,10 @@
     &:hover {
       color: @deleteColor;
     }
+  }
+  .visible-columns-cell {
+    width: 0;
+    display: none;
   }
 }
 .set-columns {
@@ -220,11 +283,24 @@
     }
   }
 }
+.activity-page li {
+  padding-left: 60px !important;
+  .avatar {
+    //left: 40px !important;
+  }
+  &:first-child {
+    .history-icon {
+      top: 24px !important;
+    }
+  }
+}
 
-
-
-.history-header {
-  margin: 20px 0 10px 0;
+.view-entire-history {
+  padding-top: 30px;
+  text-align: center;
+}
+.section-header {
+  margin: 40px 0 10px 0;
 }
 .history-container {
   background-color: @extraLightGrey;
@@ -232,22 +308,37 @@
   color: @darkGrey;
   ul {
     margin: 0 !important;
+    padding: 0;
+    list-style: none;
+    .history-add-comment {
+      padding-right: 180px;
+      .history-comment {
+        width: 100%;
+      }
+    }
     li {
       position: relative;
-      padding-bottom: @standardPad;
-      border-bottom: 1px solid @white;
-      margin-bottom: @standardPad;
-      min-height: 30px;
+      padding-top: @standardPad;
+      border-top: 1px solid @white;
+      margin-top: @standardPad;
+      min-height: 40px;
       padding-left: 50px;
-      &:last-child {
-        padding-bottom: 0;
-        border-bottom: none;
-        margin-bottom: 0;
+      padding-right: 150px;
+      &:first-child {
+        padding-top: 0;
+        border-top: none;
+        margin-top: 0;
+        .avatar {
+          top: 0;
+        }
+        .history-datetime {
+          top: 10px;
+        }
       }
       .avatar {
         float: none;
         position: absolute;
-        top: 0;
+        top: 20px;
         left: 0;
         width: 40px;
         height: 40px;
@@ -255,7 +346,7 @@
       .history-datetime {
         color: @mediumGrey;
         position: absolute;
-        top: 10px;
+        top: 30px;
         right: 0;
       }
       .history-comment {
@@ -264,8 +355,8 @@
         padding: 12px 10px 10px 10px;
         background-color: @white;
         .border-radius(3px, 3px, 3px, 3px);
-        max-width: 700px;
-        min-width: 300px;
+        max-width: 500px;
+        //min-width: 300px;
         margin-left: 10px;
         height: auto;
         min-height: 18px;
@@ -286,7 +377,7 @@
           border-width: 10px 10px 10px 0; /* vary these values to change the angle of the vertex */
           border-color:transparent @white;
         }
-        #sendCommentBtn {
+        #messages-response-button {
           position: absolute;
           right: 10px;
           bottom: 10px;
@@ -295,48 +386,91 @@
           border: none;
           width: 100%;
           min-height: 70px;
+          -webkit-font-smoothing: antialiased !important;
+        }
+      }
+      .history-follow {
+        .secondary-info;
+        margin-left: 10px;
+        margin-top: 10px;
+        input {
+          display: inline-block;
+          margin-right: 10px;
         }
       }
       .history-text {
         padding-top: 10px;
+        a {
+          color: @mediumGrey;
+        }
       }
       .history-icon {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 40px;
-        height: 40px;
+        top: 44px;
+        left: 24px;
+        width: 20px;
+        height: 20px;
         color: @white;
+        .border-radius(10px, 10px, 10px, 10px);
+        .icon {
+          font-size: 200%;
+          line-height: 60%;
+          position: absolute;
+        }
         &.add {
           background-color: @addColor;
           .icon {
-            position: absolute;
-            top: 0;
-            left: 12px;
+            top: 1px;
+            left: 5px;
           }
         }
         &.edit {
           background-color: @editColor;
           .icon {
-            position: absolute;
-            top: 0;
-            left: 11px;
+            top: 1px;
+            left: 5px;
           }
         }
         &.delete {
           background-color: @deleteColor;
           .icon {
-            position: absolute;
-            top: 0;
-            left: 11px;
+            top: 1px;
+            left: 5px;
+          }
+        }
+        &.message {
+          background-color: @messageColor;
+          .icon {
+            top: 2px;
+            left: 4px;
+          }
+        }
+        &.comment {
+          background-color: @messageColor;
+          .icon {
+            top: 1px;
+            left: 5px;
           }
         }
         &.attach {
           background-color: @attachColor;
           .icon {
-            position: absolute;
-            top: 0;
-            left: 11px;
+            top: 1px;
+            left: 4px;
+          }
+        }
+        &.login {
+          background-color: @loginColor;
+          .icon {
+            top: 1px;
+            left: 5px;
+          }
+        }
+        &.system {
+          background-color: @systemColor;
+          .icon {
+            top: 1px;
+            left: 4px;
           }
         }
       }

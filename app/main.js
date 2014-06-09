@@ -64,7 +64,7 @@ require(["config"], function() {
 
     // Setup global variables
     app.root = options.path;
-    app.DEFAULT_VALIDATION_MESSAGE = 'The data you entered is not valid';
+    app.DEFAULT_VALIDATION_MESSAGE = 'Invalid content...';
     app.API_URL = options.path + 'api/1/';
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;
@@ -76,7 +76,7 @@ require(["config"], function() {
         $(this).each(function(idx, jqXHR) {
             jqXHR.abort();
         });
-        $.xhrPool.length = 0
+        $.xhrPool.length = 0;
     };
 
     $.ajaxSetup({
@@ -111,7 +111,7 @@ require(["config"], function() {
       var autoLogoutMinutes = parseInt(app.settings.get('global').get('cms_user_auto_sign_out') || 60, 10);
 
       var waitForForAvtivity = function() {
-        console.log('minutes until automatic logout:', autoLogoutMinutes);
+        //console.log('minutes until automatic logout:', autoLogoutMinutes);
 
         Idle.start({
           timeout: function() {
@@ -172,7 +172,8 @@ require(["config"], function() {
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
-        alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
+        console.log("Error polling Messages");
+        //alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
       });
 
       app.messages.on('sync', function(collection, object) {
@@ -201,17 +202,19 @@ require(["config"], function() {
         alerts.hideProgressNotification();
       };
 
+      $('#page-blocker').fadeOut(0);
+
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Tabs
       // Default directus tabs
 
       var tabs = [
-        (app.users.getCurrentUser().get('group').id === 0) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
-        {id: "blank",    hidden: true},
-        {id: "files",    icon_class: "icon-attach"},
-        {id: "users",    icon_class: "icon-users"},
-        {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
-        {id: "activity", icon_class: "icon-bell"},
+        // (app.users.getCurrentUser().get('group').id === 0) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
+        // {id: "blank",    hidden: true},
+        // {id: "files",    icon_class: "icon-attach"},
+        // {id: "users",    icon_class: "icon-users"},
+        // {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
+        // {id: "activity", icon_class: "icon-bell"},
         {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar") ? app.users.getCurrentUser().get("avatar") : app.PATH + 'assets/img/missing-directus-avatar.png'},
         {id: "logout", icon_class: "icon-power-button"}
       ];
@@ -222,13 +225,39 @@ require(["config"], function() {
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Bookmarks
-      ////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////////
       var bookmarks = [];
+      options.tables.forEach(function(table) {
+        table = table.schema;
+
+        if(SchemaManager.getPrivileges(table.table_name) && SchemaManager.getPrivileges(table.table_name).get('permissions')) {
+        var permissions = SchemaManager.getPrivileges(table.table_name).get('permissions').split(',');
+        if(permissions.indexOf('view') !== -1 || permissions.indexOf('bigview') !== -1) {
+          if(!table.hidden) {
+            bookmarks.push(new Backbone.Model({
+              icon_class: '',
+              title: app.capitalize(table.table_name),
+              url: 'tables/' + table.table_name,
+              section: 'table'
+            }));
+          }
+        }
+        }
+      });
 
       var bookmarksData = window.directusData.bookmarks;
       _.each(bookmarksData, function(bookmark) {
         bookmarks.push(new Backbone.Model(bookmark));
       });
+
+      if(app.users.getCurrentUser().get('group').id === 0) {
+        bookmarks.push(new Backbone.Model({
+          icon_class: "icon-cog",
+          title: "Settings",
+          url: "settings",
+          section: 'other'
+        }));
+      }
 
       var extensions = ExtensionManager.getIds();
 
@@ -238,7 +267,8 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model({
           icon_class: item.icon,
           title: item.title,
-          url: item.id
+          url: item.id,
+          section: 'extension'
         }));
       });
 
@@ -308,11 +338,11 @@ require(["config"], function() {
       }, this));
 
       //@todo: move these event handlers to alerts.js
-      $(document).ajaxStart(function(e) {
+      $(document).on('ajaxStart.directus', function(e) {
         app.trigger('progress');
       });
 
-      $(document).ajaxStop(function(e) {
+      $(document).on('ajaxStop.directus', function(e) {
         app.trigger('load');
       });
 

@@ -49,6 +49,7 @@ define(function(require, exports, module) {
         "column_name":"subject",
         "ui":"textinput",
         "type":"VARCHAR",
+        "required":true,
         "system":false,
         "char_length":200,
         "hidden_list":false,

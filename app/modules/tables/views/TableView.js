@@ -18,11 +18,11 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     },
 
     leftToolbar: function() {
-      if(!this.widgets.bookmarkWidget) {
-        this.widgets.bookmarkWidget = new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}});
-      }
+      //if(!this.widgets.bookmarkWidget) {
+        //this.widgets.bookmarkWidget = new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}});
+      //}
       var widgets = [
-        this.widgets.bookmarkWidget
+        //this.widgets.bookmarkWidget
       ];
 
       if (this.collection.hasPermission('add')) {
@@ -95,7 +95,8 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
           title: this.collection.table.id,
           url: Backbone.history.fragment,
           icon_class: 'icon-star',
-          user: app.users.getCurrentUser().get("id")
+          user: app.users.getCurrentUser().get("id"),
+          section: 'table'
         };
         if(!this.isBookmarked)
         {

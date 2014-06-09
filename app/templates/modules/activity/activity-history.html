@@ -1,27 +1,35 @@
-<div class="history-header"><span class="big-label-text">Item History</span></div>
+<div class="section-header"><span class="big-label-text">Item History</span></div>
 <div class="history-container">
   <ul>
-    <li>
+    <li class="history-add-comment">
       {{userAvatar current_user}}
       <div class="history-comment">
-        <textarea id="commentTextarea" placeholder="Type your comment here..."></textarea>
-        <button id="sendCommentBtn" class="btn btn-small">Submit</button>
+        <textarea id="commentTextarea" placeholder="Leave a comment..."></textarea>
+        <button id="messages-response-button" class="btn btn-small">Submit</button>
       </div>
+      <div class="history-follow"><input type="checkbox">Follow this item's activity</div>
     </li>
 
     {{#each activities}}
-    <li>
+    <li class="{{hidden}}">
       {{#if isComment}}
         {{userAvatar user_avatar}}
         <div class="history-comment">
-          {{title}}
+          {{{nl2br title}}}
         </div>
       {{else}}
-        <div class="history-icon {{#if add}}add{{else}}edit{{/if}}"><div class="icon {{icon}}"></div></div>
-        <div class="history-text">{{userName user_avatar}} {{#if add}}added{{else}}edited{{/if}} this item...</div>
+        {{userAvatar user_avatar}}
+        <div class="history-icon {{color}}"><div class="icon {{icon}}"></div></div>
+        <div class="history-text">{{userName user_avatar}} {{action_text}}</div>
       {{/if}}
       <div class="history-datetime">{{time}}</div>
     </li>
     {{/each}}
   </ul>
 </div>
+
+{{#if preview}}
+<div class="view-entire-history">
+  <span class="btn">Show Complete History (+{{additionalCount}})</span>
+</div>
+{{/if}}

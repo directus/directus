@@ -412,7 +412,7 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendD
     return JsonView::render($response);
 });
 
-$app->map("/$v/privileges/:grupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
@@ -426,7 +426,7 @@ $app->map("/$v/privileges/:grupId/", function ($groupId) use ($db, $acl, $ZendDb
     return JsonView::render($response);
 })->via('POST');
 
-$app->map("/$v/privileges/:grupId/:privilegeId", function ($groupId, $privilegeId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilegeId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
@@ -693,7 +693,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             break;
         case "POST":
             //If Already exists and not saving with title, then updateit!
-            $existing = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, isset($params['newTitle']) ? $params['newTitle'] : null);
+            $existing = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, isset($requestPayload['title']) ? $requestPayload['title'] : null);
             if(!empty($existing)) {
               $requestPayload['id'] = $existing['id'];
             }
@@ -704,7 +704,18 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             if($requestPayload['user'] != $currentUser['id']) {
               return;
             }
-            echo $db->delete('directus_preferences', $requestPayload['id']);
+
+            if(isset($requestPayload['id'])) {
+              echo $db->delete('directus_preferences', $requestPayload['id']);
+            } else if(isset($requestPayload['title']) && isset($requestPayload['table_name'])) {
+              $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $requestPayload['table_name'], $requestPayload['title']);
+              if($jsonResponse['id']) {
+                echo $db->delete('directus_preferences', $jsonResponse['id']);
+              } else {
+                echo 1;
+              }
+            }
+
             return;
     }
 
@@ -949,6 +960,25 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
 
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
+
+    if($id) {
+      $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
+      $requestPayload['id'] = $id;
+      $Activity->recordMessage($requestPayload, $currentUser['id']);
+    }
+
+    $headers = 'From: directus@directus.com' . "\r\n" .
+    'Reply-To: directus@directus.com' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+
+    foreach($userRecipients as $recipient) {
+      $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+      $user = $usersTableGateway->findOneBy('id', $recipient);
+
+      if(isset($user) && $user['email_messages'] == 1) {
+        mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
+      }
+    }
 
     // could this be replaced?
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);

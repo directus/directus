@@ -21,9 +21,9 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var template = '<style type="text/css"> \
                   label.radiobuttons { \
-                    display:inline; \
+                    display:inline-block; \
                     margin-right: 20px; \
-                    padding: 4px 0 0 0; \
+                    padding: 0 0 4px 0; \
                     font-weight: 600; \
                     font-size: 12px; \
                     cursor: pointer; \
@@ -31,7 +31,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </style> \
                   <div style="margin-top:4px;"> \
                   {{#options}} \
-                    <input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{value}}" id="radio-{{value}}" {{#if selected}}checked{{/if}}><label class="radiobuttons" for="radio-{{value}}">{{value}}</label> \
+                    <label class="radiobuttons" for="radio-{{value}}"><input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{value}}" id="radio-{{value}}" {{#if selected}}checked{{/if}}>{{value}}</label> \
                   {{/options}} \
                   </div>';
 

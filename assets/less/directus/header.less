@@ -21,18 +21,28 @@
   pointer-events: none;
 }
 
+.has-toolbar {
+  .secondary-row {
+    min-height: 34px;
+  }
+  .content-body {
+    margin-top: 120px;
+  }
+}
+
 .header1 {
-  position: relative;
   .border-box;
+  position: relative;
   background-color: @white;
-  // border-bottom: 1px solid @lightGrey;
   clear: both;
   float: left;
-  margin-bottom: @smallPad;
-  padding-bottom: 20px;
-  padding-top: 30px;
+  padding-top: 20px;
+  padding-bottom: 5px;
   width: 100%;
-  min-height: 100px;
+  min-height: 80px;
+  .navigation-back {
+    display: none;
+  }
   h1, ul {
     margin: 0px;
   }
@@ -41,11 +51,12 @@
     float: left;
     height: 38px;
     text-transform: capitalize;
+    font-size: 28px;
     .icon {
       color: @lightGrey;
       display: inline-block;
-      font-size: 80px;
-      line-height: 30px;
+      font-size: 70px;
+      line-height: 32px;
       margin: 0px 10px;
       vertical-align: top;
       cursor: pointer;
@@ -117,6 +128,10 @@
           &:first-child {
             margin-left: 0px;
           }
+        }
+        .change-visibility {
+          margin-left: @smallPad;
+          width: 110px;
         }
       }
       &.big-space {
@@ -249,33 +264,8 @@
     @textActionMarginTop: 7px;
     color: @mediumGrey;
     font-weight: 600;
-    margin: 10px 0px -15px 0px;
-    overflow: hidden;
-    &.filter-options {
-      .filter-list {
-        padding: 0px;
-      }
-      .filter-form {
-        float: left;
-        margin-left: @smallPad;
-        .simple-select {
-          margin-right: @extraSmallPad;
-          max-width: 150px;
-        }
-        input {
-          display: inline-block;
-          max-width: 150px;
-        }
-        .action {
-          display: block;
-          float: left;
-          margin-left: 4px;
-        }
-        .simple-select {
-          margin-top: 0px;
-        }
-      }
-    }
+    margin: 15px 0 0 0;
+    //overflow: hidden;
     &.batch-actions {
       &.left {
         li {
@@ -289,11 +279,114 @@
         }
       }
     }
+    &.filter-options {
+      .filter-list {
+        padding: 0px;
+      }
+      .filter-form {
+        float: left;
+        //margin-left: @smallPad;
+        height: 33px;
+        .simple-select {
+          //margin-right: @extraSmallPad;
+          margin-top: 0px;
+          max-width: 150px;
+          display: block;
+          float: left;
+          position: relative;
+          .icon {
+            color: @darkGrey;
+            line-height: 28px;
+            right: 6px;
+          }
+          select {
+            padding-right: 20px;
+            outline: none;
+            max-width: 120px;
+          }
+        }
+        input {
+          display: inline-block;
+          max-width: 120px;
+        }
+        input[type="text"] {
+          float: left;
+          width: auto;
+        }
+        .action {
+          display: block;
+          float: left;
+          margin-left: 4px;
+        }
+        select, input[type="text"] {
+          .border-radius();
+          background-color: @lightGrey;
+          border: 0px;
+          padding: 8px;
+          margin: 0;
+        }
+      }
+    }
+    .filters {
+      padding: 0px;
+      li {
+        display: inline-block;
+        font-weight: 600;
+        background-color: @lightGrey;
+        .border-radius(2px, 2px, 2px, 2px);
+        position: relative;
+        margin: 0 0 0 10px;
+        //padding: 3px;
+        color: @mediumGrey;
+        overflow: visible;
+        height: 27px;
+        .filter-name {
+          position: absolute;
+          top: -12px;
+          left: 0px;
+          color: @mediumGrey;
+          font-size: 9px;
+          text-transform: uppercase;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          width: 100%;
+          //display: none;
+        }
+        .filter-remove {
+          color: @mediumGrey;
+          top: 8px;
+          position: relative;
+          margin: 0 6px 0 3px;
+          cursor: pointer;
+          &:hover {
+            color: @deleteColor;
+          }
+        }
+        input {
+          width: 120px;
+          background-color: @lightGrey;
+          color: @darkGrey;
+          padding: 7px 0 0 7px;
+          &[type="checkbox"] {
+            width: 30px;
+            margin-top: 10px;
+            margin-left: 10px;
+          }
+          &[type="date"] {
+            max-width: 120px;
+          }
+        }
+      }
+    }
     li {
       font-size: 12px;
     }
     .vertical-center {
       margin-top: @textActionMarginTop;
+    }
+    .pagination-number {
+      margin-top: 11px;
     }
     .action {
       display: inline-block;
@@ -314,15 +407,19 @@
       .action {
         margin-top: @textActionMarginTop;
       }
+      .snapshotOption {
+        background-color: @lightGrey;
+        width: 34px;
+        height: 33px;
+        color: @darkGrey;
+        text-align: center;
+        cursor: pointer;
+        .icon {
+          line-height: 75%;
+        }
+      }
       .tool {
         height: 32px; // TODO: This keeps the secondary toolbar height in check...
-      }
-    }
-    .filters {
-      padding: 0px;
-      li {
-        .tag;
-        margin: @extraSmallPad 0px 7px @smallPad;
       }
     }
   }

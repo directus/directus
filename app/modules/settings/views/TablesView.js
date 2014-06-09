@@ -370,7 +370,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       } else {
         element.addClass('add-color');
         element.removeClass('delete-color');
-        element.html('✔');
+        element.html('◯');
       }
     },
 

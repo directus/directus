@@ -47,6 +47,11 @@ class DB extends MySQL {
             $identifier = $data['title'];
         }
 
+        if($tbl_name == 'directus_messages')
+        {
+          $identifier = $data['subject'];
+        }
+
         $currentUser = AuthProvider::getUserInfo();
 
         return $this->set_entry('directus_activity', array(
@@ -58,7 +63,8 @@ class DB extends MySQL {
             'user' => $currentUser['id'],
             'data' => json_encode($data),
             'parent_id' => $parent_id,
-            'datetime' => gmdate('Y-m-d H:i:s')
+            'datetime' => gmdate('Y-m-d H:i:s'),
+            'logged_ip'         =>$_SERVER['REMOTE_ADDR']
         ));
     }
 

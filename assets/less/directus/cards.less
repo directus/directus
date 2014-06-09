@@ -32,6 +32,19 @@
         line-height: 190px;
         text-align: center;
       }
+      .default-loading {
+        border: solid 1px @lightGrey;
+        border-bottom: 0px;
+        font-size: 45px;
+        font-weight: 700;
+        height: 199px;
+        line-height: 190px;
+        text-align: center;
+        .icon {
+          .pulsate;
+          line-height: 130%;
+        }
+      }
       img {
         // display: block; // This inhibits centering of images
       }
@@ -55,8 +68,17 @@
         margin-bottom: -7px;
       }
     }
+    .media-card-progress {
+      position: absolute;
+      background-color: @addColor;
+      z-index: 10;
+      bottom:0px;
+      height:4px;
+      width:100%;
+    }
     .info {
-      border: solid 1px @lightGrey;
+      //border: solid 1px @lightGrey;
+      background-color: @extraLightGrey;
       border-top: none;
       margin-top: 4px;
       min-height: 100px;
@@ -74,7 +96,7 @@
       .extra {
         padding-top: 0;
         li {
-          border-bottom: solid 1px @lightGrey;
+          border-bottom: solid 1px @white;
           list-style: none;
           padding: 5px 17px 5px 0px;
           position: relative;
@@ -109,27 +131,28 @@
     background-color: @lightGrey;
     list-style: none;
     padding: @standardPad;
-    height: 160px;
+    height: 100px;
     overflow: hidden;
+    position: relative;
     &:hover .icon {
       color: @mediumGrey;
     }
-    .left-col, .right-col {
-      float: left;
-    }
     .left-col {
       color: @white;
-      margin: 0px 10px 0px -10px;
       text-align: center;
-      width: 40%;
+      width: 180px;
+      position: absolute;
+      top: 0;
+      left: 0;
       .icon {
         display: inline-block;
-        font-size: 270px;
+        font-size: 200px;
         line-height: 100px;
       }
     }
     .right-col {
-      width: 60%;
+      max-width: 400px;
+      margin-left: 160px;
     }
   }
 }

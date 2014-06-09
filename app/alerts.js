@@ -1,6 +1,7 @@
 define([
-  "app"
-], function(app) {
+  "app",
+  'plugins/alertify'
+], function(app, alertify) {
 
   "use strict";
 
@@ -33,14 +34,14 @@ define([
   var showProgressNotification = function(message) {
     $('a[href$="#activity"] span').removeClass('icon-bell').addClass('icon-cycle');
     app.activityInProgress = true;
-    $('#page_loader').show();
+    $('#page-blocker').show();
     //app.lockScreen();
   };
 
   var hideProgressNotification = function() {
     $('a[href$="#activity"] span').addClass('icon-bell').removeClass('icon-cycle');
     app.activityInProgress = false;
-    $('#page_loader').hide();
+    $('#page-blocker').fadeOut(100);
     //app.unlockScreen();
   };
 
@@ -49,6 +50,8 @@ define([
   app.on('load', hideProgressNotification);
 
   app.on('alert:error', function(message, details, showDetails) {
+    console.log("ERROR: " + message);
+    //alertify.error(message);
 /*      showDetails = showDetails || false;
       $('#loader').hide();
       var view = new ErrorView({message: message, details: details});

@@ -12,16 +12,11 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
   var BodyView = Backbone.Layout.extend({
 
-    tagName: 'ul',
-
-    attributes: {
-      class: "cards row"
-    },
+    tagName: 'span',
 
     events: {
-      'click li': function(e) {
-        var id = $(e.target).closest('li').attr('data-id');
-
+      'click .header-image': function(e) {
+        var id = $(e.target).closest('li.card').attr('data-id');
         var user = app.users.getCurrentUser();
         var userGroup = user.get('group');
 
@@ -35,6 +30,9 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     template: Handlebars.compile(
+      '{{#groups}}' +
+      '<div class="section-header"><span class="big-label-text">{{title}}</div>' +
+      '<ul class="cards row">' +
       '{{#rows}}' +
       '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
         '<div class="header-image add-color-border">' +
@@ -45,21 +43,20 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
               '<div>{{first_name}}</div>' +
               '<div>{{last_name}}</div>' +
             '</div>' +
-            '<div title="{{position}}" class="secondary-info">{{#if position}}{{position}}{{else}}<span class="secondary-info">--</span>{{/if}}</div>' +
+            '<div title="{{position}}" class="secondary-info ellipsis">{{#if position}}{{position}}{{else}}<span class="secondary-info">--</span>{{/if}}</div>' +
           '</div>' +
           '<ul class="extra">' +
             '<li title="{{location}}">{{#if location}}{{location}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-home"></span></li>' +
             '<li title="{{phone}}">{{#if phone}}{{phone}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-phone"></span></li>' +
-            '<li title="{{email}}">{{#if email}}{{email}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-mail"></span></li>' +
+            '<li title="{{email}}">{{#if email}}<a href="mailto:{{email}}">{{email}}</a>{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-mail"></span></li>' +
           '</ul>' +
         '</div>' +
       '</li>' +
-      '{{/rows}}'
+      '{{/rows}}</ul>{{/groups}}'
     ),
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
-
         var data = {
           "id": model.get('id'),
           "cid": model.cid,
@@ -70,8 +67,11 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           'position': model.get('position'),
           'location': model.get('location'),
           'phone': model.get('phone'),
-          'online': (moment(model.get('last_access')).add('m', 5) > moment())
+          'online': (moment(model.get('last_access')).add('m', 5) > moment()),
+          'group_id': model.get('group').id,
+          'group_name': model.get('group').get('name')
         };
+
         var avatarSmall = data.avatar;
 
         if(!avatarSmall) {
@@ -85,7 +85,25 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         return data;
       });
 
-      return {rows: rows};
+      _(rows).sortBy('first_name');
+
+      var groupedData = [];
+
+      rows.forEach(function(group) {
+        if(!groupedData["group_" + group.group_id]) {
+          groupedData["group_" + group.group_id] = {title: group.group_name, rows: []};
+        }
+        groupedData["group_" + group.group_id].rows.push(group);
+      });
+
+      var data = [];
+
+      for(var group in groupedData) {
+        data.push(groupedData[group]);
+      }
+
+
+      return {groups: data};
     },
 
     initialize: function(options) {
@@ -171,15 +189,18 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       }
     },
     leftToolbar: function() {
-      return [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
-      ];
+      if(app.users.getCurrentUser().get('group').id == 0) {
+        return [
+          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
+        ];
+      }
+      return [];
     },
     rightToolbar: function() {
       return [
         //new Widgets.SearchWidget(),
-        new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
-        new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
+        //new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
+        //new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
       ];
     },
     events: {

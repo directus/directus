@@ -42,6 +42,12 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       var collection = this.model.collection;
       var success;
 
+      if(data.active && data.active == 0) {
+        if(!confirm("Are you sure you wish to delete this item?")) {
+          return;
+        }
+      }
+
       if (action === 'save-form-stay') {
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');

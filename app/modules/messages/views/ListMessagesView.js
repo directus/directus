@@ -21,14 +21,18 @@ function(app, Backbone, BasePageView, Widgets) {
     serialize: function() {
       var data = this.collection.map(function(model) {
         var data = model.toJSON();
-        var momentDate = moment(data.date_updated);
+        var momentDate = moment(data.date_updated + ' UTC');
         data.timestamp = parseInt(momentDate.format('X'), 10);
         data.niceDate = moment().diff(momentDate, 'days') > 1 ? momentDate.format('MMMM D') : momentDate.fromNow();
         data.read = model.getUnreadCount() === 0;
         data.responsesLength = data.responses.length;
         data.from = parseInt(data.from, 10);
 
-        var recipients = data.recipients.split(',');
+        if(data.recipients) {
+          var recipients = data.recipients.split(',');
+        } else {
+          var recipients = [];
+        }
 
         data.recipients = [];
         var extra = 0;

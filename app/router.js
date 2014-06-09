@@ -73,7 +73,7 @@ define(function(require, exports, module) {
     },
 
     notFound: function() {
-      this.setTitle('404');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | 404');
       this.v.main.setView('#content', new Backbone.Layout({template: Handlebars.compile('<h1>Not found</h1>')}));
       this.v.main.render();
     },
@@ -130,7 +130,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.navigate('/tables'); //If going to / rewrite to tables
-      this.setTitle('Tables');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Tables');
       this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
@@ -194,8 +194,8 @@ define(function(require, exports, module) {
 
       // Cache collection for next route
       this.currentCollection = collection;
-      this.bookmarks.setActive('tables');
       this.tabs.setActive('tables');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | ' + app.capitalize(tableName));
 
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
       this.v.main.render();
@@ -205,8 +205,7 @@ define(function(require, exports, module) {
       if (_.contains(this.tabBlacklist,'tables'))
         return this.notFound();
 
-      this.setTitle('Tables');
-      this.bookmarks.setActive('tables');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Entry');
       this.tabs.setActive('tables');
 
       var isBatchEdit = (typeof id === 'string') && id.indexOf(',') !== -1,
@@ -250,7 +249,7 @@ define(function(require, exports, module) {
       if (_.contains(this.tabBlacklist,'activity'))
         return this.notFound();
 
-      this.setTitle('Activity');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Activity');
       this.tabs.setActive('activity');
       this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
       this.v.main.render();
@@ -260,7 +259,7 @@ define(function(require, exports, module) {
       if (_.contains(this.tabBlacklist,'media'))
         return this.notFound();
 
-      this.setTitle('Files');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Files');
       this.tabs.setActive('files');
       this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
       this.v.main.render();
@@ -270,7 +269,7 @@ define(function(require, exports, module) {
       var mediaView = new Media.Views.List({collection: app.media});
       var model;
 
-      this.setTitle('File');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | File');
       this.tabs.setActive('files');
 
       if (id === "new") {
@@ -287,7 +286,7 @@ define(function(require, exports, module) {
     },
 
     users: function() {
-      this.setTitle('Users');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
       this.tabs.setActive('users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
@@ -302,7 +301,7 @@ define(function(require, exports, module) {
       }
 
       var model;
-      this.setTitle('Users');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
       this.tabs.setActive('users');
 
       if (id === "new") {
@@ -318,7 +317,7 @@ define(function(require, exports, module) {
       if (_.contains(this.tabBlacklist,'settings'))
         return this.notFound();
 
-      this.setTitle('Settings');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
       this.tabs.setActive('settings');
 
       switch(name) {
@@ -352,7 +351,7 @@ define(function(require, exports, module) {
       if (_.contains(this.tabBlacklist,'settings'))
         return this.notFound();
 
-      this.setTitle('Settings');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
       this.tabs.setActive('settings');
 
       this.v.main.setView('#content', new Settings.Table({model: SchemaManager.getTable(tableName)}));
@@ -364,7 +363,7 @@ define(function(require, exports, module) {
       if (_.contains(this.tabBlacklist,'settings'))
         return this.notFound();
 
-      this.setTitle('Settings - Permissions');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Settings - Permissions');
       this.tabs.setActive('settings');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
       this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
@@ -373,13 +372,14 @@ define(function(require, exports, module) {
 
     messages: function(name) {
       this.tabs.setActive("messages");
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Messages')
       this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
       this.v.main.render();
     },
 
     message: function(id) {
       var model = app.messages.get(id);
-      this.setTitle('Message');
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Message');
 
       if (model === undefined) {
         model = new app.messages.model({id: id}, {collection: app.messages, parse: true});
@@ -391,6 +391,7 @@ define(function(require, exports, module) {
     },
 
     newMessage: function() {
+      this.setTitle(app.settings.get('global').get('site_name') + ' | Compose');
 
       var model = new app.messages.model({from: app.users.getCurrentUser().id}, {collection: app.messages, parse: true});
 
@@ -403,7 +404,7 @@ define(function(require, exports, module) {
       this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
 
       //Fade out and remove splash
-      $('#splash').fadeOut('fast').remove();
+      $('body').addClass('initial-load');
       this.tabs = options.tabs;
       this.bookmarks = app.getBookmarks();
       this.extensions = {};
@@ -450,11 +451,6 @@ define(function(require, exports, module) {
         },
 
         keep: true
-      });
-
-      // Update unread message counter
-      app.messages.on('sync', function(collection, model) {
-        $('.unread-messages-counter').html(app.messages.unread);
       });
 
       //holds references to view instances
