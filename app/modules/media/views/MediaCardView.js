@@ -36,7 +36,7 @@ function(app, Backbone, Widgets) {
           'title_short': (model.get('title').length > 28)? model.get('title').substr(0,25) + "..." : model.get('title'),
           'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
           'size': model.get('size'),
-          'type': model.get('type').split('/').pop(),
+          'type': (model.has('type')) ? model.get('type').split('/').pop() : '',
           'dimensions': model.get('width') + "×" + model.get('height')
         };
 
