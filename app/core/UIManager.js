@@ -41,7 +41,8 @@ define(function(require, exports, module) {
     require('core-ui/user'),
     require('core-ui/directus_fancy_media'),
     require('core-ui/directus_media_title'),
-    require('core-ui/map')
+    require('core-ui/map'),
+    require('core-ui/media_slideshow')
   ]);
 
   var jQuery = require('jquery');
