@@ -85,6 +85,8 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         return data;
       });
 
+      _(rows).sortBy('first_name');
+
       var groupedData = [];
 
       rows.forEach(function(group) {
