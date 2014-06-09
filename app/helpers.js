@@ -111,7 +111,12 @@ require([
   Handlebars.registerHelper('userAvatar', function(userId) {
     var user = app.users.get(userId);
     if(user) {
-      return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>');
+      var avatar = user.get('avatar');
+      if(!avatar) {
+      console.log(avatar);
+        avatar = app.PATH + 'assets/img/missing-directus-avatar.png';
+      }
+      return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar"/>');
     }
   });
 
