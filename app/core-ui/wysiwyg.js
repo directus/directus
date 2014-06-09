@@ -25,6 +25,7 @@ define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Ov
     {id: 'rule', ui: 'checkbox', def: '1'},
     {id: 'createlink', ui: 'checkbox', def: '1'},
     {id: 'insertimage', ui: 'checkbox', def: '1'},
+    {id: 'embedVideo', ui: 'checkbox', def: '1'},
     {id: 'h1', ui: 'checkbox', def: '0'},
     {id: 'h2', ui: 'checkbox', def: '0'},
     {id: 'h3', ui: 'checkbox', def: '0'},
@@ -122,6 +123,17 @@ var template = '<style type="text/css"> \
                         </div> \
                       </div> \
                     {{/if}} \
+                    {{#if embedVideo}} \
+                      <button data-wysihtml5-command="embedVideo" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Embed Video">Embed</button> \
+                      <div data-wysihtml5-dialog="embedVideo" style="display: none;z-index:108" class="directus-alert-modal"> \
+                        <div><button id="existingLinkButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing Link</button></div> \
+                        <div><input type="text" data-wysihtml5-dialog-field="src" id="insertEmbedInput" placeholder="Youtube Video ID" style="font-weight:600;"></div> \
+                        <div class="directus-alert-modal-buttons"> \
+                          <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
+                          <button data-wysihtml5-dialog-action="save" id="insertEmbedButton" type="button" class="primary">OK</button> \
+                        </div> \
+                      </div> \
+                    {{/if}} \
                   </div> \
                 </div> \
                 <div style="display:none;z-index:998;position:absolute;width:100%;height:100%;top:-5px;left:-5px;" id="iframe_blocker"></div> \
@@ -176,6 +188,27 @@ var template = '<style type="text/css"> \
           self.$el.find('#insertImageInput').val(url);
           self.$el.find('#insertImageButton').click();
         };
+      },
+      'click #existingLinkButton': function(e) {
+        var collection = app.media;
+        var model;
+        var mediaModel = new app.media.model({}, {collection: collection});
+        collection.setFilter('adv_search', [{id:'type',type:'like',value:'embed/youtube'}]);
+        collection.fetch();
+        var view = new Overlays.ListSelect({collection: collection, selectable: false});
+        app.router.overlayPage(view);
+        var self = this;
+
+        view.itemClicked = function(e) {
+          var id = $(e.target).closest('tr').attr('data-id');
+          model = collection.get(id);
+          app.router.removeOverlayPage(this);
+          if(model.get('type') == "embed/youtube") {
+            var url = model.get('url');
+            self.$el.find('#insertEmbedInput').val(url);
+            self.$el.find('#insertEmbedButton').click();
+          }
+        };
       }
     },
 
@@ -205,6 +238,7 @@ var template = '<style type="text/css"> \
         ol: (this.options.settings && this.options.settings.has('ol')) ? this.options.settings.get('ol')!=0 : false,
         createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=0 : true,
         insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=0 : true,
+        embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=0 : true,
         markupValue: String(value).replace(/"/g, '&quot;'),
         value: new Handlebars.SafeString(value),
         name: this.options.name,
@@ -296,6 +330,29 @@ var template = '<style type="text/css"> \
       this.$el.find('.wysihtml5-sandbox').contents().find('body').on('dragover', function(e) {
         self.$el.find('#iframe_blocker').show();
       });
+
+      wysihtml5.commands.embedVideo = {
+        exec: function(composer, command, value) {
+          var doc   = composer.doc,
+                      image;
+
+          image = doc.createElement("iframe");
+          image.setAttribute('width', '300');
+          image.setAttribute('height', '200');
+          image.setAttribute('frameborder', '0');
+          image.setAttribute('allowfullscreen', '1');
+
+          for (var i in value) {
+            if(i==="src") {
+              value[i] = "http://youtube.com/embed/" + value[i];
+            }
+            image.setAttribute(i === "className" ? "class" : i, value[i]);
+          }
+
+          composer.selection.insertNode(image);
+          composer.selection.setAfter(image);
+        },
+      };
     }
   });
 
@@ -427,9 +484,6 @@ var wysihtml5ParserRules = {
         "dfn": {
             "rename_tag": "span"
         },
-        "iframe": {
-            "remove": 1
-        },
         "figcaption": {
             "rename_tag": "div"
         },
@@ -451,6 +505,18 @@ var wysihtml5ParserRules = {
             },
             "add_class": {
                 "align": "align_img"
+            }
+        },
+         "iframe": {
+            "check_attributes": {
+                "width": "numbers",
+                "src": "url",
+                "height": "numbers",
+                "frameborder": "numbers"
+            },
+            "set_attributes": {
+              "frameborder": "0",
+              "allowfullscreen": ""
             }
         },
         "rb": {
@@ -807,3 +873,4 @@ var wysihtml5ParserRules = {
         }
     }
 };
+
