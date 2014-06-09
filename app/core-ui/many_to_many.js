@@ -77,6 +77,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         collection.add(model,{nest: true});
         app.router.removeOverlayPage(this);
       };
+      collection.fetch();
     },
 
     insertRow: function() {
