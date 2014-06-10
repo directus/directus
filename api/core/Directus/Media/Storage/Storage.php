@@ -81,7 +81,7 @@ class Storage {
         // Generate thumbnail if image
         $thumbnailTempName = null;
         $info = pathinfo($targetFileName);
-        if(in_array($info['extension'], array('jpg','jpeg','png','gif','tif', 'psd', 'pdf'))) {
+        if(in_array($info['extension'], array('jpg','jpeg','png','gif','tif', 'tiff', 'psd', 'pdf'))) {
             $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
             if($img) {
               $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
@@ -101,7 +101,7 @@ class Storage {
         // Push thumbnail file if applicable (if image) with prefix THUMB_
         if(!is_null($thumbnailTempName)) {
             $info = pathinfo($fileData['name']);
-            if( in_array($info['extension'], array('tif', 'pdf', 'psd'))) {
+            if( in_array($info['extension'], array('tif', 'tiff', 'pdf', 'psd'))) {
               $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$info['filename'].'.jpg', $mediaAdapter['destination']);
             } else {
               $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);

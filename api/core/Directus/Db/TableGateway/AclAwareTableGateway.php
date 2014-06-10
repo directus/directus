@@ -33,7 +33,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     protected $acl;
 
     public $primaryKeyFieldName = "id";
-    public $imagickExtensions = array('tif', 'psd', 'pdf');
+    public $imagickExtensions = array('tiff', 'tif', 'psd', 'pdf');
     public $memcache;
 
     /**

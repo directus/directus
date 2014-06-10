@@ -19,6 +19,7 @@ class Thumbnail {
             case 'pdf':
             case 'psd':
             case 'tif':
+            case 'tiff':
               if(extension_loaded('imagick')) {
                 $image = new \Imagick();
                 $image->readImage($localPath);
@@ -100,6 +101,7 @@ class Thumbnail {
             case 'pdf':
             case 'psd':
             case 'tif':
+            case 'tiff':
                 return imagejpeg($img, $path, $quality);
                 break;
         }
