@@ -26,6 +26,7 @@ define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Ov
     {id: 'createlink', ui: 'checkbox', def: '1'},
     {id: 'insertimage', ui: 'checkbox', def: '1'},
     {id: 'embedVideo', ui: 'checkbox', def: '1'},
+    {id: 'orderedList', ui: 'checkbox', def: '1'},
     {id: 'h1', ui: 'checkbox', def: '0'},
     {id: 'h2', ui: 'checkbox', def: '0'},
     {id: 'h3', ui: 'checkbox', def: '0'},
@@ -91,6 +92,7 @@ var template = '<style type="text/css"> \
                     {{#if h5}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" type="button" class="btn btn-small btn-silver" data-tag="H5" rel="tooltip" data-placement="bottom" title="H5">H5</button>{{/if}} \
                     {{#if h6}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" type="button" class="btn btn-small btn-silver" data-tag="H6" rel="tooltip" data-placement="bottom" title="H6">H6</button>{{/if}} \
                     {{#if blockquote}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote" type="button" class="btn btn-small btn-silver" data-tag="Quote" rel="tooltip" data-placement="bottom" title="Quote">Quote</button>{{/if}} \
+                    {{#if orderedList}}<button data-wysihtml5-command="insertOrderedList" type="button" class="btn btn-small btn-silver" data-tag="List" rel="tooltip" data-placement="bottom" title="List">List</button>{{/if}} \
                   </div> \
                   <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
                     {{#if ul}}<button data-wysihtml5-command="insertUnorderedList" type="button" class="btn btn-small btn-silver" data-tag="UL" rel="tooltip" data-placement="bottom" title="UL">UL</button>{{/if}} \
@@ -236,6 +238,7 @@ var template = '<style type="text/css"> \
         blockquote: (this.options.settings && this.options.settings.has('blockquote')) ? this.options.settings.get('blockquote')!=0 : true,
         ul: (this.options.settings && this.options.settings.has('ul')) ? this.options.settings.get('ul')!=0 : false,
         ol: (this.options.settings && this.options.settings.has('ol')) ? this.options.settings.get('ol')!=0 : false,
+        orderedList: (this.options.settings && this.options.settings.has('orderedList')) ? this.options.settings.get('orderedList')!=0 : true,
         createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=0 : true,
         insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=0 : true,
         embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=0 : true,
