@@ -11,7 +11,7 @@ define(function(require, exports, module) {
     require('core-ui/color'),
     require('core-ui/numeric'),
     require('core-ui/slider'),
-    require('core-ui/single_media'),
+    require('core-ui/single_file'),
     require('core-ui/slug'),
     require('core-ui/textarea'),
     require('core-ui/directus_user'),
@@ -21,7 +21,7 @@ define(function(require, exports, module) {
     require('core-ui/time'),
     require('core-ui/directus_user_activity'),
     require('core-ui/directus_user_avatar'),
-    require('core-ui/directus_media_size'),
+    require('core-ui/directus_file_size'),
     require('core-ui/blob'),
     require('core-ui/alias'),
     require('core-ui/salt'),
@@ -39,10 +39,10 @@ define(function(require, exports, module) {
     require('core-ui/multi_select'),
     require('core-ui/system'),
     require('core-ui/user'),
-    require('core-ui/directus_fancy_media'),
-    require('core-ui/directus_media_title'),
+    require('core-ui/directus_file'),
+    require('core-ui/directus_file_title'),
     require('core-ui/map'),
-    require('core-ui/media_slideshow')
+    require('core-ui/multiple_files')
   ]);
 
   var jQuery = require('jquery');

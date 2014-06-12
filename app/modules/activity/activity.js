@@ -3,11 +3,11 @@ define([
   'backbone',
   'core/directus',
   'modules/activity/chart',
-  "modules/media/media",
+  "modules/files/files",
   'core/BasePageView'
 ],
 
-function(app, Backbone, Directus, Chart, Media, BasePageView) {
+function(app, Backbone, Directus, Chart, Files, BasePageView) {
 
   "use strict";
 
@@ -68,13 +68,13 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
           data.link = "tables/" + data.table + "/" + model.get('row_id');
         }
 
-        //If table is media set to clip
-        if(data.table == "directus_media") {
-          data.is_media = true;
+        //If table is files set to clip
+        if(data.table == "directus_files") {
+          data.is_file = true;
           data.title = JSON.parse(model.get('data'))['name'];
         }
 
-        //If table is media set to clip
+        //If table is files set to clip
         if(data.table == "directus_ui") {
           data.is_system = true;
           data.title = model.get('identifier').substring(0, model.get('identifier').indexOf(','));
@@ -178,10 +178,10 @@ function(app, Backbone, Directus, Chart, Media, BasePageView) {
     },
 
     events: {
-      'click a[data-action=media]': function(e) {
+      'click a[data-action=file]': function(e) {
         var id = parseInt($(e.target).attr('data-id'),10);
-        var model = new app.media.model({id: id}, {collection: app.media});
-        var modal = new Media.Views.Edit({model: model, stretch: true});
+        var model = new app.files.model({id: id}, {collection: app.files});
+        var modal = new Files.Views.Edit({model: model, stretch: true});
         app.router.v.messages.insertView(modal).render();
         app.router.navigate('#files/'+model.id);
         modal.on('close', function() {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Media\Storage\Adapter;
+namespace Directus\Files\Storage\Adapter;
 
 use Aws\S3\S3Client;
 use Aws\S3\Enum\CannedAcl;

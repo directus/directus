@@ -157,7 +157,7 @@ var template = '<style type="text/css"> \
       'change input[type=file]': function(e) {
         var file = $(e.target)[0].files[0];
         var self = this;
-        var model = new app.media.model({}, {collection: app.media});
+        var model = new app.files.model({}, {collection: app.files});
         app.sendFiles(file, function(data) {
           _.each(data, function(item) {
             item.active = 1;
@@ -165,7 +165,7 @@ var template = '<style type="text/css"> \
             item.user = self.userId;
 
             model.save(item, {success: function(e) {
-              var url = model.makeMediaUrl(false);
+              var url = model.makeFileUrl(false);
               self.$el.find('#insertImageInput').val(url);
               self.$el.find('input[type=file]').val("");
               self.$el.find('#insertImageButton').click();
@@ -174,9 +174,9 @@ var template = '<style type="text/css"> \
         });
       },
       'click #existingFileButton': function(e) {
-        var collection = app.media;
+        var collection = app.files;
         var model;
-        var mediaModel = new app.media.model({}, {collection: collection});
+        var fileModel = new app.files.model({}, {collection: collection});
         collection.fetch();
         var view = new Overlays.ListSelect({collection: collection, selectable: false});
         app.router.overlayPage(view);
@@ -186,15 +186,15 @@ var template = '<style type="text/css"> \
           var id = $(e.target).closest('tr').attr('data-id');
           model = collection.get(id);
           app.router.removeOverlayPage(this);
-          var url = model.makeMediaUrl(false);
+          var url = model.makeFileUrl(false);
           self.$el.find('#insertImageInput').val(url);
           self.$el.find('#insertImageButton').click();
         };
       },
       'click #existingLinkButton': function(e) {
-        var collection = app.media;
+        var collection = app.files;
         var model;
-        var mediaModel = new app.media.model({}, {collection: collection});
+        var fileModel = new app.files.model({}, {collection: collection});
         collection.setFilter('adv_search', [{id:'type',type:'like',value:'embed/youtube'}]);
         collection.fetch();
         var view = new Overlays.ListSelect({collection: collection, selectable: false});
@@ -283,7 +283,7 @@ var template = '<style type="text/css"> \
       var timer;
       var $dropzone = this.$el;
       var self = this;
-      var model = new app.media.model({}, {collection: app.media});
+      var model = new app.files.model({}, {collection: app.files});
       $dropzone.on('dragover', function(e) {
         self.$el.find('#iframe_blocker').show();
         clearInterval(timer);
@@ -319,7 +319,7 @@ var template = '<style type="text/css"> \
 
             model.save(item, {success: function(e) {
               //console.log(e);
-              var url = model.makeMediaUrl(false);
+              var url = model.makeFileUrl(false);
               try {
                 self.editor.composer.commands.exec("insertImage", { src: url, alt: model.get('name')});
               } catch( e) {}

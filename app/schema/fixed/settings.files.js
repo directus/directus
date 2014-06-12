@@ -2,17 +2,17 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var SettingsMediaSchema = module.exports;
+  var SettingsFilesSchema = module.exports;
 
-  SettingsMediaSchema.structure = [
-    {id: 'media_file_naming', ui: 'select', char_length: 255, options: {allow_null: false, options: '{ \
+  SettingsFilesSchema.structure = [
+    {id: 'file_file_naming', ui: 'select', char_length: 255, options: {allow_null: false, options: '{ \
         "file_name":"File Name", \
-        "media_id":"Media ID" \
+        "file_id":"Files ID" \
       }'}
     },
-    {id: 'media_title_naming', ui: 'select', char_length: 255, options: {allow_null: false, options: '{ \
+    {id: 'file_title_naming', ui: 'select', char_length: 255, options: {allow_null: false, options: '{ \
         "file_name":"File Name", \
-        "media_id":"Media ID" \
+        "file_id":"Files ID" \
       }'}
     },
     {id: 'allowed_thumbnails', ui: 'textinput', char_length: 255},
@@ -20,5 +20,5 @@ define(function(require, exports, module) {
     {id: 'thumbnail_crop_enabled', ui: 'checkbox'}
   ];
 
-  return SettingsMediaSchema;
+  return SettingsFilesSchema;
 });

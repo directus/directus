@@ -24,7 +24,7 @@ class Acl {
     const ROW_OWNER_COLUMN = "directus_user";
 
     public static $cms_owner_columns_by_table = array(
-        'directus_media' => 'user',
+        'directus_files' => 'user',
         'directus_users' => 'id'
     );
 
@@ -48,7 +48,7 @@ class Acl {
         // value: array of column names
         '*'                 => array('id','active'),
         'directus_activity' => array('user'),
-        'directus_media'    => array('user')
+        'directus_files'    => array('user')
     );
 
     protected $groupPrivileges;

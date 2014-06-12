@@ -104,10 +104,10 @@ define(function(require, exports, module) {
       this.filters = options.filters;
       this.junctionStructure = options.junctionStructure;
 
-      if (this.table.id === 'directus_media') {
+      if (this.table.id === 'directus_files') {
         this.droppable = true;
-        options.url = app.API_URL + 'media';
-        this.nestedCollection = new EntriesManager.MediaCollection({}, options);
+        options.url = app.API_URL + 'files';
+        this.nestedCollection = new EntriesManager.FilesCollection({}, options);
       } else {
         this.nestedCollection = new EntriesCollection({}, options);
       }

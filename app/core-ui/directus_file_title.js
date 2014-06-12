@@ -1,4 +1,4 @@
-//  Media Title Core UI component
+//  Files Title Core UI component
 //  Directus 6.0
 
 //  (c) RANGER
@@ -12,7 +12,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  Module.id = 'directus_media_title';
+  Module.id = 'directus_file_title';
   Module.system = true;
 
   Module.variables = [
@@ -49,7 +49,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var readonly = false;
 
       // Fill in default value
-      if (this.options.model.isNew() && app.settings.get('media').get('media_title_naming') == "media_id") {
+      if (this.options.model.isNew() && app.settings.get('file').get('file_title_naming') == "file_id") {
         value = "This Items Title Will Automatically Become This Items ID When it is saved.";
         readonly = true;
       }

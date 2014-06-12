@@ -27,7 +27,7 @@ function(app, Backbone, Directus) {
       var me = this;
       var totals = {
         'all': 0,
-        'media': 0,
+        'files': 0,
         'system': 0,
         'deleted': 0,
         'edited': 0,
@@ -44,7 +44,7 @@ function(app, Backbone, Directus) {
       });
 
       // Get total activity (could/should be total active items)
-      totals.all = totals.media + totals.system + totals.deleted + totals.edited + totals.added;
+      totals.all = totals.files + totals.system + totals.deleted + totals.edited + totals.added;
 
       //////////////////////////////////////////////////////////////////////////////
 

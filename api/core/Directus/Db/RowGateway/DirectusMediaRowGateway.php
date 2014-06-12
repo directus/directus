@@ -6,7 +6,7 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
 use Zend\Db\RowGateway\RowGateway;
 
-class DirectusMediaRowGateway extends AclAwareRowGateway {
+class DirectusFilesRowGateway extends AclAwareRowGateway {
 
     public function preSaveDataHook(array $rowData, $rowExistsInDatabase = false)
     {

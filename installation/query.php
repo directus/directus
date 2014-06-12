@@ -73,7 +73,7 @@ $create_ip_whitelist = "CREATE TABLE `directus_ip_whitelist` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-$create_media = "CREATE TABLE `directus_media` (
+$create_media = "CREATE TABLE `directus_files` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) DEFAULT '1',
   `name` varchar(255) DEFAULT NULL,
@@ -93,7 +93,7 @@ $create_media = "CREATE TABLE `directus_media` (
   `storage_adapter` int(11) unsigned DEFAULT NULL COMMENT 'FK `directus_storage_adapters`.`id`',
   `needs_index` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Media Storage';";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';";
 
 $create_messages = "CREATE TABLE `directus_messages` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
@@ -147,7 +147,7 @@ VALUES
   (1,'directus_activity','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
   (2,'directus_columns','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
   (3,'directus_groups','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (4,'directus_media','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
+  (4,'directus_files','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
   (5,'directus_messages','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
   (6,'directus_preferences','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
   (7,'directus_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),

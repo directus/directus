@@ -3,15 +3,15 @@ define(function(require, exports, module) {
   "use strict";
 
   module.exports = {
-    "id":"directus_media",
-    "table_name":"directus_media",
+    "id":"directus_files",
+    "table_name":"directus_files",
     "hidden":true,
     "single":false,
     "inactive_by_default":"0",
     "is_junction_table":false,
     "count":0,
-    "url": "api/1/media",
-    "title":"Media",
+    "url": "api/1/files",
+    "title":"Files",
 
     "columns": [
       {
@@ -21,7 +21,7 @@ define(function(require, exports, module) {
         "is_nullable":"NO",
         "comment":"",
         "sort":-1,
-        "ui":"directus_fancy_media",
+        "ui":"directus_fancy_file",
         "system":false,
         "master":false,
         "hidden_list":false,
@@ -34,7 +34,7 @@ define(function(require, exports, module) {
         "type":"VARCHAR",
         "is_nullable":"YES",
         "sort":-1,
-        "ui":"directus_fancy_media",
+        "ui":"directus_fancy_file",
         "system":true,
         "master":false,
         "hidden_list":false,
@@ -85,7 +85,7 @@ define(function(require, exports, module) {
         "hidden_list":false,
         "hidden_input":true,
         "required":false,
-        "ui":"directus_fancy_media"
+        "ui":"directus_fancy_file"
       },
       {
         "id":"title",
@@ -101,7 +101,7 @@ define(function(require, exports, module) {
         "hidden_list":false,
         "hidden_input":false,
         "required":false,
-        "ui":"directus_media_title"
+        "ui":"directus_file_title"
       },
       {
         "id":"location",
@@ -223,7 +223,7 @@ define(function(require, exports, module) {
         "default_value":"0",
         "comment":"",
         "sort":12,
-        "ui":"directus_media_size",
+        "ui":"directus_file_size",
         "system":false,
         "master":false,
         "hidden_list":false,

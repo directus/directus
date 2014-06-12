@@ -51,8 +51,8 @@ use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 //use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
-use Directus\Media;
-use Directus\Media\Upload;
+use Directus\Files;
+use Directus\Files\Upload;
 use Directus\MemcacheProvider;
 use Directus\Util;
 use Directus\View\JsonView;
@@ -631,15 +631,15 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($db, $ZendDb, $acl) {
 });
 
 /**
- * MEDIA COLLECTION
+ * FILES COLLECTION
  */
 
-$app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $acl, $params, $requestPayload) {
+$app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $acl, $params, $requestPayload) {
 
     if(!is_null($id))
         $params['id'] = $id;
 
-    $table = "directus_media";
+    $table = "directus_files";
     $currentUser = Auth::getUserInfo();
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
     $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
@@ -660,12 +660,12 @@ $app->map("/$v/media(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
                 $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
                 break;
             }
-            $db->set_media($requestPayload);
+            $db->set_files($requestPayload);
             break;
     }
 
-    $Media = new TableGateway($acl, $table, $ZendDb);
-    $get_new = $Media->getEntries($params);
+    $Files = new TableGateway($acl, $table, $ZendDb);
+    $get_new = $Files->getEntries($params);
 
     if (array_key_exists('rows', $get_new)) {
         foreach ($get_new['rows'] as &$row) {
@@ -825,8 +825,8 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $par
  */
 
 $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-    // $Transfer = new Media\Transfer();
-    $Storage = new Media\Storage\Storage();
+    // $Transfer = new Files\Transfer();
+    $Storage = new Files\Storage\Storage();
     $result = array();
     foreach ($_FILES as $file) {
         // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
@@ -851,8 +851,8 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
 });
 
 $app->post("/$v/upload/link/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-    // $Transfer = new Media\Transfer();
-    $Storage = new Media\Storage\Storage();
+    // $Transfer = new Files\Transfer();
+    $Storage = new Files\Storage\Storage();
     $result = array();
     if(isset($_POST['link'])) {
         // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
@@ -1005,9 +1005,9 @@ $app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPa
  * EXCEPTION LOG
  */
 $app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
-    // $Transfer = new Media\Transfer();
+    // $Transfer = new Files\Transfer();
 
-  print_r($requestPayload);die();
+    print_r($requestPayload);die();
     $data = array(
         'server_addr'   =>$_SERVER['SERVER_ADDR'],
         'server_port'   =>$_SERVER['SERVER_PORT'],

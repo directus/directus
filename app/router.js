@@ -20,7 +20,7 @@ define(function(require, exports, module) {
       Activity         = require('modules/activity/activity'),
       Table            = require('modules/tables/table'),
       Settings         = require('modules/settings/settings'),
-      Media            = require('modules/media/media'),
+      Files            = require('modules/files/files'),
       Users            = require('modules/users/users'),
       Messages         = require('modules/messages/messages'),
       moment           = require('moment');
@@ -33,8 +33,8 @@ define(function(require, exports, module) {
       "tables/:name(/pref/:pref)":      "entries",
       "tables/:name/:id":               "entry",
       "activity":                       "activity",
-      "files":                           "media",
-      "files/:id":                       "mediaItem",
+      "files":                           "files",
+      "files/:id":                       "filesItem",
       "users":                          "users",
       "users/:id":                      "user",
       "settings":                       "settings",
@@ -255,33 +255,33 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    media: function() {
-      if (_.contains(this.tabBlacklist,'media'))
+    files: function() {
+      if (_.contains(this.tabBlacklist,'files'))
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Files');
       this.tabs.setActive('files');
-      this.v.main.setView('#content', new Media.Views.List({collection: app.media}));
+      this.v.main.setView('#content', new Files.Views.List({collection: app.files}));
       this.v.main.render();
     },
 
-    mediaItem: function(id) {
-      var mediaView = new Media.Views.List({collection: app.media});
+    filesItem: function(id) {
+      var filesView = new Files.Views.List({collection: app.files});
       var model;
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | File');
       this.tabs.setActive('files');
 
       if (id === "new") {
-        model = new app.media.model({}, {collection: app.media});
+        model = new app.files.model({}, {collection: app.files});
       } else {
-        model = app.media.get(id);
+        model = app.files.get(id);
         if (model === undefined) {
-          model = new app.media.model({id: id}, {collection: app.media, parse: true});
+          model = new app.files.model({id: id}, {collection: app.files, parse: true});
         }
       }
 
-      this.v.main.setView('#content', new Media.Views.Edit({model: model}));
+      this.v.main.setView('#content', new Files.Views.Edit({model: model}));
       this.v.main.render();
     },
 
@@ -327,8 +327,8 @@ define(function(require, exports, module) {
         case 'global':
           this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global', structure: SchemaManager.getColumns('settings', 'global')}));
           break;
-        case 'media':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('media'), title: 'Media', structure: SchemaManager.getColumns('settings', 'media')}));
+        case 'files':
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('files'), title: 'Files', structure: SchemaManager.getColumns('settings', 'files')}));
           break;
         case 'permissions':
           this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));

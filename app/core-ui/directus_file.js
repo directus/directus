@@ -1,4 +1,4 @@
-//  Media Core UI component
+//  Files Core UI component
 //  Directus 6.0
 
 //  (c) RANGER
@@ -12,7 +12,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  Module.id = 'directus_fancy_media';
+  Module.id = 'directus_file';
   Module.system = true;
 
     var template = '<style type="text/css"> \
@@ -81,7 +81,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </style> \
                   {{#if url}} \
                   <a target="_BLANK" href="{{url}}"> \
-                  <div class="ui-thumbnail has-media"> \
+                  <div class="ui-thumbnail has-file"> \
                     {{#if thumbUrl}} \
                       {{#if youtube}} \
                         <iframe width="300" height="200" src="http://www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe> \
@@ -101,7 +101,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
                   </div> \
                   {{/if}} \
-                  <div style="{{#if url}}display:none;{{/if}}" id="mediaDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click to choose</div> \
+                  <div style="{{#if url}}display:none;{{/if}}" id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click to choose</div> \
                   <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
                   <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or upload a local file</div>';
@@ -135,8 +135,8 @@ define(['app', 'backbone'], function(app, Backbone) {
       if(storageAdapter !== null &&
          storageAdapter !== undefined &&
          storageAdapter !== '') {
-          data.url = model.makeMediaUrl(false);
-          data.thumbUrl = model.makeMediaUrl(true);
+          data.url = model.makeFileUrl(false);
+          data.thumbUrl = model.makeFileUrl(true);
       }
 
       data.name = model.get('name');
@@ -203,14 +203,14 @@ define(['app', 'backbone'], function(app, Backbone) {
         this.$el.find('#fileAddInput').click();
       },
       'click button[data-action="swap"]': function(e) {
-        this.$el.find('#mediaDropArea').show();
+        this.$el.find('#fileDropArea').show();
       }
     },
 
     initialize: function() {
-      var MediaModel = require('modules/media/MediaModel');
-      if(!(this.model instanceof MediaModel)) {
-        this.model = new MediaModel(this.model.attributes, {collection: this.collection});
+      var FileModel = require('modules/files/FileModel');
+      if(!(this.model instanceof FilesModel)) {
+        this.model = new FileModel(this.model.attributes, {collection: this.collection});
       }
       this.listenTo(this.model, 'change', this.render);
     },
@@ -257,14 +257,14 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.list = function(options) {
     var model = options.model;
 
-    //Force model To be a Media Model
-    var MediaModel = require('modules/media/MediaModel');
-    if(!(model instanceof MediaModel)) {
-      model = new MediaModel(model.attributes, {collection: model.collection});
+    //Force model To be a Files Model
+    var FileModel = require('modules/files/FileModel');
+    if(!(model instanceof FileModel)) {
+      model = new FileModel(model.attributes, {collection: model.collection});
     }
 
     var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var url = model.makeMediaUrl(true);
+    var url = model.makeFileUrl(true);
     var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
     var thumbUrl = isImage ? url : app.PATH + 'assets/img/document-100x120.png';
 

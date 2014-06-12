@@ -317,8 +317,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $foreignRow = $foreignDataSet;
                 $foreignTableName = null;
 
-                // if("single_media" === $colUiType)
-                //     $foreignTableName = "directus_media";
+                // if("single_file" === $colUiType)
+                //     $foreignTableName = "directus_files";
                 // else {
                 //     /**
                 //      * Transitional workaround, pending bugfix to many to one uis.
@@ -782,7 +782,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     $foreign_table_name = $col['relationship']['table_related'];
 
                 } else {
-                    $message = 'Non single_media Many-to-One relationship lacks `table_related` value.';
+                    $message = 'Non single_file Many-to-One relationship lacks `table_related` value.';
                     if(array_key_exists('column_name', $col)) {
                         $message .= " Column: " . $col['column_name'];
                     }

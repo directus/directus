@@ -144,9 +144,9 @@ function getSettings() {
     return $items;
 }
 
-function getActiveMedia() {
+function getActiveFiles() {
     global $ZendDb, $acl;
-    $tableGateway = new TableGateway($acl, 'directus_media', $ZendDb);
+    $tableGateway = new TableGateway($acl, 'directus_files', $ZendDb);
     return $tableGateway->countActive();
 }
 
@@ -279,7 +279,7 @@ $data = array(
     'users' => $users,
     'groups' => getGroups(),
     'settings' => getSettings(),
-    'active_media' => getActiveMedia(),
+    'active_fiels' => getActiveFiles(),
     'authenticatedUser' => $authenticatedUser,
     'tab_privileges' => $tabPrivileges,
     'extensions' => getExtensions($tabPrivileges),
