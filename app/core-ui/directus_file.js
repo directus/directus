@@ -258,7 +258,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     var model = options.model;
 
     //Force model To be a Files Model
-    var FileModel = require('modules/files/FileModel');
+    var FileModel = require('modules/files/FilesModel');
     if(!(model instanceof FileModel)) {
       model = new FileModel(model.attributes, {collection: model.collection});
     }
