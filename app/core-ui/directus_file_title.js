@@ -49,7 +49,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       var readonly = false;
 
       // Fill in default value
-      if (this.options.model.isNew() && app.settings.get('file').get('file_title_naming') == "file_id") {
+      if (this.options.model.isNew() && app.settings.get('files').get('file_title_naming') == "file_id") {
         value = "This Items Title Will Automatically Become This Items ID When it is saved.";
         readonly = true;
       }
