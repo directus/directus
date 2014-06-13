@@ -208,9 +208,9 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     initialize: function() {
-      var FileModel = require('modules/files/FileModel');
+      var FilesModel = require('modules/files/FilesModel');
       if(!(this.model instanceof FilesModel)) {
-        this.model = new FileModel(this.model.attributes, {collection: this.collection});
+        this.model = new FilesModel(this.model.attributes, {collection: this.collection});
       }
       this.listenTo(this.model, 'change', this.render);
     },

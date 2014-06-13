@@ -266,7 +266,6 @@ define(function(require, exports, module) {
     },
 
     filesItem: function(id) {
-      var filesView = new Files.Views.List({collection: app.files});
       var model;
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | File');

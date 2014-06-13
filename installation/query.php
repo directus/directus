@@ -175,7 +175,6 @@ $create_settings = "CREATE TABLE `directus_settings` (
 $insert_settings = "INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
 VALUES
   (1,'global','cms_user_auto_sign_out','60'),
-  (2,'media','media_naming','original'),
   (3,'global','site_name','".$_SESSION['site_name']."'),
   (4,'global','site_url','http://examplesite.dev/'),
   (5,'global','cms_color','#7ac943'),
@@ -225,12 +224,6 @@ $create_storage_adapters = "CREATE TABLE `directus_storage_adapters` (
   `params` varchar(2000) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-
-$insert_storage_adapters = "INSERT INTO `directus_storage_adapters` (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
-VALUES
-  (1,'media','FileSystemAdapter','DEFAULT',1,'/Library/WebServer/www/media/directus/','http://localhost/media/directus/',NULL),
-  (2,'thumbnails','FileSystemAdapter','THUMBNAIL',1,'/Library/WebServer/www/media/directus/thumbnails/','http://localhost/media/directus/thumbnails/',NULL),
-  (3,'temp','FileSystemAdapter','TEMP',1,'/Library/WebServer/www/media/directus/temp/','http://localhost/media/directus/temp/',NULL);";
 
 $create_tab_priv = "CREATE TABLE `directus_tab_privileges` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

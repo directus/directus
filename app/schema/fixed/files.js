@@ -21,7 +21,7 @@ define(function(require, exports, module) {
         "is_nullable":"NO",
         "comment":"",
         "sort":-1,
-        "ui":"directus_fancy_file",
+        "ui":"directus_file",
         "system":false,
         "master":false,
         "hidden_list":false,
@@ -34,7 +34,7 @@ define(function(require, exports, module) {
         "type":"VARCHAR",
         "is_nullable":"YES",
         "sort":-1,
-        "ui":"directus_fancy_file",
+        "ui":"directus_file",
         "system":true,
         "master":false,
         "hidden_list":false,
@@ -85,7 +85,7 @@ define(function(require, exports, module) {
         "hidden_list":false,
         "hidden_input":true,
         "required":false,
-        "ui":"directus_fancy_file"
+        "ui":"directus_file"
       },
       {
         "id":"title",
