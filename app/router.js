@@ -296,7 +296,7 @@ define(function(require, exports, module) {
       var user = app.users.getCurrentUser();
       var userGroup = user.get('group');
 
-      if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
+      if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
         return this.notFound();
       }
 

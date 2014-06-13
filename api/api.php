@@ -402,7 +402,7 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendD
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
-    if ($myGroupId != 0) {
+    if ($myGroupId != 1) {
         throw new Exception('Permission denied');
     }
 
@@ -416,7 +416,7 @@ $app->map("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendD
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
-    if ($myGroupId != 0) {
+    if ($myGroupId != 1) {
         throw new Exception('Permission denied');
     }
 
@@ -430,7 +430,7 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
-    if ($myGroupId != 0) {
+    if ($myGroupId != 1) {
         throw new Exception('Permission denied');
     }
 

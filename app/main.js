@@ -209,7 +209,7 @@ require(["config"], function() {
       // Default directus tabs
 
       var tabs = [
-        // (app.users.getCurrentUser().get('group').id === 0) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
+        // (app.users.getCurrentUser().get('group').id === 1) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
         // {id: "blank",    hidden: true},
         // {id: "files",    icon_class: "icon-attach"},
         // {id: "users",    icon_class: "icon-users"},
@@ -219,7 +219,7 @@ require(["config"], function() {
         {id: "logout", icon_class: "icon-power-button"}
       ];
 
-      if(app.users.getCurrentUser().get('group').id === 0) {
+      if(app.users.getCurrentUser().get('group').id === 1) {
         tabs.unshift();
       }
 
@@ -250,7 +250,7 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model(bookmark));
       });
 
-      if(app.users.getCurrentUser().get('group').id === 0) {
+      if(app.users.getCurrentUser().get('group').id === 1) {
         bookmarks.push(new Backbone.Model({
           icon_class: "icon-cog",
           title: "Settings",

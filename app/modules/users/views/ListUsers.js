@@ -172,7 +172,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       var userGroup = user.get('group');
 
       //@todo fix this so it respects ACL instead of being hardcoded
-      if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
+      if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
         return;
       }
 
@@ -189,7 +189,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       }
     },
     leftToolbar: function() {
-      if(app.users.getCurrentUser().get('group').id == 0) {
+      if(app.users.getCurrentUser().get('group').id == 1) {
         return [
           new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
         ];

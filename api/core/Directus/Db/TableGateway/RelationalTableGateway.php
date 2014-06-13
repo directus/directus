@@ -80,8 +80,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
         }
 
         //Dont let non-admins make admins
-        if($tableName == 'directus_users' && $currentUser['group'] != 0) {
-          if(isset($recordData['group']) && $recordData['group']['id'] == 0) {
+        if($tableName == 'directus_users' && $currentUser['group'] != 1) {
+          if(isset($recordData['group']) && $recordData['group']['id'] == 1) {
             unset($recordData['group']);
           }
         }
