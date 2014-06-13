@@ -344,7 +344,9 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       this.fileModel.on('change', this.render, this);
       //this.collection = app.getEntries('directus_files');
       //this.collection.fetch();
-      this.collection.on('reset', this.render, this);
+      if(this.collection) {
+        this.listenTo(this.collection, 'reset', this.render);
+      }
     }
 
   });
