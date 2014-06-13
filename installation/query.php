@@ -249,6 +249,10 @@ $create_tables = "CREATE TABLE `directus_tables` (
   PRIMARY KEY (`table_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
+$insert_tables = "INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `inactive_by_default`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`)
+VALUES
+  ('directus_messages_recipients', 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL);";
+
 $create_ui = "CREATE TABLE `directus_ui` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `table_name` varchar(64) DEFAULT NULL,
@@ -292,7 +296,7 @@ $create_users = "CREATE TABLE `directus_users` (
 $create_statements = [$create_activity, $create_bookmarks, $create_columns, $create_groups, $create_ip_whitelist, $create_media, $create_messages, $create_messages_recipients, $create_preferences, $create_privileges,
   $create_settings, $create_social_feeds, $create_social_posts, $create_storage_adapters, $create_tab_priv, $create_tables, $create_ui, $create_users];
 
-$insert_statements = [$insert_columns, $insert_groups, $insert_settings, $insert_privileges];
+$insert_statements = [$insert_columns, $insert_groups, $insert_settings, $insert_privileges, $insert_tables];
 
 $mysqli = new mysqli($_SESSION['host_name'], $_SESSION['username'], $_SESSION['db_password'], $_SESSION['db_name']);
 
