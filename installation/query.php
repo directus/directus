@@ -251,7 +251,8 @@ $create_tables = "CREATE TABLE `directus_tables` (
 
 $insert_tables = "INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `inactive_by_default`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`)
 VALUES
-  ('directus_messages_recipients', 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL);";
+  ('directus_messages_recipients', 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+  ('directus_users', 1, 0, 0, 0, 0, NULL, NULL, NULL, 'id', NULL, NULL, NULL);";
 
 $create_ui = "CREATE TABLE `directus_ui` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
