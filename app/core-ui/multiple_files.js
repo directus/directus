@@ -121,6 +121,31 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
       };
     },
 
+    afterRender: function() {
+      var $dropzone = this.$el;
+      var model = this.fileModel;
+      var self = this;
+
+      // Since data transfer is not supported by jquery...
+      // XHR2, FormData
+      $dropzone[0].ondrop = _.bind(function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        app.sendFiles(e.dataTransfer.files, function(data) {
+          _.each(data, function(item) {
+            item.active = 1;
+            // Unset the model ID so that a new file record is created
+            // (and the old file record isn't replaced w/ this data)
+            item.id = undefined;
+            item.user = self.userId;
+            var model = new self.relatedCollection.nestedCollection.model(item, {collection: self.relatedCollection.nestedCollection, parse: true});
+            model = new Backbone.Model({data: model}, {collection:self.relatedCollection});
+            self.relatedCollection.add(model);
+          });
+        });
+      });
+    },
+
     initialize: function(options) {
       if (!this.columnSchema.relationship ||
            'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
