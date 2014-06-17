@@ -26,6 +26,14 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
   Module.variables = [
     {id: 'apiKey', ui: 'textinput', char_length:200},
+    {id: 'street_number_field', ui: 'textinput', char_length:200},
+    {id: 'street_field', ui: 'textinput', char_length:200},
+    {id: 'city_field', ui: 'textinput', char_length:200},
+    {id: 'postal_code_field', ui: 'textinput', char_length:200},
+    {id: 'state_field', ui: 'textinput', char_length:200},
+    {id: 'stateCode_field', ui: 'textinput', char_length:200},
+    {id: 'country_field', ui: 'textinput', char_length:200},
+    {id: 'countryCode_field', ui: 'textinput', char_length:200},
     {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: 'Height in Pixels'}
   ];
 
@@ -94,12 +102,56 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
             map:map
           });
         }
+        var latlngVal = e.latLng.lat() + "," + e.latLng.lng();
+        that.$el.find('input').val(latlngVal);
 
-        that.$el.find('input').val(e.latLng.lat() + "," + e.latLng.lng());
+        $.get('https://maps.googleapis.com/maps/api/geocode/json', {latlng: latlngVal, key: that.options.settings.get('apiKey'), result_type:"street_address"}, function(data) {
+          if(data.results && data.results.length > 0) {
+            data = data.results[0].address_components;
+            var address = {};
+            data.forEach(function(part) {
+              switch(part.types[0]) {
+                case 'street_number':
+                  address.street_number = part.long_name;
+                  break;
+                case 'route':
+                  address.street = part.long_name;
+                  break;
+                case 'locality':
+                  address.city = part.long_name;
+                  break;
+                case 'postal_code':
+                  address.postal_code = part.long_name;
+                  break;
+                case 'administrative_area_level_1':
+                  address.state = part.long_name;
+                  address.stateCode = part.short_name;
+                  break;
+                case 'country':
+                  address.country = part.long_name;
+                  address.countryCode = part.short_name;
+                  break;
+              }
+            });
+            for(var key in address) {
+              var field = that.options.settings.has(key + '_field') ? that.options.settings.get(key + '_field') : false;
+              if(field) {
+                var $fieldInput = that.$el.closest('form').find('input[name='+field+']');
+                if($fieldInput.length) {
+                  $fieldInput.val(address[key]);
+                }
+              }
+            }
+          }
+        });
       });
     },
 
     serialize: function() {
+      if(this.options.schema.get('type') == "ALIAS") {
+        return false;
+      }
+
       var value = this.options.value || '';
 
       return {
