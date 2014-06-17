@@ -146,14 +146,14 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   </div> \
                   {{else}} \
                   <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
-                  <!--<input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
+                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
+                  <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
                   {{/if}} \
                   <div class="single-image-actions"> \
                     <div class="single-image-text">OR UPLOAD FROM</div> \
-                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-upload"></span> Your Computer</button> \
-                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-link"></span> External URL</button> \
+                    <button class="btn btn-primary" data-action="computer" type="button"><span class="icon icon-upload"></span> Your Computer</button> \
+                    <button class="btn btn-primary" data-action="url" type="button"><span class="icon icon-link"></span> External URL</button> \
                     <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-attach"></span> Directus Files</button> \
                   </div>';
 
@@ -196,7 +196,39 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
             model.set(item);
           });
         });
-      }
+      },
+      'change input[type=file]': function(e) {
+        var file = $(e.target)[0].files[0];
+        var model = this.fileModel;
+        app.sendFiles(file, function(data) {
+          model.set(data[0]);
+          model.trigger('sync');
+        });
+      },
+      'click button[data-action="computer"]': function(e) {
+        this.$el.find('#fileAddInput').click();
+      },
+      'click button[data-action="url"]': function(e) {
+        var url = prompt("Enter Url");
+        if(!url) {
+          return;
+        }
+
+        var model = this.fileModel;
+        app.sendLink(url, function(data) {
+          _.each(data, function(item) {
+            item.active = 1;
+            // Unset the model ID so that a new file record is created
+            // (and the old file record isn't replaced w/ this data)
+            item.id = undefined;
+            item.user = self.userId;
+
+            //console.log()
+
+            model.set(item);
+          });
+        });
+      },
     },
 
     removeFile: function(e) {
