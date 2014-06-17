@@ -203,6 +203,16 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         //new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
       ];
     },
+    leftSecondaryToolbar: function() {
+      if(!this.widgets.visibilityWidget) {
+        this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
+      }
+      if(!this.widgets.filterWidget) {
+        this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
+      }
+
+      return [this.widgets.filterWidget, this.widgets.visibilityWidget];
+    },
     events: {
       'click #addBtn': function() {
         app.router.go('#users','new');
@@ -235,6 +245,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     initialize: function() {
       this.viewList = false;
       this.table = new BodyView({collection:this.collection});
+      this.widgets = [];
     }
   });
 

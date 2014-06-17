@@ -33,9 +33,9 @@ define(function(require, exports, module) {
       "tables/:name(/pref/:pref)":      "entries",
       "tables/:name/:id":               "entry",
       "activity":                       "activity",
-      "files":                           "files",
-      "files/:id":                       "filesItem",
-      "users":                          "users",
+      "files(/pref/:pref)":             "files",
+      "files/:id":                      "filesItem",
+      "users(/pref/:pref)":             "users",
       "users/:id":                      "user",
       "settings":                       "settings",
       "settings/:name":                 "settings",
@@ -255,9 +255,25 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    files: function() {
+    files: function(pref) {
       if (_.contains(this.tabBlacklist,'files'))
         return this.notFound();
+
+      if(pref) {
+        this.navigate("/files");
+
+        if(this.lastRoute == "files/" && this.loadedPreference == pref) {
+          return;
+        }
+
+        this.loadedPreference = pref;
+      } else {
+        //If no LoadedPref unset
+        if(this.loadedPreference && this.lastRoute.indexOf('files/pref/') == -1)
+        {
+          this.loadedPreference = null;
+        }
+      }
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Files');
       this.tabs.setActive('files');
@@ -284,7 +300,23 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    users: function() {
+    users: function(pref) {
+      if(pref) {
+        this.navigate("/users");
+
+        if(this.lastRoute == "users/" && this.loadedPreference == pref) {
+          return;
+        }
+
+        this.loadedPreference = pref;
+      } else {
+        //If no LoadedPref unset
+        if(this.loadedPreference && this.lastRoute.indexOf('users/pref/') == -1)
+        {
+          this.loadedPreference = null;
+        }
+      }
+
       this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
       this.tabs.setActive('users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));

@@ -36,7 +36,11 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
       }
 
-      return [this.widgets.filterWidget];
+      if(!this.widgets.visibilityWidget) {
+        this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
+      }
+
+      return [this.widgets.filterWidget, this.widgets.visibilityWidget];
     },
 
     events: {
