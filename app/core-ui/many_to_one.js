@@ -19,12 +19,12 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     {id: 'readonly', ui: 'checkbox'},
     {id: 'show_inactive', ui: 'checkbox', def: '0'},
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: "Enter Visible Column Name"},
-    {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"}
-    //{id: 'use_radio_buttons', ui: 'checkbox', def: '0'}
+    {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"},
+    {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
   ];
 
   var template = '<select {{#unless canEdit}}disabled{{/unless}}> \
-                  <option value="">Select from below</option> \
+                  <option value="">{{placeholder_text}}</option> \
                   {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
                   </select>';
 
@@ -86,7 +86,8 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         data: data,
         handleBarString: this.options.settings.get('value_template'),
         comment: this.options.schema.get('comment'),
-        use_radio_buttons: (this.options.settings && this.options.settings.has('use_radio_buttons') && this.options.settings.get('use_radio_buttons') == '1') ? true : false
+        use_radio_buttons: (this.options.settings && this.options.settings.has('use_radio_buttons') && this.options.settings.get('use_radio_buttons') == '1') ? true : false,
+        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
       };
     },
 

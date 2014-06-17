@@ -12,13 +12,14 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">Select from below</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
+  var template = '<select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
 
   Module.id = 'select';
   Module.dataTypes = ['VARCHAR', 'INT'];
   Module.variables = [
     {id: 'options', ui: 'textarea', options:{'rows': 25}  },
-    {id: 'allow_null', ui: 'checkbox'}
+    {id: 'allow_null', ui: 'checkbox'},
+    {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
   ];
 
   Module.Input = Backbone.Layout.extend({
@@ -52,7 +53,8 @@ define(['app', 'backbone'],function(app, Backbone) {
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
-        allow_null: this.options.settings.get('allow_null')
+        allow_null: this.options.settings.get('allow_null'),
+        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
       };
     }
 
