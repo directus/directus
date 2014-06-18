@@ -51,6 +51,7 @@ function(app, Backbone, EntriesManager) {
     removeBookmark: function(data) {
       data.user = data.user.toString();
       var model = this.findWhere(data);
+
       if(model !== undefined) {
         model.destroy();
         this.remove(model);
@@ -76,6 +77,7 @@ function(app, Backbone, EntriesManager) {
     events: {
       'click .remove-snapshot': function(e) {
         e.stopPropagation();
+        e.preventDefault();
 
         var url = $(e.target).parent().attr('href');
         if(url) {
@@ -83,6 +85,9 @@ function(app, Backbone, EntriesManager) {
           var title = urlArray.pop();
           urlArray.pop();
           var table = urlArray.pop();
+          if(urlArray.length === 0) {
+            table = "directus_" + table;
+          }
           if(title && table) {
             if(!confirm("Are you sure you wish to delete the snapshot: " + title)) {
               return false;
