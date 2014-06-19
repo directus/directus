@@ -16,7 +16,7 @@ function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Collecti
 
   var Directus = {};
 
-  //Directus.Media = Entries.MediaCollection;
+  //Directus.Files = Entries.FilesCollection;
   Directus.Collection = Collection;
   Directus.EntriesCollection = EntriesCollection;
   Directus.EditView = Edit;
@@ -24,7 +24,7 @@ function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Collecti
   Directus.Modal = Modal;
   Directus.TableSimple = TableSimple;
   Directus.Model = EntriesModel;
-  //Directus.MediaCollection = Structure.MediaCollection;
+  //Directus.FilesCollection = Structure.FilesCollection;
 
   Directus.SubRoute = Backbone.Router.extend({
     constructor: function(prefix) {

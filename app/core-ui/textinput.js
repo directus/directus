@@ -24,7 +24,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'validation_message', ui: 'textinput', char_length:200}
   ];
 
-  var template = '<div class="char-count-container"><input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
+  var template = '<div class="char-count-container {{size}}"><input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
                   <span class="char-count hide">{{characters}}</span></div>';
 
   Module.Input = Backbone.Layout.extend({

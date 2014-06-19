@@ -13,7 +13,7 @@ class MySQL {
     var $db_name;
     var $db_host;
     var $dbh;
-    var $many_to_one_uis = array('many_to_one', 'single_media');
+    var $many_to_one_uis = array('many_to_one', 'single_file');
     var $logger = null;
 
     /**
@@ -91,7 +91,7 @@ class MySQL {
                 S.TABLE_SCHEMA = :schema AND
                 (S.TABLE_NAME NOT LIKE "directus\_%" OR
                 S.TABLE_NAME = "directus_activity" OR
-                S.TABLE_NAME = "directus_media" OR
+                S.TABLE_NAME = "directus_files" OR
                 S.TABLE_NAME = "directus_messages" OR
                 S.TABLE_NAME = "directus_groups" OR
                 S.TABLE_NAME = "directus_users")
@@ -588,8 +588,8 @@ class MySQL {
                 $column_name = $col['id'];
 
                 $foreign_table_name = null;
-                if($col['ui'] == 'single_media')
-                    $foreign_table_name = 'directus_media';
+                if($col['ui'] == 'single_file')
+                    $foreign_table_name = 'directus_files';
                 elseif(isset($col['table_related']))
                     $foreign_table_name = $col['table_related'];
                 elseif(isset($col['options']['table_related']))
@@ -760,7 +760,7 @@ class MySQL {
     }
 
 	function get_activity() {
-        $sql = "SELECT id,identifier,action,table_name,row_id,user,datetime,type FROM directus_activity WHERE (parent_id IS NULL OR type = 'MEDIA') ORDER BY id DESC";
+        $sql = "SELECT id,identifier,action,table_name,row_id,user,datetime,type FROM directus_activity WHERE (parent_id IS NULL OR type = 'FILES') ORDER BY id DESC";
         $sth = $this->dbh->prepare($sql);
         $sth->execute();
         return array('rows' => $sth->fetchAll(PDO::FETCH_ASSOC));

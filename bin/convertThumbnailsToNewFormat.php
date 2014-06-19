@@ -7,7 +7,7 @@ use Directus\Bootstrap;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusStorageAdaptersTableGateway;
-use Directus\Media\Thumbnail;
+use Directus\Files\Thumbnail;
 use Zend\Db\TableGateway\TableGateway;
 
 require 'directusLoader.php';
@@ -24,7 +24,7 @@ $db = \Directus\Bootstrap::get('ZendDb');
 $acl = \Directus\Bootstrap::get('acl');
 
 $Settings = new DirectusSettingsTableGateway($acl, $db);
-$mediaSettings = $Settings->fetchCollection('media', array(
+$filesSettings = $Settings->fetchCollection('media', array(
     'storage_adapter','storage_destination','thumbnail_storage_adapter',
     'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
 ));
@@ -32,11 +32,11 @@ $mediaSettings = $Settings->fetchCollection('media', array(
 $StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $db);
 $storageAdaptersById = $StorageAdapters->fetchAllWithIdKeys();
 foreach($storageAdaptersById as $id => $storageAdapter) {
-	$storageAdaptersById[$id] = \Directus\Media\Storage\Storage::getStorage($storageAdapter);
+	$storageAdaptersById[$id] = \Directus\Files\Storage\Storage::getStorage($storageAdapter);
 }
 out("\nLoaded " . count($storageAdaptersById) . " storage adapters.");
 
-$DirectusMedia = new TableGateway('directus_media', $db);
+$DirectusMedia = new TableGateway('directus_files', $db);
 $mediaRecords = $DirectusMedia->select();
 
 out("Found " . $mediaRecords->count() . " Directus media records.");
@@ -86,9 +86,9 @@ foreach($mediaRecords as $media) {
 	}
   // Generate thumbnail
   $localFile = $tempStorageAdapter->joinPaths($adapterSettings['destination'], $media['name']);
-  $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $mediaSettings['thumbnail_size'], $mediaSettings['thumbnail_crop_enabled']);
+  $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $filesSettings['thumbnail_size'], $filesSettings['thumbnail_crop_enabled']);
   $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-  Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $mediaSettings['thumbnail_quality']);
+  Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $filesSettings['thumbnail_quality']);
   $fileData = $thumbnailStorageAdapter->acceptFile($thumbnailTempName, $media['id'].".".$info['extension'], $thumbnailStorageAdapterSettings['destination']);
   $statistics['success']++;
 }

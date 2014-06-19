@@ -21,7 +21,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         var userGroup = user.get('group');
 
         //@todo fix this so it respects ACL instead of being hardcoded
-        if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
+        if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
           return;
         }
 
@@ -172,7 +172,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       var userGroup = user.get('group');
 
       //@todo fix this so it respects ACL instead of being hardcoded
-      if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
+      if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
         return;
       }
 
@@ -189,7 +189,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       }
     },
     leftToolbar: function() {
-      if(app.users.getCurrentUser().get('group').id == 0) {
+      if(app.users.getCurrentUser().get('group').id == 1) {
         return [
           new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
         ];
@@ -202,6 +202,16 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         //new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
         //new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
       ];
+    },
+    leftSecondaryToolbar: function() {
+      if(!this.widgets.visibilityWidget) {
+        this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
+      }
+      if(!this.widgets.filterWidget) {
+        this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
+      }
+
+      return [this.widgets.visibilityWidget, this.widgets.filterWidget];
     },
     events: {
       'click #addBtn': function() {
@@ -235,6 +245,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     initialize: function() {
       this.viewList = false;
       this.table = new BodyView({collection:this.collection});
+      this.widgets = [];
     }
   });
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Directus\Media\Storage\Adapter;
+namespace Directus\Files\Storage\Adapter;
 
 use OpenCloud\Rackspace;
 
 class RackspaceOpenCloudAdapter extends Adapter {
 
     protected static $requiredClasses = array("\\OpenCloud\\Rackspace");
-    
+
     protected static $requiredParams = array('api_user','api_key','region','endpoint');
 
     /**

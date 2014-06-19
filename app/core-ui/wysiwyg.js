@@ -26,6 +26,7 @@ define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Ov
     {id: 'createlink', ui: 'checkbox', def: '1'},
     {id: 'insertimage', ui: 'checkbox', def: '1'},
     {id: 'embedVideo', ui: 'checkbox', def: '1'},
+    {id: 'orderedList', ui: 'checkbox', def: '1'},
     {id: 'h1', ui: 'checkbox', def: '0'},
     {id: 'h2', ui: 'checkbox', def: '0'},
     {id: 'h3', ui: 'checkbox', def: '0'},
@@ -91,6 +92,7 @@ var template = '<style type="text/css"> \
                     {{#if h5}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" type="button" class="btn btn-small btn-silver" data-tag="H5" rel="tooltip" data-placement="bottom" title="H5">H5</button>{{/if}} \
                     {{#if h6}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" type="button" class="btn btn-small btn-silver" data-tag="H6" rel="tooltip" data-placement="bottom" title="H6">H6</button>{{/if}} \
                     {{#if blockquote}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote" type="button" class="btn btn-small btn-silver" data-tag="Quote" rel="tooltip" data-placement="bottom" title="Quote">Quote</button>{{/if}} \
+                    {{#if orderedList}}<button data-wysihtml5-command="insertOrderedList" type="button" class="btn btn-small btn-silver" data-tag="List" rel="tooltip" data-placement="bottom" title="List">List</button>{{/if}} \
                   </div> \
                   <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
                     {{#if ul}}<button data-wysihtml5-command="insertUnorderedList" type="button" class="btn btn-small btn-silver" data-tag="UL" rel="tooltip" data-placement="bottom" title="UL">UL</button>{{/if}} \
@@ -127,7 +129,10 @@ var template = '<style type="text/css"> \
                       <button data-wysihtml5-command="embedVideo" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Embed Video">Embed</button> \
                       <div data-wysihtml5-dialog="embedVideo" style="display: none;z-index:108" class="directus-alert-modal"> \
                         <div><button id="existingLinkButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing Link</button></div> \
-                        <div><input type="text" data-wysihtml5-dialog-field="src" id="insertEmbedInput" placeholder="Youtube Video ID" style="font-weight:600;"></div> \
+                        <div><input type="text" class="videoEmbedInput" data-type="youtube" id="insertYoutubeEmbedInput" placeholder="Youtube Video ID" style="font-weight:600;"></div><br/> \
+                        <div><input type="text" class="videoEmbedInput" data-type="vimeo" id="insertVimeoEmbedInput" placeholder="Vimeo Video ID" style="font-weight:600;"></div> \
+                        <div><input type="hidden"  data-wysihtml5-dialog-field="src" id="insertEmbedInput"></div> \
+                        <div><input type="hidden"  data-wysihtml5-dialog-field="data-type" id="insertEmbedInputType"></div> \
                         <div class="directus-alert-modal-buttons"> \
                           <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
                           <button data-wysihtml5-dialog-action="save" id="insertEmbedButton" type="button" class="primary">OK</button> \
@@ -155,7 +160,7 @@ var template = '<style type="text/css"> \
       'change input[type=file]': function(e) {
         var file = $(e.target)[0].files[0];
         var self = this;
-        var model = new app.media.model({}, {collection: app.media});
+        var model = new app.files.model({}, {collection: app.files});
         app.sendFiles(file, function(data) {
           _.each(data, function(item) {
             item.active = 1;
@@ -163,7 +168,7 @@ var template = '<style type="text/css"> \
             item.user = self.userId;
 
             model.save(item, {success: function(e) {
-              var url = model.makeMediaUrl(false);
+              var url = model.makeFileUrl(false);
               self.$el.find('#insertImageInput').val(url);
               self.$el.find('input[type=file]').val("");
               self.$el.find('#insertImageButton').click();
@@ -172,9 +177,9 @@ var template = '<style type="text/css"> \
         });
       },
       'click #existingFileButton': function(e) {
-        var collection = app.media;
+        var collection = app.files;
         var model;
-        var mediaModel = new app.media.model({}, {collection: collection});
+        var fileModel = new app.files.model({}, {collection: collection});
         collection.fetch();
         var view = new Overlays.ListSelect({collection: collection, selectable: false});
         app.router.overlayPage(view);
@@ -184,16 +189,16 @@ var template = '<style type="text/css"> \
           var id = $(e.target).closest('tr').attr('data-id');
           model = collection.get(id);
           app.router.removeOverlayPage(this);
-          var url = model.makeMediaUrl(false);
+          var url = model.makeFileUrl(false);
           self.$el.find('#insertImageInput').val(url);
           self.$el.find('#insertImageButton').click();
         };
       },
       'click #existingLinkButton': function(e) {
-        var collection = app.media;
+        var collection = app.files;
         var model;
-        var mediaModel = new app.media.model({}, {collection: collection});
-        collection.setFilter('adv_search', [{id:'type',type:'like',value:'embed/youtube'}]);
+        var fileModel = new app.files.model({}, {collection: collection});
+        collection.setFilter('adv_search', [{id:'type',type:'like',value:'embed/'}]);
         collection.fetch();
         var view = new Overlays.ListSelect({collection: collection, selectable: false});
         app.router.overlayPage(view);
@@ -203,12 +208,27 @@ var template = '<style type="text/css"> \
           var id = $(e.target).closest('tr').attr('data-id');
           model = collection.get(id);
           app.router.removeOverlayPage(this);
-          if(model.get('type') == "embed/youtube") {
+          if(model.get('type') == "embed/youtube" || model.get('type') == "embed/vimeo" ) {
             var url = model.get('url');
+
+            if(model.get('type') == "embed/vimeo") {
+              self.$el.find('#insertEmbedInputType').val('vimeo');
+            } else {
+              self.$el.find('#insertEmbedInputType').val('youtube');
+            }
+
             self.$el.find('#insertEmbedInput').val(url);
             self.$el.find('#insertEmbedButton').click();
           }
         };
+      },
+      'change .videoEmbedInput': function(e) {
+        var target = $(e.target);
+
+        if(target.val()) {
+          this.$el.find('#insertEmbedInput').val(target.val());
+          this.$el.find('#insertEmbedInputType').val(target.attr('data-type'));
+        }
       }
     },
 
@@ -236,6 +256,7 @@ var template = '<style type="text/css"> \
         blockquote: (this.options.settings && this.options.settings.has('blockquote')) ? this.options.settings.get('blockquote')!=0 : true,
         ul: (this.options.settings && this.options.settings.has('ul')) ? this.options.settings.get('ul')!=0 : false,
         ol: (this.options.settings && this.options.settings.has('ol')) ? this.options.settings.get('ol')!=0 : false,
+        orderedList: (this.options.settings && this.options.settings.has('orderedList')) ? this.options.settings.get('orderedList')!=0 : true,
         createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=0 : true,
         insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=0 : true,
         embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=0 : true,
@@ -280,7 +301,7 @@ var template = '<style type="text/css"> \
       var timer;
       var $dropzone = this.$el;
       var self = this;
-      var model = new app.media.model({}, {collection: app.media});
+      var model = new app.files.model({}, {collection: app.files});
       $dropzone.on('dragover', function(e) {
         self.$el.find('#iframe_blocker').show();
         clearInterval(timer);
@@ -316,7 +337,7 @@ var template = '<style type="text/css"> \
 
             model.save(item, {success: function(e) {
               //console.log(e);
-              var url = model.makeMediaUrl(false);
+              var url = model.makeFileUrl(false);
               try {
                 self.editor.composer.commands.exec("insertImage", { src: url, alt: model.get('name')});
               } catch( e) {}
@@ -336,15 +357,28 @@ var template = '<style type="text/css"> \
           var doc   = composer.doc,
                       image;
 
+          console.log(value);
           image = doc.createElement("iframe");
           image.setAttribute('width', '300');
           image.setAttribute('height', '200');
           image.setAttribute('frameborder', '0');
           image.setAttribute('allowfullscreen', '1');
 
+          var type = "youtube"
+          if(value['data-type']) {
+            type = value['data-type'];
+          }
+
           for (var i in value) {
             if(i==="src") {
-              value[i] = "http://youtube.com/embed/" + value[i];
+              if(type == 'youtube') {
+                value[i] = "http://youtube.com/embed/" + value[i];
+              } else {
+                value[i] = "//player.vimeo.com/video/97996476?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23";
+              }
+            }
+            if(i === "data-type") {
+              continue;
             }
             image.setAttribute(i === "className" ? "class" : i, value[i]);
           }

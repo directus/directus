@@ -11,7 +11,7 @@ use Directus\MemcacheProvider;
 
 class TableSchema {
 
-    public static $many_to_one_uis = array('many_to_one', 'single_media');
+    public static $many_to_one_uis = array('many_to_one', 'single_files');
 
     // These columns types are aliases for "associations". They don't have
     // real, corresponding columns in the DB.
@@ -217,7 +217,7 @@ class TableSchema {
                     S.TABLE_SCHEMA = :schema AND
                     (S.TABLE_NAME NOT LIKE "directus\_%" OR
                     S.TABLE_NAME = "directus_activity" OR
-                    S.TABLE_NAME = "directus_media" OR
+                    S.TABLE_NAME = "directus_files" OR
                     S.TABLE_NAME = "directus_messages" OR
                     S.TABLE_NAME = "directus_groups" OR
                     S.TABLE_NAME = "directus_users" OR

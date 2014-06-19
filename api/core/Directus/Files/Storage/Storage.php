@@ -1,22 +1,22 @@
 <?php
 
-namespace Directus\Media\Storage;
+namespace Directus\Files\Storage;
 
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusStorageAdaptersTableGateway;
-use Directus\Media\Thumbnail;
+use Directus\Files\Thumbnail;
 use Directus\Util\Formatting;
 
 class Storage {
 
-	const ADAPTER_NAMESPACE = "\\Directus\\Media\\Storage\\Adapter";
+	const ADAPTER_NAMESPACE = "\\Directus\\Files\\Storage\\Adapter";
 
     /** @var DirectusSettingsTableGateway */
     protected $settings;
 
     /** @var array */
-    protected $mediaSettings = array();
+    protected $filesSettings = array();
 
     /** @var array */
     protected static $storages = array();
@@ -24,9 +24,9 @@ class Storage {
     public function __construct() {
         $this->acl = Bootstrap::get('acl');
         $this->adapter = Bootstrap::get('ZendDb');
-        // Fetch media settings
+        // Fetch files settings
         $Settings = new DirectusSettingsTableGateway($this->acl, $this->adapter);
-        $this->mediaSettings = $Settings->fetchCollection('media', array(
+        $this->filesSettings = $Settings->fetchCollection('files', array(
             'storage_adapter','storage_destination','thumbnail_storage_adapter',
             'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
         ));
@@ -37,7 +37,7 @@ class Storage {
         if(count($storage) !== count($adapterRoles)) {
             throw new \RuntimeException(__CLASS__ . ' expects adapter settings for these default adapter roles: ' . implode(',', $adapterRoles));
         }
-        $this->MediaStorage = self::getStorage($storage['DEFAULT']);
+        $this->FilesStorage = self::getStorage($storage['DEFAULT']);
         $this->ThumbnailStorage = self::getStorage($storage['THUMBNAIL']);
         $this->storageAdaptersByRole = $storage;
     }
@@ -55,7 +55,7 @@ class Storage {
 
     /**
      * @param  array $adapterSettings
-     * @return \Directus\Media\Storage\Adapter\Adapter
+     * @return \Directus\Files\Storage\Adapter\Adapter
      */
     public static function getStorage(array &$adapterSettings) {
         $adapterName = $adapterSettings['adapter_name'];
@@ -74,14 +74,14 @@ class Storage {
     }
 
     public function acceptFile($localFile, $targetFileName) {
-        $settings = $this->mediaSettings;
-        $fileData = $this->MediaStorage->getUploadInfo($localFile);
+        $settings = $this->filesSettings;
+        $fileData = $this->FilesStorage->getUploadInfo($localFile);
 
 
         // Generate thumbnail if image
         $thumbnailTempName = null;
         $info = pathinfo($targetFileName);
-        if(in_array($info['extension'], array('jpg','jpeg','png','gif','tif', 'psd', 'pdf'))) {
+        if(in_array($info['extension'], array('jpg','jpeg','png','gif','tif', 'tiff', 'psd', 'pdf'))) {
             $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
             if($img) {
               $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
@@ -90,21 +90,21 @@ class Storage {
         }
 
         // Push original file
-        $mediaAdapter = $this->storageAdaptersByRole['TEMP'];
-        $finalPath = $this->MediaStorage->acceptFile($localFile, $targetFileName, $mediaAdapter['destination']);
+        $filesAdapter = $this->storageAdaptersByRole['TEMP'];
+        $finalPath = $this->FilesStorage->acceptFile($localFile, $targetFileName, $filesAdapter['destination']);
         $fileData['name'] = basename($finalPath);
         $fileData['title'] = Formatting::fileNameToFileTitle($fileData['name']);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
-        $fileData['storage_adapter'] = $mediaAdapter['id'];
+        $fileData['storage_adapter'] = $filesAdapter['id'];
 
 
         // Push thumbnail file if applicable (if image) with prefix THUMB_
         if(!is_null($thumbnailTempName)) {
             $info = pathinfo($fileData['name']);
-            if( in_array($info['extension'], array('tif', 'pdf', 'psd'))) {
-              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$info['filename'].'.jpg', $mediaAdapter['destination']);
+            if( in_array($info['extension'], array('tif', 'tiff', 'pdf', 'psd'))) {
+              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$info['filename'].'.jpg', $filesAdapter['destination']);
             } else {
-              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);
+              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
             }
         }
 
@@ -112,7 +112,7 @@ class Storage {
     }
 
     public function acceptLink($link) {
-        $settings = $this->mediaSettings;
+        $settings = $this->filesSettings;
         $fileData = array();
 
         if (strpos($link,'youtube.com') !== false) {
@@ -138,17 +138,17 @@ class Storage {
           $content = curl_exec($ch);
           curl_close($ch);
 
-          $mediaAdapter = $this->storageAdaptersByRole['TEMP'];
+          $filesAdapter = $this->storageAdaptersByRole['TEMP'];
           $fileData['name'] = "youtube_" . $video_id . ".jpg";
           $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
-          $fileData['storage_adapter'] = $mediaAdapter['id'];
+          $fileData['storage_adapter'] = $filesAdapter['id'];
           $fileData['charset'] = '';
 
           $img = Thumbnail::generateThumbnail('http://img.youtube.com/vi/' . $video_id . '/0.jpg', 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
           $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
           Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
           if(!is_null($thumbnailTempName)) {
-            $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);
+            $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
           }
 
           if ($content !== false) {
@@ -177,10 +177,10 @@ class Storage {
           $fileData['url'] = $video_id;
           $fileData['type'] = 'embed/vimeo';
 
-          $mediaAdapter = $this->storageAdaptersByRole['TEMP'];
+          $filesAdapter = $this->storageAdaptersByRole['TEMP'];
           $fileData['name'] = "vimeo_" . $video_id . ".jpg";
           $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
-          $fileData['storage_adapter'] = $mediaAdapter['id'];
+          $fileData['storage_adapter'] = $filesAdapter['id'];
           $fileData['charset'] = '';
 
           // Get Data
@@ -205,7 +205,7 @@ class Storage {
             $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
             Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
             if(!is_null($thumbnailTempName)) {
-              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $mediaAdapter['destination']);
+              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
             }
           } else {
             // Unable to get Vimeo details
@@ -219,19 +219,19 @@ class Storage {
     }
 
     public function saveFile($fileName, $destStorageAdapterId, $newName = null) {
-        $settings = $this->mediaSettings;
+        $settings = $this->filesSettings;
         $finalName = null;
         $StorageAdapters = new DirectusStorageAdaptersTableGateway($this->acl, $this->adapter);
 
         //If desired Storage Adapter Exists...
-        $mediaAdapter = $StorageAdapters->fetchOneById($destStorageAdapterId);
-        if($mediaAdapter) {
+        $filesAdapter = $StorageAdapters->fetchOneById($destStorageAdapterId);
+        if($filesAdapter) {
           //Get Temp File Path from Temp StorageAdapter
           $tempLocation = $this->storageAdaptersByRole['TEMP']['destination'];
           //Try to accept file into new fella
           if(file_exists($tempLocation.$fileName)) {
             $destName = ($newName == null) ? $fileName : $newName;
-            $finalPath = $this->MediaStorage->acceptFile($tempLocation.$fileName, $destName, $mediaAdapter['destination']);
+            $finalPath = $this->FilesStorage->acceptFile($tempLocation.$fileName, $destName, $filesAdapter['destination']);
             $finalName = basename($finalPath);
           } else{
             $finalName = $fileName;
@@ -253,8 +253,8 @@ class Storage {
       return substr($string,$ini,$len);
     }
 
-    public function getMediaSettings() {
-      return $this->mediaSettings;
+    public function getfilesSettings() {
+      return $this->filesSettings;
     }
 }
 

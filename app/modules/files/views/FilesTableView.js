@@ -6,11 +6,11 @@ define([
   'core/BasePageView',
   'core/table/table.view',
   'core/widgets/widgets',
-  'modules/media/views/EditMediaView',
-  'modules/media/views/MediaCardView'
+  'modules/files/views/EditFilesView',
+  'modules/files/views/FilesCardView'
 ],
 
-function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable, Widgets, EditMediaView, MediaCardView) {
+function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable, Widgets, EditFilesView, FilesCardView) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -36,7 +36,11 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
       }
 
-      return [this.widgets.filterWidget];
+      if(!this.widgets.visibilityWidget) {
+        this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
+      }
+
+      return [this.widgets.visibilityWidget, this.widgets.filterWidget];
     },
 
     events: {
@@ -48,7 +52,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
           this.viewList = false;
           $('#listBtn').parent().removeClass('active');
           $('#gridBtn').parent().addClass('active');
-          this.table = new MediaCardView({collection:this.collection});
+          this.table = new FilesCardView({collection:this.collection});
           this.render();
         }
       },
@@ -162,15 +166,15 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
           that.uploadNextImage();
         }
       }, function(e) {
-        $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').show();
+        $('li[data-cid=' + fileInfo.model.cid + ']').find('.files-card-progress').show();
         $('li[data-cid=' + fileInfo.model.cid + ']').find('.default-loading > .icon').removeClass('icon-three-dots');
         $('li[data-cid=' + fileInfo.model.cid + ']').find('.default-loading > .icon').addClass('icon-upload-cloud');
-        $('li[data-cid=' + fileInfo.model.cid + ']').find('.media-card-progress').width(((e.loaded / e.total) * 100) + "%");
+        $('li[data-cid=' + fileInfo.model.cid + ']').find('.files-card-progress').width(((e.loaded / e.total) * 100) + "%");
       });
     },
     initialize: function() {
       this.viewList = false;
-      this.table = new MediaCardView({collection:this.collection});
+      this.table = new FilesCardView({collection:this.collection});
       this.widgets = [];
     }
   });

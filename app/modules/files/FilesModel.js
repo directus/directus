@@ -5,13 +5,13 @@ define([
 ],
 
 function(app, Backbone, EntriesModel) {
-  var MediaModel = EntriesModel.extend({
+  var FilesModel = EntriesModel.extend({
 
     initialize: function() {
       EntriesModel.prototype.initialize.apply(this, arguments);
     },
 
-    makeMediaUrl: function(thumbnail) {
+    makeFileUrl: function(thumbnail) {
       var storageAdapters = app.storageAdapters,
           adapterId,
           storageAdapter,
@@ -25,7 +25,7 @@ function(app, Backbone, EntriesModel) {
 
         storageAdapter = storageAdapters[adapterId];
         if(this.get('name')) {
-          if($.inArray(this.get('name').split('.').pop(),['tif', 'psd', 'pdf']) > -1) {
+          if($.inArray(this.get('name').split('.').pop(),['tif', 'tiff', 'psd', 'pdf']) > -1) {
             url = storageAdapter.url + this.get('id') + ".jpg";
           } else {
             url = storageAdapter.url + this.get('id') + "." + this.get('name').split('.').pop();
@@ -35,7 +35,7 @@ function(app, Backbone, EntriesModel) {
         //If Temp SA and Thumbnail do Special logic
         if(this.get('storage_adapter')) {
           if(storageAdapters[this.get('storage_adapter')].role == "TEMP" && thumbnail) {
-            if($.inArray(this.get('name').split('.').pop(),['tif', 'psd', 'pdf']) > -1) {
+            if($.inArray(this.get('name').split('.').pop(),['tif', 'tiff', 'psd', 'pdf']) > -1) {
               url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name').replace(/\.[^/.]+$/, "") + ".jpg";
             } else {
               url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name');
@@ -45,26 +45,22 @@ function(app, Backbone, EntriesModel) {
       } else {
         adapterId = this.get('storage_adapter');
         if(!storageAdapters.hasOwnProperty(adapterId)) {
-          throw new Error("Media record's storage_adapter FK value maps to an undefined directus_storage_adapters record: " + adapterId);
+          throw new Error("Files record's storage_adapter FK value maps to an undefined directus_storage_adapters record: " + adapterId);
         }
 
         storageAdapter = storageAdapters[adapterId];
         url = storageAdapter.url + this.get('name');
       }
 
-
-
-
-
       return url;
     },
 
-    constructor: function MediaModel(data, options) {
-      MediaModel.__super__.constructor.call(this, data, options);
+    constructor: function FilesModel(data, options) {
+      FilesModel.__super__.constructor.call(this, data, options);
     }
 
   });
 
-  return MediaModel;
+  return FilesModel;
 
 });

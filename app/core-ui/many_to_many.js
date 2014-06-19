@@ -125,9 +125,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       });
 
       if(ids.length > 0) {
-        //@TODO: Have this not fetch entire collection.
-        //relatedCollection.nestedCollection.setFilter({ids: ids.join(',')});
-        //relatedCollection.nestedCollection.fetch();
+        relatedCollection.nestedCollection.setFilter({ids: ids.join(',')});
+        relatedCollection.nestedCollection.fetch();
       }
 
       this.nestedTableView = new TableView({
@@ -160,17 +159,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       }, this);
 
       this.listenTo(relatedCollection.nestedCollection, 'sync', function() {
-        var models = this.relatedCollection.nestedCollection.filter(function(model) {
-          return ids.indexOf(model.id) != -1;
-        });
-        var  i = 0;
-        this.relatedCollection.each(function(model) {
-          if(i < models.length) {
-            model.get('data').set(models[i].attributes);
-          }
-          i++;
-        });
-
         this.nestedTableView.render();
       }, this);
 

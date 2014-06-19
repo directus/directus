@@ -5,11 +5,11 @@ define(function(require, exports, module) {
   var SchemaManager      = require('./../schema/SchemaManager'),
       EntriesCollection  = require('./entries/EntriesCollection'),
       UsersCollection    = require('modules/users/UsersCollection'),
-      MediaCollection    = require('modules/media/MediaCollection');
+      FilesCollection    = require('modules/files/FilesCollection');
 
   // Contains collections that should be persistent
   var usersInstance;
-  var mediaInstance;
+  var filesInstance;
   var groupsInstance;
   var activityInstance;
   var messagesInstance;
@@ -28,11 +28,11 @@ define(function(require, exports, module) {
       filters: {columns_visible: ['avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'location', 'phone', 'last_access'], active:1}
     }, SchemaManager.getFullSchema('directus_users')));
 
-    mediaInstance = new MediaCollection([], _.extend({
+    filesInstance = new FilesCollection([], _.extend({
       rowsPerPage: rowsPerPage,
-      url: apiURL + 'media',
+      url: apiURL + 'files',
       filters: {columns_visible: ['name','title','size', 'type', 'url', 'user','date_uploaded', 'storage_adapter', 'width', 'height']}
-    }, SchemaManager.getFullSchema('directus_media')));
+    }, SchemaManager.getFullSchema('directus_files')));
 
     activityInstance = new EntriesCollection([], _.extend({
       rowsPerPage: rowsPerPage,
@@ -51,8 +51,8 @@ define(function(require, exports, module) {
       case 'directus_users':
         return usersInstance;
 
-      case 'directus_media':
-        return mediaInstance;
+      case 'directus_files':
+        return filesInstance;
 
       case 'directus_groups':
         return groupsInstance;
@@ -80,6 +80,6 @@ define(function(require, exports, module) {
   module.exports.getInstance = getInstance;
   module.exports.setup = setup;
 
-  module.exports.MediaCollection = MediaCollection;
+  module.exports.FilesCollection = FilesCollection;
 
 });

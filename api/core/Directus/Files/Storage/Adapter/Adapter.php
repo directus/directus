@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Media\Storage\Adapter;
+namespace Directus\Files\Storage\Adapter;
 
 abstract class Adapter {
 
@@ -95,7 +95,7 @@ abstract class Adapter {
         $uploadInfo = $this->getUploadInfo($localFile);
         // Refused disallowed formats
         if(!in_array($uploadInfo['type'], $this->allowedFormats)) {
-            // @todo use Directus\Media\Upload\Exception
+            // @todo use Directus\Files\Upload\Exception
             // @todo the filters are currently turned off, please turned on again at some point
             // throw new \Exception("The type is not supported!");
         }

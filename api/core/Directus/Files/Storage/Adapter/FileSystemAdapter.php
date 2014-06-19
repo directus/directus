@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Media\Storage\Adapter;
+namespace Directus\Files\Storage\Adapter;
 
 class FileSystemAdapter extends Adapter {
 

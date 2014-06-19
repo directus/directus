@@ -38,7 +38,7 @@ require(["config"], function() {
       groups: {},
       privileges: [],
       ui: [],
-      active_media: {},
+      active_files: {},
       users: {},
       bookmarks: {},
       extensions: [],
@@ -46,7 +46,7 @@ require(["config"], function() {
       me: { id: 7 },
       settings: {
         global: {},
-        media: {}
+        files: {}
       },
       storage_adapters: {},
       tab_privileges: {},
@@ -160,7 +160,7 @@ require(["config"], function() {
       // Setup global instances
 
       app.users    = EntriesManager.getInstance('directus_users');
-      app.media    = EntriesManager.getInstance('directus_media');
+      app.files    = EntriesManager.getInstance('directus_files');
       app.activity = EntriesManager.getInstance('directus_activity');
       app.groups   = EntriesManager.getInstance('directus_groups');
 
@@ -185,7 +185,7 @@ require(["config"], function() {
       // Bootstrap data
       app.groups.reset(options.groups, {parse: true});
       app.users.reset(options.users, {parse: true});
-      app.media.reset(options.active_media, {parse: true});
+      app.files.reset(options.active_files, {parse: true});
       app.messages.reset(options.messages, {parse: true});
 
       app.messages.startPolling();
@@ -209,7 +209,7 @@ require(["config"], function() {
       // Default directus tabs
 
       var tabs = [
-        // (app.users.getCurrentUser().get('group').id === 0) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
+        // (app.users.getCurrentUser().get('group').id === 1) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
         // {id: "blank",    hidden: true},
         // {id: "files",    icon_class: "icon-attach"},
         // {id: "users",    icon_class: "icon-users"},
@@ -219,7 +219,7 @@ require(["config"], function() {
         {id: "logout", icon_class: "icon-power-button"}
       ];
 
-      if(app.users.getCurrentUser().get('group').id === 0) {
+      if(app.users.getCurrentUser().get('group').id === 1) {
         tabs.unshift();
       }
 
@@ -250,7 +250,7 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model(bookmark));
       });
 
-      if(app.users.getCurrentUser().get('group').id === 0) {
+      if(app.users.getCurrentUser().get('group').id === 1) {
         bookmarks.push(new Backbone.Model({
           icon_class: "icon-cog",
           title: "Settings",

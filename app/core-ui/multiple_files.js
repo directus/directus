@@ -12,7 +12,7 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
 
   var Module = {};
 
-  Module.id = 'media_slideshow';
+  Module.id = 'multiple_files';
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
@@ -36,17 +36,17 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
     },
 
     template: Handlebars.compile(
-      '{{#rows}}<span class="media_slideshow_item"><img data-media-cid="{{cid}}" data-media-id="{{id}}" src={{url}}>{{#if showRemoveButton}}<div class="remove_slideshow_item icon icon-cross"></div>{{/if}}</span>{{/rows}}' +
+      '{{#rows}}<span class="media_slideshow_item"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if showRemoveButton}}<div class="remove_slideshow_item icon icon-cross"></div>{{/if}}</span>{{/rows}}' +
       '<div class="related-table"></div>' +
-      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Media Item</button>{{/if}}' +
-      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Media Item</button>{{/if}}</div>'),
+      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files Item</button>{{/if}}' +
+      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files Item</button>{{/if}}</div>'),
 
     addItem: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
     },
 
     removeItem: function(e) {
-      var target_cid = $(e.target).parent().find('img').attr('data-media-cid');
+      var target_cid = $(e.target).parent().find('img').attr('data-file-cid');
       var model = this.relatedCollection.get(target_cid);
 
       if (model.isNew()) return this.relatedCollection.remove(model);
@@ -82,7 +82,7 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
     },
 
     insertItem: function() {
-      var collection = app.media;
+      var collection = app.files;
       var view = new Overlays.ListSelect({collection: collection});
       app.router.overlayPage(view);
 
@@ -107,8 +107,8 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
       _.each(models, function(model) {
         if(model.get('active') != 0) {
           var cid = model.cid;
-          model = new app.media.model(model.get('data').attributes, {collection: that.relatedCollection});
-          rows.push({id: model.id, url: model.makeMediaUrl(true), cid:cid});
+          model = new app.files.model(model.get('data').attributes, {collection: that.relatedCollection});
+          rows.push({id: model.id, url: model.makeFileUrl(true), cid:cid});
         }
       });
 
@@ -121,10 +121,35 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
       };
     },
 
+    afterRender: function() {
+      var $dropzone = this.$el;
+      var model = this.fileModel;
+      var self = this;
+
+      // Since data transfer is not supported by jquery...
+      // XHR2, FormData
+      $dropzone[0].ondrop = _.bind(function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        app.sendFiles(e.dataTransfer.files, function(data) {
+          _.each(data, function(item) {
+            item.active = 1;
+            // Unset the model ID so that a new file record is created
+            // (and the old file record isn't replaced w/ this data)
+            item.id = undefined;
+            item.user = self.userId;
+            var model = new self.relatedCollection.nestedCollection.model(item, {collection: self.relatedCollection.nestedCollection, parse: true});
+            model = new Backbone.Model({data: model}, {collection:self.relatedCollection});
+            self.relatedCollection.add(model);
+          });
+        });
+      });
+    },
+
     initialize: function(options) {
       if (!this.columnSchema.relationship ||
            'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
-        throw "The column " + this.columnSchema.id + " need to have a relationship of the type MANYTOMANY inorder to use the media_slideshow ui";
+        throw "The column " + this.columnSchema.id + " need to have a relationship of the type MANYTOMANY inorder to use the file_slideshow ui";
       }
 
       this.canEdit = !(options.inModal || false);

@@ -42,8 +42,8 @@ require dirname(__FILE__) . '/mysql.php';
 class DB extends MySQL {
 
     function log_activity($type, $tbl_name, $action, $row_id, $identifier, $data, $parent_id=null) {
-        if ($tbl_name == 'directus_media') {
-            $type = 'MEDIA';
+        if ($tbl_name == 'directus_files') {
+            $type = 'FILES';
             $identifier = $data['title'];
         }
 
@@ -93,11 +93,11 @@ class DB extends MySQL {
                 }
 
                 // Update/Add foreign data
-                if ($column['ui'] == 'single_media') {
-                    $foreign_id = $this->set_media($foreign_data);
+                if ($column['ui'] == 'single_file') {
+                    $foreign_id = $this->set_file($foreign_data);
                 } else {
-                    //Fix this. should probably not relate to directus_media, but the specified "related_table"
-                    $foreign_id = $this->set_entry('directus_media', $foreign_data);
+                    //Fix this. should probably not relate to directus_files, but the specified "related_table"
+                    $foreign_id = $this->set_entry('directus_files', $foreign_data);
                 }
 
                 // Save the data id...
@@ -179,14 +179,14 @@ class DB extends MySQL {
         return $id;
     }
 
-    function set_media($data, $parent_id = null) {
+    function set_files($data, $parent_id = null) {
         $isExisting = isset($data['id']);
         if ($isExisting)
             unset($data['date_uploaded']);
-        $id = $this->set_entry('directus_media', $data);
+        $id = $this->set_entry('directus_files', $data);
         if(!isset($data['title']))
             $data['title'] = '';
-        $this->log_activity('MEDIA', 'directus_media', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data, $parent_id);
+        $this->log_activity('FILES', 'directus_files', $isExisting ? 'UPDATE' : 'ADD', $id, $data['title'], $data, $parent_id);
         return $id;
     }
 

@@ -118,6 +118,7 @@ function(app, Backbone, PreferenceModel) {
 
       this.listenTo(this.collection.preferences, 'sync', function() {
         this.collection.fetch();
+
         if(this.defaultId) {
           this.collection.preferences.set({title:null, id: this.defaultId});
         }

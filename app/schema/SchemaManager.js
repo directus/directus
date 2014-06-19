@@ -14,7 +14,7 @@ define(function(require, exports, module) {
   var directusSchemas = {
     'directus_activity'  : require('./fixed/activity'),
     'directus_groups'    : require('./fixed/groups'),
-    'directus_media'     : require('./fixed/media'),
+    'directus_files'     : require('./fixed/files'),
     'directus_messages'  : require('./fixed/messages'),
     'directus_users'     : require('./fixed/users')
   };
@@ -25,7 +25,7 @@ define(function(require, exports, module) {
    */
   var settingsSchemas = {
     'global': require('./fixed/settings.global'),
-    'media': require('./fixed/settings.media')
+    'files': require('./fixed/settings.files')
   };
 
   /**
@@ -85,7 +85,7 @@ define(function(require, exports, module) {
   var defaultTables = [
     { schema: directusSchemas['directus_activity'] },
     { schema: directusSchemas['directus_groups'] },
-    { schema: directusSchemas['directus_media'] },
+    { schema: directusSchemas['directus_files'] },
     { schema: directusSchemas['directus_messages'] },
     { schema: directusSchemas['directus_users'] }
   ];
@@ -99,7 +99,7 @@ define(function(require, exports, module) {
 
       this.registerSettingsSchemas([
         {id: 'global', schema: settingsSchemas.global},
-        {id: 'media', schema: settingsSchemas.media}
+        {id: 'files', schema: settingsSchemas.files}
       ]);
 
     },
@@ -136,7 +136,7 @@ define(function(require, exports, module) {
       }, this);
     },
 
-    // Registers static schemas for the global and media settings
+    // Registers static schemas for the global and files settings
     registerSettingsSchemas: function(data) {
       var namespace = 'settings';
       _.each(data, function(settings) {

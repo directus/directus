@@ -6,7 +6,7 @@ define([
 
 function(app, Backbone, Widgets) {
 
-  var MediaCardView = Backbone.Layout.extend({
+  var FilesCardView = Backbone.Layout.extend({
 
     tagName: 'ul',
 
@@ -25,7 +25,7 @@ function(app, Backbone, Widgets) {
       }
     },
 
-    template: 'modules/media/mediacardview',
+    template: 'modules/files/filescardview',
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
@@ -44,7 +44,7 @@ function(app, Backbone, Widgets) {
         var subtype = model.get('type').split('/').pop();
 
         if(type == 'image' || type == 'embed' || subtype == "pdf") {
-          data.thumbnail = '<img src="'+model.makeMediaUrl(true)+'">';
+          data.thumbnail = '<img src="'+model.makeFileUrl(true)+'">';
         } else {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
         }
@@ -76,6 +76,6 @@ function(app, Backbone, Widgets) {
 
   });
 
-  return MediaCardView;
+  return FilesCardView;
 
 });

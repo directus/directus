@@ -8,7 +8,7 @@ define(function(require, exports, module) {
       UIManager               = require("core/UIManager"),
       SchemaManager           = require("schema/SchemaManager");
 
-  var nestedTypes = ['many_to_one', 'single_media'];
+  var nestedTypes = ['many_to_one', 'single_file'];
 
   var EntriesModel = module.exports = Backbone.Model.extend({
 

@@ -133,7 +133,7 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     initialize: function(options) {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
       this.headerOptions.route.title = this.model.get('id') ? 'Editing File' : 'Uploading New File';
-      this.collection = app.media;
+      this.collection = app.files;
     }
   });
 });
