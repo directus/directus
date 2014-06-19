@@ -91,7 +91,7 @@ $app->get("/:id/:format(/:filename)", function($id, $format, $filename) use ($ap
         echo "<h1>404 Not found</h1>";
         exit;
     };
-    $DirectusMedia = new TableGateway('directus_media', $ZendDb);
+    $DirectusMedia = new TableGateway('directus_files', $ZendDb);
     $media = $DirectusMedia->select(function ($select) use ($id) {
         $select->where->equalTo('id', $id);
         $select->limit(1);
@@ -113,7 +113,7 @@ $app->get("/:id/:format(/:filename)", function($id, $format, $filename) use ($ap
     $params = @json_decode($storage['params'], true);
     $params = empty($params) ? array() : $params;
     $storage['params'] = $params;
-    $MediaStorage = \Directus\Media\Storage\Storage::getStorage($storage);
+    $MediaStorage = \Directus\Files\Storage\Storage::getStorage($storage);
     header('Content-type: ' . $media['type']);
     echo $MediaStorage->getFileContents($media['name'], $storage['destination']);
     exit; // Prevent Slim from overriding our headers

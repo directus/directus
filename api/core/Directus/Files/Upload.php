@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Media;
+namespace Directus\Files;
 
 /**
  * Directus - awesome content management framework for everyone
@@ -29,7 +29,7 @@ namespace Directus\Media;
 use Directus\Bootstrap;
 
 /**
- * Media
+ * Files
  *
  * This class takes care of media uploads
  *

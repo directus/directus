@@ -2,14 +2,14 @@ define([
   "app",
   "backbone",
   "core/entries/EntriesCollection",
-  "modules/media/MediaModel"
+  "modules/files/FilesModel"
 ],
 
-function(app, Backbone, EntriesCollection, MediaModel) {
+function(app, Backbone, EntriesCollection, FilesModel) {
 
   return EntriesCollection.extend({
 
-    model: MediaModel,
+    model: FilesModel,
 
     initialize: function() {
       EntriesCollection.prototype.initialize.apply(this, arguments);

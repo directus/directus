@@ -73,7 +73,7 @@ $create_ip_whitelist = "CREATE TABLE `directus_ip_whitelist` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-$create_media = "CREATE TABLE `directus_media` (
+$create_media = "CREATE TABLE `directus_files` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) DEFAULT '1',
   `name` varchar(255) DEFAULT NULL,
@@ -93,7 +93,7 @@ $create_media = "CREATE TABLE `directus_media` (
   `storage_adapter` int(11) unsigned DEFAULT NULL COMMENT 'FK `directus_storage_adapters`.`id`',
   `needs_index` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Media Storage';";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';";
 
 $create_messages = "CREATE TABLE `directus_messages` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
@@ -144,24 +144,24 @@ $create_privileges = "CREATE TABLE `directus_privileges` (
 
 $insert_privileges = "INSERT INTO `directus_privileges` (`id`, `table_name`, `permissions`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `unlisted`)
 VALUES
-  (1,'directus_activity','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (2,'directus_columns','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (3,'directus_groups','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (4,'directus_media','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (5,'directus_messages','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (6,'directus_preferences','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (7,'directus_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (8,'directus_settings','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (9,'directus_tables','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (10,'directus_ui','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (11,'directus_users','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (12,'directus_ip_whitelist','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (13,'directus_social_feeds','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (14,'directus_messages_recipients','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (15,'directus_social_posts','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (16,'directus_storage_adapters','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (17,'directus_tab_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL),
-  (18,'directus_bookmarks','add,edit,bigedit,delete,bigdelete,alter,view,bigview',0,NULL,NULL,NULL);";
+  (1,'directus_activity','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (2,'directus_columns','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (3,'directus_groups','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (4,'directus_files','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (5,'directus_messages','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (6,'directus_preferences','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (7,'directus_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (8,'directus_settings','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (9,'directus_tables','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (10,'directus_ui','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (11,'directus_users','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (12,'directus_ip_whitelist','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (13,'directus_social_feeds','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (14,'directus_messages_recipients','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (15,'directus_social_posts','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (16,'directus_storage_adapters','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (17,'directus_tab_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (18,'directus_bookmarks','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL);";
 
 $create_settings = "CREATE TABLE `directus_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -175,22 +175,21 @@ $create_settings = "CREATE TABLE `directus_settings` (
 $insert_settings = "INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
 VALUES
   (1,'global','cms_user_auto_sign_out','60'),
-  (2,'media','media_naming','original'),
   (3,'global','site_name','".$_SESSION['site_name']."'),
   (4,'global','site_url','http://examplesite.dev/'),
   (5,'global','cms_color','#7ac943'),
   (6,'global','rows_per_page','200'),
-  (7,'media','storage_adapter','FileSystemAdapter'),
-  (8,'media','storage_destination',''),
-  (9,'media','thumbnail_storage_adapter','FileSystemAdapter'),
-  (10,'media','thumbnail_storage_destination',''),
-  (11,'media','allowed_thumbnails',''),
-  (12,'media','thumbnail_quality','100'),
-  (13,'media','thumbnail_size','200'),
+  (7,'files','storage_adapter','FileSystemAdapter'),
+  (8,'files','storage_destination',''),
+  (9,'fiels','thumbnail_storage_adapter','FileSystemAdapter'),
+  (10,'files','thumbnail_storage_destination',''),
+  (11,'files','allowed_thumbnails',''),
+  (12,'files','thumbnail_quality','100'),
+  (13,'files','thumbnail_size','200'),
   (14,'global','cms_thumbnail_url',''),
-  (15,'media','media_file_naming','media_id'),
-  (16,'media','media_title_naming','file_name'),
-  (17,'media','thumbnail_crop_enabled','1');";
+  (15,'files','file_file_naming','file_id'),
+  (16,'files','file_title_naming','file_name'),
+  (17,'files','thumbnail_crop_enabled','1');";
 
   $create_social_feeds = "CREATE TABLE `directus_social_feeds` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -226,12 +225,6 @@ $create_storage_adapters = "CREATE TABLE `directus_storage_adapters` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-$insert_storage_adapters = "INSERT INTO `directus_storage_adapters` (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
-VALUES
-  (1,'media','FileSystemAdapter','DEFAULT',1,'/Library/WebServer/www/media/directus/','http://localhost/media/directus/',NULL),
-  (2,'thumbnails','FileSystemAdapter','THUMBNAIL',1,'/Library/WebServer/www/media/directus/thumbnails/','http://localhost/media/directus/thumbnails/',NULL),
-  (3,'temp','FileSystemAdapter','TEMP',1,'/Library/WebServer/www/media/directus/temp/','http://localhost/media/directus/temp/',NULL);";
-
 $create_tab_priv = "CREATE TABLE `directus_tab_privileges` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(11) DEFAULT NULL,
@@ -255,6 +248,11 @@ $create_tables = "CREATE TABLE `directus_tables` (
   `date_update_column` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`table_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+$insert_tables = "INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `inactive_by_default`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`)
+VALUES
+  ('directus_messages_recipients', 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+  ('directus_users', 1, 0, 0, 0, 0, NULL, NULL, NULL, 'id', NULL, NULL, NULL);";
 
 $create_ui = "CREATE TABLE `directus_ui` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -299,7 +297,7 @@ $create_users = "CREATE TABLE `directus_users` (
 $create_statements = [$create_activity, $create_bookmarks, $create_columns, $create_groups, $create_ip_whitelist, $create_media, $create_messages, $create_messages_recipients, $create_preferences, $create_privileges,
   $create_settings, $create_social_feeds, $create_social_posts, $create_storage_adapters, $create_tab_priv, $create_tables, $create_ui, $create_users];
 
-$insert_statements = [$insert_columns, $insert_groups, $insert_settings, $insert_privileges];
+$insert_statements = [$insert_columns, $insert_groups, $insert_settings, $insert_privileges, $insert_tables];
 
 $mysqli = new mysqli($_SESSION['host_name'], $_SESSION['username'], $_SESSION['db_password'], $_SESSION['db_name']);
 
@@ -339,7 +337,7 @@ function AddStorageAdapters($mysqli)
   $tempu = $_SESSION['temp_url'];
   $insert = "INSERT INTO `directus_storage_adapters` (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
   VALUES
-    (1, 'media', 'FileSystemAdapter', 'DEFAULT', 1, '$dd', '$du', NULL),
+    (1, 'files', 'FileSystemAdapter', 'DEFAULT', 1, '$dd', '$du', NULL),
     (2, 'thumbnails', 'FileSystemAdapter', 'THUMBNAIL', 1, '$td', '$tu', NULL),
     (3, 'temp', 'FileSystemAdapter', 'TEMP', 1, '$tempd', '$tempu', NULL);";
 

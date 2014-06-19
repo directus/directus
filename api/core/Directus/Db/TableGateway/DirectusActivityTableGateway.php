@@ -16,7 +16,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
 
     // Populates directus_activity.type
     const TYPE_ENTRY    = "ENTRY";
-    const TYPE_MEDIA    = "MEDIA";
+    const TYPE_FILES    = "FILES";
     const TYPE_SETTINGS = "SETTINGS";
     const TYPE_UI       = "UI";
     const TYPE_LOGIN    = "LOGIN";
@@ -37,8 +37,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
                 return self::TYPE_UI;
             case 'directus_settings':
                 return self::TYPE_SETTINGS;
-            case "directus_media":
-                return self::TYPE_MEDIA;
+            case "directus_files":
+                return self::TYPE_FILES;
             default:
                 return self::TYPE_ENTRY;
         }
@@ -67,7 +67,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
               ->nest
                 ->isNull('parent_id')
                 ->OR
-                ->equalTo('type', 'MEDIA')
+                ->equalTo('type', 'FILES')
               ->unnest;
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $tableSchemaArray, $hasActiveColumn);
@@ -85,7 +85,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
         $countTotalWhere
             ->isNull('parent_id')
             ->OR
-            ->equalTo('type', 'MEDIA');
+            ->equalTo('type', 'FILES');
         $activityTotal = $this->countTotal($countTotalWhere);
 
         return array(

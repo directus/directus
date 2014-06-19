@@ -1,4 +1,4 @@
-//  Single Media core UI component
+//  Single Files core UI component
 //  Directus 6.0
 
 //  (c) RANGER
@@ -21,14 +21,14 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
 
   var Module = {};
 
-  Module.id = 'single_media';
+  Module.id = 'single_file';
   Module.dataTypes = ['INT'];
 
   Module.variables = [
     {id: 'allowed_filetypes', ui: 'textinput', char_length:200}
   ];
 
-  //{{capitalize mediaModel.title}}
+  //{{capitalize fileModel.title}}
 
   var template =  '<style type="text/css"> \
                   div.single-image-thumbnail { \
@@ -131,29 +131,29 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   } \
                   </style> \
                   {{#if url}} \
-                  <div class="single-image-thumbnail has-media"> \
-                    {{#if mediaModel.youtube}}<iframe width="300" height="200" src="http://www.youtube.com/embed/{{mediaModel.youtube}}" frameborder="0" allowfullscreen></iframe> \
+                  <div class="single-image-thumbnail has-file"> \
+                    {{#if fileModel.youtube}}<iframe width="300" height="200" src="http://www.youtube.com/embed/{{fileModel.youtube}}" frameborder="0" allowfullscreen></iframe> \
                     {{else}} \
-                      {{#if mediaModel.vimeo}} <iframe src="//player.vimeo.com/video/{{mediaModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
-                      {{else}}<a href="{{link}}" class="title" target="single_media"><img src="{{thumbUrl}}"></a>{{/if}} \
+                      {{#if fileModel.vimeo}} <iframe src="//player.vimeo.com/video/{{fileModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                      {{else}}<a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a>{{/if}} \
                     {{/if}} \
                   </div> \
                   <div class="ui-img-details"> \
-                    <a href="{{link}}" class="title" target="single_media" title="{{mediaModel.title}}">{{mediaModel.title}}</a> \
-                    <!--Uploaded by {{userName mediaModel.user}} {{contextualDate mediaModel.date_uploaded}}<br> --> \
-                    <i>{{#if isImage}}{{mediaModel.width}} &times; {{mediaModel.height}} –{{/if}} {{mediaModel.size}} - {{mediaModel.type}}</i><br> \
-                    <button class="btn btn-primary" data-action="remove-single-media" type="button">Remove File</button> \
+                    <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
+                    <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
+                    <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
+                    <button class="btn btn-primary" data-action="remove-single-file" type="button">Remove File</button> \
                   </div> \
                   {{else}} \
                   <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
-                  <!--<input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
+                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
+                  <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
                   {{/if}} \
                   <div class="single-image-actions"> \
                     <div class="single-image-text">OR UPLOAD FROM</div> \
-                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-upload"></span> Your Computer</button> \
-                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-link"></span> External URL</button> \
+                    <button class="btn btn-primary" data-action="computer" type="button"><span class="icon icon-upload"></span> Your Computer</button> \
+                    <button class="btn btn-primary" data-action="url" type="button"><span class="icon icon-link"></span> External URL</button> \
                     <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-attach"></span> Directus Files</button> \
                   </div>';
 
@@ -168,9 +168,9 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
     template: Handlebars.compile(template),
 
     events: {
-      'click button[data-action="remove-single-media"]': 'removeMedia',
+      'click button[data-action="remove-single-file"]': 'removeFile',
       'click button[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
-      'click .has-media': 'edit',
+      'click .has-file': 'edit',
       'click .swap-method-btn': function() {
         this.$el.find('.swap-method').toggleClass('hide');
 
@@ -181,13 +181,13 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       'click #retriveUrlBtn': function(e) {
         var url = this.$el.find('#urlInput').val();
         var model = this.model;
-        var model = this.mediaModel;
+        var model = this.fileModel;
         app.sendLink(url, function(data) {
           console.log(data);
           _.each(data, function(item) {
             item.active = 1;
-            // Unset the model ID so that a new media record is created
-            // (and the old media record isn't replaced w/ this data)
+            // Unset the model ID so that a new file record is created
+            // (and the old file record isn't replaced w/ this data)
             item.id = undefined;
             item.user = self.userId;
 
@@ -196,17 +196,49 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
             model.set(item);
           });
         });
-      }
+      },
+      'change input[type=file]': function(e) {
+        var file = $(e.target)[0].files[0];
+        var model = this.fileModel;
+        app.sendFiles(file, function(data) {
+          model.set(data[0]);
+          model.trigger('sync');
+        });
+      },
+      'click button[data-action="computer"]': function(e) {
+        this.$el.find('#fileAddInput').click();
+      },
+      'click button[data-action="url"]': function(e) {
+        var url = prompt("Enter Url");
+        if(!url) {
+          return;
+        }
+
+        var model = this.fileModel;
+        app.sendLink(url, function(data) {
+          _.each(data, function(item) {
+            item.active = 1;
+            // Unset the model ID so that a new file record is created
+            // (and the old file record isn't replaced w/ this data)
+            item.id = undefined;
+            item.user = self.userId;
+
+            //console.log()
+
+            model.set(item);
+          });
+        });
+      },
     },
 
-    removeMedia: function(e) {
-      this.mediaModel.clear();
+    removeFile: function(e) {
+      this.fileModel.clear();
     },
 
     swap: function() {
-      var collection = app.media;
+      var collection = app.files;
       var model;
-      var mediaModel = this.mediaModel;
+      var fileModel = this.fileModel;
       var view = new Overlays.ListSelect({collection: collection, selectable: false});
       app.router.overlayPage(view);
 
@@ -218,15 +250,15 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       view.itemClicked = function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         model = collection.get(id);
-        mediaModel.clear({silent: true});
-        mediaModel.set(model.toJSON());
+        fileModel.clear({silent: true});
+        fileModel.set(model.toJSON());
         app.router.removeOverlayPage(this);
       };
     },
 
     edit: function() {
       var EditView = require("modules/tables/views/EditView");
-      var model = this.mediaModel;
+      var model = this.fileModel;
       var view = new EditView({model: model});
       view.headerOptions.route.isOverlay = true;
       view.headerOptions.route.breadcrumbs = [];
@@ -255,7 +287,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
     afterRender: function() {
       var timer;
       var $dropzone = this.$el.find('.single-image-thumbnail');
-      var model = this.mediaModel;
+      var model = this.fileModel;
       var self = this;
 
       $dropzone.on('dragover', function(e) {
@@ -285,8 +317,8 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
             item.active = 1;
-            // Unset the model ID so that a new media record is created
-            // (and the old media record isn't replaced w/ this data)
+            // Unset the model ID so that a new file record is created
+            // (and the old file record isn't replaced w/ this data)
             item.id = undefined;
             item.user = self.userId;
 
@@ -301,11 +333,11 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
     },
 
     serialize: function() {
-      var url = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl(true) : null;
-      var link = this.mediaModel.has('name') ? this.mediaModel.makeMediaUrl() : null;
-      var data = this.mediaModel.toJSON();
-      var type = this.mediaModel.has('type') ? this.mediaModel.get('type').substring(0, this.mediaModel.get('type').indexOf('/')) : '';
-      var subtype = this.mediaModel.has('type') ? this.mediaModel.get('type').split('/').pop() : '';
+      var url = this.fileModel.has('name') ? this.fileModel.makeFileUrl(true) : null;
+      var link = this.fileModel.has('name') ? this.fileModel.makeFileUrl() : null;
+      var data = this.fileModel.toJSON();
+      var type = this.fileModel.has('type') ? this.fileModel.get('type').substring(0, this.fileModel.get('type').indexOf('/')) : '';
+      var subtype = this.fileModel.has('type') ? this.fileModel.get('type').split('/').pop() : '';
 
       var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
@@ -330,7 +362,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         thumbUrl: thumbUrl,
         comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
-        mediaModel: data,
+        fileModel: data,
         link: link
       };
       return data;
@@ -340,11 +372,13 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
 
       this.userId = app.users.getCurrentUser().id;
 
-      this.mediaModel = this.options.value;
-      this.mediaModel.on('change', this.render, this);
-      //this.collection = app.getEntries('directus_media');
+      this.fileModel = this.options.value;
+      this.fileModel.on('change', this.render, this);
+      //this.collection = app.getEntries('directus_files');
       //this.collection.fetch();
-      this.collection.on('reset', this.render, this);
+      if(this.collection) {
+        this.listenTo(this.collection, 'reset', this.render);
+      }
     }
 
   });
@@ -366,9 +400,9 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
     var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
 
     var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
-    var thumbUrl = isImage ? model.makeMediaUrl(true) : app.PATH + 'assets/img/document-100x120.png';
+    var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document-100x120.png';
 
-    var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
+    var img = '<div class="file-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
 
     return img;
   };

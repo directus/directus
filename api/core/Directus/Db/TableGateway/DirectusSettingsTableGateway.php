@@ -70,9 +70,9 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
     public function setValues($collection, $data) {
 
         $whiteList = array(
-            'media' => array(
-                    'media_file_naming',
-                    'media_title_naming',
+            'files' => array(
+                    'file_file_naming',
+                    'file_title_naming',
                     'allowed_thumbnails',
                     'thumbnail_quality',
                     'thumbnail_crop_enabled'
@@ -87,7 +87,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
                 )
         );
 
-        if ($collection !== 'media' && $collection !== 'global') {
+        if ($collection !== 'files' && $collection !== 'global') {
             throw new \Exception("The settings collection $collection is not supported");
         }
 

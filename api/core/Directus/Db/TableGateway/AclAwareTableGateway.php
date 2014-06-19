@@ -221,16 +221,16 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             // Post-update hook
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
-            //If we are adding a new directus_media Item, We need to do that logic
-            if($tableName == "directus_media") {
-              $Storage = new \Directus\Media\Storage\Storage();
+            //If we are adding a new directus_files Item, We need to do that logic
+            if($tableName == "directus_files") {
+              $Storage = new \Directus\Files\Storage\Storage();
 
               //If trying to save to temp, force to default
               if((!isset($recordData['storage_adapter']) || $recordData['storage_adapter'] == '') || $Storage->storageAdaptersByRole['TEMP']['id'] == $recordData['storage_adapter']) {
                 $recordData['storage_adapter'] = $Storage->storageAdaptersByRole['DEFAULT']['id'];
               }
 
-              //Save Temp Thumbnail name for use after media record save
+              //Save Temp Thumbnail name for use after files record save
               $info = pathinfo($recordData['name']);
               if( in_array($info['extension'], $this->imagickExtensions)) {
                 $thumbnailName = "THUMB_".$info['filename'].'.jpg';
@@ -238,8 +238,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 $thumbnailName = "THUMB_".$recordData['name'];
               }
 
-              //If we are using Media ID, Dont save until after insert
-              if($Storage->getMediaSettings()['media_file_naming'] != "media_id") {
+              //If we are using files ID, Dont save until after insert
+              if($Storage->getFilesSettings()['file_file_naming'] != "file_id") {
                 //Save the file in TEMP Storage Adapter to Designated StorageAdapter
                 $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
               }
@@ -248,18 +248,18 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $TableGateway->insert($recordData);
             $recordData['id'] = $TableGateway->getLastInsertValue();
 
-            if($tableName == "directus_media") {
+            if($tableName == "directus_files") {
               $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
               $updateArray = array();
-              //If using MediaId saving, then update record and set name to id
-              if($Storage->getMediaSettings()['media_file_naming'] == "media_id") {
+              //If using file_id saving, then update record and set name to id
+              if($Storage->getFilesSettings()['file_file_naming'] == "file_id") {
                 $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext);
                 $updateArray['name'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext;
                 $recordData['name'] = $updateArray['name'];
               }
 
-              //If we are using media_id titles, then set title to id
-              if($Storage->getMediaSettings()['media_title_naming'] == "media_id") {
+              //If we are using file_id titles, then set title to id
+              if($Storage->getFilesSettings()['file_title_naming'] == "file_id") {
                 $updateArray['title'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT);
                 $recordData['title'] = $updateArray['title'];
               }
@@ -271,7 +271,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 $TableGateway->updateWith($Update);
               }
 
-              //Save Temp Thumbnail to Thumbnail SA using media id: $params['id']
+              //Save Temp Thumbnail to Thumbnail SA using file id: $params['id']
               $tempLocation = $Storage->storageAdaptersByRole['TEMP']['destination'];
               if(file_exists($tempLocation.$thumbnailName)) {
                 $thumbnailDestination = $Storage->storageAdaptersByRole['THUMBNAIL']['destination'];

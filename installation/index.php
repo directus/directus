@@ -38,12 +38,12 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
   }
 }
 
-if($step == 3 && isset($_POST['install_sample'])) {
-  $_SESSION['step'] = 4;
-  $step = 4;
+if($step == 4 && isset($_POST['install_sample'])) {
+  $_SESSION['step'] = 5;
+  $step = 5;
 }
 
-if($step == 4 && isset($_POST['default_dest'])) {
+if($step == 3 && isset($_POST['default_dest'])) {
   if(isset($_POST['default_url']) && isset($_POST['thumb_dest']) && isset($_POST['thumb_url']) && isset($_POST['temp_dest']) && isset($_POST['temp_url'])) {
     $_SESSION['default_dest'] = $_POST['default_dest'];
     $_SESSION['default_url'] = $_POST['default_url'];
@@ -51,8 +51,8 @@ if($step == 4 && isset($_POST['default_dest'])) {
     $_SESSION['thumb_url'] = $_POST['thumb_url'];
     $_SESSION['temp_dest'] = $_POST['temp_dest'];
     $_SESSION['temp_url'] = $_POST['temp_url'];
-    $_SESSION['step'] = 5;
-    $step = 5;
+    $_SESSION['step'] = 4;
+    $step = 4;
   }
 }
 
@@ -111,7 +111,7 @@ if($step == 2) {
 <?php
 }
 
-if($step == 3) {
+if($step == 4) {
 ?>
 
 <form name="input" action="index.php" method="post">
@@ -219,18 +219,18 @@ if($step == 3) {
 <?php
 }
 
-if($step == 4) {
+if($step == 3) {
 
   ?>
 <h1>Storage Adapter Setup</h1>
 
 <form name="input" action="index.php" method="post">
-  Default Adapter Destination: <input type="text" name="default_dest"><br>
-  Default Adapter URL: <input type="text" name="default_url"><br>
-  Thumbnail Adapter Destination: <input type="text" name="thumb_dest"><br>
-  Thumbnail Adapter URL: <input type="text" name="thumb_url"><br>
-  Temp Adapter Destination: <input type="text" name="temp_dest"><br>
-  Temp Adapter URL: <input type="text" name="temp_url"><br>
+  Default Adapter Destination: <input type="text" name="default_dest" value="/var/www/media/"><br>
+  Default Adapter URL: <input type="text" name="default_url" value="http://localhost/media/"><br>
+  Thumbnail Adapter Destination: <input type="text" name="thumb_dest" value="/var/www/media/thumb/"><br>
+  Thumbnail Adapter URL: <input type="text" name="thumb_url" value="http://localhost/media/thumb/"><br>
+  Temp Adapter Destination: <input type="text" name="temp_dest" value="/var/www/media/temp/"><br>
+  Temp Adapter URL: <input type="text" name="temp_url" value="http://localhost/media/temp/"><br>
   <input type="submit" value="Submit">
 </form>
 

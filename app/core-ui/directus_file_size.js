@@ -12,7 +12,7 @@ define(['app','backbone'], function(app, Backbone) {
 
 	var Module = {};
 
-  Module.id = 'directus_media_size';
+  Module.id = 'directus_file_size';
   Module.system = true;
 
   Module.options = {};
