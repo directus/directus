@@ -21,7 +21,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         var userGroup = user.get('group');
 
         //@todo fix this so it respects ACL instead of being hardcoded
-        if (!(parseInt(id,10) === user.id || userGroup.id === 0)) {
+        if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
           return;
         }
 
@@ -211,7 +211,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
       }
 
-      return [this.widgets.filterWidget, this.widgets.visibilityWidget];
+      return [this.widgets.visibilityWidget, this.widgets.filterWidget];
     },
     events: {
       'click #addBtn': function() {

@@ -40,7 +40,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
       }
 
-      return [this.widgets.filterWidget, this.widgets.visibilityWidget];
+      return [this.widgets.visibilityWidget, this.widgets.filterWidget];
     },
 
     events: {
