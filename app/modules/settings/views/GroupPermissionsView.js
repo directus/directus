@@ -37,14 +37,14 @@ function(app, Backbone, BasePageView, PaneSaveView) {
 
     events: {
       'click td > span': function(e) {
-        var $target = $(e.target),
+        var $target = $(e.target).parent(),
             $tr = $target.closest('tr'),
             permissions, cid, attributes, model;
 
-        this.toggleIcon($target);
-
         cid = $tr.data('cid');
-        attributes = this.parseTablePermissions($tr);
+        this.toggleIcon($target, this.collection.get(cid).get('permissions'));
+
+        attributes = this.parseTablePermissions($tr, this.collection.get(cid).get('permissions'));
 
         model = this.collection.get(cid);
         model.set(attributes);
@@ -52,19 +52,21 @@ function(app, Backbone, BasePageView, PaneSaveView) {
       }
     },
 
-    toggleIcon: function($span) {
-        $span.toggleClass('add-color')
-             .toggleClass('delete-color');
+    toggleIcon: function($span, currentPermission) {
+      if(currentPermission == $span.parent().data('value')) {
+        $span.addClass('big-priv');
+      } else {
+        $span.toggleClass('add-color').toggleClass('delete-color');
+      }
+
     },
 
     parseTablePermissions: function($tr) {
-      var cid, id, permissions;
+      var permissions;
 
-      permissions = $tr.children()
-                       .has('span.add-color')
-                       .map(function() { return $(this).data('value'); })
-                       .get()
-                       .join();
+      permissions = $tr.children().has('span.add-color');
+
+      permissions = permissions.map(function() { return (($(this).has('span.big-priv').length) ? "big" : "") +  $(this).data('value');}).get().join();
 
       return {permissions: permissions};
     },

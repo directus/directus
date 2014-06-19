@@ -22,6 +22,9 @@ function(app, Backbone, BasePageView) {
     events: {
       'click td': function(e) {
         var groupName = e.target.getAttribute('data-id');
+        if(groupName == 1) {
+          return;
+        }
         app.router.go(['settings' ,'permissions', groupName]);
       }
     },
@@ -42,6 +45,9 @@ function(app, Backbone, BasePageView) {
     beforeRender: function() {
       this.setView('#page-content', new Groups({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
+    },
+    afterRender: function() {
+      this.$el.find('td[data-id=1]').addClass('disabled');
     }
   });
 
