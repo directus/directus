@@ -357,7 +357,6 @@ var template = '<style type="text/css"> \
           var doc   = composer.doc,
                       image;
 
-          console.log(value);
           image = doc.createElement("iframe");
           image.setAttribute('width', '300');
           image.setAttribute('height', '200');
