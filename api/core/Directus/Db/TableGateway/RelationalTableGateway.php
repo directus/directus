@@ -742,10 +742,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
 
+
+        //Disableing Float Cast because WOuld Sometimes break if detecting infinite number
+        /*
         // Process results
         foreach ($results as &$row) {
             array_walk($row, array($this, 'castFloatIfNumeric'));
-        }
+        }*/
 
         return array('rows' => $results);
     }
