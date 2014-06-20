@@ -406,9 +406,32 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       },
     },
 
+    leftToolbar: function() {
+      if(!this.widgets.addWidget) {
+        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}});
+      }
+      return [this.widgets.addWidget];
+    },
+
     beforeRender: function() {
       this.setView('#page-content', new Tables({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
+    },
+    initialize: function() {
+      this.widgets = {};
+    },
+
+    events: {
+      'click #addBtn': function() {
+        var tableName = prompt('Please Enter the name of the Table you would like to add.');
+        if(tableName && !this.collection.get(tableName)) {
+          var model = new Backbone.Model();
+          model.url = app.API_URL + 'privileges/1';
+          model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName});
+          model.save();
+          location.reload();
+        }
+      }
     }
   });
 
