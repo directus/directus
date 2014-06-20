@@ -30,7 +30,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
         this.model.save(data, {success: function() {
           if(!data.message) {
-            $('#tool-tips').html('<audio autoplay="autoplay"><source src="/assets/no_body.ogg"/></audio>')
+            $('#tool-tips').html('<audio autoplay="autoplay"><source src="' + app.PATH + 'assets/no_body.ogg"/></audio>')
           }
           app.router.go('#messages');
         }});
