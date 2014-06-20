@@ -164,6 +164,10 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
         this.tableHead = true;
       }
 
+      if(collection.length > 0) {
+        this.tableHead = true;
+      }
+
       if (this.options.sort === undefined) {
         this.options.sort = collection.hasColumn('sort') && collection.hasPermission && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('sort');
       }
