@@ -129,6 +129,8 @@ var template = '<style type="text/css"> \
                       <button data-wysihtml5-command="embedVideo" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Embed Video">Embed</button> \
                       <div data-wysihtml5-dialog="embedVideo" style="display: none;z-index:108" class="directus-alert-modal"> \
                         <div><button id="existingLinkButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing Link</button></div> \
+                        <div><input type="text" class="videoEmbedWidth" id="embedWidthInput" value="300" style="font-weight:600;"></div><br/> \
+                        <div><input type="text" class="videoEmbedHeight" id="embedHeightInput" value="200" style="font-weight:600;"></div><br/> \
                         <div><input type="text" class="videoEmbedInput" data-type="youtube" id="insertYoutubeEmbedInput" placeholder="Youtube Video ID" style="font-weight:600;"></div><br/> \
                         <div><input type="text" class="videoEmbedInput" data-type="vimeo" id="insertVimeoEmbedInput" placeholder="Vimeo Video ID" style="font-weight:600;"></div> \
                         <div><input type="hidden"  data-wysihtml5-dialog-field="src" id="insertEmbedInput"></div> \
@@ -357,9 +359,12 @@ var template = '<style type="text/css"> \
           var doc   = composer.doc,
                       image;
 
+          var width = that.$el.find('#embedWidthInput').val();
+          var height = that.$el.find('#embedHeightInput').val();
+
           image = doc.createElement("iframe");
-          image.setAttribute('width', '300');
-          image.setAttribute('height', '200');
+          image.setAttribute('width', width);
+          image.setAttribute('height', height);
           image.setAttribute('frameborder', '0');
           image.setAttribute('allowfullscreen', '1');
 
