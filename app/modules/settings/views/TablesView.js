@@ -25,6 +25,51 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
   // Handles new columns and aliases.
   // Rendered inside modal
+  var NewColumnOverlay = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'New Column',
+        isOverlay: true
+      }
+    },
+
+    leftToolbar: function() {
+      return  [
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-check", buttonClass: "add-color-background"}})
+      ];
+    },
+
+    events: {
+      'click #removeOverlay': function() {
+        app.router.removeOverlayPage(this);
+      },
+      'click #addBtn': function() {
+        this.save();
+      }
+    },
+
+    save: function() {
+      if(this.contentView.isValid()) {
+        var that = this;
+        this.model.save({},{success: function(data) {
+          that.model.set(data);
+          app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
+          that.collection.add(that.model);
+          that.collection.trigger('change');
+        }});
+      }
+    },
+
+    afterRender: function() {
+      this.setView('#page-content', this.contentView);
+    },
+
+    initialize: function(options) {
+      this.model.set({comment: ''});
+      this.contentView = new NewColumn({model: this.model});
+    }
+  });
+
   var NewColumn = Backbone.Layout.extend({
 
     tagName: 'div',
@@ -34,63 +79,86 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     attributes: {'class':'form'},
 
     events: {
-      'change select': function(e) {
-        var data = this.$el.serializeObject();
-        this.model.clear({silent: true});
-        this.model.set(data);
+      'change select#dataType': function(e) {
+        this.selectedDataType = $(e.target).val();
+        this.render();
+      },
+      'change select#uiType': function(e) {
+        this.selectedUI = $(e.target).val();
+        this.selectedDataType = null;
+        this.render();
+      },
+      'change input#columnName': function(e) {
+        this.model.set({column_name: $(e.target).val()});
+      },
+      'change input#charLength': function(e) {
+        this.model.set({char_length: $(e.target).val()});
       }
     },
 
     serialize: function() {
-/*      options = {};
-      options.types = _.chain(app.router.uiSettings)
-        .filter(function(ui) { return (!ui.system); })
-        .map(function(ui) { return {id: ui.id, datatype: ui.dataTypes[0]}; })
-        .value();*/
+      var data = {ui_types: [], data_types: []};
 
-      var tables = app.schemaManager.getTables();
-      var options = {data: this.model.toJSON()};
-      var dataType = this.model.get('data_type');
-      var tableRelated = this.model.relationship.get('table_related');
+      var uis = UIManager._getAllUIs();
 
-      if (dataType !== undefined) {
-        options[dataType] = true;
-        if (['ONETOMANY','MANYTOMANY','ALIAS'].indexOf(dataType) > -1) {
-          options.directusType = true;
+      if(this.model.has('column_name')) {
+        data.column_name = this.model.get('column_name');
+      }
+
+      for(var key in uis) {
+        //If not system column
+        if(key.indexOf('directus_') < 0 && ['one_to_many', 'many_to_many', 'multiple_files'].indexOf(key) < 0) {
+          if(!this.selectedUI) {
+            this.selectedUI = key;
+          }
+
+          var item = {title: key};
+
+          if(this.selectedUI == key) {
+            item.selected = true;
+          }
+
+          data.ui_types.push(item);
         }
       }
-      if (tableRelated !== undefined) {
-        options.columns = app.schemaManager.getColumns(tableRelated).map(function(model) {
-          return {column_name: model.id, selected: (model.id === this.model.relationship.get('junction_key_right'))};
-        }, this);
-      }
-      if (dataType === 'MANYTOMANY') {
-        options.junctionTables = tables.chain()
-          .filter(function(model) { return model.get('is_junction_table'); })
-          .map(function(model) { return {id: model.id, selected: (model.id === this.model.get('junction_table'))}; }, this)
-          .value();
+
+      var that = this;
+
+      uis[this.selectedUI].dataTypes.forEach(function(dataType) {
+        var item = {title: dataType};
+        if(!that.selectedDataType) {
+          that.selectedDataType = dataType;
+        }
+
+        if(dataType == that.selectedDataType) {
+          item.selected = true;
+        }
+
+        data.data_types.push(item);
+      });
+
+      //Check if we need length field
+      if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) >= 0)
+      {
+        data.CHAR_LENGTH = 1;
       }
 
-      options.tables = tables.map(function(model) {
-        return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table') ,selected: (model.id === this.model.relationship.get('table_related'))};
-      },this);
+      this.model.set({data_type: this.selectedDataType, ui: this.selectedUI});
 
-      return options;
+      return data;
     },
 
-    save: function() {
-      var data = view.$el.serializeObject();
-      this.model.clear({silent: true});
-      var that = this;
-      this.model.save(data,{success: function() {
-        app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
-        collection.add(that.model);
-        collection.trigger('change');
-      }});
+    isValid: function() {
+      if(this.model.get('column_name')) {
+        return true;
+      }
+
+      return false;
     },
 
     initialize: function() {
       this.model.on('change', this.render, this);
+      this.render();
     }
   });
 
@@ -149,9 +217,8 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       var collection = this.collection;
       //@todo: link real col
       var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: this.collection});
-      var view = new NewColumn({model: model});
-      app.router.overlayPage(view); //, {title: 'Add new column', stretch: true}
-      view.render();
+      var view = new NewColumnOverlay({model: model, collection: collection});
+      app.router.overlayPage(view);
     },
 
     // Updates the models when user interacts with the form.

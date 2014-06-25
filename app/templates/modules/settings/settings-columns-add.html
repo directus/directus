@@ -1,143 +1,29 @@
 <fieldset>
 	<label>Column Name</label>
-	<input type="text" name="column_name" value="{{data.column_name}}"/>
+	<input type="text" id="columnName" name="column_name" value="{{column_name}}"/>
 </fieldset>
 
-<!--
 <fieldset>
-	<label>Type</label>
-	<select>
-		{{#types}}
-		<option>{{id}}</option>
-		{{/types}}
-	</select>
-</fieldset>
--->
-
-
-<fieldset>
-	<label>Data Type</label>
-	<select id="datatype" name="data_type">
-	  <optgroup label="Directus">
-	    <option>ALIAS</option>
-	    <option value="ONETOMANY" {{#if ONETOMANY}}selected{{/if}}>ONETOMANY</option>
-	    <option value="MANYTOMANY" {{#if MANYTOMANY}}selected{{/if}}>MANYTOMANY</option>
-	  </optgroup>
-	  <optgroup label="Numeric">
-	    <option {{#if TINYINT}}selected{{/if}}>TINYINT</option>
-	    <option {{#if SMALLINT}}selected{{/if}}>SMALLINT</option>
-	    <option {{#if MEDIUMINT}}selected{{/if}}>MEDIUMINT</option>
-	    <option {{#if INT}}selected{{/if}}>INT</option>
-	    <option {{#if BIGINT}}selected{{/if}}>BIGINT</option>
-	    <option {{#if DECIMAL}}selected{{/if}}>DECIMAL</option>
-	    <option {{#if FLOAT}}selected{{/if}}>FLOAT</option>
-	    <option {{#if DOUBLE}}selected{{/if}}>DOUBLE</option>
-	  </optgroup>
-	  <optgroup label="Date and Time">
-	    <option {{#if DATE}}selected{{/if}}>DATE</option>
-	    <option {{#if DATETIME}}selected{{/if}}>DATETIME</option>
-	    <option {{#if TIMESTAMP}}selected{{/if}}>TIMESTAMP</option>
-	    <option {{#if TIME}}selected{{/if}}>TIME</option>
-	    <option {{#if YEAR}}selected{{/if}}>YEAR</option>
-	  </optgroup>
-	  <optgroup label="String">
-	  	<option {{#if CHAR}}selected{{/if}}>CHAR</option>
-	  	<option {{#if VARCHAR}}selected{{/if}}>VARCHAR</option>
-	  	<option {{#if TINYTEXT}}selected{{/if}}>TINYTEXT</option>
-	  	<option {{#if TEXT}}selected{{/if}}>TEXT</option>
-	  	<option {{#if MEDIUMTEXT}}selected{{/if}}>MEDIUMTEXT</option>
-	  	<option {{#if LONGTEXT}}selected{{/if}}>LONGTEXT</option>
-	  	<option {{#if TINYBLOB}}selected{{/if}}>TINYBLOB</option>
-	  	<option {{#if BLOB}}selected{{/if}}>BLOB</option>
-	  	<option {{#if MEDIUMBLOB}}selected{{/if}}>MEDIUMBLOB</option>
-	  	<option {{#if LONGBLOB}}selected{{/if}}>LONGBLOB</option>
-	  	<option {{#if BINARY}}selected{{/if}}>BINARY</option>
-	  	<option {{#if VARBINARY}}selected{{/if}}>VARBINARY</option>
-	  	<option {{#if ENUM}}selected{{/if}}>ENUM</option>
-	  	<option {{#if SET}}selected{{/if}}>SET</option>
-	  </optgroup>
+	<label>UI Type</label>
+	<select id="uiType" name="ui_type">
+    {{#ui_types}}
+      <option {{#if selected}}selected{{/if}}>{{title}}</option>
+    {{/ui_types}}
 	</select>
 </fieldset>
 
-{{#if ALIAS}}
-{{/if}}
-
-{{#if ONETOMANY}}
 <fieldset>
-<label>Related Table</label>
-<select name="table_related" id="table_related">
-	{{#tables}}
-	<option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-	{{/tables}}
-</select>
+  <label>Data Type</label>
+  <select id="dataType" name="data_type">
+    {{#data_types}}
+      <option {{#if selected}}selected{{/if}}>{{title}}</option>
+    {{/data_types}}
+  </select>
 </fieldset>
 
-<fieldset>
-<label>Junction Column</label>
-<select name="junction_key_right">
-	{{#columns}}
-	<option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-	{{/columns}}
-</select>
-</fieldset>
-{{/if}}
-
-{{#if MANYTOMANY}}
-<fieldset>
-<label>Related Table</label>
-<select name="table_related">
-	{{#tables}}
-	<option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-	{{/tables}}
-</select>
-</fieldset>
-
-<fieldset>
-<label>Junction Table</label>
-<select name="junction_table">
-	{{#junctionTables}}
-	<option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-	{{/junctionTables}}
-</select>
-</fieldset>
-
-<fieldset>
-<label>Left Column</label>
-<input type="text" name="junction_key_left"/>
-</fieldset>
-
-<fieldset>
-<label>Right Column</label>
-<input type="text" name="junction_key_right"/>
-</fieldset>
-{{/if}}
-
-{{#if CHAR}}
+{{#if CHAR_LENGTH}}
 <fieldset>
 <label>Length</label>
-<input type="text" value="" name="char_length">
+<input type="text" id="charLength" value="" name="char_length">
 </fieldset>
 {{/if}}
-
-{{#if VARCHAR}}
-<fieldset>
-<label>Length</label>
-<input type="text" value="" name="char_length">
-</fieldset>
-{{/if}}
-
-{{#unless directusType}}
-<fieldset>
-<label class="checkbox"><input type="checkbox" name="allow_null"> Allow Null</label>
-</fieldset>
-
-<fieldset>
-<label>Default</label>
-<input type="text" value="" name="column_default">
-</fieldset>
-{{/unless}}
-
-<fieldset>
-<label>Note</label>
-<input type="text" value="" name="comment">
-</fieldset>
