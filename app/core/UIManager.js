@@ -79,6 +79,10 @@ define(function(require, exports, module) {
       return ui;
     },
 
+    _getAllUIs: function() {
+      return uis;
+    },
+
     // Returns a reference to a UI based on a
     // model/attribute/schema combination
     _getModelUI: function(model, attr, schema) {
