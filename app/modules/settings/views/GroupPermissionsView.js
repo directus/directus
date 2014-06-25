@@ -54,7 +54,7 @@ function(app, Backbone, BasePageView, PaneSaveView) {
 
     toggleIcon: function($span, currentPermission) {
       var dataValue = $span.parent().data('value');
-      if(currentPermission.indexOf(dataValue) !== -1 && currentPermission.indexOf("big" + dataValue) == -1) {
+      if(currentPermission.indexOf(dataValue) !== -1 && (currentPermission && currentPermission.indexOf("big" + dataValue) == -1)) {
         $span.addClass('big-priv');
       } else {
         $span.toggleClass('add-color').toggleClass('delete-color');
