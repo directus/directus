@@ -1,4 +1,4 @@
-//  Maps core UI component
+//  Maps Core UI component
 //  Directus 6.0
 
 //  (c) RANGER
@@ -22,10 +22,12 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   var Module = {};
 
   Module.id = 'map';
-  Module.dataTypes = ['VARCHAR'];
+  Module.dataTypes = ['VARCHAR', 'ALIAS'];
 
   Module.variables = [
+    //Google API Key (Provided by Google)
     {id: 'apiKey', ui: 'textinput', char_length:200},
+    //column names to fill with respective item
     {id: 'street_number_field', ui: 'textinput', char_length:200},
     {id: 'street_field', ui: 'textinput', char_length:200},
     {id: 'city_field', ui: 'textinput', char_length:200},
@@ -34,7 +36,9 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
     {id: 'stateCode_field', ui: 'textinput', char_length:200},
     {id: 'country_field', ui: 'textinput', char_length:200},
     {id: 'countryCode_field', ui: 'textinput', char_length:200},
-    {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: 'Height in Pixels'}
+    //Height of Map Element in Pixels
+    {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: 'Height in Pixels'},
+    {id: 'showLatLng', ui: 'checkbox', comment: 'Display latlng Textbox below map'}
   ];
 
   var template =  '<style>#pac-input { \
@@ -64,6 +68,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
       <input id="pac-input" class="controls" type="text" placeholder="Search Box"><div style="height: 400px" id="map-canvas"/> \
   <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="medium" readonly/>';
 
+  //If ALIAS, only fills in fields set in options, if varchar, sets to {lat},{lng}
   Module.Input = Backbone.Layout.extend({
 
     tagName: 'div',
@@ -76,11 +81,13 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
     events: {
     },
 
+    //Called Once Map Script is loaded. Initializes the Map Element.
     initializeMap: function() {
       var that = this;
       var google = window.google;
       var center = new google.maps.LatLng(40.77, -73.98);
 
+      //If we have a value (Representing lat and long), set center to that value
       if(this.options.value) {
         var array = this.options.value.split(',');
         if(array) {
@@ -129,6 +136,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
         searchBox.setBounds(bounds);
       });
 
+      //Add A marker to value location if there is a value
       if(this.options.value) {
         var array = this.options.value.split(',');
         if(array) {
@@ -141,6 +149,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
         }
       }
 
+      //On click, update value with click location
       google.maps.event.addListener(map, 'click', function(e) {
         if(that.marker) {
           that.marker.setPosition(e.latLng);
@@ -153,8 +162,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
         var latlngVal = e.latLng.lat() + "," + e.latLng.lng();
         that.$el.find('input').val(latlngVal);
 
+        //Query Geocode api to get street info about specified latlong
         $.get('https://maps.googleapis.com/maps/api/geocode/json', {latlng: latlngVal, key: that.options.settings.get('apiKey'), result_type:"street_address"}, function(data) {
-          console.logw
           if(data.results && data.results.length > 0) {
             data = data.results[0].address_components;
             var address = {};
@@ -182,6 +191,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   break;
               }
             });
+
+            //Update the value for the specified fields on the editpage form
             for(var key in address) {
               var field = that.options.settings.has(key + '_field') ? that.options.settings.get(key + '_field') : false;
               if(field) {
@@ -215,15 +226,18 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
       this.$el.find('#map-canvas').css('height', this.options.settings.get('mapHeight'));
     },
 
+    //Called when UI is first created
     initialize: function() {
       var that = this;
+      //Include the Google JSAPI for using Maps
       require(['https://www.google.com/jsapi'], function() {
+        //Load Maps API using provided key, and call initializeMap() when API is loaded
         google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + that.options.settings.get('apiKey'), callback: function() {that.initializeMap()}});
       });
     }
-
   });
 
+  //Do not perform Validation
   Module.validate = function(value) {
     //
   };
