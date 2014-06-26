@@ -784,10 +784,11 @@ class MySQL {
 
     function add_column($tbl_name, $data) {
         $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
-        $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment');
+        $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
         $column_name = $data['column_name'];
         $data_type = $data['data_type'];
         $comment = $data['comment'];
+
         if (in_array($data_type, $directus_types)) {
             //This is a 'virtual column'. Write to directus schema instead of MYSQL
             $data['table_name'] = $tbl_name;
@@ -815,6 +816,15 @@ class MySQL {
             $sql = "ALTER TABLE $tbl_name ADD COLUMN $column_name $data_type COMMENT '$comment'";
             $sth = $this->dbh->prepare($sql);
             $sth->execute();
+
+            //If many_to_one add to the columns
+            if($data['ui'] == 'many_to_one') {
+              $data['table_name'] = $tbl_name;
+              $data['relationship_type'] = 'MANYTOONE';
+              $data['sort'] = 9999;
+              $data = array_intersect_key($data, array_flip($alias_columns));
+              $this->set_entries('directus_columns', array($data));
+            }
         }
         return $column_name;
     }

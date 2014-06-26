@@ -27,3 +27,64 @@
 <input type="text" id="charLength" value="" name="char_length">
 </fieldset>
 {{/if}}
+
+{{#if MANYTOONE}}
+<fieldset>
+<label>Related Table</label>
+<select name="table_related" id="table_related">
+  {{#tables}}
+  <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+  {{/tables}}
+</select>
+</fieldset>
+{{/if}}
+
+{{#if ONETOMANY}}
+<fieldset>
+<label>Related Table</label>
+<select name="table_related" id="table_related">
+  {{#tables}}
+  <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+  {{/tables}}
+</select>
+</fieldset>
+
+<fieldset>
+<label>Junction Column</label>
+<select id="junction_key_right" name="junction_key_right">
+  {{#columns}}
+  <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+  {{/columns}}
+</select>
+</fieldset>
+{{/if}}
+
+{{#if MANYTOMANY}}
+<fieldset>
+<label>Related Table</label>
+<select name="table_related">
+  {{#tables}}
+  <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+  {{/tables}}
+</select>
+</fieldset>
+
+<fieldset>
+<label>Junction Table</label>
+<select name="junction_table">
+  {{#junctionTables}}
+  <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+  {{/junctionTables}}
+</select>
+</fieldset>
+
+<fieldset>
+<label>Left Column</label>
+<input type="text" name="junction_key_left"/>
+</fieldset>
+
+<fieldset>
+<label>Right Column</label>
+<input type="text" name="junction_key_right"/>
+</fieldset>
+{{/if}}

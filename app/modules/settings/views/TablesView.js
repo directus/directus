@@ -49,6 +49,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     save: function() {
+      this.model.set({comment: ''});
       if(this.contentView.isValid()) {
         var that = this;
         this.model.save({},{success: function(data) {
@@ -65,7 +66,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     initialize: function(options) {
-      this.model.set({comment: ''});
       this.contentView = new NewColumn({model: this.model});
     }
   });
@@ -84,21 +84,27 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         this.render();
       },
       'change select#uiType': function(e) {
+        this.model.clear();
         this.selectedUI = $(e.target).val();
         this.selectedDataType = null;
         this.render();
       },
       'change input#columnName': function(e) {
-        this.model.set({column_name: $(e.target).val()});
+        this.columnName =  $(e.target).val();
       },
       'change input#charLength': function(e) {
         this.model.set({char_length: $(e.target).val()});
+      },
+      'change select#table_related': function(e) {
+        this.model.set({table_related: $(e.target).val()});
+      },
+      'change #junction_key_right': function(e) {
+        this.model.set({junction_key_right: $(e.target).val()});
       }
     },
 
     serialize: function() {
       var data = {ui_types: [], data_types: []};
-
       var uis = UIManager._getAllUIs();
 
       if(this.model.has('column_name')) {
@@ -107,7 +113,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
       for(var key in uis) {
         //If not system column
-        if(key.indexOf('directus_') < 0 && ['one_to_many', 'many_to_many', 'multiple_files'].indexOf(key) < 0) {
+        if(key.indexOf('directus_') < 0 && ['multiple_files'].indexOf(key) < 0) {
           if(!this.selectedUI) {
             this.selectedUI = key;
           }
@@ -138,12 +144,61 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       });
 
       //Check if we need length field
-      if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) >= 0)
+      if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) > -1)
       {
         data.CHAR_LENGTH = 1;
       }
 
-      this.model.set({data_type: this.selectedDataType, ui: this.selectedUI});
+      if(['many_to_one'].indexOf(this.selectedUI) > -1) {
+        data.MANYTOONE = true;
+        var tableRelated = this.model.get('table_related');
+
+        var tables = app.schemaManager.getTables();
+        tables = tables.map(function(model) {
+          if(!tableRelated) {
+            tableRelated = model.id;
+            this.model.set({table_related: model.id});
+          }
+          return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table'), selected: (model.id === this.model.get('table_related'))};
+        }, this);
+        data.tables = tables;
+
+        this.model.set({junction_key_right: this.columnName});
+      }
+
+      if(['ONETOMANY', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
+        data[this.selectedDataType] = true;
+
+        var tableRelated = this.model.get('table_related');
+
+        var tables = app.schemaManager.getTables();
+        tables = tables.map(function(model) {
+          if(!tableRelated) {
+            tableRelated = model.id;
+            this.model.set({table_related: model.id});
+          }
+          return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table'), selected: (model.id === this.model.get('table_related'))};
+        }, this);
+        data.tables = tables;
+
+
+        if (tableRelated !== undefined) {
+          data.columns = app.schemaManager.getColumns('tables', tableRelated).map(function(model) {
+            return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
+          }, this);
+        }
+
+        if(this.selectedDataType == 'MANYTOMANY') {
+          data.junctionTables = tables.chain()
+            .filter(function(model) { return model.get('is_junction_table'); })
+            .map(function(model) { return {id: model.id, selected: (model.id === this.model.get('junction_table'))}; }, this)
+            .value();
+        }
+
+        this.model.set({relationship_type: this.selectedDataType});
+      }
+
+      this.model.set({data_type: this.selectedDataType, ui: this.selectedUI, column_name: this.columnName});
 
       return data;
     },
