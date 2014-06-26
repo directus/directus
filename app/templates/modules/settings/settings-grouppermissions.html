@@ -17,25 +17,25 @@
 			{{#with permissions}}
 			<td data-value="view">
 				{{#if bigview}}
-          <span class="add-color big-priv"><span class="icon icon-users"></span></span>
+          <span class="add-color big-priv has-privilege"><span class="icon icon-users"></span></span>
         {{else}}
           {{#if view}}
-            <span class="yellow-color"><span class="icon icon-user"></span></span>
+            <span class="yellow-color has-privilege"><span class="icon icon-user"></span></span>
           {{else}}
             <span class="delete-color"><span class="icon icon-block"></span></span>
           {{/if}}
         {{/if}}
 			</td>
 			<td data-value="add">
-				{{#if add}}<span class="add-color"><span class="icon icon-user"></span></span>
+				{{#if add}}<span class="add-color has-privilege"><span class="icon icon-user"></span></span>
 				{{else}}<span class="delete-color"><span class="icon icon-block"></span>{{/if}}
 			</td>
 			<td data-value="edit">
 				{{#if bigedit}}
-          <span class="add-color big-priv"><span class="icon icon-users"></span></span>
+          <span class="add-color big-priv has-privilege"><span class="icon icon-users"></span></span>
         {{else}}
           {{#if edit}}
-            <span class="yellow-color"><span class="icon icon-user"></span></span>
+            <span class="yellow-color has-privilege"><span class="icon icon-user"></span></span>
           {{else}}
             <span class="delete-color"><span class="icon icon-block"></span>
           {{/if}}
@@ -43,10 +43,10 @@
 			</td>
 			<td data-value="delete">
 				{{#if bigdelete}}
-          <span class="add-color big-priv"><span class="icon icon-users"></span></span>
+          <span class="add-color big-priv has-privilege"><span class="icon icon-users"></span></span>
         {{else}}
           {{#if delete}}
-            <span class="yellow-color"><span class="icon icon-user"></span></span>
+            <span class="yellow-color has-privilege"><span class="icon icon-user"></span></span>
           {{else}}
             <span class="delete-color"><span class="icon icon-block"></span>
           {{/if}}

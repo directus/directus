@@ -54,10 +54,10 @@ function(app, Backbone, BasePageView, PaneSaveView) {
 
     toggleIcon: function($span, currentPermission) {
       var dataValue = $span.parent().data('value');
-      if(currentPermission && currentPermission.indexOf(dataValue) !== -1 && (currentPermission.indexOf("big" + dataValue) == -1)) {
+      if($span.hasClass('yellow-color')) {
         $span.addClass('big-priv');
       } else {
-        $span.toggleClass('add-color').toggleClass('delete-color');
+        $span.toggleClass('add-color').toggleClass('delete-color').toggleClass('has-privilege');
       }
 
     },
@@ -65,7 +65,7 @@ function(app, Backbone, BasePageView, PaneSaveView) {
     parseTablePermissions: function($tr) {
       var permissions;
 
-      permissions = $tr.children().has('span.add-color');
+      permissions = $tr.children().has('span.has-privilege');
 
       permissions = permissions.map(function() { return (($(this).has('span.big-priv').length) ? "big" : "") +  $(this).data('value');}).get().join();
 
