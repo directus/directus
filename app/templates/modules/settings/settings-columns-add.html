@@ -62,7 +62,7 @@
 {{#if MANYTOMANY}}
 <fieldset>
 <label>Related Table</label>
-<select name="table_related">
+<select id="table_related" name="table_related">
   {{#tables}}
   <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
   {{/tables}}
@@ -71,7 +71,7 @@
 
 <fieldset>
 <label>Junction Table</label>
-<select name="junction_table">
+<select id="junction_table" name="junction_table">
   {{#junctionTables}}
   <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
   {{/junctionTables}}
@@ -80,11 +80,19 @@
 
 <fieldset>
 <label>Left Column</label>
-<input type="text" name="junction_key_left"/>
+<select id="junction_key_left" name="junction_key_left">
+  {{#columns_left}}
+  <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+  {{/columns_left}}
+</select>
 </fieldset>
 
 <fieldset>
 <label>Right Column</label>
-<input type="text" name="junction_key_right"/>
+<select id="junction_key_right" name="junction_key_right">
+  {{#columns_right}}
+  <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+  {{/columns_right}}
+</select>
 </fieldset>
 {{/if}}

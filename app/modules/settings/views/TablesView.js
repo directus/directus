@@ -100,6 +100,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       },
       'change #junction_key_right': function(e) {
         this.model.set({junction_key_right: $(e.target).val()});
+      },
+      'change #junction_key_left': function(e) {
+        this.model.set({junction_key_left: $(e.target).val()});
+      },
+      'change #junction_table': function(e) {
+        this.model.set({junction_table: $(e.target).val()});
       }
     },
 
@@ -112,6 +118,9 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       }
 
       for(var key in uis) {
+        if(key != "many_to_many") {
+            continue;
+        }
         //If not system column
         if(key.indexOf('directus_') < 0 && ['multiple_files'].indexOf(key) < 0) {
           if(!this.selectedUI) {
@@ -170,6 +179,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         data[this.selectedDataType] = true;
 
         var tableRelated = this.model.get('table_related');
+        var junctionTable = this.model.get('junction_table');
 
         var tables = app.schemaManager.getTables();
         tables = tables.map(function(model) {
@@ -182,17 +192,32 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         data.tables = tables;
 
 
-        if (tableRelated !== undefined) {
-          data.columns = app.schemaManager.getColumns('tables', tableRelated).map(function(model) {
-            return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
-          }, this);
-        }
+
 
         if(this.selectedDataType == 'MANYTOMANY') {
-          data.junctionTables = tables.chain()
-            .filter(function(model) { return model.get('is_junction_table'); })
-            .map(function(model) { return {id: model.id, selected: (model.id === this.model.get('junction_table'))}; }, this)
-            .value();
+          data.junctionTables = _.chain(tables).filter(function(model) { return model.is_junction_table; })
+            .map(function(model) {
+              if(!junctionTable){
+                junctionTable = model.id;
+                this.model.set({junction_table: model.id});
+              }
+              return {id: model.id, selected: (model.id === this.model.get('junction_table'))};
+            }, this).value();
+
+          if (junctionTable !== undefined) {
+            data.columns_left = app.schemaManager.getColumns('tables', junctionTable).map(function(model) {
+              return {column_name: model.id, selected: (model.id === this.model.get('junction_key_left'))};
+            }, this);
+            data.columns_right = app.schemaManager.getColumns('tables', junctionTable).map(function(model) {
+              return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
+            }, this);
+          }
+        } else {
+          if (tableRelated !== undefined) {
+            data.columns = app.schemaManager.getColumns('tables', tableRelated).map(function(model) {
+              return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
+            }, this);
+          }
         }
 
         this.model.set({relationship_type: this.selectedDataType});
