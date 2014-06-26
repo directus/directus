@@ -494,7 +494,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         if(tableName && !app.schemaManager.getPrivileges(tableName)) {
           var model = new Backbone.Model();
           model.url = app.API_URL + 'privileges/1';
-          model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName});
+          model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
           model.save();
           location.reload();
         }
