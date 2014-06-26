@@ -818,7 +818,7 @@ class MySQL {
             $sth->execute();
 
             //If many_to_one add to the columns
-            if($data['ui'] == 'many_to_one') {
+            if(in_array($data['ui'], array('many_to_one', 'many_to_one_typeahead'))) {
               $data['table_name'] = $tbl_name;
               $data['relationship_type'] = 'MANYTOONE';
               $data['sort'] = 9999;

@@ -149,7 +149,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         data.CHAR_LENGTH = 1;
       }
 
-      if(['many_to_one'].indexOf(this.selectedUI) > -1) {
+      if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
         var tableRelated = this.model.get('table_related');
 
