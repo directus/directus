@@ -118,9 +118,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       }
 
       for(var key in uis) {
-        if(key != "many_to_many") {
-            continue;
-        }
         //If not system column
         if(key.indexOf('directus_') < 0 && ['multiple_files'].indexOf(key) < 0) {
           if(!this.selectedUI) {
