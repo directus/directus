@@ -1334,6 +1334,12 @@ a.secondary-info:hover {
 .add-color {
   color: #7ac943;
 }
+.light-add-color {
+  color: #ceebba;
+}
+.yellow-color {
+  color: #fdcd30;
+}
 .bold {
   font-weight: 600;
   -webkit-font-smoothing: antialiased;
