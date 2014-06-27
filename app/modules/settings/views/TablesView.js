@@ -72,11 +72,13 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
   var NewColumn = Backbone.Layout.extend({
 
-    tagName: 'div',
+    tagName: "form",
+
+    attributes: {
+      class: "two-column-form"
+    },
 
     template: 'modules/settings/settings-columns-add',
-
-    attributes: {'class':'form'},
 
     events: {
       'change select#dataType': function(e) {
