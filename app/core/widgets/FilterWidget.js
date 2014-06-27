@@ -209,6 +209,12 @@ function(app, Backbone) {
 
       this.collection.setFilter('adv_search', filters);
       this.collection.setFilter('currentPage', 0);
+
+      if(app.router.loadedPreference) {
+        if(this.basePage) {
+          this.basePage.removeHolding(this.cid);
+        }
+      }
       //this.render();
     },
 
@@ -282,8 +288,15 @@ function(app, Backbone) {
 
     initialize: function() {
       this.options.filters = [];
-      this.updateFiltersFromPreference();
-      this.collection.preferences.on('sync', function() { this.updateFiltersFromPreference();}, this);
+      this.listenTo(this.collection.preferences, 'sync', function(){this.updateFiltersFromPreference();});
+      this.basePage = this.options.basePage;
+      if(app.router.loadedPreference) {
+        if(this.basePage) {
+          this.basePage.addHolding(this.cid);
+        }
+      } else {
+        this.updateFiltersFromPreference();
+      }
     }
   });
 });

@@ -105,6 +105,7 @@ function(app, Backbone, PreferenceModel) {
     initialize: function() {
       var activeTable = this.collection.table.id;
 
+      this.basePage = this.options.basePage;
       this.options.widgetOptions = {snapshots: []};
 
       if(this.collection.table.columns.get('active')) {
@@ -114,11 +115,15 @@ function(app, Backbone, PreferenceModel) {
       if(app.router.loadedPreference) {
         this.defaultId = this.collection.preferences.get('id');
         this.collection.preferences.fetch({newTitle: app.router.loadedPreference});
+        if(this.basePage) {
+          this.basePage.addHolding(this.cid);
+        }
       }
 
       this.listenTo(this.collection.preferences, 'sync', function() {
-        this.collection.fetch();
-
+        if(this.basePage) {
+          this.basePage.removeHolding(this.cid);
+        }
         if(this.defaultId) {
           this.collection.preferences.set({title:null, id: this.defaultId});
         }

@@ -47,11 +47,11 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       switch(this.leftSecondaryCurrentState) {
         case 'default':
           if(!this.widgets.visibilityWidget) {
-            this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
+            this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
           }
 
           if(!this.widgets.filterWidget) {
-            this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
+            this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
           }
 
           return [
@@ -111,7 +111,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      this.collection.fetch({reset: true});
+      this.tryFetch();
     },
 
     initialize: function() {
@@ -147,6 +147,29 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       }, this);
 
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
+
+      //Array of cid of widgets that want to perform fetch.
+      this.fetchHolding = [];
+    },
+
+    //Only fetch if we are not waiting on any widgets to get preference data
+    tryFetch: function() {
+      console.log(this.fetchHolding);
+      if(this.fetchHolding.length == 0) {
+        this.collection.fetch();
+      }
+    },
+
+    addHolding: function(cid) {
+      console.log("adding:", cid);
+      this.fetchHolding.push(cid);
+    },
+
+    //Remove a cid from holding and try fetch
+    removeHolding: function(cid) {
+      console.log("Removing: ",cid);
+      this.fetchHolding.splice(this.fetchHolding.indexOf(cid), 1);
+      this.tryFetch();
     }
 
   });
