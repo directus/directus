@@ -147,26 +147,6 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
       }, this);
 
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
-
-      //Array of cid of widgets that want to perform fetch.
-      this.fetchHolding = [];
-    },
-
-    //Only fetch if we are not waiting on any widgets to get preference data
-    tryFetch: function() {
-      if(this.fetchHolding.length == 0) {
-        this.collection.fetch();
-      }
-    },
-
-    addHolding: function(cid) {
-      this.fetchHolding.push(cid);
-    },
-
-    //Remove a cid from holding and try fetch
-    removeHolding: function(cid) {
-      this.fetchHolding.splice(this.fetchHolding.indexOf(cid), 1);
-      this.tryFetch();
     }
 
   });

@@ -205,10 +205,10 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
     leftSecondaryToolbar: function() {
       if(!this.widgets.visibilityWidget) {
-        this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection});
+        this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
       }
       if(!this.widgets.filterWidget) {
-        this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection});
+        this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
       }
 
       return [this.widgets.visibilityWidget, this.widgets.filterWidget];
