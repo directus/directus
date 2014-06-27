@@ -1,0 +1,30 @@
+<table class="table table-striped directus-table not-responsive" id="directus-grouppermissions">
+	<thead>
+		<tr>
+			<th class="field-note">Column</th>
+			<th class="permissions">Read</th>
+			<th class="permissions">Write</th>
+		</tr>
+	</thead>
+	<tbody>
+    {{#columns}}
+    <tr class="" data-column-name="{{column_name}}">
+      <td>{{column_name}}</td>
+      <td data-value="read">
+        {{#if read}}
+          <span class="add-color has-privilege"><span title="Can View This Field" class="icon icon-check"></span></span>
+        {{else}}
+          <span class="delete-color"><span title="Can Not View Items" class="icon icon-block"></span></span>
+        {{/if}}
+      </td>
+
+      <td data-value="write">
+        {{#if write}}
+          <span class="add-color has-privilege"><span title="Can Write This Field" class="icon icon-check"></span></span>
+        {{else}}
+          <span class="delete-color"><span title="Can Not View Items" class="icon icon-block"></span></span>
+        {{/if}}
+      </td>
+    {{/columns}}
+	</tbody>
+</table>

@@ -66,7 +66,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
     public function updatePrivilege($attributes) {
         $update = new Update($this->getTable());
         $update->where->equalTo('id', $attributes['id']);
-        $update->set(array('permissions' => $attributes['permissions']));
+        $update->set(array('permissions' => $attributes['permissions'], 'read_field_blacklist' => $attributes['read_field_blacklist'], 'write_field_blacklist' =>$attributes['write_field_blacklist']));
         $this->updateWith($update);
 
         return $this->fetchById($attributes['id']);
