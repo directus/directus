@@ -137,9 +137,17 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     if (options.value === undefined) return '';
     if(options.settings.get('visible_column_template') !== undefined) {
       var displayTemplate = Handlebars.compile(options.settings.get('visible_column_template'));
-      if (options.value instanceof Backbone.Model) return displayTemplate(options.value.attributes);
+      if (options.value instanceof Backbone.Model) {
+        return displayTemplate(options.value.attributes);
+      } else if(options.value instanceof Object) {
+        return displayTemplate(options.value);
+      }
     }
-    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
+    if (options.value instanceof Backbone.Model) {
+      return options.value.get(options.settings.get('visible_column'));
+    }  else if(options.value instanceof Object) {
+      return options.value[options.settings.get('visible_column')];
+    }
     return options.value;
   };
 
