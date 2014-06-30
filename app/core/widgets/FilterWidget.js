@@ -82,7 +82,6 @@ function(app, Backbone) {
           newInput = this.filterUIMappings.default;
           break;
       }
-
       return newInput;
     },
 
@@ -95,15 +94,16 @@ function(app, Backbone) {
 
       if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
         var columnModel = this.collection.structure.get(selectedColumn);
-        if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') != "dropdown") {
-          data.filter_ui = this.getFilterDataType(selectedColumn);
-        } else {
+
+        if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
           //Get Related Column Collection
           data.columnModel = columnModel;
           data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
           data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
           this.listenTo(data.relatedCollection, 'sync', this.render);
+        } else {
+          data.filter_ui = this.getFilterDataType(selectedColumn);
         }
       } else {
         data.filter_ui = this.getFilterDataType(selectedColumn);
@@ -265,12 +265,16 @@ function(app, Backbone) {
 
             if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
               var columnModel = that.collection.structure.get(selectedColumn);
-              //Get Related Column Collection
-              data.columnModel = columnModel;
-              data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
+              if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
+                //Get Related Column Collection
+                data.columnModel = columnModel;
+                data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-              data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
-              that.listenTo(data.relatedCollection, 'sync', that.render);
+                data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+                that.listenTo(data.relatedCollection, 'sync', that.render);
+              } else{
+                data.filter_ui = that.getFilterDataType(selectedColumn);
+              }
             } else if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
               data.filter_ui = that.getFilterDataType(selectedColumn);
             }
