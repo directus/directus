@@ -1,16 +1,9 @@
-<div class="modal-header">
-    {{#if showCancel}}<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon-remove"></span></button>{{/if}}
-<h3 id="myModalLabel">{{title}}</h3>
+<div style="z-index:999" class="directus-alert-modal">
+  <div class="directus-alert-modal-message">{{message}}</div>
+  {{#if showInput}}<input type="text">{{/if}}
+  <div class="directus-alert-modal-buttons">
+    <button id="cancel" type="button">Cancel</button>
+    <button id="save" type="button" class="primary">OK</button>
+  </div>
 </div>
-
-<div class="modal-body">
-</div>
-
-{{#if showFooter}}
-<div class="modal-footer">
-	<button class="btn btn-primary" name="save">{{buttonText}}</button>
-    {{#if showCancel}}
-	<button class="btn btn-link gray-dark" name="close">Cancel</button>
-    {{/if}}
-</div>
-{{/if}}
+<div class="directus-modal-backdrop" style="z-index:998;background-color:rgba(200,200,200,0.8);width: 100%;height:100%;position:fixed;top:0"></div>

@@ -116,7 +116,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         data['columns_visible[]'].push(column);
       });
 
-      console.log(data);
       // FILTER HERE!
       this.collection.fetch({includeFilters: false, data: data});
       //this.collection.on('reset', this.render, this);

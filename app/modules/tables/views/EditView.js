@@ -181,8 +181,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'save',
-      'change #saveSelect': 'save'
+      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'saveConfirm',
+      'change #saveSelect': 'saveConfirm'
     },
 
     getHeaderOptions: function() {
@@ -216,18 +216,24 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       this.model.save({active: 0}, {success: success, patch: true, wait: true, validate: false});
     },
 
+    saveConfirm: function(e) {
+      var data = this.editView.data();
+      var that = this;
+      if(data.active && data.active == 0) {
+        app.router.openModal({type: 'confirm', text: 'Are you sure you wish to delete this item?', callback: function() {
+          that.save(e);
+        }});
+      } else {
+        this.save(e);
+      }
+    },
+
     save: function(e) {
       var action = 'save-form-leave';
       if(e.target.options !== undefined) {
         action = $(e.target.options[e.target.selectedIndex]).val();
       }
       var data = this.editView.data();
-
-      if(data.active && data.active == 0) {
-        if(!confirm("Are you sure you wish to delete this item?")) {
-          return;
-        }
-      }
 
       var model = this.model;
       var isNew = this.model.isNew();

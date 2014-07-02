@@ -12,8 +12,8 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
 
   return BasePageView.extend({
     events: {
-      'click .saved-success': 'save',
-      'change #saveSelect': 'save'
+      'click .saved-success': 'saveCheck',
+      'change #saveSelect': 'saveCheck'
     },
 
     deleteItem: function(e) {
@@ -31,6 +31,18 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       this.model.save({active: 0}, {success: success, patch: true, wait: true, validate: false});
     },
 
+    saveCheck: function(e) {
+      var data = this.editView.data();
+      if(data.active && data.active == 0) {
+        var that = this;
+        app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system.', callback: function() {
+          that.save(e);
+        }});
+      } else {
+        this.save(e);
+      }
+    },
+
     save: function(e) {
       var action = 'save-form-leave';
       if(e.target.options !== undefined) {
@@ -41,12 +53,6 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
-
-      if(data.active && data.active == 0) {
-        if(!confirm("Are you sure you wish to delete this item?")) {
-          return;
-        }
-      }
 
       if (action === 'save-form-stay') {
         success = function(model, response, options) {

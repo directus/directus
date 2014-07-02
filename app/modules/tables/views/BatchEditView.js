@@ -28,7 +28,16 @@ function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
     },
 
     events: {
-      'click .saved-success': 'save'
+      'click .saved-success': 'saveConfirm'
+    },
+
+    saveConfirm: function() {
+      var that = this,
+          itemCount = this.batchIds.length;
+
+      app.router.openModal({type: 'confirm', text: 'This will affect ' + itemCount + ' records. Continue?', callback: function() {
+        that.save();
+      }});
     },
 
     save: function() {
@@ -36,10 +45,6 @@ function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
           itemCount = this.batchIds.length,
           failRequestCount = 0,
           successRequestCount = 0;
-
-      if (!confirm('This will affect ' + itemCount + ' records. Continue?')) {
-        return;
-      }
 
       // Serialize the entire form
       var data = this.editView.data();
@@ -92,8 +97,6 @@ function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
           validate: false
         });
       });
-
-      console.log(changedAttributes);
     },
 
     afterRender: function() {

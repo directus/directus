@@ -23,6 +23,7 @@ define(function(require, exports, module) {
       Files            = require('modules/files/files'),
       Users            = require('modules/users/users'),
       Messages         = require('modules/messages/messages'),
+      Modal            = require('core/modal'),
       moment           = require('moment');
 
   var Router = Backbone.Router.extend({
@@ -78,11 +79,13 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    openModal: function(view, options) {
-      //options.view = view;
-      //var modal = new Modal(options);
-      //this.v.messages.insertView(modal).render();
-      //return modal;
+    openModal: function(options, callback) {
+      if(this.v.main.getViews('#modal-container')._wrapped.length >= 1) {
+        return;
+      }
+
+      var modalView = new Modal.Prompt(options);
+      this.v.main.insertView('#modal-container', modalView).render();
     },
 
     overlayPage: function(view) {

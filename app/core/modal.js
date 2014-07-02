@@ -7,7 +7,10 @@ function(app, Backbone) {
 
   "use strict";
 
-  var Modal = Backbone.Layout.extend({
+
+  var Modal = {};
+
+  Modal.Prompt = Backbone.Layout.extend({
 
     template: 'modal',
 
@@ -17,58 +20,38 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      return {title: this.options.title || 'Dialog', buttonText: this.options.buttonText, showFooter: this.options.showFooter, showCancel: this.options.showCancel};
+      var message = (this.options.text) ? this.options.text : '';
+      var data = {message: message};
+      if(this.options.type === 'prompt') {
+        data.showInput = true;
+      }
+      return data;
     },
 
     events: {
-      'click button[name=save]': function(e) { e.preventDefault(); this.save(); },
-      'click button[name=close]': 'close',
-      'click button.close': 'close'
+      'click #cancel': function() {
+        this.close();
+      },
+      'click #save': function() {
+        this.save();
+      }
     },
 
     close: function() {
-      this.trigger('close');
-      $('body').removeClass('modal-open');
-      this.$backdrop.remove();
       this.remove();
     },
 
     save: function() {
-
+      var val ='';
+      if(this.$el.find('input')) {
+        val = this.$el.find('input').val()
+      }
+      this.options.callback(val);
+      this.close();
     },
 
-    afterRender: function() {
-      this.setView('.modal-body', this.options.view);
-
-        if (this.options.showCancel) {
-            this.$backdrop.on('click', $.proxy(this.close, this));
-        }
-    },
-
-    constructor: function (options) {
-
-      // Add events from child
-      if (this.events) {
-        this.events = _.defaults(this.events, Modal.prototype.events);
-      }
-
-      Backbone.Layout.__super__.constructor.call(this, options);
-
-      $('body').addClass('modal-open');
-      this.$backdrop = $('<div class="modal-backdrop"/>').appendTo(document.body);
-
-      if (this.options.stretch) {
-        this.$el.addClass('stretch');
-      } else {
-        this.$el.removeClass('stretch');
-      }
-
-      this.options.buttonText = this.options.buttonText || 'Save changes';
-      this.options.showFooter = (this.options.showFooter === undefined) ? true : this.options.showFooter;
-      this.options.showCancel = (this.options.showCancel === undefined) ? true : this.options.showCancel;
-
-      this.view = this.options.view;
-
+    initialize: function (options) {
+      this.options = options;
     }
   });
   return Modal;

@@ -209,25 +209,27 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         this.$el.find('#fileAddInput').click();
       },
       'click button[data-action="url"]': function(e) {
-        var url = prompt("Enter Url");
-        if(!url) {
-          return;
-        }
+        var that = this;
+        app.router.openModal({type: 'prompt', text: 'Enter Url', callback: function(url) {
+          if(!url) {
+            return;
+          }
 
-        var model = this.fileModel;
-        app.sendLink(url, function(data) {
-          _.each(data, function(item) {
-            item.active = 1;
-            // Unset the model ID so that a new file record is created
-            // (and the old file record isn't replaced w/ this data)
-            item.id = undefined;
-            item.user = self.userId;
+          var model = that.fileModel;
+          app.sendLink(url, function(data) {
+            _.each(data, function(item) {
+              item.active = 1;
+              // Unset the model ID so that a new file record is created
+              // (and the old file record isn't replaced w/ this data)
+              item.id = undefined;
+              item.user = self.userId;
 
-            //console.log()
+              //console.log()
 
-            model.set(item);
+              model.set(item);
+            });
           });
-        });
+        }});
       },
     },
 
