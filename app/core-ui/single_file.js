@@ -402,7 +402,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
     var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
     var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document-100x120.png';
 
-    var img = '<div class="file-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
+    var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
 
     return img;
   };
