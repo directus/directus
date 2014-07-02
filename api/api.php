@@ -518,6 +518,33 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
     JsonView::render($entries);
 })->via('GET', 'POST', 'PUT');
 
+$app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use ($db, $ZendDb, $acl, $params, $app) {
+  $Table = new TableGateway($acl, $table, $ZendDb);
+
+  if(!isset($params['columns'])) {
+    $params['columns'] = '';
+  }
+
+  $columns = explode(',', $params['columns']);
+
+  if(!$query) {
+    $entries = $Table->getEntries($params);
+  }
+
+  $entries = $entries['rows'];
+  $response = [];
+  foreach($entries as $entry) {
+    $val = '';
+    $tokens = array();
+    foreach($columns as $col) {
+      array_push($tokens, $entry[$col]);
+    }
+    $val = implode(' ', $tokens);
+    array_push($response, array('value'=> $val, 'tokens'=> $tokens));
+  }
+  JsonView::render($response);
+});
+
 $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
