@@ -158,7 +158,7 @@ class TableSchema {
         $sth->execute();
 
         $columns = array();
-        $ignoreColumns = array('id','active','sort');
+        $ignoreColumns = array('id','status','sort');
         $i = 0;
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
             $i++;
@@ -452,7 +452,7 @@ class TableSchema {
             }
 
             // Defualts as system columns
-            if ($row["id"] == 'id' || $row["id"] == 'active' || $row["id"] == 'sort') {
+            if ($row["id"] == 'id' || $row["id"] == 'status' || $row["id"] == 'sort') {
                 $row["system"] = true;
                 $row["hidden"] = true;
             }
@@ -789,7 +789,7 @@ class TableSchema {
         }
 
         // Defualts as system columns
-        if ($row["id"] == 'id' || $row["id"] == 'active' || $row["id"] == 'sort') {
+        if ($row["id"] == 'id' || $row["id"] == 'status' || $row["id"] == 'sort') {
             $row["system"] = true;
             $row["hidden"] = true;
         }

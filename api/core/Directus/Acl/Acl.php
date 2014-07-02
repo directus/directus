@@ -46,7 +46,7 @@ class Acl {
     public static $mandatory_read_lists = array(
         // key: table name ('*' = all tables, baseline definition)
         // value: array of column names
-        '*'                 => array('id','active'),
+        '*'                 => array('id','status'),
         'directus_activity' => array('user'),
         'directus_files'    => array('user')
     );

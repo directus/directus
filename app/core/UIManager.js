@@ -57,7 +57,7 @@ define(function(require, exports, module) {
    * Holds all Sytem fields and mapped UI
    */
   var system_fields = {
-    'active': {'ui':'system'}
+    'status': {'ui':'system'}
   };
 
   // Attach all methods to the UIManager prototype.

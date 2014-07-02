@@ -60,22 +60,22 @@ define(function(require, exports, module) {
 
 
 
-        if('active' == column.id) {
+        if('status' == column.id) {
           if(this.options.collectionAdd) {
-            this.model.set('active', 1);
+            this.model.set('status', 1);
           }
           if(this.model.isNew()) {
             if(this.model.table && this.model.table.get('inactive_by_default') == 1) {
-              this.model.set('active', 2);
+              this.model.set('status', 2);
             } else {
-              this.model.set('active', 1);
+              this.model.set('status', 1);
             }
           }
 
           //Set this to be first field in edit table by modifiying groupings.
           if(this.model.table && this.model.table.get('column_groupings')) {
             var columnGrouping = this.model.table.get('column_groupings');
-            this.model.table.set({'column_groupings': 'active^' + columnGrouping});
+            this.model.table.set({'column_groupings': 'status^' + columnGrouping});
           }
         }
 
@@ -121,10 +121,10 @@ define(function(require, exports, module) {
           i++;
         });
       } else {
-        if(views['active']) {
+        if(views['status']) {
           this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_0'}}));
-          this.insertView('#grouping_0', views['active']);
-          delete views['active'];
+          this.insertView('#grouping_0', views['status']);
+          delete views['status'];
         }
 
         for(var key in views) {

@@ -34,7 +34,7 @@ function(app, Backbone, PreferenceModel) {
         var $target = $(e.target).find(":selected");
         if($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
           var value = $(e.target).val();
-          this.collection.setFilter({currentPage: 0, active: value});
+          this.collection.setFilter({currentPage: 0, status: value});
         }
       },
       'click #saveSnapshotBtn': 'saveSnapshot',
@@ -95,7 +95,7 @@ function(app, Backbone, PreferenceModel) {
 
     afterRender: function() {
       if(this.options.widgetOptions.hasActiveColumn) {
-        $('#visibilitySelect').val(this.collection.preferences.get('active'));
+        $('#visibilitySelect').val(this.collection.preferences.get('status'));
       }
 
       // Adjust dropdown width dynamically
@@ -109,7 +109,7 @@ function(app, Backbone, PreferenceModel) {
       this.basePage = this.options.basePage;
       this.options.widgetOptions = {snapshots: []};
 
-      if(this.collection.table.columns.get('active')) {
+      if(this.collection.table.columns.get('status')) {
         this.options.widgetOptions.hasActiveColumn = true;
       }
 

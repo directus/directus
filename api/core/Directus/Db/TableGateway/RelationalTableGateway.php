@@ -233,8 +233,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 if($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
                     $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
                     //If we are updating and active is being set to 0 then we are deleting
-                    if(!$recordIsNew && array_key_exists('active', $deltaRecordData)) {
-                      if($deltaRecordData['active'] == "0") {
+                    if(!$recordIsNew && array_key_exists('status', $deltaRecordData)) {
+                      if($deltaRecordData['status'] == "0") {
                         $logEntryAction = DirectusActivityTableGateway::ACTION_DELETE;
                       }
                     }
@@ -418,7 +418,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
-                            if (isset($junctionRow['active']) && $junctionRow['active'] == 0) {
+                            if (isset($junctionRow['status']) && $junctionRow['status'] == 0) {
                                 $Where = new Where;
                                 $Where->equalTo('id', $junctionRow['id']);
                                 $JunctionTable->delete($Where);
@@ -468,7 +468,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         'currentPage' => 0,
         'id' => -1,
         'search' => null,
-        'active' => null
+        'status' => null
     );
 
     public function applyDefaultEntriesSelectParams(array $params) {
@@ -494,11 +494,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
-        if (null !== $params['active'] && $hasActiveColumn) {
-            $haystack = is_array($params['active'])
-                ? $params['active']
-                : explode(",", $params['active']);
-            $select->where->in('active', $haystack);
+        if (null !== $params['status'] && $hasActiveColumn) {
+            $haystack = is_array($params['status'])
+                ? $params['status']
+                : explode(",", $params['status']);
+            $select->where->in('status', $haystack);
         }
 
         // Where
@@ -556,7 +556,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $schemaArray = TableSchema::getSchemaArray($this->table);
         // $schemaArray = $db->get_table($this->table);
 
-        // Table has `active` column?
+        // Table has `status` column?
         $hasActiveColumn = $this->schemaHasActiveColumn($schemaArray);
 
         $params = $this->applyDefaultEntriesSelectParams($params);
@@ -569,7 +569,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         //Filter out visible columns only
         if (array_key_exists('columns_visible', $params)) {
-            $systemColumns = array('id','sort','active');
+            $systemColumns = array('id','sort','status');
             $columnsVisible = array_unique(array_merge($systemColumns, $params['columns_visible']));
             $columnNames = array_intersect($columnNames, $columnsVisible);
         }
@@ -993,13 +993,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     /**
-     * Does a table schema array contain an `active` column?
+     * Does a table schema array contain an `status` column?
      * @param  array $schema Table schema array.
      * @return boolean
      */
     public function schemaHasActiveColumn($schema) {
         foreach($schema as $col) {
-            if('active' == $col['column_name']) {
+            if('status' == $col['column_name']) {
                 return true;
             }
         }
@@ -1062,7 +1062,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     /**
-     * Yield total number of rows on a table, irrespective of any active column.
+     * Yield total number of rows on a table, irrespective of any status column.
      * @return int
      */
     public function countTotal(PredicateInterface $predicate = null) {
@@ -1079,20 +1079,20 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     /**
-     * Only run on tables which have an active column.
+     * Only run on tables which have an status column.
      * @return array
      */
     public function countActive() {
         $select = new Select($this->table);
         $select
-            ->columns(array('active', 'quantity' => new Expression('COUNT(*)')))
-            ->group('active');
+            ->columns(array('status', 'quantity' => new Expression('COUNT(*)')))
+            ->group('status');
         $sql = new Sql($this->adapter, $this->table);
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
         $stats = array();
         foreach($results as $row) {
-            $statSlug = AclAwareRowGateway::$activeStateSlugs[$row['active']];
+            $statSlug = AclAwareRowGateway::$activeStateSlugs[$row['status']];
             $stats[$statSlug] = (int) $row['quantity'];
         }
         $possibleValues = array_values(AclAwareRowGateway::$activeStateSlugs);
@@ -1108,7 +1108,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         //qtryutn
         return array(
-            'active' => 0,
+            'status' => 0,
             'inactive' => 0,
             'trash' => 0
         );
@@ -1117,17 +1117,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $tbl_name = $this->table;
         $result = array('active'=>0);
         if ($no_active) {
-            $sql = "SELECT COUNT(*) as count, 'active' as active FROM $tbl_name";
+            $sql = "SELECT COUNT(*) as count, 'status' as status FROM $tbl_name";
         } else {
             $sql = "SELECT
-                CASE active
+                CASE status
                     WHEN 0 THEN 'trash'
                     WHEN 1 THEN 'active'
                     WHEN 2 THEN 'inactive'
-                END AS active,
+                END AS status,
                 COUNT(*) as count
             FROM $tbl_name
-            GROUP BY active";
+            GROUP BY status";
         }
         $sth = $db->dbh->prepare($sql);
         // Test if there is an active column!
@@ -1141,59 +1141,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
             }
         }
         while($row = $sth->fetch(\PDO::FETCH_ASSOC))
-            $result[$row['active']] = (int)$row['count'];
+            $result[$row['status']] = (int)$row['count'];
         $total = 0;
         return $result;
     }
-
-    // public function __runDemoTestSuite($rowset) {
-    //     foreach($rowset as $row) {
-    //         echo "<h4>\$row->toArray()</h4><pre>";
-    //         print_r($row->toArray());
-    //         echo "</pre>";
-
-    //         // Doesn't work - so no worries.
-    //         // echo "\$row key/value loop\n";
-    //         // foreach($row as $key => $value) {
-    //         //     echo "\t$key => $value\n";
-    //         // }
-
-    //         // Doesn't work - so no worries.
-    //         // echo "array_keys(\$row)\n";
-    //         // print_r(array_keys($row));
-
-    //         echo "<h4>offset lookups</h4>";
-    //         $keys = array_merge(array_keys($row->__getUncensoredDataForTesting()), array("this_is_a_fake_key"));
-    //         echo "<ul>";
-    //         foreach($keys as $key) {
-    //             echo "<li><h5>$key</h5>";
-
-    //             echo "<ul>";
-    //             echo "<li>array_key_exists: ";
-    //             $keyExists = array_key_exists($key, $row);
-    //             var_dump($keyExists);
-
-    //             echo "</li><li>property_exists: ";
-    //             $propExists = property_exists($row, $key);
-    //             var_dump($propExists);
-    //             echo "</li>";
-
-    //             echo "<li>\$row[$key]: ";
-    //             try { var_dump($row[$key]); }
-    //             catch(\ErrorException $e) { echo "<em>lookup threw ErrorException</em>"; }
-    //             echo  "</li>";
-
-    //             echo "<li>\$row->$key: ";
-    //             try { var_dump($row->{$key}); }
-    //             catch(\ErrorException $e) { echo "<em>lookup threw ErrorException</em>"; }
-    //             catch(\InvalidArgumentException $e) { echo "<em>lookup threw InvalidArgumentException</em>"; }
-
-    //             echo "</li>";
-    //             echo "</ul>";
-    //         }
-    //         echo "</ul>";
-    //     }
-    //     exit;
-    // }
-
 }

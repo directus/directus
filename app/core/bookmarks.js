@@ -32,14 +32,14 @@ function(app, Backbone, EntriesManager) {
 
       var activeModel;
       _.each(this.models,function(model) {
-        model.unset('active',{silent: true});
+        model.unset('status',{silent: true});
         if(model.get('url') == route || (model.get('url') == 'tables' && route.indexOf(model.get('url')) != -1)) {
           activeModel = model;
         }
       });
 
       if(activeModel) {
-        activeModel.set({'active':true});
+        activeModel.set({'status':true});
       }
     },
     addNewBookmark: function(data) {

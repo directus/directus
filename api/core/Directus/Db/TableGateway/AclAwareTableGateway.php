@@ -142,7 +142,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 ->where
                     ->equalTo($pk_field_name, $id)
                     ->AND
-                    ->equalTo('active', AclAwareRowGateway::ACTIVE_STATE_ACTIVE);
+                    ->equalTo('status', AclAwareRowGateway::STATUS_STATE_ACTIVE);
         });
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
@@ -174,7 +174,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     public function fetchAllActiveSort($sort = null, $dir = "ASC") {
         return $this->select(function(Select $select) use ($sort, $dir) {
-            $select->where->equalTo("active", 1);
+            $select->where->equalTo("status", 1);
             if(!is_null($sort)) {
                 $select->order("$sort $dir");
             }
@@ -411,19 +411,19 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $isInactive = false;
             if(in_array("active", $insertState['columns'])) {
               //If inactive by default and active blacklisted
-              if(in_array('active', $this->acl->getTablePrivilegeList($insertTable, Acl::FIELD_WRITE_BLACKLIST))) {
+              if(in_array('status', $this->acl->getTablePrivilegeList($insertTable, Acl::FIELD_WRITE_BLACKLIST))) {
                 if(TableSchema::getTable($insertState['table'])['inactive_by_default']) {
                   $isInactive = true;
                 }
                 //Unset active columns so it can bypass Blacklist check (and uses table default)
-                $insertState['columns'] = array_diff($insertState['columns'], array('active'));
+                $insertState['columns'] = array_diff($insertState['columns'], array('status'));
               }
             }
             $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
 
             //If forcing to inactive, make it inactive
             if($isInactive) {
-              $insertState['columns']['active'] = 2;
+              $insertState['columns']['status'] = 2;
             }
         }
 

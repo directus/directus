@@ -23,7 +23,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
     public static $defaultPreferencesValues = array(
         "sort"          => "id",
         "sort_order"    => "ASC",
-        "active"        => "1,2",
+        "status"        => "1,2",
         "title"         => null
     );
 
@@ -154,7 +154,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                 columns_visible,
                 sort,
                 sort_order,
-                active,
+                status,
                 title,
                 search_string
             FROM

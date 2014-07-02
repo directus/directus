@@ -100,7 +100,7 @@ function(app, Backbone) {
           data.columnModel = columnModel;
           data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-          data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+          data.relatedCollection.fetch({includeFilters: false, data: {status:1}});
           this.listenTo(data.relatedCollection, 'sync', this.render);
         } else {
           data.filter_ui = this.getFilterDataType(selectedColumn);
@@ -270,7 +270,7 @@ function(app, Backbone) {
                 data.columnModel = columnModel;
                 data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-                data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+                data.relatedCollection.fetch({includeFilters: false, data: {status:1}});
                 that.listenTo(data.relatedCollection, 'sync', that.render);
               } else{
                 data.filter_ui = that.getFilterDataType(selectedColumn);

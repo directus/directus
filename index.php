@@ -111,8 +111,8 @@ function getUsers() {
         array(
             'table_name'=>'directus_users',
             'perPage'=>1000,
-            'active'=>1,
-            'columns_visible'=>array('active','avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
+            'status'=>1,
+            'columns_visible'=>array('status','avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
         )
     );
 }

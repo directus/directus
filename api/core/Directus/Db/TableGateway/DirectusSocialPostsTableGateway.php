@@ -40,8 +40,8 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
             ->order('datetime DESC');
         $select
             ->where
-                ->equalTo('directus_social_posts.active', 1)
-                ->equalTo('directus_social_feeds.active', 1)
+                ->equalTo('directus_social_posts.status', 1)
+                ->equalTo('directus_social_feeds.status', 1)
                 ->equalTo('directus_social_feeds.type', $type)
                 ->equalTo('directus_social_feeds.name', $handle);
         return $this->selectWith($select);
@@ -60,8 +60,8 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
             ->order('directus_social_posts.datetime DESC');
         $select
             ->where
-                ->equalTo('directus_social_posts.active', 1)
-                ->equalTo('directus_social_feeds.active', 1);
+                ->equalTo('directus_social_posts.status', 1)
+                ->equalTo('directus_social_feeds.status', 1);
         $FeedWhere = new Where;
         $SocialCache = new SocialCache();
         foreach($feeds as $feed) {
@@ -87,7 +87,7 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
     public function deleteOtherFeedPosts($feedId, array $postIds) {
         $Update = new Update(self::$_tableName);
         $Update
-            ->set(array('active' => 0));
+            ->set(array('status' => 0));
         $Update
             ->where
                 ->addPredicate(new NotIn('foreign_id', $postIds))

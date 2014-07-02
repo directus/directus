@@ -57,7 +57,7 @@ require([
   });
 
   Handlebars.registerHelper('activeMap', function(model) {
-    switch (model.get('active')) {
+    switch (model.get('status')) {
       case 0:
         return 'deleted';
       case 1:

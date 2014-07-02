@@ -39,7 +39,7 @@ define(function(require, exports, module) {
         preferences.columns_visible = preferences.columns_visible.split(',');
       }
 
-      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'active'));
+      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'status'));
 
       // preferences normally trump filters, this is an edge case
       // @todo fix the data structure to make this logic less wierd
@@ -47,11 +47,11 @@ define(function(require, exports, module) {
         result.columns_visible = this.filters.columns_visible;
       }
 
-      // very wierd hot-fix to hardcode the user table to always show active=1
+      // very wierd hot-fix to hardcode the user table to always show status=1
       // @todo make sure that preferences and filters follow the rules!
       if ('directus_users' === this.table.id) {
         // console.warn('Active users only');
-        result.active = "1";
+        result.status = "1";
       }
 
       return result;
@@ -65,7 +65,7 @@ define(function(require, exports, module) {
         return this.table.get('total');
       }
 
-      switch (this.getFilter('active')) {
+      switch (this.getFilter('status')) {
         case '1,2':
           totalCount = this.table.get('active');
           if (this.table.has('inactive')) {
@@ -156,7 +156,7 @@ define(function(require, exports, module) {
         perPage: this.rowsPerPage,
         sort: 'id',
         sort_order: 'ASC',
-        active: '1,2'
+        status: '1,2'
       }, this.filters);
 
       if (options.preferences) {

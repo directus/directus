@@ -108,7 +108,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         active = '1,2';
       }
 
-      var data = {active: active, 'columns_visible[]': []};
+      var data = {status: active, 'columns_visible[]': []};
 
       var columns_visible = this.options.settings.get('visible_column').split(',');
 

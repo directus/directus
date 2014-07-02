@@ -41,8 +41,8 @@ function(app, Backbone) {
       //Filter active/inactive/deleted items
       activeState = _.map(activeColumns,Number);
       models = this.collection.filter(function(model) {
-        if (model.has('active')) {
-          return (_.indexOf(activeState, Number(model.get('active'))) > -1);
+        if (model.has('status')) {
+          return (_.indexOf(activeState, Number(model.get('status'))) > -1);
         } else {
           return true;
         }
