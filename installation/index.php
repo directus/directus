@@ -318,7 +318,7 @@ if($step == 5) {
 }
 
 ?>
-
+<script>var step = <?php echo($step); ?>;</script>
       </div>
     </div>
 
