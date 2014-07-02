@@ -15,7 +15,7 @@
         <div class="field required">
         	<select id="uiType" name="ui_type">
             {{#ui_types}}
-              <option {{#if selected}}selected{{/if}}>{{title}}</option>
+              <option {{#if selected}}selected{{/if}}>{{capitalize title}}</option>
             {{/ui_types}}
   	      </select>
         </div>
