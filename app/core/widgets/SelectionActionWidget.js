@@ -26,43 +26,14 @@ function(app, Backbone) {
     events: {
       'click .actionBtn': function(e) {
         var value = $(e.target).closest('span').attr('data-value');
-
         if(value == 0) {
-          if(!confirm("Are you sure? This item will be removed from the system.")) {
-            return;
-          }
+          var that = this;
+          app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system.', callback: function() {
+            that.doAction(e);
+          }});
+        } else {
+          this.doAction(e);
         }
-
-        var collection = this.collection;
-        var active = collection.getFilter('active');
-
-        var $checked = $('.select-row:checked');
-        var expectedResponses = $checked.length;
-
-
-        if(!isNaN(active)) {
-          var startCount = collection.where({'active': parseInt(active)}).length;
-        }
-
-        var success = function() {
-          expectedResponses--;
-          if (expectedResponses === 0) {
-            collection.trigger('visibility');
-            collection.trigger('select');
-            if(startCount) {
-              if(collection.where({'active': parseInt(active)}).length != startCount) {
-                collection.updateActiveCount(startCount - collection.where({'active': parseInt(active)}).length);
-              }
-            }
-          }
-        };
-
-        $checked.each(function() {
-          var id = this.value;
-
-          var model = collection.get(id);
-          model.save({active: value}, {silent: true, patch:true, validate:false, success: success});
-        });
       },
       'click #batchEditBtn': function(e) {
         var $checked = $('.select-row:checked');
@@ -74,6 +45,40 @@ function(app, Backbone) {
         route.push(ids);
         app.router.go(route);
       }
+    },
+
+    doAction: function(e) {
+      var value = $(e.target).closest('span').attr('data-value');
+      var collection = this.collection;
+      var active = collection.getFilter('active');
+
+      var $checked = $('.select-row:checked');
+      var expectedResponses = $checked.length;
+
+
+      if(!isNaN(active)) {
+        var startCount = collection.where({'active': parseInt(active)}).length;
+      }
+
+      var success = function() {
+        expectedResponses--;
+        if (expectedResponses === 0) {
+          collection.trigger('visibility');
+          collection.trigger('select');
+          if(startCount) {
+            if(collection.where({'active': parseInt(active)}).length != startCount) {
+              collection.updateActiveCount(startCount - collection.where({'active': parseInt(active)}).length);
+            }
+          }
+        }
+      };
+
+      $checked.each(function() {
+        var id = this.value;
+
+        var model = collection.get(id);
+        model.save({active: value}, {silent: true, patch:true, validate:false, success: success});
+      });
     },
 
     serialize: function() {

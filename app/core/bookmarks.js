@@ -89,13 +89,12 @@ function(app, Backbone, EntriesManager) {
             table = "directus_" + table;
           }
           if(title && table) {
-            if(!confirm("Are you sure you wish to delete the snapshot: " + title)) {
-              return false;
-            }
-            var user = app.users.getCurrentUser().get("id");
-            var collection = EntriesManager.getInstance(table);
-            collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({title:title, table_name: table, user: user}),success: function() {
-              app.getBookmarks().removeBookmark({title: title, icon_class: 'icon-search', user: user});
+            app.router.openModal({type: 'confirm', text: 'Are you sure you wish to delete the snapshot: ' + title, callback: function() {
+              var user = app.users.getCurrentUser().get("id");
+              var collection = EntriesManager.getInstance(table);
+              collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({title:title, table_name: table, user: user}),success: function() {
+                app.getBookmarks().removeBookmark({title: title, icon_class: 'icon-search', user: user});
+              }});
             }});
           }
         }

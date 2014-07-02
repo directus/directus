@@ -41,38 +41,39 @@ function(app, Backbone, PreferenceModel) {
     },
 
     saveSnapshot: function() {
-      var name = prompt("Please enter a name for your Snapshot");
-      if(name === null) {
-        return;
-      }
-
       var that = this;
-      var exists = false;
-      //Check for Duplicate
-      this.options.widgetOptions.snapshots.forEach(function(snapshot) {
-        if(name == snapshot) {
-          alert('A Snapshot With that name already exists!');
-          exists = true;
+      app.router.openModal({type: 'prompt', text: 'Please enter a name for your Snapshot', callback: function(name ) {
+        if(name === null) {
           return;
         }
-      });
 
-      if(exists) {
-        return;
-      }
+        var exists = false;
+        //Check for Duplicate
+        that.options.widgetOptions.snapshots.forEach(function(snapshot) {
+          if(name == snapshot) {
+            alert('A Snapshot With that name already exists!');
+            exists = true;
+            return;
+          }
+        });
 
-      if(name === null || name === "") {
-        alert('Please Fill In a Valid Name');
-        return;
-      }
+        if(exists) {
+          return;
+        }
 
-      //Save id so it can be reset after render
-      this.defaultId = this.collection.preferences.get('id');
-      //Unset Id so that it creates new Preference
-      this.collection.preferences.unset('id');
-      this.collection.preferences.set({title: name});
-      this.collection.preferences.save();
-      this.pinSnapshot(name);
+        if(name === null || name === "") {
+          alert('Please Fill In a Valid Name');
+          return;
+        }
+
+        //Save id so it can be reset after render
+        that.defaultId = that.collection.preferences.get('id');
+        //Unset Id so that it creates new Preference
+        that.collection.preferences.unset('id');
+        that.collection.preferences.set({title: name});
+        that.collection.preferences.save();
+        that.pinSnapshot(name);
+      }});
     },
 
     pinSnapshot: function(title) {

@@ -52,11 +52,10 @@ function(app, Backbone) {
     events: {
      'click a[href$="#logout"]': function(e) {
         e.preventDefault();
-        if(confirm("Are your sure you want to logout?")) {
+        app.router.openModal({type: 'confirm', text: 'Are your sure you want to logout?', callback: function() {
           window.location.href = app.API_URL + "auth/logout";
-        } else {
-          return false;
-        }
+        }});
+        return false;
       }
     },
 
