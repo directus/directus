@@ -18,8 +18,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
   Module.variables = [
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    {id: 'template', ui: 'textinput'},
-    {id: 'url', ui: 'textinput'}
+    {id: 'template', ui: 'textinput'}
   ];
 
   var template = '<input type="text" value="{{value}}" class="for_display_only" {{#if readonly}}readonly{{/if}}/> \
@@ -71,7 +70,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     serialize: function() {
       var relatedModel = this.model.get(this.name);
       var value = '';
-
+      console.log(relatedModel);
       // The item is not new, it has a value
       if (!relatedModel.isNew()) {
         value = relatedModel.get(this.visibleCoumn);
@@ -87,16 +86,27 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     },
 
     afterRender: function () {
-      var url = this.columnSchema.options.get('url');
       var template = this.columnSchema.options.get('template');
       var self = this;
 
+      var fetchItems = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/?columns=' + this.visibleCoumn,
+      });
+
+      fetchItems.initialize();
+
       this.$(".for_display_only").typeahead({
-        minLength: 2,
+        minLength: 1,
         items: 5,
         valueKey: this.visibleCoumn,
-        template: Handlebars.compile('<div>'+template+'</div>'),
-        remote: url,
+        template: Handlebars.compile('<div>'+template+'</div>')
+      },
+      {
+        name: 'related-items',
+        displayKey: 'value',
+        source: fetchItems.ttAdapter()
       });
 
       this.$('.for_display_only').on('typeahead:selected', function(e, datum) {
@@ -111,6 +121,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
     initialize: function(options) {
       this.visibleCoumn = this.columnSchema.options.get('visible_column');
+      var value = this.model.get(this.name);
+      this.collection = value.collection.getNewInstance({omit: ['preferences']});
+      console.log(value);
     }
 
   });
