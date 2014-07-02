@@ -107,8 +107,18 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       if(this.options.settings.get('show_inactive') == '1') {
         active = '1,2';
       }
+
+      var data = {active: active, 'columns_visible[]': []};
+
+      var columns_visible = this.options.settings.get('visible_column').split(',');
+
+      columns_visible.forEach(function(column) {
+        data['columns_visible[]'].push(column);
+      });
+
+      console.log(data);
       // FILTER HERE!
-      this.collection.fetch({includeFilters: false, data: {active:active}});
+      this.collection.fetch({includeFilters: false, data: data});
       //this.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }
