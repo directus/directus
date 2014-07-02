@@ -43,6 +43,7 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
     $_SESSION['db_password'] = $_POST['password'];
     $_SESSION['db_name'] = $_POST['db_name'];
     $_SESSION['db_prefix'] = $_POST['db_prefix'];
+    $_SESSION['install_sample'] = $_POST['install_sample'];
     $_SESSION['step'] = 3;
     $step = 3;
   } else {
@@ -50,7 +51,7 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
   }
 }
 
-if($step == 4 && isset($_POST['install_sample'])) {
+if($step == 4 && isset($_POST['install'])) {
   $_SESSION['step'] = 5;
   $step = 5;
 }
@@ -165,6 +166,9 @@ if($step == 2) {
         Password<input type="password" name="password"><br>
         Database Name<input type="text" name="db_name"><br>
         Database Prefix<input type="text" name="db_prefix"><br>
+        Install Sample Data:<br>
+      <input type="radio" name="install_sample" value="no">No<br>
+      <input type="radio" name="install_sample" value="yes">Yes
 <?php
 }
 
@@ -179,9 +183,6 @@ if($step == 4) {
 
   <div class="body">
     <div class="container">
-      Install Sample Data:<br>
-      <input type="radio" name="install_sample" value="no">No<br>
-      <input type="radio" name="install_sample" value="yes">Yes
       <br><br>
       Email This Configuration To <?php echo $_SESSION['email'];?>: <input type="checkbox" name="send_config_email"><br>
 

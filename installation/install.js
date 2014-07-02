@@ -72,8 +72,7 @@ $(window).ready(function() {
     }
   }
   function CheckStep4() {
-    $('button[type=submit]').removeClass('disabled');
-    $('button[type=submit]').html('Install');
+    $('button[type=submit]').removeClass('disabled').html('Install').attr('name', 'install');
   }
 
   $('button').click(function(e) {
