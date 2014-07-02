@@ -35,18 +35,9 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
       }
     },
 
-    leftToolbar: function() {
-      return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "saveBtn", iconClass: "icon-check", buttonClass: "add-color-background"}})
-      ];
-    },
-
     events: {
       'click #removeOverlay': function() {
         app.router.removeOverlayPage(this);
-      },
-      'click #saveBtn': function() {
-        this.save();
       }
     },
 
@@ -67,8 +58,8 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
         var $target = $(e.target),
             $tr = $target.closest('tr');
 
-      var readBlacklist = (this.model.get('read_field_blacklist')) ? this.model.get('read_field_blacklist').split(',') : [];
-      var writeBlacklist = (this.model.get('write_field_blacklist')) ? this.model.get('write_field_blacklist').split(',') : [];
+        var readBlacklist = (this.model.get('read_field_blacklist')) ? this.model.get('read_field_blacklist').split(',') : [];
+        var writeBlacklist = (this.model.get('write_field_blacklist')) ? this.model.get('write_field_blacklist').split(',') : [];
 
 
         this.toggleIcon($target);
@@ -99,6 +90,8 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
             }
           }
         }
+
+        this.model.save();
       }
     },
 
@@ -119,9 +112,6 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
             }, this);
 
       return data;
-    },
-
-    save: function() {
     },
 
     initialize: function(options) {
@@ -191,11 +181,6 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
       //@todo: link real col
       var view = new EditFieldsOverlay({model: model});
       app.router.overlayPage(view);
-
-      view.save = function() {
-        view.model.save();
-        app.router.removeOverlayPage(view);
-      }
     },
 
     serialize: function() {

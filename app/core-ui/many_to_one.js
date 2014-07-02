@@ -107,8 +107,18 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       if(this.options.settings.get('show_inactive') == '1') {
         active = '1,2';
       }
+
+      var data = {active: active, 'columns_visible[]': []};
+
+      var columns_visible = this.options.settings.get('visible_column').split(',');
+
+      columns_visible.forEach(function(column) {
+        data['columns_visible[]'].push(column);
+      });
+
+      console.log(data);
       // FILTER HERE!
-      this.collection.fetch({includeFilters: false, data: {active:active}});
+      this.collection.fetch({includeFilters: false, data: data});
       //this.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }
@@ -137,9 +147,17 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     if (options.value === undefined) return '';
     if(options.settings.get('visible_column_template') !== undefined) {
       var displayTemplate = Handlebars.compile(options.settings.get('visible_column_template'));
-      if (options.value instanceof Backbone.Model) return displayTemplate(options.value.attributes);
+      if (options.value instanceof Backbone.Model) {
+        return displayTemplate(options.value.attributes);
+      } else if(options.value instanceof Object) {
+        return displayTemplate(options.value);
+      }
     }
-    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
+    if (options.value instanceof Backbone.Model) {
+      return options.value.get(options.settings.get('visible_column'));
+    }  else if(options.value instanceof Object) {
+      return options.value[options.settings.get('visible_column')];
+    }
     return options.value;
   };
 

@@ -120,9 +120,16 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
       var ids = [];
 
-      relatedCollection.each(function(model) {
-        ids.push(model.get('data').id);
-      });
+      //Remove inactive items from collection
+      for(var i=0; i<relatedCollection.size(); i++) {
+        var model = relatedCollection.at(i);
+        if(model.get('data').get('active') !== 0) {
+          ids.push(model.get('data').id);
+        } else {
+          relatedCollection.remove(model, {silent: true});
+          i--;
+        }
+      }
 
       if(ids.length > 0) {
         relatedCollection.nestedCollection.setFilter({ids: ids.join(',')});
