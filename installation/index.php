@@ -8,6 +8,14 @@ if(isset($_SESSION['step'])) {
   $step = 0;
 }
 
+if(isset($_POST['backButton'])) {
+  if($step > 0) {
+    $_SESSION['step'] = $step - 1;
+    $step--;
+  }
+}
+
+
 if($step == 0 && isset($_POST['start'])) {
   $_SESSION['step'] = 1;
   $step = 1;
@@ -316,7 +324,7 @@ if($step == 5) {
 
     <div class="footer">
       <div class="container">
-        <button class="button left<?PHP if($step == 0){echo " hide";}?>">Back</button>
+        <button name="backButton" class="button left<?PHP if($step == 0){echo " hide";}?>">Back</button>
         <!--<div class="button right<?PHP if($step == 0){echo " hide";}?> primary disabled">Continue</div>-->
         <button type="submit" class="button right<?PHP if($step == 0){echo " hide";}?> primary disabled">Continue</button>
 
