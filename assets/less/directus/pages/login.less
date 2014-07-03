@@ -1,43 +1,49 @@
 .login-box {
   left:50%;
-  margin-left: -186px;
-  margin-top:-136px;
+  margin-left: -175px;
+  margin-top:-100px;
   position: absolute;
   top:50%;
-  width:372px;
+  width:350px;
   button[type="submit"] {
-    border: none;
-    background: transparent;
-    color: @darkGrey;
-    font-size: 30px;
-    margin-top: @smallPad;
-    &:after {
-      .icon;
-      content: "\E4AE";
-      font-size: 50px;
-      line-height: 30px;
-      margin-left: @smallPad;
-    }
+    float: right;
+    width: 150px;
+    font-size: 14px;
+    background: @darkGrey;
+    // border: none;
+    // background: transparent;
+    // color: @darkGrey;
+    // font-size: 30px;
+    // margin-top: @smallPad;
+    // &:after {
+    //   .icon;
+    //   content: "\E4AE";
+    //   font-size: 50px;
+    //   line-height: 30px;
+    //   margin-left: @smallPad;
+    // }
   }
 }
 .login-panel {
-  background-color: fade(@white, 25%);
+  background-color: fade(@white, 30%);
   //box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05);
   .border-radius(@baseRadius, @baseRadius, @baseRadius, @baseRadius);
   padding:20px;
   position: relative;
-  &:after {
-    .triangle-bottom(12px, 12px, fade(@white, 25%));
-    bottom: -12px;
-    content: "";
-    left: 50px;
-    position: absolute;
-  }
+  // &:after {
+  //   .triangle-bottom(12px, 12px, fade(@white, 30%));
+  //   bottom: -12px;
+  //   content: "";
+  //   left: 50px;
+  //   position: absolute;
+  // }
   input {
     padding: @smallPad;
     width: 100%;
     border-color: @white;
     color: @darkGrey;
+    -webkit-text-fill-color: @darkGrey;
+    font-size: 14px;
     .border-radius(@baseRadius, @baseRadius, @baseRadius, @baseRadius);
     &:first-child {
       margin-bottom: @smallPad;
@@ -45,6 +51,10 @@
   }
   p {
     position: relative;
+    margin: 0 0 10px 0;
+    &.no-margin {
+      margin: 0;
+    }
     #forgot-password {
       background: transparent;
       border: none;
@@ -52,7 +62,7 @@
       padding: 0px;
       position: absolute;
       right: 10px;
-      top: 3px;
+      top: 5px;
       &:hover {
         &:after {
           color: @darkGrey;
