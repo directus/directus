@@ -259,7 +259,7 @@ if($step == 4) {
           </tr>
           <tr>
             <td class="item">config.php Writable</td>
-            <td><?php if(is_writable('../api/config.php')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span> Please make ../api/config.php writable');}?></td>
+            <td><?php if(is_writable('../api/config.php')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span id="failSpan"><span class="label label-important">No</span> Please make ../api/config.php writable <div id="retryButton" class="button">Check</div></span>');}?></td>
           </tr>
           <tr>
             <td class="item">configuration.php Writable</td>
@@ -288,6 +288,11 @@ if($step == 4) {
       </table>
 
 <?php
+  if($showConfig) {
+    require_once('config_setup.php');
+    echo("<h1>$configText</h1>");
+  }
+
 }
 
 if($step == 3) {

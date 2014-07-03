@@ -81,4 +81,19 @@ $(window).ready(function() {
       return false;
     }
   });
+  var fetching = false;
+  $('#retryButton').click(function(e) {
+    $target = $(e.target);
+    if(fetching) {
+      return;
+    }
+    fetching = true;
+
+    $.get('config_test.php', function(res) {
+      fetching = false;
+      if(res === 'true') {
+        $('#failSpan').html('<span class="label label-success">Yes</span>');
+      }
+    });
+  });
 });
