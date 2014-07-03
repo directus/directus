@@ -36,14 +36,18 @@ if($step == 1 && isset($_POST['email']) && isset($_POST['site_name']) && isset($
 
 if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isset($_POST['db_name'])) {
   //Check for db connection
-  $connection = mysqli_connect($_POST['host_name'], $_POST['username'], $_POST['password'], $_POST['db_name']);
+  $conn = mysqli_init();
+  mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+  $connection = mysqli_real_connect($conn, $_POST['host_name'], $_POST['username'], $_POST['password'], $_POST['db_name']);
   if($connection) {
     $_SESSION['host_name'] = $_POST['host_name'];
     $_SESSION['username'] = $_POST['username'];
     $_SESSION['db_password'] = $_POST['password'];
     $_SESSION['db_name'] = $_POST['db_name'];
     $_SESSION['db_prefix'] = $_POST['db_prefix'];
-    $_SESSION['install_sample'] = $_POST['install_sample'];
+    if(isset($_POST['install_sample'])) {
+      $_SESSION['install_sample'] = $_POST['install_sample'];
+    }
     $_SESSION['step'] = 3;
     $step = 3;
   } else {
