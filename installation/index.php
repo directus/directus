@@ -156,11 +156,11 @@ if($step == 1) {
   <div class="body">
     <div class="container">
 
-  Project Name<input type="text" name="site_name"><br>
-  Project Path<input type="text" value="/directus/" name="directus_path"><br>
-  Admin Email<input type="email" name="email"><br>
-  Admin Password<input type="password" name="password"><br>
-  Confirm Admin Password<input type="password" name="password_confirm"><br>
+  Project Name<input type="text" name="site_name" value="<?php echo(isset($_SESSION['site_name']) ? $_SESSION['site_name'] : ''); ?>"><br>
+  Project Path<input type="text" name="directus_path" value="<?php echo(isset($_SESSION['directus_path']) ? $_SESSION['directus_path'] : '/directus/'); ?>"><br>
+  Admin Email<input type="email" name="email" value="<?php echo(isset($_SESSION['email']) ? $_SESSION['email'] : ''); ?>"><br>
+  Admin Password<input type="password" name="password" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
+  Confirm Admin Password<input type="password" name="password_confirm" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
 
 <?php
   }
@@ -182,7 +182,7 @@ if($step == 2) {
 
   <div class="body">
     <div class="container">
-        Host Name<input type="text" name="host_name"><br>
+        Host Name<input type="text" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : ''); ?>"><br>
         Username<input type="text" name="username"><br>
         Password<input type="password" name="password"><br>
         Database Name<input type="text" name="db_name"><br>
