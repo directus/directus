@@ -23,6 +23,26 @@
     //   margin-left: @smallPad;
     // }
   }
+  p.error {
+    color: @deleteColor;
+    font-weight: 600;
+    margin: 0;
+    padding: 15px 0 0 10px;
+    text-align: center;
+  }
+  p.message {
+    color: green;
+    margin: 0;
+    padding: 15px 0 0 10px;
+    text-align: center;
+  }
+}
+.login-panel {
+  background-color: fade(@white, 30%);
+  //box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05);
+  .border-radius(@baseRadius, @baseRadius, @baseRadius, @baseRadius);
+  padding:20px;
+  position: relative;
 }
 .login-panel {
   background-color: fade(@white, 30%);
@@ -74,17 +94,6 @@
         content: "\2753";
         line-height: 25px;
       }
-    }
-    &.error {
-      color: @deleteColor;
-      font-weight: 600;
-      margin: 0;
-      padding: 10px 0 0 10px;
-    }
-    &.message {
-      color: green;
-      margin: 0;
-      padding: 15px 10px 0;
     }
   }
 }

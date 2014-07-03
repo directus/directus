@@ -3955,6 +3955,39 @@ body.initial-load #sidebar {
   font-size: 14px;
   background: #5b5b5b;
 }
+.login-box p.error {
+  color: #c1272d;
+  font-weight: 600;
+  margin: 0;
+  padding: 15px 0 0 10px;
+  text-align: center;
+}
+.login-box p.message {
+  color: green;
+  margin: 0;
+  padding: 15px 0 0 10px;
+  text-align: center;
+}
+.login-panel {
+  background-color: rgba(255, 255, 255, 0.3);
+  -webkit-border-top-right-radius: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  -webkit-border-bottom-left-radius: 2px;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-topright: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-topleft: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 20px;
+  position: relative;
+}
 .login-panel {
   background-color: rgba(255, 255, 255, 0.3);
   -webkit-border-top-right-radius: 2px;
@@ -4034,17 +4067,6 @@ body.initial-load #sidebar {
   color: #ededed;
   content: "\2753";
   line-height: 25px;
-}
-.login-panel p.error {
-  color: #c1272d;
-  font-weight: 600;
-  margin: 0;
-  padding: 10px 0 0 10px;
-}
-.login-panel p.message {
-  color: green;
-  margin: 0;
-  padding: 15px 10px 0;
 }
 .message .message-content {
   margin-left: 40px;

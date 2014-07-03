@@ -69,9 +69,9 @@ input[type="text"], input[type="password"] {font-size:16px; width:360px; border:
     <!--<label class="checkbox">
         <input type="checkbox" name="remember" /> Keep me logged in on this computer
     </label>-->
-    <p class="error" style="display:none;"></p>
-    <p class="message" style="display:none;"></p>
   </div>
+  <p class="error" style="display:none;"></p>
+  <p class="message" style="display:none;"></p>
   <!-- <button type="submit" class="btn btn-primary">Sign in</button> -->
   <!-- <button id="forgot-password" class="btn btn-primary">Forgot Password</button> -->
 </form>
