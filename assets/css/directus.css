@@ -3943,37 +3943,33 @@ body.initial-load #sidebar {
 }
 .login-box {
   left: 50%;
-  margin-left: -186px;
-  margin-top: -136px;
+  margin-left: -175px;
+  margin-top: -100px;
   position: absolute;
   top: 50%;
-  width: 372px;
+  width: 350px;
 }
 .login-box button[type="submit"] {
-  border: none;
-  background: transparent;
-  color: #5b5b5b;
-  font-size: 30px;
-  margin-top: 10px;
+  float: right;
+  width: 150px;
+  font-size: 14px;
+  background: #5b5b5b;
 }
-.login-box button[type="submit"]:after {
-  display: inline-block;
-  font-family: 'Directus';
-  font-size: 300%;
-  font-style: normal;
-  font-weight: 100 !important;
-  letter-spacing: normal;
-  line-height: 90%;
-  text-transform: lowercase !important;
-  vertical-align: top;
-  -webkit-font-smoothing: antialiased !important;
-  content: "\E4AE";
-  font-size: 50px;
-  line-height: 30px;
-  margin-left: 10px;
+.login-box p.error {
+  color: #c1272d;
+  font-weight: 600;
+  margin: 0;
+  padding: 15px 0 0 10px;
+  text-align: center;
+}
+.login-box p.message {
+  color: green;
+  margin: 0;
+  padding: 15px 0 0 10px;
+  text-align: center;
 }
 .login-panel {
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.3);
   -webkit-border-top-right-radius: 2px;
   -webkit-border-bottom-right-radius: 2px;
   -webkit-border-bottom-left-radius: 2px;
@@ -3992,22 +3988,33 @@ body.initial-load #sidebar {
   padding: 20px;
   position: relative;
 }
-.login-panel:after {
-  border-style: solid;
-  height: 0px;
-  width: 0px;
-  border-width: 12px 12px 0 12px;
-  border-color: rgba(255, 255, 255, 0.25) transparent transparent transparent;
-  bottom: -12px;
-  content: "";
-  left: 50px;
-  position: absolute;
+.login-panel {
+  background-color: rgba(255, 255, 255, 0.3);
+  -webkit-border-top-right-radius: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  -webkit-border-bottom-left-radius: 2px;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-topright: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-topleft: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 20px;
+  position: relative;
 }
 .login-panel input {
   padding: 10px;
   width: 100%;
   border-color: #ffffff;
   color: #5b5b5b;
+  -webkit-text-fill-color: #5b5b5b;
+  font-size: 14px;
   -webkit-border-top-right-radius: 2px;
   -webkit-border-bottom-right-radius: 2px;
   -webkit-border-bottom-left-radius: 2px;
@@ -4029,6 +4036,10 @@ body.initial-load #sidebar {
 }
 .login-panel p {
   position: relative;
+  margin: 0 0 10px 0;
+}
+.login-panel p.no-margin {
+  margin: 0;
 }
 .login-panel p #forgot-password {
   background: transparent;
@@ -4037,7 +4048,7 @@ body.initial-load #sidebar {
   padding: 0px;
   position: absolute;
   right: 10px;
-  top: 3px;
+  top: 5px;
 }
 .login-panel p #forgot-password:hover:after {
   color: #5b5b5b;
@@ -4056,17 +4067,6 @@ body.initial-load #sidebar {
   color: #ededed;
   content: "\2753";
   line-height: 25px;
-}
-.login-panel p.error {
-  color: #c1272d;
-  font-weight: 600;
-  margin: 0;
-  padding: 10px 0 0 10px;
-}
-.login-panel p.message {
-  color: green;
-  margin: 0;
-  padding: 15px 10px 0;
 }
 .message .message-content {
   margin-left: 40px;
