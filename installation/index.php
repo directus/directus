@@ -102,10 +102,11 @@ if($step == 0) {
 
   <div class="body">
     <div class="container intro">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tristique, tellus faucibus sodales placerat, sem tellus laoreet sapien, vel adipiscing orci erat id libero.
-      Aenean suscipit, lacus a faucibus interdum, ligula neque laoreet mi, quis elementum risus ante ac magna. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-      posuere cubilia Curae; Ut sagittis risus in tincidunt commodo. Phasellus quis orci ut justo fringilla gravida nec eu tortor. Vestibulum ante ipsum primis in faucibus orci
-      luctus et ultrices posuere cubilia Curae; Curabitur pharetra a orci ac mattis.
+      Welcome to Directus, a free and open source content management framework written in Backbone.js that provides a feature-rich environment
+      for rapid development and management of custom SQL database solutions. Directus makes no assumptions about how you should architect your
+      schema – giving you the freedom to tailor the database to your specific project needs and provide an intuitive, one-to-one interface to
+      your users. And instead of encompassing your entire project, Directus focuses on a lightweight core suite designed to integrate with the
+      frameworks already in your workflow.
       <input type="hidden" name="start" value="true">
       <button type="submit" class="button primary">Get Started</button>
   <?php
@@ -127,8 +128,16 @@ if($step == 1) {
 
   if($error) {
     ?>
+    <div class="header">
+        <div class="container">
+          <img src="directus-logo.gif">
+          <div>Missing Requirements</div>
+        </div>
+      </div>
 
-  <div><h1><?php echo($error); ?></h1></div>
+      <div class="body">
+        <div class="container">
+          <h2><?php echo($error); ?></h2>
   <?php
   die();
   } else {
@@ -174,9 +183,7 @@ if($step == 2) {
         Password<input type="password" name="password"><br>
         Database Name<input type="text" name="db_name"><br>
         Database Prefix<input type="text" name="db_prefix"><br>
-        Install Sample Data:<br>
-      <input type="radio" name="install_sample" value="no">No<br>
-      <input type="radio" name="install_sample" value="yes">Yes
+        <input type="checkbox" name="install_sample" value="yes">Install Sample Data<br>
 <?php
 }
 
@@ -338,9 +345,8 @@ if($step == 5) {
 
     <div class="footer">
       <div class="container">
-        <button name="backButton" class="button left<?PHP if($step == 0){echo " hide";}?>">Back</button>
-        <!--<div class="button right<?PHP if($step == 0){echo " hide";}?> primary disabled">Continue</div>-->
         <button type="submit" class="button right<?PHP if($step == 0){echo " hide";}?> primary disabled">Continue</button>
+        <button name="backButton" class="button left<?PHP if($step == 0){echo " hide";}?>">Back</button>
 
         <div class="breadcrumb">
           <span class="<?PHP if($step == 1){echo "current";} elseif($step > 1){echo "complete";}?>">Project Info</span>
