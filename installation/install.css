@@ -8,6 +8,11 @@ a {
   color: inherit;
   text-decoration: none;
 }
+input[type=checkbox] {
+  margin: 0 10px 0 0;
+  top: -2px;
+  position: relative;
+}
 .container {
   text-align: center;
   max-width: 960px;
