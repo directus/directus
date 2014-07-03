@@ -112,6 +112,26 @@ if($step == 0) {
 }
 
 if($step == 1) {
+    $error = null;
+  if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+    $error = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
+  }
+
+  if (!defined('PDO::ATTR_DRIVER_NAME')) {
+    $error = 'Your host needs to have PDO enabled to run this version of Directus!';
+  }
+
+  if (!extension_loaded('gd') || !function_exists('gd_info')) {
+    $error = 'Your host needs to have GD Library enabled to run this version of Directus!';
+  }
+
+  if($error) {
+    ?>
+
+  <div><h1><?php echo($error); ?></h1></div>
+  <?php
+  die();
+  } else {
   ?>
   <div class="header">
     <div class="container">
@@ -122,20 +142,7 @@ if($step == 1) {
 
   <div class="body">
     <div class="container">
-  <?php
-  if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-    die('Your host needs to use PHP 5.5.0 or higher to run this version of Directus!');
-  }
 
-  if (!defined('PDO::ATTR_DRIVER_NAME')) {
-    die('Your host needs to have PDO enabled to run this version of Directus!');
-  }
-
-  if (!extension_loaded('gd') || !function_exists('gd_info')) {
-    die('Your host needs to have GD Library enabled to run this version of Directus!');
-  }
-
-  ?>
   Project Name<input type="text" name="site_name"><br>
   Project Path<input type="text" value="/directus/" name="directus_path"><br>
   Admin Email<input type="email" name="email"><br>
@@ -143,6 +150,7 @@ if($step == 1) {
   Confirm Admin Password<input type="password" name="password_confirm"><br>
 
 <?php
+  }
   if(extension_loaded('imagick')) {
     //echo '<span class="note">Imagick Already Installed</span>';
   } else {
