@@ -105,6 +105,11 @@ function(app, Backbone) {
         } else {
           data.filter_ui = this.getFilterDataType(selectedColumn);
         }
+      } else if(this.collection.structure.get(selectedColumn).get('type') == "ENUM") {
+        var columnModel = this.collection.structure.get(selectedColumn);
+        var vals = columnModel.get('column_type').substring(5, columnModel.get('column_type').length-1);
+        vals = vals.replace(/\'/g, "").split(',');
+        data.dropdownValues = vals;
       } else {
         data.filter_ui = this.getFilterDataType(selectedColumn);
       }
@@ -138,6 +143,11 @@ function(app, Backbone) {
           });
 
           data.filters[i].relatedEntries = _.sortBy(data.filters[i].relatedEntries, 'visible_column_template');
+        } else if(item.dropdownValues) {
+          data.filters[i].relatedEntries = [];
+          _.each(item.dropdownValues, function(model) {
+            data.filters[i].relatedEntries.push({visible_column:model, visible_column_template: model});
+          });
         } else {
           var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
           if(item.filterData) {
@@ -161,7 +171,7 @@ function(app, Backbone) {
       $('.filter-ui').last().find('input').focus();
       var that = this;
       _.each(this.options.filters, function(item) {
-        if(item.relatedCollection) {
+        if(item.relatedCollection || item.dropdownValues) {
           if(item.filterData) {
             that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
           }
@@ -275,6 +285,11 @@ function(app, Backbone) {
               } else{
                 data.filter_ui = that.getFilterDataType(selectedColumn);
               }
+            } else if(that.collection.structure.get(selectedColumn).get('type') == "ENUM") {
+              var columnModel = that.collection.structure.get(selectedColumn);
+              var vals = columnModel.get('column_type').substring(5, columnModel.get('column_type').length-1);
+              vals = vals.replace(/\'/g, "").split(',');
+              data.dropdownValues = vals;
             } else if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
               data.filter_ui = that.getFilterDataType(selectedColumn);
             }
