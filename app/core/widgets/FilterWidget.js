@@ -92,7 +92,7 @@ function(app, Backbone) {
 
       data.columnName = selectedColumn;
 
-      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
+      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') == "one_to_many") {
         var columnModel = this.collection.structure.get(selectedColumn);
 
         if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
@@ -263,7 +263,7 @@ function(app, Backbone) {
 
             data.columnName = selectedColumn;
 
-            if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
+            if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') == "one_to_many") {
               var columnModel = that.collection.structure.get(selectedColumn);
               if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
                 //Get Related Column Collection

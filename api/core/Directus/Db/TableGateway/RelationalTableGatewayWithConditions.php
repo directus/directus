@@ -119,6 +119,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
         if(isset($params['adv_where'])) {
           $select->where($params['adv_where']);
         }
+
         if(isset($params['adv_search']) && !empty($params['adv_search'])) {
           $i = 0;
           foreach ($params['adv_search'] as $search_col) {
@@ -167,7 +168,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
               $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
               $search_col['value'] = "%".$search_col['value']."%";
-              $where = $select->where->nest;
+
 
               if(isset($target['options']['filter_column'])) {
                 $targetCol = $target['options']['filter_column'];
@@ -178,14 +179,15 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               foreach ($relatedTableMetadata as $col) {
                 if($col['id'] == $targetCol) {
                   if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
+                    $where = $select->where->nest;
                     $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
                     $columnName = $relatedAliasName.".".$columnName;
                     $like = new Predicate\Expression("LOWER($columnName) LIKE ?", $search_col['value']);
                     $where->addPredicate($like, Predicate\Predicate::OP_OR);
+                    $where->unnest;
                   }
                 }
               }
-              $where->unnest;
 
             } else {
               if($search_col['type'] == "like") {
@@ -209,6 +211,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             }
             $where->unnest;
         }
+
         //    $log = Bootstrap::get('log');
         //    $log->info(__CLASS__.'#'.__FUNCTION__);
         //    $log->info("New search query: " . $this->dumpSql($select));
