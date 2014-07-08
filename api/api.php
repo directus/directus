@@ -900,7 +900,7 @@ $app->post("/$v/upload/link/?", function () use ($db, $params, $requestPayload, 
             'size' => $fileData['size'],
             'width' => $fileData['width'],
             'height' => $fileData['height'],
-            'url' => $fileData['url'],
+            'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
             'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
             'storage_adapter' => $fileData['storage_adapter']
         );

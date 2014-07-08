@@ -183,7 +183,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         var model = this.model;
         var model = this.fileModel;
         app.sendLink(url, function(data) {
-          console.log(data);
           _.each(data, function(item) {
             item.active = 1;
             // Unset the model ID so that a new file record is created

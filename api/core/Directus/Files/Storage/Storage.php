@@ -213,6 +213,14 @@ class Storage {
             $fileData['height'] = 340;
             $fileData['width'] = 560;
           }
+        } else {
+          //Arnt youtube or voimeo so try to curl photo and use uploadfile
+          $content = file_get_contents($link);
+          $tmpFile = tempnam(sys_get_temp_dir(), 'DirectusFile');
+          file_put_contents($tmpFile, $content);
+          $stripped_url = preg_replace('/\\?.*/', '', $link);
+          $realfilename = basename($stripped_url);
+          return self::acceptFile($tmpFile, $realfilename);
         }
 
         return $fileData;
