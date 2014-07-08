@@ -1,14 +1,12 @@
 define([
   'app',
   'backbone',
-  'core/panes/pane.saveview',
-  'core/panes/pane.revisionsview',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Widgets) {
+function(app, Backbone, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
     events: {
@@ -28,12 +26,12 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
         throw "This table does not have an active column and can therefore not be deleted";
       }
 
-      this.model.save({status: 0}, {success: success, patch: true, wait: true, validate: false});
+      this.model.save({status: app.statusMapping.deleted_num}, {success: success, patch: true, wait: true, validate: false});
     },
 
     saveCheck: function(e) {
       var data = this.editView.data();
-      if(data.status && data.status == 0) {
+      if(data.status && data.status == app.statusMapping.deleted_num) {
         var that = this;
         app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system.', callback: function() {
           that.save(e);

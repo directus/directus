@@ -51,7 +51,7 @@ define(function(require, exports, module) {
       // @todo make sure that preferences and filters follow the rules!
       if ('directus_users' === this.table.id) {
         // console.warn('Active users only');
-        result.status = "1";
+        result.status =  app.statusMapping.active_num;
       }
 
       return result;
@@ -61,27 +61,20 @@ define(function(require, exports, module) {
       var totalCount;
 
       // There is no active column. Use total
-      if (!this.table.has('active')) {
+      if (!this.table.columns.get('status')) {
         return this.table.get('total');
       }
 
-      switch (this.getFilter('status')) {
-        case '1,2':
-          totalCount = this.table.get('active');
-          if (this.table.has('inactive')) {
-            totalCount += this.table.get('inactive');
-          }
-          break;
-        case '1':
-          totalCount = this.table.get('active');
-          break;
-        case '2':
-          totalCount = this.table.get('inactive');
-          break;
-        case '0':
-          totalCount = this.table.get('trash');
-          break;
-      }
+      var visibleStates = this.getFilter('status').split(',');
+      totalCount = 0;
+
+      var that = this;
+      visibleStates.forEach(function(state) {
+        if(that.table.has(app.statusMapping.mapping[state].name)) {
+          totalCount += that.table.get(app.statusMapping.mapping[state].name);
+        }
+      });
+
 
       return totalCount;
 

@@ -68,7 +68,7 @@ define(function(require, exports, module) {
 
     getModels: function() {
       return this.filter(function(model) {
-        return !(model.has('status') && model.get('status') === 0);
+        return !(model.has('status') && model.get('status') === app.statusMapping.deleted_num);
       });
     },
 

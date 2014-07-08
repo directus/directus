@@ -11,10 +11,9 @@ define([
   'backbone',
   'core/BasePageView',
   'core/widgets/widgets',
-  'core/panes/pane.saveview'
 ],
 
-function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
+function(app, Backbone, BasePageView, Widgets) {
 
   "use strict";
 

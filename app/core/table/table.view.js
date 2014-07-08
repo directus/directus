@@ -120,7 +120,7 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
             item.user = app.users.getCurrentUser().id;
-            item.status = 1;
+            item.status = app.statusMapping.active_num;
             //item.title = app.capitalize(item.name);
 
             if (saveAfterDrop) {

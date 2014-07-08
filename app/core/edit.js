@@ -62,13 +62,13 @@ define(function(require, exports, module) {
 
         if('status' == column.id) {
           if(this.options.collectionAdd) {
-            this.model.set('status', 1);
+            this.model.set('status', app.statusMapping.active_num);
           }
           if(this.model.isNew()) {
             if(this.model.table && this.model.table.get('inactive_by_default') == 1) {
               this.model.set('status', 2);
             } else {
-              this.model.set('status', 1);
+              this.model.set('status', app.statusMapping.active_num);
             }
           }
 
