@@ -51,7 +51,7 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
 
       if (model.isNew()) return this.relatedCollection.remove(model);
 
-      model.set({status: 0});
+      model.set({status: app.statusMapping.deleted_num});
     },
 
     addModel: function(model) {
@@ -105,7 +105,7 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
       var rows = [];
       var that = this;
       _.each(models, function(model) {
-        if(model.get('status') != 0) {
+        if(model.get('status') != app.statusMapping.deleted_num) {
           var cid = model.cid;
           model = new app.files.model(model.get('data').attributes, {collection: that.relatedCollection});
           rows.push({id: model.id, url: model.makeFileUrl(true), cid:cid});
@@ -133,7 +133,7 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
         e.preventDefault();
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
-            item.status = 1;
+            item.status = app.statusMapping.active_num;
             // Unset the model ID so that a new file record is created
             // (and the old file record isn't replaced w/ this data)
             item.id = undefined;

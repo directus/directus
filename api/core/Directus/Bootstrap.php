@@ -96,6 +96,12 @@ class Bootstrap {
         return $config;
     }
 
+    private static function status() {
+      $config = self::get('config');
+      $status = $config['statusMapping'];
+      return $status;
+    }
+
     private static function mailer() {
         $config = self::get('config');
         $smtp = $config['SMTP'];

@@ -42,7 +42,25 @@ return array(
 
 	// These tables will not be loaded in the directus schema
 	'tableBlacklist' => array(
- 	
- 	)
 
+ 	),
+
+  'statusMapping' => array(
+    '0' => array(
+      'name' => 'deleted',
+      'color' => '#FF0000'
+    ),
+    '1' => array(
+      'name' => 'active',
+      'color' => '#00FF00'
+    ),
+    '2' => array(
+      'name' => 'draft',
+      'color' => '#0000FF'
+    ),
+    '3' => array(
+      'name' => 'inactive',
+      'color' => '#666666'
+    ),
+  )
 );

@@ -50,3 +50,6 @@ define('MEMCACHED_SERVER', '127.0.0.1');
 //Namespaced the memcached keys so branches/databases to not collide
 //options are prod, staging, testing, development
 define('MEMCACHED_ENV_NAMESPACE', 'staging');
+
+define('STATUS_DELETED_NUM', 0);
+define('STATUS_ACTIVE_NUM', 1);

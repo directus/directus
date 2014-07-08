@@ -384,16 +384,18 @@ class MySQL {
      * DB @refactor 1st round candidate
      */
     function count_active($tbl_name, $no_active=false) {
-        $result = array('status'=>0);
+        $result = array('status'=>STATUS_DELETED_NUM);
         if ($no_active) {
             $sql = "SELECT COUNT(*) as count, 'status' as status FROM $tbl_name";
         } else {
             $sql = "SELECT
-                CASE status
-                    WHEN 0 THEN 'trash'
-                    WHEN 1 THEN 'active'
-                    WHEN 2 THEN 'inactive'
-                END AS status,
+                CASE status";
+
+            $statusMap = Bootstrap::get('status');
+            foreach ($statusMap as $key => $value) {
+                $sql.= "WHEN ".$key." THEN '".$value['name']."'";
+            }
+            $sql.="END AS status,
                 COUNT(*) as count
             FROM $tbl_name
             GROUP BY status";

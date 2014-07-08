@@ -234,7 +234,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
                     //If we are updating and active is being set to 0 then we are deleting
                     if(!$recordIsNew && array_key_exists('status', $deltaRecordData)) {
-                      if($deltaRecordData['status'] == "0") {
+                      if($deltaRecordData['status'] == STATUS_DELETED_NUM) {
                         $logEntryAction = DirectusActivityTableGateway::ACTION_DELETE;
                       }
                     }
@@ -418,7 +418,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
-                            if (isset($junctionRow['status']) && $junctionRow['status'] == 0) {
+                            if (isset($junctionRow['status']) && $junctionRow['status'] == STATUS_DELETED_NUM) {
                                 $Where = new Where;
                                 $Where->equalTo('id', $junctionRow['id']);
                                 $JunctionTable->delete($Where);
@@ -1091,16 +1091,22 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
         $stats = array();
+        $statusMap = Bootstrap::get('status');
         foreach($results as $row) {
-            $statSlug = AclAwareRowGateway::$activeStateSlugs[$row['status']];
-            $stats[$statSlug] = (int) $row['quantity'];
+            $statSlug = $statusMap[$row['status']];
+            $stats[$statSlug['name']] = (int) $row['quantity'];
         }
-        $possibleValues = array_values(AclAwareRowGateway::$activeStateSlugs);
+        $vals = [];
+        foreach($statusMap as $value) {
+          array_push($vals, $value['name']);
+        }
+        $possibleValues = array_values($vals);
         $makeMeZero = array_diff($possibleValues, array_keys($stats));
         foreach($makeMeZero as $unsetActiveColumn) {
             $stats[$unsetActiveColumn] = 0;
         }
         $stats['total'] = array_sum($stats);
+
         return $stats;
     }
 
@@ -1108,7 +1114,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         //qtryutn
         return array(
-            'status' => 0,
+            'active' => 0,
             'inactive' => 0,
             'trash' => 0
         );

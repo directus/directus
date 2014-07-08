@@ -273,6 +273,9 @@ $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cach
 $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
 
+$statusMapping = array('active_num'=>STATUS_ACTIVE_NUM, 'deleted_num'=>STATUS_DELETED_NUM);;
+$statusMapping['mapping'] = $config['statusMapping'];
+
 $data = array(
     'cacheBuster' => $cacheBuster,
     'nonces' => getNonces(),
@@ -293,7 +296,8 @@ $data = array(
     'listViews' => getListViews(),
     'messages' => getInbox(),
     'bookmarks' => getBookmarks(),
-    'extendedUserColumns' => getExtendedUserColumns($tableSchema)
+    'extendedUserColumns' => getExtendedUserColumns($tableSchema),
+    'statusMapping' => $statusMapping
 );
 
 $templateVars = array(

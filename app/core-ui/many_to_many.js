@@ -49,7 +49,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
       if (model.isNew()) return this.relatedCollection.remove(model);
 
-      model.set({status: 0});
+      model.set({status: app.statusMapping.deleted_num});
     },
 
     addModel: function(model) {
@@ -123,7 +123,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       //Remove inactive items from collection
       for(var i=0; i<relatedCollection.size(); i++) {
         var model = relatedCollection.at(i);
-        if(model.get('data').get('status') !== 0) {
+        if(model.get('data').get('status') !== app.statusMapping.deleted_num) {
           ids.push(model.get('data').id);
         } else {
           relatedCollection.remove(model, {silent: true});
@@ -157,7 +157,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', function() {
         //Check if any rendered objects in collection to show or hide header
-        if(this.relatedCollection.filter(function(d){return d.get('status') !== 0;}).length > 0) {
+        if(this.relatedCollection.filter(function(d){return d.get('status') !== app.statusMapping.deleted_num;}).length > 0) {
           this.nestedTableView.tableHead = true;
         } else {
           this.nestedTableView.tableHead = false;

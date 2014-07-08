@@ -165,7 +165,7 @@ var template = '<style type="text/css"> \
         var model = new app.files.model({}, {collection: app.files});
         app.sendFiles(file, function(data) {
           _.each(data, function(item) {
-            item.status = 1;
+            item.status = app.statusMapping.active_num;
             item.id = undefined;
             item.user = self.userId;
 
@@ -333,7 +333,7 @@ var template = '<style type="text/css"> \
         this.editor.focus();
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
-            item.status = 1;
+            item.status = app.statusMapping.status_num;
             item.id = undefined;
             item.user = self.userId;
 

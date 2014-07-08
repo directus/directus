@@ -53,7 +53,7 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
         $select = new Select($this->getTable());
         $select
             ->columns(array('id','group'))
-            ->where->in('group', $ids)->and->equalTo('status', 1);
+            ->where->in('group', $ids)->and->equalTo('status', STATUS_ACTIVE_NUM);
         return $this->selectWith($select)->toArray();
     }
 
