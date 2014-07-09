@@ -54,7 +54,7 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
     },
 
     removeItem: function(e) {
-      var target_cid = $(e.target).parent().find('img').attr('data-file-cid');
+      var target_cid = $(e.target).closest('.media_slideshow_item').find('img').attr('data-file-cid');
       var model = this.relatedCollection.get(target_cid);
 
       if (model.isNew()) return this.relatedCollection.remove(model);
@@ -191,8 +191,6 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
 
       this.canEdit = !(options.inModal || false);
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
-      console.log(this.showRemoveButton);
-      console.log(this.columnSchema.options.get('remove_button'));
       this.showChooseButton = this.columnSchema.options.get('choose_button') === "1";
       this.showAddButton = this.columnSchema.options.get('add_button') === "1";
 
