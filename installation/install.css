@@ -8,10 +8,27 @@ a {
   color: inherit;
   text-decoration: none;
 }
+hr {
+  border: 0;
+  color: #bbbbbb;
+  background-color: #bbbbbb;
+  height: 1px;
+}
 input[type=checkbox] {
   margin: 0 10px 0 0;
   top: -2px;
   position: relative;
+}
+textarea {
+  width: 100%;
+  min-height: 200px;
+  font-size: 10px;
+  outline: none;
+  border-color: #bbbbbb;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-x: scroll;
+  margin: 10px 0 10px 0;
 }
 .container {
   text-align: center;
@@ -19,6 +36,7 @@ input[type=checkbox] {
   width: 100%;
   display: inline-block;
   position: relative;
+  padding-bottom: 150px;
 }
 .header {
   background-color: #ffffff;
@@ -99,7 +117,7 @@ input[type=checkbox] {
 .footer {
   background-color: #252525;
   height: 100px;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
@@ -171,6 +189,33 @@ input[type=checkbox] {
 .note {
   font-style: italic;
   font-size: 11px;
+}
+.label-important {
+  color: #c1272d;
+  font-weight: bold;
+}
+.summary h3 {
+  font-size: 16px;
+  margin-bottom: 0px;
+  margin-top: 30px;
+  font-weight: 400;
+}
+.summary table {
+  font-size: 12px;
+  width: 100%;
+}
+.summary table .item {
+  font-weight: bold;
+  height: 22px;
+}
+.summary table .result {
+  text-align: right;
+}
+.summary input[type=checkbox] {
+  margin: 0;
+}
+.config-paste {
+  font-size: 12px;
 }
 @font-face {
   font-family: 'Directus';

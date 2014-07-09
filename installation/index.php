@@ -186,7 +186,7 @@ if($step == 2) {
         Username<input type="text" name="username"><br>
         Password<input type="password" name="password"><br>
         Database Name<input type="text" name="db_name"><br>
-        Database Prefix<input type="text" name="db_prefix"><br>
+        Database Prefix (optional)<input type="text" name="db_prefix"><br>
         <input type="checkbox" name="install_sample" value="yes">Install Sample Data<br>
 <?php
 }
@@ -201,26 +201,23 @@ if($step == 4) {
   </div>
 
   <div class="body">
-    <div class="container">
-      <br><br>
-      Email This Configuration To <?php echo $_SESSION['email'];?>: <input type="checkbox" name="send_config_email"><br>
-
+    <div class="container summary">
       <h3>Main Configuration</h3>
       <hr>
       <table>
         <tbody>
           <tr>
             <td class="item">Site Name</td>
-            <td><?php echo $_SESSION['site_name'];?></td>
+            <td class="result"><?php echo $_SESSION['site_name'];?></td>
           </tr>
           <tr>
             <td class="item">Admin Email</td>
-            <td><span><?php echo $_SESSION['email'];?></span>
+            <td class="result"><span><?php echo $_SESSION['email'];?></span>
             </td>
           </tr>
           <tr>
             <td class="item">Admin Password</td>
-            <td>***</td>
+            <td class="result">***</td>
           </tr>
         </tbody>
       </table>
@@ -231,23 +228,23 @@ if($step == 4) {
         <tbody>
           <tr>
             <td class="item">Host Name</td>
-            <td><?php echo $_SESSION['host_name'];?></td>
+            <td class="result"><?php echo $_SESSION['host_name'];?></td>
           </tr>
           <tr>
             <td class="item">Username</td>
-            <td><span><?php echo $_SESSION['username'];?></span></td>
+            <td class="result"><span><?php echo $_SESSION['username'];?></span></td>
           </tr>
           <tr>
             <td class="item">Password</td>
-            <td>***</td>
+            <td class="result">***</td>
           </tr>
           <tr>
             <td class="item">Database Name</td>
-            <td><?php echo $_SESSION['db_name'];?></td>
+            <td class="result"><?php echo $_SESSION['db_name'];?></td>
           </tr>
           <tr>
             <td class="item">Database Prefix</td>
-            <td><?php echo $_SESSION['db_prefix'];?></td>
+            <td class="result"><?php echo $_SESSION['db_prefix'];?></td>
           </tr>
         </tbody>
       </table>
@@ -258,34 +255,37 @@ if($step == 4) {
         <tbody>
           <tr>
             <td class="item">PHP Version >= 5.5.0</td>
-            <td><span class="label label-success">Yes</span></td>
+            <td class="result"><span class="label label-success">Yes</span></td>
           </tr>
           <tr>
             <td class="item">Database Support</td>
-            <td><span class="label label-success">Yes</span></td>
+            <td class="result"><span class="label label-success">Yes</span></td>
           </tr>
           <tr>
             <td class="item">GD Support</td>
-            <td><span class="label label-success">Yes</span></td>
+            <td class="result"><span class="label label-success">Yes</span></td>
           </tr>
           <tr>
-            <td class="item">config.php Writable</td>
-            <td><?php if(is_writable('../api/config.php')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span id="failSpan"><span class="label label-important">No</span> Please make ../api/config.php writable <div id="retryButton" class="button">Check</div></span>');}?></td>
-          </tr>
-          <tr>
-            <td class="item">configuration.php Writable</td>
-            <td><?php if(is_writable('../api/configuration.php')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span> Please make ../api/configuration.php writable');}?></td>
-          </tr>
-          <tr>
-            <td class="item">Logs Writable</td>
-            <td><?php if(is_writable('../api/logs/1.txt')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span> Please Make ../api/logs/ Writable');}?></td>
+            <td class="item">Logs Writable (../api/logs/)</td>
+            <td class="result"><?php if(is_writable('../api/logs/1.txt')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span>');}?></td>
           </tr>
           <tr>
             <td class="item">mod_rewrite Enabled</td>
-            <td><?php if(in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span> Please Make Enable mod_rewrite');}?></td>
+            <td class="result"><?php if(in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span> Please Make Enable mod_rewrite');}?></td>
+          </tr>
+          <tr>
+            <td class="item">Config Writable (../api/config.php)</td>
+            <td class="result"><?php if(is_writable('../api/config.php')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span class="label label-important">No</span>');}?></td>
           </tr>
         </tbody>
       </table>
+
+      <?php
+      if($showConfig || true) {
+        require_once('config_setup.php');
+        echo("<span class='config-paste label label-important'>Manually copy the code below into ../api/config.php</span><br><textarea readonly>$configText</textarea><span id='failSpan'><button id='retryButton' class='button'>Check Config File</button></span>");
+      }
+      ?>
 
       <h3>Reccommended Optional Features</h3>
       <hr>
@@ -293,17 +293,22 @@ if($step == 4) {
         <tbody>
           <tr>
             <td class="item">Imagick PHP Extension</td>
-            <td><?php if(extension_loaded('imagick')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span>');}?></td>
+            <td class="result"><?php if(extension_loaded('imagick')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span>');}?></td>
           </tr>
         </tbody>
       </table>
 
+      <h3>Email This Summary?</h3>
+      <hr>
+      <table>
+        <tbody>
+          <tr>
+            <td class="item"><?php echo $_SESSION['email'];?></td>
+            <td class="result"><input type="checkbox" name="send_config_email" checked="checked"></td>
+          </tr>
+        </tbody>
+      </table>
 <?php
-  if($showConfig) {
-    require_once('config_setup.php');
-    echo("<h1>$configText</h1>");
-  }
-
 }
 
 if($step == 3) {
