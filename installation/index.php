@@ -281,7 +281,7 @@ if($step == 4) {
       </table>
 
       <?php
-      if($showConfig || true) {
+      if($showConfig) {
         require_once('config_setup.php');
         echo("<span class='config-paste label label-important'>Manually copy the code below into ../api/config.php</span><br><textarea readonly>$configText</textarea><span id='failSpan'><button id='retryButton' class='button'>Check Config File</button></span>");
       }
