@@ -194,6 +194,10 @@ textarea {
   color: #c1272d;
   font-weight: bold;
 }
+.label-success {
+  color: #7cc74c;
+  font-weight: bold;
+}
 .summary h3 {
   font-size: 16px;
   margin-bottom: 0px;
