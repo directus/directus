@@ -43,7 +43,7 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
         foreach ($rowset as $row) {
             $row['group'] = array('id'=> (int) $row['group'], 'name' => $row['group_name']);
             unset($row['group_name']);
-            $row['status'] = (int) $row['status'];
+            $row[STATUS_COLUMN_NAME] = (int) $row[STATUS_COLUMN_NAME];
             array_push($results, $row);
         }
         return array('rows' => $results);
@@ -53,7 +53,7 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
         $select = new Select($this->getTable());
         $select
             ->columns(array('id','group'))
-            ->where->in('group', $ids)->and->equalTo('status', STATUS_ACTIVE_NUM);
+            ->where->in('group', $ids)->and->equalTo(STATUS_COLUMN_NAME, STATUS_ACTIVE_NUM);
         return $this->selectWith($select)->toArray();
     }
 

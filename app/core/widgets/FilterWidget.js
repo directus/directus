@@ -100,7 +100,9 @@ function(app, Backbone) {
           data.columnModel = columnModel;
           data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-          data.relatedCollection.fetch({includeFilters: false, data: {status:app.statusMapping.active_num}});
+          var name = {};
+          name[app.statusMapping.status_name] = app.statusMapping.active_num;
+          data.relatedCollection.fetch({includeFilters: false, data: name});
           this.listenTo(data.relatedCollection, 'sync', this.render);
         } else {
           data.filter_ui = this.getFilterDataType(selectedColumn);
@@ -270,7 +272,9 @@ function(app, Backbone) {
                 data.columnModel = columnModel;
                 data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-                data.relatedCollection.fetch({includeFilters: false, data: {status:app.statusMapping.active_num}});
+                var name = {};
+                name[app.statusMapping.status_name] = app.statusMapping.active_num;
+                data.relatedCollection.fetch({includeFilters: false, data: name});
                 that.listenTo(data.relatedCollection, 'sync', that.render);
               } else{
                 data.filter_ui = that.getFilterDataType(selectedColumn);

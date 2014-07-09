@@ -291,7 +291,7 @@ class MySQL {
             }
 
             // Defualts as system columns
-            if ($row["id"] == 'id' || $row["id"] == 'status' || $row["id"] == 'sort') {
+            if ($row["id"] == 'id' || $row["id"] == STATUS_COLUMN_NAME || $row["id"] == 'sort') {
                 $row["system"] = true;
                 $row["hidden"] = true;
             }
@@ -361,7 +361,7 @@ class MySQL {
 
             $columns_visible = array();
             while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-                if ($row['column_name'] != 'id' && $row['column_name'] != 'status' && $row['column_name'] != 'sort') {
+                if ($row['column_name'] != 'id' && $row['column_name'] != STATUS_COLUMN_NAME && $row['column_name'] != 'sort') {
                     array_push($columns_visible, $row['column_name']);
                 }
             }
@@ -371,7 +371,7 @@ class MySQL {
                 'table_name' => $tbl_name,
                 'sort' => 'id',
                 'sort_order' => 'asc',
-                'status' => '1,2',
+                STATUS_COLUMN_NAME => '1,2',
                 'title' => 'default'
             );
             // Insert to DB
@@ -384,21 +384,21 @@ class MySQL {
      * DB @refactor 1st round candidate
      */
     function count_active($tbl_name, $no_active=false) {
-        $result = array('status'=>STATUS_DELETED_NUM);
+        $result = array(STATUS_COLUMN_NAME=>STATUS_DELETED_NUM);
         if ($no_active) {
-            $sql = "SELECT COUNT(*) as count, 'status' as status FROM $tbl_name";
+            $sql = "SELECT COUNT(*) as count, ".STATUS_COLUMN_NAME." as ".STATUS_COLUMN_NAME." FROM $tbl_name";
         } else {
             $sql = "SELECT
-                CASE status";
+                CASE ".STATUS_COLUMN_NAME;
 
             $statusMap = Bootstrap::get('status');
             foreach ($statusMap as $key => $value) {
                 $sql.= "WHEN ".$key." THEN '".$value['name']."'";
             }
-            $sql.="END AS status,
+            $sql.="END AS ".STATUS_COLUMN_NAME.",
                 COUNT(*) as count
             FROM $tbl_name
-            GROUP BY status";
+            GROUP BY ".STATUS_COLUMN_NAME;
         }
         $sth = $this->dbh->prepare($sql);
         // Test if there is an active column!
@@ -412,7 +412,7 @@ class MySQL {
             }
         }
         while($row = $sth->fetch(PDO::FETCH_ASSOC))
-            $result[$row['status']] = (int)$row['count'];
+            $result[$row[STATUS_COLUMN_NAME]] = (int)$row['count'];
         $total = 0;
         return $result;
     }
@@ -494,7 +494,7 @@ class MySQL {
         $id = isset($params['id']) ? $params['id'] : -1;
 
         $search = isset($params['search']) ? $this->dbh->quote('%'.strtolower($params['search']).'%') : null;
-        $active = isset($params['status']) ? $params['status'] : null;
+        $active = isset($params[STATUS_COLUMN_NAME]) ? $params[STATUS_COLUMN_NAME] : null;
 
         $alias_schema = array();
 
@@ -533,7 +533,7 @@ class MySQL {
         $has_active = false;
 
         foreach ($schema as $col) {
-            if ($col['column_name'] == 'status') {
+            if ($col['column_name'] == STATUS_COLUMN_NAME) {
                 $has_active = true;
                 break;
             }
@@ -544,7 +544,7 @@ class MySQL {
         if (isset($active)) {
             // Check if table has an active column
             if ($has_active) {
-                $active_sql = "AND status IN ($active)";
+                $active_sql = "AND ".STATUS_COLUMN_NAME." IN ($active)";
             }
         }
 
@@ -746,7 +746,7 @@ class MySQL {
         while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $row['group'] = array('id'=>(int)$row['group'],'name'=>$row['group_name']);
             unset($row['group_name']);
-            $row['status'] = (int)$row['status'];
+            $row[STATUS_COLUMN_NAME] = (int)$row[STATUS_COLUMN_NAME];
             array_push($result, $row);
         }
         return array('rows'=>$result);

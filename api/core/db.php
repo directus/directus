@@ -153,7 +153,7 @@ class DB extends MySQL {
                     foreach($data as $junction_table_row) {
 
                         // Delete?
-                        if (isset($junction_table_row['status']) && ($junction_table_row['status'] == STATUS_DELETED_NUM)) {
+                        if (isset($junction_table_row[STATUS_COLUMN_NAME]) && ($junction_table_row[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM)) {
                             $junction_table_id = intval($junction_table_row['id']);
                             $this->dbh->exec("DELETE FROM $junction_table WHERE id=$junction_table_id");
                             $this->log_activity($junction_table, 'DELETE', $junction_table_id, 'TEST', null, $activity_id);

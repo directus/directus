@@ -87,7 +87,7 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway {
     public function deleteOtherFeedPosts($feedId, array $postIds) {
         $Update = new Update(self::$_tableName);
         $Update
-            ->set(array('status' => 0));
+            ->set(array(STATUS_COLUMN_NAME => 0));
         $Update
             ->where
                 ->addPredicate(new NotIn('foreign_id', $postIds))

@@ -34,7 +34,9 @@ function(app, Backbone, PreferenceModel) {
         var $target = $(e.target).find(":selected");
         if($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
           var value = $(e.target).val();
-          this.collection.setFilter({currentPage: 0, status: value});
+          var name = {currentPage: 0};
+          name[app.statusMapping.status_name] = value;
+          this.collection.setFilter(name);
         }
       },
       'click #saveSnapshotBtn': 'saveSnapshot',
@@ -95,7 +97,7 @@ function(app, Backbone, PreferenceModel) {
 
     afterRender: function() {
       if(this.options.widgetOptions.hasActiveColumn) {
-        $('#visibilitySelect').val(this.collection.preferences.get('status'));
+        $('#visibilitySelect').val(this.collection.preferences.get(app.statusMapping.status_name));
       }
 
       // Adjust dropdown width dynamically
@@ -109,7 +111,7 @@ function(app, Backbone, PreferenceModel) {
       this.basePage = this.options.basePage;
       this.options.widgetOptions = {snapshots: []};
 
-      if(this.collection.table.columns.get('status')) {
+      if(this.collection.table.columns.get(app.statusMapping.status_name)) {
         this.options.widgetOptions.hasActiveColumn = true;
       }
 

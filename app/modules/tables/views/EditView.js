@@ -207,17 +207,19 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       };
 
       // hard-destroy model if there is no active column
-      if (!this.model.has('status')){
+      if (!this.model.has(app.statusMapping.status_name)){
         throw "This table does not have an active column and can therefore not be deleted";
       }
-
-      this.model.save({status: app.statusMapping.deleted_num}, {success: success, patch: true, wait: true, validate: false});
+      var name = app.statusMapping.status_name;
+      var name = {};
+      name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
+      this.model.save(name, {success: success, patch: true, wait: true, validate: false});
     },
 
     saveConfirm: function(e) {
       var data = this.editView.data();
       var that = this;
-      if(data.status && data.status == app.statusMapping.deleted_num) {
+      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
         app.router.openModal({type: 'confirm', text: 'Are you sure you wish to delete this item?', callback: function() {
           that.save(e);
         }});

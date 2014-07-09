@@ -233,8 +233,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 if($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
                     $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
                     //If we are updating and active is being set to 0 then we are deleting
-                    if(!$recordIsNew && array_key_exists('status', $deltaRecordData)) {
-                      if($deltaRecordData['status'] == STATUS_DELETED_NUM) {
+                    if(!$recordIsNew && array_key_exists(STATUS_COLUMN_NAME, $deltaRecordData)) {
+                      if($deltaRecordData[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
                         $logEntryAction = DirectusActivityTableGateway::ACTION_DELETE;
                       }
                     }
@@ -418,7 +418,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
-                            if (isset($junctionRow['status']) && $junctionRow['status'] == STATUS_DELETED_NUM) {
+                            if (isset($junctionRow[STATUS_COLUMN_NAME]) && $junctionRow[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
                                 $Where = new Where;
                                 $Where->equalTo('id', $junctionRow['id']);
                                 $JunctionTable->delete($Where);
@@ -468,7 +468,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         'currentPage' => 0,
         'id' => -1,
         'search' => null,
-        'status' => null
+        STATUS_COLUMN_NAME => null
     );
 
     public function applyDefaultEntriesSelectParams(array $params) {
@@ -494,11 +494,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
-        if (null !== $params['status'] && $hasActiveColumn) {
-            $haystack = is_array($params['status'])
-                ? $params['status']
-                : explode(",", $params['status']);
-            $select->where->in('status', $haystack);
+        if (null !== $params[STATUS_COLUMN_NAME] && $hasActiveColumn) {
+            $haystack = is_array($params[STATUS_COLUMN_NAME])
+                ? $params[STATUS_COLUMN_NAME]
+                : explode(",", $params[STATUS_COLUMN_NAME]);
+            $select->where->in(STATUS_COLUMN_NAME, $haystack);
         }
 
         // Where
@@ -569,7 +569,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         //Filter out visible columns only
         if (array_key_exists('columns_visible', $params)) {
-            $systemColumns = array('id','sort','status');
+            $systemColumns = array('id','sort', STATUS_COLUMN_NAME);
             $columnsVisible = array_unique(array_merge($systemColumns, $params['columns_visible']));
             $columnNames = array_intersect($columnNames, $columnsVisible);
         }
@@ -999,7 +999,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
      */
     public function schemaHasActiveColumn($schema) {
         foreach($schema as $col) {
-            if('status' == $col['column_name']) {
+            if(STATUS_COLUMN_NAME == $col['column_name']) {
                 return true;
             }
         }
@@ -1085,15 +1085,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
     public function countActive() {
         $select = new Select($this->table);
         $select
-            ->columns(array('status', 'quantity' => new Expression('COUNT(*)')))
-            ->group('status');
+            ->columns(array(STATUS_COLUMN_NAME, 'quantity' => new Expression('COUNT(*)')))
+            ->group(STATUS_COLUMN_NAME);
         $sql = new Sql($this->adapter, $this->table);
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
         $stats = array();
         $statusMap = Bootstrap::get('status');
         foreach($results as $row) {
-            $statSlug = $statusMap[$row['status']];
+            $statSlug = $statusMap[$row[STATUS_COLUMN_NAME]];
             $stats[$statSlug['name']] = (int) $row['quantity'];
         }
         $vals = [];
@@ -1123,17 +1123,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $tbl_name = $this->table;
         $result = array('active'=>0);
         if ($no_active) {
-            $sql = "SELECT COUNT(*) as count, 'status' as status FROM $tbl_name";
+            $sql = "SELECT COUNT(*) as count, '".STATUS_COLUMN_NAME."' as ".STATUS_COLUMN_NAME." FROM $tbl_name";
         } else {
             $sql = "SELECT
-                CASE status
+                CASE ".STATUS_COLUMN_NAME."
                     WHEN 0 THEN 'trash'
                     WHEN 1 THEN 'active'
                     WHEN 2 THEN 'inactive'
-                END AS status,
+                END AS ".STATUS_COLUMN_NAME.",
                 COUNT(*) as count
             FROM $tbl_name
-            GROUP BY status";
+            GROUP BY ".STATUS_COLUMN_NAME;
         }
         $sth = $db->dbh->prepare($sql);
         // Test if there is an active column!
@@ -1147,7 +1147,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             }
         }
         while($row = $sth->fetch(\PDO::FETCH_ASSOC))
-            $result[$row['status']] = (int)$row['count'];
+            $result[$row[STATUS_COLUMN_NAME]] = (int)$row['count'];
         $total = 0;
         return $result;
     }

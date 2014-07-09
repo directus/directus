@@ -112,7 +112,10 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
 
       var that = this;
       _.each(e.dataTransfer.files, function(file) {
-        var  model = new that.collection.model({status: app.statusMapping.active_num, title: file.name, size: file.size, type: file.type, }, {collection: that.collection, parse: true});
+      var name = app.statusMapping.status_name;
+        var name = {title: file.name, size: file.size, type: file.type};
+        name[app.statusMapping.status_name] = app.statusMapping.active_num;
+        var  model = new that.collection.model(name, {collection: that.collection, parse: true});
         that.collection.add(model);
         that.uploadFiles.push({model: model, fileInfo: file});
       });
