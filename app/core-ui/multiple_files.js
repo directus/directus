@@ -44,7 +44,7 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
     },
 
     template: Handlebars.compile(
-      '{{#rows}}<span class="media_slideshow_item"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove_slideshow_item icon icon-cross"></div>{{/if}}</span>{{/rows}}' +
+      '{{#rows}}<span class="media_slideshow_item show-circle"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove_slideshow_item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}' +
       '<div class="related-table"></div>' +
       '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files Item</button>{{/if}}' +
       '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files Item</button>{{/if}}</div>'),

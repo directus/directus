@@ -1242,6 +1242,12 @@ button {
 .directus-alert-modal .directus-alert-modal-buttons button.primary:hover {
   background-color: #6dbc36;
 }
+.show-circle:hover {
+  position: relative;
+}
+.show-circle:hover .white-circle {
+  display: block;
+}
 .large-circle {
   -webkit-border-top-right-radius: 50px;
   -webkit-border-bottom-right-radius: 50px;
@@ -1281,6 +1287,22 @@ button {
 }
 .large-circle .icon.icon-paper-plane {
   margin-left: -2px;
+}
+.large-circle.white-circle {
+  background-color: #ffffff;
+  bottom: 10px;
+  color: #5b5b5b;
+  display: none;
+  position: absolute;
+  right: 10px;
+  z-index: 3;
+  cursor: pointer;
+}
+.large-circle.white-circle .icon-pencil {
+  margin-top: -6px;
+}
+.large-circle.white-circle .icon-cross {
+  margin-top: -6px;
 }
 .tag {
   display: inline-block;
