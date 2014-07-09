@@ -164,11 +164,6 @@ if($step == 1) {
 
 <?php
   }
-  if(extension_loaded('imagick')) {
-    //echo '<span class="note">Imagick Already Installed</span>';
-  } else {
-    echo '<span class="note">*Install Imagick to support TIFF, PSD, and PDF thumbnails</span>';
-  }
 }
 
 if($step == 2) {
@@ -292,7 +287,7 @@ if($step == 4) {
       <table>
         <tbody>
           <tr>
-            <td class="item">Imagick PHP Extension</td>
+            <td class="item">Imagick PHP Extension<br>For TIFF, PSD, and PDF thumbnails</td>
             <td class="result"><?php if(extension_loaded('imagick')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span>');}?></td>
           </tr>
         </tbody>
