@@ -16,7 +16,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
-    {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a JSON object'}
+    {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a Comma Delimited list'}
   ];
 
   var template = '<style type="text/css"> \
