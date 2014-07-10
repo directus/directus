@@ -344,4 +344,35 @@ function AddStorageAdapters($mysqli)
   $mysqli->query($insert);
 }
 
+function InstallSampleData($mysqli) {
+  $create = "CREATE TABLE `ui_gallery` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `status` tinyint(4) DEFAULT NULL,
+  `single_media` int(11) DEFAULT NULL,
+  `wysiwyg` text,
+  `checkbox` tinyint(4) DEFAULT NULL,
+  `color` varchar(10) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `datetime` datetime DEFAULT NULL,
+  `enum` enum('ENTRY 1','ENTRY 2','ENTRY 3') DEFAULT NULL,
+  `many_to_one` int(11) DEFAULT NULL,
+  `multiselect` varchar(255) DEFAULT NULL,
+  `numeric` int(11) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `salt` varchar(255) DEFAULT NULL,
+  `radiobuttons` varchar(255) DEFAULT NULL,
+  `select` varchar(255) DEFAULT NULL,
+  `slider` int(11) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
+  `system` tinyint(4) DEFAULT NULL,
+  `tags` varchar(255) DEFAULT NULL,
+  `textarea` text,
+  `textinput` varchar(255) DEFAULT NULL,
+  `time` time DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;";
+
+$mysqli->query($create);
+}
+
 ?>

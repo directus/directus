@@ -47,6 +47,8 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
     $_SESSION['db_prefix'] = $_POST['db_prefix'];
     if(isset($_POST['install_sample'])) {
       $_SESSION['install_sample'] = $_POST['install_sample'];
+    } else {
+      $_SESSION['install_sample'] = "no";
     }
     $_SESSION['step'] = 3;
     $step = 3;
@@ -178,11 +180,11 @@ if($step == 2) {
   <div class="body">
     <div class="container">
         Host Name<input type="text" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : ''); ?>"><br>
-        Username<input type="text" name="username"><br>
-        Password<input type="password" name="password"><br>
-        Database Name<input type="text" name="db_name"><br>
-        Database Prefix (optional)<input type="text" name="db_prefix"><br>
-        <input type="checkbox" name="install_sample" value="yes">Install Sample Data<br>
+        Username<input type="text" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
+        Password<input type="password" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
+        Database Name<input type="text" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
+        Database Prefix (optional)<input type="text" name="db_prefix" value="<?php echo(isset($_SESSION['db_prefix']) ? $_SESSION['db_prefix'] : ''); ?>"><br>
+        <input type="checkbox" name="install_sample" value="yes" <?php echo(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == 'yes' ? 'checked' : ''); ?>>Install Sample Data<br>
 <?php
 }
 
@@ -316,12 +318,12 @@ if($step == 3) {
   </div>
   <div class="body">
     <div class="container">
-        Default Adapter Destination<input type="text" name="default_dest" value="/var/www/media/" placeholder="/var/www/media/"><br>
-        Default Adapter URL<input type="text" name="default_url" value="http://localhost/media/" placeholder="http://localhost/media/"><br>
-        Thumbnail Adapter Destination<input type="text" name="thumb_dest" value="/var/www/media/thumb/" placeholder="/var/www/media/thumb/"><br>
-        Thumbnail Adapter URL<input type="text" name="thumb_url" value="http://localhost/media/thumb/" placeholder="http://localhost/media/thumb/"><br>
-        Temp Adapter Destination<input type="text" name="temp_dest" value="/var/www/media/temp/" placeholder="/var/www/media/temp/"><br>
-        Temp Adapter URL<input type="text" name="temp_url" value="http://localhost/media/temp/" placeholder="http://localhost/media/temp/"><br>
+        Default Adapter Destination<input type="text" name="default_dest" value="<?php echo(isset($_SESSION['default_dest']) ? $_SESSION['default_dest'] : '/var/www/media/'); ?>" placeholder="/var/www/media/"><br>
+        Default Adapter URL<input type="text" name="default_url" value="<?php echo(isset($_SESSION['default_url']) ? $_SESSION['default_url'] : 'http://localhost/media/'); ?>" placeholder="http://localhost/media/"><br>
+        Thumbnail Adapter Destination<input type="text" name="thumb_dest" value="<?php echo(isset($_SESSION['thumb_dest']) ? $_SESSION['thumb_dest'] : '/var/www/media/thumb/'); ?>" placeholder="/var/www/media/thumb/"><br>
+        Thumbnail Adapter URL<input type="text" name="thumb_url" value="<?php echo(isset($_SESSION['thumb_url']) ? $_SESSION['thumb_url'] : 'http://localhost/media/thumb/'); ?>" placeholder="http://localhost/media/thumb/"><br>
+        Temp Adapter Destination<input type="text" name="temp_dest" value="<?php echo(isset($_SESSION['temp_dest']) ? $_SESSION['temp_dest'] : '/var/www/media/temp/'); ?>" placeholder="/var/www/media/temp/"><br>
+        Temp Adapter URL<input type="text" name="temp_url" value="<?php echo(isset($_SESSION['temp_url']) ? $_SESSION['temp_url'] : 'http://localhost/media/temp/'); ?>" placeholder="http://localhost/media/temp/"><br>
 <?php
 }
 
