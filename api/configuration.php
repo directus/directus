@@ -58,7 +58,7 @@ return array(
       'name' => 'draft',
       'color' => '#0000FF'
     ),
-    '3' => array(
+    '5' => array(
       'name' => 'inactive',
       'color' => '#666666'
     ),

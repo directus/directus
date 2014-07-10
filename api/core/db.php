@@ -203,7 +203,7 @@ class DB extends MySQL {
             'table_name' => $data['table_name'],
             'hidden' => (int)$data['hidden'],
             'single' => (int)$data['single'],
-            'inactive_by_default' => (int)$data['inactive_by_default'],
+            'default_status' => (int)$data['default_status'],
             'is_junction_table' => (int)$data['is_junction_table'],
             'footer' => (int)$data['footer'],
             'primary_column' => $data['primary_column']

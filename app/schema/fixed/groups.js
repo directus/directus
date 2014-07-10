@@ -8,7 +8,7 @@ define(function(require, exports, module) {
     "table_name":"directus_groups",
     "hidden":true,
     "single":false,
-    "inactive_by_default": "0",
+    "default_status": "1",
     "url": "api/1/groups",
 
     "columns": [

@@ -128,7 +128,7 @@ class MySQL {
             TABLE_COMMENT AS comment,
             ifnull(hidden,0) as hidden,
             ifnull(single,0) as single,
-            inactive_by_default,
+            default_status,
             is_junction_table,
             user_create_column,
             footer,
@@ -147,7 +147,6 @@ class MySQL {
             $info['single'] = (boolean)$info['single'];
             $info['footer'] = (boolean)$info['footer'];
             $info['is_junction_table'] = (boolean)$info['is_junction_table'];
-            $info['inactive_by_default'] = (boolean)$info['inactive_by_default'];
         }
         $info = array_merge($info, $this->count_active($tbl_name));
         // $info['columns'] = $this->get_table($tbl_name);

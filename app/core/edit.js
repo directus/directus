@@ -65,8 +65,8 @@ define(function(require, exports, module) {
             this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
           }
           if(this.model.isNew()) {
-            if(this.model.table && this.model.table.get('inactive_by_default') == 1) {
-              this.model.set(app.statusMapping.status_name, 2);
+            if(this.model.table && this.model.table.get('default_status')) {
+              this.model.set(app.statusMapping.status_name, this.model.table.get('default_status'));
             } else {
               this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
             }

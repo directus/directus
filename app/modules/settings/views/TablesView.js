@@ -429,7 +429,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       return {
         hidden: this.model.get('hidden'),
         single: this.model.get('single'),
-        inactive_by_default: this.model.get('inactive_by_default'),
+        default_status: this.model.get('default_status'),
         is_junction_table: this.model.get('is_junction_table'),
         footer: this.model.get('footer')
       };

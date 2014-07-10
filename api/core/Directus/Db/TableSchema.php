@@ -272,7 +272,7 @@ class TableSchema {
             TABLE_COMMENT AS comment,
             ifnull(hidden,0) as hidden,
             ifnull(single,0) as single,
-            inactive_by_default,
+            default_status,
             is_junction_table,
             user_create_column,
             user_update_column,
@@ -293,7 +293,6 @@ class TableSchema {
             $info['single'] = (boolean) $info['single'];
             $info['footer'] = (boolean) $info['footer'];
             $info['is_junction_table'] = (boolean) $info['is_junction_table'];
-            $info['inactive_by_default'] = (boolean) $info['inactive_by_default'];
         }
         $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $ZendDb);
         $info = array_merge($info, $relationalTableGateway->countActiveOld());
@@ -564,7 +563,7 @@ class TableSchema {
                 TABLE_COMMENT AS comment,
                 ifnull(hidden,0) as hidden,
                 ifnull(single,0) as single,
-                inactive_by_default,
+                default_status,
                 is_junction_table,
                 user_create_column,
                 user_update_column,
@@ -744,7 +743,6 @@ class TableSchema {
         $info['single'] = (boolean) $info['single'];
         $info['footer'] = (boolean) $info['footer'];
         $info['is_junction_table'] = (boolean) $info['is_junction_table'];
-        $info['inactive_by_default'] = (boolean) $info['inactive_by_default'];
         return $info;
     }
 
