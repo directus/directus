@@ -56,8 +56,10 @@ define(['app', 'backbone'], function(app, Backbone) {
       if(select) {
         var values = this.$el.find('select').val();
         var out = "";
-        for (var i=0; i<values.length; i++) {
-          out += values[i] + this.options.settings.get('delimiter');
+        if(values) {
+          for (var i=0; i<values.length; i++) {
+            out += values[i] + this.options.settings.get('delimiter');
+          }
         }
       } else {
         var values = this.$el.find('input[type=checkbox]:checked');
