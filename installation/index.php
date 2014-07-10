@@ -1,7 +1,8 @@
 <?php
 
 session_start();
-
+$code = 0;
+$bad_paths = array();
 
 if(isset($_SESSION['step'])) {
   $step = $_SESSION['step'];
@@ -37,7 +38,6 @@ if($step == 1 && isset($_POST['email']) && isset($_POST['site_name']) && isset($
 
 if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isset($_POST['db_name'])) {
   //Check for db connection
-  $code = 0;
   ini_set('display_errors', 0);
   $conn = mysqli_init();
   mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
@@ -57,8 +57,6 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
     $step = 3;
   } else {
     $code = mysqli_connect_errno();
-    print_r($code);
-    echo('<h1>ERROR: Connection Could not be made.</h1>');
   }
 }
 
@@ -81,7 +79,6 @@ if($step == 3 && isset($_POST['default_dest'])) {
     $_SESSION['temp_dest'] = $_POST['temp_dest'];
     $_SESSION['temp_url'] = $_POST['temp_url'];
 
-    $bad_paths = [];
     $good = true;
     if(!file_exists($_SESSION['default_dest'])) {
       array_push($bad_paths, 'default_dest');
