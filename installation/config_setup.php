@@ -66,7 +66,7 @@ $configText = "
 
 
 function WriteConfig() {
-
+  global $configText;
   file_put_contents("../api/config.php", $configText);
 
   $configuration = "<?php
