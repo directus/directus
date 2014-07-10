@@ -58,6 +58,11 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
 }
 
 if($step == 4 && isset($_POST['install'])) {
+  if(isset($_POST['send_config_email'])) {
+    $_SESSION['send_config_email'] = $_POST['send_config_email'];
+  } else {
+    $_SESSION['send_config_email'] = "no";
+  }
   $_SESSION['step'] = 5;
   $step = 5;
 }
@@ -301,7 +306,7 @@ if($step == 4) {
         <tbody>
           <tr>
             <td class="item"><?php echo $_SESSION['email'];?></td>
-            <td class="result"><input type="checkbox" name="send_config_email" checked="checked"></td>
+            <td class="result"><input type="checkbox" value="yes" name="send_config_email" checked></td>
           </tr>
         </tbody>
       </table>
@@ -333,6 +338,63 @@ if($step == 5) {
   RunInserts($insert_statements, $mysqli);
   AddDefaultUser($_SESSION['email'], $_SESSION['password'], $mysqli);
   AddStorageAdapters($mysqli);
+  if(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == "yes") {
+    InstallSampleData($mysqli);
+  }
+  if(isset($_SESSION['send_config_email']) && $_SESSION['send_config_email'] == "yes") {
+        require_once('config_setup.php');
+    $mailBody = '<html><h3>Main Configuration</h3>
+      <hr>
+      <table>
+        <tbody>
+          <tr>
+            <td class="item">Site Name</td>
+            <td class="result">'.$_SESSION['site_name'].'</td>
+          </tr>
+          <tr>
+            <td class="item">Admin Email</td>
+            <td class="result"><span>'.$_SESSION['email'].'</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="item">Admin Password</td>
+            <td class="result">***</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Database Configuration</h3>
+      <hr>
+      <table>
+        <tbody>
+          <tr>
+            <td class="item">Host Name</td>
+            <td class="result">'.$_SESSION['host_name'].'</td>
+          </tr>
+          <tr>
+            <td class="item">Username</td>
+            <td class="result"><span>'.$_SESSION['username'].'</span></td>
+          </tr>
+          <tr>
+            <td class="item">Password</td>
+            <td class="result">***</td>
+          </tr>
+          <tr>
+            <td class="item">Database Name</td>
+            <td class="result">'.$_SESSION['db_name'].'</td>
+          </tr>
+          <tr>
+            <td class="item">Database Prefix</td>
+            <td class="result">'.$_SESSION['db_prefix'].'</td>
+          </tr>
+        </tbody>
+      </table>
+
+    <h3>Config File</h3><textarea>'.$configText.'</textarea></html>';
+      $headers  = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+    mail($_SESSION['email'], "Directus Install Config Overview", $mailBody, $headers);
+  }
   $mysqli->close();
 
   echo"<h1>Database Updated</h1>";
