@@ -46,12 +46,15 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
-      var options = _.map(this.options.settings.get('options').split(','), function(item) {
-        return {
-          value: item,
-          selected: (item === this.options.value)
-        };
-      }, this);
+      var options = [];
+      if(this.options.settings.get('options')) {
+        options = _.map(this.options.settings.get('options').split(','), function(item) {
+          return {
+            value: item,
+            selected: (item === this.options.value)
+          };
+        }, this);
+      }
 
       return {
         name: this.options.name,
