@@ -77,12 +77,14 @@ function(app, Backbone, PreferenceModel) {
     serialize: function() {
       var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};
       var mapping = app.statusMapping.mapping;
-      //Do not show option for deleted status
-      delete mapping[app.statusMapping.deleted_num];
+
       var keys = [];
       for(var key in mapping) {
-        data.mapping.push({id: key, name: mapping[key].name});
-        keys.push(key);
+        //Do not show option for deleted status
+        if(key != app.statusMapping.deleted_num) {
+          data.mapping.push({id: key, name: mapping[key].name});
+          keys.push(key);
+        }
       }
 
       data.allKeys = keys.join(',');
