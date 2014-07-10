@@ -15,9 +15,10 @@ function(app, Backbone, PreferenceModel) {
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status" class="change-visibility"> \
         <optgroup label="Status"> \
-          <option data-status value="1,2">View All</option> \
-          <option data-status value="1">View Active</option> \
-          <option data-status value="2">View Inactive</option> \
+          <option data-status value="{{allKeys}}">View All</option> \
+          {{#mapping}} \
+            <option data-status value="{{id}}">View {{capitalize name}}</option> \
+          {{/mapping}} \
         </optgroup> \
       </select> \
       <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
@@ -45,24 +46,6 @@ function(app, Backbone, PreferenceModel) {
     saveSnapshot: function() {
       var that = this;
       app.router.openModal({type: 'prompt', text: 'Please enter a name for your Snapshot', callback: function(name ) {
-        if(name === null) {
-          return;
-        }
-
-        var exists = false;
-        //Check for Duplicate
-        that.options.widgetOptions.snapshots.forEach(function(snapshot) {
-          if(name == snapshot) {
-            alert('A Snapshot With that name already exists!');
-            exists = true;
-            return;
-          }
-        });
-
-        if(exists) {
-          return;
-        }
-
         if(name === null || name === "") {
           alert('Please Fill In a Valid Name');
           return;
@@ -92,11 +75,22 @@ function(app, Backbone, PreferenceModel) {
     },
 
     serialize: function() {
-      return this.options.widgetOptions;
+      var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};
+      var mapping = app.statusMapping.mapping;
+      //Do not show option for deleted status
+      delete mapping[app.statusMapping.deleted_num];
+      var keys = [];
+      for(var key in mapping) {
+        data.mapping.push({id: key, name: mapping[key].name});
+        keys.push(key);
+      }
+
+      data.allKeys = keys.join(',');
+      return data;
     },
 
     afterRender: function() {
-      if(this.options.widgetOptions.hasActiveColumn) {
+      if(this.options.hasActiveColumn) {
         $('#visibilitySelect').val(this.collection.preferences.get(app.statusMapping.status_name));
       }
 
@@ -109,10 +103,9 @@ function(app, Backbone, PreferenceModel) {
       var activeTable = this.collection.table.id;
 
       this.basePage = this.options.basePage;
-      this.options.widgetOptions = {snapshots: []};
 
       if(this.collection.table.columns.get(app.statusMapping.status_name)) {
-        this.options.widgetOptions.hasActiveColumn = true;
+        this.options.hasActiveColumn = true;
       }
 
       if(app.router.loadedPreference) {
