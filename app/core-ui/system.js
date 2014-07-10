@@ -24,9 +24,9 @@ define(['app','backbone'], function(app, Backbone) {
   <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';*/
 
   var template = '<div class="status-group" style="margin-top:4px;"> \
-                  <label style="margin-right:40px;display:inline-block;" class="bold"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" value="1" {{#if readonly}}disabled{{/if}} {{#if active}}checked{{/if}}>Active</label> \
-                  <label style="margin-right:40px;display:inline-block;" class="bold medium-grey-color"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" {{#if readonly}}disabled{{/if}} name="{{name}}" value="2" {{#if inactive}}checked{{/if}}>Inactive</label> \
-                  <label style="margin-right:40px;display:inline-block;" class="bold delete-color"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" name="{{name}}" {{#if readonly}}disabled{{/if}} value="0" {{#if deleted}}checked{{/if}}>Deleted</label> \
+                  {{#mapping}} \
+                    <label style="margin-right:40px;display:inline-block;color:{{color}}" class="bold"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if active}}checked{{/if}}>{{name}}</label> \
+                  {{/mapping}} \
                   </div>';
 
   Module.id = 'system';
@@ -50,21 +50,23 @@ define(['app','backbone'], function(app, Backbone) {
 
     serialize: function() {
       var data = {};
-      var value = this.options.value;
 
-      switch(value) {
-        case 1:
-          data.active = true;
-          break;
-        case 2:
-          data.inactive = true;
-          break;
-        case 0:
-          data.deleted = true;
-          break;
+      var mapping = app.statusMapping.mapping;
+
+      var value = this.options.value;
+      data.mapping = [];
+      for(var key in mapping) {
+        var entry = mapping[key];
+        entry.id = key;
+        if(key == value) {
+          entry.active = true;
+        } else {
+          entry.active = false;
+        }
+
+        data.mapping.push(entry);
       }
 
-      data.value = value;
       data.name = this.options.name;
 
       data.readonly = !this.options.canWrite;
