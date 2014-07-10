@@ -2,6 +2,7 @@
 
 session_start();
 
+
 if(isset($_SESSION['step'])) {
   $step = $_SESSION['step'];
 } else {
@@ -36,23 +37,27 @@ if($step == 1 && isset($_POST['email']) && isset($_POST['site_name']) && isset($
 
 if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isset($_POST['db_name'])) {
   //Check for db connection
+  $code = 0;
+  ini_set('display_errors', 0);
   $conn = mysqli_init();
   mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
   $connection = mysqli_real_connect($conn, $_POST['host_name'], $_POST['username'], $_POST['password'], $_POST['db_name']);
+  $_SESSION['host_name'] = $_POST['host_name'];
+  $_SESSION['username'] = $_POST['username'];
+  $_SESSION['db_password'] = $_POST['password'];
+  $_SESSION['db_name'] = $_POST['db_name'];
+  $_SESSION['db_prefix'] = $_POST['db_prefix'];
+  if(isset($_POST['install_sample'])) {
+    $_SESSION['install_sample'] = $_POST['install_sample'];
+  } else {
+    $_SESSION['install_sample'] = "no";
+  }
   if($connection) {
-    $_SESSION['host_name'] = $_POST['host_name'];
-    $_SESSION['username'] = $_POST['username'];
-    $_SESSION['db_password'] = $_POST['password'];
-    $_SESSION['db_name'] = $_POST['db_name'];
-    $_SESSION['db_prefix'] = $_POST['db_prefix'];
-    if(isset($_POST['install_sample'])) {
-      $_SESSION['install_sample'] = $_POST['install_sample'];
-    } else {
-      $_SESSION['install_sample'] = "no";
-    }
     $_SESSION['step'] = 3;
     $step = 3;
   } else {
+    $code = mysqli_connect_errno();
+    print_r($code);
     echo('<h1>ERROR: Connection Could not be made.</h1>');
   }
 }
@@ -75,8 +80,23 @@ if($step == 3 && isset($_POST['default_dest'])) {
     $_SESSION['thumb_url'] = $_POST['thumb_url'];
     $_SESSION['temp_dest'] = $_POST['temp_dest'];
     $_SESSION['temp_url'] = $_POST['temp_url'];
-    $_SESSION['step'] = 4;
-    $step = 4;
+
+    $bad_paths = [];
+    $good = true;
+    if(!file_exists($_SESSION['default_dest'])) {
+      array_push($bad_paths, 'default_dest');
+    }
+    if(!file_exists($_SESSION['thumb_dest'])) {
+      array_push($bad_paths, 'thumb_dest');
+    }
+    if(!file_exists($_SESSION['temp_dest'])) {
+      array_push($bad_paths, 'temp_dest');
+    }
+
+    if(empty($bad_paths)) {
+      $_SESSION['step'] = 4;
+      $step = 4;
+    }
   }
 }
 ?><!doctype html>
@@ -92,6 +112,9 @@ if($step == 3 && isset($_POST['default_dest'])) {
   <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="install.css?v=1.0">
+<style>.error{
+  border: 1px solid red!important;;
+  }</style>
 </head>
 <body>
   <form name="input" action="index.php" method="post">
@@ -181,13 +204,12 @@ if($step == 2) {
       <div>Database Configuration</div>
     </div>
   </div>
-
   <div class="body">
     <div class="container">
-        Host Name<input type="text" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : ''); ?>"><br>
-        Username<input type="text" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
-        Password<input type="password" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
-        Database Name<input type="text" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
+        Host Name<input type="text" class="<?php if($code == 2002){echo "error";}?>" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : ''); ?>"><br>
+        Username<input type="text" class="<?php if($code == 1045){echo "error";}?>" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
+        Password<input type="password" class="<?php if($code == 1045){echo "error";}?>" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
+        Database Name<input type="text" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
         Database Prefix (optional)<input type="text" name="db_prefix" value="<?php echo(isset($_SESSION['db_prefix']) ? $_SESSION['db_prefix'] : ''); ?>"><br>
         <input type="checkbox" name="install_sample" value="yes" <?php echo(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == 'yes' ? 'checked' : ''); ?>>Install Sample Data<br>
 <?php
@@ -246,7 +268,7 @@ if($step == 4) {
           </tr>
           <tr>
             <td class="item">Database Prefix</td>
-            <td class="result"><?php echo $_SESSION['db_prefix'];?></td>
+            <td class="result"><?php echo(isset($_SESSION['db_prefix']) && !empty($_SESSION['db_prefix']) ? $_SESSION['db_prefix'] : '--');?></td>
           </tr>
         </tbody>
       </table>
@@ -323,11 +345,11 @@ if($step == 3) {
   </div>
   <div class="body">
     <div class="container">
-        Default Adapter Destination<input type="text" name="default_dest" value="<?php echo(isset($_SESSION['default_dest']) ? $_SESSION['default_dest'] : '/var/www/media/'); ?>" placeholder="/var/www/media/"><br>
+        Default Adapter Destination<input type="text" class="<?php if(in_array("default_dest", $bad_paths)){echo "error";}?>" name="default_dest" value="<?php echo(isset($_SESSION['default_dest']) ? $_SESSION['default_dest'] : '/var/www/media/'); ?>" placeholder="/var/www/media/"><br>
         Default Adapter URL<input type="text" name="default_url" value="<?php echo(isset($_SESSION['default_url']) ? $_SESSION['default_url'] : 'http://localhost/media/'); ?>" placeholder="http://localhost/media/"><br>
-        Thumbnail Adapter Destination<input type="text" name="thumb_dest" value="<?php echo(isset($_SESSION['thumb_dest']) ? $_SESSION['thumb_dest'] : '/var/www/media/thumb/'); ?>" placeholder="/var/www/media/thumb/"><br>
+        Thumbnail Adapter Destination<input type="text" class="<?php if(in_array("thumb_dest", $bad_paths)){echo "error";}?>" name="thumb_dest" value="<?php echo(isset($_SESSION['thumb_dest']) ? $_SESSION['thumb_dest'] : '/var/www/media/thumb/'); ?>" placeholder="/var/www/media/thumb/"><br>
         Thumbnail Adapter URL<input type="text" name="thumb_url" value="<?php echo(isset($_SESSION['thumb_url']) ? $_SESSION['thumb_url'] : 'http://localhost/media/thumb/'); ?>" placeholder="http://localhost/media/thumb/"><br>
-        Temp Adapter Destination<input type="text" name="temp_dest" value="<?php echo(isset($_SESSION['temp_dest']) ? $_SESSION['temp_dest'] : '/var/www/media/temp/'); ?>" placeholder="/var/www/media/temp/"><br>
+        Temp Adapter Destination<input type="text" name="temp_dest" class="<?php if(in_array("temp_dest", $bad_paths)){echo "error";}?>" value="<?php echo(isset($_SESSION['temp_dest']) ? $_SESSION['temp_dest'] : '/var/www/media/temp/'); ?>" placeholder="/var/www/media/temp/"><br>
         Temp Adapter URL<input type="text" name="temp_url" value="<?php echo(isset($_SESSION['temp_url']) ? $_SESSION['temp_url'] : 'http://localhost/media/temp/'); ?>" placeholder="http://localhost/media/temp/"><br>
 <?php
 }
