@@ -573,6 +573,7 @@ class TableSchema {
                 footer,
                 list_view,
                 column_groupings,
+                filter_column_blacklist,
                 primary_column,
                 TABLE_ROWS AS count
             FROM

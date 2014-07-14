@@ -122,6 +122,9 @@ function(app, Backbone) {
       var data = {};
       data.filters = this.options.filters;
       data.tableColumns = this.collection.structure.pluck('id');
+      if(this.collection.table.get('filter_column_blacklist')) {
+        data.tableColumns = _.difference(data.tableColumns, this.collection.table.get('filter_column_blacklist').split(','));
+      }
       data.tableColumns.sort(function(a, b) {
         if(a < b) return -1;
         if(a > b) return 1;
