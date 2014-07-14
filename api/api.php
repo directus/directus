@@ -524,6 +524,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   if(!isset($params['columns'])) {
     $params['columns'] = '';
   }
+  $params['active'] = 1;
 
   $columns = explode(',', $params['columns']);
 
@@ -540,7 +541,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
       array_push($tokens, $entry[$col]);
     }
     $val = implode(' ', $tokens);
-    array_push($response, array('value'=> $val, 'tokens'=> $tokens));
+    array_push($response, array('value'=> $val, 'tokens'=> $tokens, 'id'=>$entry['id']));
   }
   JsonView::render($response);
 });
