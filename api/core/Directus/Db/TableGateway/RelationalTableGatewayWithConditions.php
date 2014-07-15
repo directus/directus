@@ -130,6 +130,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
                 break;
               }
             }
+
             if(empty($target)) {
               continue;
             }
@@ -190,13 +191,16 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               }
 
             } else {
-              if($search_col['type'] == "like") {
-                $select->where($tableName.'.'.$search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue("%".$search_col['value']."%"));
+              if($target['type'] == "DATETIME" && strpos($search_col['value'], " ") == false){
+                $select->where('date('.$tableName.'.'.$search_col['id'].") = ".$this->adapter->platform->quoteValue($search_col['value']));
               } else {
-                $select->where($tableName.'.'.$search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue($search_col['value']));
+                if($search_col['type'] == "like") {
+                  $select->where($tableName.'.'.$search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue("%".$search_col['value']."%"));
+                } else {
+                  $select->where($tableName.'.'.$search_col['id']." ".$search_col['type']." ".$this->adapter->platform->quoteValue($search_col['value']));
+                }
               }
             }
-
             $i++;
           }
         } else if(isset($params['search']) && !empty($params['search'])) {
