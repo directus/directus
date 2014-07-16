@@ -1,6 +1,5 @@
 <?php
 
-function WriteConfig() {
   $db_host = $_SESSION['host_name'];
   $db_name = $_SESSION['db_name'];
   $db_user = $_SESSION['username'];
@@ -11,7 +10,8 @@ function WriteConfig() {
 
   $_SERVER['SERVER_NAME'] = '$_SERVER[\'SERVER_NAME\']';
   $host = '$host';
-  $configText = "
+
+$configText = "
   <?php
   date_default_timezone_set('America/New_York');
 
@@ -64,6 +64,9 @@ function WriteConfig() {
   //options are prod, staging, testing, development
   define('MEMCACHED_ENV_NAMESPACE', 'staging');";
 
+
+function WriteConfig() {
+  global $configText;
   file_put_contents("../api/config.php", $configText);
 
   $configuration = "<?php

@@ -16,7 +16,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
-    {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a JSON object'}
+    {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a Comma Delimited list'}
   ];
 
   var template = '<style type="text/css"> \
@@ -46,12 +46,15 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
-      var options = _.map(this.options.settings.get('options').split(','), function(item) {
-        return {
-          value: item,
-          selected: (item === this.options.value)
-        };
-      }, this);
+      var options = [];
+      if(this.options.settings.get('options')) {
+        options = _.map(this.options.settings.get('options').split(','), function(item) {
+          return {
+            value: item,
+            selected: (item === this.options.value)
+          };
+        }, this);
+      }
 
       return {
         name: this.options.name,

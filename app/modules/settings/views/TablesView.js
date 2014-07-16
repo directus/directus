@@ -106,7 +106,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       'change #junction_key_left': function(e) {
         this.model.set({junction_key_left: $(e.target).val()});
       },
-      'change #junction_table': function(e) {
+      'change #table_junction': function(e) {
         this.model.set({junction_table: $(e.target).val()});
       }
     },
@@ -121,7 +121,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
       for(var key in uis) {
         //If not system column
-        if(key.indexOf('directus_') < 0 && ['multiple_files'].indexOf(key) < 0) {
+        if(key.indexOf('directus_') < 0 ) {
           if(!this.selectedUI) {
             this.selectedUI = key;
           }
@@ -157,7 +157,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         data.CHAR_LENGTH = 1;
       }
 
-      if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
+      if(['many_to_one', 'many_to_one_typeahead', 'single_file'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
         var tableRelated = this.model.get('table_related');
 

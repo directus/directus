@@ -524,6 +524,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   if(!isset($params['columns'])) {
     $params['columns'] = '';
   }
+  $params['active'] = 1;
 
   $columns = explode(',', $params['columns']);
 
@@ -540,7 +541,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
       array_push($tokens, $entry[$col]);
     }
     $val = implode(' ', $tokens);
-    array_push($response, array('value'=> $val, 'tokens'=> $tokens));
+    array_push($response, array('value'=> $val, 'tokens'=> $tokens, 'id'=>$entry['id']));
   }
   JsonView::render($response);
 });
@@ -900,7 +901,7 @@ $app->post("/$v/upload/link/?", function () use ($db, $params, $requestPayload, 
             'size' => $fileData['size'],
             'width' => $fileData['width'],
             'height' => $fileData['height'],
-            'url' => $fileData['url'],
+            'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
             'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
             'storage_adapter' => $fileData['storage_adapter']
         );

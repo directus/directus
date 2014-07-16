@@ -32,11 +32,19 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
     events: {
       'click button[data-action=add]': 'addItem',
       'click button[data-action=insert]': 'insertItem',
-      'click .remove_slideshow_item': 'removeItem'
+      'click .remove_slideshow_item': 'removeItem',
+      'click .media_slideshow_item > img': function(e) {
+        if (!this.canEdit) {
+          return;
+        }
+        var cid = $(e.target).attr('data-file-cid');
+        var model = this.relatedCollection.get(cid, true);
+        this.editModel(model);
+      }
     },
 
     template: Handlebars.compile(
-      '{{#rows}}<span class="media_slideshow_item"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if showRemoveButton}}<div class="remove_slideshow_item icon icon-cross"></div>{{/if}}</span>{{/rows}}' +
+      '{{#rows}}<span class="media_slideshow_item show-circle"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove_slideshow_item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}' +
       '<div class="related-table"></div>' +
       '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files Item</button>{{/if}}' +
       '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files Item</button>{{/if}}</div>'),
@@ -46,7 +54,7 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
     },
 
     removeItem: function(e) {
-      var target_cid = $(e.target).parent().find('img').attr('data-file-cid');
+      var target_cid = $(e.target).closest('.media_slideshow_item').find('img').attr('data-file-cid');
       var model = this.relatedCollection.get(target_cid);
 
       if (model.isNew()) return this.relatedCollection.remove(model);
@@ -100,6 +108,35 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
       };
 
       collection.fetch();
+    },
+
+    editModel: function(model) {
+      var EditView = require("modules/tables/views/EditView");
+      var columnName = this.columnSchema.relationship.get('junction_key_right');
+      var view = new EditView({model: model, hiddenFields: [columnName]});
+
+      view.headerOptions.route.isOverlay = true;
+      view.headerOptions.route.breadcrumbs = [];
+      view.headerOptions.basicSave = true;
+
+      view.events = {
+        'click .saved-success': function() {
+          this.save();
+        },
+        'click #removeOverlay': function() {
+          app.router.removeOverlayPage(this);
+        }
+      };
+
+      app.router.overlayPage(view);
+
+      view.save = function() {
+        model.set(model.diff(view.editView.data()));
+        app.router.removeOverlayPage(this);
+      };
+
+      // Fetch first time to get the nested tables
+      model.fetch();
     },
 
     serialize: function() {

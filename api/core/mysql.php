@@ -13,7 +13,7 @@ class MySQL {
     var $db_name;
     var $db_host;
     var $dbh;
-    var $many_to_one_uis = array('many_to_one', 'single_file');
+    var $many_to_one_uis = array('many_to_one', 'single_file', 'many_to_one_typeahead');
     var $logger = null;
 
     /**
@@ -795,18 +795,6 @@ class MySQL {
             $data['table_name'] = $tbl_name;
             $data['sort'] = 9999;
 
-            switch ($data_type) {
-                case 'ALIAS':
-                    $data['ui'] = 'alias';
-                    break;
-                case 'ONETOMANY':
-                    $data['ui'] = 'one_to_many';
-                    break;
-                case 'MANYTOMANY':
-                    $data['ui'] = 'many_to_many';
-                    break;
-            }
-
             $data = array_intersect_key($data, array_flip($alias_columns));
             //Wrap data in an array so the multi collection can be used.
             $this->set_entries('directus_columns', array($data));
@@ -819,7 +807,7 @@ class MySQL {
             $sth->execute();
 
             //If many_to_one add to the columns
-            if(in_array($data['ui'], array('many_to_one', 'many_to_one_typeahead'))) {
+            if(in_array($data['ui'], $this->many_to_one_uis)) {
               $data['table_name'] = $tbl_name;
               $data['relationship_type'] = 'MANYTOONE';
               $data['sort'] = 9999;

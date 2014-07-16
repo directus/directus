@@ -20,7 +20,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     {id: 'show_inactive', ui: 'checkbox', def: '0'},
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: "Enter Visible Column Name"},
     {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"},
-    {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
+    {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"},
+    {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
+    {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"}
   ];
 
   var template = '<select {{#unless canEdit}}disabled{{/unless}}> \

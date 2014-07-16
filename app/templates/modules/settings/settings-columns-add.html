@@ -15,7 +15,7 @@
         <div class="field required">
         	<select id="uiType" name="ui_type">
             {{#ui_types}}
-              <option {{#if selected}}selected{{/if}}>{{capitalize title}}</option>
+              <option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
             {{/ui_types}}
   	      </select>
         </div>
@@ -136,24 +136,7 @@
           <label>Junction Table</label>
         </div>
         <div class="field required">
-          <select id="table_related" name="table_related">
-            {{#junctionTables}}
-            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-            {{/junctionTables}}
-          </select>
-        </div>
-      </div>
-    </div>
-  </li>
-
-  <li class="batchcontainer required">
-    <div class="table">
-      <div class="trow">
-        <div class="label">
-          <label>Junction Table</label>
-        </div>
-        <div class="field required">
-          <select id="table_related" name="table_related">
+          <select id="table_junction" name="table_junction">
             {{#junctionTables}}
             <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
             {{/junctionTables}}

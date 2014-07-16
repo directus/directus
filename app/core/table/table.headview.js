@@ -180,8 +180,15 @@ function(app, Backbone) {
 
     initialize: function() {
       this.maxColumns = this.options.maxColumns || 8;
+      var that = this;
       if(this.collection.preferences) {
-        this.collection.filters.columns_visible = this.collection.preferences.get('columns_visible').split(',');
+        this.collection.filters.columns_visible = [];
+        this.collection.preferences.get('columns_visible').split(',').forEach(function(column) {
+          //Only add columns that actually exist
+          if(that.collection.structure.get(column) !== undefined) {
+            that.collection.filters.columns_visible.push(column);
+          }
+        });
       }
 
       this.collection.on('sort', this.render, this);

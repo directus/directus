@@ -63,6 +63,18 @@
 //  Alerts
 ////////////
 
+.directus-modal-backdrop {
+  z-index: 998;
+  background-color: rgba(255,255,255,0.9);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .directus-alert-modal {
   position: fixed;
   top: 50%;
@@ -121,6 +133,12 @@
 ////////////
 //  BUTTONS
 ////////////
+.show-circle:hover {
+  position: relative;
+  .white-circle {
+    display: block;
+  }
+}
 .large-circle {
   .border-radius(50px, 50px, 50px, 50px);
   background-color: @mediumGrey;
@@ -144,6 +162,22 @@
     }
     &.icon-paper-plane {
       margin-left: -2px;
+    }
+  }
+  &.white-circle {
+    background-color: @white;
+    bottom: 10px;
+    color: @darkGrey;
+    display: none;
+    position: absolute;
+    right: 10px;
+    z-index: 3;
+    cursor: pointer;
+    .icon-pencil {
+      margin-top: -6px;
+    }
+    .icon-cross {
+      margin-top: -6px;
     }
   }
 }
