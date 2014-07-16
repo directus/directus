@@ -524,7 +524,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   if(!isset($params['columns'])) {
     $params['columns'] = '';
   }
-  $params['active'] = 1;
+  $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
 
   $columns = explode(',', $params['columns']);
 
