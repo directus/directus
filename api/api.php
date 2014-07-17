@@ -412,13 +412,14 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendD
     return JsonView::render($response);
 });
 
-$app->map("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/privileges/:groupId/?", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
     if ($myGroupId != 1) {
         throw new Exception('Permission denied');
     }
+
     if(isset($requestPayload['addTable'])) {
       unset($requestPayload['addTable']);
       $ZendDb->query('CREATE TABLE `'.$requestPayload['table_name'].'` (id int(11) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))', $ZendDb::QUERY_MODE_EXECUTE);
@@ -439,6 +440,24 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+
+    if(isset($requestPayload['activeState'])) {
+      if($requestPayload['activeState'] == 'all') {
+
+      } else {
+        $priv = $privileges->findByStatus($requestPayload['table_name'], $requestPayload['group_id'], $requestPayload['activeState']);
+        if($priv) {
+          $requestPayload['id'] = $priv['id'];
+          $requestPayload['status_id'] = $priv['status_id'];
+        } else {
+          unset($requestPayload['id']);
+          $requestPayload['status_id'] = $requestPayload['activeState'];
+          $response = $privileges->insertPrivilege($requestPayload);
+          return JsonView::render($response);
+        }
+      }
+    }
+
     $response = $privileges->updatePrivilege($requestPayload);
 
     return JsonView::render($response);
