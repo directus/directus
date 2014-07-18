@@ -16,7 +16,7 @@
 			<td class="editFields"><span class="icon icon-text-doc"></span></td>
 			{{#with permissions}}
 			<td data-value="view">
-        {{#if viewValConsistent}}<span><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
+        {{#if viewValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
 				{{#if bigview}}
           <span class="add-color big-priv has-privilege"><span title="Can View Any Items" class="icon icon-users"></span></span>
         {{else}}
@@ -28,12 +28,12 @@
         {{/if}}{{/if}}
 			</td>
 			<td data-value="add">
-				{{#if addValConsistent}}<span><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
+				{{#if addValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
         {{#if add}}<span class="add-color has-privilege"><span title="Can Add Items" class="icon icon-user"></span></span>
 				{{else}}<span class="delete-color"><span title="Can Not Add Items" class="icon icon-block"></span>{{/if}}{{/if}}
 			</td>
 			<td data-value="edit">
-        {{#if editValConsistent}}<span><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
+        {{#if editValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
 				{{#if bigedit}}
           <span class="add-color big-priv has-privilege"><span title="Can Edit Any Items" class="icon icon-users"></span></span>
         {{else}}
@@ -45,7 +45,7 @@
         {{/if}}{{/if}}
 			</td>
 			<td data-value="delete">
-        {{#if deleteValConsistent}}<span><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
+        {{#if deleteValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
 				{{#if bigdelete}}
           <span class="add-color big-priv has-privilege"><span title="Can Delete Any Items" class="icon icon-users"></span></span>
         {{else}}

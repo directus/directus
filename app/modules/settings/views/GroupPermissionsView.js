@@ -139,15 +139,57 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
         }
 
         cid = $tr.data('cid');
+        model = this.collection.get(cid);
+
+        if(this.selectedState == 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
+          var without = [];
+          var additional = [];
+
+
+          if($target.hasClass('big-priv')) {
+            without.push($target.parent().data('value'));
+            without.push('big' + $target.parent().data('value'));
+          } else if($target.hasClass('has-privilege')) {
+            additional.push('big' + $target.parent().data('value'));
+            without.push($target.parent().data('value'));
+          } else {
+            without.push('big' + $target.parent().data('value'));
+            additional.push($target.parent().data('value'));
+          }
+
+          this.collection.each(function(cmodel) {
+            if(cmodel.get('table_name') == model.get('table_name') && cmodel.get('group_id') == model.get('group_id')) {
+              var perms = cmodel.get('permissions').split(',');
+              perms = _.difference(perms, without);
+              perms = _.union(perms, additional);
+              perms = _.compact(perms);
+              cmodel.set('permissions', perms.join(','));
+              cmodel.save();
+            }
+          });
+
+          return;
+        }
+
         this.toggleIcon($target, this.collection.get(cid).get('permissions'));
 
         attributes = this.parseTablePermissions($tr, this.collection.get(cid).get('permissions'));
 
-        //app.API_URL + 'privileges/'+groupId
-
-        model = this.collection.get(cid);
+        var fancySave = false;
+        var oldModel = model;
+        if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
+          model = model.clone();
+          this.model = model;
+          model.collection = oldModel.collection;
+          fancySave = true;
+        }
         model.set(attributes);
-        model.save({activeState: this.selectedState});
+        var that = this;
+        model.save({activeState: this.selectedState}, {success: function(res) {
+          if(fancySave) {
+            that.collection.add(that.model);
+          }
+        }});
       }
     },
 
@@ -164,6 +206,7 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
       var permissions;
 
       permissions = $tr.children().has('span.has-privilege');
+
 
       permissions = permissions.map(function() { return (($(this).has('span.big-priv').length) ? "big" : "") +  $(this).data('value');}).get().join();
 
@@ -228,7 +271,6 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
       // Create data structure suitable for view
       collection = [];
 
-        console.log(tableStatusMapping);
       for(var prop in tableStatusMapping) {
         collection.push(tableStatusMapping[prop][this.selectedState]);
       }
@@ -264,7 +306,6 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
             data.permissions[property] = true;
           }
         });
-
         if(that.selectedState == 'all' && tableStatusMapping[data.table_name].count > 1) {
           var viewValConsistent = true;
           var lastView = (!data.permissions.bigview) ? ((!data.permissions.view) ? 0 : 1) : 2;
@@ -274,32 +315,62 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
           var lastEdit = (!data.permissions.bigedit) ? ((!data.permissions.edit) ? 0 : 1) : 2;
           var deleteValConsistent = true;
           var lastDelete = (!data.permissions.bigdelete) ? ((!data.permissions.delete) ? 0 : 1) : 2;
-
           for(var prop in tableStatusMapping[data.table_name]) {
             if(prop == 'all' || prop == 'count') {
               continue;
             }
             var permissions = tableStatusMapping[data.table_name][prop].get('permissions').split(',');
+
             if(addValConsistent) {
               addValConsistent = ((permissions.indexOf('add') > -1) == lastAdd);
             }
 
             if(viewValConsistent) {
-              if(permissions.indexOf('bigview') > -1 && lastView != 2) {viewValConsistent = false;}
-              else if(permissions.indexOf('view') > -1 && lastView != 1) {viewValConsistent = false;}
-              else if(lastView != 0) {viewValConsistent = false;}
+              if(permissions.indexOf('bigview') > -1) {
+                if(lastView != 2) {
+                  viewValConsistent = false;
+                }
+              }
+              else if(permissions.indexOf('view') > -1) {
+                if(lastView != 1) {
+                  viewValConsistent = false;
+                }
+              }
+              else if(lastView != 0) {
+                viewValConsistent = false;
+              }
             }
 
             if(editValConsistent) {
-              if(permissions.indexOf('bigedit') > -1 && lastEdit != 2) {editValConsistent = false;}
-              else if(permissions.indexOf('edit') > -1 && lastEdit != 1) {editValConsistent = false;}
-              else if(lastEdit != 0) {editValConsistent = false;}
+              if(permissions.indexOf('bigedit') > -1) {
+                if(lastEdit != 2) {
+                  editValConsistent = false;
+                }
+              }
+              else if(permissions.indexOf('edit') > -1) {
+                if(lastEdit != 1) {
+                  editValConsistent = false;
+                }
+              }
+              else if(lastEdit != 0) {
+                editValConsistent = false;
+              }
             }
 
             if(deleteValConsistent) {
-              if(permissions.indexOf('bigdelete') > -1 && lastDelete != 2) {deleteValConsistent = false;}
-              else if(permissions.indexOf('delete') > -1 && lastDelete != 1) {deleteValConsistent = false;}
-              else if(lastDelete != 0) {viewValConsistent = false;}
+              if(permissions.indexOf('bigdelete') > -1) {
+                if(lastDelete != 2) {
+                  deleteValConsistent = false;
+                }
+              }
+              else if(permissions.indexOf('delete') > -1) {
+                if(lastDelete != 1) {
+                  deleteValConsistent = false;
+                }
+              }
+              else if(lastDelete != 0) {
+                viewValConsistent = false;
+              }
             }
           }
 
@@ -308,7 +379,6 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
           data.permissions.editValConsistent = !editValConsistent;
           data.permissions.deleteValConsistent = !deleteValConsistent;
         }
-
 
         /*
         Don't blacklist columns yet
@@ -367,7 +437,6 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
       'change #statusSelect': function(e) {
         var $target = $(e.target).find(":selected");
         if($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
-          console.log("Change");
           this.baseView.updatePermissionList($(e.target).val());
           //var value = $(e.target).val();
           //var name = {currentPage: 0};
