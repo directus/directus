@@ -40,25 +40,29 @@ function(app, Backbone) {
         }
       },
       'change .filter_ui': function(e) {
-        var data = {
-          id: this.mysql_real_escape_string($(e.target).closest('li').find('.filterColumnName').attr('data-filter-id')),
-          type: 'like',
-          value: this.mysql_real_escape_string($(e.target).val())
-        };
-
-        if($(e.target).is(':checkbox')) {
-          if($(e.target).prop('checked')) {
-            data.value = 1;
-          } else {
-            data.value = 0;
-          }
-        }
-        this.selfChanged = true;
-        this.options.filters[$(e.target).closest('li').index()].filterData = data;
-        this.updateFilters();
-        this.collection.fetch();
-        this.saveFilterString();
+        this.processFilterChange(e);
       }
+    },
+
+    processFilterChange: function(e) {
+      var data = {
+        id: this.mysql_real_escape_string($(e.target).closest('li').find('.filterColumnName').attr('data-filter-id')),
+        type: 'like',
+        value: this.mysql_real_escape_string($(e.target).val())
+      };
+
+      if($(e.target).is(':checkbox')) {
+        if($(e.target).prop('checked')) {
+          data.value = 1;
+        } else {
+          data.value = 0;
+        }
+      }
+      this.selfChanged = true;
+      this.options.filters[$(e.target).closest('li').index()].filterData = data;
+      this.updateFilters();
+      this.collection.fetch();
+      this.saveFilterString();
     },
 
     getFilterDataType: function(selectedColumn) {
@@ -176,6 +180,34 @@ function(app, Backbone) {
       $('.filter-ui').last().find('input').focus();
       var that = this;
       _.each(this.options.filters, function(item) {
+        var columnModel = that.collection.structure.get(item.columnName);
+        if(columnModel.relationship) {
+          var fetchItems = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: app.API_URL + 'tables/' + columnModel.relationship.get('table_related') + '/typeahead/?columns=' + columnModel.options.get('visible_columns'),
+          });
+          fetchItems.initialize();
+
+          var typeaheadSelector = that.$(".filter-form[data-filter-id-master=" + columnModel.id + "] > .filter-ui > input");
+
+          typeaheadSelector.typeahead({
+            minLength: 1,
+            items: 5,
+            valueKey: columnModel.options.get('visible_columns'),
+            template: Handlebars.compile('<div>'+columnModel.options.get('visible_column_template')+'</div>')
+          },
+          {
+            name: 'related-items',
+            displayKey: 'value',
+            source: fetchItems.ttAdapter()
+          });
+
+          typeaheadSelector.on('typeahead:selected', function(e, datum) {
+            that.processFilterChange(e);
+          });
+        }
+
         if(item.relatedCollection || item.dropdownValues) {
           if(item.filterData) {
             that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
