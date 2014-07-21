@@ -720,10 +720,14 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
 
     if (array_key_exists('rows', $get_new)) {
         foreach ($get_new['rows'] as &$row) {
+          if(isset($row['date_uploaded'])) {
             $row['date_uploaded'] .= ' UTC';
+          }
         }
     } else {
+      if(isset($get_new['date_uploaded'])) {
         $get_new['date_uploaded'] .= ' UTC';
+      }
     }
 
     JsonView::render($get_new);
