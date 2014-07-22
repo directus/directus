@@ -26,10 +26,14 @@ function(app, Backbone) {
       'click .removeFilterClass':function(e) {
         var index = $(e.target).parent().index();
         var title = $(e.target).parent().find('.filterColumnName').attr('data-filter-id');
+
+        var value = this.options.filters[index].filterData.value;
         this.options.filters.splice(index, 1);
 
         this.updateFilters();
-        this.collection.fetch();
+        if(value) {
+          this.collection.fetch();
+        }
         this.saveFilterString();
         this.render();
       },
@@ -319,7 +323,9 @@ function(app, Backbone) {
             var selectedColumn = filter[0].replace('%20',':');
 
             data.columnName = selectedColumn;
-
+            if(!that.collection.structure.get(selectedColumn)) {
+              return;
+            }
             if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') == "one_to_many") {
               var columnModel = that.collection.structure.get(selectedColumn);
               if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
