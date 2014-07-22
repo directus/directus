@@ -38,6 +38,15 @@ function(app, Backbone, PreferenceModel) {
           var name = {currentPage: 0};
           name[app.statusMapping.status_name] = value;
           this.collection.setFilter(name);
+
+          this.listenToOnce(this.collection.preferences, 'sync', function() {
+            if(this.basePage) {
+              this.basePage.removeHolding(this.cid);
+            }
+            if(this.defaultId) {
+              this.collection.preferences.set({title:null, id: this.defaultId});
+            }
+          });
         }
       },
       'click #saveSnapshotBtn': 'saveSnapshot',
@@ -58,6 +67,15 @@ function(app, Backbone, PreferenceModel) {
         that.collection.preferences.set({title: name});
         that.collection.preferences.save();
         that.pinSnapshot(name);
+
+        that.listenToOnce(that.collection.preferences, 'sync', function() {
+          if(this.basePage) {
+            that.basePage.removeHolding(this.cid);
+          }
+          if(this.defaultId) {
+            that.collection.preferences.set({title:null, id: that.defaultId});
+          }
+        });
       }});
     },
 
@@ -116,16 +134,16 @@ function(app, Backbone, PreferenceModel) {
         if(this.basePage) {
           this.basePage.addHolding(this.cid);
         }
-      }
 
-      this.listenTo(this.collection.preferences, 'sync', function() {
-        if(this.basePage) {
-          this.basePage.removeHolding(this.cid);
-        }
-        if(this.defaultId) {
-          this.collection.preferences.set({title:null, id: this.defaultId});
-        }
-      });
+        this.listenToOnce(this.collection.preferences, 'sync', function() {
+          if(this.basePage) {
+            this.basePage.removeHolding(this.cid);
+          }
+          if(this.defaultId) {
+            this.collection.preferences.set({title:null, id: this.defaultId});
+          }
+        });
+      }
     }
   });
 });
