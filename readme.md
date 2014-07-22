@@ -12,6 +12,11 @@ View the Directus documentation here:
 
 [GitHub Wiki](https://github.com/RNGR/directus6/wiki)
 
+## Issues ##
+
+Discovered a bug? Please create an issue here on GitHub!
+
+https://github.com/RNGR/directus6/issues
 
 ## Versioning ##
 For transparency and insight into our release cycle, releases will be numbered with the follow format:
