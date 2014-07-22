@@ -181,32 +181,42 @@ function(app, Backbone) {
       var that = this;
       _.each(this.options.filters, function(item) {
         var columnModel = that.collection.structure.get(item.columnName);
+
+        var table = columnModel.collection.table.id;
+        var columns = columnModel.id;
+        var visibleTemplate = '<div>{{'+columnModel.id+'}}</div>';
+
         if(columnModel.relationship) {
-          var fetchItems = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: app.API_URL + 'tables/' + columnModel.relationship.get('table_related') + '/typeahead/?columns=' + columnModel.options.get('visible_columns'),
-          });
-          fetchItems.initialize();
+          table = columnModel.relationship.get('table_related');
+          columns = columnModel.options.get('visible_columns');
 
-          var typeaheadSelector = that.$(".filter-form[data-filter-id-master=" + columnModel.id + "] > .filter-ui > input");
-
-          typeaheadSelector.typeahead({
-            minLength: 1,
-            items: 5,
-            valueKey: columnModel.options.get('visible_columns'),
-            template: Handlebars.compile('<div>'+columnModel.options.get('visible_column_template')+'</div>')
-          },
-          {
-            name: 'related-items',
-            displayKey: 'value',
-            source: fetchItems.ttAdapter()
-          });
-
-          typeaheadSelector.on('typeahead:selected', function(e, datum) {
-            that.processFilterChange(e);
-          });
+          visibleTemplate = '<div>'+columnModel.options.get('visible_column_template')+'</div>';
         }
+
+        var fetchItems = new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          prefetch: app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns,
+        });
+        fetchItems.initialize();
+
+        var typeaheadSelector = that.$(".filter-form[data-filter-id-master=" + columnModel.id + "] > .filter-ui > input");
+
+        typeaheadSelector.typeahead({
+          minLength: 1,
+          items: 5,
+          valueKey: columns,
+          template: Handlebars.compile(visibleTemplate)
+        },
+        {
+          name: 'related-items',
+          displayKey: 'value',
+          source: fetchItems.ttAdapter()
+        });
+
+        typeaheadSelector.on('typeahead:selected', function(e, datum) {
+          that.processFilterChange(e);
+        });
 
         if(item.relatedCollection || item.dropdownValues) {
           if(item.filterData) {
