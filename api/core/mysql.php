@@ -128,7 +128,7 @@ class MySQL {
             TABLE_COMMENT AS comment,
             ifnull(hidden,0) as hidden,
             ifnull(single,0) as single,
-            inactive_by_default,
+            default_status,
             is_junction_table,
             user_create_column,
             footer,
@@ -147,7 +147,6 @@ class MySQL {
             $info['single'] = (boolean)$info['single'];
             $info['footer'] = (boolean)$info['footer'];
             $info['is_junction_table'] = (boolean)$info['is_junction_table'];
-            $info['inactive_by_default'] = (boolean)$info['inactive_by_default'];
         }
         $info = array_merge($info, $this->count_active($tbl_name));
         // $info['columns'] = $this->get_table($tbl_name);
@@ -291,7 +290,7 @@ class MySQL {
             }
 
             // Defualts as system columns
-            if ($row["id"] == 'id' || $row["id"] == 'active' || $row["id"] == 'sort') {
+            if ($row["id"] == 'id' || $row["id"] == STATUS_COLUMN_NAME || $row["id"] == 'sort') {
                 $row["system"] = true;
                 $row["hidden"] = true;
             }
@@ -361,7 +360,7 @@ class MySQL {
 
             $columns_visible = array();
             while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-                if ($row['column_name'] != 'id' && $row['column_name'] != 'active' && $row['column_name'] != 'sort') {
+                if ($row['column_name'] != 'id' && $row['column_name'] != STATUS_COLUMN_NAME && $row['column_name'] != 'sort') {
                     array_push($columns_visible, $row['column_name']);
                 }
             }
@@ -371,7 +370,7 @@ class MySQL {
                 'table_name' => $tbl_name,
                 'sort' => 'id',
                 'sort_order' => 'asc',
-                'active' => '1,2',
+                STATUS_COLUMN_NAME => '1,2',
                 'title' => 'default'
             );
             // Insert to DB
@@ -384,19 +383,21 @@ class MySQL {
      * DB @refactor 1st round candidate
      */
     function count_active($tbl_name, $no_active=false) {
-        $result = array('active'=>0);
+        $result = array(STATUS_COLUMN_NAME=>STATUS_DELETED_NUM);
         if ($no_active) {
-            $sql = "SELECT COUNT(*) as count, 'active' as active FROM $tbl_name";
+            $sql = "SELECT COUNT(*) as count, ".STATUS_COLUMN_NAME." as ".STATUS_COLUMN_NAME." FROM $tbl_name";
         } else {
             $sql = "SELECT
-                CASE active
-                    WHEN 0 THEN 'trash'
-                    WHEN 1 THEN 'active'
-                    WHEN 2 THEN 'inactive'
-                END AS active,
+                CASE ".STATUS_COLUMN_NAME;
+
+            $statusMap = Bootstrap::get('status');
+            foreach ($statusMap as $key => $value) {
+                $sql.= "WHEN ".$key." THEN '".$value['name']."'";
+            }
+            $sql.="END AS ".STATUS_COLUMN_NAME.",
                 COUNT(*) as count
             FROM $tbl_name
-            GROUP BY active";
+            GROUP BY ".STATUS_COLUMN_NAME;
         }
         $sth = $this->dbh->prepare($sql);
         // Test if there is an active column!
@@ -410,7 +411,7 @@ class MySQL {
             }
         }
         while($row = $sth->fetch(PDO::FETCH_ASSOC))
-            $result[$row['active']] = (int)$row['count'];
+            $result[$row[STATUS_COLUMN_NAME]] = (int)$row['count'];
         $total = 0;
         return $result;
     }
@@ -492,7 +493,7 @@ class MySQL {
         $id = isset($params['id']) ? $params['id'] : -1;
 
         $search = isset($params['search']) ? $this->dbh->quote('%'.strtolower($params['search']).'%') : null;
-        $active = isset($params['active']) ? $params['active'] : null;
+        $active = isset($params[STATUS_COLUMN_NAME]) ? $params[STATUS_COLUMN_NAME] : null;
 
         $alias_schema = array();
 
@@ -531,18 +532,18 @@ class MySQL {
         $has_active = false;
 
         foreach ($schema as $col) {
-            if ($col['column_name'] == 'active') {
+            if ($col['column_name'] == STATUS_COLUMN_NAME) {
                 $has_active = true;
                 break;
             }
         }
 
-        // This holds a "active" filter
+        // This holds a "status" filter
         $active_sql = "";
         if (isset($active)) {
             // Check if table has an active column
             if ($has_active) {
-                $active_sql = "AND active IN ($active)";
+                $active_sql = "AND ".STATUS_COLUMN_NAME." IN ($active)";
             }
         }
 
@@ -744,7 +745,7 @@ class MySQL {
         while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $row['group'] = array('id'=>(int)$row['group'],'name'=>$row['group_name']);
             unset($row['group_name']);
-            $row['active'] = (int)$row['active'];
+            $row[STATUS_COLUMN_NAME] = (int)$row[STATUS_COLUMN_NAME];
             array_push($result, $row);
         }
         return array('rows'=>$result);

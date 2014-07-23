@@ -39,7 +39,7 @@ define(function(require, exports, module) {
         preferences.columns_visible = preferences.columns_visible.split(',');
       }
 
-      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'active'));
+      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', app.statusMapping.status_name));
 
       // preferences normally trump filters, this is an edge case
       // @todo fix the data structure to make this logic less wierd
@@ -47,11 +47,11 @@ define(function(require, exports, module) {
         result.columns_visible = this.filters.columns_visible;
       }
 
-      // very wierd hot-fix to hardcode the user table to always show active=1
+      // very wierd hot-fix to hardcode the user table to always show status=1
       // @todo make sure that preferences and filters follow the rules!
       if ('directus_users' === this.table.id) {
         // console.warn('Active users only');
-        result.active = "1";
+        result[app.statusMapping.status_name] =  app.statusMapping.active_num;
       }
 
       return result;
@@ -61,27 +61,20 @@ define(function(require, exports, module) {
       var totalCount;
 
       // There is no active column. Use total
-      if (!this.table.has('active')) {
+      if (!this.table.columns.get(app.statusMapping.status_name)) {
         return this.table.get('total');
       }
 
-      switch (this.getFilter('active')) {
-        case '1,2':
-          totalCount = this.table.get('active');
-          if (this.table.has('inactive')) {
-            totalCount += this.table.get('inactive');
-          }
-          break;
-        case '1':
-          totalCount = this.table.get('active');
-          break;
-        case '2':
-          totalCount = this.table.get('inactive');
-          break;
-        case '0':
-          totalCount = this.table.get('trash');
-          break;
-      }
+      var visibleStates = this.getFilter(app.statusMapping.status_name).split(',');
+      totalCount = 0;
+
+      var that = this;
+      visibleStates.forEach(function(state) {
+        if(that.table.has(app.statusMapping.mapping[state].name)) {
+          totalCount += that.table.get(app.statusMapping.mapping[state].name);
+        }
+      });
+
 
       return totalCount;
 
@@ -150,14 +143,15 @@ define(function(require, exports, module) {
       this.url = options.url || this.table.get('url') + '/rows';
 
       this.active = this.table.get('active');
-
+      
       this.filters = _.extend({
         currentPage: 0,
         perPage: this.rowsPerPage,
         sort: 'id',
-        sort_order: 'ASC',
-        active: '1,2'
+        sort_order: 'ASC'
       }, this.filters);
+
+      this.filters[app.statusMapping.status_name] = '1,2';
 
       if (options.preferences) {
         this.preferences = options.preferences;

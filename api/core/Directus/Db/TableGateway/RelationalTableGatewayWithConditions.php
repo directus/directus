@@ -23,8 +23,13 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
         $tableName = $this->getTable();
 
-        $select->group($tableName . '.id')
-            ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
+        if(isset($params['group_by'])) {
+          $select->group($tableName . '.' . $params['group_by']);
+        } else {
+          $select->group($tableName . '.id');
+        }
+
+        $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
             ->limit($params['perPage'])
             ->offset($params['currentPage'] * $params['perPage']);
 
@@ -57,10 +62,10 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
-        if (null !== $params['active'] && $hasActiveColumn) {
-            $haystack = is_array($params['active'])
-                ? $params['active']
-                : explode(",", $params['active']);
+        if (null !== $params[STATUS_COLUMN_NAME] && $hasActiveColumn) {
+            $haystack = is_array($params[STATUS_COLUMN_NAME])
+                ? $params[STATUS_COLUMN_NAME]
+                : explode(",", $params[STATUS_COLUMN_NAME]);
 
             if (!isset($params['table_name']) || empty($params['table_name'])) {
               $tableName = $this->getTable();
@@ -68,7 +73,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               $tableName = $params['table_name'];
             }
 
-            $select->where->in($tableName.'.active', $haystack);
+            $select->where->in($tableName.'.'.STATUS_COLUMN_NAME, $haystack);
         }
 
         // Where

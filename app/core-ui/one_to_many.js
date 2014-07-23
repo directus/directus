@@ -209,7 +209,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.listenTo(relatedCollection, 'change', function() {
         //Check if any rendered objects in collection to show or hide header
-        if(this.relatedCollection.filter(function(d){return d.get('active') !== 0;}).length > 0) {
+        if(this.relatedCollection.filter(function(d){return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;}).length > 0) {
           this.nestedTableView.tableHead = true;
         } else {
           this.nestedTableView.tableHead = false;

@@ -15,9 +15,10 @@ function(app, Backbone, PreferenceModel) {
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status" class="change-visibility"> \
         <optgroup label="Status"> \
-          <option data-status value="1,2">View All</option> \
-          <option data-status value="1">View Active</option> \
-          <option data-status value="2">View Inactive</option> \
+          <option data-status value="{{allKeys}}">View All</option> \
+          {{#mapping}} \
+            <option data-status value="{{id}}">View {{capitalize name}}</option> \
+          {{/mapping}} \
         </optgroup> \
       </select> \
       <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
@@ -34,7 +35,18 @@ function(app, Backbone, PreferenceModel) {
         var $target = $(e.target).find(":selected");
         if($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
           var value = $(e.target).val();
-          this.collection.setFilter({currentPage: 0, active: value});
+          var name = {currentPage: 0};
+          name[app.statusMapping.status_name] = value;
+          this.collection.setFilter(name);
+
+          this.listenToOnce(this.collection.preferences, 'sync', function() {
+            if(this.basePage) {
+              this.basePage.removeHolding(this.cid);
+            }
+            if(this.defaultId) {
+              this.collection.preferences.set({title:null, id: this.defaultId});
+            }
+          });
         }
       },
       'click #saveSnapshotBtn': 'saveSnapshot',
@@ -43,24 +55,6 @@ function(app, Backbone, PreferenceModel) {
     saveSnapshot: function() {
       var that = this;
       app.router.openModal({type: 'prompt', text: 'Please enter a name for your Snapshot', callback: function(name ) {
-        if(name === null) {
-          return;
-        }
-
-        var exists = false;
-        //Check for Duplicate
-        that.options.widgetOptions.snapshots.forEach(function(snapshot) {
-          if(name == snapshot) {
-            alert('A Snapshot With that name already exists!');
-            exists = true;
-            return;
-          }
-        });
-
-        if(exists) {
-          return;
-        }
-
         if(name === null || name === "") {
           alert('Please Fill In a Valid Name');
           return;
@@ -73,6 +67,15 @@ function(app, Backbone, PreferenceModel) {
         that.collection.preferences.set({title: name});
         that.collection.preferences.save();
         that.pinSnapshot(name);
+
+        that.listenToOnce(that.collection.preferences, 'sync', function() {
+          if(this.basePage) {
+            that.basePage.removeHolding(this.cid);
+          }
+          if(this.defaultId) {
+            that.collection.preferences.set({title:null, id: that.defaultId});
+          }
+        });
       }});
     },
 
@@ -90,12 +93,35 @@ function(app, Backbone, PreferenceModel) {
     },
 
     serialize: function() {
-      return this.options.widgetOptions;
+      var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};
+      var mapping = app.statusMapping.mapping;
+
+      var keys = [];
+      for(var key in mapping) {
+        //Do not show option for deleted status
+        if(key != app.statusMapping.deleted_num) {
+          data.mapping.push({id: key, name: mapping[key].name, sort: mapping[key].sort});
+          keys.push(key);
+        }
+      }
+
+      data.mapping.sort(function(a, b) {
+        if(a.sort < b.sort) {
+          return -1;
+        }
+        if(a.sort > b.sort) {
+          return 1;
+        }
+        return 0;
+      });
+
+      data.allKeys = keys.join(',');
+      return data;
     },
 
     afterRender: function() {
-      if(this.options.widgetOptions.hasActiveColumn) {
-        $('#visibilitySelect').val(this.collection.preferences.get('active'));
+      if(this.options.hasActiveColumn) {
+        $('#visibilitySelect').val(this.collection.preferences.get(app.statusMapping.status_name));
       }
 
       // Adjust dropdown width dynamically
@@ -107,10 +133,9 @@ function(app, Backbone, PreferenceModel) {
       var activeTable = this.collection.table.id;
 
       this.basePage = this.options.basePage;
-      this.options.widgetOptions = {snapshots: []};
 
-      if(this.collection.table.columns.get('active')) {
-        this.options.widgetOptions.hasActiveColumn = true;
+      if(this.collection.table.columns.get(app.statusMapping.status_name)) {
+        this.options.hasActiveColumn = true;
       }
 
       if(app.router.loadedPreference) {
@@ -119,16 +144,16 @@ function(app, Backbone, PreferenceModel) {
         if(this.basePage) {
           this.basePage.addHolding(this.cid);
         }
-      }
 
-      this.listenTo(this.collection.preferences, 'sync', function() {
-        if(this.basePage) {
-          this.basePage.removeHolding(this.cid);
-        }
-        if(this.defaultId) {
-          this.collection.preferences.set({title:null, id: this.defaultId});
-        }
-      });
+        this.listenToOnce(this.collection.preferences, 'sync', function() {
+          if(this.basePage) {
+            this.basePage.removeHolding(this.cid);
+          }
+          if(this.defaultId) {
+            this.collection.preferences.set({title:null, id: this.defaultId});
+          }
+        });
+      }
     }
   });
 });

@@ -52,12 +52,13 @@ define(function(require, exports, module) {
    */
   var uis = {};
 
+  var app = require('app');
+
   /**
    * @private
    * Holds all Sytem fields and mapped UI
    */
   var system_fields = {
-    'active': {'ui':'system'}
   };
 
   // Attach all methods to the UIManager prototype.
@@ -66,6 +67,7 @@ define(function(require, exports, module) {
     setup: function() {
       //Register default UI's
       this.register(defaultUis);
+      system_fields[app.statusMapping.status_name] = {'ui':'system'};
     },
 
     // Get reference to external UI file

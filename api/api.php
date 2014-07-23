@@ -412,13 +412,14 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendD
     return JsonView::render($response);
 });
 
-$app->map("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/privileges/:groupId/?", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
     if ($myGroupId != 1) {
         throw new Exception('Permission denied');
     }
+
     if(isset($requestPayload['addTable'])) {
       unset($requestPayload['addTable']);
       $ZendDb->query('CREATE TABLE `'.$requestPayload['table_name'].'` (id int(11) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))', $ZendDb::QUERY_MODE_EXECUTE);
@@ -439,6 +440,24 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+
+    if(isset($requestPayload['activeState'])) {
+      if($requestPayload['activeState'] == 'all') {
+
+      } else {
+        $priv = $privileges->findByStatus($requestPayload['table_name'], $requestPayload['group_id'], $requestPayload['activeState']);
+        if($priv) {
+          $requestPayload['id'] = $priv['id'];
+          $requestPayload['status_id'] = $priv['status_id'];
+        } else {
+          unset($requestPayload['id']);
+          $requestPayload['status_id'] = $requestPayload['activeState'];
+          $response = $privileges->insertPrivilege($requestPayload);
+          return JsonView::render($response);
+        }
+      }
+    }
+
     $response = $privileges->updatePrivilege($requestPayload);
 
     return JsonView::render($response);
@@ -524,9 +543,18 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   if(!isset($params['columns'])) {
     $params['columns'] = '';
   }
-  $params['active'] = 1;
+  $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
 
   $columns = explode(',', $params['columns']);
+
+  if(count($columns) > 0) {
+    $params['group_by'] = $columns[0];
+
+    if(isset($params['q'])) {
+      $params['adv_where'] = $columns[0].' like \'%'.$params['q'].'%\'';
+      $params['perPage'] = 50;
+    }
+  }
 
   if(!$query) {
     $entries = $Table->getEntries($params);
@@ -541,7 +569,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
       array_push($tokens, $entry[$col]);
     }
     $val = implode(' ', $tokens);
-    array_push($response, array('value'=> $val, 'tokens'=> $tokens, 'id'=>$entry['id']));
+    array_push($response, array('value'=> $val, 'tokens'=> $tokens, 'id'=>$val));
   }
   JsonView::render($response);
 });

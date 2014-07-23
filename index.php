@@ -111,8 +111,8 @@ function getUsers() {
         array(
             'table_name'=>'directus_users',
             'perPage'=>1000,
-            'active'=>1,
-            'columns_visible'=>array('active','avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
+            STATUS_COLUMN_NAME=>STATUS_ACTIVE_NUM,
+            'columns_visible'=>array(STATUS_COLUMN_NAME,'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
         )
     );
 }
@@ -273,6 +273,9 @@ $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cach
 $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
 
+$statusMapping = array('active_num'=>STATUS_ACTIVE_NUM, 'deleted_num'=>STATUS_DELETED_NUM, 'status_name'=>STATUS_COLUMN_NAME);;
+$statusMapping['mapping'] = $config['statusMapping'];
+
 $data = array(
     'cacheBuster' => $cacheBuster,
     'nonces' => getNonces(),
@@ -293,7 +296,8 @@ $data = array(
     'listViews' => getListViews(),
     'messages' => getInbox(),
     'bookmarks' => getBookmarks(),
-    'extendedUserColumns' => getExtendedUserColumns($tableSchema)
+    'extendedUserColumns' => getExtendedUserColumns($tableSchema),
+    'statusMapping' => $statusMapping
 );
 
 $templateVars = array(

@@ -2,12 +2,11 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'core/panes/pane.saveview',
   'core/BasePageView',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, SaveModule, BasePageView, Widgets) {
+function(app, Backbone, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
 

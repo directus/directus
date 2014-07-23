@@ -68,7 +68,7 @@ define(function(require, exports, module) {
 
     getModels: function() {
       return this.filter(function(model) {
-        return !(model.has('active') && model.get('active') === 0);
+        return !(model.has(app.statusMapping.status_name) && model.get(app.statusMapping.status_name) === app.statusMapping.deleted_num);
       });
     },
 

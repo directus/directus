@@ -109,8 +109,8 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       if(this.options.settings.get('show_inactive') == '1') {
         active = '1,2';
       }
-
-      var data = {active: active, 'columns_visible[]': []};
+      var data = {'columns_visible[]': []};
+      data[app.statusMapping.status_name] = active;
 
       var columns_visible = this.options.settings.get('visible_column').split(',');
 

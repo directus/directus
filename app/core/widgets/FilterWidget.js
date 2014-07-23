@@ -26,10 +26,14 @@ function(app, Backbone) {
       'click .removeFilterClass':function(e) {
         var index = $(e.target).parent().index();
         var title = $(e.target).parent().find('.filterColumnName').attr('data-filter-id');
+
+        var value = this.options.filters[index].filterData.value;
         this.options.filters.splice(index, 1);
 
         this.updateFilters();
-        this.collection.fetch();
+        if(value) {
+          this.collection.fetch();
+        }
         this.saveFilterString();
         this.render();
       },
@@ -40,25 +44,29 @@ function(app, Backbone) {
         }
       },
       'change .filter_ui': function(e) {
-        var data = {
-          id: this.mysql_real_escape_string($(e.target).closest('li').find('.filterColumnName').attr('data-filter-id')),
-          type: 'like',
-          value: this.mysql_real_escape_string($(e.target).val())
-        };
-
-        if($(e.target).is(':checkbox')) {
-          if($(e.target).prop('checked')) {
-            data.value = 1;
-          } else {
-            data.value = 0;
-          }
-        }
-        this.selfChanged = true;
-        this.options.filters[$(e.target).closest('li').index()].filterData = data;
-        this.updateFilters();
-        this.collection.fetch();
-        this.saveFilterString();
+        this.processFilterChange(e);
       }
+    },
+
+    processFilterChange: function(e) {
+      var data = {
+        id: this.mysql_real_escape_string($(e.target).closest('li').find('.filterColumnName').attr('data-filter-id')),
+        type: 'like',
+        value: this.mysql_real_escape_string($(e.target).val())
+      };
+
+      if($(e.target).is(':checkbox')) {
+        if($(e.target).prop('checked')) {
+          data.value = 1;
+        } else {
+          data.value = 0;
+        }
+      }
+      this.selfChanged = true;
+      this.options.filters[$(e.target).closest('li').index()].filterData = data;
+      this.updateFilters();
+      this.collection.fetch();
+      this.saveFilterString();
     },
 
     getFilterDataType: function(selectedColumn) {
@@ -100,7 +108,9 @@ function(app, Backbone) {
           data.columnModel = columnModel;
           data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-          data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+          var name = {};
+          name[app.statusMapping.status_name] = app.statusMapping.active_num;
+          data.relatedCollection.fetch({includeFilters: false, data: name});
           this.listenTo(data.relatedCollection, 'sync', this.render);
         } else {
           data.filter_ui = this.getFilterDataType(selectedColumn);
@@ -174,6 +184,51 @@ function(app, Backbone) {
       $('.filter-ui').last().find('input').focus();
       var that = this;
       _.each(this.options.filters, function(item) {
+        var columnModel = that.collection.structure.get(item.columnName);
+
+        var table = columnModel.collection.table.id;
+        var columns = columnModel.id;
+        var visibleTemplate = '<div>{{'+columnModel.id+'}}</div>';
+
+        if(columnModel.relationship) {
+          table = columnModel.relationship.get('table_related');
+          columns = columnModel.options.get('visible_columns');
+
+          visibleTemplate = '<div>'+columnModel.options.get('visible_column_template')+'</div>';
+        }
+
+        var bloodHoundOptions = {
+          datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          prefetch: app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns,
+        };
+
+        if(that.collection.table.get('total') > that.collection.getFilter('perPage'))
+        {
+          bloodHoundOptions.remote = app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns + '&q=%QUERY';
+        }
+
+        var fetchItems = new Bloodhound(bloodHoundOptions);
+        fetchItems.initialize();
+
+        var typeaheadSelector = that.$(".filter-form[data-filter-id-master=" + columnModel.id + "] > .filter-ui > input");
+
+        typeaheadSelector.typeahead({
+          minLength: 1,
+          items: 5,
+          valueKey: columns,
+          template: Handlebars.compile(visibleTemplate)
+        },
+        {
+          name: 'related-items',
+          displayKey: 'value',
+          source: fetchItems.ttAdapter()
+        });
+
+        typeaheadSelector.on('typeahead:selected', function(e, datum) {
+          that.processFilterChange(e);
+        });
+
         if(item.relatedCollection || item.dropdownValues) {
           if(item.filterData) {
             that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
@@ -275,7 +330,9 @@ function(app, Backbone) {
             var selectedColumn = filter[0].replace('%20',':');
 
             data.columnName = selectedColumn;
-
+            if(!that.collection.structure.get(selectedColumn)) {
+              return;
+            }
             if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') == "one_to_many") {
               var columnModel = that.collection.structure.get(selectedColumn);
               if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
@@ -283,7 +340,9 @@ function(app, Backbone) {
                 data.columnModel = columnModel;
                 data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
 
-                data.relatedCollection.fetch({includeFilters: false, data: {active:1}});
+                var name = {};
+                name[app.statusMapping.status_name] = app.statusMapping.active_num;
+                data.relatedCollection.fetch({includeFilters: false, data: name});
                 that.listenTo(data.relatedCollection, 'sync', that.render);
               } else{
                 data.filter_ui = that.getFilterDataType(selectedColumn);

@@ -10,7 +10,7 @@ define(function(require, exports, module) {
     "title":"Users",
     "hidden":true,
     "single":false,
-    "inactive_by_default":"0",
+    "default_status":"1",
     "is_junction_table":false,
     "count":0,
     "active":0,
@@ -62,8 +62,8 @@ define(function(require, exports, module) {
         "hidden":true
       },
       {
-        "id":"active",
-        "column_name":"active",
+        "id":'status',
+        "column_name":'status',
         "type":"TINYINT",
         "is_nullable":"NO",
         "default_value":"1",

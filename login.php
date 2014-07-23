@@ -128,7 +128,7 @@ $(function(){
           message("Temporary password sent to your email address")
         },
         error: function(jqXHR, textStatus, errorThrown) {
-          message("Server error occurred (" + textStatus + ")", true);
+          message("Server error occurred!", true);
         }
       });
     }
@@ -170,7 +170,7 @@ $(function(){
 
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        message("Server error occurred (" + textStatus + ")", true);
+        message("Server error occurred!", true);
       }
     });
   });

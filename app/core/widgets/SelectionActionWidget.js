@@ -57,7 +57,9 @@ function(app, Backbone) {
 
 
       if(!isNaN(active)) {
-        var startCount = collection.where({'active': parseInt(active)}).length;
+        var name = {};
+        name[app.statusMapping.status_name] = parseInt(active);
+        var startCount = collection.where(name).length;
       }
 
       var success = function() {
@@ -66,8 +68,10 @@ function(app, Backbone) {
           collection.trigger('visibility');
           collection.trigger('select');
           if(startCount) {
-            if(collection.where({'active': parseInt(active)}).length != startCount) {
-              collection.updateActiveCount(startCount - collection.where({'active': parseInt(active)}).length);
+            var name = {};
+            name[app.statusMapping.status_name] = parseInt(active);
+            if(collection.where(name).length != startCount) {
+              collection.updateActiveCount(startCount - collection.where({name: parseInt(active)}).length);
             }
           }
         }
@@ -77,7 +81,9 @@ function(app, Backbone) {
         var id = this.value;
 
         var model = collection.get(id);
-        model.save({active: value}, {silent: true, patch:true, validate:false, success: success});
+        var name = {};
+        name[app.statusMapping.status_name] = value;
+        model.save(name, {silent: true, patch:true, validate:false, success: success});
       });
     },
 

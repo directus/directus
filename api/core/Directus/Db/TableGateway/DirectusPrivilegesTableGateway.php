@@ -46,13 +46,15 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
     // @todo This currently only supports permissions,
     // include blacklists when there is a UI for it
     public function insertPrivilege($attributes) {
+        $status_id = (isset($attributes['status_id']) ? $attributes['status_id'] : null);
         $insert = new Insert($this->getTable());
         $insert
             ->columns(array('table_name','permissions','group_id'))
             ->values(array(
                 'table_name' => $attributes['table_name'],
                 'permissions' => $attributes['permissions'],
-                'group_id' => $attributes['group_id']
+                'group_id' => $attributes['group_id'],
+                'status_id' => $status_id
                 ));
         $this->insertWith($insert);
 
@@ -64,9 +66,11 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
     // @todo This currently only supports permissions,
     // include blacklists when there is a UI for it
     public function updatePrivilege($attributes) {
-        $update = new Update($this->getTable());
-        $update->where->equalTo('id', $attributes['id']);
-        $update->set(array('permissions' => $attributes['permissions'], 'read_field_blacklist' => $attributes['read_field_blacklist'], 'write_field_blacklist' =>$attributes['write_field_blacklist']));
+
+
+      $update = new Update($this->getTable());
+      $update->where->equalTo('id', $attributes['id']);
+      $update->set(array('permissions' => $attributes['permissions'], 'read_field_blacklist' => $attributes['read_field_blacklist'], 'write_field_blacklist' =>$attributes['write_field_blacklist']));
         $this->updateWith($update);
 
         return $this->fetchById($attributes['id']);
@@ -94,7 +98,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
         $select = new Select($this->table);
         $select->where->equalTo('group_id', $groupId);
-        $select->group(array('group_id', 'table_name'));
+        $select->group(array('group_id', 'table_name', 'status_id'));
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 
@@ -104,7 +108,11 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         $privilegesHash = array();
 
         foreach ($rowset as $item) {
+            if (in_array($item['table_name'], $blacklist)) {
+                continue;
+            }
             $privilegesHash[$item['table_name']] = $item;
+            $privileges[] = $item;
         }
 
         foreach ($tables as $table) {
@@ -112,10 +120,10 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
                 continue;
             }
             if (array_key_exists($table, $privilegesHash)) {
-                $item = $privilegesHash[$table];
-            } else {
-                $item = array('table_name' => $table, 'group_id'=> $groupId);
+              continue;
             }
+
+            $item = array('table_name' => $table, 'group_id'=> $groupId, 'status_id' => null);
 
             $privileges[] = $item;
         }
@@ -129,5 +137,16 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
         return $rowset;
+    }
+
+    public function findByStatus($table_name, $group_id, $status_id) {
+      $select = new Select($this->table);
+      $select->where
+        ->equalTo('table_name', $table_name)
+        ->equalTo('group_id', $group_id)
+        ->equalTo('status_id', $status_id);
+      $rowset = $this->selectWith($select);
+      $rowset = $rowset->toArray();
+      return current($rowset);
     }
 }

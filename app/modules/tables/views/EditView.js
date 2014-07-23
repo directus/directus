@@ -1,14 +1,12 @@
 define([
   'app',
   'backbone',
-  'core/panes/pane.saveview',
-  'core/panes/pane.revisionsview',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Widgets) {
+function(app, Backbone, Directus, BasePageView, Widgets) {
 
   var HistoryView = Backbone.Layout.extend({
     tagName: "ul",
@@ -209,17 +207,19 @@ function(app, Backbone, SaveModule, RevisionsModule, Directus, BasePageView, Wid
       };
 
       // hard-destroy model if there is no active column
-      if (!this.model.has('active')){
+      if (!this.model.has(app.statusMapping.status_name)){
         throw "This table does not have an active column and can therefore not be deleted";
       }
-
-      this.model.save({active: 0}, {success: success, patch: true, wait: true, validate: false});
+      var name = app.statusMapping.status_name;
+      var name = {};
+      name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
+      this.model.save(name, {success: success, patch: true, wait: true, validate: false});
     },
 
     saveConfirm: function(e) {
       var data = this.editView.data();
       var that = this;
-      if(data.active && data.active == 0) {
+      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
         app.router.openModal({type: 'confirm', text: 'Are you sure you wish to delete this item?', callback: function() {
           that.save(e);
         }});

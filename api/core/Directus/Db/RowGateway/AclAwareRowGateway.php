@@ -18,16 +18,6 @@ use Zend\Db\RowGateway\RowGateway;
 
 class AclAwareRowGateway extends RowGateway {
 
-    const ACTIVE_STATE_TRASH    = 0;
-    const ACTIVE_STATE_ACTIVE   = 1;
-    const ACTIVE_STATE_INACTIVE = 2;
-
-    public static $activeStateSlugs = array(
-        self::ACTIVE_STATE_INACTIVE => "inactive",
-        self::ACTIVE_STATE_ACTIVE   => "active",
-        self::ACTIVE_STATE_TRASH    => "trash"
-    );
-
     protected $acl;
 
     /**

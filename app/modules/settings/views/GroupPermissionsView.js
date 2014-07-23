@@ -10,11 +10,10 @@ define([
   'app',
   'backbone',
   'core/BasePageView',
-  'core/widgets/widgets',
-  'core/panes/pane.saveview'
+  'core/widgets/widgets'
 ],
 
-function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
+function(app, Backbone, BasePageView, Widgets, SchemaManager) {
 
   "use strict";
 
@@ -140,13 +139,57 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
         }
 
         cid = $tr.data('cid');
+        model = this.collection.get(cid);
+
+        if(this.selectedState == 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
+          var without = [];
+          var additional = [];
+
+
+          if($target.hasClass('big-priv')) {
+            without.push($target.parent().data('value'));
+            without.push('big' + $target.parent().data('value'));
+          } else if($target.hasClass('has-privilege')) {
+            additional.push('big' + $target.parent().data('value'));
+            without.push($target.parent().data('value'));
+          } else {
+            without.push('big' + $target.parent().data('value'));
+            additional.push($target.parent().data('value'));
+          }
+
+          this.collection.each(function(cmodel) {
+            if(cmodel.get('table_name') == model.get('table_name') && cmodel.get('group_id') == model.get('group_id')) {
+              var perms = cmodel.get('permissions').split(',');
+              perms = _.difference(perms, without);
+              perms = _.union(perms, additional);
+              perms = _.compact(perms);
+              cmodel.set('permissions', perms.join(','));
+              cmodel.save();
+            }
+          });
+
+          return;
+        }
+
         this.toggleIcon($target, this.collection.get(cid).get('permissions'));
 
         attributes = this.parseTablePermissions($tr, this.collection.get(cid).get('permissions'));
 
-        model = this.collection.get(cid);
+        var fancySave = false;
+        var oldModel = model;
+        if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
+          model = model.clone();
+          this.model = model;
+          model.collection = oldModel.collection;
+          fancySave = true;
+        }
         model.set(attributes);
-        model.save();
+        var that = this;
+        model.save({activeState: this.selectedState}, {success: function(res) {
+          if(fancySave) {
+            that.collection.add(that.model);
+          }
+        }});
       }
     },
 
@@ -157,13 +200,13 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
       } else {
         $span.toggleClass('add-color').toggleClass('delete-color').toggleClass('has-privilege');
       }
-
     },
 
     parseTablePermissions: function($tr) {
       var permissions;
 
       permissions = $tr.children().has('span.has-privilege');
+
 
       permissions = permissions.map(function() { return (($(this).has('span.big-priv').length) ? "big" : "") +  $(this).data('value');}).get().join();
 
@@ -183,9 +226,57 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
       app.router.overlayPage(view);
     },
 
+    updatePermissionList: function(value) {
+      this.selectedState = value;
+      this.render();
+    },
+
     serialize: function() {
+      var collection = this.collection;
+      var that = this;
+
+      collection = collection.filter(function(model) {
+        if(that.selectedState != 'all') {
+          var test = app.schemaManager.getColumns('tables', model.get('table_name'));
+          if(test) {
+            test = test.find(function(hat){return hat.id == app.statusMapping.status_name;});
+            if(test) {
+              return true;
+            }
+          }
+          return false;
+        }
+        return true;
+      });
+
+      var tableStatusMapping = {};
+
+      collection.forEach(function(priv) {
+        if(!tableStatusMapping[priv.get('table_name')]) {
+          tableStatusMapping[priv.get('table_name')] = {count: 0};
+        }
+        if(priv.get('status_id')) {
+          tableStatusMapping[priv.get('table_name')][priv.get('status_id')] = priv;
+        } else {
+          tableStatusMapping[priv.get('table_name')][that.selectedState] = priv;
+        }
+
+        if(!tableStatusMapping[priv.get('table_name')][that.selectedState]) {
+          tableStatusMapping[priv.get('table_name')][that.selectedState] = priv;
+        }
+
+        tableStatusMapping[priv.get('table_name')].count++;
+      });
+
       // Create data structure suitable for view
-      var data = this.collection.map(function(model) {
+      collection = [];
+
+      for(var prop in tableStatusMapping) {
+        collection.push(tableStatusMapping[prop][this.selectedState]);
+      }
+
+      var tableData = [];
+      collection.forEach(function(model) {
         var permissions, read_field_blacklist,
             write_field_blacklist, data, defaultPermissions;
 
@@ -215,6 +306,79 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
             data.permissions[property] = true;
           }
         });
+        if(that.selectedState == 'all' && tableStatusMapping[data.table_name].count > 1) {
+          var viewValConsistent = true;
+          var lastView = (!data.permissions.bigview) ? ((!data.permissions.view) ? 0 : 1) : 2;
+          var addValConsistent = true;
+          var lastAdd = data.permissions.add;
+          var editValConsistent = true;
+          var lastEdit = (!data.permissions.bigedit) ? ((!data.permissions.edit) ? 0 : 1) : 2;
+          var deleteValConsistent = true;
+          var lastDelete = (!data.permissions.bigdelete) ? ((!data.permissions.delete) ? 0 : 1) : 2;
+          for(var prop in tableStatusMapping[data.table_name]) {
+            if(prop == 'all' || prop == 'count') {
+              continue;
+            }
+            var permissions = tableStatusMapping[data.table_name][prop].get('permissions').split(',');
+
+            if(addValConsistent) {
+              addValConsistent = ((permissions.indexOf('add') > -1) == lastAdd);
+            }
+
+            if(viewValConsistent) {
+              if(permissions.indexOf('bigview') > -1) {
+                if(lastView != 2) {
+                  viewValConsistent = false;
+                }
+              }
+              else if(permissions.indexOf('view') > -1) {
+                if(lastView != 1) {
+                  viewValConsistent = false;
+                }
+              }
+              else if(lastView != 0) {
+                viewValConsistent = false;
+              }
+            }
+
+            if(editValConsistent) {
+              if(permissions.indexOf('bigedit') > -1) {
+                if(lastEdit != 2) {
+                  editValConsistent = false;
+                }
+              }
+              else if(permissions.indexOf('edit') > -1) {
+                if(lastEdit != 1) {
+                  editValConsistent = false;
+                }
+              }
+              else if(lastEdit != 0) {
+                editValConsistent = false;
+              }
+            }
+
+            if(deleteValConsistent) {
+              if(permissions.indexOf('bigdelete') > -1) {
+                if(lastDelete != 2) {
+                  deleteValConsistent = false;
+                }
+              }
+              else if(permissions.indexOf('delete') > -1) {
+                if(lastDelete != 1) {
+                  deleteValConsistent = false;
+                }
+              }
+              else if(lastDelete != 0) {
+                viewValConsistent = false;
+              }
+            }
+          }
+
+          data.permissions.addValConsistent = !addValConsistent;
+          data.permissions.viewValConsistent = !viewValConsistent;
+          data.permissions.editValConsistent = !editValConsistent;
+          data.permissions.deleteValConsistent = !deleteValConsistent;
+        }
 
         /*
         Don't blacklist columns yet
@@ -238,16 +402,69 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
         });
         */
 
-        return data;
+        tableData.push(data);
       });
 
-      return {tables: data};
+      return {tables: tableData};
     },
 
     initialize: function() {
+      this.selectedState = "all";
       this.collection.on('sync', this.render, this);
     }
+  });
 
+  var StatusSelectWidget = Backbone.Layout.extend({
+    template: Handlebars.compile('\
+    <div class="simple-select dark-grey-color simple-gray right"> \
+      <span class="icon icon-triangle-down"></span> \
+      <select id="statusSelect" name="status" class="change-visibility"> \
+        <optgroup label="Status"> \
+          <option data-status value="all">All States</option> \
+          {{#mapping}} \
+            <option data-status value="{{id}}">View {{capitalize name}}</option> \
+          {{/mapping}} \
+        </optgroup> \
+      </select> \
+    </div>'),
+
+    tagName: 'div',
+    attributes: {
+      'class': 'tool'
+    },
+
+    events: {
+      'change #statusSelect': function(e) {
+        var $target = $(e.target).find(":selected");
+        if($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
+          this.baseView.updatePermissionList($(e.target).val());
+          //var value = $(e.target).val();
+          //var name = {currentPage: 0};
+          //name[app.statusMapping.status_name] = value;
+          //this.collection.setFilter(name);
+        }
+      }
+    },
+
+    serialize: function() {
+      var data = {mapping: []};
+      var mapping = app.statusMapping.mapping;
+
+      for(var key in mapping) {
+        //Do not show option for deleted status
+        if(key != app.statusMapping.deleted_num) {
+          data.mapping.push({id: key, name: mapping[key].name});
+        }
+      }
+      return data;
+    },
+
+    afterRender: function() {
+      //$('#visibilitySelect').val(this.collection.preferences.get(app.statusMapping.status_name));
+    },
+    initialize: function(options) {
+      this.baseView = options.baseView;
+    }
   });
 
   GroupPermissions.Page = BasePageView.extend({
@@ -257,14 +474,20 @@ function(app, Backbone, BasePageView, Widgets, PaneSaveView) {
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
       },
     },
+    rightToolbar: function() {
+      this.statusSelect = new StatusSelectWidget({baseView: this.view});
+      return [
+        this.statusSelect
+      ];
+    },
     afterRender: function() {
-      var view = new GroupPermissions.Permissions({collection: this.collection});
-      this.setView('#page-content', view);
+      this.setView('#page-content', this.view);
       this.collection.fetch();
       //this.insertView('#sidebar', new PaneSaveView({model: this.model, single: this.single}));
     },
     initialize: function() {
       this.headerOptions.route.title = this.options.title;
+      this.view = new GroupPermissions.Permissions({collection: this.collection});
     }
 
   });

@@ -70,6 +70,7 @@ require(["config"], function() {
     app.PATH = options.path;
     app.authenticatedUserId = window.directusData.authenticatedUser;
     app.storageAdapters = window.directusData.storage_adapters;
+    app.statusMapping = window.directusData.statusMapping;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function() { // our abort function

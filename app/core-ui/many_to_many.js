@@ -48,8 +48,9 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       var model = this.relatedCollection.get(cid);
 
       if (model.isNew()) return this.relatedCollection.remove(model);
-
-      model.set({active: 0});
+      var name = {};
+      name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
+      model.set(name);
     },
 
     addModel: function(model) {
@@ -123,7 +124,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       //Remove inactive items from collection
       for(var i=0; i<relatedCollection.size(); i++) {
         var model = relatedCollection.at(i);
-        if(model.get('data').get('active') !== 0) {
+        if(model.get('data').get(app.statusMapping.status_name) !== app.statusMapping.deleted_num) {
           ids.push(model.get('data').id);
         } else {
           relatedCollection.remove(model, {silent: true});
@@ -157,7 +158,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', function() {
         //Check if any rendered objects in collection to show or hide header
-        if(this.relatedCollection.filter(function(d){return d.get('active') !== 0;}).length > 0) {
+        if(this.relatedCollection.filter(function(d){return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;}).length > 0) {
           this.nestedTableView.tableHead = true;
         } else {
           this.nestedTableView.tableHead = false;

@@ -158,7 +158,7 @@ class TableSchema {
         $sth->execute();
 
         $columns = array();
-        $ignoreColumns = array('id','active','sort');
+        $ignoreColumns = array('id',STATUS_COLUMN_NAME,'sort');
         $i = 0;
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
             $i++;
@@ -272,7 +272,7 @@ class TableSchema {
             TABLE_COMMENT AS comment,
             ifnull(hidden,0) as hidden,
             ifnull(single,0) as single,
-            inactive_by_default,
+            default_status,
             is_junction_table,
             user_create_column,
             user_update_column,
@@ -293,7 +293,6 @@ class TableSchema {
             $info['single'] = (boolean) $info['single'];
             $info['footer'] = (boolean) $info['footer'];
             $info['is_junction_table'] = (boolean) $info['is_junction_table'];
-            $info['inactive_by_default'] = (boolean) $info['inactive_by_default'];
         }
         $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $ZendDb);
         $info = array_merge($info, $relationalTableGateway->countActiveOld());
@@ -452,7 +451,7 @@ class TableSchema {
             }
 
             // Defualts as system columns
-            if ($row["id"] == 'id' || $row["id"] == 'active' || $row["id"] == 'sort') {
+            if ($row["id"] == 'id' || $row["id"] == STATUS_COLUMN_NAME || $row["id"] == 'sort') {
                 $row["system"] = true;
                 $row["hidden"] = true;
             }
@@ -564,7 +563,7 @@ class TableSchema {
                 TABLE_COMMENT AS comment,
                 ifnull(hidden,0) as hidden,
                 ifnull(single,0) as single,
-                inactive_by_default,
+                default_status,
                 is_junction_table,
                 user_create_column,
                 user_update_column,
@@ -745,7 +744,6 @@ class TableSchema {
         $info['single'] = (boolean) $info['single'];
         $info['footer'] = (boolean) $info['footer'];
         $info['is_junction_table'] = (boolean) $info['is_junction_table'];
-        $info['inactive_by_default'] = (boolean) $info['inactive_by_default'];
         return $info;
     }
 
@@ -790,7 +788,7 @@ class TableSchema {
         }
 
         // Defualts as system columns
-        if ($row["id"] == 'id' || $row["id"] == 'active' || $row["id"] == 'sort') {
+        if ($row["id"] == 'id' || $row["id"] == STATUS_COLUMN_NAME || $row["id"] == 'sort') {
             $row["system"] = true;
             $row["hidden"] = true;
         }

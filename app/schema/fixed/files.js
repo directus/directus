@@ -7,7 +7,7 @@ define(function(require, exports, module) {
     "table_name":"directus_files",
     "hidden":true,
     "single":false,
-    "inactive_by_default":"0",
+    "default_status":"1",
     "is_junction_table":false,
     "count":0,
     "url": "api/1/files",
@@ -57,8 +57,8 @@ define(function(require, exports, module) {
         "hidden":true
       },
       {
-        "id":"active",
-        "column_name":"active",
+        "id":'status',
+        "column_name":'status',
         "type":"TINYINT",
         "is_nullable":"YES",
         "default_value":"1",
