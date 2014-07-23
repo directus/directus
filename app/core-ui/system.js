@@ -52,7 +52,6 @@ define(['app','backbone'], function(app, Backbone) {
       var data = {};
 
       var mapping = app.statusMapping.mapping;
-
       var value = this.options.value;
       data.mapping = [];
       for(var key in mapping) {
@@ -66,6 +65,16 @@ define(['app','backbone'], function(app, Backbone) {
 
         data.mapping.push(entry);
       }
+
+      data.mapping.sort(function(a, b) {
+        if(a.sort < b.sort) {
+          return -1;
+        }
+        if(a.sort > b.sort) {
+          return 1;
+        }
+        return 0;
+      });
 
       data.name = this.options.name;
 
