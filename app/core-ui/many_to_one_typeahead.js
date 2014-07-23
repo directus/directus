@@ -70,7 +70,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     serialize: function() {
       var relatedModel = this.model.get(this.name);
       var value = '';
-      console.log(relatedModel);
       // The item is not new, it has a value
       if (!relatedModel.isNew()) {
         value = relatedModel.get(this.visibleCoumn);
@@ -123,7 +122,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       this.visibleCoumn = this.columnSchema.options.get('visible_column');
       var value = this.model.get(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
-      console.log(value);
     }
 
   });
