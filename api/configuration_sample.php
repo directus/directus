@@ -49,7 +49,7 @@ return array(
     '0' => array(
       'name' => 'deleted',
       'color' => '#FF0000',
-      'sort' => 4
+      'sort' => 3
     ),
     '1' => array(
       'name' => 'active',
