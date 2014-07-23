@@ -197,12 +197,18 @@ function(app, Backbone) {
           visibleTemplate = '<div>'+columnModel.options.get('visible_column_template')+'</div>';
         }
 
-        var fetchItems = new Bloodhound({
+        var bloodHoundOptions = {
           datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
           queryTokenizer: Bloodhound.tokenizers.whitespace,
           prefetch: app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns,
-          remote: app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns + '&q=%QUERY'
-        });
+        };
+
+        if(that.collection.table.get('total') > that.collection.getFilter('perPage'))
+        {
+          bloodHoundOptions.remote = app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns + '&q=%QUERY';
+        }
+
+        var fetchItems = new Bloodhound(bloodHoundOptions);
         fetchItems.initialize();
 
         var typeaheadSelector = that.$(".filter-form[data-filter-id-master=" + columnModel.id + "] > .filter-ui > input");
