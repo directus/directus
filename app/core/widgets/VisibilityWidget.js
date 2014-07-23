@@ -100,10 +100,20 @@ function(app, Backbone, PreferenceModel) {
       for(var key in mapping) {
         //Do not show option for deleted status
         if(key != app.statusMapping.deleted_num) {
-          data.mapping.push({id: key, name: mapping[key].name});
+          data.mapping.push({id: key, name: mapping[key].name, sort: mapping[key].sort});
           keys.push(key);
         }
       }
+
+      data.mapping.sort(function(a, b) {
+        if(a.sort < b.sort) {
+          return -1;
+        }
+        if(a.sort > b.sort) {
+          return 1;
+        }
+        return 0;
+      });
 
       data.allKeys = keys.join(',');
       return data;
