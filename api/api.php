@@ -422,7 +422,10 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($db, $acl, $Zend
 
     if(isset($requestPayload['addTable'])) {
       unset($requestPayload['addTable']);
-      $ZendDb->query('CREATE TABLE `'.$requestPayload['table_name'].'` (id int(11) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))', $ZendDb::QUERY_MODE_EXECUTE);
+      try{
+        $ZendDb->query('CREATE TABLE `'.$requestPayload['table_name'].'` (id int(11) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))', $ZendDb::QUERY_MODE_EXECUTE);
+      }catch(\Exception $e){
+      }
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
