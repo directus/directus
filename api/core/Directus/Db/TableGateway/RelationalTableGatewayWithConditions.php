@@ -23,8 +23,13 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
         $tableName = $this->getTable();
 
-        $select->group($tableName . '.id')
-            ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
+        if(isset($params['group_by'])) {
+          $select->group($tableName . '.' . $params['group_by']);
+        } else {
+          $select->group($tableName . '.id');
+        }
+
+        $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
             ->limit($params['perPage'])
             ->offset($params['currentPage'] * $params['perPage']);
 

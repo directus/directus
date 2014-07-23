@@ -547,6 +547,15 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
 
   $columns = explode(',', $params['columns']);
 
+  if(count($columns) > 0) {
+    $params['group_by'] = $columns[0];
+
+    if(isset($params['q'])) {
+      $params['adv_where'] = $columns[0].' like \'%'.$params['q'].'%\'';
+      $params['perPage'] = 50;
+    }
+  }
+
   if(!$query) {
     $entries = $Table->getEntries($params);
   }
@@ -560,7 +569,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
       array_push($tokens, $entry[$col]);
     }
     $val = implode(' ', $tokens);
-    array_push($response, array('value'=> $val, 'tokens'=> $tokens, 'id'=>$entry['id']));
+    array_push($response, array('value'=> $val, 'tokens'=> $tokens, 'id'=>$val));
   }
   JsonView::render($response);
 });

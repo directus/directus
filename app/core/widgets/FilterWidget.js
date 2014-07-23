@@ -201,6 +201,7 @@ function(app, Backbone) {
           datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
           queryTokenizer: Bloodhound.tokenizers.whitespace,
           prefetch: app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns,
+          remote: app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns + '&q=%QUERY'
         });
         fetchItems.initialize();
 
