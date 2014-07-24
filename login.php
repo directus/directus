@@ -1,6 +1,7 @@
 <?php
 
 require "api/config.php";
+require "api/globals.php";
 
 /**
  * Temporary solution for disabling this page for logged in users.
@@ -72,6 +73,7 @@ input[type="text"], input[type="password"] {font-size:16px; width:360px; border:
   </div>
   <p class="error" style="display:none;"></p>
   <p class="message" style="display:none;"></p>
+  <div class="directus-version">Version: <?php echo(DIRECTUS_VERSION) ?></div>
   <!-- <button type="submit" class="btn btn-primary">Sign in</button> -->
   <!-- <button id="forgot-password" class="btn btn-primary">Forgot Password</button> -->
 </form>
