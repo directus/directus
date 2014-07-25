@@ -81,6 +81,7 @@ function(app, Backbone) {
       switch(columnModelType) {
         case 'DATE':
         case 'DATETIME':
+        case 'TIMESTAMP':
           newInput = this.filterUIMappings.date;
           break;
         case 'TINYINT':
