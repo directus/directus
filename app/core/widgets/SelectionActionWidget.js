@@ -90,17 +90,20 @@ function(app, Backbone) {
     serialize: function() {
       return this.options.widgetOptions;
     },
-    initialize: function() {
-      if(!this.options.widgetOptions) {
-        this.options.widgetOptions = {};
-      }
-      this.collection.on('select', function() {
+    beforeRender: function() {
+      this.stopListening(this.collection, 'select');
+      this.listenTo(this.collection, 'select', function() {
         var batchEdit = $('.select-row:checked').length > 1;
         if(this.options.widgetOptions.batchEdit != batchEdit) {
           this.options.widgetOptions.batchEdit = batchEdit;
           this.render();
         }
       }, this);
+    },
+    initialize: function() {
+      if(!this.options.widgetOptions) {
+        this.options.widgetOptions = {};
+      }
     }
   });
 });
