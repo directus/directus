@@ -160,10 +160,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
                 $select->join($junctionTable,
                     "$keyleft = $keyRight",
                     array(),
-                    Select::JOIN_INNER)
-                ->join(array($relatedAliasName => $relatedTable),
-                    "$jkeyleft = $jkeyright",
-                    array(),
                     Select::JOIN_INNER);
               } else {
                 $select->join(array($relatedAliasName => $relatedTable),
@@ -173,28 +169,35 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               }
 
               $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
-              $search_col['value'] = "%".$search_col['value']."%";
 
+              if($search_col['type'] == "like") {
+                $select->join(array($relatedAliasName => $relatedTable),
+                    "$jkeyleft = $jkeyright",
+                    array(),
+                    Select::JOIN_INNER);
 
-              if(isset($target['options']['filter_column'])) {
-                $targetCol = $target['options']['filter_column'];
-              } else {
-                $targetCol = $target['options']['visible_column'];
-              }
+                $search_col['value'] = "%".$search_col['value']."%";
+                if(isset($target['options']['filter_column'])) {
+                  $targetCol = $target['options']['filter_column'];
+                } else {
+                  $targetCol = $target['options']['visible_column'];
+                }
 
-              foreach ($relatedTableMetadata as $col) {
-                if($col['id'] == $targetCol) {
-                  if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
-                    $where = $select->where->nest;
-                    $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
-                    $columnName = $relatedAliasName.".".$columnName;
-                    $like = new Predicate\Expression("LOWER($columnName) LIKE ?", $search_col['value']);
-                    $where->addPredicate($like, Predicate\Predicate::OP_OR);
-                    $where->unnest;
+                foreach ($relatedTableMetadata as $col) {
+                  if($col['id'] == $targetCol) {
+                    if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
+                      $where = $select->where->nest;
+                      $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
+                      $columnName = $relatedAliasName.".".$columnName;
+                      $like = new Predicate\Expression("LOWER($columnName) LIKE ?", $search_col['value']);
+                      $where->addPredicate($like, Predicate\Predicate::OP_OR);
+                      $where->unnest;
+                    }
                   }
                 }
+              } else {
+                  $select->where($jkeyleft.' = '.$this->adapter->platform->quoteValue($search_col['value']));
               }
-
             } else {
               if($target['type'] == "DATETIME" && strpos($search_col['value'], " ") == false){
                 $select->where('date('.$tableName.'.'.$search_col['id'].") = ".$this->adapter->platform->quoteValue($search_col['value']));
@@ -220,7 +223,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             }
             $where->unnest;
         }
-
         //    $log = Bootstrap::get('log');
         //    $log->info(__CLASS__.'#'.__FUNCTION__);
         //    $log->info("New search query: " . $this->dumpSql($select));
