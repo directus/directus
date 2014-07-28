@@ -140,7 +140,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               continue;
             }
 
-            if(isset($target['relationship'])) {
+            if(isset($target['relationship']) && $target['relationship']['type'] == "MANYTOMANY") {
 
               $relatedTable = $target['relationship']['table_related'];
               $relatedAliasName = $relatedTable."_".$i;
