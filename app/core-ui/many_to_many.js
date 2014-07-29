@@ -133,7 +133,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       }
 
       if(ids.length > 0) {
-        relatedCollection.nestedCollection.setFilter({ids: ids.join(',')});
+        relatedCollection.nestedCollection.setFilter({ids: ids.slice(0,relatedCollection.nestedCollection.filters.perPage).join(',')});
         relatedCollection.nestedCollection.fetch();
       }
 

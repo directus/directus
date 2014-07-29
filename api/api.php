@@ -572,7 +572,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
       array_push($tokens, $entry[$col]);
     }
     $val = implode(' ', $tokens);
-    array_push($response, array('value'=> $val, 'tokens'=> $tokens, 'id'=>$val));
+    array_push($response, array('value'=> $val, 'tokens'=> $tokens, 'id'=>$entry['id']));
   }
   JsonView::render($response);
 });

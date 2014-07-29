@@ -176,7 +176,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         } else {
           filters.columns_visible = [joinColumn];
         }
-        filters.ids = ids.join(',');
+        filters.ids = ids.slice(0,filters.perPage).join(',');
 
         relatedCollection.fetch({includeFilters: false, data: filters});
       }

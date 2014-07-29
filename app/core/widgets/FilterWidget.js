@@ -49,9 +49,13 @@ function(app, Backbone) {
     },
 
     processFilterChange: function(e) {
+      var type = 'like';
+      if($(e.target).prop('tagName') == 'SELECT') {
+        type = '=';
+      }
       var data = {
         id: this.mysql_real_escape_string($(e.target).closest('li').find('.filterColumnName').attr('data-filter-id')),
-        type: 'like',
+        type: type,
         value: this.mysql_real_escape_string($(e.target).val())
       };
 
@@ -81,6 +85,7 @@ function(app, Backbone) {
       switch(columnModelType) {
         case 'DATE':
         case 'DATETIME':
+        case 'TIMESTAMP':
           newInput = this.filterUIMappings.date;
           break;
         case 'TINYINT':
@@ -152,7 +157,7 @@ function(app, Backbone) {
           }
           var displayTemplate = Handlebars.compile(item.columnModel.options.get('visible_column_template'));
           item.relatedCollection.each(function(model) {
-            data.filters[i].relatedEntries.push({visible_column:model.get(visibleColumn), visible_column_template: displayTemplate(model.attributes)});
+            data.filters[i].relatedEntries.push({visible_column:model.get('id'), visible_column_template: displayTemplate(model.attributes)});
           });
 
           data.filters[i].relatedEntries = _.sortBy(data.filters[i].relatedEntries, 'visible_column_template');
@@ -197,6 +202,16 @@ function(app, Backbone) {
           visibleTemplate = '<div>'+columnModel.options.get('visible_column_template')+'</div>';
         }
 
+        if(item.relatedCollection || item.dropdownValues) {
+          if(item.filterData) {
+            that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
+          }
+        }
+
+        if(!columns) {
+          return;
+        }
+
         var bloodHoundOptions = {
           datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
           queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -228,12 +243,6 @@ function(app, Backbone) {
         typeaheadSelector.on('typeahead:selected', function(e, datum) {
           that.processFilterChange(e);
         });
-
-        if(item.relatedCollection || item.dropdownValues) {
-          if(item.filterData) {
-            that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
-          }
-        }
       });
 
     /*  if(this.savedValue) {
