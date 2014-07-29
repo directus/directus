@@ -75,7 +75,6 @@ define(function(require, exports, module) {
         }
       });
 
-
       return totalCount;
 
     },
@@ -143,7 +142,7 @@ define(function(require, exports, module) {
       this.url = options.url || this.table.get('url') + '/rows';
 
       this.active = this.table.get('active');
-      
+
       this.filters = _.extend({
         currentPage: 0,
         perPage: this.rowsPerPage,
@@ -182,18 +181,12 @@ define(function(require, exports, module) {
       if (response.total !== undefined) {
         this.table.set('total', response.total, {silent: true});
       }
-
-      if (response.active !== undefined) {
-        this.table.set('active', response.active, {silent: true});
-      }
-
-      if (response.inactive !== undefined) {
-        this.table.set('inactive', response.inactive, {silent: true});
-      }
-
-      if (response.trash !== undefined) {
-        this.table.set('trash', response.trash, {silent: true});
-      }
+      var that = this;
+      app.statusMapping.mapping.forEach(function(status) {
+        if(response[status.name]) {
+          that.table.set(status.name, response[status.name], {silent: true});
+        }
+      });
     },
 
     parse: function(response) {
