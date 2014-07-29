@@ -1610,17 +1610,26 @@ input[type="date"]::-webkit-inner-spin-button {
 }
 .twitter-typeahead {
   display: block;
-  width: 300px;
+}
+.tt-hint {
+  color: #bbbbbb !important;
 }
 .tt-suggestions {
   background-color: #ffffff;
   border: 1px solid #ededed;
+  width: 200px;
+  padding: 0;
+  margin: 0;
 }
 .tt-suggestions .tt-suggestion {
-  display: inline-block;
-  width: 100%;
+  display: block;
+  height: 100%;
+  padding: 1px 10px 0 10px;
+  margin: 0;
+  cursor: pointer;
 }
-.tt-suggestions .tt-suggestion.tt-is-under-cursor {
+.tt-suggestions .tt-suggestion.tt-is-under-cursor,
+.tt-suggestions .tt-suggestion.tt-cursor {
   background-color: #fffddd;
 }
 .tt-suggestions .tt-suggestion img {
@@ -3989,6 +3998,12 @@ body.initial-load #sidebar {
   margin: 0;
   padding: 15px 0 0 10px;
   text-align: center;
+}
+.directus-version {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  color: #ffffff;
 }
 .login-panel {
   background-color: rgba(255, 255, 255, 0.3);
