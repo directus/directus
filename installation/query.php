@@ -236,7 +236,7 @@ $create_tables = "CREATE TABLE `directus_tables` (
   `table_name` varchar(64) NOT NULL DEFAULT '',
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `single` tinyint(1) NOT NULL DEFAULT '0',
-  `default_status` tinyint(1) NOT NULL DEFAULT '0',
+  `default_status` tinyint(1) NOT NULL DEFAULT '1',
   `is_junction_table` tinyint(1) NOT NULL DEFAULT '0',
   `footer` tinyint(1) DEFAULT '0',
   `list_view` varchar(200) DEFAULT NULL,
@@ -246,6 +246,7 @@ $create_tables = "CREATE TABLE `directus_tables` (
   `user_update_column` varchar(64) DEFAULT NULL,
   `date_create_column` varchar(64) DEFAULT NULL,
   `date_update_column` varchar(64) DEFAULT NULL,
+  `filter_column_blacklist` text,
   PRIMARY KEY (`table_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
