@@ -5,6 +5,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
+/*jshint multistr: true */
 
 define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 

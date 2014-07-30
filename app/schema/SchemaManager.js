@@ -83,11 +83,11 @@ define(function(require, exports, module) {
    * Holds defaualt table configurations
    */
   var defaultTables = [
-    { schema: directusSchemas['directus_activity'] },
-    { schema: directusSchemas['directus_groups'] },
-    { schema: directusSchemas['directus_files'] },
-    { schema: directusSchemas['directus_messages'] },
-    { schema: directusSchemas['directus_users'] }
+    { schema: directusSchemas.directus_activity },
+    { schema: directusSchemas.directus_groups },
+    { schema: directusSchemas.directus_files },
+    { schema: directusSchemas.directus_messages },
+    { schema: directusSchemas.directus_users }
   ];
 
   module.exports = {

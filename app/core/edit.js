@@ -157,7 +157,7 @@ define(function(require, exports, module) {
       var data = this.$el.serializeObject();
       var whiteListedData = _.pick(data, this.visibleFields);
       if(this.model.getWriteFieldBlacklist) {
-        whiteListedData = _.omit(whiteListedData, this.model.getWriteFieldBlacklist())
+        whiteListedData = _.omit(whiteListedData, this.model.getWriteFieldBlacklist());
       }
       // check if any of the listed data has multiple values, then serialize it to string
       _.each(whiteListedData, function(value, key, obj) {

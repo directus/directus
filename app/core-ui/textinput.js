@@ -13,6 +13,7 @@
 // options.value      String            Value for this field
 // options.settings   Backbone.Model    Saved values for current UI options     options.settings.get('placeholder_text') [any key from this UI options]
 // options.name       String            Field name
+/*jshint multistr: true */
 
 define(['app', 'backbone'], function(app, Backbone) {
 

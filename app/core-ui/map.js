@@ -13,6 +13,7 @@
 // options.value      String            Value for this field
 // options.settings   Backbone.Model    Saved values for current UI options     options.settings.get('length') [any key from this UI options]
 // options.name       String            Field name
+/*jshint multistr: true */
 
 
 define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
@@ -122,8 +123,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
         var places = searchBox.getPlaces();
 
         var bounds = new google.maps.LatLngBounds();
-        for (var i = 0, place; place = places[i]; i++) {
-          bounds.extend(place.geometry.location);
+        for (var i = 0; i < places.length; i++) {
+          bounds.extend(places[i].geometry.location);
         }
 
         map.fitBounds(bounds);
@@ -138,12 +139,12 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
       //Add A marker to value location if there is a value
       if(this.options.value) {
-        var array = this.options.value.split(',');
-        if(array) {
-          var lng = array.pop();
-          var lat = array.pop();
+        var arr = this.options.value.split(',');
+        if(arr) {
+          var lng2 = arr.pop();
+          var lat2 = arr.pop();
           this.marker = new google.maps.Marker({
-            position: new google.maps.LatLng(lat, lng),
+            position: new google.maps.LatLng(lat2, lng2),
             map:map
           });
         }
@@ -232,7 +233,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
       //Include the Google JSAPI for using Maps
       require(['https://www.google.com/jsapi'], function() {
         //Load Maps API using provided key, and call initializeMap() when API is loaded
-        google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + that.options.settings.get('apiKey'), callback: function() {that.initializeMap()}});
+        google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + that.options.settings.get('apiKey'), callback: function() {that.initializeMap();}});
       });
     }
   });

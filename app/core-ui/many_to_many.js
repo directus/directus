@@ -5,6 +5,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
+/*jshint multistr: true */
 
 define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, Backbone, Onetomany, TableView, Overlays) {
 

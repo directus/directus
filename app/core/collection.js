@@ -159,7 +159,7 @@ function(app, Backbone) {
 
       if (options.includeFilters) {
         var filters = this.getFilters();
-        if(filters && filters.columns_visible && !(filters.columns_visible.indexOf(filters.sort) != -1)) {
+        if(filters && filters.columns_visible && filters.columns_visible.indexOf(filters.sort) === -1) {
           filters.columns_visible.push(filters.sort);
         }
         _.extend(options.data, filters);

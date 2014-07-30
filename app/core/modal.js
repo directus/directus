@@ -44,7 +44,7 @@ function(app, Backbone) {
     save: function() {
       var val ='';
       if(this.$el.find('input')) {
-        val = this.$el.find('input').val()
+        val = this.$el.find('input').val();
       }
       this.options.callback(val);
       this.close();
