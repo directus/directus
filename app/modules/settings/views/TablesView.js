@@ -459,7 +459,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables') && ui[row.ui].variables.length > 0;
 
-        row.uiHasRelationship = ['many_to_one', 'many_to_one_typeahead', 'single_file', 'many_to_many'].indexOf(row.ui) > -1;
+        row.uiHasRelationship = ['many_to_one', 'many_to_one_typeahead', 'single_file'].indexOf(row.ui) > -1;
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
         row.relationship = "";
