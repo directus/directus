@@ -112,7 +112,10 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       var data = {'columns_visible[]': []};
       data[app.statusMapping.status_name] = active;
 
-      var columns_visible = this.options.settings.get('visible_column').split(',');
+      var columns_visible =[];
+      if(this.options.settings.get('visible_column')) {
+        columns_visible = this.options.settings.get('visible_column').split(',');
+      }
 
       columns_visible.forEach(function(column) {
         data['columns_visible[]'].push(column);
