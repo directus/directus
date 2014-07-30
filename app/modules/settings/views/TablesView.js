@@ -275,6 +275,76 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     }
   });
 
+  var EditRelationship = BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Relationship Settings',
+        isOverlay: true
+      }
+    },
+
+    leftToolbar: function() {
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
+      return [
+        this.saveWidget
+      ];
+    },
+
+    events: {
+      'click .saved-success': function() {
+        this.save();
+      },
+      'click #removeOverlay': function() {
+        app.router.removeOverlayPage(this);
+      }
+    },
+    save: function() {
+      console.log("Save");
+    },
+    afterRender: function() {
+      this.setView('#page-content', this.table);
+    },
+    initialize: function(options) {
+      console.log(this.model);
+      this.table = new EditRelationshipView({model: this.model});
+    }
+  });
+
+  var EditRelationshipView = Backbone.Layout.extend({
+    tagName: "form",
+
+    attributes: {
+      class: "two-column-form"
+    },
+
+    template: 'modules/settings/settings-columns-edit-relationship',
+
+    serialize: function() {
+      var data = {};
+
+      var tableRelated = this.model.get('table_related');
+      data.data_types = [{title: 'MANYTOONE', selected: true}];
+
+      var tables = app.schemaManager.getTables();
+      tables = tables.map(function(model) {
+        if(!tableRelated) {
+          tableRelated = model.id;
+          this.model.set({table_related: model.id});
+        }
+        return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
+      }, this);
+      data.tables = tables;
+
+
+      return data;
+    },
+
+    initialize: function() {
+      this.model.on('change', this.render, this);
+      this.render();
+    }
+  });
+
   //
   var Columns = Backbone.Layout.extend({
 
@@ -288,6 +358,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
     events: {
       'click span[data-action=ui]': 'editUI',
+      'click span[data-action=relationship]': 'editRelationship',
       'change select,input': 'bindForm',
       'click button[data-action=new-field]': 'newField'
     },
@@ -352,6 +423,23 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       model.fetch();
     },
 
+    editRelationship: function(e) {
+      var id = e.target.getAttribute('data-id');
+      var column = this.collection.get(id);
+      console.log(column);
+      var model = new Backbone.Model({type: 'MANYTOONE', junction_key_left: column.id, ui: column.get('ui')});
+      column.relationship = model;
+      var that = this;
+      var view = new EditRelationship({model: model});
+      app.router.overlayPage(view);
+      view.save = function() {
+        model.url = app.API_URL + 'tables/' + that.collection.table.id + '/columns/' + column.id + '/';
+        model.save({}, {success: function() {
+          app.router.removeOverlayPage(view); //, {title: 'Add new column', stretch: true}
+        }});
+      };
+    },
+
     serialize: function() {
       var ui = UIManager.getAllSettings({returnObject: true});
 
@@ -370,6 +458,8 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         }
 
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables') && ui[row.ui].variables.length > 0;
+
+        row.uiHasRelationship = ['many_to_one', 'many_to_one_typeahead', 'single_file', 'many_to_many'].indexOf(row.ui) > -1;
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
         row.relationship = "";

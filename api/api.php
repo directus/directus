@@ -669,6 +669,21 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
     JsonView::render($response);
 })->via('GET', 'PUT');
 
+$app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($db, $ZendDb, $acl, $requestPayload, $app) {
+  $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
+  $data = $requestPayload;
+  if(isset($data['type'])) {
+    $data['data_type'] = $data['type'];
+    $data['relationship_type'] = $data['type'];
+    unset($data['type']);
+  }
+  $data['column_name'] = $data['junction_key_left'];
+  $data['table_name'] = $table;
+  $newRecord = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+  $_POST['id'] = $newRecord['id'];
+  JsonView::render($_POST);
+  //$TableGateway->updateCollection($requestPayload);
+});
 /**
  * GROUPS COLLECTION
  */

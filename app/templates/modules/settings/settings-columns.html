@@ -28,7 +28,9 @@
         <span class="icon icon-cog open-ui-options" data-action="ui" data-id="{{id}}"></span>
         {{#unless valid}}<span class="icon icon-warning"></span>{{/unless}}
       {{/if}}
-      <span class="icon icon-flow-tree open-ui-options" data-action="ui" data-id="{{id}}"></span>
+      {{#if uiHasRelationship}}
+        <span class="icon icon-flow-tree open-ui-options" data-action="relationship" data-id="{{id}}"></span>
+      {{/if}}
     </td>
     <td>
         <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}">
