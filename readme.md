@@ -1,4 +1,4 @@
-![Directus](http://getdirectus.com/images/directus.png)
+![Directus](http://f.cl.ly/items/2s3R03202k3h233T0R0A/DIRECTUS-trans-logo.png)
 
 Directus
 ====================
