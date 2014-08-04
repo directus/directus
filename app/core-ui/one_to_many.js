@@ -187,7 +187,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         selectable: false,
-        sortable: true,
+        sortable: false,
         footer: false,
         saveAfterDrop: true,
         deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES") && this.canEdit && this.showRemoveButton,
