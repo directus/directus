@@ -60,6 +60,8 @@ define(['app', 'backbone'], function(app, Backbone) {
       var $el = this.$el.find('#directus_messages_recipients-recipients');
       var elArray = [];
 
+      this.$('#directus_messages_recipients-input').val("");
+
       _.each(this.recipients, function(item) {
         var fontWeight = item.type === 1 ? 'font-weight:bold;' : '';
         elArray.push('<div class="message-recipient" data-id="'+item.id+'" style="' + fontWeight + '"><img src="' + item.avatar + '"><div class="recipient-name">' + item.name + '</div></div>');
@@ -67,15 +69,6 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       this.$el.find('#directus_messages_recipients-form').val(_.keys(this.recipients));
       $el.html(elArray.join(''));
-
-      this.$('#directus_messages_recipients-input').typeahead('destroy');
-
-      this.$('#directus_messages_recipients-input').typeahead({
-        limit: 5,
-        local: this.datums,
-        template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar"><span class="recipient-name">{{name}}</span></div>')
-      });
-
     },
 
     afterRender: function() {
@@ -121,10 +114,9 @@ define(['app', 'backbone'], function(app, Backbone) {
 
         datums.push({
           id: uid,
-          value: name,
           name: item.name,
           avatar: item.avatar,
-          tokens: item.name.split()
+          tokens: item.name.split(" ")
         });
 
         keywordsMap[uid] = item;
@@ -133,25 +125,28 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       this.datums = datums;
 
+      var engine = new Bloodhound({
+        name: 'recipients',
+        local: datums,
+        datumTokenizer: function(d) {
+          return Bloodhound.tokenizers.whitespace(d.name);
+        },
+        queryTokenizer: Bloodhound.tokenizers.whitespace
+      });
+
+      this.searchEngine = engine;
+
+      engine.initialize();
+
       this.$("#directus_messages_recipients-input").typeahead({
 
         limit: 5,
 
-        local: datums,
-
         template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar"><span class="recipient-name">{{name}}</span></div>')
-/*
-        highlighter: function (item) {
-          var id = item.split(':')[0];
-          var obj = keywordsMap[id];
-          return '<img src="' +obj.avatar + '" class="avatar">' + obj.name;//'<img src="' + item;
-        },
-
-        updater: function(item) {
-          var id = item.split(':')[0];
-          me.recipients[id] = keywordsMap[id];
-          me.renderTags();
-        }*/
+      },
+      {
+        displayKey: 'name',
+        source: engine.ttAdapter()
       });
 
       this.$('#directus_messages_recipients-input').on('typeahead:selected', function (object, datum) {
@@ -163,9 +158,9 @@ define(['app', 'backbone'], function(app, Backbone) {
           }
           return true;
         });
+        me.searchEngine.clear();
+        me.searchEngine.add(me.datums);
         me.renderTags();
-
-
       });
 
     },
