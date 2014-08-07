@@ -5,6 +5,7 @@ define([
   'core/BasePageView',
   'core/widgets/widgets',
   'modules/tables/views/HistoryView',
+  'modules/tables/views/TranslationView'
 ],
 
 function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, TranslationView) {
@@ -15,9 +16,15 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       this.insertView("#editFormEntry", this.editView);
       this.insertView("#historyFormEntry", this.historyView);
 
+      if(this.translateView) {
+        this.insertView("#translateFormEntry", this.translateView);
+      }
+
       if(this.model.isNew()) {
         this.editView.render();
       }
+
+      this.translateView.render();
     },
     data: function() {
       return this.editView.data();
@@ -25,6 +32,13 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
     initialize: function(options) {
       this.editView = new Directus.EditView(options);
       this.historyView = new HistoryView(options);
+
+      var uis = options.model.structure.pluck('ui');
+      var translationIndex = uis.indexOf('translation');
+      if(translationIndex !== -1) {
+        var translateId = options.model.structure.models[translationIndex].id;
+        this.translateView = new TranslationView({model: options.model, translateId: translateId, translateSettings:options.model.structure.models[translationIndex].options.attributes});
+      }
     },
     serialize: function() {
       return {};
