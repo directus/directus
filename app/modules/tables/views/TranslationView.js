@@ -8,18 +8,27 @@ define([
 function(app, Backbone, Directus, EntriesManager) {
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile('<span class="big-label-text">Translation:</span><span id="saveTranslateBtn" class="btn">Apply Changes</span> \
+    template: Handlebars.compile('<span class="big-label-text">Translation:</span> \
       <select id="activeLanguageSelect">{{#languages}}<option {{#if active}}selected{{/if}} value="{{val}}">{{name}}</option>{{/languages}}</select> \
       <div id="translateEditFormEntry"></div>'),
     events: {
       'change #activeLanguageSelect': function(e) {
-        this.initializeTranslateView($(e.target).val());
-      },
-      'click #saveTranslateBtn': function(e) {
-        this.translateModel.set(this.translateModel.diff(this.editView.data()));
-        if(!this.translateCollection.contains(this.translateModel)) {
-          this.translateCollection.add(this.translateModel, {nest: true});
-        }
+        var that = this;
+        var originalVal = $(e.target).val();
+        $(e.target).val(this.activeLanguageId);
+        app.router.openModal({type: 'yesnocancel', text: 'Do you wish to save changes to current Translation?', callback: function(response) {
+          if(response === 'yes') {
+            that.saveTranslation();
+          }
+          that.initializeTranslateView(originalVal);
+        }});
+
+      }
+    },
+    saveTranslation: function() {
+      this.translateModel.set(this.translateModel.diff(this.editView.data()));
+      if(!this.translateCollection.contains(this.translateModel)) {
+        this.translateCollection.add(this.translateModel, {nest: true});
       }
     },
     afterRender: function() {

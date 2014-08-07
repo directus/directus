@@ -24,6 +24,11 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         this.editView.render();
       }
     },
+    beforeSaveHook: function() {
+      if(this.translateView) {
+        this.translateView.saveTranslation();
+      }
+    },
     data: function() {
       return this.editView.data();
     },
@@ -97,6 +102,8 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
     },
 
     save: function(e) {
+      this.editView.beforeSaveHook();
+
       var action = 'save-form-leave';
       if(e.target.options !== undefined) {
         action = $(e.target.options[e.target.selectedIndex]).val();
