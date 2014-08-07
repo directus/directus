@@ -91,7 +91,7 @@ function(app, Backbone, Directus) {
             end = endText.indexOf(" ") + start +startString.length;
           }
 
-          text = text.substring(0, start) + "@" + target.data('id') + "[" + target.data('name') + "]" + text.substring(end, text.length);
+          text = text.substring(0, start) + "@[" + target.data('id') + " " + target.data('name') + "] " + text.substring(end, text.length);
           console.log(text);
           $('#commentTextarea').val(text);
           $('#tagInsert').empty();
@@ -251,17 +251,16 @@ function(app, Backbone, Directus) {
           var offset = 0;
           while(true) {
             if(title) {
-              console.log(title);
-              var atPos = title.indexOf('@')
+              var atPos = title.indexOf('@[')
               if(atPos !== -1) {
-                var bracketPos = title.indexOf('[');
-                if(bracketPos !== -1) {
-                  var substring = title.substring(atPos + 1, bracketPos);
+                var spacePos = title.substring(atPos).indexOf(' ');
+                if(spacePos !== -1) {
+                  var substring = title.substring(atPos + 2, spacePos + atPos);
                   var contains = /^[0-9]|_+$/.test(substring);
                   if(contains) {
                     var bracketPos2 = title.indexOf(']');
                     if(bracketPos2 !== -1) {
-                      var name = title.substring(bracketPos + 1, bracketPos2);
+                      var name = title.substring(spacePos + 1 + atPos, bracketPos2);
                       var newTitle = data[key].title;
                       data[key].title = newTitle.substring(0, atPos + offset) + "<span class=\"mention-tag\">" + name + "</span>";
                       var newOffset = data[key].title.length;
