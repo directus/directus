@@ -25,6 +25,20 @@ function(app, Backbone) {
       if(this.options.type === 'prompt') {
         data.showInput = true;
       }
+
+      switch(this.options.type) {
+        case 'prompt':
+          data.isPrompt = true;
+          data.showInput = true;
+          break;
+        case 'yesnocancel':
+          data.isYesNoConfirm = true;
+          break;
+        default:
+          data.isPrompt = true;
+          break;
+      }
+
       return data;
     },
 
@@ -34,6 +48,14 @@ function(app, Backbone) {
       },
       'click #save': function() {
         this.save();
+      },
+      'click #noBtn': function() {
+        this.options.callback('no');
+        this.close();
+      },
+      'click #yesBtn': function() {
+        this.options.callback('yes');
+        this.close();
       }
     },
 
@@ -54,5 +76,6 @@ function(app, Backbone) {
       this.options = options;
     }
   });
+
   return Modal;
 });
