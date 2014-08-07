@@ -104,7 +104,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       $('#tagInsert').empty();
       this.searchEngine.get(query, function(res) {
         res.forEach(function(item) {
-          $('#tagInsert').append('<div class="tagInsertItem" data-id="' + item.id + '" data-name="' + item.name + '"><img src=""' + item.avatar + '"/>'  + item.name + '</div>');
+          $('#tagInsert').append('<div class="tagInsertItem mention-choice" data-id="' + item.id + '" data-name="' + item.name + '"><img src=""' + item.avatar + '"/>'  + item.name + '</div>');
         });
       });
     },
@@ -265,7 +265,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
                     if(bracketPos2 !== -1) {
                       var name = title.substring(bracketPos + 1, bracketPos2);
                       var newTitle = data[key].title;
-                      data[key].title = newTitle.substring(0, atPos + offset) + "<i>" + name + "</i>";
+                      data[key].title = newTitle.substring(0, atPos + offset) + "<span class=\"mention-tag\">" + name + "</span>";
                       var newOffset = data[key].title.length;
                       data[key].title += newTitle.substring(bracketPos2 + offset + 1);
                       title = newTitle.substring(bracketPos2 + offset + 1);

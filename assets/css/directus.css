@@ -2680,6 +2680,34 @@ select:focus,
 .history-container ul li:first-child .history-datetime {
   top: 10px;
 }
+.history-container ul li .mention-list {
+  width: 100%;
+  max-width: 500px;
+  background-color: #ffffff;
+  display: block;
+  margin-left: 10px;
+  padding: 5px 10px 5px 10px;
+}
+.history-container ul li .mention-list:empty {
+  display: none;
+}
+.history-container ul li .mention-choice {
+  background-color: inherit;
+  padding: 5px 10px 5px 10px;
+}
+.history-container ul li .mention-choice:hover {
+  background-color: #ededed;
+  cursor: pointer;
+}
+.history-container ul li .mention-tag {
+  background-color: #f4f4f4;
+  padding: 0 4px 0 4px;
+  margin: 0 1px 0 1px;
+  cursor: pointer;
+}
+.history-container ul li .mention-tag:hover {
+  background-color: #ededed;
+}
 .history-container ul li .avatar {
   float: none;
   position: absolute;

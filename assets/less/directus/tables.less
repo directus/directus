@@ -335,6 +335,34 @@
           top: 10px;
         }
       }
+      .mention-list {
+        width: 100%;
+        max-width: 500px;
+        background-color: #ffffff;
+        display: block;
+        margin-left: 10px;
+        padding: 5px 10px 5px 10px;
+        &:empty {
+          display: none;
+        }
+      }
+      .mention-choice {
+        background-color: inherit;
+        padding: 5px 10px 5px 10px;
+        &:hover {
+          background-color: @lightGrey;
+          cursor: pointer;
+        }
+      }
+      .mention-tag {
+        background-color: @extraLightGrey;
+        padding: 0 4px 0 4px;
+        margin: 0 1px 0 1px;
+        cursor: pointer;
+        &:hover {
+          background-color: @lightGrey;
+        }
+      }
       .avatar {
         float: none;
         position: absolute;
