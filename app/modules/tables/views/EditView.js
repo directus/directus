@@ -23,8 +23,6 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       if(this.model.isNew()) {
         this.editView.render();
       }
-
-      this.translateView.render();
     },
     data: function() {
       return this.editView.data();
