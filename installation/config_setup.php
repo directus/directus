@@ -62,7 +62,12 @@ $configText = "
 
   //Namespaced the memcached keys so branches/databases to not collide
   //options are prod, staging, testing, development
-  define('MEMCACHED_ENV_NAMESPACE', 'staging');";
+  define('MEMCACHED_ENV_NAMESPACE', 'staging');
+
+
+  define('STATUS_DELETED_NUM', 0);
+  define('STATUS_ACTIVE_NUM', 1);
+  define('STATUS_COLUMN_NAME', 'active');";
 
 
 function WriteConfig() {
@@ -114,6 +119,24 @@ return array(
   // These tables will not be loaded in the directus schema
   'tableBlacklist' => array(
 
+  ),
+
+  'statusMapping' => array(
+    '0' => array(
+      'name' => 'deleted',
+      'color' => '#FF0000',
+      'sort' => 3
+    ),
+    '1' => array(
+      'name' => 'active',
+      'color' => '#00FF00',
+      'sort' => 1
+    ),
+    '2' => array(
+      'name' => 'draft',
+      'color' => '#0000FF',
+      'sort' => 2
+    )
   )
 
 );";

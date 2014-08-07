@@ -128,6 +128,7 @@ function(app, Backbone) {
       } else {
         data.filter_ui = this.getFilterDataType(selectedColumn);
       }
+      data.filter_type = this.collection.structure.get(selectedColumn).get('type');
       data.filterData = {id: selectedColumn, type: 'like', value:''};
       this.options.filters.push(data);
       this.render();
@@ -206,6 +207,10 @@ function(app, Backbone) {
           if(item.filterData) {
             that.$el.find('span[data-filter-id=' + item.columnName + ']').parent().find('.filter_ui').val(item.filterData.value);
           }
+        }
+
+        if(['DATETIME', 'DATE', 'TIMESTAMP'].indexOf(item.filter_type) !== -1) {
+          return;
         }
 
         if(!columns) {
@@ -364,6 +369,7 @@ function(app, Backbone) {
             } else if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
               data.filter_ui = that.getFilterDataType(selectedColumn);
             }
+            data.filter_type = that.collection.structure.get(selectedColumn).get('type');
 
             data.filterData = {id: selectedColumn, type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')};
 
