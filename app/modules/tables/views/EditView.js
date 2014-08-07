@@ -33,15 +33,16 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       return this.editView.data();
     },
     initialize: function(options) {
-      this.editView = new Directus.EditView(options);
-      this.historyView = new HistoryView(options);
-
       var uis = options.model.structure.pluck('ui');
       var translationIndex = uis.indexOf('translation');
       if(translationIndex !== -1) {
         var translateId = options.model.structure.models[translationIndex].id;
+        options.hiddenFields = [translateId];
         this.translateView = new TranslationView({model: options.model, translateId: translateId, translateSettings:options.model.structure.models[translationIndex].options.attributes});
       }
+
+      this.editView = new Directus.EditView(options);
+      this.historyView = new HistoryView(options);
     },
     serialize: function() {
       return {};
