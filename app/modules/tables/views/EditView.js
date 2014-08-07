@@ -104,7 +104,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       $('#tagInsert').empty();
       this.searchEngine.get(query, function(res) {
         res.forEach(function(item) {
-          $('#tagInsert').append('<div class="tagInsertItem mention-choice" data-id="' + item.id + '" data-name="' + item.name + '"><img src=""' + item.avatar + '"/>'  + item.name + '</div>');
+          $('#tagInsert').append('<div class="tagInsertItem mention-choice" data-id="' + item.id + '" data-name="' + item.name + '"><img src="' + item.avatar + '"/>'  + item.name + '</div>');
         });
       });
     },

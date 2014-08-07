@@ -2685,19 +2685,25 @@ select:focus,
   max-width: 500px;
   background-color: #ffffff;
   display: block;
+  margin-top: -3px;
   margin-left: 10px;
-  padding: 5px 10px 5px 10px;
+  padding: 6px 10px 6px 10px;
 }
 .history-container ul li .mention-list:empty {
   display: none;
 }
 .history-container ul li .mention-choice {
   background-color: inherit;
-  padding: 5px 10px 5px 10px;
+  padding: 4px;
 }
 .history-container ul li .mention-choice:hover {
-  background-color: #ededed;
+  background-color: #f4f4f4;
   cursor: pointer;
+}
+.history-container ul li .mention-choice img {
+  width: 30px;
+  vertical-align: middle;
+  margin-right: 10px;
 }
 .history-container ul li .mention-tag {
   background-color: #f4f4f4;

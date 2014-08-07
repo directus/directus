@@ -340,18 +340,24 @@
         max-width: 500px;
         background-color: #ffffff;
         display: block;
+        margin-top: -3px;
         margin-left: 10px;
-        padding: 5px 10px 5px 10px;
+        padding: 6px 10px 6px 10px;
         &:empty {
           display: none;
         }
       }
       .mention-choice {
         background-color: inherit;
-        padding: 5px 10px 5px 10px;
+        padding: 4px;
         &:hover {
-          background-color: @lightGrey;
+          background-color: @extraLightGrey;
           cursor: pointer;
+        }
+        img {
+          width: 30px;
+          vertical-align: middle;
+          margin-right: 10px;
         }
       }
       .mention-tag {
