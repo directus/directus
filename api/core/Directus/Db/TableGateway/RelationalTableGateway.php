@@ -1093,8 +1093,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $stats = array();
         $statusMap = Bootstrap::get('status');
         foreach($results as $row) {
+          if(isset($row[STATUS_COLUMN_NAME])) {
             $statSlug = $statusMap[$row[STATUS_COLUMN_NAME]];
             $stats[$statSlug['name']] = (int) $row['quantity'];
+          }
         }
         $vals = [];
         foreach($statusMap as $value) {
