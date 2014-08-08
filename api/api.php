@@ -360,8 +360,8 @@ EMAILBODY;
     $mailer = Bootstrap::get('mailer');
     $result = $mailer->send($message);
 */
-    $headers = 'From: directus@directus.com' . "\r\n" .
-    'Reply-To: directus@directus.com' . "\r\n" .
+    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
+    'Reply-To: donotreply@getdirectus.com' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
 
     mail($user['email'], 'You Reset Your Directus Password', $emailBodyPlainText, $headers);
@@ -1049,8 +1049,8 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
       $Activity->recordMessage($requestPayload, $currentUser['id']);
     }
 
-    $headers = 'From: directus@directus.com' . "\r\n" .
-    'Reply-To: directus@directus.com' . "\r\n" .
+    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
+    'Reply-To: donotreply@getdirectus.com' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
 
     foreach($userRecipients as $recipient) {
@@ -1117,8 +1117,18 @@ $app->post("/$v/comments/?", function() use ($db, $params, $requestPayload, $app
     $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
     $params['id'] = $id;
 
-    $headers = 'From: directus@directus.com' . "\r\n" .
-      'Reply-To: directus@directus.com' . "\r\n" .
+    preg_match_all('/@\[.*?\]/', $requestPayload['message'], $results);
+    $messageBody = $requestPayload['message'];
+    $results = $results[0];
+
+    foreach($results as $result) {
+      $newresult = substr($result, 0, -1);
+      $newresult = substr($newresult, strpos($newresult, " "));
+      $messageBody = str_replace($result, $newresult, $messageBody);
+    }
+
+    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
+      'Reply-To: donotreply@getdirectus.com' . "\r\n" .
       'X-Mailer: PHP/' . phpversion();
 
     foreach($userRecipients as $recipient) {
@@ -1126,7 +1136,7 @@ $app->post("/$v/comments/?", function() use ($db, $params, $requestPayload, $app
       $user = $usersTableGateway->findOneBy('id', $recipient);
 
       if(isset($user) && $user['email_messages'] == 1) {
-        mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
+        mail($user['email'], $requestPayload['subject'], $messageBody, $headers);
       }
     }
   }
