@@ -27,6 +27,7 @@ function(app, Backbone, Directus) {
         var date = new Date();
         model.set({datetime: date, subject: subject, message:this.$el.find('#commentTextarea').val(), comment_metadata: this.model.collection.table.id + ":" + this.model.get('id')})
         model.unset("responses");
+        model.url = app.API_URL + "comments/";
 
         this.listenToOnce(model, 'sync', function(e) {
           this.comments.add(model);

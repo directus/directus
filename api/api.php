@@ -1083,6 +1083,62 @@ $app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPa
     JsonView::render($result);
 });
 
+$app->post("/$v/comments/?", function() use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+  $currentUser = Auth::getUserInfo();
+  $params['table_name'] = "directus_messages";
+  $TableGateway = new TableGateway($acl, "directus_messages", $ZendDb);
+
+  $groupRecipients = array();
+  $userRecipients = array();
+
+  preg_match_all('/@\[.*? /', $requestPayload['message'], $results);
+  $results = $results[0];
+
+  if(count($results) > 0) {
+    foreach($results as $result) {
+      $result = substr($result, 2);
+      $typeAndId = explode('_', $result);
+      if ($typeAndId[0] == 0) {
+          $userRecipients[] = $typeAndId[1];
+      } else {
+          $groupRecipients[] = $typeAndId[1];
+      }
+    }
+
+    if (count($groupRecipients) > 0) {
+      $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+      $result = $usersTableGateway->findActiveUserIdsByGroupIds($groupRecipients);
+      foreach($result as $item) {
+        $userRecipients[] = $item['id'];
+      }
+    }
+
+    $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
+    $params['id'] = $id;
+
+    $headers = 'From: directus@directus.com' . "\r\n" .
+      'Reply-To: directus@directus.com' . "\r\n" .
+      'X-Mailer: PHP/' . phpversion();
+
+    foreach($userRecipients as $recipient) {
+      $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+      $user = $usersTableGateway->findOneBy('id', $recipient);
+
+      if(isset($user) && $user['email_messages'] == 1) {
+        mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
+      }
+    }
+  }
+
+  $newRecord = $TableGateway->manageRecordUpdate("directus_messages", $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+  $params['id'] = $newRecord['id'];
+
+  // GET all table entries
+  $entries = $TableGateway->getEntries($params);
+  JsonView::render($entries);
+});
+
 /**
  * EXCEPTION LOG
  */
