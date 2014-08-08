@@ -9,9 +9,9 @@ function(app, Backbone) {
   return Backbone.Layout.extend({
     template: Handlebars.compile(' \
       <ul class="tools left big-space"> \
-        <li class="tool"><span data-value="1" class="action actionBtn">Active</span></li> \
-        <li class="tool"><span data-value="2" class="action actionBtn inactive">Inactive</span></li> \
-        <li class="tool"><span data-value="0" class="action actionBtn delete">Delete</span></li> \
+        {{#mapping}} \
+          <li class="tool"><span data-value="{{id}}" style="color: {{color}}" class="action actionBtn">{{name}}</span></li> \
+        {{/mapping}} \
         {{#if batchEdit}} \
         <li class="tool div-left"><span id="batchEditBtn" class="action">Batch Edit</span></li> \
         {{/if}} \
@@ -88,6 +88,28 @@ function(app, Backbone) {
     },
 
     serialize: function() {
+      var data = this.options.widgetOptions;
+
+      if (this.collection.table.columns.get(app.statusMapping.status_name)) {
+        var mapping = app.statusMapping.mapping;
+        data.mapping = [];
+        for(var key in mapping) {
+          var entry = mapping[key];
+          entry.id = key;
+          data.mapping.push(entry);
+        }
+
+        data.mapping.sort(function(a, b) {
+          if(a.sort < b.sort) {
+            return -1;
+          }
+          if(a.sort > b.sort) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+
       return this.options.widgetOptions;
     },
     beforeRender: function() {
