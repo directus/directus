@@ -38,9 +38,14 @@ function(app, Backbone, Directus, EntriesManager) {
       }
     },
     initialize: function(options) {
-      this.listenToOnce(this.model, 'sync', this.updateTranslateConnection);
       this.translateId = options.translateId;
       this.translateSettings = options.translateSettings;
+
+      if(this.model.id) {
+        this.listenToOnce(this.model, 'sync', this.updateTranslateConnection);
+      } else {
+        this.updateTranslateConnection();
+      }
     },
 
     updateTranslateConnection: function() {
