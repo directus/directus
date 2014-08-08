@@ -70,7 +70,6 @@ define(function(require, exports, module) {
 
       var that = this;
       visibleStates.forEach(function(state) {
-        console.log(state);
         if(state in app.statusMapping.mapping && that.table.has(app.statusMapping.mapping[state].name)) {
           totalCount += that.table.get(app.statusMapping.mapping[state].name);
         }
