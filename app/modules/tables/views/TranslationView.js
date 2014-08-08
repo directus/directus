@@ -8,8 +8,8 @@ define([
 function(app, Backbone, Directus, EntriesManager) {
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile('<span class="big-label-text">Translation:</span> \
-      <select id="activeLanguageSelect">{{#languages}}<option {{#if active}}selected{{/if}} value="{{val}}">{{name}}</option>{{/languages}}</select> \
+    template: Handlebars.compile('<div class="section-header"><span class="big-label-text">Translations</span> \
+      <select id="activeLanguageSelect" class="section-dropdown">{{#languages}}<option {{#if active}}selected{{/if}} value="{{val}}">{{name}}</option>{{/languages}}</select></div> \
       <div id="translateEditFormEntry"></div>'),
     events: {
       'change #activeLanguageSelect': function(e) {
