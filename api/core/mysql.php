@@ -148,9 +148,16 @@ class MySQL {
             $info['footer'] = (boolean)$info['footer'];
             $info['is_junction_table'] = (boolean)$info['is_junction_table'];
         }
-        $info = array_merge($info, $this->count_active($tbl_name));
         // $info['columns'] = $this->get_table($tbl_name);
         $info['columns'] = TableSchema::getSchemaArray($tbl_name);
+        $has_active = false;
+        foreach ($info['columns'] as $col) {
+          if ($col['column_name'] == STATUS_COLUMN_NAME) {
+            $has_active = true;
+            break;
+          }
+        }
+        $info = array_merge($info, $this->count_active($tbl_name, !$has_active));
         return $info;
     }
 
@@ -385,20 +392,20 @@ class MySQL {
     function count_active($tbl_name, $no_active=false) {
         $result = array(STATUS_COLUMN_NAME=>STATUS_DELETED_NUM);
         if ($no_active) {
-            $sql = "SELECT COUNT(*) as count, ".STATUS_COLUMN_NAME." as ".STATUS_COLUMN_NAME." FROM $tbl_name";
+            $sql = "SELECT COUNT(*) as count FROM $tbl_name";
         } else {
-            $sql = "SELECT
-                CASE ".STATUS_COLUMN_NAME;
+            $sql = "SELECT CASE ".STATUS_COLUMN_NAME;
 
             $statusMap = Bootstrap::get('status');
             foreach ($statusMap as $key => $value) {
-                $sql.= "WHEN ".$key." THEN '".$value['name']."'";
+                $sql.= " WHEN ".$key." THEN '".$value['name']."'";
             }
             $sql.="END AS ".STATUS_COLUMN_NAME.",
                 COUNT(*) as count
             FROM $tbl_name
             GROUP BY ".STATUS_COLUMN_NAME;
         }
+
         $sth = $this->dbh->prepare($sql);
         // Test if there is an active column!
         try {
@@ -410,9 +417,16 @@ class MySQL {
                 throw $e;
             }
         }
-        while($row = $sth->fetch(PDO::FETCH_ASSOC))
+        while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+
+          if($no_active) {
+            $result[STATUS_COLUMN_NAME] = (int)$row['count'];
+          } else {
             $result[$row[STATUS_COLUMN_NAME]] = (int)$row['count'];
+          }
+        }
         $total = 0;
+
         return $result;
     }
 
