@@ -692,20 +692,18 @@ $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use
 
 $app->get("/$v/groups/?", function () use ($db, $ZendDb, $acl) {
     // @TODO need POST and PUT
-    $get_old = $db->get_entries("directus_groups");
     $Groups = new TableGateway($acl, 'directus_groups', $ZendDb);
     $get_new = $Groups->getEntries();
-    JsonView::render($get_new, $get_old);
+    JsonView::render($get_new);
 });
 
 $app->get("/$v/groups/:id/?", function ($id = null) use ($db, $ZendDb, $acl) {
     // @TODO need POST and PUT
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null;
-    $get_old = $db->get_group($id);
     $Groups = new TableGateway($acl, 'directus_groups', $ZendDb);
     $get_new = $Groups->find($id);
-    JsonView::render($get_new, $get_old);
+    JsonView::render($get_new);
 });
 
 /**
