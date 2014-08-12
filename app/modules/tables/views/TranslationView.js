@@ -40,6 +40,7 @@ function(app, Backbone, Directus, EntriesManager) {
     initialize: function(options) {
       this.translateId = options.translateId;
       this.translateSettings = options.translateSettings;
+      this.translateRelationship = options.translateRelationship;
 
       if(this.model.id) {
         this.listenToOnce(this.model, 'sync', this.updateTranslateConnection);
@@ -76,13 +77,13 @@ function(app, Backbone, Directus, EntriesManager) {
         this.translateModel = new this.translateCollection.model({}, {collection: this.translateCollection, parse: true});
         var data = {};
         data[this.translateSettings.left_column_name] = this.activeLanguageId;
-        data[this.translateSettings.right_column_name] = this.model.id;
+        data[this.translateRelationship.junction_key_right] = this.model.id;
         this.translateModel.set(data);
       }
 
       this.editView = new Directus.EditView({
         model: this.translateModel,
-        hiddenFields: [this.translateSettings.left_column_name, this.translateSettings.right_column_name],
+        hiddenFields: [this.translateSettings.left_column_name, this.translateRelationship.junction_key_right],
       });
 
       this.render();
