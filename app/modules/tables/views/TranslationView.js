@@ -16,13 +16,19 @@ function(app, Backbone, Directus, EntriesManager) {
         var that = this;
         var originalVal = $(e.target).val();
         $(e.target).val(this.activeLanguageId);
-        app.router.openModal({type: 'yesnocancel', text: 'Do you wish to save changes to current Translation?', callback: function(response) {
-          if(response === 'yes') {
-            that.saveTranslation();
-          }
-          that.initializeTranslateView(originalVal);
-        }});
 
+        var diff = this.translateModel.diff(this.editView.data());
+        delete diff.id;
+        if(!$.isEmptyObject(diff)) {
+          app.router.openModal({type: 'yesnocancel', text: 'Do you wish to save changes to current Translation?', callback: function(response) {
+            if(response === 'yes') {
+              that.saveTranslation();
+            }
+            that.initializeTranslateView(originalVal);
+          }});
+        } else {
+          this.initializeTranslateView(originalVal);
+        }
       }
     },
     saveTranslation: function() {
