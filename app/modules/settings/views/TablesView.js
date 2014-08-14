@@ -57,6 +57,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
           app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
           that.collection.add(that.model);
           that.collection.trigger('change');
+          location.reload();
         }});
       }
     },
