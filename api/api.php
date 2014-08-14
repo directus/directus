@@ -1121,27 +1121,43 @@ $app->post("/$v/comments/?", function() use ($db, $params, $requestPayload, $app
     $messageBody = $requestPayload['message'];
     $results = $results[0];
 
+    $recipientString = "";
+    $len = count($results);
+    $i = 0;
     foreach($results as $result) {
       $newresult = substr($result, 0, -1);
       $newresult = substr($newresult, strpos($newresult, " ") + 1);
       $messageBody = str_replace($result, $newresult, $messageBody);
+
+      if($i == $len - 1) {
+        if($i > 0) {
+          $recipientString.=" and ".$newresult;
+        } else {
+          $recipientString.=$newresult;
+        }
+      } else {
+        $recipientString.=$newresult.", ";
+      }
+      $i++;
     }
 
     $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
       'Reply-To: donotreply@getdirectus.com' . "\r\n" .
+      'MIME-Version: 1.0' . "\r\n" .
+      'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
       'X-Mailer: PHP/' . phpversion();
 
-    $messageBody.="\n\n--\n
-      This message was sent to [users/groups].\n
-      Please <a href='".HOST_URL.DIRECTUS_PATH."'>log in</a> to change your email settings.\n\n
-      Delivered by <a href='http://getdirectus.com/'>Directus</a>";
+    $messageBody.="<br/><br/>--<br/>
+      This message was sent to ".$recipientString.".<br/>
+      Please <a href='".HOST_URL.DIRECTUS_PATH."'>log in</a> to change your email settings.<br/><br/>
+      <i>Delivered by <a href='http://getdirectus.com/'>Directus</a></i>";
 
     foreach($userRecipients as $recipient) {
       $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
       $user = $usersTableGateway->findOneBy('id', $recipient);
 
       if(isset($user) && $user['email_messages'] == 1) {
-        mail($user['email'],'[]'.$requestPayload['subject'], $messageBody, $headers);
+        mail($user['email'],$requestPayload['subject'], $messageBody, $headers);
       }
     }
   }
