@@ -220,13 +220,8 @@ function(app, Backbone) {
         var bloodHoundOptions = {
           datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
           queryTokenizer: Bloodhound.tokenizers.whitespace,
-          prefetch: app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns,
+          remote: app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns + '&q=%QUERY'
         };
-
-        if(that.collection.table.get('total') > that.collection.getFilter('perPage'))
-        {
-          bloodHoundOptions.remote = app.API_URL + 'tables/' + table + '/typeahead/?columns=' + columns + '&q=%QUERY';
-        }
 
         var fetchItems = new Bloodhound(bloodHoundOptions);
         fetchItems.initialize();
