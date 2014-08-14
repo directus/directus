@@ -19,9 +19,7 @@ define(['app','backbone'], function(app, Backbone) {
     {id: 'languages_table', ui: 'textinput', char_length: 255, comment: "Enter Table that contains all languages supported"},
     {id: 'languages_name_column', ui: 'textinput', char_length: 255, comment: "Language Title Field"},
     {id: 'default_language_id', ui: 'numeric', comment: "Default language ID in language table"},
-    {id: 'junction_table', ui: 'textinput', char_length: 255, comment: "Enter Table used to map languages to table items"},
     {id: 'left_column_name', ui: 'textinput', char_length: 255, comment: "Enter Column name pointing to Languages table PK"},
-    {id: 'right_column_name', ui: 'textinput', char_length: 255, comment: "Enter Column name pointing to This table PK"}
   ];
 
   Module.Input = Backbone.Layout.extend({

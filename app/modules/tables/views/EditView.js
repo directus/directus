@@ -38,7 +38,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       if(translationIndex !== -1) {
         var translateId = options.model.structure.models[translationIndex].id;
         options.hiddenFields = [translateId];
-        this.translateView = new TranslationView({model: options.model, translateId: translateId, translateSettings:options.model.structure.models[translationIndex].options.attributes});
+        this.translateView = new TranslationView({model: options.model, translateId: translateId, translateSettings:options.model.structure.models[translationIndex].options.attributes, translateRelationship: options.model.structure.models[translationIndex].relationship.attributes});
       }
 
       this.editView = new Directus.EditView(options);
