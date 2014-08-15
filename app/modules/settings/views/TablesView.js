@@ -306,7 +306,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       this.setView('#page-content', this.table);
     },
     initialize: function(options) {
-      console.log(this.model);
       this.table = new EditRelationshipView({model: this.model});
     }
   });
@@ -384,13 +383,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         value = $(e.target).is(':checked') ? 1 : 0;
       }
 
-      //Unset previous master
-      if (attr === 'master') {
-        var master = this.collection.where({master: true});
-        if (master.length) {
-          master[0].set({master: false}, {silent: true});
-        }
-      }
+      this.collection.table.set({'primary_column':$('#table-settings').find('input[type=radio]:checked').attr('data-id')});
 
       data[attr] = value;
       model.set(data);
@@ -427,7 +420,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     editRelationship: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
-      console.log(column);
       var model = new Backbone.Model({type: 'MANYTOONE', junction_key_left: column.id, ui: column.get('ui')});
       column.relationship = model;
       var that = this;
@@ -444,12 +436,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     serialize: function() {
       var ui = UIManager.getAllSettings({returnObject: true});
 
-      if(!this.collection.where({master: true}).length) {
-        if(this.collection.where({system: false}).length) {
-          this.collection.where({system: false})[0].set({master:true});
-        }
-      }
-
+      var primaryColumn = this.collection.table.get('primary_column');
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
 
@@ -492,6 +479,13 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
             row.types.push({id: ui.id, isActive: (ui.id === row.ui)});
           }
         });
+
+        if(primaryColumn === row.column_name) {
+          row.master = true;
+        } else {
+          row.master = false;
+        }
+
         return row;
       });
 
