@@ -416,11 +416,8 @@ if($step == 5) {
   }
   $mysqli->close();
 
-  echo"<h1>Database Updated</h1>";
-
   require_once('config_setup.php');
   WriteConfig();
-  echo"<h1>Installation Done Updated</h1>";
 
   header('Location: ../');
 }

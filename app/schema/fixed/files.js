@@ -57,8 +57,8 @@ define(function(require, exports, module) {
         "hidden":true
       },
       {
-        "id":'status',
-        "column_name":'status',
+        "id":'active',
+        "column_name":'active',
         "type":"TINYINT",
         "is_nullable":"YES",
         "default_value":"1",
