@@ -561,6 +561,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       //Get Selected master
       data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
 
+      if(!data.primary_column) {
+        app.router.openModal({type: 'alert', text: 'Please Select A Primary Column', callback: function(tableName) {
+        }});
+        return;
+      }
+
       this.model.save(data, {success: function(){
         app.router.go('settings','tables');
       }});
