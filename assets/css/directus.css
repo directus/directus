@@ -1199,6 +1199,7 @@ button {
   background-color: #f4f4f4;
   border: none !important;
   padding: 10px 10px 10px 10px;
+  width: 100%;
 }
 .directus-alert-modal input:focus {
   border: none;
