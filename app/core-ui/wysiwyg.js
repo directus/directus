@@ -5,6 +5,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
+/*jshint multistr: true */
 
 define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Overlays) {
 
@@ -242,32 +243,33 @@ var template = '<style type="text/css"> \
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
 
-      return {
+      var data = {
         height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '500',
-        bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold')!=0 : true,
-        italic: (this.options.settings && this.options.settings.has('italic')) ? this.options.settings.get('italic')!=0 : true,
-        underline: (this.options.settings && this.options.settings.has('underline')) ? this.options.settings.get('underline')!=0 : true,
-        strikethrough: (this.options.settings && this.options.settings.has('strikethrough')) ? this.options.settings.get('strikethrough')!=0 : true,
-        rule: (this.options.settings && this.options.settings.has('rule')) ? this.options.settings.get('rule')!=0 : true,
-        h1: (this.options.settings && this.options.settings.has('h1')) ? this.options.settings.get('h1')!=0 : false,
-        h2: (this.options.settings && this.options.settings.has('h2')) ? this.options.settings.get('h2')!=0 : false,
-        h3: (this.options.settings && this.options.settings.has('h3')) ? this.options.settings.get('h3')!=0 : false,
-        h4: (this.options.settings && this.options.settings.has('h4')) ? this.options.settings.get('h4')!=0 : false,
-        h5: (this.options.settings && this.options.settings.has('h5')) ? this.options.settings.get('h5')!=0 : false,
-        h6: (this.options.settings && this.options.settings.has('h6')) ? this.options.settings.get('h6')!=0 : false,
-        blockquote: (this.options.settings && this.options.settings.has('blockquote')) ? this.options.settings.get('blockquote')!=0 : true,
-        ul: (this.options.settings && this.options.settings.has('ul')) ? this.options.settings.get('ul')!=0 : false,
-        ol: (this.options.settings && this.options.settings.has('ol')) ? this.options.settings.get('ol')!=0 : false,
-        orderedList: (this.options.settings && this.options.settings.has('orderedList')) ? this.options.settings.get('orderedList')!=0 : true,
-        createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=0 : true,
-        insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=0 : true,
-        embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=0 : true,
+        bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold')!=='0' : true,
+        italic: (this.options.settings && this.options.settings.has('italic')) ? this.options.settings.get('italic')!=='0' : true,
+        underline: (this.options.settings && this.options.settings.has('underline')) ? this.options.settings.get('underline')!=='0' : true,
+        strikethrough: (this.options.settings && this.options.settings.has('strikethrough')) ? this.options.settings.get('strikethrough')!=='0' : true,
+        rule: (this.options.settings && this.options.settings.has('rule')) ? this.options.settings.get('rule')!=='0' : true,
+        h1: (this.options.settings && this.options.settings.has('h1')) ? this.options.settings.get('h1')!=='0' : false,
+        h2: (this.options.settings && this.options.settings.has('h2')) ? this.options.settings.get('h2')!=='0' : false,
+        h3: (this.options.settings && this.options.settings.has('h3')) ? this.options.settings.get('h3')!=='0' : false,
+        h4: (this.options.settings && this.options.settings.has('h4')) ? this.options.settings.get('h4')!=='0' : false,
+        h5: (this.options.settings && this.options.settings.has('h5')) ? this.options.settings.get('h5')!=='0' : false,
+        h6: (this.options.settings && this.options.settings.has('h6')) ? this.options.settings.get('h6')!=='0' : false,
+        blockquote: (this.options.settings && this.options.settings.has('blockquote')) ? this.options.settings.get('blockquote')!=='0' : true,
+        ul: (this.options.settings && this.options.settings.has('ul')) ? this.options.settings.get('ul')!=='0' : false,
+        ol: (this.options.settings && this.options.settings.has('ol')) ? this.options.settings.get('ol')!=='0' : false,
+        orderedList: (this.options.settings && this.options.settings.has('orderedList')) ? this.options.settings.get('orderedList')!=='0' : true,
+        createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=='0' : true,
+        insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=='0' : true,
+        embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=='0' : true,
         markupValue: String(value).replace(/"/g, '&quot;'),
         value: new Handlebars.SafeString(value),
         name: this.options.name,
         maxLength: length,
         characters: length - value.length
       };
+      return data;
     },
 
     initialize: function() {
@@ -342,7 +344,7 @@ var template = '<style type="text/css"> \
               var url = model.makeFileUrl(false);
               try {
                 self.editor.composer.commands.exec("insertImage", { src: url, alt: model.get('name')});
-              } catch( e) {}
+              } catch(ex) {}
 
             }});
           });
@@ -368,7 +370,7 @@ var template = '<style type="text/css"> \
           image.setAttribute('frameborder', '0');
           image.setAttribute('allowfullscreen', '1');
 
-          var type = "youtube"
+          var type = "youtube";
           if(value['data-type']) {
             type = value['data-type'];
           }
