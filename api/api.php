@@ -135,13 +135,6 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 $ZendDb = Bootstrap::get('ZendDb');
 
 /**
- * Old \DB adapter
- * Transitional: initialize old and new until old is obsolete
- * @var \DB
- */
-$db = Bootstrap::get('OldDb');
-
-/**
  * @var \Directus\Acl
  */
 $acl = Bootstrap::get('acl');
@@ -398,7 +391,7 @@ $app->post("/$v/hash/?", function() use ($app) {
     ));
 });
 
-$app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->get("/$v/privileges/:groupId/", function ($groupId) use ($acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
@@ -412,7 +405,7 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($db, $acl, $ZendD
     return JsonView::render($response);
 });
 
-$app->map("/$v/privileges/:groupId/?", function ($groupId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
@@ -434,7 +427,7 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($db, $acl, $Zend
     return JsonView::render($response);
 })->via('POST');
 
-$app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilegeId) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilegeId) use ($acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
@@ -470,7 +463,7 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
  * ENTRIES COLLECTION
  */
 
-$app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $id = null;
     $params['table_name'] = $table;
@@ -518,7 +511,6 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
     switch($app->request()->getMethod()) {
         // POST one new table entry
         case 'POST':
-            // $id = $db->set_entry_relational($table, $requestPayload);
             $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
             $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
             $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
@@ -526,7 +518,6 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
             break;
         // PUT a change set of table entries
         case 'PUT':
-            // $db->set_entries($table, $requestPayload);
             if(!is_numeric_array($requestPayload)) {
                 $params['id'] = $requestPayload['id'];
                 $requestPayload = array($requestPayload);
@@ -540,7 +531,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($db, $acl, $ZendDb,
     JsonView::render($entries);
 })->via('GET', 'POST', 'PUT');
 
-$app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use ($db, $ZendDb, $acl, $params, $app) {
+$app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use ($ZendDb, $acl, $params, $app) {
   $Table = new TableGateway($acl, $table, $ZendDb);
 
   if(!isset($params['columns'])) {
@@ -577,7 +568,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   JsonView::render($response);
 });
 
-$app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
 
@@ -602,11 +593,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
             break;
         // DELETE a given table entry
         case 'DELETE':
-            // @todo need to find a place where this actually occurs in the pre-existing application
-            echo $db->delete($table, $id);
-            // @todo then confirm this will have identical output:
-            // $row = $TableGateway->find($id);
-            // $row->delete();
+            echo $TableGateway->delete(array('id' => $id));
             return;
     }
     $params['id'] = $id;
@@ -620,7 +607,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($db, $Zend
  * ACTIVITY COLLECTION
  */
 
-$app->get("/$v/activity/?", function () use ($db, $params, $ZendDb, $acl) {
+$app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
@@ -633,7 +620,7 @@ $app->get("/$v/activity/?", function () use ($db, $params, $ZendDb, $acl) {
 
 // GET all table columns, or POST one new table column
 
-$app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $requestPayload, $app, $acl) {
+$app->map("/$v/tables/:table/columns/?", function ($table) use ($ZendDb, $params, $requestPayload, $app, $acl) {
     $params['table_name'] = $table;
     if($app->request()->isPost()) {
         /**
@@ -643,16 +630,17 @@ $app->map("/$v/tables/:table/columns/?", function ($table) use ($db, $params, $r
         if(!$acl->hasTablePrivilege($table, 'alter')) {
             throw new UnauthorizedTableAlterException("Table alter access forbidden on table `$table`");
         }
-        $params['column_name'] = $db->add_column($table, $requestPayload); // NOTE Alters the behavior of db#get_table below
+        $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
+        $params = $TableGateway->manageRecordUpdate('directus_columns', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
     }
-    // $response = $db->get_table($table, $params);
+
     $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
 })->via('GET', 'POST');
 
 // GET or PUT one column
 
-$app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $params, $requestPayload, $app) {
     $params['column_name'] = $column;
     $params['table_name'] = $table;
     // Add table name to dataset. @TODO more clarification would be useful
@@ -660,16 +648,14 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $row['table_name'] = $table;
     }
     if($app->request()->isPut()) {
-        // $db->set_entries('directus_columns', $requestPayload);
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
         $TableGateway->updateCollection($requestPayload);
     }
-    // $response = $db->get_table($table, $params);
     $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
 })->via('GET', 'PUT');
 
-$app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($db, $ZendDb, $acl, $requestPayload, $app) {
+$app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $requestPayload, $app) {
   $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
   $data = $requestPayload;
   if(isset($data['type'])) {
@@ -690,14 +676,14 @@ $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use
 
 /** (Optional slim route params break when these two routes are merged) */
 
-$app->get("/$v/groups/?", function () use ($db, $ZendDb, $acl) {
+$app->get("/$v/groups/?", function () use ($ZendDb, $acl) {
     // @TODO need POST and PUT
     $Groups = new TableGateway($acl, 'directus_groups', $ZendDb);
     $get_new = $Groups->getEntries();
     JsonView::render($get_new);
 });
 
-$app->get("/$v/groups/:id/?", function ($id = null) use ($db, $ZendDb, $acl) {
+$app->get("/$v/groups/:id/?", function ($id = null) use ($ZendDb, $acl) {
     // @TODO need POST and PUT
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null;
@@ -710,7 +696,7 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($db, $ZendDb, $acl) {
  * FILES COLLECTION
  */
 
-$app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $acl, $params, $requestPayload) {
+$app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $params, $requestPayload) {
 
     if(!is_null($id))
         $params['id'] = $id;
@@ -723,21 +709,19 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
 
 
     switch ($app->request()->getMethod()) {
-        case "POST":
-            $requestPayload['user'] = $currentUser['id'];
-            $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
-            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
-            $params['id'] = $newRecord['id'];
-            break;
-        case "PATCH":
-            $requestPayload['id'] = $id;
-        case "PUT":
-            if (!is_null($id)) {
-                $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
-                break;
-            }
-            $db->set_files($requestPayload);
-            break;
+      case "POST":
+        $requestPayload['user'] = $currentUser['id'];
+        $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
+        $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
+        $params['id'] = $newRecord['id'];
+        break;
+      case "PATCH":
+        $requestPayload['id'] = $id;
+      case "PUT":
+        if (!is_null($id)) {
+          $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
+          break;
+        }
     }
 
     $Files = new TableGateway($acl, $table, $ZendDb);
@@ -762,7 +746,7 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $db, $ZendDb, $a
  * PREFERENCES COLLECTION
  */
 
-$app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/preferences/?", function($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserInfo();
     $params['table_name'] = $table;
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
@@ -786,11 +770,11 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
             }
 
             if(isset($requestPayload['id'])) {
-              echo $db->delete('directus_preferences', $requestPayload['id']);
+              echo $TableGateway->delete(array('id' => $requestPayload['id']));
             } else if(isset($requestPayload['title']) && isset($requestPayload['table_name'])) {
               $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $requestPayload['table_name'], $requestPayload['title']);
               if($jsonResponse['id']) {
-                echo $db->delete('directus_preferences', $jsonResponse['id']);
+                echo $TableGateway->delete(array('id' => $jsonResponse['id']));
               } else {
                 echo 1;
               }
@@ -813,7 +797,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($db, $ZendDb,
     JsonView::render($jsonResponse);
 })->via('GET','POST','PUT', 'DELETE');
 
-$app->get("/$v/preferences/:table", function($table) use ($db, $app, $ZendDb, $acl) {
+$app->get("/$v/preferences/:table", function($table) use ($app, $ZendDb, $acl) {
   $currentUser = Auth::getUserInfo();
   $params['table_name'] = $table;
   $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
@@ -825,7 +809,7 @@ $app->get("/$v/preferences/:table", function($table) use ($db, $app, $ZendDb, $a
  * BOOKMARKS COLLECTION
  */
 
-$app->map("/$v/bookmarks(/:id)/?", function($id = null) use ($db, $params, $app, $ZendDb, $acl, $requestPayload) {
+$app->map("/$v/bookmarks(/:id)/?", function($id = null) use ($params, $app, $ZendDb, $acl, $requestPayload) {
   $currentUser = Auth::getUserInfo();
   $bookmarks = new DirectusBookmarksTableGateway($acl, $ZendDb);
   switch ($app->request()->getMethod()) {
@@ -838,7 +822,7 @@ $app->map("/$v/bookmarks(/:id)/?", function($id = null) use ($db, $params, $app,
       $id = $bookmarks->insertBookmark($requestPayload);
       break;
     case "DELETE":
-      echo $db->delete('directus_bookmarks', $id);
+      echo $bookmarks->delete(array('id' => $id));
       return;
   }
   $jsonResponse = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
@@ -849,7 +833,7 @@ $app->map("/$v/bookmarks(/:id)/?", function($id = null) use ($db, $params, $app,
  * REVISIONS COLLECTION
  */
 
-$app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($db, $acl, $ZendDb, $params) {
+$app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($acl, $ZendDb, $params) {
     $params['table_name'] = $table;
     $params['id'] = $id;
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
@@ -861,7 +845,7 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function($table, $id) use ($
  * SETTINGS COLLECTION
  */
 
-$app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
+$app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $params, $requestPayload, $app) {
 
     $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
 
@@ -880,23 +864,14 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($db, $acl, $ZendDb,
     JsonView::render($get_new);
 })->via('GET','POST','PUT');
 
-/**:
- * TABLES COLLECTION
- */
-
-// GET table index
-$app->get("/$v/tables/?", function () use ($db, $params, $requestPayload) {
-    $response = $db->get_tables($params);
-    JsonView::render($response);
-})->name('table_index');
-
 // GET and PUT table details
-$app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $params, $requestPayload, $app) {
+$app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {
+    $TableGateway = new TableGateway($acl, 'directus_tables', $ZendDb);
     /* PUT updates the table */
     if($app->request()->isPut()) {
-        $db->set_table_settings($requestPayload);
+        $TableGateway->manageRecordUpdate('directus_tables', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
     }
-    $response = $db->get_table_info($table, $params);
+    $response = TableSchema::getTable($table);
     JsonView::render($response);
 })->via('GET', 'PUT')->name('table_meta');
 
@@ -904,7 +879,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($db, $ZendDb, $acl, $par
  * UPLOAD COLLECTION
  */
 
-$app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     // $Transfer = new Files\Transfer();
     $Storage = new Files\Storage\Storage();
     $result = array();
@@ -930,7 +905,7 @@ $app->post("/$v/upload/?", function () use ($db, $params, $requestPayload, $app,
     JsonView::render($result);
 });
 
-$app->post("/$v/upload/link/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     // $Transfer = new Files\Transfer();
     $Storage = new Files\Storage\Storage();
     $result = array();
@@ -957,7 +932,7 @@ $app->post("/$v/upload/link/?", function () use ($db, $params, $requestPayload, 
     JsonView::render($result);
 });
 
-$app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->get("/$v/messages/rows/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
 
     if (isset($_GET['max_id'])) {
@@ -978,7 +953,7 @@ $app->get("/$v/messages/rows/?", function () use ($db, $params, $requestPayload,
     JsonView::render($result);
 });
 
-$app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->get("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
@@ -991,7 +966,7 @@ $app->get("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
     JsonView::render($message);
 });
 
-$app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->map("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
     $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($acl, $ZendDb);
@@ -1011,7 +986,7 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($db, $params, $requestP
     JsonView::render($message);
 })->via('PATCH');
 
-$app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
 
     // Unpack recipients
@@ -1067,7 +1042,7 @@ $app->post("/$v/messages/rows/?", function () use ($db, $params, $requestPayload
     JsonView::render($message);
 });
 
-$app->get("/$v/messages/recipients/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->get("/$v/messages/recipients/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $tokens = explode(' ', $_GET['q']);
 
     $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
@@ -1171,7 +1146,7 @@ $app->post("/$v/comments/?", function() use ($db, $params, $requestPayload, $app
 /**
  * EXCEPTION LOG
  */
-$app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->post("/$v/exception/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     // $Transfer = new Files\Transfer();
 
     print_r($requestPayload);die();
@@ -1220,20 +1195,20 @@ $app->post("/$v/exception/?", function () use ($db, $params, $requestPayload, $a
  * UI COLLECTION
  */
 
-$app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $ui) use ($db, $acl, $ZendDb, $params, $requestPayload, $app) {
-    $params['table_name'] = $table;
-    $params['column_name'] = $column;
-    $params['ui_name'] = $ui;
+$app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $ui) use ($acl, $ZendDb, $params, $requestPayload, $app) {
+    $TableGateway = new TableGateway($acl, 'directus_ui', $ZendDb);
     switch ($app->request()->getMethod()) {
       case "PUT":
       case "POST":
-        $db->set_ui_options($requestPayload, $table, $column, $ui);
+        $id = $requestPayload['id'];
+        unset($requestPayload['id']);
+        $keys = array('table_name' => $table, 'column_name' => $column, 'ui_name' => $ui);
+        $TableGateway->manageRecordUpdate('directus_ui', to_name_value($requestPayload, $keys), TableGateway::ACTIVITY_ENTRY_MODE_PARENT);
         break;
     }
-    $get_old = $db->get_ui_options($table, $column, $ui);
     $UiOptions = new DirectusUiTableGateway($acl, $ZendDb);
     $get_new = $UiOptions->fetchOptions($table, $column, $ui);
-    JsonView::render($get_old, $get_new);
+    JsonView::render($get_new);
 })->via('GET','POST','PUT');
 
 /**
