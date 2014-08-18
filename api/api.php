@@ -909,7 +909,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       $existing = $ColumnsTableGateway->select(array('table_name' => $table, 'column_name' => $col['column_name']))->toArray();
       if(count($existing) > 0) {
         $columnData['id'] = $existing[0]['id'];
-    }
+      }
       array_push($column_settings, $columnData);
     }
     $ColumnsTableGateway->updateCollection($column_settings);
@@ -1243,11 +1243,18 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
     switch ($app->request()->getMethod()) {
       case "PUT":
       case "POST":
-        $id = $requestPayload['id'];
-        unset($requestPayload['id']);
         $keys = array('table_name' => $table, 'column_name' => $column, 'ui_name' => $ui);
-        $TableGateway->manageRecordUpdate('directus_ui', to_name_value($requestPayload, $keys), TableGateway::ACTIVITY_ENTRY_MODE_PARENT);
-        break;
+        $uis = to_name_value($requestPayload, $keys);
+
+        $column_settings = array();
+        foreach ($uis as $col) {
+          $existing = $TableGateway->select(array('table_name' => $table, 'column_name' => $column, 'ui_name'=>$ui, 'name'=>$col['name']))->toArray();
+          if(count($existing) > 0) {
+            $col['id'] = $existing[0]['id'];
+          }
+          array_push($column_settings, $col);
+        }
+        $TableGateway->updateCollection($column_settings);
     }
     $UiOptions = new DirectusUiTableGateway($acl, $ZendDb);
     $get_new = $UiOptions->fetchOptions($table, $column, $ui);
