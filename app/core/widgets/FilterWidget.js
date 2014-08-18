@@ -279,13 +279,15 @@ function(app, Backbone) {
       });
     },
 
-    updateFilters: function() {
+    updateFilters: function(bInit) {
       var filters = this.options.filters.map(function(item) {
         return item.filterData;
       });
 
       this.collection.setFilter('adv_search', filters);
-      this.collection.setFilter('currentPage', 0);
+      if(!bInit) {
+        this.collection.setFilter('currentPage', 0);
+      }
 
       if(app.router.loadedPreference) {
         if(this.basePage) {
@@ -372,7 +374,7 @@ function(app, Backbone) {
           }
         });
       }
-      this.updateFilters();
+      this.updateFilters(true);
       //this.collection.fetch();
       this.render();
     },
