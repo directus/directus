@@ -91,7 +91,6 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_messages },
         { schema: directusSchemas.directus_users.getUsers() }
       ];
-      console.log(require('app').statusMapping);
 
       this.register('tables', defaultTables);
 

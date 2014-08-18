@@ -5,8 +5,8 @@ define(function(require, exports, module) {
   var app = require('app');
 
   module.exports = {
-    var statusName = app.statusMapping.status_name;
     getUsers: function() {
+      var statusName = app.statusMapping.status_name;
       return {
         "id":"directus_users",
         "table_name":"directus_users",
