@@ -631,6 +631,8 @@ $app->map("/$v/tables/:table/columns/?", function ($table) use ($ZendDb, $params
             throw new UnauthorizedTableAlterException("Table alter access forbidden on table `$table`");
         }
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
+        $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
+        $requestPayload = array_intersect_key($requestPayload, array_flip($alias_columns));
         $params = $TableGateway->manageRecordUpdate('directus_columns', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
     }
 
@@ -866,13 +868,54 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
 
 // GET and PUT table details
 $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {
-    $TableGateway = new TableGateway($acl, 'directus_tables', $ZendDb);
-    /* PUT updates the table */
-    if($app->request()->isPut()) {
-        $TableGateway->manageRecordUpdate('directus_tables', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+  $TableGateway = new TableGateway($acl, 'directus_tables', $ZendDb,null,null,null,'table_name');
+  $ColumnsTableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
+  /* PUT updates the table */
+  if($app->request()->isPut()) {
+    $data = $requestPayload;
+    $table_settings = array(
+      'table_name' => $data['table_name'],
+      'hidden' => (int)$data['hidden'],
+      'single' => (int)$data['single'],
+      'default_status' => (int)$data['default_status'],
+      'is_junction_table' => (int)$data['is_junction_table'],
+      'footer' => (int)$data['footer'],
+      'primary_column' => $data['primary_column']
+    );
+
+    //@TODO: Possibly pretty this up so not doing direct inserts/updates
+    $set = $TableGateway->select(array('table_name' => $table))->toArray();
+
+    //If item exists, update, else insert
+    if(count($set) > 0) {
+      $TableGateway->update($table_settings, array('table_name' => $table));
+    } else {
+      $TableGateway->insert($table_settings);
     }
-    $response = TableSchema::getTable($table);
-    JsonView::render($response);
+
+    $column_settings = array();
+    foreach ($data['columns'] as $col) {
+      $columnData = array(
+        'table_name' => $table,
+        'column_name'=>$col['column_name'],
+        'ui'=>$col['ui'],
+        'hidden_input'=>$col['hidden_input'],
+        'required'=>$col['required'],
+        'master'=>$col['master'],
+        'sort'=> array_key_exists('sort', $col) ? $col['sort'] : 99999,
+        'comment'=> array_key_exists('comment', $col) ? $col['comment'] : ''
+      );
+
+      $existing = $ColumnsTableGateway->select(array('table_name' => $table, 'column_name' => $col['column_name']))->toArray();
+      if(count($existing) > 0) {
+        $columnData['id'] = $existing[0]['id'];
+    }
+      array_push($column_settings, $columnData);
+    }
+    $ColumnsTableGateway->updateCollection($column_settings);
+  }
+  $response = TableSchema::getTable($table);
+  JsonView::render($response);
 })->via('GET', 'PUT')->name('table_meta');
 
 /**
@@ -1056,7 +1099,7 @@ $app->get("/$v/messages/recipients/?", function () use ($params, $requestPayload
     JsonView::render($result);
 });
 
-$app->post("/$v/comments/?", function() use ($db, $params, $requestPayload, $app, $acl, $ZendDb) {
+$app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $acl, $ZendDb) {
   $currentUser = Auth::getUserInfo();
   $params['table_name'] = "directus_messages";
   $TableGateway = new TableGateway($acl, "directus_messages", $ZendDb);
