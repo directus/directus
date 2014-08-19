@@ -138,6 +138,14 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         relatedCollection.nestedCollection.fetch();
       }
 
+      var blacklist = [];
+      var that = this;
+      relatedCollection.getColumns().forEach(function(column) {
+        if(that.columnSchema.options.get('visible_columns').split(',').indexOf(column) == -1) {
+          blacklist.push(column);
+        }
+      });
+
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         toolbar: false,
@@ -149,7 +157,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         deleteColumn: this.showRemoveButton,
         hideEmptyMessage: true,
         hideColumnPreferences: true,
-        hasSort: junctionStructure.get('sort') !== undefined
+        hasSort: junctionStructure.get('sort') !== undefined,
+        blacklist: blacklist
       });
 
       if(junctionStructure.get('sort') !== undefined) {
