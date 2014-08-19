@@ -125,6 +125,11 @@ function(app, Backbone) {
         var vals = columnModel.get('column_type').substring(5, columnModel.get('column_type').length-1);
         vals = vals.replace(/\'/g, "").split(',');
         data.dropdownValues = vals;
+      } else if(that.collection.structure.get(selectedColumn).get('ui') === "multi_select") {
+        var columnModel = that.collection.structure.get(selectedColumn);
+        var keys = [];
+        for(var k in JSON.parse(columnModel.options.get('options'))) keys.push(k);
+        data.dropdownValues = keys;
       } else {
         data.filter_ui = this.getFilterDataType(selectedColumn);
       }
@@ -365,6 +370,11 @@ function(app, Backbone) {
               data.dropdownValues = vals;
             } else if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
               data.filter_ui = that.getFilterDataType(selectedColumn);
+            }else if(that.collection.structure.get(selectedColumn).get('ui') === "multi_select") {
+              var columnModel = that.collection.structure.get(selectedColumn);
+              var keys = [];
+              for(var k in JSON.parse(columnModel.options.get('options'))) keys.push(k);
+              data.dropdownValues = keys;
             }
             data.filter_type = that.collection.structure.get(selectedColumn).get('type');
 
