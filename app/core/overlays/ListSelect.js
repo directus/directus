@@ -31,7 +31,8 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
     leftSecondaryToolbar: function() {
       return [
-        new Widgets.FilterWidget({collection: this.collection, basePage: this})
+        new Widgets.FilterWidget({collection: this.collection, basePage: this}),
+        new Widgets.VisibilityWidget({collection: this.collection, basePage: this})
       ];
     },
 
