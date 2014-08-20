@@ -29,7 +29,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   var template = '<select {{#unless canEdit}}disabled{{/unless}}> \
                   <option value="">{{placeholder_text}}</option> \
-                  {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/data}} \
+                  {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>{{/data}} \
                   </select>';
 
   //name="{{name}}"

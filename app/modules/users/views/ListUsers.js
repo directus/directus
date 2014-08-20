@@ -3,10 +3,11 @@ define([
   "backbone",
   "core/directus",
   'core/BasePageView',
-  'core/widgets/widgets'
+  'core/widgets/widgets',
+  'moment'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets) {
+function(app, Backbone, Directus, BasePageView, Widgets, moment) {
 
   "use strict";
 

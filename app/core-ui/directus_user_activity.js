@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app','backbone', 'moment'], function(app, Backbone, moment) {
 
   "use strict";
 
