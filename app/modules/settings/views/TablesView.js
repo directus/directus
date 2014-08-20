@@ -136,6 +136,14 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         }
       }
 
+      data.ui_types.sort(function(a, b) {
+        if (a.title < b.title)
+          return -1
+        if (a.title > b.title)
+          return 1
+        return 0
+      });
+
       var that = this;
 
       uis[this.selectedUI].dataTypes.forEach(function(dataType) {
