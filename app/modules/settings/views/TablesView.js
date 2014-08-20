@@ -165,7 +165,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         data.CHAR_LENGTH = 1;
       }
 
-      if(['many_to_one', 'many_to_one_typeahead', 'single_file'].indexOf(this.selectedUI) > -1) {
+      if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
         var tableRelated = this.model.get('table_related');
 
@@ -180,6 +180,11 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         data.tables = tables;
 
         this.model.set({junction_key_right: this.columnName});
+      }
+
+      //If Single_file UI, force related table to be directus_files
+      if(this.selectedUI === 'single_file') {
+        this.model.set({table_related: 'directus_files'});
       }
 
       if(['ONETOMANY', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
@@ -197,9 +202,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
           return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table'), selected: (model.id === this.model.get('table_related'))};
         }, this);
         data.tables = tables;
-
-
-
 
         if(this.selectedDataType == 'MANYTOMANY') {
           data.junctionTables = _.chain(tables).filter(function(model) { return model.is_junction_table; })
