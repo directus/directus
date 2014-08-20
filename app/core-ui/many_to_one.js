@@ -18,7 +18,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
-    {id: 'show_inactive', ui: 'checkbox', def: '0'},
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: "Enter Visible Column Name"},
     {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"},
     {id: 'visible_status_ids', ui: 'textinput', char_length: 64, required: true, def: 1, comment: "Enter the visible status ids"},
