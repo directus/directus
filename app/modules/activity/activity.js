@@ -4,10 +4,11 @@ define([
   'core/directus',
   'modules/activity/chart',
   "modules/files/files",
-  'core/BasePageView'
+  'core/BasePageView',
+  'moment'
 ],
 
-function(app, Backbone, Directus, Chart, Files, BasePageView) {
+function(app, Backbone, Directus, Chart, Files, BasePageView, moment) {
 
   "use strict";
 

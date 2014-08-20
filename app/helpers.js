@@ -1,8 +1,9 @@
 require([
   "app",
   "handlebars",
-  "core/UIManager"
-], function(app, Handlebars, UIManager) {
+  "core/UIManager",
+  'moment'
+], function(app, Handlebars, UIManager, moment) {
 
   "use strict";
 

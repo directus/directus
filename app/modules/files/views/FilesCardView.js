@@ -1,10 +1,11 @@
 define([
   'app',
   'backbone',
-  'core/widgets/widgets'
+  'core/widgets/widgets',
+  'moment'
 ],
 
-function(app, Backbone, Widgets) {
+function(app, Backbone, Widgets, moment) {
 
   var FilesCardView = Backbone.Layout.extend({
 

@@ -2,10 +2,11 @@ define([
   'app',
   'backbone',
   'core/BasePageView',
-  'core/widgets/widgets'
+  'core/widgets/widgets',
+  'moment'
 ],
 
-function(app, Backbone, BasePageView, Widgets) {
+function(app, Backbone, BasePageView, Widgets, moment) {
 
   var ListView = Backbone.Layout.extend({
 
