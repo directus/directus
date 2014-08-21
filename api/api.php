@@ -445,9 +445,7 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
 
     if(isset($requestPayload['activeState'])) {
-      if($requestPayload['activeState'] == 'all') {
-
-      } else {
+      if($requestPayload['activeState'] !== 'all') {
         $priv = $privileges->findByStatus($requestPayload['table_name'], $requestPayload['group_id'], $requestPayload['activeState']);
         if($priv) {
           $requestPayload['id'] = $priv['id'];
