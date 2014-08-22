@@ -567,13 +567,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Only select the fields not on the currently authenticated user group's read field blacklist
         $columnNames = TableSchema::getAllNonAliasTableColumnNames($this->table);
 
-        //Filter out visible columns only
-        if (array_key_exists('columns_visible', $params)) {
-            $systemColumns = array('id','sort', STATUS_COLUMN_NAME);
-            $columnsVisible = array_unique(array_merge($systemColumns, $params['columns_visible']));
-            $columnNames = array_intersect($columnNames, $columnsVisible);
-        }
-
         $select->columns($columnNames);
 
         if(array_key_exists('ids', $params)) {
