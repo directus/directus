@@ -124,11 +124,7 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
             //item.title = app.capitalize(item.name);
 
             if (saveAfterDrop) {
-              var success = function() {
-                var active = collection.table.get('active') + 1;
-                collection.table.set('active', active);
-              };
-              collection.create(item, {success: success});
+              collection.create(item);
             } else {
               console.log('ADD');
               collection.add(item, {nest: true, parse: true});
