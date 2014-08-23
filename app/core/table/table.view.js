@@ -39,7 +39,6 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
           $(document).scrollTop(0);
-          //this.collection.off(null, null, this);
           this.collection.off();
           this.navigate(id);
         }
@@ -121,9 +120,9 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
           _.each(data, function(item) {
             item.user = app.users.getCurrentUser().id;
             item[app.statusMapping.status_name] = app.statusMapping.active_num;
-            //item.title = app.capitalize(item.name);
 
             if (saveAfterDrop) {
+              //@todo: update collection status count
               collection.create(item);
             } else {
               console.log('ADD');
@@ -138,12 +137,7 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
     initialize: function(options) {
       var collection = this.collection;
 
-      //this.html("<img src='/assets/img/spinner.gif'>");
-      //return;
-
-
       this.listenTo(collection, 'sync', function(model, resp, options) {
-        //if (collection instanceof Backbone.Model) return;
         if (options.silent) return;
         this.render();
       });
@@ -177,12 +171,6 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       if (this.options.droppable || collection.droppable) {
         this.initializeDrop();
       }
-
-      // pre-render if there is stuff in the collection
-      if (this.collection.length > 0) {
-        //this.render();
-      }
-
     },
 
     constructor: function (options) {
