@@ -2,9 +2,10 @@ define([
   'app',
   'backbone',
   'core/directus',
+  'moment'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, Directus, moment) {
 
   return Backbone.Layout.extend({
     tagName: "ul",
