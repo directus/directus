@@ -29,8 +29,28 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
           $select->group($tableName . '.id');
         }
 
-        $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
-            ->limit($params['perPage'])
+        //If this is a relational order, than it is an array.
+        if(is_array($params['orderBy'])) {
+          $select->join(
+            array('jsort' => $params['orderBy']['junction_table']),
+            'jsort.'.$params['orderBy']['jkeyRight'].' = '.$tableName.'.id',
+            array(),
+            $select::JOIN_LEFT
+          );
+
+          $select->join(
+              array('rsort' => $params['orderBy']['related_table']),
+              'rsort.id = jsort.'.$params['orderBy']['jkeyLeft'],
+              array(),
+              $select::JOIN_LEFT
+          );
+
+          $select->order('rsort.title', $params['orderDirection']);
+        } else {
+          $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
+        }
+
+        $select->limit($params['perPage'])
             ->offset($params['currentPage'] * $params['perPage']);
 
         // Are we sorting on a relationship?
