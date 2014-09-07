@@ -17,6 +17,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
   Module.variables = [
     {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
+    {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: 'Maximum number of results to fetch'},
     {id: 'add_button', ui: 'checkbox'},
     {id: 'remove_button', ui: 'checkbox'}
   ];
@@ -176,7 +177,12 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         } else {
           filters.columns_visible = [joinColumn];
         }
-        filters.ids = ids.slice(0,filters.perPage).join(',');
+        //Pass this filter to select only where column = val
+        filters.related_table_filter = {column: joinColumn, val: this.model.id};
+
+        if(this.columnSchema.options.get('result_limit') !== undefined) {
+          filters.perPage = this.columnSchema.options.get('result_limit');
+        }
 
         relatedCollection.fetch({includeFilters: false, data: filters});
       }

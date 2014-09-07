@@ -569,8 +569,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $select->columns($columnNames);
 
-        if(array_key_exists('ids', $params)) {
-          $select->where('id IN ('.$params['ids'].')');
+        if(array_key_exists('related_table_filter', $params)) {
+          $select->where->equalTo($params['related_table_filter']['column'], $params['related_table_filter']['val']);
         }
 
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
