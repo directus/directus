@@ -1,5 +1,5 @@
 <?php
-
+ob_start();
 session_start();
 $code = 0;
 $bad_paths = array();
@@ -449,3 +449,4 @@ if($step == 5) {
   <script type="text/javascript" src="install.js"></script>
 </body>
 </html>
+<?php ob_end_flush(); ?>
