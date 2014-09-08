@@ -25,6 +25,10 @@ class Git {
             $modulePath = dirname($expectedGitDirectory) . "/$modulePath";
             return self::getCloneHash($modulePath);
         }
+        else {
+          //Always bust cache
+          return uniqid();
+        }
     }
 
 }
