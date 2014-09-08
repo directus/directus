@@ -37,8 +37,21 @@ function(app, Backbone) {
       }
     },
 
+    onKeydown: function(e) {
+      var key = e.keyCode || e.which;
+      //enter
+      if (key === 13) {
+        this.save();
+      }
+      // esc
+      if (key === 27) {
+        this.close();
+      }
+    },
+
     close: function() {
       this.remove();
+      $(document).off('keydown', _.bind(this.onKeydown, this));
     },
 
     save: function() {
@@ -52,6 +65,7 @@ function(app, Backbone) {
 
     initialize: function (options) {
       this.options = options;
+      $(document).on('keydown', _.bind(this.onKeydown, this));
     }
   });
   return Modal;
