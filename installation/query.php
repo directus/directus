@@ -136,6 +136,7 @@ $create_privileges = "CREATE TABLE `directus_privileges` (
   `table_name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `permissions` varchar(500) CHARACTER SET latin1 DEFAULT NULL COMMENT 'Table-level permissions (insert, delete, etc.)',
   `group_id` int(11) NOT NULL,
+  `status_id` int(11) DEFAULT NULL,
   `read_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
   `write_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
   `unlisted` tinyint(1) DEFAULT NULL,
