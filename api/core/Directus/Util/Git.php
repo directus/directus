@@ -27,7 +27,7 @@ class Git {
         }
         else {
           //Always bust cache
-          return uniqid();
+          return session_id();
         }
     }
 
