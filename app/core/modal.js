@@ -63,6 +63,10 @@ function(app, Backbone) {
       this.close();
     },
 
+    afterRender: function(view) {
+      this.$el.find('input[type="text"]').focus();
+    },
+
     initialize: function (options) {
       this.options = options;
       $(document).on('keydown', _.bind(this.onKeydown, this));
