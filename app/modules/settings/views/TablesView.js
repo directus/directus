@@ -571,9 +571,10 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       //Get Selected master
       data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
 
-      this.model.save(data, {success: function(){
+      this.model.save();
+      /*data, {success: function(){
         app.router.go('settings','tables');
-      }});
+      }});*/
     },
 
     afterRender: function() {
@@ -591,6 +592,56 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
   var Tables = Backbone.Layout.extend({
 
     template: 'modules/settings/settings-tables',
+
+    addRowView: function(model, render) {
+      var view = this.insertView('tbody', new TablesRow({model: model}));
+      if (render !== false) {
+        view.render();
+      }
+    },
+
+    isValidModel: function(model) {
+      //Filter out _directus tables
+      if (model.id.substring(0,9) === 'directus_') return false;
+
+      //Filter out tables you don't have alter permissions on
+      var privileges = app.schemaManager.getPrivileges(model.id);
+
+      // filter out tables with empty privileges
+      if (privileges === undefined) return false;
+
+      var permissions = privileges.get('permissions').split(',');
+
+      // only return tables with view permissions
+      return _.contains(permissions, 'alter');
+    },
+
+    beforeRender: function() {
+      this.collection.each(function(model){
+        if (!this.isValidModel(model)) {
+          this.collection.remove(model);
+          return false;
+        }
+        this.addRowView(model, false);
+      }, this);
+    },
+
+    initialize: function() {
+      this.listenTo(this.collection, 'add', this.addRowView);
+    }
+  });
+
+  var TablesRow = Backbone.Layout.extend({
+
+    template: 'modules/settings/settings-tables-rows',
+
+    tagName: 'tr',
+
+    attributes: function() {
+      return {
+        'data-id': this.model.get('table_name')
+      };
+    },
 
     events: {
       'click td span': function(e) {
@@ -621,27 +672,8 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     serialize: function() {
-
-      var rows = this.collection.filter(function(model) {
-        //Filter out _directus tables
-        if (model.id.substring(0,9) === 'directus_') return false;
-
-        //Filter out tables you don't have alter permissions on
-        var privileges = app.schemaManager.getPrivileges(model.id);
-
-        // filter out tables with empty privileges
-        if (privileges === undefined) return false;
-
-        var permissions = privileges.get('permissions').split(',');
-
-        // only return tables with view permissions
-        return _.contains(permissions, 'alter');
-      });
-
-      rows = _.map(rows, function(model) { return model.toJSON(); });
-      return {rows: rows};
+      return this.model.toJSON();
     }
-
   });
 
   SettingsTables.Views.List = BasePageView.extend({
@@ -669,13 +701,14 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
     events: {
       'click #addBtn': function() {
+        var self = this;
         app.router.openModal({type: 'prompt', text: 'Please Enter the name of the Table you would like to add.', callback: function(tableName) {
           if(tableName && !app.schemaManager.getPrivileges(tableName)) {
             var model = new Backbone.Model();
             model.url = app.API_URL + 'privileges/1';
             model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
             model.save();
-            location.reload();
+            self.collection.add(model);
           }
         }});
       }
