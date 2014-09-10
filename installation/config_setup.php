@@ -11,8 +11,7 @@
   $_SERVER['SERVER_NAME'] = '$_SERVER[\'SERVER_NAME\']';
   $host = '$host';
 
-$configText = "
-  <?php
+$configText = "<?php
   date_default_timezone_set('America/New_York');
 
   define('API_VERSION', 1);
