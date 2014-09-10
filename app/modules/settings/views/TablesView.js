@@ -572,9 +572,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
 
       this.model.save();
-      /*data, {success: function(){
-        app.router.go('settings','tables');
-      }});*/
     },
 
     afterRender: function() {
