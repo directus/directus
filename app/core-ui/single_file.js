@@ -13,6 +13,7 @@
 // options.value      String            Value for this field
 // options.settings   Backbone.Model    Saved values for current UI options     options.settings.get('length') [any key from this UI options]
 // options.name       String            Field name
+/*jshint multistr: true */
 
 
 define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], function(app, Backbone, TableView, Overlays) {
@@ -180,7 +181,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       },
       'click #retriveUrlBtn': function(e) {
         var url = this.$el.find('#urlInput').val();
-        var model = this.model;
         var model = this.fileModel;
         app.sendLink(url, function(data) {
           _.each(data, function(item) {

@@ -5,6 +5,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
+/*jshint multistr: true */
 
 define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
@@ -17,9 +18,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
-    {id: 'show_inactive', ui: 'checkbox', def: '0'},
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: "Enter Visible Column Name"},
     {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"},
+    {id: 'visible_status_ids', ui: 'textinput', char_length: 64, required: true, def: 1, comment: "Enter the visible status ids"},
     {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"},
     {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
     {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"}
@@ -106,8 +107,8 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
       var active = 1;
-      if(this.options.settings.get('show_inactive') == '1') {
-        active = '1,2';
+      if(this.options.settings.get('visible_status_ids')) {
+        active = this.options.settings.get('visible_status_ids');
       }
       var data = {'columns_visible[]': []};
       data[app.statusMapping.status_name] = active;

@@ -47,7 +47,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
      * @param Sql $sql
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct(Acl $acl, $table, AdapterInterface $adapter, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null)
+    public function __construct(Acl $acl, $table, AdapterInterface $adapter, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null, $primaryKeyName = null)
     {
         $this->acl = $acl;
 
@@ -67,6 +67,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         } else {
             $this->featureSet = new Feature\FeatureSet();
+        }
+
+        if($primaryKeyName !== null) {
+          $this->primaryKeyFieldName = $primaryKeyName;
         }
 
         $rowGatewayPrototype = new AclAwareRowGateway($acl, $this->primaryKeyFieldName, $table, $adapter);
@@ -176,12 +180,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
         $tableName = is_null($tableName) ? $this->table : $tableName;
         $rowExists = isset($recordData['id']);
-
-        // $record = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, $tableName, $this->adapter);
-        // $record->populateSkipAcl($recordData, $rowExists);
-        // $record->populate($recordData, $rowExists);
-        // $record->save();
-        // return $record;
 
         $TableGateway = new self($this->acl, $tableName, $this->adapter);
         if($rowExists) {

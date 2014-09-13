@@ -5,6 +5,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
+/*jshint multistr: true */
 
 define(['app', 'backbone'], function(app, Backbone) {
 
@@ -53,18 +54,19 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     updateValue: function(select) {
+      var values, out, i;
       if(select) {
-        var values = this.$el.find('select').val();
-        var out = "";
+        values = this.$el.find('select').val();
+        out = "";
         if(values) {
-          for (var i=0; i<values.length; i++) {
+          for (i=0; i<values.length; i++) {
             out += values[i] + this.options.settings.get('delimiter');
           }
         }
       } else {
-        var values = this.$el.find('input[type=checkbox]:checked');
-        var out = "";
-        for (var i=0; i<values.length; i++) {
+        values = this.$el.find('input[type=checkbox]:checked');
+        out = "";
+        for (i=0; i<values.length; i++) {
           out += $(values[i]).attr('name') + this.options.settings.get('delimiter');
         }
       }
@@ -75,7 +77,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     afterRender: function() {
       if(this.options.value) {
-        this.updateValue(!(this.options.settings.get('type') == "cb_list"));
+        this.updateValue((this.options.settings.get('type') != "cb_list"));
       }
     },
 

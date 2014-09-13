@@ -58,6 +58,7 @@ require([
   });
 
   Handlebars.registerHelper('activeMap', function(model) {
+    //@todo: how do we want to handle this stuff
     switch (model.get(app.statusMapping.status_name)) {
       case 0:
         return 'deleted';
@@ -114,7 +115,6 @@ require([
     if(user) {
       var avatar = user.get('avatar');
       if(!avatar) {
-      console.log(avatar);
         avatar = app.PATH + 'assets/img/missing-directus-avatar.png';
       }
       return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar"/>');

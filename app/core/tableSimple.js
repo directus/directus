@@ -37,7 +37,7 @@ function(app, Backbone) {
         var permissions = privileges.get('permissions').split(',');
 
         // only return tables with view permissions and not hidden
-        return _.contains(permissions, 'view') && !(privileges.get('unlisted') == 1);
+        return _.contains(permissions, 'view') && privileges.get('unlisted') != 1;
       });
       return {rows: rows, columns: this.collection.getColumns()};
     }

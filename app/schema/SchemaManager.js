@@ -78,22 +78,19 @@ define(function(require, exports, module) {
    */
   var privileges = {};
 
-  /**
-   * @private
-   * Holds defaualt table configurations
-   */
-  var defaultTables = [
-    { schema: directusSchemas['directus_activity'] },
-    { schema: directusSchemas['directus_groups'] },
-    { schema: directusSchemas['directus_files'] },
-    { schema: directusSchemas['directus_messages'] },
-    { schema: directusSchemas['directus_users'] }
-  ];
-
   module.exports = {
 
     setup: function(options) {
       this.apiURL = options.apiURL;
+
+
+      var defaultTables = [
+        { schema: directusSchemas.directus_activity },
+        { schema: directusSchemas.directus_groups },
+        { schema: directusSchemas.directus_files.getFiles() },
+        { schema: directusSchemas.directus_messages },
+        { schema: directusSchemas.directus_users.getUsers() }
+      ];
 
       this.register('tables', defaultTables);
 

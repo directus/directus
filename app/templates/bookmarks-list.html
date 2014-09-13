@@ -6,7 +6,7 @@
     </a>
   </li>
   {{#bookmarks.table}}
-  <li class="{{#if active}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
         {{capitalize title}}
       </a>
@@ -17,7 +17,7 @@
 <div class="extensions-sidebar">
   {{#bookmarks.extension}}
   <li class="hr"></li>
-  <li class="{{#if active}}active{{/if}} sidebar-extension" title="{{capitalize title}}">
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-extension" title="{{capitalize title}}">
       <a href="{{url}}">
         <span class="icon {{icon_class}}"></span>
         <span class="sidebar-label">{{capitalize title}}</span>
@@ -36,7 +36,7 @@
     </a>
   </li>
   {{#bookmarks.search}}
-  <li class="{{#if active}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
         <span class="icon"></span>
         {{capitalize title}}
@@ -50,7 +50,7 @@
 <li class="hr"></li>
 <div class="sidebar-section other-sidebar">
   {{#bookmarks.other}}
-  <li class="{{#if active}}active{{/if}}" title="{{capitalize title}}">
+  <li class="{{#if active_bookmark}}active{{/if}}" title="{{capitalize title}}">
       <a href="{{url}}">
         <span class="icon {{icon_class}}"></span>
         <span class="sidebar-label">{{capitalize title}}</span>
