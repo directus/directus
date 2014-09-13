@@ -243,7 +243,7 @@ var template = '<style type="text/css"> \
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
 
-      var data = {
+      return {
         height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '500',
         bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold')!=='0' : true,
         italic: (this.options.settings && this.options.settings.has('italic')) ? this.options.settings.get('italic')!=='0' : true,
@@ -269,7 +269,6 @@ var template = '<style type="text/css"> \
         maxLength: length,
         characters: length - value.length
       };
-      return data;
     },
 
     initialize: function() {

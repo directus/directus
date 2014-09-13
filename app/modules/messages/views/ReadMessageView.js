@@ -67,7 +67,38 @@ function(app, Backbone, BasePageView) {
 
       data.responses = data.responses.reverse();
 
+
+      var title = data.message;
+      var offset = 0;
+      while(true) {
+        if(title) {
+          var atPos = title.indexOf('@[')
+          if(atPos !== -1) {
+            var spacePos = title.substring(atPos).indexOf(' ');
+            if(spacePos !== -1) {
+              var substring = title.substring(atPos + 2, spacePos + atPos);
+              var contains = /^[0-9]|_+$/.test(substring);
+              if(contains) {
+                var bracketPos2 = title.indexOf(']');
+                if(bracketPos2 !== -1) {
+                  var name = title.substring(spacePos + 1 + atPos, bracketPos2);
+                  var newTitle = data.message;
+                  data.message = newTitle.substring(0, atPos + offset) + "<span class=\"mention-tag\">" + name + "</span>";
+                  var newOffset = data.message.length;
+                  data.message += newTitle.substring(bracketPos2 + offset + 1);
+                  title = newTitle.substring(bracketPos2 + offset + 1);
+                  offset = newOffset;
+                  continue;
+                }
+              }
+            }
+          }
+        }
+        break;
+      }
+
       data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
+
       return data;
     },
 

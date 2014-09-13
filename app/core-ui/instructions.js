@@ -14,6 +14,7 @@
 // options.settings   Backbone.Model    Saved values for current UI options     options.settings.get('length') [any key from this UI options]
 // options.name       String            Field name
 
+/*jshint multistr: true */
 
 define(['app', 'backbone'], function(app, Backbone) {
 

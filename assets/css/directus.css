@@ -2645,6 +2645,12 @@ select:focus,
 .section-header {
   margin: 40px 0 10px 0;
 }
+.section-dropdown {
+  float: right;
+  height: 30px;
+  min-width: 150px;
+  margin-top: -4px;
+}
 .history-container {
   background-color: #f4f4f4;
   padding: 20px;
@@ -2680,6 +2686,40 @@ select:focus,
 }
 .history-container ul li:first-child .history-datetime {
   top: 10px;
+}
+.history-container ul li .mention-list {
+  width: 100%;
+  max-width: 500px;
+  background-color: #ffffff;
+  display: block;
+  margin-top: -3px;
+  margin-left: 10px;
+  padding: 6px 10px 6px 10px;
+}
+.history-container ul li .mention-list:empty {
+  display: none;
+}
+.history-container ul li .mention-choice {
+  background-color: inherit;
+  padding: 4px;
+}
+.history-container ul li .mention-choice:hover {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+.history-container ul li .mention-choice img {
+  width: 30px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+.history-container ul li .mention-tag {
+  background-color: #f4f4f4;
+  padding: 0 4px 0 4px;
+  margin: 0 1px 0 1px;
+  cursor: pointer;
+}
+.history-container ul li .mention-tag:hover {
+  background-color: #ededed;
 }
 .history-container ul li .avatar {
   float: none;

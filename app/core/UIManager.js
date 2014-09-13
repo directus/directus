@@ -42,7 +42,8 @@ define(function(require, exports, module) {
     require('core-ui/directus_file'),
     require('core-ui/directus_file_title'),
     require('core-ui/map'),
-    require('core-ui/multiple_files')
+    require('core-ui/multiple_files'),
+    require('core-ui/translation')
   ]);
 
   var jQuery = require('jquery');
@@ -181,11 +182,11 @@ define(function(require, exports, module) {
 
       // If there is no UI, return just text
       if (UI === undefined) {
-        var attr = model.get(attr);
-        if(!attr || attr == "") {
-          attr = '<span class="secondary-info">--</span>';
+        var attribute = model.get(attr);
+        if(!attribute || attribute === "") {
+          attribute = '<span class="secondary-info">--</span>';
         }
-        return attr;
+        return attribute;
       }
 
       var list = UI.list({
@@ -197,8 +198,8 @@ define(function(require, exports, module) {
           tagName: 'td'
       });
 
-      if(list == "") {
-        list = '<span class="secondary-info">--</span>'
+      if(!list || list === "") {
+        list = '<span class="secondary-info">--</span>';
       }
 
       return list;

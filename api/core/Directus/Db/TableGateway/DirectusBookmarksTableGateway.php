@@ -72,59 +72,46 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
     }
 
     public function fetchByUserAndId($user_id, $id) {
-        $select = new Select($this->table);
-        $select->limit(1);
-        $select
-            ->where
-                ->equalTo('id', $id)
-                ->equalTo('user', $user_id);
+      $select = new Select($this->table);
+      $select->limit(1);
+      $select
+        ->where
+          ->equalTo('id', $id)
+          ->equalTo('user', $user_id);
 
-        $bookmarks = $this
-            ->selectWith($select)
-            ->current();
+      $bookmarks = $this
+        ->selectWith($select)
+        ->current();
 
-        if($bookmarks) {
-            $bookmarks = $bookmarks->toArray();
-        }
+      if($bookmarks) {
+        $bookmarks = $bookmarks->toArray();
+      }
 
-        return $bookmarks;
+      return $bookmarks;
     }
 
     public function fetchAllByUser($user_id) {
-        $db = Bootstrap::get('olddb');
+        $select = new Select($this->table);
+        $select
+          ->where
+            ->equalTo('user', $user_id);
 
-        $sql =
-            'SELECT
-                id,
-                user,
-                title,
-                url,
-                icon_class,
-                section
-            FROM
-                directus_bookmarks
-            WHERE
-                directus_bookmarks.user = :user';
-
-        $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':user', $user_id, \PDO::PARAM_INT);
-        $sth->execute();
-
-        $bookmarks = array();
+        $bookmarks = $this->selectWith($select)->toArray();
 
         $defaultBookmarks = array_keys(self::$defaultBookmarksValues);
 
-        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
-            $title = $row['title'];
+        foreach($bookmarks as $row) {
+          $title = $row['title'];
 
-            if (($key = array_search($title, $defaultBookmarks)) !== false) unset($defaultBookmarks[$key]);
+          if (($key = array_search($title, $defaultBookmarks)) !== false) unset($defaultBookmarks[$key]);
 
-            if (!isset($row['user'])) {
-                $row = null;
-            }
+          if (!isset($row['user'])) {
+              $row = null;
+          }
 
-            $bookmarks[$title] = $row;
+          $bookmarks[$title] = $row;
         }
+
         foreach($defaultBookmarks as $defaultBookmark) {
           $data = array(
             'user' => $user_id

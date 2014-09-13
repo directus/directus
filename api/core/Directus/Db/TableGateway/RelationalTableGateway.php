@@ -536,9 +536,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * NOTE: equivalent to old DB#get_entries
      */
     public function getEntries($params = array()) {
-        // tmp transitional.
-        $db = Bootstrap::get('olddb');
-
         // @todo this is for backwards compatibility, make sure this doesn't happen and ditch the following 2 if-blocks
         if (!array_key_exists('orderBy',$params) && array_key_exists('sort',$params)) {
             $params['orderBy'] = $params['sort'];
@@ -554,7 +551,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Get table column schema
         $schemaArray = TableSchema::getSchemaArray($this->table);
-        // $schemaArray = $db->get_table($this->table);
 
         // Table has `status` column?
         $hasActiveColumn = $this->schemaHasActiveColumn($schemaArray);
@@ -1086,8 +1082,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $stats = array();
         $statusMap = Bootstrap::get('status');
         foreach($results as $row) {
+          if(isset($row[STATUS_COLUMN_NAME])) {
             $statSlug = $statusMap[$row[STATUS_COLUMN_NAME]];
             $stats[$statSlug['name']] = (int) $row['quantity'];
+          }
         }
         $vals = [];
         foreach($statusMap as $value) {
@@ -1104,41 +1102,30 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     function countActiveOld($no_active=false) {
+        $select = new Select($this->table);
 
-        //qtryutn
         return array(
             'active' => 0,
             'inactive' => 0,
             'trash' => 0
         );
 
-        $db = Bootstrap::get('olddb');
-        $tbl_name = $this->table;
         $result = array('active'=>0);
         if ($no_active) {
-            $sql = "SELECT COUNT(*) as count, '".STATUS_COLUMN_NAME."' as ".STATUS_COLUMN_NAME." FROM $tbl_name";
+          $select->columns(array('count' => new \Zend\Db\Sql\Expression('COUNT(*)'), STATUS_COLUMN_NAME=>STATUS_COLUMN_NAME));
         } else {
-            $sql = "SELECT
-                CASE ".STATUS_COLUMN_NAME."
-                    WHEN 0 THEN 'trash'
-                    WHEN 1 THEN 'active'
-                    WHEN 2 THEN 'inactive'
-                END AS ".STATUS_COLUMN_NAME.",
-                COUNT(*) as count
-            FROM $tbl_name
-            GROUP BY ".STATUS_COLUMN_NAME;
+          $select->columns(array(
+            new \Zend\Db\Sql\Expression('CASE '.STATUS_COLUMN_NAME.'WHEN 0 THEN \'trash\'
+              WHEN 1 THEN \'active\'
+              WHEN 2 THEN \'active\'
+            END AS '.STATUS_COLUMN_NAME), 'count' => new \Zend\Db\Sql\Expression('COUNT(*)')));
+          $select->group(STATUS_COLUMN_NAME);
         }
-        $sth = $db->dbh->prepare($sql);
-        // Test if there is an active column!
-        try {
-            $sth->execute();
-        } catch(\PDOException $e) {
-            if ($e->getCode() == "42S22" && strpos(strtolower($e->getMessage()),"unknown column")) {
-                return $this->countActiveOld(true);
-            } else {
-                throw $e;
-            }
-        }
+
+        $rows = $this->selectWith($select)->toArray();
+
+        print_r($rows);die();
+
         while($row = $sth->fetch(\PDO::FETCH_ASSOC))
             $result[$row[STATUS_COLUMN_NAME]] = (int)$row['count'];
         $total = 0;

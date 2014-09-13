@@ -457,7 +457,7 @@ VALUES
   ('ui_gallery', 'slug', 'slug', 'size', 'large'),
   ('ui_gallery', 'slug', 'slug', 'mirrored_field', 'textinput'),
   ('ui_gallery', 'user', 'many_to_one', 'readonly', '0'),
-  ('ui_gallery', 'user', 'many_to_one', 'show_inactive', '0'),
+  ('ui_gallery', 'user', 'many_to_one', 'visible_status_ids', '1'),
   ('ui_gallery', 'user', 'many_to_one', 'visible_column', 'email'),
   ('ui_gallery', 'user', 'many_to_one', 'visible_column_template', '{{email}}'),
   ('ui_gallery', 'user', 'many_to_one', 'placeholder_text', ''),

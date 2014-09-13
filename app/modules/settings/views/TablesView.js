@@ -57,6 +57,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
           app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
           that.collection.add(that.model);
           that.collection.trigger('change');
+          location.reload();
         }});
       }
     },
@@ -315,7 +316,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       this.setView('#page-content', this.table);
     },
     initialize: function(options) {
-      console.log(this.model);
       this.table = new EditRelationshipView({model: this.model});
     }
   });
@@ -393,13 +393,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         value = $(e.target).is(':checked') ? 1 : 0;
       }
 
-      //Unset previous master
-      if (attr === 'master') {
-        var master = this.collection.where({master: true});
-        if (master.length) {
-          master[0].set({master: false}, {silent: true});
-        }
-      }
+      this.collection.table.set({'primary_column':$('#table-settings').find('input[type=radio]:checked').attr('data-id')});
 
       data[attr] = value;
       model.set(data);
@@ -436,7 +430,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     editRelationship: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
-      console.log(column);
       var model = new Backbone.Model({type: 'MANYTOONE', junction_key_left: column.id, ui: column.get('ui')});
       column.relationship = model;
       var that = this;
@@ -453,12 +446,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     serialize: function() {
       var ui = UIManager.getAllSettings({returnObject: true});
 
-      if(!this.collection.where({master: true}).length) {
-        if(this.collection.where({system: false}).length) {
-          this.collection.where({system: false})[0].set({master:true});
-        }
-      }
-
+      var primaryColumn = this.collection.table.get('primary_column');
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
 
@@ -501,6 +489,13 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
             row.types.push({id: ui.id, isActive: (ui.id === row.ui)});
           }
         });
+
+        if(primaryColumn === row.column_name) {
+          row.master = true;
+        } else {
+          row.master = false;
+        }
+
         return row;
       });
 
@@ -529,7 +524,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       return {
         hidden: this.model.get('hidden'),
         single: this.model.get('single'),
-        default_status: this.model.get('default_status'),
         is_junction_table: this.model.get('is_junction_table'),
         footer: this.model.get('footer')
       };
@@ -571,7 +565,15 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       //Get Selected master
       data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
 
-      this.model.save();
+      if(!data.primary_column) {
+        app.router.openModal({type: 'alert', text: 'Please Select A Primary Column', callback: function(tableName) {
+        }});
+        return;
+      }
+
+      this.model.save(data, {success: function(){
+        app.router.go('settings','tables');
+      }});
     },
 
     afterRender: function() {
@@ -698,14 +700,16 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
     events: {
       'click #addBtn': function() {
-        var self = this;
+        var that = this;
         app.router.openModal({type: 'prompt', text: 'Please Enter the name of the Table you would like to add.', callback: function(tableName) {
           if(tableName && !app.schemaManager.getPrivileges(tableName)) {
             var model = new Backbone.Model();
             model.url = app.API_URL + 'privileges/1';
             model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
             model.save();
-            self.collection.add(model);
+            that.listenToOnce(model, 'sync', function() {
+              location.reload();
+            });
           }
         }});
       }
