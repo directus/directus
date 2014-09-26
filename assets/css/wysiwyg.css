@@ -12,3 +12,7 @@ hr {
 	background-color: #ededed;
 	height: 1px;
 }
+iframe {
+	width: 100%;
+	height: 400px;
+}

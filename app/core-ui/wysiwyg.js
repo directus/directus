@@ -77,6 +77,9 @@ var template = '<style type="text/css"> \
                   div.ui-thumbnail img { \
                     max-height: 200px; \
                   } \
+                  .wysihtml5-textarea-body iframe { \
+                    width: 100%; \
+                  } \
                   </style> \
                   <div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="display: none;"> \
                   <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
@@ -145,7 +148,7 @@ var template = '<style type="text/css"> \
                   </div> \
                 </div> \
                 <div style="display:none;z-index:998;position:absolute;width:100%;height:100%;top:-5px;left:-5px;" id="iframe_blocker"></div> \
-                <textarea id="wysihtml5-textarea-{{name}}" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}} autofocus></textarea> \
+                <textarea id="wysihtml5-textarea-{{name}}" class="wysihtml5-style" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}}" autofocus></textarea> \
                 <input type="hidden" name="{{name}}" class="hidden_input" value="{{markupValue}}">';
 
   Module.Input = Backbone.Layout.extend({
@@ -276,7 +279,8 @@ var template = '<style type="text/css"> \
       this.userId = app.users.getCurrentUser().id;
 
       $.ajax({
-        url: "//cdn.jsdelivr.net/wysihtml5/0.3.0/wysihtml5-0.3.0.min.js",
+        //url: "//cdn.jsdelivr.net/wysihtml5/0.3.0/wysihtml5-0.3.0.min.js",
+        url: window.location.origin + window.directusData.path +"assets/js/libs/wysihtml5.js",
         dataType: "script",
         success: function() {
           that.initEditor();
