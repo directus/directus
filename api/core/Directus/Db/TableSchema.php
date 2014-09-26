@@ -521,7 +521,6 @@ class TableSchema {
         $getSchemasFn = function () {
             $tableSchemas = TableSchema::getTableSchemas();
             $columnSchemas = TableSchema::getColumnSchemas();
-
             // Nest column schemas in table schemas
             foreach ($tableSchemas as &$table) {
                 $tableName = $table['id'];
@@ -581,6 +580,7 @@ class TableSchema {
                 directus_tables DT ON (DT.table_name = ST.TABLE_NAME)
             WHERE
                 ST.TABLE_SCHEMA = :schema
+                AND ST.TABLE_TYPE = "BASE TABLE"
                 AND
                 (
                     ST.TABLE_NAME NOT IN (
@@ -648,9 +648,11 @@ class TableSchema {
                 FROM
                     INFORMATION_SCHEMA.COLUMNS C
                 LEFT JOIN
+                    INFORMATION_SCHEMA.TABLES T ON C.TABLE_NAME = T.TABLE_NAME
+                LEFT JOIN
                     directus_columns AS D ON (C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name)
                 WHERE
-                    C.TABLE_SCHEMA = :schema
+                    C.TABLE_SCHEMA = :schema AND (T.TABLE_SCHEMA = :schema AND T.TABLE_TYPE = "BASE TABLE")
 
             ) UNION ALL (
 
