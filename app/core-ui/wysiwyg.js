@@ -22,19 +22,20 @@ define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Ov
     {id: 'bold', ui: 'checkbox', def: '1'},
     {id: 'italic', ui: 'checkbox', def: '1'},
     {id: 'underline', ui: 'checkbox', def: '1'},
-    {id: 'strikethrough', ui: 'checkbox', def: '1'},
-    {id: 'rule', ui: 'checkbox', def: '1'},
-    {id: 'createlink', ui: 'checkbox', def: '1'},
-    {id: 'insertimage', ui: 'checkbox', def: '1'},
-    {id: 'embedVideo', ui: 'checkbox', def: '1'},
-    {id: 'orderedList', ui: 'checkbox', def: '1'},
+    {id: 'strikethrough', ui: 'checkbox', def: '0'},
+    {id: 'rule', ui: 'checkbox', def: '0'},
+    {id: 'createlink', ui: 'checkbox', def: '0'},
+    {id: 'insertimage', ui: 'checkbox', def: '0'},
+    {id: 'embedVideo', ui: 'checkbox', def: '0'},
+    {id: 'html', ui: 'checkbox', def: '0'},
+    {id: 'orderedList', ui: 'checkbox', def: '0'},
     {id: 'h1', ui: 'checkbox', def: '0'},
     {id: 'h2', ui: 'checkbox', def: '0'},
     {id: 'h3', ui: 'checkbox', def: '0'},
     {id: 'h4', ui: 'checkbox', def: '0'},
     {id: 'h5', ui: 'checkbox', def: '0'},
     {id: 'h6', ui: 'checkbox', def: '0'},
-    {id: 'blockquote', ui: 'checkbox', def: '1'},
+    {id: 'blockquote', ui: 'checkbox', def: '0'},
     {id: 'ul', ui: 'checkbox', def: '0'},
     {id: 'ol', ui: 'checkbox', def: '0'}
   ];
@@ -145,6 +146,9 @@ var template = '<style type="text/css"> \
                         </div> \
                       </div> \
                     {{/if}} \
+                    {{#if html}} \
+                      <button data-wysihtml5-action="change_view" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Toggle HTML">HTML</button> \
+                    {{/if}} \
                   </div> \
                 </div> \
                 <div style="display:none;z-index:998;position:absolute;width:100%;height:100%;top:-5px;left:-5px;" id="iframe_blocker"></div> \
@@ -251,21 +255,22 @@ var template = '<style type="text/css"> \
         bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold')!=='0' : true,
         italic: (this.options.settings && this.options.settings.has('italic')) ? this.options.settings.get('italic')!=='0' : true,
         underline: (this.options.settings && this.options.settings.has('underline')) ? this.options.settings.get('underline')!=='0' : true,
-        strikethrough: (this.options.settings && this.options.settings.has('strikethrough')) ? this.options.settings.get('strikethrough')!=='0' : true,
-        rule: (this.options.settings && this.options.settings.has('rule')) ? this.options.settings.get('rule')!=='0' : true,
+        strikethrough: (this.options.settings && this.options.settings.has('strikethrough')) ? this.options.settings.get('strikethrough')!=='0' : false,
+        rule: (this.options.settings && this.options.settings.has('rule')) ? this.options.settings.get('rule')!=='0' : false,
         h1: (this.options.settings && this.options.settings.has('h1')) ? this.options.settings.get('h1')!=='0' : false,
         h2: (this.options.settings && this.options.settings.has('h2')) ? this.options.settings.get('h2')!=='0' : false,
         h3: (this.options.settings && this.options.settings.has('h3')) ? this.options.settings.get('h3')!=='0' : false,
         h4: (this.options.settings && this.options.settings.has('h4')) ? this.options.settings.get('h4')!=='0' : false,
         h5: (this.options.settings && this.options.settings.has('h5')) ? this.options.settings.get('h5')!=='0' : false,
         h6: (this.options.settings && this.options.settings.has('h6')) ? this.options.settings.get('h6')!=='0' : false,
-        blockquote: (this.options.settings && this.options.settings.has('blockquote')) ? this.options.settings.get('blockquote')!=='0' : true,
+        blockquote: (this.options.settings && this.options.settings.has('blockquote')) ? this.options.settings.get('blockquote')!=='0' : false,
         ul: (this.options.settings && this.options.settings.has('ul')) ? this.options.settings.get('ul')!=='0' : false,
         ol: (this.options.settings && this.options.settings.has('ol')) ? this.options.settings.get('ol')!=='0' : false,
-        orderedList: (this.options.settings && this.options.settings.has('orderedList')) ? this.options.settings.get('orderedList')!=='0' : true,
-        createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=='0' : true,
-        insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=='0' : true,
-        embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=='0' : true,
+        orderedList: (this.options.settings && this.options.settings.has('orderedList')) ? this.options.settings.get('orderedList')!=='0' : false,
+        createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=='0' : false,
+        insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=='0' : false,
+        embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=='0' : false,
+        html: (this.options.settings && this.options.settings.has('html')) ? this.options.settings.get('html')!=='0' : false,
         markupValue: String(value).replace(/"/g, '&quot;'),
         value: new Handlebars.SafeString(value),
         name: this.options.name,
