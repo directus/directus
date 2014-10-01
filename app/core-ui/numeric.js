@@ -12,13 +12,14 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
+  var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>{{#if allow_null}}<input style="margin-left:20px;margin-right:5px;display:inline-block" type="checkbox" {{#if is_null}}checked{{/if}}/> NULL{{/if}}';
 
   Module.id = 'numeric';
-  Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR','DOUBLE', 'BIGINT'];
+  Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR', 'DOUBLE', 'BIGINT'];
 
   Module.variables = [
-    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }}
+    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+    {id: 'allow_null', ui: 'checkbox', def: '0'}
   ];
 
   Module.Input = Backbone.Layout.extend({
@@ -67,6 +68,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         value: value,
         name: this.options.name,
         size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
+        allow_null: (this.options.settings && this.options.settings.has('allow_null')) ? this.options.settings.get('allow_null')!=='0' : false,
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite
       };
