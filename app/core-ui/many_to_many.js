@@ -153,11 +153,11 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         sortable: true,
         footer: false,
         tableHead: false,
-        saveAfterDrop: true,
+        saveAfterDrop: false,
         deleteColumn: this.showRemoveButton,
         hideEmptyMessage: true,
         hideColumnPreferences: true,
-        hasSort: junctionStructure.get('sort') !== undefined,
+        sort: junctionStructure.get('sort') !== undefined,
         blacklist: blacklist
       });
 
