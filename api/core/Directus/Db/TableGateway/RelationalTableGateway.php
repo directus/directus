@@ -1026,7 +1026,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             case 'int':
             case 'long':
             case 'tinyint':
-                return (int) $mysql_data;
+                return ($mysql_data == null) ? null : (int) $mysql_data;
             case 'float':
                 return (float) $mysql_data;
             case 'date':

@@ -111,10 +111,20 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       }
       var data = this.editView.data();
 
+
       var model = this.model;
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
+
+      for(var key in data) {
+        if(model.structure.get(key).options && model.structure.get(key).options.get('allow_null') == '1') {
+          if(data[key] == '') {
+            data[key] = null;
+          }
+        }
+      }
+
       if (action === 'save-form-stay') {
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');
@@ -136,7 +146,6 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
           app.router.go(route);
         };
       }
-
       if (action === 'save-form-copy') {
         console.log('cloning...');
         var clone = model.toJSON();
