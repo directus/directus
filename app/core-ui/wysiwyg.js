@@ -153,7 +153,7 @@ var template = '<style type="text/css"> \
                 </div> \
                 <div style="display:none;z-index:998;position:absolute;width:100%;height:100%;top:-5px;left:-5px;" id="iframe_blocker"></div> \
                 <textarea id="wysihtml5-textarea-{{name}}" class="wysihtml5-style" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}}" autofocus></textarea> \
-                <input type="hidden" name="{{name}}" class="hidden_input" value="{{markupValue}}">';
+                <input type="hidden" name="{{name}}" class="hidden_input" value="{{{markupValue}}}">';
 
   Module.Input = Backbone.Layout.extend({
 
