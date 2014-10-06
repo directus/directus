@@ -6970,6 +6970,12 @@ wysihtml5.Commands = Base.extend(
         value = typeof(value) === "object" ? value : { href: value };
         _format(composer, value);
       }
+
+      wysihtml5.commands.createLink.triggerEvent();
+    },
+
+    triggerEvent: function() {
+
     },
 
     state: function(composer, command) {

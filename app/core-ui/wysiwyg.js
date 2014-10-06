@@ -399,7 +399,13 @@ var template = '<style type="text/css"> \
 
           composer.selection.insertNode(image);
           composer.selection.setAfter(image);
+
+          that.textChanged(that);
         },
+      };
+
+      wysihtml5.commands.createLink.triggerEvent = function() {
+        that.textChanged(that);
       };
     }
   });
