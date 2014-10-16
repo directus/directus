@@ -27,6 +27,8 @@ define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Ov
     {id: 'createlink', ui: 'checkbox', def: '0'},
     {id: 'insertimage', ui: 'checkbox', def: '0'},
     {id: 'embedVideo', ui: 'checkbox', def: '0'},
+    {id: 'embed_width', ui: 'numeric', def: 300},
+    {id: 'embed_height', ui: 'numeric', def: 200},
     {id: 'html', ui: 'checkbox', def: '0'},
     {id: 'orderedList', ui: 'checkbox', def: '0'},
     {id: 'h1', ui: 'checkbox', def: '0'},
@@ -134,8 +136,8 @@ var template = '<style type="text/css"> \
                       <button data-wysihtml5-command="embedVideo" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Embed Video">Embed</button> \
                       <div data-wysihtml5-dialog="embedVideo" style="display: none;z-index:108" class="directus-alert-modal"> \
                         <div><button id="existingLinkButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing Link</button></div> \
-                        <div><input type="text" class="videoEmbedWidth" id="embedWidthInput" value="300" style="font-weight:600;"></div><br/> \
-                        <div><input type="text" class="videoEmbedHeight" id="embedHeightInput" value="200" style="font-weight:600;"></div><br/> \
+                        <div><input type="text" class="videoEmbedWidth" id="embedWidthInput" value="{{embed_width}}" style="font-weight:600;"></div><br/> \
+                        <div><input type="text" class="videoEmbedHeight" id="embedHeightInput" value="{{embed_height}}" style="font-weight:600;"></div><br/> \
                         <div><input type="text" class="videoEmbedInput" data-type="youtube" id="insertYoutubeEmbedInput" placeholder="Youtube Video ID" style="font-weight:600;"></div><br/> \
                         <div><input type="text" class="videoEmbedInput" data-type="vimeo" id="insertVimeoEmbedInput" placeholder="Vimeo Video ID" style="font-weight:600;"></div> \
                         <div><input type="hidden"  data-wysihtml5-dialog-field="src" id="insertEmbedInput"></div> \
@@ -270,6 +272,8 @@ var template = '<style type="text/css"> \
         createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=='0' : false,
         insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=='0' : false,
         embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=='0' : false,
+        embed_width: (this.options.settings && this.options.settings.has('embed_width')) ? this.options.settings.get('embed_width') : '300',
+        embed_height: (this.options.settings && this.options.settings.has('embed_height')) ? this.options.settings.get('embed_height') : '200',
         html: (this.options.settings && this.options.settings.has('html')) ? this.options.settings.get('html')!=='0' : false,
         markupValue: String(value).replace(/"/g, '&quot;'),
         value: new Handlebars.SafeString(value),
