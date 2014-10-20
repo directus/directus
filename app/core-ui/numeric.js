@@ -33,23 +33,15 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     events: {
-      'keyup input': function(e) {
-        var numeric = this.$el.find('input');
-        var value = numeric.val();
-        value = value.replace(/[^0-9-.]/ig, "");
-        numeric.val(value);
-      },
+      'keyup input': 'checkChars',
+      'blur input': 'checkChars'
+    },
 
-      'blur input': function(e) {
-        // var val;
-        // if (!this.$input.val()) return;
-        // if (this.hasDecimals) {
-        //   val = parseFloat(this.$input.val(), 10);
-        // } else {
-        //   val = parseInt(this.$input.val(), 10);
-        // }
-        // this.$input.val(val);
-      }
+    checkChars: function() {
+      var numeric = this.$el.find('input');
+      var value = numeric.val();
+      value = value.replace(/[^0-9-.]/ig, "");
+      numeric.val(value);
     },
 
     serialize: function() {
