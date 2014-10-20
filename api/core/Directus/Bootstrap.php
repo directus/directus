@@ -298,6 +298,12 @@ class Bootstrap {
                 continue;
             }
             $extensionName = $file->getFilename();
+
+            // Ignore all extensions prefixed with an underscore
+            if($extensionName[0] == "_"){
+                continue;
+            }
+
             if(is_dir($extensionsDirectory . $extensionName)) {
                 $extensions[$extensionName] = "extensions/$extensionName/main";
             }
