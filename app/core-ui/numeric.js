@@ -33,10 +33,11 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     events: {
-      'keydown input': function(e) {
-        if (!e.metaKey && !(e.which < 58 || (this.hasDecimals && e.which === 190))) {
-          e.preventDefault();
-        }
+      'keyup input': function(e) {
+        var numeric = this.$el.find('input');
+        var value = numeric.val();
+        value = value.replace(/[^0-9-.]/ig, "");
+        numeric.val(value);
       },
 
       'blur input': function(e) {
