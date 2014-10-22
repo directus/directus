@@ -1,7 +1,6 @@
 define([
   "app",
-  "backbone",
-  "jquery-ui"
+  "backbone"
 ],
 
 function(app, Backbone) {

@@ -1,10 +1,10 @@
 define([
   "app",
   "backbone",
-  "jquery-ui"
+  "sortable"
 ],
 
-function(app, Backbone) {
+function(app, Backbone, Sortable) {
 
   "use strict";
 
@@ -110,15 +110,30 @@ function(app, Backbone) {
     initialize: function(options) {
       this.options.filters = this.options.filters || {};
       this.sort = this.options.structure.get('sort') || options.sort;
-
       this.collection.on('sort', this.render, this);
-      //Setup jquery UI sortable
       if (this.sort) {
-        this.$el.sortable({
-          stop: _.bind(this.drop, this),
-          axis: "y",
-          containment: "parent",
-          handle: '.sort'
+        var container = this.$el[0];
+        var that = this;
+        var sort = new Sortable(container, {
+          animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+          handle: ".sort", // Restricts sort start click/touch to the specified element
+          draggable: "tr", // Specifies which items inside the element should be sortable
+          ghostClass: "sortable-ghost",
+          onStart: function (evt) {
+            //var dragItem = jQuery(evt.item);
+            var tbody = jQuery(container);
+            tbody.addClass('remove-hover-state');
+          },
+          onEnd: function (evt) {
+            //var dragItem = jQuery(evt.item);
+            var tbody = jQuery(container);
+            tbody.removeClass('remove-hover-state');
+          },
+          onUpdate: function (evt){
+            app.router.openModal({type: 'confirm', text: 'Are your sure you want to reorder these items?', callback: function() {
+              that.drop();
+            }});
+          }
         });
       }
     }

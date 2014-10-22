@@ -517,3 +517,60 @@
     }
   }
 }
+
+tbody.remove-hover-state {
+  tr:hover {
+    background-color: @white;
+  }
+  .sort {
+    color: @mediumGrey !important;
+    .icon-list {
+      .reorder-effect;
+    }
+  }
+}
+
+.sortable-ghost {
+  //opacity: 0.5 !important;
+  background-color: @tableHoverYellow !important;
+}
+
+/* Buzz */
+@-webkit-keyframes buzz {
+  50% {
+    -webkit-transform: translateX(2px) rotate(2deg);
+    transform: translateX(2px) rotate(2deg);
+  }
+
+  100% {
+    -webkit-transform: translateX(-2px) rotate(-2deg);
+    transform: translateX(-2px) rotate(-2deg);
+  }
+}
+
+@keyframes buzz {
+  50% {
+    -webkit-transform: translateX(2px) rotate(2deg);
+    transform: translateX(2px) rotate(2deg);
+  }
+
+  100% {
+    -webkit-transform: translateX(-2px) rotate(-2deg);
+    transform: translateX(-2px) rotate(-2deg);
+  }
+}
+
+.reorder-effect {
+  display: inline-block;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-animation-name: buzz;
+  animation-name: buzz;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}

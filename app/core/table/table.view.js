@@ -3,8 +3,7 @@ define([
   "backbone",
   "core/table/table.headview",
   "core/table/table.bodyview",
-  "core/table/table.footerview",
-  "jquery-ui"
+  "core/table/table.footerview"
 ],
 
 function(app, Backbone, TableHead, TableBody, TableFooter) {

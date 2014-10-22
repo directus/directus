@@ -2898,6 +2898,64 @@ select:focus,
   top: 1px;
   left: 4px;
 }
+tbody.remove-hover-state tr:hover {
+  background-color: #ffffff;
+}
+tbody.remove-hover-state .sort {
+  color: #bbbbbb !important;
+}
+tbody.remove-hover-state .sort .icon-list {
+  display: inline-block;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-animation-name: buzz;
+  animation-name: buzz;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+.sortable-ghost {
+  background-color: #fffddd !important;
+}
+/* Buzz */
+@-webkit-keyframes buzz {
+  50% {
+    -webkit-transform: translateX(2px) rotate(2deg);
+    transform: translateX(2px) rotate(2deg);
+  }
+  100% {
+    -webkit-transform: translateX(-2px) rotate(-2deg);
+    transform: translateX(-2px) rotate(-2deg);
+  }
+}
+@keyframes buzz {
+  50% {
+    -webkit-transform: translateX(2px) rotate(2deg);
+    transform: translateX(2px) rotate(2deg);
+  }
+  100% {
+    -webkit-transform: translateX(-2px) rotate(-2deg);
+    transform: translateX(-2px) rotate(-2deg);
+  }
+}
+.reorder-effect {
+  display: inline-block;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-animation-name: buzz;
+  animation-name: buzz;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
 .cards {
   padding-left: 0px;
 }

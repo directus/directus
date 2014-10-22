@@ -15,10 +15,11 @@ define([
   'schema/ColumnModel',
   'core/UIManager',
   'core/widgets/widgets',
-  'schema/SchemaManager'
+  'schema/SchemaManager',
+  'sortable'
 ],
 
-function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets, SchemaManager) {
+function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets, SchemaManager, Sortable) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -503,10 +504,27 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     afterRender: function() {
-      this.$el.find('tbody').sortable({
-        stop: _.bind(this.sort, this),
-        axis: "y",
-        handle: '.sort'
+      var container = this.$el.find('tbody')[0];
+      var that = this;
+      var sort = new Sortable(container, {
+        animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+        handle: ".sort", // Restricts sort start click/touch to the specified element
+        draggable: "tr", // Specifies which items inside the element should be sortable
+        ghostClass: "sortable-ghost",
+        filter: ".system", // Selectors that do not lead to dragging (String or Function)
+        onStart: function (evt) {
+          //var dragItem = jQuery(evt.item);
+          var tbody = jQuery(container);
+          tbody.addClass('remove-hover-state');
+        },
+        onEnd: function (evt) {
+          //var dragItem = jQuery(evt.item);
+          var tbody = jQuery(container);
+          tbody.removeClass('remove-hover-state');
+        },
+        onUpdate: function (evt){
+          that.sort();
+        }
       });
 
     },

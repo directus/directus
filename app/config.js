@@ -11,7 +11,7 @@ require.config({
     "underscore": "../assets/js/libs/underscore",
     "backbone":   "../assets/js/libs/backbone",
     "handlebars": "../assets/js/libs/handlebars",
-    "jquery-ui":  "../assets/js/libs/jquery-ui",
+    "sortable":  "../assets/js/libs/sortable",
     "moment":     "../assets/js/libs/moment.min",
 
     // JavaScript folders.
@@ -30,10 +30,6 @@ require.config({
     "backbone": {
       deps: ["underscore", "jquery"],
       exports: "Backbone"
-    },
-
-    "jquery-ui": {
-      deps: ['jquery']
     },
 
     "handlebars": {
