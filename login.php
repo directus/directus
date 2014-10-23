@@ -16,6 +16,10 @@ if(\Directus\Auth\Provider::loggedIn()) {
     exit;
 }
 
+// Get current commit hash
+$git = __DIR__ . '/.git';
+$cacheBuster = Directus\Util\Git::getCloneHash($git);
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -73,7 +77,7 @@ input[type="text"], input[type="password"] {font-size:16px; width:360px; border:
   </div>
   <p class="error" style="display:none;"></p>
   <p class="message" style="display:none;"></p>
-  <div class="directus-version">Version: <?php echo(DIRECTUS_VERSION) ?></div>
+  <div class="directus-version" title="<?php echo $cacheBuster; ?>">Version: <?php echo(DIRECTUS_VERSION) ?></div>
   <!-- <button type="submit" class="btn btn-primary">Sign in</button> -->
   <!-- <button id="forgot-password" class="btn btn-primary">Forgot Password</button> -->
 </form>

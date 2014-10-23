@@ -4103,6 +4103,7 @@ body.initial-load #sidebar {
   left: 10px;
   bottom: 10px;
   color: #ffffff;
+  cursor: help;
 }
 .login-panel {
   background-color: rgba(255, 255, 255, 0.3);
