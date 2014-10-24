@@ -680,11 +680,11 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       if(element.hasClass('add-color')) {
         element.addClass('delete-color');
         element.removeClass('add-color');
-        element.html('✕');
+        element.removeClass('on');
       } else {
         element.addClass('add-color');
         element.removeClass('delete-color');
-        element.html('◯');
+        element.addClass('on');
       }
     },
 

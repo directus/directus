@@ -112,7 +112,7 @@ var template = '<style type="text/css"> \
                     {{#if createlink}} \
                     <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">Link</button> \
                     <div data-wysihtml5-dialog="createLink" style="display: none;z-index:108" class="directus-alert-modal"> \
-                      <div class="directus-alert-modal-message">Please Insert a Link?</div> \
+                      <div class="directus-alert-modal-message">Please Insert a Link</div> \
                       <input type="text" data-wysihtml5-dialog-field="href" value="http://"> \
                       <div class="directus-alert-modal-buttons"> \
                         <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \

@@ -1,7 +1,7 @@
 <form style="position:fixed;top:160px;right:80px;" class="directus-form set-columns">
 <fieldset>
 {{#columns}}
-	<label class="checkbox"><input name="columns_visible" type="checkbox" value="{{name}}" {{#if isForeign}}data-foreign="true"{{/if}} {{#if visible}}checked{{/if}} {{#if disabled}}disabled{{/if}}>{{capitalize name}}</label>
+	<label class="checkbox" {{#if disabled}}title="Can't add relational columns"{{/if}}><input name="columns_visible" type="checkbox" value="{{name}}" {{#if isForeign}}data-foreign="true"{{/if}} {{#if visible}}checked{{/if}} {{#if disabled}}disabled{{/if}}>{{capitalize name}}</label>
 {{/columns}}
 </fieldset>
 <div class="btn-row">

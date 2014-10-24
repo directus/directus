@@ -48,8 +48,8 @@ body.initial-load #sidebar {
     line-height: 90px;
     text-align: center;
     font-size: 40px;
-    color: @darkGrey;
-    border-bottom: 1px solid @mediumDarkGrey;
+    color: lighten(@extraDarkGrey, 10%);
+    border-bottom: 1px solid lighten(@extraDarkGrey, 5%);
     &:hover {
       color: @mediumGrey;
     }
@@ -84,7 +84,7 @@ body.initial-load #sidebar {
     li {
       &.hr {
         margin: 10px 0 10px 0;
-        border-top: 1px solid @mediumDarkGrey;
+        border-top: 1px solid lighten(@extraDarkGrey, 5%);
       }
       a {
         display: block;
@@ -117,13 +117,13 @@ body.initial-load #sidebar {
       &.active {
         border-left-width: 4px;
         //border-left-style: solid;
-        background-color: @mediumDarkGrey;
+        //background-color: @mediumDarkGrey;
         a {
           color: @white;
           cursor: auto;
           //padding-left: 16px;
           &:after {
-            .triangle-left(6px, 12px, @white);
+            .triangle-left(6px, 12px, @lightGrey);
             content: "";
             margin-top: -12px;
             position: absolute;
@@ -147,8 +147,9 @@ body.initial-load #sidebar {
   #featureSidebar {
     @featureSidebarItemMargin: 10px;
     bottom: 0px;
-    padding: 0px @standardPad @standardPad @standardPad;
+    padding: @standardPad;
     position: absolute;
+    background-color: lighten(@extraDarkGrey, 3%);
     .row {
       margin-left: -@featureSidebarItemMargin;
     }
@@ -156,7 +157,7 @@ body.initial-load #sidebar {
       margin-bottom: -@featureSidebarItemMargin;
     }
     li {
-      background-color: @mediumDarkGrey;
+      background-color: lighten(@mediumDarkGrey, 8%);
       float: left;
       height: 59px;
       margin-bottom: @featureSidebarItemMargin;
@@ -164,7 +165,7 @@ body.initial-load #sidebar {
       position: relative;
       width: 59px;
       &:hover {
-        background-color: @darkGrey;
+        background-color: lighten(@mediumDarkGrey, 10%);
         &.has-image {
           .icon {
             display: block;
@@ -179,7 +180,7 @@ body.initial-load #sidebar {
         padding: 17px;
       }
       &.active {
-        background-color: @darkGrey !important;
+        background-color: lighten(@mediumDarkGrey, 10%) !important;
       }
       &.has-image {
         .icon {

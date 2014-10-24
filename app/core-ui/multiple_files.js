@@ -46,14 +46,59 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
 
     template: Handlebars.compile(
       '<style type="text/css"> \
+        .ui-file-container:after { \
+          clear: both; \
+          content: ""; \
+          display: block; \
+          width: 100%; \
+        } \
         .media-slideshow-item { \
           cursor: {{#if sortable}}move{{else}}pointer{{/if}}; \
+          width: 160px; \
+          float: left; \
+          height: 160px; \
+          position: relative; \
+        } \
+        .media-slideshow-item img { \
+          width: 100%; \
+          height: 100%; \
         } \
         .remove-hover-state .show-circle:hover .white-circle { \
-          display:none !important; \
+          opacity: 0.0; \
+        } \
+        div.single-image-thumbnail.empty { \
+          float: left; \
+          background-color: #ffffff; \
+          color: #ededed; \
+          text-align: center; \
+          cursor: pointer; \
+          width: 156px; \
+          height: 156px; \
+          background-color: #ffffff; \
+          border: 2px dashed #bbbbbb; \
+          font-size: 12px; \
+          font-weight: 600; \
+          line-height: 14px; \
+          color: #bbbbbb; \
+        } \
+        div.single-image-thumbnail.empty span { \
+          margin-top: 0; \
+          display: inline-block; \
+          line-height: 18px; \
+        } \
+        div.single-image-thumbnail.empty span div.icon { \
+          display: block; \
+          font-size: 100px; \
+          line-height: 90px; \
+        } \
+        div.single-image-thumbnail.empty.dragover, \
+        div.single-image-thumbnail.empty:hover { \
+          background-color: #BBBBBB; \
+          color: #ffffff; \
+          cursor: pointer; \
         } \
       </style> \
-      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}</div> \
+      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div></div> \
       <div class="related-table"></div> \
       <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files Item</button>{{/if}} \
       {{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files Item</button>{{/if}}</div>'),
@@ -63,6 +108,7 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
     },
 
     removeItem: function(e) {
+      console.log("gone");
       var target_cid = $(e.target).closest('.media-slideshow-item').find('img').attr('data-file-cid');
       var model = this.relatedCollection.get(target_cid);
 

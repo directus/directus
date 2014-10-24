@@ -27,7 +27,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   input.time { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 100px; \
+                    width: 110px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \

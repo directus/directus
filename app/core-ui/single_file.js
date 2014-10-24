@@ -42,9 +42,10 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     height: 160px; \
                   } \
                   div.single-image-thumbnail.empty { \
-                    width: 160px; \
-                    height: 160px; \
+                    width: 156px; \
+                    height: 156px; \
                     background-color: #ffffff; \
+                    border: 2px dashed #bbbbbb; \
                     font-size: 12px; \
                     font-weight: 600; \
                     line-height: 14px; \
@@ -77,7 +78,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     position: relative; \
                     line-height: 18px; \
                     padding:20px; \
-                    background-color: #ffffff; \
+                    background-color: #ececec; \
                   } \
                   div.ui-img-details .btn { \
                     position: absolute; \
@@ -123,12 +124,12 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   .single-image-actions .btn { \
                     margin: 0; \
                     display: block; \
-                    margin-top: 10px; \
+                    margin-top: 8px; \
                     width: 100%; \
                   } \
                   .single-image-actions .btn .icon { \
                     font-size: 300%; \
-                    line-height: 20%; \
+                    line-height: 30%; \
                     margin-right: 3px; \
                   } \
                   </style> \
@@ -402,7 +403,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
     var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
 
     var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
-    var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document-100x120.png';
+    var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document.png';
 
     var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
 

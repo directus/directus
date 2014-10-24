@@ -63,11 +63,11 @@ function(app, Backbone, Directus, moment) {
         if(element.hasClass('add-color')) {
           element.addClass('delete-color');
           element.removeClass('add-color');
-          element.html('✕');
+          element.removeClass('on');
         } else {
           element.addClass('add-color');
           element.removeClass('delete-color');
-          element.html('◯');
+          element.addClass('on');
         }*/
       },
       'click .view-entire-history': function(e) {

@@ -1,6 +1,7 @@
 .cards {
   padding-left: 0px;
   .card {
+    .card-border;
     font-size: 12px;
     list-style: none;
     .header-image {
@@ -78,7 +79,7 @@
     }
     .info {
       //border: solid 1px @lightGrey;
-      background-color: @extraLightGrey;
+      background-color: @white;
       border-top: none;
       margin-top: 4px;
       min-height: 100px;
@@ -128,17 +129,18 @@
 .feature-cards {
   padding-left: 0px;
   .feature-card {
-    background-color: @lightGrey;
+    .card-border;
+    background-color: @white;
     list-style: none;
     padding: @standardPad;
     height: 100px;
     overflow: hidden;
     position: relative;
     &:hover .icon {
-      color: @mediumGrey;
+      color: darken(@white, 10%);
     }
     .left-col {
-      color: @white;
+      color: darken(@white, 5%);
       text-align: center;
       width: 180px;
       position: absolute;

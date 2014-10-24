@@ -5,10 +5,11 @@
   .input-selector {
     width: 150px;
     display: inline-block;
+    height: 30px;
   }
   .open-ui-options {
     margin-left: 4px;
-    margin-top: -9px;
+    margin-top: -4px;
     &:hover {
       color: #000000;
     }
@@ -16,6 +17,7 @@
 }
 
 .table-striped {
+  .card-border;
   text-align: left;
   width: 100%;
   .visible-columns-cell:hover,
@@ -29,17 +31,18 @@
   thead {
     tr {
       -webkit-font-smoothing: antialiased;
-      background-color: @extraLightGrey;
+      background-color: darken(@white, 3%);
       &:hover {
-        background-color: @extraLightGrey;
+        background-color: darken(@white, 5%);
         cursor: default;
       }
       th {
         color: @mediumGrey;
         // border-bottom: 1px solid @lightGrey;
-        font-size: 12px;
+        text-transform: uppercase;
+        font-size: 11px;
         font-weight: 600;
-        padding: @smallPad;
+        padding: 11px @smallPad @smallPad @smallPad;
         position: relative;
         &.asc, &.desc {
           .sorter {
@@ -197,14 +200,18 @@
         opacity: 1.0;
       }
     }
+    &.system {
+      height: 55px;
+      color: @mediumGrey;
+    }
     th, td {
       padding-left: 10px;
       padding-right: 10px;
     }
     td {
       vertical-align: middle;
-      padding-bottom: 6px;
-      padding-top: 5px;
+      padding-bottom: 9px;
+      padding-top: 8px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -239,12 +246,23 @@
       }
     }
   }
-  .table-striped tr td.delete {
-    text-align: left;
-    width: 15px;
-    font-size: 16px;
-    &:hover {
-      color: @deleteColor;
+  .table-striped {
+    border-bottom: none;
+    tr {
+      &:hover td {
+        background-color: @tableHoverYellow;
+      }
+      td {
+        background-color: darken(@white, 2%);
+        &.delete {
+          text-align: left;
+          width: 15px;
+          font-size: 16px;
+          &:hover {
+            color: @deleteColor;
+          }
+        }
+      }
     }
   }
   .visible-columns-cell {
@@ -253,29 +271,52 @@
   }
 }
 .set-columns {
-  overflow: hidden;
+  // overflow: hidden; // For triangle
   display: block;
   position: absolute;
   right: -2px;
   top: 38px;
   width: 200px;
-  background-color: @white;
-  color: @darkGrey;
-  border: 1px solid @mediumGrey;
+  background-color: @extraDarkGrey;
+  color: @mediumGrey;
   z-index: 1;
+  &:after {
+    .triangle-top(12px, 6px, @extraDarkGrey);
+    content: "";
+    margin-top: -6px;
+    position: absolute;
+    right: 12px;
+    top: 0px;
+  }
   fieldset {
+    padding: 15px 20px 15px 20px;
     max-height: 300px;
     overflow: scroll;
     border-top: none;
     border-right: none;
     border-left: none;
-    border-bottom: 1px solid @lightGrey;
-    margin-bottom: 50px;
+    border-bottom: 3px solid lighten(@extraDarkGrey, 5%);
+    margin: 0 0 55px 0;
+    label {
+      padding: 5px 0 5px 0;
+    }
   }
   .btn-row {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 15px;
+    left: 20px;
+    right: 20px;
+    font-size: 12px;
+    .btn {
+      float: right;
+      margin-left: 10px;
+      background-color: lighten(@extraDarkGrey, 10%);
+      border-bottom: 2px solid #222222;
+      &:hover {
+        background-color: lighten(@extraDarkGrey, 15%);
+        border-bottom: 2px solid #000000;
+      }
+    }
   }
   label {
     display: block;
@@ -310,9 +351,12 @@
   height: 30px;
   min-width: 150px;
   margin-top: -4px;
+  background-color: @white;
+  font-weight: normal;
 }
 .history-container {
-  background-color: @extraLightGrey;
+  .card-border;
+  background-color: @white;
   padding: @standardPad;
   color: @darkGrey;
   ul {
@@ -328,7 +372,7 @@
     li {
       position: relative;
       padding-top: @standardPad;
-      border-top: 1px solid @white;
+      border-top: 1px solid @lightGrey;
       margin-top: @standardPad;
       min-height: 40px;
       padding-left: 50px;
@@ -396,7 +440,7 @@
         position: relative;
         display: inline-block;
         padding: 12px 10px 10px 10px;
-        background-color: @white;
+        background-color: @fieldColor;
         .border-radius(3px, 3px, 3px, 3px);
         max-width: 500px;
         //min-width: 300px;
@@ -410,7 +454,7 @@
           left:50px; /* controls horizontal position */
           border-width:40px 0 0 40px; /* vary these values to change the angle of the vertex */
           border-style:solid;
-          border-color: @white transparent;
+          border-color: @fieldColor transparent;
           /* reduce the damage in FF3.0 */
           display:block;
           width:0;
@@ -418,7 +462,7 @@
           left:-10px; /* value = - border-left-width - border-right-width */
           bottom:auto;
           border-width: 10px 10px 10px 0; /* vary these values to change the angle of the vertex */
-          border-color:transparent @white;
+          border-color:transparent @fieldColor;
         }
         #messages-response-button {
           position: absolute;
