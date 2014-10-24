@@ -2530,8 +2530,10 @@ select:focus,
   font-size: 12px;
 }
 .table-striped tr:hover {
-  background-color: #fffddd;
   cursor: pointer;
+}
+.table-striped tr:hover td {
+  background-color: #fffddd;
 }
 .table-striped tr:hover .settings {
   display: block;
@@ -2898,7 +2900,10 @@ select:focus,
   top: 1px;
   left: 4px;
 }
-tbody.remove-hover-state tr:hover {
+.disable-transform tr {
+  transform: none !important;
+}
+tbody.remove-hover-state tr:hover td {
   background-color: #ffffff;
 }
 tbody.remove-hover-state .sort {
@@ -2918,10 +2923,26 @@ tbody.remove-hover-state .sort .icon-list {
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
 }
-.sortable-ghost {
+.sortable-ghost td {
   background-color: #fffddd !important;
 }
-/* Buzz */
+.remove-hover-state {
+  cursor: move !important;
+}
+.remove-hover-state .media-slideshow-item {
+  opacity: 0.5;
+}
+.ui-file-container.remove-hover-state img {
+  -webkit-animation: jiggle 0.2s infinite;
+  -moz-animation-duration: 0.2s;
+  -moz-animation-name: jiggle;
+  -moz-animation-iteration-count: infinite;
+  -webkit-transform: rotate(-1deg);
+  -moz-transform: rotate(-1deg);
+}
+.sortable-file-ghost {
+  opacity: 1.0 !important;
+}
 @-webkit-keyframes buzz {
   50% {
     -webkit-transform: translateX(2px) rotate(2deg);
@@ -2955,6 +2976,30 @@ tbody.remove-hover-state .sort .icon-list {
   animation-timing-function: linear;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
+}
+@-moz-keyframes jiggle {
+  0% {
+    -moz-transform: rotate(-1deg);
+  }
+  50% {
+    -moz-transform: rotate(1deg);
+  }
+}
+@-webkit-keyframes jiggle {
+  0% {
+    -webkit-transform: rotate(-1deg);
+  }
+  50% {
+    -webkit-transform: rotate(1deg);
+  }
+}
+.jiggly {
+  -webkit-animation: jiggle 0.2s infinite;
+  -moz-animation-duration: 0.2s;
+  -moz-animation-name: jiggle;
+  -moz-animation-iteration-count: infinite;
+  -webkit-transform: rotate(-1deg);
+  -moz-transform: rotate(-1deg);
 }
 .cards {
   padding-left: 0px;

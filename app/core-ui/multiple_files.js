@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(app, Backbone, UIView, Overlays) {
+define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'], function(app, Backbone, Sortable, UIView, Overlays) {
 
   "use strict";
 
@@ -33,8 +33,8 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
     events: {
       'click button[data-action=add]': 'addItem',
       'click button[data-action=insert]': 'insertItem',
-      'click .remove_slideshow_item': 'removeItem',
-      'click .media_slideshow_item > img': function(e) {
+      'click .remove-slideshow-item': 'removeItem',
+      'click .media-slideshow-item > img': function(e) {
         if (!this.canEdit) {
           return;
         }
@@ -45,17 +45,25 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
     },
 
     template: Handlebars.compile(
-      '{{#rows}}<span class="media_slideshow_item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove_slideshow_item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}' +
-      '<div class="related-table"></div>' +
-      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files Item</button>{{/if}}' +
-      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files Item</button>{{/if}}</div>'),
+      '<style type="text/css"> \
+        .media-slideshow-item { \
+          cursor: {{#if sortable}}move{{else}}pointer{{/if}}; \
+        } \
+        .remove-hover-state .show-circle:hover .white-circle { \
+          display:none !important; \
+        } \
+      </style> \
+      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}</div> \
+      <div class="related-table"></div> \
+      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files Item</button>{{/if}} \
+      {{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files Item</button>{{/if}}</div>'),
 
     addItem: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
     },
 
     removeItem: function(e) {
-      var target_cid = $(e.target).closest('.media_slideshow_item').find('img').attr('data-file-cid');
+      var target_cid = $(e.target).closest('.media-slideshow-item').find('img').attr('data-file-cid');
       var model = this.relatedCollection.get(target_cid);
 
       if (model.isNew()) return this.relatedCollection.remove(model);
@@ -140,6 +148,21 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
       model.fetch();
     },
 
+    drop: function() {
+      var relatedCollection = this.model.get(this.name);
+
+      this.$('.media-slideshow-item img').each(function(i) {
+        relatedCollection.get($(this).attr('data-file-cid')).set({sort: i},{silent: true});
+      });
+
+      // There is no "saveAfterDrop" now, but we could use this for instant saving
+      // if (this.options.saveAfterDrop) {
+      //   relatedCollection.save({columns:['id','sort']});
+      // }
+
+      relatedCollection.setOrder('sort','ASC',{silent: true});
+    },
+
     serialize: function() {
       var models = this.relatedCollection.models;
       var rows = [];
@@ -152,12 +175,17 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
         }
       });
 
+      var relatedCollection = this.model.get(this.name);
+      var junctionStructure = relatedCollection.junctionStructure;
+      var sortable = (junctionStructure.get('sort') !== undefined)? true : false;
+
       return {
         rows: rows,
         canEdit: this.canEdit,
         showChooseButton: this.showChooseButton && this.canEdit,
         showAddButton: this.showAddButton && this.canEdit,
-        showRemoveButton: this.showRemoveButton && this.canEdit
+        showRemoveButton: this.showRemoveButton && this.canEdit,
+        sortable: sortable
       };
     },
 
@@ -165,6 +193,9 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
       var $dropzone = this.$el;
       var model = this.fileModel;
       var self = this;
+      var relatedCollection = this.model.get(this.name);
+      var relatedSchema = relatedCollection.structure;
+      var junctionStructure = relatedCollection.junctionStructure;
 
       // Since data transfer is not supported by jquery...
       // XHR2, FormData
@@ -184,22 +215,54 @@ define(['app', 'backbone', 'core/UIView', 'core/overlays/overlays'], function(ap
           });
         });
       });
+
+      if(junctionStructure.get('sort') !== undefined) {
+        // Drag and drop reordering
+        var container = this.$el.find('.ui-file-container')[0];
+        var that = this;
+        var sort = new Sortable(container, {
+          animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+          draggable: ".media-slideshow-item", // Specifies which items inside the element should be sortable
+          ghostClass: "sortable-file-ghost",
+          onStart: function (evt) {
+            //var dragItem = jQuery(evt.item);
+            var jContainer = jQuery(container);
+            jContainer.addClass('remove-hover-state');
+          },
+          onEnd: function (evt) {
+            //var dragItem = jQuery(evt.item);
+            var jContainer = jQuery(container);
+            jContainer.removeClass('remove-hover-state');
+          },
+          onUpdate: function (evt){
+            that.drop();
+          }
+        });
+      }
+
     },
 
     initialize: function(options) {
       if (!this.columnSchema.relationship ||
            'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
-        throw "The column " + this.columnSchema.id + " need to have a relationship of the type MANYTOMANY inorder to use the file_slideshow ui";
+        throw "The column " + this.columnSchema.id + " needs to have a relationship of the type MANYTOMANY in order to use the multiple_files ui";
+      }
+
+      var relatedCollection = this.model.get(this.name);
+      var relatedSchema = relatedCollection.structure;
+      var junctionStructure = relatedCollection.junctionStructure;
+      var sortable = false;
+
+      if(junctionStructure.get('sort') !== undefined) {
+        sortable = true;
+        relatedCollection.setOrder('sort','ASC');
       }
 
       this.canEdit = !(options.inModal || false);
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
       this.showChooseButton = this.columnSchema.options.get('choose_button') === "1";
       this.showAddButton = this.columnSchema.options.get('add_button') === "1";
-
-      var relatedCollection = this.model.get(this.name);
-      var relatedSchema = relatedCollection.structure;
-      var junctionStructure = relatedCollection.junctionStructure;
+      this.sortable = sortable;
 
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', function() {

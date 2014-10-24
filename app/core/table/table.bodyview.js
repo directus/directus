@@ -123,11 +123,13 @@ function(app, Backbone, Sortable) {
             //var dragItem = jQuery(evt.item);
             var tbody = jQuery(container);
             tbody.addClass('remove-hover-state');
+            tbody.removeClass('disable-transform');
           },
           onEnd: function (evt) {
             //var dragItem = jQuery(evt.item);
             var tbody = jQuery(container);
             tbody.removeClass('remove-hover-state');
+            tbody.addClass('disable-transform');
           },
           onUpdate: function (evt){
             app.router.openModal({type: 'confirm', text: 'Are your sure you want to reorder these items?', callback: function() {

@@ -176,8 +176,11 @@
     font-weight: 400;
     font-size: 12px;
     &:hover {
-      background-color: @tableHoverYellow;
       cursor: pointer;
+      // Resolved transform3d bug in chrome (weird black borders on tr)
+      td {
+        background-color: @tableHoverYellow;
+      }
       .settings {
         display: block;
       }
@@ -518,8 +521,14 @@
   }
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// Drag and drop (sortable) styling
+
+.disable-transform tr {
+  transform: none !important;
+}
 tbody.remove-hover-state {
-  tr:hover {
+  tr:hover td {
     background-color: @white;
   }
   .sort {
@@ -529,13 +538,24 @@ tbody.remove-hover-state {
     }
   }
 }
-
-.sortable-ghost {
+.sortable-ghost td {
   //opacity: 0.5 !important;
   background-color: @tableHoverYellow !important;
 }
+.remove-hover-state {
+  cursor: move !important;
+}
+.remove-hover-state .media-slideshow-item {
+  opacity: 0.5;
+}
+.ui-file-container.remove-hover-state img {
+  .jiggly;
+}
+.sortable-file-ghost {
+  opacity: 1.0 !important;
+}
 
-/* Buzz */
+// Buzz
 @-webkit-keyframes buzz {
   50% {
     -webkit-transform: translateX(2px) rotate(2deg);
@@ -573,4 +593,35 @@ tbody.remove-hover-state {
   animation-timing-function: linear;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
+}
+
+// Jiggle
+@-moz-keyframes jiggle {
+  0% {
+    -moz-transform: rotate(-1deg);
+  }
+
+  50% {
+    -moz-transform: rotate(1deg);
+  }
+}
+
+@-webkit-keyframes jiggle {
+  0% {
+    -webkit-transform: rotate(-1deg);
+  }
+
+  50% {
+    -webkit-transform: rotate(1deg);
+  }
+}
+
+
+.jiggly {
+  -webkit-animation: jiggle 0.2s infinite;
+  -moz-animation-duration: 0.2s;
+  -moz-animation-name: jiggle;
+  -moz-animation-iteration-count: infinite;
+  -webkit-transform: rotate(-1deg);
+  -moz-transform: rotate(-1deg);
 }
