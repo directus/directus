@@ -44,3 +44,6 @@ media_auth_proxy/client_auth_proxies/*
 !media_auth_proxy/client_auth_proxies/.gitkeep
 
 .project
+
+# Ignore dev files
+assets/less/directus/config.codekit
