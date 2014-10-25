@@ -122,18 +122,18 @@ return array(
 
   'statusMapping' => array(
     '0' => array(
-      'name' => 'deleted',
-      'color' => '#FF0000',
+      'name' => 'Delete',
+      'color' => '#C1272D',
       'sort' => 3
     ),
     '1' => array(
-      'name' => 'active',
-      'color' => '#00FF00',
+      'name' => 'Active',
+      'color' => '#5B5B5B',
       'sort' => 1
     ),
     '2' => array(
-      'name' => 'draft',
-      'color' => '#0000FF',
+      'name' => 'Braft',
+      'color' => '#BBBBBB',
       'sort' => 2
     )
   )

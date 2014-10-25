@@ -145,8 +145,8 @@ if($step == 0) {
 
 if($step == 1) {
     $error = null;
-  if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-    $error = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
+  if (version_compare(PHP_VERSION, '5.4.10', '<')) {
+    $error = 'Your host needs to use PHP 5.4.10 or higher to run this version of Directus!';
   }
 
   if (!defined('PDO::ATTR_DRIVER_NAME')) {
@@ -344,7 +344,7 @@ if($step == 3) {
     <div class="container">
         Default Adapter Destination<input type="text" class="<?php if(in_array("default_dest", $bad_paths)){echo "error";}?>" name="default_dest" value="<?php echo(isset($_SESSION['default_dest']) ? $_SESSION['default_dest'] : '/var/www/media/'); ?>" placeholder="/var/www/media/"><br>
         Default Adapter URL<input type="text" name="default_url" value="<?php echo(isset($_SESSION['default_url']) ? $_SESSION['default_url'] : 'http://localhost/media/'); ?>" placeholder="http://localhost/media/"><br>
-        Thumbnail Adapter Destination<input type="text" class="<?php if(in_array("thumb_dest", $bad_paths)){echo "error";}?>" name="thumb_dest" value="<?php echo(isset($_SESSION['thumb_dest']) ? $_SESSION['thumb_dest'] : '/var/www/media/thumb/'); ?>" placeholder="/var/www/media/thumb/"><br>
+        Thumbnail Adapter Destination<input type="text" class="<?php if(in_array("thumb_dest", $bad_paths)){echo "error";}?>" name="thumb_dest" value="<?php echo(isset($_SESSION['thumb_dest']) ? $_SESSION['thumb_dest'] : '/var/www/media/thumbs/'); ?>" placeholder="/var/www/media/thumbs/"><br>
         Thumbnail Adapter URL<input type="text" name="thumb_url" value="<?php echo(isset($_SESSION['thumb_url']) ? $_SESSION['thumb_url'] : 'http://localhost/media/thumb/'); ?>" placeholder="http://localhost/media/thumb/"><br>
         Temp Adapter Destination<input type="text" name="temp_dest" class="<?php if(in_array("temp_dest", $bad_paths)){echo "error";}?>" value="<?php echo(isset($_SESSION['temp_dest']) ? $_SESSION['temp_dest'] : '/var/www/media/temp/'); ?>" placeholder="/var/www/media/temp/"><br>
         Temp Adapter URL<input type="text" name="temp_url" value="<?php echo(isset($_SESSION['temp_url']) ? $_SESSION['temp_url'] : 'http://localhost/media/temp/'); ?>" placeholder="http://localhost/media/temp/"><br>
