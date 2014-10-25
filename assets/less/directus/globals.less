@@ -85,12 +85,12 @@
   margin-top: -170px;
   padding: 30px 30px 30px 30px;
   background-color: @white;
-  color: @mediumDarkGrey;
+  color: @extraDarkGrey;
   font-size: 14px;
   font-weight: 600;
   z-index: 110;
   .border-radius(3px, 3px, 3px, 3px);
-  box-shadow: 0 0 20px fade(@mediumDarkGrey, 30%);
+  box-shadow: 0 0 20px fade(@extraDarkGrey, 30%);
   -webkit-font-smoothing: antialiased;
   .directus-alert-modal-message {
     padding-bottom: 20px;
@@ -466,7 +466,8 @@ input[type="date"]::-webkit-inner-spin-button {
   margin-top: 6px;
 }
 .message-recipients {
-  background-color: @extraLightGrey;
+  .card-border;
+  background-color: @white;
   padding: @standardPad;
   //margin-bottom: @standardPad;
 }

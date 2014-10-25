@@ -1171,7 +1171,7 @@ button {
   margin-top: -170px;
   padding: 30px 30px 30px 30px;
   background-color: #ffffff;
-  color: #313131;
+  color: #333333;
   font-size: 14px;
   font-weight: 600;
   z-index: 110;
@@ -1190,7 +1190,7 @@ button {
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  box-shadow: 0 0 20px rgba(49, 49, 49, 0.3);
+  box-shadow: 0 0 20px rgba(51, 51, 51, 0.3);
   -webkit-font-smoothing: antialiased;
 }
 .directus-alert-modal .directus-alert-modal-message {
@@ -1597,7 +1597,8 @@ input[type="date"]::-webkit-inner-spin-button {
   margin-top: 6px;
 }
 .message-recipients {
-  background-color: #f4f4f4;
+  border-bottom: 3px solid #dfdfdf;
+  background-color: #ffffff;
   padding: 20px;
 }
 .message-response {
@@ -2606,13 +2607,13 @@ select:focus,
   display: block;
   margin-bottom: 2px;
   font-size: 14px;
-  color: #313131;
+  color: #333333;
 }
 .table-striped tfoot tr .footer-function li {
   color: #bbbbbb;
 }
 .table-striped tfoot tr .footer-function li:hover {
-  color: #313131;
+  color: #333333;
 }
 .table-striped tfoot tr .footer-function:after {
   content: "";
@@ -3595,7 +3596,7 @@ body.initial-load #sidebar {
   margin-bottom: -10px;
 }
 #sidebar #featureSidebar li {
-  background-color: #454545;
+  background-color: #474747;
   float: left;
   height: 59px;
   margin-bottom: 10px;
@@ -3604,7 +3605,7 @@ body.initial-load #sidebar {
   width: 59px;
 }
 #sidebar #featureSidebar li:hover {
-  background-color: #4b4b4b;
+  background-color: #4d4d4d;
 }
 #sidebar #featureSidebar li:hover.has-image .icon {
   display: block;
@@ -3617,7 +3618,7 @@ body.initial-load #sidebar {
   padding: 17px;
 }
 #sidebar #featureSidebar li.active {
-  background-color: #4b4b4b !important;
+  background-color: #4d4d4d !important;
 }
 #sidebar #featureSidebar li.has-image .icon {
   display: none;
@@ -4414,7 +4415,8 @@ body.initial-load #sidebar {
   color: #bbbbbb;
 }
 .message.unread {
-  background-color: #ececec;
+  background-color: #ffffff;
+  color: #999999;
 }
 .message.unread .message-content .title {
   font-weight: 700;
@@ -4424,8 +4426,9 @@ body.initial-load #sidebar {
   color: #999999;
 }
 ul.general-container {
-  background-color: #f4f4f4;
-  color: #999999;
+  border-bottom: 3px solid #dfdfdf;
+  background-color: #fafafa;
+  color: #b3b3b3;
   padding: 0;
 }
 ul.general-container.selectable li:hover {
@@ -4435,7 +4438,7 @@ ul.general-container.selectable li:hover {
 ul.general-container li {
   position: relative;
   padding: 20px;
-  border-top: 1px solid #ffffff;
+  border-top: 1px solid #ececec;
   min-height: 40px;
   padding-right: 150px;
   list-style: none;
