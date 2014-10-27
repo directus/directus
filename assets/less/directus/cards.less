@@ -137,16 +137,17 @@
     overflow: hidden;
     position: relative;
     &:hover .icon {
-      color: darken(@white, 10%);
+      color: darken(@lightGrey, 10%);
     }
     .left-col {
-      color: darken(@white, 5%);
+      color: @lightGrey;
       text-align: center;
       width: 180px;
       position: absolute;
       top: 0;
       left: 0;
       .icon {
+        .transition;
         display: inline-block;
         font-size: 200px;
         line-height: 100px;

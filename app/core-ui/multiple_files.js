@@ -100,8 +100,8 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
       </style> \
       <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div></div> \
       <div class="related-table"></div> \
-      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files Item</button>{{/if}} \
-      {{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files Item</button>{{/if}}</div>'),
+      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files</button>{{/if}} \
+      {{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files</button>{{/if}}</div>'),
 
     addItem: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));

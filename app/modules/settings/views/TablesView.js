@@ -719,7 +719,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     events: {
       'click #addBtn': function() {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Please Enter the name of the Table you would like to add.', callback: function(tableName) {
+        app.router.openModal({type: 'prompt', text: 'Please enter the name of the table you would like to add', callback: function(tableName) {
           if(tableName && !app.schemaManager.getPrivileges(tableName)) {
             var model = new Backbone.Model();
             model.url = app.API_URL + 'privileges/1';

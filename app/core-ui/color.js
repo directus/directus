@@ -31,13 +31,19 @@ define(['app', 'backbone'], function(app, Backbone) {
   ];
 
   var template =  '<style type="text/css"> \
+                  .position-offset { \
+                    position: relative; \
+                  } \
                   input.color-box { \
                     margin-left: 10px; \
-                    width: 60px; \
-                    padding-top: 2px; \
-                    padding-bottom: 2px; \
-                    height: 24px; \
+                    width: 24px; \
+                    padding-top: 6px; \
+                    padding-bottom: 6px; \
+                    height: 26px; \
                     display: inline-block; \
+                    top: -11px; \
+                    left: 0; \
+                    position: absolute; \
                   } \
                   input.color-text.invalid { \
                     border-color: #EB2A49; \
@@ -52,7 +58,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     margin-left: 10px; \
                   } \
                   </style> \
-                  <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="e.g. #bbbbbb"> <span class="invalid"></span>';
+                  <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><span class="position-offset"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="e.g. #bbbbbb"></span> <span class="invalid"></span>';
 
   Module.Input = Backbone.Layout.extend({
 

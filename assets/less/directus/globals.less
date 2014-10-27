@@ -315,7 +315,8 @@ img.grayscale {
   display: none !important;
 }
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset;
+    -webkit-box-shadow: 0 0 0px 1000px @fieldColor inset;
+    color: @mediumGrey !important;
 }
 ::-webkit-input-placeholder {
     color: @mediumGrey;
@@ -354,7 +355,7 @@ input:-webkit-autofill {
 }
 body.initial-load {
   #page-blocker-smoke {
-    opacity: 0.9;
+    opacity: 0.5;
   }
 }
 #page-blocker-smoke {

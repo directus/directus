@@ -8,7 +8,7 @@ function(app, Backbone, Directus) {
 
   "use strict";
 
-  var view = Backbone.Layout.extend({
+  var Chart = Backbone.Layout.extend({
 
     tagName: 'div',
 
@@ -22,7 +22,7 @@ function(app, Backbone, Directus) {
 
     afterRender: function() {
       //////////////////////////////////////////////////////////////////////////////
-
+      console.log("test");
       var animationTime = 1000;
       var me = this;
       var totals = {
@@ -69,13 +69,26 @@ function(app, Backbone, Directus) {
       });
     },
 
+    serialize: function() {
+      var tables = app.schemaManager.getTables();
+
+      var data = this.collection.map(function(model) {
+        var data = {
+          "table": model.get('table_name'),
+          'time': moment(model.get('datetime')).fromNow(),
+          "timestamp": model.get('datetime'),
+          "user_avatar": model.get('user')
+        };
+      });
+
+      return {activities: data};
+    },
+
     initialize: function() {
-      this.collection.on('reset', function() {
-        if (this.collection.total) this.render();
-      }, this);
+      this.collection.on('sync', this.render, this);
     }
 
   });
 
-  return view;
+  return Chart;
 });

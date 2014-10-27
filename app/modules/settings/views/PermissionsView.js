@@ -20,13 +20,24 @@ function(app, Backbone, BasePageView) {
     template: 'modules/settings/settings-groups',
 
     events: {
+      'click button[data-action=new-group]': 'newGroup',
       'click td': function(e) {
         var groupName = e.target.getAttribute('data-id');
-        if(groupName == 1) {
-          return;
-        }
+        // Don't bypass Admins until their permissions are always guaranteed
+        // if(groupName == 1) {
+        //   return;
+        // }
         app.router.go(['settings' ,'permissions', groupName]);
       }
+    },
+
+    newGroup: function(e) {
+      console.log('@TODO: Create new group');
+      // var collection = this.collection;
+      // //@todo: link real col
+      // var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: this.collection});
+      // var view = new NewColumnOverlay({model: model, collection: collection});
+      // app.router.overlayPage(view);
     },
 
     serialize: function() {
@@ -47,7 +58,8 @@ function(app, Backbone, BasePageView) {
       BasePageView.prototype.beforeRender.call(this);
     },
     afterRender: function() {
-      this.$el.find('td[data-id=1]').addClass('disabled');
+      // Don't bypass Admins until their permissions are always guaranteed
+      // this.$el.find('td[data-id=1]').addClass('disabled');
     }
   });
 

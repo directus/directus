@@ -196,13 +196,13 @@ function(app, Backbone, Directus, Chart, Files, BasePageView, moment) {
     },
 
     afterRender: function() {
-      //this.insertView('#page-content', this.chart);
+      this.insertView('#page-content', this.chart);
       this.insertView('#page-content', this.table);
       this.collection.fetch();
     },
 
     initialize: function() {
-      //this.chart = new Chart({collection: this.collection});
+      this.chart = new Chart({collection: this.collection});
       this.table = new ListView({collection: this.collection});
     }
 

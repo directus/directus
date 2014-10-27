@@ -322,7 +322,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     $emailBodyPlainText = <<<EMAILBODY
 Hey there,
 
-Here is a temporary password to login to Directus:
+Here is a temporary password to access Directus:
 
 $password
 

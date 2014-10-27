@@ -111,15 +111,15 @@
   cursor: pointer;
   outline: none;
   user-select: none;
-}
-
-.toggle-switch {
   padding: 2px;
   width: 30px;
   height: 15px;
   background-color: lighten(@mediumGrey, 15%);
   border-radius: 15px;
   transition: background 0.4s;
+  &:hover {
+    background-color: lighten(@mediumGrey, 5%);
+  }
 }
 .toggle-switch:before,
 .toggle-switch:after {
@@ -147,6 +147,9 @@
 }
 .toggle-switch.on {
   background-color: @addColor;
+  &:hover {
+    background-color: darken(@addColor, 10%);
+  }
 }
 .toggle-switch.on:after {
   margin-left: 15px;

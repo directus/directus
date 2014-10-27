@@ -137,14 +137,12 @@ input,
 textarea,
 select,
 .input {
-  .border-box;
   .transition;
   background-color: @fieldColor;
-  border: none; //border: solid 1px @lightGrey;
+  border: none;
   display: block;
   padding: @smallPad;
   font-size: 13px;
-  //width: 100%;
   outline: none;
   resize: none;
   &:hover {
@@ -157,7 +155,6 @@ select,
     //border: solid 1px @lightGrey;
   }
   &:focus {
-    //border: solid 1px @addColor;
     color: darken(@darkGrey, 10%);
   }
 }
@@ -187,8 +184,11 @@ select,
 //  CUSTOM FORMS
 ////////////
 
-.field-comment {
-  width: 100%;
+.table-striped tr td.field-comment-container {
+  padding-right: 40px;
+  .field-comment {
+    width: 100%;
+  }
 }
 .simple-select.simple-gray {
   margin-top: 0;

@@ -566,6 +566,119 @@
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// Activity Chart
+
+.activity-module {
+  position: relative;
+  //border-bottom: 1px solid #ececec;
+  padding: 25px 20px 0 20px;
+
+  h2 {
+    font-family: 'Arvo', serif;
+    font-size: 32px;
+    font-weight: 400;
+    margin: 0 0 -4px 0;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 1.0);
+  }
+
+  .black {color:#000000;}
+  .green{color:#8bc53f;}
+  .blue {color:#26a9e0;}
+  .red {color:#ee2545;}
+  .yellow {color:#ffc10b;}
+  .purple {color:#7f3f97;}
+
+  .bgblack {background-color:#000000;}
+  .bggreen{background-color:#8bc53f;}
+  .bgblue {background-color:#26a9e0;}
+  .bgred {background-color:#ee2545;}
+  .bgyellow {background-color:#ffc10b;}
+  .bgpurple {background-color:#7f3f97;}
+
+  .chart-key {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    background-color: @lightGrey;
+    color: @mediumGrey;
+    text-align: center;
+    font-size: 10px;
+    padding-right: 10px;
+  }
+  .activity-module {
+    background-color: @lightGrey;
+    border-radius: 2px;
+    color: #8f8f8f;
+    width: 100%;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 1.0);
+    font-size: 14px;
+    min-width: 630px;
+  }
+  .activity-chart table {
+    width: 100%;
+    border-top: 1px dashed @white;
+    font-style: italic;
+    font-size: 12px;
+  }
+  .activity-chart table td {
+    vertical-align: bottom;
+  }
+  .bars {
+    height: 150px;
+  }
+  .bar {
+    width: 10px;
+    margin: 0 auto;
+    box-shadow: 0 -2px 6px 0 rgba(255, 255, 255, 0.1);
+  }
+  .bar:first-child {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+  }
+  .activity-totals {
+    //border-top: 1px solid @white;
+    padding: 15px 15px 0 15px;
+    overflow: hidden;
+  }
+  .activity-total {
+    width: 16.6%;
+    min-width: 130px;
+    text-align: center;
+    position: relative;
+    float: left;
+  }
+  .center {
+    width: 90%;
+    min-width: 780px;
+    margin: 0 auto;
+  }
+  .align-center {
+    text-align: center;
+  }
+  .align-right {
+    text-align: right;
+  }
+  .date-range {
+    color: @mediumGrey;
+  }
+
+  @media (max-width: 900px) {
+    h2 {
+      font-size: 24px;
+    }
+    .activity-total {
+      min-width: 100px;
+    }
+    .activity-total span {
+      font-size: 10px;
+    }
+    .center {
+      min-width: 600px;
+    }
+  }
+
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // Drag and drop (sortable) styling
 
 .disable-transform tr {

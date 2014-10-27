@@ -60,12 +60,10 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
         var readBlacklist = (this.model.get('read_field_blacklist')) ? this.model.get('read_field_blacklist').split(',') : [];
         var writeBlacklist = (this.model.get('write_field_blacklist')) ? this.model.get('write_field_blacklist').split(',') : [];
 
-
-        this.toggleIcon($target);
-
         //Removing so add to blacklist
-        if($target.parent().hasClass('delete-color')) {
-          if($target.parent().parent().data('value') == "read") {
+        if($target.hasClass('on')) {
+          $target.removeClass('on').removeClass('has-privilege');
+          if($target.parent().data('value') == "read") {
             if(readBlacklist.indexOf($tr.data('column-name')) === -1) {
               readBlacklist.push($tr.data('column-name'));
               this.model.set({read_field_blacklist: readBlacklist.join(",")});
@@ -77,7 +75,8 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
             }
           }
         } else {
-          if($target.parent().parent().data('value') == "read") {
+          $target.addClass('on').addClass('has-privilege');;
+          if($target.parent().data('value') == "read") {
             if(readBlacklist.indexOf($tr.data('column-name')) !== -1) {
               readBlacklist.splice(readBlacklist.indexOf($tr.data('column-name')), 1);
               this.model.set({read_field_blacklist: readBlacklist.join(",")});
@@ -92,11 +91,6 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
 
         this.model.save();
       }
-    },
-
-    toggleIcon: function($span) {
-      $span.parent().toggleClass('add-color').toggleClass('delete-color');
-      $span.toggleClass('icon-block').toggleClass('icon-check');
     },
 
     serialize: function() {
