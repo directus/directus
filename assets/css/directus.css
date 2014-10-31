@@ -3842,7 +3842,7 @@ body.initial-load #sidebar {
   z-index: 50;
   /* Switch to mixin */
 
-  background: -webkit-linear-gradient(top, rgba(153, 153, 153, 0.1) 0%, rgba(153, 153, 153, 0) 100%);
+  background: -webkit-linear-gradient(top, rgba(51, 51, 51, 0.15) 0%, rgba(51, 51, 51, 0) 100%);
   opacity: 0.0;
   pointer-events: none;
 }
