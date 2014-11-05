@@ -1902,6 +1902,9 @@ input[type="date"]::-webkit-inner-spin-button {
   font-size: 400%;
   line-height: 16%;
 }
+#existingFileButton {
+  color: #333333;
+}
 .toggle-switch {
   display: block;
   position: relative;

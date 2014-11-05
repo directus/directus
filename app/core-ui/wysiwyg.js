@@ -181,9 +181,11 @@ var template = '<style type="text/css"> \
 
             model.save(item, {success: function(e) {
               var url = model.makeFileUrl(false);
+              var title = model.attributes.title;
               self.$el.find('#insertImageInput').val(url);
               self.$el.find('input[type=file]').val("");
-              self.$el.find('#insertImageButton').click();
+              self.editor.composer.commands.exec("insertImage", { src: url, alt: title, title: title});
+              $('.directus-alert-modal').addClass('hide'); //  manually close modal
             }});
           });
         });
@@ -202,8 +204,9 @@ var template = '<style type="text/css"> \
           model = collection.get(id);
           app.router.removeOverlayPage(this);
           var url = model.makeFileUrl(false);
-          self.$el.find('#insertImageInput').val(url);
-          self.$el.find('#insertImageButton').click();
+          var title = model.attributes.title;
+          self.editor.composer.commands.exec("insertImage", { src: url, alt: title, title: title});
+          $('.directus-alert-modal').addClass('hide'); //  manually close modal
         };
       },
       'click #existingLinkButton': function(e) {
@@ -245,7 +248,13 @@ var template = '<style type="text/css"> \
     },
 
     textChanged: function(view) {
-      view.$('.hidden_input').val(view.editor.getValue());
+      if(view.editor){
+        try {
+          view.$('.hidden_input').val(view.editor.getValue());
+        } catch (err){
+          console.log(err.message);
+        }
+      }
     },
 
     serialize: function() {
@@ -352,10 +361,9 @@ var template = '<style type="text/css"> \
             item.user = self.userId;
 
             model.save(item, {success: function(e) {
-              //console.log(e);
               var url = model.makeFileUrl(false);
               try {
-                self.editor.composer.commands.exec("insertImage", { src: url, alt: model.get('name')});
+                self.editor.composer.commands.exec("insertImage", { src: url, alt: model.get('title'), title: model.get('title')});
               } catch(ex) {}
 
             }});
