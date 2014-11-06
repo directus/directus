@@ -9,10 +9,11 @@
 define([
   'app',
   'backbone',
+  'core/widgets/widgets',
   'core/BasePageView'
 ],
 
-function(app, Backbone, BasePageView) {
+function(app, Backbone, Widgets, BasePageView) {
 
   "use strict";
 
@@ -41,6 +42,28 @@ function(app, Backbone, BasePageView) {
         title: 'Permissions',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
+    },
+    leftToolbar: function() {
+      return  [
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
+      ];
+    },
+    events: {
+      'click #addBtn': function() {
+        var that = this;
+        app.router.openModal({type: 'prompt', text: 'Please Enter the name of the Group you would like to add.', callback: function(groupName) {
+          if(groupName && !app.schemaManager.getPrivileges('directus_permission')) {
+            var model = new Backbone.Model();
+            model.url = app.API_URL + 'groups';
+            model.set({name: groupName});
+            model.save();
+            // @TODO render just once, instead of reload
+            that.listenToOnce(model, 'sync', function() {
+              location.reload();
+            });
+          }
+        }});
+      }
     },
     beforeRender: function() {
       this.setView('#page-content', new Groups({collection: this.collection}));
