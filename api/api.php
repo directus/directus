@@ -682,12 +682,24 @@ $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use
 
 /** (Optional slim route params break when these two routes are merged) */
 
-$app->get("/$v/groups/?", function () use ($ZendDb, $acl) {
-    // @TODO need POST and PUT
-    $Groups = new TableGateway($acl, 'directus_groups', $ZendDb);
-    $get_new = $Groups->getEntries();
+$app->map("/$v/groups/?", function () use ($app, $ZendDb, $acl, $requestPayload) {
+    // @TODO need PUT
+    $GroupsTableGateway = new TableGateway($acl, 'directus_groups', $ZendDb);
+
+    $tableName =  'directus_groups';
+    $GroupsTableGateway = new TableGateway($acl, $tableName, $ZendDb);
+    $currentUser = Auth::getUserInfo();
+
+    switch ($app->request()->getMethod()) {
+      case "POST":
+        $newRecord = $GroupsTableGateway->manageRecordUpdate($tableName, $requestPayload);
+        $id = $newRecord['id'];
+        break;
+    }
+
+    $get_new = $GroupsTableGateway->getEntries();
     JsonView::render($get_new);
-});
+})->via('GET','POST');;
 
 $app->get("/$v/groups/:id/?", function ($id = null) use ($ZendDb, $acl) {
     // @TODO need POST and PUT
