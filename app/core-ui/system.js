@@ -55,6 +55,15 @@ define(['app','backbone'], function(app, Backbone) {
       var mapping = app.statusMapping.mapping;
       var value = this.options.value;
       data.mapping = [];
+
+      // If new and has a default value, use the default
+      // if (
+      //   this.options.model.isNew() &&
+      //   this.options.schema.has('default_value')) {
+      //     value = parseInt(this.options.schema.get('default_value'),10);
+      // }
+
+
       for(var key in mapping) {
         var entry = mapping[key];
         entry.id = key;

@@ -17,9 +17,9 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
-    {id: 'add_button', ui: 'checkbox'},
-    {id: 'choose_button', ui: 'checkbox'},
-    {id: 'remove_button', ui: 'checkbox'},
+    {id: 'add_button', ui: 'checkbox', def: '1'},
+    {id: 'choose_button', ui: 'checkbox', def: '1'},
+    {id: 'remove_button', ui: 'checkbox', def: '1'},
   ];
 
   Module.Input = UIView.extend({

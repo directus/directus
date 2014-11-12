@@ -18,9 +18,9 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
   Module.variables = [
     {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
-    {id: 'add_button', ui: 'checkbox'},
-    {id: 'choose_button', ui: 'checkbox'},
-    {id: 'remove_button', ui: 'checkbox'},
+    {id: 'add_button', ui: 'checkbox', def: '1'},
+    {id: 'choose_button', ui: 'checkbox', def: '1'},
+    {id: 'remove_button', ui: 'checkbox', def: '1'},
     {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
     {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"},
     {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"}
