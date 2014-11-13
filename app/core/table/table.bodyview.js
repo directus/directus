@@ -132,9 +132,10 @@ function(app, Backbone, Sortable) {
             tbody.addClass('disable-transform');
           },
           onUpdate: function (evt){
-            app.router.openModal({type: 'confirm', text: 'Are you sure you want to reorder these items?', callback: function() {
-              that.drop();
-            }});
+            // app.router.openModal({type: 'confirm', text: 'Are you sure you want to reorder these items?', callback: function() {
+            //   that.drop();
+            // }});
+            that.drop();
           }
         });
       }
