@@ -411,13 +411,22 @@ class RelationalTableGateway extends AclAwareTableGateway {
                          * $parentRecord['collectionName1'][0-9]['id']; // for updating a pre-existing junction row
                          * $parentRecord['collectionName1'][0-9]['active']; // for disassociating a junction via the '0' value
                          */
+                        $noDuplicates = isset($column['options']['no_duplicates'])?$column['options']['no_duplicates']:0;
+
                         $this->enforceColumnHasNonNullValues($column['relationship'], array('junction_table','junction_key_left'), $this->table);
                         $junctionTableName = $column['relationship']['junction_table'];
                         $junctionKeyLeft = $column['relationship']['junction_key_left'];
+                        $junctionKeyRight = $column['relationship']['junction_key_right'];
                         $JunctionTable = new RelationalTableGateway($this->acl, $junctionTableName, $this->adapter);
                         $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
+                            $Where = new Where;
+                            $Where->equalTo($junctionKeyLeft, $parentRow['id'])
+                                    ->equalTo($junctionKeyRight, $junctionRow['data']['id']);
+                            if ($JunctionTable->select($Where)->count()) {
+                                continue;
+                            }
                             if (isset($junctionRow[STATUS_COLUMN_NAME]) && $junctionRow[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
                                 $Where = new Where;
                                 $Where->equalTo('id', $junctionRow['id']);
@@ -687,6 +696,19 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
                             $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
                             $entry['id']);
+                        $noDuplicates = isset($alias['options']['no_duplicates'])?$alias['options']['no_duplicates']:0;
+                        // @todo: better way to handle this.
+                        if ($noDuplicates) {
+                            $uniquesID = array();
+                            foreach($foreign_data['rows'] as $index => $row) {
+                                if (!in_array($row['data']['id'], $uniquesID)) {
+                                    array_push($uniquesID, $row['data']['id']);
+                                } else {
+                                    unset($foreign_data['rows'][$index]);
+                                }
+                            }
+                            unset($uniquesID);
+                        }
                         break;
                     case 'ONETOMANY':
                         // $log->info("One-to-Many");

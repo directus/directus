@@ -23,7 +23,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
     {id: 'remove_button', ui: 'checkbox', def: '1'},
     {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
     {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"},
-    {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"}
+    {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"},
+    {id: 'no_duplicates', ui: 'checkbox', def: '0', comment: "No Duplicates"}
   ];
 
   Module.Input = Onetomany.Input.extend({
@@ -96,6 +97,18 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       view.save = function() {
         _.each(view.table.selection(), function(id) {
           var data = collection.get(id).toJSON();
+          // prevent duplicate
+          if (me.columnSchema.options.get('no_duplicates')==1) {
+            var duplicated = false;
+            me.relatedCollection.each(function(model) {
+              if (model.get('data').id == id) {
+                duplicated = true;
+              }
+            });
+            if (duplicated) {
+              return false;
+            }
+          }
           me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
         }, this);
         me.relatedCollection.trigger('add');
