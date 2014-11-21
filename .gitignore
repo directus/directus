@@ -24,6 +24,7 @@ customFooterHTML.html
 assets/css/custom.css
 
 node_modules
+npm-debug.log
 
 build_test
 build_test.html
