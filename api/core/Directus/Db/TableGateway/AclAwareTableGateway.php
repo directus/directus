@@ -11,6 +11,7 @@ use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
+use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\Hooks;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
@@ -265,6 +266,37 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
         return $recordData;
     }
+    
+    /*
+      Temporary solutions to fix add column error
+        This add column is the same old-db add_column method
+    */
+    public function addColumn($tableName, $tableData) {
+      $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
+      $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
+      $column_name = $tableData['column_name'];
+      $data_type = $tableData['data_type'];
+      $comment = $tableData['comment'];
+
+      if (in_array($data_type, $directus_types)) {
+          //This is a 'virtual column'. Write to directus schema instead of MYSQL
+          $data['table_name'] = $tbl_name;
+          $data['sort'] = 9999;
+
+          $data = array_intersect_key($tableData, array_flip($alias_columns));
+          //Wrap data in an array so the multi collection can be used.
+          $this->addOrUpdateRecordByArray(array($data), 'directus_columns');
+      } else {
+          if (array_key_exists('char_length', $tableData)) {
+              $data_type = $data_type.'('.$tableData['char_length'].')';
+          }
+          $sql = "ALTER TABLE $tableName ADD COLUMN $column_name $data_type COMMENT '$comment'";
+          
+          $this->adapter->query( $sql )->execute();
+      }
+      
+      return $column_name;
+    }
 
     protected function logger() {
         return Bootstrap::get('app')->getLog();
@@ -380,6 +412,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeInsert($insert);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
+                if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
+                  throw new DuplicateEntryException($e->getMessage());
+                }
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($insert), 0, $e);
             }
             // @todo send developer warning

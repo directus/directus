@@ -624,23 +624,22 @@ $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
 
 // GET all table columns, or POST one new table column
 
-$app->map("/$v/tables/:table/columns/?", function ($table) use ($ZendDb, $params, $requestPayload, $app, $acl) {
-    $params['table_name'] = $table;
+$app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $params, $requestPayload, $app, $acl) {
+    $params['table_name'] = $table_name;
     if($app->request()->isPost()) {
         /**
          * @todo  check if a column by this name already exists
          * @todo  build this into the method when we shift its location to the new layer
          */
-        if(!$acl->hasTablePrivilege($table, 'alter')) {
+        if(!$acl->hasTablePrivilege($table_name, 'alter')) {
             throw new UnauthorizedTableAlterException("Table alter access forbidden on table `$table`");
         }
-        $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
-        $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
-        $requestPayload = array_intersect_key($requestPayload, array_flip($alias_columns));
-        $params = $TableGateway->manageRecordUpdate('directus_columns', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+        
+        $tableGateway = new TableGateway($acl, $table_name, $ZendDb);
+        $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
     }
 
-    $response = TableSchema::getSchemaArray($table, $params);
+    $response = TableSchema::getSchemaArray($table_name, $params);
     JsonView::render($response);
 })->via('GET', 'POST');
 
@@ -881,7 +880,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       'table_name' => $data['table_name'],
       'hidden' => (int)$data['hidden'],
       'single' => (int)$data['single'],
-      'default_status' => (int)$data['default_status'],
+      'default_status' => (isset($data['default_status']))?(int)$data['default_status']:1,
       'is_junction_table' => (int)$data['is_junction_table'],
       'footer' => (int)$data['footer'],
       'primary_column' => $data['primary_column']

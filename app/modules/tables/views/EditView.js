@@ -161,6 +161,16 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         error: function(model, xhr, options) {
           console.log('err');
           //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
+          //Duplicate entry, forced but works
+          //@todo finds a better way to determine whether there's an duplicate error
+          // and what's the column's name
+          var response = JSON.parse(xhr.responseText);
+          if (response.message.indexOf('Duplicate entry') != -1) {
+            var columnName = response.message.split('for key')[1].trim();
+            columnName = columnName.substring(1, columnName.lastIndexOf("'"));
+            alert('This item was not saved because its value in [' + columnName + '] is not unique.');
+            return;
+          }
         },
         wait: true,
         patch: true,
