@@ -420,13 +420,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $JunctionTable = new RelationalTableGateway($this->acl, $junctionTableName, $this->adapter);
                         $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
-                            /** This association is designated for removal */
-                            $Where = new Where;
-                            $Where->equalTo($junctionKeyLeft, $parentRow['id'])
-                                    ->equalTo($junctionKeyRight, $junctionRow['data']['id']);
-                            if ($JunctionTable->select($Where)->count()) {
-                                continue;
+                            // Is this a new element?
+                            // if the element `id` exists it's because is not a new element
+                            // and already had its id given.
+                            if (isset($junctionRow['data']['id'])) {
+                              $Where = new Where;
+                              $Where->equalTo($junctionKeyLeft, $parentRow['id'])
+                                      ->equalTo($junctionKeyRight, $junctionRow['data']['id']);
+                              if ($JunctionTable->select($Where)->count()) {
+                                  continue;
+                              }
                             }
+                            /** This association is designated for removal */
                             if (isset($junctionRow[STATUS_COLUMN_NAME]) && $junctionRow[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
                                 $Where = new Where;
                                 $Where->equalTo('id', $junctionRow['id']);
