@@ -170,6 +170,18 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $row = $row->toArray();
         return $row;
     }
+    
+    public function findOneByArray(array $data) {
+        $rowset = $this->select($data);
+        
+        $row = $rowset->current();
+        // Supposing this "one" doesn't exist in the DB
+        if(false === $row) {
+            return false;
+        }
+        $row = $row->toArray();
+        return $row;
+    }
 
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
         foreach($recordData as $columnName => $columnValue) {

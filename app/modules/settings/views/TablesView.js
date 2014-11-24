@@ -327,6 +327,14 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     attributes: {
       class: "two-column-form"
     },
+    
+    events: {
+      'change select#table_related': 'changeRelatedTable'
+    },
+    
+    changeRelatedTable: function(e) {
+      this.model.set({table_related: $(e.target).val()});
+    },
 
     template: 'modules/settings/settings-columns-edit-relationship',
 
@@ -334,7 +342,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       var data = {};
 
       var tableRelated = this.model.get('table_related');
-      data.data_types = [{title: 'MANYTOONE', selected: true}];
+      data.data_types = [{title: this.model.get('relationship_type'), selected: true}];
 
       var tables = app.schemaManager.getTables();
       tables = tables.map(function(model) {
@@ -431,7 +439,15 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     editRelationship: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
-      var model = new Backbone.Model({type: 'MANYTOONE', junction_key_left: column.id, ui: column.get('ui')});
+      var model = new Backbone.Model(_.extend(column.relationship.toJSON(),{
+        data_type: column.get('type'),
+        //ui: column.get('ui'),
+        //type: column.get('type'),
+        relationship_type: column.relationship.get('type')
+        //junction_key_left: column.relationship.get('junction_key_right'),
+        //table_related: column.relationship.get('table_related')
+      }));
+      
       column.relationship = model;
       var that = this;
       var view = new EditRelationship({model: model});
@@ -458,7 +474,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables') && ui[row.ui].variables.length > 0;
 
-        row.uiHasRelationship = ['many_to_one', 'many_to_one_typeahead', 'single_file'].indexOf(row.ui) > -1;
+        row.uiHasRelationship = ['many_to_one', 'many_to_many', 'many_to_one_typeahead', 'single_file'].indexOf(row.ui) > -1;
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
         row.relationship = "";
