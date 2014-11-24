@@ -648,9 +648,16 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
 $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $params, $requestPayload, $app) {
     $params['column_name'] = $column;
     $params['table_name'] = $table;
+    // This `type` variable is used on the client-side
+    // Not need on server side.
+    // @TODO: We should probably stop using it on the client-side
+    unset($requestPayload['type']);
     // Add table name to dataset. @TODO more clarification would be useful
+    // Also This would return an Error because of $row not always would be an array.
     foreach ($requestPayload as &$row) {
-        $row['table_name'] = $table;
+        if(is_array($row)) {
+          $row['table_name'] = $table;
+        }
     }
     if($app->request()->isPut()) {
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
@@ -663,13 +670,20 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
 $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $requestPayload, $app) {
   $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
   $data = $requestPayload;
+  // @TODO: check whether this condition is still needed
   if(isset($data['type'])) {
     $data['data_type'] = $data['type'];
     $data['relationship_type'] = $data['type'];
     unset($data['type']);
   }
-  $data['column_name'] = $data['junction_key_left'];
+  //$data['column_name'] = $data['junction_key_left'];
+  $data['column_name'] = $column;
   $data['table_name'] = $table;
+  $row = $TableGateway->findOneByArray(array('table_name'=>$table, 'column_name'=>$column));
+  
+  if ($row) {
+    $data['id'] = $row['id'];
+  }
   $newRecord = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
   $_POST['id'] = $newRecord['id'];
   JsonView::render($_POST);
