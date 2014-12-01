@@ -14,5 +14,10 @@
       <button id="cancel" type="button">Cancel</button>
     </div>
   {{/if}}
+  {{#if isAlert}}
+    <div class="directus-alert-modal-buttons">
+      <button id="okBtn" type="button" class="primary">OK</button>
+    </div>
+  {{/if}}
 </div>
 <div class="directus-modal-backdrop"></div>

@@ -168,7 +168,9 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
           if (response.message.indexOf('Duplicate entry') != -1) {
             var columnName = response.message.split('for key')[1].trim();
             columnName = columnName.substring(1, columnName.lastIndexOf("'"));
-            alert('This item was not saved because its value in [' + columnName + '] is not unique.');
+            app.router.openModal({type: 'alert', text: 'This item was not saved because its value in [' + columnName + '] is not unique.', callback: function() {
+              console.log('end');
+            }});
             return;
           }
         },
