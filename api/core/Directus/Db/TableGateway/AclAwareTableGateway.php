@@ -170,10 +170,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $row = $row->toArray();
         return $row;
     }
-    
+
     public function findOneByArray(array $data) {
         $rowset = $this->select($data);
-        
+
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
         if(false === $row) {
@@ -278,7 +278,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
         return $recordData;
     }
-    
+
     /*
       Temporary solutions to fix add column error
         This add column is the same old-db add_column method
@@ -303,10 +303,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               $data_type = $data_type.'('.$tableData['char_length'].')';
           }
           $sql = "ALTER TABLE $tableName ADD COLUMN $column_name $data_type COMMENT '$comment'";
-          
+
           $this->adapter->query( $sql )->execute();
       }
-      
+
       return $column_name;
     }
 
@@ -504,6 +504,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeUpdate($update);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
+                // @TODO: these lines are the same as the executeInsert,
+                // let's put it together
+                if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
+                  throw new DuplicateEntryException($e->getMessage());
+                }
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($update), 0, $e);
             }
             // @todo send developer warning
