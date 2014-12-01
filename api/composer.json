@@ -1,6 +1,6 @@
 {
     "require": {
-        "slim/slim": "dev-master",
+        "slim/slim": "2.2.0",
         "slim/extras": "dev-develop",
         "zendframework/zend-db": "2.1.*@dev",
         "jublonet/codebird-php": "dev-master",
