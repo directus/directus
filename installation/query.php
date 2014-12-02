@@ -184,13 +184,12 @@ VALUES
   (8,'files','storage_destination',''),
   (9,'files','thumbnail_storage_adapter','FileSystemAdapter'),
   (10,'files','thumbnail_storage_destination',''),
-  (11,'files','allowed_thumbnails',''),
-  (12,'files','thumbnail_quality','100'),
-  (13,'files','thumbnail_size','200'),
-  (14,'global','cms_thumbnail_url',''),
-  (15,'files','file_file_naming','file_id'),
-  (16,'files','file_title_naming','file_name'),
-  (17,'files','thumbnail_crop_enabled','1');";
+  (11,'files','thumbnail_quality','100'),
+  (12,'files','thumbnail_size','200'),
+  (13,'global','cms_thumbnail_url',''),
+  (14,'files','file_file_naming','file_id'),
+  (15,'files','file_title_naming','file_name'),
+  (16,'files','thumbnail_crop_enabled','1');";
 
   $create_social_feeds = "CREATE TABLE `directus_social_feeds` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

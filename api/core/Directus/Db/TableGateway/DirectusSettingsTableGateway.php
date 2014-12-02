@@ -73,7 +73,6 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'files' => array(
                     'file_file_naming',
                     'file_title_naming',
-                    'allowed_thumbnails',
                     'thumbnail_quality',
                     'thumbnail_crop_enabled'
                 ),

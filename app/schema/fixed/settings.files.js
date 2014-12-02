@@ -15,7 +15,6 @@ define(function(require, exports, module) {
         "file_id":"Files ID" \
       }'}, comment: "The displayed title naming convention for uploads"
     },
-    // {id: 'allowed_thumbnails', ui: 'textinput', char_length: 255, comment: "TK"},
     {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {options: 'small'}, comment: "The quality percentage for Directus thumbnails"},
     {id: 'thumbnail_crop_enabled', ui: 'checkbox', comment: 'Uncheck if your project requires seeing uncropped Directus Thumbnails'}
   ];
