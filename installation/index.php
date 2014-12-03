@@ -419,6 +419,35 @@ if($step == 5) {
   require_once('config_setup.php');
   WriteConfig();
 
+  // @TODO: put all this data into an array.
+  // so we can clear all session unset($_SESSION['installation']);
+  $install_data = array(
+    'step',
+    'email',
+    'site_name',
+    'password',
+    'directus_path',
+    'host_name',
+    'username',
+    'db_password',
+    'db_name',
+    'db_prefix',
+    'install_sample',
+    'default_dest',
+    'default_url',
+    'thumb_dest',
+    'thumb_url',
+    'temp_dest',
+    'temp_url',
+    'send_config_email'
+  );
+
+  foreach($_SESSION as $key => $value) {
+    if (in_array($key, $install_data)) {
+      unset($_SESSION[$key]);
+    }
+  }
+
   header('Location: ../');
 }
 
