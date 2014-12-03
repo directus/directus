@@ -12,8 +12,8 @@ if(isset($_SESSION['step'])) {
 
 if(isset($_POST['backButton'])) {
   if($step > 0) {
-    $_SESSION['step'] = $step - 1;
     $step--;
+    $_SESSION['step'] = $step;
   }
 }
 
@@ -172,6 +172,7 @@ if($step == 1) {
   <?php
   die();
   } else {
+    $directus_path = preg_replace('#/(installation/.*)#i', '', $_SERVER['REQUEST_URI']) . '/';
   ?>
   <div class="header">
     <div class="container">
@@ -184,7 +185,7 @@ if($step == 1) {
     <div class="container">
 
   Project Name<input type="text" name="site_name" value="<?php echo(isset($_SESSION['site_name']) ? $_SESSION['site_name'] : ''); ?>"><br>
-  Project Path<input type="text" name="directus_path" value="<?php echo(isset($_SESSION['directus_path']) ? $_SESSION['directus_path'] : '/directus/'); ?>"><br>
+  Project Path<input type="text" name="directus_path" value="<?php echo(isset($_SESSION['directus_path']) ? $_SESSION['directus_path'] : $directus_path); ?>"><br>
   Admin Email<input type="email" name="email" value="<?php echo(isset($_SESSION['email']) ? $_SESSION['email'] : ''); ?>"><br>
   Admin Password<input type="password" name="password" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
   Confirm Admin Password<input type="password" name="password_confirm" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
@@ -209,6 +210,33 @@ if($step == 2) {
         Database Name<input type="text" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
         Database Prefix (optional)<input type="text" name="db_prefix" value="<?php echo(isset($_SESSION['db_prefix']) ? $_SESSION['db_prefix'] : ''); ?>"><br>
         <input type="checkbox" name="install_sample" value="yes" <?php echo(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == 'yes' ? 'checked' : ''); ?>>Install Sample Data<br>
+<?php
+}
+
+if($step == 3) {
+  $abspath = dirname( dirname(__FILE__) ) . '/';
+  $isHTTPS = false;
+  if ((isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) ||
+      (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) {
+    $isHTTPS = true;
+  }
+
+  $site_url = ($isHTTPS) ? "https://" : "http://" . $_SERVER['HTTP_HOST'] . $_SESSION['directus_path'];
+  ?>
+  <div class="header">
+    <div class="container">
+      <img src="directus-logo.gif">
+      <div>Storage Adapter Setup</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="container">
+        Default Adapter Destination<input type="text" class="<?php if(in_array("default_dest", $bad_paths)){echo "error";}?>" name="default_dest" value="<?php echo(isset($_SESSION['default_dest']) ? $_SESSION['default_dest'] : $abspath.'media/'); ?>" placeholder="/var/www/media/"><br>
+        Default Adapter URL<input type="text" name="default_url" value="<?php echo(isset($_SESSION['default_url']) ? $_SESSION['default_url'] : $site_url.'media/'); ?>" placeholder="http://localhost/media/"><br>
+        Thumbnail Adapter Destination<input type="text" class="<?php if(in_array("thumb_dest", $bad_paths)){echo "error";}?>" name="thumb_dest" value="<?php echo(isset($_SESSION['thumb_dest']) ? $_SESSION['thumb_dest'] : $abspath.'media/thumbs/'); ?>" placeholder="/var/www/media/thumbs/"><br>
+        Thumbnail Adapter URL<input type="text" name="thumb_url" value="<?php echo(isset($_SESSION['thumb_url']) ? $_SESSION['thumb_url'] : $abspath.'media/thumb/'); ?>" placeholder="http://localhost/media/thumb/"><br>
+        Temp Adapter Destination<input type="text" name="temp_dest" class="<?php if(in_array("temp_dest", $bad_paths)){echo "error";}?>" value="<?php echo(isset($_SESSION['temp_dest']) ? $_SESSION['temp_dest'] : $abspath.'media/temp/'); ?>" placeholder="/var/www/media/temp/"><br>
+        Temp Adapter URL<input type="text" name="temp_url" value="<?php echo(isset($_SESSION['temp_url']) ? $_SESSION['temp_url'] : $site_url.'media/temp/'); ?>" placeholder="http://localhost/media/temp/"><br>
 <?php
 }
 
@@ -288,7 +316,7 @@ if($step == 4) {
           </tr>
           <tr>
             <td class="item">Logs Writable (../api/logs/)</td>
-            <td class="result"><?php if(is_writable('../api/logs/1.txt')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span>');}?></td>
+            <td class="result"><?php if(is_writable('../api/logs')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span>');}?></td>
           </tr>
           <tr>
             <td class="item">mod_rewrite Enabled</td>
@@ -329,25 +357,6 @@ if($step == 4) {
           </tr>
         </tbody>
       </table>
-<?php
-}
-
-if($step == 3) {
-  ?>
-  <div class="header">
-    <div class="container">
-      <img src="directus-logo.gif">
-      <div>Storage Adapter Setup</div>
-    </div>
-  </div>
-  <div class="body">
-    <div class="container">
-        Default Adapter Destination<input type="text" class="<?php if(in_array("default_dest", $bad_paths)){echo "error";}?>" name="default_dest" value="<?php echo(isset($_SESSION['default_dest']) ? $_SESSION['default_dest'] : '/var/www/media/'); ?>" placeholder="/var/www/media/"><br>
-        Default Adapter URL<input type="text" name="default_url" value="<?php echo(isset($_SESSION['default_url']) ? $_SESSION['default_url'] : 'http://localhost/media/'); ?>" placeholder="http://localhost/media/"><br>
-        Thumbnail Adapter Destination<input type="text" class="<?php if(in_array("thumb_dest", $bad_paths)){echo "error";}?>" name="thumb_dest" value="<?php echo(isset($_SESSION['thumb_dest']) ? $_SESSION['thumb_dest'] : '/var/www/media/thumbs/'); ?>" placeholder="/var/www/media/thumbs/"><br>
-        Thumbnail Adapter URL<input type="text" name="thumb_url" value="<?php echo(isset($_SESSION['thumb_url']) ? $_SESSION['thumb_url'] : 'http://localhost/media/thumb/'); ?>" placeholder="http://localhost/media/thumb/"><br>
-        Temp Adapter Destination<input type="text" name="temp_dest" class="<?php if(in_array("temp_dest", $bad_paths)){echo "error";}?>" value="<?php echo(isset($_SESSION['temp_dest']) ? $_SESSION['temp_dest'] : '/var/www/media/temp/'); ?>" placeholder="/var/www/media/temp/"><br>
-        Temp Adapter URL<input type="text" name="temp_url" value="<?php echo(isset($_SESSION['temp_url']) ? $_SESSION['temp_url'] : 'http://localhost/media/temp/'); ?>" placeholder="http://localhost/media/temp/"><br>
 <?php
 }
 
@@ -418,6 +427,35 @@ if($step == 5) {
 
   require_once('config_setup.php');
   WriteConfig();
+
+  // @TODO: put all this data into an array.
+  // so we can clear all session unset($_SESSION['installation']);
+  $install_data = array(
+    'step',
+    'email',
+    'site_name',
+    'password',
+    'directus_path',
+    'host_name',
+    'username',
+    'db_password',
+    'db_name',
+    'db_prefix',
+    'install_sample',
+    'default_dest',
+    'default_url',
+    'thumb_dest',
+    'thumb_url',
+    'temp_dest',
+    'temp_url',
+    'send_config_email'
+  );
+
+  foreach($_SESSION as $key => $value) {
+    if (in_array($key, $install_data)) {
+      unset($_SESSION[$key]);
+    }
+  }
 
   header('Location: ../');
 }

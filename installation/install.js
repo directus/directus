@@ -15,7 +15,7 @@ $(window).ready(function() {
       break;
   }
 
-  $('input').change(function(e) {
+  $('input').on('change keypress paste focus textInput input', function(e) {
     switch(step) {
       case 1:
         CheckStep1();
