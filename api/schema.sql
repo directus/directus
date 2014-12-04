@@ -267,7 +267,7 @@ VALUES
   (6,'global','rows_per_page','200'),
   (7,'files','storage_adapter','FileSystemAdapter'),
   (8,'files','storage_destination',''),
-  (9,'fiels','thumbnail_storage_adapter','FileSystemAdapter'),
+  (9,'files','thumbnail_storage_adapter','FileSystemAdapter'),
   (10,'files','thumbnail_storage_destination',''),
   (11,'files','allowed_thumbnails',''),
   (12,'files','thumbnail_quality','100'),
