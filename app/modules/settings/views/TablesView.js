@@ -327,11 +327,11 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     attributes: {
       class: "two-column-form"
     },
-    
+
     events: {
       'change select#table_related': 'changeRelatedTable'
     },
-    
+
     changeRelatedTable: function(e) {
       this.model.set({table_related: $(e.target).val()});
     },
@@ -447,7 +447,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         //junction_key_left: column.relationship.get('junction_key_right'),
         //table_related: column.relationship.get('table_related')
       }));
-      
+
       column.relationship = model;
       var that = this;
       var view = new EditRelationship({model: model});
@@ -650,13 +650,17 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     beforeRender: function() {
+      var modelsToRemove = [];
       this.collection.each(function(model){
         if (!this.isValidModel(model)) {
-          this.collection.remove(model);
+          modelsToRemove.push(model);
           return false;
         }
         this.addRowView(model, false);
       }, this);
+      if (modelsToRemove.length>0) {
+        this.collection.remove(modelsToRemove);
+      }
     },
 
     initialize: function() {
