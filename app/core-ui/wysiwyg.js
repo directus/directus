@@ -422,8 +422,10 @@ var template = '<style type="text/css"> \
     }
   });
 
-  Module.validate = function(value) {
-
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
   };
 
   Module.list = function(options) {

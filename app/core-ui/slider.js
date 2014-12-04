@@ -76,8 +76,11 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   });
 
-  Module.validate = function(value) {
-    //
+  Module.validate = function(value, options) {
+    // Not needed since HTML5 slider defaults to "0"
+    if (options.schema.isRequired() && !value) {
+      return 'This field is required';
+    }
   };
 
   Module.list = function(options) {

@@ -108,8 +108,11 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   });
 
-  Module.validate = function(value) {
-    //
+  Module.validate = function(value, options) {
+    // This doesn't work since the input type="color" has a default color which is black: #000000
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
   };
 
   Module.list = function(options) {

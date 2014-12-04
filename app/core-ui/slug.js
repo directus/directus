@@ -81,13 +81,15 @@ define(['app', 'backbone'], function(app, Backbone) {
   });
 
   Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
     if (options.settings.has('validation_regex')) {
       var regex = new RegExp(options.settings.get('validation_regex'));
       if (!regex.test(value)) {
         return options.settings.get('validation_message');
       }
     }
-    //return 'HELL NO';
   };
 
   Module.list = function(options) {

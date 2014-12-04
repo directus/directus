@@ -202,6 +202,13 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
   });
 
+  Module.validate = function(value, options) {
+    // @TODO: Does not currently consider newly deleted items
+    if (options.schema.isRequired() && value.length == 0) {
+      return 'This field is required';
+    }
+  };
+
   Module.list = function() {
     return 'x';
   };

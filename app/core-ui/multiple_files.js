@@ -320,6 +320,12 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
     }
   });
 
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && value.length === 0) {
+      return 'This field is required';
+    }
+  };
+
   Module.list = function() {
     return 'x';
   };

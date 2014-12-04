@@ -388,7 +388,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
 
   Module.validate = function(value, options) {
     if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
-      return 'The field is required';
+      return 'This field is required';
     }
   };
 

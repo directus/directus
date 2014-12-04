@@ -73,13 +73,22 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
     },
 
     initialize: function() {
-      this.value = moment(this.options.value);
+      //this.value = moment(this.options.value);
+
+      var value = this.model.get(this.name);
+      if(undefined === value) {
+        this.value = moment('0000-00-00');
+      } else {
+        this.value = moment(value);
+      }
     }
 
   });
 
-  Module.validate = function(value) {
-    //
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
   };
 
   Module.list = function(options) {

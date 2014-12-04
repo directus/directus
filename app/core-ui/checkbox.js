@@ -62,6 +62,13 @@ define(['app','backbone'], function(app, Backbone) {
 
   });
 
+  Module.validate = function(value, options) {
+    // If a checkbox is required, it MUST be checked to save – similar to "agree to terms" functionality
+    if (options.schema.isRequired() && value == 0) {
+      return 'This field is required';
+    }
+  };
+
   Module.list = function(options) {
     var val = (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
     //var val = options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100);

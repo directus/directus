@@ -111,6 +111,12 @@ define(['app', 'backbone'], function(app, Backbone) {
     }
   });
 
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
+  };
+
   Module.list = function(options) {
     return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
   };
