@@ -650,17 +650,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     beforeRender: function() {
-      var modelsToRemove = [];
       this.collection.each(function(model){
         if (!this.isValidModel(model)) {
-          modelsToRemove.push(model);
           return false;
         }
         this.addRowView(model, false);
       }, this);
-      if (modelsToRemove.length>0) {
-        this.collection.remove(modelsToRemove);
-      }
     },
 
     initialize: function() {
