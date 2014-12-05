@@ -29,6 +29,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
   var NewColumnOverlay = BasePageView.extend({
     headerOptions: {
       route: {
+
         title: 'New Column',
         isOverlay: true
       }
@@ -95,6 +96,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       },
       'change input#columnName': function(e) {
         this.columnName =  $(e.target).val();
+        this.model.set({column_name: this.columnName});
       },
       'change input#charLength': function(e) {
         this.model.set({char_length: $(e.target).val()});
@@ -116,10 +118,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     serialize: function() {
       var data = {ui_types: [], data_types: []};
       var uis = UIManager._getAllUIs();
-
-      if(this.model.has('column_name')) {
-        data.column_name = this.model.get('column_name');
-      }
 
       for(var key in uis) {
         //If not system column
@@ -164,7 +162,9 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       //Check if we need length field
       if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) > -1)
       {
-        data.CHAR_LENGTH = 1;
+        if (!this.model.get('char_length')) {
+          this.model.set({char_length: 1});
+        }
       }
 
       if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
@@ -234,7 +234,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         this.model.set({relationship_type: this.selectedDataType});
       }
 
-      this.model.set({data_type: this.selectedDataType, ui: this.selectedUI, column_name: this.columnName});
+      this.model.set({data_type: this.selectedDataType, ui: this.selectedUI});
 
       return data;
     },
