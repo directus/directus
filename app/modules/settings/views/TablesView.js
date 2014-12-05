@@ -29,6 +29,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
   var NewColumnOverlay = BasePageView.extend({
     headerOptions: {
       route: {
+
         title: 'New Column',
         isOverlay: true
       }
@@ -164,7 +165,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       //Check if we need length field
       if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) > -1)
       {
+        // what's this line purpose of this here?
         data.CHAR_LENGTH = 1;
+
+        if (!this.model.get('char_length')) {
+          this.model.set({char_length: 1});
+        }
       }
 
       if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
