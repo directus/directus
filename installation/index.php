@@ -232,7 +232,7 @@ if($step == 3) {
   <div class="body">
     <div class="container">
       <?php if(count($bad_paths) > 0) {
-        echo("<div style='color:#FF4C4C'>Error: Paths dont have Write Permissions.</div><br/>");
+        echo("<div style='color:#FF4C4C'>Error: Paths dont exist or have Write Permissions.</div><br/>");
       } ?>
       Default Adapter Destination<input type="text" class="<?php if(in_array("default_dest", $bad_paths)){echo "error";}?>" name="default_dest" value="<?php echo(isset($_SESSION['default_dest']) ? $_SESSION['default_dest'] : $abspath.'media/'); ?>" placeholder="/var/www/media/"><br>
       Default Adapter URL<input type="text" name="default_url" value="<?php echo(isset($_SESSION['default_url']) ? $_SESSION['default_url'] : $site_url.'media/'); ?>" placeholder="http://localhost/media/"><br>
