@@ -2445,6 +2445,8 @@ select:focus,
   width: 150px;
   display: inline-block;
   height: 30px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 #directus_columns .open-ui-options {
   margin-left: 4px;
