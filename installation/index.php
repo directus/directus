@@ -318,6 +318,10 @@ if($step == 4) {
             <td class="result"><span class="label label-success">Yes</span></td>
           </tr>
           <tr>
+            <td class="item">Vendor Installed</td>
+            <td class="result"><?php if(file_exists('../api/vendor/autoload.php')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span>');} ?></td>
+          </tr>
+          <tr> 
             <td class="item">Logs Writable (../api/logs/)</td>
             <td class="result"><?php if(is_writable('../api/logs')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span>');}?></td>
           </tr>
