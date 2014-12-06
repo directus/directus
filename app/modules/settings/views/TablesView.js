@@ -168,6 +168,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         if (!this.model.get('char_length')) {
           this.model.set({char_length: 1});
         }
+        data.char_length = this.model.get('char_length');
       }
 
       if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
