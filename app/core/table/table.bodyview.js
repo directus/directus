@@ -114,11 +114,12 @@ function(app, Backbone, Sortable) {
       if (this.sort) {
         var container = this.$el[0];
         var that = this;
-        var sort = new Sortable(container, {
+        options.parentView.sortableWidget = new Sortable(container, {
           animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
           handle: ".sort", // Restricts sort start click/touch to the specified element
           draggable: "tr", // Specifies which items inside the element should be sortable
           ghostClass: "sortable-ghost",
+          sort: false,
           onStart: function (evt) {
             //var dragItem = jQuery(evt.item);
             var tbody = jQuery(container);

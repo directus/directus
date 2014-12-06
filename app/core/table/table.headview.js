@@ -155,6 +155,16 @@ function(app, Backbone) {
         };
 
         this.render();
+      },
+      'click.sortableHeader': function(e) {
+        if(this.parentView.sortableWidget.options.sort)
+        {
+          $(e.currentTarget).removeClass('active');
+          this.parentView.sortableWidget.options.sort = false;  
+        } else {
+          $(e.currentTarget).addClass('active');
+          this.parentView.sortableWidget.options.sort = true;  
+        }
       }
     },
 
@@ -178,7 +188,9 @@ function(app, Backbone) {
       return {selectable: this.options.selectable, sortable: this.options.sort, columns: columns, deleteColumn: this.options.deleteColumn, hideColumnPreferences: this.options.hideColumnPreferences};
     },
 
-    initialize: function() {
+    initialize: function(options) {
+      this.parentView = options.parentView;
+
       this.maxColumns = this.options.maxColumns || 8;
       var that = this;
       if(this.collection.preferences) {
