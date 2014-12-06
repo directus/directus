@@ -243,9 +243,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             }
             $where->unnest;
         }
-        //    $log = Bootstrap::get('log');
-        //    $log->info(__CLASS__.'#'.__FUNCTION__);
-        //    $log->info("New search query: " . $this->dumpSql($select));
         return $select;
     }
 

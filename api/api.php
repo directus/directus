@@ -1,9 +1,4 @@
 <?php
-
-// Initialization
-//  - Apparently the autoloaders must be registered separately in both index.php and api.php
-
-
 // Composer Autoloader
 $loader = require 'vendor/autoload.php';
 $loader->add("Directus", dirname(__FILE__) . "/core/");
@@ -48,7 +43,6 @@ use Directus\Db\TableGateway\DirectusGroupsTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
-//use Directus\Db\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
 use Directus\Files;
@@ -94,12 +88,6 @@ $authAndNonceRouteWhitelist = array(
     "auth_permissions",
     "debug_acl_poc",
 );
-
-// var_dump($app->request()->getRootUri());
-// var_dump($app->request()->getResourceUri());
-// var_dump($_GET['run_api_router']);
-// var_dump(API_VERSION);
-// die('die');
 
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist) {
     /** Skip routes which don't require these protections */
@@ -235,8 +223,6 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
         }
     }
 
-    // ------------------------------
-
     if(!$user) {
         return JsonView::render($response);
     }
@@ -284,7 +270,7 @@ $app->get("/$v/auth/clear-session/?", function() use ($app) {
     if('production' === DIRECTUS_ENV) {
         return $app->halt('404');
     }
-    // Example #1 - http://php.net/manual/en/function.session-destroy.php
+
     $_SESSION = array();
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
@@ -344,22 +330,12 @@ EMAILBODY;
             'success' => false
         ));
     }
-/*
-    $message = Swift_Message::newInstance('You reset your Directus password')
-      ->setFrom(array('noreply@getdirectus.com' => 'Directus'))
-      ->setTo(array($user['email']))
-      ->setBody($emailBodyPlainText);
 
-    $mailer = Bootstrap::get('mailer');
-    $result = $mailer->send($message);
-*/
     $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
     'Reply-To: donotreply@getdirectus.com' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
 
     mail($user['email'], 'You Reset Your Directus Password', $emailBodyPlainText, $headers);
-    //$result = 1;
-    //$success = ($result === 1);
     $success = true;
     return JsonView::render(array(
         'success' => $success
@@ -472,36 +448,6 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
     $id = null;
     $params['table_name'] = $table;
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
-
-    /**
-     * Tmp hack for password bug.
-     * AARG#preSaveDataHook is insufficient for this.
-     * We need back-end form processing :)
-     */
-    // if("directus_users" === $table && in_array($app->request()->getMethod(), array('PUT','POST'))) {
-    //     $users = $requestPayload;
-    //     if(!is_numeric_array($users))
-    //         $users = array($users);
-    //     foreach($users as $user) {
-    //         if(!isset($user['password']) || empty($user['password']))
-    //             continue;
-    //         $Users = new DirectusUsersTableGateway($acl, $ZendDb);
-    //         $UserRow = null;
-    //         $isNew = !(isset($user['id']) && !empty($user['id']));
-    //         // Salt can't be written by client
-    //         if($isNew) {
-    //             $user['salt'] = uniqid();
-    //         } else {
-    //             $UserRow = $Users->find($user['id']);
-    //             if(false === $UserRow)
-    //                 $app->halt('404', 'No such user with ID ' . $user['id']);
-    //             $user['salt'] = $UserRow['salt'];
-    //         }
-    //         $user['password'] = Auth::hashPassword($user['password'], $user['salt']);
-    //         $where = array('id' => $user['id']);
-    //         $Users->update($user, $where);
-    //     }
-    // }
 
     // any CREATE requests should md5 the email
     if("directus_users" === $table &&
@@ -687,7 +633,6 @@ $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use
   $newRecord = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
   $_POST['id'] = $newRecord['id'];
   JsonView::render($_POST);
-  //$TableGateway->updateCollection($requestPayload);
 });
 /**
  * GROUPS COLLECTION
@@ -716,7 +661,6 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($ZendDb, $acl) {
  */
 
 $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $params, $requestPayload) {
-
     if(!is_null($id))
         $params['id'] = $id;
 
@@ -725,7 +669,6 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
     $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
     $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
-
 
     switch ($app->request()->getMethod()) {
       case "POST":
@@ -966,11 +909,9 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
 });
 
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    // $Transfer = new Files\Transfer();
     $Storage = new Files\Storage\Storage();
     $result = array();
     if(isset($_POST['link'])) {
-        // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
         $fileData = array('caption'=>'','tags'=>'','location'=>'');
         $fileData = array_merge($fileData, $Storage->acceptLink($_POST['link']));
         $result[] = array(
@@ -1216,8 +1157,6 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
  * EXCEPTION LOG
  */
 $app->post("/$v/exception/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    // $Transfer = new Files\Transfer();
-
     print_r($requestPayload);die();
     $data = array(
         'server_addr'   =>$_SERVER['SERVER_ADDR'],
@@ -1242,7 +1181,6 @@ $app->post("/$v/exception/?", function () use ($params, $requestPayload, $app, $
     $fp = @fopen($url, 'rb', false, $ctx);
 
     if (!$fp) {
-        // throw new Exception("Problem with $url, $php_errormsg");
         $response = "Failed to log error. File pointer could not be initialized.";
         $app->getLog()->warn($response);
     }
@@ -1250,7 +1188,6 @@ $app->post("/$v/exception/?", function () use ($params, $requestPayload, $app, $
     $response = @stream_get_contents($fp);
 
     if ($response === false) {
-        // throw new Exception("Problem reading data from $url, $php_errormsg");
         $response = "Failed to log error. stream_get_contents failed.";
         $app->getLog()->warn($response);
     }

@@ -52,7 +52,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     {
         $this->acl = $acl;
 
-        // process features
         if ($features !== null) {
             if ($features instanceof Feature\AbstractFeature) {
                 $features = array($features);
@@ -200,7 +199,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $Update->set($recordData);
             $Update->where(array('id' => $recordData['id']));
             $TableGateway->updateWith($Update);
-            // Post-update hook
+            
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
             //If we are adding a new directus_files Item, We need to do that logic
@@ -264,7 +263,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               }
             }
 
-            // Post-insert hook
             Hooks::runHook('postInsert', array($TableGateway, $recordData, $this->adapter, $this->acl));
         }
 
@@ -458,7 +456,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
         if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
-            // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
             /**
              * Enforce Privilege: "Big" Edit
              */
