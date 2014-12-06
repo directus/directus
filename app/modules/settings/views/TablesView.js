@@ -164,6 +164,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       //Check if we need length field
       if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) > -1)
       {
+        data.SHOW_CHAR_LENGTH = true;
         if (!this.model.get('char_length')) {
           this.model.set({char_length: 1});
         }
