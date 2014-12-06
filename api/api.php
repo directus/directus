@@ -1086,18 +1086,27 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
     'Reply-To: donotreply@getdirectus.com' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
 
+    $warning = null;
+
     foreach($userRecipients as $recipient) {
       $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
       $user = $usersTableGateway->findOneBy('id', $recipient);
 
       if(isset($user) && $user['email_messages'] == 1) {
-        mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
+        try {
+            mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
+        } catch(\Exception $e) {
+            $warning = $e->getMessage();
+        }
       }
     }
 
-    // could this be replaced?
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
-    //$message = $messagesTableGateway->fetchMessage($id);
+
+    //Attach warning if thier are any
+    if($warning != null) {
+        $message['warning'] = $warning;
+    }
 
     JsonView::render($message);
 });

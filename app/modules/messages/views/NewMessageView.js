@@ -3,7 +3,8 @@ define([
   'backbone',
   'core/directus',
   'core/BasePageView',
-  'core/widgets/widgets'
+  'core/widgets/widgets',
+  'noty'
 ],
 
 function(app, Backbone, Directus, BasePageView, Widgets) {
@@ -28,7 +29,11 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         data.read = "1";
         data.date_updated = new Date();
 
-        this.model.save(data, {success: function() {
+        this.model.save(data, {success: function(model, res) {
+          if(res.warning) {
+            noty({text: res.warning, type: 'warning', timeout: 5000});
+          }
+
           app.router.go('#messages');
         }});
 
