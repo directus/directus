@@ -24,6 +24,7 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
     {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
     {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"},
     {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"},
+    {id: 'min_entries', ui: 'numeric', char_length: 11, default_value:0, comment: "Minimum Allowed related Entries"},
     {id: 'no_duplicates', ui: 'checkbox', def: '0', comment: "No Duplicates"}
   ];
 
@@ -203,6 +204,12 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
   });
 
   Module.validate = function(value, options) {
+    var minEntries = parseInt(options.settings.get('min_entries'));
+
+    if(value.length < minEntries) {
+      return 'This field requires at least ' + minEntries + ' entries.';
+    }
+
     // @TODO: Does not currently consider newly deleted items
     if (options.schema.isRequired() && value.length == 0) {
       return 'This field is required';
