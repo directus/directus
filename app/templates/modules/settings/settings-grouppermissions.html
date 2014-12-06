@@ -12,7 +12,7 @@
 	<tbody>
 		{{#tables}}
 		<tr class="" data-table-name="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
-			<td>{{title}}</td>
+			<td class="tableName"><div style="display:inline-block">{{title}}</div></td>
 			<td class="editFields"><span class="icon icon-text-doc"></span></td>
 			{{#with permissions}}
 			<td data-value="view">

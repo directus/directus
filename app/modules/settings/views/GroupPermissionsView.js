@@ -122,6 +122,7 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
     template: 'modules/settings/settings-grouppermissions',
 
     events: {
+      'click td.tableName > div': 'toggleRowPermissions',
       'click td.editFields > span': 'editFields',
       'click td > span': function(e) {
         var $target = $(e.target).parent(),
@@ -194,6 +195,54 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
       } else {
         $span.toggleClass('add-color').toggleClass('delete-color').toggleClass('has-privilege');
       }
+    },
+
+    toggleRowPermissions: function(e) {
+      var $target = $(e.target).parent(),
+        $tr = $target.closest('tr'),
+        cid = $tr.data('cid'),
+        model = this.collection.get(cid);
+
+      //@todo: cleaner way to do this?
+      var hasFullPerms = true;
+      ['add','bigedit','bigdelete','bigview'].forEach(function (perm) {
+        if(model.get('permissions').indexOf(perm) == -1) {
+          hasFullPerms = false;
+        }
+      });
+
+      var newPerms = '';
+
+      if(!hasFullPerms)
+      {
+        newPerms = 'add,bigedit,bigdelete,bigview';
+      }
+
+      if(this.selectedState == 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
+        this.collection.each(function(cmodel) {
+          if(cmodel.get('table_name') == model.get('table_name') && cmodel.get('group_id') == model.get('group_id')) {
+            cmodel.set({permissions: newPerms});
+            cmodel.save();
+          }
+        });
+        return;
+      }
+
+      var fancySave = false;
+      var oldModel = model;
+      if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
+        model = model.clone();
+        this.model = model;
+        model.collection = oldModel.collection;
+        fancySave = true;
+      }
+      model.set({permissions: newPerms});
+      var that = this;
+      model.save({activeState: this.selectedState}, {success: function(res) {
+        if(fancySave) {
+          that.collection.add(that.model);
+        }
+      }});
     },
 
     parseTablePermissions: function($tr) {
