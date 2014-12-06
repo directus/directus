@@ -375,7 +375,11 @@ require(["config"], function() {
             message = "Server Error";
             details = encodeURIComponent(xhr.responseText);
             app.logErrorToServer(type, message, details);
-            app.trigger("alert:error", "Server Error", xhr.responseJSON.message);
+            if(xhr.responseJSON) {
+              app.trigger("alert:error", "Server Error", xhr.responseJSON.message);
+            } else {
+              app.trigger("alert:error", "Server Error", xhr.responseText);
+            }
             break;
         }
       });
