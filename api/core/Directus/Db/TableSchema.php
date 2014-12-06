@@ -497,7 +497,11 @@ class TableSchema {
         //    $return[3]['master'] = true;
         //}
         if ($column_name != -1) {
-            return $return[0];
+            if(count($return) > 0) {
+                return $return[0];
+            } else {
+                throw new \Exception("No Schema Found for table ".$tbl_name." with params: ".json_encode($params));
+            }
         }
         return $return;
     }
