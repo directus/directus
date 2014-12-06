@@ -52,7 +52,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       // Fill in default value
       if (
-        this.options.model.isNew() &&
+        value !== undefined &&
         this.options.schema.has('default_value')) {
           value = this.options.schema.get('default_value');
       }
