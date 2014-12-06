@@ -116,6 +116,7 @@ require(["config"], function() {
 
         Idle.start({
           timeout: function() {
+            noty({text: 'You have been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds', type: 'warning'});
 
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
@@ -172,13 +173,24 @@ require(["config"], function() {
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
-        console.log("Error polling Messages");
-        //alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
+        noty({text: 'Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.', type: 'error', layout:'bottomRight'});
       });
 
       app.messages.on('sync', function(collection, object) {
         if (object !== null && object.rows) {
-          alertify.log('New Message');
+          object.rows.forEach(function(msg) {
+            noty({text: 'New Message:' + msg.subject, layout:'bottomRight', buttons: [
+              {addClass: 'btn btn-primary', text: 'View Message', onClick: function($noty) {
+                  $noty.close();
+                  Backbone.history.navigate('/messages/' + msg.id, true);
+                }
+              },
+              {addClass: 'btn btn-danger', text: 'Close', onClick: function($noty) {
+                  $noty.close();
+                }
+              }
+            ]});
+          });
         }
       });
 
