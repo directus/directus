@@ -89,7 +89,9 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         this.render();
       },
       'change select#uiType': function(e) {
+        var columnName = this.model.get('column_name');
         this.model.clear();
+        this.model.set({column_name: columnName});
         this.selectedUI = $(e.target).val();
         this.selectedDataType = null;
         this.render();
@@ -116,7 +118,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     serialize: function() {
-      var data = {ui_types: [], data_types: []};
+      var data = {ui_types: [], data_types: [], column_name: this.model.get('column_name')};
       var uis = UIManager._getAllUIs();
 
       for(var key in uis) {
