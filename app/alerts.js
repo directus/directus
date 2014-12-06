@@ -1,10 +1,9 @@
 define([
   "app",
-  'plugins/alertify'
-], function(app, alertify) {
+  "noty"
+], function(app) {
 
   "use strict";
-
   // Messages Container
   var messages = new Backbone.Layout({el: '#messages'});
 

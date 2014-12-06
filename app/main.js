@@ -17,17 +17,17 @@ require(["config"], function() {
     "core/tabs",
     "core/bookmarks",
     'modules/messages/messages',
-    'plugins/alertify',
     'schema/SchemaManager',
     'modules/settings/SettingsCollection',
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
     'core/idle',
-    'tool-tips'
+    'tool-tips',
+    'noty'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip) {
 
     "use strict";
 
@@ -116,7 +116,6 @@ require(["config"], function() {
 
         Idle.start({
           timeout: function() {
-            alertify.log('You have been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
 
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
