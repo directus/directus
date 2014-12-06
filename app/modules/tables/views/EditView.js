@@ -160,7 +160,6 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         success: success,
         error: function(model, xhr, options) {
           console.log('err');
-          //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
           //Duplicate entry, forced but works
           //@todo finds a better way to determine whether there's an duplicate error
           // and what's the column's name

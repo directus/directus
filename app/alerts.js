@@ -49,6 +49,6 @@ define([
   app.on('load', hideProgressNotification);
 
   app.on('alert:error', function(message, details, showDetails) {
-    noty({text: "Error: " + message, type: 'error'});
+    noty({text: message + ': ' + details, type: 'error'});
   });
 });

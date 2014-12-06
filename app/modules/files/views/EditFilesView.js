@@ -85,10 +85,6 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       // patch only the changed values
       model.save(model.diff(data), {
         success: success,
-        error: function(model, xhr, options) {
-          console.log('err');
-          //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
-        },
         wait: true,
         patch: true,
         includeRelationships: true
