@@ -292,11 +292,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
       if (in_array($data_type, $directus_types)) {
           //This is a 'virtual column'. Write to directus schema instead of MYSQL
-          $data['table_name'] = $tableName;
-          $data['sort'] = 9999;
-
+          $tableData['table_name'] = $tableName;
+          $tableData['sort'] = 9999;
           $data = array_intersect_key($tableData, array_flip($alias_columns));
-          //Wrap data in an array so the multi collection can be used.
+
           $this->addOrUpdateRecordByArray($data, 'directus_columns');
       } else {
           if (array_key_exists('char_length', $tableData)) {
