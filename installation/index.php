@@ -208,7 +208,7 @@ if($step == 2) {
 }
 
 if($step == 3) {
-  $abspath = dirname( dirname(__FILE__) ) . '/';
+  $abspath = str_replace('\\', '/', dirname( dirname(__FILE__) ) . '/');
   $isHTTPS = false;
   if ((isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) ||
       (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) {
