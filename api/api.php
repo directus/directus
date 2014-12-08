@@ -559,6 +559,8 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
 
 $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
+    unset($params['perPage']);
+    $params['adv_search'] = 'datetime BETWEEN NOW() - INTERVAL 30 DAY AND NOW()';
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
     JsonView::render($new_get);
@@ -580,7 +582,7 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
         if(!$acl->hasTablePrivilege($table_name, 'alter')) {
             throw new UnauthorizedTableAlterException("Table alter access forbidden on table `$table`");
         }
-        
+
         $tableGateway = new TableGateway($acl, $table_name, $ZendDb);
         $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
     }
@@ -626,7 +628,7 @@ $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use
   $data['column_name'] = $column;
   $data['table_name'] = $table;
   $row = $TableGateway->findOneByArray(array('table_name'=>$table, 'column_name'=>$column));
-  
+
   if ($row) {
     $data['id'] = $row['id'];
   }
