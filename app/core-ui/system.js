@@ -59,10 +59,7 @@ define(['app','backbone'], function(app, Backbone) {
 
       //If new model, remove delete option
       if(this.model.isNew()) {
-        console.log(app.statusMapping);
-        mapping = mapping.filter(function(item, key) {
-          return key != app.statusMapping.deleted_num;
-        });
+        delete mapping[app.statusMapping.deleted_num];
       }
 
       for(var key in mapping) {
