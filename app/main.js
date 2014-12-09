@@ -219,7 +219,16 @@ require(["config"], function() {
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Tabs
       // Default directus tabs
-
+      //app.users.getCurrentUser().get("avatar") ? app.users.getCurrentUser().get("avatar") : app.PATH + 'assets/img/missing-directus-avatar.png'
+      var currentUser = app.users.getCurrentUser();
+      var currentUserAvatar = currentUser.get('avatar');
+      if (currentUser.get('avatar_file_id').has('name') && currentUser.get('avatar_is_file') == 1) {
+        currentUserAvatar = currentUser.get('avatar_file_id').makeFileUrl(true);
+      } else if(!currentUserAvatar) {
+        currentUserAvatar = app.PATH + 'assets/img/missing-directus-avatar.png';
+      } else {
+        currentUserAvatar = currentUserAvatar.replace('?s=100','?s=200');
+      }
       var tabs = [
         // (app.users.getCurrentUser().get('group').id === 1) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
         // {id: "blank",    hidden: true},
@@ -227,7 +236,7 @@ require(["config"], function() {
         // {id: "users",    icon_class: "icon-users"},
         // {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
         // {id: "activity", icon_class: "icon-bell"},
-        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar") ? app.users.getCurrentUser().get("avatar") : app.PATH + 'assets/img/missing-directus-avatar.png'},
+        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: currentUserAvatar},
         {id: "logout", icon_class: "icon-power-button"}
       ];
 

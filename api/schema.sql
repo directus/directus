@@ -85,7 +85,8 @@ LOCK TABLES `directus_columns` WRITE;
 
 INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
 VALUES
-  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,'');
+  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
+  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');
 
 /*!40000 ALTER TABLE `directus_columns` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -421,6 +422,8 @@ CREATE TABLE `directus_users` (
   `ip` varchar(50) DEFAULT '',
   `group` int(11) DEFAULT NULL,
   `avatar` varchar(500) DEFAULT NULL,
+  `avatar_file_id` int(11) DEFAULT NULL,
+  `avatar_is_file` tinyint(1) DEFAULT 0,
   `location` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
