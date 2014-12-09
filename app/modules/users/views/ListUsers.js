@@ -58,10 +58,13 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
+        
         var data = {
           "id": model.get('id'),
           "cid": model.cid,
           'avatar': model.get('avatar'),
+          'avatar_file_id': model.get('avatar_file_id'),
+          'avatar_is_file': model.get('avatar_is_file'),
           'first_name': model.get('first_name'),
           'last_name': model.get('last_name'),
           'email': model.get('email'),
@@ -74,8 +77,10 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
         };
 
         var avatarSmall = data.avatar;
-
-        if(!avatarSmall) {
+        
+        if (data.avatar_file_id.has('name') && data.avatar_is_file == 1) {
+          avatarSmall = data.avatar_file_id.makeFileUrl(true);
+        } else if(!avatarSmall) {
           avatarSmall = app.PATH + 'assets/img/missing-directus-avatar.png';
         } else {
           avatarSmall = avatarSmall.replace('?s=100','?s=200');
