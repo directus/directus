@@ -49,7 +49,6 @@ function(app, Backbone, Directus) {
         var barType = $(this).attr("data-type");
         var percentage = (150 / heightTotal);
         var heightPercentage = Math.floor(percentage * barTotal);
-        console.log(heightPercentage, percentage, heightTotal, barTotal);
         $(this).animate({ height: heightPercentage}, animationTime, "swing");
 
         totals[barType] += parseInt(barTotal, 10);
