@@ -27,6 +27,7 @@ function(app, Backbone, Directus) {
       var me = this;
       var heightTotal = 0;
       var totals = {
+        'days': 30,
         'all': 0,
         'files': 0,
         'system': 0,
@@ -132,41 +133,59 @@ function(app, Backbone, Directus) {
       var groupedData = [];
 
       data.forEach(function(group) {
-        var date = moment(group.timestamp).format('MMMM-D-YYYY');
+        var date = moment(group.timestamp).format('YYYY-MM-DD');
         if(!groupedData[date]) {
           //If Today Have it say Today
-          if(date == moment().format('MMMM-D-YYYY')) {
+          if(date == moment().format('YYYY-MM-DD')) {
             groupedData[date] = {title: "Today", data: []};
           } else {
-            groupedData[date] = {title: moment(group.timestamp).format('MMMM D'), data: []};
+            groupedData[date] = {title: moment(group.timestamp).format('M-D'), data: []};
           }
         }
         groupedData[date].data.push(group);
       });
 
+      var thirtyDays = [];
+      for (var i = 0; i < 30; i++) {
+        var dateTest = moment(new Date(new Date().setDate(new Date().getDate()-i))).format('YYYY-MM-DD');
+
+        if(groupedData[dateTest]){
+          thirtyDays[dateTest] = groupedData[dateTest];
+        } else {
+          if(dateTest == moment().format('YYYY-MM-DD')) {
+            thirtyDays[dateTest] = {title: "Today", data: []};
+          } else {
+            thirtyDays[dateTest] = {title: moment(new Date(new Date().setDate(new Date().getDate()-i))).format('M-D'), data: []};
+          }
+        }
+      }
+
       data = [];
 
-      for(var group in groupedData) {
-        groupedData[group].logins = 0;
-        groupedData[group].edits = 0;
-        groupedData[group].adds = 0;
-        groupedData[group].deletes = 0;
-        groupedData[group].messages = 0;
-        groupedData[group].files = 0;
-        groupedData[group].system = 0;
-        groupedData[group].total = 0;
-        for(var groupData in groupedData[group].data) {
-          if(groupedData[group].data[groupData].category == "login"){ groupedData[group].logins += 1; }
-          if(groupedData[group].data[groupData].category == "edit"){ groupedData[group].edits += 1; }
-          if(groupedData[group].data[groupData].category == "add"){ groupedData[group].adds += 1; }
-          if(groupedData[group].data[groupData].category == "delete"){ groupedData[group].deletes += 1; }
-          if(groupedData[group].data[groupData].category == "message"){ groupedData[group].messages += 1; }
-          if(groupedData[group].data[groupData].category == "file"){ groupedData[group].files += 1; }
-          if(groupedData[group].data[groupData].category == "system"){ groupedData[group].system += 1; }
-          groupedData[group].total += 1;
+      for(var group in thirtyDays) {
+        thirtyDays[group].logins = 0;
+        thirtyDays[group].edits = 0;
+        thirtyDays[group].adds = 0;
+        thirtyDays[group].deletes = 0;
+        thirtyDays[group].messages = 0;
+        thirtyDays[group].files = 0;
+        thirtyDays[group].system = 0;
+        thirtyDays[group].total = 0;
+        for(var groupData in thirtyDays[group].data) {
+          if(thirtyDays[group].data[groupData].category == "login"){ thirtyDays[group].logins += 1; }
+          if(thirtyDays[group].data[groupData].category == "edit"){ thirtyDays[group].edits += 1; }
+          if(thirtyDays[group].data[groupData].category == "add"){ thirtyDays[group].adds += 1; }
+          if(thirtyDays[group].data[groupData].category == "delete"){ thirtyDays[group].deletes += 1; }
+          if(thirtyDays[group].data[groupData].category == "message"){ thirtyDays[group].messages += 1; }
+          if(thirtyDays[group].data[groupData].category == "file"){ thirtyDays[group].files += 1; }
+          if(thirtyDays[group].data[groupData].category == "system"){ thirtyDays[group].system += 1; }
+          thirtyDays[group].total += 1;
         }
-        data.push(groupedData[group]);
+        data.push(thirtyDays[group]);
       }
+
+      // When outputting to markup we need "today" last, so reverse the array
+      data.reverse();
 
       return {activities: data};
     },

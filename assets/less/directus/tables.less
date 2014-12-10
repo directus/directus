@@ -574,14 +574,14 @@
 .activity-module {
   position: relative;
   //border-bottom: 1px solid #ececec;
-  padding: 25px 20px 0 20px;
+  //padding: 0px 20px 0 20px;
 
   h2 {
     font-family: 'Arvo', serif;
     font-size: 32px;
     font-weight: 400;
     margin: 0 0 -4px 0;
-    text-shadow: 0 2px 0 rgba(255, 255, 255, 1.0);
+    //text-shadow: 0 2px 0 rgba(255, 255, 255, 1.0);
   }
 
   .black {color:#000000;}
@@ -600,58 +600,76 @@
 
   .chart-key {
     position: absolute;
-    top: 18px;
-    left: 20px;
+    top: -2px;
+    left: -14px;
     background-color: @lightGrey;
     color: @mediumGrey;
     text-align: center;
     font-size: 10px;
-    padding-right: 10px;
-  }
-  .activity-module {
-    background-color: @lightGrey;
-    border-radius: 2px;
-    color: #8f8f8f;
-    width: 100%;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 1.0);
-    font-size: 14px;
-    min-width: 630px;
+    padding-right: 5px;
+    margin-right: 5px;
+    display: none;
   }
   .activity-chart table {
     width: 100%;
-    border-top: 1px dashed @white;
+    //border-top: 2px solid @extraLightGrey;
     font-style: italic;
     font-size: 12px;
   }
   .activity-chart table td {
     vertical-align: bottom;
+    position: relative;
+  }
+  .bgfiller {
+    background-color: @extraLightGrey;
+    height: 100%;
+    width: 50%;
+    min-width: 10px;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-left: -25%;
+    z-index: 0;
   }
   .bars {
     height: 150px;
   }
   .bar {
-    width: 10px;
+    width: 50%;
+    min-width: 10px;
     margin: 0 auto;
-    box-shadow: 0 -2px 6px 0 rgba(255, 255, 255, 0.1);
+    //box-shadow: 0 -2px 6px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
   }
   .bar:first-child {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+    //box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+  }
+  .bar-date {
+    position: absolute;
+    bottom: -18px;
+    color: @mediumGrey;
+    font-size: 9px;
+    text-align: center;
+    width: 100%;
   }
   .activity-totals {
     //border-top: 1px solid @white;
-    padding: 15px 15px 0 15px;
+    padding: 35px 15px 0 15px;
     overflow: hidden;
+    //display: none;
   }
   .activity-total {
-    width: 16.6%;
-    min-width: 130px;
+    width: 14.2%;
+    min-width: 80px;
     text-align: center;
     position: relative;
     float: left;
   }
   .center {
-    width: 90%;
-    min-width: 780px;
+    width: 100%;
+    min-width: 560px;
     margin: 0 auto;
   }
   .align-center {
@@ -659,9 +677,6 @@
   }
   .align-right {
     text-align: right;
-  }
-  .date-range {
-    color: @mediumGrey;
   }
 
   @media (max-width: 900px) {

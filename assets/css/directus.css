@@ -3050,14 +3050,12 @@ select:focus,
 }
 .activity-module {
   position: relative;
-  padding: 25px 20px 0 20px;
 }
 .activity-module h2 {
   font-family: 'Arvo', serif;
   font-size: 32px;
   font-weight: 400;
   margin: 0 0 -4px 0;
-  text-shadow: 0 2px 0 #ffffff;
 }
 .activity-module .black {
   color: #000000;
@@ -3097,57 +3095,69 @@ select:focus,
 }
 .activity-module .chart-key {
   position: absolute;
-  top: 18px;
-  left: 20px;
+  top: -2px;
+  left: -14px;
   background-color: #ececec;
   color: #bbbbbb;
   text-align: center;
   font-size: 10px;
-  padding-right: 10px;
-}
-.activity-module .activity-module {
-  background-color: #ececec;
-  border-radius: 2px;
-  color: #8f8f8f;
-  width: 100%;
-  text-shadow: 0 1px 0 #ffffff;
-  font-size: 14px;
-  min-width: 630px;
+  padding-right: 5px;
+  margin-right: 5px;
+  display: none;
 }
 .activity-module .activity-chart table {
   width: 100%;
-  border-top: 1px dashed #ffffff;
   font-style: italic;
   font-size: 12px;
 }
 .activity-module .activity-chart table td {
   vertical-align: bottom;
+  position: relative;
+}
+.activity-module .bgfiller {
+  background-color: #f4f4f4;
+  height: 100%;
+  width: 50%;
+  min-width: 10px;
+  margin: 0 auto;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  margin-left: -25%;
+  z-index: 0;
 }
 .activity-module .bars {
   height: 150px;
 }
 .activity-module .bar {
-  width: 10px;
+  width: 50%;
+  min-width: 10px;
   margin: 0 auto;
-  box-shadow: 0 -2px 6px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
 }
-.activity-module .bar:first-child {
-  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+.activity-module .bar-date {
+  position: absolute;
+  bottom: -18px;
+  color: #bbbbbb;
+  font-size: 9px;
+  text-align: center;
+  width: 100%;
 }
 .activity-module .activity-totals {
-  padding: 15px 15px 0 15px;
+  padding: 35px 15px 0 15px;
   overflow: hidden;
 }
 .activity-module .activity-total {
-  width: 16.6%;
-  min-width: 130px;
+  width: 14.2%;
+  min-width: 80px;
   text-align: center;
   position: relative;
   float: left;
 }
 .activity-module .center {
-  width: 90%;
-  min-width: 780px;
+  width: 100%;
+  min-width: 560px;
   margin: 0 auto;
 }
 .activity-module .align-center {
@@ -3155,9 +3165,6 @@ select:focus,
 }
 .activity-module .align-right {
   text-align: right;
-}
-.activity-module .date-range {
-  color: #bbbbbb;
 }
 @media (max-width: 900px) {
   .activity-module h2 {
@@ -4392,6 +4399,9 @@ body.initial-load #sidebar {
   .two-column-form .fields .label {
     width: 100px;
     padding: 30px 10px 20px 10px;
+  }
+  .bar-date {
+    display: none;
   }
   .history-container ul .history-add-comment {
     padding-right: 20px;
