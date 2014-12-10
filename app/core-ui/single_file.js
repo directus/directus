@@ -150,9 +150,9 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                   {{else}} \
                   <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
                   <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
                   {{/if}} \
+                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <div class="single-image-actions"> \
                     <div class="single-image-text">OR UPLOAD FROM</div> \
                     <button class="btn btn-primary" data-action="computer" type="button"><span class="icon icon-upload"></span> Your Computer</button> \
