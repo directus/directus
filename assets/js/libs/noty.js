@@ -491,8 +491,8 @@
     };
 
     $.noty.defaults = {
-        layout      : 'top',
-        theme       : 'defaultTheme',
+        layout      : 'bottomRight',
+        theme       : 'directus',
         type        : 'alert',
         text        : '',
         dismissQueue: true,

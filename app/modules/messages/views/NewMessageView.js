@@ -31,7 +31,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
         this.model.save(data, {success: function(model, res) {
           if(res.warning) {
-            noty({text: res.warning, type: 'warning', timeout: 5000});
+            noty({text: res.warning, type: 'warning', timeout: 5000, theme: 'directus'});
           }
 
           app.router.go('#messages');

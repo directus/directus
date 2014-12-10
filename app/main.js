@@ -116,7 +116,7 @@ require(["config"], function() {
 
         Idle.start({
           timeout: function() {
-            noty({text: 'You have been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds', type: 'warning'});
+            noty({text: 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds', type: 'warning', layout:'bottomRight', theme: 'directus'});
 
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
@@ -173,23 +173,19 @@ require(["config"], function() {
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
-        noty({text: 'Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.', type: 'error', layout:'bottomRight'});
+        noty({text: 'Directus can\'t reach the server<br>A new attempt will be made in 30 seconds', type: 'error', layout:'bottomRight', theme: 'directus'});
       });
 
       app.messages.on('sync', function(collection, object) {
         if (object !== null && object.rows) {
           object.rows.forEach(function(msg) {
-            noty({text: 'New Message:' + msg.subject, layout:'bottomRight', buttons: [
-              {addClass: 'btn btn-primary', text: 'View Message', onClick: function($noty) {
-                  $noty.close();
+            noty({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + msg.responses.models[msg.responses.models.length-1].attributes.message + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
+              callback: {
+                onCloseClick: function() {
                   Backbone.history.navigate('/messages/' + msg.id, true);
                 }
-              },
-              {addClass: 'btn btn-danger', text: 'Close', onClick: function($noty) {
-                  $noty.close();
-                }
               }
-            ]});
+            });
           });
         }
       });

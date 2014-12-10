@@ -1,6 +1,7 @@
 define([
   "app",
-  "noty"
+  "noty",
+  "noty_theme"
 ], function(app) {
 
   "use strict";
@@ -49,6 +50,6 @@ define([
   app.on('load', hideProgressNotification);
 
   app.on('alert:error', function(message, details, showDetails) {
-    noty({text: message + ': ' + details, type: 'error'});
+    noty({text: '<b>' + message + '</b><br>' + details, type: 'error', theme: 'directus'});
   });
 });
