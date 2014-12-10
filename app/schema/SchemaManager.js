@@ -116,6 +116,7 @@ define(function(require, exports, module) {
         var model = new TableModel(options.schema, {parse: true, url: this.apiURL + 'tables/' + tableName});
         //model.url = this.apiURL + 'tables/' + tableName;
         //model.columns.url = this.apiURL + 'tables/' + tableName + '/columns';
+        //@TODO: why not moving this to TableModel
         model.columns.table = model;
 
         columnSchemas[namespace][tableName] = model.columns;
