@@ -12,6 +12,7 @@ define([
   'backbone',
   'core/directus',
   'core/BasePageView',
+  'schema/TableModel',
   'schema/ColumnModel',
   'core/UIManager',
   'core/widgets/widgets',
@@ -19,7 +20,7 @@ define([
   'sortable'
 ],
 
-function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets, SchemaManager, Sortable) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -59,7 +60,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
           app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
           that.collection.add(that.model);
           that.collection.trigger('change');
-          location.reload();
         }});
       }
     },
@@ -743,10 +743,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
             var model = new Backbone.Model();
             model.url = app.API_URL + 'privileges/1';
             model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
-            model.save();
-            that.listenToOnce(model, 'sync', function() {
-              location.reload();
-            });
+            model.save({}, {success: function(model){
+              var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
+              tableModel.fetch();
+              tableModel.columns.table = tableModel;
+              that.collection.add(tableModel);
+            }});
           }
         }});
       }
