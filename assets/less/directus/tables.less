@@ -6,6 +6,8 @@
     width: 150px;
     display: inline-block;
     height: 30px;
+    padding-top: 0px;
+    padding-bottom: 0px;
   }
   .open-ui-options {
     margin-left: 4px;
@@ -194,11 +196,12 @@
     }
     &.inactive {
       td {
-        opacity: 0.25;
+        opacity: 0.5;
       }
-      td.check label {
-        opacity: 1.0;
-      }
+      // td.check,
+      // td.sort {
+      //   opacity: 1.0;
+      // }
     }
     &.system {
       height: 55px;
@@ -680,6 +683,27 @@
 
 //////////////////////////////////////////////////////////////////////////////
 // Drag and drop (sortable) styling
+
+.sortableHeader {
+  color: @extraDarkGrey !important;
+}
+
+.disable-sorting {
+  .sortableHeader {
+    cursor: pointer;
+    .icon {
+      color: @mediumGrey;
+    }
+    &:hover .icon {
+      color: @darkGrey;
+    }
+  }
+  td.sort {
+    .icon {
+      visibility: hidden;
+    }
+  }
+}
 
 .disable-transform tr {
   transform: none !important;

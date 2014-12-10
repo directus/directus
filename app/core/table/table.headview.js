@@ -159,11 +159,11 @@ function(app, Backbone) {
       'click.sortableHeader': function(e) {
         if(this.parentView.sortableWidget.options.sort)
         {
-          $(e.currentTarget).removeClass('active');
-          this.parentView.sortableWidget.options.sort = false;  
+          $(e.currentTarget).closest('table').addClass('disable-sorting');
+          this.parentView.sortableWidget.options.sort = false;
         } else {
-          $(e.currentTarget).addClass('active');
-          this.parentView.sortableWidget.options.sort = true;  
+          $(e.currentTarget).closest('table').removeClass('disable-sorting');
+          this.parentView.sortableWidget.options.sort = true;
         }
       }
     },
