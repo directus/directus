@@ -213,26 +213,11 @@ require(["config"], function() {
       $('#page-blocker').fadeOut(0);
 
       ////////////////////////////////////////////////////////////////////////////////////
-      // Setup Tabs
+      // Setup Tabs @TODO: REMOVE
       // Default directus tabs
-      //app.users.getCurrentUser().get("avatar") ? app.users.getCurrentUser().get("avatar") : app.PATH + 'assets/img/missing-directus-avatar.png'
-      var currentUser = app.users.getCurrentUser();
-      var currentUserAvatar = currentUser.get('avatar');
-      if (currentUser.get('avatar_file_id').has('name') && currentUser.get('avatar_is_file') == 1) {
-        currentUserAvatar = currentUser.get('avatar_file_id').makeFileUrl(true);
-      } else if(!currentUserAvatar) {
-        currentUserAvatar = app.PATH + 'assets/img/missing-directus-avatar.png';
-      } else {
-        currentUserAvatar = currentUserAvatar.replace('?s=100','?s=200');
-      }
+
       var tabs = [
-        // (app.users.getCurrentUser().get('group').id === 1) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
-        // {id: "blank",    hidden: true},
-        // {id: "files",    icon_class: "icon-attach"},
-        // {id: "users",    icon_class: "icon-users"},
-        // {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
-        // {id: "activity", icon_class: "icon-bell"},
-        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: currentUserAvatar},
+        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: ''},
         {id: "logout", icon_class: "icon-power-button"}
       ];
 
@@ -267,18 +252,9 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model(bookmark));
       });
 
-      if(app.users.getCurrentUser().get('group').id === 1) {
-        bookmarks.push(new Backbone.Model({
-          icon_class: "icon-cog",
-          title: "Settings",
-          url: "settings",
-          section: 'other'
-        }));
-      }
-
       var extensions = ExtensionManager.getIds();
 
-      // Add extensions to tabs
+      // Add extensions to bookmarks
       _.each(extensions, function(item) {
         item = ExtensionManager.getInfo(item);
         bookmarks.push(new Backbone.Model({
@@ -293,9 +269,9 @@ require(["config"], function() {
       var tabPrivileges = options.tab_privileges;
       var tabBlacklist = (tabPrivileges.tab_blacklist || '').split(',');
 
-      // Filter out blacklisted tabs
-      tabs = _.filter(tabs, function(tab) {
-        return !_.contains(tabBlacklist, tab.id);
+      // Filter out blacklisted bookmarks (case-sensitive)
+      bookmarks = _.filter(bookmarks, function(bookmark) {
+        return !_.contains(tabBlacklist, bookmark.attributes.title);
       });
 
       // Turn into collection

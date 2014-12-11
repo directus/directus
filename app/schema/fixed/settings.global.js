@@ -10,8 +10,7 @@ define(function(require, exports, module) {
       // {id: 'cms_color', ui: 'color', comment: "Deprecated"},
       {id: 'cms_user_auto_sign_out', ui: 'numeric', char_length: 4, options: {size: 'small'}, comment: "Number of minutes before a user is automatically logged out of Directus"},
       {id: 'rows_per_page', ui: 'numeric', char_length: 4, options: {size: 'small'}, comment: "The number of items per listing page"},
-      {id: 'cms_thumbnail_url', ui: 'textinput', char_length: 255, options: {placeholder_text: "http://"}, comment: "Add a image URL for the main logo (170x100)"},
-      {id: 'cms_navigation_override', ui: 'textarea', options:{'rows': 25}, comment: "JSON to allow customization of the sidebar organization"}
+      {id: 'cms_thumbnail_url', ui: 'textinput', char_length: 255, options: {placeholder_text: "http://"}, comment: "Add a image URL for the main logo (170x100)"}
   ];
 
   return settingsGlobalSchema;

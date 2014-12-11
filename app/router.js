@@ -259,6 +259,7 @@ define(function(require, exports, module) {
     },
 
     files: function(pref) {
+      console.log("HERE");
       if (_.contains(this.tabBlacklist,'files'))
         return this.notFound();
 
@@ -436,6 +437,7 @@ define(function(require, exports, module) {
     initialize: function(options) {
 
       this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
+      console.log('blacklist', this.tabBlacklist);
 
       //Fade out and remove splash
       $('body').addClass('initial-load');
@@ -463,7 +465,7 @@ define(function(require, exports, module) {
       var tabs = new Tabs.View({collection: this.tabs});
 
       var bookmarks = new Bookmarks.View({collection: this.bookmarks});
-
+      console.log(bookmarks);
       //Top
       var Navbar = Backbone.Layout.extend(
       {

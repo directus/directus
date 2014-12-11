@@ -1,10 +1,5 @@
 <div class="sidebar-section tables-sidebar">
-  <li class="{{#if tablesActive}}active{{/if}}" title="Tables">
-    <a href="tables">
-      <span class="icon icon-database"></span>
-      <span class="sidebar-label">Tables</span>
-    </a>
-  </li>
+  <div class="sidebar-group">Tables</div>
   {{#bookmarks.table}}
   <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
@@ -14,31 +9,25 @@
   {{/bookmarks.table}}
 </div>
 
-<div class="extensions-sidebar">
+{{#if bookmarks.extension}}
+<div class="sidebar-section searches-sidebar">
+  <div class="sidebar-group">Extensions</div>
   {{#bookmarks.extension}}
-  <li class="hr"></li>
-  <li class="{{#if active_bookmark}}active{{/if}} sidebar-extension" title="{{capitalize title}}">
+  <li class="{{#if active_bookmark}}active{{/if}}sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
-        <span class="icon {{icon_class}}"></span>
         <span class="sidebar-label">{{capitalize title}}</span>
       </a>
   </li>
   {{/bookmarks.extension}}
 </div>
+{{/if}}
 
 {{#if bookmarks.search}}
-<li class="hr"></li>
 <div class="sidebar-section searches-sidebar">
-  <li title="Searches">
-    <a>
-      <span class="icon icon-camera"></span>
-      <span class="sidebar-label">Snapshots</span>
-    </a>
-  </li>
+  <div class="sidebar-group">Snapshots</div>
   {{#bookmarks.search}}
   <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
-        <span class="icon"></span>
         {{capitalize title}}
         <span class="remove-snapshot">✕</span>
       </a>
@@ -47,12 +36,11 @@
 </div>
 {{/if}}
 
-<li class="hr"></li>
 <div class="sidebar-section other-sidebar">
+  <div class="sidebar-group">System</div>
   {{#bookmarks.other}}
-  <li class="{{#if active_bookmark}}active{{/if}}" title="{{capitalize title}}">
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
-        <span class="icon {{icon_class}}"></span>
         <span class="sidebar-label">{{capitalize title}}</span>
         {{#if unread}}
         <span class="unread-color">●</span>

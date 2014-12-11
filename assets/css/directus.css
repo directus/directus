@@ -3621,6 +3621,7 @@ body.initial-load #sidebar {
 }
 #sidebar ul {
   padding: 0px;
+  margin: 0px;
 }
 #sidebar ul li {
   list-style: none;
@@ -3668,11 +3669,19 @@ body.initial-load #sidebar {
 #sidebar #mainSidebar .sidebar-section,
 #sidebar #mainSidebar .sidebar-extension {
   margin-bottom: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
+}
+#sidebar #mainSidebar .sidebar-section .sidebar-group,
+#sidebar #mainSidebar .sidebar-extension .sidebar-group {
+  color: #666666;
+  margin-left: 17px;
+  font-size: 11px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
 }
 #sidebar #mainSidebar .sidebar-subitem a {
-  padding-left: 43px;
-  padding-right: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
   position: relative;
 }
 #sidebar #mainSidebar ul {
@@ -3681,6 +3690,7 @@ body.initial-load #sidebar {
 #sidebar #mainSidebar li.hr {
   margin: 10px 0 10px 0;
   border-top: 1px solid #404040;
+  display: none;
 }
 #sidebar #mainSidebar li.group-header {
   text-transform: uppercase;
@@ -3750,24 +3760,23 @@ body.initial-load #sidebar {
 }
 #sidebar #featureSidebar {
   bottom: 0px;
-  padding: 20px;
   position: absolute;
-  background-color: #3b3b3b;
 }
-#sidebar #featureSidebar .row {
-  margin-left: -10px;
+#sidebar #featureSidebar .settings-link {
+  text-align: center;
+  padding: 5px 0 5px 0;
+  float: left;
+  width: 100%;
 }
-#sidebar #featureSidebar ul {
-  margin-bottom: -10px;
+#sidebar #featureSidebar .settings-link:hover {
+  color: #ffffff;
 }
 #sidebar #featureSidebar li {
   background-color: #474747;
   float: left;
-  height: 59px;
-  margin-bottom: 10px;
-  margin-left: 10px;
+  height: 85px;
   position: relative;
-  width: 59px;
+  width: 85px;
 }
 #sidebar #featureSidebar li:hover {
   background-color: #4d4d4d;
@@ -3780,7 +3789,7 @@ body.initial-load #sidebar {
 }
 #sidebar #featureSidebar li a {
   display: block;
-  padding: 17px;
+  padding: 29px;
 }
 #sidebar #featureSidebar li.active {
   background-color: #4d4d4d !important;
@@ -3801,7 +3810,7 @@ body.initial-load #sidebar {
   font-size: 60px;
   height: 25px;
   line-height: 17px;
-  margin-left: -3px;
+  margin-left: 0px;
   margin-right: 18px;
   margin-top: -1px;
   position: relative;
