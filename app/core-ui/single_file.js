@@ -236,6 +236,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
 
     removeFile: function(e) {
       this.fileModel.clear();
+      this.fileModel.set({id: null});
     },
 
     swap: function() {
