@@ -156,7 +156,7 @@ function(app, Backbone) {
 
         this.render();
       },
-      'click.sortableHeader': function(e) {
+      'click .sortableHeader': function(e) {
         if(this.parentView.sortableWidget.options.sort)
         {
           $(e.currentTarget).closest('table').addClass('disable-sorting');
@@ -165,6 +165,13 @@ function(app, Backbone) {
           $(e.currentTarget).closest('table').removeClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = true;
         }
+      },
+      'click th:not(.sortableHeader)': function(e) {
+        if(this.parentView.sortableWidget.options.sort)
+        {
+          $(e.currentTarget).closest('table').addClass('disable-sorting');
+          this.parentView.sortableWidget.options.sort = false;
+        } 
       }
     },
 
