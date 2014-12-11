@@ -313,6 +313,7 @@
       var dataTransfer = evt.dataTransfer,
         options = this.options;
 
+      this.isDragging = true;
       this._offUpEvents();
 
       if (isTouch) {
@@ -365,6 +366,10 @@
         groupPut = group.put,
         isOwner = (activeGroup === group),
         canSort = options.sort;
+
+        if(!isOwner) {
+          return;
+        }
 
       if (!_silent &&
         (isOwner

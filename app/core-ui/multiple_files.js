@@ -108,7 +108,6 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
     },
 
     removeItem: function(e) {
-      console.log("gone");
       var target_cid = $(e.target).closest('.media-slideshow-item').find('img').attr('data-file-cid');
       var model = this.relatedCollection.get(target_cid);
 
@@ -248,6 +247,12 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
       $dropzone[0].ondrop = _.bind(function(e) {
         e.stopPropagation();
         e.preventDefault();
+
+        if(self.sort.isDragging) {
+          self.sort.isDragging = false;
+          return;
+        }
+
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
             item[app.statusMapping.status_name] = app.statusMapping.active_num;
@@ -262,11 +267,13 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
         });
       });
 
+      $dropzone[0]
+
       if(junctionStructure.get('sort') !== undefined) {
         // Drag and drop reordering
         var container = this.$el.find('.ui-file-container')[0];
         var that = this;
-        var sort = new Sortable(container, {
+        this.sort = new Sortable(container, {
           animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
           draggable: ".media-slideshow-item", // Specifies which items inside the element should be sortable
           ghostClass: "sortable-file-ghost",
