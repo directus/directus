@@ -21,7 +21,7 @@ function(app, Backbone) {
       },
 
       'click th:not(.check, .visible-columns-cell)': function(e) {
-        var column = $(e.target).attr('data-id');
+        var column = $(e.target).closest('th').attr('data-id'); // .closet() accounts for event return children (icon) elements instead
         var order = this.collection.getOrder();
 
         //Flip direction if the same column is clicked twice.
