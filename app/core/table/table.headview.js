@@ -159,19 +159,19 @@ function(app, Backbone) {
       'click .sortableHeader': function(e) {
         if(this.parentView.sortableWidget.options.sort)
         {
-          $(e.currentTarget).closest('table').addClass('disable-sorting');
+          this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;
         } else {
-          $(e.currentTarget).closest('table').removeClass('disable-sorting');
+          this.$el.closest('table').removeClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = true;
         }
       },
       'click th:not(.sortableHeader)': function(e) {
         if(this.parentView.sortableWidget.options.sort)
         {
-          $(e.currentTarget).closest('table').addClass('disable-sorting');
+          this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;
-        } 
+        }
       }
     },
 
