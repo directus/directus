@@ -3659,12 +3659,13 @@ body.initial-load #sidebar {
   opacity: 0.6;
 }
 #sidebar #mainSidebar {
-  bottom: 100px;
+  bottom: 0;
   overflow: auto;
   position: absolute;
   top: 101px;
   width: 100%;
   color: #bbbbbb;
+  padding-bottom: 150px;
 }
 #sidebar #mainSidebar .sidebar-section,
 #sidebar #mainSidebar .sidebar-extension {
@@ -3767,6 +3768,7 @@ body.initial-load #sidebar {
   padding: 5px 0 5px 0;
   float: left;
   width: 100%;
+  background-color: #333333;
 }
 #sidebar #featureSidebar .settings-link:hover {
   color: #ffffff;

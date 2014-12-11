@@ -64,12 +64,13 @@ body.initial-load #sidebar {
   }
 
   #mainSidebar {
-    bottom: 100px;
+    bottom: 0;
     overflow: auto;
     position: absolute;
     top: 101px;
     width: 100%;
     color: @mediumGrey;
+    padding-bottom: 150px;
     .sidebar-section, .sidebar-extension {
       margin-bottom: 10px;
       margin-top: 15px;
@@ -173,6 +174,7 @@ body.initial-load #sidebar {
       padding: 5px 0 5px 0;
       float: left;
       width: 100%;
+      background-color: @extraDarkGrey;
       &:hover {
         color: @white;
       }
