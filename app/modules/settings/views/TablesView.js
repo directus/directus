@@ -746,7 +746,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
             model.save({}, {success: function(model){
               var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
               tableModel.fetch();
-              tableModel.columns.table = tableModel;
               that.collection.add(tableModel);
             }});
           }
