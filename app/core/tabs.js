@@ -40,7 +40,7 @@ function(app, Backbone) {
     serialize: function() {
       var currentUser = app.users.getCurrentUser();
       var currentUserAvatar = currentUser.get('avatar');
-      if (currentUser.get('avatar_file_id').has('name') && currentUser.get('avatar_is_file') == 1) {
+      if (currentUser.get('avatar_file_id') && currentUser.get('avatar_file_id').has('name') && currentUser.get('avatar_is_file') == 1) {
         currentUserAvatar = currentUser.get('avatar_file_id').makeFileUrl(true);
       } else if(!currentUserAvatar) {
         currentUserAvatar = app.PATH + 'assets/img/missing-directus-avatar.png';
