@@ -560,7 +560,8 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
 $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
     unset($params['perPage']);
-    $params['adv_search'] = 'datetime BETWEEN NOW() - INTERVAL 30 DAY AND NOW()';
+    //@TODO: This would be more than 30 days, check issue #513
+    $params['adv_search'] = 'datetime >= NOW() - INTERVAL 30 DAY';
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
     JsonView::render($new_get);
