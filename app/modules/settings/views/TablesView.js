@@ -650,7 +650,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var permissions = privileges.get('permissions').split(',');
 
       // only return tables with view permissions
-      return _.contains(permissions, 'alter');
+      return _.contains(permissions, 'bigview');
     },
 
     beforeRender: function() {
