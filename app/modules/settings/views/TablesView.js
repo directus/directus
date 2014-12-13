@@ -745,8 +745,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
             model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
             model.save({}, {success: function(model){
               var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
-              tableModel.fetch();
-              that.collection.add(tableModel);
+              tableModel.fetch({
+                success: function() {
+                  that.collection.add(tableModel); 
+                }
+              });
             }});
           }
         }});
