@@ -311,7 +311,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         });
         
         if (!allowed) {
-          app.router.openModal({type: 'alert', text: 'This file is not allowed'});
+          app.router.openModal({type: 'alert', text: 'This type of file is not allowed'});
           return false;
         }
         
