@@ -27,11 +27,7 @@ define(['app','backbone'], function(app, Backbone) {
     initialize: function(options) {
       var user = app.users.get(options.value);
       if(user) {
-        var avatar = user.get('avatar');
-        if(!avatar) {
-          avatar = app.PATH + 'assets/img/missing-directus-avatar.png';
-        }
-
+        var avatar = user.getAvatar();
         this.$el.append('<img src="'+avatar+'" class="avatar" />');
       }
     }

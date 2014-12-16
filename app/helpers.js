@@ -54,7 +54,7 @@ require([
   Handlebars.registerHelper('avatarSmall', function(userId) {
     var user = app.users.get(userId);
     if (user === undefined) return unknowUserMessage;
-    return '<img src="' + user.get('avatar') + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
+    return '<img src="' + user.getAvatar() + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
   });
 
   Handlebars.registerHelper('activeMap', function(model) {
@@ -107,13 +107,13 @@ require([
         nickName = firstName + ' ' + user.get('last_name');
       }
     }
-    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>' + app.capitalize(nickName," "));
+    return new Handlebars.SafeString('<img src="'+user.getAvatar()+'" class="avatar"/>' + app.capitalize(nickName," "));
   });
 
   Handlebars.registerHelper('userAvatar', function(userId) {
     var user = app.users.get(userId);
     if(user) {
-      var avatar = user.get('avatar');
+      var avatar = user.getAvatar();
       if(!avatar) {
         avatar = app.PATH + 'assets/img/missing-directus-avatar.png';
       }
@@ -123,7 +123,7 @@ require([
 
   Handlebars.registerHelper('userFull', function(userId) {
     var user = app.users.get(userId);
-    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'"  class="avatar"/><span class="avatar-name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
+    return new Handlebars.SafeString('<img src="'+user.getAvatar()+'"  class="avatar"/><span class="avatar-name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
   });
 
   Handlebars.registerHelper('userFirstAndLastName', function(userId) {
