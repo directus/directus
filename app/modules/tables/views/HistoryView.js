@@ -151,7 +151,7 @@ function(app, Backbone, Directus, moment) {
           id: item.id,
           uid: DIRECTUS_USERS + '_' + item.id,
           name: item.get('first_name') + ' ' + item.get('last_name'),
-          avatar: item.get('avatar') ? item.get('avatar') : app.PATH + 'assets/img/missing-directus-avatar.png',
+          avatar: item.getAvatar(),
           type: DIRECTUS_USERS
         };
       });

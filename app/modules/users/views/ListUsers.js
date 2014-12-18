@@ -62,7 +62,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
         var data = {
           "id": model.get('id'),
           "cid": model.cid,
-          'avatar': model.get('avatar'),
+          'avatar': model.getAvatar(),
           'avatar_file_id': model.get('avatar_file_id'),
           'avatar_is_file': model.get('avatar_is_file'),
           'first_name': model.get('first_name'),
@@ -76,15 +76,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
           'group_name': model.get('group').get('name')
         };
 
-        var avatarSmall = data.avatar;
-
-        if (data.avatar_file_id && data.avatar_file_id.has('name') && data.avatar_is_file == 1) {
-          avatarSmall = data.avatar_file_id.makeFileUrl(true);
-        } else if(!avatarSmall) {
-          avatarSmall = app.PATH + 'assets/img/missing-directus-avatar.png';
-        } else {
-          avatarSmall = avatarSmall.replace('?s=100','?s=200');
-        }
+        var avatarSmall = model.getAvatar();
 
         data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
 
@@ -141,7 +133,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
         var data = {
           "id": model.get('id'),
           "cid": model.cid,
-          'avatar': model.get('avatar'),
+          'avatar': model.getAvatar(),
           'first_name': model.get('first_name'),
           'last_name': model.get('last_name'),
           'email': model.get('email'),
