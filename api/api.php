@@ -562,7 +562,10 @@ $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     unset($params['perPage']);
     $datetime = new DateTime('NOW', new DateTimeZone('GMT'));
     $datetime->modify('-30 days');
-    $params['adv_search'] = "datetime >= '" . $datetime->format('Y-m-d H:i:s') . "'";
+    // @todo move this to backbone collection
+    if (!$params['adv_search']) {
+      $params['adv_search'] = "datetime >= '" . $datetime->format('Y-m-d H:i:s') . "'"; 
+    }
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
     JsonView::render($new_get);
