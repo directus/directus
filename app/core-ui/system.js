@@ -58,16 +58,17 @@ define(['app','backbone'], function(app, Backbone) {
       data.mapping = [];
 
       for(var key in mapping) {
+        //If new model, skip delete option
+        if(this.model.isNew() && key == app.statusMapping.deleted_num) {
+          continue;
+        }
+
         var entry = mapping[key];
         entry.id = key;
         if(key == value) {
           entry.active = true;
         } else {
           entry.active = false;
-        }
-        //If new model, skip delete option
-        if(this.model.isNew() && key == app.statusMapping.deleted_num) {
-          continue;
         }
         data.mapping.push(entry);
       }
