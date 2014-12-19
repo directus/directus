@@ -52,7 +52,8 @@ $create_columns = "CREATE TABLE `directus_columns` (
 
 $insert_columns = "INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
 VALUES
-  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,'');";
+  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
+  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');";
 
 $create_groups = "CREATE TABLE `directus_groups` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -266,6 +267,10 @@ $create_ui = "CREATE TABLE `directus_ui` (
   UNIQUE KEY `unique` (`table_name`,`column_name`,`ui_name`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
+$insert_ui = "INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
+VALUES
+  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');"
+
 $create_users = "CREATE TABLE `directus_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) DEFAULT '1',
@@ -285,6 +290,8 @@ $create_users = "CREATE TABLE `directus_users` (
   `ip` varchar(50) DEFAULT '',
   `group` int(11) DEFAULT NULL,
   `avatar` varchar(500) DEFAULT NULL,
+  `avatar_file_id` int(11) DEFAULT NULL,
+  `avatar_is_file` tinyint(1) DEFAULT 0,
   `location` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
@@ -298,7 +305,7 @@ $create_users = "CREATE TABLE `directus_users` (
 $create_statements = [$create_activity, $create_bookmarks, $create_columns, $create_groups, $create_ip_whitelist, $create_media, $create_messages, $create_messages_recipients, $create_preferences, $create_privileges,
   $create_settings, $create_social_feeds, $create_social_posts, $create_storage_adapters, $create_tab_priv, $create_tables, $create_ui, $create_users];
 
-$insert_statements = [$insert_columns, $insert_groups, $insert_settings, $insert_privileges, $insert_tables];
+$insert_statements = [$insert_columns, $insert_groups, $insert_settings, $insert_privileges, $insert_tables, $insert_ui];
 
 $mysqli = new mysqli($_SESSION['host_name'], $_SESSION['username'], $_SESSION['db_password'], $_SESSION['db_name']);
 
