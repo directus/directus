@@ -9,7 +9,6 @@ var rename  = require('gulp-rename');
 var less    = require('gulp-less');
 var size    = require('gulp-size');
 var rjs     = require('gulp-requirejs');
-var gulpSync= require('gulp-sync')(gulp);
 
 // --------------------
 // CSS - Gulp Task
@@ -47,7 +46,7 @@ gulp.task('scripts:vendor', function() {
     .pipe(gulp.dest('dist/assets/js'))
     .pipe(rename('vendor.min.js'))
     .pipe(size())
-    //.pipe(uglify())
+    .pipe(uglify())
     .pipe(size())
     .pipe(gulp.dest('dist/assets/js'));
 });
@@ -61,7 +60,7 @@ gulp.task('scripts:app', function() {
     out: "app.min.js",
     removeCombined: true,
     findNestedDependencies: true,
-    optimize:'',// 'uglify2',
+    optimize: 'uglify2',
     wrap: true,
     paths: {
 
@@ -142,7 +141,7 @@ gulp.task('scripts:app', function() {
 gulp.task('scripts:directus', function() {
   return gulp.src(['./dist/assets/js/vendor.js', './dist/assets/js/app.min.js'])
     .pipe(concat('directus.min.js'))
-    //.pipe(uglify())
+    .pipe(uglify())
     .pipe(gulp.dest('dist/assets/js'));
 });
 
