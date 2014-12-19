@@ -269,7 +269,7 @@ $create_ui = "CREATE TABLE `directus_ui` (
 
 $insert_ui = "INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
 VALUES
-  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');"
+  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');";
 
 $create_users = "CREATE TABLE `directus_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
