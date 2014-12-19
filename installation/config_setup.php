@@ -132,7 +132,7 @@ return array(
       'sort' => 1
     ),
     '2' => array(
-      'name' => 'Braft',
+      'name' => 'Draft',
       'color' => '#BBBBBB',
       'sort' => 2
     )
