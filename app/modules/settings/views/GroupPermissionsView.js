@@ -169,7 +169,7 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
         this.toggleIcon($target, this.collection.get(cid).get('permissions'));
 
         attributes = this.parseTablePermissions($tr, this.collection.get(cid).get('permissions'));
-
+        
         var fancySave = false;
         var oldModel = model;
         if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
@@ -192,6 +192,10 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
       var dataValue = $span.parent().data('value');
       if($span.hasClass('yellow-color')) {
         $span.addClass('big-priv');
+      } else if ($span.hasClass('big-priv') && dataValue == 'delete') {
+        $span.removeClass('big-priv').addClass('hard-priv hard-color');
+      } else if ($span.hasClass('hard-priv') && dataValue == 'delete') {
+        $span.removeClass('hard-priv').addClass('big-hard-priv hard-color');
       } else {
         $span.toggleClass('add-color').toggleClass('delete-color').toggleClass('has-privilege');
       }
@@ -251,7 +255,17 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
       permissions = $tr.children().has('span.has-privilege');
 
 
-      permissions = permissions.map(function() { return (($(this).has('span.big-priv').length) ? "big" : "") +  $(this).data('value');}).get().join();
+      permissions = permissions.map(function() { 
+        var permissionPrefix = '';
+        if ($(this).has('span.big-priv').length) {
+          permissionPrefix = 'big';
+        } else if ($(this).has('span.hard-priv').length) {
+          permissionPrefix = 'hard';
+        } else if ($(this).has('span.big-hard-priv').length) {
+          permissionPrefix = 'bighard';
+        }
+        return permissionPrefix +  $(this).data('value');
+      }).get().join();
 
       return {permissions: permissions};
     },
@@ -339,6 +353,8 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
           'bigedit': false,
           'delete': false,
           'bigdelete': false,
+          'harddelete': false,
+          'bigharddelete': false,
           'alter': false,
           'view': false,
           'bigview': false
