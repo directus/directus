@@ -82,8 +82,13 @@ function(app, Backbone) {
 
         var model = collection.get(id);
         var name = {};
-        name[app.statusMapping.status_name] = value;
-        model.save(name, {silent: true, patch:true, validate:false, success: success});
+        
+        if (collection.hasPermission('harddelete') || collection.hasPermission('bigharddelete')) {
+          model.destroy({success: success});
+        } else {
+          name[app.statusMapping.status_name] = value;
+          model.save(name, {silent: true, patch:true, validate:false, success: success}); 
+        }
       });
     },
 

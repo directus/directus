@@ -534,7 +534,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
          * ACL Enforcement
          */
 
-        if(!$this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
+        if(!$this->acl->hasTablePrivilege($deleteTable, 'bigharddelete')) {
             /**
              * Enforce Privilege: "Big" Delete
              */
@@ -553,7 +553,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
         }
 
-        if(!$this->acl->hasTablePrivilege($deleteTable, 'delete')) {
+        if(!$this->acl->hasTablePrivilege($deleteTable, 'harddelete')) {
             /**
              * Enforce Privilege: "Little" Delete (I am the record CMS owner)
              */
