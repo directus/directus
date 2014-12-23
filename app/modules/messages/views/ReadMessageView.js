@@ -67,12 +67,11 @@ function(app, Backbone, BasePageView) {
 
       data.responses = data.responses.reverse();
 
-
       var title = data.message;
       var offset = 0;
       while(true) {
         if(title) {
-          var atPos = title.indexOf('@[')
+          var atPos = title.indexOf('@[');
           if(atPos !== -1) {
             var spacePos = title.substring(atPos).indexOf(' ');
             if(spacePos !== -1) {

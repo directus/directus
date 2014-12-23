@@ -2,10 +2,10 @@
     <b>To:</b> {{#if collapseRecipients}}
     <a href="#" id="messages-show-recipients">{{recipientsCount}} Repcepients</a>
     <div id="messages-recipients" style="display:none">
-        {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
+        {{#each recipients}}{{userAvatar this}}{{/each}}
     </div>
     {{else}}
-        {{#each recipients}}{{userFirstAndLastName this}}, {{/each}}
+        {{#each recipients}}{{userAvatar this}}{{/each}}
     {{/if}}
 </div>
 

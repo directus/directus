@@ -267,8 +267,6 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
         });
       });
 
-      $dropzone[0]
-
       if(junctionStructure.get('sort') !== undefined) {
         // Drag and drop reordering
         var container = this.$el.find('.ui-file-container')[0];
