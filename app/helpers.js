@@ -114,9 +114,6 @@ require([
     var user = app.users.get(userId);
     if(user) {
       var avatar = user.getAvatar();
-      if(!avatar) {
-        avatar = app.PATH + 'assets/img/missing-directus-avatar.png';
-      }
       return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar" title="'+user.get('first_name')+' '+user.get('last_name')+'"/>');
     }
   });
