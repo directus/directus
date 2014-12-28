@@ -79,18 +79,14 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         route.pop();
         app.router.go(route);
       };
-      alert(1); return;
-      var canHardDelete = model.collection.hasPermission('harddelete') || model.collection.hasPermission('bigharddelete');
-      if (!this.model.has(app.statusMapping.status_name) && !canHardDelete) {
-        throw "Please add an active column to this table for soft-delete, or change your group permissions to allow for a hard-delete";
-      }
-      var name = app.statusMapping.status_name;
-      var name = {};
-      if (canHardDelete) {
-          model.destroy({success: success});
-      } else {
-        name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
-        this.model.save(name, {success: success, patch: true, wait: true, validate: false});
+      //@todo: who trigger this?
+      var options = {success: success, patch: true, wait: true, validate: false};
+      try {
+        app.changeItemStatus(model, value, options);
+      } catch(e) {
+        setTimeout(function() {
+          app.router.openModal({type: 'alert', text: e.message});
+        }, 0);
       }
     },
 
