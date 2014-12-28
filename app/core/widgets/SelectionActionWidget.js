@@ -94,16 +94,21 @@ function(app, Backbone) {
 
     serialize: function() {
       var data = this.options.widgetOptions;
-
-      if (this.collection.table.columns.get(app.statusMapping.status_name)) {
+      var canHardDelete = this.collection.hasPermission('harddelete') || this.collection.hasPermission('bigharddelete');
+      var canSoftDelete = this.collection.hasPermission('delete') || this.collection.hasPermission('bidelete');
+      var hasStatus = this.collection.table.columns.get(app.statusMapping.status_name);
+      
+      if (hasStatus) {
         var mapping = app.statusMapping.mapping;
         data.mapping = [];
         for(var key in mapping) {
+          if(key==app.statusMapping.deleted_num && !canHardDelete && !canSoftDelete) continue;
+          
           var entry = mapping[key];
           entry.id = key;
           data.mapping.push(entry);
         }
-
+        
         data.mapping.sort(function(a, b) {
           if(a.sort < b.sort) {
             return -1;
