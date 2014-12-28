@@ -79,15 +79,15 @@ function(app, Backbone) {
 
       $checked.each(function() {
         var id = this.value;
-
         var model = collection.get(id);
-        var name = {};
+        var options = {silent: true, patch:true, validate:false, success: success};
         
-        if (collection.hasPermission('harddelete') || collection.hasPermission('bigharddelete')) {
-          model.destroy({success: success});
-        } else {
-          name[app.statusMapping.status_name] = value;
-          model.save(name, {silent: true, patch:true, validate:false, success: success}); 
+        try {
+          app.changeItemStatus(model, value, options);
+        } catch(e) {
+          setTimeout(function() {
+            app.router.openModal({type: 'alert', text: e.message});
+          }, 0);
         }
       });
     },

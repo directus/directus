@@ -79,15 +79,19 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         route.pop();
         app.router.go(route);
       };
-
-      // hard-destroy model if there is no active column
-      if (!this.model.has(app.statusMapping.status_name)){
-        throw "This table does not have an active column and can therefore not be deleted";
+      alert(1); return;
+      var canHardDelete = model.collection.hasPermission('harddelete') || model.collection.hasPermission('bigharddelete');
+      if (!this.model.has(app.statusMapping.status_name) && !canHardDelete) {
+        throw "Please add an active column to this table for soft-delete, or change your group permissions to allow for a hard-delete";
       }
       var name = app.statusMapping.status_name;
       var name = {};
-      name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
-      this.model.save(name, {success: success, patch: true, wait: true, validate: false});
+      if (canHardDelete) {
+          model.destroy({success: success});
+      } else {
+        name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
+        this.model.save(name, {success: success, patch: true, wait: true, validate: false});
+      }
     },
 
     saveConfirm: function(e) {
@@ -110,7 +114,6 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         action = $(e.target.options[e.target.selectedIndex]).val();
       }
       var data = this.editView.data();
-
 
       var model = this.model;
       var isNew = this.model.isNew();
@@ -154,27 +157,41 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         collection.add(model);
         console.log(model);
       }
-
-      // patch only the changed values
-      model.save(model.diff(data), {
-        success: success,
-        error: function(model, xhr, options) {
-          console.log('err');
-          //Duplicate entry, forced but works
-          //@todo finds a better way to determine whether there's an duplicate error
-          // and what's the column's name
-          var response = JSON.parse(xhr.responseText);
-          if (response.message.indexOf('Duplicate entry') != -1) {
-            var columnName = response.message.split('for key')[1].trim();
-            columnName = columnName.substring(1, columnName.lastIndexOf("'"));
-            app.router.openModal({type: 'alert', text: 'This item was not saved because its "' + columnName + '" value is not unique.'});
-            return;
-          }
-        },
-        wait: true,
-        patch: true,
-        includeRelationships: true
-      });
+      
+      var changedValues = model.diff(data);
+      
+      if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] == app.statusMapping.deleted_num ) {
+        var value = app.statusMapping.deleted_num;
+        var options = {success: success, wait: true, patch: true, includeRelationships: true};
+        try {
+          app.changeItemStatus(this.model, value, options);
+        } catch(e) {
+          setTimeout(function() {
+            app.router.openModal({type: 'alert', text: e.message});
+          }, 0);
+        }
+      } else {
+        // patch only the changed values
+        model.save(changedValues, {
+          success: success,
+          error: function(model, xhr, options) {
+            console.log('err');
+            //Duplicate entry, forced but works
+            //@todo finds a better way to determine whether there's an duplicate error
+            // and what's the column's name
+            var response = JSON.parse(xhr.responseText);
+            if (response.message.indexOf('Duplicate entry') != -1) {
+              var columnName = response.message.split('for key')[1].trim();
+              columnName = columnName.substring(1, columnName.lastIndexOf("'"));
+              app.router.openModal({type: 'alert', text: 'This item was not saved because its "' + columnName + '" value is not unique.'});
+              return;
+            }
+          },
+          wait: true,
+          patch: true,
+          includeRelationships: true
+        });
+      }
       this.$el.find('#saveSelect').val('');
     },
 
