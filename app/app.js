@@ -179,6 +179,25 @@ define(function(require, exports, module) {
       }
     });
   };
+  
+  // TODO: Move to a Directus backbone model
+  // change status or delete item
+  app.changeItemStatus = function(model, value, options) {
+    var name = app.statusMapping.status_name;
+    var name = {};
+    var canHardDelete = model.collection.hasPermission('harddelete') || model.collection.hasPermission('bigharddelete');
+    var canSoftDelete = model.collection.hasPermission('delete') || model.collection.hasPermission('bigdelete');
+    var goingToDelete = value == app.statusMapping.deleted_num;
+    
+    if (goingToDelete && canHardDelete) {
+      model.destroy({success: options.success});
+    } else if (model.has(app.statusMapping.status_name) && ((goingToDelete && canSoftDelete) || !goingToDelete)) {
+      name[app.statusMapping.status_name] = value;
+      model.save(name, options);
+    } else {
+      throw new Error('Please add an active column to this table for soft-delete, or change your group permissions to allow for a hard-delete');
+    }
+  }
 
   // Agnus Croll:
   // http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
