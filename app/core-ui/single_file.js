@@ -305,7 +305,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       
       if (this.options.settings.has('allowed_filetypes')) {
         allowed_types = this.options.settings.get('allowed_filetypes');
-        var file_type = file.type || file.get('type') || '';
+        var file_type = file.type || '';
         var allowed = allowed_types.split('|').some(function(item){
           return file_type.indexOf(item)>-1;
         });
