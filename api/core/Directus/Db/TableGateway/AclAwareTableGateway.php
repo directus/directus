@@ -453,47 +453,50 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         /**
          * ACL Enforcement
          */
-
-        if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
-            // Parsing for the column name is unnecessary. Zend enforces raw column names.
-            /**
-             * Enforce Privilege: "Big" Edit
-             */
-            if(false === $cmsOwnerColumn) {
-                // All edits are "big" edits if there is no magic owner column.
-                $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on table `$updateTable` (no magic owner column).");
-            } else {
-                // Who are the owners of these rows?
-                list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
-                // Enforce
-                if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
-                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
-                }
-            }
-
-            /**
-             * Enforce write field blacklist (if user lacks bigedit privileges on this table)
-             */
-            $attemptOffsets = array_keys($updateState['set']);
-            $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
-        }
-
-        if(!$this->acl->hasTablePrivilege($updateTable, 'edit')) {
-            /**
-             * Enforce Privilege: "Little" Edit (I am the record CMS owner)
-             */
-            if(false !== $cmsOwnerColumn) {
-                if(!isset($predicateResultQty)) {
-                    // Who are the owners of these rows?
-                    list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
-                }
-                if(in_array($currentUserId, $predicateOwnerIds)) {
-                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
-                }
-            }
+        // check if it's NOT soft delete
+        $updateFields = $updateState['set'];
+        if(!(count($updateFields)==2 && array_key_exists(STATUS_COLUMN_NAME, $updateFields) && $updateFields[STATUS_COLUMN_NAME]==STATUS_DELETED_NUM)) {
+          if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
+              // Parsing for the column name is unnecessary. Zend enforces raw column names.
+              /**
+               * Enforce Privilege: "Big" Edit
+               */
+              if(false === $cmsOwnerColumn) {
+                  // All edits are "big" edits if there is no magic owner column.
+                  $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                  throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on table `$updateTable` (no magic owner column).");
+              } else {
+                  // Who are the owners of these rows?
+                  list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                  // Enforce
+                  if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
+                      $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                      throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
+                  }
+              }
+  
+              /**
+               * Enforce write field blacklist (if user lacks bigedit privileges on this table)
+               */
+              $attemptOffsets = array_keys($updateState['set']);
+              $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+          }
+  
+          if(!$this->acl->hasTablePrivilege($updateTable, 'edit')) {
+              /**
+               * Enforce Privilege: "Little" Edit (I am the record CMS owner)
+               */
+              if(false !== $cmsOwnerColumn) {
+                  if(!isset($predicateResultQty)) {
+                      // Who are the owners of these rows?
+                      list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                  }
+                  if(in_array($currentUserId, $predicateOwnerIds)) {
+                      $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                      throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
+                  }
+              }
+          }
         }
 
         try {
