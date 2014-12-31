@@ -30,17 +30,17 @@ gulp.task('styles', function() {
 // --------------------
 gulp.task('scripts', ['scripts:app', 'scripts:vendor', 'scripts:directus']);
 
+// Include what's neccesary
+// @TODO: include all vendors
+var vendorFiles = [
+  'assets/js/libs/handlebars.js',
+  //'assets/js/libs/bootstrap.js',
+  'assets/js/libs/require.js',
+  'assets/js/util/*.js'
+];
+  
 // Concat all vendors
 gulp.task('scripts:vendor', function() {
-  // Include what's neccesary
-  // @TODO: include all vendors
-  var vendorFiles = [
-    'assets/js/libs/handlebars.js',
-    //'assets/js/libs/bootstrap.js',
-    'assets/js/libs/require.js',
-    'assets/js/util/*.js'
-  ];
-
   return gulp.src(vendorFiles)
     .pipe(concat('vendor.js'))
     .pipe(gulp.dest('dist/assets/js'))
@@ -231,6 +231,16 @@ gulp.task('move', function() {
     .pipe(gulp.dest('dist'));
 });
 
+// Rerun the task when a file changes
+gulp.task('watch', function() {
+  gulp.watch('assets/less/directus/**/*.less', ['styles']);
+  gulp.watch('app/**/*.js', ['scripts:app', 'scripts:directus']);
+  gulp.watch(vendorFiles, ['scripts:vendor', 'scripts:directus']);
+  gulp.watch('assets/fonts/**/*.*', ['fonts']);
+  gulp.watch('assets/img/**/*.*', ['images']);
+  gulp.watch('app/**/*.html', ['templates']);
+});
+
 // -------------------
 // Build - Gulp Task
 // Run all the tasks
@@ -238,4 +248,4 @@ gulp.task('move', function() {
 gulp.task('build', ['scripts', 'templates', 'styles', 'fonts', 'images', 'media', 'move']);
 
 // Default task
-gulp.task('default', ['build']);
+gulp.task('default', ['watch', 'build']);
