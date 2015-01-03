@@ -79,12 +79,12 @@ if($step == 3 && isset($_POST['install'])) {
 
   $site_url = ($isHTTPS) ? "https://" : "http://" . $_SERVER['HTTP_HOST'] . $_SESSION['directus_path'];
 
-  $_SESSION['default_dest'] = $abspath.'media/';//$_POST['default_dest'];
-  $_SESSION['default_url'] = $site_url.'media/';//$_POST['default_url'];
-  $_SESSION['thumb_dest'] = $abspath.'media/thumbs/';//$_POST['thumb_dest'];
-  $_SESSION['thumb_url'] = $site_url.'media/thumbs/';//$_POST['thumb_url'];
-  $_SESSION['temp_dest'] = $abspath.'media/temp/';//$_POST['temp_dest'];
-  $_SESSION['temp_url'] = $site_url.'media/temp/';//$_POST['temp_url'];
+  $_SESSION['default_dest'] = $abspath.'media/';
+  $_SESSION['default_url'] = $site_url.'media/';//
+  $_SESSION['thumb_dest'] = $abspath.'media/thumbs/';
+  $_SESSION['thumb_url'] = $site_url.'media/thumbs/';
+  $_SESSION['temp_dest'] = $abspath.'media/temp/';
+  $_SESSION['temp_url'] = $site_url.'media/temp/';
 }
 
 ?><!doctype html>
