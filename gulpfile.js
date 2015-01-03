@@ -9,6 +9,7 @@ var rename  = require('gulp-rename');
 var less    = require('gulp-less');
 var size    = require('gulp-size');
 var rjs     = require('gulp-requirejs');
+var prohtml = require('gulp-processhtml');
 
 // --------------------
 // CSS - Gulp Task
@@ -167,6 +168,13 @@ gulp.task('templates', function() {
     .pipe(gulp.dest('dist/app/'));
 });
 
+var singlePageFiles = ['./main.html', './login.php'];
+gulp.task('singlepage', function () {
+  gulp.src(singlePageFiles)
+    .pipe(prohtml())
+    .pipe(gulp.dest('dist'));
+});
+
 // --------------------
 // Media - Gulp Task
 // Creates media dir
@@ -210,6 +218,7 @@ gulp.task('move', function() {
     // for login.php
     // @TODO: find a better way
     './assets/js/libs/jquery.js',
+    './assets/js/libs/jquery.min.map',
     './assets/js/libs/wysihtml5.js',
     './assets/css/wysiwyg.css',
     './bin/**',
@@ -222,8 +231,8 @@ gulp.task('move', function() {
     './.htaccess',
     './favicon.ico',
     './index.php',
-    './login.php',
-    './main.html',
+    //'./login.php',
+    //'./main.html',
     './readme.md'
   ];
 
@@ -239,6 +248,7 @@ gulp.task('watch', function() {
   gulp.watch('assets/fonts/**/*.*', ['fonts']);
   gulp.watch('assets/img/**/*.*', ['images']);
   gulp.watch('app/**/*.html', ['templates']);
+  gulp.watch(singlePageFiles, ['singlepage']);
 });
 
 // -------------------
