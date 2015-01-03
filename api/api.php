@@ -557,14 +557,16 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
  * ACTIVITY COLLECTION
  */
 
+// @todo: create different activity endpoints
+// ex: /activity/:table, /activity/recents/:days
 $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
-    unset($params['perPage']);
     $datetime = new DateTime('NOW', new DateTimeZone('GMT'));
     $datetime->modify('-30 days');
     // @todo move this to backbone collection
     if (!$params['adv_search']) {
-      $params['adv_search'] = "datetime >= '" . $datetime->format('Y-m-d H:i:s') . "'"; 
+      unset($params['perPage']);
+      $params['adv_search'] = "datetime >= '" . $datetime->format('Y-m-d H:i:s') . "'";
     }
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
@@ -663,9 +665,9 @@ $app->map("/$v/groups/?", function () use ($app, $ZendDb, $acl, $requestPayload)
       case "GET":
       default:
         $get_new = $GroupsTableGateway->getEntries();
-        $outputData = $get_new;    
+        $outputData = $get_new;
     }
-    
+
     JsonView::render($outputData);
 })->via('GET','POST');
 
