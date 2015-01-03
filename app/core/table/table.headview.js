@@ -167,7 +167,7 @@ function(app, Backbone) {
         }
       },
       'click th:not(.sortableHeader)': function(e) {
-        if(this.parentView.sortableWidget.options.sort)
+        if(this.parentView.sortableWidget && this.parentView.sortableWidget.options.sort)
         {
           this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;
