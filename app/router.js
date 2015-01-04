@@ -259,7 +259,6 @@ define(function(require, exports, module) {
     },
 
     files: function(pref) {
-      console.log("HERE");
       if (_.contains(this.tabBlacklist,'files'))
         return this.notFound();
 
