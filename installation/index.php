@@ -288,6 +288,15 @@ if($step == 3) {
             <td class="item">Config Writable (../api/config.php)</td>
             <td class="result"><?php if(is_writable('../api/config.php')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span class="label label-important">No</span>');}?></td>
           </tr>
+          <tr>
+            <td class="item">Media Directory (/media)</td>
+            <td class="result"><?php if(is_writable('../media')) { echo '<span class="label label-success">Yes</span>';} else { echo '<span class="label label-important">No</span>';}?></td>
+          </tr>
+          <?php if(!is_writable('../media')): ?>
+          <tr>
+            <td>The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths.</td>
+          </tr>
+          <?php endif; ?>
         </tbody>
       </table>
 
