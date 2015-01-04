@@ -46,6 +46,17 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
 
     public function __construct(Acl $acl, AdapterInterface $adapter) {
         parent::__construct($acl, self::$_tableName, $adapter);
+
+        self::$defaultEntriesSelectParams = array(
+          'orderBy' => 'id', // @todo validate $params['order*']
+          'orderDirection' => 'DESC',
+          'fields' => '*',
+          //'perPage' => null,
+          //'currentPage' => 0,
+          'id' => -1,
+          'search' => null,
+          STATUS_COLUMN_NAME => null
+        );
     }
 
     public function fetchFeed($params = null) {

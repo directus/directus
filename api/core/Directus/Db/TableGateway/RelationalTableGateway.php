@@ -440,9 +440,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
     public function applyParamsToTableEntriesSelect(array $params, Select $select, array $schema, $hasActiveColumn = false) {
         $select->group('id')
-            ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])))
-            ->limit($params['perPage'])
-            ->offset($params['currentPage'] * $params['perPage']);
+            ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
+        if (isset($params['perPage']) && isset($params['currentPage'])) {
+            $select->limit($params['perPage'])
+                ->offset($params['currentPage'] * $params['perPage']);
+        }
 
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
@@ -680,7 +682,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $TableGateway = new RelationalTableGateway($this->acl, $table, $this->adapter);
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
-        
+
         $schemaArray = TableSchema::getSchemaArray($table);
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
 
