@@ -1837,7 +1837,7 @@ body.initial-load #page-blocker-smoke {
 }
 #page-blocker-smoke {
   left: 170px;
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
