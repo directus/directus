@@ -49,9 +49,11 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
         } else {
           $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
         }
-
-        $select->limit($params['perPage'])
-            ->offset($params['currentPage'] * $params['perPage']);
+        
+        if (isset($params['perPage']) && isset($params['currentPage'])) {
+          $select->limit($params['perPage'])
+              ->offset($params['currentPage'] * $params['perPage']);
+        }
 
         // Are we sorting on a relationship?
         foreach($schema as $column) {
