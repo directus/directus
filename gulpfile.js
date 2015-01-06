@@ -255,7 +255,7 @@ gulp.task('watch', function() {
 // Build - Gulp Task
 // Run all the tasks
 // ------------------- 'composer',
-gulp.task('build', ['scripts', 'templates', 'styles', 'fonts', 'images', 'media', 'move']);
+gulp.task('build', ['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'media', 'move']);
 
 // Default task
 gulp.task('default', ['watch', 'build']);
