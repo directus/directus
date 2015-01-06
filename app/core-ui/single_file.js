@@ -252,7 +252,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       var collection = app.files;
       var model;
       var fileModel = this.fileModel;
-      var view = new Overlays.ListSelect({collection: collection, selectable: false});
+      var view = new Overlays.ListSelect({collection: collection, selectable: true});
       app.router.overlayPage(view);
 
       collection.fetch();
