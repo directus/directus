@@ -587,7 +587,7 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
          * @todo  build this into the method when we shift its location to the new layer
          */
         if(!$acl->hasTablePrivilege($table_name, 'alter')) {
-            throw new UnauthorizedTableAlterException("Table alter access forbidden on table `$table`");
+            throw new UnauthorizedTableAlterException("Table alter access forbidden on table `$table_name`");
         }
 
         $tableGateway = new TableGateway($acl, $table_name, $ZendDb);
