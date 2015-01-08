@@ -223,6 +223,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Yield record object
         $recordGateway = new AclAwareRowGateway($this->acl, $TableGateway->primaryKeyFieldName, $tableName, $this->adapter);
         $recordGateway->populate($fullRecordData, true);
+        
         return $recordGateway;
     }
 
@@ -358,17 +359,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $JunctionTable = new RelationalTableGateway($this->acl, $junctionTableName, $this->adapter);
                         $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach($foreignDataSet as $junctionRow) {
-                            // Is this a new element?
-                            // if the element `id` exists it's because is not a new element
-                            // and already had its id given.
-                            if (isset($junctionRow['data']['id'])) {
-                              $Where = new Where;
-                              $Where->equalTo($junctionKeyLeft, $parentRow['id'])
-                                      ->equalTo($junctionKeyRight, $junctionRow['data']['id']);
-                              if ($JunctionTable->select($Where)->count()) {
-                                  continue;
-                              }
-                            }
                             /** This association is designated for removal */
                             if (isset($junctionRow[STATUS_COLUMN_NAME]) && $junctionRow[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
                                 $Where = new Where;
@@ -378,6 +368,16 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 // (disassociating w/ existing M2M collection entry)
                                 $parentCollectionRelationshipsChanged = true;
                                 continue;
+                            } else if (isset($junctionRow['data']['id'])) {
+                              // Is this a new element?
+                              // if the element `id` exists it's because is not a new element
+                              // and already had its id given.
+                              $Where = new Where;
+                              $Where->equalTo($junctionKeyLeft, $parentRow['id'])
+                                      ->equalTo($junctionKeyRight, $junctionRow['data']['id']);
+                              if ($JunctionTable->select($Where)->count()) {
+                                  continue;
+                              }
                             }
                             /** Update foreign record */
                             $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged);
