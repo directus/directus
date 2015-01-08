@@ -309,14 +309,13 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         var allowed = allowed_types.split('|').some(function(item){
           return file_type.indexOf(item)>-1;
         });
-        
-        if (!allowed) {
-          app.router.openModal({type: 'alert', text: 'This type of file is not allowed'});
-          return false;
-        }
-        
-        return allowed;
       }
+      
+      if (!allowed) {
+        app.router.openModal({type: 'alert', text: 'This type of file is not allowed'});
+      }
+      
+      return allowed;
     },
 
     afterRender: function() {
