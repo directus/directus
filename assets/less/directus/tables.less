@@ -104,14 +104,14 @@
       -webkit-font-smoothing: antialiased;
     }
     .sort {
-      color: @lightGrey;
+      color: @mediumGrey;
       font-size: 10px;
       width: 5px;
       padding-top: 0;
       padding-bottom: 0;
       padding-right: 0;
       &:hover {
-        color: @mediumGrey;
+        color: @darkGrey;
       }
       .icon {
         margin-top: -4px;
@@ -714,11 +714,36 @@
     }
   }
   td.sort {
-    .icon {
-      visibility: hidden;
+    color: @lightGrey;
+    .icon-list {
+      -o-transform: none !important;
+      -moz-transform: none !important;
+      -ms-transform: none !important;
+      -webkit-transform: none !important;
+      transform: none !important;
+      /*CSS animations*/
+      -webkit-animation: none !important;
+      -moz-animation: none !important;
+      -o-animation: none !important;
+      -ms-animation: none !important;
+      animation: none !important;
+    }
+    &:hover {
+      color: @lightGrey;
     }
   }
 }
+
+// Turn on default sorting for relational tables
+// .related-table {
+//   .disable-sorting {
+//     td.sort {
+//       .icon {
+//         visibility: visible;
+//       }
+//     }
+//   }
+// }
 
 .disable-transform tr {
   transform: none !important;

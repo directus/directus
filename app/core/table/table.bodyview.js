@@ -18,6 +18,17 @@ function(app, Backbone, Sortable) {
       'change td.check > input': 'select',
       'click td.check > input': function() {
         this.collection.trigger('select');
+      },
+      'click .sort': function(e) {
+        e.cancelBubble = true;
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+      },
+      'mousedown .sort': function(e) {
+        if($(e.target).closest('.disable-sorting').length > 0){
+          noty({text: "<b>Disabled</b><br><i>Click the reordering icon to enable</i>", type: 'information', timeout: 4000, theme: 'directus'});
+        }
       }
     },
 
