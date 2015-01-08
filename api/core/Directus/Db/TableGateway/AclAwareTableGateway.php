@@ -532,45 +532,34 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($deleteTable);
-
+        $canBigHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'bigharddelete');
+        $canHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'harddelete');
+        $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+        
         /**
          * ACL Enforcement
          */
-
-        if(!$this->acl->hasTablePrivilege($deleteTable, 'bigharddelete')) {
-            /**
-             * Enforce Privilege: "Big" Delete
-             */
-            if(false === $cmsOwnerColumn) {
-                // All deletes are "big" deletes if there is no magic owner column.
-                $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigdelete access forbidden on table `$deleteTable` (no magic owner column).");
-            } else {
-                // Who are the owners of these rows?
-                list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
-                // Enforce
-                if(is_null($currentUserId) || count(array_diff($predicateOwnerIds, array($currentUserId)))) {
-                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigdelete access forbidden on $predicateResultQty `$deleteTable` table record(s) and " . count($predicateOwnerIds) . " CMS owner(s) (with ids " . implode(", ", $predicateOwnerIds) . ").");
-                }
-            }
+         
+        if(!$canBigHardDelete && !$canHardDelete) {
+          throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "BigHardDelete/HardDelete access forbidden on table `$deleteTable`.");
         }
-
-        if(!$this->acl->hasTablePrivilege($deleteTable, 'harddelete')) {
-            /**
-             * Enforce Privilege: "Little" Delete (I am the record CMS owner)
-             */
-            if(false !== $cmsOwnerColumn) {
-                if(!isset($predicateResultQty)) {
-                    // Who are the owners of these rows?
-                    list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
-                }
-                if(in_array($currentUserId, $predicateOwnerIds)) {
-                    $exceptionMessage = "Table delete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
-                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableDeleteException($aclErrorPrefix . $exceptionMessage);
-                }
+        
+        if (false === $cmsOwnerColumn) {
+          // cannot delete if there's no magic owner column and can't big delete
+          if (!$canBigHardDelete) {
+            // All deletes are "big" deletes if there is no magic owner column.
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table harddelete access forbidden on table `$deleteTable` (no magic owner column).");
+          }
+        } else {
+          if(!$canBigHardDelete){
+            // Who are the owners of these rows?
+            list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
+            if(in_array($currentUserId, $predicateOwnerIds)) {
+              $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
+              $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+              throw new UnauthorizedTableDeleteException($aclErrorPrefix . $exceptionMessage);
             }
+          }
         }
 
         try {
