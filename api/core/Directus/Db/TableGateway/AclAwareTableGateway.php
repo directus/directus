@@ -299,7 +299,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
           if (array_key_exists('char_length', $tableData)) {
               $data_type = $data_type.'('.$tableData['char_length'].')';
           }
-          $sql = "ALTER TABLE $tableName ADD COLUMN $column_name $data_type COMMENT '$comment'";
+          $sql = "ALTER TABLE `$tableName` ADD COLUMN `$column_name` $data_type COMMENT '$comment'";
 
           $this->adapter->query( $sql )->execute();
       }
