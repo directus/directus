@@ -464,7 +464,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               if(false === $cmsOwnerColumn) {
                   // All edits are "big" edits if there is no magic owner column.
                   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                  throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on table `$updateTable` (no magic owner column).");
+                  throw new UnauthorizedTableBigEditException($aclErrorPrefix . "The table `$updateTable` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)");
               } else {
                   // Who are the owners of these rows?
                   list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
@@ -548,7 +548,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
           // cannot delete if there's no magic owner column and can't big delete
           if (!$canBigHardDelete) {
             // All deletes are "big" deletes if there is no magic owner column.
-            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table harddelete access forbidden on table `$deleteTable` (no magic owner column).");
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "The table `$deleteTable` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)");
           }
         } else {
           if(!$canBigHardDelete){

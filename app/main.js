@@ -173,7 +173,7 @@ require(["config"], function() {
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
-        noty({text: 'Directus can\'t reach the server<br>A new attempt will be made in 30 seconds', type: 'error', layout:'bottomRight', theme: 'directus'});
+        noty({text: '<b>Directus can\'t reach the server</b><br><i>A new attempt will be made in 30 seconds</i>', type: 'error', layout:'bottomRight', theme: 'directus'});
       });
 
       app.messages.on('sync', function(collection, object) {
@@ -348,7 +348,7 @@ require(["config"], function() {
         switch(xhr.status) {
           case 403:
             // var response = $.parseJSON(xhr.responseText);
-            message = "You don't have permission to access this table. Please send this to IT:\n\n" + xhr.responseText;
+            message = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
             app.trigger("alert:error", "Restricted Access", message, true);
             break;
           default:
