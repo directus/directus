@@ -95,7 +95,7 @@ function(app, Backbone) {
     serialize: function() {
       var data = this.options.widgetOptions;
       var canHardDelete = this.collection.hasPermission('harddelete') || this.collection.hasPermission('bigharddelete');
-      var canSoftDelete = this.collection.hasPermission('delete') || this.collection.hasPermission('bidelete');
+      var canSoftDelete = this.collection.hasPermission('delete') || this.collection.hasPermission('bigdelete');
       var hasStatus = this.collection.table.columns.get(app.statusMapping.status_name);
       
       if (hasStatus) {
