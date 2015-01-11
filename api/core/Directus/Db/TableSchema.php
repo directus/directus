@@ -171,6 +171,16 @@ class TableSchema {
         }
         return $columns;
     }
+    
+    public static function hasTableColumn($table, $column) {
+      $columns = self::getTableColumns($table);
+      
+      if (array_key_exists($column, array_flip($columns))) {
+        return true;
+      }
+      
+      return false;
+    }
 
     public static function getUniqueColumnName($tbl_name) {
         // @todo for safe joins w/o name collision
