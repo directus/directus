@@ -128,7 +128,7 @@ class TableSchema {
         return $columns;
     }
 
-    public static function getTableColumns($table, $limit = null) {
+    public static function getTableColumns($table, $limit = null, $skipIgnore = false) {
 
         if(!self::canGroupViewTable($table)) {
             return array();
@@ -158,7 +158,7 @@ class TableSchema {
         $sth->execute();
 
         $columns = array();
-        $ignoreColumns = array('id',STATUS_COLUMN_NAME,'sort');
+        $ignoreColumns = ($skipIgnore !== true) ? array('id',STATUS_COLUMN_NAME,'sort') : array();
         $i = 0;
         while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
             $i++;
@@ -173,7 +173,7 @@ class TableSchema {
     }
     
     public static function hasTableColumn($table, $column) {
-      $columns = self::getTableColumns($table);
+      $columns = self::getTableColumns($table, null, true);
       
       if (array_key_exists($column, array_flip($columns))) {
         return true;
