@@ -232,7 +232,7 @@ function getCSSFilePath() {
     if(file_exists('./assets/css/custom.css')) {
         return DIRECTUS_PATH . 'assets/css/custom.css';
     }
-    return DIRECTUS_PATH . 'assets/css/index.css';
+    return DIRECTUS_PATH . 'assets/css/directus.css';
 }
 
 // ---------------------------------------------------------------------
