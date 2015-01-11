@@ -536,6 +536,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $canHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'harddelete');
         $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
         
+        if (!TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
+          if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
+            $canBigHardDelete = true;
+          } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {
+            $canHardDelete = true;
+          }
+        }
+        
         /**
          * ACL Enforcement
          */
@@ -548,7 +556,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
           // cannot delete if there's no magic owner column and can't big delete
           if (!$canBigHardDelete) {
             // All deletes are "big" deletes if there is no magic owner column.
-            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "The table `$deleteTable` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)");
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "The table `$deleteTable` is missing the `user_create_column` within `directus_tables` (BigHardDelete Permission Forbidden)");
           }
         } else {
           if(!$canBigHardDelete){
