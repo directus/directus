@@ -32,7 +32,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
   <link rel="shortcut icon" href="favicon.ico">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
   <!-- build:css assets/css/directus.min.css -->
-  <link rel="stylesheet" href="assets/css/index.css">
+  <link rel="stylesheet" href="assets/css/directus.css">
   <!--/build -->
   <style>
     html,body {

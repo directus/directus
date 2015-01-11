@@ -19,6 +19,7 @@ gulp.task('styles', function() {
     .pipe(less())
     .pipe(rename('directus.css'))
     .pipe(gulp.dest('dist/assets/css'))
+    .pipe(gulp.dest('assets/css'))
     .pipe(size())
     .pipe(rename('directus.min.css'))
     .pipe(mincss())
