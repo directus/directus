@@ -537,7 +537,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
         // Is this table a junction table?
         $deleteTableSchema = TableSchema::getTable($deleteTable);
-        $isDeleteTableAJunction = (bool)$deleteTableSchema['is_junction_table'];
+        $isDeleteTableAJunction = array_key_exists('is_junction_table', $deleteTableSchema) ? (bool)$deleteTableSchema['is_junction_table'] : false;
 
         if ($isDeleteTableAJunction || !TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
           if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
