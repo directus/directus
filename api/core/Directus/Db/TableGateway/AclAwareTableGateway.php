@@ -535,8 +535,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $canBigHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'bigharddelete');
         $canHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'harddelete');
         $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-        
-        if (!TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
+        // Is this table a junction table?
+        $deleteTableSchema = TableSchema::getTable($deleteTable);
+        $isDeleteTableAJunction = array_key_exists('is_junction_table', $deleteTableSchema) ? (bool)$deleteTableSchema['is_junction_table'] : false;
+
+        if ($isDeleteTableAJunction || !TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
           if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
             $canBigHardDelete = true;
           } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {
