@@ -150,6 +150,12 @@ define(function(require, exports, module) {
         sort_order: 'ASC'
       }, this.filters);
 
+      // do we got a sort column?
+      // let sort it by that instead please
+      if(this.structure.get('sort')) {
+        this.filters['sort'] = 'sort';
+      }
+
       this.filters[app.statusMapping.status_name] = '1,2';
 
       if (options.preferences) {

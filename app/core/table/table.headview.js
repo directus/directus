@@ -24,13 +24,18 @@ function(app, Backbone) {
         var column = $(e.target).closest('th').attr('data-id'); // .closet() accounts for event return children (icon) elements instead
         var order = this.collection.getOrder();
 
+        if((column=='sort') || (order.sort === column && order.sort_order == 'DESC')) {
+          this.collection.setOrder('sort', 'ASC');
+          return;
+        }
+
         //Flip direction if the same column is clicked twice.
         if (order.sort === column) {
           if (order.sort_order === 'ASC') {
             this.collection.setOrder(column, 'DESC');
           }
           else if (order.sort_order === 'DESC') {
-            this.collection.setOrder();
+            this.collection.setOrder(order.sort, order.sort_order);
           }
         } else {
           this.collection.setOrder(column, 'ASC');

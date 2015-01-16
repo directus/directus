@@ -89,6 +89,9 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             'table_name' => $table,
             'title' => $title
         );
+        if(TableSchema::hasTableColumn($table,'sort')) {
+            $data['sort'] = 'sort';
+        }
         $data = $this->applyDefaultPreferences($table, $data);
 
         $insert
