@@ -48,9 +48,9 @@ define(['app', 'backbone'],function(app, Backbone) {
 		template: Handlebars.compile(template),
 
 		// Event Declarations
-	events: {
-	  'input select': 'updateMaxLength'
-	},
+		events: {
+			'input select': 'updateVisibleColumns'
+		},
 
 		tagName: 'div',
 
@@ -58,14 +58,14 @@ define(['app', 'backbone'],function(app, Backbone) {
 			'class': 'field'
 		},
 
-		// Update the character counter with the remaining characters available
-	updateMaxLength: function(e) {
-		var columnBlacklist = this.$el.find('select option:selected').data('columnBlacklist').split(",");
-		for (var i = 0; i < columnBlacklist.length; i++) {
+		// Update visible fields/inputs
+		updateVisibleColumns: function(e) {
+			var columnBlacklist = this.$el.find('select option:selected').data('columnBlacklist').split(",");
 			$('.batchcontainer').show(); // Needs to be scoped/limited to this overlay
-			$("#edit_field_" + columnBlacklist[i]).parent().parent().parent().hide();
-		}
-	},
+			for (var i = 0; i < columnBlacklist.length; i++) {
+				$("#edit_field_" + columnBlacklist[i]).parent().parent().parent().hide();
+			}
+		},
 
 		serialize: function() {
 			var selectedValue = this.options.value;
