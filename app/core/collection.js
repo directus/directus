@@ -85,6 +85,9 @@ function(app, Backbone) {
       }
 
       //Check if date
+      // handling date is weird
+      // if there is a number it would return a number
+      // @todo validate this
       if(typeof value === "string") {
         if(!isNaN(Date.parse(value))) {
           return new Date(value).getTime();

@@ -414,7 +414,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
     public static $defaultEntriesSelectParams = array(
         'orderBy' => 'id', // @todo validate $params['order*']
-        'orderDirection' => 'DESC',
+        'orderDirection' => 'ASC',
         'fields' => '*',
         'perPage' => 500,
         'currentPage' => 0,
@@ -432,6 +432,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $params['fields'] = array_merge(array('id'), $params['fields']);
 
         $params = array_merge(self::$defaultEntriesSelectParams, $params);
+
+        // Is there a sort column?
+        $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
+        if(array_key_exists('sort', $tableColumns)) {
+            $params['orderBy'] = 'sort';
+        }
 
         array_walk($params, array($this, 'castFloatIfNumeric'));
 
