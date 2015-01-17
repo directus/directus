@@ -109,6 +109,12 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       if(e.target.options !== undefined) {
         action = $(e.target.options[e.target.selectedIndex]).val();
       }
+
+      if(this.single && action !== 'save-form-stay' && action !== 'save-form-leave') {
+        console.log('This shouldn\'t be happening');
+        return;
+      }
+
       var data = this.editView.data();
 
       var model = this.model;
@@ -217,7 +223,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
     },
 
     leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave}});
+      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave, singlePage: this.single}});
       this.saveWidget.setSaved(false);
       return [
         this.saveWidget
