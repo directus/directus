@@ -256,7 +256,9 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
 
 
       permissions = permissions.map(function() { 
-        var permissionPrefix = '';
+        var permissionPrefix = '',
+            permission = [];
+
         if ($(this).has('span.big-priv').length) {
           permissionPrefix = 'big';
         } else if ($(this).has('span.hard-priv').length) {
@@ -264,10 +266,23 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
         } else if ($(this).has('span.big-hard-priv').length) {
           permissionPrefix = 'bighard';
         }
-        return permissionPrefix +  $(this).data('value');
-      }).get().join();
 
-      return {permissions: permissions};
+        if(permissionPrefix && permissionPrefix !== 'hard') {
+          var value = $(this).data('value');
+          if(permissionPrefix === 'bighard'){
+            value = 'hard'+value;
+          }
+          permission.push(value);
+        }
+        permission.push(permissionPrefix +  $(this).data('value'));
+
+        return permission;
+      }).get();
+
+      // it seems that it always have alter permission
+      permissions.push('alter');
+      
+      return {permissions: permissions.join()};
     },
 
     editFields: function(e) {
