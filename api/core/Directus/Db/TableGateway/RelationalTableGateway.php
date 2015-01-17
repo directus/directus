@@ -377,18 +377,17 @@ class RelationalTableGateway extends AclAwareTableGateway {
                               $Where->equalTo($junctionKeyLeft, $parentRow['id'])
                                       ->equalTo($junctionKeyRight, $junctionRow['data']['id']);
 
+                              // hard-coded check for sort diff
+                              // @todo fix this
                               $junctionRowResult = $JunctionTable->select($Where);
                               if ($junctionRowResult->count()) {
+                                // we are expecting one.
                                 $junctionRowResultArray = $junctionRowResult->toArray();
-
+                                $junctionRowResultArray = end($junctionRowResultArray);
                                 if(array_key_exists('sort', $junctionRow) && array_key_exists('sort', $junctionRowResultArray)) {
-                                    
-                                    print_r($junctionRowResultArray);
                                     if($junctionRowResultArray['sort'] == $junctionRow['sort']) {
                                         continue;
                                     }
-                                // hard-coded check for sort diff
-                                // @todo fix this
                                 }
                               }
                             }
