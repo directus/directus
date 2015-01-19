@@ -125,6 +125,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $draftRecord[$colName] = $recordData[$colName];
             }
         }
+
         $draftRecord = $TableGateway->addOrUpdateToManyRelationships($schemaArray, $draftRecord, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
         $rowId = $draftRecord['id'];
 
@@ -375,10 +376,22 @@ class RelationalTableGateway extends AclAwareTableGateway {
                               $Where = new Where;
                               $Where->equalTo($junctionKeyLeft, $parentRow['id'])
                                       ->equalTo($junctionKeyRight, $junctionRow['data']['id']);
-                              if ($JunctionTable->select($Where)->count()) {
-                                  continue;
+
+                              // hard-coded check for sort diff
+                              // @todo fix this
+                              $junctionRowResult = $JunctionTable->select($Where);
+                              if ($junctionRowResult->count()) {
+                                // we are expecting one.
+                                $junctionRowResultArray = $junctionRowResult->toArray();
+                                $junctionRowResultArray = end($junctionRowResultArray);
+                                if(array_key_exists('sort', $junctionRow) && array_key_exists('sort', $junctionRowResultArray)) {
+                                    if($junctionRowResultArray['sort'] == $junctionRow['sort']) {
+                                        continue;
+                                    }
+                                }
                               }
                             }
+                            
                             /** Update foreign record */
                             $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged);
                             // Junction/Association row
