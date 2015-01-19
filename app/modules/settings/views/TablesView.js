@@ -169,6 +169,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           this.model.set({char_length: 1});
         }
         data.char_length = this.model.get('char_length');
+      } else {
+        delete data.char_length;
+        if(this.model.has('char_length')) {
+          this.model.unset('char_length', {silent: true});
+        }
       }
 
       if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
