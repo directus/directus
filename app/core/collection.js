@@ -1,6 +1,6 @@
 define([
   "app",
-  "backbone",
+  "backbone"
 ],
 
 function(app, Backbone) {
@@ -131,13 +131,6 @@ function(app, Backbone) {
     setOrder: function(column, sortOrder, options) {
       //useless without filters...
       if (!this.filters) return;
-
-      //If we have nested collection pass this reorder down
-      /*if(this.nestedCollection) {
-        this.nestedCollection.setOrder(column, sortOrder, options);
-        console.log(this.nestedCollection);
-        return;
-      }*/
 
       if (column === undefined) {
         this.setFilter({sort:'id', sort_order: 'ASC'});
