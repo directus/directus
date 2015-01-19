@@ -1,6 +1,6 @@
 define([
   "app",
-  "backbone"
+  "backbone",
 ],
 
 function(app, Backbone) {
@@ -74,8 +74,16 @@ function(app, Backbone) {
     comparator: function(rowA, rowB) {
       var UIManager = require('core/UIManager');
       var column = this.getFilter('sort') || 'id';
-      var valueA = rowA.get(column) || rowA.get('data').get(column);
-      var valueB = rowB.get(column) || rowB.get('data').get(column);
+      var valueA, valueB;
+
+      // @todo find a better way to check is a entriesjunctioncollection
+      if (rowA.collection.nestedCollection && column != 'sort') {
+        valueA = rowA.get('data').get(column);
+        valueB = rowB.get('data').get(column);
+      } else {
+        valueA = rowA.get(column);
+        valueB = rowB.get(column);
+      }
 
       var options, ui, type, schema;
 
