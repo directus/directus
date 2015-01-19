@@ -53,18 +53,42 @@ function(app, Backbone) {
 
     sortBy: function() {
       var models = _.sortBy(this.models, this.comparator, this);
-      if (this.getFilter('sort_order') === 'DESC') models.reverse();
+
       return models;
     },
 
-    comparator: function(row) {
+    comparatorValue: function(a, b) {
+      var cmp = 0;
+
+      if (typeof a === "string" && typeof b === "string") {
+        cmp = a.localeCompare(b);
+      } else {
+        cmp = (a > b) ? 1 : -1;
+      }
+
+      if (this.getFilter('sort_order')==='DESC') cmp*=-1;
+
+      return cmp;
+    },
+
+    comparator: function(rowA, rowB) {
       var UIManager = require('core/UIManager');
       var column = this.getFilter('sort') || 'id';
-      var value = row.get(column);
+      var valueA, valueB;
+
+      // @todo find a better way to check is a entriesjunctioncollection
+      if (rowA.collection.nestedCollection && column != 'sort') {
+        valueA = rowA.get('data').get(column);
+        valueB = rowB.get('data').get(column);
+      } else {
+        valueA = rowA.get(column);
+        valueB = rowB.get(column);
+      }
+
       var options, ui, type, schema;
 
       //There is no value
-      if (!row.has(column)) {
+      if (!rowA.has(column)) {
         if (this.structure && this.structure.get(column) !== undefined) {
           schema = this.structure.get(column);
           ui = schema.get('ui');
@@ -74,37 +98,39 @@ function(app, Backbone) {
 
             //Merge the column values, eg first_name, last_name
             if (_.isArray(options.sortBy)) {
-              return _.map(options.sortBy, function(value) { return row.get(value); }).join('');
+              valueA = _.map(options.sortBy, function(value) { 
+                return rowA.get(value);
+              }).join('');
+              valueB = _.map(options.sortBy, function(value) { 
+                return rowB.get(value);
+              }).join('');
+            } else {
+              valueA = rowA.get(options.sortBy);
+              valueB = rowB.get(options.sortBy);
             }
-
-            return row.get(options.sortBy);
-
           }
+        } else {
+          valueA = rowA.id;
+          valueB = rowB.id;
         }
-        value = row.id;
       }
 
       //Check if date
       // handling date is weird
       // if there is a number it would return a number
       // @todo validate this
-      if(typeof value === "string") {
-        if(!isNaN(Date.parse(value))) {
-          return new Date(value).getTime();
+      if(typeof valueA === "string") {
+        if(!isNaN(Date.parse(valueA))) {
+          return this.comparatorValue(new Date(valueA).getTime(), new Date(valueB).getTime());
         }
       }
 
-      return value;
+      return this.comparatorValue(valueA, valueB);
     },
 
     setOrder: function(column, sortOrder, options) {
       //useless without filters...
       if (!this.filters) return;
-
-      //If we have nested collection pass this reorder down
-      if(this.nestedCollection) {
-        this.nestedCollection.setOrder(column, sortOrder, options);
-      }
 
       if (column === undefined) {
         this.setFilter({sort:'id', sort_order: 'ASC'});
