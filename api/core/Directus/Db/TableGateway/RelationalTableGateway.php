@@ -854,7 +854,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             $entry = array('id' => $junction_table_id);
             if(in_array('sort', $junctionColumns)) {
-                $entry['sort'] = $row[$junction_sort_column_alias];
+                // @TODO: check why is this a string instead of an integer.
+                $entry['sort'] = (int)$row[$junction_sort_column_alias];
                 unset($row[$junction_sort_column_alias]);
             }
             $entry['data'] = $row;

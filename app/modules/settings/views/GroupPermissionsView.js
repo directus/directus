@@ -279,9 +279,11 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
         return permission;
       }).get();
 
-      // it seems that it always have alter permission
-      permissions.push('alter');
-      
+      // do not let non-admin users to have alter permission
+      if(app.getCurrentGroup().get('id')===1) {
+        permissions.push('alter');
+      }
+
       return {permissions: permissions.join()};
     },
 
