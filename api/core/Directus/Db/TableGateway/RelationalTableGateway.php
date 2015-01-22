@@ -385,7 +385,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 $junctionRowResultArray = $junctionRowResult->toArray();
                                 $junctionRowResultArray = end($junctionRowResultArray);
                                 if(array_key_exists('sort', $junctionRow) && array_key_exists('sort', $junctionRowResultArray)) {
-                                    if($junctionRowResultArray['sort'] == $junctionRow['sort']) {
+                                    if($junctionRowResultArray['sort'] === $junctionRow['sort']) {
                                         continue;
                                     }
                                 }
