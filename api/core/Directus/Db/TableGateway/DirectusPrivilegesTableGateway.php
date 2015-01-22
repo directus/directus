@@ -25,11 +25,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         $currentUser = Auth::getUserRecord();
 
         //Dont let non-admins have alter privilege
-        if($currentUser['group'] == 1) {
-            return true;
-        }
-
-        return false;
+        return ($currentUser['group'] == 1) ? true : false;
     }
 
     private function verifyPrivilege($attributes) {
