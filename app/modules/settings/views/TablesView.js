@@ -642,6 +642,25 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
     },
 
+    moveRowView: function(model) {
+      var currentModelIndex = this.collection.indexOf(model);
+      var afterModelIndex = currentModelIndex-1;
+      var tbody = this.$el.find('tbody');
+      var tableId = model.id || false;
+      
+      if (tableId) {
+        var currentRow = tbody.find('[data-id="'+tableId+'"]');
+        var afterRow = tbody.find('tr:eq('+afterModelIndex+')');
+        var currentRowIndex = currentRow.index();
+
+        if(currentModelIndex === 0) {
+          currentRow.prependTo(tbody);
+        } else {
+          currentRow.insertAfter(afterRow);
+        }
+      }
+    },
+
     isValidModel: function(model) {
       //Filter out _directus tables
       if (model.id.substring(0,9) === 'directus_') return false;
@@ -668,7 +687,10 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     initialize: function() {
-      this.listenTo(this.collection, 'add', this.addRowView);
+      this.listenTo(this.collection, 'add', function(model) {
+        this.addRowView(model);
+        this.moveRowView(model);
+      });
     }
   });
 
