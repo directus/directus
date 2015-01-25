@@ -23,9 +23,11 @@ function(app, Backbone) {
       'click th:not(.check, .visible-columns-cell)': function(e) {
         var column = $(e.target).closest('th').attr('data-id'); // .closet() accounts for event return children (icon) elements instead
         var order = this.collection.getOrder();
+        var isDefaultSorting = (order.sort === column && order.sort_order == 'DESC');
+        var defaultSortColumn = this.collection.structure.where({column_name: 'sort'}).length ? 'sort' : 'id';
 
-        if((column=='sort') || (order.sort === column && order.sort_order == 'DESC')) {
-          this.collection.setOrder('sort', 'ASC');
+        if(isDefaultSorting) {
+          this.collection.setOrder(defaultSortColumn, 'ASC');
           return;
         }
 
