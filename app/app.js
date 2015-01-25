@@ -203,6 +203,11 @@ define(function(require, exports, module) {
     }
   }
 
+  // check if string has this format "D, d M Y H:i:s"
+  app.isStringADate = function(date) {
+    return (typeof date === "string") ? !!date.match(/^([a-zA-Z]{3})\, ([0-9]{2}) ([a-zA-Z]{3}) ([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/) : false;
+  }
+
   // Agnus Croll:
   // http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
   Object.toType = function(obj) {

@@ -115,11 +115,8 @@ function(app, Backbone) {
         }
       }
 
-      //Check if date
-      // handling date is weird
-      // if there is a number it would return a number
-      // @todo validate this
-      if(typeof valueA === "string") {
+      // Check if it's a date
+      if(app.isStringADate(valueA)) {
         if(!isNaN(Date.parse(valueA))) {
           return this.comparatorValue(new Date(valueA).getTime(), new Date(valueB).getTime());
         }
