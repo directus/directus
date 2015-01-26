@@ -26,7 +26,8 @@ function(app, Backbone) {
         var isDefaultSorting = (order.sort === column && order.sort_order == 'DESC');
         var defaultSortColumn = this.collection.structure.where({column_name: 'sort'}).length ? 'sort' : 'id';
 
-        if(isDefaultSorting) {
+        // set default sort for a column
+        if(column == 'sort' || isDefaultSorting) {
           this.collection.setOrder(defaultSortColumn, 'ASC');
           return;
         }
