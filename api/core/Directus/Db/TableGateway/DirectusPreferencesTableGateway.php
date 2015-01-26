@@ -54,6 +54,12 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                 }
             }
         }
+        if(isset($preferences['sort'])) {
+            $sortColumn = $preferences['sort'];
+            if (!TableSchema::hasTableColumn($table, $sortColumn)) {
+                $preferences['sort'] = 'id';
+            }
+        }
         return $preferences;
     }
 
