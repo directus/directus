@@ -3,9 +3,5 @@
         "slim/slim": "2.2.0",
         "slim/extras": "dev-develop",
         "zendframework/zend-db": "2.1.*@dev"
-    },
-    "require-dev": {
-        // Save it for later
-        //"phpunit/phpunit": "3.7.*@dev"
     }
 }
