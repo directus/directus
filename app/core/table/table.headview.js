@@ -23,25 +23,24 @@ function(app, Backbone) {
       'click th:not(.check, .visible-columns-cell)': function(e) {
         var column = $(e.target).closest('th').attr('data-id'); // .closet() accounts for event return children (icon) elements instead
         var order = this.collection.getOrder();
-        var isDefaultSorting = (order.sort === column && order.sort_order == 'DESC');
-        var defaultSortColumn = this.collection.structure.where({column_name: 'sort'}).length ? 'sort' : 'id';
+        var order_sort = 'ASC';
+        var isDefaultSorting = (order.sort === column && order.sort_order != order_sort);
 
-        // set default sort for a column
+        var structure = this.collection.junctionStructure || this.collection.structure;
+        var defaultSortColumn = structure.where({column_name: 'sort'}).length ? 'sort' : 'id';
+
         if(column == 'sort' || isDefaultSorting) {
-          this.collection.setOrder(defaultSortColumn, 'ASC');
+          this.collection.setOrder(defaultSortColumn, order_sort);
           return;
         }
 
-        //Flip direction if the same column is clicked twice.
-        if (order.sort === column) {
-          if (order.sort_order === 'ASC') {
-            this.collection.setOrder(column, 'DESC');
-          }
-          else if (order.sort_order === 'DESC') {
-            this.collection.setOrder(order.sort, order.sort_order);
-          }
+        if(column != order.sort) {
+          this.collection.setOrder(column, order_sort);
         } else {
-          this.collection.setOrder(column, 'ASC');
+          if(order.sort_order == order_sort) {
+            order_sort = 'DESC';
+          }
+          this.collection.setOrder(column, order_sort);
         }
       },
 
