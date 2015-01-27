@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
+define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, moment, UIView) {
 
   "use strict";
 
@@ -41,7 +41,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   <input type="date" class="date" {{#if readonly}}disabled{{/if}} name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
                   <a class="now secondary-info">Now</a>';
 
-  Module.Input = Backbone.Layout.extend({
+  Module.Input = UIView.extend({
 
     tagName: 'div',
     attributes: {
