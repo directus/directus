@@ -77,7 +77,7 @@ function(app, Backbone) {
       var valueA, valueB;
 
       // @todo find a better way to check is a entriesjunctioncollection
-      if (rowA.collection.nestedCollection && column != 'sort') {
+      if(rowA.collection.nestedCollection && ['sort', 'id'].indexOf(column) < 0) {
         valueA = rowA.get('data').get(column);
         valueB = rowB.get('data').get(column);
       } else {
