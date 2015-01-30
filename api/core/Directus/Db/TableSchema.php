@@ -437,6 +437,12 @@ class TableSchema {
                 }
             }
 
+            // Read method formatColumnRow
+            // @TODO: combine this method with AllSchema, kind of doing same thing
+            if (array_key_exists('type', $row) && $row['type'] == 'MANYTOMANY') {
+                $row['is_nullable'] = "YES";
+            }
+
             if ($row['is_nullable'] == "NO") {
                 $row["required"] = true;
             }
