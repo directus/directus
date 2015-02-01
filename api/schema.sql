@@ -348,6 +348,7 @@ CREATE TABLE `directus_tab_privileges` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(11) DEFAULT NULL,
   `tab_blacklist` varchar(500) DEFAULT NULL,
+  `nav_override` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

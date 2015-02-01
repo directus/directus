@@ -24,6 +24,9 @@ class DirectusTabPrivilegesTableGateway extends AclAwareTableGateway {
         if(!$row) {
             return array();
         }
-        return $row[0];
+
+        $row = $row[0];
+        $row['nav_override'] = json_decode($row['nav_override']);
+        return $row;
     }
 }

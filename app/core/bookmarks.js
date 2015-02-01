@@ -20,8 +20,9 @@ function(app, Backbone, EntriesManager) {
   var Bookmarks = {};
 
   Bookmarks.Collection = Backbone.Collection.extend({
-    initialize: function() {
+    initialize: function(models, options) {
       this.url = app.API_URL + 'bookmarks/';
+      this.isCustomBookmarks = options.isCustomBookmarks || false;
     },
     setActive: function(route) {
       //deactive all tabs
@@ -105,15 +106,22 @@ function(app, Backbone, EntriesManager) {
 
     serialize: function() {
       var bookmarks = {table:[],search:[],extension:[],other:[]};
+      var isCustomBookmarks = this.isCustomBookmarks;
 
       this.collection.each(function(model) {
         var bookmark = model.toJSON();
         if(bookmarks[bookmark.section]) {
           bookmarks[bookmark.section].push(bookmark);
+        } else if(isCustomBookmarks) {
+          if(!bookmarks[bookmark.section]) {
+            bookmarks[bookmark.section] = [];
+            bookmarks[bookmark.section].isCustomBookmark = true;
+          }
+          bookmarks[bookmark.section].push(bookmark);
         }
       });
 
-      var data = {bookmarks: bookmarks};
+      var data = {bookmarks: bookmarks, isCustomBookmarks: this.isCustomBookmarks};
 
       if(Backbone.history.fragment == "tables") {
         data.tablesActive = true;
@@ -121,7 +129,10 @@ function(app, Backbone, EntriesManager) {
 
       return data;
     },
-    initialize: function() {
+    initialize: function(options) {
+
+      this.isCustomBookmarks = this.collection.isCustomBookmarks || false;
+
       var that = this;
       //For some reason need to do this and that....
       this.collection.on('add', function() {

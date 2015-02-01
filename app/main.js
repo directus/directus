@@ -269,6 +269,26 @@ require(["config"], function() {
       var tabPrivileges = options.tab_privileges;
       var tabBlacklist = (tabPrivileges.tab_blacklist || '').split(',');
 
+      // Custom Bookmarks Nav
+      var customBookmarks = [];
+      for(var section in tabPrivileges.nav_override) {
+        var sectionItems = tabPrivileges.nav_override[section];
+        for(var item in sectionItems) {
+          customBookmarks.push(new Backbone.Model({
+            icon_class: item.icon,
+            title: item,
+            url: item.path,
+            section: section
+          }));
+        }
+      }
+
+      var isCustomBookmarks = false;
+      if(customBookmarks.length) {
+        isCustomBookmarks = true;
+        bookmarks = bookmarks.concat(customBookmarks);
+      }
+
       // Filter out blacklisted bookmarks (case-sensitive)
       bookmarks = _.filter(bookmarks, function(bookmark) {
         return !_.contains(tabBlacklist, bookmark.attributes.title);
@@ -277,7 +297,7 @@ require(["config"], function() {
       // Turn into collection
       tabs = new Tabs.Collection(tabs);
 
-      app.bookmarks = new Bookmarks.Collection(bookmarks);
+      app.bookmarks = new Bookmarks.Collection(bookmarks, {isCustomBookmarks: isCustomBookmarks});
 
       //////////////////////////////////////////////////////////////////////////////
       //Override backbone sync for custom error handling
