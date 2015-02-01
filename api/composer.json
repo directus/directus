@@ -3,5 +3,10 @@
         "slim/slim": "2.2.0",
         "slim/extras": "dev-develop",
         "zendframework/zend-db": "2.1.*@dev"
+    },
+    "_require": {
+      "rackspace/php-opencloud": "dev-master",
+      "amazonwebservices/aws-sdk-for-php": "1.6.2",
+      "aws/aws-sdk-php": "2.6.*@dev"
     }
 }
