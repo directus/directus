@@ -275,10 +275,11 @@ require(["config"], function() {
         for(var section in tabPrivileges.nav_override) {
           var sectionItems = tabPrivileges.nav_override[section];
           for(var item in sectionItems) {
+            var path = sectionItems[item].path || '';
             customBookmarks.push(new Backbone.Model({
               icon_class: item.icon,
               title: item,
-              url: item.path,
+              url: path,
               section: section
             }));
           }
