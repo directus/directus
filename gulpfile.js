@@ -237,7 +237,7 @@ gulp.task('move', function() {
     './readme.md'
   ];
 
-  return gulp.src(filesToMove, { base: './'})
+  return gulp.src(filesToMove, { base: './' })
     .pipe(gulp.dest('dist'));
 });
 
