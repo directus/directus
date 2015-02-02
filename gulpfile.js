@@ -252,6 +252,12 @@ gulp.task('watch', function() {
   gulp.watch(singlePageFiles, ['singlepage']);
 });
 
+var deploy = require('gulp-gh-pages');
+gulp.task('deploy', function () {
+  return gulp.src(['./dist/**/*'], {dot: true})
+        .pipe(deploy({branch: 'build'}));
+});
+
 // -------------------
 // Build - Gulp Task
 // Run all the tasks
