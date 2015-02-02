@@ -1,3 +1,19 @@
+{{#if isCustomBookmarks}}
+  {{#each bookmarks}}
+    {{#if isCustomBookmark}}
+    <div class="sidebar-section tables-sidebar">
+      <div class="sidebar-group">{{@key}}</div>
+      {{#each this}}
+      <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+          <a href="{{url}}">
+            {{capitalize title}}
+          </a>
+      </li>
+      {{/each}}
+    </div>
+    {{/if}}
+  {{/each}}
+{{else}}
 <div class="sidebar-section tables-sidebar">
   <div class="sidebar-group">Tables</div>
   {{#bookmarks.table}}
@@ -8,6 +24,7 @@
   </li>
   {{/bookmarks.table}}
 </div>
+{{/if}}
 
 {{#if bookmarks.extension}}
 <div class="sidebar-section searches-sidebar">
