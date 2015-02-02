@@ -271,16 +271,20 @@ require(["config"], function() {
 
       // Custom Bookmarks Nav
       var customBookmarks = [];
-      for(var section in tabPrivileges.nav_override) {
-        var sectionItems = tabPrivileges.nav_override[section];
-        for(var item in sectionItems) {
-          customBookmarks.push(new Backbone.Model({
-            icon_class: item.icon,
-            title: item,
-            url: item.path,
-            section: section
-          }));
+      if (tabPrivileges.nav_override !== false) {
+        for(var section in tabPrivileges.nav_override) {
+          var sectionItems = tabPrivileges.nav_override[section];
+          for(var item in sectionItems) {
+            customBookmarks.push(new Backbone.Model({
+              icon_class: item.icon,
+              title: item,
+              url: item.path,
+              section: section
+            }));
+          }
         }
+      } else {
+        console.log("The nav override JSON for this user group is malformed – the default nav will be used instead");
       }
 
       var isCustomBookmarks = false;

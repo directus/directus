@@ -26,8 +26,15 @@ class DirectusTabPrivilegesTableGateway extends AclAwareTableGateway {
         }
 
         $row = $row[0];
-        if(array_key_exists('nav_override', $row) {
-            $row['nav_override'] = json_decode($row['nav_override']);
+        if(array_key_exists('nav_override', $row)) {
+            if(!empty($row['nav_override'])) {
+                $row['nav_override'] = @json_decode($row['nav_override']);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $row['nav_override'] = false;
+                }
+            } else {
+                $row['nav_override'] = NULL;
+            }
         }
         return $row;
     }
