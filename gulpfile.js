@@ -237,7 +237,7 @@ gulp.task('move', function() {
     './readme.md'
   ];
 
-  return gulp.src(filesToMove, { base: './' })
+  return gulp.src(filesToMove, { base: './'})
     .pipe(gulp.dest('dist'));
 });
 
@@ -250,6 +250,12 @@ gulp.task('watch', function() {
   gulp.watch('assets/img/**/*.*', ['images']);
   gulp.watch('app/**/*.html', ['templates']);
   gulp.watch(singlePageFiles, ['singlepage']);
+});
+
+var deploy = require('gulp-gh-pages');
+gulp.task('deploy', function () {
+  return gulp.src(['./dist/**/*'], {dot: true})
+        .pipe(deploy({branch: 'build'}));
 });
 
 // -------------------
