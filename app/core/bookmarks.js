@@ -129,7 +129,7 @@ function(app, Backbone, EntriesManager) {
 
       return data;
     },
-    initialize: function(options) {
+    initialize: function() {
 
       this.isCustomBookmarks = this.collection.isCustomBookmarks || false;
 
