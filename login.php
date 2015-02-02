@@ -1,5 +1,10 @@
 <?php
 
+//If config file doesnt exist, go to install file
+if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
+  header('Location: installation/index.php');
+}
+
 require "api/config.php";
 require "api/globals.php";
 
