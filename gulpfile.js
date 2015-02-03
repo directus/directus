@@ -314,7 +314,7 @@ gulp.task('watch', function() {
 
 gulp.task('deploy', function () {
   return gulp.src(['./dist/**/*'], {dot: true})
-        .pipe(deploy({branch: 'build'}));
+        .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/RNGR/directus6'}));
 });
 
 // -------------------
