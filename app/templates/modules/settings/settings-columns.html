@@ -1,0 +1,47 @@
+<table class="table table-striped directus-table" id="directus_columns">
+<thead>
+<tr>
+    <th class="sort"><span class="icon icon-list"></span></th>
+    <th class="field-field">Field</th>
+    <th class="field-input_type">Input Type</th>
+    <th class="field-hidden" style="width:50px;">Hidden</th>
+    <th class="field-required" style="width:50px;">Required</th>
+    <th class="field-master" style="width:50px;">Primary</th>
+    <th class="field-note">Note</th>
+</tr>
+</thead>
+<tbody>
+  {{#rows}}
+  <tr class="{{#if alias}}alias{{/if}}{{#if system}}system{{/if}}" data-id="{{id}}">
+    <td class="sort">{{#unless system}}<span class="icon icon-list"></span>{{/unless}}</td>
+    <td><span class="settings-column-name" title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
+    {{#if system}}
+    <td colspan="5"><em>This is a system field</em></td>
+    {{else}}
+    <td>
+      <select name="ui" id="ui" data-id="{{id}}" class="input-selector">
+        {{#types}}
+        <option {{#if isActive}}selected{{/if}} value="{{id}}">{{{capitalize id}}}</option>
+        {{/types}}
+      </select>
+      {{#if uiHasVariables}}
+        <span class="icon icon-cog open-ui-options" data-action="ui" data-id="{{id}}"></span>
+        {{#unless valid}}<span class="icon icon-warning"></span>{{/unless}}
+      {{/if}}
+      {{#if uiHasRelationship}}
+        <span class="icon icon-flow-tree open-ui-options" data-action="relationship" data-id="{{id}}"></span>
+      {{/if}}
+    </td>
+    <td>
+        <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}" title="Hidden">
+    </td>
+    <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="Allow Null: {{is_nullable}}" title="Required"></td>
+    <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}" title="Primary"></td>
+    <td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment"></td>
+    {{/if}}
+  </tr>
+  {{/rows}}
+</tbody>
+</table>
+
+<button class="btn btn-link margin-top-small" type="button" data-action="new-field">Add New Field</button>

@@ -1,0 +1,33 @@
+<div class="header1">
+  <div id="header-shadow">&nbsp;</div>
+  <div class="primary-row row-plain">
+    <h1 class="font-primary">
+      {{#if route}}
+        {{#if route.isOverlay}}
+          <span class="icon icon-circled-left" id="removeOverlay"></span>
+          <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
+        {{else}}
+          {{#if route.lastBreadcrumbAnchor}}
+          <a class="navigation-back" href="{{route.lastBreadcrumbAnchor}}">
+            <span class="icon icon-circled-left" id="removeOverlay"></span>
+            <!-- <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span> -->
+          </a>
+          {{/if}}
+          <span class="navigation-breadcrumb">
+          {{#each route.breadcrumbs}}
+              <a href="{{anchor}}" class="" >{{{capitalize title}}}</a>
+              <span class="icon breadcrumb-delimiter icon-chevron-small-right"></span>
+          {{/each}}
+        </span>
+        {{/if}}
+        <span class="endnode">{{{capitalize route.title}}}</span>
+      {{/if}}
+    </h1>
+    <ul class="tools left" id="tools-left-insert"></ul>
+    <ul class="tools right" id="tools-right-insert"></ul>
+  </div>
+  <div class="secondary-row row-plain filter-options">
+    <div id="tools-secondary-left-insert" class="tools left"></div>
+    <div id="tools-secondary-right-insert" class="tools right"></div>
+  </div>
+</div>

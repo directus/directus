@@ -1,0 +1,23 @@
+<div style="z-index:999" class="directus-alert-modal">
+  <div class="directus-alert-modal-message">{{message}}</div>
+  {{#if isPrompt}}
+    {{#if showInput}}<input type="text">{{/if}}
+    <div class="directus-alert-modal-buttons">
+      <button id="cancel" type="button">Cancel</button>
+      <button id="save" type="button" class="primary">OK</button>
+    </div>
+  {{/if}}
+  {{#if isYesNoConfirm}}
+    <div class="directus-alert-modal-buttons">
+      <button id="yesBtn" type="button" class="primary">Yes</button>
+      <button id="noBtn" type="button">No</button>
+      <button id="cancel" type="button">Cancel</button>
+    </div>
+  {{/if}}
+  {{#if isAlert}}
+    <div class="directus-alert-modal-buttons">
+      <button id="okBtn" type="button" class="primary">OK</button>
+    </div>
+  {{/if}}
+</div>
+<div class="directus-modal-backdrop"></div>

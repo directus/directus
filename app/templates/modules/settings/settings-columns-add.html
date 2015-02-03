@@ -1,0 +1,184 @@
+<ul class="fields">
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label"><label>Column Name</label></div>
+        <div class="field required"><input type="text" id="columnName" name="column_name" value="{{column_name}}"/></div>
+      </div>
+    </div>
+  </li>
+
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label"><label>UI Type</label></div>
+        <div class="field required">
+        	<select id="uiType" name="ui_type">
+            {{#ui_types}}
+              <option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
+            {{/ui_types}}
+  	      </select>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Data Type</label>
+        </div>
+        <div class="field required">
+          <select id="dataType" name="data_type">
+            {{#data_types}}
+              <option {{#if selected}}selected{{/if}}>{{title}}</option>
+            {{/data_types}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+
+
+  {{#if SHOW_CHAR_LENGTH}}
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Length</label>
+        </div>
+        <div class="field required">
+          <input type="text" id="charLength" value="{{char_length}}" name="char_length">
+        </div>
+      </div>
+    </div>
+  </li>
+  {{/if}}
+
+  {{#if MANYTOONE}}
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Related Table</label>
+        </div>
+        <div class="field required">
+          <select name="table_related" id="table_related">
+            {{#tables}}
+            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+            {{/tables}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+  {{/if}}
+
+  {{#if ONETOMANY}}
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Related Table</label>
+        </div>
+        <div class="field required">
+          <select name="table_related" id="table_related">
+            {{#tables}}
+            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+            {{/tables}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Junction Column</label>
+        </div>
+        <div class="field required">
+          <select id="junction_key_right" name="junction_key_right">
+            {{#columns}}
+            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+            {{/columns}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+  {{/if}}
+
+  {{#if MANYTOMANY}}
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Related Table</label>
+        </div>
+        <div class="field required">
+          <select id="table_related" name="table_related">
+            {{#tables}}
+            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+            {{/tables}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Junction Table</label>
+        </div>
+        <div class="field required">
+          <select id="table_junction" name="table_junction">
+            {{#junctionTables}}
+            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+            {{/junctionTables}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Left Column</label>
+        </div>
+        <div class="field required">
+          <select id="junction_key_left" name="junction_key_left">
+            {{#columns_left}}
+            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+            {{/columns_left}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Right Column</label>
+        </div>
+        <div class="field required">
+          <select id="junction_key_right" name="junction_key_right">
+            {{#columns_right}}
+            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+            {{/columns_right}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  {{/if}}
+</ul>

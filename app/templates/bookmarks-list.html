@@ -1,0 +1,68 @@
+{{#if isCustomBookmarks}}
+  {{#each bookmarks}}
+    {{#if isCustomBookmark}}
+    <div class="sidebar-section tables-sidebar">
+      <div class="sidebar-group">{{@key}}</div>
+      {{#each this}}
+      <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+          <a href="{{url}}">
+            {{capitalize title}}
+          </a>
+      </li>
+      {{/each}}
+    </div>
+    {{/if}}
+  {{/each}}
+{{else}}
+<div class="sidebar-section tables-sidebar">
+  <div class="sidebar-group">Tables</div>
+  {{#bookmarks.table}}
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+      <a href="{{url}}">
+        {{capitalize title}}
+      </a>
+  </li>
+  {{/bookmarks.table}}
+</div>
+{{/if}}
+
+{{#if bookmarks.extension}}
+<div class="sidebar-section searches-sidebar">
+  <div class="sidebar-group">Extensions</div>
+  {{#bookmarks.extension}}
+  <li class="{{#if active_bookmark}}active{{/if}}sidebar-subitem" title="{{capitalize title}}">
+      <a href="{{url}}">
+        <span class="sidebar-label">{{capitalize title}}</span>
+      </a>
+  </li>
+  {{/bookmarks.extension}}
+</div>
+{{/if}}
+
+{{#if bookmarks.search}}
+<div class="sidebar-section searches-sidebar">
+  <div class="sidebar-group">Snapshots</div>
+  {{#bookmarks.search}}
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+      <a href="{{url}}">
+        {{capitalize title}}
+        <span class="remove-snapshot">✕</span>
+      </a>
+  </li>
+  {{/bookmarks.search}}
+</div>
+{{/if}}
+
+<div class="sidebar-section other-sidebar">
+  <div class="sidebar-group">System</div>
+  {{#bookmarks.other}}
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+      <a href="{{url}}">
+        <span class="sidebar-label">{{capitalize title}}</span>
+        {{#if unread}}
+        <span class="unread-color">●</span>
+        {{/if}}
+      </a>
+  </li>
+  {{/bookmarks.other}}
+</div>

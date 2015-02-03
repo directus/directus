@@ -1,0 +1,38 @@
+	{{#if showActive}}
+	<div class="directus-module-section">
+		<label class="radio inline"><input type="radio" name="active" value="1" {{#if isActive}}checked="true"{{/if}} {{#unless canEdit}}disabled="true"{{/unless}}> Active</label>
+		<label class="radio inline"><input type="radio" name="active" value="2" {{#if isInactive}}checked="true"{{/if}} {{#unless canEdit}}disabled="true"{{/unless}}> Inactive</label>
+	</div>
+	{{/if}}
+
+	{{#if canEdit}}
+		<div class="directus-module-section">
+			{{#if showDropdown}}
+				<div class="btn-group">
+					<a class="btn btn-primary" id="save-form">Save Item</a>
+					<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+					<ul class="dropdown-menu dropdown-menu-primary">
+						<li><a id="save-form-stay">Save & Stay</a></li>
+						<li><a id="save-form-add">Save & Add</a></li>
+						{{#if showSaveAsCopy}}<li><a id="save-form-copy">Save as Copy</a></li>{{/if}}
+					</ul>
+				</div>
+			{{else}}
+				<a class="btn btn-primary" id="save-form">{{buttonText}}</a>
+			{{/if}}
+			<div class="cancel">or <a href="#" id="save-form-cancel">Cancel</a></div>
+		</div>
+	{{else}}
+		<div class="directus-module-section">
+			<div class="btn-group">
+				<a class="btn btn-primary" style="opacity:0.3;cursor:not-allowed!important;">Save Item</a>
+			</div>
+		</div>
+	{{/if}}
+
+	{{#if showDelete}}
+	<div class="directus-module-section">
+		<button class="btn-delete" id="delete-form"><span class="glyphicon-remove"></span>Delete</button>
+	</div>
+	{{/if}}
+

@@ -1,0 +1,39 @@
+<!-- <div class="secondary-row row-plain filter-options">  -->
+  <div class="left">
+  </div>
+  <ul id="advancedFilterList" class="filter-list advanced-search-fields left">
+    <li class="advanced-search-fields-row filter-form">
+      <span class="simple-select dark-grey-color">
+        <span class="icon icon-triangle-down"></span>
+        <select name="" id="" class="medium adv-search-col-id">
+          <option value="">Add Filter</option>
+          {{#tableColumns}}
+          <option value="{{this}}">{{capitalize this}}</option>
+          {{/tableColumns}}
+        </select>
+      </span>
+    </li>
+  </ul>
+
+  <ul class="filters left">
+  {{#filters}}
+    <li class="filter-form" data-filter-id-master="{{columnName}}">
+      {{#if relatedEntries}}
+        <span class="simple-select dark-grey-color">
+          <span class="icon icon-triangle-down"></span>
+          <select name="keywords" id="advKeywords" class="medium filter_ui">
+          {{#relatedEntries}}
+            <option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
+          {{/relatedEntries}}
+          </select>
+        </span>
+      {{else}}
+        <span class="filter-ui" data-value="{{value}}" style="float:left">{{{filter_ui}}}</span>
+      {{/if}}
+      <span class="filterColumnName filter-name" data-filter-id="{{columnName}}">{{capitalize columnName}}</span>
+      <span class="removeFilterClass filter-remove">✕</span>
+    </li>
+  {{/filters}}
+  </ul>
+  <!-- <div class="vertical-center right pagination-number">501–1,000 of 3,508</div>  -->
+<!-- </div> -->

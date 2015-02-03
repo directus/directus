@@ -1,0 +1,23 @@
+<ul class="general-container selectable">
+  {{#each messages}}
+  <li class="message {{#unless read}}unread{{/unless}}" data-id="{{id}}">
+    <div class="check-box">
+      <input class="custom-check" id="check{{ id }}" type="checkbox" />
+      <label for="check{{ id }}"><span></span></label>
+    </div>
+    <div class="message-content">
+      <div class="users">{{recipients}}</div>
+      <div class="title">{{subject}}</div>
+      <div class="subject">{{message}}</div>
+    </div>
+    <span class="general-datetime" title="{{date_updated}}">{{niceDate}}</span>
+  </li>
+  {{/each}}
+</ul>
+
+{{#unless messages}}
+<div class="nothing-here secondary-info">
+  <h1>There doesn't seem to be anything here</h1>
+  Maybe send someone a message?
+</div>
+{{/unless}}

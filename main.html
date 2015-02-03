@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1.0">
+  <title>directus</title>
+
+  <!-- Application styles. -->
+  <link rel="shortcut icon" href="{{path}}favicon.ico" type="image/x-icon">
+  <link rel="icon" href="{{path}}favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700" type="text/css">
+  
+  <link rel="stylesheet" href="{{path}}assets/css/directus.min.css?bust={{cacheBuster}}"></head>
+
+<body class="font-primary">
+
+<!-- For blocking drag placeholder -->
+<img id="transparent-placeholder" src="{{path}}assets/img/transparent.gif">
+
+<!-- Loader and Alerts -->
+<div class="invisible-blocker" id="page-blocker">
+  <div class="spinner"></div>
+  <div class="blocker" id="page-blocker-smoke">
+  </div>
+  <div class="directus-alert-modal hide">
+    <div class="directus-alert-modal-message">Your alert text goes here...</div>
+    <!-- <input type="text" placeholder="Enter text here..."> -->
+    <div class="directus-alert-modal-buttons">
+      <button type="button" >Cancel</button>
+      <button type="button" class="primary">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main container. Get's attached to a Backbone View -->
+<div id="main">
+
+  <!-- Sidebar template -->
+  <header id="sidebar" class="font-primary">
+
+  </header>
+
+  <div id="content"></div>
+  <div id="modal-container"></div>
+
+</div>
+
+<div id="push"></div>
+<div id="messages"></div>
+<div id="tool-tips"></div>
+
+<!-- custom HTML can be injected here -->
+{{customFooterHTML}}
+
+<style>
+    .primary-text-color {
+      color: {{cms_color}} !important;
+    }
+    .primary-border-color {
+      border-color: {{cms_color}} !important;
+    }
+    .primary-background {
+      background-color: {{cms_color}} !important;
+      color: #ffffff !important;
+    }
+</style>
+
+<script>
+window.directusData = {{data}};
+</script>
+
+<!-- Application source. -->
+<script src="{{path}}assets/js/directus.min.js?bust={{cacheBuster}}"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<ul>
+	<li class="{{#if active}}active primary-background{{/if}} has-image" title="View Profile">
+	    <a href="#users/{{currentUserId}}">
+	      <img src="{{avatar}}" alt>
+	      <span class="icon icon-pencil"></span>
+	    </a>
+	</li>
+	<li class="{{#if active}}active primary-background{{/if}}" title="Logout">
+	    <a href="#logout">
+	      <span class="icon icon-logout"></span>
+	    </a>
+	</li>
+</ul>
+{{#if showSettings}}
+ <a class="settings-link" href="#settings" title="Settings">
+ 	<span class="icon icon-cog"></span>
+ </a>
+{{/if}}

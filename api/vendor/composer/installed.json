@@ -1,0 +1,145 @@
+[
+    {
+        "name": "slim/slim",
+        "version": "2.2.0",
+        "version_normalized": "2.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/codeguy/Slim.git",
+            "reference": "b8181de1112a1e2f565b40158b621c34ded38053"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/codeguy/Slim/zipball/b8181de1112a1e2f565b40158b621c34ded38053",
+            "reference": "b8181de1112a1e2f565b40158b621c34ded38053",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2012-12-13 02:15:50",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Slim": "."
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Josh Lockhart",
+                "email": "info@joshlockhart.com",
+                "homepage": "http://www.joshlockhart.com/"
+            }
+        ],
+        "description": "Slim Framework, a PHP micro framework",
+        "homepage": "http://github.com/codeguy/Slim",
+        "keywords": [
+            "microframework",
+            "rest",
+            "router"
+        ]
+    },
+    {
+        "name": "slim/extras",
+        "version": "dev-develop",
+        "version_normalized": "dev-develop",
+        "target-dir": "Slim/Extras",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/codeguy/Slim-Extras.git",
+            "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/5bceb3658f77a2b237f5b70ac02a0834fed871f9",
+            "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0",
+            "slim/slim": ">=2.0.0"
+        },
+        "time": "2013-05-24 13:41:59",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Twig_Extensions_": "Views/Extension/",
+                "Slim\\Extras": "."
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Andrew Smith",
+                "email": "a.smith@silentworks.co.uk",
+                "homepage": "http://www.silentworks.co.uk/"
+            },
+            {
+                "name": "Josh Lockhart",
+                "email": "info@joshlockhart.com",
+                "homepage": "http://www.joshlockhart.com/"
+            }
+        ],
+        "description": "Extras package for the Slim Framework",
+        "homepage": "http://github.com/codeguy/Slim-Extras",
+        "keywords": [
+            "extensions",
+            "middleware",
+            "templating"
+        ]
+    },
+    {
+        "name": "zendframework/zend-db",
+        "version": "2.1.6",
+        "version_normalized": "2.1.6.0",
+        "target-dir": "Zend/Db",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/Component_ZendDb.git",
+            "reference": "2b4ca5895e3291912039f6357b8e82882aebd2d9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/Component_ZendDb/zipball/2b4ca5895e3291912039f6357b8e82882aebd2d9",
+            "reference": "2b4ca5895e3291912039f6357b8e82882aebd2d9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "suggest": {
+            "zendframework/zend-stdlib": "2.1.6"
+        },
+        "time": "2014-03-04 17:00:12",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.2-dev",
+                "dev-develop": "2.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Zend\\Db\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "keywords": [
+            "db",
+            "zf2"
+        ]
+    }
+]
