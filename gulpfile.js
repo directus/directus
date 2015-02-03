@@ -1,15 +1,51 @@
 // Include gulp
-var fs      = require('fs');
-var cp      = require('child_process');
-var gulp    = require('gulp');
-var uglify  = require('gulp-uglify');
-var mincss  = require('gulp-minify-css');
-var concat  = require('gulp-concat');
-var rename  = require('gulp-rename');
-var less    = require('gulp-less');
-var size    = require('gulp-size');
-var rjs     = require('gulp-requirejs');
-var prohtml = require('gulp-processhtml');
+var fs        = require('fs');
+var cp        = require('child_process');
+var gulp      = require('gulp');
+var uglify    = require('gulp-uglify');
+var mincss    = require('gulp-minify-css');
+var concat    = require('gulp-concat');
+var rename    = require('gulp-rename');
+var less      = require('gulp-less');
+var size      = require('gulp-size');
+var rjs       = require('gulp-requirejs');
+var prohtml   = require('gulp-processhtml');
+var deploy    = require('gulp-gh-pages');
+var merge     = require('merge-stream');
+
+
+// ----------------------------
+// Run sequence shell commands
+// ----------------------------
+function runSequence(commands, prefix) {
+  var exec = cp.exec,
+      commands = (typeof commands === "string") ? commands.split(',') : commands,
+      prefix = prefix || 'gulp ';
+
+  var commandsList = commands;
+  // Run Next Command on the command list
+  function executeCommand() {
+    if(commandsList.length > 0) {
+      var command = commandsList.shift(),
+          cmd = prefix + command + ' --ansi',
+          out = [];
+
+      if(typeof command === "string") {
+        exec(cmd, function(error, stdout, stderr) {
+          executeCommand();
+        }).stdout.on('data', function (chunk) {
+          out.push(chunk);
+        }).on('close', function() {
+          console.log(out.join(''));
+        });
+      } else {
+        executeCommand();
+      }
+    }
+  }
+
+  executeCommand();
+}
 
 // --------------------
 // CSS - Gulp Task
@@ -30,7 +66,9 @@ gulp.task('styles', function() {
 // --------------------
 // JS - Gulp Task
 // --------------------
-gulp.task('scripts', ['scripts:app', 'scripts:vendor', 'scripts:directus']);
+gulp.task('scripts', function(cb) {
+  runSequence(['scripts:app', cb, 'scripts:vendor', 'scripts:directus']);
+});
 
 // Include what's neccesary
 // @TODO: include all vendors
@@ -171,7 +209,7 @@ gulp.task('templates', function() {
 
 var singlePageFiles = ['./main.html', './login.php'];
 gulp.task('singlepage', function () {
-  gulp.src(singlePageFiles)
+  return gulp.src(singlePageFiles)
     .pipe(prohtml())
     .pipe(gulp.dest('dist'));
 });
@@ -181,8 +219,18 @@ gulp.task('singlepage', function () {
 // Creates media dir
 // --------------------
 gulp.task('media', function(cb) {
-  var exec = cp.exec;
-  exec('mkdir -p media/thumbs; mkdir -p media/temp', function(err, stdout, stderr){
+  var exec = cp.exec,
+      commands = [
+        'mkdir -p dist/media/thumbs',
+        'mkdir -p dist/media/temp',
+        // to be able to push these empty directories
+        // we need to create .gitkeep file
+        'touch dist/media/.gitkeep', // we actually don't need this, just to know.
+        'touch dist/media/thumbs/.gitkeep',
+        'touch dist/media/temp/.gitkeep'
+      ];
+
+  exec(commands.join(' && '), function(err, stdout, stderr){
     if (err !== null) {
       console.log('exec error: ', err);
     }
@@ -208,12 +256,11 @@ gulp.task('composer', function(cb) {
 // Move - Gulp Task
 // Move required files
 // -------------------
-
 gulp.task('move', function() {
   var filesToMove = [
     './api/core/**',
     './api/logs/**',
-    './api/vendor/**',
+    './api/vendor/**/*.*',
     './api/.htaccess',
     './api/!(composer.json|composer.lock|config.php|configuration.php|schema.sql)',
     // for login.php
@@ -225,20 +272,33 @@ gulp.task('move', function() {
     './bin/**',
     './extensions/**',
     './installation/**',
-    './listviews/**',
-    './media/**',
+    // These two directories are moved separately below
+    //'./listviews/**',
+    //'./media/**/*',
     './media_auth_proxy/**',
-    './ui/**',
+    './ui/**/*',
     './.htaccess',
     './favicon.ico',
     './index.php',
+    // This two files are processed by singlepage task
     //'./login.php',
     //'./main.html',
     './readme.md'
   ];
 
-  return gulp.src(filesToMove, { base: './' })
+  var dirsToKeep = [
+    './ui/**/*.*',
+    './media/**/*.*',
+    './listviews/**/*.*'
+  ];
+
+  var mainFiles = gulp.src(filesToMove, { base: './' })
     .pipe(gulp.dest('dist'));
+
+  var keepFiles = gulp.src(dirsToKeep, { base: './', dot: true })
+    .pipe(gulp.dest('dist'));
+
+  return merge(mainFiles, keepFiles);
 });
 
 // Rerun the task when a file changes
@@ -252,7 +312,6 @@ gulp.task('watch', function() {
   gulp.watch(singlePageFiles, ['singlepage']);
 });
 
-var deploy = require('gulp-gh-pages');
 gulp.task('deploy', function () {
   return gulp.src(['./dist/**/*'], {dot: true})
         .pipe(deploy({branch: 'build'}));
