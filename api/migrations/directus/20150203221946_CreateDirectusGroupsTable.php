@@ -12,7 +12,11 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_groups", array("id"=>false,"options" => "Engine=InnoDB"));
+      $t = $this->create_table("directus_groups", array(
+        "id"=>false,
+        "options"=>"Engine=InnoDB DEFAULT CHARSET=utf8"
+        )
+      );
 
       // columns
       $t->column("id", "integer", array(
@@ -24,11 +28,13 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("name", "string", array(
-        "limit" => 100
+        "limit" => 100,
+        "DEFAULT"=>NULL
         )
       );
       $t->column("description", "string", array(
-        "limit" => 500
+        "limit" => 500,
+        "DEFAULT"=>NULL
         )
       );
       $t->column("restrict_to_ip_whitelist", "tinyinteger", array(
