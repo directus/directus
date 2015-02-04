@@ -2,7 +2,8 @@
     "require": {
         "slim/slim": "2.2.0",
         "slim/extras": "dev-develop",
-        "zendframework/zend-db": "2.1.*@dev"
+        "zendframework/zend-db": "2.1.*@dev",
+        "ruckusing/ruckusing-migrations": "1.0.3"
     },
     "_require": {
       "rackspace/php-opencloud": "dev-master",
