@@ -276,7 +276,7 @@ gulp.task('move', function() {
     //'./listviews/**',
     //'./media/**/*',
     './media_auth_proxy/**',
-    './ui/**/*',
+    //'./ui/**/*',
     './.htaccess',
     './favicon.ico',
     './index.php',
@@ -287,9 +287,9 @@ gulp.task('move', function() {
   ];
 
   var dirsToKeep = [
-    './ui/**/*.*',
-    './media/**/*.*',
-    './listviews/**/*.*'
+    './ui/.gitkeep',
+    './media/**/.gitkeep',
+    './listviews/.gitkeep'
   ];
 
   var mainFiles = gulp.src(filesToMove, { base: './' })
