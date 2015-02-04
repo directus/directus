@@ -2,6 +2,7 @@ assets/bower
 
 api/config.php
 api/configuration.php
+api/ruckusing.conf.php
 
 assets/css/*.map
 
