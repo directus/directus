@@ -54,7 +54,12 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
       'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'saveConfirm',
-      'change #saveSelect': 'saveConfirm'
+      'change #saveSelect': 'saveConfirm',
+      'submit': function(e) {
+        // prevent user submit the form using Enter key
+        // @todo handle this event to or as 'saveConfirm'
+        e.preventDefault();
+      }
     },
 
     getHeaderOptions: function() {
