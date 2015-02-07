@@ -193,8 +193,6 @@ function(app, Backbone) {
 
     serialize: function() {
       var order = this.collection.getOrder();
-      var blacklist = this.options.blacklist || [];
-      var structure = this.collection.structure;
 
       var columns = _.map(this.options.columns, function(column) {
         return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
