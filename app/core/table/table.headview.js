@@ -193,13 +193,9 @@ function(app, Backbone) {
 
     serialize: function() {
       var order = this.collection.getOrder();
-      var blacklist = this.options.blacklist || [];
-      var columns = _.map(this.collection.getColumns(), function(column) {
-        return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
-      });
 
-      columns = _.filter(columns, function(col) {
-        return !_.contains(blacklist, col.name);
+      var columns = _.map(this.options.columns, function(column) {
+        return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
 
       return {selectable: this.options.selectable, sortable: this.options.sort, columns: columns, deleteColumn: this.options.deleteColumn, hideColumnPreferences: this.options.hideColumnPreferences};
