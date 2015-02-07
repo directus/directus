@@ -19,13 +19,8 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
     TableBody: TableBody,
 
     serialize: function() {
-      var blacklist = this.options.blacklist || [];
-      var columns = _.filter(this.collection.getColumns(), function(col) {
-        return !_.contains(blacklist, col);
-      });
-
       return {
-        columns: columns,
+        columns: this.options.columns,
         id: this.collection.table.id,
         selectable: this.options.selectable,
         sortable: this.options.sortable,
@@ -67,7 +62,7 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight');
+        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
         options.parentView = this;
         this.insertView('table', new this.TableBody(options));
       }
@@ -136,7 +131,9 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
     },
 
     initialize: function(options) {
-      var collection = this.collection;
+      var collection = this.collection,
+          structure = this.collection.structure,
+          blacklist = this.options.blacklist || [];
 
       this.listenTo(collection, 'sync', function(model, resp, options) {
         if (options.silent) return;
@@ -150,6 +147,12 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;
       this.options.table = this.options.table || this.collection.table;
+      this.options.columns = _.filter(this.collection.getColumns(), function(col) {
+        var columnModel = structure.get(col),
+            hiddenInput = (columnModel && columnModel.get('hidden_input') !== true);
+
+        return !_.contains(blacklist, col) && hiddenInput;
+      });
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;
