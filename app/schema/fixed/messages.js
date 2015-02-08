@@ -7,7 +7,6 @@ define(function(require, exports, module) {
     "table_name":"directus_messages",
     "hidden":true,
     "single":false,
-    "default_status": "1",
     "url": "api/1/groups",
 
     "columns": [

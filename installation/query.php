@@ -238,7 +238,6 @@ $create_tables = "CREATE TABLE `directus_tables` (
   `table_name` varchar(64) NOT NULL DEFAULT '',
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `single` tinyint(1) NOT NULL DEFAULT '0',
-  `default_status` tinyint(1) NOT NULL DEFAULT '1',
   `is_junction_table` tinyint(1) NOT NULL DEFAULT '0',
   `footer` tinyint(1) DEFAULT '0',
   `list_view` varchar(200) DEFAULT NULL,
@@ -252,10 +251,10 @@ $create_tables = "CREATE TABLE `directus_tables` (
   PRIMARY KEY (`table_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-$insert_tables = "INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `default_status`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`)
+$insert_tables = "INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`)
 VALUES
-  ('directus_messages_recipients', 1, 0, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-  ('directus_users', 1, 0, 1, 0, 0, NULL, NULL, NULL, 'id', NULL, NULL, NULL);";
+  ('directus_messages_recipients', 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+  ('directus_users', 1, 0, 0, 0, NULL, NULL, NULL, 'id', NULL, NULL, NULL);";
 
 $create_ui = "CREATE TABLE `directus_ui` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

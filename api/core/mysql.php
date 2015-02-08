@@ -128,7 +128,6 @@ class MySQL {
             TABLE_COMMENT AS comment,
             ifnull(hidden,0) as hidden,
             ifnull(single,0) as single,
-            default_status,
             is_junction_table,
             user_create_column,
             footer,

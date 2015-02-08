@@ -8,7 +8,6 @@ define(function(require, exports, module) {
     "table_name":"directus_activity",
     "hidden":true,
     "single":false,
-    "default_status":"1",
     "is_junction_table":false,
     "count":0,
     "active":0,
