@@ -61,7 +61,7 @@ function(app, Backbone) {
 
         data.columns = structure.chain()
           .filter(function(model) {
-            return !model.get('system') && !model.get('hidden_list');
+            return !model.get('system') && !model.get('hidden_list') && !model.get('hidden_input');
           })
           .map(function(model) {
             var isVisible = _.contains(visibleColumns, model.id);

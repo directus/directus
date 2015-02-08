@@ -130,10 +130,23 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       }, this);
     },
 
+    getTableColumns: function() {
+      var structure = this.collection.structure,
+          blacklist = this.options.blacklist || [],
+          columns;
+
+      columns = _.filter(this.collection.getColumns(), function(col) {
+        var columnModel = structure.get(col),
+            hiddenInput = (columnModel && columnModel.get('hidden_input') !== true);
+
+        return !_.contains(blacklist, col) && hiddenInput;
+      });
+
+      return columns;
+    },
+
     initialize: function(options) {
-      var collection = this.collection,
-          structure = this.collection.structure,
-          blacklist = this.options.blacklist || [];
+      var collection = this.collection;
 
       this.listenTo(collection, 'sync', function(model, resp, options) {
         if (options.silent) return;
@@ -141,18 +154,14 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       });
 
       this.listenTo(collection, 'visibility', function() {
+        this.options.columns = this.getTableColumns();
         this.render();
       });
 
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;
       this.options.table = this.options.table || this.collection.table;
-      this.options.columns = _.filter(this.collection.getColumns(), function(col) {
-        var columnModel = structure.get(col),
-            hiddenInput = (columnModel && columnModel.get('hidden_input') !== true);
-
-        return !_.contains(blacklist, col) && hiddenInput;
-      });
+      this.options.columns = this.getTableColumns();
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;
