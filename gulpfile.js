@@ -259,12 +259,12 @@ gulp.task('composer', function(cb) {
 gulp.task('move', function() {
   var filesToMove = [
     './api/core/**',
-    './api/logs/**',
+    './api/logs/!*',
+    './api/migrations/**/*',
     './api/vendor/**/*.*',
     './api/.htaccess',
     './api/!(composer.json|composer.lock|config.php|configuration.php|schema.sql)',
     // for login.php
-    // @TODO: find a better way
     './assets/js/libs/jquery.js',
     './assets/js/libs/jquery.min.map',
     './assets/js/libs/wysihtml5.js',
