@@ -5,7 +5,6 @@ $loader->add("Directus", dirname(__FILE__) . "/core/");
 
 // Non-autoload components
 require dirname(__FILE__) . '/config.php';
-require dirname(__FILE__) . '/core/db.php';
 require dirname(__FILE__) . '/core/functions.php';
 
 // Define directus environment
