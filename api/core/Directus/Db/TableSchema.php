@@ -424,7 +424,7 @@ class TableSchema {
 
         $parameterContainer = new ParameterContainer;
         $parameterContainer->offsetSet(':table_name', $tbl_name, ParameterContainer::TYPE_STRING);
-        $parameterContainer->offsetSet(':schema', $db->getCurrentSchema(), ParameterContainer::TYPE_STRING);
+        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
         $parameterContainer->offsetSet(':column_name', $column_name, ParameterContainer::TYPE_INTEGER);
 
         foreach($readFieldBlacklistParams as $key => $value) {
@@ -630,7 +630,7 @@ class TableSchema {
 
         $sth = $zendDb->query($sql);
         $parameterContainer = new ParameterContainer;
-        $parameterContainer->offsetSet(':schema', $db->getCurrentSchema(), ParameterContainer::TYPE_STRING);
+        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
         $result = $sth->execute($parameterContainer);
         $tables = array();
 
