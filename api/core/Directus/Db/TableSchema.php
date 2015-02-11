@@ -906,8 +906,8 @@ class TableSchema {
         $ui;
         $result = array();
         $item = array();
-        $db = Bootstrap::get('zendDb');
-        $sth = $db->query("SELECT ui_name as id, name, value FROM directus_ui WHERE column_name='$col_name' AND table_name='$tbl_name' AND ui_name='$datatype_name' ORDER BY ui_name");
+        $zendDb = Bootstrap::get('zendDb');
+        $sth = $zendDb->query("SELECT ui_name as id, name, value FROM directus_ui WHERE column_name='$col_name' AND table_name='$tbl_name' AND ui_name='$datatype_name' ORDER BY ui_name");
         $rows = $sth->execute();
         foreach($rows as $row) {//$sth->fetch(PDO::FETCH_ASSOC)) {
             //first case
