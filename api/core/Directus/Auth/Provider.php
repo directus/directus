@@ -172,9 +172,6 @@ class Provider {
     public static function hashPassword($password, $salt = '') {
         $composite = $salt . $password;
         return sha1( $composite );
-        // This is not working --
-        $PHPass = new \Directus\Auth\PasswordHash(8, true);
-        return $PHPass->HashPassword( $salt . $password );
     }
 
 }
