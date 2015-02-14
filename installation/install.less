@@ -1,7 +1,7 @@
 // Variables
 //////////////////////////////////////////////////////////////////////////////
 
-@primary: #7CC74C;
+@primary: #b26cee;
 @bad: #c1272d;
 
 // Mixins
@@ -11,6 +11,14 @@
   -webkit-border-radius: @radius;
   -moz-border-radius: @radius;
   border-radius: @radius;
+}
+
+.transition (@prop: all, @time: 200ms, @ease: linear) {
+  -webkit-transition: @prop @time @ease;
+  -moz-transition: @prop @time @ease;
+  -o-transition: @prop @time @ease;
+  -ms-transition: @prop @time @ease;
+  transition: @prop @time @ease;
 }
 
 // Tags and Structure
@@ -71,7 +79,6 @@ textarea {
 			margin-top: 40px;
 		}
 		div {
-			margin-top: 20px;
 			font-size: 30px;
 			color: #5b5b5b;
 			-webkit-font-smoothing: antialiased !important;
@@ -156,6 +163,7 @@ textarea {
 }
 .button {
 	.border-radius;
+  .transition (all, 200ms, linear);
 	width: 130px;
 	height: 29px;
 	background-color: #5B5B5B;
@@ -174,12 +182,12 @@ textarea {
 	&.primary {
 		background-color: @primary;
 		&:hover {
-			background-color: #6cba3b;
+			background-color: #4CA6DE;
 		}
 		&.disabled {
 			opacity: 0.6;
 			&:hover {
-				background-color: #7CC74C;
+				background-color: @primary;
 				cursor: not-allowed;
 			}
 		}
