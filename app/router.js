@@ -120,7 +120,7 @@ define(function(require, exports, module) {
       vieww.$el.show();
 
       if(vieww.scrollTop !== undefined) {
-        document.body.scrollTop = vieww.scrollTop;
+        document.body.scrollTop = parseInt(vieww.scrollTop, 10);
       }
 
       if(this.v.main.getViews('#content')._wrapped.length <= 1) {
