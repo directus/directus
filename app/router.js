@@ -94,6 +94,8 @@ define(function(require, exports, module) {
         this.oldLoadUrlFunction = Backbone.History.prototype.loadUrl;
       }
 
+      var lastView = this.v.main.getViews('#content').last()._wrapped;
+      lastView.scrollTop = document.body.scrollTop;
       this.v.main.getViews('#content').each(function(view) {
         view.$el.hide();
       });
@@ -116,6 +118,10 @@ define(function(require, exports, module) {
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last()._wrapped;
       vieww.$el.show();
+
+      if(vieww.scrollTop !== undefined) {
+        document.body.scrollTop = parseInt(vieww.scrollTop, 10);
+      }
 
       if(this.v.main.getViews('#content')._wrapped.length <= 1) {
         Backbone.History.prototype.loadUrl = this.oldLoadUrlFunction;
