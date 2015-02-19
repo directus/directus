@@ -2,8 +2,9 @@ require([
   "app",
   "handlebars",
   "core/UIManager",
+  'modules/users/UsersModel',
   'moment'
-], function(app, Handlebars, UIManager, moment) {
+], function(app, Handlebars, UIManager, UsersModel, moment) {
 
   "use strict";
 
@@ -112,10 +113,17 @@ require([
 
   Handlebars.registerHelper('userAvatar', function(userId) {
     var user = app.users.get(userId);
+    var avatar = '';
+
     if(user) {
-      var avatar = user.getAvatar();
-      return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar" title="'+user.get('first_name')+' '+user.get('last_name')+'"/>');
+      avatar = user.getAvatar();
+    } else {
+      // empty user object
+      user = new UsersModel({}, {collection: {}});
+      avatar = user.getDefaultAvatar();
     }
+
+    return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar" title="'+user.get('first_name')+' '+user.get('last_name')+'"/>');
   });
 
   Handlebars.registerHelper('userFull', function(userId) {
