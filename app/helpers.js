@@ -7,7 +7,7 @@ require([
 
   "use strict";
 
-  var unknowUserMessage = "-";
+  var unknowUserMessage = "A missing or removed user";
 
   Handlebars.registerHelper('imagesPath', function() {
     return app.PATH + 'assets/img/';
