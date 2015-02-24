@@ -333,8 +333,8 @@ if($step == 3) {
 
 if($step == 4) {
   require_once('query.php');
-  CreateTables($create_statements,$mysqli);
-  RunInserts($insert_statements, $mysqli);
+  $setupResponse = $main->execute(array('', 'db:setup'));
+  $migrateResponse = $main->execute(array('', 'db:migrate'));
   AddDefaultUser($_SESSION['email'], $_SESSION['password'], $mysqli);
   AddStorageAdapters($mysqli);
   if(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == "yes") {

@@ -17,6 +17,8 @@ CREATE TABLE `directus_preferences` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -32,43 +34,43 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
           "limit"=>10,
           "unsigned"=>true,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
       $t->column("user", "integer", array(
           "limit"=>11,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("table_name", "string", array(
           "limit"=>64,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("title", "string", array(
           "limit"=>255,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("columns_visible", "string", array(
           "limit"=>300,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("sort", "string", array(
           "limit"=>64,
-          "DEFAULT"=>"id"
+          "default"=>"id"
         )
       );
       $t->column("sort_order", "string", array(
           "limit"=>5,
-          "DEFAULT"=>"ASC"
+          "default"=>"ASC"
         )
       );
       $t->column("active", "string", array(
           "limit"=>5,
-          "DEFAULT"=>3
+          "default"=>3
         )
       );
       $t->column("search_string", "text");
@@ -89,7 +91,6 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
 
     public function down()
     {
-      $this->drop_table("directus_preferences");
       $this->remove_index("directus_preferences", array("user","table_name", "title"), array(
         "unique"=>true,
         "name"=>"user"
@@ -100,5 +101,6 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
         "name"=>"pref_title_constraint"
         )
       );
+      $this->drop_table("directus_preferences");
     }//down()
 }

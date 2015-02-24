@@ -14,6 +14,8 @@ CREATE TABLE `directus_storage_adapters` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusStorageAdaptersTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -29,56 +31,56 @@ class CreateDirectusStorageAdaptersTable extends Ruckusing_Migration_Base
           "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
       $t->column("key", "string", array(
           "limit"=>255,
-          "CHARACTER"=>"latin1",
+          "character"=>"latin1",
           "null"=>false
         )
       );
       $t->column("adapter_name", "string", array(
           "limit"=>255,
-          "CHARACTER"=>"latin1",
+          "character"=>"latin1",
           "null"=>false,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("role", "string", array(
           "limit"=>255,
-          "CHARACTER"=>"latin1",
-          "DEFAULT"=>NULL,
-          "COMMENT"=>"DEFAULT, THUMBNAIL, or Null. DEFAULT and THUMBNAIL should only occur once each."
+          "character"=>"latin1",
+          "default"=>NULL,
+          "comment"=>"DEFAULT, THUMBNAIL, or Null. DEFAULT and THUMBNAIL should only occur once each."
         )
       );
       $t->column("public", "tinyinteger", array(
           "limit"=>1,
           "unsigned"=>true,
           "null"=>false,
-          "DEFAULT"=>1,
-          "COMMENT"=>"1 for yes, 0 for no."
+          "default"=>1,
+          "comment"=>"1 for yes, 0 for no."
         )
       );
       $t->column("destination", "string", array(
           "limit"=>255,
-          "CHARACTER"=>"latin1",
+          "character"=>"latin1",
           "null"=>false,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("url", "string", array(
           "limit"=>2000,
-          "CHARACTER"=>"latin1",
-          "DEFAULT"=>"",
-          "COMMENT"=>"Trailing slash required."
+          "character"=>"latin1",
+          "default"=>"",
+          "comment"=>"Trailing slash required."
         )
       );
       $t->column("params", "string", array(
           "limit"=>2000,
-          "CHARACTER"=>"latin1",
-          "DEFAULT"=>NULL
+          "character"=>"latin1",
+          "default"=>NULL
         )
       );
 

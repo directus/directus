@@ -13,6 +13,8 @@ CREATE TABLE `directus_social_posts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusSocialPostsTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -27,37 +29,37 @@ class CreateDirectusSocialPostsTable extends Ruckusing_Migration_Base
       $t->column("id", "integer", array(
           "limit"=>11,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
       $t->column("active", "tinyinteger", array(
           "limit"=>1,
           "null"=>false,
-          "DEFAULT"=>1
+          "default"=>1
         )
       );
       $t->column("feed", "integer", array(
           "limit"=>11,
           "null"=>false,
-          "COMMENT"=>"The FK ID of the feed."
+          "comment"=>"The FK ID of the feed."
         )
       );
       $t->column("datetime", "datetime", array(
           "null"=>false,
-          "COMMENT"=>"The date/time this entry was published."
+          "comment"=>"The date/time this entry was published."
         )
       );
       $t->column("foreign_id", "string", array(
           "limit"=>55,
           "null"=>false,
-          "CHARACTER"=>"latin1"
+          "character"=>"latin1"
         )
       );
       $t->column("data", "text", array(
-          "COMMENT"=>"The API response for this entry, excluding unnecessary feed metadata, which is stored on the directus_social_feeds table.",
+          "comment"=>"The API response for this entry, excluding unnecessary feed metadata, which is stored on the directus_social_feeds table.",
           "null"=>false,
-          "CHARACTER"=>"latin1"
+          "character"=>"latin1"
         )
       );
 

@@ -8,6 +8,8 @@ CREATE TABLE `directus_groups` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -23,18 +25,18 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
           "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
       $t->column("name", "string", array(
         "limit" => 100,
-        "DEFAULT"=>NULL
+        "default"=>NULL
         )
       );
       $t->column("description", "string", array(
         "limit" => 500,
-        "DEFAULT"=>NULL
+        "default"=>NULL
         )
       );
       $t->column("restrict_to_ip_whitelist", "tinyinteger", array(
@@ -44,6 +46,8 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         )
       );
       $t->finish();
+
+      $this->execute("INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`) VALUES (1,'Administrator',NULL,0);");
     }//up()
 
     public function down()

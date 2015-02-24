@@ -32,6 +32,8 @@ CREATE TABLE `directus_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusUsersTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -46,130 +48,130 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
       $t->column("id", "integer", array(
           "limit"=>11,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
       $t->column("active", "tinyinteger", array(
           "limit"=>1,
-          "DEFAULT"=>1
+          "default"=>1
         )
       );
       $t->column("first_name", "string", array(
           "limit"=>50,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("last_name", "string", array(
           "limit"=>50,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("email", "string", array(
           "limit"=>255,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("password", "string", array(
           "limit"=>255,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("salt", "string", array(
           "limit"=>255,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("token", "string", array(
           "limit"=>255,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("reset_token", "string", array(
           "limit"=>255,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("reset_expiration", "datetime", array(
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("position", "string", array(
           "limit"=>500,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("email_messages", "tinyinteger", array(
           "limit"=>1,
-          "DEFAULT"=>1
+          "default"=>1
         )
       );
       $t->column("last_login", "datetime", array(
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("last_access", "datetime", array(
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("last_page", "string", array(
           "limit"=>255,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("ip", "string", array(
           "limit"=>50,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("group", "integer", array(
           "limit"=>11,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("avatar", "string", array(
           "limit"=>500,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("avatar_file_id", "integer", array(
           "limit"=>11,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("avatar_is_file", "tinyinteger", array(
           "limit"=>1,
-          "DEFAULT"=>0
+          "default"=>0
         )
       );
       $t->column("location", "string", array(
           "limit"=>255,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("phone", "string", array(
           "limit"=>255,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("address", "string", array(
           "limit"=>255,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("city", "string", array(
           "limit"=>255,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("state", "string", array(
           "limit"=>2,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("zip", "string", array(
           "limit"=>10,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
 

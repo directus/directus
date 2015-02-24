@@ -9,6 +9,8 @@ CREATE TABLE `directus_ip_whitelist` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusIpWhitelistTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -24,7 +26,7 @@ class CreateDirectusIpWhitelistTable extends Ruckusing_Migration_Base
           "limit"=>10,
           "unsigned"=>true,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );

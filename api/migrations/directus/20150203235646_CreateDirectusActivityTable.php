@@ -19,6 +19,8 @@ CREATE TABLE `directus_activity` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains history of revisions';
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusActivityTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -33,7 +35,7 @@ class CreateDirectusActivityTable extends Ruckusing_Migration_Base
       $t->column("id", "integer", array(
           "limit"=>10,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );

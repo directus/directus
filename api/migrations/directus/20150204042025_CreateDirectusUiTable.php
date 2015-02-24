@@ -17,6 +17,8 @@ VALUES
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusUiTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -32,28 +34,28 @@ class CreateDirectusUiTable extends Ruckusing_Migration_Base
           "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
       $t->column("table_name", "string", array(
           "limit"=>64,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("column_name", "string", array(
           "limit"=>64,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("ui_name", "string", array(
           "limit"=>200,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("name", "string", array(
           "limit"=>200,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("value", "text");
@@ -65,15 +67,19 @@ class CreateDirectusUiTable extends Ruckusing_Migration_Base
         "name"=>"unique"
         )
       );
+
+      $this->execute("INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
+VALUES
+  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');");
     }//up()
 
     public function down()
     {
-      $this->drop_table("directus_ui");
       $this->remove_index("directus_ui", array("table_name","column_name", "ui_name", "name"), array(
         "unique"=>true,
         "name"=>"unique"
         )
       );
+      $this->drop_table("directus_ui");
     }//down()
 }

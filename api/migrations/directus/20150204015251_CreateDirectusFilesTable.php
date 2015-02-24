@@ -24,6 +24,8 @@ CREATE TABLE `directus_files` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusFilesTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -38,7 +40,7 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
       $t->column("id", "integer", array(
           "limit"=>10,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
