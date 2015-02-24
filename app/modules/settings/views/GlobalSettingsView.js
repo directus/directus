@@ -40,7 +40,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         var success = function() { app.router.go('settings'); };
         this.model.save(data, {success: success});
       },
-      'change input, select, textarea': 'checkDiff',
+      'change select': 'checkDiff',
       'keyup input, textarea': 'checkDiff'
     },
     checkDiff: function(e) {
@@ -53,7 +53,6 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     initialize: function(options) {
-      console.log(this.model);
       this.editView = new Directus.EditView({model: this.model, structure: options.structure});
       this.headerOptions.route.title = this.options.title;
     }

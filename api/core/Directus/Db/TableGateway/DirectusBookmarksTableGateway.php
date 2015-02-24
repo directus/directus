@@ -118,7 +118,7 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
           );
 
           $row = $this->createDefaultBookmark($defaultBookmark, $data);
-          //$id = $db->set_entry(self::$_tableName, $row);
+          $id = $this->insertBookmark($row);
 
           $bookmarks[$defaultBookmark] = $row;
         }

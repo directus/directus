@@ -21,19 +21,63 @@ function(app, Backbone, Widgets, BasePageView) {
     template: 'modules/settings/settings-groups',
 
     events: {
+      'click button[data-action=new-group]': 'newGroup'
+    },
+
+    newGroup: function(e) {
+      // @TODO either move this to permission or from permission to here
+      //
+      // console.log('@TODO: Create new group');
+      // var collection = this.collection;
+      // //@todo: link real col
+      // var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: this.collection});
+      // var view = new NewColumnOverlay({model: model, collection: collection});
+      // app.router.overlayPage(view);
+    },
+
+    serialize: function() {
+      return {rows: this.collection.toJSON()};
+    },
+    
+    addRowView: function(model, render) {
+      var view = this.insertView('tbody', new GroupsRow({model: model}));
+      if (render !== false) {
+        view.render();
+      }
+    },
+
+    beforeRender: function() {
+      this.collection.each(function(model){
+        this.addRowView(model, false);
+      }, this);
+    },
+
+    initialize: function() {
+      this.listenTo(this.collection, 'add', this.addRowView);
+    }
+
+  });
+  
+  var GroupsRow = Backbone.Layout.extend({
+
+    template: 'modules/settings/settings-groups-rows',
+
+    tagName: 'tr',
+
+    events: {
       'click td': function(e) {
         var groupName = e.target.getAttribute('data-id');
-        if(groupName == 1) {
-          return;
-        }
+        // Don't bypass Admins until their permissions are always guaranteed
+        // if(groupName == 1) {
+        //   return;
+        // }
         app.router.go(['settings' ,'permissions', groupName]);
       }
     },
 
     serialize: function() {
-      return {rows: this.collection.toJSON()};
+      return this.model.toJSON();
     }
-
   });
 
   var Permissions = BasePageView.extend({
@@ -56,11 +100,12 @@ function(app, Backbone, Widgets, BasePageView) {
             var model = new Backbone.Model();
             model.url = app.API_URL + 'groups';
             model.set({name: groupName});
-            model.save();
-            // @TODO render just once, instead of reload
-            that.listenToOnce(model, 'sync', function() {
-              location.reload();
-            });
+            model.save({}, {success: function(model) {
+              console.log(model);
+              model.fetch({success: function(){
+                that.collection.add(model);
+              }});
+            }});
           }
         }});
       }
@@ -70,7 +115,8 @@ function(app, Backbone, Widgets, BasePageView) {
       BasePageView.prototype.beforeRender.call(this);
     },
     afterRender: function() {
-      this.$el.find('td[data-id=1]').addClass('disabled');
+      // Don't bypass Admins until their permissions are always guaranteed
+      // this.$el.find('td[data-id=1]').addClass('disabled');
     }
   });
 

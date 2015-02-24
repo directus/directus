@@ -12,6 +12,7 @@ define([
   'backbone',
   'core/directus',
   'core/BasePageView',
+  'schema/TableModel',
   'schema/ColumnModel',
   'core/UIManager',
   'core/widgets/widgets',
@@ -19,7 +20,7 @@ define([
   'sortable'
 ],
 
-function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets, SchemaManager, Sortable) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -29,6 +30,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
   var NewColumnOverlay = BasePageView.extend({
     headerOptions: {
       route: {
+
         title: 'New Column',
         isOverlay: true
       }
@@ -58,7 +60,6 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
           app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
           that.collection.add(that.model);
           that.collection.trigger('change');
-          location.reload();
         }});
       }
     },
@@ -88,13 +89,16 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         this.render();
       },
       'change select#uiType': function(e) {
+        var columnName = this.model.get('column_name');
         this.model.clear();
+        this.model.set({column_name: columnName});
         this.selectedUI = $(e.target).val();
         this.selectedDataType = null;
         this.render();
       },
       'change input#columnName': function(e) {
         this.columnName =  $(e.target).val();
+        this.model.set({column_name: this.columnName});
       },
       'change input#charLength': function(e) {
         this.model.set({char_length: $(e.target).val()});
@@ -114,12 +118,8 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     serialize: function() {
-      var data = {ui_types: [], data_types: []};
+      var data = {ui_types: [], data_types: [], column_name: this.model.get('column_name')};
       var uis = UIManager._getAllUIs();
-
-      if(this.model.has('column_name')) {
-        data.column_name = this.model.get('column_name');
-      }
 
       for(var key in uis) {
         //If not system column
@@ -162,9 +162,18 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       });
 
       //Check if we need length field
-      if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) > -1)
+      if(['VARCHAR', 'CHAR', 'ENUM', 'INT'].indexOf(this.selectedDataType) > -1)
       {
-        data.CHAR_LENGTH = 1;
+        data.SHOW_CHAR_LENGTH = true;
+        if (!this.model.get('char_length')) {
+          this.model.set({char_length: 1});
+        }
+        data.char_length = this.model.get('char_length');
+      } else {
+        delete data.char_length;
+        if(this.model.has('char_length')) {
+          this.model.unset('char_length', {silent: true});
+        }
       }
 
       if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
@@ -234,7 +243,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
         this.model.set({relationship_type: this.selectedDataType});
       }
 
-      this.model.set({data_type: this.selectedDataType, ui: this.selectedUI, column_name: this.columnName});
+      this.model.set({data_type: this.selectedDataType, ui: this.selectedUI});
 
       return data;
     },
@@ -328,13 +337,21 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       class: "two-column-form"
     },
 
+    events: {
+      'change select#table_related': 'changeRelatedTable'
+    },
+
+    changeRelatedTable: function(e) {
+      this.model.set({table_related: $(e.target).val()});
+    },
+
     template: 'modules/settings/settings-columns-edit-relationship',
 
     serialize: function() {
       var data = {};
 
       var tableRelated = this.model.get('table_related');
-      data.data_types = [{title: 'MANYTOONE', selected: true}];
+      data.data_types = [{title: this.model.get('relationship_type'), selected: true}];
 
       var tables = app.schemaManager.getTables();
       tables = tables.map(function(model) {
@@ -431,7 +448,15 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     editRelationship: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
-      var model = new Backbone.Model({type: 'MANYTOONE', junction_key_left: column.id, ui: column.get('ui')});
+      var model = new Backbone.Model(_.extend(column.relationship.toJSON(),{
+        data_type: column.get('type'),
+        //ui: column.get('ui'),
+        //type: column.get('type'),
+        relationship_type: column.relationship.get('type')
+        //junction_key_left: column.relationship.get('junction_key_right'),
+        //table_related: column.relationship.get('table_related')
+      }));
+
       column.relationship = model;
       var that = this;
       var view = new EditRelationship({model: model});
@@ -458,7 +483,7 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
 
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables') && ui[row.ui].variables.length > 0;
 
-        row.uiHasRelationship = ['many_to_one', 'many_to_one_typeahead', 'single_file'].indexOf(row.ui) > -1;
+        row.uiHasRelationship = model.relationship !== undefined;
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
         row.relationship = "";
@@ -617,6 +642,25 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       }
     },
 
+    moveRowView: function(model) {
+      var currentModelIndex = this.collection.indexOf(model);
+      var afterModelIndex = currentModelIndex-1;
+      var tbody = this.$el.find('tbody');
+      var tableId = model.id || false;
+      
+      if (tableId) {
+        var currentRow = tbody.find('[data-id="'+tableId+'"]');
+        var afterRow = tbody.find('tr:eq('+afterModelIndex+')');
+        var currentRowIndex = currentRow.index();
+
+        if(currentModelIndex === 0) {
+          currentRow.prependTo(tbody);
+        } else {
+          currentRow.insertAfter(afterRow);
+        }
+      }
+    },
+
     isValidModel: function(model) {
       //Filter out _directus tables
       if (model.id.substring(0,9) === 'directus_') return false;
@@ -630,13 +674,12 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       var permissions = privileges.get('permissions').split(',');
 
       // only return tables with view permissions
-      return _.contains(permissions, 'alter');
+      return _.contains(permissions, 'bigview');
     },
 
     beforeRender: function() {
       this.collection.each(function(model){
         if (!this.isValidModel(model)) {
-          this.collection.remove(model);
           return false;
         }
         this.addRowView(model, false);
@@ -644,7 +687,10 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     },
 
     initialize: function() {
-      this.listenTo(this.collection, 'add', this.addRowView);
+      this.listenTo(this.collection, 'add', function(model) {
+        this.addRowView(model);
+        this.moveRowView(model);
+      });
     }
   });
 
@@ -680,11 +726,11 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
       if(element.hasClass('add-color')) {
         element.addClass('delete-color');
         element.removeClass('add-color');
-        element.html('✕');
+        element.removeClass('on');
       } else {
         element.addClass('add-color');
         element.removeClass('delete-color');
-        element.html('◯');
+        element.addClass('on');
       }
     },
 
@@ -719,15 +765,19 @@ function(app, Backbone, Directus, BasePageView, ColumnModel, UIManager, Widgets,
     events: {
       'click #addBtn': function() {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Please Enter the name of the Table you would like to add.', callback: function(tableName) {
+        app.router.openModal({type: 'prompt', text: 'Please enter the name of the table you would like to add', callback: function(tableName) {
           if(tableName && !app.schemaManager.getPrivileges(tableName)) {
             var model = new Backbone.Model();
             model.url = app.API_URL + 'privileges/1';
             model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
-            model.save();
-            that.listenToOnce(model, 'sync', function() {
-              location.reload();
-            });
+            model.save({}, {success: function(model){
+              var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
+              tableModel.fetch({
+                success: function() {
+                  that.collection.add(tableModel); 
+                }
+              });
+            }});
           }
         }});
       }

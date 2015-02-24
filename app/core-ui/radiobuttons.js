@@ -66,6 +66,13 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   });
 
+  // @TODO: Not working – not even being called
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
+  };
+
   Module.list = function(options) {
     return options.value;
   };

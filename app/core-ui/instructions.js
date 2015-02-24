@@ -23,7 +23,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   var Module = {};
 
   Module.id = 'instructions';
-  Module.dataTypes = ['VARCHAR'];
+  Module.dataTypes = ['VARCHAR', 'TEXT'];
 
   Module.variables = [
     {id: 'instructions', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}

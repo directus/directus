@@ -12,8 +12,8 @@ if(isset($_SESSION['step'])) {
 
 if(isset($_POST['backButton'])) {
   if($step > 0) {
-    $_SESSION['step'] = $step - 1;
     $step--;
+    $_SESSION['step'] = $step;
   }
 }
 
@@ -60,42 +60,33 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
   }
 }
 
-if($step == 4 && isset($_POST['install'])) {
+if($step == 3 && isset($_POST['install'])) {
   if(isset($_POST['send_config_email'])) {
     $_SESSION['send_config_email'] = $_POST['send_config_email'];
   } else {
     $_SESSION['send_config_email'] = "no";
   }
-  $_SESSION['step'] = 5;
-  $step = 5;
-}
+  $_SESSION['step'] = 4;
+  $step = 4;
 
-if($step == 3 && isset($_POST['default_dest'])) {
-  if(isset($_POST['default_url']) && isset($_POST['thumb_dest']) && isset($_POST['thumb_url']) && isset($_POST['temp_dest']) && isset($_POST['temp_url'])) {
-    $_SESSION['default_dest'] = $_POST['default_dest'];
-    $_SESSION['default_url'] = $_POST['default_url'];
-    $_SESSION['thumb_dest'] = $_POST['thumb_dest'];
-    $_SESSION['thumb_url'] = $_POST['thumb_url'];
-    $_SESSION['temp_dest'] = $_POST['temp_dest'];
-    $_SESSION['temp_url'] = $_POST['temp_url'];
-
-    $good = true;
-    if(!file_exists($_SESSION['default_dest'])) {
-      array_push($bad_paths, 'default_dest');
-    }
-    if(!file_exists($_SESSION['thumb_dest'])) {
-      array_push($bad_paths, 'thumb_dest');
-    }
-    if(!file_exists($_SESSION['temp_dest'])) {
-      array_push($bad_paths, 'temp_dest');
-    }
-
-    if(empty($bad_paths)) {
-      $_SESSION['step'] = 4;
-      $step = 4;
-    }
+  // Media paths
+  $abspath = str_replace('\\', '/', dirname( dirname(__FILE__) ) . '/');
+  $isHTTPS = false;
+  if ((isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) ||
+      (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) {
+    $isHTTPS = true;
   }
+
+  $site_url = ($isHTTPS) ? "https://" : "http://" . $_SERVER['HTTP_HOST'] . $_SESSION['directus_path'];
+
+  $_SESSION['default_dest'] = $abspath.'media/';
+  $_SESSION['default_url'] = $site_url.'media/';//
+  $_SESSION['thumb_dest'] = $abspath.'media/thumbs/';
+  $_SESSION['thumb_url'] = $site_url.'media/thumbs/';
+  $_SESSION['temp_dest'] = $abspath.'media/temp/';
+  $_SESSION['temp_url'] = $site_url.'media/temp/';
 }
+
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -115,18 +106,12 @@ if($step == 3 && isset($_POST['default_dest'])) {
 </head>
 <body>
   <form name="input" action="index.php" method="post">
-    <!--
-      <div>Default Adapter Destination</div>
-      <input class="bad" value="">
-    -->
-
-
 <?php
 if($step == 0) {
   ?>
   <div class="header">
     <div class="container">
-      <img src="directus-logo.gif">
+      <img src="directus-logo.png">
       <div>Install Directus</div>
     </div>
   </div>
@@ -145,8 +130,8 @@ if($step == 0) {
 
 if($step == 1) {
     $error = null;
-  if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-    $error = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
+  if (version_compare(PHP_VERSION, '5.4.10', '<')) {
+    $error = 'Your host needs to use PHP 5.4.10 or higher to run this version of Directus!';
   }
 
   if (!defined('PDO::ATTR_DRIVER_NAME')) {
@@ -161,7 +146,7 @@ if($step == 1) {
     ?>
     <div class="header">
         <div class="container">
-          <img src="directus-logo.gif">
+          <img src="directus-logo.png">
           <div>Missing Requirements</div>
         </div>
       </div>
@@ -172,10 +157,11 @@ if($step == 1) {
   <?php
   die();
   } else {
+    $directus_path = preg_replace('#/(installation/.*)#i', '', $_SERVER['REQUEST_URI']) . '/';
   ?>
   <div class="header">
     <div class="container">
-      <img src="directus-logo.gif">
+      <img src="directus-logo.png">
       <div>Project Info</div>
     </div>
   </div>
@@ -184,7 +170,7 @@ if($step == 1) {
     <div class="container">
 
   Project Name<input type="text" name="site_name" value="<?php echo(isset($_SESSION['site_name']) ? $_SESSION['site_name'] : ''); ?>"><br>
-  Project Path<input type="text" name="directus_path" value="<?php echo(isset($_SESSION['directus_path']) ? $_SESSION['directus_path'] : '/directus/'); ?>"><br>
+  Project Path<input type="text" name="directus_path" value="<?php echo(isset($_SESSION['directus_path']) ? $_SESSION['directus_path'] : $directus_path); ?>"><br>
   Admin Email<input type="email" name="email" value="<?php echo(isset($_SESSION['email']) ? $_SESSION['email'] : ''); ?>"><br>
   Admin Password<input type="password" name="password" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
   Confirm Admin Password<input type="password" name="password_confirm" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
@@ -197,7 +183,7 @@ if($step == 2) {
 ?>
   <div class="header">
     <div class="container">
-      <img src="directus-logo.gif">
+      <img src="directus-logo.png">
       <div>Database Configuration</div>
     </div>
   </div>
@@ -212,11 +198,11 @@ if($step == 2) {
 <?php
 }
 
-if($step == 4) {
+if($step == 3) {
 ?>
   <div class="header">
     <div class="container">
-      <img src="directus-logo.gif">
+      <img src="directus-logo.png">
       <div>Confirmation</div>
     </div>
   </div>
@@ -287,17 +273,30 @@ if($step == 4) {
             <td class="result"><span class="label label-success">Yes</span></td>
           </tr>
           <tr>
+            <td class="item">Composer Dependencies Installed</td>
+            <td class="result"><?php if(file_exists('../api/vendor/autoload.php')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus6/wiki/Installation-Guides#how-to-install-composer-dependencies" target="_blank"> ?</a>');} ?></td>
+          </tr>
+          <tr>
             <td class="item">Logs Writable (../api/logs/)</td>
-            <td class="result"><?php if(is_writable('../api/logs/1.txt')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span>');}?></td>
+            <td class="result"><?php if(is_writable('../api/logs')) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span>');}?></td>
           </tr>
           <tr>
             <td class="item">mod_rewrite Enabled</td>
-            <td class="result"><?php if(in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span> Please Make Enable mod_rewrite');}?></td>
+            <td class="result"><?php if(in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus6/wiki/Installation-Guides#how-to-enable-mod_rewrite" target="_blank"> ?</a>');}?></td>
           </tr>
           <tr>
             <td class="item">Config Writable (../api/config.php)</td>
             <td class="result"><?php if(is_writable('../api/config.php')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span class="label label-important">No</span>');}?></td>
           </tr>
+          <tr>
+            <td class="item">Media Directory (/media)</td>
+            <td class="result"><?php if(is_writable('../media')) { echo '<span class="label label-success">Yes</span>';} else { echo '<span class="label label-important">No</span>';}?></td>
+          </tr>
+          <?php if(!is_writable('../media')): ?>
+          <tr>
+            <td>The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths.</td>
+          </tr>
+          <?php endif; ?>
         </tbody>
       </table>
 
@@ -332,29 +331,10 @@ if($step == 4) {
 <?php
 }
 
-if($step == 3) {
-  ?>
-  <div class="header">
-    <div class="container">
-      <img src="directus-logo.gif">
-      <div>Storage Adapter Setup</div>
-    </div>
-  </div>
-  <div class="body">
-    <div class="container">
-        Default Adapter Destination<input type="text" class="<?php if(in_array("default_dest", $bad_paths)){echo "error";}?>" name="default_dest" value="<?php echo(isset($_SESSION['default_dest']) ? $_SESSION['default_dest'] : '/var/www/media/'); ?>" placeholder="/var/www/media/"><br>
-        Default Adapter URL<input type="text" name="default_url" value="<?php echo(isset($_SESSION['default_url']) ? $_SESSION['default_url'] : 'http://localhost/media/'); ?>" placeholder="http://localhost/media/"><br>
-        Thumbnail Adapter Destination<input type="text" class="<?php if(in_array("thumb_dest", $bad_paths)){echo "error";}?>" name="thumb_dest" value="<?php echo(isset($_SESSION['thumb_dest']) ? $_SESSION['thumb_dest'] : '/var/www/media/thumb/'); ?>" placeholder="/var/www/media/thumb/"><br>
-        Thumbnail Adapter URL<input type="text" name="thumb_url" value="<?php echo(isset($_SESSION['thumb_url']) ? $_SESSION['thumb_url'] : 'http://localhost/media/thumb/'); ?>" placeholder="http://localhost/media/thumb/"><br>
-        Temp Adapter Destination<input type="text" name="temp_dest" class="<?php if(in_array("temp_dest", $bad_paths)){echo "error";}?>" value="<?php echo(isset($_SESSION['temp_dest']) ? $_SESSION['temp_dest'] : '/var/www/media/temp/'); ?>" placeholder="/var/www/media/temp/"><br>
-        Temp Adapter URL<input type="text" name="temp_url" value="<?php echo(isset($_SESSION['temp_url']) ? $_SESSION['temp_url'] : 'http://localhost/media/temp/'); ?>" placeholder="http://localhost/media/temp/"><br>
-<?php
-}
-
-if($step == 5) {
+if($step == 4) {
   require_once('query.php');
-  CreateTables($create_statements,$mysqli);
-  RunInserts($insert_statements, $mysqli);
+  $setupResponse = $main->execute(array('', 'db:setup'));
+  $migrateResponse = $main->execute(array('', 'db:migrate'));
   AddDefaultUser($_SESSION['email'], $_SESSION['password'], $mysqli);
   AddStorageAdapters($mysqli);
   if(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == "yes") {
@@ -419,6 +399,35 @@ if($step == 5) {
   require_once('config_setup.php');
   WriteConfig();
 
+  // @TODO: put all this data into an array.
+  // so we can clear all session unset($_SESSION['installation']);
+  $install_data = array(
+    'step',
+    'email',
+    'site_name',
+    'password',
+    'directus_path',
+    'host_name',
+    'username',
+    'db_password',
+    'db_name',
+    'db_prefix',
+    'install_sample',
+    'default_dest',
+    'default_url',
+    'thumb_dest',
+    'thumb_url',
+    'temp_dest',
+    'temp_url',
+    'send_config_email'
+  );
+
+  foreach($_SESSION as $key => $value) {
+    if (in_array($key, $install_data)) {
+      unset($_SESSION[$key]);
+    }
+  }
+
   header('Location: ../');
 }
 
@@ -437,9 +446,7 @@ if($step == 5) {
           <span class="separator icon icon-chevron-right"></span>
           <span class="<?PHP if($step == 2){echo "current";} elseif($step > 2){echo "complete";}?>">Database</span>
           <span class="separator icon icon-chevron-right"></span>
-          <span class="<?PHP if($step == 3){echo "current";} elseif($step > 3){echo "complete";}?>">Storage Adapters</span>
-          <span class="separator icon icon-chevron-right"></span>
-          <span class="<?PHP if($step == 4){echo "current";} elseif($step > 4){echo "complete";}?>">Confirmation</span>
+          <span class="<?PHP if($step == 3){echo "current";} elseif($step > 3){echo "complete";}?>">Confirmation</span>
         </div>
       </div>
     </div>

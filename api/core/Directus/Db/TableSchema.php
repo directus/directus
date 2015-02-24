@@ -8,6 +8,7 @@ use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\MemcacheProvider;
+use Zend\Db\Adapter\ParameterContainer;
 
 class TableSchema {
 
@@ -128,7 +129,7 @@ class TableSchema {
         return $columns;
     }
 
-    public static function getTableColumns($table, $limit = null) {
+    public static function getTableColumns($table, $limit = null, $skipIgnore = false) {
 
         if(!self::canGroupViewTable($table)) {
             return array();
@@ -150,17 +151,19 @@ class TableSchema {
                 S.table_schema = :table_schema AND
                 S.column_name NOT IN (:field_read_blacklist)';
 
-        $db = Bootstrap::get('olddb');
-        $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':table_name', $table, \PDO::PARAM_STR);
-        $sth->bindValue(':table_schema', DB_NAME, \PDO::PARAM_STR);
-        $sth->bindValue(':field_read_blacklist', $readFieldBlacklist, \PDO::PARAM_STR);
-        $sth->execute();
+        $zendDb = Bootstrap::get('ZendDb');
+        $parameterContainer = new ParameterContainer;
+
+        $sth = $zendDb->query($sql);
+        $parameterContainer->offsetSet(':table_name', $table, ParameterContainer::TYPE_STRING);
+        $parameterContainer->offsetSet(':table_schema', DB_NAME, ParameterContainer::TYPE_STRING);
+        $parameterContainer->offsetSet(':field_read_blacklist', $readFieldBlacklist, ParameterContainer::TYPE_STRING);
+        $result = $sth->execute($parameterContainer);
 
         $columns = array();
-        $ignoreColumns = array('id',STATUS_COLUMN_NAME,'sort');
+        $ignoreColumns = ($skipIgnore !== true) ? array('id',STATUS_COLUMN_NAME,'sort') : array();
         $i = 0;
-        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+        foreach($result as $row) {
             $i++;
             if(!in_array($row['column_name'], $ignoreColumns)) {
                 array_push($columns, $row['column_name']);
@@ -170,6 +173,16 @@ class TableSchema {
             }
         }
         return $columns;
+    }
+    
+    public static function hasTableColumn($table, $column) {
+      $columns = self::getTableColumns($table, null, true);
+      
+      if (array_key_exists($column, array_flip($columns))) {
+        return true;
+      }
+      
+      return false;
     }
 
     public static function getUniqueColumnName($tbl_name) {
@@ -182,15 +195,16 @@ class TableSchema {
      *
      */
     public static function getTablenames($params=null) {
-        $db = Bootstrap::get('olddb');
+        $zendDb = Bootstrap::get('zendDb');
 
         $sql = 'SHOW TABLES';
-        $sth = $db->dbh->prepare($sql);
-        $sth->execute();
+        $sth = $zendDb->query($sql);
+        $result = $sth->execute();
 
         $tables = array();
 
-        while ($row = $sth->fetch(\PDO::FETCH_NUM)) {
+        foreach($result as $row) {
+            $row = array_values($row);
             $name = $row[0];
             if(self::canGroupViewTable($name)) {
                 $tables[] = $name;
@@ -205,12 +219,12 @@ class TableSchema {
      */
     public static function getTables($userGroupId, $versionHash) {
         $acl = Bootstrap::get('acl');
-        $ZendDb = Bootstrap::get('ZendDb');
-        $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
-        $getTablesFn = function () use ($Preferences) {
+        $zendDb = Bootstrap::get('ZendDb');
+        $Preferences = new DirectusPreferencesTableGateway($acl, $zendDb);
+        $getTablesFn = function () use ($Preferences, $zendDb) {
             $return = array();
-            $db = Bootstrap::get('olddb');
-            $name = $db->db_name;
+            $name = $zendDb->getCurrentSchema();
+
             $sql = 'SELECT S.TABLE_NAME as id
                 FROM INFORMATION_SCHEMA.TABLES S
                 WHERE
@@ -225,19 +239,20 @@ class TableSchema {
                     )
                 GROUP BY S.TABLE_NAME
                 ORDER BY S.TABLE_NAME';
-            $sth = $db->dbh->prepare($sql);
-            $sth->bindValue(':schema', $name, \PDO::PARAM_STR);
-            $sth->execute();
+            $sth = $zendDb->query($sql);
+            $parameterContainer = new ParameterContainer;
+            $parameterContainer->offsetSet(':schema', $name, ParameterContainer::TYPE_STRING);
+            $result = $sth->execute($parameterContainer);
 
             $currentUser = Auth::getUserInfo();
 
-            while($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+            foreach($result as $row) {
                 if(!self::canGroupViewTable($row['id'])) {
                     continue;
                 }
                 $tbl["schema"] = self::getTable($row['id']);
                 //$tbl["columns"] = $this->get_table($row['id']);
-                $tbl["preferences"] = $Preferences->fetchByUserAndTable($currentUser['id'], $row['id']);
+                $tbl["preferences"] = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $row['id']);
                 // $tbl["preferences"] = $this->get_table_preferences($currentUser['id'], $row['id']);
                 $return[] = $tbl;
             }
@@ -251,16 +266,15 @@ class TableSchema {
     public static function canGroupViewTable($tableName) {
         $acl = Bootstrap::get('acl');
         $tablePrivilegeList = $acl->getTablePrivilegeList($tableName, $acl::TABLE_PERMISSIONS);
-        if(in_array('view', $tablePrivilegeList)) {
+        if(in_array('view', $tablePrivilegeList) || in_array('bigview', $tablePrivilegeList)) {
             return true;
         }
         return false;
     }
 
     public static function getTable($tbl_name) {
-        $db = Bootstrap::get('olddb');
         $acl = Bootstrap::get('acl');
-        $ZendDb = Bootstrap::get('ZendDb');
+        $zendDb = Bootstrap::get('ZendDb');
 
         if(!self::canGroupViewTable($tbl_name)) {
             return false;
@@ -272,7 +286,6 @@ class TableSchema {
             TABLE_COMMENT AS comment,
             ifnull(hidden,0) as hidden,
             ifnull(single,0) as single,
-            default_status,
             is_junction_table,
             user_create_column,
             user_update_column,
@@ -283,18 +296,21 @@ class TableSchema {
             FROM INFORMATION_SCHEMA.TABLES T
             LEFT JOIN directus_tables DT ON (DT.table_name = T.TABLE_NAME)
             WHERE T.TABLE_SCHEMA = :schema AND T.TABLE_NAME = :table_name";
-        $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':table_name', $tbl_name, \PDO::PARAM_STR);
-        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
-        $sth->execute();
-        $info = $sth->fetch(\PDO::FETCH_ASSOC);
+        $sth = $zendDb->query($sql);
+        $parameterContainer = new ParameterContainer;
+        $parameterContainer->offsetSet(':table_name', $tbl_name, ParameterContainer::TYPE_STRING);
+        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
+        $result = $sth->execute($parameterContainer);
+
+        $info = $result->current();
+
         if ($info) {
             $info['hidden'] = (boolean) $info['hidden'];
             $info['single'] = (boolean) $info['single'];
             $info['footer'] = (boolean) $info['footer'];
             $info['is_junction_table'] = (boolean) $info['is_junction_table'];
         }
-        $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $ZendDb);
+        $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $zendDb);
         $info = array_merge($info, $relationalTableGateway->countActiveOld());
 
         $info['columns'] = self::getSchemaArray($tbl_name);
@@ -335,7 +351,7 @@ class TableSchema {
             $readFieldBlacklistKeys = "''";
         }
 
-        $db = Bootstrap::get('olddb');
+        $zendDb = Bootstrap::get('ZendDb');
         $return = array();
         $column_name = isset($params['column_name']) ? $params['column_name'] : -1;
         $hasMaster = false;
@@ -406,25 +422,32 @@ class TableSchema {
         AND
             data_type IS NOT NULL) ORDER BY sort';
 
-        $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':table_name', $tbl_name, \PDO::PARAM_STR);
-        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
-        $sth->bindValue(':column_name', $column_name, \PDO::PARAM_INT);
+        $parameterContainer = new ParameterContainer;
+        $parameterContainer->offsetSet(':table_name', $tbl_name, ParameterContainer::TYPE_STRING);
+        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
+        $parameterContainer->offsetSet(':column_name', $column_name, ParameterContainer::TYPE_INTEGER);
 
         foreach($readFieldBlacklistParams as $key => $value) {
-            $sth->bindValue($key, $value, \PDO::PARAM_STR);
+            $parameterContainer->offsetSet($key, $value, ParameterContainer::TYPE_STRING);
         }
 
-        $sth->execute();
+        $sth = $zendDb->query($sql);
+
+        $result = $sth->execute($parameterContainer);
 
         $writeFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_WRITE_BLACKLIST);
 
-        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
-
+        foreach ($result as $row) {
             foreach ($row as $key => $value) {
                 if (is_null($value)) {
                     unset ($row[$key]);
                 }
+            }
+
+            // Read method formatColumnRow
+            // @TODO: combine this method with AllSchema, kind of doing same thing
+            if (array_key_exists('type', $row) && $row['type'] == 'MANYTOMANY') {
+                $row['is_nullable'] = "YES";
             }
 
             if ($row['is_nullable'] == "NO") {
@@ -447,7 +470,7 @@ class TableSchema {
 
             // Default UI types.
             if (!isset($row["ui"])) {
-                $row['ui'] = $db->column_type_to_ui_type($row['type']);
+                $row['ui'] = self::columnTypeToUIType($row['type']);
             }
 
             // Defualts as system columns
@@ -457,7 +480,7 @@ class TableSchema {
             }
 
             if (array_key_exists('ui', $row)) {
-                $options = $db->get_ui_options( $tbl_name, $row['id'], $row['ui'] );
+                $options = self::getUIOptions( $tbl_name, $row['id'], $row['ui'] );
             }
 
             if (isset($options)) {
@@ -497,7 +520,11 @@ class TableSchema {
         //    $return[3]['master'] = true;
         //}
         if ($column_name != -1) {
-            return $return[0];
+            if(count($return) > 0) {
+                return $return[0];
+            } else {
+                throw new \Exception("No Schema Found for table ".$tbl_name." with params: ".json_encode($params));
+            }
         }
         return $return;
     }
@@ -546,7 +573,7 @@ class TableSchema {
     }
 
     public static function getTableSchemas() {
-        $db = Bootstrap::get('olddb');
+        $zendDb = Bootstrap::get('zendDb');
         $config = Bootstrap::get('config');
         $blacklist = '""';
         if (array_key_exists('tableBlacklist', $config)) {
@@ -562,7 +589,6 @@ class TableSchema {
                 TABLE_COMMENT AS comment,
                 ifnull(hidden,0) as hidden,
                 ifnull(single,0) as single,
-                default_status,
                 is_junction_table,
                 user_create_column,
                 user_update_column,
@@ -602,12 +628,13 @@ class TableSchema {
             GROUP BY ST.TABLE_NAME
             ORDER BY ST.TABLE_NAME';
 
-        $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
-        $sth->execute();
+        $sth = $zendDb->query($sql);
+        $parameterContainer = new ParameterContainer;
+        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
+        $result = $sth->execute($parameterContainer);
         $tables = array();
 
-        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+        foreach($result as $row) {
             // Only include tables w ACL privileges
             if(self::canGroupViewTable($row['table_name'])) {
                 $tables[] = self::formatTableRow($row);
@@ -618,9 +645,8 @@ class TableSchema {
     }
 
     public static function getColumnSchemas() {
-        $db = Bootstrap::get('olddb');
         $acl = Bootstrap::get('acl');
-        $ZendDb = Bootstrap::get('ZendDb');
+        $zendDb = Bootstrap::get('ZendDb');
 
         $sql =
             '(
@@ -684,15 +710,16 @@ class TableSchema {
 
             ) ORDER BY `table_name`';
 
-        $sth = $db->dbh->prepare($sql);
-        $sth->bindValue(':schema', $db->db_name, \PDO::PARAM_STR);
-        $sth->execute();
+        $sth = $zendDb->query($sql);
+        $parameterContainer = new ParameterContainer;
+        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
+        $result = $sth->execute($parameterContainer);
 
         // Group columns by table name
         $tables = array();
         $tableName = null;
 
-        while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+        foreach($result as $row) {
             $tableName = $row['table_name'];
             $columnName = $row['column_name'];
 
@@ -719,7 +746,7 @@ class TableSchema {
         }
 
         // UI's
-        $directusUiTableGateway = new DirectusUiTableGateway($acl, $ZendDb);
+        $directusUiTableGateway = new DirectusUiTableGateway($acl, $zendDb);
         $uis = $directusUiTableGateway->fetchExisting()->toArray();
 
         foreach ($uis as $ui) {
@@ -750,7 +777,6 @@ class TableSchema {
     }
 
     private static function formatColumnRow($row) {
-        $db = Bootstrap::get('olddb');
         $columnName = $row['column_name'];
 
         foreach ($row as $key => $value) {
@@ -763,6 +789,13 @@ class TableSchema {
 
         $row['id'] = $columnName;
         $row['options'] = array();
+
+        // Many-to-Many type it actually can be null,
+        // it's based on a junction table, not a real column.
+        // Issue #612 https://github.com/RNGR/directus6/issues/612
+        if (array_key_exists('type', $row) && $row['type'] == 'MANYTOMANY') {
+            $row['is_nullable'] = "YES";
+        }
 
         if ($row['is_nullable'] == "NO") {
             $row["required"] = true;
@@ -786,7 +819,7 @@ class TableSchema {
 
         // Default UI types.
         if (!isset($row["ui"])) {
-            $row['ui'] = $db->column_type_to_ui_type($row['type']);
+            $row['ui'] = self::columnTypeToUIType($row['type']);
         }
 
         // Defualts as system columns
@@ -822,5 +855,78 @@ class TableSchema {
 
         return $row;
     }
+
+    public static function columnTypeToUIType($column_type) {
+        switch($column_type) {
+            case "ALIAS":
+                return "alias";
+            case "MANYTOMANY":
+            case "ONETOMANY":
+                return "relational";
+            case "TINYINT":
+                return "checkbox";
+            case "MEDIUMBLOB":
+            case "BLOB":
+                return "blob";
+            case "TEXT":
+            case "LONGTEXT":
+                return "textarea";
+            case "CHAR":
+            case "VARCHAR":
+            case "POINT":
+                return "textinput";
+            case "DATETIME":
+            case "TIMESTAMP":
+                return "datetime";
+            case "DATE":
+                return "date";
+            case "TIME":
+                return "time";
+            case "YEAR":
+            case "INT":
+            case "BIGINT":
+            case "SMALLINT":
+            case "MEDIUMINT":
+            case "FLOAT":
+            case "DOUBLE":
+            case "DECIMAL":
+                return "numeric";
+        }
+        return "textinput";
+    }
+
+    /**
+     *  Get ui options
+     *
+     *  @param $tbl_name
+     *  @param $col_name
+     *  @param $datatype_name
+     */
+     public static function getUIOptions( $tbl_name, $col_name, $datatype_name ) {
+        $ui;
+        $result = array();
+        $item = array();
+        $zendDb = Bootstrap::get('zendDb');
+        $sth = $zendDb->query("SELECT ui_name as id, name, value FROM directus_ui WHERE column_name='$col_name' AND table_name='$tbl_name' AND ui_name='$datatype_name' ORDER BY ui_name");
+        $rows = $sth->execute();
+        foreach($rows as $row) {//$sth->fetch(PDO::FETCH_ASSOC)) {
+            //first case
+            if (!isset($ui)) { $item['id'] = $ui = $row['id']; }
+            //new ui = new item
+            if ($ui != $row['id']) {
+                array_push($result, $item);
+                $item = array();
+                $item['id'] = $ui = $row['id'];
+            }
+            $item[$row['name']] = $row['value'];
+        };
+        if (count($item) > 0) {
+            array_push($result, $item);
+        }
+        if (sizeof($result)) {
+            return $result[0];
+        }
+        return array();
+     }
 
 }

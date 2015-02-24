@@ -12,12 +12,13 @@
   <link rel="shortcut icon" href="{{path}}favicon.ico" type="image/x-icon">
   <link rel="icon" href="{{path}}favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700" type="text/css">
-
+  
+  <!--build:css  {{path}}assets/css/directus.min.css?bust={{cacheBuster}}-->
   <link rel="stylesheet" href="{{cssFilePath}}?bust={{cacheBuster}}">
-  <link rel="stylesheet" href="{{path}}assets/css/alertify.core.css?bust={{cacheBuster}}">
-  <link rel="stylesheet" href="{{path}}assets/css/alertify.default.css?bust={{cacheBuster}}">
-
+  <!--/build -->
+  <!--build:remove -->
   <script type="text/javascript" src="{{path}}assets/js/util/chromecheck.js?bust={{cacheBuster}}"></script>
+  <!--/build -->
 </head>
 
 <body class="font-primary">
@@ -78,7 +79,8 @@ window.directusData = {{data}};
 </script>
 
 <!-- Application source. -->
+<!--build:js {{path}}assets/js/directus.min.js?bust={{cacheBuster}}-->
 <script data-main="{{path}}app/main" src="{{path}}assets/js/libs/require.js?bust={{cacheBuster}}"></script>
-
+<!--/build -->
 </body>
 </html>

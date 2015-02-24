@@ -14,8 +14,32 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_settings";
 
+    private $_defaults = array();
+
     public function __construct(Acl $acl, AdapterInterface $adapter) {
         parent::__construct($acl, self::$_tableName, $adapter);
+
+        $this->_defaults['global'] = array(
+            'cms_user_auto_sign_out' => 60,
+            'site_name' => 'Directus',
+            'site_url' => 'http://localhost/',
+            'cms_color' => '#7ac943',
+            'rows_per_page' => 200,
+            'cms_thumbnail_url' => ''
+        );
+
+        $this->_defaults['files'] = array(
+            'storage_adapter' => 'FileSystemAdapter',
+            'storage_destination' => '',
+            'thumbnail_storage_destination' => '',
+            'allowed_thumbnails' => '',
+            'thumbnail_quality' => 100,
+            'thumbnail_size' => 200,
+            'file_file_naming' => 'file_id',
+            'file_title_naming' => 'file_name',
+            'thumbnail_crop_enabled' => 1,
+            'thumbnail_storage_adapter' => 'FileSystemAdapter'
+        );
     }
 
     public function fetchAll($selectModifier = null) {
@@ -34,6 +58,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             }
             $result[$collection][$row['name']] = $row['value'];
         }
+        $result = array_replace_recursive($this->_defaults, $result);
         return $result;
     }
 
@@ -73,7 +98,6 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'files' => array(
                     'file_file_naming',
                     'file_title_naming',
-                    'allowed_thumbnails',
                     'thumbnail_quality',
                     'thumbnail_crop_enabled'
                 ),

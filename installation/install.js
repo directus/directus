@@ -10,12 +10,9 @@ $(window).ready(function() {
     case 3:
       CheckStep3();
       break;
-    case 4:
-      CheckStep4();
-      break;
   }
 
-  $('input').change(function(e) {
+  $('input').on('change keypress paste focus textInput input', function(e) {
     switch(step) {
       case 1:
         CheckStep1();
@@ -25,9 +22,6 @@ $(window).ready(function() {
         break;
       case 3:
         CheckStep3();
-        break;
-      case 4:
-        CheckStep4();
         break;
     }
   });
@@ -57,21 +51,8 @@ $(window).ready(function() {
       $('button[type=submit]').addClass('disabled');
     }
   }
-  function CheckStep3() {
-    var defaultDest = $('input[name=default_dest]').val();
-    var defaultUrl = $('input[name=default_url]').val();
-    var thumbDest = $('input[name=thumb_dest]').val();
-    var thumbUrl = $('input[name=thumb_url]').val();
-    var tempDest = $('input[name=temp_dest]').val();
-    var tempUrl = $('input[name=temp_url]').val();
 
-    if(defaultDest && defaultUrl && thumbDest && thumbUrl && tempDest && tempUrl) {
-      $('button[type=submit]').removeClass('disabled');
-    } else {
-      $('button[type=submit]').addClass('disabled');
-    }
-  }
-  function CheckStep4() {
+  function CheckStep3() {
     $('button[type=submit]').removeClass('disabled').html('Install').attr('name', 'install');
   }
 

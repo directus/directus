@@ -21,19 +21,26 @@ function(app, Backbone) {
       },
 
       'click th:not(.check, .visible-columns-cell)': function(e) {
-        var column = $(e.target).attr('data-id');
+        var column = $(e.target).closest('th').attr('data-id'); // .closet() accounts for event return children (icon) elements instead
         var order = this.collection.getOrder();
+        var order_sort = 'ASC';
+        var isDefaultSorting = (order.sort === column && order.sort_order != order_sort);
 
-        //Flip direction if the same column is clicked twice.
-        if (order.sort === column) {
-          if (order.sort_order === 'ASC') {
-            this.collection.setOrder(column, 'DESC');
-          }
-          else if (order.sort_order === 'DESC') {
-            this.collection.setOrder();
-          }
+        var structure = this.collection.junctionStructure || this.collection.structure;
+        var defaultSortColumn = structure.where({column_name: 'sort'}).length ? 'sort' : 'id';
+
+        if(column == 'sort' || isDefaultSorting) {
+          this.collection.setOrder(defaultSortColumn, order_sort);
+          return;
+        }
+
+        if(column != order.sort) {
+          this.collection.setOrder(column, order_sort);
         } else {
-          this.collection.setOrder(column, 'ASC');
+          if(order.sort_order == order_sort) {
+            order_sort = 'DESC';
+          }
+          this.collection.setOrder(column, order_sort);
         }
       },
 
@@ -54,7 +61,7 @@ function(app, Backbone) {
 
         data.columns = structure.chain()
           .filter(function(model) {
-            return !model.get('system') && !model.get('hidden_list');
+            return !model.get('system') && !model.get('hidden_list') && !model.get('hidden_input');
           })
           .map(function(model) {
             var isVisible = _.contains(visibleColumns, model.id);
@@ -155,6 +162,26 @@ function(app, Backbone) {
         };
 
         this.render();
+      },
+      'click .sortableHeader': function(e) {
+        if(this.parentView.sortableWidget.options.sort)
+        {
+          this.$el.closest('table').addClass('disable-sorting');
+          this.parentView.sortableWidget.options.sort = false;
+          noty({text: "<b>Sorting Disabled</b><br><i>Drag-and-drop sorting is now disabled</i>", type: 'information', timeout: 3000, theme: 'directus'});
+        } else {
+          this.$el.closest('table').removeClass('disable-sorting');
+          this.parentView.sortableWidget.options.sort = true;
+          noty({text: "<b>Sorting Enabled</b><br><i>You can now sort items with drag-and-drop</i>", type: 'information', timeout: 3000, theme: 'directus'});
+        }
+      },
+      'click th:not(.sortableHeader)': function(e) {
+        if(this.parentView.sortableWidget && this.parentView.sortableWidget.options.sort)
+        {
+          this.$el.closest('table').addClass('disable-sorting');
+          this.parentView.sortableWidget.options.sort = false;
+          noty({text: "<b>Sorting Disabled</b><br><i>Drag-and-drop sorting is now disabled</i>", type: 'information', timeout: 3000, theme: 'directus'});
+        }
       }
     },
 
@@ -166,19 +193,17 @@ function(app, Backbone) {
 
     serialize: function() {
       var order = this.collection.getOrder();
-      var blacklist = this.options.blacklist || [];
-      var columns = _.map(this.collection.getColumns(), function(column) {
-        return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
-      });
 
-      columns = _.filter(columns, function(col) {
-        return !_.contains(blacklist, col.name);
+      var columns = _.map(this.options.columns, function(column) {
+        return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
 
       return {selectable: this.options.selectable, sortable: this.options.sort, columns: columns, deleteColumn: this.options.deleteColumn, hideColumnPreferences: this.options.hideColumnPreferences};
     },
 
-    initialize: function() {
+    initialize: function(options) {
+      this.parentView = options.parentView;
+
       this.maxColumns = this.options.maxColumns || 8;
       var that = this;
       if(this.collection.preferences) {

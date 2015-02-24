@@ -4,6 +4,7 @@ namespace Directus\View;
 
 use Directus\Bootstrap;
 use Directus\Acl\Exception\AclException;
+use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\Exception\RelationshipMetadataException;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\Exception\CustomUiValidationError;
@@ -47,6 +48,14 @@ class ExceptionView {
          */
         elseif($exception instanceof CustomUiValidationError) {
             $httpCode = 422;
+            $data = array('message' => $exception->getMessage());
+        }
+        
+        /**
+         * Directus\Db\Exception\DuplicateEntryException
+         */
+        elseif($exception instanceof DuplicateEntryException) {
+            $httpCode = 409;
             $data = array('message' => $exception->getMessage());
         }
 

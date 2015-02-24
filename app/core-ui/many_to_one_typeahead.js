@@ -22,9 +22,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     {id: 'template', ui: 'textinput'}
   ];
 
-  var template = '<input type="text" value="{{value}}" class="for_display_only" {{#if readonly}}readonly{{/if}}/> \
+  var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" {{#if readonly}}readonly{{/if}}/> \
                   <style> \
-                    .tt-hint {padding:6px 8px;} \
+                    .tt-hint {padding:10px;} \
                     #edit_field_{{name}} .twitter-typeahead {\
                       width:100%;\
                     }\
@@ -42,7 +42,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
                   \
                   #edit_field_{{name}} .tt-suggestion { \
                     display: block; \
-                    padding: 3px 20px; \
+                    padding: 0px 20px; \
                     clear: both; \
                     font-weight: normal; \
                     white-space: nowrap; \
@@ -73,7 +73,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       var value = '';
       // The item is not new, it has a value
       if (!relatedModel.isNew()) {
-        value = relatedModel.get(this.visibleCoumn);
+        value = relatedModel.get(this.visibleColumn);
       }
 
       return {
@@ -92,15 +92,19 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       var fetchItems = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/?columns=' + this.visibleCoumn,
+        prefetch: {
+          url: app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/?columns=' + this.visibleColumn,
+          ttl: 0
+        }
       });
 
       fetchItems.initialize();
-
+      // fetchItems.clearPrefetchCache();
+      // engine.clearRemoteCache();
       this.$(".for_display_only").typeahead({
         minLength: 1,
         items: 5,
-        valueKey: this.visibleCoumn,
+        valueKey: this.visibleColumn,
         template: Handlebars.compile('<div>'+template+'</div>')
       },
       {
@@ -120,7 +124,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     },
 
     initialize: function(options) {
-      this.visibleCoumn = this.columnSchema.options.get('visible_column');
+      this.visibleColumn = this.columnSchema.options.get('visible_column');
       var value = this.model.get(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
     }

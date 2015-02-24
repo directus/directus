@@ -219,7 +219,7 @@ class Acl {
      */
     public function hasTablePrivilege($table, $privilege) {
         $tablePermissions = $this->getTablePrivilegeList($table, self::TABLE_PERMISSIONS);
-        return in_array($privilege, $tablePermissions);
+        return in_array($privilege, $tablePermissions) || in_array('big'.$privilege, $tablePermissions);
     }
 
     public function getCmsOwnerColumnByTable($table) {

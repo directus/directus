@@ -212,19 +212,6 @@ class Bootstrap {
     }
 
     /**
-     * Construct old DB object
-     * @return \DB
-     */
-    private static function olddb() {
-        self::requireConstants('DB_NAME', __FUNCTION__);
-        $db = self::get('ZendDb');
-        $connection = $db->getDriver()->getConnection();
-        $dbh = $connection->getResource();
-        $db = new \DB($dbh, DB_NAME, $db);
-        return $db;
-    }
-
-    /**
      * Construct Acl provider
      * @return \Directus\Acl
      */

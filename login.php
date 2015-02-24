@@ -1,5 +1,10 @@
 <?php
 
+//If config file doesnt exist, go to install file
+if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
+  header('Location: installation/index.php');
+}
+
 require "api/config.php";
 require "api/globals.php";
 
@@ -31,28 +36,16 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
   <!-- Application styles. -->
   <link rel="shortcut icon" href="favicon.ico">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="assets/css/index.css">
+  <!-- build:css assets/css/directus.min.css -->
+  <link rel="stylesheet" href="assets/css/directus.css">
+  <!--/build -->
   <style>
     html,body {
-      /*background-color: #bbbbbb;*/
       margin:0;
       padding:0;
       height: 100%;
       width: 100%;
-      background: -webkit-linear-gradient(left top, #eeeeee , #dddddd); /* For Safari 5.1 to 6.0 */
-      background: -o-linear-gradient(bottom right, #eeeeee, #dddddd); /* For Opera 11.1 to 12.0 */
-      background: -moz-linear-gradient(bottom right, #eeeeee, #dddddd); /* For Firefox 3.6 to 15 */
-      background: linear-gradient(to bottom right, #eeeeee , #dddddd); /* Standard syntax (must be last) */
     }
-    /* .login-panel { background-color:rgba(255,255,255,0.4); padding:20px; width:372px; box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05); position: absolute; left:50%; top:50%; margin-left:-208px; margin-top:-245px;} */
-    /* .login-panel p.error { padding: 15px 10px 0; margin: 0; color: red; } */
-    /* .login-panel p.message { padding: 15px 10px 0; margin: 0; color: green; } */
-    /*
-input[type="text"], input[type="password"] {font-size:16px; width:360px; border:0;  margin-bottom:20px; height:30px; line-height:30px;}
-    input[type="submit"], button { display:block; width:375px; }
-*/
-    /* label {margin-bottom:20px; font-weight:normal;} */
-    /* h2 {font-size:26px; margin-bottom:20px; margin-top:0px;} */
   </style>
 </head>
 

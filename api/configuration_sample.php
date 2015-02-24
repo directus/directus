@@ -60,6 +60,6 @@ return array(
       'name' => 'Draft',
       'color' => '#BBBBBB',
       'sort' => 2
-    ),
+    )
   )
 );

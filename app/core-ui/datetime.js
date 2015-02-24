@@ -27,7 +27,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   input.time { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 100px; \
+                    width: 110px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
@@ -92,7 +92,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
       data.valueTime = date.format('HH:mm');
       data.valueMerged = date.format(format);
       data.name = this.name;
-      data.note = this.columnSchema.get('comment');
       data.readonly = (this.options.settings && this.options.settings.has('readonly')) ? this.options.settings.get('readonly')!==0 : false;
       return data;
     },
@@ -109,6 +108,10 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   });
 
   Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
+
     var m = moment(value);
 
     if (m.isValid() || value === '' || value === null || value === undefined) {

@@ -13,7 +13,8 @@
     }
   }
   &.unread {
-    background-color: @lightGrey;
+    background-color: @white;
+    color: @darkGrey;
     .message-content {
       .title {
         font-weight: 700;
@@ -28,12 +29,21 @@
 
 
 
-
+.message-recipients {
+  .avatar {
+    height: 40px;
+    float: none;
+    margin-left: 10px;
+    margin-right: 0;
+    vertical-align: middle;
+  }
+}
 
 
 ul.general-container {
-  background-color: @extraLightGrey;
-  color: @darkGrey;
+  .card-border;
+  background-color: darken(@white, 2%);
+  color: lighten(@darkGrey, 10%);
   padding: 0;
   &.selectable {
     li:hover {
@@ -44,7 +54,7 @@ ul.general-container {
   li {
     position: relative;
     padding: @standardPad;
-    border-top: 1px solid @white;
+    border-top: 1px solid @lightGrey;
     min-height: 40px;
     padding-right: 150px;
     list-style: none;

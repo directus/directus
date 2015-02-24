@@ -65,8 +65,9 @@ define(function(require, exports, module) {
             this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
           }
           if(this.model.isNew()) {
-            if(this.model.table && this.model.table.get('default_status')) {
-              this.model.set(app.statusMapping.status_name, this.model.table.get('default_status'));
+            var tableStatusColumn = this.model.structure.get(app.statusMapping.status_name);
+            if(tableStatusColumn && tableStatusColumn.get('default_value')) {
+              this.model.set(app.statusMapping.status_name, tableStatusColumn.get('default_value'));
             } else {
               this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
             }
@@ -112,7 +113,7 @@ define(function(require, exports, module) {
             group = group.substring(group.indexOf(':') + 1);
           }
           var compileString = "<span>" + title + "</span><div></div>";
-          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
+          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom card-border', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
           group.split(',').forEach(function(subgroup) {
             if(views[subgroup] !== undefined) {
               that.insertView('#grouping_' + i + ' div', views[subgroup]);
@@ -122,7 +123,7 @@ define(function(require, exports, module) {
         });
       } else {
         if(views[app.statusMapping.status_name]) {
-          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom', id:'grouping_0'}}));
+          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom card-border', id:'grouping_0'}}));
           this.insertView('#grouping_0', views[app.statusMapping.status_name]);
           delete views[app.statusMapping.status_name];
         }

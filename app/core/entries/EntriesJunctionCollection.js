@@ -84,16 +84,6 @@ define(function(require, exports, module) {
       return this.structure.get(columnName) !== undefined;
     },
 
-    comparator: function(model) {
-      var comparator;
-      if (model.has('sort')) {
-        comparator = model.get('sort');
-      } else {
-        comparator = model.get('id');
-      }
-      return parseInt(comparator,10);
-    },
-
     initialize: function(models, options) {
       var EntriesCollection = require('core/entries/EntriesCollection');
 

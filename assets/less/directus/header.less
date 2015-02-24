@@ -16,7 +16,7 @@
   width: 100%;
   z-index: 50;
   /* Switch to mixin */
-  background: -webkit-linear-gradient(top, fade(@darkGrey, 10%) 0%,fade(@darkGrey, 0%) 100%);
+  background: -webkit-linear-gradient(top, fade(@extraDarkGrey, 15%) 0%,fade(@extraDarkGrey, 0%) 100%);
   opacity: 0.0;
   pointer-events: none;
 }
@@ -26,14 +26,14 @@
     min-height: 34px;
   }
   .content-body {
-    margin-top: 120px;
+    margin-top: 104px;
   }
 }
 
 .header1 {
   .border-box;
   position: relative;
-  background-color: @white;
+  background-color: @lightGrey;
   clear: both;
   float: left;
   padding-top: 20px;
@@ -53,24 +53,22 @@
     text-transform: capitalize;
     font-size: 28px;
     .icon {
-      color: @lightGrey;
+      color: @mediumGrey;
       display: inline-block;
       font-size: 70px;
-      line-height: 32px;
+      line-height: 25px;
       margin: 0px 10px;
       vertical-align: top;
       cursor: pointer;
-      &:hover {
-        color: @mediumGrey; // Removed due to breadcrumb >'s hovering
+      &.icon-circled-left:hover {
+        color: @darkGrey; // Removed due to breadcrumb >'s hovering
       }
       &#removeOverlay {
         margin: 0;
       }
       &.breadcrumb-delimiter {
         cursor: auto;
-        &:hover {
-          color: @lightGrey;
-        }
+        color: lighten(@mediumGrey, 15%);
       }
     }
     .endnode {
@@ -179,20 +177,24 @@
     }
     .tool {
       &.div-right {
-        border-right: solid 1px @lightGrey;
+        border-right: solid 1px @white;
         height: 32px;
         padding-right: @smallPad;
       }
       &.div-left {
-        border-left: solid 1px @lightGrey;
+        border-left: solid 1px @white;
         height: 32px;
         padding-left: @smallPad;
       }
     }
     .tool-item {
-      background-color: @mediumGrey;
-      color: @white;
+      background-color: @white;
+      color: @mediumGrey;
       cursor: pointer;
+      &.add-color-background:hover {
+        background-color: @addColor;
+        color: @white !important;
+      }
       &:hover {
         background-color: @darkGrey;
       }
@@ -204,12 +206,12 @@
       cursor: pointer;
     }
     .saved-success {
-      color: @addColor;
+      color: @white;
       .simple-select {
-        color: @addColor;
+        color: @white;
       }
       .tool-item {
-        background-color: @addColor;
+        background-color: @white;
       }
     }
     .btn {
@@ -227,7 +229,7 @@
   }
   .primary-row {
     .tools {
-      margin-top: 5px;
+      margin-top: 2px;
       &.left {
         margin-left: 15px;
       }
@@ -320,7 +322,7 @@
         }
         select, input[type="text"] {
           .border-radius();
-          background-color: @lightGrey;
+          background-color: @white;
           border: 0px;
           padding: 8px;
           margin: 0;
@@ -408,7 +410,7 @@
         margin-top: @textActionMarginTop;
       }
       .snapshotOption {
-        background-color: @lightGrey;
+        background-color: @white;
         width: 34px;
         height: 33px;
         color: @darkGrey;

@@ -119,7 +119,9 @@ define(function(require, exports, module) {
 
       //Parse response date
       responseData = _.map(responseData, function(item) {
-        item.date_uploaded = new Date(item.date_uploaded);
+        // Safari hates dashes apparently
+        // http://stackoverflow.com/a/5646753/1772076
+        item.date_uploaded = new Date(item.date_uploaded.replace(/-/g, '/'));
         return item;
       });
 
@@ -159,7 +161,9 @@ define(function(require, exports, module) {
     var success = function(responseData) {
       //Parse response date
       responseData = _.map(responseData, function(item) {
-        item.date_uploaded = new Date(item.date_uploaded);
+        // Safari hates dashes apparently
+        // http://stackoverflow.com/a/5646753/1772076
+        item.date_uploaded = new Date(item.date_uploaded.replace(/-/g, '/'));
         return item;
       });
 
@@ -179,6 +183,30 @@ define(function(require, exports, module) {
       }
     });
   };
+  
+  // TODO: Move to a Directus backbone model
+  // change status or delete item
+  app.changeItemStatus = function(model, value, options) {
+    var name = app.statusMapping.status_name;
+    var name = {};
+    var canHardDelete = model.collection.hasPermission('harddelete') || model.collection.hasPermission('bigharddelete');
+    var canSoftDelete = model.collection.hasPermission('delete') || model.collection.hasPermission('bigdelete');
+    var goingToDelete = value == app.statusMapping.deleted_num;
+    
+    if (goingToDelete && canHardDelete) {
+      model.destroy({success: options.success});
+    } else if (model.has(app.statusMapping.status_name) && ((goingToDelete && canSoftDelete) || !goingToDelete)) {
+      name[app.statusMapping.status_name] = value;
+      model.save(name, options);
+    } else {
+      throw new Error('Please add an active column to this table for soft-delete, or change your group permissions to allow for a hard-delete');
+    }
+  }
+
+  // check if string has this format "D, d M Y H:i:s"
+  app.isStringADate = function(date) {
+    return (typeof date === "string") ? !!date.match(/^([a-zA-Z]{3})\, ([0-9]{2}) ([a-zA-Z]{3}) ([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/) : false;
+  }
 
   // Agnus Croll:
   // http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
