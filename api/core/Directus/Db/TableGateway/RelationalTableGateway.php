@@ -997,7 +997,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     return null;
                 }
                 $date = new \DateTime($mysql_data);
-                $formatted = $date->format("D, d M Y H:i:s");
+                $formatted = $date->format('Y-m-d H:i:s');
                 return $formatted;
             case 'char':
             case 'varchar':
