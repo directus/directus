@@ -13,6 +13,8 @@ CREATE TABLE `directus_privileges` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -27,7 +29,7 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
       $t->column("id", "integer", array(
           "limit"=>11,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
@@ -39,7 +41,7 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
       );
       $t->column("permissions", "string", array(
           "limit"=>500,
-          "DEFAULT"=>NULL,
+          "default"=>NULL,
           "character"=>"latin1",
           "COMMENT"=>"Table-level permissions (insert, delete, etc.)"
         )
@@ -51,23 +53,44 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
       );
       $t->column("read_field_blacklist", "string", array(
           "limit"=>1000,
-          "DEFAULT"=>NULL,
+          "default"=>NULL,
           "character"=>"latin1",
         )
       );
       $t->column("write_field_blacklist", "string", array(
           "limit"=>1000,
-          "DEFAULT"=>NULL,
+          "default"=>NULL,
           "character"=>"latin1",
         )
       );
       $t->column("unlisted", "tinyinteger", array(
           "limit"=>1,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
 
       $t->finish();
+
+      $this->execute("INSERT INTO `directus_privileges` (`id`, `table_name`, `permissions`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `unlisted`)
+VALUES
+  (1,'directus_activity','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (2,'directus_columns','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (3,'directus_groups','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (4,'directus_files','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (5,'directus_messages','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (6,'directus_preferences','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (7,'directus_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (8,'directus_settings','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (9,'directus_tables','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (10,'directus_ui','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (11,'directus_users','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (12,'directus_ip_whitelist','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (13,'directus_social_feeds','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (14,'directus_messages_recipients','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (15,'directus_social_posts','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (16,'directus_storage_adapters','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (17,'directus_tab_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
+  (18,'directus_bookmarks','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL);");
     }//up()
 
     public function down()

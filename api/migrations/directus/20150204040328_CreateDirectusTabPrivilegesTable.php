@@ -10,6 +10,8 @@ CREATE TABLE `directus_tab_privileges` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusTabPrivilegesTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -25,18 +27,18 @@ class CreateDirectusTabPrivilegesTable extends Ruckusing_Migration_Base
           "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
       $t->column("group_id", "integer", array(
           "limit"=>11,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("tab_blacklist", "string", array(
           "limit"=>500,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("nav_override", "text");

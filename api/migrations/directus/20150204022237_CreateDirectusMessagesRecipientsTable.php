@@ -11,6 +11,8 @@ CREATE TABLE `directus_messages_recipients` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusMessagesRecipientsTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -26,7 +28,7 @@ class CreateDirectusMessagesRecipientsTable extends Ruckusing_Migration_Base
           "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
@@ -51,7 +53,7 @@ class CreateDirectusMessagesRecipientsTable extends Ruckusing_Migration_Base
 
       $t->column("group", "integer", array(
           "limit"=>11,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
 

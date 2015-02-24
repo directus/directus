@@ -24,6 +24,8 @@ CREATE TABLE `directus_columns` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -37,7 +39,7 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
       //columns
       $t->column("id", "integer", array(
         "unsigned"=>true,
-        "AUTO_INCREMENT"=>true,
+        "auto_increment"=>true,
         "null"=>false,
         "primary_key"=>true
         )
@@ -137,15 +139,21 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         "name"=>"table-column"
         )
       );
+
+      $this->execute("INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
+VALUES
+  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
+  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');");
     }//up()
 
     public function down()
     {
-      $this->drop_table("directus_columns");
       $this->remove_index("directus_columns", array("table_name","column_name"), array(
         "unique"=>true,
         "name"=>"table-column"
         )
       );
+      
+      $this->drop_table("directus_columns");
     }//down()
 }

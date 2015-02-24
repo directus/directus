@@ -14,6 +14,8 @@ CREATE TABLE `directus_messages` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -28,20 +30,20 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
       $t->column("id", "integer", array(
           "limit"=>10,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
 
       $t->column("from", "integer", array(
           "limit"=>11,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("subject", "string", array(
           "limit"=>255,
           "null"=>false,
-          "DEFAULT"=>""
+          "default"=>""
         )
       );
       $t->column("message", "text", array(
@@ -50,22 +52,22 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
       );
       $t->column("datetime", "datetime", array(
           "null"=>false,
-          "DEFAULT"=>"0000-00-00 00:00:00"
+          "default"=>"0000-00-00 00:00:00"
         )
       );
       $t->column("attachment", "integer", array(
           "limit"=>11,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("response_to", "integer", array(
           "limit"=>11,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("comment_metadata", "string", array(
           "limit"=>255,
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
 

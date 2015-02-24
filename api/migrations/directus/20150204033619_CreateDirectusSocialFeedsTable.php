@@ -13,6 +13,8 @@ CREATE TABLE `directus_social_feeds` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
+use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+
 class CreateDirectusSocialFeedsTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -27,24 +29,24 @@ class CreateDirectusSocialFeedsTable extends Ruckusing_Migration_Base
       $t->column("id", "integer", array(
           "limit"=>11,
           "null"=>false,
-          "AUTO_INCREMENT"=>true,
+          "auto_increment"=>true,
           "primary_key"=>true
         )
       );
       $t->column("active", "tinyinteger", array(
           "limit"=>1,
           "null"=>false,
-          "DEFAULT"=>1
+          "default"=>1
         )
       );
       $t->column("type", "tinyinteger", array(
           "limit"=>2,
           "null"=>false,
-          "COMMENT"=>"Twitter (1), Instagram (2)"
+          "comment"=>"Twitter (1), Instagram (2)"
         )
       );
       $t->column("last_checked", "datetime", array(
-          "DEFAULT"=>NULL
+          "default"=>NULL
         )
       );
       $t->column("name", "string", array(
@@ -62,7 +64,7 @@ class CreateDirectusSocialFeedsTable extends Ruckusing_Migration_Base
       $t->column("data", "text", array(
           "character"=>"latin1",
           "null"=>false,
-          "COMMENT"=>"Feed metadata. JSON format."
+          "comment"=>"Feed metadata. JSON format."
         )
       );
 

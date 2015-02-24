@@ -6,6 +6,7 @@ date_default_timezone_set('UTC');
 //----------------------------
 
 define('RUCKUSING_TS_SCHEMA_TBL_NAME', 'directus_schema_migrations');
+define('RUCKUSING_WORKING_BASE', '');
 
 /*
 

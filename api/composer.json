@@ -1,13 +1,19 @@
 {
-    "require": {
-        "slim/slim": "2.2.0",
-        "slim/extras": "dev-develop",
-        "zendframework/zend-db": "2.1.*@dev",
-        "ruckusing/ruckusing-migrations": "1.0.3"
-    },
-    "_require": {
-      "rackspace/php-opencloud": "dev-master",
-      "amazonwebservices/aws-sdk-for-php": "1.6.2",
-      "aws/aws-sdk-php": "2.6.*@dev"
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/WellingGuzman/ruckusing-migrations"
     }
+  ],
+  "require": {
+    "slim/slim": "2.2.0",
+    "slim/extras": "dev-develop",
+    "zendframework/zend-db": "2.1.*@dev",
+    "ruckusing/ruckusing-migrations": "dev-welling"
+  },
+  "_require": {
+    "rackspace/php-opencloud": "dev-master",
+    "amazonwebservices/aws-sdk-for-php": "1.6.2",
+    "aws/aws-sdk-php": "2.6.*@dev"
+  }
 }

@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "73316e69b742b80124d8547eb309ab80",
+    "hash": "e43f726c37afe65bac686278385217be",
     "packages": [
         {
             "name": "ruckusing/ruckusing-migrations",
-            "version": "1.0.3",
+            "version": "dev-welling",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ruckus/ruckusing-migrations.git",
-                "reference": "c75869068e031c5d66aa4a23b46dec0cc9a948cd"
+                "url": "https://github.com/WellingGuzman/ruckusing-migrations.git",
+                "reference": "7d40d9d413d58fa1b8345563c1e073e5ef80436f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ruckus/ruckusing-migrations/zipball/c75869068e031c5d66aa4a23b46dec0cc9a948cd",
-                "reference": "c75869068e031c5d66aa4a23b46dec0cc9a948cd",
+                "url": "https://api.github.com/repos/WellingGuzman/ruckusing-migrations/zipball/7d40d9d413d58fa1b8345563c1e073e5ef80436f",
+                "reference": "7d40d9d413d58fa1b8345563c1e073e5ef80436f",
                 "shasum": ""
             },
             "require": {
@@ -36,7 +36,6 @@
                     "Task": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -59,7 +58,12 @@
                 "ruckusing",
                 "task"
             ],
-            "time": "2014-07-22 15:35:47"
+            "support": {
+                "email": "codycaughlan@gmail.com",
+                "issues": "https://github.com/ruckus/ruckusing-migrations/issues",
+                "source": "https://github.com/ruckus/ruckusing-migrations"
+            },
+            "time": "2015-02-24 04:33:46"
         },
         {
             "name": "slim/extras",
@@ -208,7 +212,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "slim/extras": 20,
-        "zendframework/zend-db": 20
+        "zendframework/zend-db": 20,
+        "ruckusing/ruckusing-migrations": 20
     },
     "prefer-stable": false,
     "platform": [
