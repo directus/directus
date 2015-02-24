@@ -38,10 +38,7 @@ define(['app','backbone'], function(app, Backbone) {
       var user = app.users.get(options.value);
 
       if(user) {
-        var avatar = user.get('avatar');
-        if(!avatar) {
-          avatar = app.PATH + 'assets/img/missing-directus-avatar.png';
-        }
+        var avatar = user.getAvatar();
         this.$el.append('<img src="' + avatar + '" class="avatar"><span class="avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>');
       } else {
         this.$el.append('<span class="avatar-name medium-grey-color">No user</span>');
@@ -53,10 +50,7 @@ define(['app','backbone'], function(app, Backbone) {
     var avatar, output, user = app.users.get(options.value);
 
     if(user) {
-      avatar = user.get('avatar');
-      if(!avatar) {
-        avatar = app.PATH + 'assets/img/missing-directus-avatar.png';
-      }
+      avatar = user.getAvatar();
       output = '<img src="' + avatar + '" class="avatar"><span class="avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>';
     } else {
       output = '<span class="avatar-name medium-grey-color">No user</span>';

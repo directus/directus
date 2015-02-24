@@ -13,6 +13,8 @@ define(function(require, exports, module) {
       } else {
         this.columns.reset(data.columns, {parse: true});
       }
+      
+      this.columns.table = this;
 
       return _.omit(data, 'columns');
     },

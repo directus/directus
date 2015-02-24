@@ -18,12 +18,14 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
   Module.variables = [
     {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
-    {id: 'add_button', ui: 'checkbox'},
-    {id: 'choose_button', ui: 'checkbox'},
-    {id: 'remove_button', ui: 'checkbox'},
+    {id: 'add_button', ui: 'checkbox', def: '1'},
+    {id: 'choose_button', ui: 'checkbox', def: '1'},
+    {id: 'remove_button', ui: 'checkbox', def: '1'},
     {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
     {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"},
-    {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"}
+    {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"},
+    {id: 'min_entries', ui: 'numeric', char_length: 11, default_value:0, comment: "Minimum Allowed related Entries"},
+    {id: 'no_duplicates', ui: 'checkbox', def: '0', comment: "No Duplicates"}
   ];
 
   Module.Input = Onetomany.Input.extend({
@@ -37,8 +39,8 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
 
     template: Handlebars.compile(
       '<div class="related-table"></div>' +
-      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}' +
-      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing {{{capitalize tableTitle}}} Item</button>{{/if}}</div>'),
+      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New</button>{{/if}}' +
+      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing</button>{{/if}}</div>'),
 
     addRow: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
@@ -96,6 +98,18 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
       view.save = function() {
         _.each(view.table.selection(), function(id) {
           var data = collection.get(id).toJSON();
+          // prevent duplicate
+          if (me.columnSchema.options.get('no_duplicates')==1) {
+            var duplicated = false;
+            me.relatedCollection.each(function(model) {
+              if (model.get('data').id == id) {
+                duplicated = true;
+              }
+            });
+            if (duplicated) {
+              return false;
+            }
+          }
           me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
         }, this);
         me.relatedCollection.trigger('add');
@@ -188,6 +202,19 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
     }
 
   });
+
+  Module.validate = function(value, options) {
+    var minEntries = parseInt(options.settings.get('min_entries'));
+
+    if(value.length < minEntries) {
+      return 'This field requires at least ' + minEntries + ' entries.';
+    }
+
+    // @TODO: Does not currently consider newly deleted items
+    if (options.schema.isRequired() && value.length == 0) {
+      return 'This field is required';
+    }
+  };
 
   Module.list = function() {
     return 'x';

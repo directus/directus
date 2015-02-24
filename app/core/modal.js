@@ -22,9 +22,6 @@ function(app, Backbone) {
     serialize: function() {
       var message = (this.options.text) ? this.options.text : '';
       var data = {message: message};
-      if(this.options.type === 'prompt') {
-        data.showInput = true;
-      }
 
       switch(this.options.type) {
         case 'prompt':
@@ -33,6 +30,9 @@ function(app, Backbone) {
           break;
         case 'yesnocancel':
           data.isYesNoConfirm = true;
+          break;
+        case 'alert':
+          data.isAlert = true;
           break;
         default:
           data.isPrompt = true;
@@ -55,6 +55,9 @@ function(app, Backbone) {
       },
       'click #yesBtn': function() {
         this.options.callback('yes');
+        this.close();
+      },
+      'click #okBtn': function() {
         this.close();
       }
     },

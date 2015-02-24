@@ -144,21 +144,21 @@ class AclAwareRowGateway extends RowGateway {
          * Enforce Privilege: "Little" Delete (I am the record CMS owner)
          */
         if($cmsOwnerId === $currentUserId) {
-            if(!$this->acl->hasTablePrivilege($this->table, 'delete')) {
+            if(!$this->acl->hasTablePrivilege($this->table, 'harddelete')) {
                 $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                 $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                throw new UnauthorizedTableDeleteException($aclErrorPrefix . "Table delete access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
+                throw new UnauthorizedTableDeleteException($aclErrorPrefix . "Table harddelete access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
             }
         }
         /**
          * Enforce Privilege: "Big" Delete (I am not the record CMS owner)
          */
         else {
-            if(!$this->acl->hasTablePrivilege($this->table, 'bigdelete')) {
+            if(!$this->acl->hasTablePrivilege($this->table, 'bigharddelete')) {
                 $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                 $recordOwner = (false === $cmsOwnerId) ? "no magic owner column" : "the CMS owner #$cmsOwnerId";
                 $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigdelete access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
+                throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigharddelete access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
             }
         }
         return parent::delete();

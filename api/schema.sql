@@ -85,7 +85,8 @@ LOCK TABLES `directus_columns` WRITE;
 
 INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
 VALUES
-  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,'');
+  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
+  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');
 
 /*!40000 ALTER TABLE `directus_columns` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -267,15 +268,14 @@ VALUES
   (6,'global','rows_per_page','200'),
   (7,'files','storage_adapter','FileSystemAdapter'),
   (8,'files','storage_destination',''),
-  (9,'fiels','thumbnail_storage_adapter','FileSystemAdapter'),
+  (9,'files','thumbnail_storage_adapter','FileSystemAdapter'),
   (10,'files','thumbnail_storage_destination',''),
-  (11,'files','allowed_thumbnails',''),
-  (12,'files','thumbnail_quality','100'),
-  (13,'files','thumbnail_size','200'),
-  (14,'global','cms_thumbnail_url',''),
-  (15,'files','file_file_naming','file_id'),
-  (16,'files','file_title_naming','file_name'),
-  (17,'files','thumbnail_crop_enabled','1');
+  (11,'files','thumbnail_quality','100'),
+  (12,'files','thumbnail_size','200'),
+  (13,'global','cms_thumbnail_url',''),
+  (14,'files','file_file_naming','file_id'),
+  (15,'files','file_title_naming','file_name'),
+  (16,'files','thumbnail_crop_enabled','1');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -348,6 +348,7 @@ CREATE TABLE `directus_tab_privileges` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(11) DEFAULT NULL,
   `tab_blacklist` varchar(500) DEFAULT NULL,
+  `nav_override` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -360,7 +361,6 @@ CREATE TABLE `directus_tables` (
   `table_name` varchar(64) NOT NULL DEFAULT '',
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `single` tinyint(1) NOT NULL DEFAULT '0',
-  `default_status` tinyint(1) NOT NULL DEFAULT '1',
   `is_junction_table` tinyint(1) NOT NULL DEFAULT '0',
   `footer` tinyint(1) DEFAULT '0',
   `list_view` varchar(200) DEFAULT NULL,
@@ -377,10 +377,10 @@ CREATE TABLE `directus_tables` (
 LOCK TABLES `directus_tables` WRITE;
 /*!40000 ALTER TABLE `directus_tables` DISABLE KEYS */;
 
-INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `default_status`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
+INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
 VALUES
-  ('directus_messages_recipients',1,0,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-  ('directus_users',1,0,1,0,0,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
+  ('directus_messages_recipients',1,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+  ('directus_users',1,0,0,0,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_tables` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -398,6 +398,10 @@ CREATE TABLE `directus_ui` (
   `value` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique` (`table_name`,`column_name`,`ui_name`,`name`)
+  
+INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
+VALUES
+  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Dump of table directus_users
@@ -422,6 +426,8 @@ CREATE TABLE `directus_users` (
   `ip` varchar(50) DEFAULT '',
   `group` int(11) DEFAULT NULL,
   `avatar` varchar(500) DEFAULT NULL,
+  `avatar_file_id` int(11) DEFAULT NULL,
+  `avatar_is_file` tinyint(1) DEFAULT 0,
   `location` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,

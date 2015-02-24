@@ -2,6 +2,7 @@
 
 namespace Directus\Db\TableGateway;
 
+use Directus\Auth\Provider as Auth;
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableSchema;
@@ -17,6 +18,32 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
     public function __construct(Acl $acl, AdapterInterface $adapter) {
         parent::__construct($acl, self::$_tableName, $adapter);
+    }
+
+    // @TODO: move it to another object.
+    private function isCurrentUserAdmin() {
+        $currentUser = Auth::getUserRecord();
+
+        //Dont let non-admins have alter privilege
+        return ($currentUser['group'] == 1) ? true : false;
+    }
+
+    private function verifyPrivilege($attributes) {
+        // Making sure alter is set for admin only.
+        $permissions = array_flip(explode(',', $attributes['permissions']));
+        if($this->isCurrentUserAdmin()) {
+            if(!array_key_exists('alter', $permissions)) {
+                $permissions['alter'] = count($permissions); // the id
+                $attributes['permissions'] = implode(',', array_flip($permissions));
+            }
+        } else {
+            if(array_key_exists('alter', $permissions)) {
+                unset($permissions['alter']);
+                $attributes['permissions'] = implode(',', array_flip($permissions));
+            }
+        }
+
+        return $attributes;
     }
 
     public function fetchGroupPrivileges($group_id) {
@@ -46,6 +73,8 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
     // @todo This currently only supports permissions,
     // include blacklists when there is a UI for it
     public function insertPrivilege($attributes) {
+        $attributes = $this->verifyPrivilege($attributes);
+
         $status_id = (isset($attributes['status_id']) ? $attributes['status_id'] : null);
         $insert = new Insert($this->getTable());
         $insert
@@ -66,11 +95,11 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
     // @todo This currently only supports permissions,
     // include blacklists when there is a UI for it
     public function updatePrivilege($attributes) {
+        $attributes = $this->verifyPrivilege($attributes);
 
-
-      $update = new Update($this->getTable());
-      $update->where->equalTo('id', $attributes['id']);
-      $update->set(array('permissions' => $attributes['permissions'], 'read_field_blacklist' => $attributes['read_field_blacklist'], 'write_field_blacklist' =>$attributes['write_field_blacklist']));
+        $update = new Update($this->getTable());
+        $update->where->equalTo('id', $attributes['id']);
+        $update->set(array('permissions' => $attributes['permissions'], 'read_field_blacklist' => $attributes['read_field_blacklist'], 'write_field_blacklist' =>$attributes['write_field_blacklist']));
         $this->updateWith($update);
 
         return $this->fetchById($attributes['id']);

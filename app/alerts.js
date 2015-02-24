@@ -1,10 +1,10 @@
 define([
   "app",
-  'plugins/alertify'
-], function(app, alertify) {
+  "noty",
+  "noty_theme"
+], function(app) {
 
   "use strict";
-
   // Messages Container
   var messages = new Backbone.Layout({el: '#messages'});
 
@@ -50,17 +50,6 @@ define([
   app.on('load', hideProgressNotification);
 
   app.on('alert:error', function(message, details, showDetails) {
-    console.log("ERROR: " + message);
-    //alertify.error(message);
-/*      showDetails = showDetails || false;
-      $('#loader').hide();
-      var view = new ErrorView({message: message, details: details});
-      hideProgressNotification();
-      app.lockScreen();
-      messages.insertView(view).render();
-      view.render();
-      if(showDetails) {
-        view.$el.find('button.show-details').click();
-      }*/
-    });
+    noty({text: '<b>' + message + '</b><br>' + details, type: 'error', theme: 'directus'});
+  });
 });

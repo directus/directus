@@ -84,6 +84,12 @@ define(['app','backbone'], function(app, Backbone) {
 
   });
 
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
+  };
+
   Module.list = function(options) {
     return options.model.attributes.tags;
   };

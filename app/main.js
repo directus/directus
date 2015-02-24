@@ -17,17 +17,17 @@ require(["config"], function() {
     "core/tabs",
     "core/bookmarks",
     'modules/messages/messages',
-    'plugins/alertify',
     'schema/SchemaManager',
     'modules/settings/SettingsCollection',
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
     'core/idle',
-    'tool-tips'
+    'tool-tips',
+    'noty'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, alertify, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip) {
 
     "use strict";
 
@@ -116,7 +116,7 @@ require(["config"], function() {
 
         Idle.start({
           timeout: function() {
-            alertify.log('You have been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
+            noty({text: 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds', type: 'warning', layout:'bottomRight', theme: 'directus'});
 
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
@@ -173,13 +173,20 @@ require(["config"], function() {
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
-        console.log("Error polling Messages");
-        //alertify.error('Directus failed to communicate with the server.<br> A new attempt will be made in 30 seconds.');
+        noty({text: '<b>Directus can\'t reach the server</b><br><i>A new attempt will be made in 30 seconds</i>', type: 'error', layout:'bottomRight', theme: 'directus'});
       });
 
       app.messages.on('sync', function(collection, object) {
         if (object !== null && object.rows) {
-          alertify.log('New Message');
+          object.rows.forEach(function(msg) {
+            noty({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + msg.responses.models[msg.responses.models.length-1].attributes.message + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
+              callback: {
+                onCloseClick: function() {
+                  Backbone.history.navigate('/messages/' + msg.id, true);
+                }
+              }
+            });
+          });
         }
       });
 
@@ -206,17 +213,11 @@ require(["config"], function() {
       $('#page-blocker').fadeOut(0);
 
       ////////////////////////////////////////////////////////////////////////////////////
-      // Setup Tabs
+      // Setup Tabs @TODO: REMOVE
       // Default directus tabs
 
       var tabs = [
-        // (app.users.getCurrentUser().get('group').id === 1) ? {id: "settings", icon_class: "icon-cog"} : {id: "blank2", hidden: true},
-        // {id: "blank",    hidden: true},
-        // {id: "files",    icon_class: "icon-attach"},
-        // {id: "users",    icon_class: "icon-users"},
-        // {id: "messages", icon_class: "icon-chat", unread: (app.messages.unread > 0)},
-        // {id: "activity", icon_class: "icon-bell"},
-        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: app.users.getCurrentUser().get("avatar") ? app.users.getCurrentUser().get("avatar") : app.PATH + 'assets/img/missing-directus-avatar.png'},
+        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: ''},
         {id: "logout", icon_class: "icon-power-button"}
       ];
 
@@ -251,18 +252,9 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model(bookmark));
       });
 
-      if(app.users.getCurrentUser().get('group').id === 1) {
-        bookmarks.push(new Backbone.Model({
-          icon_class: "icon-cog",
-          title: "Settings",
-          url: "settings",
-          section: 'other'
-        }));
-      }
-
       var extensions = ExtensionManager.getIds();
 
-      // Add extensions to tabs
+      // Add extensions to bookmarks
       _.each(extensions, function(item) {
         item = ExtensionManager.getInfo(item);
         bookmarks.push(new Backbone.Model({
@@ -277,15 +269,40 @@ require(["config"], function() {
       var tabPrivileges = options.tab_privileges;
       var tabBlacklist = (tabPrivileges.tab_blacklist || '').split(',');
 
-      // Filter out blacklisted tabs
-      tabs = _.filter(tabs, function(tab) {
-        return !_.contains(tabBlacklist, tab.id);
+      // Custom Bookmarks Nav
+      var customBookmarks = [];
+      if (tabPrivileges.nav_override !== false) {
+        for(var section in tabPrivileges.nav_override) {
+          var sectionItems = tabPrivileges.nav_override[section];
+          for(var item in sectionItems) {
+            var path = sectionItems[item].path || '';
+            customBookmarks.push(new Backbone.Model({
+              icon_class: item.icon,
+              title: item,
+              url: path,
+              section: section
+            }));
+          }
+        }
+      } else {
+        console.log("The nav override JSON for this user group is malformed – the default nav will be used instead");
+      }
+
+      var isCustomBookmarks = false;
+      if(customBookmarks.length) {
+        isCustomBookmarks = true;
+        bookmarks = bookmarks.concat(customBookmarks);
+      }
+
+      // Filter out blacklisted bookmarks (case-sensitive)
+      bookmarks = _.filter(bookmarks, function(bookmark) {
+        return !_.contains(tabBlacklist, bookmark.attributes.title);
       });
 
       // Turn into collection
       tabs = new Tabs.Collection(tabs);
 
-      app.bookmarks = new Bookmarks.Collection(bookmarks);
+      app.bookmarks = new Bookmarks.Collection(bookmarks, {isCustomBookmarks: isCustomBookmarks});
 
       //////////////////////////////////////////////////////////////////////////////
       //Override backbone sync for custom error handling
@@ -356,7 +373,7 @@ require(["config"], function() {
         switch(xhr.status) {
           case 403:
             // var response = $.parseJSON(xhr.responseText);
-            message = "You don't have permission to access this table. Please send this to IT:\n\n" + xhr.responseText;
+            message = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
             app.trigger("alert:error", "Restricted Access", message, true);
             break;
           default:
@@ -364,7 +381,11 @@ require(["config"], function() {
             message = "Server Error";
             details = encodeURIComponent(xhr.responseText);
             app.logErrorToServer(type, message, details);
-            app.trigger("alert:error", "Server Error", xhr.responseText);
+            if(xhr.responseJSON) {
+              app.trigger("alert:error", "Server Error", xhr.responseJSON.message);
+            } else {
+              app.trigger("alert:error", "Server Error", xhr.responseText);
+            }
             break;
         }
       });

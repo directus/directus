@@ -40,7 +40,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     checkChars: function() {
       var numeric = this.$el.find('input');
       var value = numeric.val();
-      value = value.replace(/[^0-9-.]/ig, "");
+      value = value.replace(/[^0-9-.]/ig, ""); // @TODO: regex needs to reflect datatype (no "." for INT, etc)
       numeric.val(value);
     },
 
@@ -52,7 +52,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       // Fill in default value
       if (
-        this.options.model.isNew() &&
+        this.options.value === undefined &&
         this.options.schema.has('default_value')) {
           value = this.options.schema.get('default_value');
       }
@@ -71,6 +71,13 @@ define(['app', 'backbone'], function(app, Backbone) {
     }
 
   });
+
+  Module.validate = function(value, options) {
+    // _.isEmpty (in the installed version) does not support INTs properly
+    if (options.schema.isRequired() && !value) {
+      return 'This field is required';
+    }
+  };
 
   Module.list = function(options) {
     var val = options.value;

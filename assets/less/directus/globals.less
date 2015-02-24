@@ -85,24 +85,19 @@
   margin-top: -170px;
   padding: 30px 30px 30px 30px;
   background-color: @white;
-  color: @mediumDarkGrey;
+  color: @extraDarkGrey;
   font-size: 14px;
   font-weight: 600;
   z-index: 110;
   .border-radius(3px, 3px, 3px, 3px);
-  box-shadow: 0 0 20px fade(@mediumDarkGrey, 30%);
+  box-shadow: 0 0 20px fade(@extraDarkGrey, 30%);
   -webkit-font-smoothing: antialiased;
   .directus-alert-modal-message {
     padding-bottom: 20px;
   }
   input {
-    background-color: @extraLightGrey;
-    border: none !important;
-    padding: 10px 10px 10px 10px;
     width: 100%;
-    &:focus {
-      border: none;
-    }
+    font-weight: normal;
   }
   .directus-alert-modal-buttons {
     margin-top: 20px;
@@ -112,7 +107,11 @@
       text-align: center;
       color: @white;
       background-color: @mediumGrey;
-      border: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 3px solid darken(@mediumGrey, 5%);
+
       .border-radius(3px, 3px, 3px, 3px);
       margin-left: 20px;
       min-width: 120px;
@@ -120,11 +119,14 @@
       -webkit-font-smoothing: antialiased;
       &:hover {
         background-color: darken(@mediumGrey, 5%);
+        border-bottom: 3px solid darken(@mediumGrey, 10%);
       }
       &.primary {
         background-color: @addColor;
+        border-bottom: 3px solid darken(@addColor, 5%);
         &:hover {
           background-color: darken(@addColor, 5%);
+          border-bottom: 3px solid darken(@addColor, 10%);
         }
       }
     }
@@ -142,14 +144,22 @@
 }
 .large-circle {
   .border-radius(50px, 50px, 50px, 50px);
-  background-color: @mediumGrey;
-  color: @white;
+  background-color: @white;
+  color: @mediumGrey;
   display: inline-block;
   height: 32px;
   padding: 0px;
   position: relative;
   text-align: center;
   width: 32px;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.05);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.05);
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.05);
+  &:hover {
+    // -webkit-box-shadow: 0px 0px 10px 3px rgba(255,255,255,0.6);
+    // -moz-box-shadow: 0px 0px 10px 3px rgba(255,255,255,0.6);
+    // box-shadow: 0px 0px 10px 3px rgba(255,255,255,0.6);
+  }
   .icon {
     display: inline-block;
     font-size: 40px;
@@ -162,7 +172,7 @@
       font-size: 33px;
     }
     &.icon-paper-plane {
-      margin-left: -2px;
+      margin-left: -3px;
     }
   }
   &.white-circle {
@@ -186,10 +196,10 @@
   display: inline-block;
   cursor: pointer;
   font-weight: 600;
-  background-color: @mediumGrey;
+  background-color: @darkGrey;
   color: @white;
   margin: @smallPad @smallPad 0 0;
-  padding: 3px @smallPad;
+  padding: @extraSmallPad @smallPad;
   .border-radius(2px, 2px, 2px, 2px);
   &:hover {
     background-color: @deleteColor;
@@ -239,12 +249,15 @@ a.secondary-info {
 .yellow-color {
   color: @systemColor;
 }
+.hard-color {
+  color: #0F76C0;  // @TODO: needs variable
+}
 .bold {
   font-weight: 600;
   -webkit-font-smoothing: antialiased;
 }
 .add-color-background {
-  background-color: @addColor !important;
+  color: @addColor !important; // changed to accommodate white buttons
 }
 .add-color-border {
   border-color: @addColor !important;
@@ -285,7 +298,7 @@ img.grayscale {
 .content-body {
   /* flex: 1; */
   margin-bottom: 40px;
-  margin-top: 80px;
+  margin-top: 63px;
 }
 .overlay {
   h3 {
@@ -294,7 +307,8 @@ img.grayscale {
 }
 .nothing-here {
   text-align: center;
-  margin-top: 100px;
+  margin-top: 150px;
+  line-height: 35px;
 }
 .media-thumb {
   .img.portrait { height: 50px; }
@@ -304,7 +318,8 @@ img.grayscale {
   display: none !important;
 }
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset;
+    -webkit-box-shadow: 0 0 0px 1000px @fieldColor inset;
+    color: @mediumGrey !important;
 }
 ::-webkit-input-placeholder {
     color: @mediumGrey;
@@ -329,6 +344,10 @@ input:-webkit-autofill {
 //  OTHER
 ////////////
 
+.card-border {
+  border-bottom: 3px solid darken(@lightGrey, 5%);
+}
+
 .invisible-blocker {
   position: fixed;
   left: 0;
@@ -339,17 +358,17 @@ input:-webkit-autofill {
 }
 body.initial-load {
   #page-blocker-smoke {
-    opacity: 0.9;
+    opacity: 0.75;
   }
 }
 #page-blocker-smoke {
   left: 170px;
   //left: 0;
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: @white;
+  background-color: @lightGrey;
   z-index: 109;
   cursor: progress;
   -webkit-transition: opacity 400ms ease-in-out;
@@ -451,7 +470,8 @@ input[type="date"]::-webkit-inner-spin-button {
   margin-top: 6px;
 }
 .message-recipients {
-  background-color: @extraLightGrey;
+  .card-border;
+  background-color: @white;
   padding: @standardPad;
   //margin-bottom: @standardPad;
 }

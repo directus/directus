@@ -11,6 +11,7 @@ use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
+use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\Hooks;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
@@ -51,7 +52,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     {
         $this->acl = $acl;
 
-        // process features
         if ($features !== null) {
             if ($features instanceof Feature\AbstractFeature) {
                 $features = array($features);
@@ -170,6 +170,18 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $row;
     }
 
+    public function findOneByArray(array $data) {
+        $rowset = $this->select($data);
+
+        $row = $rowset->current();
+        // Supposing this "one" doesn't exist in the DB
+        if(false === $row) {
+            return false;
+        }
+        $row = $row->toArray();
+        return $row;
+    }
+
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
         foreach($recordData as $columnName => $columnValue) {
             if(is_array($columnValue)) {
@@ -187,7 +199,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $Update->set($recordData);
             $Update->where(array('id' => $recordData['id']));
             $TableGateway->updateWith($Update);
-            // Post-update hook
+            
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
             //If we are adding a new directus_files Item, We need to do that logic
@@ -251,7 +263,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               }
             }
 
-            // Post-insert hook
             Hooks::runHook('postInsert', array($TableGateway, $recordData, $this->adapter, $this->acl));
         }
 
@@ -264,6 +275,36 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         })->current();
 
         return $recordData;
+    }
+
+    /*
+      Temporary solutions to fix add column error
+        This add column is the same old-db add_column method
+    */
+    public function addColumn($tableName, $tableData) {
+      $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
+      $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
+      $column_name = $tableData['column_name'];
+      $data_type = $tableData['data_type'];
+      $comment = $tableData['comment'];
+
+      if (in_array($data_type, $directus_types)) {
+          //This is a 'virtual column'. Write to directus schema instead of MYSQL
+          $tableData['table_name'] = $tableName;
+          $tableData['sort'] = 9999;
+          $data = array_intersect_key($tableData, array_flip($alias_columns));
+
+          $this->addOrUpdateRecordByArray($data, 'directus_columns');
+      } else {
+          if (array_key_exists('char_length', $tableData)) {
+              $data_type = $data_type.'('.$tableData['char_length'].')';
+          }
+          $sql = "ALTER TABLE `$tableName` ADD COLUMN `$column_name` $data_type COMMENT '$comment'";
+
+          $this->adapter->query( $sql )->execute();
+      }
+
+      return $column_name;
     }
 
     protected function logger() {
@@ -380,6 +421,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             return parent::executeInsert($insert);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
+                if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
+                  throw new DuplicateEntryException($e->getMessage());
+                }
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($insert), 0, $e);
             }
             // @todo send developer warning
@@ -409,54 +453,61 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         /**
          * ACL Enforcement
          */
-
-        if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
-            // Parsing for the column name is unnecessary. Zend enforces raw column names.
-            // $rawColumns = $this->extractRawColumnNames($updateState['columns']);
-            /**
-             * Enforce Privilege: "Big" Edit
-             */
-            if(false === $cmsOwnerColumn) {
-                // All edits are "big" edits if there is no magic owner column.
-                $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on table `$updateTable` (no magic owner column).");
-            } else {
-                // Who are the owners of these rows?
-                list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
-                // Enforce
-                if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
-                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
-                }
-            }
-
-            /**
-             * Enforce write field blacklist (if user lacks bigedit privileges on this table)
-             */
-            $attemptOffsets = array_keys($updateState['set']);
-            $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
-        }
-
-        if(!$this->acl->hasTablePrivilege($updateTable, 'edit')) {
-            /**
-             * Enforce Privilege: "Little" Edit (I am the record CMS owner)
-             */
-            if(false !== $cmsOwnerColumn) {
-                if(!isset($predicateResultQty)) {
-                    // Who are the owners of these rows?
-                    list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
-                }
-                if(in_array($currentUserId, $predicateOwnerIds)) {
-                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
-                }
-            }
+        // check if it's NOT soft delete
+        $updateFields = $updateState['set'];
+        if(!(count($updateFields)==2 && array_key_exists(STATUS_COLUMN_NAME, $updateFields) && $updateFields[STATUS_COLUMN_NAME]==STATUS_DELETED_NUM)) {
+          if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
+              // Parsing for the column name is unnecessary. Zend enforces raw column names.
+              /**
+               * Enforce Privilege: "Big" Edit
+               */
+              if(false === $cmsOwnerColumn) {
+                  // All edits are "big" edits if there is no magic owner column.
+                  $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                  throw new UnauthorizedTableBigEditException($aclErrorPrefix . "The table `$updateTable` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)");
+              } else {
+                  // Who are the owners of these rows?
+                  list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                  // Enforce
+                  if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
+                      $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                      throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
+                  }
+              }
+  
+              /**
+               * Enforce write field blacklist (if user lacks bigedit privileges on this table)
+               */
+              $attemptOffsets = array_keys($updateState['set']);
+              $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+          }
+  
+          if(!$this->acl->hasTablePrivilege($updateTable, 'edit')) {
+              /**
+               * Enforce Privilege: "Little" Edit (I am the record CMS owner)
+               */
+              if(false !== $cmsOwnerColumn) {
+                  if(!isset($predicateResultQty)) {
+                      // Who are the owners of these rows?
+                      list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                  }
+                  if(in_array($currentUserId, $predicateOwnerIds)) {
+                      $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                      throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
+                  }
+              }
+          }
         }
 
         try {
             return parent::executeUpdate($update);
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
+                // @TODO: these lines are the same as the executeInsert,
+                // let's put it together
+                if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
+                  throw new DuplicateEntryException($e->getMessage());
+                }
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($update), 0, $e);
             }
             // @todo send developer warning
@@ -481,45 +532,45 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($deleteTable);
+        $canBigHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'bigharddelete');
+        $canHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'harddelete');
+        $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+        // Is this table a junction table?
+        $deleteTableSchema = TableSchema::getTable($deleteTable);
+        $isDeleteTableAJunction = array_key_exists('is_junction_table', $deleteTableSchema) ? (bool)$deleteTableSchema['is_junction_table'] : false;
 
+        if ($isDeleteTableAJunction || !TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
+          if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
+            $canBigHardDelete = true;
+          } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {
+            $canHardDelete = true;
+          }
+        }
+        
         /**
          * ACL Enforcement
          */
-
-        if(!$this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
-            /**
-             * Enforce Privilege: "Big" Delete
-             */
-            if(false === $cmsOwnerColumn) {
-                // All deletes are "big" deletes if there is no magic owner column.
-                $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigdelete access forbidden on table `$deleteTable` (no magic owner column).");
-            } else {
-                // Who are the owners of these rows?
-                list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
-                // Enforce
-                if(is_null($currentUserId) || count(array_diff($predicateOwnerIds, array($currentUserId)))) {
-                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigdelete access forbidden on $predicateResultQty `$deleteTable` table record(s) and " . count($predicateOwnerIds) . " CMS owner(s) (with ids " . implode(", ", $predicateOwnerIds) . ").");
-                }
-            }
+         
+        if(!$canBigHardDelete && !$canHardDelete) {
+          throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "BigHardDelete/HardDelete access forbidden on table `$deleteTable`.");
         }
-
-        if(!$this->acl->hasTablePrivilege($deleteTable, 'delete')) {
-            /**
-             * Enforce Privilege: "Little" Delete (I am the record CMS owner)
-             */
-            if(false !== $cmsOwnerColumn) {
-                if(!isset($predicateResultQty)) {
-                    // Who are the owners of these rows?
-                    list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
-                }
-                if(in_array($currentUserId, $predicateOwnerIds)) {
-                    $exceptionMessage = "Table delete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
-                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableDeleteException($aclErrorPrefix . $exceptionMessage);
-                }
+        
+        if (false === $cmsOwnerColumn) {
+          // cannot delete if there's no magic owner column and can't big delete
+          if (!$canBigHardDelete) {
+            // All deletes are "big" deletes if there is no magic owner column.
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "The table `$deleteTable` is missing the `user_create_column` within `directus_tables` (BigHardDelete Permission Forbidden)");
+          }
+        } else {
+          if(!$canBigHardDelete){
+            // Who are the owners of these rows?
+            list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
+            if(in_array($currentUserId, $predicateOwnerIds)) {
+              $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
+              $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+              throw new UnauthorizedTableDeleteException($aclErrorPrefix . $exceptionMessage);
             }
+          }
         }
 
         try {

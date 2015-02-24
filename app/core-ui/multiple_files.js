@@ -17,9 +17,9 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
-    {id: 'add_button', ui: 'checkbox'},
-    {id: 'choose_button', ui: 'checkbox'},
-    {id: 'remove_button', ui: 'checkbox'},
+    {id: 'add_button', ui: 'checkbox', def: '1'},
+    {id: 'choose_button', ui: 'checkbox', def: '1'},
+    {id: 'remove_button', ui: 'checkbox', def: '1'},
   ];
 
   Module.Input = UIView.extend({
@@ -46,17 +46,62 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
 
     template: Handlebars.compile(
       '<style type="text/css"> \
+        .ui-file-container:after { \
+          clear: both; \
+          content: ""; \
+          display: block; \
+          width: 100%; \
+        } \
         .media-slideshow-item { \
           cursor: {{#if sortable}}move{{else}}pointer{{/if}}; \
+          width: 160px; \
+          float: left; \
+          height: 160px; \
+          position: relative; \
+        } \
+        .media-slideshow-item img { \
+          width: 100%; \
+          height: 100%; \
         } \
         .remove-hover-state .show-circle:hover .white-circle { \
-          display:none !important; \
+          opacity: 0.0; \
+        } \
+        div.single-image-thumbnail.empty { \
+          float: left; \
+          background-color: #ffffff; \
+          color: #ededed; \
+          text-align: center; \
+          cursor: pointer; \
+          width: 156px; \
+          height: 156px; \
+          background-color: #ffffff; \
+          border: 2px dashed #bbbbbb; \
+          font-size: 12px; \
+          font-weight: 600; \
+          line-height: 14px; \
+          color: #bbbbbb; \
+        } \
+        div.single-image-thumbnail.empty span { \
+          margin-top: 0; \
+          display: inline-block; \
+          line-height: 18px; \
+        } \
+        div.single-image-thumbnail.empty span div.icon { \
+          display: block; \
+          font-size: 100px; \
+          line-height: 90px; \
+        } \
+        div.single-image-thumbnail.empty.dragover, \
+        div.single-image-thumbnail.empty:hover { \
+          background-color: #BBBBBB; \
+          color: #ffffff; \
+          cursor: pointer; \
         } \
       </style> \
-      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}</div> \
+      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div></div> \
       <div class="related-table"></div> \
-      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files Item</button>{{/if}} \
-      {{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files Item</button>{{/if}}</div>'),
+      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files</button>{{/if}} \
+      {{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files</button>{{/if}}</div>'),
 
     addItem: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
@@ -202,6 +247,12 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
       $dropzone[0].ondrop = _.bind(function(e) {
         e.stopPropagation();
         e.preventDefault();
+
+        if(self.sort.isDragging) {
+          self.sort.isDragging = false;
+          return;
+        }
+
         app.sendFiles(e.dataTransfer.files, function(data) {
           _.each(data, function(item) {
             item[app.statusMapping.status_name] = app.statusMapping.active_num;
@@ -220,7 +271,7 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
         // Drag and drop reordering
         var container = this.$el.find('.ui-file-container')[0];
         var that = this;
-        var sort = new Sortable(container, {
+        this.sort = new Sortable(container, {
           animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
           draggable: ".media-slideshow-item", // Specifies which items inside the element should be sortable
           ghostClass: "sortable-file-ghost",
@@ -273,6 +324,12 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
       }, this);
     }
   });
+
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && value.length === 0) {
+      return 'This field is required';
+    }
+  };
 
   Module.list = function() {
     return 'x';

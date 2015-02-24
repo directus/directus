@@ -1,9 +1,18 @@
-{{#tabs}}
-<li class="{{#if active}}active primary-background{{/if}}{{#if hidden}} hidden{{/if}}{{#if avatar}} has-image{{/if}}">
-    <a href="#{{id}}">
-      {{#if avatar}}<img src="{{avatar}}" alt>{{/if}}
-      <span class="icon {{icon_class}}"></span>
-      {{#if unread}}<span class="feature-nav-alert primary-background"></span>{{/if}}
-    </a>
-</li>
-{{/tabs}}
+<ul>
+	<li class="{{#if active}}active primary-background{{/if}} has-image" title="View Profile">
+	    <a href="#users/{{currentUserId}}">
+	      <img src="{{avatar}}" alt>
+	      <span class="icon icon-pencil"></span>
+	    </a>
+	</li>
+	<li class="{{#if active}}active primary-background{{/if}}" title="Logout">
+	    <a href="#logout">
+	      <span class="icon icon-logout"></span>
+	    </a>
+	</li>
+</ul>
+{{#if showSettings}}
+ <a class="settings-link" href="#settings" title="Settings">
+ 	<span class="icon icon-cog"></span>
+ </a>
+{{/if}}

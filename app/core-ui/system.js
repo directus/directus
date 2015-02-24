@@ -24,7 +24,7 @@ define(['app','backbone'], function(app, Backbone) {
     <label for="check3"><span></span>Deleted</label> \
   <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';*/
 
-  var template = '<div class="status-group" style="margin-top:4px;"> \
+  var template = '<div class="status-group" style="padding: 10px 0;"> \
                   {{#mapping}} \
                     <label style="margin-right:40px;display:inline-block;color:{{color}}" class="bold"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if active}}checked{{/if}}>{{name}}</label> \
                   {{/mapping}} \
@@ -54,8 +54,15 @@ define(['app','backbone'], function(app, Backbone) {
 
       var mapping = app.statusMapping.mapping;
       var value = this.options.value;
+
       data.mapping = [];
+
       for(var key in mapping) {
+        //If new model, skip delete option
+        if(this.model.isNew() && key == app.statusMapping.deleted_num) {
+          continue;
+        }
+
         var entry = mapping[key];
         entry.id = key;
         if(key == value) {
@@ -63,7 +70,6 @@ define(['app','backbone'], function(app, Backbone) {
         } else {
           entry.active = false;
         }
-
         data.mapping.push(entry);
       }
 

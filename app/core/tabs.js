@@ -35,24 +35,23 @@ function(app, Backbone) {
   Tabs.View = Backbone.Layout.extend({
     template: "tabs",
 
-    tagName: "ul",
-
-    attributes: {
-      class:"row"
-    },
+    tagName: "div",
 
     serialize: function() {
-      var tabs = this.collection.map(function(model) {
-        var tab = model.toJSON();
-        return tab;
-      });
-      return {tabs: tabs};
+      var currentUser = app.users.getCurrentUser();
+      var currentUserAvatar = currentUser.getAvatar();
+
+      var currentUserId = app.users.getCurrentUser().get("id");
+
+      var showSettings = (app.users.getCurrentUser().get('group').id === 1)? true : false;
+
+      return {avatar: currentUserAvatar, currentUserId: currentUserId, showSettings: showSettings};
     },
 
     events: {
      'click a[href$="#logout"]': function(e) {
         e.preventDefault();
-        app.router.openModal({type: 'confirm', text: 'Are your sure you want to logout?', callback: function() {
+        app.router.openModal({type: 'confirm', text: 'Are you sure you want to logout?', callback: function() {
           window.location.href = app.API_URL + "auth/logout";
         }});
         return false;

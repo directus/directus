@@ -2,12 +2,13 @@ require([
   "app",
   "handlebars",
   "core/UIManager",
+  'modules/users/UsersModel',
   'moment'
-], function(app, Handlebars, UIManager, moment) {
+], function(app, Handlebars, UIManager, UsersModel, moment) {
 
   "use strict";
 
-  var unknowUserMessage = "-";
+  var unknowUserMessage = "A missing or removed user";
 
   Handlebars.registerHelper('imagesPath', function() {
     return app.PATH + 'assets/img/';
@@ -54,7 +55,7 @@ require([
   Handlebars.registerHelper('avatarSmall', function(userId) {
     var user = app.users.get(userId);
     if (user === undefined) return unknowUserMessage;
-    return '<img src="' + user.get('avatar') + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
+    return '<img src="' + user.getAvatar() + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
   });
 
   Handlebars.registerHelper('activeMap', function(model) {
@@ -107,23 +108,27 @@ require([
         nickName = firstName + ' ' + user.get('last_name');
       }
     }
-    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'" class="avatar"/>' + app.capitalize(nickName," "));
+    return new Handlebars.SafeString('<img src="'+user.getAvatar()+'" class="avatar"/>' + app.capitalize(nickName," "));
   });
 
   Handlebars.registerHelper('userAvatar', function(userId) {
     var user = app.users.get(userId);
+    var avatar = '';
+
     if(user) {
-      var avatar = user.get('avatar');
-      if(!avatar) {
-        avatar = app.PATH + 'assets/img/missing-directus-avatar.png';
-      }
-      return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar"/>');
+      avatar = user.getAvatar();
+    } else {
+      // empty user object
+      user = new UsersModel({}, {collection: {}});
+      avatar = user.getDefaultAvatar();
     }
+
+    return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar" title="'+user.get('first_name')+' '+user.get('last_name')+'"/>');
   });
 
   Handlebars.registerHelper('userFull', function(userId) {
     var user = app.users.get(userId);
-    return new Handlebars.SafeString('<img src="'+user.get('avatar')+'"  class="avatar"/><span class="avatar-name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
+    return new Handlebars.SafeString('<img src="'+user.getAvatar()+'"  class="avatar"/><span class="avatar-name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
   });
 
   Handlebars.registerHelper('userFirstAndLastName', function(userId) {

@@ -1,4 +1,6 @@
-![Directus](http://f.cl.ly/items/2s3R03202k3h233T0R0A/DIRECTUS-trans-logo.png)
+<p align="center">
+<img src="https://s3.amazonaws.com/f.cl.ly/items/3Q2830043H1Y1c1F1K2D/directus-logo-stacked.png" alt="Directus Logo"/>
+</p>
 
 Directus
 ====================

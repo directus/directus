@@ -2,6 +2,7 @@ assets/bower
 
 api/config.php
 api/configuration.php
+api/ruckusing.conf.php
 
 assets/css/*.map
 
@@ -24,6 +25,7 @@ customFooterHTML.html
 assets/css/custom.css
 
 node_modules
+npm-debug.log
 
 build_test
 build_test.html
@@ -44,3 +46,6 @@ media_auth_proxy/client_auth_proxies/*
 !media_auth_proxy/client_auth_proxies/.gitkeep
 
 .project
+
+# Ignore dev files
+assets/less/directus/config.codekit

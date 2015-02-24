@@ -27,7 +27,7 @@ select {
   width: 100%;
   .char-count {
     position: absolute;
-    top: 6px;
+    top: 10px;
     right: 10px;
     color: @mediumGrey;
   }
@@ -137,26 +137,28 @@ input,
 textarea,
 select,
 .input {
-  .border-box;
   .transition;
-  background-color: @white;
-  border: solid 1px @lightGrey;
+  background-color: @fieldColor;
+  border: none;
   display: block;
-  padding: @extraSmallPad;
-  //width: 100%;
+  padding: @smallPad;
+  font-size: 13px;
   outline: none;
   resize: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   &:hover {
-    border: solid 1px @mediumGrey;
+    //border: solid 1px @mediumGrey;
   }
   &:disabled {
     color: @mediumGrey;
   }
   &:disabled:hover {
-    border: solid 1px @lightGrey;
+    //border: solid 1px @lightGrey;
   }
   &:focus {
-    border: solid 1px @addColor;
+    color: darken(@darkGrey, 10%);
   }
 }
 .wysiwyg {
@@ -185,6 +187,12 @@ select,
 //  CUSTOM FORMS
 ////////////
 
+.table-striped tr td.field-comment-container {
+  padding-right: 40px;
+  .field-comment {
+    width: 100%;
+  }
+}
 .simple-select.simple-gray {
   margin-top: 0;
   .icon {
@@ -192,7 +200,7 @@ select,
   }
   select {
     .border-radius();
-    background-color: @lightGrey;
+    background-color: @white; // class name no longer applicable
     border: 0px;
     //margin: 0px 4px 0px 0px;
     padding: 8px @smallPad;
@@ -210,12 +218,13 @@ select,
     margin-bottom: @smallPad;
   }
   .fields {
+    .card-border;
     list-style: none;
     margin: 0px;
     padding: 0px;
     width: 100%;
     li {
-      margin-bottom: 1px;
+      margin-top: 1px;
       position: relative;
       width: 100%;
     }
@@ -242,17 +251,16 @@ select,
     .label {
       .border-box;
       .clear-fix;
-      background-color: @lightGrey;
+      background-color: @white;
       color: @darkGrey;
       font-weight: 600;
-      padding: 30px @standardPad @standardPad @standardPad;
-      text-align: right;
+      padding: 40px @standardPad @largePad @largePad;
       vertical-align: top;
       width: 200px;
       label {
         position: relative;
         text-transform: capitalize;
-        top: -5px;
+        //top: -5px;
         font-weight: 600;
         .note {
           display: block;
@@ -275,8 +283,8 @@ select,
     }
     .field {
       .clear-fix;
-      background-color: @extraLightGrey;
-      padding: @standardPad;
+      background-color: @white;
+      padding: @largePad;
       position: relative;
       font-weight: 400;
       input[type="text"], textarea, .input {
@@ -311,7 +319,7 @@ select,
       select {
         max-width: 200px;
         margin-top: 2px;
-        height: 30px;
+        height: 38px;
         width: 100%;
       }
       select[multiple] {

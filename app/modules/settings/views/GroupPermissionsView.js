@@ -60,12 +60,10 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
         var readBlacklist = (this.model.get('read_field_blacklist')) ? this.model.get('read_field_blacklist').split(',') : [];
         var writeBlacklist = (this.model.get('write_field_blacklist')) ? this.model.get('write_field_blacklist').split(',') : [];
 
-
-        this.toggleIcon($target);
-
         //Removing so add to blacklist
-        if($target.parent().hasClass('delete-color')) {
-          if($target.parent().parent().data('value') == "read") {
+        if($target.hasClass('on')) {
+          $target.removeClass('on').removeClass('has-privilege');
+          if($target.parent().data('value') == "read") {
             if(readBlacklist.indexOf($tr.data('column-name')) === -1) {
               readBlacklist.push($tr.data('column-name'));
               this.model.set({read_field_blacklist: readBlacklist.join(",")});
@@ -77,7 +75,8 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
             }
           }
         } else {
-          if($target.parent().parent().data('value') == "read") {
+          $target.addClass('on').addClass('has-privilege');;
+          if($target.parent().data('value') == "read") {
             if(readBlacklist.indexOf($tr.data('column-name')) !== -1) {
               readBlacklist.splice(readBlacklist.indexOf($tr.data('column-name')), 1);
               this.model.set({read_field_blacklist: readBlacklist.join(",")});
@@ -92,11 +91,6 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
 
         this.model.save();
       }
-    },
-
-    toggleIcon: function($span) {
-      $span.parent().toggleClass('add-color').toggleClass('delete-color');
-      $span.toggleClass('icon-block').toggleClass('icon-check');
     },
 
     serialize: function() {
@@ -128,6 +122,7 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
     template: 'modules/settings/settings-grouppermissions',
 
     events: {
+      'click td.tableName > div': 'toggleRowPermissions',
       'click td.editFields > span': 'editFields',
       'click td > span': function(e) {
         var $target = $(e.target).parent(),
@@ -174,7 +169,7 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
         this.toggleIcon($target, this.collection.get(cid).get('permissions'));
 
         attributes = this.parseTablePermissions($tr, this.collection.get(cid).get('permissions'));
-
+        
         var fancySave = false;
         var oldModel = model;
         if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
@@ -197,9 +192,61 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
       var dataValue = $span.parent().data('value');
       if($span.hasClass('yellow-color')) {
         $span.addClass('big-priv');
+      } else if ($span.hasClass('big-priv') && dataValue == 'delete') {
+        $span.removeClass('big-priv').addClass('hard-priv hard-color');
+      } else if ($span.hasClass('hard-priv') && dataValue == 'delete') {
+        $span.removeClass('hard-priv').addClass('big-hard-priv hard-color');
       } else {
         $span.toggleClass('add-color').toggleClass('delete-color').toggleClass('has-privilege');
       }
+    },
+
+    toggleRowPermissions: function(e) {
+      var $target = $(e.target).parent(),
+        $tr = $target.closest('tr'),
+        cid = $tr.data('cid'),
+        model = this.collection.get(cid);
+
+      //@todo: cleaner way to do this?
+      var hasFullPerms = true;
+      ['add','bigedit','bigdelete','bigview'].forEach(function (perm) {
+        if(model.get('permissions').indexOf(perm) == -1) {
+          hasFullPerms = false;
+        }
+      });
+
+      var newPerms = '';
+
+      if(!hasFullPerms)
+      {
+        newPerms = 'add,bigedit,bigdelete,bigview';
+      }
+
+      if(this.selectedState == 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
+        this.collection.each(function(cmodel) {
+          if(cmodel.get('table_name') == model.get('table_name') && cmodel.get('group_id') == model.get('group_id')) {
+            cmodel.set({permissions: newPerms});
+            cmodel.save();
+          }
+        });
+        return;
+      }
+
+      var fancySave = false;
+      var oldModel = model;
+      if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
+        model = model.clone();
+        this.model = model;
+        model.collection = oldModel.collection;
+        fancySave = true;
+      }
+      model.set({permissions: newPerms});
+      var that = this;
+      model.save({activeState: this.selectedState}, {success: function(res) {
+        if(fancySave) {
+          that.collection.add(that.model);
+        }
+      }});
     },
 
     parseTablePermissions: function($tr) {
@@ -208,9 +255,36 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
       permissions = $tr.children().has('span.has-privilege');
 
 
-      permissions = permissions.map(function() { return (($(this).has('span.big-priv').length) ? "big" : "") +  $(this).data('value');}).get().join();
+      permissions = permissions.map(function() { 
+        var permissionPrefix = '',
+            permission = [];
 
-      return {permissions: permissions};
+        if ($(this).has('span.big-priv').length) {
+          permissionPrefix = 'big';
+        } else if ($(this).has('span.hard-priv').length) {
+          permissionPrefix = 'hard';
+        } else if ($(this).has('span.big-hard-priv').length) {
+          permissionPrefix = 'bighard';
+        }
+
+        if(permissionPrefix && permissionPrefix !== 'hard') {
+          var value = $(this).data('value');
+          if(permissionPrefix === 'bighard'){
+            value = 'hard'+value;
+          }
+          permission.push(value);
+        }
+        permission.push(permissionPrefix +  $(this).data('value'));
+
+        return permission;
+      }).get();
+
+      // do not let non-admin users to have alter permission
+      if(app.getCurrentGroup().get('id')===1) {
+        permissions.push('alter');
+      }
+
+      return {permissions: permissions.join()};
     },
 
     editFields: function(e) {
@@ -296,6 +370,8 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
           'bigedit': false,
           'delete': false,
           'bigdelete': false,
+          'harddelete': false,
+          'bigharddelete': false,
           'alter': false,
           'view': false,
           'bigview': false

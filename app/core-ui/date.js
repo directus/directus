@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
+define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, moment, UIView) {
 
   "use strict";
 
@@ -41,7 +41,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   <input type="date" class="date" {{#if readonly}}disabled{{/if}} name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
                   <a class="now secondary-info">Now</a>';
 
-  Module.Input = Backbone.Layout.extend({
+  Module.Input = UIView.extend({
 
     tagName: 'div',
     attributes: {
@@ -73,13 +73,22 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
     },
 
     initialize: function() {
-      this.value = moment(this.options.value);
+      //this.value = moment(this.options.value);
+
+      var value = this.model.get(this.name);
+      if(undefined === value) {
+        this.value = moment('0000-00-00');
+      } else {
+        this.value = moment(value);
+      }
     }
 
   });
 
-  Module.validate = function(value) {
-    //
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
   };
 
   Module.list = function(options) {

@@ -19,13 +19,8 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
     TableBody: TableBody,
 
     serialize: function() {
-      var blacklist = this.options.blacklist || [];
-      var columns = _.filter(this.collection.getColumns(), function(col) {
-        return !_.contains(blacklist, col);
-      });
-
       return {
-        columns: columns,
+        columns: this.options.columns,
         id: this.collection.table.id,
         selectable: this.options.selectable,
         sortable: this.options.sortable,
@@ -62,11 +57,13 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
 
       if (this.tableHead) {
         options = this.options;
+        options.parentView = this;
         this.insertView('table', new TableHead(options));
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight');
+        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
+        options.parentView = this;
         this.insertView('table', new this.TableBody(options));
       }
 
@@ -133,6 +130,21 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       }, this);
     },
 
+    getTableColumns: function() {
+      var structure = this.collection.structure,
+          blacklist = this.options.blacklist || [],
+          columns;
+
+      columns = _.filter(this.collection.getColumns(), function(col) {
+        var columnModel = structure.get(col),
+            hiddenInput = (columnModel && columnModel.get('hidden_input') !== true);
+
+        return !_.contains(blacklist, col) && hiddenInput;
+      });
+
+      return columns;
+    },
+
     initialize: function(options) {
       var collection = this.collection;
 
@@ -142,12 +154,14 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       });
 
       this.listenTo(collection, 'visibility', function() {
+        this.options.columns = this.getTableColumns();
         this.render();
       });
 
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;
       this.options.table = this.options.table || this.collection.table;
+      this.options.columns = this.getTableColumns();
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;

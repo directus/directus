@@ -16,7 +16,7 @@
     <td class="sort">{{#unless system}}<span class="icon icon-list"></span>{{/unless}}</td>
     <td><span class="settings-column-name" title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
     {{#if system}}
-    <td colspan="5"><em class="light-grey-color">This is a system field</em></td>
+    <td colspan="5"><em>This is a system field</em></td>
     {{else}}
     <td>
       <select name="ui" id="ui" data-id="{{id}}" class="input-selector">
@@ -33,11 +33,11 @@
       {{/if}}
     </td>
     <td>
-        <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}">
+        <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}" title="Hidden">
     </td>
-    <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="Allow Null: {{is_nullable}}"></td>
-    <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}"></td>
-    <td><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input"></td>
+    <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="Allow Null: {{is_nullable}}" title="Required"></td>
+    <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}" title="Primary"></td>
+    <td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment"></td>
     {{/if}}
   </tr>
   {{/rows}}

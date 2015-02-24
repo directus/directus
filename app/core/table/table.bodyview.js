@@ -18,6 +18,17 @@ function(app, Backbone, Sortable) {
       'change td.check > input': 'select',
       'click td.check > input': function() {
         this.collection.trigger('select');
+      },
+      'click .sort': function(e) {
+        e.cancelBubble = true;
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+      },
+      'mousedown .sort': function(e) {
+        if($(e.target).closest('.disable-sorting').length > 0){
+          noty({text: "<b>Sorting Disabled</b><br><i>Click the reordering icon to enable</i>", type: 'information', timeout: 4000, theme: 'directus'});
+        }
       }
     },
 
@@ -80,7 +91,7 @@ function(app, Backbone, Sortable) {
       });
 
       var tableData = {
-        columns: this.collection.getColumns(),
+        columns: this.options.columns,
         rows: rows,
         sortable: this.options.sort,
         selectable: this.options.selectable,
@@ -114,11 +125,12 @@ function(app, Backbone, Sortable) {
       if (this.sort) {
         var container = this.$el[0];
         var that = this;
-        var sort = new Sortable(container, {
+        options.parentView.sortableWidget = new Sortable(container, {
           animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
           handle: ".sort", // Restricts sort start click/touch to the specified element
           draggable: "tr", // Specifies which items inside the element should be sortable
           ghostClass: "sortable-ghost",
+          sort: false,
           onStart: function (evt) {
             //var dragItem = jQuery(evt.item);
             var tbody = jQuery(container);
@@ -132,9 +144,10 @@ function(app, Backbone, Sortable) {
             tbody.addClass('disable-transform');
           },
           onUpdate: function (evt){
-            app.router.openModal({type: 'confirm', text: 'Are your sure you want to reorder these items?', callback: function() {
-              that.drop();
-            }});
+            // app.router.openModal({type: 'confirm', text: 'Are you sure you want to reorder these items?', callback: function() {
+            //   that.drop();
+            // }});
+            that.drop();
           }
         });
       }

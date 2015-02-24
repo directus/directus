@@ -13,6 +13,8 @@ require.config({
     "handlebars": "../assets/js/libs/handlebars",
     "sortable":  "../assets/js/libs/sortable",
     "moment":     "../assets/js/libs/moment.min",
+    "noty":     "../assets/js/libs/noty",
+    "noty_theme": "../assets/js/libs/noty_theme",
 
     // JavaScript folders.
     "libs":       "../assets/js/libs",
@@ -38,6 +40,14 @@ require.config({
 
     "underscore": {
       exports: '_'
+    },
+
+    "noty": {
+      deps: ["jquery"]
+    },
+
+    "noty_theme": {
+      deps: ["jquery", "noty"]
     },
 
     "plugins/backbone.layoutmanager": ["backbone"],

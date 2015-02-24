@@ -20,14 +20,16 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         route.pop();
         app.router.go(route);
       };
-
-      // hard-destroy model if there is no active column
-      if (!this.model.has(app.statusMapping.status_name)){
-        throw "This table does not have an active column and can therefore not be deleted";
+      
+      var value = app.statusMapping.deleted_num;
+      var options = {success: success, patch: true, wait: true, validate: false};
+      try {
+        app.changeItemStatus(this.model, value, options);
+      } catch(e) {
+        setTimeout(function() {
+          app.router.openModal({type: 'alert', text: e.message});
+        }, 0);
       }
-      var name = {};
-      name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
-      this.model.save(name, {success: success, patch: true, wait: true, validate: false});
     },
 
     saveCheck: function(e) {
@@ -85,10 +87,6 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       // patch only the changed values
       model.save(model.diff(data), {
         success: success,
-        error: function(model, xhr, options) {
-          console.log('err');
-          //app.trigger('alert:error', 'Failed to Save', xhr.responseText);
-        },
         wait: true,
         patch: true,
         includeRelationships: true

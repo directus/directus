@@ -34,7 +34,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   input.time { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 100px; \
+                    width: 110px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \
@@ -85,8 +85,10 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
   });
 
-  Module.validate = function(value) {
-    //
+  Module.validate = function(value, options) {
+    if (options.schema.isRequired() && _.isEmpty(value)) {
+      return 'This field is required';
+    }
   };
 
   Module.list = function(options) {
