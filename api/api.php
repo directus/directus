@@ -5,7 +5,6 @@ $loader->add("Directus", dirname(__FILE__) . "/core/");
 
 // Non-autoload components
 require dirname(__FILE__) . '/config.php';
-require dirname(__FILE__) . '/core/db.php';
 require dirname(__FILE__) . '/core/functions.php';
 
 // Define directus environment
@@ -861,7 +860,6 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       'table_name' => $data['table_name'],
       'hidden' => (int)$data['hidden'],
       'single' => (int)$data['single'],
-      'default_status' => (isset($data['default_status']))?(int)$data['default_status']:1,
       'is_junction_table' => (int)$data['is_junction_table'],
       'footer' => (int)$data['footer'],
       'primary_column' => $data['primary_column']

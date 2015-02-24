@@ -53,7 +53,6 @@ textarea {
   margin-top: 40px;
 }
 .header .container div {
-  margin-top: 20px;
   font-size: 30px;
   color: #5b5b5b;
   -webkit-font-smoothing: antialiased !important;
@@ -107,7 +106,7 @@ textarea {
 .body .container input[type=text]:focus,
 .body .container input[type=email]:focus,
 .body .container input[type=password]:focus {
-  border: 1px solid #7cc74c;
+  border: 1px solid #b26cee;
 }
 .body .container input[type=text].bad,
 .body .container input[type=email].bad,
@@ -144,6 +143,11 @@ textarea {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+  -webkit-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  -ms-transition: all 200ms linear;
+  transition: all 200ms linear;
   width: 130px;
   height: 29px;
   background-color: #5B5B5B;
@@ -161,16 +165,16 @@ textarea {
   background-color: #4f4f4f;
 }
 .button.primary {
-  background-color: #7cc74c;
+  background-color: #b26cee;
 }
 .button.primary:hover {
-  background-color: #6cba3b;
+  background-color: #4CA6DE;
 }
 .button.primary.disabled {
   opacity: 0.6;
 }
 .button.primary.disabled:hover {
-  background-color: #7CC74C;
+  background-color: #b26cee;
   cursor: not-allowed;
 }
 .left {
@@ -195,7 +199,7 @@ textarea {
   font-weight: bold;
 }
 .label-success {
-  color: #7cc74c;
+  color: #b26cee;
   font-weight: bold;
 }
 .summary h3 {
@@ -224,10 +228,9 @@ textarea {
 @font-face {
   font-family: 'Directus';
   src: url('../assets/fonts/directus/directus-regular.eot');
-  src: url('../assets/fonts/directus/directus-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-   url('../assets/fonts/directus/directus-regular.woff') format('woff'), /* Modern Browsers */
-   url('../assets/fonts/directus/directus-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-   url('../assets/fonts/directus/directus-regular.svg#entypo') format('svg');/* IE9 Compat Modes */
+  src: url('../assets/fonts/directus/directus-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../assets/fonts/directus/directus-regular.woff') format('woff'), /* Modern Browsers */ url('../assets/fonts/directus/directus-regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../assets/fonts/directus/directus-regular.svg#entypo') format('svg');
+  
+  /* IE9 Compat Modes */
   /* Legacy iOS */
 }
 .icon {

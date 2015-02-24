@@ -111,7 +111,7 @@ if($step == 0) {
   ?>
   <div class="header">
     <div class="container">
-      <img src="directus-logo.gif">
+      <img src="directus-logo.png">
       <div>Install Directus</div>
     </div>
   </div>
@@ -146,7 +146,7 @@ if($step == 1) {
     ?>
     <div class="header">
         <div class="container">
-          <img src="directus-logo.gif">
+          <img src="directus-logo.png">
           <div>Missing Requirements</div>
         </div>
       </div>
@@ -161,7 +161,7 @@ if($step == 1) {
   ?>
   <div class="header">
     <div class="container">
-      <img src="directus-logo.gif">
+      <img src="directus-logo.png">
       <div>Project Info</div>
     </div>
   </div>
@@ -183,7 +183,7 @@ if($step == 2) {
 ?>
   <div class="header">
     <div class="container">
-      <img src="directus-logo.gif">
+      <img src="directus-logo.png">
       <div>Database Configuration</div>
     </div>
   </div>
@@ -202,7 +202,7 @@ if($step == 3) {
 ?>
   <div class="header">
     <div class="container">
-      <img src="directus-logo.gif">
+      <img src="directus-logo.png">
       <div>Confirmation</div>
     </div>
   </div>
@@ -333,8 +333,8 @@ if($step == 3) {
 
 if($step == 4) {
   require_once('query.php');
-  CreateTables($create_statements,$mysqli);
-  RunInserts($insert_statements, $mysqli);
+  $setupResponse = $main->execute(array('', 'db:setup'));
+  $migrateResponse = $main->execute(array('', 'db:migrate'));
   AddDefaultUser($_SESSION['email'], $_SESSION['password'], $mysqli);
   AddStorageAdapters($mysqli);
   if(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == "yes") {
