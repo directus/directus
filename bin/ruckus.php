@@ -10,14 +10,9 @@ use Ruckusing\FrameworkRunner as Ruckusing_Framework;
 
 require ROOTPATH . '/api/config.php';
 $config = require ROOTPATH . '/api/ruckusing.conf.php';
-$config['db']['development'] = array(
-  'type' => 'mysql',
-  'host' => DB_HOST,
-  'port' => 3306,
-  'database' => DB_NAME,
-  'user' => DB_USER,
-  'password' => DB_PASSWORD
-);
+
+$dbconfig = getDatabaseConfig();
+$config = array_merge($config, $dbconfig);
 
 $main = new Ruckusing_Framework($config, $_SERVER['argv']);
 $output = $main->execute();
