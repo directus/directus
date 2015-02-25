@@ -1,4 +1,10 @@
 <?php
+$mysqli = new mysqli($_SESSION['host_name'], $_SESSION['username'], $_SESSION['db_password'], $_SESSION['db_name']);
+if($mysqli && !file_exists('../api/vendor/autoload.php') || !file_exists('../api/ruckusing.conf.php')  || filesize('../api/ruckusing.conf.php') == 0) {
+  $_SESSION['step'] = 3;
+  header('refresh: 0');
+  exit;
+}
 
 $loader = require '../api/vendor/autoload.php';
 $loader->add("Ruckusing", "../api/vendor/ruckusing/ruckusing-migrations/lib/");
@@ -6,17 +12,18 @@ $loader->add("Ruckusing", "../api/vendor/ruckusing/ruckusing-migrations/lib/");
 use Ruckusing\Framework as Ruckusing_Framework;
 
 $config = require '../api/ruckusing.conf.php';
-$config['db']['development'] = array(
+
+$dbconfig = getDatabaseConfig(array(
   'type' => 'mysql',
   'host' => $_SESSION['host_name'],
   'port' => 3306,
-  'database' => $_SESSION['db_name'],
+  'name' => $_SESSION['db_name'],
   'user' => $_SESSION['username'],
-  'password' => $_SESSION['db_password']
-);
-
+  'pass' => $_SESSION['db_password'],
+  'directory' => 'directus'
+));
+$config = array_merge($config, $dbconfig);
 $main = new Ruckusing_Framework($config);
-$mysqli = new mysqli($_SESSION['host_name'], $_SESSION['username'], $_SESSION['db_password'], $_SESSION['db_name']);
 
 function AddDefaultUser($email, $password, $mysqli) {
   $salt = uniqid();
