@@ -49,7 +49,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         return $identifier;
     }
 
-    public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false) {
+    public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = array()) {
         $log = $this->logger();
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
@@ -126,7 +126,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
             }
         }
 
-        $draftRecord = $TableGateway->addOrUpdateToManyRelationships($schemaArray, $draftRecord, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
+        // parent
+        if ($activityEntryMode === self::ACTIVITY_ENTRY_MODE_PARENT) {
+            $parentData = array(
+                'id'            => $recordData['id'],
+                'table_name'    => $tableName
+            );
+        }
+
+        $draftRecord = $TableGateway->addOrUpdateToManyRelationships($schemaArray, $draftRecord, $nestedLogEntries, $nestedCollectionRelationshipsChanged, $parentData);
         $rowId = $draftRecord['id'];
 
         $columnNames = TableSchema::getAllNonAliasTableColumnNames($tableName);
@@ -157,11 +165,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     'action'        => $logEntryAction,
                     'user'          => $currentUser['id'],
                     'datetime'      => gmdate('Y-m-d H:i:s'),
+                    'parent_id'     => isset($parentData['id']) ? $parentData['id'] : null,
+                    'parent_table'  => isset($parentData['table_name']) ? $parentData['table_name'] : null,
                     'data'          => json_encode($fullRecordData),
                     'delta'         => json_encode($deltaRecordData),
                     'row_id'        => $rowId,
                     'identifier'    => null,
-                    'logged_ip'         =>$_SERVER['REMOTE_ADDR']
+                    'logged_ip'     => $_SERVER['REMOTE_ADDR'],
+                    'user_agent'    => $_SERVER['HTTP_USER_AGENT']
                 );
                 if($recordIsNew) {
                     /**
@@ -206,7 +217,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         'parent_changed'    => (int) $parentRecordChanged,
                         'identifier'        => $recordIdentifier,
                         'row_id'            => $rowId,
-                        'logged_ip'         =>$_SERVER['REMOTE_ADDR']
+                        'logged_ip'         => $_SERVER['REMOTE_ADDR'],
+                        'user_agent'        => $_SERVER['HTTP_USER_AGENT']
                     );
                     $parentLogEntry->populate($logData, false);
                     $parentLogEntry->save();
@@ -293,7 +305,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @param array $parentRow           The parent record being updated.
      * @return  array
      */
-    public function addOrUpdateToManyRelationships($schema, $parentRow, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false) {
+    public function addOrUpdateToManyRelationships($schema, $parentRow, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = array()) {
         $log = $this->logger();
 
         // Create foreign row and update local column with the data id
@@ -338,7 +350,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             if (!array_key_exists($foreignJoinColumn, $foreignRecord)) {
                                 $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
                             }
-                            $foreignRecord = $this->manageRecordUpdate($foreignTableName, $foreignRecord, self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged);
+                            $foreignRecord = $this->manageRecordUpdate($foreignTableName, $foreignRecord, self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
                         }
                         break;
 
@@ -393,7 +405,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             }
                             
                             /** Update foreign record */
-                            $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged);
+                            $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
                             // Junction/Association row
                             $junctionTableRecord = array(
                                 $junctionKeyLeft   => $parentRow['id'],
