@@ -6,7 +6,7 @@ class AddUseragentAndParentTableColumnToDirectusActivity extends Ruckusing_Migra
     public function up()
     {
         $this->add_column('directus_activity', 'user_agent', 'string', array('limit' => 256));
-        $this->add_column('directus_activity', 'parent_table', 'string', array('limit' => 100, 'after' => 'name'));
+        $this->add_column('directus_activity', 'parent_table', 'string', array('limit' => 100, 'after' => 'parent_id'));
     }//up()
 
     public function down()
