@@ -81,14 +81,7 @@ abstract class FrameworkAbstract implements FrameworkInterface
      *
      * @var boolean
      */
-    private $_showhelp = false;
-
-    /**
-     * To force to use this directory instead db name
-     *
-     * @var boolean
-     */
-    protected $_migrations_dirname = '';
+    protected $_showhelp = false;
 
     /**
      * Creates an instance of Ruckusing_Adapters_Base
@@ -175,8 +168,7 @@ abstract class FrameworkAbstract implements FrameworkInterface
             return $migration_dir . $this->_config['db'][$this->_env]['directory'];
         }
 
-        $migrations_dirnamme = isset($this->_migrations_dirname) ? $this->_migrations_dirname : $this->_config['db'][$this->_env]['database'];
-        return $migration_dir . $migrations_dirnamme;
+        return $migration_dir . $this->_config['db'][$this->_env]['database'];
     }
 
     /**

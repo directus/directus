@@ -1,66 +1,5 @@
 [
     {
-        "name": "ruckusing/ruckusing-migrations",
-        "version": "dev-welling",
-        "version_normalized": "dev-welling",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/WellingGuzman/ruckusing-migrations.git",
-            "reference": "7d40d9d413d58fa1b8345563c1e073e5ef80436f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/WellingGuzman/ruckusing-migrations/zipball/7d40d9d413d58fa1b8345563c1e073e5ef80436f",
-            "reference": "7d40d9d413d58fa1b8345563c1e073e5ef80436f",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "3.7.*"
-        },
-        "time": "2015-02-24 04:33:46",
-        "bin": [
-            "ruckus.php"
-        ],
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Ruckusing": "lib/",
-                "Task": "lib/"
-            }
-        },
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Cody Caughlan",
-                "email": "codycaughlan@gmail.com",
-                "homepage": "https://github.com/ruckus/ruckusing-migrations/wiki",
-                "role": "Project lead / Developer"
-            }
-        ],
-        "description": "Framework for generating and managing database migrations",
-        "homepage": "https://github.com/ruckus/ruckusing-migrations",
-        "keywords": [
-            "database",
-            "migrations",
-            "mysql",
-            "postgres",
-            "rake",
-            "ruckusing",
-            "task"
-        ],
-        "support": {
-            "email": "codycaughlan@gmail.com",
-            "issues": "https://github.com/ruckus/ruckusing-migrations/issues",
-            "source": "https://github.com/ruckus/ruckusing-migrations"
-        }
-    },
-    {
         "name": "slim/slim",
         "version": "2.2.0",
         "version_normalized": "2.2.0.0",
@@ -202,5 +141,66 @@
             "db",
             "zf2"
         ]
+    },
+    {
+        "name": "ruckusing/ruckusing-migrations",
+        "version": "dev-welling",
+        "version_normalized": "dev-welling",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/WellingGuzman/ruckusing-migrations.git",
+            "reference": "69624a78efaa73354fbad39bfdb2bb930ac197cc"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/WellingGuzman/ruckusing-migrations/zipball/69624a78efaa73354fbad39bfdb2bb930ac197cc",
+            "reference": "69624a78efaa73354fbad39bfdb2bb930ac197cc",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2015-02-25 16:20:48",
+        "bin": [
+            "ruckus.php"
+        ],
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Ruckusing": "lib/",
+                "Task": "lib/"
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Cody Caughlan",
+                "email": "codycaughlan@gmail.com",
+                "homepage": "https://github.com/ruckus/ruckusing-migrations/wiki",
+                "role": "Project lead / Developer"
+            }
+        ],
+        "description": "Framework for generating and managing database migrations",
+        "homepage": "https://github.com/ruckus/ruckusing-migrations",
+        "keywords": [
+            "database",
+            "migrations",
+            "mysql",
+            "postgres",
+            "rake",
+            "ruckusing",
+            "task"
+        ],
+        "support": {
+            "email": "codycaughlan@gmail.com",
+            "issues": "https://github.com/ruckus/ruckusing-migrations/issues",
+            "source": "https://github.com/ruckus/ruckusing-migrations"
+        }
     }
 ]

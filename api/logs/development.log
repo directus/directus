@@ -1,0 +1,35 @@
+Feb 25 17:52:25 [info] CREATE TABLE `directus_schema_migrations` (
+`version` varchar(255))  DEFAULT CHARSET=utf8;
+Feb 25 17:52:25 [info] CREATE UNIQUE INDEX `idx_directus_schema_migrations_version` ON `directus_schema_migrations`(`version`)
+Feb 25 14:16:32 [info] CREATE TABLE `directus_schema_migrations` (
+`version` varchar(255))  DEFAULT CHARSET=utf8;
+Feb 25 14:16:32 [info] CREATE UNIQUE INDEX `idx_directus_schema_migrations_version` ON `directus_schema_migrations`(`version`)
+Feb 25 22:40:11 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:40:11 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:40:11 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:40:11 [info] ALTER TABLE `directus_activity` ADD `user_agent` varchar(256)
+Feb 25 22:40:11 [info] INSERT INTO directus_schema_migrations (version) VALUES ('20150226033750')
+Feb 25 22:47:41 [info] CREATE TABLE `directus_schema_migrations` (
+`version` varchar(255))  DEFAULT CHARSET=utf8;
+Feb 25 22:47:41 [info] CREATE UNIQUE INDEX `idx_directus_schema_migrations_version` ON `directus_schema_migrations`(`version`)
+Feb 25 22:47:41 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:47:41 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:47:41 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:47:41 [info] CREATE TABLE `directus_groups` (
+`id` int(11) UNSIGNED auto_increment NOT NULL,
+`name` varchar(100),
+`description` varchar(500),
+`restrict_to_ip_whitelist` tinyint(1) DEFAULT 0 NOT NULL,
+ PRIMARY KEY (`id`)) Engine=InnoDB DEFAULT CHARSET=utf8 DEFAULT CHARSET=utf8;
+Feb 25 22:47:56 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:47:56 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:47:56 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:48:08 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:48:08 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:48:08 [info] SELECT version FROM directus_schema_migrations
+Feb 25 22:48:08 [info] CREATE TABLE `directus_groups` (
+`id` int(11) UNSIGNED auto_increment NOT NULL,
+`name` varchar(100),
+`description` varchar(500),
+`restrict_to_ip_whitelist` tinyint(1) DEFAULT 0 NOT NULL,
+ PRIMARY KEY (`id`)) Engine=InnoDB DEFAULT CHARSET=utf8 DEFAULT CHARSET=utf8;

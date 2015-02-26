@@ -30,21 +30,6 @@ use Ruckusing\Adapter\MySQL\MySQLBase;
 class Framework extends FrameworkAbstract
 {
     /**
-     * Creates an instance of Ruckusing_Adapters_Base
-     *
-     * @param array $config The current config
-     * @param array $argv   the supplied command line arguments
-     * @param Ruckusing_Util_Logger An optional custom logger
-     *
-     * @return Ruckusing_FrameworkRunner
-     */
-    public function __construct($config, $argv = array(), Ruckusing_Util_Logger $log = null)
-    {
-        $this->_migrations_dirname = isset($config['migrations_dirname']) ? $config['migrations_dirname'] : '';
-        parent::__construct($config, $argv, $log);
-    }
-
-    /**
      * Execute the current task
      */
     public function execute($argv = array())
