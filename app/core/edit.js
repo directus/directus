@@ -91,6 +91,7 @@ define(function(require, exports, module) {
 
         if (column.isRequired()) {
           view.$el.addClass('required');
+          column.set('required', true);
         }
 
         if (!isHidden) {
