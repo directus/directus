@@ -137,7 +137,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
           'user'              => $userid,
           'datetime'          => gmdate('Y-m-d H:i:s'),
           'parent_id'         => null,
-          'logged_ip'         =>$_SERVER['REMOTE_ADDR']
+          'logged_ip'         => $_SERVER['REMOTE_ADDR'],
+          'user_agent'        => $_SERVER['HTTP_USER_AGENT']
       );
 
       $insert = new Insert($this->getTable());
@@ -165,7 +166,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
           'delta'             => "[]",
           'identifier'        => $data['subject'],
           'row_id'            => $data['id'],
-          'logged_ip'         =>$_SERVER['REMOTE_ADDR']
+          'logged_ip'         => $_SERVER['REMOTE_ADDR'],
+          'user_agent'        => $_SERVER['HTTP_USER_AGENT']
       );
 
       $insert = new Insert($this->getTable());
