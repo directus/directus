@@ -22,7 +22,8 @@ define(function(require, exports, module) {
     },
 
     getColumns: function() {
-      var columns = (this.filters.columns_visible !== undefined) ? this.filters.columns_visible : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      var filters = this.getFilters();
+      var columns = (filters.columns_visible !== undefined) ? filters.columns_visible : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
       return columns;
     },
 
