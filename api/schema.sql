@@ -34,9 +34,11 @@ CREATE TABLE `directus_activity` (
   `data` text,
   `delta` text NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
+  `parent_table` varchar(100) DEFAULT NULL,
   `parent_changed` tinyint(1) NOT NULL COMMENT 'Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)',
   `datetime` datetime DEFAULT NULL,
   `logged_ip` varchar(20) DEFAULT NULL,
+  `user_agent` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains history of revisions';
 

@@ -2,9 +2,8 @@ require([
   "app",
   "handlebars",
   "core/UIManager",
-  'modules/users/UsersModel',
   'moment'
-], function(app, Handlebars, UIManager, UsersModel, moment) {
+], function(app, Handlebars, UIManager, moment) {
 
   "use strict";
 
@@ -119,6 +118,7 @@ require([
       avatar = user.getAvatar();
     } else {
       // empty user object
+      var UsersModel = require('modules/users/UsersModel');
       user = new UsersModel({}, {collection: {}});
       avatar = user.getDefaultAvatar();
     }
