@@ -419,6 +419,10 @@ var template = '<style type="text/css"> \
       wysihtml5.commands.createLink.triggerEvent = function() {
         that.textChanged(that);
       };
+
+      this.editor.on('aftercommand:composer', function(a, b, c) {
+        that.textChanged(that);
+      });
     }
   });
 
