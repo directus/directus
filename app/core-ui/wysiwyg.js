@@ -420,7 +420,7 @@ var template = '<style type="text/css"> \
         that.textChanged(that);
       };
 
-      this.editor.on('aftercommand:composer', function(a, b, c) {
+      this.editor.on('aftercommand:composer', function() {
         that.textChanged(that);
       });
     }
