@@ -219,7 +219,7 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
 
       if(!hasFullPerms)
       {
-        newPerms = 'add,bigedit,bigdelete,bigview';
+        newPerms = 'add,edit,bigedit,delete,bigdelete,view,bigview';
       }
 
       if(this.selectedState == 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
