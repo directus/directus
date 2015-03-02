@@ -9,7 +9,7 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTablesTableGateway;
 use Slim\Slim;
-use Slim\Extras\Log\DateTimeFileWriter;
+use Slim\Logger\DateTimeFileWriter;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -114,7 +114,7 @@ class Bootstrap {
 
     /**
      * Yield Slim logger
-     * @return \Slim\Extras\Log\DateTimeFileWriter
+     * @return \Slim\Logger\DateTimeFileWriter
      */
     private static function log() {
         return self::get('app')->getLog();
