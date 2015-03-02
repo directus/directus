@@ -149,23 +149,24 @@ function(app, Backbone, EntriesManager) {
         messageModel = messageModel[0];
         if(messageModel) {
           messageModel.set({unread: app.messages.unread > 0}, {silent: true});
-          this.render();
         }
       }
 
-      app.messages.on('sync change add', function(data) {
+      app.messages.on('sync change add', function() {
         var messageModel = this.collection.where({url: 'messages'});
-        if(messageModel) {
-          messageModel = messageModel[0];
-          if(messageModel) {
-            var currentMaxId = app.messages.maxId || 0;
-            var maxId = data.maxId || 0;
-            var hasUnread = (currentMaxId < maxId) ? true : false;
-            messageModel.set({unread: hasUnread}, {silent: true});
-            if(hasUnread) {
-              this.render();
-            }
-          }
+        if(!messageModel) {
+          return;
+        }
+
+        messageModel = messageModel[0];
+        var unread = app.messages.where({read: '0'});
+
+        if(unread.length>0 && messageModel.get('unread') === false) {
+          messageModel.set({unread: true}, {silent: true});
+          this.render();
+        } else if(unread.length===0 && messageModel.get('unread') === true) {
+          messageModel.set({unread: false}, {silent: true});
+          this.render();
         }
       }, this);
     },

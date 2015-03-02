@@ -179,7 +179,8 @@ require(["config"], function() {
       app.messages.on('sync', function(collection, object) {
         if (object !== null && object.rows) {
           object.rows.forEach(function(msg) {
-            noty({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + msg.responses.models[msg.responses.models.length-1].attributes.message + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
+            var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
+            noty({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + message_excerpt + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
               callback: {
                 onCloseClick: function() {
                   Backbone.history.navigate('/messages/' + msg.id, true);
