@@ -153,13 +153,17 @@ function(app, Backbone, EntriesManager) {
         }
       }
 
-      app.messages.on('sync change add', function() {
+      app.messages.on('sync change add', function(data) {
         var messageModel = this.collection.where({url: 'messages'});
         if(messageModel) {
           messageModel = messageModel[0];
           if(messageModel) {
             messageModel.set({unread: app.messages.unread > 0}, {silent: true});
-            this.render();
+            var currentMaxId = app.messages.maxId || 0;
+            var maxId = data.maxId || 0;
+            if(currentMaxId < maxId) {
+              this.render();
+            }
           }
         }
       }, this);
