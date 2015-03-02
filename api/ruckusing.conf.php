@@ -13,6 +13,7 @@ function getDatabaseConfig($config = array()) {
         'name' => defined('DB_NAME') ? DB_NAME : 'directus',
         'user' => defined('DB_USER') ? DB_USER : 'root',
         'pass' => defined('DB_PASSWORD') ? DB_PASSWORD : '',
+        'prefix' => defined('DB_PREFIX') ? DB_PREFIX : '',
         //'charset' => 'utf8',
         'directory' => 'directus',
         //'socket' => '/var/run/mysqld/mysqld.sock'
@@ -33,7 +34,8 @@ function getDatabaseConfig($config = array()) {
                 'password' => $db['pass'],
                 'directory' => $db['directory']
             )
-        )
+        ),
+        'prefix' => $db['prefix']
     );
 }
 
