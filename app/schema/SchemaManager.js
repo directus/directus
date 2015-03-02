@@ -175,6 +175,10 @@ define(function(require, exports, module) {
       return privileges[tableName];
     },
 
+    updatePrivileges: function(tableName, permissions) {
+      privileges[tableName].set('permissions', permissions);
+    },
+
     countTables: function() {
       return tableSchemas.tables.countVisible();
     },

@@ -13,7 +13,7 @@ define([
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, BasePageView, Widgets, SchemaManager) {
+function(app, Backbone, BasePageView, Widgets) {
 
   "use strict";
 
@@ -184,6 +184,7 @@ function(app, Backbone, BasePageView, Widgets, SchemaManager) {
           if(fancySave) {
             that.collection.add(that.model);
           }
+          app.schemaManager.updatePrivileges(model.get('table_name'), attributes.permissions);
         }});
       }
     },
