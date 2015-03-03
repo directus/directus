@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e43f726c37afe65bac686278385217be",
+    "hash": "5745c505bad9859fa523cc9a15a0d519",
     "packages": [
         {
             "name": "ruckusing/ruckusing-migrations",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WellingGuzman/ruckusing-migrations.git",
-                "reference": "7d40d9d413d58fa1b8345563c1e073e5ef80436f"
+                "reference": "dd9324e8722edb7858e7ad22aaba3f53fa919e24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WellingGuzman/ruckusing-migrations/zipball/7d40d9d413d58fa1b8345563c1e073e5ef80436f",
-                "reference": "7d40d9d413d58fa1b8345563c1e073e5ef80436f",
+                "url": "https://api.github.com/repos/WellingGuzman/ruckusing-migrations/zipball/dd9324e8722edb7858e7ad22aaba3f53fa919e24",
+                "reference": "dd9324e8722edb7858e7ad22aaba3f53fa919e24",
                 "shasum": ""
             },
             "require": {
@@ -63,32 +63,30 @@
                 "issues": "https://github.com/ruckus/ruckusing-migrations/issues",
                 "source": "https://github.com/ruckus/ruckusing-migrations"
             },
-            "time": "2015-02-24 04:33:46"
+            "time": "2015-03-02 01:30:33"
         },
         {
-            "name": "slim/extras",
+            "name": "slim/logger",
             "version": "dev-develop",
-            "target-dir": "Slim/Extras",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim-Extras.git",
-                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9"
+                "url": "https://github.com/codeguy/Slim-Logger.git",
+                "reference": "22b28f21189d52022d43f932da4076f18df61cbb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/5bceb3658f77a2b237f5b70ac02a0834fed871f9",
-                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9",
+                "url": "https://api.github.com/repos/codeguy/Slim-Logger/zipball/22b28f21189d52022d43f932da4076f18df61cbb",
+                "reference": "22b28f21189d52022d43f932da4076f18df61cbb",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
-                "slim/slim": ">=2.0.0"
+                "slim/slim": ">=2.4.0"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Twig_Extensions_": "Views/Extension/",
-                    "Slim\\Extras": "."
+                "psr-4": {
+                    "Slim\\Logger\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -97,41 +95,33 @@
             ],
             "authors": [
                 {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://www.silentworks.co.uk/"
-                },
-                {
                     "name": "Josh Lockhart",
                     "email": "info@joshlockhart.com",
                     "homepage": "http://www.joshlockhart.com/"
                 }
             ],
-            "description": "Extras package for the Slim Framework",
-            "homepage": "http://github.com/codeguy/Slim-Extras",
-            "keywords": [
-                "extensions",
-                "middleware",
-                "templating"
-            ],
-            "time": "2013-05-24 13:41:59"
+            "description": "Slim Framework logger",
+            "time": "2014-09-02 12:07:18"
         },
         {
             "name": "slim/slim",
-            "version": "2.2.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim.git",
-                "reference": "b8181de1112a1e2f565b40158b621c34ded38053"
+                "url": "https://github.com/slimphp/Slim.git",
+                "reference": "ff7d7148848fa4f45712984d7b91ac3cbced586b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim/zipball/b8181de1112a1e2f565b40158b621c34ded38053",
-                "reference": "b8181de1112a1e2f565b40158b621c34ded38053",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/ff7d7148848fa4f45712984d7b91ac3cbced586b",
+                "reference": "ff7d7148848fa4f45712984d7b91ac3cbced586b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-mcrypt": "Required for HTTP cookie encryption"
             },
             "type": "library",
             "autoload": {
@@ -157,7 +147,7 @@
                 "rest",
                 "router"
             ],
-            "time": "2012-12-13 02:15:50"
+            "time": "2013-11-29 20:33:36"
         },
         {
             "name": "zendframework/zend-db",
@@ -211,7 +201,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "slim/extras": 20,
+        "slim/logger": 20,
         "zendframework/zend-db": 20,
         "ruckusing/ruckusing-migrations": 20
     },
