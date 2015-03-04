@@ -24,6 +24,11 @@ function(app, Backbone, EntriesManager) {
       this.url = app.API_URL + 'bookmarks/';
       this.isCustomBookmarks = options.isCustomBookmarks || false;
     },
+    comparator: function(a, b) {
+      if(a.get('title') < b.get('title')) return -1;
+      if(a.get('title') > b.get('title')) return 1;
+      return 0;
+    },
     setActive: function(route) {
       //deactive all tabs
       var splitRoute = route.split('/');
@@ -137,6 +142,7 @@ function(app, Backbone, EntriesManager) {
       //For some reason need to do this and that....
       this.collection.on('add', function() {
         that.collection.setActive(Backbone.history.fragment);
+        that.collection.sort();
         that.render();
       });
 

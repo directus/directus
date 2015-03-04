@@ -123,6 +123,10 @@ define(function(require, exports, module) {
       }, this);
     },
 
+    registerColumns: function(namespace, tableName, columns) {
+      columnSchemas[namespace][tableName] = columns;
+    },
+
     // Registers the UI variables as schemas so they can be
     // used as forms in the table settings
     registerUISchemas: function(data) {
@@ -176,7 +180,10 @@ define(function(require, exports, module) {
     },
 
     updatePrivileges: function(tableName, permissions) {
-      privileges[tableName].set('permissions', permissions);
+      var tablePrivileges = this.getPrivileges(tableName);
+      if(tablePrivileges) {
+        tablePrivileges.set('permissions', permissions);
+      }
     },
 
     countTables: function() {
