@@ -297,6 +297,7 @@ class TableSchema {
             LEFT JOIN directus_tables DT ON (DT.table_name = T.TABLE_NAME)
             WHERE T.TABLE_SCHEMA = :schema AND T.TABLE_NAME = :table_name";
         $sth = $zendDb->query($sql);
+
         $parameterContainer = new ParameterContainer;
         $parameterContainer->offsetSet(':table_name', $tbl_name, ParameterContainer::TYPE_STRING);
         $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
@@ -314,6 +315,9 @@ class TableSchema {
         $info = array_merge($info, $relationalTableGateway->countActiveOld());
 
         $info['columns'] = self::getSchemaArray($tbl_name);
+        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $zendDb);
+        $currentUser = Auth::getUserInfo();
+        $info['preferences'] = $directusPreferencesTableGateway->fetchByUserAndTable($currentUser['id'], $tbl_name);
         return $info;
     }
 

@@ -763,24 +763,45 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     events: {
-      'click #addBtn': function() {
+      'click #addBtn': 'addTableConfirmation'
+    },
+
+    addTableConfirmation: function() {
+      app.router.openModal({type: 'prompt', text: 'Please enter the name of the table you would like to add', callback: _.bind(this.addTable, this)});
+    },
+
+    addTable: function(tableName) {
+      if(tableName && !app.schemaManager.getPrivileges(tableName)) {
+        // @TODO: make this save a table info rather than permissions.
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Please enter the name of the table you would like to add', callback: function(tableName) {
-          if(tableName && !app.schemaManager.getPrivileges(tableName)) {
-            var model = new Backbone.Model();
-            model.url = app.API_URL + 'privileges/1';
-            model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
-            model.save({}, {success: function(model){
-              var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
-              tableModel.fetch({
-                success: function() {
-                  that.collection.add(tableModel); 
-                }
-              });
-            }});
-          }
+        var model = new Backbone.Model();
+        model.url = app.API_URL + 'privileges/1';
+        model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
+        model.save({}, {success: function(model){
+          var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
+          tableModel.fetch({
+            success: function(model) {
+              that.registerTable(model);
+            }
+          });
         }});
       }
+    },
+
+    registerTable: function(tableModel) {
+      app.schemaManager.register('tables', [{schema: tableModel.toJSON()}]);
+      app.schemaManager.registerPrivileges([{
+        table_name: tableModel.get('table_name'),
+        permissions: "add,edit,bigedit,delete,bigdelete,alter,view,bigview",
+        group_id: app.getCurrentGroup()
+      }]);
+      app.schemaManager.registerPreferences([tableModel.preferences.toJSON()]);
+      app.router.bookmarks.add(new Backbone.Model({
+        icon_class: '',
+        title: app.capitalize(tableModel.get('table_name')),
+        url: 'tables/' + tableModel.get('table_name'),
+        section: 'table'
+      }));
     }
   });
 
