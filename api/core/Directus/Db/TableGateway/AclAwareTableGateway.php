@@ -327,8 +327,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return Bootstrap::get('app')->getLog();
     }
 
-    public function castFloatIfNumeric(&$value) {
-        $value = is_numeric($value) ? (float) $value : $value;
+    public function castFloatIfNumeric(&$value, $key) {
+        if ($key != 'table_name') {
+            $value = is_numeric($value) ? (float) $value : $value;
+        }
     }
 
     /**
