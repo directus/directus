@@ -28,8 +28,6 @@ function(app, Backbone) {
       rows = _.filter(rows, function(row) {
         var privileges = app.schemaManager.getPrivileges(row.table_name);
 
-        row.bookmarked = bookmarks.findWhere({'title':row.id}) !== undefined;
-
         // filter out tables without privileges
         if (typeof privileges === "undefined" || privileges === undefined || privileges === null) return false;
         if (privileges.get('permissions') === null) return false;
