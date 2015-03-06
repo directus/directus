@@ -18,6 +18,13 @@ function(app, Backbone) {
       }
     },
 
+    flashItem: function(entryID, bodyScrollTop) {
+      document.body.scrollTop = parseInt(bodyScrollTop, 10) || 0;
+      if(entryID) {
+        this.$el.find('tr[data-id="' + entryID + '"]').flashRow();
+      }
+    },
+
     serialize: function() {
       var rows = this.collection.getRows();
 
@@ -38,6 +45,10 @@ function(app, Backbone) {
         return _.contains(permissions, 'view') && privileges.get('unlisted') != 1;
       });
       return {rows: rows, columns: this.collection.getColumns()};
+    },
+
+    initialize: function() {
+      this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
     }
 
   });

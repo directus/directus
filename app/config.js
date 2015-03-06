@@ -50,6 +50,8 @@ require.config({
       deps: ["jquery", "noty"]
     },
 
+    "plugins/jquery.flashrow": ['jquery'],
+
     "plugins/backbone.layoutmanager": ["backbone"],
     "plugins/bootstrap-dropdown": ["jquery"],
     "plugins/typeahead": ["jquery"],

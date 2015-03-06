@@ -2985,6 +2985,12 @@ select:focus,
   color: #999999;
   font-weight: 400;
   font-size: 12px;
+  background-color: #FFFFFF;
+  -webkit-transition: background-color 600ms ease;
+  transition: background-color 600ms ease;
+}
+.table-striped tr.highlight {
+  background-color: #fffddd;
 }
 .table-striped tr:hover {
   cursor: pointer;
