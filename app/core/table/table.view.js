@@ -3,7 +3,8 @@ define([
   "backbone",
   "core/table/table.headview",
   "core/table/table.bodyview",
-  "core/table/table.footerview"
+  "core/table/table.footerview",
+  "plugins/jquery.flashrow"
 ],
 
 function(app, Backbone, TableHead, TableBody, TableFooter) {
@@ -32,7 +33,6 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       'click tbody td:not(.check):not(.status):not(.sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
-          $(document).scrollTop(0);
           this.collection.off();
           this.navigate(id);
         }
@@ -73,9 +73,22 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       }
     },
 
+    flashItemID: undefined,
+    bodyScrollTop: undefined,
+    flashItem: function(entryID, bodyScrollTop) {
+      this.flashItemID = entryID;
+      this.bodyScrollTop = parseInt(bodyScrollTop, 10) || 0;
+    },
+
     afterRender: function() {
       var now = new Date().getTime();
       //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
+      document.body.scrollTop = this.bodyScrollTop;
+      if(this.flashItemID) {
+        this.$el.find('tr[data-id="' + this.flashItemID + '"]').flashRow();
+      }
+      this.flashItemID = undefined;
+      this.bodyScrollTop = undefined;
     },
 
     initializeDrop: function() {
@@ -157,6 +170,8 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
         this.options.columns = this.getTableColumns();
         this.render();
       });
+
+      this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
 
       this.options.preferences = this.options.preferences || this.collection.preferences;
       this.options.structure = this.options.structure || this.collection.structure;

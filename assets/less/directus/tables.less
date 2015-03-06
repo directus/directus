@@ -180,6 +180,13 @@
     color: @darkGrey;
     font-weight: 400;
     font-size: 12px;
+    // background highlight
+    background-color: #FFFFFF;
+    -webkit-transition: background-color 600ms ease;
+    transition: background-color 600ms ease;
+    &.highlight {
+      background-color: @tableHoverYellow;
+    }
     &:hover {
       cursor: pointer;
       // Resolved transform3d bug in chrome (weird black borders on tr)

@@ -50,6 +50,82 @@ define(function(require, exports, module) {
       '*notFound':                      "notFound"
     },
 
+    route: function(route, name, callback) {
+      var router = this;
+      var args = _.toArray(arguments);
+      if (!callback) callback = this[name];
+
+      var cb = function() {
+        if (_.isFunction(this.before)) this.before.apply(router, args);
+        callback.apply(router, arguments);
+        if (_.isFunction(this.after)) this.after.apply(router, args);
+      };
+      return Backbone.Router.prototype.route.call(this, route, name, cb);
+    },
+
+    getRouteParameters: function(route, fragment) {
+      var r = this._routeToRegExp(route);
+      var args = this._extractParameters(r, fragment);
+      return args;
+    },
+
+    before: function(route, name) {
+      var fragment = Backbone.history.fragment;
+      if(fragment) {
+        var routeHistoryBase = fragment;
+        if (this.routeHistory.base === '' || routeHistoryBase.indexOf(this.routeHistory.base) !== 0) {
+          this.routeHistory.base = routeHistoryBase;
+          this.routeHistory.stack = [];
+          this.routeHistory.routes = {};
+        }
+
+        var currentRoute = _.last(this.routeHistory.stack);
+        var nextRoute = {route: name, path: fragment, args: this.getRouteParameters(route, fragment)};
+
+        // Exists
+        if(currentRoute && nextRoute) {
+          var current = currentRoute = this.routeHistory.routes[currentRoute.path];
+          var next = this.routeHistory.routes[nextRoute.path];
+
+          if(next) {
+            delete this.routeHistory.routes[currentRoute.path];
+            currentRoute = undefined;
+          }
+        }
+
+        if(currentRoute) {
+          currentRoute.scrollTop = parseInt(document.body.scrollTop, 10) || 0;
+          currentRoute.toRoute = nextRoute;
+        }
+        this.routeHistory.stack.push(nextRoute);
+        this.routeHistory.last = currentRoute ? currentRoute.path : fragment;
+        if(!this.routeHistory.routes[fragment]) {
+          this.routeHistory.routes[fragment] = nextRoute;
+        }
+      }
+
+      var mainSidebar = document.getElementById('mainSidebar');
+      if(mainSidebar) {
+        this.scrollTop = parseInt(mainSidebar.scrollTop, 10) || 0;
+      }
+    },
+
+    after: function(route, name) {
+      var currentRoute = this.routeHistory.routes[this.routeHistory.last];
+      if(currentRoute && currentRoute.path === Backbone.history.fragment) {
+        var itemID;
+        if(currentRoute.toRoute) {
+          itemID = _.last(_.filter(currentRoute.toRoute.args, function(v){ return v !== null}));
+        }
+        this.v.main.trigger.apply(this.v.main, ['flashItem', itemID, currentRoute.scrollTop]);
+      }
+
+      var mainSidebar = document.getElementById('mainSidebar');
+      if(mainSidebar) {
+        mainSidebar.scrollTop = this.scrollTop;
+      }
+    },
+
     go: function() {
       var array = _.isArray(arguments[0]) ? arguments[0] : _.toArray(arguments);
       return this.navigate(array.join("/"), true);
@@ -516,6 +592,7 @@ define(function(require, exports, module) {
         this.tabs.setActive(id);
       });
 
+      this.routeHistory = {stack: [], base: '', routes: []};
 
       this.bind("all", function(route, router){
         this.lastRoute = window.location.pathname.substring(app.root.length);

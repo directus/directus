@@ -677,6 +677,13 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       return _.contains(permissions, 'bigview');
     },
 
+    flashItem: function(entryID, bodyScrollTop) {
+      document.body.scrollTop = parseInt(bodyScrollTop, 10) || 0;
+      if(entryID) {
+        this.$el.find('tr[data-id="' + entryID + '"]').flashRow();
+      }
+    },
+
     beforeRender: function() {
       this.collection.each(function(model){
         if (!this.isValidModel(model)) {
@@ -691,6 +698,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         this.addRowView(model);
         this.moveRowView(model);
       });
+      this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
     }
   });
 
