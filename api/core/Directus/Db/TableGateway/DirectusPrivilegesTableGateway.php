@@ -34,12 +34,12 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         if($this->isCurrentUserAdmin()) {
             if(!array_key_exists('alter', $permissions)) {
                 $permissions['alter'] = count($permissions); // the id
-                $attributes['permissions'] = implode(',', array_flip($permissions));
+                $attributes['permissions'] = trim(implode(',', array_flip($permissions)), ',');
             }
         } else {
             if(array_key_exists('alter', $permissions)) {
                 unset($permissions['alter']);
-                $attributes['permissions'] = implode(',', array_flip($permissions));
+                $attributes['permissions'] = trim(implode(',', array_flip($permissions)), ',');
             }
         }
 
