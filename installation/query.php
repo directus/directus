@@ -20,17 +20,23 @@ $dbconfig = getDatabaseConfig(array(
   'name' => $_SESSION['db_name'],
   'user' => $_SESSION['username'],
   'pass' => $_SESSION['db_password'],
-  'directory' => 'directus'
+  'directory' => 'directus',
+  'prefix' => $_SESSION['db_prefix']
 ));
 $config = array_merge($config, $dbconfig);
 $main = new Ruckusing_Framework($config);
+
+function getTableName($table_name) {
+  return $_SESSION['db_prefix'] . $table_name;
+}
 
 function AddDefaultUser($email, $password, $mysqli) {
   $salt = uniqid();
   $composite = $salt . $password;
   $hash = sha1( $composite );
+  $tableName = getTableName("directus_users");
 
-  $insert = "INSERT INTO `directus_users` (`id`, `active`, `email`, `password`, `salt`, `group`)
+  $insert = "INSERT INTO `$tableName` (`id`, `active`, `email`, `password`, `salt`, `group`)
 VALUES
   (1, 1, '$email', '$hash', '$salt', 1);";
 
@@ -45,7 +51,8 @@ function AddStorageAdapters($mysqli)
   $tu = $_SESSION['thumb_url'];
   $tempd = $_SESSION['temp_dest'];
   $tempu = $_SESSION['temp_url'];
-  $insert = "INSERT INTO `directus_storage_adapters` (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
+  $tableName = getTableName("directus_storage_adapters");
+  $insert = "INSERT INTO `$tableName` (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
   VALUES
     (1, 'files', 'FileSystemAdapter', 'DEFAULT', 1, '$dd', '$du', NULL),
     (2, 'thumbnails', 'FileSystemAdapter', 'THUMBNAIL', 1, '$td', '$tu', NULL),
@@ -55,7 +62,8 @@ function AddStorageAdapters($mysqli)
 }
 
 function InstallSampleData($mysqli) {
-  $create = "CREATE TABLE `ui_gallery` (
+  $galleryTableName = getTableName("ui_gallery");
+  $create = "CREATE TABLE `$galleryTableName` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `active` tinyint(4) DEFAULT NULL,
   `wysiwyg` text,
@@ -84,7 +92,8 @@ function InstallSampleData($mysqli) {
 
   $mysqli->query($create);
 
-  $create = "CREATE TABLE `ui_users` (
+  $uiUsersTableName = getTableName("ui_users");
+  $create = "CREATE TABLE `$uiUsersTableName` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ui_id` int(4) DEFAULT NULL,
   `user_id` int(4) DEFAULT NULL,
@@ -92,7 +101,8 @@ function InstallSampleData($mysqli) {
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
   $mysqli->query($create);
 
-  $create = "CREATE TABLE `ui_files` (
+  $uiFilesTableName = getTableName("ui_files");
+  $create = "CREATE TABLE `$uiFilesTableName` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `file_id` int(4) DEFAULT NULL,
   `ui_id` int(4) DEFAULT NULL,
@@ -100,17 +110,18 @@ function InstallSampleData($mysqli) {
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
   $mysqli->query($create);
 
-  $insert = "INSERT INTO `ui_users` (`ui_id`, `user_id`)
+  $insert = "INSERT INTO `$uiUsersTableName` (`ui_id`, `user_id`)
 VALUES
   (1, 1);";
   $mysqli->query($insert);
 
-  $insert = "INSERT INTO `ui_gallery` (`id`, `active`, `wysiwyg`, `checkbox`, `color`, `date`, `datetime`, `enum`, `multiselect`, `numeric`, `password`, `salt`, `radiobuttons`, `select`, `slider`, `slug`, `system`, `tags`, `textarea`, `textinput`, `time`, `single_file`, `user`)
+  $insert = "INSERT INTO `$galleryTableName` (`id`, `active`, `wysiwyg`, `checkbox`, `color`, `date`, `datetime`, `enum`, `multiselect`, `numeric`, `password`, `salt`, `radiobuttons`, `select`, `slider`, `slug`, `system`, `tags`, `textarea`, `textinput`, `time`, `single_file`, `user`)
 VALUES
   (1, 1, '<u>Test</u>', 1, '#27cd2b', '2014-07-10', '2014-07-10 11:53:00', 'ENTRY 2', 'Option 1,Option 2', 634, '74d26f2ab730ac48ee8a9c8f494508a542a6273e', '537d2d1852208', 'Option 2', 'Select 2', 46, 'test-field', 2, 'tag1,tag 2,tag 3', 'Test Text Area', 'test field', '11:58:00', NULL, 1);";
   $mysqli->query($insert);
 
-  $insert = "INSERT INTO `directus_columns` ( `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
+  $columnsTableName = getTableName("directus_columns");
+  $insert = "INSERT INTO `$columnsTableName` ( `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
 VALUES
   ('ui_gallery', 'id', NULL, 'numeric', 0, 0, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, 1, ''),
   ('ui_gallery', 'active', NULL, 'checkbox', 0, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 2, ''),
@@ -140,14 +151,16 @@ VALUES
   ('ui_gallery', 'files', 'MANYTOMANY', 'multiple_files', 0, 0, 0, 0, 1, 'MANYTOMANY', 'directus_files', 'ui_files', 'ui_id', 'file_id', 9999, '');";
   $mysqli->query($insert);
 
-  $insert = "INSERT INTO `directus_privileges` (`table_name`, `permissions`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `unlisted`)
+  $directusPrivilegesTableName = getTableName("directus_privileges");
+  $insert = "INSERT INTO `$directusPrivilegesTableName` (`table_name`, `permissions`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `unlisted`)
 VALUES
   ('ui_gallery', 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', 1, NULL, NULL, NULL),
   ('ui_users', 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', 1, NULL, NULL, NULL),
   ('ui_files', 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', 1, NULL, NULL, NULL);";
   $mysqli->query($insert);
 
-  $insert = "INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
+  $directusUITableName = getTableName("directus_ui");
+  $insert = "INSERT INTO `$directusUITableName` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
 VALUES
   ('ui_gallery', 'radiobuttons', 'radiobuttons', 'options', 'Option 1,Option 2,Option 3'),
   ('ui_gallery', 'multiselect', 'multi_select', 'type', 'select_list'),
