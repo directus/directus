@@ -6,8 +6,8 @@
     }
   ],
   "require": {
-    "slim/slim": "2.4.0",
-    "slim/logger": "dev-develop",
+    "slim/slim": "2.3.2",
+    "slim/extras": "dev-develop",
     "zendframework/zend-db": "2.1.*@dev",
     "ruckusing/ruckusing-migrations": "dev-welling"
   },
