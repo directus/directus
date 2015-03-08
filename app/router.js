@@ -63,6 +63,11 @@ define(function(require, exports, module) {
       return Backbone.Router.prototype.route.call(this, route, name, cb);
     },
 
+    navigateTo: function(route, alertMessage) {
+      this.showAlertNextRoute(alertMessage);
+      this.navigate(route, {trigger: true});
+    },
+
     getRouteParameters: function(route, fragment) {
       var r = this._routeToRegExp(route);
       var args = this._extractParameters(r, fragment);
@@ -142,6 +147,17 @@ define(function(require, exports, module) {
       }
     },
 
+    showAlertNextRoute: function(message) {
+      if (!_.isString(message)) {
+        return;
+      }
+
+      this.pendingAlert = {
+        message: message,
+        type: 'alert'
+      };
+    },
+
     hideAlert: function() {
       if (this.alert) {
         this.alert.remove();
@@ -150,9 +166,7 @@ define(function(require, exports, module) {
     },
 
     notFound: function() {
-      this.setTitle(app.settings.get('global').get('site_name') + ' | 404');
-      this.v.main.setView('#content', new Backbone.Layout({template: Handlebars.compile('<h1>Not found</h1>')}));
-      this.v.main.render();
+      this.navigateTo('/tables', 'You do not have permission to view that page or it doesn\'t exist');
     },
 
     openModal: function(options, callback) {
@@ -518,6 +532,8 @@ define(function(require, exports, module) {
     initialize: function(options) {
 
       this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
+      // @todo: Allow a queue of pending alerts, maybe?
+      this.pendingAlert = {};
 
       //Fade out and remove splash
       $('body').addClass('initial-load');
@@ -593,6 +609,13 @@ define(function(require, exports, module) {
       });
 
       this.routeHistory = {stack: [], base: '', routes: []};
+
+      this.bind('route', function(route, router) {
+        if(!_.isEmpty(this.pendingAlert)) {
+          this.openModal({type: this.pendingAlert.type, text: this.pendingAlert.message});
+          this.pendingAlert = {};
+        }
+      }, this);
 
       this.bind("all", function(route, router){
         this.lastRoute = window.location.pathname.substring(app.root.length);
