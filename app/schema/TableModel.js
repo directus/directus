@@ -20,7 +20,7 @@ define(function(require, exports, module) {
           var preference = data.preferences;
           this.preferences = new PreferenceModel(data.preferences, {url: app.API_URL + 'tables/' + preference.table_name + '/preferences'})
         } else {
-          this.preferences.reset(data.preferences, {parse: true});
+          this.preferences.set(data.preferences);
         }
       }
 
