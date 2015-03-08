@@ -4,7 +4,7 @@
   $db_name = $_SESSION['db_name'];
   $db_user = $_SESSION['username'];
   $db_password = $_SESSION['db_password'];
-  $db_prefix = $_SESSION['db_prefix'];
+  $db_prefix = '';//$_SESSION['db_prefix'];
   $dirPath = $_SESSION['directus_path'];
 
 
