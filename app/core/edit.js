@@ -206,7 +206,7 @@ define(function(require, exports, module) {
         });
       }, this);
 
-      this.model.on('sync', function(e) {
+      this.model.once('sync', function(e) {
         this.model.changed = {};
         this.render();
       }, this);
