@@ -27,8 +27,10 @@ use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableSchema;
 
 // No access, forward to login page
+unset($_SESSION['_directus_login_redirect']);
 if (!AuthProvider::loggedIn()) {
-    header('Location: ' . DIRECTUS_PATH . 'login.php');
+    $redirect = $_SESSION['_directus_login_redirect'] = urlencode($_SERVER['REQUEST_URI']);
+    header('Location: ' . DIRECTUS_PATH . 'login.php?redirect=' . $redirect );
     die();
 }
 
