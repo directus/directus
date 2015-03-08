@@ -150,13 +150,22 @@ $(function(){
       success: function(data, textStatus, jqXHR) {
 
         // Default path
-        var path = 'users';
+        var defaultPath = 'users';
+        <?php
+          if (isset($_SESSION['_directus_login_redirect'])) {
+            $redirectPath = $_SESSION['_directus_login_redirect'];
+        ?>
+        var redirectPath = '<?php echo trim(urldecode($redirectPath), '/'); ?>';
+        <?php
+        }
+        ?>
 
         // Silent error if the path is not avalible
         try {
           var lastPage = JSON.parse(data.last_page);
-          path = lastPage.path;
+          path = redirectPath || lastPage.path || defaultPath;
         } catch(e) {
+          path = defaultPath;
           console.warn('Parsing path object failed', data.last_page);
         }
 
