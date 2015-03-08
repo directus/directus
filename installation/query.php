@@ -21,13 +21,14 @@ $dbconfig = getDatabaseConfig(array(
   'user' => $_SESSION['username'],
   'pass' => $_SESSION['db_password'],
   'directory' => 'directus',
-  'prefix' => $_SESSION['db_prefix']
+  'prefix' => '', //$_SESSION['db_prefix']
 ));
 $config = array_merge($config, $dbconfig);
 $main = new Ruckusing_Framework($config);
 
 function getTableName($table_name) {
-  return $_SESSION['db_prefix'] . $table_name;
+  $prefix = ''; //$_SESSION['db_prefix'];
+  return $prefix . $table_name;
 }
 
 function AddDefaultUser($email, $password, $mysqli) {
