@@ -157,6 +157,11 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
             $privileges[] = $item;
         }
 
+        // sort ascending
+        usort($privileges, function($a, $b) {
+            return strcmp($a['table_name'], $b['table_name']);
+        });
+
         return $privileges;
     }
 
