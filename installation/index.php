@@ -46,7 +46,7 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
   $_SESSION['username'] = $_POST['username'];
   $_SESSION['db_password'] = $_POST['password'];
   $_SESSION['db_name'] = $_POST['db_name'];
-  $_SESSION['db_prefix'] = $_POST['db_prefix'];
+  $_SESSION['db_prefix'] = '';//$_POST['db_prefix'];
   if(isset($_POST['install_sample'])) {
     $_SESSION['install_sample'] = $_POST['install_sample'];
   } else {
@@ -193,7 +193,6 @@ if($step == 2) {
         Username<input type="text" class="<?php if($code == 1045){echo "error";}?>" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
         Password<input type="password" class="<?php if($code == 1045){echo "error";}?>" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
         Database Name<input type="text" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
-        Database Prefix (optional)<input type="text" name="db_prefix" value="<?php echo(isset($_SESSION['db_prefix']) ? $_SESSION['db_prefix'] : ''); ?>"><br>
         <input type="checkbox" name="install_sample" value="yes" <?php echo(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == 'yes' ? 'checked' : ''); ?>>Install Sample Data<br>
 <?php
 }
@@ -248,10 +247,6 @@ if($step == 3) {
           <tr>
             <td class="item">Database Name</td>
             <td class="result"><?php echo $_SESSION['db_name'];?></td>
-          </tr>
-          <tr>
-            <td class="item">Database Prefix</td>
-            <td class="result"><?php echo(isset($_SESSION['db_prefix']) && !empty($_SESSION['db_prefix']) ? $_SESSION['db_prefix'] : '--');?></td>
           </tr>
         </tbody>
       </table>
@@ -385,10 +380,6 @@ if($step == 4) {
           <tr>
             <td class="item">Database Name</td>
             <td class="result">'.$_SESSION['db_name'].'</td>
-          </tr>
-          <tr>
-            <td class="item">Database Prefix</td>
-            <td class="result">'.$_SESSION['db_prefix'].'</td>
           </tr>
         </tbody>
       </table>
