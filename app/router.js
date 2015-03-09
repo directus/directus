@@ -73,7 +73,7 @@ define(function(require, exports, module) {
       var args = this._extractParameters(r, fragment);
       return args;
     },
-
+    // @todo: refactoring
     before: function(route, name) {
       var fragment = Backbone.history.fragment;
       if(fragment) {
@@ -117,13 +117,15 @@ define(function(require, exports, module) {
 
     after: function(route, name) {
       var currentRoute = this.routeHistory.routes[this.routeHistory.last];
+      var itemID, scrollTop = 0;
       if(currentRoute && currentRoute.path === Backbone.history.fragment) {
-        var itemID;
         if(currentRoute.toRoute) {
           itemID = _.last(_.filter(currentRoute.toRoute.args, function(v){ return v !== null}));
         }
-        this.v.main.trigger.apply(this.v.main, ['flashItem', itemID, currentRoute.scrollTop]);
+        scrollTop = currentRoute.scrollTop;
       }
+
+      this.v.main.trigger.apply(this.v.main, ['flashItem', itemID, scrollTop]);
 
       var mainSidebar = document.getElementById('mainSidebar');
       if(mainSidebar) {
@@ -341,7 +343,7 @@ define(function(require, exports, module) {
       }
 
       this.v.main.setView('#content', view);
-      this.v.main.render();
+      view.render();
     },
 
     activity: function() {
