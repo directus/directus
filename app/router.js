@@ -343,7 +343,6 @@ define(function(require, exports, module) {
       }
 
       this.v.main.setView('#content', view);
-      var v = this.v.main.getView('#content');
       view.render();
     },
 
