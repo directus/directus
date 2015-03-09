@@ -211,7 +211,8 @@ function(app, Backbone, BasePageView, Widgets) {
       //@todo: cleaner way to do this?
       var hasFullPerms = true;
       ['add','bigedit','bigdelete','bigview'].forEach(function (perm) {
-        if(model.get('permissions').indexOf(perm) == -1) {
+        var permissions = model.get('permissions');
+        if(!permissions || (permissions && permissions.indexOf(perm) == -1)) {
           hasFullPerms = false;
         }
       });
