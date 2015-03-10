@@ -119,6 +119,11 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
       this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8, toolbar: true});
       this.headerOptions.route.title = this.collection.table.id;
+      if(!this.collection.options) {
+        this.collection.options = {};
+      }
+
+      this.collection.options['sort'] = false;
 
       this.collection.on('select', function() {
 

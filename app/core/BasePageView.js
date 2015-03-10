@@ -55,7 +55,8 @@ function(app, Backbone, BaseHeaderView) {
     //Only fetch if we are not waiting on any widgets to get preference data
     tryFetch: function() {
       if(this.fetchHolding.length === 0) {
-        this.collection.fetch();
+        var options = this.collection.options ? this.collection.options : {};
+        this.collection.fetch(options);
       }
     },
 

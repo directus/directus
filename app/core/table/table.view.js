@@ -84,11 +84,13 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       var now = new Date().getTime();
       //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
       document.body.scrollTop = this.bodyScrollTop;
-      if(this.flashItemID) {
-        this.$el.find('tr[data-id="' + this.flashItemID + '"]').flashRow();
-      }
-      this.flashItemID = undefined;
       this.bodyScrollTop = undefined;
+      app.on('load', function() {
+        if(this.flashItemID) {
+          this.$el.find('tr[data-id="' + this.flashItemID + '"]').flashRow();
+        }
+        this.flashItemID = undefined;
+      }, this);
     },
 
     initializeDrop: function() {
