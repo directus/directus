@@ -10,10 +10,11 @@ define([
   'app',
   'backbone',
   'core/BasePageView',
-  'core/widgets/widgets'
+  'core/widgets/widgets',
+  'schema/TableModel'
 ],
 
-function(app, Backbone, BasePageView, Widgets) {
+function(app, Backbone, BasePageView, Widgets, TableModel) {
 
   "use strict";
 
@@ -242,11 +243,35 @@ function(app, Backbone, BasePageView, Widgets) {
         model.collection = oldModel.collection;
         fancySave = true;
       }
+
+      var isNewTable = model.get('permissions') ? false : true;
       model.set({permissions: newPerms});
       var that = this;
-      model.save({activeState: this.selectedState}, {success: function(res) {
+      model.save({activeState: this.selectedState}, {success: function(model) {
         if(fancySave) {
           that.collection.add(that.model);
+        }
+
+        if(isNewTable) {
+          // @todo: make this a method is being used in add table as well.
+          // DRY for later
+          var tableName = model.get('table_name');
+          var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
+
+          app.schemaManager.register('tables', [{schema: tableModel.toJSON()}]);
+          app.schemaManager.registerPrivileges([{
+            table_name: tableModel.get('table_name'),
+            permissions: model.get('permissions'),
+            group_id: model.get('group_id') || 1
+          }]);
+          var preferences = tableModel.preferences ? tableModel.preferences.toJSON() : {};
+          app.schemaManager.registerPreferences([preferences]);
+          app.router.bookmarks.add(new Backbone.Model({
+            icon_class: '',
+            title: app.capitalize(tableModel.get('table_name')),
+            url: 'tables/' + tableModel.get('table_name'),
+            section: 'table'
+          }));
         }
       }});
     },
