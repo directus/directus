@@ -58,12 +58,12 @@ function(app, Backbone) {
     },
 
     comparatorValue: function(a, b) {
-      var cmp = 0;
+      var cmp;
 
       if (typeof a === "string" && typeof b === "string") {
         cmp = a.localeCompare(b);
       } else {
-        cmp = (a > b) ? 1 : -1;
+        cmp = a - b;
       }
 
       if (this.getFilter('sort_order')==='DESC') cmp*=-1;
@@ -78,12 +78,12 @@ function(app, Backbone) {
 
       // @todo find a better way to check is a entriesjunctioncollection
       if(rowA.collection.nestedCollection && ['sort', 'id'].indexOf(column) < 0) {
-        valueA = rowA.get('data').get(column);
-        valueB = rowB.get('data').get(column);
-      } else {
-        valueA = rowA.get(column);
-        valueB = rowB.get(column);
+        rowA = rowA.get('data');
+        rowB = rowB.get('data');
       }
+
+      valueA = UIManager.getList(rowA, column) || '';
+      valueB = UIManager.getList(rowB, column) || '';
 
       var options, ui, type, schema;
 
