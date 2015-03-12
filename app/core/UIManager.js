@@ -177,9 +177,18 @@ define(function(require, exports, module) {
     // returns a string containing the table view
     getList: function(model, attr) {
       var collection = model.collection;
-      var structure = model.getStructure();
-      var schema = structure.get(attr);
-      var UI = this._getModelUI(model, attr, schema);
+      // @TODO: we need to make this getStructure available to our base model
+      var structure;
+      if (typeof model.getStructure === 'function') {
+        structure = model.getStructure();
+      } else {
+        structure = this.structure || undefined;
+      }
+      var UI;
+      if (structure !== undefined) {
+        var schema = structure.get(attr);
+        UI = schema ? this._getModelUI(model, attr, schema) : undefined;
+      }
 
       // If there is no UI, return just text
       if (UI === undefined) {
