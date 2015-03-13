@@ -32,3 +32,10 @@ And constructed with the following guidelines:
 * Bug fixes and misc changes bump the patch
 
 For more information on semantic versioning, please visit [http://semver.org/](http://semver.org/).
+
+## Screenshots ##
+
+![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-item-listing.png)
+
+
+![Directus Edit Page](http://getdirectus.com/assets/imgs/ss-full-item-edit.png)
