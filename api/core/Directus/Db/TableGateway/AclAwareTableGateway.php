@@ -564,6 +564,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $canHardDelete = true;
           }
         }
+
+        // @todo: clean way
+        if ($deleteTable === 'directus_bookmarks') {
+          $canBigHardDelete = true;
+        }
         
         /**
          * ACL Enforcement
