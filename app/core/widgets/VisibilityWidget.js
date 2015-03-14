@@ -9,9 +9,9 @@ function(app, Backbone, PreferenceModel) {
 
   return Backbone.Layout.extend({
     template: Handlebars.compile('\
-    <div class="left snapshotOption" id="saveSnapshotBtn"><span class="icon icon-camera"></span></div> \
+    <div class="left snapshotOption" id="saveSnapshotBtn" title="Save Page as Bookmark"><span class="icon icon-bookmark"></span></div> \
     {{#if hasActiveColumn}} \
-    <div class="simple-select dark-grey-color simple-gray left"> \
+    <div class="simple-select dark-grey-color simple-gray left" title="Choose which items are displayed"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status" class="change-visibility"> \
         <optgroup label="Status"> \
@@ -54,7 +54,7 @@ function(app, Backbone, PreferenceModel) {
 
     saveSnapshot: function() {
       var that = this;
-      app.router.openModal({type: 'prompt', text: 'Please enter a name for your Snapshot', callback: function(name ) {
+      app.router.openModal({type: 'prompt', text: 'Please enter a name for your Bookmark', callback: function(name ) {
         if(name === null || name === "") {
           alert('Please Fill In a Valid Name');
           return;
