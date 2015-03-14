@@ -807,7 +807,10 @@ $app->map("/$v/bookmarks(/:id)/?", function($id = null) use ($params, $app, $Zen
       $id = $bookmarks->insertBookmark($requestPayload);
       break;
     case "DELETE":
-      echo $bookmarks->delete(array('id' => $id));
+      $bookmark = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
+      if($bookmark) {
+        echo $bookmarks->delete(array('id' => $id));
+      }
       return;
   }
   $jsonResponse = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
