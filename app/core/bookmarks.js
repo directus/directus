@@ -96,7 +96,7 @@ function(app, Backbone, EntriesManager) {
           }
           if(title && table) {
             var that = this;
-            app.router.openModal({type: 'confirm', text: 'Are you sure you wish to delete the snapshot: ' + title, callback: function() {
+            app.router.openModal({type: 'confirm', text: 'Delete the Bookmark: "' + title + '"?', callback: function() {
               var bookmarkModel = that.collection.findWhere({title: title});
               if (bookmarkModel) {
                 bookmarkModel.destroy();
