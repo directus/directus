@@ -2818,10 +2818,10 @@ select:focus,
 }
 .table-striped thead tr {
   -webkit-font-smoothing: antialiased;
-  background-color: #f7f7f7;
+  background-color: #333;
 }
 .table-striped thead tr:hover {
-  background-color: #f2f2f2;
+  background-color: #585858;
   cursor: default;
 }
 .table-striped thead tr th {
@@ -2888,7 +2888,6 @@ select:focus,
 }
 .table-striped thead:hover #set-visible-columns {
   display: block;
-  background-color: #f4f4f4;
   padding-left: 10px;
 }
 .table-striped tbody {
@@ -2994,6 +2993,7 @@ select:focus,
 }
 .table-striped tr:hover {
   cursor: pointer;
+  background-color: #fffddd;
 }
 .table-striped tr:hover td {
   background-color: #fffddd;
