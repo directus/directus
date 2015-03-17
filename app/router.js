@@ -45,8 +45,6 @@ define(function(require, exports, module) {
       "messages":                       "messages",
       "messages/new":                   "newMessage",
       "messages/:id":                   "message",
-      "cashregister":                   "cashregister",
-      "booker":                         "booker",
       '*notFound':                      "notFound"
     },
 
