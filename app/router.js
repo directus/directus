@@ -230,7 +230,6 @@ define(function(require, exports, module) {
 
       this.navigate('/tables'); //If going to / rewrite to tables
       this.setTitle(app.settings.get('global').get('site_name') + ' | Tables');
-      this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
     },
@@ -293,7 +292,6 @@ define(function(require, exports, module) {
 
       // Cache collection for next route
       this.currentCollection = collection;
-      this.tabs.setActive('tables');
       this.setTitle(app.settings.get('global').get('site_name') + ' | ' + app.capitalize(tableName));
 
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
@@ -305,7 +303,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Entry');
-      this.tabs.setActive('tables');
 
       var isBatchEdit = (typeof id === 'string') && id.indexOf(',') !== -1,
           collection,
@@ -349,7 +346,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Activity');
-      this.tabs.setActive('activity');
       this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
       this.v.main.render();
     },
@@ -375,7 +371,6 @@ define(function(require, exports, module) {
       }
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Files');
-      this.tabs.setActive('files');
       this.v.main.setView('#content', new Files.Views.List({collection: app.files}));
       this.v.main.render();
     },
@@ -384,7 +379,6 @@ define(function(require, exports, module) {
       var model;
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | File');
-      this.tabs.setActive('files');
 
       if (id === "new") {
         model = new app.files.model({}, {collection: app.files});
@@ -417,7 +411,6 @@ define(function(require, exports, module) {
       }
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
-      this.tabs.setActive('users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
     },
@@ -432,7 +425,6 @@ define(function(require, exports, module) {
 
       var model;
       this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
-      this.tabs.setActive('users');
 
       if (id === "new") {
         model = new app.users.model({}, {collection: app.users, parse:true});
@@ -448,7 +440,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
-      this.tabs.setActive('settings');
 
       switch(name) {
         case 'tables':
@@ -482,7 +473,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
-      this.tabs.setActive('settings');
 
       this.v.main.setView('#content', new Settings.Table({model: SchemaManager.getTable(tableName)}));
 
@@ -494,14 +484,12 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings - Permissions');
-      this.tabs.setActive('settings');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
       this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
       this.v.main.render();
     },
 
     messages: function(name) {
-      this.tabs.setActive("messages");
       this.setTitle(app.settings.get('global').get('site_name') + ' | Messages')
       this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
       this.v.main.render();
@@ -621,10 +609,6 @@ define(function(require, exports, module) {
 
       this.v.messages = new Backbone.Layout({
         el: "#messages"
-      });
-
-      this.on('subroute', function(id, router) {
-        this.tabs.setActive(id);
       });
 
       this.routeHistory = {stack: [], base: '', routes: []};
