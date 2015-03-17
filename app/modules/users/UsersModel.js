@@ -1,10 +1,11 @@
 define([
-  "app",
-  "backbone",
-  "core/entries/EntriesModel"
+  'app',
+  'backbone',
+  'core/entries/EntriesModel',
+  'moment'
 ],
 
-function(app, Backbone, EntriesModel) {
+function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
