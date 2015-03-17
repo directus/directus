@@ -1,10 +1,11 @@
 define([
   'app',
   'backbone',
-  'core/directus'
+  'core/directus',
+  'moment'
 ],
 
-function(app, Backbone, Directus) {
+function(app, Backbone, Directus, moment) {
 
   "use strict";
 
