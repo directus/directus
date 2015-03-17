@@ -531,6 +531,25 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
+    onRoute: function(route) {
+      // try to set the current active nav
+      var currentPath = Backbone.history.fragment;
+      var bookmarksView = this.v.main.getView('#sidebar').sidebar.getView('#mainSidebar');
+      bookmarksView.setActive(currentPath);
+      this.lastRoute = currentPath;
+
+      // update user last route
+      var currentUser = app.users.getCurrentUser();
+      var history = _.clone(Backbone.history);
+      currentUser.updateLastRoute(route, history);
+
+      // check for a pending alert to execute
+      if(!_.isEmpty(this.pendingAlert)) {
+        this.openModal({type: this.pendingAlert.type, text: this.pendingAlert.message});
+        this.pendingAlert = {};
+      }
+    },
+
     initialize: function(options) {
 
       this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
@@ -611,64 +630,7 @@ define(function(require, exports, module) {
       });
 
       this.routeHistory = {stack: [], base: '', routes: []};
-
-      this.bind('route', function(route, router) {
-        if(!_.isEmpty(this.pendingAlert)) {
-          this.openModal({type: this.pendingAlert.type, text: this.pendingAlert.message});
-          this.pendingAlert = {};
-        }
-      }, this);
-
-      this.bind("all", function(route, router){
-        this.lastRoute = window.location.pathname.substring(app.root.length);
-        var last_page;
-        var routeTokens = route.split(':');
-        if(routeTokens.length > 1) {
-          // Report the "last page" data to the API
-          // @fixes https://github.com/RNGR/directus6/issues/199
-
-          var user = app.users.getCurrentUser();
-
-          var currentPath = window.location.pathname.substring(app.root.length);
-          if(currentPath.length) {
-            bookmarks.setActive(currentPath);
-
-            last_page = JSON.stringify({
-              'path' : currentPath,
-              'route' : route.substring(6),
-              'param' : router
-            });
-
-            //If we went to logout route dont save.
-            if(currentPath != "logout") {
-              user.save({'last_page': last_page, 'last_access': moment().format('YYYY-MM-DD HH:mm')}, {
-                patch: true,
-                global: false,
-                silent: true,
-                wait: true,
-                validate: false,
-                url: user.url() + "?skip_activity_log=1"
-              });
-            }
-
-
-          } else {
-            // If theere's no path in the location (i.e. the user just logged in),
-            // take them to their last visited page, defaulting to "tables".
-            /*var authenticatedUser = app.getCurrentUser();
-            user = app.users.get(authenticatedUser.id);
-            last_page = $.parseJSON(user.get('last_page'));
-
-            if(_.isEmpty(last_page)) {
-              last_page = {};
-            }
-            if(_.isEmpty(last_page.path)) {
-              last_page.path = 'tables';
-            }
-            this.navigate(last_page.path, {trigger: true});*/
-          }
-        }
-      });
+      this.bind('route', this.onRoute, this);
 
       this.v.main.render();
     }
