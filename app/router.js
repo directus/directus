@@ -532,7 +532,7 @@ define(function(require, exports, module) {
     onRoute: function(route) {
       // try to set the current active nav
       var currentPath = Backbone.history.fragment;
-      var bookmarksView = this.v.main.getView('#sidebar').sidebar.getView('#mainSidebar');
+      var bookmarksView = this.v.main.getView('#sidebar').getView('#mainSidebar');
       bookmarksView.setActive(currentPath);
       this.lastRoute = currentPath;
 
