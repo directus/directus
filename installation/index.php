@@ -274,7 +274,7 @@ if($step == 3) {
           </tr>
           <tr>
             <td class="item">Composer Dependencies Installed</td>
-            <td class="result"><?php if(file_exists('../api/vendor/autoload.php')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus6/wiki/Installation-Guides#how-to-install-composer-dependencies" target="_blank"> ?</a>');} ?></td>
+            <td class="result"><?php if(file_exists('../api/vendor/autoload.php')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus/wiki/Installation-Guides#how-to-install-composer-dependencies" target="_blank"> ?</a>');} ?></td>
           </tr>
           <tr>
             <td class="item">Logs Writable (../api/logs/)</td>
@@ -282,7 +282,7 @@ if($step == 3) {
           </tr>
           <tr>
             <td class="item">mod_rewrite Enabled</td>
-            <td class="result"><?php if(in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus6/wiki/Installation-Guides#how-to-enable-mod_rewrite" target="_blank"> ?</a>');}?></td>
+            <td class="result"><?php if(in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus/wiki/Installation-Guides#how-to-enable-mod_rewrite" target="_blank"> ?</a>');}?></td>
           </tr>
           <tr>
             <td class="item">Config Writable (../api/config.php)</td>
