@@ -162,6 +162,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               continue;
             }
 
+            // TODO: fix this, it must be refactored
             if(isset($target['relationship']) && $target['relationship']['type'] == "MANYTOMANY") {
 
               $relatedTable = $target['relationship']['table_related'];
@@ -220,6 +221,31 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               } else {
                   $select->where($jkeyleft.' = '.$this->adapter->platform->quoteValue($search_col['value']));
               }
+            } elseif (isset($target['relationship']) && $target['relationship']['type'] == "MANYTOONE") {
+              $relatedTable = $target['relationship']['table_related'];
+              $keyLeft = $this->getTable() . "." . $target['relationship']['junction_key_left'];
+              $keyRight = $relatedTable . ".id";
+              $filterColumn = $target['options']['filter_column'];
+              $joinedFilterColumn = $relatedTable . "." . $filterColumn;
+
+              // do not let join this table twice
+              // TODO: do a extra checking in case it's being used twice
+              // and none for sorting
+              if($target['column_name'] != $params['orderBy']) {
+                $select
+                    ->join($relatedTable, "$keyLeft = $keyRight", array(), Select::JOIN_LEFT);
+              }
+
+              if($search_col['type'] == 'like') {
+                $searchLike = '%'.$search_col['value'].'%';
+                $spec = function (Where $where) use($joinedFilterColumn, $searchLike) {
+                    $where->like($joinedFilterColumn, $searchLike);
+                };
+                $select->where($spec);
+              } else {
+                $select->where($search_col['id'] . " " . $search_col['type'] . " " . $this->adapter->platform->quoteValue($search_col['value']));
+              }
+
             } else {
               if($target['type'] == "DATETIME" && strpos($search_col['value'], " ") == false){
                 $select->where('date('.$tableName.'.'.$search_col['id'].") = ".$this->adapter->platform->quoteValue($search_col['value']));
