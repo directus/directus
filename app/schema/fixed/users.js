@@ -211,7 +211,7 @@ define(function(require, exports, module) {
             "id":"email_messages",
             "column_name":"email_messages",
             "type":"TINYINT",
-            "is_nullable":"NO",
+            "is_nullable":"YES",
             "default_value":"1",
             "comment":"CMS messages will also be sent to email address above",
             "sort":6,
