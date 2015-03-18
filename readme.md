@@ -41,7 +41,19 @@ For more information on semantic versioning, please visit [http://semver.org/](h
 
 ## Screenshots ##
 
+![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-tables.png)
+
+
 ![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-item-listing.png)
 
 
 ![Directus Edit Page](http://getdirectus.com/assets/imgs/ss-full-item-edit.png)
+
+
+![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-activity.png)
+
+
+![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-files.png)
+
+
+![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-users.png)
