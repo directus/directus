@@ -41,7 +41,7 @@ For more information on semantic versioning, please visit [http://semver.org/](h
 
 ## Screenshots ##
 
-![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-tables.png)
+![Directus Tables](http://getdirectus.com/assets/imgs/ss-full-tables.png)
 
 
 ![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-item-listing.png)
@@ -50,10 +50,10 @@ For more information on semantic versioning, please visit [http://semver.org/](h
 ![Directus Edit Page](http://getdirectus.com/assets/imgs/ss-full-item-edit.png)
 
 
-![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-activity.png)
+![Directus Activity](http://getdirectus.com/assets/imgs/ss-full-activity.png)
 
 
-![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-files.png)
+![Directus Files](http://getdirectus.com/assets/imgs/ss-full-files.png)
 
 
-![Directus Item Listing](http://getdirectus.com/assets/imgs/ss-full-users.png)
+![Directus Users](http://getdirectus.com/assets/imgs/ss-full-users.png)
