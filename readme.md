@@ -20,6 +20,15 @@ View the Directus documentation here:
 
 [GitHub Wiki](https://github.com/RNGR/directus6/wiki)
 
+1. [Installation & Configuration](https://github.com/RNGR/Directus/wiki/1.-Installation-&-Configuration)
+2. [Settings & Customization](https://github.com/RNGR/Directus/wiki/2.-Settings-&-Customization)
+3. [Inputs and Interfaces](https://github.com/RNGR/Directus/wiki/3.-Inputs-and-Interfaces)
+4. [Getting Started Using Directus](https://github.com/RNGR/Directus/wiki/4.-Getting-Started-Using-Directus)
+5. [Extending Directus](https://github.com/RNGR/Directus/wiki/5.-Extending-Directus)
+6. [Development Build](https://github.com/RNGR/Directus/wiki/6.-Development-Build)
+7. [Directus REST API](https://github.com/RNGR/Directus/wiki/7.-Directus-REST-API)
+8. [Ports, Libraries, and Frameworks to Consider](https://github.com/RNGR/Directus/wiki/Ports,-Libraries,-and-Frameworks-to-Consider)
+
 ## Issues ##
 
 Discovered a bug? Please create an issue here on GitHub!
