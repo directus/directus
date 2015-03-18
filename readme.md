@@ -57,3 +57,15 @@ For more information on semantic versioning, please visit [http://semver.org/](h
 
 
 ![Directus Users](http://getdirectus.com/assets/imgs/ss-full-users.png)
+
+
+![Directus Settings](http://getdirectus.com/assets/imgs/ss-full-settings.png)
+
+
+![Directus Tables & Inputs](http://getdirectus.com/assets/imgs/ss-full-tablesinputs.png)
+
+
+![Directus Tables & Inputs Edit](http://getdirectus.com/assets/imgs/ss-full-tablesinputs-edit.png)
+
+
+![Directus Permissions](http://getdirectus.com/assets/imgs/ss-full-permissions.png)
