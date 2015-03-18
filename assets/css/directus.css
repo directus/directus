@@ -1821,6 +1821,15 @@ input:-webkit-autofill {
   color: #aaaaaa;
   -webkit-font-smoothing: antialiased !important;
 }
+hr {
+  border: none;
+  color: #ffffff;
+  background-color: #ffffff;
+  height: 1px;
+}
+ul {
+  list-style-type: disc;
+}
 .card-border {
   border-bottom: 3px solid #dfdfdf;
 }
@@ -3905,6 +3914,12 @@ tbody.remove-hover-state .sort .icon-list {
 }
 .alerts .alert.login {
   background-color: #5b5b5b;
+}
+.noty_text {
+  word-break: break-all;
+}
+.noty_text ul {
+  padding-left: 20px;
 }
 #tool-tips {
   bottom: 0px;
