@@ -140,7 +140,7 @@ $(function(){
         password = $.trim($(this).find('input[name=password]').val());
 
     if(email.length == 0 || password.length == 0) {
-      return message("We need both!", true);
+      return message("Please enter your email and password", true);
     }
 
     $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/login' ?>', {
