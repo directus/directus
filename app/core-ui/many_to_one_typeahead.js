@@ -19,7 +19,8 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
   Module.variables = [
     {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    {id: 'template', ui: 'textinput'}
+    {id: 'template', ui: 'textinput'},
+    {id: 'include_inactive', ui: 'checkbox', def: '0', comment: 'Include Inactive Items', required: false}
   ];
 
   var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" {{#if readonly}}readonly{{/if}}/> \
@@ -88,12 +89,18 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     afterRender: function () {
       var template = this.columnSchema.options.get('template');
       var self = this;
+      var inactiveURLParam = '';
+
+      if(1 === parseInt(this.includeInactives, 10)) {
+        inactiveURLParam = '&include_inactive=1';
+      }
+
 
       var fetchItems = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         prefetch: {
-          url: app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/?columns=' + this.visibleColumn,
+          url: app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/?columns=' + this.visibleColumn + inactiveURLParam,
           ttl: 0
         }
       });
@@ -125,6 +132,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
     initialize: function(options) {
       this.visibleColumn = this.columnSchema.options.get('visible_column');
+      this.includeInactives = this.columnSchema.options.get('include_inactive');
       var value = this.model.get(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
     }
