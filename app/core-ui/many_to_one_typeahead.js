@@ -103,7 +103,10 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
           url: url,
           ttl: 0
         },
-        remote: url + '&q=%QUERY'
+        remote: url + '&q=%QUERY',
+        dupDetector: function(remoteMatch, localMatch) {
+          return remoteMatch.value === localMatch.value;
+        }
       });
 
       fetchItems.initialize();
