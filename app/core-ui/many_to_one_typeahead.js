@@ -89,10 +89,10 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     afterRender: function () {
       var template = this.columnSchema.options.get('template');
       var self = this;
-      var inactiveURLParam = '';
+      var url = app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/?columns=' + this.visibleColumn;
 
       if(1 === parseInt(this.includeInactives, 10)) {
-        inactiveURLParam = '&include_inactive=1';
+        url += '&include_inactive=1';
       }
 
 
@@ -100,9 +100,10 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         prefetch: {
-          url: app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/?columns=' + this.visibleColumn + inactiveURLParam,
+          url: url,
           ttl: 0
-        }
+        },
+        remote: url + '&q=%QUERY'
       });
 
       fetchItems.initialize();
