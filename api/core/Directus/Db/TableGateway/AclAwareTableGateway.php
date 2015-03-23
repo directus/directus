@@ -290,7 +290,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
           $this->addVirtualColumn($tableName, $tableData);
       } else {
           $this->addTableColumn($tableName, $tableData);
-          if(array_key_exists('ui', $tableData) && $tableData['ui'] == 'single_file' ) {
+          if(array_key_exists('ui', $tableData)) {
+            // Temporary solutions to #481, #645
+            $tableData['data_type'] = 'MANYTOONE';
             $tableData['relationship_type'] = 'MANYTOONE';
             $tableData['junction_key_right'] = $tableData['column_name'];
             $this->addVirtualColumn($tableName, $tableData);
