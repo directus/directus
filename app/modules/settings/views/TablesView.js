@@ -203,6 +203,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
         var tableRelated = this.model.get('table_related');
         var junctionTable = this.model.get('junction_table');
+        var junctionKeyRight = this.model.get('junction_key_right');
 
         var tables = app.schemaManager.getTables();
         tables = tables.map(function(model) {
@@ -235,8 +236,12 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         } else {
           if (tableRelated !== undefined) {
             data.columns = app.schemaManager.getColumns('tables', tableRelated).map(function(model) {
-              return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
+              return {column_name: model.id, selected: (model.id === junctionKeyRight)};
             }, this);
+          }
+          if(!junctionKeyRight && data.columns.length > 0) {
+            junctionKeyRight = data.columns[0].column_name;
+            this.model.set({junction_key_right: junctionKeyRight});
           }
         }
 
