@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
+define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIView, Utils) {
 
   "use strict";
 
@@ -89,12 +89,21 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     afterRender: function () {
       var template = this.columnSchema.options.get('template');
       var self = this;
-      var url = app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/?columns=' + this.visibleColumn;
+      var url = app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/';
+      var params = {};
 
-      if(1 === parseInt(this.includeInactives, 10)) {
-        url += '&include_inactive=1';
+      if(this.visibleColumn) {
+        params['columns'] = this.visibleColumn;
       }
 
+      if(1 === parseInt(this.includeInactives, 10)) {
+        params['include_inactive'] = 1;
+      }
+
+      var urlParams = Utils.encodeQueryParams(params);
+      if(urlParams) {
+        url += '?' + urlParams;
+      }
 
       var fetchItems = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
