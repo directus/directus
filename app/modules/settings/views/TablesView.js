@@ -684,9 +684,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     flashItem: function(entryID, bodyScrollTop) {
       document.body.scrollTop = parseInt(bodyScrollTop, 10) || 0;
-      if(entryID) {
-        this.$el.find('tr[data-id="' + entryID + '"]').flashRow();
-      }
+      app.on('load', function() {
+        if(entryID) {
+          this.$el.find('tr[data-id="' + entryID + '"]').flashRow();
+        }
+      }, this);
     },
 
     beforeRender: function() {
