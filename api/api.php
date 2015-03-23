@@ -490,8 +490,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
     $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
   }
 
-  $columns = explode(',', $params['columns']);
-
+  $columns = ($params['columns']) ? explode(',', $params['columns']) : array();
   if(count($columns) > 0) {
     $params['group_by'] = $columns[0];
 
