@@ -866,7 +866,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       'single' => (int)$data['single'],
       'is_junction_table' => (int)$data['is_junction_table'],
       'footer' => (int)$data['footer'],
-      'primary_column' => $data['primary_column']
+      'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
     );
 
     //@TODO: Possibly pretty this up so not doing direct inserts/updates
