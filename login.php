@@ -159,7 +159,9 @@ $(function(){
         ?>
         var redirectPath = '<?php echo trim(urldecode($redirectPath), '/'); ?>';
         var lastPage = data.last_page;
-        path = redirectPath || lastPage.path || defaultPath;
+        var lastPagePath = lastPage ? lastPage.path : '';
+
+        path = redirectPath || lastPagePath || defaultPath;
 
         if(!data.success) {
           message(data.message, true);
