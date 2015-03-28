@@ -7,10 +7,6 @@ AddType font/woff .woff
 <ifModule mod_rewrite.c>
     RewriteEngine On
 
-    # No Trailing-slash
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
-
     RewriteRule ^assets - [L,NC]
     RewriteRule ^extensions/([^/]+) - [L,NC]
     RewriteRule ^extensions/([^/]+)/assets - [L,NC]
