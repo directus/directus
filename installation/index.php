@@ -281,7 +281,7 @@ if($step == 3) {
           </tr>
           <tr>
             <td class="item">Config Writable (../api/config.php)</td>
-            <td class="result"><?php if(is_writable('../api/config.php')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span class="label label-important">No</span>');}?></td>
+            <td class="result"><?php if(is_writable('../api')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span class="label label-important">No</span>');}?></td>
           </tr>
           <tr>
             <td class="item">Migration Config</td>
