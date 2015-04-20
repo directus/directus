@@ -75,7 +75,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
     public function insertPrivilege($attributes) {
         $attributes = $this->verifyPrivilege($attributes);
 
-        $status_id = (isset($attributes['status_id']) ? $attributes['status_id'] : null);
+        $status_id = isset($attributes['status_id']) ? $attributes['status_id'] : 0;
         $insert = new Insert($this->getTable());
         $insert
             ->columns(array('table_name','permissions','group_id'))
