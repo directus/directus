@@ -63,7 +63,7 @@ function(app, Backbone) {
       if (typeof a === "string" && typeof b === "string") {
         cmp = a.localeCompare(b);
       } else {
-        cmp = a - b;
+        cmp = ( a > b ) ? 1 : -1;
       }
 
       if (this.getFilter('sort_order')==='DESC') cmp*=-1;
@@ -82,8 +82,14 @@ function(app, Backbone) {
         rowB = rowB.get('data');
       }
 
-      valueA = UIManager.getList(rowA, column) || '';
-      valueB = UIManager.getList(rowB, column) || '';
+      if (UIManager.hasList(rowA, column)) {
+        // Sort relational columns in listview https://github.com/RNGR/Directus/issues/452
+        valueA = UIManager.getList(rowA, column) || '';
+        valueB = UIManager.getList(rowB, column) || '';
+      } else {
+        valueA = rowA.get(column);
+        valueB = rowB.get(column);
+      }
 
       var options, ui, type, schema;
 
