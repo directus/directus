@@ -12,6 +12,7 @@ var rjs       = require('gulp-requirejs');
 var prohtml   = require('gulp-processhtml');
 var deploy    = require('gulp-gh-pages');
 var merge     = require('merge-stream');
+var jscs      = require('gulp-jscs');
 
 
 // ----------------------------
@@ -312,9 +313,14 @@ gulp.task('watch', function() {
   gulp.watch(singlePageFiles, ['singlepage']);
 });
 
-gulp.task('deploy', function () {
+gulp.task('deploy', function() {
   return gulp.src(['./dist/**/*'], {dot: true})
         .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/RNGR/directus6'}));
+});
+
+gulp.task('jscs', function() {
+  return gulp.src('app/**/*.js')
+    .pipe(jscs());
 });
 
 // -------------------
