@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7246a9159c7365d779c59bfd61c7ef67",
+    "hash": "6550d25c7b67a8852dc7a9aa4ad055d9",
     "packages": [
         {
-            "name": "ruckusing/ruckusing-migrations",
-            "version": "dev-welling",
+            "name": "directus/migrations",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/WellingGuzman/ruckusing-migrations.git",
-                "reference": "dd9324e8722edb7858e7ad22aaba3f53fa919e24"
+                "url": "https://github.com/WellingGuzman/Migrations.git",
+                "reference": "3d88eb00e0e08520e129140a4fa116b9a180189d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WellingGuzman/ruckusing-migrations/zipball/dd9324e8722edb7858e7ad22aaba3f53fa919e24",
-                "reference": "dd9324e8722edb7858e7ad22aaba3f53fa919e24",
+                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/3d88eb00e0e08520e129140a4fa116b9a180189d",
+                "reference": "3d88eb00e0e08520e129140a4fa116b9a180189d",
                 "shasum": ""
             },
             "require": {
@@ -36,6 +36,7 @@
                     "Task": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -44,26 +45,17 @@
                     "name": "Cody Caughlan",
                     "email": "codycaughlan@gmail.com",
                     "homepage": "https://github.com/ruckus/ruckusing-migrations/wiki",
-                    "role": "Project lead / Developer"
+                    "role": "Original Developer"
+                },
+                {
+                    "name": "Welling Guzman",
+                    "email": "hola@wellingguzman.com",
+                    "homepage": "https://github.com/wellingguzman/migrations"
                 }
             ],
             "description": "Framework for generating and managing database migrations",
-            "homepage": "https://github.com/ruckus/ruckusing-migrations",
-            "keywords": [
-                "database",
-                "migrations",
-                "mysql",
-                "postgres",
-                "rake",
-                "ruckusing",
-                "task"
-            ],
-            "support": {
-                "email": "codycaughlan@gmail.com",
-                "issues": "https://github.com/ruckus/ruckusing-migrations/issues",
-                "source": "https://github.com/ruckus/ruckusing-migrations"
-            },
-            "time": "2015-03-02 01:30:33"
+            "homepage": "https://github.com/wellingguzman/migrations",
+            "time": "2015-04-27 02:35:01"
         },
         {
             "name": "slim/extras",
@@ -214,7 +206,7 @@
     "stability-flags": {
         "slim/extras": 20,
         "zendframework/zend-db": 20,
-        "ruckusing/ruckusing-migrations": 20
+        "directus/migrations": 20
     },
     "prefer-stable": false,
     "platform": [
