@@ -23,7 +23,19 @@ define(function(require, exports, module) {
 
     getColumns: function() {
       var filters = this.getFilters();
-      var columns = (filters.columns_visible !== undefined) ? filters.columns_visible : _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      var columns;
+
+      if (filters.columns_visible === undefined) {
+        columns = _.intersection(this.structure.pluck('id'), this.preferences.get('columns_visible').split(','));
+      } else {
+        columns = filters.columns_visible;
+        // @todo: ensure that this always be an array everywhere.
+        if (typeof columns === 'string') {
+          columns = columns.split();
+        }
+        columns = _.intersection(columns, this.preferences.get('columns_visible').split(','));
+      }
+
       return columns;
     },
 
