@@ -194,7 +194,7 @@ function(app, Backbone) {
     serialize: function() {
       var order = this.collection.getOrder();
 
-      var columns = _.map(this.options.columns, function(column) {
+      var columns = _.map(this.collection.getColumns(), function(column) {
         return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
 
