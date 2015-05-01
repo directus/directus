@@ -193,8 +193,14 @@ function(app, Backbone) {
 
     serialize: function() {
       var order = this.collection.getOrder();
+      var blacklist = this.options.blacklist;
 
-      var columns = _.map(this.collection.getColumns(), function(column) {
+      // get whitelisted columns first
+      var columns = _.filter(this.collection.getColumns(), function(column) {
+        return ! _.contains(blacklist, column);
+      });
+
+      columns = _.map(columns, function(column) {
         return {name: column, orderBy: column === order.sort, desc: order.sort_order === 'DESC'};
       });
 
