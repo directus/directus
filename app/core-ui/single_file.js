@@ -71,7 +71,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     max-width: 160px; \
                     display: block; \
                   } \
-                  div.ui-img-details { \
+                  div.ui-img-details.single_file { \
                     height: 120px; \
                     width: 220px; \
                     float: left; \
@@ -80,7 +80,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     padding:20px; \
                     background-color: #ececec; \
                   } \
-                  div.ui-img-details .btn { \
+                  div.ui-img-details.single_file .btn { \
                     position: absolute; \
                     bottom: 20px; \
                     left: 20px; \
@@ -141,7 +141,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                       {{else}}<a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a>{{/if}} \
                     {{/if}} \
                   </div> \
-                  <div class="ui-img-details"> \
+                  <div class="ui-img-details single_file"> \
                     <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
                     <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
                     <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
