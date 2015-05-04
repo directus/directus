@@ -363,6 +363,13 @@ require(["config"], function() {
               options.beforeSend = function(xhr) {
                 xhr.setRequestHeader(nonces.nonce_request_header, nonce);
               };
+              options.complete = function(xhr) {
+                var new_nonces = xhr.getResponseHeader(nonces.nonce_response_header);
+                if(new_nonces) {
+                  new_nonces = new_nonces.split(',');
+                  nonces.pool.push.apply(nonces.pool, new_nonces);
+                }
+              }
             }
           }
         }
