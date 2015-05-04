@@ -335,6 +335,38 @@ require(["config"], function() {
 
         options.error = errorCodeHandler;
 
+        // Force fix: https://github.com/RNGR/Directus/issues/776
+        // when $.ajax global is false there's not global event fired
+        // the code below wouldn't run on .ajaxSend
+        // therefore we run it here
+
+        if(options.global == false) {
+          var url = '';
+          var collection = {};
+
+          if (model.url) {
+            collection = model;
+          } else if(model.collection) {
+            collection = model.collection;
+          }
+
+          if(typeof collection.url === "function") {
+            url = collection.url();
+          } else {
+            url = collection.url;
+          }
+
+          if (url) {
+            var isApiRequest = url.substr(0, app.API_URL.length) == app.API_URL;
+            if(isApiRequest) {
+              nonce = nonces.pool.pop();
+              options.beforeSend = function(xhr) {
+                xhr.setRequestHeader(nonces.nonce_request_header, nonce);
+              };
+            }
+          }
+        }
+
         sync(method, model, options);
       };
 
