@@ -334,6 +334,7 @@ if($step == 4) {
   require_once('query.php');
   $setupResponse = $main->execute(array('', 'db:setup'));
   $migrateResponse = $main->execute(array('', 'db:migrate'));
+  AddSettings($mysqli);
   AddDefaultUser($_SESSION['email'], $_SESSION['password'], $mysqli);
   AddStorageAdapters($mysqli);
   if(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == "yes") {
