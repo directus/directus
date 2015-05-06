@@ -393,7 +393,14 @@ if($step == 4) {
   $mysqli->close();
 
   require_once('config_setup.php');
-  WriteConfig();
+  WriteConfig(array(
+    'db_host' => $_SESSION['host_name'],
+    'db_name' => $_SESSION['db_name'],
+    'db_user' => $_SESSION['username'],
+    'db_pass' => $_SESSION['db_password'],
+    'db_prefix' => '',//$_SESSION['db_prefix'],
+    'directus_path' => $_SESSION['directus_path'],
+  ));
 
   // @TODO: put all this data into an array.
   // so we can clear all session unset($_SESSION['installation']);
