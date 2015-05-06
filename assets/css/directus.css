@@ -4928,7 +4928,7 @@ body.initial-load #sidebar {
   text-transform: lowercase !important;
   vertical-align: top;
   -webkit-font-smoothing: antialiased !important;
-  color: #ececec;
+  color: #aaaaaa;
   content: "\2753";
   line-height: 25px;
 }
