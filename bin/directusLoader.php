@@ -6,7 +6,6 @@ $loader->add("Directus", __DIR__ . '/../api/core/');
 
 // Non-autoload components
 require __DIR__ . '/../api/config.php';
-require __DIR__ . '/../api/core/db.php';
 require __DIR__ . '/../api/core/functions.php';
 
 // Define directus environment
