@@ -6,7 +6,7 @@ function buildConfig($data) {
         'db_name' => 'directus',
         'db_user' => 'root',
         'db_pass' => '',
-        'db_prefix' => '',
+        //'db_prefix' => '',
         'directus_path' => '/'
     );
 
@@ -32,7 +32,7 @@ define('DB_HOST',        '{$data['db_host']}');
 define('DB_NAME',        '{$data['db_name']}');
 define('DB_USER',        '{$data['db_user']}');
 define('DB_PASSWORD',    '{$data['db_pass']}');
-define('DB_PREFIX',      '{$data['db_prefix']}');
+define('DB_PREFIX',      '');
 
 
 define('DB_HOST_SLAVE',        ''); //Leave undefined to fall back on master
