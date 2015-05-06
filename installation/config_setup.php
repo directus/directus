@@ -1,18 +1,18 @@
 <?php
 function buildConfig($data) {
 
-  $default_data = array(
-    'db_host' => 'localhost',
-    'db_name' => 'directus',
-    'db_user' => 'root',
-    'db_pass' => '',
-    'db_prefix' => '',
-    'directus_path' => '/'
-  );
+    $default_data = array(
+        'db_host' => 'localhost',
+        'db_name' => 'directus',
+        'db_user' => 'root',
+        'db_pass' => '',
+        'db_prefix' => '',
+        'directus_path' => '/'
+    );
 
-  $data = array_merge($default_data, (array)$data);
+    $data = array_merge($default_data, (array)$data);
 
-  $configText = "<?php
+    $configText = "<?php
 date_default_timezone_set('America/New_York');
 
 define('API_VERSION', 1);
@@ -69,15 +69,14 @@ define('STATUS_DELETED_NUM', 0);
 define('STATUS_ACTIVE_NUM', 1);
 define('STATUS_COLUMN_NAME', 'active');";
 
-  return $configText;
-
+    return $configText;
 }
 
 function WriteConfig($data) {
-  $configText = buildConfig($data);
-  file_put_contents("../api/config.php", $configText);
+    $configText = buildConfig($data);
+    file_put_contents("../api/config.php", $configText);
 
-  $configuration = "<?php
+    $configuration = "<?php
 
 /**
  * High priority use case, not super planned out yet.
@@ -87,63 +86,62 @@ function WriteConfig($data) {
 
 return array(
 
-  'session' => array(
-    'prefix' =>  'directus6_'
-  ),
-
-  'HTTP' => array(
-    'forceHttps' => false,
-    'isHttpsFn' => function () {
-      // Override this check for custom arrangements, e.g. SSL-termination @ load balancer
-      return isset(".'$_SERVER[\'HTTPS\']) && $_SERVER[\'HTTPS\']'." != 'off';
-    }
-  ),
-
-  // Define this to send emails e.g. forgot password
-  'SMTP' => array(
-    'host' => '',
-    'port' => 25,
-    'username' => '',
-    'password' => ''
-  ),
-
-  'dbHooks' => array(
-    'postInsert' => function (".'$TableGateway, $record, $db, $acl'.") {
-
-    },
-    'postUpdate' => function (".'$TableGateway, $record, $db, $acl'.") {
-      ".'$tableName = $TableGateway->getTable()'.";
-      switch(".'$tableName'.") {
-        // ...
-      }
-    }
-  ),
-
-  // These tables will not be loaded in the directus schema
-  'tableBlacklist' => array(
-
-  ),
-
-  'statusMapping' => array(
-    '0' => array(
-      'name' => 'Delete',
-      'color' => '#C1272D',
-      'sort' => 3
+    'session' => array(
+        'prefix' =>  'directus6_'
     ),
-    '1' => array(
-      'name' => 'Active',
-      'color' => '#5B5B5B',
-      'sort' => 1
+
+    'HTTP' => array(
+        'forceHttps' => false,
+        'isHttpsFn' => function () {
+            // Override this check for custom arrangements, e.g. SSL-termination @ load balancer
+            return isset(".'$_SERVER[\'HTTPS\']) && $_SERVER[\'HTTPS\']'." != 'off';
+        }
     ),
-    '2' => array(
-      'name' => 'Draft',
-      'color' => '#BBBBBB',
-      'sort' => 2
+
+    // Define this to send emails e.g. forgot password
+    'SMTP' => array(
+        'host' => '',
+        'port' => 25,
+        'username' => '',
+        'password' => ''
+    ),
+
+    'dbHooks' => array(
+        'postInsert' => function (".'$TableGateway, $record, $db, $acl'.") {
+
+        },
+        'postUpdate' => function (".'$TableGateway, $record, $db, $acl'.") {
+            ".'$tableName = $TableGateway->getTable()'.";
+            switch(".'$tableName'.") {
+                // ...
+            }
+        }
+    ),
+
+    // These tables will not be loaded in the directus schema
+    'tableBlacklist' => array(
+
+    ),
+
+    'statusMapping' => array(
+        '0' => array(
+            'name' => 'Delete',
+            'color' => '#C1272D',
+            'sort' => 3
+        ),
+        '1' => array(
+            'name' => 'Active',
+            'color' => '#5B5B5B',
+            'sort' => 1
+        ),
+        '2' => array(
+            'name' => 'Draft',
+            'color' => '#BBBBBB',
+            'sort' => 2
+        )
     )
-  )
 
 );";
 
-  file_put_contents("../api/configuration.php", $configuration);
-
+    file_put_contents("../api/configuration.php", $configuration);
 }
