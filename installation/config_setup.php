@@ -72,9 +72,12 @@ define('STATUS_COLUMN_NAME', 'active');";
     return $configText;
 }
 
-function WriteConfig($data) {
+function WriteConfig($data, $base = '') {
     $configText = buildConfig($data);
-    file_put_contents("../api/config.php", $configText);
+    if ($base === '') {
+        $base = '..';
+    }
+    file_put_contents($base . '/api/config.php', $configText);
 
     $configuration = "<?php
 
@@ -143,5 +146,5 @@ return array(
 
 );";
 
-    file_put_contents("../api/configuration.php", $configuration);
+    file_put_contents($base . '/api/configuration.php', $configuration);
 }
