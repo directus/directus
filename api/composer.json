@@ -3,7 +3,8 @@
     "slim/slim": "2.3.2",
     "slim/extras": "dev-develop",
     "zendframework/zend-db": "2.1.*@dev",
-    "directus/migrations": "dev-master"
+    "directus/migrations": "dev-master",
+    "phpmailer/phpmailer": "~5.2"
   },
   "_require": {
     "rackspace/php-opencloud": "dev-master",
