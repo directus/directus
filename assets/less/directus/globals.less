@@ -525,6 +525,9 @@ input[type="date"]::-webkit-inner-spin-button {
     padding: 1px 10px 0 10px;
     margin: 0;
     cursor: pointer;
+    max-height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     &.tt-is-under-cursor, &.tt-cursor {
       background-color: @tableHoverYellow;
     }

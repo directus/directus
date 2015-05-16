@@ -371,9 +371,8 @@ th {
 @font-face {
   font-family: 'Directus';
   src: url('../fonts/directus/directus-regular.eot');
-  src: url('../fonts/directus/directus-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/directus/directus-regular.woff') format('woff'), /* Modern Browsers */ url('../fonts/directus/directus-regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/directus/directus-regular.svg#entypo') format('svg');
-  
   /* IE9 Compat Modes */
+  src: url('../fonts/directus/directus-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/directus/directus-regular.woff') format('woff'), /* Modern Browsers */ url('../fonts/directus/directus-regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/directus/directus-regular.svg#entypo') format('svg');
   /* Legacy iOS */
 }
 .icon {
@@ -2000,6 +1999,9 @@ input[type="date"]::-webkit-inner-spin-button {
   padding: 1px 10px 0 10px;
   margin: 0;
   cursor: pointer;
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tt-suggestions .tt-suggestion.tt-is-under-cursor,
 .tt-suggestions .tt-suggestion.tt-cursor {
