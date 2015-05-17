@@ -282,7 +282,7 @@ if($step == 3) {
           </tr>
           <tr>
             <td class="item">mod_rewrite Enabled</td>
-            <td class="result"><?php if(in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/Directus/wiki/1.-Installation-&-Configuration#how-to-enable-mod_rewrite" target="_blank"> ?</a>');}?></td>
+            <td class="result"><?php if(function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/Directus/wiki/1.-Installation-&-Configuration#how-to-enable-mod_rewrite" target="_blank"> ?</a>');}?></td>
           </tr>
           <tr>
             <td class="item">Config Writable (../api/config.php)</td>
