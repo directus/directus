@@ -486,6 +486,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $select->where->in(STATUS_COLUMN_NAME, $haystack);
         }
 
+        // Select only ids from the ids if provided
+        if (array_key_exists('ids', $params)) {
+            $entriesIds = array_filter(explode(',', $params['ids']), 'is_numeric');
+
+            if (count($entriesIds) > 0) {
+                $select->where->in($this->getTable() . '.id', $entriesIds);
+            }
+        }
+
         // Where
         $select
             ->where

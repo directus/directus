@@ -7,10 +7,6 @@ AddType font/woff .woff
 <ifModule mod_rewrite.c>
     RewriteEngine On
 
-    # No Trailing-slash
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
-
     RewriteRule ^assets - [L,NC]
     RewriteRule ^extensions/([^/]+) - [L,NC]
     RewriteRule ^extensions/([^/]+)/assets - [L,NC]
@@ -26,16 +22,6 @@ AddType font/woff .woff
     RewriteCond %{REQUEST_URI} media_auth_proxy/([^/]+)/(.+)$
     RewriteRule ^ /media_auth_proxy/index.php [L]
 
-    # Files Thumbnails
-    # - Cached thumbnail exists
-    #RewriteCond %{REQUEST_URI} ^/thumbnail/(.+)$
-    #RewriteCond %{DOCUMENT_ROOT}/images/cached/%1 -f
-    #RewriteRule ^ /images/cached/%1 [L]
-    # - Cached thumbnail doesn't exist
-    RewriteCond %{REQUEST_URI} thumbnail/(.+)$
-    #RewriteCond %{DOCUMENT_ROOT}/images/cached/%2 !-f
-    RewriteRule ^ thumbnail.php?filename=%1 [L]
-
     # Directus Front Controller
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -44,14 +30,16 @@ AddType font/woff .woff
 
 </ifModule>
 
-# default is 64, so 64 + 72 (post_max_size value)
-php_value memory_limit 136M
+<ifModule mod_php5.c>
+    # default is 64, so 64 + 72 (post_max_size value)
+    php_value memory_limit 136M
 
-# default is 8, so 8 + 64 (upload_max_filesize value)
-php_value post_max_size 72M
+    # default is 8, so 8 + 64 (upload_max_filesize value)
+    php_value post_max_size 72M
 
-# default is 2
-php_value upload_max_filesize 64M
+    # default is 2
+    php_value upload_max_filesize 64M
 
-# E_ALL | E_STRICT
-php_value error_reporting 32767
+    # E_ALL | E_STRICT
+    php_value error_reporting 32767
+</ifModule>

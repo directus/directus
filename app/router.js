@@ -45,9 +45,90 @@ define(function(require, exports, module) {
       "messages":                       "messages",
       "messages/new":                   "newMessage",
       "messages/:id":                   "message",
-      "cashregister":                   "cashregister",
-      "booker":                         "booker",
       '*notFound':                      "notFound"
+    },
+
+    route: function(route, name, callback) {
+      var router = this;
+      var args = _.toArray(arguments);
+      if (!callback) callback = this[name];
+
+      var cb = function() {
+        if (_.isFunction(this.before)) this.before.apply(router, args);
+        callback.apply(router, arguments);
+        if (_.isFunction(this.after)) this.after.apply(router, args);
+      };
+      return Backbone.Router.prototype.route.call(this, route, name, cb);
+    },
+
+    navigateTo: function(route, alertMessage) {
+      this.showAlertNextRoute(alertMessage);
+      this.navigate(route, {trigger: true});
+    },
+
+    getRouteParameters: function(route, fragment) {
+      var r = this._routeToRegExp(route);
+      var args = this._extractParameters(r, fragment);
+      return args;
+    },
+    // @todo: refactoring
+    before: function(route, name) {
+      var fragment = Backbone.history.fragment;
+      if(fragment) {
+        var routeHistoryBase = fragment;
+        if (this.routeHistory.base === '' || routeHistoryBase.indexOf(this.routeHistory.base) !== 0) {
+          this.routeHistory.base = routeHistoryBase;
+          this.routeHistory.stack = [];
+          this.routeHistory.routes = {};
+        }
+
+        var currentRoute = _.last(this.routeHistory.stack);
+        var nextRoute = {route: name, path: fragment, args: this.getRouteParameters(route, fragment)};
+
+        // Exists
+        if(currentRoute && nextRoute) {
+          var current = currentRoute = this.routeHistory.routes[currentRoute.path];
+          var next = this.routeHistory.routes[nextRoute.path];
+
+          if(next) {
+            delete this.routeHistory.routes[currentRoute.path];
+            currentRoute = undefined;
+          }
+        }
+
+        if(currentRoute) {
+          currentRoute.scrollTop = parseInt(document.body.scrollTop, 10) || 0;
+          currentRoute.toRoute = nextRoute;
+        }
+        this.routeHistory.stack.push(nextRoute);
+        this.routeHistory.last = currentRoute ? currentRoute.path : fragment;
+        if(!this.routeHistory.routes[fragment]) {
+          this.routeHistory.routes[fragment] = nextRoute;
+        }
+      }
+
+      var mainSidebar = document.getElementById('mainSidebar');
+      if(mainSidebar) {
+        this.scrollTop = parseInt(mainSidebar.scrollTop, 10) || 0;
+      }
+    },
+
+    after: function(route, name) {
+      var currentRoute = this.routeHistory.routes[this.routeHistory.last];
+      var itemID, scrollTop = 0;
+      if(currentRoute && currentRoute.path === Backbone.history.fragment) {
+        if(currentRoute.toRoute) {
+          itemID = _.last(_.filter(currentRoute.toRoute.args, function(v){ return v !== null}));
+        }
+        scrollTop = currentRoute.scrollTop;
+      }
+
+      this.v.main.trigger.apply(this.v.main, ['flashItem', itemID, scrollTop]);
+
+      var mainSidebar = document.getElementById('mainSidebar');
+      if(mainSidebar) {
+        mainSidebar.scrollTop = this.scrollTop;
+      }
     },
 
     go: function() {
@@ -66,6 +147,17 @@ define(function(require, exports, module) {
       }
     },
 
+    showAlertNextRoute: function(message) {
+      if (!_.isString(message)) {
+        return;
+      }
+
+      this.pendingAlert = {
+        message: message,
+        type: 'alert'
+      };
+    },
+
     hideAlert: function() {
       if (this.alert) {
         this.alert.remove();
@@ -74,9 +166,7 @@ define(function(require, exports, module) {
     },
 
     notFound: function() {
-      this.setTitle(app.settings.get('global').get('site_name') + ' | 404');
-      this.v.main.setView('#content', new Backbone.Layout({template: Handlebars.compile('<h1>Not found</h1>')}));
-      this.v.main.render();
+      this.navigateTo('/tables', 'You do not have permission to view that page or it doesn\'t exist');
     },
 
     openModal: function(options, callback) {
@@ -140,7 +230,6 @@ define(function(require, exports, module) {
 
       this.navigate('/tables'); //If going to / rewrite to tables
       this.setTitle(app.settings.get('global').get('site_name') + ' | Tables');
-      this.tabs.setActive('tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
     },
@@ -203,7 +292,6 @@ define(function(require, exports, module) {
 
       // Cache collection for next route
       this.currentCollection = collection;
-      this.tabs.setActive('tables');
       this.setTitle(app.settings.get('global').get('site_name') + ' | ' + app.capitalize(tableName));
 
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
@@ -215,7 +303,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Entry');
-      this.tabs.setActive('tables');
 
       var isBatchEdit = (typeof id === 'string') && id.indexOf(',') !== -1,
           collection,
@@ -251,7 +338,7 @@ define(function(require, exports, module) {
       }
 
       this.v.main.setView('#content', view);
-      this.v.main.render();
+      view.render();
     },
 
     activity: function() {
@@ -259,7 +346,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Activity');
-      this.tabs.setActive('activity');
       this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
       this.v.main.render();
     },
@@ -285,7 +371,6 @@ define(function(require, exports, module) {
       }
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Files');
-      this.tabs.setActive('files');
       this.v.main.setView('#content', new Files.Views.List({collection: app.files}));
       this.v.main.render();
     },
@@ -294,7 +379,6 @@ define(function(require, exports, module) {
       var model;
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | File');
-      this.tabs.setActive('files');
 
       if (id === "new") {
         model = new app.files.model({}, {collection: app.files});
@@ -327,7 +411,6 @@ define(function(require, exports, module) {
       }
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
-      this.tabs.setActive('users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
     },
@@ -342,7 +425,6 @@ define(function(require, exports, module) {
 
       var model;
       this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
-      this.tabs.setActive('users');
 
       if (id === "new") {
         model = new app.users.model({}, {collection: app.users, parse:true});
@@ -358,7 +440,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
-      this.tabs.setActive('settings');
 
       switch(name) {
         case 'tables':
@@ -392,7 +473,6 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
-      this.tabs.setActive('settings');
 
       this.v.main.setView('#content', new Settings.Table({model: SchemaManager.getTable(tableName)}));
 
@@ -404,14 +484,12 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings - Permissions');
-      this.tabs.setActive('settings');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
       this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
       this.v.main.render();
     },
 
     messages: function(name) {
-      this.tabs.setActive("messages");
       this.setTitle(app.settings.get('global').get('site_name') + ' | Messages')
       this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
       this.v.main.render();
@@ -439,9 +517,30 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
+    onRoute: function(route) {
+      // try to set the current active nav
+      var currentPath = Backbone.history.fragment;
+      var bookmarksView = this.v.main.getView('#sidebar').getView('#mainSidebar');
+      bookmarksView.setActive(currentPath);
+      this.lastRoute = currentPath;
+
+      // update user last route
+      var currentUser = app.users.getCurrentUser();
+      var history = _.clone(Backbone.history);
+      currentUser.updateLastRoute(route, history);
+
+      // check for a pending alert to execute
+      if(!_.isEmpty(this.pendingAlert)) {
+        this.openModal({type: this.pendingAlert.type, text: this.pendingAlert.message});
+        this.pendingAlert = {};
+      }
+    },
+
     initialize: function(options) {
 
       this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
+      // @todo: Allow a queue of pending alerts, maybe?
+      this.pendingAlert = {};
 
       //Fade out and remove splash
       $('body').addClass('initial-load');
@@ -512,61 +611,8 @@ define(function(require, exports, module) {
         el: "#messages"
       });
 
-      this.on('subroute', function(id, router) {
-        this.tabs.setActive(id);
-      });
-
-
-      this.bind("all", function(route, router){
-        this.lastRoute = window.location.pathname.substring(app.root.length);
-        var last_page;
-        var routeTokens = route.split(':');
-        if(routeTokens.length > 1) {
-          // Report the "last page" data to the API
-          // @fixes https://github.com/RNGR/directus6/issues/199
-
-          var user = app.users.getCurrentUser();
-
-          var currentPath = window.location.pathname.substring(app.root.length);
-          if(currentPath.length) {
-            bookmarks.setActive(currentPath);
-
-            last_page = JSON.stringify({
-              'path' : currentPath,
-              'route' : route.substring(6),
-              'param' : router
-            });
-
-            //If we went to logout route dont save.
-            if(currentPath != "logout") {
-              user.save({'last_page': last_page, 'last_access': moment().format('YYYY-MM-DD HH:mm')}, {
-                patch: true,
-                global: false,
-                silent: true,
-                wait: true,
-                validate: false,
-                url: user.url() + "?skip_activity_log=1"
-              });
-            }
-
-
-          } else {
-            // If theere's no path in the location (i.e. the user just logged in),
-            // take them to their last visited page, defaulting to "tables".
-            /*var authenticatedUser = app.getCurrentUser();
-            user = app.users.get(authenticatedUser.id);
-            last_page = $.parseJSON(user.get('last_page'));
-
-            if(_.isEmpty(last_page)) {
-              last_page = {};
-            }
-            if(_.isEmpty(last_page.path)) {
-              last_page.path = 'tables';
-            }
-            this.navigate(last_page.path, {trigger: true});*/
-          }
-        }
-      });
+      this.routeHistory = {stack: [], base: '', routes: []};
+      this.bind('route', this.onRoute, this);
 
       this.v.main.render();
     }

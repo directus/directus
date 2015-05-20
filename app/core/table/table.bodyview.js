@@ -91,7 +91,7 @@ function(app, Backbone, Sortable) {
       });
 
       var tableData = {
-        columns: this.options.columns,
+        columns: this.collection.getColumns(),
         rows: rows,
         sortable: this.options.sort,
         selectable: this.options.selectable,

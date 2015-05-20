@@ -140,7 +140,7 @@ $(function(){
         password = $.trim($(this).find('input[name=password]').val());
 
     if(email.length == 0 || password.length == 0) {
-      return message("We need both!", true);
+      return message("Please enter your email and password", true);
     }
 
     $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/login' ?>', {
@@ -150,15 +150,18 @@ $(function(){
       success: function(data, textStatus, jqXHR) {
 
         // Default path
-        var path = 'users';
-
-        // Silent error if the path is not avalible
-        try {
-          var lastPage = JSON.parse(data.last_page);
-          path = lastPage.path;
-        } catch(e) {
-          console.warn('Parsing path object failed', data.last_page);
+        var defaultPath = 'users';
+        <?php
+        $redirectPath = '';
+          if (isset($_SESSION['_directus_login_redirect'])) {
+            $redirectPath = $_SESSION['_directus_login_redirect'];
         }
+        ?>
+        var redirectPath = '<?php echo trim(urldecode($redirectPath), '/'); ?>';
+        var lastPage = data.last_page;
+        var lastPagePath = lastPage ? lastPage.path : '';
+
+        path = redirectPath || lastPagePath || defaultPath;
 
         if(!data.success) {
           message(data.message, true);

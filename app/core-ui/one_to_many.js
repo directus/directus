@@ -84,14 +84,11 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       };
 
       app.router.overlayPage(view);
-
+      
       view.save = function() {
         model.set(model.diff(view.editView.data()));
         app.router.removeOverlayPage(this);
       };
-
-      // Fetch first time to get the nested tables
-      model.fetch();
     },
 
     addModel: function(model) {
