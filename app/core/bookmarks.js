@@ -24,17 +24,17 @@ function(app, Backbone, EntriesManager) {
       this.url = app.API_URL + 'bookmarks/';
       this.isCustomBookmarks = options.isCustomBookmarks || false;
     },
+    comparator: function(a, b) {
+      if(a.get('title') < b.get('title')) return -1;
+      if(a.get('title') > b.get('title')) return 1;
+      return 0;
+    },
     setActive: function(route) {
       //deactive all tabs
-      var splitRoute = route.split('/');
-      if(splitRoute.length > 2) {
-        route = splitRoute[0] + '/' + splitRoute[1];
-      }
-
       var activeModel;
-      _.each(this.models,function(model) {
-        model.unset('active_bookmark',{silent: true});
-        if(model.get('url') == route || (model.get('url') == 'tables' && route.indexOf(model.get('url')) != -1)) {
+      _.each(this.models, function(model) {
+        model.unset('active_bookmark', {silent: true});
+        if(route.indexOf(model.get('url')) === 0) {
           activeModel = model;
         }
       });
@@ -90,12 +90,12 @@ function(app, Backbone, EntriesManager) {
             table = "directus_" + table;
           }
           if(title && table) {
-            app.router.openModal({type: 'confirm', text: 'Are you sure you wish to delete the snapshot: ' + title, callback: function() {
-              var user = app.users.getCurrentUser().get("id");
-              var collection = EntriesManager.getInstance(table);
-              collection.preferences.destroy({contentType: 'application/json', data: JSON.stringify({title:title, table_name: table, user: user}),success: function() {
-                app.getBookmarks().removeBookmark({title: title, icon_class: 'icon-search', user: user});
-              }});
+            var that = this;
+            app.router.openModal({type: 'confirm', text: 'Delete the Bookmark: "' + title + '"?', callback: function() {
+              var bookmarkModel = that.collection.findWhere({title: title});
+              if (bookmarkModel) {
+                bookmarkModel.destroy();
+              }
             }});
           }
         }
@@ -137,6 +137,7 @@ function(app, Backbone, EntriesManager) {
       //For some reason need to do this and that....
       this.collection.on('add', function() {
         that.collection.setActive(Backbone.history.fragment);
+        that.collection.sort();
         that.render();
       });
 
@@ -149,18 +150,24 @@ function(app, Backbone, EntriesManager) {
         messageModel = messageModel[0];
         if(messageModel) {
           messageModel.set({unread: app.messages.unread > 0}, {silent: true});
-          this.render();
         }
       }
 
       app.messages.on('sync change add', function() {
         var messageModel = this.collection.where({url: 'messages'});
-        if(messageModel) {
-          messageModel = messageModel[0];
-          if(messageModel) {
-            messageModel.set({unread: app.messages.unread > 0}, {silent: true});
-            this.render();
-          }
+        if(!messageModel) {
+          return;
+        }
+
+        messageModel = messageModel[0];
+        var unread = app.messages.where({read: '0'});
+
+        if(unread.length>0 && messageModel.get('unread') === false) {
+          messageModel.set({unread: true}, {silent: true});
+          this.render();
+        } else if(unread.length===0 && messageModel.get('unread') === true) {
+          messageModel.set({unread: false}, {silent: true});
+          this.render();
         }
       }, this);
     },

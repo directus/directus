@@ -54,7 +54,7 @@ function(app, Backbone) {
     initialize: function() {
       this.options.widgetOptions = {};
       this.updatePaginator();
-      this.collection.on('sync', function() {this.updatePaginator();document.body.scrollTop = document.documentElement.scrollTop = 0;}, this);
+      this.collection.on('sync', this.updatePaginator, this);
     }
 
   });

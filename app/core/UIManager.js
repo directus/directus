@@ -173,19 +173,40 @@ define(function(require, exports, module) {
       return array;
     },
 
+    hasList: function(model, attr) {
+      return this.getList(model, attr, true);
+    },
+
     // Finds the UI for the model/attribute and
     // returns a string containing the table view
-    getList: function(model, attr) {
+    getList: function(model, attr, noDefault) {
       var collection = model.collection;
-      var structure = model.getStructure();
-      var schema = structure.get(attr);
-      var UI = this._getModelUI(model, attr, schema);
+      var defaultValue = '<span class="secondary-info">--</span>';
+      // Return true or false whether there's value or not (UI)
+      // Instead of returning the default HTML
+      // https://github.com/RNGR/Directus/issues/452
+      var returnDefaultValue = true === noDefault ? true : false;
+      // @TODO: we need to make this getStructure available to our base model
+      var structure;
+      if (typeof model.getStructure === 'function') {
+        structure = model.getStructure();
+      } else {
+        structure = this.structure || undefined;
+      }
+      var UI;
+      if (structure !== undefined) {
+        var schema = structure.get(attr);
+        UI = schema ? this._getModelUI(model, attr, schema) : undefined;
+      }
 
       // If there is no UI, return just text
       if (UI === undefined) {
         var attribute = model.get(attr);
         if(!attribute || attribute === "") {
-          attribute = '<span class="secondary-info">--</span>';
+          if (!returnDefaultValue) {
+            return false;
+          }
+          attribute = defaultValue;
         }
         return attribute;
       }
@@ -200,7 +221,10 @@ define(function(require, exports, module) {
       });
 
       if(!list || list === "") {
-        list = '<span class="secondary-info">--</span>';
+        if (!returnDefaultValue) {
+          return false;
+        }
+        list = defaultValue;
       }
 
       return list;

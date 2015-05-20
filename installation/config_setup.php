@@ -1,17 +1,18 @@
 <?php
+function buildConfig($data) {
 
-  $db_host = $_SESSION['host_name'];
-  $db_name = $_SESSION['db_name'];
-  $db_user = $_SESSION['username'];
-  $db_password = $_SESSION['db_password'];
-  $db_prefix = $_SESSION['db_prefix'];
-  $dirPath = $_SESSION['directus_path'];
+    $default_data = array(
+        'db_host' => 'localhost',
+        'db_name' => 'directus',
+        'db_user' => 'root',
+        'db_pass' => '',
+        //'db_prefix' => '',
+        'directus_path' => '/'
+    );
 
+    $data = array_merge($default_data, (array)$data);
 
-  $_SERVER['SERVER_NAME'] = '$_SERVER[\'SERVER_NAME\']';
-  $host = '$host';
-
-$configText = "<?php
+    $configText = "<?php
 date_default_timezone_set('America/New_York');
 
 define('API_VERSION', 1);
@@ -27,11 +28,11 @@ define('API_VERSION', 1);
 define('DIRECTUS_ENV',  'development');
 
 // MySQL Settings
-define('DB_HOST',        '$db_host');
-define('DB_NAME',        '$db_name');
-define('DB_USER',        '$db_user');
-define('DB_PASSWORD',    '$db_password');
-define('DB_PREFIX',      '$db_prefix');
+define('DB_HOST',        '{$data['db_host']}');
+define('DB_NAME',        '{$data['db_name']}');
+define('DB_USER',        '{$data['db_user']}');
+define('DB_PASSWORD',    '{$data['db_pass']}');
+define('DB_PREFIX',      '');
 
 
 define('DB_HOST_SLAVE',        ''); //Leave undefined to fall back on master
@@ -39,18 +40,18 @@ define('DB_USER_SLAVE',        '');
 define('DB_PASSWORD_SLAVE',    '');
 
 // Url path to Directus
-define('DIRECTUS_PATH', '$dirPath');
+define('DIRECTUS_PATH', '{$data['directus_path']}');
 
 
-$host = 'www.example.com'; // (Make it work for CLI)
+\$host = 'www.example.com'; // (Make it work for CLI)
 if(isset(".'$_SERVER[\'SERVER_NAME\']'.")) {
-    $host = ".'$_SERVER[\'SERVER_NAME\']'.";
+    \$host = ".'$_SERVER[\'SERVER_NAME\']'.";
 }
 
-define('ROOT_URL', '//' . $host);
+define('ROOT_URL', '//' . \$host);
 if (!defined('ROOT_URL_WITH_SCHEME')){
     //Use this for emailing URLs(links, images etc) as some clients will trip on the scheme agnostic ROOT_URL
-    define('ROOT_URL_WITH_SCHEME', 'https://' . $host);
+    define('ROOT_URL_WITH_SCHEME', 'https://' . \$host);
 }
 
 // Absolute path to application
@@ -68,12 +69,14 @@ define('STATUS_DELETED_NUM', 0);
 define('STATUS_ACTIVE_NUM', 1);
 define('STATUS_COLUMN_NAME', 'active');";
 
+    return $configText;
+}
 
-function WriteConfig() {
-  global $configText;
-  file_put_contents("../api/config.php", $configText);
+function WriteConfig($data, $base = '..') {
+    $configText = buildConfig($data);
+    file_put_contents($base . '/api/config.php', $configText);
 
-  $configuration = "<?php
+    $configuration = "<?php
 
 /**
  * High priority use case, not super planned out yet.
@@ -83,63 +86,62 @@ function WriteConfig() {
 
 return array(
 
-  'session' => array(
-    'prefix' =>  'directus6_'
-  ),
-
-  'HTTP' => array(
-    'forceHttps' => false,
-    'isHttpsFn' => function () {
-      // Override this check for custom arrangements, e.g. SSL-termination @ load balancer
-      return isset(".'$_SERVER[\'HTTPS\']) && $_SERVER[\'HTTPS\']'." != 'off';
-    }
-  ),
-
-  // Define this to send emails e.g. forgot password
-  'SMTP' => array(
-    'host' => '',
-    'port' => 25,
-    'username' => '',
-    'password' => ''
-  ),
-
-  'dbHooks' => array(
-    'postInsert' => function (".'$TableGateway, $record, $db, $acl'.") {
-
-    },
-    'postUpdate' => function (".'$TableGateway, $record, $db, $acl'.") {
-      ".'$tableName = $TableGateway->getTable()'.";
-      switch(".'$tableName'.") {
-        // ...
-      }
-    }
-  ),
-
-  // These tables will not be loaded in the directus schema
-  'tableBlacklist' => array(
-
-  ),
-
-  'statusMapping' => array(
-    '0' => array(
-      'name' => 'Delete',
-      'color' => '#C1272D',
-      'sort' => 3
+    'session' => array(
+        'prefix' =>  'directus6_'
     ),
-    '1' => array(
-      'name' => 'Active',
-      'color' => '#5B5B5B',
-      'sort' => 1
+
+    'HTTP' => array(
+        'forceHttps' => false,
+        'isHttpsFn' => function () {
+            // Override this check for custom arrangements, e.g. SSL-termination @ load balancer
+            return isset(".'$_SERVER[\'HTTPS\']) && $_SERVER[\'HTTPS\']'." != 'off';
+        }
     ),
-    '2' => array(
-      'name' => 'Draft',
-      'color' => '#BBBBBB',
-      'sort' => 2
+
+    // Define this to send emails e.g. forgot password
+    'SMTP' => array(
+        'host' => '',
+        'port' => 25,
+        'username' => '',
+        'password' => ''
+    ),
+
+    'dbHooks' => array(
+        'postInsert' => function (".'$TableGateway, $record, $db, $acl'.") {
+
+        },
+        'postUpdate' => function (".'$TableGateway, $record, $db, $acl'.") {
+            ".'$tableName = $TableGateway->getTable()'.";
+            switch(".'$tableName'.") {
+                // ...
+            }
+        }
+    ),
+
+    // These tables will not be loaded in the directus schema
+    'tableBlacklist' => array(
+
+    ),
+
+    'statusMapping' => array(
+        '0' => array(
+            'name' => 'Delete',
+            'color' => '#C1272D',
+            'sort' => 3
+        ),
+        '1' => array(
+            'name' => 'Active',
+            'color' => '#5B5B5B',
+            'sort' => 1
+        ),
+        '2' => array(
+            'name' => 'Draft',
+            'color' => '#BBBBBB',
+            'sort' => 2
+        )
     )
-  )
 
 );";
 
-  file_put_contents("../api/configuration.php", $configuration);
-
+    file_put_contents($base . '/api/configuration.php', $configuration);
 }

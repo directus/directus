@@ -1,6 +1,6 @@
 <?php
 
-if(is_writable('../api/config.php')) {die("true");}
+if(is_writable('../api')) {die("true");}
 
 die('false');
 

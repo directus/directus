@@ -103,7 +103,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
           error: function(model, XMLHttpRequest) {
             //If Cant Find Model Then Open New Entry Page
             if(404 === XMLHttpRequest.status) {
-              var route = Backbone.history.fragment;
+              var route = Backbone.history.fragment.split('/');
               route.pop();
               route.push('new');
               app.router.go(route);

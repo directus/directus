@@ -229,7 +229,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
 
     if($response['success']) {
         unset($response['message']);
-        $response['last_page'] = $user['last_page'];
+        $response['last_page'] = json_decode($user['last_page']);
         $set = array('last_login' => new Expression('NOW()'));
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
@@ -486,10 +486,11 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   if(!isset($params['columns'])) {
     $params['columns'] = '';
   }
-  $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
+  if(!array_key_exists('include_inactive', $params)) {
+    $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
+  }
 
-  $columns = explode(',', $params['columns']);
-
+  $columns = ($params['columns']) ? explode(',', $params['columns']) : array();
   if(count($columns) > 0) {
     $params['group_by'] = $columns[0];
 
@@ -807,7 +808,10 @@ $app->map("/$v/bookmarks(/:id)/?", function($id = null) use ($params, $app, $Zen
       $id = $bookmarks->insertBookmark($requestPayload);
       break;
     case "DELETE":
-      echo $bookmarks->delete(array('id' => $id));
+      $bookmark = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
+      if($bookmark) {
+        echo $bookmarks->delete(array('id' => $id));
+      }
       return;
   }
   $jsonResponse = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
@@ -862,7 +866,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       'single' => (int)$data['single'],
       'is_junction_table' => (int)$data['is_junction_table'],
       'footer' => (int)$data['footer'],
-      'primary_column' => $data['primary_column']
+      'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
     );
 
     //@TODO: Possibly pretty this up so not doing direct inserts/updates

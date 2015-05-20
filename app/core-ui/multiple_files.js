@@ -190,7 +190,10 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
       };
 
       // Fetch first time to get the nested tables
-      model.fetch();
+      // Only fetch if it's not a new entry
+      if(!model.isNew()) {
+        model.fetch();
+      }
     },
 
     drop: function() {

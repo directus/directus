@@ -203,6 +203,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
         var tableRelated = this.model.get('table_related');
         var junctionTable = this.model.get('junction_table');
+        var junctionKeyRight = this.model.get('junction_key_right');
 
         var tables = app.schemaManager.getTables();
         tables = tables.map(function(model) {
@@ -235,8 +236,12 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         } else {
           if (tableRelated !== undefined) {
             data.columns = app.schemaManager.getColumns('tables', tableRelated).map(function(model) {
-              return {column_name: model.id, selected: (model.id === this.model.get('junction_key_right'))};
+              return {column_name: model.id, selected: (model.id === junctionKeyRight)};
             }, this);
+          }
+          if(!junctionKeyRight && data.columns.length > 0) {
+            junctionKeyRight = data.columns[0].column_name;
+            this.model.set({junction_key_right: junctionKeyRight});
           }
         }
 
@@ -677,6 +682,15 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       return _.contains(permissions, 'bigview');
     },
 
+    flashItem: function(entryID, bodyScrollTop) {
+      document.body.scrollTop = parseInt(bodyScrollTop, 10) || 0;
+      app.on('load', function() {
+        if(entryID) {
+          this.$el.find('tr[data-id="' + entryID + '"]').flashRow();
+        }
+      }, this);
+    },
+
     beforeRender: function() {
       this.collection.each(function(model){
         if (!this.isValidModel(model)) {
@@ -691,6 +705,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         this.addRowView(model);
         this.moveRowView(model);
       });
+      this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
     }
   });
 
@@ -763,24 +778,45 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     events: {
-      'click #addBtn': function() {
+      'click #addBtn': 'addTableConfirmation'
+    },
+
+    addTableConfirmation: function() {
+      app.router.openModal({type: 'prompt', text: 'Please enter the name of the table you would like to add', callback: _.bind(this.addTable, this)});
+    },
+
+    addTable: function(tableName) {
+      if(tableName && !app.schemaManager.getPrivileges(tableName)) {
+        // @TODO: make this save a table info rather than permissions.
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Please enter the name of the table you would like to add', callback: function(tableName) {
-          if(tableName && !app.schemaManager.getPrivileges(tableName)) {
-            var model = new Backbone.Model();
-            model.url = app.API_URL + 'privileges/1';
-            model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
-            model.save({}, {success: function(model){
-              var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
-              tableModel.fetch({
-                success: function() {
-                  that.collection.add(tableModel); 
-                }
-              });
-            }});
-          }
+        var model = new Backbone.Model();
+        model.url = app.API_URL + 'privileges/1';
+        model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
+        model.save({}, {success: function(model){
+          var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
+          tableModel.fetch({
+            success: function(model) {
+              that.registerTable(model);
+            }
+          });
         }});
       }
+    },
+
+    registerTable: function(tableModel) {
+      app.schemaManager.register('tables', [{schema: tableModel.toJSON()}]);
+      app.schemaManager.registerPrivileges([{
+        table_name: tableModel.get('table_name'),
+        permissions: "add,edit,bigedit,delete,bigdelete,alter,view,bigview",
+        group_id: app.getCurrentGroup()
+      }]);
+      app.schemaManager.registerPreferences([tableModel.preferences.toJSON()]);
+      app.router.bookmarks.add(new Backbone.Model({
+        icon_class: '',
+        title: app.capitalize(tableModel.get('table_name')),
+        url: 'tables/' + tableModel.get('table_name'),
+        section: 'table'
+      }));
     }
   });
 

@@ -58,12 +58,12 @@ function(app, Backbone) {
     },
 
     comparatorValue: function(a, b) {
-      var cmp = 0;
+      var cmp;
 
       if (typeof a === "string" && typeof b === "string") {
         cmp = a.localeCompare(b);
       } else {
-        cmp = (a > b) ? 1 : -1;
+        cmp = ( a > b ) ? 1 : -1;
       }
 
       if (this.getFilter('sort_order')==='DESC') cmp*=-1;
@@ -78,8 +78,14 @@ function(app, Backbone) {
 
       // @todo find a better way to check is a entriesjunctioncollection
       if(rowA.collection.nestedCollection && ['sort', 'id'].indexOf(column) < 0) {
-        valueA = rowA.get('data').get(column);
-        valueB = rowB.get('data').get(column);
+        rowA = rowA.get('data');
+        rowB = rowB.get('data');
+      }
+
+      if (UIManager.hasList(rowA, column)) {
+        // Sort relational columns in listview https://github.com/RNGR/Directus/issues/452
+        valueA = UIManager.getList(rowA, column) || '';
+        valueB = UIManager.getList(rowB, column) || '';
       } else {
         valueA = rowA.get(column);
         valueB = rowB.get(column);
@@ -186,6 +192,11 @@ function(app, Backbone) {
       if (options.includeFilters) {
         var filters = this.getFilters();
         if(filters && filters.columns_visible && !(filters.columns_visible.indexOf(filters.sort) != -1) && this.structure.get(filters.sort)) {
+          // when there's only one visible column
+          // it's an string so we need to convert it to an array
+          if(typeof filters.columns_visible === 'string') {
+            filters.columns_visible = filters.columns_visible.split();
+          }
           filters.columns_visible.push(filters.sort);
         }
         _.extend(options.data, filters);

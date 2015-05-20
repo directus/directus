@@ -353,11 +353,10 @@ define(function(require, exports, module) {
 
     initialize: function(data, options) {
       this.on('invalid', function(model, errors) {
-        var details = _.map(errors, function(err) { return err.attr+': '+err.message; }).join('<br>');
-        details = 'Table:\t' + this.getTable().id +
-                  '<br>ID:\t' + this.id +
-                  '<br>-----------------------<br>' + details;
-        app.trigger('alert:error', 'The data is not valid', details);
+        var details = _.map(errors, function(err) { return '<b>'+app.capitalize(err.attr)+':</b> '+err.message; }).join('</li><li>');
+        var error_id = (this.id)? this.id : 'New';
+        details = app.capitalize(this.getTable().id) + ' (' + error_id + ')' + '<hr><ul><li>' + details + '</li></ul>';
+        app.trigger('alert:error', 'There seems to be a problem...', details);
       });
     },
 

@@ -1,15 +1,9 @@
 {
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/WellingGuzman/ruckusing-migrations"
-    }
-  ],
   "require": {
-    "slim/slim": "2.2.0",
+    "slim/slim": "2.3.2",
     "slim/extras": "dev-develop",
     "zendframework/zend-db": "2.1.*@dev",
-    "ruckusing/ruckusing-migrations": "dev-welling"
+    "directus/migrations": "dev-master"
   },
   "_require": {
     "rackspace/php-opencloud": "dev-master",

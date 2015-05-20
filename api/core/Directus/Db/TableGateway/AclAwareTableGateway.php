@@ -284,13 +284,17 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
     public function addColumn($tableName, $tableData) {
       $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
       $data_type = $tableData['data_type'];
+      // TODO: list all types which need manytoone ui
+      // Hard-coded
+      $manytoones = array('single_file', 'MANYTOONE');
 
       if (in_array($data_type, $directus_types)) {
           //This is a 'virtual column'. Write to directus schema instead of MYSQL
           $this->addVirtualColumn($tableName, $tableData);
       } else {
           $this->addTableColumn($tableName, $tableData);
-          if(array_key_exists('ui', $tableData) && $tableData['ui'] == 'single_file' ) {
+          // Temporary solutions to #481, #645
+          if(array_key_exists('ui', $tableData) && in_array($tableData['ui'], $manytoones)) {
             $tableData['relationship_type'] = 'MANYTOONE';
             $tableData['junction_key_right'] = $tableData['column_name'];
             $this->addVirtualColumn($tableName, $tableData);
@@ -327,8 +331,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return Bootstrap::get('app')->getLog();
     }
 
-    public function castFloatIfNumeric(&$value) {
-        $value = is_numeric($value) ? (float) $value : $value;
+    public function castFloatIfNumeric(&$value, $key) {
+        if ($key != 'table_name') {
+            $value = is_numeric($value) ? (float) $value : $value;
+        }
     }
 
     /**
@@ -561,6 +567,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
           } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {
             $canHardDelete = true;
           }
+        }
+
+        // @todo: clean way
+        if ($deleteTable === 'directus_bookmarks') {
+          $canBigHardDelete = true;
         }
         
         /**

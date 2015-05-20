@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+define('DIRECTUS_PATH', dirname(dirname(__FILE__)));
+
+// Composer Autoloader
+$loader = require __DIR__ . '/../api/vendor/autoload.php';
+$loader->add("Directus", __DIR__ . '/../api/core/');
+$loader->add("Ruckusing", "../api/vendor/ruckusing/ruckusing-migrations/lib/");
+
+use Directus\Util\Installation\Console;
+
+$cli = new Console();
+
+$cli->run();
+
+?>

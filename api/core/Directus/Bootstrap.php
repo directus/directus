@@ -175,7 +175,15 @@ class Bootstrap {
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
         );
-        $db = new \Zend\Db\Adapter\Adapter($dbConfig);
+
+        try {
+            $db = new \Zend\Db\Adapter\Adapter($dbConfig);
+            $db->getDriver()->getConnection()->connect();
+        } catch (\Exception $e) {
+            echo 'Database connection failed.';
+            exit;
+        }
+
         return $db;
 //        $dbConfig = array(
 //            'driver'    => 'Pdo_Mysql',

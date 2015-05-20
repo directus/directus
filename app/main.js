@@ -179,7 +179,8 @@ require(["config"], function() {
       app.messages.on('sync', function(collection, object) {
         if (object !== null && object.rows) {
           object.rows.forEach(function(msg) {
-            noty({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + msg.responses.models[msg.responses.models.length-1].attributes.message + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
+            var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
+            noty({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + message_excerpt + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
               callback: {
                 onCloseClick: function() {
                   Backbone.history.navigate('/messages/' + msg.id, true);
@@ -333,6 +334,45 @@ require(["config"], function() {
         };
 
         options.error = errorCodeHandler;
+
+        // Force fix: https://github.com/RNGR/Directus/issues/776
+        // when $.ajax global is false there's not global event fired
+        // the code below wouldn't run on .ajaxSend
+        // therefore we run it here
+
+        if(options.global == false) {
+          var url = '';
+          var collection = {};
+
+          if (model.url) {
+            collection = model;
+          } else if(model.collection) {
+            collection = model.collection;
+          }
+
+          if(typeof collection.url === "function") {
+            url = collection.url();
+          } else {
+            url = collection.url;
+          }
+
+          if (url) {
+            var isApiRequest = url.substr(0, app.API_URL.length) == app.API_URL;
+            if(isApiRequest) {
+              nonce = nonces.pool.pop();
+              options.beforeSend = function(xhr) {
+                xhr.setRequestHeader(nonces.nonce_request_header, nonce);
+              };
+              options.complete = function(xhr) {
+                var new_nonces = xhr.getResponseHeader(nonces.nonce_response_header);
+                if(new_nonces) {
+                  new_nonces = new_nonces.split(',');
+                  nonces.pool.push.apply(nonces.pool, new_nonces);
+                }
+              }
+            }
+          }
+        }
 
         sync(method, model, options);
       };
