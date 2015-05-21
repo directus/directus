@@ -48,6 +48,7 @@ use Directus\Files;
 use Directus\Files\Upload;
 use Directus\MemcacheProvider;
 use Directus\Util;
+use Directus\Util\Session;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
 use Directus\Db\TableGateway\DirectusIPWhitelist;
@@ -302,24 +303,10 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     }
 
     $password = uniqid();
-    $appURL = HOST_URL; // Took this out of the email body since it refers to the wrong URL (app, not directus)
-
-    $emailBodyPlainText = <<<EMAILBODY
-Hey there,
-
-Here is a temporary password to access Directus:
-
-$password
-
-Once you log in, you can change your password via the User Settings menu.
-
-Thanks!
-Directus
-EMAILBODY;
-
     $set = array();
     $set['salt'] = uniqid();
     $set['password'] = Auth::hashPassword($password, $set['salt']);
+
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
     $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
@@ -330,11 +317,9 @@ EMAILBODY;
         ));
     }
 
-    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
-    'Reply-To: donotreply@getdirectus.com' . "\r\n" .
-    'X-Mailer: PHP/' . phpversion();
+    $mail = new Directus\Mail\Mailer(new Directus\Mail\ForgotPasswordMail($user['email'], $password));
+    $mail->send();
 
-    mail($user['email'], 'You Reset Your Directus Password', $emailBodyPlainText, $headers);
     $success = true;
     return JsonView::render(array(
         'success' => $success
