@@ -10,7 +10,7 @@ function(app, Backbone) {
   var Collection = Backbone.Collection.extend({
 
     initialize: function(models, options) {
-      this.filters = options.filters;
+      this.filters = options.filters || {};
     },
 
     getColumns: function() {
