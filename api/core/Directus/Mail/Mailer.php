@@ -20,7 +20,7 @@ class Mailer extends \PHPMailer
      */
     private $settings = array();
 
-    public function __construct(MailTypeInterface $mail = null)
+    public function __construct()
     {
         parent::__construct(false);
 
@@ -31,16 +31,25 @@ class Mailer extends \PHPMailer
             $this->settings[$setting['collection']][$setting['name']] = $setting['value'];
         }
 
-        if ($mail !== null) {
-            $this->parseMailObject($mail);
-        }
-
         $this->setFrom('noreply@getdirectus.com', 'Directus');
         $this->addReplyTo('noreply@getdirectus.com', 'No Reply');
 
         $this->headers[] = 'X-Mailer: PHP/' . phpversion();
         $this->headers[] = 'MIME-Version: 1.0';
-        $this->headers[] = 'Content-type: text/html; charset=utf8';
+
+        $this->ContentType = 'text/html';
+    }
+
+    public function send(MailTypeInterface $mail = null)
+    {
+        if ($mail !== null) {
+            $this->parseMailObject($mail);
+        }
+
+        $return = parent::send();
+        $this->ClearAllRecipients();
+
+        return $return;
     }
 
     public function setSubject($subject)
