@@ -84,7 +84,11 @@ function(app, Backbone) {
       if(this.$el.find('input')) {
         val = this.$el.find('input').val();
       }
-      this.options.callback(val);
+
+      if (_.isFunction(this.options.callback)) {
+        this.options.callback(val);
+      }
+
       this.close();
     },
 
