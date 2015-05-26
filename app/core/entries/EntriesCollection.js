@@ -113,6 +113,17 @@ define(function(require, exports, module) {
       }
     },
 
+    saveAll: function(options) {
+      options = options || {};
+      var originalURL = this.url;
+      var method = options.patch ? 'patch' : 'update';
+
+      this.url += '/bulk';
+      this.sync(method, this, options);
+      this.url = originalURL;
+      this.trigger('sync');
+    },
+
     setFilter: function(key, value, options) {
       var attrs, preferencesHasChanged = false;
       if (key === null || typeof key === 'object') {
