@@ -164,6 +164,7 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
       var collection = this.collection;
 
       this.listenTo(collection, 'sync', function(model, resp, options) {
+        options = options || {};
         if (options.silent) return;
         this.render();
       });
