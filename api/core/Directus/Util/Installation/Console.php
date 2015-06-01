@@ -9,8 +9,9 @@ class Console
     private $command = '';
     private $options = array();
     private $dbh = null;
+    private $directusPath = '';
 
-    public function __construct($argv = array())
+    public function __construct($directusPath = '', $argv = array())
     {
         if (!$argv) {
             $argv = $_SERVER['argv'] ?: array();
@@ -18,6 +19,8 @@ class Console
 
         // get rid of the command name
         array_shift($argv);
+
+        $this->directusPath = $directusPath;
 
         $this->command = array_shift($argv);
         $this->options = $this->parseOptions($argv);
@@ -27,8 +30,8 @@ class Console
 
     private function connectDatabase()
     {
-        if (file_exists( DIRECTUS_PATH . '/api/config.php')) {
-            require DIRECTUS_PATH . '/api/config.php';
+        if (file_exists( $this->directusPath . '/api/config.php')) {
+            require $this->directusPath . '/api/config.php';
 
             try {
                 $this->dbh = new \PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASSWORD);
@@ -56,7 +59,7 @@ class Console
 
     private function createConfig()
     {
-        require DIRECTUS_PATH . '/installation/config_setup.php';
+        require $this->directusPath . '/installation/config_setup.php';
 
         $options = $this->options;
         foreach($options as $key => $value) {
@@ -89,25 +92,24 @@ class Console
             }
         }
 
-        $data = $options;
-        WriteConfig($data, DIRECTUS_PATH);
+        WriteConfig($options, $this->directusPath);
 
         $this->clear();
     }
 
     private function createDatabase()
     {
-        if (!file_exists(DIRECTUS_PATH . '/api/config.php')) {
+        if (!file_exists($this->directusPath . '/api/config.php')) {
             echo "Config file does not exists, run [directus config]" . PHP_EOL;
             exit;
         }
 
-        if (!file_exists(DIRECTUS_PATH . '/api/ruckusing.conf.php')) {
+        if (!file_exists($this->directusPath . '/api/ruckusing.conf.php')) {
             echo "Migration configuration file does not exists" . PHP_EOL;
             exit;
         }
 
-        $config = require DIRECTUS_PATH . '/api/ruckusing.conf.php';
+        $config = require $this->directusPath . '/api/ruckusing.conf.php';
         $dbconfig = getDatabaseConfig(array(
           'type' => 'mysql',
           'host' => DB_HOST,
@@ -131,7 +133,7 @@ class Console
 
     private function install()
     {
-        if (!file_exists(DIRECTUS_PATH . '/api/config.php')) {
+        if (!file_exists($this->directusPath . '/api/config.php')) {
             echo "Config file does not exists, run [directus config]" . PHP_EOL;
             exit;
         }
@@ -242,7 +244,7 @@ class Console
         $options = array();
 
         foreach($argv as $arg) {
-            if(preg_match("/^(--)([A-Za-z0-9-_]+)(=)?([A-Za-z0-9-_@\.\ ]+)*$/", $arg, $argMatch)) {
+            if(preg_match("/^(-{1,2})([A-Za-z0-9-_]+)(=)?([A-Za-z0-9-_@\.\ ]+)*$/", $arg, $argMatch)) {
                 $value = '';
                 if (count($argMatch) == 5) {
                     $value = $argMatch[4];

@@ -29,7 +29,11 @@ use Directus\Db\TableSchema;
 // No access, forward to login page
 unset($_SESSION['_directus_login_redirect']);
 if (!AuthProvider::loggedIn()) {
-    $redirect = urlencode(trim($_SERVER['REQUEST_URI'], '/'));
+    $request_uri = $_SERVER['REQUEST_URI'];
+    if (strpos($request_uri, DIRECTUS_PATH) === 0) {
+        $request_uri = substr($request_uri, strlen(DIRECTUS_PATH));
+    }
+    $redirect = urlencode(trim($request_uri, '/'));
     if($redirect) {
         $_SESSION['_directus_login_redirect'] = $redirect;
         $redirect = '?redirect=' . $redirect;

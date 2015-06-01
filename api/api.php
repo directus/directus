@@ -302,24 +302,10 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     }
 
     $password = uniqid();
-    $appURL = HOST_URL; // Took this out of the email body since it refers to the wrong URL (app, not directus)
-
-    $emailBodyPlainText = <<<EMAILBODY
-Hey there,
-
-Here is a temporary password to access Directus:
-
-$password
-
-Once you log in, you can change your password via the User Settings menu.
-
-Thanks!
-Directus
-EMAILBODY;
-
     $set = array();
     $set['salt'] = uniqid();
     $set['password'] = Auth::hashPassword($password, $set['salt']);
+
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
     $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
@@ -330,11 +316,9 @@ EMAILBODY;
         ));
     }
 
-    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
-    'Reply-To: donotreply@getdirectus.com' . "\r\n" .
-    'X-Mailer: PHP/' . phpversion();
+    $mail = new Directus\Mail\Mailer();
+    $mail->send(new Directus\Mail\ForgotPasswordMail($user['email'], $password));
 
-    mail($user['email'], 'You Reset Your Directus Password', $emailBodyPlainText, $headers);
     $success = true;
     return JsonView::render(array(
         'success' => $success
@@ -1049,31 +1033,24 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
       $Activity->recordMessage($requestPayload, $currentUser['id']);
     }
 
-    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
-    'Reply-To: donotreply@getdirectus.com' . "\r\n" .
-    'X-Mailer: PHP/' . phpversion();
-
-    $warning = null;
-
+    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
-      $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
-      $user = $usersTableGateway->findOneBy('id', $recipient);
+        $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+        $user = $usersTableGateway->findOneBy('id', $recipient);
 
-      if(isset($user) && $user['email_messages'] == 1) {
-        try {
-            mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
-        } catch(\Exception $e) {
-            $warning = $e->getMessage();
+        if(isset($user) && $user['email_messages'] == 1) {
+            $messageNotificationMail = new Directus\Mail\NotificationMail(
+                                    $user['email'],
+                                    $requestPayload['subject'],
+                                    $requestPayload['message']
+                                );
+
+            $mail->send($messageNotificationMail);
+            $mail->ClearAllRecipients();
         }
-      }
     }
 
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
-
-    //Attach warning if thier are any
-    if($warning != null) {
-        $message['warning'] = $warning;
-    }
 
     JsonView::render($message);
 });
@@ -1150,23 +1127,19 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
       $i++;
     }
 
-    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
-      'Reply-To: donotreply@getdirectus.com' . "\r\n" .
-      'MIME-Version: 1.0' . "\r\n" .
-      'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
-      'X-Mailer: PHP/' . phpversion();
-
-    $messageBody.="<br/><br/>--<br/>
-      This message was sent to ".$recipientString.".<br/>
-      Please <a href='".HOST_URL.DIRECTUS_PATH."'>log in</a> to change your email settings.<br/><br/>
-      <i>Delivered by <a href='http://getdirectus.com/'>Directus</a></i>";
-
+    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
-      $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
-      $user = $usersTableGateway->findOneBy('id', $recipient);
+        $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+        $user = $usersTableGateway->findOneBy('id', $recipient);
 
-      if(isset($user) && $user['email_messages'] == 1) {
-        mail($user['email'],$requestPayload['subject'], $messageBody, $headers);
+        if(isset($user) && $user['email_messages'] == 1) {
+            $NotificationMail = new Directus\Mail\NotificationMail(
+                                    $user['email'],
+                                    $requestPayload['subject'],
+                                    $requestPayload['message']
+                                );
+
+            $mail->send($NotificationMail);
       }
     }
   }
