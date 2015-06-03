@@ -216,30 +216,6 @@ gulp.task('singlepage', function () {
 });
 
 // --------------------
-// Media - Gulp Task
-// Creates media dir
-// --------------------
-gulp.task('media', function(cb) {
-  var exec = cp.exec,
-      commands = [
-        'mkdir -p dist/media/thumbs',
-        'mkdir -p dist/media/temp',
-        // to be able to push these empty directories
-        // we need to create .gitkeep file
-        'touch dist/media/.gitkeep', // we actually don't need this, just to know.
-        'touch dist/media/thumbs/.gitkeep',
-        'touch dist/media/temp/.gitkeep'
-      ];
-
-  exec(commands.join(' && '), function(err, stdout, stderr){
-    if (err !== null) {
-      console.log('exec error: ', err);
-    }
-    cb();
-  })
-});
-
-// --------------------
 // Composer - Gulp Task
 // --------------------
 gulp.task('composer', function(cb) {
@@ -327,7 +303,7 @@ gulp.task('jscs', function() {
 // Build - Gulp Task
 // Run all the tasks
 // ------------------- 'composer',
-gulp.task('build', ['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'media', 'move']);
+gulp.task('build', ['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move']);
 
 // Default task
 gulp.task('default', ['watch', 'build']);
