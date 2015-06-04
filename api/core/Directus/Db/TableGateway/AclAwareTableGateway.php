@@ -260,6 +260,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                   $ext = 'jpg';
                 }
                 $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $recordData['id'].".".$ext, $thumbnailDestination);
+                unlink($tempLocation.$thumbnailName);
               }
             }
 
