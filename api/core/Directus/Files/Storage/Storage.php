@@ -241,6 +241,7 @@ class Storage {
             $destName = ($newName == null) ? $fileName : $newName;
             $finalPath = $this->FilesStorage->acceptFile($tempLocation.$fileName, $destName, $filesAdapter['destination']);
             $finalName = basename($finalPath);
+            unlink($tempLocation.$fileName);
           } else{
             $finalName = $fileName;
           }

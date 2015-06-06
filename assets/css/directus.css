@@ -1737,7 +1737,8 @@ a.secondary-info:hover {
   -webkit-font-smoothing: antialiased;
 }
 .add-color-background {
-  color: #7ac943 !important;
+  background-color: #7ac943 !important;
+  color: #ffffff !important;
 }
 .add-color-border {
   border-color: #7ac943 !important;
@@ -4444,8 +4445,8 @@ body.initial-load #sidebar {
   cursor: pointer;
 }
 .header1 .tools .tool-item.add-color-background:hover {
-  background-color: #7ac943;
-  color: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #7ac943 !important;
 }
 .header1 .tools .tool-item:hover {
   background-color: #888888;
