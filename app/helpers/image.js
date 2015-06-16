@@ -92,7 +92,6 @@ define(function() {
         canvas.width = MAX_WIDTH;
         canvas.height = MAX_HEIGHT;
         var ctx = canvas.getContext("2d");
-        console.log(width, height);
         ctx.drawImage(img, x, y, width, height);
 
         var dataurl = canvas.toDataURL("image/png");
