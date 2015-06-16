@@ -60,12 +60,12 @@ define(function() {
     // this method try to fit a image
     // into a box [width]x[height]
     // no fancy resizing
-    resizeFromData: function(fileData, w, h, fn) {
+    resizeFromData: function(fileData, thumbnailWidth, thumbnailHeight, fn) {
       var img = new Image();
       img.src = fileData;
       img.onload = function() {
-        var MAX_WIDTH = w;
-        var MAX_HEIGHT = h;
+        var MAX_WIDTH = thumbnailWidth;
+        var MAX_HEIGHT = thumbnailHeight;
         var width = this.width;
         var height = this.height;
         var x = 0;
