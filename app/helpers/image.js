@@ -2,7 +2,7 @@ define(function() {
 
   'use strict';
 
-  var _Image = {
+  var ImageHelper = {
     isImage: function(url, fn) {
       var img = new Image();
       
@@ -103,5 +103,5 @@ define(function() {
     }
   };
 
-  return _Image;
+  return ImageHelper;
 });
