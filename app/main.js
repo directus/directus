@@ -482,12 +482,16 @@ require(["config"], function() {
       // attribute, bypass the delegation completely.
       $(document).on("click", "a[href]:not([data-bypass])", function(evt) {
         // Get the absolute anchor href.
-        var href = { prop: $(this).prop("href"), attr: $(this).attr("href") };
+        var href = {
+          prop: $(this).prop('href'),
+          attr: $(this).attr('href'),
+          target: $(this).attr('target')
+        };
         // Get the absolute root.
         var root = location.protocol + "//" + location.host + app.root;
 
         // Ensure the root is part of the anchor href, meaning it's relative.
-        if (href.prop.slice(0, root.length) === root) {
+        if (href.prop.slice(0, root.length) === root && href.target != '_BLANK') {
           // Stop the default event to ensure the link will not cause a page
           // refresh.
           evt.preventDefault();
