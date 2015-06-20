@@ -69,6 +69,14 @@ function(app, Backbone, Widgets, moment) {
       return {rows: rows};
     },
 
+    afterRender: function() {
+      // Show fallback image if file missing
+      $('.header-image > img', this.$el).error(function() {
+        $(this).off('error');
+        $(this).attr('src', app.root + 'assets/img/missing-image-placeholder.jpg');
+      });
+    },
+
     initialize: function(options) {
       this.collection.setOrder('date_uploaded', 'DESC');
       this.collection.on('sort', this.render, this);
