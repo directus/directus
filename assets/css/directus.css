@@ -1525,22 +1525,7 @@ button {
   font-size: 14px;
   font-weight: 600;
   z-index: 110;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-topleft: 3px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
-  -moz-background-clip: padding-box;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  box-shadow: 0 0 20px rgba(51, 51, 51, 0.3);
+  box-shadow: 0 2px 6px #aaaaaa;
   -webkit-font-smoothing: antialiased;
 }
 .directus-alert-modal .directus-alert-modal-message {

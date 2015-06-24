@@ -28,7 +28,7 @@ function(app, Backbone) {
         var value = $(e.target).closest('span').attr('data-value');
         if(value == 0) {
           var that = this;
-          app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system.', callback: function() {
+          app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system!', callback: function() {
             that.doAction(e);
           }});
         } else {

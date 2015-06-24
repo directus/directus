@@ -216,7 +216,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       },
       'click button[data-action="url"]': function(e) {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Enter Url', callback: function(url) {
+        app.router.openModal({type: 'prompt', text: 'Enter a URL:', callback: function(url) {
           if(!url) {
             return;
           }

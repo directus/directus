@@ -20,7 +20,7 @@ function(app, Backbone, Directus, EntriesManager) {
         var diff = this.translateModel.diff(this.editView.data());
         delete diff.id;
         if(!$.isEmptyObject(diff)) {
-          app.router.openModal({type: 'yesnocancel', text: 'Do you wish to save changes to current Translation?', callback: function(response) {
+          app.router.openModal({type: 'yesnocancel', text: 'Would you like to save this translation?', callback: function(response) {
             if(response === 'yes') {
               that.saveTranslation();
             }

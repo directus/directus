@@ -614,7 +614,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
 
       if(!data.primary_column) {
-        app.router.openModal({type: 'alert', text: 'Please Select A Primary Column', callback: function(tableName) {
+        app.router.openModal({type: 'alert', text: 'Please choose a primary column:', callback: function(tableName) {
         }});
         return;
       }
@@ -782,7 +782,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     addTableConfirmation: function() {
-      app.router.openModal({type: 'prompt', text: 'Please enter the name of the table you would like to add', callback: _.bind(this.addTable, this)});
+      app.router.openModal({type: 'prompt', text: 'What would you like to name this table?', callback: _.bind(this.addTable, this)});
     },
 
     addTable: function(tableName) {
