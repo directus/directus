@@ -4523,6 +4523,7 @@ body.initial-load #sidebar {
 .header1 .secondary-row.filter-options .filter-form {
   float: left;
   height: 33px;
+  background-color: #ffffff;
 }
 .header1 .secondary-row.filter-options .filter-form .simple-select {
   margin-top: 0px;
@@ -4556,24 +4557,9 @@ body.initial-load #sidebar {
 }
 .header1 .secondary-row.filter-options .filter-form select,
 .header1 .secondary-row.filter-options .filter-form input[type="text"] {
-  -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomright: 0;
-  -moz-border-radius-bottomleft: 0;
-  -moz-border-radius-topleft: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-  -moz-background-clip: padding-box;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
   background-color: #ffffff;
   border: 0px;
-  padding: 8px;
+  padding: 8px 22px 8px 8px;
   margin: 0;
 }
 .header1 .secondary-row .filters {
@@ -4583,21 +4569,6 @@ body.initial-load #sidebar {
   display: inline-block;
   font-weight: 600;
   background-color: #ececec;
-  -webkit-border-top-right-radius: 2px;
-  -webkit-border-bottom-right-radius: 2px;
-  -webkit-border-bottom-left-radius: 2px;
-  -webkit-border-top-left-radius: 2px;
-  -moz-border-radius-topright: 2px;
-  -moz-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomleft: 2px;
-  -moz-border-radius-topleft: 2px;
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px;
-  border-bottom-left-radius: 2px;
-  border-top-left-radius: 2px;
-  -moz-background-clip: padding-box;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
   position: relative;
   margin: 0 0 0 10px;
   color: #aaaaaa;
@@ -4606,8 +4577,8 @@ body.initial-load #sidebar {
 }
 .header1 .secondary-row .filters li .filter-name {
   position: absolute;
-  top: -12px;
-  left: 0px;
+  top: -13px;
+  left: 1px;
   color: #aaaaaa;
   font-size: 9px;
   text-transform: uppercase;
@@ -4620,7 +4591,7 @@ body.initial-load #sidebar {
   color: #aaaaaa;
   top: 8px;
   position: relative;
-  margin: 0 6px 0 3px;
+  margin: 0 6px 0 -16px;
   cursor: pointer;
 }
 .header1 .secondary-row .filters li .filter-remove:hover {
@@ -4628,17 +4599,20 @@ body.initial-load #sidebar {
 }
 .header1 .secondary-row .filters li input {
   width: 120px;
-  background-color: #ececec;
+  background-color: #ffffff;
   color: #888888;
   padding: 7px 0 0 7px;
 }
 .header1 .secondary-row .filters li input[type="checkbox"] {
   width: 30px;
   margin-top: 10px;
-  margin-left: 10px;
+  margin-left: 8px;
+  margin-right: 10px;
 }
 .header1 .secondary-row .filters li input[type="date"] {
   max-width: 120px;
+  width: 120px;
+  margin-right: 20px;
 }
 .header1 .secondary-row li {
   font-size: 12px;

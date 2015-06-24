@@ -289,6 +289,7 @@
         float: left;
         //margin-left: @smallPad;
         height: 33px;
+        background-color: @white;
         .simple-select {
           //margin-right: @extraSmallPad;
           margin-top: 0px;
@@ -321,10 +322,10 @@
           margin-left: 4px;
         }
         select, input[type="text"] {
-          .border-radius();
+          //.border-radius();
           background-color: @white;
           border: 0px;
-          padding: 8px;
+          padding: 8px 22px 8px 8px;
           margin: 0;
         }
       }
@@ -335,7 +336,7 @@
         display: inline-block;
         font-weight: 600;
         background-color: @lightGrey;
-        .border-radius(2px, 2px, 2px, 2px);
+        //.border-radius(2px, 2px, 2px, 2px);
         position: relative;
         margin: 0 0 0 10px;
         //padding: 3px;
@@ -344,8 +345,8 @@
         height: 27px;
         .filter-name {
           position: absolute;
-          top: -12px;
-          left: 0px;
+          top: -13px;
+          left: 1px;
           color: @mediumGrey;
           font-size: 9px;
           text-transform: uppercase;
@@ -359,7 +360,7 @@
           color: @mediumGrey;
           top: 8px;
           position: relative;
-          margin: 0 6px 0 3px;
+          margin: 0 6px 0 -16px;
           cursor: pointer;
           &:hover {
             color: @deleteColor;
@@ -367,16 +368,19 @@
         }
         input {
           width: 120px;
-          background-color: @lightGrey;
+          background-color: @white;
           color: @darkGrey;
           padding: 7px 0 0 7px;
           &[type="checkbox"] {
             width: 30px;
             margin-top: 10px;
-            margin-left: 10px;
+            margin-left: 8px;
+            margin-right: 10px;
           }
           &[type="date"] {
             max-width: 120px;
+            width: 120px;
+            margin-right: 20px;
           }
         }
       }
