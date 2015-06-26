@@ -4041,6 +4041,9 @@ body.initial-load #sidebar {
 #sidebar #mainSidebar .responsive-nav {
   display: none;
 }
+#sidebar #mainSidebar .sidebar-tables-shortcut {
+  display: none;
+}
 #sidebar #mainSidebar .sidebar-section,
 #sidebar #mainSidebar .sidebar-extension {
   margin-bottom: 10px;
@@ -4662,14 +4665,6 @@ body.initial-load #sidebar {
   #sidebar .unread-color {
     margin-left: -4px;
   }
-  #sidebar .sidebar-tables-shortcut {
-    position: absolute;
-    bottom: 200px;
-    left: 20px;
-  }
-  #sidebar .sidebar-tables-shortcut .icon {
-    font-size: 50px;
-  }
   #sidebar .sidebar-subitem {
     display: none;
   }
@@ -4682,6 +4677,15 @@ body.initial-load #sidebar {
   #sidebar #mainSidebar {
     top: 70px;
     overflow: hidden;
+  }
+  #sidebar #mainSidebar .sidebar-tables-shortcut {
+    display: block;
+    position: absolute;
+    bottom: 200px;
+    left: 20px;
+  }
+  #sidebar #mainSidebar .sidebar-tables-shortcut .icon {
+    font-size: 50px;
   }
   #sidebar #mainSidebar .sidebar-extension,
   #sidebar #mainSidebar .sidebar-section {
