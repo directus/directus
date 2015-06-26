@@ -147,6 +147,35 @@ abstract class Adapter {
         return $info;
     }
 
+    public function getLinkInfo($link) {
+        $fileData = array();
+
+        $urlHeaders = get_headers($link, 1);
+        $urlInfo = pathinfo($link);
+
+        // if(in_array($urlInfo['extension'], array('jpg','jpeg','png','gif','tif','tiff'))) {
+        if (strpos($urlHeaders['Content-Type'], 'image/') === 0) {
+            list($width, $height) = getimagesize($link);
+        }
+
+        $linkContent = file_get_contents($link);
+        $url = 'data:' . $urlHeaders['Content-Type'] . ';base64,' . base64_encode($linkContent);
+
+        $fileData = array_merge($fileData, array(
+            'type' => $urlHeaders['Content-Type'],
+            'name' => $urlInfo['basename'],
+            'title' => $urlInfo['filename'],
+            'charset' => 'binary',
+            'size' => isset($urlHeaders['Content-Length']) ? $urlHeaders['Content-Length'] : 0,
+            'width' => $width,
+            'height' => $height,
+            'data' => $url,
+            'url' => ($width) ? $url : ''
+        ));
+
+        return $fileData;
+    }
+
     public function joinPaths($path, $file) {
         $file = ltrim($file, '/');
         $path = rtrim($path, '/');

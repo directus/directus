@@ -159,14 +159,6 @@ define(function(require, exports, module) {
 
   app.sendLink = function(link, callback) {
     var success = function(responseData) {
-      //Parse response date
-      responseData = _.map(responseData, function(item) {
-        // Safari hates dashes apparently
-        // http://stackoverflow.com/a/5646753/1772076
-        item.date_uploaded = new Date(item.date_uploaded.replace(/-/g, '/'));
-        return item;
-      });
-
       callback.apply(this, [responseData]);
     };
 
