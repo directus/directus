@@ -1,20 +1,19 @@
 define([
-  "app",
-  "backbone",
-  "core/collection"
-],
+  'app',
+  'backbone',
+  'core/collection'
+  ],
+  function(app, Backbone, Collection) {
 
-function(app, Backbone, Collection) {
+    'use strict';
 
-	"use strict";
+    var Settings = Collection.extend({
 
-	var Settings = Collection.extend({
-
-		model: Backbone.Model.extend({
-			getStructure: function() {
-				return this.structure;
-			}
-		}),
+    model: Backbone.Model.extend({
+      getStructure: function() {
+        return this.structure;
+      }
+    }),
 
     isFileAllowed: function(file) {
       var allowed_types = this.get('allowed_filetypes') || '';
@@ -33,8 +32,7 @@ function(app, Backbone, Collection) {
       return allowed;
     }
 
-	});
+  });
 
-	return Settings;
-
+  return Settings;
 });
