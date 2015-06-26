@@ -2,86 +2,184 @@
 //////////////////////////////////////////////////////////////////////////////
 // Small Desktop
 
+@keyframes tox-1-on {
+    0%   {left:0px; top:0px;}
+    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
+    100% {left:0px; top:10px; transform: rotateZ(45deg);}
+}
+@keyframes tox-2-on {
+    0%   {left:0px; top:10px;}
+    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
+    100% {left:0px; top:10px; transform: rotateZ(45deg);}
+}
+@keyframes tox-3-on {
+    0%   {left:0px; top:20px;}
+    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
+    100% {left:0px; top:10px; transform: rotateZ(-45deg);}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Off
+
+@keyframes tox-1-off {
+    0%   {left:0px; top:10px; transform: rotateZ(45deg);}
+    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
+    100% {left:0px; top:0px;}
+}
+@keyframes tox-2-off {
+    0%   {left:0px; top:10px; transform: rotateZ(45deg);}
+    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
+    100% {left:0px; top:10px;}
+}
+@keyframes tox-3-off {
+    0%   {left:0px; top:10px; transform: rotateZ(-45deg);}
+    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
+    100% {left:0px; top:20px;}
+}
+
 @media only screen and (max-width : 800px) {
-	#sidebar {
-		width: 60px;
-		.directusLogo {
-			height: 55px !important;
-			font-size: 22px;
-			padding: 5px 0 0 0;
+	.responsive-nav-toggle {
+		position: relative;
+		display: inline-block;
+		width: 50px;
+		height: 30px;
+		float: left;
+		margin-top: 3px;
+		margin-right: 20px;
+		cursor: pointer;
+		&:hover .hamburger-line {
+			background-color: @darkGrey;
 		}
-		#mainLogoBox {
-			height: auto;
-			margin-top: 17px;
+		&.active .line-1 {
+			animation-name: tox-1-on;
+			-webkit-animation-name: tox-1-on;
 		}
-		.unread-color {
-			margin-left: -4px;
+		&.active .line-2 {
+			animation-name: tox-2-on;
+			-webkit-animation-name: tox-2-on;
 		}
-		// Hide sub-items in sidebar
-		.sidebar-subitem {
-			display: none;
+		&.active .line-3 {
+			animation-name: tox-3-on;
+			-webkit-animation-name: tox-3-on;
 		}
-		.sidebar-group {
-			display: none;
+		.hamburger-line {
+			position: absolute;
+			background-color: @mediumGrey;
+			height: 5px;
+			width: 50px;
+
+			@tox-duration: 600ms;
+
+			animation-duration: @tox-duration;
+			-webkit-animation-duration: @tox-duration;
+			-webkit-animation-iteration-count: 1;
+			animation-fill-mode: forwards;
+			-webkit-animation-fill-mode: forwards;
+
+			transform: rotateZ(0deg);
+			-webkit-transition: @tox-duration ease-in-out;
+			-moz-transition: @tox-duration ease-in-out;
+			-o-transition: @tox-duration ease-in-out;
+			transition: @tox-duration ease-in-out;
 		}
-		.sidebar-label {
-			display: none;
+		.line-1 {
+			top: 0;
+			left: 0px;
+			animation-name: tox-1-off;
+			-webkit-animation-name: tox-1-off;
 		}
-		#mainSidebar {
-			top: 70px;
-			overflow: hidden;
-			.sidebar-tables-shortcut {
-				display: block;
-				position: absolute;
-				bottom: 200px;
-				left: 20px;
-				.icon {
-					font-size: 50px;
-				}
-			}
-			.sidebar-extension,
-			.sidebar-section {
-				margin: 0;
-			}
-			.responsive-nav {
-				display: block;
-			}
-			li {
-				height: 31px;
-				margin-bottom: 4px;
-				&.hr {
-					display: none;
-				}
-				a {
-					height: 12px;
-				}
-				.icon {
-					font-size: 400%;
-					margin-left: 5px;
-				}
-			}
+		.line-2 {
+			top: 10px;
+			left: 0px;
+			animation-name: tox-2-off;
+			-webkit-animation-name: tox-2-off;
 		}
-		#featureSidebar {
-			padding: 0px 0px 0px 0px;
-			li {
-				width: 60px;
-				height: 60px;
-				.icon {
-					font-size: 50px;
-					margin-left: -12px;
-  					margin-top: -12px;
-				}
-			}
-			.icon.icon-cog {
-				font-size: 50px;
-				margin-left: -4px;
-				margin-top: -3px;
-  				margin-bottom: 6px;
-			}
+		.line-3 {
+			top: 20px;
+			left: 0px;
+			animation-name: tox-3-off;
+			-webkit-animation-name: tox-3-off;
 		}
 	}
+	#sidebar {
+		left: -170px !important;
+		&.active {
+			left: 0 !important;
+		}
+	}
+  	#fixedHeader.active {
+  		left: 170px;
+  	}
+	// #sidebar {
+	// 	width: 60px;
+	// 	.directusLogo {
+	// 		height: 55px !important;
+	// 		font-size: 22px;
+	// 		padding: 5px 0 0 0;
+	// 	}
+	// 	#mainLogoBox {
+	// 		height: auto;
+	// 		margin-top: 17px;
+	// 	}
+	// 	.unread-color {
+	// 		margin-left: -4px;
+	// 	}
+	// 	// Hide sub-items in sidebar
+	// 	.sidebar-subitem {
+	// 		display: none;
+	// 	}
+	// 	.sidebar-group {
+	// 		display: none;
+	// 	}
+	// 	.sidebar-label {
+	// 		display: none;
+	// 	}
+	// 	#mainSidebar {
+	// 		top: 70px;
+	// 		overflow: hidden;
+	// 		.sidebar-extension,
+	// 		.sidebar-section {
+	// 			margin: 0;
+	// 		}
+	// 		.responsive-nav {
+	// 			display: block;
+	// 		}
+	// 		li {
+	// 			height: 31px;
+	// 			margin-bottom: 4px;
+	// 			&.hr {
+	// 				display: none;
+	// 			}
+	// 			a {
+	// 				height: 12px;
+	// 			}
+	// 			.icon {
+	// 				font-size: 400%;
+	// 				margin-left: 5px;
+	// 			}
+	// 		}
+	// 	}
+	// 	#featureSidebar {
+	// 		padding: 0px 0px 0px 0px;
+	// 		li {
+	// 			width: 60px;
+	// 			height: 60px;
+	// 			.icon {
+	// 				font-size: 50px;
+	// 				margin-left: -12px;
+ //  					margin-top: -12px;
+	// 			}
+	// 		}
+	// 		.icon.icon-cog {
+	// 			font-size: 50px;
+	// 			margin-left: -4px;
+	// 			margin-top: -3px;
+ //  				margin-bottom: 6px;
+	// 		}
+	// 	}
+	// }
 	.main-container {
-		margin-left: 60px;
+		margin-left: 0px;
 		padding: 0px 20px;
 		.header1 {
 			padding-top: 20px;

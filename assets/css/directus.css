@@ -3971,6 +3971,9 @@ tbody.remove-hover-state .sort .icon-list {
 body.initial-load #sidebar {
   left: 0;
 }
+.responsive-nav-toggle {
+  display: none;
+}
 #sidebar {
   background-color: #333333;
   bottom: 0px;
@@ -4039,9 +4042,6 @@ body.initial-load #sidebar {
   padding-bottom: 150px;
 }
 #sidebar #mainSidebar .responsive-nav {
-  display: none;
-}
-#sidebar #mainSidebar .sidebar-tables-shortcut {
   display: none;
 }
 #sidebar #mainSidebar .sidebar-section,
@@ -4257,6 +4257,10 @@ body.initial-load #sidebar {
   right: 0px;
   top: 0px;
   z-index: 50;
+  -webkit-transition: left 400ms ease-in-out;
+  -moz-transition: left 400ms ease-in-out;
+  -o-transition: left 400ms ease-in-out;
+  transition: left 400ms ease-in-out;
 }
 #header-shadow {
   position: absolute;
@@ -4649,85 +4653,173 @@ body.initial-load #sidebar {
 .header1 .secondary-row .tools .tool {
   height: 32px;
 }
+@keyframes tox-1-on {
+  0% {
+    left: 0px;
+    top: 0px;
+  }
+  50% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(0deg);
+  }
+  100% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(45deg);
+  }
+}
+@keyframes tox-2-on {
+  0% {
+    left: 0px;
+    top: 10px;
+  }
+  50% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(0deg);
+  }
+  100% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(45deg);
+  }
+}
+@keyframes tox-3-on {
+  0% {
+    left: 0px;
+    top: 20px;
+  }
+  50% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(0deg);
+  }
+  100% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(-45deg);
+  }
+}
+@keyframes tox-1-off {
+  0% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(45deg);
+  }
+  50% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(0deg);
+  }
+  100% {
+    left: 0px;
+    top: 0px;
+  }
+}
+@keyframes tox-2-off {
+  0% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(45deg);
+  }
+  50% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(0deg);
+  }
+  100% {
+    left: 0px;
+    top: 10px;
+  }
+}
+@keyframes tox-3-off {
+  0% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(-45deg);
+  }
+  50% {
+    left: 0px;
+    top: 10px;
+    transform: rotateZ(0deg);
+  }
+  100% {
+    left: 0px;
+    top: 20px;
+  }
+}
 @media only screen and (max-width: 800px) {
-  #sidebar {
-    width: 60px;
+  .responsive-nav-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 30px;
+    float: left;
+    margin-top: 3px;
+    margin-right: 20px;
+    cursor: pointer;
   }
-  #sidebar .directusLogo {
-    height: 55px !important;
-    font-size: 22px;
-    padding: 5px 0 0 0;
+  .responsive-nav-toggle:hover .hamburger-line {
+    background-color: #888888;
   }
-  #sidebar #mainLogoBox {
-    height: auto;
-    margin-top: 17px;
+  .responsive-nav-toggle.active .line-1 {
+    animation-name: tox-1-on;
+    -webkit-animation-name: tox-1-on;
   }
-  #sidebar .unread-color {
-    margin-left: -4px;
+  .responsive-nav-toggle.active .line-2 {
+    animation-name: tox-2-on;
+    -webkit-animation-name: tox-2-on;
   }
-  #sidebar .sidebar-subitem {
-    display: none;
+  .responsive-nav-toggle.active .line-3 {
+    animation-name: tox-3-on;
+    -webkit-animation-name: tox-3-on;
   }
-  #sidebar .sidebar-group {
-    display: none;
-  }
-  #sidebar .sidebar-label {
-    display: none;
-  }
-  #sidebar #mainSidebar {
-    top: 70px;
-    overflow: hidden;
-  }
-  #sidebar #mainSidebar .sidebar-tables-shortcut {
-    display: block;
+  .responsive-nav-toggle .hamburger-line {
     position: absolute;
-    bottom: 200px;
-    left: 20px;
+    background-color: #aaaaaa;
+    height: 5px;
+    width: 50px;
+    animation-duration: 600ms;
+    -webkit-animation-duration: 600ms;
+    -webkit-animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+    transform: rotateZ(0deg);
+    -webkit-transition: 600ms ease-in-out;
+    -moz-transition: 600ms ease-in-out;
+    -o-transition: 600ms ease-in-out;
+    transition: 600ms ease-in-out;
   }
-  #sidebar #mainSidebar .sidebar-tables-shortcut .icon {
-    font-size: 50px;
+  .responsive-nav-toggle .line-1 {
+    top: 0;
+    left: 0px;
+    animation-name: tox-1-off;
+    -webkit-animation-name: tox-1-off;
   }
-  #sidebar #mainSidebar .sidebar-extension,
-  #sidebar #mainSidebar .sidebar-section {
-    margin: 0;
+  .responsive-nav-toggle .line-2 {
+    top: 10px;
+    left: 0px;
+    animation-name: tox-2-off;
+    -webkit-animation-name: tox-2-off;
   }
-  #sidebar #mainSidebar .responsive-nav {
-    display: block;
+  .responsive-nav-toggle .line-3 {
+    top: 20px;
+    left: 0px;
+    animation-name: tox-3-off;
+    -webkit-animation-name: tox-3-off;
   }
-  #sidebar #mainSidebar li {
-    height: 31px;
-    margin-bottom: 4px;
+  #sidebar {
+    left: -170px !important;
   }
-  #sidebar #mainSidebar li.hr {
-    display: none;
+  #sidebar.active {
+    left: 0 !important;
   }
-  #sidebar #mainSidebar li a {
-    height: 12px;
-  }
-  #sidebar #mainSidebar li .icon {
-    font-size: 400%;
-    margin-left: 5px;
-  }
-  #sidebar #featureSidebar {
-    padding: 0px 0px 0px 0px;
-  }
-  #sidebar #featureSidebar li {
-    width: 60px;
-    height: 60px;
-  }
-  #sidebar #featureSidebar li .icon {
-    font-size: 50px;
-    margin-left: -12px;
-    margin-top: -12px;
-  }
-  #sidebar #featureSidebar .icon.icon-cog {
-    font-size: 50px;
-    margin-left: -4px;
-    margin-top: -3px;
-    margin-bottom: 6px;
+  #fixedHeader.active {
+    left: 170px;
   }
   .main-container {
-    margin-left: 60px;
+    margin-left: 0px;
     padding: 0px 20px;
   }
   .main-container .header1 {

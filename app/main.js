@@ -377,6 +377,19 @@ require(["config"], function() {
         sync(method, model, options);
       };
 
+      // Toggle responsive navigation
+      $(document).on("click", ".responsive-nav-toggle", function(evt) {
+        if($('#sidebar').hasClass('active')){
+          $('#sidebar').removeClass('active');
+          $('#fixedHeader').removeClass('active');
+          $(this).removeClass('active');
+        } else {
+          $('#sidebar').addClass('active');
+          $('#fixedHeader').addClass('active');
+          $(this).addClass('active');
+        }
+      });
+
       //Cancel default file drop
       $(document).on('drop dragover', function(e) {
         e.preventDefault();
