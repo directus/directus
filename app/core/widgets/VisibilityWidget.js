@@ -54,7 +54,7 @@ function(app, Backbone, PreferenceModel) {
 
     saveSnapshot: function() {
       var that = this;
-      app.router.openModal({type: 'prompt', text: 'Please enter a name for your Bookmark', callback: function(name ) {
+      app.router.openModal({type: 'prompt', text: 'What would you like to name this bookmark?', callback: function(name ) {
         if(name === null || name === "") {
           alert('Please Fill In a Valid Name');
           return;

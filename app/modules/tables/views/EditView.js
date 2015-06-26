@@ -99,7 +99,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       var data = this.editView.data();
       var that = this;
       if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
-        app.router.openModal({type: 'confirm', text: 'Are you sure you wish to delete this item?', callback: function() {
+        app.router.openModal({type: 'confirm', text: 'Are you sure you want to delete this item?', callback: function() {
           that.save(e);
         }});
       } else {

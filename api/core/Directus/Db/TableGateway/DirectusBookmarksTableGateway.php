@@ -22,11 +22,11 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
     }
 
     public static $defaultBookmarksValues = array(
-      'Activity' => array(
-        "title" => "Activity",
-        "url" => "activity",
-        "icon_class" => "icon-bell",
-        "section" => "other"),
+      // 'Activity' => array(
+      //   "title" => "Activity",
+      //   "url" => "activity",
+      //   "icon_class" => "icon-bell",
+      //   "section" => "other"),
       'Files' => array(
         "title" => "Files",
         "url" => "files",

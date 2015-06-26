@@ -24,12 +24,10 @@ define(['app', 'backbone', 'helpers/file'], function(app, Backbone, File) {
                     padding: 10px; \
                     background-color: #ffffff; \
                     border: 1px solid #ededed; \
-                    -webkit-border-radius:3px; \
-                    -moz-border-radius:3px; \
-                    border-radius:3px; \
                     color: #ededed; \
                     text-align: center; \
                     cursor: pointer; \
+                    margin-bottom: 10px; \
                   } \
                   div.ui-thumbnail.empty { \
                     width: 300px; \
@@ -73,10 +71,19 @@ define(['app', 'backbone', 'helpers/file'], function(app, Backbone, File) {
                     margin-top: 8px; \
                     margin-right: 10px; \
                   } \
+                  .url-import { \
+                    width: 100%; \
+                    margin-top: 10px; \
+                    display: inline-block; \
+                  } \
                   .swap-method-btn { \
                     display:block; \
                     clear: both; \
                     padding-top: 5px; \
+                    cursor: pointer; \
+                  } \
+                  .ui-text-hover:hover { \
+                    color: #333333; \
                     cursor: pointer; \
                   } \
                   </style> \
@@ -99,13 +106,15 @@ define(['app', 'backbone', 'helpers/file'], function(app, Backbone, File) {
                   </div> \
                   </a> \
                   <div class="ui-img-details"> \
-                    <button class="btn btn-small btn-primary btn-right" data-action="swap" type="button">Choose file</button> \
+                    <span class="ui-text-hover" data-action="swap">Swap file</span> \
                   </div> \
                   {{/if}} \
-                  <div style="{{#if url}}display:none;{{/if}}" id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click to choose</div> \
-                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
-                  <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or upload a local file</div>';
+                  <div class="swap-container" {{#if url}}style="display:none"{{/if}}> \
+                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click to upload</div> \
+                    <input id="fileAddInput" type="file" class="large hide" /> \
+                    <div class="secondary-info url-import">Or paste in a YouTube, Vimeo, or file link:</div> \
+                    <input id="urlInput" type="text" class="swap-method medium" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                  </div>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -212,8 +221,12 @@ define(['app', 'backbone', 'helpers/file'], function(app, Backbone, File) {
       'click .ui-thumbnail-dropzone': function(e) {
         this.$el.find('#fileAddInput').click();
       },
-      'click button[data-action="swap"]': function(e) {
-        this.$el.find('#fileDropArea').show();
+      'click span[data-action="swap"]': function(e) {
+        this.$el.find('.swap-container').toggle();
+        this.$el.find('.ui-thumbnail.has-file').toggle();
+        var swapText = this.$el.find('.ui-text-hover').text();
+        var newSwapText = (swapText == 'Swap file')? 'Cancel' : 'Swap file';
+        this.$el.find('.ui-text-hover').text(newSwapText);
       }
     },
 

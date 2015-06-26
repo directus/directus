@@ -38,8 +38,8 @@ define([
     },
 
     events: {
-      'click button[data-action=add]': 'addItem',
-      'click button[data-action=insert]': 'insertItem',
+      'click span[data-action=add]': 'addItem',
+      'click span[data-action=insert]': 'insertItem',
       'click .remove-slideshow-item': 'removeItem',
       'click .media-slideshow-item > img': function(e) {
         if (!this.canEdit) {
@@ -72,6 +72,15 @@ define([
         } \
         .remove-hover-state .show-circle:hover .white-circle { \
           opacity: 0.0; \
+        } \
+        .multiple-image-actions { \
+          margin: 10px 0 0 0; \
+          display: block; \
+          font-size: 12px; \
+        } \
+        .multiple-image-actions span:hover { \
+          color: #333333; \
+          cursor: pointer; \
         } \
         div.single-image-thumbnail.empty { \
           float: left; \
@@ -107,8 +116,11 @@ define([
       </style> \
       <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div></div> \
       <div class="related-table"></div> \
-      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files</button>{{/if}} \
-      {{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files</button>{{/if}}</div>'),
+      <div class="multiple-image-actions"> \
+        {{#if showAddButton}}<span data-action="add">Upload</span>{{/if}} \
+        {{#if showAddButton}}{{#if showChooseButton}} or {{/if}}{{/if}} \
+        {{#if showChooseButton}}<span data-action="insert">Directus Files</span>{{/if}} \
+      </div>'),
 
     addItem: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));

@@ -39,6 +39,12 @@ define([
   //{{capitalize fileModel.title}}
 
   var template =  '<style type="text/css"> \
+                  .ui-file-container:after { \
+                    clear: both; \
+                    content: ""; \
+                    display: block; \
+                    width: 100%; \
+                  } \
                   div.single-image-thumbnail { \
                     float: left; \
                     max-height: 200px; \
@@ -121,50 +127,41 @@ define([
                     cursor: pointer; \
                   } \
                   .single-image-actions { \
-                    margin: 2px 20px 0 20px; \
-                    float: left; \
-                    width: 160px; \
-                    text-align: center; \
-                    font-size: 12px; \
-                    color: #bbbbbb; \
-                  } \
-                  .single-image-actions .btn { \
-                    margin: 0; \
+                    margin: 10px 0 0 0; \
                     display: block; \
-                    margin-top: 8px; \
-                    width: 100%; \
+                    font-size: 12px; \
                   } \
-                  .single-image-actions .btn .icon { \
-                    font-size: 300%; \
-                    line-height: 30%; \
-                    margin-right: 3px; \
+                  .single-image-actions span:hover { \
+                    color: #333333; \
+                    cursor: pointer; \
                   } \
                   </style> \
-                  {{#if url}} \
-                  <div class="single-image-thumbnail has-file"> \
-                    {{#if fileModel.youtube}}<iframe width="280" height="160" src="http://www.youtube.com/embed/{{fileModel.youtube}}?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe> \
+                  <div class="ui-file-container"> \
+                    {{#if url}} \
+                    <div class="single-image-thumbnail has-file"> \
+                      {{#if fileModel.youtube}}<iframe width="280" height="160" src="http://www.youtube.com/embed/{{fileModel.youtube}}?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe> \
+                      {{else}} \
+                        {{#if fileModel.vimeo}} <iframe src="//player.vimeo.com/video/{{fileModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="280" height="160" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                        {{else}}<a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a>{{/if}} \
+                      {{/if}} \
+                    </div> \
+                    <div class="ui-img-details single_file"> \
+                      <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
+                      <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
+                      <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
+                      <button class="btn btn-primary" data-action="remove-single-file" type="button">Remove File</button> \
+                    </div> \
                     {{else}} \
-                      {{#if fileModel.vimeo}} <iframe src="//player.vimeo.com/video/{{fileModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="280" height="160" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
-                      {{else}}<a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a>{{/if}} \
+                    <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
+                    <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                    <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
                     {{/if}} \
+                    <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   </div> \
-                  <div class="ui-img-details single_file"> \
-                    <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
-                    <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
-                    <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
-                    <button class="btn btn-primary" data-action="remove-single-file" type="button">Remove File</button> \
-                  </div> \
-                  {{else}} \
-                  <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
-                  <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
-                  {{/if}} \
-                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <div class="single-image-actions"> \
-                    <div class="single-image-text">OR UPLOAD FROM</div> \
-                    <button class="btn btn-primary" data-action="computer" type="button"><span class="icon icon-upload"></span> Your Computer</button> \
-                    <button class="btn btn-primary" data-action="url" type="button"><span class="icon icon-link"></span> External URL</button> \
-                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-attach"></span> Directus Files</button> \
+                    <span data-action="computer">Upload</span>, \
+                    <span data-action="url">URL Import</span>, or \
+                    <span data-action="swap">Directus Files</span> \
                   </div>';
 
   Module.Input = Backbone.Layout.extend({
@@ -179,7 +176,7 @@ define([
 
     events: {
       'click button[data-action="remove-single-file"]': 'removeFile',
-      'click button[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
+      'click span[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
       'click .has-file': 'edit',
       'click .swap-method-btn': function() {
         this.$el.find('.swap-method').toggleClass('hide');
@@ -199,12 +196,12 @@ define([
         var model = this.fileModel;
         model.setFile(file);
       },
-      'click button[data-action="computer"]': function(e) {
+      'click span[data-action="computer"]': function(e) {
         this.$el.find('#fileAddInput').click();
       },
-      'click button[data-action="url"]': function(e) {
+      'click span[data-action="url"]': function(e) {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Enter Url', callback: function(url) {
+        app.router.openModal({type: 'prompt', text: 'Enter the URL to a file:', callback: function(url) {
           that.getLinkData(url);
         }});
       },

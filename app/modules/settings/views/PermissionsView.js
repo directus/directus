@@ -95,7 +95,7 @@ function(app, Backbone, Widgets, BasePageView) {
     events: {
       'click #addBtn': function() {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Please Enter the name of the Group you would like to add.', callback: function(groupName) {
+        app.router.openModal({type: 'prompt', text: 'What would you like to name this group?', callback: function(groupName) {
           if(groupName && !app.schemaManager.getPrivileges('directus_permission')) {
             var model = new Backbone.Model();
             model.url = app.API_URL + 'groups';
