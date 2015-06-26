@@ -4038,6 +4038,9 @@ body.initial-load #sidebar {
   color: #b7b7b7;
   padding-bottom: 150px;
 }
+#sidebar #mainSidebar .responsive-nav {
+  display: none;
+}
 #sidebar #mainSidebar .sidebar-section,
 #sidebar #mainSidebar .sidebar-extension {
   margin-bottom: 10px;
@@ -4654,11 +4657,23 @@ body.initial-load #sidebar {
   }
   #sidebar #mainLogoBox {
     height: auto;
+    margin-top: 17px;
   }
   #sidebar .unread-color {
     margin-left: -4px;
   }
+  #sidebar .sidebar-tables-shortcut {
+    position: absolute;
+    bottom: 200px;
+    left: 20px;
+  }
+  #sidebar .sidebar-tables-shortcut .icon {
+    font-size: 50px;
+  }
   #sidebar .sidebar-subitem {
+    display: none;
+  }
+  #sidebar .sidebar-group {
     display: none;
   }
   #sidebar .sidebar-label {
@@ -4666,10 +4681,14 @@ body.initial-load #sidebar {
   }
   #sidebar #mainSidebar {
     top: 70px;
+    overflow: hidden;
   }
   #sidebar #mainSidebar .sidebar-extension,
   #sidebar #mainSidebar .sidebar-section {
     margin: 0;
+  }
+  #sidebar #mainSidebar .responsive-nav {
+    display: block;
   }
   #sidebar #mainSidebar li {
     height: 31px;
@@ -4686,16 +4705,22 @@ body.initial-load #sidebar {
     margin-left: 5px;
   }
   #sidebar #featureSidebar {
-    padding: 0px 10px 10px 10px;
+    padding: 0px 0px 0px 0px;
   }
   #sidebar #featureSidebar li {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
   }
   #sidebar #featureSidebar li .icon {
-    font-size: 40px;
-    line-height: 3px;
-    margin-left: -9px;
+    font-size: 50px;
+    margin-left: -12px;
+    margin-top: -12px;
+  }
+  #sidebar #featureSidebar .icon.icon-cog {
+    font-size: 50px;
+    margin-left: -4px;
+    margin-top: -3px;
+    margin-bottom: 6px;
   }
   .main-container {
     margin-left: 60px;

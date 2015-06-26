@@ -12,12 +12,24 @@
 		}
 		#mainLogoBox {
 			height: auto;
+			margin-top: 17px;
 		}
 		.unread-color {
 			margin-left: -4px;
 		}
+		.sidebar-tables-shortcut {
+			position: absolute;
+			bottom: 200px;
+			left: 20px;
+			.icon {
+				font-size: 50px;
+			}
+		}
 		// Hide sub-items in sidebar
 		.sidebar-subitem {
+			display: none;
+		}
+		.sidebar-group {
 			display: none;
 		}
 		.sidebar-label {
@@ -25,9 +37,13 @@
 		}
 		#mainSidebar {
 			top: 70px;
+			overflow: hidden;
 			.sidebar-extension,
 			.sidebar-section {
 				margin: 0;
+			}
+			.responsive-nav {
+				display: block;
 			}
 			li {
 				height: 31px;
@@ -45,15 +61,21 @@
 			}
 		}
 		#featureSidebar {
-			padding: 0px 10px 10px 10px;
+			padding: 0px 0px 0px 0px;
 			li {
-				width: 40px;
-				height: 40px;
+				width: 60px;
+				height: 60px;
 				.icon {
-					font-size: 40px;
-					line-height: 3px;
-					margin-left: -9px;
+					font-size: 50px;
+					margin-left: -12px;
+  					margin-top: -12px;
 				}
+			}
+			.icon.icon-cog {
+				font-size: 50px;
+				margin-left: -4px;
+				margin-top: -3px;
+  				margin-bottom: 6px;
 			}
 		}
 	}
