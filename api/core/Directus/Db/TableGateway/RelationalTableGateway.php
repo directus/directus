@@ -16,6 +16,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
+use Directus\Files;
 
 class RelationalTableGateway extends AclAwareTableGateway {
 
@@ -60,6 +61,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         if($tableName !== $this->table) {
             $TableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
         }
+
+        // Upload file if necessary
+        $TableGateway->copyFiles($tableName, $recordData);
 
         $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
@@ -238,6 +242,60 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $recordGateway->populate($fullRecordData, true);
         
         return $recordGateway;
+    }
+
+    /**
+     * @param string $table
+     * @param array $recordData
+     * @return bool
+     */
+    public function copyFiles($tableName, &$recordData)
+    {
+        $schemaArray = TableSchema::getSchemaArray($tableName);
+        foreach($schemaArray as $column) {
+            $colName = $column['id'];
+
+            // Ignore absent values & non-arrays
+            if(!isset($recordData[$colName]) || !is_array($recordData[$colName])) {
+                continue;
+            }
+
+            $foreignRow = $recordData[$colName];
+
+            $colUiType = $column['ui'];
+
+            // $isManyToOne = (array_key_exists('relationship', $column) &&
+            //     $column['relationship']['type'] == 'MANYTOONE'
+            // );
+            // $isManyToMany = (array_key_exists('relationship', $column) &&
+            //     $column['relationship']['type'] == 'MANYTOMANY'
+            // );
+
+            $foreignTableName = $column['relationship']['table_related'];
+            // @todo: rewrite this
+            if ($foreignTableName === 'directus_files') {
+                // Update/Add foreign record
+                $Storage = new Files\Storage\Storage();
+                if (count(array_filter($foreignRow,'is_array')) == count($foreignRow)) {
+                    $index = 0;
+                    foreach($foreignRow as $row) {
+                        if (!isset($row['data'][$this->primaryKeyFieldName]) && isset($row['data']['data'])) {
+                            $recordData[$colName][$index]['data'] = $Storage->saveData($row['data']['data'], $row['data']['name']);
+                        }
+
+                        unset($recordData[$colName][$index]['data']['data']);
+                        $index++;
+                    }
+                } else {
+                    if (!isset($foreignRow[$this->primaryKeyFieldName]) && isset($foreignRow['data'])) {
+                        $recordData[$colName] = $Storage->saveData($foreignRow['data'], $foreignRow['name']);
+                    }
+                    unset($recordData[$colName]['data']);
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
