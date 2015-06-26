@@ -682,6 +682,10 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
       case "POST":
         $requestPayload['user'] = $currentUser['id'];
         $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
+
+        $Storage = new Files\Storage\Storage();
+        $recordData = $Storage->saveData($requestPayload['data'], $requestPayload['name']);
+        $recordData = array_merge($requestPayload, $recordData);
         $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
         $params['id'] = $newRecord['id'];
         break;
@@ -924,6 +928,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
     if(isset($_POST['link'])) {
         $fileData = array('caption'=>'','tags'=>'','location'=>'');
         $fileData = array_merge($fileData, $Storage->acceptLink($_POST['link']));
+
         $result[] = array(
             'type' => $fileData['type'],
             'name' => $fileData['name'],
@@ -936,8 +941,9 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
             'width' => $fileData['width'],
             'height' => $fileData['height'],
             'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
-            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-            'storage_adapter' => $fileData['storage_adapter']
+            'data' => (isset($fileData['data'])) ? $fileData['data'] : null
+            //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            //'storage_adapter' => $fileData['storage_adapter']
         );
     }
     JsonView::render($result);

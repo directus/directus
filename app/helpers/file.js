@@ -98,7 +98,7 @@ define(function() {
   // no fancy resizing
   FileHelper.resizeFromData = function(image, thumbnailWidth, thumbnailHeight, fn) {
     var img = new Image();
-    
+
     img.onload = function() {
       var MAX_WIDTH = thumbnailWidth;
       var MAX_HEIGHT = thumbnailHeight;
@@ -106,7 +106,7 @@ define(function() {
       var height = this.height;
       var x = 0;
       var y = 0;
-      
+
       if (width > height) {
         if (width > MAX_WIDTH) {
           width *= MAX_HEIGHT / height;

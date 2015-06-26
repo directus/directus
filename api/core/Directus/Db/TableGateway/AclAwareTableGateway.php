@@ -211,6 +211,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 $recordData['storage_adapter'] = $Storage->storageAdaptersByRole['DEFAULT']['id'];
               }
 
+              $StorageAdapters = new DirectusStorageAdaptersTableGateway($this->acl, $this->adapter);
+              //If desired Storage Adapter Exists...
+              $filesAdapter = $StorageAdapters->fetchOneById($recordData['storage_adapter']);
+
               //Save Temp Thumbnail name for use after files record save
               $info = pathinfo($recordData['name']);
               if( in_array($info['extension'], $this->imagickExtensions)) {
@@ -223,10 +227,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               if($Storage->getFilesSettings()['file_file_naming'] != "file_id") {
                 //Save the file in TEMP Storage Adapter to Designated StorageAdapter
                 $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
+                // $fileData = $Storage->saveData($recordData['data'], $recordData['name'], $filesAdapter['destination']);
+                // $recordData['name'] = $fileData['name'];
               }
             }
 
-            $TableGateway->insert($recordData);
+            $d = $recordData;
+            unset($d['data']);
+            $TableGateway->insert($d);
             $recordData['id'] = $TableGateway->getLastInsertValue();
 
             if($tableName == "directus_files") {
@@ -234,9 +242,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               $updateArray = array();
               //If using file_id saving, then update record and set name to id
               if($Storage->getFilesSettings()['file_file_naming'] == "file_id") {
+                $originalFile = $recordData['name'];
                 $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext);
                 $updateArray['name'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext;
                 $recordData['name'] = $updateArray['name'];
+
+                if(file_exists($filesAdapter['destination'].$originalFile)) {
+                  unlink($filesAdapter['destination'].$originalFile);
+                }
               }
 
               //If we are using file_id titles, then set title to id

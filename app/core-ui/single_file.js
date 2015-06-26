@@ -16,9 +16,16 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], function(app, Backbone, TableView, Overlays) {
+define([
+    'app',
+    'backbone',
+    'core/table/table.view',
+    'core/overlays/overlays',
+    'helpers/file'
+  ],
+  function(app, Backbone, TableView, Overlays, File) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -184,32 +191,13 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       'click #retriveUrlBtn': function(e) {
         var url = this.$el.find('#urlInput').val();
         var model = this.fileModel;
-        app.sendLink(url, function(data) {
-          _.each(data, function(item) {
-            item[app.statusMapping.status_name] = app.statusMapping.active_num;
-            // Unset the model ID so that a new file record is created
-            // (and the old file record isn't replaced w/ this data)
-            item.id = undefined;
-            item.user = self.userId;
-
-            //console.log()
-
-            model.set(item);
-          });
-        });
+        model.setLink(url);
       },
-      'change input[type=file]': function(e) {
-        var file = $(e.target)[0].files[0];
+      'change input[type=file]': function(event) {
+        var target = $(event.target);
+        var file = target[0].files[0];
         var model = this.fileModel;
-        
-        if (!this.verifyFile(file)) {
-          return false;
-        }
-        
-        app.sendFiles(file, function(data) {
-          model.set(data[0]);
-          model.trigger('sync');
-        });
+        model.setFile(file);
       },
       'click button[data-action="computer"]': function(e) {
         this.$el.find('#fileAddInput').click();
@@ -217,30 +205,19 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       'click button[data-action="url"]': function(e) {
         var that = this;
         app.router.openModal({type: 'prompt', text: 'Enter Url', callback: function(url) {
-          if(!url) {
-            return;
-          }
-
-          var model = that.fileModel;
-          app.sendLink(url, function(data) {
-            _.each(data, function(item) {
-              if (!that.verifyFile(item)) {
-                return false;
-              }
-              
-              item[app.statusMapping.status_name] = app.statusMapping.active_num;
-              // Unset the model ID so that a new file record is created
-              // (and the old file record isn't replaced w/ this data)
-              item.id = undefined;
-              item.user = self.userId;
-
-              //console.log()
-
-              model.set(item);
-            });
-          });
+          that.getLinkData(url);
         }});
       },
+    },
+
+    getLinkData: function(url) {
+
+      if(!url) {
+        return;
+      }
+
+      var model = this.fileModel;
+      model.setLink(url);
     },
 
     removeFile: function(e) {
@@ -263,7 +240,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       view.itemClicked = function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         model = collection.get(id);
-        if (!me.verifyFile(model)) {
+        if (!app.settings.isFileAllowed(model)) {
           return false;
         }
         fileModel.clear({silent: true});
@@ -299,24 +276,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       // Fetch first time to get the nested tables
       model.fetch();
     },
-    
-    verifyFile: function(file) {
-      var allowed_types, allowed = true;
-      
-      if (this.options.settings.has('allowed_filetypes')) {
-        allowed_types = this.options.settings.get('allowed_filetypes');
-        var file_type = file.type || '';
-        var allowed = allowed_types.split('|').some(function(item){
-          return file_type.indexOf(item)>-1;
-        });
-      }
-      
-      if (!allowed) {
-        app.router.openModal({type: 'alert', text: 'This type of file is not allowed'});
-      }
-      
-      return allowed;
-    },
 
     afterRender: function() {
       var timer;
@@ -344,36 +303,35 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       $dropzone[0].ondrop = _.bind(function(e) {
         e.stopPropagation();
         e.preventDefault();
+
         if (e.dataTransfer.files.length > 1) {
           alert('One file only please');
           return;
         }
-        app.sendFiles(e.dataTransfer.files, function(data) {
-          _.each(data, function(item) {
-            item[app.statusMapping.status_name] = app.statusMapping.active_num;
-            // Unset the model ID so that a new file record is created
-            // (and the old file record isn't replaced w/ this data)
-            item.id = undefined;
-            item.user = self.userId;
 
-            //console.log()
-
-            model.set(item);
-          });
-        });
+        var file = e.dataTransfer.files[0];
+        model.setFile(file);
         $dropzone.removeClass('dragover');
       }, this);
 
     },
 
     serialize: function() {
-      var url = this.fileModel.has('name') ? this.fileModel.makeFileUrl(true) : null;
-      var link = this.fileModel.has('name') ? this.fileModel.makeFileUrl() : null;
+      var url, link;
+      if (this.fileModel.has('name')) {
+        if (this.fileModel.isNew()) {
+          url = this.fileModel.get('thumbnailData') || this.fileModel.get('url');
+          link = '#';
+        } else {
+          url = this.fileModel.makeFileUrl(true);
+          link = this.fileModel.makeFileUrl();
+        }
+      }
+
       var data = this.fileModel.toJSON();
       var type = this.fileModel.has('type') ? this.fileModel.get('type').substring(0, this.fileModel.get('type').indexOf('/')) : '';
-      var subtype = this.fileModel.has('type') ? this.fileModel.get('type').split('/').pop() : '';
-
-      var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
+      // var subtype = this.fileModel.has('type') ? this.fileModel.get('type').split('/').pop() : '';
+      var isImage = _.contains(['image', 'embed'], type);// || _.contains(['pdf'], subtype);
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
       if(data.type) {
@@ -389,6 +347,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       } else {
         data.size = app.bytesToSize(data.size, 0);
       }
+
       data = {
         isImage: isImage,
         name: this.options.name,
@@ -399,6 +358,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         fileModel: data,
         link: link
       };
+
       return data;
     },
 

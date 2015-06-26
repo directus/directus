@@ -7,7 +7,14 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'], function(app, Backbone, Sortable, UIView, Overlays) {
+define([
+    'app',
+    'backbone',
+    'sortable',
+    'core/UIView',
+    'core/overlays/overlays',
+  ],
+  function(app, Backbone, Sortable, UIView, Overlays, FilesModel) {
 
   "use strict";
 
@@ -218,8 +225,16 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
       _.each(models, function(model) {
         if(model.get(app.statusMapping.status_name) != app.statusMapping.deleted_num) {
           var cid = model.cid;
+          var url;
+
           model = new app.files.model(model.get('data').attributes, {collection: that.relatedCollection});
-          rows.push({id: model.id, url: model.makeFileUrl(true), cid:cid});
+          if (model.isNew()) {
+            url = model.get('thumbnailData') || model.get('url');
+          } else {
+            url = model.makeFileUrl(true)
+          }
+
+          rows.push({id: model.id, url: url, cid:cid});
         }
       });
 
@@ -247,7 +262,7 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
 
       // Since data transfer is not supported by jquery...
       // XHR2, FormData
-      $dropzone[0].ondrop = _.bind(function(e) {
+      $dropzone[0].ondrop = function(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -255,9 +270,11 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
           self.sort.isDragging = false;
           return;
         }
-
-        app.sendFiles(e.dataTransfer.files, function(data) {
-          _.each(data, function(item) {
+        var FilesModel = require('modules/files/FilesModel');
+        _.each(e.dataTransfer.files, function(file) {
+          // force a fileModel object
+          var fileModel = new FilesModel({}, {collection:{}});
+          fileModel.setFile(file, function(item) {
             item[app.statusMapping.status_name] = app.statusMapping.active_num;
             // Unset the model ID so that a new file record is created
             // (and the old file record isn't replaced w/ this data)
@@ -268,7 +285,7 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
             self.relatedCollection.add(model);
           });
         });
-      });
+      };
 
       if(junctionStructure.get('sort') !== undefined) {
         // Drag and drop reordering

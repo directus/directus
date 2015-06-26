@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'backbone', 'helpers/file'], function(app, Backbone, File) {
 
   "use strict";
 
@@ -119,6 +119,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           authenticatedUser = app.users.getCurrentUser();
 
       data = model.toJSON();
+
       if (!model.has('id')) {
         userId = authenticatedUser.id;
         data.isNew = true;
@@ -138,6 +139,9 @@ define(['app', 'backbone'], function(app, Backbone) {
          storageAdapter !== '') {
           data.url = model.makeFileUrl(false);
           data.thumbUrl = model.makeFileUrl(true);
+      } else if (model.isNew()) {
+        data.url = model.get('url') || model.get('data');
+        data.thumbUrl = model.get('thumbnailData') || model.get('url');
       }
 
       data.name = model.get('name');
@@ -188,17 +192,22 @@ define(['app', 'backbone'], function(app, Backbone) {
         var model = this.model;
 
         app.sendLink(url, function(data) {
-          model.set(data[0]);
-          model.trigger('sync');
+          var item = data[0];
+
+          item[app.statusMapping.status_name] = app.statusMapping.active_num;
+          // Unset the model ID so that a new file record is created
+          // (and the old file record isn't replaced w/ this data)
+          item.id = undefined;
+          item.user = self.userId;
+
+          model.setData(item);
         });
       },
       'change input[type=file]': function(e) {
         var file = $(e.target)[0].files[0];
         var model = this.model;
-        app.sendFiles(file, function(data) {
-          model.set(data[0]);
-          model.trigger('sync');
-        });
+
+        model.setFile(file);
       },
       'click .ui-thumbnail-dropzone': function(e) {
         this.$el.find('#fileAddInput').click();
@@ -238,19 +247,21 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       // Since data transfer is not supported by jquery...
       // XHR2, FormData
-      $dropzone[0].ondrop = _.bind(function(e) {
+      $dropzone[0].ondrop = function(e) {
         e.stopPropagation();
         e.preventDefault();
+
         if (e.dataTransfer.files.length > 1) {
           alert('One file only please');
           return;
         }
-        app.sendFiles(e.dataTransfer.files, function(data) {
-          model.set(data[0]);
-          model.trigger('sync');
-        });
+
+        var file = e.dataTransfer.files[0];
+
+        model.setFile(file);
+
         $dropzone.removeClass('dragover');
-      }, this);
+      };
 
     },
   });
