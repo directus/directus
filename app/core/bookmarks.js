@@ -110,6 +110,8 @@ function(app, Backbone, EntriesManager) {
 
       this.collection.each(function(model) {
         var bookmark = model.toJSON();
+        // force | remove from activity from navigation
+        if (bookmark.title === 'Activity') return false;
         if(bookmarks[bookmark.section]) {
           bookmarks[bookmark.section].push(bookmark);
         } else if(isCustomBookmarks) {
