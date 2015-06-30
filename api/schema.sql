@@ -236,9 +236,7 @@ VALUES
   (10,'directus_ui','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
   (11,'directus_users','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
   (12,'directus_ip_whitelist','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (13,'directus_social_feeds','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
   (14,'directus_messages_recipients','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (15,'directus_social_posts','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
   (16,'directus_storage_adapters','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
   (17,'directus_tab_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
   (18,'directus_bookmarks','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL);
@@ -282,38 +280,6 @@ VALUES
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-# Dump of table directus_social_feeds
-# ------------------------------------------------------------
-
-CREATE TABLE `directus_social_feeds` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `type` tinyint(2) NOT NULL COMMENT 'Twitter (1), Instagram (2)',
-  `last_checked` datetime DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `foreign_id` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `data` text CHARACTER SET latin1 NOT NULL COMMENT 'Feed metadata. JSON format.',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table directus_social_posts
-# ------------------------------------------------------------
-
-CREATE TABLE `directus_social_posts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `feed` int(11) NOT NULL COMMENT 'The FK ID of the feed.',
-  `datetime` datetime NOT NULL COMMENT 'The date/time this entry was published.',
-  `foreign_id` varchar(55) CHARACTER SET latin1 NOT NULL,
-  `data` text CHARACTER SET latin1 NOT NULL COMMENT 'The API response for this entry, excluding unnecessary feed metadata, which is stored on the directus_social_feeds table.',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `feed` (`feed`,`foreign_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 
 # Dump of table directus_storage_adapters
