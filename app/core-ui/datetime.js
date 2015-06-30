@@ -2,7 +2,7 @@
 
 define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, moment, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
