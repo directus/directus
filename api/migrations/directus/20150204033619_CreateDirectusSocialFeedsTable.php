@@ -13,8 +13,8 @@ CREATE TABLE `directus_social_feeds` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
-use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
-
+/*use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
+@TODO: Remove this file
 class CreateDirectusSocialFeedsTable extends Ruckusing_Migration_Base
 {
     public function up()
@@ -76,3 +76,4 @@ class CreateDirectusSocialFeedsTable extends Ruckusing_Migration_Base
       $this->drop("directus_social_feeds");
     }//down()
 }
+*/
