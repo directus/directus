@@ -51,6 +51,7 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
           if(!isset($bookmark[$field]) || ("0" !== $bookmark[$field] && empty($bookmark[$field]))) {
             if(!isset($bookmark[$field])) {
                 $bookmark[$field] = $defaultValue;
+                print_r($bookmark);
             }
           }
         }
@@ -100,13 +101,19 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
 
         $defaultBookmarks = array_keys(self::$defaultBookmarksValues);
 
-        foreach($bookmarks as $row) {
+        foreach($bookmarks as $index => $row) {
           $title = $row['title'];
 
           if (($key = array_search($title, $defaultBookmarks)) !== false) unset($defaultBookmarks[$key]);
 
           if (!isset($row['user'])) {
               $row = null;
+          }
+
+          // force: no activity nav item
+          if ($row['url'] == 'activity') {
+            unset($bookmarks[$index]);
+            continue;
           }
 
           $bookmarks[$title] = $row;
