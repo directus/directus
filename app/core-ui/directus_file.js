@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'helpers/file'], function(app, Backbone, File) {
+define(['app', 'backbone'], function(app, Backbone) {
 
   "use strict";
 

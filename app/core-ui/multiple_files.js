@@ -14,7 +14,7 @@ define([
     'core/UIView',
     'core/overlays/overlays',
   ],
-  function(app, Backbone, Sortable, UIView, Overlays, FilesModel) {
+  function(app, Backbone, Sortable, UIView, Overlays) {
 
   "use strict";
 

@@ -20,10 +20,9 @@ define([
     'app',
     'backbone',
     'core/table/table.view',
-    'core/overlays/overlays',
-    'helpers/file'
+    'core/overlays/overlays'
   ],
-  function(app, Backbone, TableView, Overlays, File) {
+  function(app, Backbone, TableView, Overlays) {
 
   'use strict';
 
