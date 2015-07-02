@@ -51,7 +51,6 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
           if(!isset($bookmark[$field]) || ("0" !== $bookmark[$field] && empty($bookmark[$field]))) {
             if(!isset($bookmark[$field])) {
                 $bookmark[$field] = $defaultValue;
-                print_r($bookmark);
             }
           }
         }
