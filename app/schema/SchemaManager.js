@@ -179,10 +179,10 @@ define(function(require, exports, module) {
       return privileges[tableName];
     },
 
-    updatePrivileges: function(tableName, permissions) {
+    updatePrivileges: function(tableName, attributes) {
       var tablePrivileges = this.getPrivileges(tableName);
       if(tablePrivileges) {
-        tablePrivileges.set('permissions', permissions);
+        tablePrivileges.set(attributes);
       }
     },
 

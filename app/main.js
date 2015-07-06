@@ -233,9 +233,9 @@ require(["config"], function() {
       options.tables.forEach(function(table) {
         table = table.schema;
 
-        if(SchemaManager.getPrivileges(table.table_name) && SchemaManager.getPrivileges(table.table_name).get('permissions')) {
-        var permissions = SchemaManager.getPrivileges(table.table_name).get('permissions').split(',');
-        if(permissions.indexOf('view') !== -1 || permissions.indexOf('bigview') !== -1) {
+        if(SchemaManager.getPrivileges(table.table_name)) {
+        var privileges = SchemaManager.getPrivileges(table.table_name);
+        if(privileges.get('allow_view') > 0) {
           if(!table.hidden) {
             bookmarks.push(new Backbone.Model({
               icon_class: '',

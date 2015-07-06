@@ -137,9 +137,24 @@ define(function(require, exports, module) {
     },
 
     hasPermission: function(permissionType) {
-      var permissions = this.privileges.get('permissions') || '';
-      var permissionsArray = permissions.split(',');
-      return _.contains(permissionsArray, permissionType);
+      var permissionLevel = 1;
+      var permissionName = permissionType;
+      if (permissionType.indexOf('big') === 0) {
+        permissionLevel = 2;
+        permissionName = permissionType.substr(3);
+      } else if (permissionType.indexOf('hard') === 0) {
+        permissionLevel = 3;
+        permissionName = permissionType.substr(4);
+      } else if(permissionType.indexOf('bighard') === 0) {
+        permissionLevel = 4;
+        permissionName = permissionType.substr(7);
+      }
+
+      if (this.privileges.get('allow_' + permissionName) && this.privileges.get('allow_' + permissionName) <= permissionLevel) {
+        return true;
+      }
+
+      return false;
     },
 
     isWriteBlacklisted: function(attribute) {
