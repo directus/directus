@@ -235,8 +235,10 @@ define(function(require, exports, module) {
     },
 
     entries: function(tableName, pref) {
-      if (_.contains(this.tabBlacklist,'tables'))
+      var privileges = SchemaManager.getPrivileges(tableName);
+      if (_.contains(this.tabBlacklist,'tables') || (privileges && privileges.get('allow_view') == 0)) {
         return this.notFound();
+      }
 
       var collection;
 
