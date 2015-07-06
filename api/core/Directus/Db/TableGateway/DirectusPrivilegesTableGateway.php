@@ -30,17 +30,10 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
     private function verifyPrivilege($attributes) {
         // Making sure alter is set for admin only.
-        $permissions = array_flip(explode(',', $attributes['permissions']));
-        if($this->isCurrentUserAdmin()) {
-            if(!array_key_exists('alter', $permissions)) {
-                $permissions['alter'] = count($permissions); // the id
-                $attributes['permissions'] = trim(implode(',', array_flip($permissions)), ',');
-            }
+        if($this->isCurrentUserAdmin() && !$attributes['allow_alter']) {
+            $attributes['allow_alter'] = 1;
         } else {
-            if(array_key_exists('alter', $permissions)) {
-                unset($permissions['alter']);
-                $attributes['permissions'] = trim(implode(',', array_flip($permissions)), ',');
-            }
+            $attributes['allow_alter'] = 0;
         }
 
         return $attributes;
@@ -96,10 +89,22 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
     // include blacklists when there is a UI for it
     public function updatePrivilege($attributes) {
         $attributes = $this->verifyPrivilege($attributes);
+        $arrayKeyExpected = array(
+            'allow_view',
+            'allow_add',
+            'allow_delete',
+            'allow_edit',
+            'allow_alter',
+            'nav_listed',
+            'read_field_blacklist',
+            'write_field_blacklist'
+        );
+
+        $data = array_intersect_key($attributes, array_flip($arrayKeyExpected));
 
         $update = new Update($this->getTable());
         $update->where->equalTo('id', $attributes['id']);
-        $update->set(array('permissions' => $attributes['permissions'], 'read_field_blacklist' => $attributes['read_field_blacklist'], 'write_field_blacklist' =>$attributes['write_field_blacklist']));
+        $update->set($data);
         $this->updateWith($update);
 
         return $this->fetchById($attributes['id']);

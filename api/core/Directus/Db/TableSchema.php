@@ -266,7 +266,7 @@ class TableSchema {
     public static function canGroupViewTable($tableName) {
         $acl = Bootstrap::get('acl');
         $tablePrivilegeList = $acl->getTablePrivilegeList($tableName, $acl::TABLE_PERMISSIONS);
-        if(in_array('view', $tablePrivilegeList) || in_array('bigview', $tablePrivilegeList)) {
+        if (array_key_exists('allow_view', $tablePrivilegeList) && $tablePrivilegeList['allow_view'] > 0) {
             return true;
         }
         return false;

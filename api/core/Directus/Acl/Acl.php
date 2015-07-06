@@ -164,8 +164,21 @@ class Acl {
             throw new \InvalidArgumentException("Invalid list: $list");
         }
         $privilegeList = self::$base_acl[$list];
-
         $groupHasTablePrivileges = array_key_exists($table, $this->groupPrivileges);
+
+        if ($list === 'permissions' && $groupHasTablePrivileges) {
+            $permissionFields = array_merge(self::$base_acl[self::TABLE_PERMISSIONS], array(
+                'alter'
+            ));
+            $permissionFields = array_map(function($name) {
+                return 'allow_' . $name;
+            }, $permissionFields);
+
+            $privilegeList = array_intersect_key($this->groupPrivileges[$table], array_flip($permissionFields));
+
+            return $privilegeList;
+        }
+
         if($groupHasTablePrivileges) {
             if(!isset($this->groupPrivileges[$table][$list]) || !is_array($this->groupPrivileges[$table][$list])) {
                 throw new \RuntimeException('Expected permissions list `$list` for table `$table` to be set and type array.');
@@ -219,7 +232,24 @@ class Acl {
      */
     public function hasTablePrivilege($table, $privilege) {
         $tablePermissions = $this->getTablePrivilegeList($table, self::TABLE_PERMISSIONS);
-        return in_array($privilege, $tablePermissions) || in_array('big'.$privilege, $tablePermissions);
+        $permissionLevel = 1;
+        $permissionName = $privilege;
+        if (strpos($privilege, 'big') === 0) {
+            $permissionLevel = 2;
+            $permissionName = substr($privilege, 3);
+        } else if (strpos($privilege, 'hard')) {
+            $permissionLevel = 3;
+            $permissionName = substr($privilege, 4);
+        } else if (strpos($privilege, 'bighard')) {
+            $permissionLevel = 4;
+            $permissionName = substr($privilege, 7);
+        }
+
+        if (isset($tablePermissions['allow_' . $permissionName])) {
+            return  $permissionLevel <= $tablePermissions['allow_' . $permissionName];
+        }
+
+        return false;
     }
 
     public function getCmsOwnerColumnByTable($table) {

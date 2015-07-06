@@ -438,7 +438,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var column = this.collection.get(id);
       var model = column.options;
       model.set({id: column.get('ui')});
-
       var schema = app.schemaManager.getColumns('ui', model.id);
       var view = new EditColumn({model: model, schema: schema});
       app.router.overlayPage(view);
@@ -791,7 +790,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var that = this;
         var model = new Backbone.Model();
         model.url = app.API_URL + 'privileges/1';
-        model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
+        // @todo: set default values in the server side
+        model.set({group_id: 1, to_add:1, to_edit:2, to_delete:2, to_alter:1, to_view:2, table_name: tableName, addTable: true});
         model.save({}, {success: function(model){
           var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
           tableModel.fetch({
