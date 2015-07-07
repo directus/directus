@@ -49,7 +49,7 @@ require(["config"], function() {
         files: {}
       },
       storage_adapters: {},
-      tab_privileges: {},
+      // tab_privileges: {},
       preferences: [],
       tables: [],
       nonces: {
@@ -232,7 +232,6 @@ require(["config"], function() {
       var bookmarks = [];
       options.tables.forEach(function(table) {
         table = table.schema;
-
         if(SchemaManager.getPrivileges(table.table_name)) {
         var privileges = SchemaManager.getPrivileges(table.table_name);
         if(privileges.get('allow_view') > 0) {
@@ -267,14 +266,16 @@ require(["config"], function() {
       });
 
       // Grab tab permissions from DB
-      var tabPrivileges = options.tab_privileges;
-      var tabBlacklist = (tabPrivileges.tab_blacklist || '').split(',');
+      var currentUserGroupId = app.users.getCurrentUser().get('group').get('id');
+      var currentUserGroup = app.groups.get(currentUserGroupId);
+      var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',');
 
       // Custom Bookmarks Nav
       var customBookmarks = [];
-      if (tabPrivileges.nav_override !== false) {
-        for(var section in tabPrivileges.nav_override) {
-          var sectionItems = tabPrivileges.nav_override[section];
+      if (currentUserGroup.get('nav_override') !== false) {
+        for (var section in currentUserGroup.get('nav_override')) {
+          var sectionItems = currentUserGroup.get('nav_override')[section]
+          // @todo: check this is not a string, but a valid object.
           for(var item in sectionItems) {
             var path = sectionItems[item].path || '';
             customBookmarks.push(new Backbone.Model({
@@ -297,7 +298,7 @@ require(["config"], function() {
 
       // Filter out blacklisted bookmarks (case-sensitive)
       bookmarks = _.filter(bookmarks, function(bookmark) {
-        return !_.contains(tabBlacklist, bookmark.attributes.title);
+        return !_.contains(navBlacklist, bookmark.attributes.title);
       });
 
       // Turn into collection
@@ -484,7 +485,7 @@ require(["config"], function() {
       });
 
 
-      app.router = new Router({extensions: extensions, tabs: tabs, tabPrivileges: options.tab_privileges});
+      app.router = new Router({extensions: extensions, tabs: tabs, navPrivileges: app.users.getCurrentUser().get('group')});
 
       // Trigger the initial route and enable HTML5 History API support, set the
       // root folder to '/' by default.  Change in app.js.

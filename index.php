@@ -21,7 +21,7 @@ use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGatewa
 use Directus\Db\TableGateway\DirectusBookmarksTableGateway;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
-use Directus\Db\TableGateway\DirectusTabPrivilegesTableGateway;
+// use Directus\Db\TableGateway\DirectusTabPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableSchema;
@@ -144,7 +144,24 @@ function getBookmarks() {
 function getGroups() {
     global $ZendDb, $acl;
     $groups = new TableGateway($acl, 'directus_groups', $ZendDb);
-    return $groups->getEntries();
+    // @todo: move to DirectusGroupsTableGateway
+    $groupEntries = $groups->getEntries();
+
+    $groupEntries['rows'] = array_map(function($row) {
+        if(array_key_exists('nav_override', $row)) {
+            if(!empty($row['nav_override'])) {
+                $row['nav_override'] = @json_decode($row['nav_override']);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $row['nav_override'] = false;
+                }
+            } else {
+                $row['nav_override'] = NULL;
+            }
+        }
+        return $row;
+    }, $groupEntries['rows']);
+
+    return $groupEntries;
 }
 
 function getSettings() {
@@ -165,11 +182,11 @@ function getActiveFiles() {
     return $tableGateway->countActive();
 }
 
-function getTabPrivileges($groupId) {
-    global $ZendDb, $acl;
-    $tableGateway = new DirectusTabPrivilegesTableGateway($acl, $ZendDb);
-    return $tableGateway->fetchAllByGroup($groupId);
-}
+// function getTabPrivileges($groupId) {
+//     global $ZendDb, $acl;
+//     $tableGateway = new DirectusTabPrivilegesTableGateway($acl, $ZendDb);
+//     return $tableGateway->fetchAllByGroup($groupId);
+// }
 
 function getInbox() {
     global $ZendDb, $acl, $authenticatedUser;
@@ -194,13 +211,13 @@ function filterPermittedExtensions($extensions, $blacklist) {
     return array_values($permittedExtensions);
 }
 
-function getExtensions($tabPrivileges) {
+function getExtensions($currentUserGroup) {
 
     $extensions = array_values(Bootstrap::get('extensions'));
 
     // filter out tabs that aren't visible
-    if (array_key_exists('tab_blacklist', $tabPrivileges)) {
-        $extensions = filterPermittedExtensions($extensions, $tabPrivileges['tab_blacklist']);
+    if (array_key_exists('nav_blacklist', $currentUserGroup)) {
+        $extensions = filterPermittedExtensions($extensions, $currentUserGroup['nav_blacklist']);
     }
 
     // Append relative path and filename for dynamic loading
@@ -280,8 +297,18 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
 
 $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cacheBuster);
 
-$tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
+// $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
+$groups = getGroups();
+$currentUserGroup = array();
+if (isset($groups['rows']) && count($groups['rows'] > 0)) {
+    foreach($groups['rows'] as $group) {
+        if ($group['id'] === $groupId) {
+            $currentUserGroup = $group;
+            break;
+        }
+    }
+}
 
 $statusMapping = array('active_num'=>STATUS_ACTIVE_NUM, 'deleted_num'=>STATUS_DELETED_NUM, 'status_name'=>STATUS_COLUMN_NAME);;
 $statusMapping['mapping'] = $config['statusMapping'];
@@ -295,12 +322,12 @@ $data = array(
     'tables' => parseTables($tableSchema),
     'preferences' => parsePreferences($tableSchema), //ok
     'users' => $users,
-    'groups' => getGroups(),
+    'groups' => $groups,
     'settings' => getSettings(),
     'active_files' => getActiveFiles(),
     'authenticatedUser' => $authenticatedUser,
-    'tab_privileges' => $tabPrivileges,
-    'extensions' => getExtensions($tabPrivileges),
+    // 'tab_privileges' => $tabPrivileges,
+    'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),
     'ui' => getUI(),
     'listViews' => getListViews(),
