@@ -225,7 +225,7 @@ define(function(require, exports, module) {
     },
 
     tables: function() {
-      if (_.contains(this.tabBlacklist,'tables'))
+      if (_.contains(this.navBlacklist,'tables'))
         return this.notFound();
 
       this.navigate('/tables'); //If going to / rewrite to tables
@@ -236,7 +236,7 @@ define(function(require, exports, module) {
 
     entries: function(tableName, pref) {
       var privileges = SchemaManager.getPrivileges(tableName);
-      if (_.contains(this.tabBlacklist,'tables') || (privileges && privileges.get('allow_view') == 0)) {
+      if (_.contains(this.navBlacklist,'tables') || (privileges && privileges.get('allow_view') == 0)) {
         return this.notFound();
       }
 
@@ -301,7 +301,7 @@ define(function(require, exports, module) {
     },
 
     entry: function(tableName, id) {
-      if (_.contains(this.tabBlacklist,'tables'))
+      if (_.contains(this.navBlacklist,'tables'))
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Entry');
@@ -344,7 +344,7 @@ define(function(require, exports, module) {
     },
 
     activity: function() {
-      if (_.contains(this.tabBlacklist,'activity'))
+      if (_.contains(this.navBlacklist,'activity'))
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Activity');
@@ -353,7 +353,7 @@ define(function(require, exports, module) {
     },
 
     files: function(pref) {
-      if (_.contains(this.tabBlacklist,'files'))
+      if (_.contains(this.navBlacklist,'files'))
         return this.notFound();
 
       if(pref) {
@@ -438,7 +438,7 @@ define(function(require, exports, module) {
     },
 
     settings: function(name) {
-      if (_.contains(this.tabBlacklist,'settings'))
+      if (_.contains(this.navBlacklist,'settings'))
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
@@ -471,7 +471,7 @@ define(function(require, exports, module) {
     },
 
     settingsTable: function(tableName) {
-      if (_.contains(this.tabBlacklist,'settings'))
+      if (_.contains(this.navBlacklist,'settings'))
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
@@ -482,7 +482,7 @@ define(function(require, exports, module) {
     },
 
     settingsPermissions: function(groupId) {
-      if (_.contains(this.tabBlacklist,'settings'))
+      if (_.contains(this.navBlacklist,'settings'))
         return this.notFound();
 
       this.setTitle(app.settings.get('global').get('site_name') + ' | Settings - Permissions');
@@ -539,8 +539,7 @@ define(function(require, exports, module) {
     },
 
     initialize: function(options) {
-
-      this.tabBlacklist = (options.tabPrivileges.tab_blacklist || '').split(',');
+      this.navBlacklist = (options.navPrivileges.get('nav_blacklist') || '').split(',');
       // @todo: Allow a queue of pending alerts, maybe?
       this.pendingAlert = {};
 
