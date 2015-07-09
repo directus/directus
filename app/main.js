@@ -230,12 +230,12 @@ require(["config"], function() {
       // Setup Bookmarks
       ////////////////////////////////////////////////////////////////////////////////////
       var bookmarks = [];
+
       options.tables.forEach(function(table) {
         table = table.schema;
         if(SchemaManager.getPrivileges(table.table_name)) {
         var privileges = SchemaManager.getPrivileges(table.table_name);
-        if(privileges.get('allow_view') > 0) {
-          if(!table.hidden) {
+        if(privileges.get('allow_view') > 0 && !table.hidden) {
             bookmarks.push(new Backbone.Model({
               icon_class: '',
               title: app.capitalize(table.table_name),
@@ -243,7 +243,6 @@ require(["config"], function() {
               section: 'table'
             }));
           }
-        }
         }
       });
 
@@ -265,7 +264,7 @@ require(["config"], function() {
         }));
       });
 
-      // Grab tab permissions from DB
+      // Grab nav permissions
       var currentUserGroupId = app.users.getCurrentUser().get('group').get('id');
       var currentUserGroup = app.groups.get(currentUserGroupId);
       var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',');
