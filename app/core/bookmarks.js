@@ -110,8 +110,34 @@ function(app, Backbone, EntriesManager) {
 
       this.collection.each(function(model) {
         var bookmark = model.toJSON();
+        var currentUserGroup = app.users.getCurrentUser().get('group');
         // force | remove from activity from navigation
         if (bookmark.title === 'Activity') return false;
+
+        // skip system nav to an user
+        // if the user's group aren't allow to
+        // see it on the navigation panel
+        var skipSystemNav = false;
+        // @todo: bookmark.title to id or url.
+        switch (bookmark.title) {
+          case 'Activity':
+            skipSystemNav = currentUserGroup.get('show_activity') === 0 ? true : false;
+            break;
+          case 'Files':
+            skipSystemNav = currentUserGroup.get('show_files') === 0 ? true : false;
+            break;
+          case 'Users':
+            skipSystemNav = currentUserGroup.get('show_users') === 0 ? true : false;
+            break;
+          case 'Messages':
+            skipSystemNav = currentUserGroup.get('show_messages') === 0 ? true : false;
+            break;
+        }
+
+        if (skipSystemNav) {
+          return false;
+        }
+
         if(bookmarks[bookmark.section]) {
           bookmarks[bookmark.section].push(bookmark);
         } else if(isCustomBookmarks) {
