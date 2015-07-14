@@ -351,11 +351,11 @@ CREATE TABLE `directus_ui` (
   `value` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique` (`table_name`,`column_name`,`ui_name`,`name`)
-  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
 VALUES
   ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Dump of table directus_users
 # ------------------------------------------------------------
