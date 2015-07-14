@@ -8,22 +8,22 @@ class AddShowNavColumnsDirectusGroups extends Ruckusing_Migration_Base
         $this->add_column('directus_groups', 'show_activity', 'tinyinteger', array(
             'limit' => 1,
             'null' => false,
-            'default' => 0
+            'default' => 1
         ));
         $this->add_column('directus_groups', 'show_messages', 'tinyinteger', array(
             'limit' => 1,
             'null' => false,
-            'default' => 0
+            'default' => 1
         ));
         $this->add_column('directus_groups', 'show_users', 'tinyinteger', array(
             'limit' => 1,
             'null' => false,
-            'default' => 0
+            'default' => 1
         ));
         $this->add_column('directus_groups', 'show_files', 'tinyinteger', array(
             'limit' => 1,
             'null' => false,
-            'default' => 0
+            'default' => 1
         ));
     }//up()
 
