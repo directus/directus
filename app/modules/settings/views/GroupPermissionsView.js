@@ -398,16 +398,16 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
 
         // Default permissions
         data.permissions = {
-          'add': model.get('allow_add') != 0 ? true : false,
-          'edit': model.get('allow_edit') != 0 ? true : false,
-          'bigedit': model.get('allow_edit') == 2 ? true : false,
-          'delete': model.get('allow_delete') != 0 ? true : false,
-          'bigdelete': model.get('allow_delete') == 2 ? true : false,
-          'harddelete': model.get('allow_delete') == 3 ? true : false,
-          'bigharddelete': model.get('allow_delete') == 4 ? true : false,
-          'alter': model.get('allow_alter') != 0 ? true : false,
-          'view': model.get('allow_view') != 0 ? true : false,
-          'bigview': model.get('allow_view') == 2 ? true : false
+          'add': (model.has('allow_add') && model.get('allow_add') != 0) ? true : false,
+          'edit': (model.has('allow_add') && model.get('allow_edit') != 0) ? true : false,
+          'bigedit': (model.has('allow_add') && model.get('allow_edit') == 2) ? true : false,
+          'delete': (model.has('allow_add') && model.get('allow_delete') != 0) ? true : false,
+          'bigdelete': (model.has('allow_add') && model.get('allow_delete') == 2) ? true : false,
+          'harddelete': (model.has('allow_add') && model.get('allow_delete') == 3) ? true : false,
+          'bigharddelete': (model.has('allow_add') && model.get('allow_delete') == 4) ? true : false,
+          'alter': (model.has('allow_add') && model.get('allow_alter') != 0) ? true : false,
+          'view': (model.has('allow_add') && model.get('allow_view') != 0) ? true : false,
+          'bigview': (model.has('allow_add') && model.get('allow_view') == 2) ? true : false
         };
 
         if(that.selectedState == 'all' && tableStatusMapping[data.table_name].count > 1) {
