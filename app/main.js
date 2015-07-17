@@ -235,7 +235,7 @@ require(["config"], function() {
         table = table.schema;
         if(SchemaManager.getPrivileges(table.table_name)) {
         var privileges = SchemaManager.getPrivileges(table.table_name);
-        if(privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') != 0) {
+        if(privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
             bookmarks.push(new Backbone.Model({
               icon_class: '',
               title: app.capitalize(table.table_name),
