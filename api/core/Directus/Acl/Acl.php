@@ -165,8 +165,8 @@ class Acl {
         }
         $privilegeList = self::$base_acl[$list];
         $groupHasTablePrivileges = array_key_exists($table, $this->groupPrivileges);
-
-        if ($list === 'permissions' && $groupHasTablePrivileges) {
+        // @TODO: remove permissions.
+        if ($list === 'permissions') {
             $permissionFields = array_merge(self::$base_acl[self::TABLE_PERMISSIONS], array(
                 'alter'
             ));
@@ -174,7 +174,14 @@ class Acl {
                 return 'allow_' . $name;
             }, $permissionFields);
 
-            $privilegeList = array_intersect_key($this->groupPrivileges[$table], array_flip($permissionFields));
+            if ($groupHasTablePrivileges) {
+                $privilegeList = array_intersect_key($this->groupPrivileges[$table], array_flip($permissionFields));
+            } else {
+                $privilegeList = array();
+                foreach($permissionFields as $permission) {
+                    $privilegeList[$permission] = 1;
+                }
+            }
 
             return $privilegeList;
         }
