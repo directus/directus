@@ -40,7 +40,7 @@ function(app, Backbone) {
         }
 
         // only return tables with view permissions and not hidden
-        return privileges.get('allow_view') > 0  && privileges.get('nav_listed') != 0;
+        return privileges.get('allow_view') > 0  && privileges.get('nav_listed') > 0;
       });
       return {rows: rows, columns: this.collection.getColumns()};
     },
