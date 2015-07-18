@@ -30,7 +30,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
     private function verifyPrivilege($attributes) {
         // Making sure alter is set for admin only.
-        if($this->isCurrentUserAdmin() && !$attributes['allow_alter']) {
+        if($this->isCurrentUserAdmin() && !array_key_exists('allow_alter', $attributes)) {
             $attributes['allow_alter'] = 1;
         } else {
             $attributes['allow_alter'] = 0;
@@ -71,10 +71,10 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         $status_id = isset($attributes['status_id']) ? $attributes['status_id'] : 0;
         $insert = new Insert($this->getTable());
         $insert
-            ->columns(array('table_name','permissions','group_id'))
+            ->columns(array('table_name',/*'permissions',*/'group_id'))
             ->values(array(
                 'table_name' => $attributes['table_name'],
-                'permissions' => $attributes['permissions'],
+                // 'permissions' => $attributes['permissions'],
                 'group_id' => $attributes['group_id'],
                 'status_id' => $status_id
                 ));
