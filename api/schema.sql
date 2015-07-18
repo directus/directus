@@ -222,20 +222,20 @@ LOCK TABLES `directus_privileges` WRITE;
 
 INSERT INTO `directus_privileges` (`id`, `table_name`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `nav_listed`, `allow_view`, `allow_add`, `allow_edit`, `allow_delete`, `allow_alter`, `status_id`)
 VALUES
-  (1,'directus_activity',1,NULL,NULL,1,1,1,1,1,1,1),
-  (2,'directus_columns',1,NULL,NULL,1,1,1,1,1,1,1),
-  (3,'directus_groups',1,NULL,NULL,1,1,1,1,1,1,1),
-  (4,'directus_files',1,NULL,NULL,1,1,1,1,1,1,1),
-  (5,'directus_messages',1,NULL,NULL,1,1,1,1,1,1,1),
-  (6,'directus_preferences',1,NULL,NULL,1,1,1,1,1,1,1),
-  (7,'directus_privileges',1,NULL,NULL,1,1,1,1,1,1,1),
-  (8,'directus_settings',1,NULL,NULL,1,1,1,1,1,1,1),
-  (9,'directus_tables',1,NULL,NULL,1,1,1,1,1,1,1),
-  (10,'directus_ui',1,NULL,NULL,1,1,1,1,1,1,1),
-  (11,'directus_users',1,NULL,NULL,1,1,1,1,1,1,1),
-  (12,'directus_messages_recipients',1,NULL,NULL,1,1,1,1,1,1,1),
-  (13,'directus_storage_adapters',1,NULL,NULL,1,1,1,1,1,1,1),
-  (14,'directus_bookmarks',1,NULL,NULL,1,1,1,1,1,1,1);
+  (1,'directus_activity',1,NULL,NULL,1,2,1,2,2,1,1),
+  (2,'directus_columns',1,NULL,NULL,1,2,1,2,2,1,1),
+  (3,'directus_groups',1,NULL,NULL,1,2,1,2,2,1,1),
+  (4,'directus_files',1,NULL,NULL,1,2,1,2,2,1,1),
+  (5,'directus_messages',1,NULL,NULL,1,2,1,2,2,1,1),
+  (6,'directus_preferences',1,NULL,NULL,1,2,1,2,2,1,1),
+  (7,'directus_privileges',1,NULL,NULL,1,2,1,2,2,1,1),
+  (8,'directus_settings',1,NULL,NULL,1,2,1,2,2,1,1),
+  (9,'directus_tables',1,NULL,NULL,1,2,1,2,2,1,1),
+  (10,'directus_ui',1,NULL,NULL,1,2,1,2,2,1,1),
+  (11,'directus_users',1,NULL,NULL,1,2,1,2,2,1,1),
+  (12,'directus_messages_recipients',1,NULL,NULL,1,2,1,2,2,1,1),
+  (13,'directus_storage_adapters',1,NULL,NULL,1,2,1,2,2,1,1),
+  (14,'directus_bookmarks',1,NULL,NULL,1,2,1,2,2,1,1);
 
 /*!40000 ALTER TABLE `directus_privileges` ENABLE KEYS */;
 UNLOCK TABLES;
