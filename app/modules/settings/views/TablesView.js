@@ -675,10 +675,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       // filter out tables with empty privileges
       if (privileges === undefined) return false;
 
-      var permissions = privileges.get('permissions').split(',');
-
       // only return tables with view permissions
-      return _.contains(permissions, 'bigview');
+      return privileges.has('allow_view') && privileges.get('allow_view') > 0;
     },
 
     flashItem: function(entryID, bodyScrollTop) {
@@ -791,7 +789,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var model = new Backbone.Model();
         model.url = app.API_URL + 'privileges/1';
         // @todo: set default values in the server side
-        model.set({group_id: 1, to_add:1, to_edit:2, to_delete:2, to_alter:1, to_view:2, table_name: tableName, addTable: true});
+        model.set({group_id: 1, allow_add:1, allow_edit:2, allow_delete:2, allow_alter:1, allow_view:2, table_name: tableName, addTable: true});
         model.save({}, {success: function(model){
           var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
           tableModel.fetch({
@@ -807,7 +805,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       app.schemaManager.register('tables', [{schema: tableModel.toJSON()}]);
       app.schemaManager.registerPrivileges([{
         table_name: tableModel.get('table_name'),
-        permissions: "add,edit,bigedit,delete,bigdelete,alter,view,bigview",
+        allow_add:1,
+        allow_edit:2,
+        allow_delete:2,
+        allow_alter:1,
+        allow_view:2,
         group_id: app.getCurrentGroup()
       }]);
       app.schemaManager.registerPreferences([tableModel.preferences.toJSON()]);
