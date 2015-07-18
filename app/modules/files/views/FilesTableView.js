@@ -25,6 +25,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
     },
     rightToolbar: function() {
       return [
+        new Widgets.PaginatorWidget({collection: this.collection})
         //new Widgets.SearchWidget(),
         //new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
         //new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
@@ -41,6 +42,12 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
       }
 
       return [this.widgets.visibilityWidget, this.widgets.filterWidget];
+    },
+
+    rightSecondaryToolbar: function() {
+      return [
+        new Widgets.PaginationCountWidget({collection: this.collection})
+      ];
     },
 
     events: {
