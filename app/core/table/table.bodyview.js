@@ -108,7 +108,7 @@ function(app, Backbone, Sortable) {
     drop: function() {
       var collection = this.collection;
       this.$('tr').each(function(i) {
-        collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
+        collection.get($(this).attr('data-cid')).set({sort: i},{silent: true});
       });
 
       if (this.options.saveAfterDrop) {
