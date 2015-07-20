@@ -2,71 +2,95 @@
 //////////////////////////////////////////////////////////////////////////////
 // Small Desktop
 
+@hamburger-height: 7px;
+
 @keyframes tox-1-on {
     0%   {left:0px; top:0px;}
-    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
-    100% {left:0px; top:10px; transform: rotateZ(45deg);}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
 }
 @keyframes tox-2-on {
-    0%   {left:0px; top:10px;}
-    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
-    100% {left:0px; top:10px; transform: rotateZ(45deg);}
+    0%   {left:0px; top:@hamburger-height*1;}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
 }
 @keyframes tox-3-on {
-    0%   {left:0px; top:20px;}
-    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
-    100% {left:0px; top:10px; transform: rotateZ(-45deg);}
+    0%   {left:0px; top:@hamburger-height*2;}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(-45deg);}
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Off
 
 @keyframes tox-1-off {
-    0%   {left:0px; top:10px; transform: rotateZ(45deg);}
-    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
+    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
     100% {left:0px; top:0px;}
 }
 @keyframes tox-2-off {
-    0%   {left:0px; top:10px; transform: rotateZ(45deg);}
-    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
-    100% {left:0px; top:10px;}
+    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*1;}
 }
 @keyframes tox-3-off {
-    0%   {left:0px; top:10px; transform: rotateZ(-45deg);}
-    50%  {left:0px; top:10px; transform: rotateZ(0deg);}
-    100% {left:0px; top:20px;}
+    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(-45deg);}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*2;}
 }
 
 @media only screen and (max-width : 800px) {
+	#main.sidebar-active {
+		#sidebar {
+			left: 0 !important;
+		}
+		.main-container {
+			margin-left: @standardSidebarWidth;
+		}
+		.responsive-nav-toggle {
+			.line-1 {
+				animation-name: tox-1-on;
+				-webkit-animation-name: tox-1-on;
+			}
+			.line-2 {
+				animation-name: tox-2-on;
+				-webkit-animation-name: tox-2-on;
+			}
+			.line-3 {
+				animation-name: tox-3-on;
+				-webkit-animation-name: tox-3-on;
+			}
+		}
+	}
 	.responsive-nav-toggle {
 		position: relative;
 		display: inline-block;
-		width: 50px;
-		height: 30px;
+		width: 30px;
+		height: @hamburger-height*3;
 		float: left;
-		margin-top: 3px;
+		margin-top: @hamburger-height;
 		margin-right: 20px;
 		cursor: pointer;
 		&:hover .hamburger-line {
 			background-color: @darkGrey;
 		}
-		&.active .line-1 {
-			animation-name: tox-1-on;
-			-webkit-animation-name: tox-1-on;
-		}
-		&.active .line-2 {
-			animation-name: tox-2-on;
-			-webkit-animation-name: tox-2-on;
-		}
-		&.active .line-3 {
-			animation-name: tox-3-on;
-			-webkit-animation-name: tox-3-on;
-		}
+		// &.active .line-1 {
+		// 	animation-name: tox-1-on;
+		// 	-webkit-animation-name: tox-1-on;
+		// }
+		// &.active .line-2 {
+		// 	animation-name: tox-2-on;
+		// 	-webkit-animation-name: tox-2-on;
+		// }
+		// &.active .line-3 {
+		// 	animation-name: tox-3-on;
+		// 	-webkit-animation-name: tox-3-on;
+		// }
 		.hamburger-line {
 			position: absolute;
 			background-color: @mediumGrey;
-			height: 5px;
-			width: 50px;
+			height: 2px;
+			width: 30px;
 
 			@tox-duration: 600ms;
 
@@ -89,27 +113,24 @@
 			-webkit-animation-name: tox-1-off;
 		}
 		.line-2 {
-			top: 10px;
+			top: 5px;
 			left: 0px;
 			animation-name: tox-2-off;
 			-webkit-animation-name: tox-2-off;
 		}
 		.line-3 {
-			top: 20px;
+			top: 10px;
 			left: 0px;
 			animation-name: tox-3-off;
 			-webkit-animation-name: tox-3-off;
 		}
 	}
 	#sidebar {
-		left: -170px !important;
-		&.active {
-			left: 0 !important;
-		}
+		left: -@standardSidebarWidth !important;
 	}
-  	#fixedHeader.active {
-  		left: 170px;
-  	}
+  	// #fixedHeader.active {
+  	// 	left: 170px;
+  	// }
 	// #sidebar {
 	// 	width: 60px;
 	// 	.directusLogo {
@@ -265,7 +286,7 @@
 			//width: 70%;
 			margin-left: 80px;
 			h2 {
-				margin-top: 10px;
+				margin-top: 15px;
 				white-space:nowrap;
 				text-overflow: ellipsis;
 				overflow: hidden;

@@ -196,13 +196,13 @@
       background-color: @white;
       color: @mediumGrey;
       cursor: pointer;
-      &.add-color-background:hover {
-        background-color: @white !important;
-        color: @addColor !important;
-      }
-      &:hover {
-        background-color: @darkGrey;
-      }
+      // &.add-color-background:hover {
+      //   background-color: @white !important;
+      //   color: @addColor !important;
+      // }
+      // &:hover {
+      //   background-color: @darkGrey;
+      // }
     }
     .simple-select {
       display: inline-block;
@@ -251,6 +251,9 @@
         label {
           &.icon {
             line-height: 85%;
+          }
+          &.icon-triangle-down {
+            color: @addColor;
           }
         }
       }

@@ -54,7 +54,7 @@ body.initial-load #sidebar {
     line-height: 90px;
     text-align: center;
     font-size: 40px;
-    color: lighten(@extraDarkGrey, 10%);
+    color: @white;
     border-bottom: 1px solid lighten(@extraDarkGrey, 5%);
     &:hover {
       color: @mediumGrey;
@@ -88,6 +88,13 @@ body.initial-load #sidebar {
         font-size: 11px;
         margin-bottom: 4px;
         text-transform: uppercase;
+      }
+      .sidebar-subitem.disabled {
+        cursor: auto;
+        font-style: italic;
+        &:hover {
+          color: lighten(@mediumGrey, 5%);
+        }
       }
     }
     .sidebar-subitem a {

@@ -16,6 +16,9 @@
 {{else}}
 <div class="sidebar-section tables-sidebar">
   <div class="sidebar-group">Tables</div>
+  {{#unless bookmarks.table}}
+   <li class="sidebar-subitem disabled" title="There are no tables you have permission to view"><a>No Tables</a></li>
+  {{/unless}}
   {{#bookmarks.table}}
   <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">

@@ -1588,6 +1588,11 @@ button {
   display: block;
 }
 .large-circle {
+  -webkit-transition: all 100ms ease-in-out;
+  -moz-transition: all 100ms ease-in-out;
+  -o-transition: all 100ms ease-in-out;
+  -ms-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
   -webkit-border-top-right-radius: 50px;
   -webkit-border-bottom-right-radius: 50px;
   -webkit-border-bottom-left-radius: 50px;
@@ -1614,6 +1619,11 @@ button {
   -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+}
+.large-circle:hover {
+  -ms-transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
 }
 .large-circle .icon {
   display: inline-block;
@@ -1752,6 +1762,11 @@ img.grayscale:hover {
   text-overflow: ellipsis;
 }
 .main-container {
+  -webkit-transition: all 400ms ease-in-out;
+  -moz-transition: all 400ms ease-in-out;
+  -o-transition: all 400ms ease-in-out;
+  -ms-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out;
   margin-left: 170px;
   padding: 0px 80px;
   position: relative;
@@ -1773,8 +1788,13 @@ img.grayscale:hover {
 }
 .nothing-here {
   text-align: center;
-  margin-top: 150px;
+  margin-top: 200px;
   line-height: 35px;
+}
+.nothing-here h1 {
+  color: #ffffff;
+  font-size: 50px;
+  line-height: 60px;
 }
 .media-thumb .img.portrait {
   height: 50px;
@@ -2525,11 +2545,11 @@ input,
 textarea,
 select,
 .input {
-  -webkit-transition: all 100ms linear;
-  -moz-transition: all 100ms linear;
-  -o-transition: all 100ms linear;
-  -ms-transition: all 100ms linear;
-  transition: all 100ms linear;
+  -webkit-transition: all 100ms ease-in-out;
+  -moz-transition: all 100ms ease-in-out;
+  -o-transition: all 100ms ease-in-out;
+  -ms-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
   background-color: #f1f1f1;
   border: none;
   display: block;
@@ -3807,11 +3827,11 @@ tbody.remove-hover-state .sort .icon-list {
   left: 0;
 }
 .feature-cards .feature-card .left-col .icon {
-  -webkit-transition: all 100ms linear;
-  -moz-transition: all 100ms linear;
-  -o-transition: all 100ms linear;
-  -ms-transition: all 100ms linear;
-  transition: all 100ms linear;
+  -webkit-transition: all 100ms ease-in-out;
+  -moz-transition: all 100ms ease-in-out;
+  -o-transition: all 100ms ease-in-out;
+  -ms-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
   display: inline-block;
   font-size: 200px;
   line-height: 100px;
@@ -4018,7 +4038,7 @@ body.initial-load #sidebar {
   line-height: 90px;
   text-align: center;
   font-size: 40px;
-  color: #4d4d4d;
+  color: #ffffff;
   border-bottom: 1px solid #404040;
 }
 #sidebar .directusLogo:hover {
@@ -4056,6 +4076,15 @@ body.initial-load #sidebar {
   font-size: 11px;
   margin-bottom: 4px;
   text-transform: uppercase;
+}
+#sidebar #mainSidebar .sidebar-section .sidebar-subitem.disabled,
+#sidebar #mainSidebar .sidebar-extension .sidebar-subitem.disabled {
+  cursor: auto;
+  font-style: italic;
+}
+#sidebar #mainSidebar .sidebar-section .sidebar-subitem.disabled:hover,
+#sidebar #mainSidebar .sidebar-extension .sidebar-subitem.disabled:hover {
+  color: #b7b7b7;
 }
 #sidebar #mainSidebar .sidebar-subitem a {
   padding-left: 20px;
@@ -4440,13 +4469,6 @@ body.initial-load #sidebar {
   color: #aaaaaa;
   cursor: pointer;
 }
-.header1 .tools .tool-item.add-color-background:hover {
-  background-color: #ffffff !important;
-  color: #7ac943 !important;
-}
-.header1 .tools .tool-item:hover {
-  background-color: #888888;
-}
 .header1 .tools .simple-select {
   display: inline-block;
   vertical-align: middle;
@@ -4487,6 +4509,9 @@ body.initial-load #sidebar {
 }
 .header1 .primary-row .tools .select-and-circle label.icon {
   line-height: 85%;
+}
+.header1 .primary-row .tools .select-and-circle label.icon-triangle-down {
+  color: #7ac943;
 }
 .header1 .primary-row .tools .simple-select {
   margin-bottom: -13px;
@@ -4660,56 +4685,56 @@ body.initial-load #sidebar {
   }
   50% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(0deg);
   }
   100% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(45deg);
   }
 }
 @keyframes tox-2-on {
   0% {
     left: 0px;
-    top: 10px;
+    top: 7px;
   }
   50% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(0deg);
   }
   100% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(45deg);
   }
 }
 @keyframes tox-3-on {
   0% {
     left: 0px;
-    top: 20px;
+    top: 14px;
   }
   50% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(0deg);
   }
   100% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(-45deg);
   }
 }
 @keyframes tox-1-off {
   0% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(45deg);
   }
   50% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(0deg);
   }
   100% {
@@ -4720,66 +4745,72 @@ body.initial-load #sidebar {
 @keyframes tox-2-off {
   0% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(45deg);
   }
   50% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(0deg);
   }
   100% {
     left: 0px;
-    top: 10px;
+    top: 7px;
   }
 }
 @keyframes tox-3-off {
   0% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(-45deg);
   }
   50% {
     left: 0px;
-    top: 10px;
+    top: 7px;
     transform: rotateZ(0deg);
   }
   100% {
     left: 0px;
-    top: 20px;
+    top: 14px;
   }
 }
 @media only screen and (max-width: 800px) {
+  #main.sidebar-active #sidebar {
+    left: 0 !important;
+  }
+  #main.sidebar-active .main-container {
+    margin-left: 170px;
+  }
+  #main.sidebar-active .responsive-nav-toggle .line-1 {
+    animation-name: tox-1-on;
+    -webkit-animation-name: tox-1-on;
+  }
+  #main.sidebar-active .responsive-nav-toggle .line-2 {
+    animation-name: tox-2-on;
+    -webkit-animation-name: tox-2-on;
+  }
+  #main.sidebar-active .responsive-nav-toggle .line-3 {
+    animation-name: tox-3-on;
+    -webkit-animation-name: tox-3-on;
+  }
   .responsive-nav-toggle {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 30px;
+    width: 30px;
+    height: 21px;
     float: left;
-    margin-top: 3px;
+    margin-top: 7px;
     margin-right: 20px;
     cursor: pointer;
   }
   .responsive-nav-toggle:hover .hamburger-line {
     background-color: #888888;
   }
-  .responsive-nav-toggle.active .line-1 {
-    animation-name: tox-1-on;
-    -webkit-animation-name: tox-1-on;
-  }
-  .responsive-nav-toggle.active .line-2 {
-    animation-name: tox-2-on;
-    -webkit-animation-name: tox-2-on;
-  }
-  .responsive-nav-toggle.active .line-3 {
-    animation-name: tox-3-on;
-    -webkit-animation-name: tox-3-on;
-  }
   .responsive-nav-toggle .hamburger-line {
     position: absolute;
     background-color: #aaaaaa;
-    height: 5px;
-    width: 50px;
+    height: 2px;
+    width: 30px;
     animation-duration: 600ms;
     -webkit-animation-duration: 600ms;
     -webkit-animation-iteration-count: 1;
@@ -4798,25 +4829,19 @@ body.initial-load #sidebar {
     -webkit-animation-name: tox-1-off;
   }
   .responsive-nav-toggle .line-2 {
-    top: 10px;
+    top: 5px;
     left: 0px;
     animation-name: tox-2-off;
     -webkit-animation-name: tox-2-off;
   }
   .responsive-nav-toggle .line-3 {
-    top: 20px;
+    top: 10px;
     left: 0px;
     animation-name: tox-3-off;
     -webkit-animation-name: tox-3-off;
   }
   #sidebar {
     left: -170px !important;
-  }
-  #sidebar.active {
-    left: 0 !important;
-  }
-  #fixedHeader.active {
-    left: 170px;
   }
   .main-container {
     margin-left: 0px;
@@ -4895,7 +4920,7 @@ body.initial-load #sidebar {
     margin-left: 80px;
   }
   .feature-cards .feature-card .right-col h2 {
-    margin-top: 10px;
+    margin-top: 15px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -4958,11 +4983,11 @@ body.initial-load #sidebar {
   position: relative;
 }
 .login-panel input {
-  -webkit-transition: all 100ms linear;
-  -moz-transition: all 100ms linear;
-  -o-transition: all 100ms linear;
-  -ms-transition: all 100ms linear;
-  transition: all 100ms linear;
+  -webkit-transition: all 100ms ease-in-out;
+  -moz-transition: all 100ms ease-in-out;
+  -o-transition: all 100ms ease-in-out;
+  -ms-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
   background-color: #f1f1f1;
   border: none;
   display: block;
@@ -5048,7 +5073,7 @@ body.initial-load #sidebar {
   vertical-align: middle;
 }
 ul.general-container {
-  border-bottom: 3px solid #dfdfdf;
+  border-bottom: 2px solid #dfdfdf;
   background-color: #fafafa;
   color: #a2a2a2;
   padding: 0;

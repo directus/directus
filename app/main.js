@@ -378,19 +378,16 @@ require(["config"], function() {
       };
 
       // Toggle responsive navigation
-      $(document).on("click", ".responsive-nav-toggle", function(evt) {
-        if($('#sidebar').hasClass('active')){
-          $('#sidebar').removeClass('active');
-          $('#fixedHeader').removeClass('active');
-          $(this).removeClass('active');
-        } else {
-          $('#sidebar').addClass('active');
-          $('#fixedHeader').addClass('active');
-          $(this).addClass('active');
-        }
+      $(document).on("click", ".responsive-nav-toggle", function(e) {
+        $('#main').toggleClass('sidebar-active');
       });
 
-      //Cancel default file drop
+      // Close sidebar when clicking
+      $(document).on("click", "#sidebar", function(e) {
+        $('#main').removeClass('sidebar-active');
+      });
+
+      // Cancel default file drop
       $(document).on('drop dragover', function(e) {
         e.preventDefault();
       });
