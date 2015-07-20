@@ -3269,21 +3269,6 @@ select:focus,
   display: inline-block;
   padding: 12px 10px 10px 10px;
   background-color: #f1f1f1;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-topleft: 3px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
-  -moz-background-clip: padding-box;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
   max-width: 500px;
   margin-left: 10px;
   height: auto;
@@ -4863,6 +4848,7 @@ body.initial-load #sidebar {
   }
   .set-columns {
     top: 125px !important;
+    right: 20px !important;
   }
   .main-container {
     margin-left: 0px;
