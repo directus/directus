@@ -380,7 +380,6 @@ CREATE TABLE `directus_users` (
   `group` int(11) DEFAULT NULL,
   `avatar` varchar(500) DEFAULT NULL,
   `avatar_file_id` int(11) DEFAULT NULL,
-  `avatar_is_file` tinyint(1) DEFAULT 0,
   `location` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,

@@ -527,7 +527,7 @@ define(function(require, exports, module) {
       this.lastRoute = currentPath;
 
       // update user last route
-      var currentUser = app.users.getCurrentUser();
+      var currentUser = app.users.getCurrentUser().clone();
       var history = _.clone(Backbone.history);
       currentUser.updateLastRoute(route, history);
 
