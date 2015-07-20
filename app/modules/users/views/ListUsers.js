@@ -64,7 +64,6 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
           "cid": model.cid,
           'avatar': model.getAvatar(),
           'avatar_file_id': model.get('avatar_file_id'),
-          'avatar_is_file': model.get('avatar_is_file'),
           'first_name': model.get('first_name'),
           'last_name': model.get('last_name'),
           'email': model.get('email'),
