@@ -10,7 +10,7 @@
     <th class="sortable-column" data-id="{{name}}">{{{capitalize name}}} {{#if orderBy}}{{#if desc}}▼{{else}}▲{{/if}}{{/if}}</th>
   {{/columns}}
   {{#if deleteColumn}}<th class="delete"></th>{{/if}}
-  <th class="visible-columns-cell" style="position:absolute;top:0;right:65px">
+  <th class="visible-columns-cell">
     {{#unless hideColumnPreferences}}<a href="#" id="set-visible-columns"><span class="icon icon-cog"></span></a>{{/unless}}
     <span id="visible_columns_entry"></span>
   </th>

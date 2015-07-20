@@ -2902,6 +2902,7 @@ select:focus,
 }
 .table-striped .visible-columns-cell {
   width: 0;
+  right: 0;
   display: table;
 }
 .table-striped thead:hover #set-visible-columns {
@@ -3089,7 +3090,13 @@ select:focus,
 }
 .related-table .visible-columns-cell {
   width: 0;
+  right: 0;
   display: none;
+}
+.visible-columns-cell {
+  position: absolute;
+  top: 0;
+  right: 24px;
 }
 .set-columns {
   display: block;
@@ -4842,6 +4849,9 @@ body.initial-load #sidebar {
   }
   #sidebar {
     left: -170px !important;
+  }
+  .set-columns {
+    top: 125px !important;
   }
   .main-container {
     margin-left: 0px;

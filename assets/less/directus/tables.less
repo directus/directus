@@ -91,6 +91,7 @@
   }
   .visible-columns-cell {
     width: 0;
+    right: 0;
     display: table;
   }
   thead:hover #set-visible-columns {
@@ -277,8 +278,14 @@
   }
   .visible-columns-cell {
     width: 0;
+    right: 0;
     display: none;
   }
+}
+.visible-columns-cell {
+  position: absolute;
+  top: 0;
+  right: 24px;
 }
 .set-columns {
   // overflow: hidden; // For triangle
