@@ -83,7 +83,7 @@ function(app, Backbone, Widgets, BasePageView) {
   var Permissions = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Permissions',
+        title: 'Group Permissions',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
     },

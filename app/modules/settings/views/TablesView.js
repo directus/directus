@@ -754,7 +754,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
   SettingsTables.Views.List = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Tables+Inputs',
+        title: 'Tables &amp; Inputs',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
     },

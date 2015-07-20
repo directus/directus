@@ -575,7 +575,7 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
     headerOptions: {
       route: {
         title: 'Settings',
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Group Permissions', anchor: '#settings/permissions'}]
       },
     },
     rightToolbar: function() {
