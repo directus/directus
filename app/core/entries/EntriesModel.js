@@ -360,6 +360,13 @@ define(function(require, exports, module) {
       });
     },
 
+    clone: function() {
+      return new this.constructor(this.attributes, {
+        collection: this.collection,
+        table: this.table
+      });
+    },
+
     // we need to do this because initialize is called AFTER parse.
     constructor: function EntriesModel(data, options) {
       // inherit structure and table from collection if it exists
