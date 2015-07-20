@@ -581,7 +581,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     headerOptions: {
       route: {
         title: 'Classes',
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables+Inputs', anchor: '#settings/tables'}]
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables &amp; Inputs', anchor: '#settings/tables'}]
       }
     },
 
