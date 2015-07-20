@@ -4850,6 +4850,17 @@ body.initial-load #sidebar {
   #sidebar {
     left: -170px !important;
   }
+  .cards .card {
+    width: 150px;
+  }
+  .cards .card .header-image {
+    width: 150px;
+    height: 150px;
+  }
+  .cards .card .header-image img {
+    width: 150px !important;
+    height: 150px !important;
+  }
   .set-columns {
     top: 125px !important;
   }
