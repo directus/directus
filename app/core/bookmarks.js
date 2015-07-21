@@ -130,7 +130,7 @@ function(app, Backbone, EntriesManager) {
     pinSnapshot: function(title) {
       var data = {
         title: title,
-        url: '/' + Backbone.history.fragment + "/pref/" + title,
+        url: Backbone.history.fragment + "/pref/" + title,
         icon_class: 'icon-search',
         user: app.users.getCurrentUser().get("id"),
         section: 'search'
