@@ -8,6 +8,8 @@ function(app, Backbone, PreferenceModel) {
   "use strict";
 
   return Backbone.Layout.extend({
+    // add bookmark button was moved to sidebar
+    // if false is a way to keep it there unavailable just in case
     template: Handlebars.compile('\
     {{#if false }}<div class="left snapshotOption" id="saveSnapshotBtn" title="Save Page as Bookmark"><span class="icon icon-bookmark"></span></div>{{/if}} \
     {{#if hasActiveColumn}} \
