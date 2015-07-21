@@ -29,23 +29,23 @@ define(function(require, exports, module) {
   var Router = Backbone.Router.extend({
 
     routes: {
-      "":                               "tables",
-      "tables":                         "tables",
-      "tables/:name(/pref/:pref)":      "entries",
-      "tables/:name/:id":               "entry",
-      "activity":                       "activity",
-      "files(/pref/:pref)":             "files",
-      "files/:id":                      "filesItem",
-      "users(/pref/:pref)":             "users",
-      "users/:id":                      "user",
-      "settings":                       "settings",
-      "settings/:name":                 "settings",
-      "settings/tables/:table":         "settingsTable",
-      "settings/permissions/:groupId":  "settingsPermissions",
-      "messages":                       "messages",
-      "messages/new":                   "newMessage",
-      "messages/:id":                   "message",
-      '*notFound':                      "notFound"
+      "":                                            "tables",
+      "tables(/pref/:pref)":                         "tables",
+      "tables/:name(/pref/:pref)(/pref/:pref)":      "entries",
+      "tables/:name/:id(/pref/:pref)":               "entry",
+      "activity(/pref/:pref)":                       "activity",
+      "files(/pref/:pref)(/pref/:pref)":             "files",
+      "files/:id(/pref/:pref)":                      "filesItem",
+      "users(/pref/:pref)(/pref/:pref)":             "users",
+      "users/:id(/pref/:pref)":                      "user",
+      "settings(/pref/:pref)":                       "settings",
+      "settings/:name(/pref/:pref)":                 "settings",
+      "settings/tables/:table(/pref/:pref)":         "settingsTable",
+      "settings/permissions/:groupId(/pref/:pref)":  "settingsPermissions",
+      "messages(/pref/:pref)":                       "messages",
+      "messages/new(/pref/:pref)":                   "newMessage",
+      "messages/:id(/pref/:pref)":                   "message",
+      '*notFound':                                   "notFound"
     },
 
     route: function(route, name, callback) {

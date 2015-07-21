@@ -106,12 +106,6 @@ function(app, Backbone, EntriesManager) {
     },
 
     saveSnapshot: function() {
-      var currentCollection = app.router.currentCollection;
-      if (typeof currentCollection === 'undefined') {
-        app.router.openModal({type: 'alert', text: 'This page cannot be bookmarked'});
-        return;
-      }
-
       var that = this;
       app.router.openModal({type: 'prompt', text: 'What would you like to name this bookmark?', callback: function(name ) {
         if(name === null || name === "") {
@@ -119,12 +113,15 @@ function(app, Backbone, EntriesManager) {
           return;
         }
 
-        var schema = app.schemaManager.getFullSchema( currentCollection.table.id );
-        var preferences = schema.preferences;
-        preferences.unset('id');
-        // Unset Id so that it creates new Preference
-        preferences.set({title: name});
-        preferences.save();
+        var currentCollection = app.router.currentCollection;
+        if (typeof currentCollection !== 'undefined') {
+          var schema = app.schemaManager.getFullSchema( currentCollection.table.id );
+          var preferences = schema.preferences;
+          preferences.unset('id');
+          // Unset Id so that it creates new Preference
+          preferences.set({title: name});
+          preferences.save();
+        }
 
         that.pinSnapshot(name);
       }});
