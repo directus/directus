@@ -9,7 +9,7 @@ function(app, Backbone, PreferenceModel) {
 
   return Backbone.Layout.extend({
     template: Handlebars.compile('\
-    <div class="left snapshotOption" id="saveSnapshotBtn" title="Save Page as Bookmark"><span class="icon icon-bookmark"></span></div> \
+    {{#if false }}<div class="left snapshotOption" id="saveSnapshotBtn" title="Save Page as Bookmark"><span class="icon icon-bookmark"></span></div>{{/if}} \
     {{#if hasActiveColumn}} \
     <div class="simple-select dark-grey-color simple-gray left" title="Choose which items are displayed"> \
       <span class="icon icon-triangle-down"></span> \
@@ -49,48 +49,48 @@ function(app, Backbone, PreferenceModel) {
           });
         }
       },
-      'click #saveSnapshotBtn': 'saveSnapshot',
+      // 'click #saveSnapshotBtn': 'saveSnapshot',
     },
 
-    saveSnapshot: function() {
-      var that = this;
-      app.router.openModal({type: 'prompt', text: 'What would you like to name this bookmark?', callback: function(name ) {
-        if(name === null || name === "") {
-          alert('Please Fill In a Valid Name');
-          return;
-        }
+    // saveSnapshot: function() {
+    //   var that = this;
+    //   app.router.openModal({type: 'prompt', text: 'What would you like to name this bookmark?', callback: function(name ) {
+    //     if(name === null || name === "") {
+    //       alert('Please Fill In a Valid Name');
+    //       return;
+    //     }
 
-        //Save id so it can be reset after render
-        that.defaultId = that.collection.preferences.get('id');
-        //Unset Id so that it creates new Preference
-        that.collection.preferences.unset('id');
-        that.collection.preferences.set({title: name});
-        that.collection.preferences.save();
-        that.pinSnapshot(name);
+    //     //Save id so it can be reset after render
+    //     that.defaultId = that.collection.preferences.get('id');
+    //     //Unset Id so that it creates new Preference
+    //     that.collection.preferences.unset('id');
+    //     that.collection.preferences.set({title: name});
+    //     that.collection.preferences.save();
+    //     that.pinSnapshot(name);
 
-        that.listenToOnce(that.collection.preferences, 'sync', function() {
-          if(this.basePage) {
-            that.basePage.removeHolding(this.cid);
-          }
-          if(this.defaultId) {
-            that.collection.preferences.set({title:null, id: that.defaultId});
-          }
-        });
-      }});
-    },
+    //     that.listenToOnce(that.collection.preferences, 'sync', function() {
+    //       if(this.basePage) {
+    //         that.basePage.removeHolding(this.cid);
+    //       }
+    //       if(this.defaultId) {
+    //         that.collection.preferences.set({title:null, id: that.defaultId});
+    //       }
+    //     });
+    //   }});
+    // },
 
-    pinSnapshot: function(title) {
-      var data = {
-        title: title,
-        url: Backbone.history.fragment + "/pref/" + title,
-        icon_class: 'icon-search',
-        user: app.users.getCurrentUser().get("id"),
-        section: 'search'
-      };
-      if(!app.getBookmarks().isBookmarked(data.title)) {
-        app.getBookmarks().addNewBookmark(data);
-      }
-    },
+    // pinSnapshot: function(title) {
+    //   var data = {
+    //     title: title,
+    //     url: Backbone.history.fragment + "/pref/" + title,
+    //     icon_class: 'icon-search',
+    //     user: app.users.getCurrentUser().get("id"),
+    //     section: 'search'
+    //   };
+    //   if(!app.getBookmarks().isBookmarked(data.title)) {
+    //     app.getBookmarks().addNewBookmark(data);
+    //   }
+    // },
 
     serialize: function() {
       var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};

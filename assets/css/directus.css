@@ -371,8 +371,9 @@ th {
 @font-face {
   font-family: 'Directus';
   src: url('../fonts/directus/directus-regular.eot');
-  /* IE9 Compat Modes */
   src: url('../fonts/directus/directus-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/directus/directus-regular.woff') format('woff'), /* Modern Browsers */ url('../fonts/directus/directus-regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/directus/directus-regular.svg#entypo') format('svg');
+  
+  /* IE9 Compat Modes */
   /* Legacy iOS */
 }
 .icon {
@@ -4406,7 +4407,6 @@ body.initial-load #sidebar {
   margin-left: 0px;
 }
 .header1 .tools.left .tool .change-visibility {
-  margin-left: 10px;
   width: 110px;
 }
 .header1 .tools.left.big-space .tool {

@@ -76,6 +76,7 @@ function(app, Backbone, EntriesManager) {
     },
 
     events: {
+      'click #saveSnapshotBtn': 'saveSnapshot',
       'click .remove-snapshot': function(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -101,6 +102,44 @@ function(app, Backbone, EntriesManager) {
         }
 
         return false;
+      }
+    },
+
+    saveSnapshot: function() {
+      var currentCollection = app.router.currentCollection;
+      if (typeof currentCollection === 'undefined') {
+        app.router.openModal({type: 'alert', text: 'This page cannot be bookmarked'});
+        return;
+      }
+
+      var that = this;
+      app.router.openModal({type: 'prompt', text: 'What would you like to name this bookmark?', callback: function(name ) {
+        if(name === null || name === "") {
+          alert('Please Fill In a Valid Name');
+          return;
+        }
+
+        var schema = app.schemaManager.getFullSchema( currentCollection.table.id );
+        var preferences = schema.preferences;
+        preferences.unset('id');
+        // Unset Id so that it creates new Preference
+        preferences.set({title: name});
+        preferences.save();
+
+        that.pinSnapshot(name);
+      }});
+    },
+
+    pinSnapshot: function(title) {
+      var data = {
+        title: title,
+        url: '/' + Backbone.history.fragment + "/pref/" + title,
+        icon_class: 'icon-search',
+        user: app.users.getCurrentUser().get("id"),
+        section: 'search'
+      };
+      if(!app.getBookmarks().isBookmarked(data.title)) {
+        app.getBookmarks().addNewBookmark(data);
       }
     },
 
