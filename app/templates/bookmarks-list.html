@@ -42,7 +42,6 @@
 </div>
 {{/if}}
 
-{{#if bookmarks.search}}
 <div class="sidebar-section searches-sidebar">
   <div class="sidebar-group">Bookmarks</div>
   <li class="sidebar-subitem" title="Add Bookmark">
@@ -50,6 +49,7 @@
         Add Bookmark
       </a>
   </li>
+  {{#if bookmarks.search}}
   {{#bookmarks.search}}
   <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
@@ -58,8 +58,8 @@
       </a>
   </li>
   {{/bookmarks.search}}
+  {{/if}}
 </div>
-{{/if}}
 
 {{#if bookmarks.other}}
 <div class="sidebar-section other-sidebar">
