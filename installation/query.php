@@ -35,8 +35,8 @@ function AddSettings($mysqli) {
   $mysqli->query("INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
   VALUES
   (1,'global','cms_user_auto_sign_out','60'),
-  (3,'global','site_name','".$_SESSION['site_name']."'),
-  (4,'global','site_url','http://examplesite.dev/'),
+  (3,'global','project_name','".$_SESSION['site_name']."'),
+  (4,'global','project_url','http://examplesite.dev/'),
   (5,'global','cms_color','#7ac943'),
   (6,'global','rows_per_page','200'),
   (7,'files','storage_adapter','FileSystemAdapter'),

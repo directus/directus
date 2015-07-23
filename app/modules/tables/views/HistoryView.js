@@ -23,7 +23,7 @@ function(app, Backbone, Directus, moment) {
         }
 
         var model = new app.messages.model({from: app.authenticatedUserId.id}, {collection: this.comments, parse: true});
-        var subject = '[' + app.settings.get('global').get('site_name') + '] ' + app.capitalize(this.model.collection.table.id) + ': "' + this.model.get(this.model.table.get('primary_column')) + '"';
+        var subject = '[' + app.settings.get('global').get('project_name') + '] ' + app.capitalize(this.model.collection.table.id) + ': "' + this.model.get(this.model.table.get('primary_column')) + '"';
 
         var date = new Date();
         model.set({datetime: date, subject: subject, message:this.$el.find('#commentTextarea').val(), comment_metadata: this.model.collection.table.id + ":" + this.model.get('id')})

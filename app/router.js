@@ -229,7 +229,7 @@ define(function(require, exports, module) {
         return this.notFound();
 
       this.navigate('/tables'); //If going to / rewrite to tables
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Tables');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Tables');
       this.v.main.setView('#content', new Table.Views.Tables({collection: SchemaManager.getTables()}));
       this.v.main.render();
     },
@@ -294,7 +294,7 @@ define(function(require, exports, module) {
 
       // Cache collection for next route
       this.currentCollection = collection;
-      this.setTitle(app.settings.get('global').get('site_name') + ' | ' + app.capitalize(tableName));
+      this.setTitle(app.settings.get('global').get('project_name') + ' | ' + app.capitalize(tableName));
 
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
       this.v.main.render();
@@ -304,7 +304,7 @@ define(function(require, exports, module) {
       if (_.contains(this.navBlacklist,'tables'))
         return this.notFound();
 
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Entry');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Entry');
 
       var isBatchEdit = (typeof id === 'string') && id.indexOf(',') !== -1,
           collection,
@@ -347,7 +347,7 @@ define(function(require, exports, module) {
       if (_.contains(this.navBlacklist,'activity'))
         return this.notFound();
 
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Activity');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Activity');
       this.v.main.setView('#content', new Activity.Views.List({collection: app.activity}));
       this.v.main.render();
     },
@@ -372,7 +372,7 @@ define(function(require, exports, module) {
         }
       }
 
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Files');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Files');
       this.v.main.setView('#content', new Files.Views.List({collection: app.files}));
       this.v.main.render();
     },
@@ -380,7 +380,7 @@ define(function(require, exports, module) {
     filesItem: function(id) {
       var model;
 
-      this.setTitle(app.settings.get('global').get('site_name') + ' | File');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | File');
 
       if (id === "new") {
         model = new app.files.model({}, {collection: app.files});
@@ -412,7 +412,7 @@ define(function(require, exports, module) {
         }
       }
 
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Users');
       this.v.main.setView('#content', new Users.Views.List({collection: app.users}));
       this.v.main.render();
     },
@@ -426,7 +426,7 @@ define(function(require, exports, module) {
       }
 
       var model;
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Users');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Users');
 
       if (id === "new") {
         model = new app.users.model({}, {collection: app.users, parse:true});
@@ -441,7 +441,7 @@ define(function(require, exports, module) {
       if (_.contains(this.navBlacklist,'settings'))
         return this.notFound();
 
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Settings');
 
       switch(name) {
         case 'tables':
@@ -474,7 +474,7 @@ define(function(require, exports, module) {
       if (_.contains(this.navBlacklist,'settings'))
         return this.notFound();
 
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Settings');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Settings');
 
       this.v.main.setView('#content', new Settings.Table({model: SchemaManager.getTable(tableName)}));
 
@@ -485,21 +485,21 @@ define(function(require, exports, module) {
       if (_.contains(this.navBlacklist,'settings'))
         return this.notFound();
 
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Settings - Permissions');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Settings - Permissions');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
       this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
       this.v.main.render();
     },
 
     messages: function(name) {
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Messages')
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Messages')
       this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
       this.v.main.render();
     },
 
     message: function(id) {
       var model = app.messages.get(id);
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Message');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Message');
 
       if (model === undefined) {
         model = new app.messages.model({id: id}, {collection: app.messages, parse: true});
@@ -511,7 +511,7 @@ define(function(require, exports, module) {
     },
 
     newMessage: function() {
-      this.setTitle(app.settings.get('global').get('site_name') + ' | Compose');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Compose');
 
       var model = new app.messages.model({from: app.users.getCurrentUser().id}, {collection: app.messages, parse: true});
 
@@ -580,7 +580,7 @@ define(function(require, exports, module) {
 
         serialize: function() {
           return {
-            siteUrl: this.model.get('site_url'),
+            siteUrl: this.model.get('project_url'),
             messageCounter: app.messages.unread,
             cms_thumbnail_url: this.model.get('cms_thumbnail_url')
           };

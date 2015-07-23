@@ -21,8 +21,8 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
 
         $this->_defaults['global'] = array(
             'cms_user_auto_sign_out' => 60,
-            'site_name' => 'Directus',
-            'site_url' => 'http://localhost/',
+            'project_name' => 'Directus',
+            'project_url' => 'http://localhost/',
             'cms_color' => '#7ac943',
             'rows_per_page' => 200,
             'cms_thumbnail_url' => ''
@@ -102,8 +102,8 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
                     'thumbnail_crop_enabled'
                 ),
             'global' => array(
-                    'site_name',
-                    'site_url',
+                    'project_name',
+                    'project_url',
                     'cms_color',
                     'cms_user_auto_sign_out',
                     'rows_per_page',
