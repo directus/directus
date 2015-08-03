@@ -53,7 +53,13 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
           '</ul>' +
         '</div>' +
       '</li>' +
-      '{{/rows}}</ul>{{/groups}}'
+      '{{/rows}}</ul>{{/groups}}' +
+      '{{#unless rows}}' +
+        '<div class="nothing-here secondary-info">' +
+        '<h1>Nothing to see here...</h1>' +
+        '<!-- Maybe add a new file? -->' +
+        '</div>' +
+      '{{/unless}}'
     ),
 
     serialize: function() {
