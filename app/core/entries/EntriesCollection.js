@@ -139,15 +139,9 @@ define(function(require, exports, module) {
     hasPermission: function(permissionType) {
       var permissionLevel = 1;
       var permissionName = permissionType;
-      if (permissionType.indexOf('bighard') === 0) {
-        permissionLevel = 4;
-        permissionName = permissionType.substr(7);
-      } else if (permissionType.indexOf('big') === 0) {
+      if (permissionType.indexOf('big') === 0) {
         permissionLevel = 2;
         permissionName = permissionType.substr(3);
-      } else if (permissionType.indexOf('hard') === 0) {
-        permissionLevel = 3;
-        permissionName = permissionType.substr(4);
       }
 
       if (this.privileges.has('allow_' + permissionName) && permissionLevel <= this.privileges.get('allow_' + permissionName)) {
