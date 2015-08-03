@@ -46,13 +46,10 @@
 			</td>
 			<td data-value="delete">
         {{#if deleteValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
-        {{#if bigharddelete}}
-        <span class="hard-color big-hard-priv has-privilege"><span title="Can Delete Any Items" class="icon icon-users"></span></span>
-        {{else}}
           {{#if harddelete}}
             <span class="hard-color hard-priv has-privilege"><span title="Can Delete Any Items" class="icon icon-user"></span></span>
           {{else}}
-				    {{#if bigdelete}}
+  			    {{#if bigdelete}}
             <span class="add-color big-priv has-privilege"><span title="Can Delete Any Items" class="icon icon-users"></span></span>
             {{else}}
               {{#if delete}}
@@ -62,7 +59,6 @@
               {{/if}}
             {{/if}}
           {{/if}}
-        {{/if}}
         {{/if}}
 			</td>
       {{/with}}

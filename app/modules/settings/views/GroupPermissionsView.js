@@ -196,10 +196,6 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
 
       if($span.hasClass('yellow-color')) {
         $span.addClass('big-priv');
-      } else if ($span.hasClass('big-priv') && dataValue == 'delete') {
-        $span.removeClass('big-priv').addClass('hard-priv hard-color');
-      } else if ($span.hasClass('hard-priv') && dataValue == 'delete') {
-        $span.removeClass('hard-priv').addClass('big-hard-priv hard-color');
       } else {
         $span.toggleClass('add-color').toggleClass('delete-color').toggleClass('has-privilege');
       }
@@ -286,29 +282,17 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
 
       if ($tr.hasClass('big-priv')) {
         permissionPrefix = 'big';
-      } else if ($tr.hasClass('hard-priv')) {
-        permissionPrefix = 'hard';
-      } else if ($tr.hasClass('big-hard-priv')) {
-        permissionPrefix = 'bighard';
       }
 
       var permissionName = $tr.closest('td').data('value');
-      if(permissionPrefix && permissionPrefix !== 'hard') {
-        var value = permissionName;
-        if(permissionPrefix === 'bighard'){
-          value = 'hard'+value;
-        }
-        permission.push(value);
+      if(permissionPrefix) {
+        permission.push(permissionName);
       }
       permission.push(permissionPrefix +  permissionName);
 
       var permissionLevel = 0;
       if ($tr.hasClass('delete-color')) {
         permissionLevel = 0;
-      } else if (_.contains(permission, 'bighard' + permissionName)) {
-        permissionLevel = 4;
-      } else if (_.contains(permission, 'hard' + permissionName)) {
-        permissionLevel = 3;
       } else if (_.contains(permission, 'big' + permissionName)) {
         permissionLevel = 2;
       } else if (_.contains(permission, permissionName)) {
@@ -403,8 +387,6 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
           'bigedit': (model.has('allow_edit') && model.get('allow_edit') == 2) ? true : false,
           'delete': (model.has('allow_delete') && model.get('allow_delete') != 0) ? true : false,
           'bigdelete': (model.has('allow_delete') && model.get('allow_delete') == 2) ? true : false,
-          'harddelete': (model.has('allow_delete') && model.get('allow_delete') == 3) ? true : false,
-          'bigharddelete': (model.has('allow_delete') && model.get('allow_delete') == 4) ? true : false,
           'alter': (model.has('allow_alter') && model.get('allow_alter') != 0) ? true : false,
           'view': (model.has('allow_view') && model.get('allow_view') != 0) ? true : false,
           'bigview': (model.has('allow_view') && model.get('allow_view') == 2) ? true : false
