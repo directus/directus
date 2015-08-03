@@ -74,7 +74,7 @@ define(function(require, exports, module) {
             "system":true,
             "master":false,
             "hidden_list":false,
-            "hidden_input":true,
+            "hidden_input":false,
             "required":false,
             "ui":"checkbox",
             "hidden":true
