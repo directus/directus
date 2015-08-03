@@ -184,7 +184,6 @@ define(function(require, exports, module) {
     var canDelete = model.collection.hasPermission('delete') || model.collection.hasPermission('bigdelete');
     // check if doesn't have status column
     var canHardDelete = !!!model.has(app.statusMapping.status_name);
-    // debugger;var canHardDelete = model.collection.hasPermission('harddelete') || model.collection.hasPermission('bigharddelete');
     var goingToDelete = value == app.statusMapping.deleted_num;
 
     if (goingToDelete && canHardDelete) {
