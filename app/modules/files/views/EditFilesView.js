@@ -10,7 +10,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
     events: {
-      'click .saved-success': 'saveCheck',
+      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'saveCheck',
       'change #saveSelect': 'saveCheck'
     },
 
