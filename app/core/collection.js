@@ -82,14 +82,9 @@ function(app, Backbone) {
         rowB = rowB.get('data');
       }
 
-      if (UIManager.hasList(rowA, column)) {
-        // Sort relational columns in listview https://github.com/RNGR/Directus/issues/452
-        valueA = UIManager.getList(rowA, column) || '';
-        valueB = UIManager.getList(rowB, column) || '';
-      } else {
-        valueA = rowA.get(column);
-        valueB = rowB.get(column);
-      }
+      // Sort relational columns in listview https://github.com/RNGR/Directus/issues/452
+      valueA = UIManager.getSortValue(rowA, column) || '';
+      valueB = UIManager.getSortValue(rowB, column) || '';
 
       var options, ui, type, schema;
 
@@ -118,13 +113,6 @@ function(app, Backbone) {
         } else {
           valueA = rowA.id;
           valueB = rowB.id;
-        }
-      }
-
-      // Check if it's a date
-      if(app.isStringADate(valueA)) {
-        if(!isNaN(Date.parse(valueA))) {
-          return this.comparatorValue(new Date(valueA).getTime(), new Date(valueB).getTime());
         }
       }
 
