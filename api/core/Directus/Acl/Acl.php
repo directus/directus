@@ -242,15 +242,9 @@ class Acl {
         $permissionLevel = 1;
         $permissionName = $privilege;
 
-        if (strpos($privilege, 'bighard') === 0) {
-            $permissionLevel = 4;
-            $permissionName = substr($privilege, 7);
-        } else if (strpos($privilege, 'big') === 0) {
+        if (strpos($privilege, 'big') === 0) {
             $permissionLevel = 2;
             $permissionName = substr($privilege, 3);
-        } else if (strpos($privilege, 'hard') === 0) {
-            $permissionLevel = 3;
-            $permissionName = substr($privilege, 4);
         }
 
         if (isset($tablePermissions['allow_' . $permissionName])) {

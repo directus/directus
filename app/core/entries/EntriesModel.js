@@ -286,11 +286,9 @@ define(function(require, exports, module) {
     canDelete: function() {
       var iAmTheOwner = this.isMine(),
           canDelete = this.collection.hasPermission('delete'),
-          canBigdelete = this.collection.hasPermission('bigdelete'),
-          canHardDelete = this.collection.hasPermission('harddelete'),
-          canBigHardDelete = this.collection.hasPermission('bigharddelete');
+          canBigdelete = this.collection.hasPermission('bigdelete');
 
-      return (!iAmTheOwner && canBigdelete) || (iAmTheOwner && canDelete) || (!iAmTheOwner && canBigHardDelete) || (iAmTheOwner && canHardDelete);
+      return (!iAmTheOwner && canBigdelete) || (iAmTheOwner && canDelete);
     },
 
     toJSON: function(options, noNest) {
