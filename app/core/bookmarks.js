@@ -115,6 +115,14 @@ function(app, Backbone, EntriesManager) {
 
         var currentCollection = app.router.currentCollection;
         if (typeof currentCollection !== 'undefined') {
+          //Save id so it can be reset after render
+          var defaultId = currentCollection.preferences.get('id');
+          that.listenToOnce(currentCollection.preferences, 'sync', function() {
+            if(defaultId) {
+              currentCollection.preferences.set({title:null, id: defaultId});
+            }
+          });
+
           var schema = app.schemaManager.getFullSchema( currentCollection.table.id );
           var preferences = schema.preferences;
           preferences.unset('id');
