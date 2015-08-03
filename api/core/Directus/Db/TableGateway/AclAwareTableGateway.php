@@ -568,8 +568,8 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($deleteTable);
-        $canBigHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'bigharddelete');
-        $canHardDelete = $this->acl->hasTablePrivilege($deleteTable, 'harddelete');
+        $canBigDelete = $this->acl->hasTablePrivilege($deleteTable, 'bigdelete');
+        $canDelete = $this->acl->hasTablePrivilege($deleteTable, 'delete');
         $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
         // Is this table a junction table?
         $deleteTableSchema = TableSchema::getTable($deleteTable);
@@ -577,33 +577,33 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
         if ($isDeleteTableAJunction || !TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
           if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
-            $canBigHardDelete = true;
+            $canBigDelete = true;
           } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {
-            $canHardDelete = true;
+            $canDelete = true;
           }
         }
 
         // @todo: clean way
         if ($deleteTable === 'directus_bookmarks') {
-          $canBigHardDelete = true;
+          $canBigDelete = true;
         }
         
         /**
          * ACL Enforcement
          */
          
-        if(!$canBigHardDelete && !$canHardDelete) {
-          throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "BigHardDelete/HardDelete access forbidden on table `$deleteTable`.");
+        if(!$canBigDelete && !$canDelete) {
+          throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . " forbidden to hard delete on table `$deleteTable` because it has Status Column.");
         }
         
         if (false === $cmsOwnerColumn) {
           // cannot delete if there's no magic owner column and can't big delete
-          if (!$canBigHardDelete) {
+          if (!$canBigDelete) {
             // All deletes are "big" deletes if there is no magic owner column.
             throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "The table `$deleteTable` is missing the `user_create_column` within `directus_tables` (BigHardDelete Permission Forbidden)");
           }
         } else {
-          if(!$canBigHardDelete){
+          if(!$canBigDelete){
             // Who are the owners of these rows?
             list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
             if(in_array($currentUserId, $predicateOwnerIds)) {

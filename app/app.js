@@ -181,24 +181,24 @@ define(function(require, exports, module) {
   app.changeItemStatus = function(model, value, options) {
     var name = app.statusMapping.status_name;
     var name = {};
-    var canHardDelete = model.collection.hasPermission('harddelete') || model.collection.hasPermission('bigharddelete');
-    var canSoftDelete = model.collection.hasPermission('delete') || model.collection.hasPermission('bigdelete');
+    var canDelete = model.collection.hasPermission('delete') || model.collection.hasPermission('bigdelete');
+    // check if doesn't have status column
+    var canHardDelete = !!!model.has(app.statusMapping.status_name);
+    // debugger;var canHardDelete = model.collection.hasPermission('harddelete') || model.collection.hasPermission('bigharddelete');
     var goingToDelete = value == app.statusMapping.deleted_num;
-    
+
     if (goingToDelete && canHardDelete) {
       model.destroy({success: options.success});
-    } else if (model.has(app.statusMapping.status_name) && ((goingToDelete && canSoftDelete) || !goingToDelete)) {
+    } else {
       name[app.statusMapping.status_name] = value;
       model.save(name, options);
-    } else {
-      throw new Error('Please add an active column to this table for soft-delete, or change your group permissions to allow for a hard-delete');
     }
-  }
+  };
 
   // check if string has this format "D, d M Y H:i:s"
   app.isStringADate = function(date) {
     return (typeof date === "string") ? !!date.match(/^([a-zA-Z]{3})\, ([0-9]{2}) ([a-zA-Z]{3}) ([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/) : false;
-  }
+  };
 
   // Agnus Croll:
   // http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
