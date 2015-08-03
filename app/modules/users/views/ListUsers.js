@@ -105,6 +105,10 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
 
     initialize: function(options) {
       this.collection.on('sort', this.render, this);
+      this.listenTo(this.collection, 'sync', function(model, resp, options) {
+        if (options.silent) return;
+        this.render();
+      });
     }
 
   });
