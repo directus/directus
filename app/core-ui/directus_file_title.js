@@ -49,12 +49,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       var value = this.options.value || '';
       var readonly = false;
 
-      // Fill in default value
-      if (this.options.model.isNew() && app.settings.get('files').get('file_title_naming') == "file_id") {
-        value = "This Items Title Will Automatically Become This Items ID When it is saved.";
-        readonly = true;
-      }
-
       return {
         size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
         value: value,

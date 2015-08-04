@@ -223,9 +223,8 @@ class Console
                       (11,'files','thumbnail_quality','100'),
                       (12,'files','thumbnail_size','200'),
                       (13,'global','cms_thumbnail_url',''),
-                      (14,'files','file_file_naming','file_id'),
-                      (15,'files','file_title_naming','file_name'),
-                      (16,'files','thumbnail_crop_enabled','1');";
+                      (14,'files','file_naming','file_id'),
+                      (15,'files','thumbnail_crop_enabled','1');";
 
         $statement = $this->dbh->prepare($insert);
         $statement->execute();
