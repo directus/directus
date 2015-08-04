@@ -203,6 +203,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
             //If we are adding a new directus_files Item, We need to do that logic
+            // @todo: clean up/refactor saving file process
             if($tableName == "directus_files") {
               $Storage = new \Directus\Files\Storage\Storage();
 
@@ -229,11 +230,18 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               }
 
               //If we are using files ID, Dont save until after insert
-              if($Storage->getFilesSettings()['file_naming'] != "file_id") {
+              if($Storage->getFilesSettings()['file_naming'] == "file_name") {
                 //Save the file in TEMP Storage Adapter to Designated StorageAdapter
                 $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
                 // $fileData = $Storage->saveData($recordData['data'], $recordData['name'], $filesAdapter['destination']);
                 // $recordData['name'] = $fileData['name'];
+              } else if($Storage->getFilesSettings()['file_naming'] == "file_hash") {
+                //Save the file in TEMP Storage Adapter to Designated StorageAdapter
+                $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
+                $fileHashName = md5(microtime() . $recordData['name']);
+                $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], $fileHashName.'.'.$ext);
+                $updateArray['name'] = $fileHashName.'.'.$ext;
+                $recordData['name'] = $updateArray['name'];
               }
             }
 
