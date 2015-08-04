@@ -252,12 +252,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 }
               }
 
-              //If we are using file_id titles, then set title to id
-              // if($Storage->getFilesSettings()['file_title_naming'] == "file_id") {
-              //   $updateArray['title'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT);
-              //   $recordData['title'] = $updateArray['title'];
-              // }
-
               if(!empty($updateArray)) {
                 $Update = new Update($tableName);
                 $Update->set($updateArray);
