@@ -216,6 +216,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               $filesAdapter = $StorageAdapters->fetchOneById($recordData['storage_adapter']);
 
               //Save Temp Thumbnail name for use after files record save
+              // @todo: make file name format sanatize by default
+              // same as uniqueName by the adapter
+              // replacing space with underscore
+              $originalFile = $recordData['name'];
+              $recordData['name'] = str_replace(' ', '_', $recordData['name']);
               $info = pathinfo($recordData['name']);
               if( in_array($info['extension'], $this->imagickExtensions)) {
                 $thumbnailName = "THUMB_".$info['filename'].'.jpg';
@@ -225,7 +230,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
               //If we are using files ID, Dont save until after insert
               if($Storage->getFilesSettings()['file_naming'] != "file_id") {
-                $originalFile = $recordData['name'];
                 //Save the file in TEMP Storage Adapter to Designated StorageAdapter
                 $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
                 // $fileData = $Storage->saveData($recordData['data'], $recordData['name'], $filesAdapter['destination']);
@@ -249,6 +253,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 $recordData['name'] = $updateArray['name'];
               }
 
+              // @todo: do not make this file create twice.
+              // file should be copied to temp and then work from there.
+              // but is copied on "media" also on "temp" then copied back to "media"
               if(file_exists($filesAdapter['destination'].$originalFile)) {
                 unlink($filesAdapter['destination'].$originalFile);
               }
