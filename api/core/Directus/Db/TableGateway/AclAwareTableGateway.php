@@ -225,6 +225,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
               //If we are using files ID, Dont save until after insert
               if($Storage->getFilesSettings()['file_naming'] != "file_id") {
+                $originalFile = $recordData['name'];
                 //Save the file in TEMP Storage Adapter to Designated StorageAdapter
                 $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
                 // $fileData = $Storage->saveData($recordData['data'], $recordData['name'], $filesAdapter['destination']);
@@ -246,10 +247,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext);
                 $updateArray['name'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext;
                 $recordData['name'] = $updateArray['name'];
+              }
 
-                if(file_exists($filesAdapter['destination'].$originalFile)) {
-                  unlink($filesAdapter['destination'].$originalFile);
-                }
+              if(file_exists($filesAdapter['destination'].$originalFile)) {
+                unlink($filesAdapter['destination'].$originalFile);
               }
 
               if(!empty($updateArray)) {
