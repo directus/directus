@@ -35,8 +35,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'allowed_thumbnails' => '',
             'thumbnail_quality' => 100,
             'thumbnail_size' => 200,
-            'file_file_naming' => 'file_id',
-            'file_title_naming' => 'file_name',
+            'file_naming' => 'file_id',
             'thumbnail_crop_enabled' => 1,
             'thumbnail_storage_adapter' => 'FileSystemAdapter'
         );
@@ -96,8 +95,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
 
         $whiteList = array(
             'files' => array(
-                    'file_file_naming',
-                    'file_title_naming',
+                    'file_naming',
                     'thumbnail_quality',
                     'thumbnail_crop_enabled'
                 ),
