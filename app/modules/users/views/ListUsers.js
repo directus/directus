@@ -35,7 +35,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
       '<div class="section-header"><span class="big-label-text">{{title}}</div>' +
       '<ul class="cards row">' +
       '{{#rows}}' +
-      '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
+      '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}} {{#if inactive}}inactive{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
         '<div class="header-image add-color-border">' +
           '{{avatar}} <div class="tool-item large-circle"><span class="icon icon-pencil"></span></div></div>' +
         '<div class="info">' +
@@ -78,14 +78,15 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
           'phone': model.get('phone'),
           'online': (moment(model.get('last_access')).add('m', 5) > moment()),
           'group_id': model.get('group').id,
-          'group_name': model.get('group').get('name')
+          'group_name': model.get('group').get('name'),
+          'inactive': false
         };
 
         // Put Inactive user into Inactive Group.
-        data[app.statusMapping.status_name] = model.get(app.statusMapping.status_name);
-        if (data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
+        if (model.get(app.statusMapping.status_name) == app.statusMapping.deleted_num) {
           data.group_id = 0;
           data.group_name = 'Inactive';
+          data.inactive = true;
         }
 
         var avatarSmall = model.getAvatar();
