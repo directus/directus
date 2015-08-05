@@ -54,7 +54,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
         '</div>' +
       '</li>' +
       '{{/rows}}</ul>{{/groups}}' +
-      '{{#unless rows}}' +
+      '{{#unless groups}}' +
         '<div class="nothing-here secondary-info">' +
         '<h1>Nothing to see here...</h1>' +
         '<!-- Maybe add a new file? -->' +
