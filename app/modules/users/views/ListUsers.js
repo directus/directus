@@ -112,9 +112,17 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
       var data = [];
 
       for(var group in groupedData) {
-        data.push(groupedData[group]);
+        // skip inactive group
+        // and push it at the end
+        if (group != 'group_0') {
+          data.push(groupedData[group]);
+        }
       }
 
+      // if exists, push inactive users group at the end
+      if (_.has(groupedData, 'group_0')) {
+        data.push(groupedData['group_0']);
+      }
 
       return {groups: data};
     },
