@@ -82,8 +82,8 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
           'inactive': false
         };
 
-        // Put Inactive user into Inactive Group.
-        if (model.get(app.statusMapping.status_name) == app.statusMapping.deleted_num) {
+        // Put non-active users into the Inactive Group.
+        if (model.get(app.statusMapping.status_name) != app.statusMapping.active_num) {
           data.group_id = 0;
           data.group_name = 'Inactive';
           data.inactive = true;
