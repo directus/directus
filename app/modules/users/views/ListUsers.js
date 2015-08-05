@@ -81,6 +81,13 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
           'group_name': model.get('group').get('name')
         };
 
+        // Put Inactive user into Inactive Group.
+        data[app.statusMapping.status_name] = model.get(app.statusMapping.status_name);
+        if (data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
+          data.group_id = 0;
+          data.group_name = 'Inactive';
+        }
+
         var avatarSmall = model.getAvatar();
 
         data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
@@ -88,7 +95,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
         return data;
       });
 
-      _(rows).sortBy('first_name');
+      rows = _(rows).sortBy('first_name');
 
       var groupedData = [];
 
@@ -246,7 +253,13 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
 
     afterRender: function() {
       this.setView('#page-content', this.table);
+      var active = this.collection.preferences.attributes['active'];
+      // Ignore preferences and get all users
+      // @todo: make a better solution
+      this.collection.preferences.unset('active');
+      this.collection.filters['active'] = '0,1,2';
       this.collection.fetch();
+      this.collection.preferences.set('active', active);
     },
 
     initialize: function() {
