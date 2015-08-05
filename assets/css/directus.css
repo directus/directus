@@ -3678,6 +3678,9 @@ tbody.remove-hover-state .sort .icon-list {
   font-size: 12px;
   list-style: none;
 }
+.cards .card.inactive {
+  opacity: 0.4;
+}
 .cards .card .header-image {
   overflow: hidden;
   height: 200px;
