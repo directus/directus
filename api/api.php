@@ -222,10 +222,26 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
         }
     }
 
-    if(!$user) {
+    if (!$user) {
         return JsonView::render($response);
     }
+
+    // @todo: Login should fail on correct information when user is not active.
     $response['success'] = Auth::login($user['id'], $user['password'], $user['salt'], $password);
+
+    // When the credentials are correct but the user is Inactive
+    $userHasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $user);
+    $isUserActive = false;
+    if ($userHasStatusColumn && $user[STATUS_COLUMN_NAME] == STATUS_ACTIVE_NUM) {
+        $isUserActive = true;
+    }
+
+    if ($response['success'] && !$isUserActive) {
+        Auth::logout();
+        $response['success'] = false;
+        $response['message'] = 'You do not have access to this system';
+        return JsonView::render($response);
+    }
 
     if($response['success']) {
         unset($response['message']);
