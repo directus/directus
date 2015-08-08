@@ -278,14 +278,14 @@ define(function(require, exports, module) {
       }
 
       //Clear loaded preference if navigating to new entries
-      if(this.lastRoute != "tables/" + tableName && this.loadedPreference) {
+      if(this.lastRoute != 'tables/' + tableName + '/' + pref && this.loadedPreference) {
         this.loadedPreference = undefined;
       }
 
       if(pref) {
         this.navigate("/tables/" + tableName);
 
-        if(this.lastRoute == "tables/" + tableName && this.loadedPreference == pref) {
+        if(this.lastRoute == 'tables/' + tableName + '/' + pref && this.loadedPreference == pref) {
           return;
         }
 
@@ -519,12 +519,14 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    onRoute: function(route) {
+    onRoute: function(route, fragments) {
       // try to set the current active nav
       var currentPath = Backbone.history.fragment;
       var bookmarksView = this.v.main.getView('#sidebar').getView('#mainSidebar');
       bookmarksView.setActive(currentPath);
-      this.lastRoute = currentPath;
+      this.lastRoute = fragments.filter(function(fragment) {
+        return fragment;
+      }).join('/');
 
       // update user last route
       var currentUser = app.users.getCurrentUser().clone();

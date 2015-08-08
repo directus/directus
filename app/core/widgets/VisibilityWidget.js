@@ -19,7 +19,7 @@ function(app, Backbone, PreferenceModel) {
         <optgroup label="Status"> \
           <option data-status value="{{allKeys}}">View All</option> \
           {{#mapping}} \
-            <option data-status value="{{id}}">View {{capitalize name}}</option> \
+            <option data-status value="{{id}}" {{#if isSelected}} selected {{/if}}>View {{capitalize name}}</option> \
           {{/mapping}} \
         </optgroup> \
       </select> \
@@ -97,12 +97,18 @@ function(app, Backbone, PreferenceModel) {
     serialize: function() {
       var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};
       var mapping = app.statusMapping.mapping;
+      var statusSelected = this.collection.getFilter(app.statusMapping.status_name);
 
       var keys = [];
       for(var key in mapping) {
         //Do not show option for deleted status
         if(key != app.statusMapping.deleted_num) {
-          data.mapping.push({id: key, name: mapping[key].name, sort: mapping[key].sort});
+          data.mapping.push({
+            id: key,
+            name: mapping[key].name,
+            sort: mapping[key].sort,
+            isSelected: statusSelected == key ? true : false
+          });
           keys.push(key);
         }
       }
@@ -135,6 +141,8 @@ function(app, Backbone, PreferenceModel) {
       var activeTable = this.collection.table.id;
 
       this.basePage = this.options.basePage;
+
+      this.collection.on('sync', this.render, this);
 
       if(this.collection.table.columns.get(app.statusMapping.status_name)) {
         this.options.hasActiveColumn = true;
