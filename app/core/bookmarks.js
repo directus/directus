@@ -245,6 +245,15 @@ function(app, Backbone, EntriesManager) {
           this.render();
         }
       }, this);
+
+      // @todo: make this global application events cleaner
+      var self = this;
+      app.on('tables:preferences', function(widget, collection) {debugger;
+        if (app.router.loadedPreference) {
+          app.router.loadedPreference = undefined;
+          self.setActive('tables/' + collection.table.id);
+        }
+      });
     },
     setActive: function(route, pref) {
       this.collection.setActive(route, pref);
