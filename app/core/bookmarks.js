@@ -29,13 +29,16 @@ function(app, Backbone, EntriesManager) {
       if(a.get('title') > b.get('title')) return 1;
       return 0;
     },
-    setActive: function(route) {
+    setActive: function(route, pref) {
       //deactive all tabs
       var activeModel;
+      var prefSuffix = _.isString(pref) ? '/pref/' + pref : '';
+      var found = false;
       _.each(this.models, function(model) {
         model.unset('active_bookmark', {silent: true});
-        if(route.indexOf(model.get('url')) === 0) {
+        if((route + prefSuffix).indexOf(model.get('url')) === 0 && !found) {
           activeModel = model;
+          found = true;
         }
       });
 
@@ -243,8 +246,8 @@ function(app, Backbone, EntriesManager) {
         }
       }, this);
     },
-    setActive: function(route) {
-      this.collection.setActive(route);
+    setActive: function(route, pref) {
+      this.collection.setActive(route, pref);
       this.render();
     }
 

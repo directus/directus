@@ -148,21 +148,24 @@ function(app, Backbone, PreferenceModel) {
         this.options.hasActiveColumn = true;
       }
 
+      var options = {};
       if(app.router.loadedPreference) {
-        this.defaultId = this.collection.preferences.get('id');
-        this.collection.preferences.fetch({newTitle: app.router.loadedPreference});
-        if(this.basePage) {
-          this.basePage.addHolding(this.cid);
-        }
+        options = {newTitle: app.router.loadedPreference};
+      }
 
-        this.listenToOnce(this.collection.preferences, 'sync', function() {
-          if(this.basePage) {
-            this.basePage.removeHolding(this.cid);
-          }
-          if(this.defaultId) {
-            this.collection.preferences.set({title:null, id: this.defaultId});
-          }
-        });
+      this.listenToOnce(this.collection.preferences, 'sync', function() {
+        if(this.basePage) {
+          this.basePage.removeHolding(this.cid);
+        }
+        if(this.defaultId) {
+          this.collection.preferences.set({title:null, id: this.defaultId});
+        }
+      });
+
+      this.defaultId = this.collection.preferences.get('id');
+      this.collection.preferences.fetch(options);
+      if(this.basePage) {
+        this.basePage.addHolding(this.cid);
       }
     }
   });

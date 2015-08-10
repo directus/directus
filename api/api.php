@@ -780,7 +780,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($ZendDb, $acl
 
     if(isset($params['newTitle'])) {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
-        $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
+        // $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
     } else {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table);
     }
