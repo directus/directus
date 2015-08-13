@@ -259,7 +259,7 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model({
           icon_class: item.icon,
           title: item.title,
-          url: item.id,
+          url: encodeURIComponent(item.id),
           section: 'extension'
         }));
       });
