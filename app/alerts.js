@@ -49,7 +49,12 @@ define([
   app.on('progress', showProgressNotification);
   app.on('load', hideProgressNotification);
 
-  app.on('alert:error', function(message, details, showDetails) {
-    noty({text: '<b>' + message + '</b><br>' + details, type: 'error', theme: 'directus'});
+  app.on('alert:error', function(message, details, showDetails, moreOptions) {
+    var options = _.extend({
+      text: '<b>' + message + '</b><br>' + details,
+      type: 'error',
+      theme: 'directus'
+    }, (moreOptions || {}));
+    noty(options);
   });
 });
