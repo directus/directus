@@ -651,7 +651,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var afterModelIndex = currentModelIndex-1;
       var tbody = this.$el.find('tbody');
       var tableId = model.id || false;
-      
+
       if (tableId) {
         var currentRow = tbody.find('[data-id="'+tableId+'"]');
         var afterRow = tbody.find('tr:eq('+afterModelIndex+')');
@@ -783,22 +783,47 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     addTable: function(tableName) {
-      if(tableName && !app.schemaManager.getPrivileges(tableName)) {
-        // @TODO: make this save a table info rather than permissions.
-        var that = this;
-        var model = new Backbone.Model();
-        model.url = app.API_URL + 'privileges/1';
-        // @todo: set default values in the server side
-        model.set({group_id: 1, allow_add:1, allow_edit:2, allow_delete:2, allow_alter:1, allow_view:2, table_name: tableName, addTable: true});
-        model.save({}, {success: function(model){
-          var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
-          tableModel.fetch({
-            success: function(model) {
-              that.registerTable(model);
-            }
-          });
-        }});
+      // @TODO: better error message.
+      if (!tableName) {
+        app.trigger('alert:error', 'Empty Table name.', '', true, {
+          timeout: 5000
+        });
+        return;
       }
+
+      // Make sure it's an alphanumeric table name
+      // and it has at least one character or one number
+      if (!(/[a-z0-9]+/i.test(tableName) && /[_-]*/i.test(tableName))) {
+        app.trigger('alert:error',
+                    'You must enter an valid table name.',
+                    'Letters (A-Z), Numbers and/or underscores and dashes',
+                    true, {
+          timeout: 5000
+        });
+        return;
+      }
+
+      if (app.schemaManager.getPrivileges(tableName)) {
+        app.trigger('alert:error', 'Error', 'This table Already exists BITCH!', true, {
+          timeout: 5000
+        });
+        return;
+      }
+
+      // @TODO: make this save a table info rather than permissions.
+      var that = this;
+      var model = new Backbone.Model();
+      model.url = app.API_URL + 'privileges/1';
+      // @todo: set default values in the server side
+      model.set({group_id: 1, allow_add:1, allow_edit:2, allow_delete:2, allow_alter:1, allow_view:2, table_name: tableName, addTable: true});
+      model.save({}, {success: function(model){
+        var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
+        tableModel.fetch({
+          success: function(model) {
+            that.registerTable(model);
+          }
+        });
+      }});
     },
 
     registerTable: function(tableModel) {
