@@ -53,7 +53,7 @@
             <span class="add-color big-priv has-privilege"><span title="Can Delete Any Items" class="icon icon-users"></span></span>
             {{else}}
               {{#if delete}}
-              <span class="yellow-color has-privilege"><span title="Can Delete Their Items" class="icon icon-user"></span></span>
+              <span class="yellow-color has-privilege"><span title="Can Delete Their Items: {{user_create_column}}" class="icon icon-user"></span></span>
               {{else}}
               <span class="delete-color"><span title="Can Not Delete Items" class="icon icon-block"></span>
               {{/if}}
