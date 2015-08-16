@@ -80,7 +80,9 @@ function(app, Backbone) {
     },
 
     initialize: function(options) {
-      this.collection.preferences.on('change:columns_visible', this.render, this);
+      if (this.collection.preferences) {
+        this.collection.preferences.on('change:columns_visible', this.render, this);
+      }
     }
   });
 
