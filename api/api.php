@@ -389,6 +389,12 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
     }
 
     if(isset($requestPayload['addTable'])) {
+      $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
+      $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+      if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+          $app->response->setStatus(400);
+          return JsonView::render(array('message'=> 'Invalid table name'));
+      }
       unset($requestPayload['addTable']);
       try{
         $statusColumnName = STATUS_COLUMN_NAME;
