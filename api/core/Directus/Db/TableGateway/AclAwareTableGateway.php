@@ -199,7 +199,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $Update->set($recordData);
             $Update->where(array('id' => $recordData['id']));
             $TableGateway->updateWith($Update);
-            
+
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
             //If we are adding a new directus_files Item, We need to do that logic
@@ -520,14 +520,14 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                       throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
                   }
               }
-  
+
               /**
                * Enforce write field blacklist (if user lacks bigedit privileges on this table)
                */
               $attemptOffsets = array_keys($updateState['set']);
               $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
           }
-  
+
           if(!$this->acl->hasTablePrivilege($updateTable, 'edit')) {
               /**
                * Enforce Privilege: "Little" Edit (I am the record CMS owner)
@@ -597,15 +597,15 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         if ($deleteTable === 'directus_bookmarks') {
           $canBigDelete = true;
         }
-        
+
         /**
          * ACL Enforcement
          */
-         
+
         if(!$canBigDelete && !$canDelete) {
           throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . " forbidden to hard delete on table `$deleteTable` because it has Status Column.");
         }
-        
+
         if (false === $cmsOwnerColumn) {
           // cannot delete if there's no magic owner column and can't big delete
           if (!$canBigDelete) {
@@ -616,7 +616,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
           if(!$canBigDelete){
             // Who are the owners of these rows?
             list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
-            if(in_array($currentUserId, $predicateOwnerIds)) {
+            if (!in_array($currentUserId, $predicateOwnerIds)) {
               $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
               $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
               throw new UnauthorizedTableDeleteException($aclErrorPrefix . $exceptionMessage);
