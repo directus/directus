@@ -380,6 +380,12 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
         data.hasReadBlacklist = false;
         data.hasWriteBlacklist = false;
 
+        var modelTable = app.schemaManager.getTable(model.get('table_name'));
+        var userCreateColumnName = 'no column chosen';
+        if (modelTable && modelTable.has('user_create_column')) {
+          userCreateColumnName = modelTable.get('user_create_column') || userCreateColumnName;
+        }
+
         // Default permissions
         data.permissions = {
           'add': (model.has('allow_add') && model.get('allow_add') != 0) ? true : false,
@@ -389,7 +395,8 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
           'bigdelete': (model.has('allow_delete') && model.get('allow_delete') == 2) ? true : false,
           'alter': (model.has('allow_alter') && model.get('allow_alter') != 0) ? true : false,
           'view': (model.has('allow_view') && model.get('allow_view') != 0) ? true : false,
-          'bigview': (model.has('allow_view') && model.get('allow_view') == 2) ? true : false
+          'bigview': (model.has('allow_view') && model.get('allow_view') == 2) ? true : false,
+          'user_create_column': userCreateColumnName
         };
 
         if(that.selectedState == 'all' && tableStatusMapping[data.table_name].count > 1) {
