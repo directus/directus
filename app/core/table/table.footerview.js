@@ -49,17 +49,38 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      var columns = _.map(this.collection.getColumns(), function(value) {
+      var hasANumericColumn = false;
+      var columns = _.map(this.collection.getColumns(), function(column) {
+        var isANumericColumn = this.collection.structure.get(column).get('ui') === 'numeric';
+        if (isANumericColumn) {
+          hasANumericColumn = true;
+        }
+
         var col = {
-          title: value,
-          isNumeric: this.collection.structure.get(value).get('ui') === 'numeric',
-          selectedFunction: this.functions.hasOwnProperty(value) ? this.functions[value] : 'SUM'
+          title: column,
+          isNumeric: isANumericColumn,
+          selectedFunction: this.functions.hasOwnProperty(column) ? this.functions[column] : 'SUM'
         };
+
         col.otherFunctions = _.without(['MIN', 'MAX', 'AVG', 'SUM'], col.selectedFunction);
-        if (col.isNumeric) col.value = this.calculate(this.collection.pluck(value), col.selectedFunction);
+
+        if (col.isNumeric) {
+          col.value = this.calculate(this.collection.pluck(column), col.selectedFunction);
+        }
+
         return col;
       }, this);
-      return {columns: columns, selectable: this.options.selectable, sortable: this.options.sortable};
+
+      return {
+        columns: columns,
+        selectable: this.options.selectable,
+        sortable: this.options.sortable,
+        hasANumericColumn: hasANumericColumn
+      };
+    },
+
+    initialize: function(options) {
+      this.collection.preferences.on('change:columns_visible', this.render, this);
     }
   });
 
