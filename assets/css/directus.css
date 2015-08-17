@@ -2820,7 +2820,6 @@ select:focus,
   color: #000000;
 }
 .table-striped {
-  border-bottom: 3px solid #dfdfdf;
   text-align: left;
   width: 100%;
 }
@@ -2909,6 +2908,7 @@ select:focus,
   padding-left: 10px;
 }
 .table-striped tbody {
+  border-bottom: 3px solid #dfdfdf;
   background-color: #ffffff;
 }
 .table-striped tbody .secondary-info {
@@ -2931,10 +2931,14 @@ select:focus,
 .table-striped tfoot tr {
   border-bottom: none;
   height: 100px;
+  background-color: transparent;
 }
 .table-striped tfoot tr:hover {
   background-color: initial;
   cursor: auto;
+}
+.table-striped tfoot tr:hover td {
+  background-color: inherit;
 }
 .table-striped tfoot tr td {
   vertical-align: top;
@@ -2957,7 +2961,7 @@ select:focus,
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   color: #aaaaaa;
-  background-color: #ececec;
+  background-color: #ffffff;
   width: 72px;
   text-align: center;
   padding: 7px 5px 5px 5px;
@@ -2991,7 +2995,7 @@ select:focus,
   left: 10px;
   border-style: solid;
   border-width: 0 5px 5px;
-  border-color: #ececec transparent;
+  border-color: #ffffff transparent;
   display: block;
   width: 0;
   z-index: 1;

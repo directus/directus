@@ -19,7 +19,6 @@
 }
 
 .table-striped {
-  .card-border;
   text-align: left;
   width: 100%;
   .visible-columns-cell:hover,
@@ -100,6 +99,7 @@
     padding-left: 10px;
   }
   tbody {
+    .card-border;
     background-color: @white;
     .secondary-info {
       -webkit-font-smoothing: antialiased;
@@ -123,9 +123,14 @@
     tr {
       border-bottom: none;
       height: 100px;
+      background-color: transparent;
       &:hover {
         background-color: initial;
         cursor: auto;
+
+        td {
+          background-color: inherit;
+        }
       }
       td {
         vertical-align: top;
@@ -155,7 +160,7 @@
           color: @extraDarkGrey;
         }
         color: @mediumGrey;
-        background-color:@lightGrey;
+        background-color:@white;
         width:72px;
         text-align:center;
         padding: 7px 5px 5px 5px;
@@ -168,7 +173,7 @@
         left: 10px;
         border-style: solid;
         border-width: 0 5px 5px;
-        border-color: @lightGrey transparent;
+        border-color: @white transparent;
         display: block;
         width: 0;
         z-index: 1;
