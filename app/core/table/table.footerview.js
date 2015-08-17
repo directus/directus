@@ -74,7 +74,7 @@ function(app, Backbone) {
       return {
         columns: columns,
         selectable: this.options.selectable,
-        sortable: this.options.sortable,
+        sortable: this.options.sort,
         hasANumericColumn: hasANumericColumn
       };
     },
