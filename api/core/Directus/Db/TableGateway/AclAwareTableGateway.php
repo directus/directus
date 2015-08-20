@@ -504,8 +504,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
         $permissionName = 'edit';
         $hasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $updateFields) ? true : false;
-        $goingToDeleteEntry = $updateFields[STATUS_COLUMN_NAME]==STATUS_DELETED_NUM ? true : false;
-        if ($hasStatusColumn && $goingToDeleteEntry) {
+        if ($hasStatusColumn && $updateFields[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
             $permissionName = 'delete';
         }
 
