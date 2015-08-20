@@ -24,10 +24,10 @@ require(["config"], function() {
     'core/ListViewManager',
     'core/idle',
     'tool-tips',
-    'noty'
+    'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, Notification) {
 
     "use strict";
 
@@ -116,7 +116,7 @@ require(["config"], function() {
 
         Idle.start({
           timeout: function() {
-            noty({text: 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds', type: 'warning', layout:'bottomRight', theme: 'directus'});
+            Notification({text: 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds', type: 'warning', layout:'bottomRight', theme: 'directus'});
 
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
@@ -173,14 +173,14 @@ require(["config"], function() {
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
-        noty({text: '<b>Directus can\'t reach the server</b><br><i>A new attempt will be made in 30 seconds</i>', type: 'error', layout:'bottomRight', theme: 'directus'});
+        Notification({text: '<b>Directus can\'t reach the server</b><br><i>A new attempt will be made in 30 seconds</i>', type: 'error', layout:'bottomRight', theme: 'directus'});
       });
 
       app.messages.on('sync', function(collection, object) {
         if (object !== null && object.rows) {
           object.rows.forEach(function(msg) {
             var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
-            noty({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + message_excerpt + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
+            Notification({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + message_excerpt + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
               callback: {
                 onCloseClick: function() {
                   Backbone.history.navigate('/messages/' + msg.id, true);
