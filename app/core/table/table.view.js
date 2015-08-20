@@ -67,11 +67,9 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
         this.insertView('table', new this.TableBody(options));
       }
 
-      // if (this.collection.length > 0 && this.collection.table.get('footer') && this.options.footer !== false) {
-      //   options = this.options;
-      //   this.insertView('table', new TableFooter(options));
-      // }
-      this.insertView('table', new TableFooter(this.options));
+      if (this.collection.length > 0 && this.options.footer !== false) {
+        this.insertView('table', new TableFooter(this.options));
+      }
     },
 
     flashItemID: undefined,
