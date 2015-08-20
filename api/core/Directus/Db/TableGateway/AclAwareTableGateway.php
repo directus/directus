@@ -501,7 +501,15 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
          */
         // check if it's NOT soft delete
         $updateFields = $updateState['set'];
-        if(!$this->acl->hasTablePrivilege($updateTable, 'bigedit')) {
+
+        $permissionName = 'edit';
+        $hasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $updateFields) ? true : false;
+        $goingToDeleteEntry = $updateFields[STATUS_COLUMN_NAME]==STATUS_DELETED_NUM ? true : false;
+        if ($hasStatusColumn && $goingToDeleteEntry) {
+            $permissionName = 'delete';
+        }
+
+        if(!$this->acl->hasTablePrivilege($updateTable, 'big' . $permissionName)) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             /**
              * Enforce Privilege: "Big" Edit
@@ -527,7 +535,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         }
 
-        if(!$this->acl->hasTablePrivilege($updateTable, 'edit')) {
+        if(!$this->acl->hasTablePrivilege($updateTable, $permissionName)) {
             /**
              * Enforce Privilege: "Little" Edit (I am the record CMS owner)
              */
