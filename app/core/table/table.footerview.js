@@ -49,8 +49,14 @@ function(app, Backbone) {
     },
 
     serialize: function() {
+      // get whitelisted columns first
+      var blacklist = this.options.blacklist || [];
+      var columns = _.filter(this.collection.getColumns(), function(column) {
+        return ! _.contains(blacklist, column);
+      });
+
       var hasANumericColumn = false;
-      var columns = _.map(this.collection.getColumns(), function(column) {
+      var columns = _.map(columns, function(column) {
         var isANumericColumn = this.collection.structure.get(column).get('ui') === 'numeric';
         if (isANumericColumn) {
           hasANumericColumn = true;
