@@ -175,7 +175,7 @@ define(function(require, exports, module) {
       }
     });
   };
-  
+
   // TODO: Move to a Directus backbone model
   // change status or delete item
   app.changeItemStatus = function(model, value, options) {
@@ -187,7 +187,10 @@ define(function(require, exports, module) {
     var goingToDelete = value == app.statusMapping.deleted_num;
 
     if (goingToDelete && canHardDelete) {
-      model.destroy({success: options.success});
+      // https://github.com/RNGR/Directus/issues/960
+      // Pass {wait: true} if you'd like to wait for the server to respond
+      // before removing the model from the collection.
+      model.destroy({success: options.success, wait: true});
     } else {
       name[app.statusMapping.status_name] = value;
       model.save(name, options);
