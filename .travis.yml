@@ -5,4 +5,4 @@ php:
   - 5.5
 
 install:
-  - cd api && composer install
+  - cd api && composer install && cd ..

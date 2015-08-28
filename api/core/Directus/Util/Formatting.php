@@ -2,9 +2,11 @@
 
 namespace Directus\Util;
 
-class Formatting {
+class Formatting
+{
 
-    public static function fileNameToFileTitle($fileName) {
+    public static function fileNameToFileTitle($fileName)
+    {
         $info = pathinfo($fileName);
         $ext = $info['extension'];
         $name = basename($fileName,'.'.$ext);
@@ -15,7 +17,8 @@ class Formatting {
     }
 
 
-    public static function underscoreToCamelCase($string) {
+    public static function underscoreToCamelCase($string)
+    {
         $filtered = preg_replace_callback(
             "/(_)(.)/",
             function($matches) {
@@ -44,7 +47,8 @@ class Formatting {
      * @param string $context Optional. The operation for which the string is sanitized.
      * @return string The sanitized title.
      */
-    public static function sanitize_title_with_dashes($title, $raw_title = '', $context = 'display') {
+    public static function sanitize_title_with_dashes($title, $raw_title = '', $context = 'display')
+    {
         $title = strip_tags($title);
         // Preserve escaped octets.
         $title = preg_replace('|%([a-fA-F0-9][a-fA-F0-9])|', '---$1---', $title);
@@ -101,7 +105,8 @@ class Formatting {
      * @param  string $str The string to be checked
      * @return bool      True if $str fits a UTF-8 model, false otherwise.
      */
-    public static function seems_utf8($str) {
+    public static function seems_utf8($str)
+    {
         $length = strlen($str);
         for ($i=0; $i < $length; $i++) {
             $c = ord($str[$i]);
@@ -127,7 +132,8 @@ class Formatting {
      * @param  integer $length      Max length of the string
      * @return string               String with Unicode encoded for URI.
      */
-    public static function utf8_uri_encode( $utf8_string, $length = 0 ) {
+    public static function utf8_uri_encode( $utf8_string, $length = 0 )
+    {
         $unicode = '';
         $values = array();
         $num_octets = 1;
@@ -174,7 +180,8 @@ class Formatting {
      * @param  string $string Text that might have accent characters
      * @return string         Filtered string with replaced "nice" characters.
      */
-    public static function remove_accents($string) {
+    public static function remove_accents($string)
+    {
         if ( !preg_match('/[\x80-\xff]/', $string) )
             return $string;
 
