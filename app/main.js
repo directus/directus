@@ -416,28 +416,32 @@ require(["config"], function() {
 
       // Capture sync errors...
       $(document).ajaxError(function(e, xhr) {
-        var type, message, details;
+        var type, messageTitle, messageBody, details;
         if(xhr.statusText == "abort") {
           return;
         }
         switch(xhr.status) {
           case 403:
             // var response = $.parseJSON(xhr.responseText);
-            message = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
-            app.trigger("alert:error", "Restricted Access", message, true);
+            messageTitle = 'Restricted Access';
+            // messageBody = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
+            details = true;
             break;
           default:
             type = 'Server ' + xhr.status;
-            message = "Server Error";
+            messageTitle = "Server Error";
             details = encodeURIComponent(xhr.responseText);
-            app.logErrorToServer(type, message, details);
-            if(xhr.responseJSON) {
-              app.trigger("alert:error", "Server Error", xhr.responseJSON.message);
-            } else {
-              app.trigger("alert:error", "Server Error", xhr.responseText);
-            }
+            app.logErrorToServer(type, messageTitle, details);
             break;
         }
+
+        if(xhr.responseJSON) {
+          messageBody = xhr.responseJSON.message;
+        } else {
+          messageBody = xhr.responseText;
+        }
+
+        app.trigger('alert:error', messageTitle, messageBody, details)
       });
 
       // And js errors...
