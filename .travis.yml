@@ -3,3 +3,6 @@ language: php
 php:
   - 5.4
   - 5.5
+
+install:
+  - cd api && composer install
