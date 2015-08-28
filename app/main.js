@@ -528,6 +528,13 @@ require(["config"], function() {
       var toolTip = new ToolTip();
       toolTip.render();
 
+      $(document).on('click', '.toggle-help-text', function(event) {
+        var text = $(this).data('help-text');
+        if (text) {
+          app.router.openModal({type: 'alert', text: text});
+        }
+      });
+
     });
 
   });
