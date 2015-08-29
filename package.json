@@ -32,6 +32,16 @@
     "gulp-print": "~1.1.0",
     "merge-stream": "~0.1.7",
     "run-sequence": "~1.0.2",
-    "gulp-jscs": "~1.6.0"
+    "gulp-jscs": "~1.6.0",
+    "karma": "~0.13.9",
+    "jasmine-core": "~2.3.4",
+    "karma-jasmine": "~0.3.6",
+    "requirejs": "~2.1.20",
+    "karma-requirejs": "~0.2.2",
+    "phantomjs": "~1.9.18",
+    "karma-phantomjs-launcher": "~0.2.1"
+  },
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start",
   }
 }

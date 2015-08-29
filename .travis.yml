@@ -4,5 +4,12 @@ php:
   - 5.4
   - 5.5
 
+before_script:
+  - npm install
+  - npm install -g karma-cli
+
 install:
   - cd api && composer install && cd ..
+
+script:
+  - npm test
