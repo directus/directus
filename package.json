@@ -4,7 +4,7 @@
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/karma/bin/karma start"
   },
   "repository": {
     "type": "git",
@@ -40,8 +40,5 @@
     "karma-requirejs": "~0.2.2",
     "phantomjs": "~1.9.18",
     "karma-phantomjs-launcher": "~0.2.1"
-  },
-  "scripts": {
-    "test": "./node_modules/karma/bin/karma start"
   }
 }
