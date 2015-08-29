@@ -524,7 +524,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
                     // $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
-                    throw new UnauthorizedTableBigEditException("[Group] permissions only allow you to [$permissionName] your own items.");
+                    $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
+                    $group = $groupsTableGateway->find($this->acl->getGroupId());
+                    throw new UnauthorizedTableBigEditException("[{$group['name']}] permissions only allow you to [$permissionName] your own items.");
                 }
             }
 
@@ -624,7 +626,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
             if (!in_array($currentUserId, $predicateOwnerIds)) {
             //   $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
-              $exceptionMessage = "[Group] permissions only allow you to [delete] your own items.";
+              $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
+              $group = $groupsTableGateway->find($this->acl->getGroupId());
+              $exceptionMessage = "[{$group['name']}] permissions only allow you to [delete] your own items.";
             //   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
               throw new UnauthorizedTableDeleteException($exceptionMessage);
             }
