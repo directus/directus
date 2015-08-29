@@ -1,6 +1,6 @@
 {
-  "name": "Directus6",
-  "version": "0.0.1",
+  "name": "Directus",
+  "version": "6.0.2",
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/RNGR/directus6.git"
+    "url": "https://github.com/RNGR/Directus.git"
   },
   "author": "RANGER",
   "bugs": {
-    "url": "https://github.com/RNGR/directus6/issues"
+    "url": "https://github.com/RNGR/Directus/issues"
   },
   "private": true,
-  "homepage": "https://github.com/RNGR/directus6",
+  "homepage": "https://github.com/RNGR/Directus",
   "devDependencies": {
     "gulp": "~3.8.10",
     "gulp-clean": "~0.3.1",
