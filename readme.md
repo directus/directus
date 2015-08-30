@@ -12,13 +12,13 @@ Welcome to Directus, a free and open source content management framework written
 View the Directus documentation here:
 
 
-[GitHub Wiki](https://github.com/RNGR/directus6/wiki)
+[GitHub Wiki](https://github.com/RNGR/Directus/wiki)
 
 ## Issues ##
 
 Discovered a bug? Please create an issue here on GitHub!
 
-https://github.com/RNGR/directus6/issues
+https://github.com/RNGR/Directus/issues
 
 ## Versioning ##
 For transparency and insight into our release cycle, releases will be numbered with the follow format:
