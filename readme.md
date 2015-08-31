@@ -62,6 +62,10 @@ For more information on semantic versioning, please visit [http://semver.org/](h
 ## Database Types ##
 While Directus has been abstracted to allow for different database adapters in the future, currently only MySQL is supported. We hope that as we gain additional contributors we can expand Directus to support additional database types.
 
+## Copyright and License ##
+
+Code and documentation copyright 2015 [RANGER Studio LLC](http://rngr.org/). Code released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html).
+
 ## Screenshots ##
 
 ![Directus Tables](http://getdirectus.com/assets/imgs/ss-full-tables.png)
