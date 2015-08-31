@@ -13,6 +13,16 @@ Welcome to Directus, a free and open-source, client-friendly MySQL database GUI 
 * Lead Developer: [@WellingGuzman](https://github.com/WellingGuzman)
 * Developers: [@coolov](https://github.com/coolov), [@freen](https://github.com/freen), [@jel-massih](https://github.com/jel-massih), [@Lasha](https://github.com/Lasha)
 
+## New Contributors ##
+We're currently a very small team looking to grow our network of contributors. If you're interested in helping advance the Directus framework please reach out to [@BenHaynes](https://github.com/BenHaynes). We're actively seeking developers, designers, and testers who are willing to contribute time to: 
+* The core codebase
+* Alternate database ports (PostgreSQL, SQLite, etc)
+* Alternate server-side ports (RoR, Python, etc)
+* Custom UIs
+* Custom extensions
+
+_Some compensation may be available based on your role and contributions._
+
 ## Documentation ##
 
 View the Directus documentation here:
