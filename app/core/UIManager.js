@@ -243,7 +243,7 @@ define(function(require, exports, module) {
         tagName: 'td'
       };
 
-      var value = _.contains(UIObject.UI, section) ? UIObject.UI[section](UIOptions) : UIObject.UI.list(UIOptions);
+      var value = _.has(UIObject.UI, section) ? UIObject.UI[section](UIOptions) : UIObject.UI.list(UIOptions);
 
       if ((!value || value === "") && returnDefaultValue) {
         value = defaultValue;
