@@ -35,14 +35,12 @@ function(app, Backbone) {
       rows = _.filter(rows, function(row) {
         var privileges = app.schemaManager.getPrivileges(row.table_name);
 
-        // filter out tables without privileges
-        if (typeof privileges === "undefined" || privileges === undefined || privileges === null) return false;
-        if (privileges.get('permissions') === null) return false;
-
-        var permissions = privileges.get('permissions').split(',');
+        if (typeof privileges === 'undefined' || privileges === null) {
+          return false;
+        }
 
         // only return tables with view permissions and not hidden
-        return _.contains(permissions, 'view') && privileges.get('unlisted') != 1;
+        return privileges.get('allow_view') > 0  && privileges.get('nav_listed') > 0;
       });
       return {rows: rows, columns: this.collection.getColumns()};
     },

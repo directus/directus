@@ -1,21 +1,21 @@
 {
-  "name": "Directus6",
-  "version": "0.0.1",
+  "name": "Directus",
+  "version": "6.0.2",
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/karma/bin/karma start"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/RNGR/directus6.git"
+    "url": "https://github.com/RNGR/Directus.git"
   },
   "author": "RANGER",
   "bugs": {
-    "url": "https://github.com/RNGR/directus6/issues"
+    "url": "https://github.com/RNGR/Directus/issues"
   },
   "private": true,
-  "homepage": "https://github.com/RNGR/directus6",
+  "homepage": "https://github.com/RNGR/Directus",
   "devDependencies": {
     "gulp": "~3.8.10",
     "gulp-clean": "~0.3.1",
@@ -32,6 +32,13 @@
     "gulp-print": "~1.1.0",
     "merge-stream": "~0.1.7",
     "run-sequence": "~1.0.2",
-    "gulp-jscs": "~1.6.0"
+    "gulp-jscs": "~1.6.0",
+    "karma": "~0.13.9",
+    "jasmine-core": "~2.3.4",
+    "karma-jasmine": "~0.3.6",
+    "requirejs": "~2.1.20",
+    "karma-requirejs": "~0.2.2",
+    "phantomjs": "~1.9.18",
+    "karma-phantomjs-launcher": "~0.2.1"
   }
 }

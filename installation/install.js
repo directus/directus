@@ -42,10 +42,11 @@ $(window).ready(function() {
   function CheckStep2() {
     var name = $('input[name=host_name]').val();
     var user = $('input[name=username]').val();
-    var pass = $('input[name=password]').val();
+    // password could be empty
+    // var pass = $('input[name=password]').val();
     var dbname = $('input[name=db_name]').val();
 
-    if(name && user && pass && dbname) {
+    if(name && user /*&& pass*/ && dbname) {
       $('button[type=submit]').removeClass('disabled');
     } else {
       $('button[type=submit]').addClass('disabled');

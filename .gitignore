@@ -49,3 +49,4 @@ media_auth_proxy/client_auth_proxies/*
 
 # Ignore dev files
 assets/less/directus/config.codekit
+installation/config.codekit

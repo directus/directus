@@ -8,8 +8,9 @@ function(app, Backbone, PreferenceModel) {
   "use strict";
 
   return Backbone.Layout.extend({
+    // add bookmark button was moved to sidebar
+    // if false is a way to keep it there unavailable just in case
     template: Handlebars.compile('\
-    <div class="left snapshotOption" id="saveSnapshotBtn" title="Save Page as Bookmark"><span class="icon icon-bookmark"></span></div> \
     {{#if hasActiveColumn}} \
     <div class="simple-select dark-grey-color simple-gray left" title="Choose which items are displayed"> \
       <span class="icon icon-triangle-down"></span> \
@@ -17,7 +18,7 @@ function(app, Backbone, PreferenceModel) {
         <optgroup label="Status"> \
           <option data-status value="{{allKeys}}">View All</option> \
           {{#mapping}} \
-            <option data-status value="{{id}}">View {{capitalize name}}</option> \
+            <option data-status value="{{id}}" {{#if isSelected}} selected {{/if}}>View {{capitalize name}}</option> \
           {{/mapping}} \
         </optgroup> \
       </select> \
@@ -48,59 +49,24 @@ function(app, Backbone, PreferenceModel) {
             }
           });
         }
-      },
-      'click #saveSnapshotBtn': 'saveSnapshot',
-    },
-
-    saveSnapshot: function() {
-      var that = this;
-      app.router.openModal({type: 'prompt', text: 'Please enter a name for your Bookmark', callback: function(name ) {
-        if(name === null || name === "") {
-          alert('Please Fill In a Valid Name');
-          return;
-        }
-
-        //Save id so it can be reset after render
-        that.defaultId = that.collection.preferences.get('id');
-        //Unset Id so that it creates new Preference
-        that.collection.preferences.unset('id');
-        that.collection.preferences.set({title: name});
-        that.collection.preferences.save();
-        that.pinSnapshot(name);
-
-        that.listenToOnce(that.collection.preferences, 'sync', function() {
-          if(this.basePage) {
-            that.basePage.removeHolding(this.cid);
-          }
-          if(this.defaultId) {
-            that.collection.preferences.set({title:null, id: that.defaultId});
-          }
-        });
-      }});
-    },
-
-    pinSnapshot: function(title) {
-      var data = {
-        title: title,
-        url: Backbone.history.fragment + "/pref/" + title,
-        icon_class: 'icon-search',
-        user: app.users.getCurrentUser().get("id"),
-        section: 'search'
-      };
-      if(!app.getBookmarks().isBookmarked(data.title)) {
-        app.getBookmarks().addNewBookmark(data);
       }
     },
 
     serialize: function() {
       var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};
       var mapping = app.statusMapping.mapping;
+      var statusSelected = this.collection.getFilter(app.statusMapping.status_name);
 
       var keys = [];
       for(var key in mapping) {
         //Do not show option for deleted status
         if(key != app.statusMapping.deleted_num) {
-          data.mapping.push({id: key, name: mapping[key].name, sort: mapping[key].sort});
+          data.mapping.push({
+            id: key,
+            name: mapping[key].name,
+            sort: mapping[key].sort,
+            isSelected: statusSelected == key ? true : false
+          });
           keys.push(key);
         }
       }
@@ -134,25 +100,30 @@ function(app, Backbone, PreferenceModel) {
 
       this.basePage = this.options.basePage;
 
+      this.collection.on('sync', this.render, this);
+
       if(this.collection.table.columns.get(app.statusMapping.status_name)) {
         this.options.hasActiveColumn = true;
       }
 
+      var options = {};
       if(app.router.loadedPreference) {
-        this.defaultId = this.collection.preferences.get('id');
-        this.collection.preferences.fetch({newTitle: app.router.loadedPreference});
-        if(this.basePage) {
-          this.basePage.addHolding(this.cid);
-        }
+        options = {newTitle: app.router.loadedPreference};
+      }
 
-        this.listenToOnce(this.collection.preferences, 'sync', function() {
-          if(this.basePage) {
-            this.basePage.removeHolding(this.cid);
-          }
-          if(this.defaultId) {
-            this.collection.preferences.set({title:null, id: this.defaultId});
-          }
-        });
+      this.listenToOnce(this.collection.preferences, 'sync', function() {
+        if(this.basePage) {
+          this.basePage.removeHolding(this.cid);
+        }
+        if(this.defaultId) {
+          this.collection.preferences.set({title:null, id: this.defaultId});
+        }
+      });
+
+      this.defaultId = this.collection.preferences.get('id');
+      this.collection.preferences.fetch(options);
+      if(this.basePage) {
+        this.basePage.addHolding(this.cid);
       }
     }
   });

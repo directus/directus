@@ -212,8 +212,8 @@ class Console
         $insert = "INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
                       VALUES
                       (1,'global','cms_user_auto_sign_out','60'),
-                      (3,'global','site_name','".$site_name."'),
-                      (4,'global','site_url','http://examplesite.dev/'),
+                      (3,'global','project_name','".$site_name."'),
+                      (4,'global','project_url','http://examplesite.dev/'),
                       (5,'global','cms_color','#7ac943'),
                       (6,'global','rows_per_page','200'),
                       (7,'files','storage_adapter','FileSystemAdapter'),
@@ -223,9 +223,8 @@ class Console
                       (11,'files','thumbnail_quality','100'),
                       (12,'files','thumbnail_size','200'),
                       (13,'global','cms_thumbnail_url',''),
-                      (14,'files','file_file_naming','file_id'),
-                      (15,'files','file_title_naming','file_name'),
-                      (16,'files','thumbnail_crop_enabled','1');";
+                      (14,'files','file_naming','file_id'),
+                      (15,'files','thumbnail_crop_enabled','1');";
 
         $statement = $this->dbh->prepare($insert);
         $statement->execute();

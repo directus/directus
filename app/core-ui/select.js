@@ -17,7 +17,7 @@ define(['app', 'backbone'],function(app, Backbone) {
   Module.id = 'select';
   Module.dataTypes = ['VARCHAR', 'INT'];
   Module.variables = [
-    {id: 'options', ui: 'textarea', options:{'rows': 25}  },
+    {id: 'options', ui: 'textarea', options:{'rows': 25}, comment: "Enter JSON key value pairs with the saved value and text displayed."},
     {id: 'allow_null', ui: 'checkbox'},
     {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
   ];

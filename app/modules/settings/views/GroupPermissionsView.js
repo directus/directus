@@ -167,10 +167,10 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
           return;
         }
 
-        this.toggleIcon($target, this.collection.get(cid).get('permissions'));
+        this.toggleIcon($target);
 
-        attributes = this.parseTablePermissions($tr, this.collection.get(cid).get('permissions'));
-        
+        attributes = this.parseTablePermissions($target);
+
         var fancySave = false;
         var oldModel = model;
         if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
@@ -185,24 +185,23 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
           if(fancySave) {
             that.collection.add(that.model);
           }
-          app.schemaManager.updatePrivileges(model.get('table_name'), attributes.permissions);
+          app.schemaManager.updatePrivileges(model.get('table_name'), attributes);
         }});
       }
     },
 
-    toggleIcon: function($span, currentPermission) {
+    // @todo: UPDATE this whole View, these value shouldn't be depending on class values.
+    toggleIcon: function($span) {
       var dataValue = $span.parent().data('value');
+
       if($span.hasClass('yellow-color')) {
         $span.addClass('big-priv');
-      } else if ($span.hasClass('big-priv') && dataValue == 'delete') {
-        $span.removeClass('big-priv').addClass('hard-priv hard-color');
-      } else if ($span.hasClass('hard-priv') && dataValue == 'delete') {
-        $span.removeClass('hard-priv').addClass('big-hard-priv hard-color');
       } else {
         $span.toggleClass('add-color').toggleClass('delete-color').toggleClass('has-privilege');
       }
     },
 
+    // @todo: update this for newest permission model
     toggleRowPermissions: function(e) {
       var $target = $(e.target).parent(),
         $tr = $target.closest('tr'),
@@ -276,42 +275,33 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
       }});
     },
 
-    parseTablePermissions: function($tr) {
+    parseTablePermissions: function($tr, model) {
       var permissions;
+      var permissionPrefix = '';
+      var permission = [];
 
-      permissions = $tr.children().has('span.has-privilege');
-
-
-      permissions = permissions.map(function() { 
-        var permissionPrefix = '',
-            permission = [];
-
-        if ($(this).has('span.big-priv').length) {
-          permissionPrefix = 'big';
-        } else if ($(this).has('span.hard-priv').length) {
-          permissionPrefix = 'hard';
-        } else if ($(this).has('span.big-hard-priv').length) {
-          permissionPrefix = 'bighard';
-        }
-
-        if(permissionPrefix && permissionPrefix !== 'hard') {
-          var value = $(this).data('value');
-          if(permissionPrefix === 'bighard'){
-            value = 'hard'+value;
-          }
-          permission.push(value);
-        }
-        permission.push(permissionPrefix +  $(this).data('value'));
-
-        return permission;
-      }).get();
-
-      // do not let non-admin users to have alter permission
-      if(app.getCurrentGroup().get('id')===1) {
-        permissions.push('alter');
+      if ($tr.hasClass('big-priv')) {
+        permissionPrefix = 'big';
       }
 
-      return {permissions: permissions.join()};
+      var permissionName = $tr.closest('td').data('value');
+      if(permissionPrefix) {
+        permission.push(permissionName);
+      }
+      permission.push(permissionPrefix +  permissionName);
+
+      var permissionLevel = 0;
+      if ($tr.hasClass('delete-color')) {
+        permissionLevel = 0;
+      } else if (_.contains(permission, 'big' + permissionName)) {
+        permissionLevel = 2;
+      } else if (_.contains(permission, permissionName)) {
+        permissionLevel = 1;
+      }
+
+      var attributes = {};
+      attributes['allow_' + permissionName ] = permissionLevel;
+      return attributes;
     },
 
     editFields: function(e) {
@@ -390,25 +380,25 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
         data.hasReadBlacklist = false;
         data.hasWriteBlacklist = false;
 
+        var modelTable = app.schemaManager.getTable(model.get('table_name'));
+        var userCreateColumnName = 'no column chosen';
+        if (modelTable && modelTable.has('user_create_column')) {
+          userCreateColumnName = modelTable.get('user_create_column') || userCreateColumnName;
+        }
+
         // Default permissions
         data.permissions = {
-          'add': false,
-          'edit': false,
-          'bigedit': false,
-          'delete': false,
-          'bigdelete': false,
-          'harddelete': false,
-          'bigharddelete': false,
-          'alter': false,
-          'view': false,
-          'bigview': false
+          'add': (model.has('allow_add') && model.get('allow_add') != 0) ? true : false,
+          'edit': (model.has('allow_edit') && model.get('allow_edit') != 0) ? true : false,
+          'bigedit': (model.has('allow_edit') && model.get('allow_edit') == 2) ? true : false,
+          'delete': (model.has('allow_delete') && model.get('allow_delete') != 0) ? true : false,
+          'bigdelete': (model.has('allow_delete') && model.get('allow_delete') == 2) ? true : false,
+          'alter': (model.has('allow_alter') && model.get('allow_alter') != 0) ? true : false,
+          'view': (model.has('allow_view') && model.get('allow_view') != 0) ? true : false,
+          'bigview': (model.has('allow_view') && model.get('allow_view') == 2) ? true : false,
+          'user_create_column': userCreateColumnName
         };
 
-        _.each(permissions, function(property) {
-          if (data.permissions.hasOwnProperty(property)) {
-            data.permissions[property] = true;
-          }
-        });
         if(that.selectedState == 'all' && tableStatusMapping[data.table_name].count > 1) {
           var viewValConsistent = true;
           var lastView = (!data.permissions.bigview) ? ((!data.permissions.view) ? 0 : 1) : 2;
@@ -574,7 +564,7 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
     headerOptions: {
       route: {
         title: 'Settings',
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Permissions', anchor: '#settings/permissions'}]
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Group Permissions', anchor: '#settings/permissions'}]
       },
     },
     rightToolbar: function() {

@@ -10,7 +10,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
     events: {
-      'click .saved-success': 'saveCheck',
+      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'saveCheck',
       'change #saveSelect': 'saveCheck'
     },
 
@@ -36,7 +36,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       var data = this.editView.data();
       if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
         var that = this;
-        app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system.', callback: function() {
+        app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system!', callback: function() {
           that.save(e);
         }});
       } else {

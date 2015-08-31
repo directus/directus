@@ -7,7 +7,14 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'], function(app, Backbone, Sortable, UIView, Overlays) {
+define([
+    'app',
+    'backbone',
+    'sortable',
+    'core/UIView',
+    'core/overlays/overlays',
+  ],
+  function(app, Backbone, Sortable, UIView, Overlays) {
 
   "use strict";
 
@@ -31,8 +38,8 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
     },
 
     events: {
-      'click button[data-action=add]': 'addItem',
-      'click button[data-action=insert]': 'insertItem',
+      'click span[data-action=add]': 'addItem',
+      'click span[data-action=insert]': 'insertItem',
       'click .remove-slideshow-item': 'removeItem',
       'click .media-slideshow-item > img': function(e) {
         if (!this.canEdit) {
@@ -65,6 +72,15 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
         } \
         .remove-hover-state .show-circle:hover .white-circle { \
           opacity: 0.0; \
+        } \
+        .multiple-image-actions { \
+          margin: 10px 0 0 0; \
+          display: block; \
+          font-size: 12px; \
+        } \
+        .multiple-image-actions span:hover { \
+          color: #333333; \
+          cursor: pointer; \
         } \
         div.single-image-thumbnail.empty { \
           float: left; \
@@ -100,8 +116,11 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
       </style> \
       <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div></div> \
       <div class="related-table"></div> \
-      <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New Files</button>{{/if}} \
-      {{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing Files</button>{{/if}}</div>'),
+      <div class="multiple-image-actions"> \
+        {{#if showAddButton}}<span data-action="add">Upload</span>{{/if}} \
+        {{#if showAddButton}}{{#if showChooseButton}} or {{/if}}{{/if}} \
+        {{#if showChooseButton}}<span data-action="insert">Directus Files</span>{{/if}} \
+      </div>'),
 
     addItem: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
@@ -218,8 +237,16 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
       _.each(models, function(model) {
         if(model.get(app.statusMapping.status_name) != app.statusMapping.deleted_num) {
           var cid = model.cid;
+          var url;
+
           model = new app.files.model(model.get('data').attributes, {collection: that.relatedCollection});
-          rows.push({id: model.id, url: model.makeFileUrl(true), cid:cid});
+          if (model.isNew()) {
+            url = model.get('thumbnailData') || model.get('url');
+          } else {
+            url = model.makeFileUrl(true)
+          }
+
+          rows.push({id: model.id, url: url, cid:cid});
         }
       });
 
@@ -247,7 +274,7 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
 
       // Since data transfer is not supported by jquery...
       // XHR2, FormData
-      $dropzone[0].ondrop = _.bind(function(e) {
+      $dropzone[0].ondrop = function(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -255,9 +282,11 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
           self.sort.isDragging = false;
           return;
         }
-
-        app.sendFiles(e.dataTransfer.files, function(data) {
-          _.each(data, function(item) {
+        var FilesModel = require('modules/files/FilesModel');
+        _.each(e.dataTransfer.files, function(file) {
+          // force a fileModel object
+          var fileModel = new FilesModel({}, {collection:{}});
+          fileModel.setFile(file, function(item) {
             item[app.statusMapping.status_name] = app.statusMapping.active_num;
             // Unset the model ID so that a new file record is created
             // (and the old file record isn't replaced w/ this data)
@@ -268,7 +297,7 @@ define(['app', 'backbone', 'sortable', 'core/UIView', 'core/overlays/overlays'],
             self.relatedCollection.add(model);
           });
         });
-      });
+      };
 
       if(junctionStructure.get('sort') !== undefined) {
         // Drag and drop reordering

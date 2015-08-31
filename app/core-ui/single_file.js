@@ -16,9 +16,15 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], function(app, Backbone, TableView, Overlays) {
+define([
+    'app',
+    'backbone',
+    'core/table/table.view',
+    'core/overlays/overlays'
+  ],
+  function(app, Backbone, TableView, Overlays) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -32,6 +38,12 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
   //{{capitalize fileModel.title}}
 
   var template =  '<style type="text/css"> \
+                  .ui-file-container:after { \
+                    clear: both; \
+                    content: ""; \
+                    display: block; \
+                    width: 100%; \
+                  } \
                   div.single-image-thumbnail { \
                     float: left; \
                     max-height: 200px; \
@@ -114,50 +126,41 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
                     cursor: pointer; \
                   } \
                   .single-image-actions { \
-                    margin: 2px 20px 0 20px; \
-                    float: left; \
-                    width: 160px; \
-                    text-align: center; \
-                    font-size: 12px; \
-                    color: #bbbbbb; \
-                  } \
-                  .single-image-actions .btn { \
-                    margin: 0; \
+                    margin: 10px 0 0 0; \
                     display: block; \
-                    margin-top: 8px; \
-                    width: 100%; \
+                    font-size: 12px; \
                   } \
-                  .single-image-actions .btn .icon { \
-                    font-size: 300%; \
-                    line-height: 30%; \
-                    margin-right: 3px; \
+                  .single-image-actions span:hover { \
+                    color: #333333; \
+                    cursor: pointer; \
                   } \
                   </style> \
-                  {{#if url}} \
-                  <div class="single-image-thumbnail has-file"> \
-                    {{#if fileModel.youtube}}<iframe width="280" height="160" src="http://www.youtube.com/embed/{{fileModel.youtube}}?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe> \
+                  <div class="ui-file-container"> \
+                    {{#if url}} \
+                    <div class="single-image-thumbnail has-file"> \
+                      {{#if fileModel.youtube}}<iframe width="280" height="160" src="http://www.youtube.com/embed/{{fileModel.youtube}}?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe> \
+                      {{else}} \
+                        {{#if fileModel.vimeo}} <iframe src="//player.vimeo.com/video/{{fileModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="280" height="160" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
+                        {{else}}<a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a>{{/if}} \
+                      {{/if}} \
+                    </div> \
+                    <div class="ui-img-details single_file"> \
+                      <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
+                      <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
+                      <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
+                      <button class="btn btn-primary" data-action="remove-single-file" type="button">Remove File</button> \
+                    </div> \
                     {{else}} \
-                      {{#if fileModel.vimeo}} <iframe src="//player.vimeo.com/video/{{fileModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="280" height="160" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
-                      {{else}}<a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a>{{/if}} \
+                    <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
+                    <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                    <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
                     {{/if}} \
+                    <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   </div> \
-                  <div class="ui-img-details single_file"> \
-                    <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
-                    <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
-                    <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
-                    <button class="btn btn-primary" data-action="remove-single-file" type="button">Remove File</button> \
-                  </div> \
-                  {{else}} \
-                  <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
-                  <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                  <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
-                  {{/if}} \
-                  <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   <div class="single-image-actions"> \
-                    <div class="single-image-text">OR UPLOAD FROM</div> \
-                    <button class="btn btn-primary" data-action="computer" type="button"><span class="icon icon-upload"></span> Your Computer</button> \
-                    <button class="btn btn-primary" data-action="url" type="button"><span class="icon icon-link"></span> External URL</button> \
-                    <button class="btn btn-primary" data-action="swap" type="button"><span class="icon icon-attach"></span> Directus Files</button> \
+                    <span data-action="computer">Upload</span>, \
+                    <span data-action="url">URL Import</span>, or \
+                    <span data-action="swap">Directus Files</span> \
                   </div>';
 
   Module.Input = Backbone.Layout.extend({
@@ -172,7 +175,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
 
     events: {
       'click button[data-action="remove-single-file"]': 'removeFile',
-      'click button[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
+      'click span[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
       'click .has-file': 'edit',
       'click .swap-method-btn': function() {
         this.$el.find('.swap-method').toggleClass('hide');
@@ -184,63 +187,33 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       'click #retriveUrlBtn': function(e) {
         var url = this.$el.find('#urlInput').val();
         var model = this.fileModel;
-        app.sendLink(url, function(data) {
-          _.each(data, function(item) {
-            item[app.statusMapping.status_name] = app.statusMapping.active_num;
-            // Unset the model ID so that a new file record is created
-            // (and the old file record isn't replaced w/ this data)
-            item.id = undefined;
-            item.user = self.userId;
-
-            //console.log()
-
-            model.set(item);
-          });
-        });
+        model.setLink(url);
       },
-      'change input[type=file]': function(e) {
-        var file = $(e.target)[0].files[0];
+      'change input[type=file]': function(event) {
+        var target = $(event.target);
+        var file = target[0].files[0];
         var model = this.fileModel;
-        
-        if (!this.verifyFile(file)) {
-          return false;
-        }
-        
-        app.sendFiles(file, function(data) {
-          model.set(data[0]);
-          model.trigger('sync');
-        });
+        model.setFile(file);
       },
-      'click button[data-action="computer"]': function(e) {
+      'click span[data-action="computer"]': function(e) {
         this.$el.find('#fileAddInput').click();
       },
-      'click button[data-action="url"]': function(e) {
+      'click span[data-action="url"]': function(e) {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Enter Url', callback: function(url) {
-          if(!url) {
-            return;
-          }
-
-          var model = that.fileModel;
-          app.sendLink(url, function(data) {
-            _.each(data, function(item) {
-              if (!that.verifyFile(item)) {
-                return false;
-              }
-              
-              item[app.statusMapping.status_name] = app.statusMapping.active_num;
-              // Unset the model ID so that a new file record is created
-              // (and the old file record isn't replaced w/ this data)
-              item.id = undefined;
-              item.user = self.userId;
-
-              //console.log()
-
-              model.set(item);
-            });
-          });
+        app.router.openModal({type: 'prompt', text: 'Enter the URL to a file:', callback: function(url) {
+          that.getLinkData(url);
         }});
       },
+    },
+
+    getLinkData: function(url) {
+
+      if(!url) {
+        return;
+      }
+
+      var model = this.fileModel;
+      model.setLink(url);
     },
 
     removeFile: function(e) {
@@ -263,7 +236,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       view.itemClicked = function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         model = collection.get(id);
-        if (!me.verifyFile(model)) {
+        if (!app.settings.isFileAllowed(model)) {
           return false;
         }
         fileModel.clear({silent: true});
@@ -299,24 +272,6 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       // Fetch first time to get the nested tables
       model.fetch();
     },
-    
-    verifyFile: function(file) {
-      var allowed_types, allowed = true;
-      
-      if (this.options.settings.has('allowed_filetypes')) {
-        allowed_types = this.options.settings.get('allowed_filetypes');
-        var file_type = file.type || '';
-        var allowed = allowed_types.split('|').some(function(item){
-          return file_type.indexOf(item)>-1;
-        });
-      }
-      
-      if (!allowed) {
-        app.router.openModal({type: 'alert', text: 'This type of file is not allowed'});
-      }
-      
-      return allowed;
-    },
 
     afterRender: function() {
       var timer;
@@ -344,36 +299,35 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       $dropzone[0].ondrop = _.bind(function(e) {
         e.stopPropagation();
         e.preventDefault();
+
         if (e.dataTransfer.files.length > 1) {
           alert('One file only please');
           return;
         }
-        app.sendFiles(e.dataTransfer.files, function(data) {
-          _.each(data, function(item) {
-            item[app.statusMapping.status_name] = app.statusMapping.active_num;
-            // Unset the model ID so that a new file record is created
-            // (and the old file record isn't replaced w/ this data)
-            item.id = undefined;
-            item.user = self.userId;
 
-            //console.log()
-
-            model.set(item);
-          });
-        });
+        var file = e.dataTransfer.files[0];
+        model.setFile(file);
         $dropzone.removeClass('dragover');
       }, this);
 
     },
 
     serialize: function() {
-      var url = this.fileModel.has('name') ? this.fileModel.makeFileUrl(true) : null;
-      var link = this.fileModel.has('name') ? this.fileModel.makeFileUrl() : null;
+      var url, link;
+      if (this.fileModel.has('name')) {
+        if (this.fileModel.isNew()) {
+          url = this.fileModel.get('thumbnailData') || this.fileModel.get('url');
+          link = '#';
+        } else {
+          url = this.fileModel.makeFileUrl(true);
+          link = this.fileModel.makeFileUrl();
+        }
+      }
+
       var data = this.fileModel.toJSON();
       var type = this.fileModel.has('type') ? this.fileModel.get('type').substring(0, this.fileModel.get('type').indexOf('/')) : '';
-      var subtype = this.fileModel.has('type') ? this.fileModel.get('type').split('/').pop() : '';
-
-      var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
+      // var subtype = this.fileModel.has('type') ? this.fileModel.get('type').split('/').pop() : '';
+      var isImage = _.contains(['image', 'embed'], type);// || _.contains(['pdf'], subtype);
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
       if(data.type) {
@@ -389,6 +343,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
       } else {
         data.size = app.bytesToSize(data.size, 0);
       }
+
       data = {
         isImage: isImage,
         name: this.options.name,
@@ -399,6 +354,7 @@ define(['app', 'backbone', 'core/table/table.view', 'core/overlays/overlays'], f
         fileModel: data,
         link: link
       };
+
       return data;
     },
 

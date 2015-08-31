@@ -101,8 +101,8 @@ class Mailer extends \PHPMailer
     private function getBodyFooter()
     {
         $loginUrl = DIRECTUS_PATH . 'login.php';
-        $projectTitle = $this->settings['global']['site_name'];
-        $projectUrl = $this->settings['global']['site_url'];
+        $projectTitle = $this->settings['global']['project_name'];
+        $projectUrl = $this->settings['global']['project_url'];
 
         $footer = "\n
             --- \n

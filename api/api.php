@@ -222,10 +222,26 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
         }
     }
 
-    if(!$user) {
+    if (!$user) {
         return JsonView::render($response);
     }
+
+    // @todo: Login should fail on correct information when user is not active.
     $response['success'] = Auth::login($user['id'], $user['password'], $user['salt'], $password);
+
+    // When the credentials are correct but the user is Inactive
+    $userHasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $user);
+    $isUserActive = false;
+    if ($userHasStatusColumn && $user[STATUS_COLUMN_NAME] == STATUS_ACTIVE_NUM) {
+        $isUserActive = true;
+    }
+
+    if ($response['success'] && !$isUserActive) {
+        Auth::logout();
+        $response['success'] = false;
+        $response['message'] = 'You do not have access to this system';
+        return JsonView::render($response);
+    }
 
     if($response['success']) {
         unset($response['message']);
@@ -373,6 +389,12 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
     }
 
     if(isset($requestPayload['addTable'])) {
+      $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
+      $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+      if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+          $app->response->setStatus(400);
+          return JsonView::render(array('message'=> 'Invalid table name'));
+      }
       unset($requestPayload['addTable']);
       try{
         $statusColumnName = STATUS_COLUMN_NAME;
@@ -479,7 +501,7 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
     $params['group_by'] = $columns[0];
 
     if(isset($params['q'])) {
-      $params['adv_where'] = $columns[0].' like \'%'.$params['q'].'%\'';
+      $params['adv_where'] = "`{$columns[0]}` like '%{$params['q']}%'";
       $params['perPage'] = 50;
     }
   }
@@ -682,6 +704,13 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
       case "POST":
         $requestPayload['user'] = $currentUser['id'];
         $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
+
+        // When the file is uploaded there's not a data key
+        if (array_key_exists('data', $requestPayload)) {
+            $Storage = new Files\Storage\Storage();
+            $recordData = $Storage->saveData($requestPayload['data'], $requestPayload['name']);
+            $requestPayload = array_merge($requestPayload, $recordData);
+        }
         $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
         $params['id'] = $newRecord['id'];
         break;
@@ -760,7 +789,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($ZendDb, $acl
 
     if(isset($params['newTitle'])) {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
-        $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
+        // $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
     } else {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table);
     }
@@ -924,6 +953,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
     if(isset($_POST['link'])) {
         $fileData = array('caption'=>'','tags'=>'','location'=>'');
         $fileData = array_merge($fileData, $Storage->acceptLink($_POST['link']));
+
         $result[] = array(
             'type' => $fileData['type'],
             'name' => $fileData['name'],
@@ -936,8 +966,9 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
             'width' => $fileData['width'],
             'height' => $fileData['height'],
             'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
-            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-            'storage_adapter' => $fileData['storage_adapter']
+            'data' => (isset($fileData['data'])) ? $fileData['data'] : null
+            //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            //'storage_adapter' => $fileData['storage_adapter']
         );
     }
     JsonView::render($result);

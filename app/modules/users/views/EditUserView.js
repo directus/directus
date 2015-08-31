@@ -21,8 +21,20 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     events: {
-      'click .saved-success': 'save',
-      'change #saveSelect': 'save'
+      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'saveConfirm',
+      'change #saveSelect': 'saveConfirm'
+    },
+
+    saveConfirm: function(e) {
+      var data = this.editView.data();
+      var that = this;
+      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
+        app.router.openModal({type: 'confirm', text: 'Are you sure you want to delete this item?', callback: function() {
+          that.save(e);
+        }});
+      } else {
+        this.save(e);
+      }
     },
 
     save: function(e) {
@@ -86,7 +98,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     afterRender: function() {
-      var editView = new Directus.EditView({model: this.model});
+      var editView = this.editView;
       this.setView('#page-content', editView);
       if (!this.model.isNew()) {
         this.model.fetch();
@@ -96,6 +108,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     initialize: function(options) {
+      this.editView = new Directus.EditView({model: this.model});
       this.headerOptions.route.title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : 'New User';
     }
   });

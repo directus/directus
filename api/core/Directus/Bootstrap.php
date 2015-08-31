@@ -266,19 +266,19 @@ class Bootstrap {
      * Construct CodeBird Twitter API Client
      * @return \Codebird\Codebird
      */
-    private static function codebird() {
-        $acl = self::get('acl');
-        $db = self::get('ZendDb');
-        // Social settings
-        $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $db);
-        $requiredKeys = array('twitter_consumer_key','twitter_consumer_secret', 'twitter_oauth_token', 'twitter_oauth_token_secret');
-        $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
-        // Codebird initialization
-        \Codebird\Codebird::setConsumerKey($socialSettings['twitter_consumer_key'], $socialSettings['twitter_consumer_secret']);
-        $cb = \Codebird\Codebird::getInstance();
-        $cb->setToken($socialSettings['twitter_oauth_token'], $socialSettings['twitter_oauth_token_secret']);
-        return $cb;
-    }
+    // private static function codebird() {
+    //     $acl = self::get('acl');
+    //     $db = self::get('ZendDb');
+    //     // Social settings
+    //     $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $db);
+    //     $requiredKeys = array('twitter_consumer_key','twitter_consumer_secret', 'twitter_oauth_token', 'twitter_oauth_token_secret');
+    //     $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
+    //     // Codebird initialization
+    //     \Codebird\Codebird::setConsumerKey($socialSettings['twitter_consumer_key'], $socialSettings['twitter_consumer_secret']);
+    //     $cb = \Codebird\Codebird::getInstance();
+    //     $cb->setToken($socialSettings['twitter_oauth_token'], $socialSettings['twitter_oauth_token_secret']);
+    //     return $cb;
+    // }
 
     /**
      * Scan for extensions.

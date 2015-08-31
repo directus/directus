@@ -129,29 +129,23 @@ CREATE TABLE `directus_groups` (
   `name` varchar(100) DEFAULT NULL,
   `description` varchar(500) DEFAULT NULL,
   `restrict_to_ip_whitelist` tinyint(1) NOT NULL DEFAULT '0',
+  `show_activity` tinyint(1) NOT NULL DEFAULT '1',
+  `show_messages` tinyint(1) NOT NULL DEFAULT '1',
+  `show_users` tinyint(1) NOT NULL DEFAULT '1',
+  `show_files` tinyint(1) NOT NULL DEFAULT '1',
+  `nav_override` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `directus_groups` WRITE;
 /*!40000 ALTER TABLE `directus_groups` DISABLE KEYS */;
 
-INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`)
+INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `show_activity`, `show_messages`, `show_users`, `show_files`, `nav_override`)
 VALUES
-  (1,'Administrator',NULL,0);
+  (1,'Administrator',NULL,0,1,1,1,1,NULL);
 
 /*!40000 ALTER TABLE `directus_groups` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-# Dump of table directus_ip_whitelist
-# ------------------------------------------------------------
-
-CREATE TABLE `directus_ip_whitelist` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ip_address` varchar(250) DEFAULT NULL,
-  `description` varchar(250) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -210,38 +204,38 @@ CREATE TABLE `directus_preferences` (
 CREATE TABLE `directus_privileges` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `table_name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `permissions` varchar(500) CHARACTER SET latin1 DEFAULT NULL COMMENT 'Table-level permissions (insert, delete, etc.)',
   `group_id` int(11) NOT NULL,
   `read_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
   `write_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
-  `unlisted` tinyint(1) DEFAULT NULL,
-  `status_id` tinyint(1) NOT NULL DEFAULT 1,
+  `nav_listed` tinyint(1) DEFAULT '1' COMMENT '0=not listed in navs, 1=listed in navs',
+  `allow_view` tinyint(1) DEFAULT '1' COMMENT '0=no viewing, 1=view your records, 2=view everyones records',
+  `allow_add` tinyint(1) DEFAULT '1' COMMENT '0=no adding, 1=add records',
+  `allow_edit` tinyint(1) DEFAULT '1' COMMENT '0=no editing, 1=edit your records, 2=edit everyones records',
+  `allow_delete` tinyint(1) DEFAULT '1' COMMENT '0=no deleting, 1=delete your records, 2=delete everyones records',
+  `allow_alter` tinyint(1) DEFAULT '1' COMMENT '0=no altering, 1=allow altering',
+  `status_id` tinyint(1) NOT NULL DEFAULT NULL COMMENT 'NULL=permissions apply to records with any status, [0,1,2,etc]=permissions apply to records with this status',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `directus_privileges` WRITE;
 /*!40000 ALTER TABLE `directus_privileges` DISABLE KEYS */;
 
-INSERT INTO `directus_privileges` (`id`, `table_name`, `permissions`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `unlisted`)
+INSERT INTO `directus_privileges` (`id`, `table_name`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `nav_listed`, `allow_view`, `allow_add`, `allow_edit`, `allow_delete`, `allow_alter`, `status_id`)
 VALUES
-  (1,'directus_activity','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (2,'directus_columns','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (3,'directus_groups','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (4,'directus_files','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (5,'directus_messages','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (6,'directus_preferences','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (7,'directus_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (8,'directus_settings','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (9,'directus_tables','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (10,'directus_ui','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (11,'directus_users','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (12,'directus_ip_whitelist','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (13,'directus_social_feeds','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (14,'directus_messages_recipients','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (15,'directus_social_posts','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (16,'directus_storage_adapters','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (17,'directus_tab_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (18,'directus_bookmarks','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL);
+  (1,'directus_activity',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (2,'directus_columns',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (3,'directus_groups',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (4,'directus_files',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (5,'directus_messages',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (6,'directus_preferences',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (7,'directus_privileges',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (8,'directus_settings',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (9,'directus_tables',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (10,'directus_ui',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (11,'directus_users',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (12,'directus_messages_recipients',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (13,'directus_storage_adapters',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (14,'directus_bookmarks',1,NULL,NULL,1,2,1,2,2,1,NULL);
 
 /*!40000 ALTER TABLE `directus_privileges` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -265,8 +259,8 @@ LOCK TABLES `directus_settings` WRITE;
 INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
 VALUES
   (1,'global','cms_user_auto_sign_out','60'),
-  (3,'global','site_name','Directus'),
-  (4,'global','site_url','http://examplesite.dev/'),
+  (3,'global','project_name','Directus'),
+  (4,'global','project_url','http://examplesite.dev/'),
   (5,'global','cms_color','#7ac943'),
   (6,'global','rows_per_page','200'),
   (7,'files','storage_adapter','FileSystemAdapter'),
@@ -276,44 +270,11 @@ VALUES
   (11,'files','thumbnail_quality','100'),
   (12,'files','thumbnail_size','200'),
   (13,'global','cms_thumbnail_url',''),
-  (14,'files','file_file_naming','file_id'),
-  (15,'files','file_title_naming','file_name'),
-  (16,'files','thumbnail_crop_enabled','1');
+  (14,'files','file_naming','file_id'),
+  (15,'files','thumbnail_crop_enabled','1');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-# Dump of table directus_social_feeds
-# ------------------------------------------------------------
-
-CREATE TABLE `directus_social_feeds` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `type` tinyint(2) NOT NULL COMMENT 'Twitter (1), Instagram (2)',
-  `last_checked` datetime DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `foreign_id` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `data` text CHARACTER SET latin1 NOT NULL COMMENT 'Feed metadata. JSON format.',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table directus_social_posts
-# ------------------------------------------------------------
-
-CREATE TABLE `directus_social_posts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `feed` int(11) NOT NULL COMMENT 'The FK ID of the feed.',
-  `datetime` datetime NOT NULL COMMENT 'The date/time this entry was published.',
-  `foreign_id` varchar(55) CHARACTER SET latin1 NOT NULL,
-  `data` text CHARACTER SET latin1 NOT NULL COMMENT 'The API response for this entry, excluding unnecessary feed metadata, which is stored on the directus_social_feeds table.',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `feed` (`feed`,`foreign_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 
 # Dump of table directus_storage_adapters
@@ -342,18 +303,6 @@ VALUES
 
 /*!40000 ALTER TABLE `directus_storage_adapters` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-# Dump of table directus_tab_privileges
-# ------------------------------------------------------------
-
-CREATE TABLE `directus_tab_privileges` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) DEFAULT NULL,
-  `tab_blacklist` varchar(500) DEFAULT NULL,
-  `nav_override` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -401,11 +350,11 @@ CREATE TABLE `directus_ui` (
   `value` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique` (`table_name`,`column_name`,`ui_name`,`name`)
-  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
 VALUES
   ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Dump of table directus_users
 # ------------------------------------------------------------
@@ -430,7 +379,6 @@ CREATE TABLE `directus_users` (
   `group` int(11) DEFAULT NULL,
   `avatar` varchar(500) DEFAULT NULL,
   `avatar_file_id` int(11) DEFAULT NULL,
-  `avatar_is_file` tinyint(1) DEFAULT 0,
   `location` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,

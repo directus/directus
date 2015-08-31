@@ -286,11 +286,9 @@ define(function(require, exports, module) {
     canDelete: function() {
       var iAmTheOwner = this.isMine(),
           canDelete = this.collection.hasPermission('delete'),
-          canBigdelete = this.collection.hasPermission('bigdelete'),
-          canHardDelete = this.collection.hasPermission('harddelete'),
-          canBigHardDelete = this.collection.hasPermission('bigharddelete');
+          canBigdelete = this.collection.hasPermission('bigdelete');
 
-      return (!iAmTheOwner && canBigdelete) || (iAmTheOwner && canDelete) || (!iAmTheOwner && canBigHardDelete) || (iAmTheOwner && canHardDelete);
+      return (!iAmTheOwner && canBigdelete) || (iAmTheOwner && canDelete);
     },
 
     toJSON: function(options, noNest) {
@@ -360,9 +358,19 @@ define(function(require, exports, module) {
       });
     },
 
+    clone: function() {
+      return new this.constructor(this.attributes, {
+        collection: this.collection,
+        table: this.table
+      });
+    },
+
     // we need to do this because initialize is called AFTER parse.
     constructor: function EntriesModel(data, options) {
       // inherit structure and table from collection if it exists
+      //@todo: it needs a fallback or throw an exception
+      // when options (collection) is not defined.
+      options || (options = {});
       this.structure = options.collection ? options.collection.structure : options.structure;
       this.table = options.collection ? options.collection.table : options.table;
       this.privileges = options.collection ? options.collection.privileges : options.privileges;

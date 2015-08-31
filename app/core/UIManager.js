@@ -66,6 +66,8 @@ define(function(require, exports, module) {
   // Attach all methods to the UIManager prototype.
   module.exports = {
 
+    validSections: ['list', 'value', 'sort'],
+
     setup: function() {
       //Register default UI's
       this.register(defaultUis);
@@ -177,15 +179,15 @@ define(function(require, exports, module) {
       return this.getList(model, attr, true);
     },
 
-    // Finds the UI for the model/attribute and
-    // returns a string containing the table view
-    getList: function(model, attr, noDefault) {
-      var collection = model.collection;
-      var defaultValue = '<span class="secondary-info">--</span>';
-      // Return true or false whether there's value or not (UI)
-      // Instead of returning the default HTML
-      // https://github.com/RNGR/Directus/issues/452
-      var returnDefaultValue = true === noDefault ? true : false;
+    hasValue: function(model, attr) {
+      return this.getValue(model, attr, true);
+    },
+
+    hasSortValue: function(model, attr) {
+      return this.getSortValue(model, attr) || this.getValue(model, attr);
+    },
+
+    getUIByModel: function(model, attr, defaultValue) {
       // @TODO: we need to make this getStructure available to our base model
       var structure;
       if (typeof model.getStructure === 'function') {
@@ -199,11 +201,32 @@ define(function(require, exports, module) {
         UI = schema ? this._getModelUI(model, attr, schema) : undefined;
       }
 
+      if (typeof UI === 'undefined') {
+        return false;
+      }
+
+      return {
+        UI: UI,
+        schema: schema
+      };
+    },
+
+    // Finds the UI for the model/attribute and
+    // returns a string containing the table view
+    getUIValue: function(section, model, attr, noDefault) {
+      var section = _.contains(this.validSections, section) ? section : 'list';
+      var defaultValue = '<span class="secondary-info">--</span>';
+      // Return true or false whether there's value or not (UI)
+      // Instead of returning the default HTML
+      // https://github.com/RNGR/Directus/issues/452
+      var returnDefaultValue = true === noDefault ? true : false;
+
+      var UIObject = this.getUIByModel(model, attr);
       // If there is no UI, return just text
-      if (UI === undefined) {
+      if (UIObject == false) {
         var attribute = model.get(attr);
-        if(!attribute || attribute === "") {
-          if (!returnDefaultValue) {
+        if (!attribute || attribute === "") {
+          if (!defaultValue) {
             return false;
           }
           attribute = defaultValue;
@@ -211,23 +234,34 @@ define(function(require, exports, module) {
         return attribute;
       }
 
-      var list = UI.list({
-          model: model,
-          collection: collection,
-          settings: schema.options,
-          schema: schema,
-          value: model.get(attr),
-          tagName: 'td'
-      });
+      var UIOptions = {
+        model: model,
+        collection: model.collection,
+        settings: UIObject.schema.options,
+        schema: UIObject.schema,
+        value: model.get(attr),
+        tagName: 'td'
+      };
 
-      if(!list || list === "") {
-        if (!returnDefaultValue) {
-          return false;
-        }
-        list = defaultValue;
+      var value = _.has(UIObject.UI, section) ? UIObject.UI[section](UIOptions) : UIObject.UI.list(UIOptions);
+
+      if ((!value || value === "") && returnDefaultValue) {
+        value = defaultValue;
       }
 
-      return list;
+      return value;
+    },
+
+    getSortValue: function(model, attr, noDefault) {
+      return this.getUIValue('sort', model, attr, noDefault);
+    },
+
+    getValue: function(model, attr, defaultValue) {
+      return this.getUIValue('value', model, attr, noDefault);
+    },
+
+    getList: function(model, attr, noDefault) {
+      return this.getUIValue('list', model, attr, noDefault);
     },
 
     // Finds the UI for the provided model/attribute and

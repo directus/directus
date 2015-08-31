@@ -70,6 +70,7 @@ define(['moment'], function(moment) {
       'CSS',
       'SKU',
       'DateTime',
+      'ISO',
       'RNGR',
       'CC',
       'CCV'

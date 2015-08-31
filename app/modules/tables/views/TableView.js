@@ -112,6 +112,13 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
     afterRender: function() {
       this.setView('#page-content', this.table);
       this.tryFetch();
+
+      // Listen to preferences sync after the first sync
+      this.listenToOnce(this.collection.preferences, 'sync', function() {
+        this.listenTo(this.collection.preferences, 'sync', function() {
+          app.trigger('tables:preferences', this, this.collection);
+        });
+      });
     },
 
     initialize: function() {

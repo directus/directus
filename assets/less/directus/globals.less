@@ -65,7 +65,8 @@
 
 .directus-modal-backdrop {
   z-index: 998;
-  background-color: rgba(255,255,255,0.9);
+  background-color: @lightGrey;
+  opacity: 0.9;
   width: 100%;
   height: 100%;
   position: fixed;
@@ -89,8 +90,8 @@
   font-size: 14px;
   font-weight: 600;
   z-index: 110;
-  .border-radius(3px, 3px, 3px, 3px);
-  box-shadow: 0 0 20px fade(@extraDarkGrey, 30%);
+  //.border-radius(3px, 3px, 3px, 3px);
+  box-shadow: 0 2px 6px @mediumGrey;
   -webkit-font-smoothing: antialiased;
   .directus-alert-modal-message {
     padding-bottom: 20px;
@@ -143,6 +144,7 @@
   }
 }
 .large-circle {
+  .transition;
   .border-radius(50px, 50px, 50px, 50px);
   background-color: @white;
   color: @mediumGrey;
@@ -159,6 +161,9 @@
     // -webkit-box-shadow: 0px 0px 10px 3px rgba(255,255,255,0.6);
     // -moz-box-shadow: 0px 0px 10px 3px rgba(255,255,255,0.6);
     // box-shadow: 0px 0px 10px 3px rgba(255,255,255,0.6);
+    -ms-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
   }
   .icon {
     display: inline-block;
@@ -249,9 +254,6 @@ a.secondary-info {
 .yellow-color {
   color: @systemColor;
 }
-.hard-color {
-  color: #0F76C0;  // @TODO: needs variable
-}
 .bold {
   font-weight: 600;
   -webkit-font-smoothing: antialiased;
@@ -290,9 +292,10 @@ img.grayscale {
 //  CONTAINERS
 ////////////
 .main-container {
+  .transition (all, 400ms, ease-in-out);
   .clear-fix;
   margin-left: @standardSidebarWidth;
-  padding: 0px 80px;
+  padding: 0px 40px;
   position: relative;
   right: 0px;
 }
@@ -308,8 +311,13 @@ img.grayscale {
 }
 .nothing-here {
   text-align: center;
-  margin-top: 150px;
+  margin-top: 200px;
   line-height: 35px;
+  h1 {
+    color: @white;
+    font-size: 50px;
+    line-height: 60px;
+  }
 }
 .media-thumb {
   .img.portrait { height: 50px; }

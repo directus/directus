@@ -18,7 +18,7 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 

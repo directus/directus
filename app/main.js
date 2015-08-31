@@ -49,7 +49,7 @@ require(["config"], function() {
         files: {}
       },
       storage_adapters: {},
-      tab_privileges: {},
+      // tab_privileges: {},
       preferences: [],
       tables: [],
       nonces: {
@@ -230,21 +230,19 @@ require(["config"], function() {
       // Setup Bookmarks
       ////////////////////////////////////////////////////////////////////////////////////
       var bookmarks = [];
+
       options.tables.forEach(function(table) {
         table = table.schema;
-
-        if(SchemaManager.getPrivileges(table.table_name) && SchemaManager.getPrivileges(table.table_name).get('permissions')) {
-        var permissions = SchemaManager.getPrivileges(table.table_name).get('permissions').split(',');
-        if(permissions.indexOf('view') !== -1 || permissions.indexOf('bigview') !== -1) {
-          if(!table.hidden) {
+        if(SchemaManager.getPrivileges(table.table_name)) {
+        var privileges = SchemaManager.getPrivileges(table.table_name);
+        if(privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
             bookmarks.push(new Backbone.Model({
               icon_class: '',
               title: app.capitalize(table.table_name),
-              url: 'tables/' + table.table_name,
+              url: 'tables/' + encodeURIComponent(table.table_name),
               section: 'table'
             }));
           }
-        }
         }
       });
 
@@ -261,20 +259,22 @@ require(["config"], function() {
         bookmarks.push(new Backbone.Model({
           icon_class: item.icon,
           title: item.title,
-          url: item.id,
+          url: encodeURIComponent(item.id),
           section: 'extension'
         }));
       });
 
-      // Grab tab permissions from DB
-      var tabPrivileges = options.tab_privileges;
-      var tabBlacklist = (tabPrivileges.tab_blacklist || '').split(',');
+      // Grab nav permissions
+      var currentUserGroupId = app.users.getCurrentUser().get('group').get('id');
+      var currentUserGroup = app.groups.get(currentUserGroupId);
+      var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',');
 
       // Custom Bookmarks Nav
       var customBookmarks = [];
-      if (tabPrivileges.nav_override !== false) {
-        for(var section in tabPrivileges.nav_override) {
-          var sectionItems = tabPrivileges.nav_override[section];
+      if (currentUserGroup.get('nav_override') !== false) {
+        for (var section in currentUserGroup.get('nav_override')) {
+          var sectionItems = currentUserGroup.get('nav_override')[section]
+          // @todo: check this is not a string, but a valid object.
           for(var item in sectionItems) {
             var path = sectionItems[item].path || '';
             customBookmarks.push(new Backbone.Model({
@@ -297,7 +297,7 @@ require(["config"], function() {
 
       // Filter out blacklisted bookmarks (case-sensitive)
       bookmarks = _.filter(bookmarks, function(bookmark) {
-        return !_.contains(tabBlacklist, bookmark.attributes.title);
+        return !_.contains(navBlacklist, bookmark.attributes.title);
       });
 
       // Turn into collection
@@ -377,7 +377,17 @@ require(["config"], function() {
         sync(method, model, options);
       };
 
-      //Cancel default file drop
+      // Toggle responsive navigation
+      $(document).on("click", ".responsive-nav-toggle", function(e) {
+        $('#main').toggleClass('sidebar-active');
+      });
+
+      // Close sidebar when clicking
+      $(document).on("click", "#sidebar", function(e) {
+        $('#main').removeClass('sidebar-active');
+      });
+
+      // Cancel default file drop
       $(document).on('drop dragover', function(e) {
         e.preventDefault();
       });
@@ -406,28 +416,32 @@ require(["config"], function() {
 
       // Capture sync errors...
       $(document).ajaxError(function(e, xhr) {
-        var type, message, details;
+        var type, messageTitle, messageBody, details;
         if(xhr.statusText == "abort") {
           return;
         }
         switch(xhr.status) {
           case 403:
             // var response = $.parseJSON(xhr.responseText);
-            message = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
-            app.trigger("alert:error", "Restricted Access", message, true);
+            messageTitle = 'Restricted Access';
+            // messageBody = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
+            details = true;
             break;
           default:
             type = 'Server ' + xhr.status;
-            message = "Server Error";
+            messageTitle = "Server Error";
             details = encodeURIComponent(xhr.responseText);
-            app.logErrorToServer(type, message, details);
-            if(xhr.responseJSON) {
-              app.trigger("alert:error", "Server Error", xhr.responseJSON.message);
-            } else {
-              app.trigger("alert:error", "Server Error", xhr.responseText);
-            }
+            app.logErrorToServer(type, messageTitle, details);
             break;
         }
+
+        if(xhr.responseJSON) {
+          messageBody = xhr.responseJSON.message;
+        } else {
+          messageBody = xhr.responseText;
+        }
+
+        app.trigger('alert:error', messageTitle, messageBody, details)
       });
 
       // And js errors...
@@ -471,7 +485,7 @@ require(["config"], function() {
       });
 
 
-      app.router = new Router({extensions: extensions, tabs: tabs, tabPrivileges: options.tab_privileges});
+      app.router = new Router({extensions: extensions, tabs: tabs, navPrivileges: app.users.getCurrentUser().get('group')});
 
       // Trigger the initial route and enable HTML5 History API support, set the
       // root folder to '/' by default.  Change in app.js.
@@ -482,12 +496,16 @@ require(["config"], function() {
       // attribute, bypass the delegation completely.
       $(document).on("click", "a[href]:not([data-bypass])", function(evt) {
         // Get the absolute anchor href.
-        var href = { prop: $(this).prop("href"), attr: $(this).attr("href") };
+        var href = {
+          prop: $(this).prop('href'),
+          attr: $(this).attr('href'),
+          target: $(this).attr('target')
+        };
         // Get the absolute root.
         var root = location.protocol + "//" + location.host + app.root;
 
         // Ensure the root is part of the anchor href, meaning it's relative.
-        if (href.prop.slice(0, root.length) === root) {
+        if (href.prop.slice(0, root.length) === root && href.target != '_BLANK') {
           // Stop the default event to ensure the link will not cause a page
           // refresh.
           evt.preventDefault();
@@ -509,6 +527,13 @@ require(["config"], function() {
 
       var toolTip = new ToolTip();
       toolTip.render();
+
+      $(document).on('click', '.toggle-help-text', function(event) {
+        var text = $(this).data('help-text');
+        if (text) {
+          app.router.openModal({type: 'alert', text: text});
+        }
+      });
 
     });
 

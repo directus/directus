@@ -438,7 +438,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var column = this.collection.get(id);
       var model = column.options;
       model.set({id: column.get('ui')});
-
       var schema = app.schemaManager.getColumns('ui', model.id);
       var view = new EditColumn({model: model, schema: schema});
       app.router.overlayPage(view);
@@ -582,7 +581,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     headerOptions: {
       route: {
         title: 'Classes',
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables+Inputs', anchor: '#settings/tables'}]
+        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables &amp; Inputs', anchor: '#settings/tables'}]
       }
     },
 
@@ -614,7 +613,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
 
       if(!data.primary_column) {
-        app.router.openModal({type: 'alert', text: 'Please Select A Primary Column', callback: function(tableName) {
+        app.router.openModal({type: 'alert', text: 'Please choose a primary column:', callback: function(tableName) {
         }});
         return;
       }
@@ -652,7 +651,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var afterModelIndex = currentModelIndex-1;
       var tbody = this.$el.find('tbody');
       var tableId = model.id || false;
-      
+
       if (tableId) {
         var currentRow = tbody.find('[data-id="'+tableId+'"]');
         var afterRow = tbody.find('tr:eq('+afterModelIndex+')');
@@ -676,10 +675,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       // filter out tables with empty privileges
       if (privileges === undefined) return false;
 
-      var permissions = privileges.get('permissions').split(',');
-
       // only return tables with view permissions
-      return _.contains(permissions, 'bigview');
+      return privileges.has('allow_view') && privileges.get('allow_view') > 0;
     },
 
     flashItem: function(entryID, bodyScrollTop) {
@@ -757,7 +754,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
   SettingsTables.Views.List = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Tables+Inputs',
+        title: 'Tables &amp; Inputs',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
     },
@@ -782,32 +779,62 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     addTableConfirmation: function() {
-      app.router.openModal({type: 'prompt', text: 'Please enter the name of the table you would like to add', callback: _.bind(this.addTable, this)});
+      app.router.openModal({type: 'prompt', text: 'What would you like to name this table?', callback: _.bind(this.addTable, this)});
     },
 
     addTable: function(tableName) {
-      if(tableName && !app.schemaManager.getPrivileges(tableName)) {
-        // @TODO: make this save a table info rather than permissions.
-        var that = this;
-        var model = new Backbone.Model();
-        model.url = app.API_URL + 'privileges/1';
-        model.set({group_id: 1, permissions: 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', table_name: tableName, addTable: true});
-        model.save({}, {success: function(model){
-          var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
-          tableModel.fetch({
-            success: function(model) {
-              that.registerTable(model);
-            }
-          });
-        }});
+      // @TODO: better error message.
+      if (!tableName) {
+        app.trigger('alert:error', 'Empty Table name.', '', true, {
+          timeout: 5000
+        });
+        return;
       }
+
+      // Make sure it's an alphanumeric table name
+      // and it has at least one character or one number
+      if (!(/[a-z0-9]+/i.test(tableName) && /[_-]*/i.test(tableName))) {
+        app.trigger('alert:error',
+                    'You must enter an valid table name.',
+                    'Letters (A-Z), Numbers and/or underscores and dashes',
+                    true, {
+          timeout: 5000
+        });
+        return;
+      }
+
+      if (app.schemaManager.getPrivileges(tableName)) {
+        app.trigger('alert:error', 'Error', 'This table Already exists BITCH!', true, {
+          timeout: 5000
+        });
+        return;
+      }
+
+      // @TODO: make this save a table info rather than permissions.
+      var that = this;
+      var model = new Backbone.Model();
+      model.url = app.API_URL + 'privileges/1';
+      // @todo: set default values in the server side
+      model.set({group_id: 1, allow_add:1, allow_edit:2, allow_delete:2, allow_alter:1, allow_view:2, table_name: tableName, addTable: true});
+      model.save({}, {success: function(model){
+        var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
+        tableModel.fetch({
+          success: function(model) {
+            that.registerTable(model);
+          }
+        });
+      }});
     },
 
     registerTable: function(tableModel) {
       app.schemaManager.register('tables', [{schema: tableModel.toJSON()}]);
       app.schemaManager.registerPrivileges([{
         table_name: tableModel.get('table_name'),
-        permissions: "add,edit,bigedit,delete,bigdelete,alter,view,bigview",
+        allow_add:1,
+        allow_edit:2,
+        allow_delete:2,
+        allow_alter:1,
+        allow_view:2,
         group_id: app.getCurrentGroup()
       }]);
       app.schemaManager.registerPreferences([tableModel.preferences.toJSON()]);

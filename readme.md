@@ -26,7 +26,7 @@ We're currently a very small team looking to grow our network of contributors. I
 View the Directus documentation here:
 
 
-[GitHub Wiki](https://github.com/RNGR/directus6/wiki)
+[GitHub Wiki](https://github.com/RNGR/Directus/wiki)
 
 1. [Installation & Configuration](https://github.com/RNGR/Directus/wiki/1.-Installation-&-Configuration)
 2. [Settings & Customization](https://github.com/RNGR/Directus/wiki/2.-Settings-&-Customization)
@@ -41,7 +41,7 @@ View the Directus documentation here:
 
 Discovered a bug? Please create an issue here on GitHub!
 
-https://github.com/RNGR/directus6/issues
+https://github.com/RNGR/Directus/issues
 
 ## Requirements ##
 Apache HTTP Server, PHP 5.5+, MySQL 5.2+, PDO_MySQL, Mod_Rewrite, CURL, GD Library — and optionally: mcrypt and Imagick

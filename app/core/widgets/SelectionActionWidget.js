@@ -28,7 +28,7 @@ function(app, Backbone) {
         var value = $(e.target).closest('span').attr('data-value');
         if(value == 0) {
           var that = this;
-          app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system.', callback: function() {
+          app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system!', callback: function() {
             that.doAction(e);
           }});
         } else {
@@ -94,31 +94,36 @@ function(app, Backbone) {
 
     serialize: function() {
       var data = this.options.widgetOptions;
-      var canHardDelete = this.collection.hasPermission('harddelete') || this.collection.hasPermission('bigharddelete');
-      var canSoftDelete = this.collection.hasPermission('delete') || this.collection.hasPermission('bigdelete');
-      var hasStatus = this.collection.table.columns.get(app.statusMapping.status_name);
-      
-      if (hasStatus) {
-        var mapping = app.statusMapping.mapping;
-        data.mapping = [];
-        for(var key in mapping) {
-          if(key==app.statusMapping.deleted_num && !canHardDelete && !canSoftDelete) continue;
-          
-          var entry = mapping[key];
-          entry.id = key;
-          data.mapping.push(entry);
+      var canDelete = this.collection.hasPermission('delete') || this.collection.hasPermission('bigdelete');
+      var hasStatusColumn = this.collection.table.columns.get(app.statusMapping.status_name);
+
+      var mapping = app.statusMapping.mapping;
+      data.mapping = [];
+      for (var key in mapping) {
+        // if there's not permission to delete, we skip delete
+        if (!canDelete && key==app.statusMapping.deleted_num) {
+          continue;
+        }
+
+        // if there's not status column we skip everything but delete
+        if (!hasStatusColumn && key != app.statusMapping.deleted_num) {
+          continue;
         }
         
-        data.mapping.sort(function(a, b) {
-          if(a.sort < b.sort) {
-            return -1;
-          }
-          if(a.sort > b.sort) {
-            return 1;
-          }
-          return 0;
-        });
+        var entry = mapping[key];
+        entry.id = key;
+        data.mapping.push(entry);
       }
+
+      data.mapping.sort(function(a, b) {
+        if(a.sort < b.sort) {
+          return -1;
+        }
+        if(a.sort > b.sort) {
+          return 1;
+        }
+        return 0;
+      });
 
       return this.options.widgetOptions;
     },

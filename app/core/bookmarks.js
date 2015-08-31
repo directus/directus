@@ -29,13 +29,16 @@ function(app, Backbone, EntriesManager) {
       if(a.get('title') > b.get('title')) return 1;
       return 0;
     },
-    setActive: function(route) {
+    setActive: function(route, pref) {
       //deactive all tabs
       var activeModel;
+      var prefSuffix = _.isString(pref) ? '/pref/' + pref : '';
+      var found = false;
       _.each(this.models, function(model) {
         model.unset('active_bookmark', {silent: true});
-        if(route.indexOf(model.get('url')) === 0) {
+        if((route + prefSuffix).indexOf(model.get('url')) === 0 && !found) {
           activeModel = model;
+          found = true;
         }
       });
 
@@ -76,6 +79,7 @@ function(app, Backbone, EntriesManager) {
     },
 
     events: {
+      'click #saveSnapshotBtn': 'saveSnapshot',
       'click .remove-snapshot': function(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -91,7 +95,7 @@ function(app, Backbone, EntriesManager) {
           }
           if(title && table) {
             var that = this;
-            app.router.openModal({type: 'confirm', text: 'Delete the Bookmark: "' + title + '"?', callback: function() {
+            app.router.openModal({type: 'confirm', text: 'Delete the bookmark "' + title + '"?', callback: function() {
               var bookmarkModel = that.collection.findWhere({title: title});
               if (bookmarkModel) {
                 bookmarkModel.destroy();
@@ -104,12 +108,83 @@ function(app, Backbone, EntriesManager) {
       }
     },
 
+    saveSnapshot: function() {
+      var that = this;
+      app.router.openModal({type: 'prompt', text: 'What would you like to name this bookmark?', callback: function(name ) {
+        if(name === null || name === "") {
+          alert('Please Fill In a Valid Name');
+          return;
+        }
+
+        var currentCollection = app.router.currentCollection;
+        if (typeof currentCollection !== 'undefined') {
+          //Save id so it can be reset after render
+          var defaultId = currentCollection.preferences.get('id');
+          that.listenToOnce(currentCollection.preferences, 'sync', function() {
+            if(defaultId) {
+              currentCollection.preferences.set({title:null, id: defaultId});
+            }
+          });
+
+          var schema = app.schemaManager.getFullSchema( currentCollection.table.id );
+          var preferences = schema.preferences;
+          preferences.unset('id');
+          // Unset Id so that it creates new Preference
+          preferences.set({title: name});
+          preferences.save();
+        }
+
+        that.pinSnapshot(name);
+      }});
+    },
+
+    pinSnapshot: function(title) {
+      var data = {
+        title: title,
+        url: Backbone.history.fragment + "/pref/" + encodeURIComponent(title),
+        icon_class: 'icon-search',
+        user: app.users.getCurrentUser().get("id"),
+        section: 'search'
+      };
+      if(!app.getBookmarks().isBookmarked(data.title)) {
+        app.getBookmarks().addNewBookmark(data);
+      }
+    },
+
     serialize: function() {
       var bookmarks = {table:[],search:[],extension:[],other:[]};
       var isCustomBookmarks = this.isCustomBookmarks;
 
       this.collection.each(function(model) {
         var bookmark = model.toJSON();
+        var currentUserGroup = app.users.getCurrentUser().get('group');
+        // force | remove from activity from navigation
+        if (bookmark.title === 'Activity') return false;
+
+        // skip system nav to an user
+        // if the user's group aren't allow to
+        // see it on the navigation panel
+        var skipSystemNav = false;
+        // @todo: bookmark.title to id or url.
+        switch (bookmark.title) {
+          case 'Activity':
+            skipSystemNav = currentUserGroup.get('show_activity') === 0 ? true : false;
+            break;
+          case 'Files':
+            skipSystemNav = currentUserGroup.get('show_files') === 0 ? true : false;
+            break;
+          case 'Users':
+            skipSystemNav = currentUserGroup.get('show_users') === 0 ? true : false;
+            break;
+          case 'Messages':
+            skipSystemNav = currentUserGroup.get('show_messages') === 0 ? true : false;
+            break;
+        }
+
+        if (skipSystemNav) {
+          return false;
+        }
+
         if(bookmarks[bookmark.section]) {
           bookmarks[bookmark.section].push(bookmark);
         } else if(isCustomBookmarks) {
@@ -170,9 +245,18 @@ function(app, Backbone, EntriesManager) {
           this.render();
         }
       }, this);
+
+      // @todo: make this global application events cleaner
+      var self = this;
+      app.on('tables:preferences', function(widget, collection) {debugger;
+        if (app.router.loadedPreference) {
+          app.router.loadedPreference = undefined;
+          self.setActive('tables/' + collection.table.id);
+        }
+      });
     },
-    setActive: function(route) {
-      this.collection.setActive(route);
+    setActive: function(route, pref) {
+      this.collection.setActive(route, pref);
       this.render();
     }
 

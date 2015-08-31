@@ -2,63 +2,222 @@
 //////////////////////////////////////////////////////////////////////////////
 // Small Desktop
 
+@hamburger-height: 7px;
+
+@keyframes tox-1-on {
+    0%   {left:0px; top:0px;}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
+}
+@keyframes tox-2-on {
+    0%   {left:0px; top:@hamburger-height*1;}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
+}
+@keyframes tox-3-on {
+    0%   {left:0px; top:@hamburger-height*2;}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(-45deg);}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Off
+
+@keyframes tox-1-off {
+    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:0px;}
+}
+@keyframes tox-2-off {
+    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*1;}
+}
+@keyframes tox-3-off {
+    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(-45deg);}
+    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:@hamburger-height*2;}
+}
+
 @media only screen and (max-width : 800px) {
+	#main.sidebar-active {
+		#sidebar {
+			left: 0 !important;
+		}
+		.main-container {
+			margin-left: @standardSidebarWidth;
+		}
+		.responsive-nav-toggle {
+			.line-1 {
+				animation-name: tox-1-on;
+				-webkit-animation-name: tox-1-on;
+			}
+			.line-2 {
+				animation-name: tox-2-on;
+				-webkit-animation-name: tox-2-on;
+			}
+			.line-3 {
+				animation-name: tox-3-on;
+				-webkit-animation-name: tox-3-on;
+			}
+		}
+	}
+	.responsive-nav-toggle {
+		position: relative;
+		display: inline-block;
+		width: 30px;
+		height: @hamburger-height*3;
+		float: left;
+		margin-top: @hamburger-height;
+		margin-right: 20px;
+		cursor: pointer;
+		&:hover .hamburger-line {
+			background-color: @darkGrey;
+		}
+		// &.active .line-1 {
+		// 	animation-name: tox-1-on;
+		// 	-webkit-animation-name: tox-1-on;
+		// }
+		// &.active .line-2 {
+		// 	animation-name: tox-2-on;
+		// 	-webkit-animation-name: tox-2-on;
+		// }
+		// &.active .line-3 {
+		// 	animation-name: tox-3-on;
+		// 	-webkit-animation-name: tox-3-on;
+		// }
+		.hamburger-line {
+			position: absolute;
+			background-color: @mediumGrey;
+			height: 2px;
+			width: 30px;
+
+			@tox-duration: 600ms;
+
+			animation-duration: @tox-duration;
+			-webkit-animation-duration: @tox-duration;
+			-webkit-animation-iteration-count: 1;
+			animation-fill-mode: forwards;
+			-webkit-animation-fill-mode: forwards;
+
+			transform: rotateZ(0deg);
+			-webkit-transition: @tox-duration ease-in-out;
+			-moz-transition: @tox-duration ease-in-out;
+			-o-transition: @tox-duration ease-in-out;
+			transition: @tox-duration ease-in-out;
+		}
+		.line-1 {
+			top: 0;
+			left: 0px;
+			animation-name: tox-1-off;
+			-webkit-animation-name: tox-1-off;
+		}
+		.line-2 {
+			top: 5px;
+			left: 0px;
+			animation-name: tox-2-off;
+			-webkit-animation-name: tox-2-off;
+		}
+		.line-3 {
+			top: 10px;
+			left: 0px;
+			animation-name: tox-3-off;
+			-webkit-animation-name: tox-3-off;
+		}
+	}
 	#sidebar {
-		width: 60px;
-		.directusLogo {
-			height: 55px !important;
-			font-size: 22px;
-			padding: 5px 0 0 0;
-		}
-		#mainLogoBox {
-			height: auto;
-		}
-		.unread-color {
-			margin-left: -4px;
-		}
-		// Hide sub-items in sidebar
-		.sidebar-subitem {
-			display: none;
-		}
-		.sidebar-label {
-			display: none;
-		}
-		#mainSidebar {
-			top: 70px;
-			.sidebar-extension,
-			.sidebar-section {
-				margin: 0;
-			}
-			li {
-				height: 31px;
-				margin-bottom: 4px;
-				&.hr {
-					display: none;
-				}
-				a {
-					height: 12px;
-				}
-				.icon {
-					font-size: 400%;
-					margin-left: 5px;
-				}
-			}
-		}
-		#featureSidebar {
-			padding: 0px 10px 10px 10px;
-			li {
-				width: 40px;
-				height: 40px;
-				.icon {
-					font-size: 40px;
-					line-height: 3px;
-					margin-left: -9px;
+		left: -@standardSidebarWidth !important;
+	}
+	.cards {
+		.card {
+			width: 150px;
+			.header-image {
+				width: 150px;
+				height: 150px;
+				img {
+					width: 150px !important;
+					height: 150px !important;
 				}
 			}
 		}
 	}
+	.set-columns {
+		top: 125px !important;
+		right: 20px !important;
+	}
+  	// #fixedHeader.active {
+  	// 	left: 170px;
+  	// }
+	// #sidebar {
+	// 	width: 60px;
+	// 	.directusLogo {
+	// 		height: 55px !important;
+	// 		font-size: 22px;
+	// 		padding: 5px 0 0 0;
+	// 	}
+	// 	#mainLogoBox {
+	// 		height: auto;
+	// 		margin-top: 17px;
+	// 	}
+	// 	.unread-color {
+	// 		margin-left: -4px;
+	// 	}
+	// 	// Hide sub-items in sidebar
+	// 	.sidebar-subitem {
+	// 		display: none;
+	// 	}
+	// 	.sidebar-group {
+	// 		display: none;
+	// 	}
+	// 	.sidebar-label {
+	// 		display: none;
+	// 	}
+	// 	#mainSidebar {
+	// 		top: 70px;
+	// 		overflow: hidden;
+	// 		.sidebar-extension,
+	// 		.sidebar-section {
+	// 			margin: 0;
+	// 		}
+	// 		.responsive-nav {
+	// 			display: block;
+	// 		}
+	// 		li {
+	// 			height: 31px;
+	// 			margin-bottom: 4px;
+	// 			&.hr {
+	// 				display: none;
+	// 			}
+	// 			a {
+	// 				height: 12px;
+	// 			}
+	// 			.icon {
+	// 				font-size: 400%;
+	// 				margin-left: 5px;
+	// 			}
+	// 		}
+	// 	}
+	// 	#featureSidebar {
+	// 		padding: 0px 0px 0px 0px;
+	// 		li {
+	// 			width: 60px;
+	// 			height: 60px;
+	// 			.icon {
+	// 				font-size: 50px;
+	// 				margin-left: -12px;
+ //  					margin-top: -12px;
+	// 			}
+	// 		}
+	// 		.icon.icon-cog {
+	// 			font-size: 50px;
+	// 			margin-left: -4px;
+	// 			margin-top: -3px;
+ //  				margin-bottom: 6px;
+	// 		}
+	// 	}
+	// }
 	.main-container {
-		margin-left: 60px;
+		margin-left: 0px;
 		padding: 0px 20px;
 		.header1 {
 			padding-top: 20px;
@@ -144,7 +303,7 @@
 			//width: 70%;
 			margin-left: 80px;
 			h2 {
-				margin-top: 10px;
+				margin-top: 15px;
 				white-space:nowrap;
 				text-overflow: ellipsis;
 				overflow: hidden;

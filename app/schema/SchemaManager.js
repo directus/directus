@@ -111,9 +111,9 @@ define(function(require, exports, module) {
         }
 
         // Set table schema
-        options.schema.url = this.apiURL + 'tables/' + tableName;
+        options.schema.url = this.apiURL + 'tables/' + encodeURIComponent(tableName);
 
-        var model = new TableModel(options.schema, {parse: true, url: this.apiURL + 'tables/' + tableName});
+        var model = new TableModel(options.schema, {parse: true, url: this.apiURL + 'tables/' + encodeURIComponent(tableName)});
         //model.url = this.apiURL + 'tables/' + tableName;
         //model.columns.url = this.apiURL + 'tables/' + tableName + '/columns';
 
@@ -152,7 +152,7 @@ define(function(require, exports, module) {
         {
           add = ":" + preference.title;
         }
-        preferences[preference.table_name + add] = new PreferenceModel(preference, {url: this.apiURL + 'tables/' + preference.table_name + '/preferences'});
+        preferences[preference.table_name + add] = new PreferenceModel(preference, {url: this.apiURL + 'tables/' + encodeURIComponent(preference.table_name) + '/preferences'});
       }, this);
     },
 
@@ -179,10 +179,10 @@ define(function(require, exports, module) {
       return privileges[tableName];
     },
 
-    updatePrivileges: function(tableName, permissions) {
+    updatePrivileges: function(tableName, attributes) {
       var tablePrivileges = this.getPrivileges(tableName);
       if(tablePrivileges) {
-        tablePrivileges.set('permissions', permissions);
+        tablePrivileges.set(attributes);
       }
     },
 

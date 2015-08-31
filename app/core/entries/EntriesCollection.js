@@ -63,13 +63,6 @@ define(function(require, exports, module) {
         result.columns_visible = this.filters.columns_visible;
       }
 
-      // very wierd hot-fix to hardcode the user table to always show status=1
-      // @todo make sure that preferences and filters follow the rules!
-      if ('directus_users' === this.table.id) {
-        // console.warn('Active users only');
-        result[app.statusMapping.status_name] =  app.statusMapping.active_num;
-      }
-
       return result;
     },
 
@@ -137,9 +130,18 @@ define(function(require, exports, module) {
     },
 
     hasPermission: function(permissionType) {
-      var permissions = this.privileges.get('permissions') || '';
-      var permissionsArray = permissions.split(',');
-      return _.contains(permissionsArray, permissionType);
+      var permissionLevel = 1;
+      var permissionName = permissionType;
+      if (permissionType.indexOf('big') === 0) {
+        permissionLevel = 2;
+        permissionName = permissionType.substr(3);
+      }
+
+      if (this.privileges.has('allow_' + permissionName) && permissionLevel <= this.privileges.get('allow_' + permissionName)) {
+        return true;
+      }
+
+      return false;
     },
 
     isWriteBlacklisted: function(attribute) {
