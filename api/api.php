@@ -705,9 +705,12 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
         $requestPayload['user'] = $currentUser['id'];
         $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
 
-        $Storage = new Files\Storage\Storage();
-        $recordData = $Storage->saveData($requestPayload['data'], $requestPayload['name']);
-        $recordData = array_merge($requestPayload, $recordData);
+        // When the file is uploaded there's not a data key
+        if (array_key_exists('data', $requestPayload)) {
+            $Storage = new Files\Storage\Storage();
+            $recordData = $Storage->saveData($requestPayload['data'], $requestPayload['name']);
+            $recordData = array_merge($requestPayload, $recordData);
+        }
         $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
         $params['id'] = $newRecord['id'];
         break;
