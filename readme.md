@@ -35,6 +35,9 @@ Discovered a bug? Please create an issue here on GitHub!
 
 https://github.com/RNGR/directus6/issues
 
+## Requirements ##
+Apache HTTP Server, PHP 5.5+, MySQL 5.2+, PDO_MySQL, Mod_Rewrite, CURL, GD Library — and optionally: mcrypt and Imagick
+
 ## Versioning ##
 For transparency and insight into our release cycle, releases will be numbered with the follow format:
 
