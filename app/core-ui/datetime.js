@@ -137,6 +137,10 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     return value;
   };
 
+  Module.sort = function(options) {
+    return options.value;
+  }
+
   return Module;
 
 });
