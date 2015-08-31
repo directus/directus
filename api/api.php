@@ -709,7 +709,7 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
         if (array_key_exists('data', $requestPayload)) {
             $Storage = new Files\Storage\Storage();
             $recordData = $Storage->saveData($requestPayload['data'], $requestPayload['name']);
-            $recordData = array_merge($requestPayload, $recordData);
+            $requestPayload = array_merge($requestPayload, $recordData);
         }
         $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
         $params['id'] = $newRecord['id'];
