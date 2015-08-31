@@ -21,8 +21,6 @@ We're currently a very small team looking to grow our network of contributors. I
 * Custom UIs
 * Custom extensions
 
-_Some compensation may be available based on your role and contributions._
-
 ## Documentation ##
 
 View the Directus documentation here:
