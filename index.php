@@ -33,7 +33,7 @@ if (!AuthProvider::loggedIn()) {
     if (strpos($request_uri, DIRECTUS_PATH) === 0) {
         $request_uri = substr($request_uri, strlen(DIRECTUS_PATH));
     }
-    $redirect = urlencode(trim($request_uri, '/'));
+    $redirect = htmlspecialchars(trim($request_uri, '/'), ENT_QUOTES, 'UTF-8');
     if($redirect) {
         $_SESSION['_directus_login_redirect'] = $redirect;
         $redirect = '?redirect=' . $redirect;
