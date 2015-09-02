@@ -13,6 +13,7 @@ var prohtml   = require('gulp-processhtml');
 var deploy    = require('gulp-gh-pages');
 var merge     = require('merge-stream');
 var jscs      = require('gulp-jscs');
+var excludeGitignore = require('gulp-exclude-gitignore');
 
 
 // ----------------------------
@@ -79,7 +80,7 @@ var vendorFiles = [
   'assets/js/libs/require.js',
   'assets/js/util/*.js'
 ];
-  
+
 // Concat all vendors
 gulp.task('scripts:vendor', function() {
   return gulp.src(vendorFiles)
@@ -270,6 +271,7 @@ gulp.task('move', function() {
   ];
 
   var mainFiles = gulp.src(filesToMove, { base: './' })
+    .pipe(excludeGitignore())
     .pipe(gulp.dest('dist'));
 
   var keepFiles = gulp.src(dirsToKeep, { base: './', dot: true })
