@@ -34,7 +34,7 @@ define('DB_NAME',        '{$data['db_name']}');
 define('DB_USER',        '{$data['db_user']}');
 define('DB_PASSWORD',    '{$data['db_pass']}');
 define('DB_PREFIX',      '');
-s
+
 
 define('DB_HOST_SLAVE',        ''); //Leave undefined to fall back on master
 define('DB_USER_SLAVE',        '');
