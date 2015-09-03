@@ -60,6 +60,11 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
+
+      if (this.options.model.isNew() && this.options.schema.has('default_value')) {
+        this.options.value = this.options.schema.get('default_value');
+      }
+
       return {
         value: this.options.value || '0',
         name: this.options.name,
@@ -71,7 +76,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     initialize: function() {
-      //
+      
     }
 
   });
