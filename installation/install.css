@@ -225,11 +225,22 @@ textarea {
 .config-paste {
   font-size: 12px;
 }
+
+.error-container {
+  background-color:#aa2929;
+  color: white;
+  padding:5px;
+  margin: 0 0 20px 0;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
+}
 @font-face {
   font-family: 'Directus';
   src: url('../assets/fonts/directus/directus-regular.eot');
   src: url('../assets/fonts/directus/directus-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../assets/fonts/directus/directus-regular.woff') format('woff'), /* Modern Browsers */ url('../assets/fonts/directus/directus-regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../assets/fonts/directus/directus-regular.svg#entypo') format('svg');
-  
+
   /* IE9 Compat Modes */
   /* Legacy iOS */
 }
