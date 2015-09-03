@@ -5,16 +5,16 @@ if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
   header('Location: installation/index.php');
 }
 
+// Composer Autoloader
+$loader = require 'api/vendor/autoload.php';
+$loader->add("Directus", dirname(__FILE__) . "/api/core/");
+
 require "api/config.php";
 require "api/globals.php";
 
 /**
  * Temporary solution for disabling this page for logged in users.
  */
-
-// Composer Autoloader
-$loader = require 'api/vendor/autoload.php';
-$loader->add("Directus", dirname(__FILE__) . "/api/core/");
 
 if(\Directus\Auth\Provider::loggedIn()) {
     header('Location: ' . DIRECTUS_PATH );
