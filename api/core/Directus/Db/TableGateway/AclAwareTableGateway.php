@@ -220,7 +220,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               // @todo: make file name format sanatize by default
               // same as uniqueName by the adapter
               // replacing space with underscore
-              $originalFile = $recordData['name'];
+              $originalFile = $recordData['file_name'];
+              // we do not need it part of our records Data
+              unset($recordData['file_name']);
               $recordData['name'] = str_replace(' ', '_', $recordData['name']);
               $info = pathinfo($recordData['name']);
               if( in_array($info['extension'], $this->imagickExtensions)) {
@@ -255,7 +257,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               $updateArray = array();
               //If using file_id saving, then update record and set name to id
               if($Storage->getFilesSettings()['file_naming'] == "file_id") {
-                $originalFile = $recordData['name'];
                 $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext);
                 $updateArray['name'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext;
                 $recordData['name'] = $updateArray['name'];
