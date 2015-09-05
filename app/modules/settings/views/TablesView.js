@@ -804,7 +804,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       if (app.schemaManager.getPrivileges(tableName)) {
-        app.trigger('alert:error', 'Error', 'This table name already exists', true, {
+        app.trigger('alert:error', 'Error', 'This table already exists!', true, {
           timeout: 5000
         });
         return;

@@ -5,7 +5,7 @@
 Directus
 ====================
 
-Welcome to Directus, a free and open-source, client-friendly MySQL database GUI written in Backbone.js that provides a feature-rich environment for rapid development and management of custom database solutions. Directus makes no assumptions about how you should architect your schema – giving you the freedom to tailor the database to your specific project needs and provide an intuitive, one-to-one interface to your users. And instead of encompassing your entire project, Directus focuses on a lightweight core suite designed to integrate with the frameworks already in your workflow.
+Welcome to Directus, a free and open-source, customer-friendly MySQL database GUI written in Backbone.js that provides a feature-rich environment for rapid development and management of custom database schemas. Directus makes no assumptions about how you should architect your schema – giving you the freedom to tailor the database to your specific project needs and provide an intuitive, one-to-one interface to your users. And instead of encompassing your entire project, Directus focuses on a lightweight core suite designed to integrate with the frameworks already in your workflow.
 
 **[Learn more at getdirectus.com](http://getdirectus.com)**
 
@@ -44,7 +44,7 @@ Discovered a bug? Please create an issue here on GitHub!
 https://github.com/RNGR/Directus/issues
 
 ## Requirements ##
-Apache HTTP Server, PHP 5.5+, MySQL 5.2+, PDO_MySQL, Mod_Rewrite, CURL, GD Library — and optionally: mcrypt and Imagick
+Apache HTTP Server, PHP 5.5+, MySQL 5.2+, PDO_MySQL, Mod_Rewrite, CURL, GD Library, mcrypt — and optionally: Imagick
 
 ## Versioning ##
 For transparency and insight into our release cycle, releases will be numbered with the follow format:
@@ -61,6 +61,10 @@ For more information on semantic versioning, please visit [http://semver.org/](h
 
 ## Database Types ##
 While Directus has been abstracted to allow for different database adapters in the future, currently only MySQL is supported. We hope that as we gain additional contributors we can expand Directus to support additional database types.
+
+## Copyright and License ##
+
+Code and documentation copyright 2015 [RANGER Studio LLC](http://rngr.org/). Code released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html).
 
 ## Screenshots ##
 
