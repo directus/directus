@@ -175,7 +175,7 @@ $(function(){
             $redirectPath = $_SESSION['_directus_login_redirect'];
         }
         ?>
-        var redirectPath = '<?php echo trim(urldecode($redirectPath), '/'); ?>';
+        var redirectPath = '<?php echo trim($redirectPath, '/'); ?>';
         var lastPage = data.last_page;
         var lastPagePath = lastPage ? lastPage.path : '';
 

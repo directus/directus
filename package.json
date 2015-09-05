@@ -39,6 +39,7 @@
     "requirejs": "~2.1.20",
     "karma-requirejs": "~0.2.2",
     "phantomjs": "~1.9.18",
-    "karma-phantomjs-launcher": "~0.2.1"
+    "karma-phantomjs-launcher": "~0.2.1",
+    "gulp-exclude-gitignore": "~1.0.0"
   }
 }
