@@ -45,10 +45,12 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
     private function verifyPrivilege($attributes) {
         // Making sure alter is set for admin only.
-        if($this->isCurrentUserAdmin() && !array_key_exists('allow_alter', $attributes)) {
-            $attributes['allow_alter'] = 1;
-        } else {
-            $attributes['allow_alter'] = 0;
+        if(array_key_exists('allow_alter', $attributes)) {
+            if ($this->isCurrentUserAdmin()) {
+                $attributes['allow_alter'] = 1;
+            } else {
+                $attributes['allow_alter'] = 0;
+            }
         }
 
         return $attributes;
