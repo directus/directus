@@ -11,6 +11,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
 
   Module.variables = [
     {id: 'readonly', ui: 'checkbox'},
+    {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD HH:mm'},
     {id: 'include_seconds', ui: 'checkbox'},
     {id: 'contextual_date_in_listview', ui: 'checkbox'},
     {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
@@ -124,6 +125,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   //@todo make contextual date a ui
   Module.list = function(options) {
     var value = options.value;
+    var format = options.settings.get('format');
 
     if (options.settings.get('contextual_date_in_listview') === '1') {
       var momentDate = moment(options.value);
@@ -132,6 +134,8 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
       } else {
         value = '-';
       }
+    } else if (format) {
+      value = moment(value).format(format);
     }
 
     return value;
