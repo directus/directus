@@ -26,7 +26,8 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   Module.dataTypes = ['DATE'];
 
   Module.variables = [
-    {id: 'readonly', ui: 'checkbox'}
+    {id: 'readonly', ui: 'checkbox'},
+    {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD'},
   ];
 
   var template =  '<style type="text/css"> \
@@ -40,6 +41,10 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   </style> \
                   <input type="date" class="date" {{#if readonly}}disabled{{/if}} name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
                   <a class="now secondary-info">Now</a>';
+
+  function removeTimeFromFormat(format) {
+    return format.replace(/(A|a|H|h|m|s|S|z|Z|x|X)/g, '');
+  }
 
   Module.Input = UIView.extend({
 
@@ -92,7 +97,12 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   };
 
   Module.list = function(options) {
-    return moment(options.value).format('DD-MMM-YYYY');
+    var value = options.value;
+    var format = options.settings.get('format');
+    if (format) {
+      value = moment().format(removeTimeFromFormat(format));
+    }
+    return value;
   };
 
   return Module;
