@@ -1,0 +1,3 @@
+<FilesMatch "\.(php|phps|php5|htm|shtml|xhtml|cgi.+)$">
+    ForceType text/plain
+</FilesMatch>
