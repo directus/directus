@@ -50,7 +50,8 @@ define(function(require, exports, module) {
       this.structure.each(function(column) {
 
         // Skip ID
-        if('id' == column.id) {
+        // if('id' == column.id) {
+        if (column.get('column_key') == 'PRI') {
           return;
         }
         //Skip magic owner column if we dont have bigedit

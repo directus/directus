@@ -3,6 +3,7 @@ define(function(require, exports, module) {
   "use strict";
 
   var Backbone = require("backbone"),
+      ModelHelper = require('helpers/model'),
       Collection = require("core/collection"),
       EntriesModel = require("core/entries/EntriesModel");
 
@@ -153,6 +154,8 @@ define(function(require, exports, module) {
       this.structure = options.structure;
       this.privileges = options.privileges;
       this.table = options.table;
+
+      this.listenTo(this, 'sync', ModelHelper.setIdAttribute);
 
       if (options.rowsPerPage) this.rowsPerPage = options.rowsPerPage;
       if (options.filters) this.filters = options.filters;

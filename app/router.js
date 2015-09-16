@@ -329,7 +329,12 @@ define(function(require, exports, module) {
       } else {
         model = collection.get(id);
         if (model === undefined) {
-          model = new collection.model({id: id}, {collection: collection, parse: true});
+          var primaryColumn = collection.table.get('primary_column');
+          var modelData = {};
+          modelData[primaryColumn] = id;
+          model = new collection.model(modelData, {collection: collection, parse: true});
+          model.idAttribute = primaryColumn;
+          model.id = id;
         }
       }
 

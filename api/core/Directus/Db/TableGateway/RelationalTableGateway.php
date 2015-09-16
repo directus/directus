@@ -133,18 +133,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // parent
         if ($activityEntryMode === self::ACTIVITY_ENTRY_MODE_PARENT) {
             $parentData = array(
-                'id'            => array_key_exists('id', $recordData) ? $recordData['id'] : null,
+                'id'            => array_key_exists($this->primaryKeyFieldName, $recordData) ? $recordData[$this->primaryKeyFieldName] : null,
                 'table_name'    => $tableName
             );
         }
 
         $draftRecord = $TableGateway->addOrUpdateToManyRelationships($schemaArray, $draftRecord, $nestedLogEntries, $nestedCollectionRelationshipsChanged, $parentData);
-        $rowId = $draftRecord['id'];
+        $rowId = $draftRecord[$this->primaryKeyFieldName];
 
         $columnNames = TableSchema::getAllNonAliasTableColumnNames($tableName);
         $TemporaryTableGateway = new TableGateway($tableName, $this->adapter);
         $fullRecordData= $TemporaryTableGateway->select(function ($select) use ($rowId, $columnNames) {
-            $select->where->equalTo('id', $rowId);
+            $select->where->equalTo($this->primaryKeyFieldName, $rowId);
             $select->limit(1)->columns($columnNames);
         })->current();
 
@@ -240,7 +240,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Yield record object
         $recordGateway = new AclAwareRowGateway($this->acl, $TableGateway->primaryKeyFieldName, $tableName, $this->adapter);
         $recordGateway->populate($fullRecordData, true);
-        
+
         return $recordGateway;
     }
 
@@ -461,7 +461,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                 }
                               }
                             }
-                            
+
                             /** Update foreign record */
                             $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
                             // Junction/Association row
@@ -508,6 +508,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
     public function applyDefaultEntriesSelectParams(array $params) {
 
+        if ($this->primaryKeyFieldName != 'id') {
+            unset(self::$defaultEntriesSelectParams['id']);
+            self::$defaultEntriesSelectParams[$this->primaryKeyFieldName] = -1;
+            self::$defaultEntriesSelectParams['orderBy'] = $this->primaryKeyFieldName;
+        }
+
         if(isset($params['perPage']) && isset($params['current_page']))
             $params['currentPage'] = $params['current_page'] * $params['perPage'];
 
@@ -549,7 +555,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $entriesIds = array_filter(explode(',', $params['ids']), 'is_numeric');
 
             if (count($entriesIds) > 0) {
-                $select->where->in($this->getTable() . '.id', $entriesIds);
+                $select->where->in($this->getTable() . '.'.$this->primaryKeyFieldName, $entriesIds);
             }
         }
 
@@ -557,9 +563,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $select
             ->where
             ->nest
-                ->expression('-1 = ?', $params['id'])
+                ->expression('-1 = ?', $params[$this->primaryKeyFieldName])
                 ->or
-                ->equalTo('id', $params['id'])
+                ->equalTo($this->primaryKeyFieldName, $params[$this->primaryKeyFieldName])
             ->unnest;
 
         if(isset($params['adv_search']) && !empty($params['adv_search'])) {
@@ -650,7 +656,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
          * Fetching a set of data
          */
 
-        if (-1 == $params['id']) {
+        if (-1 == $params[$this->primaryKeyFieldName]) {
             $set = array();
             if($hasActiveColumn) {
                 $countActive = $this->countActive($hasActiveColumn);
