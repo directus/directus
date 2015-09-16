@@ -55,6 +55,7 @@ class TableSchema {
     }
 
     protected static $_schemas = array();
+    protected static $_primaryKeys = array();
 
     /**
      * @todo  for ALTER requests, caching schemas can't be allowed
@@ -161,7 +162,11 @@ class TableSchema {
         $result = $sth->execute($parameterContainer);
 
         $columns = array();
-        $ignoreColumns = ($skipIgnore !== true) ? array('id',STATUS_COLUMN_NAME,'sort') : array();
+        $primaryKeyFieldName = self::getTablePrimaryKey($table);
+        if (!$primaryKeyFieldName) {
+            $primaryKeyFieldName = 'id';
+        }
+        $ignoreColumns = ($skipIgnore !== true) ? array($primaryKeyFieldName,STATUS_COLUMN_NAME,'sort') : array();
         $i = 0;
         foreach($result as $row) {
             $i++;
@@ -174,14 +179,14 @@ class TableSchema {
         }
         return $columns;
     }
-    
+
     public static function hasTableColumn($table, $column) {
       $columns = self::getTableColumns($table, null, true);
-      
+
       if (array_key_exists($column, array_flip($columns))) {
         return true;
       }
-      
+
       return false;
     }
 
@@ -319,6 +324,47 @@ class TableSchema {
         $currentUser = Auth::getUserInfo();
         $info['preferences'] = $directusPreferencesTableGateway->fetchByUserAndTable($currentUser['id'], $tbl_name);
         return $info;
+    }
+
+    /**
+     * Get table primary key
+     * @param $tableName
+     * @return String|boolean - column name or false
+     */
+    public static function getTablePrimaryKey($tableName)
+    {
+        if (isset(self::$_primaryKeys[$tableName])) {
+            return self::$_primaryKeys[$tableName];
+        }
+
+        $zendDb = Bootstrap::get('ZendDb');
+
+        // @todo: make this part of loadSchema
+        // without the need to use acl and create a infinite nested function call
+        $sql = 'SELECT  COLUMN_NAME as column_name
+                FROM
+                    INFORMATION_SCHEMA.COLUMNS C
+                WHERE
+                    C.TABLE_SCHEMA = :schema
+                AND
+                    C.table_name = :table_name';
+
+        $parameterContainer = new ParameterContainer();
+        $parameterContainer->offsetSet(':table_name', $tableName, ParameterContainer::TYPE_STRING);
+        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
+
+        $sth = $zendDb->query($sql);
+        $result = $sth->execute($parameterContainer);
+        $result = $result->current();
+
+        if (!$result) {
+            self::$_primaryKeys[$tableName] = null;
+            return false;
+        }
+
+        self::$_primaryKeys[$tableName] = $result['column_name'];
+
+        return $result['column_name'];
     }
 
     protected static function createParamArray($values, $prefix) {
@@ -556,6 +602,12 @@ class TableSchema {
             foreach ($tableSchemas as &$table) {
                 $tableName = $table['id'];
                 $table['columns'] = array_values($columnSchemas[$tableName]);
+                foreach($columnSchemas[$tableName] as $column) {
+                    if ($column['column_key'] == 'PRI') {
+                        $table['primary_column'] = $column['column_name'];
+                        break;
+                    }
+                }
                 $table = array(
                     'schema' => $table,
                 );
@@ -672,7 +724,8 @@ class TableSchema {
                     junction_key_left,
                     junction_key_right,
                     ifnull(D.required,0) as required,
-                    COLUMN_TYPE as column_type
+                    COLUMN_TYPE as column_type,
+                    COLUMN_KEY as column_key
                 FROM
                     INFORMATION_SCHEMA.COLUMNS C
                 LEFT JOIN
@@ -704,7 +757,8 @@ class TableSchema {
                     junction_key_left,
                     junction_key_right,
                     DC.required,
-                    NULL as column_type
+                    NULL as column_type,
+                    NULL as column_key
                 FROM
                     `directus_columns` DC
                 WHERE

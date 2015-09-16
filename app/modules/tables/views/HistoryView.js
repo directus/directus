@@ -114,9 +114,9 @@ function(app, Backbone, Directus, moment) {
       this.comments = new Directus.EntriesCollection({}, {table: app.messages.table, structure: app.messages.structure});
 
       if(!this.model.isNew()) {
-        this.activity.setFilter({adv_search: 'table_name = "' + this.model.collection.table.id + '" AND row_id = ' + this.model.get('id')});
+        this.activity.setFilter({adv_search: 'table_name = "' + this.model.collection.table.id + '" AND row_id = ' + this.model.get(this.model.idAttribute)});
         this.activity.fetch();
-        this.comments.setFilter({adv_where: 'comment_metadata = "' + this.model.collection.table.id + ":" + this.model.get('id') + '"'});
+        this.comments.setFilter({adv_where: 'comment_metadata = "' + this.model.collection.table.id + ":" + this.model.get(this.model.idAttribute) + '"'});
         this.comments.fetch();
       }
 

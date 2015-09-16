@@ -1,13 +1,14 @@
 define([
   "app",
   "backbone",
+  'helpers/model',
   "core/table/table.headview",
   "core/table/table.bodyview",
   "core/table/table.footerview",
   "plugins/jquery.flashrow"
 ],
 
-function(app, Backbone, TableHead, TableBody, TableFooter) {
+function(app, Backbone, ModelHelper, TableHead, TableBody, TableFooter) {
 
   "use strict";
 
@@ -164,6 +165,7 @@ function(app, Backbone, TableHead, TableBody, TableFooter) {
 
       this.listenTo(collection, 'sync', function(model, resp, options) {
         if (options.silent) return;
+        ModelHelper.setIdAttribute(model);
         this.render();
       });
 

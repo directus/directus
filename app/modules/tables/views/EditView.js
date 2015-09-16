@@ -164,9 +164,9 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         collection.add(model);
         console.log(model);
       }
-      
+
       var changedValues = model.diff(data);
-      
+
       if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] == app.statusMapping.deleted_num ) {
         var value = app.statusMapping.deleted_num;
         var options = {success: success, wait: true, patch: true, includeRelationships: true};
@@ -206,7 +206,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       this.setView('#page-content', this.editView);
 
       //Fetch Model if Exists
-      if (this.model.has('id')) {
+      if (this.model.has(this.model.idAttribute)) {
         this.model.fetch({
           dontTrackChanges: true,
           error: function(model, XMLHttpRequest) {
@@ -246,7 +246,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
         this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;
         this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}];
       } else {
-        this.headerOptions.route.title = this.model.get('id') ? 'Editing Item' : 'Creating New Item';
+        this.headerOptions.route.title = this.model.get(this.model.idAttribute) ? 'Editing Item' : 'Creating New Item';
         this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
       }
     }

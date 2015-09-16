@@ -469,12 +469,12 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
             $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
             $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
             $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
-            $params['id'] = $newRecord['id'];
+            $params[$TableGateway->primaryKeyFieldName] = $newRecord[$TableGateway->primaryKeyFieldName];
             break;
         // PUT a change set of table entries
         case 'PUT':
             if(!is_numeric_array($requestPayload)) {
-                $params['id'] = $requestPayload['id'];
+                $params[$TableGateway->primaryKeyFieldName] = $requestPayload[$TableGateway->primaryKeyFieldName];
                 $requestPayload = array($requestPayload);
             }
             $TableGateway->updateCollection($requestPayload);
@@ -542,17 +542,18 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
         // PUT an updated table entry
         case 'PATCH':
         case 'PUT':
-            $requestPayload['id'] = $id;
+            $requestPayload[$TableGateway->primaryKeyFieldName] = $id;
             $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
             $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
             $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
             break;
         // DELETE a given table entry
         case 'DELETE':
-            echo $TableGateway->delete(array('id' => $id));
+            echo $TableGateway->delete(array($TableGateway->primaryKeyFieldName => $id));
             return;
     }
-    $params['id'] = $id;
+
+    $params[$TableGateway->primaryKeyFieldName] = $id;
     // GET a table entry
     $Table = new TableGateway($acl, $table, $ZendDb);
     $entries = $Table->getEntries($params);

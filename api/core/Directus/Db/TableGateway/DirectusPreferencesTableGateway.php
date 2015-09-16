@@ -47,6 +47,10 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             }
         }
         // Global default values
+        $primaryKeyFieldName = TableSchema::getTablePrimaryKey($table);
+        if ($primaryKeyFieldName) {
+            self::$defaultPreferencesValues['sort'] = $primaryKeyFieldName;
+        }
         foreach(self::$defaultPreferencesValues as $field => $defaultValue) {
             if(!isset($preferences[$field]) || ("0" !== $preferences[$field] && empty($preferences[$field]))) {
                 if(!isset($preferences[$field])) {

@@ -26,14 +26,14 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
         if(isset($params['group_by'])) {
           $select->group($tableName . '.' . $params['group_by']);
         } else {
-          $select->group($tableName . '.id');
+          $select->group($tableName . '.'.$this->primaryKeyFieldName);
         }
 
         //If this is a relational order, than it is an array.
         if(is_array($params['orderBy'])) {
           $select->join(
             array('jsort' => $params['orderBy']['junction_table']),
-            'jsort.'.$params['orderBy']['jkeyRight'].' = '.$tableName.'.id',
+            'jsort.'.$params['orderBy']['jkeyRight'].' = '.$tableName.'.'.$this->primaryKeyFieldName,
             array(),
             $select::JOIN_LEFT
           );
@@ -49,7 +49,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
         } else {
           $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
         }
-        
+
         if (isset($params['perPage']) && isset($params['currentPage'])) {
           $select->limit($params['perPage'])
               ->offset($params['currentPage'] * $params['perPage']);
@@ -103,7 +103,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             $entriesIds = array_filter(explode(',', $params['ids']), 'is_numeric');
 
             if (count($entriesIds) > 0) {
-                $select->where->in($this->getTable() . '.id', $entriesIds);
+                $select->where->in($this->getTable() . '.'.$this->primaryKeyFieldName, $entriesIds);
             }
         }
 
@@ -111,9 +111,9 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
         $select
             ->where
             ->nest
-                ->expression('-1 = ?', $params['id'])
+                ->expression('-1 = ?', $params[$this->primaryKeyFieldName])
                 ->or
-                ->equalTo($tableName . '.id', $params['id'])
+                ->equalTo($tableName . '.'.$this->primaryKeyFieldName, $params[$this->primaryKeyFieldName])
             ->unnest;
 
         // very very rudimentary ability to supply where conditions to fetch...
