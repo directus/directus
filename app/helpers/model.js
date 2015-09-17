@@ -5,13 +5,21 @@ define(function(require, exports) {
   var Backbone = require('backbone');
 
   var addPrimaryColumnToModel = function(model) {
-    model.idAttribute = model.table.get('primary_column');
+    if (model.junctionStructure) {
+      model.idAttribute = model.junctionStructure.table.get('primary_column');
+    } else {
+      model.idAttribute = model.table.get('primary_column');
+    }
     model.id = model.get(model.idAttribute);
     model.collection._byId[model.id] = model;
   }
 
   return {
     setIdAttribute: function(model) {
+      if (!model) {
+        return;
+      }
+
       if (model.table.id.indexOf('directus_') === 0) {
         return;
       }
