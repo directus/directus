@@ -433,19 +433,19 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             /** This association is designated for removal */
                             if (isset($junctionRow[STATUS_COLUMN_NAME]) && $junctionRow[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
                               $Where = new Where;
-                              $Where->equalTo('id', $junctionRow['id']);
+                              $Where->equalTo($JunctionTable->primaryKeyFieldName, $junctionRow[$JunctionTable->primaryKeyFieldName]);
                               $JunctionTable->delete($Where);
                               // Flag the top-level record as having been altered.
                               // (disassociating w/ existing M2M collection entry)
                               $parentCollectionRelationshipsChanged = true;
                               continue;
-                            } else if (isset($junctionRow['data']['id'])) {
+                          } else if (isset($junctionRow['data'][$JunctionTable->primaryKeyFieldName])) {
                               // Is this a new element?
                               // if the element `id` exists it's because is not a new element
                               // and already had its id given.
                               $Where = new Where;
-                              $Where->equalTo($junctionKeyLeft, $parentRow['id'])
-                                      ->equalTo($junctionKeyRight, $junctionRow['data']['id']);
+                              $Where->equalTo($junctionKeyLeft, $parentRow[$this->primaryKeyFieldName])
+                                      ->equalTo($junctionKeyRight, $junctionRow['data'][$JunctionTable->primaryKeyFieldName]);
 
                               // hard-coded check for sort diff
                               // @todo fix this
@@ -466,8 +466,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                             $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
                             // Junction/Association row
                             $junctionTableRecord = array(
-                                $junctionKeyLeft   => $parentRow['id'],
-                                $foreignJoinColumn => $foreignRecord['id']
+                                $junctionKeyLeft   => $parentRow[$this->primaryKeyFieldName],
+                                $foreignJoinColumn => $foreignRecord[$ForeignTable->primaryKeyFieldName]
                             );
 
                             // Update fields on the Junction Record
@@ -475,8 +475,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                             $foreignRecord = (array) $foreignRecord;
 
-                            $relationshipChanged = $this->recordDataContainsNonPrimaryKeyData($foreignRecord) ||
-                                $this->recordDataContainsNonPrimaryKeyData($junctionTableRecord);
+                            $relationshipChanged = $this->recordDataContainsNonPrimaryKeyData($foreignRecord, $ForeignTable->primaryKeyFieldName) ||
+                                $this->recordDataContainsNonPrimaryKeyData($junctionTableRecord, $JunctionTable->primaryKeyFieldName);
 
                             // Update Foreign Record
                             if($relationshipChanged) {
@@ -733,7 +733,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
                         $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
                             $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
-                            $entry['id']);
+                            $entry[$this->primaryKeyFieldName]);
                         $noDuplicates = isset($alias['options']['no_duplicates'])?$alias['options']['no_duplicates']:0;
                         // @todo: better way to handle this.
                         if ($noDuplicates) {
@@ -889,18 +889,19 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @return array                      Foreign rowset
      */
     public function loadManyToManyRelationships($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals) {
-        $foreign_table_pk = "id";
+        $foreign_table_pk = TableSchema::getTablePrimaryKey($foreign_table);
         $foreign_join_column = "$foreign_table.$foreign_table_pk";
         $junction_join_column = "$junction_table.$junction_key_right";
         $junction_comparison_column = "$junction_table.$junction_key_left";
 
-        $junction_id_column = "$junction_table.id";
+        $junction_table_pk = TableSchema::getTablePrimaryKey($junction_table);
+        $junction_id_column = "$junction_table.".$junction_table_pk;
 
         // Less likely name collision:
         $junction_id_column_alias = "directus_junction_id_column_518d31856e131";
         $junction_sort_column_alias = "directus_junction_sort_column_518d318e3f0f5";
 
-        $junctionSelectColumns = array($junction_id_column_alias => 'id');
+        $junctionSelectColumns = array($junction_id_column_alias => $junction_table_pk);
 
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -937,7 +938,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $junction_table_id = (int) $row[$junction_id_column_alias];
             unset($row[$junction_id_column_alias]);
 
-            $entry = array('id' => $junction_table_id);
+            $entry = array($junction_table_pk => $junction_table_id);
             if(in_array('sort', $junctionColumns)) {
                 // @TODO: check why is this a string instead of an integer.
                 $entry['sort'] = (int)$row[$junction_sort_column_alias];
