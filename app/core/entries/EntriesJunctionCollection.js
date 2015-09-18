@@ -82,7 +82,7 @@ define(function(require, exports, module) {
     },
 
     reset: function(models, options) {
-      var models = Collection.__super__.reset.call(this, models, options);debugger;
+      var models = Collection.__super__.reset.call(this, models, options);
       models.each(ModelHelper.setIdAttribute);
       return models;
     },
