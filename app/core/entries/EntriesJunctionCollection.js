@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
   var app               = require('app'),
       Backbone          = require('backbone'),
+      ModelHelper       = require('helpers/model'),
       Collection        = require('core/collection'),
       EntriesManager    = require('core/EntriesManager');
 
@@ -63,7 +64,7 @@ define(function(require, exports, module) {
           return obj;
         });
       }
-      NestedCollection.__super__.add.apply(this, [models, options]);
+      return NestedCollection.__super__.add.apply(this, [models, options]);
     },
 
     getModels: function() {
@@ -78,6 +79,12 @@ define(function(require, exports, module) {
 
     parse: function(response) {
       return (response.rows === undefined) ? response : response.rows;
+    },
+
+    reset: function(models, options) {
+      var models = Collection.__super__.reset.call(this, models, options);
+      models.each(ModelHelper.setIdAttribute);
+      return models;
     },
 
     hasColumn: function(columnName) {
