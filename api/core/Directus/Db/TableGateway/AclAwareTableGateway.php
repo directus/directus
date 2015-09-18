@@ -33,7 +33,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
     protected $acl;
 
-    public $primaryKeyFieldName = "id";
+    public $primaryKeyFieldName = 'id';
     public $imagickExtensions = array('tiff', 'tif', 'psd', 'pdf');
     public $memcache;
 
@@ -70,7 +70,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
 
         if($primaryKeyName !== null) {
-          $this->primaryKeyFieldName = $primaryKeyName;
+            $this->primaryKeyFieldName = $primaryKeyName;
+        } else {
+            $tablePrimaryKey = TableSchema::getTablePrimaryKey($table);
+            if ($tablePrimaryKey) {
+                $this->primaryKeyFieldName = $tablePrimaryKey;
+            }
         }
 
         $rowGatewayPrototype = new AclAwareRowGateway($acl, $this->primaryKeyFieldName, $table, $adapter);
@@ -134,7 +139,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         return $row;
     }
 
-    public function find($id, $pk_field_name = "id") {
+    public function find($id, $pk_field_name = null) {
+        if ($pk_field_name == null) {
+            $pk_field_name = $this->primaryKeyFieldName;
+        }
         $record = $this->findOneBy($pk_field_name, $id);
         return $record;
     }
@@ -191,13 +199,13 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
 
         $tableName = is_null($tableName) ? $this->table : $tableName;
-        $rowExists = isset($recordData['id']);
+        $rowExists = isset($recordData[$this->primaryKeyFieldName]);
 
         $TableGateway = new self($this->acl, $tableName, $this->adapter);
         if($rowExists) {
             $Update = new Update($tableName);
             $Update->set($recordData);
-            $Update->where(array('id' => $recordData['id']));
+            $Update->where(array($this->primaryKeyFieldName => $recordData[$this->primaryKeyFieldName]));
             $TableGateway->updateWith($Update);
 
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
@@ -250,15 +258,15 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $d = $recordData;
             unset($d['data']);
             $TableGateway->insert($d);
-            $recordData['id'] = $TableGateway->getLastInsertValue();
+            $recordData[$this->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if($tableName == "directus_files") {
               $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
               $updateArray = array();
               //If using file_id saving, then update record and set name to id
               if($Storage->getFilesSettings()['file_naming'] == "file_id") {
-                $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext);
-                $updateArray['name'] = str_pad($recordData['id'],11,"0", STR_PAD_LEFT).'.'.$ext;
+                $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData[$this->primaryKeyFieldName],11,"0", STR_PAD_LEFT).'.'.$ext);
+                $updateArray['name'] = str_pad($recordData[$this->primaryKeyFieldName],11,"0", STR_PAD_LEFT).'.'.$ext;
                 $recordData['name'] = $updateArray['name'];
               }
 
@@ -272,7 +280,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               if(!empty($updateArray)) {
                 $Update = new Update($tableName);
                 $Update->set($updateArray);
-                $Update->where(array('id' => $recordData['id']));
+                $Update->where(array($this->primaryKeyFieldName => $recordData[$this->primaryKeyFieldName]));
                 $TableGateway->updateWith($Update);
               }
 
@@ -283,7 +291,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 if(in_array($ext, $this->imagickExtensions)) {
                   $ext = 'jpg';
                 }
-                $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $recordData['id'].".".$ext, $thumbnailDestination);
+                $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $recordData[$this->primaryKeyFieldName].".".$ext, $thumbnailDestination);
                 unlink($tempLocation.$thumbnailName);
               }
             }
@@ -296,7 +304,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $select
                 ->columns($columns)
                 ->limit(1);
-            $select->where->equalTo('id', $recordData['id']);
+            $select->where->equalTo($this->primaryKeyFieldName, $recordData[$this->primaryKeyFieldName]);
         })->current();
 
         return $recordData;

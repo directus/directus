@@ -186,6 +186,8 @@ abstract class Adapter {
         $info = pathinfo($filename);
         $ext = $info['extension'];
         $name = basename($filename, ".$ext");
+        // do not start with dot
+        $name = preg_replace('/^\./', 'dot-', $name);
         $name = str_replace(' ', '_', $name);
         $filename = "$name.$ext";
         if($this->fileExists($filename, $destination)) {

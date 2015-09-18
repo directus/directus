@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
   var app                     = require("app"),
       Backbone                = require("backbone"),
+      ModelHelper             = require('helpers/model'),
       EntriesJunctionCollection = require("core/entries/EntriesJunctionCollection"),
       UIManager               = require("core/UIManager"),
       SchemaManager           = require("schema/SchemaManager");
@@ -199,7 +200,7 @@ define(function(require, exports, module) {
       },this);
 
       //Always pass id
-      changedAttrs.id = this.id;
+      changedAttrs[this.idAttribute] = this.id;
 
       return changedAttrs;
     },
@@ -356,6 +357,8 @@ define(function(require, exports, module) {
         details = app.capitalize(this.getTable().id) + ' (' + error_id + ')' + '<hr><ul><li>' + details + '</li></ul>';
         app.trigger('alert:error', 'There seems to be a problem...', details);
       });
+
+      this.listenTo(this,  'sync', ModelHelper.setIdAttribute);
     },
 
     clone: function() {
