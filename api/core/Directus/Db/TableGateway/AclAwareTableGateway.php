@@ -199,13 +199,12 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
 
         $tableName = is_null($tableName) ? $this->table : $tableName;
-        $rowExists = isset($recordData[$this->primaryKeyFieldName]);
-
         $TableGateway = new self($this->acl, $tableName, $this->adapter);
+        $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if($rowExists) {
             $Update = new Update($tableName);
             $Update->set($recordData);
-            $Update->where(array($this->primaryKeyFieldName => $recordData[$this->primaryKeyFieldName]));
+            $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
             $TableGateway->updateWith($Update);
 
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
@@ -228,7 +227,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               // @todo: make file name format sanatize by default
               // same as uniqueName by the adapter
               // replacing space with underscore
-              $originalFile = $recordData['file_name'];
+              $originalFile = $recordData['name'];
               // we do not need it part of our records Data
               unset($recordData['file_name']);
               $recordData['name'] = str_replace(' ', '_', $recordData['name']);
@@ -258,7 +257,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $d = $recordData;
             unset($d['data']);
             $TableGateway->insert($d);
-            $recordData[$this->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
+            $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if($tableName == "directus_files") {
               $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
@@ -280,7 +279,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               if(!empty($updateArray)) {
                 $Update = new Update($tableName);
                 $Update->set($updateArray);
-                $Update->where(array($this->primaryKeyFieldName => $recordData[$this->primaryKeyFieldName]));
+                $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
                 $TableGateway->updateWith($Update);
               }
 
@@ -300,11 +299,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
-        $recordData = $TableGateway->fetchAll(function($select) use ($recordData, $columns) {
+        $recordData = $TableGateway->fetchAll(function($select) use ($recordData, $columns, $TableGateway) {
             $select
                 ->columns($columns)
                 ->limit(1);
-            $select->where->equalTo($this->primaryKeyFieldName, $recordData[$this->primaryKeyFieldName]);
+            $select->where->equalTo($TableGateway->primaryKeyFieldName, $recordData[$TableGateway->primaryKeyFieldName]);
         })->current();
 
         return $recordData;
