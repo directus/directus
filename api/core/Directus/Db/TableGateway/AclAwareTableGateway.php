@@ -227,7 +227,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               // @todo: make file name format sanatize by default
               // same as uniqueName by the adapter
               // replacing space with underscore
-              $originalFile = $recordData['name'];
+              $originalFile = isset($recordData['file_name']) ? $recordData['file_name'] : $recordData['name'];
               // we do not need it part of our records Data
               unset($recordData['file_name']);
               $recordData['name'] = str_replace(' ', '_', $recordData['name']);
@@ -272,7 +272,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               // @todo: do not make this file create twice.
               // file should be copied to temp and then work from there.
               // but is copied on "media" also on "temp" then copied back to "media"
-              if(file_exists($filesAdapter['destination'].$originalFile)) {
+              if(file_exists($filesAdapter['destination'].$originalFile) && $Storage->getFilesSettings()['file_naming'] != "file_name") {
                 unlink($filesAdapter['destination'].$originalFile);
               }
 
