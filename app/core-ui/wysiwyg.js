@@ -293,21 +293,20 @@ var template = '<style type="text/css"> \
     },
 
     initialize: function() {
-      var that = this;
       this.userId = app.users.getCurrentUser().id;
+    },
 
+    afterRender: function() {
+      var that = this;
       $.ajax({
         //url: "//cdn.jsdelivr.net/wysihtml5/0.3.0/wysihtml5-0.3.0.min.js",
         url: window.location.origin + window.directusData.path +"assets/js/libs/wysihtml5.js",
         dataType: "script",
         success: function() {
           that.initEditor();
+          if (that.options.settings.get("readonly") === "on") that.editor.readonly();
         }
       });
-    },
-
-    afterRender: function() {
-      if (this.options.settings.get("readonly") === "on") this.editor.readonly();
     },
 
     initEditor: function() {
