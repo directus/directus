@@ -10,6 +10,11 @@ define(function(require, exports) {
     } else {
       model.idAttribute = model.table.get('primary_column');
     }
+
+    if (!model.idAttribute) {
+      model.idAttribute = 'id';
+    }
+
     model.id = model.get(model.idAttribute);
     model.collection._byId[model.id] = model;
   }
