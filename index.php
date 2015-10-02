@@ -55,7 +55,7 @@ function getNonces() {
 };
 
 function getStorageAdapters() {
-    $storageAdapter = require(API_PATH . '/filesystem.php');
+    $storageAdapter = Bootstrap::get('configFilesystem');
     return [
         $storageAdapter['adapter'] => [
             'adapter' => $storageAdapter['adapter'],
