@@ -26,7 +26,7 @@ class Files
         $acl = Bootstrap::get('acl');
         $adapter = Bootstrap::get('ZendDb');
         $this->filesystem = Bootstrap::get('filesystem');
-        $this->config = require API_PATH . '/filesystem.php';
+        $this->config = Bootstrap::get('configFilesystem');
 
         // Fetch files settings
         $Settings = new DirectusSettingsTableGateway($acl, $adapter);
