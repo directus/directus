@@ -4,7 +4,8 @@
     "slim/extras": "dev-develop",
     "zendframework/zend-db": "2.2.*@dev",
     "directus/migrations": "dev-master",
-    "phpmailer/phpmailer": "~5.2"
+    "phpmailer/phpmailer": "~5.2",
+    "league/flysystem": "^1.0"
   },
   "_require": {
     "rackspace/php-opencloud": "dev-master",

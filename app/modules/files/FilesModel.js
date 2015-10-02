@@ -13,44 +13,27 @@ function(app, Backbone, EntriesModel, File) {
     },
 
     makeFileUrl: function(thumbnail) {
-      var storageAdapters = app.storageAdapters,
-          adapterId,
-          storageAdapter,
-          url;
+      var storageAdapters = app.storageAdapters;
+      var adapterId = this.get('storage_adapter');
+      var storageAdapter;
+      var url;
 
-      if(thumbnail) {
-        adapterId = 'THUMBNAIL';
-        if(!storageAdapters.hasOwnProperty(adapterId)) {
-          throw new Error("Cannot find default thumbnail storage_adapter using key: " + adapterId);
-        }
+      if (!storageAdapters.hasOwnProperty(adapterId)) {
+        throw new Error("Files record's storage_adapter FK value maps to an undefined directus_storage_adapters record: " + adapterId);
+      }
 
-        storageAdapter = storageAdapters[adapterId];
+      storageAdapter = storageAdapters[adapterId];
+
+      if (thumbnail) {
         if(this.get('name')) {
           if($.inArray(this.get('name').split('.').pop(),['tif', 'tiff', 'psd', 'pdf']) > -1) {
-            url = storageAdapter.url + this.get('id') + ".jpg";
+            url = storageAdapter.root_thumb_url + '/' + this.get('id') + ".jpg";
           } else {
-            url = storageAdapter.url + this.get('id') + "." + this.get('name').split('.').pop();
-          }
-        }
-
-        //If Temp SA and Thumbnail do Special logic
-        if(this.get('storage_adapter')) {
-          if(storageAdapters[this.get('storage_adapter')].role == "TEMP" && thumbnail) {
-            if($.inArray(this.get('name').split('.').pop(),['tif', 'tiff', 'psd', 'pdf']) > -1) {
-              url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name').replace(/\.[^/.]+$/, "") + ".jpg";
-            } else {
-              url = storageAdapters[this.get('storage_adapter')].url + "THUMB_" + this.get('name');
-            }
+            url = storageAdapter.root_thumb_url + '/' + this.get('id') + "." + this.get('name').split('.').pop();
           }
         }
       } else {
-        adapterId = this.get('storage_adapter');
-        if(!storageAdapters.hasOwnProperty(adapterId)) {
-          throw new Error("Files record's storage_adapter FK value maps to an undefined directus_storage_adapters record: " + adapterId);
-        }
-
-        storageAdapter = storageAdapters[adapterId];
-        url = storageAdapter.url + this.get('name');
+        url = storageAdapter.root_url + '/' + this.get('name');
       }
 
       return url;
@@ -62,7 +45,7 @@ function(app, Backbone, EntriesModel, File) {
         atts = _.clone(this.attributes);
       }
 
-      return _.omit(atts, 'thumbnailData');
+      return _.omit(atts, 'thumbnailData', 'file_url', 'file_thumb_url');
     },
 
     formatTitle: function(name) {
