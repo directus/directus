@@ -7,9 +7,12 @@ define(function(require, exports) {
   var addPrimaryColumnToModel = function(model) {
     if (model.collection.junctionStructure) {
       model.idAttribute = model.collection.junctionStructure.table.get('primary_column');
-    } else {
+    } else if (model.table) {
       model.idAttribute = model.table.get('primary_column');
+    } else {
+      model.idAttribute = 'id';
     }
+
     model.id = model.get(model.idAttribute);
     model.collection._byId[model.id] = model;
   }
