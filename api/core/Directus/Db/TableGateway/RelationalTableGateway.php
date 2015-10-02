@@ -275,12 +275,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
             // @todo: rewrite this
             if ($foreignTableName === 'directus_files') {
                 // Update/Add foreign record
-                $Storage = new Files\Storage\Storage();
+                $Files = new \Directus\Files\Files();
                 if (count(array_filter($foreignRow,'is_array')) == count($foreignRow)) {
                     $index = 0;
                     foreach($foreignRow as $row) {
                         if (!isset($row['data'][$this->primaryKeyFieldName]) && isset($row['data']['data'])) {
-                            $recordData[$colName][$index]['data'] = $Storage->saveData($row['data']['data'], $row['data']['name']);
+                            $recordData[$colName][$index]['data'] = $Files->saveData($row['data']['data'], $row['data']['name']);
                         }
 
                         unset($recordData[$colName][$index]['data']['data']);
@@ -288,7 +288,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     }
                 } else {
                     if (!isset($foreignRow[$this->primaryKeyFieldName]) && isset($foreignRow['data'])) {
-                        $recordData[$colName] = $Storage->saveData($foreignRow['data'], $foreignRow['name']);
+                        $recordData[$colName] = $Files->saveData($foreignRow['data'], $foreignRow['name']);
                     }
                     unset($recordData[$colName]['data']);
                 }
