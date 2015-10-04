@@ -1,4 +1,5 @@
 <?php
+
 // Composer Autoloader
 $loader = require 'vendor/autoload.php';
 $loader->add("Directus", dirname(__FILE__) . "/core/");
@@ -25,6 +26,8 @@ switch (DIRECTUS_ENV) {
 $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 $url = ($isHttps ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 define('HOST_URL', $url);
+define('API_PATH', dirname(__FILE__));
+define('BASE_PATH', dirname(API_PATH));
 
 use Directus\Acl\Exception\UnauthorizedTableAlterException;
 use Directus\Auth\Provider as Auth;
@@ -44,8 +47,8 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
-use Directus\Files;
-use Directus\Files\Upload;
+// use Directus\Files;
+// use Directus\Files\Upload;
 use Directus\MemcacheProvider;
 use Directus\Util;
 use Directus\View\JsonView;
@@ -708,9 +711,9 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
 
         // When the file is uploaded there's not a data key
         if (array_key_exists('data', $requestPayload)) {
-            $Storage = new Files\Storage\Storage();
-            $recordData = $Storage->saveData($requestPayload['data'], $requestPayload['name']);
-            $requestPayload['file_name'] = $requestPayload['name'];
+            $Files = new \Directus\Files\Files();
+            $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
+            // $requestPayload['file_name'] = $requestPayload['name'];
             $requestPayload = array_merge($requestPayload, $recordData);
         }
         $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
@@ -925,36 +928,21 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
 
 $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     // $Transfer = new Files\Transfer();
-    $Storage = new Files\Storage\Storage();
-    $result = array();
+    // $Storage = new Files\Storage\Storage();
+    $Files = new Directus\Files\Files();
+    $result = [];
     foreach ($_FILES as $file) {
-        // $fileData = $Transfer->acceptFile($file['tmp_name'], $file['name']);
-        $fileData = array('caption'=>'','tags'=>'','location'=>'');
-        $fileData = array_merge($fileData, $Storage->acceptFile($file['tmp_name'], $file['name']));
-        $result[] = array(
-            'type' => $fileData['type'],
-            'name' => $fileData['name'],
-            'title' => $fileData['title'],
-            'tags' => $fileData['tags'],
-            'caption' => $fileData['caption'],
-            'location' => $fileData['location'],
-            'charset' => $fileData['charset'],
-            'size' => $fileData['size'],
-            'width' => $fileData['width'],
-            'height' => $fileData['height'],
-            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-            'storage_adapter' => $fileData['storage_adapter']
-        );
+        $result[] = $Files->upload($file);
     }
     JsonView::render($result);
 });
 
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    $Storage = new Files\Storage\Storage();
+    $Files = new \Directus\Files\Files();
     $result = array();
     if(isset($_POST['link'])) {
         $fileData = array('caption'=>'','tags'=>'','location'=>'');
-        $fileData = array_merge($fileData, $Storage->acceptLink($_POST['link']));
+        $fileData = array_merge($fileData, $Files->getLink($_POST['link']));
 
         $result[] = array(
             'type' => $fileData['type'],

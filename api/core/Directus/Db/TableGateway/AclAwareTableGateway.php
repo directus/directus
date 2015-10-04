@@ -209,71 +209,25 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
             Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
-            //If we are adding a new directus_files Item, We need to do that logic
-            // @todo: clean up/refactor saving file process
-            if($tableName == "directus_files") {
-              $Storage = new \Directus\Files\Storage\Storage();
-
-              //If trying to save to temp, force to default
-              if((!isset($recordData['storage_adapter']) || $recordData['storage_adapter'] == '') || $Storage->storageAdaptersByRole['TEMP']['id'] == $recordData['storage_adapter']) {
-                $recordData['storage_adapter'] = $Storage->storageAdaptersByRole['DEFAULT']['id'];
-              }
-
-              $StorageAdapters = new DirectusStorageAdaptersTableGateway($this->acl, $this->adapter);
-              //If desired Storage Adapter Exists...
-              $filesAdapter = $StorageAdapters->fetchOneById($recordData['storage_adapter']);
-
-              //Save Temp Thumbnail name for use after files record save
-              // @todo: make file name format sanatize by default
-              // same as uniqueName by the adapter
-              // replacing space with underscore
-              $originalFile = isset($recordData['file_name']) ? $recordData['file_name'] : $recordData['name'];
-              // we do not need it part of our records Data
-              unset($recordData['file_name']);
-              $recordData['name'] = str_replace(' ', '_', $recordData['name']);
-              $info = pathinfo($recordData['name']);
-              if( in_array($info['extension'], $this->imagickExtensions)) {
-                $thumbnailName = "THUMB_".$info['filename'].'.jpg';
-              } else {
-                $thumbnailName = "THUMB_".$recordData['name'];
-              }
-
-              //If we are using files ID, Dont save until after insert
-              if($Storage->getFilesSettings()['file_naming'] == "file_name") {
-                //Save the file in TEMP Storage Adapter to Designated StorageAdapter
-                $recordData['name'] = $Storage->saveFile($recordData['name'], $recordData['storage_adapter']);
-                // $fileData = $Storage->saveData($recordData['data'], $recordData['name'], $filesAdapter['destination']);
-                // $recordData['name'] = $fileData['name'];
-              } else if($Storage->getFilesSettings()['file_naming'] == "file_hash") {
-                //Save the file in TEMP Storage Adapter to Designated StorageAdapter
-                $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
-                $fileHashName = md5(microtime() . $recordData['name']);
-                $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], $fileHashName.'.'.$ext);
-                $updateArray['name'] = $fileHashName.'.'.$ext;
-                $recordData['name'] = $updateArray['name'];
-              }
-            }
-
             $d = $recordData;
             unset($d['data']);
             $TableGateway->insert($d);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if($tableName == "directus_files") {
+              $Files = new \Directus\Files\Files();
               $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
-              $updateArray = array();
-              //If using file_id saving, then update record and set name to id
-              if($Storage->getFilesSettings()['file_naming'] == "file_id") {
-                $newName = $Storage->saveFile($recordData['name'], $recordData['storage_adapter'], str_pad($recordData[$this->primaryKeyFieldName],11,"0", STR_PAD_LEFT).'.'.$ext);
-                $updateArray['name'] = str_pad($recordData[$this->primaryKeyFieldName],11,"0", STR_PAD_LEFT).'.'.$ext;
-                $recordData['name'] = $updateArray['name'];
+
+              $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];
+              if ($Files->exists($thumbnailPath)) {
+                $Files->rename($thumbnailPath, 'thumbs/' . $recordData[$this->primaryKeyFieldName] . '.' . $ext);
               }
 
-              // @todo: do not make this file create twice.
-              // file should be copied to temp and then work from there.
-              // but is copied on "media" also on "temp" then copied back to "media"
-              if(file_exists($filesAdapter['destination'].$originalFile) && $Storage->getFilesSettings()['file_naming'] != "file_name") {
-                unlink($filesAdapter['destination'].$originalFile);
+              $updateArray = array();
+              if ($Files->getSettings('file_naming') == 'file_id') {
+                $Files->rename($recordData['name'], str_pad($recordData[$this->primaryKeyFieldName],11,"0", STR_PAD_LEFT).'.'.$ext);
+                $updateArray['name'] = str_pad($recordData[$this->primaryKeyFieldName],11,"0", STR_PAD_LEFT).'.'.$ext;
+                $recordData['name'] = $updateArray['name'];
               }
 
               if(!empty($updateArray)) {
@@ -281,17 +235,6 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
                 $Update->set($updateArray);
                 $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
                 $TableGateway->updateWith($Update);
-              }
-
-              //Save Temp Thumbnail to Thumbnail SA using file id: $params['id']
-              $tempLocation = $Storage->storageAdaptersByRole['TEMP']['destination'];
-              if(file_exists($tempLocation.$thumbnailName)) {
-                $thumbnailDestination = $Storage->storageAdaptersByRole['THUMBNAIL']['destination'];
-                if(in_array($ext, $this->imagickExtensions)) {
-                  $ext = 'jpg';
-                }
-                $Storage->ThumbnailStorage->acceptFile($tempLocation.$thumbnailName, $recordData[$this->primaryKeyFieldName].".".$ext, $thumbnailDestination);
-                unlink($tempLocation.$thumbnailName);
               }
             }
 
