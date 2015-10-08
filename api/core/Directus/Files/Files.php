@@ -9,6 +9,7 @@ use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Util\Formatting;
 use Directus\Files\Thumbnail;
 use League\Flysystem\Config as FlysystemConfig;
+use League\Flysystem\FileNotFoundException;
 
 class Files
 {
@@ -26,7 +27,8 @@ class Files
         $acl = Bootstrap::get('acl');
         $adapter = Bootstrap::get('ZendDb');
         $this->filesystem = Bootstrap::get('filesystem');
-        $this->config = Bootstrap::get('configFilesystem');
+        $config = Bootstrap::get('config');
+        $this->config = $config['filesystem'] ?: [];
 
         // Fetch files settings
         $Settings = new DirectusSettingsTableGateway($acl, $adapter);
@@ -36,13 +38,33 @@ class Files
         ));
     }
 
+    // @TODO: remove exists() and rename() method
+    // and move it to Directus\Filesystem Wraper
+    public function exists($path)
+    {
+        return $this->filesystem->getAdapter()->has($path);
+    }
+
+    public function rename($path, $newPath)
+    {
+        return $this->filesystem->getAdapter()->rename($path, $newPath);
+    }
+
     public function upload(Array $file)
     {
         $filePath = $file['tmp_name'];
         $fileName = $file['name'];
 
-        $fileData = array_merge($this->defaults, $this->processUpload($filePath, $fileName));
-        $this->createThumbnails($fileData['name']);
+        try {
+            $fileData = array_merge($this->defaults, $this->processUpload($filePath, $fileName));
+            $this->createThumbnails($fileData['name']);
+        } catch (FileNotFoundException $e) {
+            echo $e->getMessage();
+            exit;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
+        }
 
         return [
             'type' => $fileData['type'],
@@ -188,12 +210,22 @@ class Files
             $fileData = base64_decode(explode(',', $fileData)[1]);
         }
 
+        // @TODO: merge with upload()
         $fileName = $this->getFileName($fileName);
         $filePath = $this->getConfig('root') . '/' . $fileName;
-        $this->filesystem->getAdapter()->write($fileName, $fileData, new FlysystemConfig());
-        $this->createThumbnails($fileName);
 
-        $fileData = $this->getFileInfo($filePath);
+        try {
+            $this->filesystem->getAdapter()->write($fileName, $fileData);//, new FlysystemConfig());}
+            $this->createThumbnails($fileName);
+        } catch (FileNotFoundException $e) {
+            echo $e->getMessage();
+            exit;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
+        }
+
+        $fileData = $this->getFileInfo($fileName);
         $fileData['title'] = Formatting::fileNameToFileTitle($fileName);
         $fileData['name'] = basename($filePath);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
@@ -217,30 +249,26 @@ class Files
         ];
     }
 
-    public function exists($filename)
-    {
-        return $this->filesystem->getAdapter()->has($filename);
-    }
-
-    public function rename($name, $newName)
-    {
-        return $this->filesystem->getAdapter()->rename($name, $newName);
-    }
-
     public function getFileInfo($filePath)
     {
         $finfo = new \finfo(FILEINFO_MIME);
-        $type = explode('; charset=', $finfo->file($filePath));
+        // $type = explode('; charset=', $finfo->file($filePath));
+        $buffer = $this->filesystem->getAdapter()->read($filePath);
+        $type = explode('; charset=', $finfo->buffer($buffer));
         $info = array('type' => $type[0], 'charset' => $type[1]);
         $typeTokens = explode('/', $info['type']);
         $info['format'] = $typeTokens[1]; // was: $this->format
-        $info['size'] = filesize($filePath);
+        $info['size'] = strlen($buffer);//filesize($filePath);
         $info['width'] = null;
         $info['height'] = null;
 
         if($typeTokens[0] == 'image') {
             $meta = array();
-            $size = getimagesize($filePath, $meta);
+            //$size = getimagesize($filePath, $meta);
+            $size = [];
+            $image = imagecreatefromstring($buffer);
+            $size[] = imagesx($image);
+            $size[] = imagesy($image);
 
             $info['width'] = $size[0];
             $info['height'] = $size[1];
@@ -300,10 +328,13 @@ class Files
         $info = pathinfo($targetFileName);
 
         if (in_array($info['extension'], array('jpg','jpeg','png','gif','tif', 'tiff', 'psd', 'pdf'))) {
-            $img = Thumbnail::generateThumbnail($targetFileName, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
+            $targetContent = $this->filesystem->getAdapter()->read($imageName);
+            $img = Thumbnail::generateThumbnail($targetContent, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
             if($img) {
-              $thumbnailTempName = $this->getConfig('root') . '/thumbs/THUMB_' . $imageName;
-              Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
+                //   $thumbnailTempName = $this->getConfig('root') . '/thumbs/THUMB_' . $imageName;
+                $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
+                $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
+                $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);//, new FlysystemConfig());
             }
         }
     }

@@ -4,13 +4,14 @@ namespace Directus\Filesystem;
 
 use Directus\Bootstrap;
 use League\Flysystem\Filesystem as Flysystem;
+use League\Flysystem\FilesystemInterface as FlysystemInterface;
 use League\Flysystem\AdapterInterface;
 
 class Filesystem
 {
     private $adapter = null;
 
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(FlysystemInterface $adapter)
     {
         $this->adapter = $adapter;
     }
@@ -27,6 +28,6 @@ class Filesystem
 
     public function getPath()
     {
-        return $this->adapter->getPathPrefix();
+        return $this->adapter->getAdapter()->getPathPrefix();
     }
 }
