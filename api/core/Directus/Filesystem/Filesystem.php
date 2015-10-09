@@ -16,16 +16,33 @@ class Filesystem
         $this->adapter = $adapter;
     }
 
+    /**
+     * Check whether a file exists.
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
     public function exists($path)
     {
         return $this->adapter->has($path);
     }
 
+    /**
+     * Get the filesystem adapter (flysystem object)
+     *
+     * @return Flysystem
+     */
     public function getAdapter()
     {
         return $this->adapter;
     }
 
+    /**
+     * Get Filesystem adapter path
+     *
+     * @return string
+     */
     public function getPath()
     {
         return $this->adapter->getAdapter()->getPathPrefix();

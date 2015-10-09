@@ -50,6 +50,13 @@ class Files
         return $this->filesystem->getAdapter()->rename($path, $newPath);
     }
 
+    /**
+     * Copy $_FILES data into directus media
+     *
+     * @param Array $_FILES data
+     *
+     * @return Array directus file info data
+     */
     public function upload(Array $file)
     {
         $filePath = $file['tmp_name'];
@@ -82,6 +89,13 @@ class Files
         ];
     }
 
+    /**
+     * Get URL info
+     *
+     * @param string $url
+     *
+     * @return Array
+     */
     public function getLink($link)
     {
         $settings = $this->filesSettings;
@@ -204,6 +218,14 @@ class Files
         return $fileData;
     }
 
+    /**
+     * Copy base64 data into Directus Media
+     *
+     * @param string $fileData - base64 data
+     * @param string $fileName - name of the file
+     *
+     * @return bool
+     */
     public function saveData($fileData, $fileName)
     {
         if (strpos($fileData, 'data:') === 0) {
@@ -249,6 +271,13 @@ class Files
         ];
     }
 
+    /**
+     * Get file info
+     *
+     * @param string $path
+     *
+     * @return Array file info
+     */
     public function getFileInfo($filePath)
     {
         $finfo = new \finfo(FILEINFO_MIME);
@@ -300,6 +329,13 @@ class Files
         return $info;
     }
 
+    /**
+     * Get file settings
+     *
+     * @param string $key - Optional setting key name
+     *
+     * @return mixed
+     */
     public function getSettings($key = '')
     {
         if (!$key) {
@@ -311,6 +347,13 @@ class Files
         return false;
     }
 
+    /**
+     * Get filesystem config
+     *
+     * @param string $key - Optional config key name
+     *
+     * @return mixed
+     */
     public function getConfig($key = '')
     {
         if (!$key) {
@@ -322,6 +365,14 @@ class Files
         return false;
     }
 
+    /**
+     * Create a thumbnail
+     *
+     * @param string $imageName - the name of the image. it must exists on files.
+     *
+     * @return void
+     */
+     // @TODO: it should return thumbnail info.
     private function createThumbnails($imageName)
     {
         $targetFileName = $this->getConfig('root') . '/' . $imageName;
@@ -339,6 +390,14 @@ class Files
         }
     }
 
+    /**
+     * Creates a new file for Directus Media
+     *
+     * @param string $filePath
+     * @param string $targetName
+     *
+     * @return Array file info
+     */
     private function processUpload($filePath, $targetName)
     {
         $fileData = $this->getFileInfo($filePath);
@@ -357,6 +416,13 @@ class Files
         return $fileData;
     }
 
+    /**
+     * Sanitize title name from file name
+     *
+     * @param string $fileName
+     *
+     * @return string
+     */
     private function sanitizeName($fileName)
     {
         // do not start with dot
@@ -366,6 +432,15 @@ class Files
         return $fileName;
     }
 
+    /**
+     * Add suffix number to file name if already exists.
+     *
+     * @param string $fileName
+     * @param string $targetPath
+     * @param int    $attempt - Optional
+     *
+     * @return bool
+     */
     private function uniqueName($fileName, $targetPath, $attempt = 0)
     {
         $info = pathinfo($fileName);
@@ -397,6 +472,13 @@ class Files
         return $fileName;
     }
 
+    /**
+     * Get file name based on file naming setting
+     *
+     * @param string $fileName
+     *
+     * @return string
+     */
     private function getFileName($fileName)
     {
         switch($this->getSettings('file_naming')) {
@@ -408,6 +490,13 @@ class Files
         return $this->uniqueName($fileName, $this->filesystem->getPath());
     }
 
+    /**
+     * Hash file name
+     *
+     * @param string $fileName
+     *
+     * @return string
+     */
     private function hashFileName($fileName)
     {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
@@ -415,6 +504,15 @@ class Files
         return $fileHashName.'.'.$ext;
     }
 
+    /**
+     * Get string between two string
+     *
+     * @param string $string
+     * @param string $start
+     * @param string $end
+     *
+     * @return string
+     */
     private function get_string_between($string, $start, $end)
     {
       $string = " ".$string;
@@ -425,6 +523,13 @@ class Files
       return substr($string,$ini,$len);
     }
 
+    /**
+     * Get URL info
+     *
+     * @param string $link
+     *
+     * @return Array
+     */
     public function getLinkInfo($link)
     {
         $fileData = array();
