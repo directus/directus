@@ -94,6 +94,7 @@ class Bootstrap {
     }
 
     private static function config() {
+        self::requireConstants('BASE_PATH', __FUNCTION__);
         $config = require APPLICATION_PATH . "/api/configuration.php";
         return $config;
     }
