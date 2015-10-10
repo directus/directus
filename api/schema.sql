@@ -114,7 +114,7 @@ CREATE TABLE `directus_files` (
   `embed_id` varchar(200) DEFAULT NULL,
   `user` int(11) NOT NULL,
   `date_uploaded` datetime DEFAULT NULL,
-  `storage_adapter` int(11) unsigned DEFAULT NULL COMMENT 'FK `directus_storage_adapters`.`id`',
+  `storage_adapter` varchar(50) DEFAULT NULL,
   `needs_index` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';
