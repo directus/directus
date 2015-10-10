@@ -275,14 +275,19 @@ class Files
      * Get file info
      *
      * @param string $path
+     * @param bool if the $path is outside of the adapter root path.
      *
      * @return Array file info
      */
-    public function getFileInfo($filePath)
+    public function getFileInfo($filePath, $outside = false)
     {
         $finfo = new \finfo(FILEINFO_MIME);
         // $type = explode('; charset=', $finfo->file($filePath));
-        $buffer = $this->filesystem->getAdapter()->read($filePath);
+        if ($outside === true) {
+            $buffer = file_get_contents($filePath);
+        } else {
+            $buffer = $this->filesystem->getAdapter()->read($filePath);
+        }
         $type = explode('; charset=', $finfo->buffer($buffer));
         $info = array('type' => $type[0], 'charset' => $type[1]);
         $typeTokens = explode('/', $info['type']);
@@ -400,14 +405,16 @@ class Files
      */
     private function processUpload($filePath, $targetName)
     {
-        $fileData = $this->getFileInfo($filePath);
+        // set true as $filePath it's outside adapter path
+        // $filePath is on a temporary php directory
+        $fileData = $this->getFileInfo($filePath, true);
         $mediaPath = $this->filesystem->getPath();
 
         $fileData['title'] = Formatting::fileNameToFileTitle($targetName);
 
         $targetName = $this->getFileName($targetName);
         $finalPath = rtrim($mediaPath, '/').'/'.$targetName;
-        $this->filesystem->getAdapter()->write($targetName, file_get_contents($filePath), new FlysystemConfig());
+        $this->filesystem->getAdapter()->write($targetName, file_get_contents($filePath));
 
         $fileData['name'] = basename($finalPath);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
