@@ -94,12 +94,8 @@ class Bootstrap {
     }
 
     private static function config() {
+        self::requireConstants('BASE_PATH', __FUNCTION__);
         $config = require APPLICATION_PATH . "/api/configuration.php";
-        return $config;
-    }
-
-    private static function configFilesystem() {
-        $config = require BASE_PATH . "/api/filesystem.php";
         return $config;
     }
 
@@ -271,8 +267,8 @@ class Bootstrap {
 
     private static function filesystem()
     {
-        $config = self::get('configFilesystem');
-        return new Filesystem(FilesystemFactory::createAdapter($config));
+        $config = self::get('config');
+        return new Filesystem(FilesystemFactory::createAdapter($config['filesystem']));
     }
 
     /**

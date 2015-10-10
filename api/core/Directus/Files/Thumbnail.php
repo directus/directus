@@ -8,13 +8,16 @@ class Thumbnail {
         switch($format) {
             case 'jpg':
             case 'jpeg':
-                $img = imagecreatefromjpeg($localPath);
+                // $img = imagecreatefromjpeg($localPath);
+				$img = imagecreatefromstring($localPath);
                 break;
             case 'gif':
-                $img = imagecreatefromgif($localPath);
+                // $img = imagecreatefromgif($localPath);
+				$img = imagecreatefromstring($localPath);
                 break;
             case 'png':
-                $img = imagecreatefrompng($localPath);
+                // $img = imagecreatefrompng($localPath);
+				$img = imagecreatefromstring($localPath);
                 break;
             case 'pdf':
             case 'psd':
@@ -22,12 +25,14 @@ class Thumbnail {
             case 'tiff':
               if(extension_loaded('imagick')) {
                 $image = new \Imagick();
-                $image->readImage($localPath);
+                // $image->readImage($localPath);
+				$image->readImageBlob($localPath);
                 $image->setIteratorIndex(0);
                 $image->setImageFormat('jpeg');
-                $tempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-                $image->writeImage($tempName);
-                $img = imagecreatefromjpeg($tempName);
+                // $tempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+                // $image->writeImage($tempName);
+                // $img = imagecreatefromjpeg($tempName);
+				$img = $image->getImageBlob();
               } else {
                 return false;
               }
@@ -87,25 +92,28 @@ class Thumbnail {
 	}
 
 	public static function writeImage($extension, $path, $img, $quality) {
+		ob_start();
+		// force $path to be NULL to dump writeImage on the stream
+		$path = NULL;
         switch($extension) {
             case 'jpg':
             case 'jpeg':
-                return imagejpeg($img, $path, $quality);
+                imagejpeg($img, $path, $quality);
                 break;
             case 'gif':
-                return imagegif($img, $path);
+                imagegif($img, $path);
                 break;
             case 'png':
-                return imagepng($img, $path);
+                imagepng($img, $path);
                 break;
             case 'pdf':
             case 'psd':
             case 'tif':
             case 'tiff':
-                return imagejpeg($img, $path, $quality);
+            	imagejpeg($img, $path, $quality);
                 break;
         }
-        return false;
+        return ob_get_clean();
 	}
 
 }

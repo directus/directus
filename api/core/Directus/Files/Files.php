@@ -9,6 +9,7 @@ use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Util\Formatting;
 use Directus\Files\Thumbnail;
 use League\Flysystem\Config as FlysystemConfig;
+use League\Flysystem\FileNotFoundException;
 
 class Files
 {
@@ -26,7 +27,8 @@ class Files
         $acl = Bootstrap::get('acl');
         $adapter = Bootstrap::get('ZendDb');
         $this->filesystem = Bootstrap::get('filesystem');
-        $this->config = Bootstrap::get('configFilesystem');
+        $config = Bootstrap::get('config');
+        $this->config = $config['filesystem'] ?: [];
 
         // Fetch files settings
         $Settings = new DirectusSettingsTableGateway($acl, $adapter);
@@ -36,13 +38,40 @@ class Files
         ));
     }
 
+    // @TODO: remove exists() and rename() method
+    // and move it to Directus\Filesystem Wraper
+    public function exists($path)
+    {
+        return $this->filesystem->getAdapter()->has($path);
+    }
+
+    public function rename($path, $newPath)
+    {
+        return $this->filesystem->getAdapter()->rename($path, $newPath);
+    }
+
+    /**
+     * Copy $_FILES data into directus media
+     *
+     * @param Array $_FILES data
+     *
+     * @return Array directus file info data
+     */
     public function upload(Array $file)
     {
         $filePath = $file['tmp_name'];
         $fileName = $file['name'];
 
-        $fileData = array_merge($this->defaults, $this->processUpload($filePath, $fileName));
-        $this->createThumbnails($fileData['name']);
+        try {
+            $fileData = array_merge($this->defaults, $this->processUpload($filePath, $fileName));
+            $this->createThumbnails($fileData['name']);
+        } catch (FileNotFoundException $e) {
+            echo $e->getMessage();
+            exit;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
+        }
 
         return [
             'type' => $fileData['type'],
@@ -60,6 +89,13 @@ class Files
         ];
     }
 
+    /**
+     * Get URL info
+     *
+     * @param string $url
+     *
+     * @return Array
+     */
     public function getLink($link)
     {
         $settings = $this->filesSettings;
@@ -182,18 +218,36 @@ class Files
         return $fileData;
     }
 
+    /**
+     * Copy base64 data into Directus Media
+     *
+     * @param string $fileData - base64 data
+     * @param string $fileName - name of the file
+     *
+     * @return bool
+     */
     public function saveData($fileData, $fileName)
     {
         if (strpos($fileData, 'data:') === 0) {
             $fileData = base64_decode(explode(',', $fileData)[1]);
         }
 
+        // @TODO: merge with upload()
         $fileName = $this->getFileName($fileName);
         $filePath = $this->getConfig('root') . '/' . $fileName;
-        $this->filesystem->getAdapter()->write($fileName, $fileData, new FlysystemConfig());
-        $this->createThumbnails($fileName);
 
-        $fileData = $this->getFileInfo($filePath);
+        try {
+            $this->filesystem->getAdapter()->write($fileName, $fileData);//, new FlysystemConfig());}
+            $this->createThumbnails($fileName);
+        } catch (FileNotFoundException $e) {
+            echo $e->getMessage();
+            exit;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
+        }
+
+        $fileData = $this->getFileInfo($fileName);
         $fileData['title'] = Formatting::fileNameToFileTitle($fileName);
         $fileData['name'] = basename($filePath);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
@@ -217,30 +271,38 @@ class Files
         ];
     }
 
-    public function exists($filename)
-    {
-        return $this->filesystem->getAdapter()->has($filename);
-    }
-
-    public function rename($name, $newName)
-    {
-        return $this->filesystem->getAdapter()->rename($name, $newName);
-    }
-
-    public function getFileInfo($filePath)
+    /**
+     * Get file info
+     *
+     * @param string $path
+     * @param bool if the $path is outside of the adapter root path.
+     *
+     * @return Array file info
+     */
+    public function getFileInfo($filePath, $outside = false)
     {
         $finfo = new \finfo(FILEINFO_MIME);
-        $type = explode('; charset=', $finfo->file($filePath));
+        // $type = explode('; charset=', $finfo->file($filePath));
+        if ($outside === true) {
+            $buffer = file_get_contents($filePath);
+        } else {
+            $buffer = $this->filesystem->getAdapter()->read($filePath);
+        }
+        $type = explode('; charset=', $finfo->buffer($buffer));
         $info = array('type' => $type[0], 'charset' => $type[1]);
         $typeTokens = explode('/', $info['type']);
         $info['format'] = $typeTokens[1]; // was: $this->format
-        $info['size'] = filesize($filePath);
+        $info['size'] = strlen($buffer);//filesize($filePath);
         $info['width'] = null;
         $info['height'] = null;
 
         if($typeTokens[0] == 'image') {
             $meta = array();
-            $size = getimagesize($filePath, $meta);
+            //$size = getimagesize($filePath, $meta);
+            $size = [];
+            $image = imagecreatefromstring($buffer);
+            $size[] = imagesx($image);
+            $size[] = imagesy($image);
 
             $info['width'] = $size[0];
             $info['height'] = $size[1];
@@ -272,6 +334,13 @@ class Files
         return $info;
     }
 
+    /**
+     * Get file settings
+     *
+     * @param string $key - Optional setting key name
+     *
+     * @return mixed
+     */
     public function getSettings($key = '')
     {
         if (!$key) {
@@ -283,6 +352,13 @@ class Files
         return false;
     }
 
+    /**
+     * Get filesystem config
+     *
+     * @param string $key - Optional config key name
+     *
+     * @return mixed
+     */
     public function getConfig($key = '')
     {
         if (!$key) {
@@ -294,30 +370,51 @@ class Files
         return false;
     }
 
+    /**
+     * Create a thumbnail
+     *
+     * @param string $imageName - the name of the image. it must exists on files.
+     *
+     * @return void
+     */
+     // @TODO: it should return thumbnail info.
     private function createThumbnails($imageName)
     {
         $targetFileName = $this->getConfig('root') . '/' . $imageName;
         $info = pathinfo($targetFileName);
 
         if (in_array($info['extension'], array('jpg','jpeg','png','gif','tif', 'tiff', 'psd', 'pdf'))) {
-            $img = Thumbnail::generateThumbnail($targetFileName, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
+            $targetContent = $this->filesystem->getAdapter()->read($imageName);
+            $img = Thumbnail::generateThumbnail($targetContent, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
             if($img) {
-              $thumbnailTempName = $this->getConfig('root') . '/thumbs/THUMB_' . $imageName;
-              Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
+                //   $thumbnailTempName = $this->getConfig('root') . '/thumbs/THUMB_' . $imageName;
+                $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
+                $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
+                $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);//, new FlysystemConfig());
             }
         }
     }
 
+    /**
+     * Creates a new file for Directus Media
+     *
+     * @param string $filePath
+     * @param string $targetName
+     *
+     * @return Array file info
+     */
     private function processUpload($filePath, $targetName)
     {
-        $fileData = $this->getFileInfo($filePath);
+        // set true as $filePath it's outside adapter path
+        // $filePath is on a temporary php directory
+        $fileData = $this->getFileInfo($filePath, true);
         $mediaPath = $this->filesystem->getPath();
 
         $fileData['title'] = Formatting::fileNameToFileTitle($targetName);
 
         $targetName = $this->getFileName($targetName);
         $finalPath = rtrim($mediaPath, '/').'/'.$targetName;
-        $this->filesystem->getAdapter()->write($targetName, file_get_contents($filePath), new FlysystemConfig());
+        $this->filesystem->getAdapter()->write($targetName, file_get_contents($filePath));
 
         $fileData['name'] = basename($finalPath);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
@@ -326,6 +423,13 @@ class Files
         return $fileData;
     }
 
+    /**
+     * Sanitize title name from file name
+     *
+     * @param string $fileName
+     *
+     * @return string
+     */
     private function sanitizeName($fileName)
     {
         // do not start with dot
@@ -335,6 +439,15 @@ class Files
         return $fileName;
     }
 
+    /**
+     * Add suffix number to file name if already exists.
+     *
+     * @param string $fileName
+     * @param string $targetPath
+     * @param int    $attempt - Optional
+     *
+     * @return bool
+     */
     private function uniqueName($fileName, $targetPath, $attempt = 0)
     {
         $info = pathinfo($fileName);
@@ -366,6 +479,13 @@ class Files
         return $fileName;
     }
 
+    /**
+     * Get file name based on file naming setting
+     *
+     * @param string $fileName
+     *
+     * @return string
+     */
     private function getFileName($fileName)
     {
         switch($this->getSettings('file_naming')) {
@@ -377,6 +497,13 @@ class Files
         return $this->uniqueName($fileName, $this->filesystem->getPath());
     }
 
+    /**
+     * Hash file name
+     *
+     * @param string $fileName
+     *
+     * @return string
+     */
     private function hashFileName($fileName)
     {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
@@ -384,6 +511,15 @@ class Files
         return $fileHashName.'.'.$ext;
     }
 
+    /**
+     * Get string between two string
+     *
+     * @param string $string
+     * @param string $start
+     * @param string $end
+     *
+     * @return string
+     */
     private function get_string_between($string, $start, $end)
     {
       $string = " ".$string;
@@ -394,6 +530,13 @@ class Files
       return substr($string,$ini,$len);
     }
 
+    /**
+     * Get URL info
+     *
+     * @param string $link
+     *
+     * @return Array
+     */
     public function getLinkInfo($link)
     {
         $fileData = array();

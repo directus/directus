@@ -55,7 +55,8 @@ function getNonces() {
 };
 
 function getStorageAdapters() {
-    $storageAdapter = Bootstrap::get('configFilesystem');
+    $config = Bootstrap::get('config');
+    $storageAdapter = $config['filesystem'];
     return [
         $storageAdapter['adapter'] => [
             'adapter' => $storageAdapter['adapter'],
