@@ -213,7 +213,7 @@ CREATE TABLE `directus_privileges` (
   `allow_edit` tinyint(1) DEFAULT '1' COMMENT '0=no editing, 1=edit your records, 2=edit everyones records',
   `allow_delete` tinyint(1) DEFAULT '1' COMMENT '0=no deleting, 1=delete your records, 2=delete everyones records',
   `allow_alter` tinyint(1) DEFAULT '1' COMMENT '0=no altering, 1=allow altering',
-  `status_id` tinyint(1) NOT NULL DEFAULT NULL COMMENT 'NULL=permissions apply to records with any status, [0,1,2,etc]=permissions apply to records with this status',
+  `status_id` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'NULL=permissions apply to records with any status, [0,1,2,etc]=permissions apply to records with this status',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
