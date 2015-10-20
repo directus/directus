@@ -138,7 +138,7 @@ define([
                   <div class="ui-file-container"> \
                     {{#if url}} \
                     <div class="single-image-thumbnail has-file"> \
-                      {{#if fileModel.youtube}}<iframe width="280" height="160" src="http://www.youtube.com/embed/{{fileModel.youtube}}?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe> \
+                      {{#if fileModel.youtube}}<iframe width="280" height="160" src="//www.youtube.com/embed/{{fileModel.youtube}}?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe> \
                       {{else}} \
                         {{#if fileModel.vimeo}} <iframe src="//player.vimeo.com/video/{{fileModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="280" height="160" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
                         {{else}}<a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a>{{/if}} \
