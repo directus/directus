@@ -46,7 +46,7 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
   $_SESSION['username'] = $_POST['username'];
   $_SESSION['db_password'] = $_POST['password'];
   $_SESSION['db_name'] = $_POST['db_name'];
-  $_SESSION['db_prefix'] = $_POST['db_prefix'];
+  $_SESSION['db_prefix'] = '';//$_POST['db_prefix'];
   if(isset($_POST['install_sample'])) {
     $_SESSION['install_sample'] = $_POST['install_sample'];
   } else {
@@ -98,7 +98,7 @@ if($step == 3 && isset($_POST['install'])) {
   <meta name="author" content="RANGER Studio LLC">
 
   <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="install.css?v=1.0">
 <style>.error{
   border: 1px solid red!important;;
@@ -189,11 +189,10 @@ if($step == 2) {
   </div>
   <div class="body">
     <div class="container">
-        Host Name<input type="text" class="<?php if($code == 2002){echo "error";}?>" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : ''); ?>"><br>
+        Host Name<input type="text" class="<?php if($code == 2002){echo "error";}?>" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : 'localhost'); ?>"><br>
         Username<input type="text" class="<?php if($code == 1045){echo "error";}?>" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
         Password<input type="password" class="<?php if($code == 1045){echo "error";}?>" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
         Database Name<input type="text" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
-        Database Prefix (optional)<input type="text" name="db_prefix" value="<?php echo(isset($_SESSION['db_prefix']) ? $_SESSION['db_prefix'] : ''); ?>"><br>
         <input type="checkbox" name="install_sample" value="yes" <?php echo(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == 'yes' ? 'checked' : ''); ?>>Install Sample Data<br>
 <?php
 }
@@ -249,10 +248,6 @@ if($step == 3) {
             <td class="item">Database Name</td>
             <td class="result"><?php echo $_SESSION['db_name'];?></td>
           </tr>
-          <tr>
-            <td class="item">Database Prefix</td>
-            <td class="result"><?php echo(isset($_SESSION['db_prefix']) && !empty($_SESSION['db_prefix']) ? $_SESSION['db_prefix'] : '--');?></td>
-          </tr>
         </tbody>
       </table>
 
@@ -273,8 +268,8 @@ if($step == 3) {
             <td class="result"><span class="label label-success">Yes</span></td>
           </tr>
           <tr>
-            <td class="item">Composer Dependencies Installed</td>
-            <td class="result"><?php if(file_exists('../api/vendor/autoload.php')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus6/wiki/Installation-Guides#how-to-install-composer-dependencies" target="_blank"> ?</a>');} ?></td>
+            <td class="item">Composer Dependencies Installed (../api/composer.json)</td>
+            <td class="result"><?php if(file_exists('../api/vendor/autoload.php')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/Directus/wiki/6.-Development-Build#step-4-install-dependencies" target="_blank"> ?</a>');} ?></td>
           </tr>
           <tr>
             <td class="item">Logs Writable (../api/logs/)</td>
@@ -282,11 +277,11 @@ if($step == 3) {
           </tr>
           <tr>
             <td class="item">mod_rewrite Enabled</td>
-            <td class="result"><?php if(in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus6/wiki/Installation-Guides#how-to-enable-mod_rewrite" target="_blank"> ?</a>');}?></td>
+            <td class="result"><?php if(function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">Yes</span>');}else{echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/directus6/wiki/Installation-Guides#how-to-enable-mod_rewrite" target="_blank"> ?</a>');}?></td>
           </tr>
           <tr>
             <td class="item">Config Writable (../api/config.php)</td>
-            <td class="result"><?php if(is_writable('../api/config.php')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span class="label label-important">No</span>');}?></td>
+            <td class="result"><?php if(is_writable('../api')) {$showConfig = false; echo('<span class="label label-success">Yes</span>');}else{$showConfig = true; echo('<span class="label label-important">No</span>');}?></td>
           </tr>
           <tr>
             <td class="item">Migration Config</td>
@@ -339,6 +334,7 @@ if($step == 4) {
   require_once('query.php');
   $setupResponse = $main->execute(array('', 'db:setup'));
   $migrateResponse = $main->execute(array('', 'db:migrate'));
+  AddSettings($mysqli);
   AddDefaultUser($_SESSION['email'], $_SESSION['password'], $mysqli);
   AddStorageAdapters($mysqli);
   if(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == "yes") {
@@ -386,10 +382,6 @@ if($step == 4) {
             <td class="item">Database Name</td>
             <td class="result">'.$_SESSION['db_name'].'</td>
           </tr>
-          <tr>
-            <td class="item">Database Prefix</td>
-            <td class="result">'.$_SESSION['db_prefix'].'</td>
-          </tr>
         </tbody>
       </table>
 
@@ -401,7 +393,14 @@ if($step == 4) {
   $mysqli->close();
 
   require_once('config_setup.php');
-  WriteConfig();
+  WriteConfig(array(
+    'db_host' => $_SESSION['host_name'],
+    'db_name' => $_SESSION['db_name'],
+    'db_user' => $_SESSION['username'],
+    'db_pass' => $_SESSION['db_password'],
+    'db_prefix' => '',//$_SESSION['db_prefix'],
+    'directus_path' => $_SESSION['directus_path'],
+  ));
 
   // @TODO: put all this data into an array.
   // so we can clear all session unset($_SESSION['installation']);

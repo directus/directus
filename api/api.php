@@ -222,14 +222,30 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
         }
     }
 
-    if(!$user) {
+    if (!$user) {
         return JsonView::render($response);
     }
+
+    // @todo: Login should fail on correct information when user is not active.
     $response['success'] = Auth::login($user['id'], $user['password'], $user['salt'], $password);
+
+    // When the credentials are correct but the user is Inactive
+    $userHasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $user);
+    $isUserActive = false;
+    if ($userHasStatusColumn && $user[STATUS_COLUMN_NAME] == STATUS_ACTIVE_NUM) {
+        $isUserActive = true;
+    }
+
+    if ($response['success'] && !$isUserActive) {
+        Auth::logout();
+        $response['success'] = false;
+        $response['message'] = 'You do not have access to this system';
+        return JsonView::render($response);
+    }
 
     if($response['success']) {
         unset($response['message']);
-        $response['last_page'] = $user['last_page'];
+        $response['last_page'] = json_decode($user['last_page']);
         $set = array('last_login' => new Expression('NOW()'));
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
@@ -302,24 +318,10 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     }
 
     $password = uniqid();
-    $appURL = HOST_URL; // Took this out of the email body since it refers to the wrong URL (app, not directus)
-
-    $emailBodyPlainText = <<<EMAILBODY
-Hey there,
-
-Here is a temporary password to access Directus:
-
-$password
-
-Once you log in, you can change your password via the User Settings menu.
-
-Thanks!
-Directus
-EMAILBODY;
-
     $set = array();
     $set['salt'] = uniqid();
     $set['password'] = Auth::hashPassword($password, $set['salt']);
+
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
     $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
@@ -330,11 +332,9 @@ EMAILBODY;
         ));
     }
 
-    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
-    'Reply-To: donotreply@getdirectus.com' . "\r\n" .
-    'X-Mailer: PHP/' . phpversion();
+    $mail = new Directus\Mail\Mailer();
+    $mail->send(new Directus\Mail\ForgotPasswordMail($user['email'], $password));
 
-    mail($user['email'], 'You Reset Your Directus Password', $emailBodyPlainText, $headers);
     $success = true;
     return JsonView::render(array(
         'success' => $success
@@ -389,6 +389,12 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
     }
 
     if(isset($requestPayload['addTable'])) {
+      $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
+      $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+      if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+          $app->response->setStatus(400);
+          return JsonView::render(array('message'=> 'Invalid table name'));
+      }
       unset($requestPayload['addTable']);
       try{
         $statusColumnName = STATUS_COLUMN_NAME;
@@ -463,12 +469,12 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
             $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
             $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
             $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
-            $params['id'] = $newRecord['id'];
+            $params[$TableGateway->primaryKeyFieldName] = $newRecord[$TableGateway->primaryKeyFieldName];
             break;
         // PUT a change set of table entries
         case 'PUT':
             if(!is_numeric_array($requestPayload)) {
-                $params['id'] = $requestPayload['id'];
+                $params[$TableGateway->primaryKeyFieldName] = $requestPayload[$TableGateway->primaryKeyFieldName];
                 $requestPayload = array($requestPayload);
             }
             $TableGateway->updateCollection($requestPayload);
@@ -486,15 +492,16 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   if(!isset($params['columns'])) {
     $params['columns'] = '';
   }
-  $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
+  if(!array_key_exists('include_inactive', $params)) {
+    $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
+  }
 
-  $columns = explode(',', $params['columns']);
-
+  $columns = ($params['columns']) ? explode(',', $params['columns']) : array();
   if(count($columns) > 0) {
     $params['group_by'] = $columns[0];
 
     if(isset($params['q'])) {
-      $params['adv_where'] = $columns[0].' like \'%'.$params['q'].'%\'';
+      $params['adv_where'] = "`{$columns[0]}` like '%{$params['q']}%'";
       $params['perPage'] = 50;
     }
   }
@@ -535,17 +542,18 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
         // PUT an updated table entry
         case 'PATCH':
         case 'PUT':
-            $requestPayload['id'] = $id;
+            $requestPayload[$TableGateway->primaryKeyFieldName] = $id;
             $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
             $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
             $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
             break;
         // DELETE a given table entry
         case 'DELETE':
-            echo $TableGateway->delete(array('id' => $id));
+            echo $TableGateway->delete(array($TableGateway->primaryKeyFieldName => $id));
             return;
     }
-    $params['id'] = $id;
+
+    $params[$TableGateway->primaryKeyFieldName] = $id;
     // GET a table entry
     $Table = new TableGateway($acl, $table, $ZendDb);
     $entries = $Table->getEntries($params);
@@ -697,6 +705,14 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
       case "POST":
         $requestPayload['user'] = $currentUser['id'];
         $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
+
+        // When the file is uploaded there's not a data key
+        if (array_key_exists('data', $requestPayload)) {
+            $Storage = new Files\Storage\Storage();
+            $recordData = $Storage->saveData($requestPayload['data'], $requestPayload['name']);
+            $requestPayload['file_name'] = $requestPayload['name'];
+            $requestPayload = array_merge($requestPayload, $recordData);
+        }
         $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
         $params['id'] = $newRecord['id'];
         break;
@@ -775,7 +791,7 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($ZendDb, $acl
 
     if(isset($params['newTitle'])) {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
-        $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
+        // $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
     } else {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table);
     }
@@ -807,7 +823,10 @@ $app->map("/$v/bookmarks(/:id)/?", function($id = null) use ($params, $app, $Zen
       $id = $bookmarks->insertBookmark($requestPayload);
       break;
     case "DELETE":
-      echo $bookmarks->delete(array('id' => $id));
+      $bookmark = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
+      if($bookmark) {
+        echo $bookmarks->delete(array('id' => $id));
+      }
       return;
   }
   $jsonResponse = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
@@ -862,7 +881,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       'single' => (int)$data['single'],
       'is_junction_table' => (int)$data['is_junction_table'],
       'footer' => (int)$data['footer'],
-      'primary_column' => $data['primary_column']
+      'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
     );
 
     //@TODO: Possibly pretty this up so not doing direct inserts/updates
@@ -936,6 +955,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
     if(isset($_POST['link'])) {
         $fileData = array('caption'=>'','tags'=>'','location'=>'');
         $fileData = array_merge($fileData, $Storage->acceptLink($_POST['link']));
+
         $result[] = array(
             'type' => $fileData['type'],
             'name' => $fileData['name'],
@@ -948,8 +968,9 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
             'width' => $fileData['width'],
             'height' => $fileData['height'],
             'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
-            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-            'storage_adapter' => $fileData['storage_adapter']
+            'data' => (isset($fileData['data'])) ? $fileData['data'] : null
+            //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            //'storage_adapter' => $fileData['storage_adapter']
         );
     }
     JsonView::render($result);
@@ -1045,31 +1066,24 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
       $Activity->recordMessage($requestPayload, $currentUser['id']);
     }
 
-    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
-    'Reply-To: donotreply@getdirectus.com' . "\r\n" .
-    'X-Mailer: PHP/' . phpversion();
-
-    $warning = null;
-
+    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
-      $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
-      $user = $usersTableGateway->findOneBy('id', $recipient);
+        $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+        $user = $usersTableGateway->findOneBy('id', $recipient);
 
-      if(isset($user) && $user['email_messages'] == 1) {
-        try {
-            mail($user['email'], $requestPayload['subject'], $requestPayload['message'], $headers);
-        } catch(\Exception $e) {
-            $warning = $e->getMessage();
+        if(isset($user) && $user['email_messages'] == 1) {
+            $messageNotificationMail = new Directus\Mail\NotificationMail(
+                                    $user['email'],
+                                    $requestPayload['subject'],
+                                    $requestPayload['message']
+                                );
+
+            $mail->send($messageNotificationMail);
+            $mail->ClearAllRecipients();
         }
-      }
     }
 
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
-
-    //Attach warning if thier are any
-    if($warning != null) {
-        $message['warning'] = $warning;
-    }
 
     JsonView::render($message);
 });
@@ -1146,23 +1160,19 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
       $i++;
     }
 
-    $headers = 'From: donotreply@getdirectus.com' . "\r\n" .
-      'Reply-To: donotreply@getdirectus.com' . "\r\n" .
-      'MIME-Version: 1.0' . "\r\n" .
-      'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
-      'X-Mailer: PHP/' . phpversion();
-
-    $messageBody.="<br/><br/>--<br/>
-      This message was sent to ".$recipientString.".<br/>
-      Please <a href='".HOST_URL.DIRECTUS_PATH."'>log in</a> to change your email settings.<br/><br/>
-      <i>Delivered by <a href='http://getdirectus.com/'>Directus</a></i>";
-
+    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
-      $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
-      $user = $usersTableGateway->findOneBy('id', $recipient);
+        $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+        $user = $usersTableGateway->findOneBy('id', $recipient);
 
-      if(isset($user) && $user['email_messages'] == 1) {
-        mail($user['email'],$requestPayload['subject'], $messageBody, $headers);
+        if(isset($user) && $user['email_messages'] == 1) {
+            $NotificationMail = new Directus\Mail\NotificationMail(
+                                    $user['email'],
+                                    $requestPayload['subject'],
+                                    $requestPayload['message']
+                                );
+
+            $mail->send($NotificationMail);
       }
     }
   }

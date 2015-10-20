@@ -16,6 +16,21 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_privileges";
 
+    // @todo: make this part of every table gateway
+    private $fillable = array(
+        'allow_view',
+        'allow_add',
+        'allow_delete',
+        'allow_edit',
+        'allow_alter',
+        'nav_listed',
+        'read_field_blacklist',
+        'write_field_blacklist',
+        'group_id',
+        'table_name',
+        'status_id',
+    );
+
     public function __construct(Acl $acl, AdapterInterface $adapter) {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
@@ -30,16 +45,11 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
     private function verifyPrivilege($attributes) {
         // Making sure alter is set for admin only.
-        $permissions = array_flip(explode(',', $attributes['permissions']));
-        if($this->isCurrentUserAdmin()) {
-            if(!array_key_exists('alter', $permissions)) {
-                $permissions['alter'] = count($permissions); // the id
-                $attributes['permissions'] = implode(',', array_flip($permissions));
-            }
-        } else {
-            if(array_key_exists('alter', $permissions)) {
-                unset($permissions['alter']);
-                $attributes['permissions'] = implode(',', array_flip($permissions));
+        if(array_key_exists('allow_alter', $attributes)) {
+            if ($this->isCurrentUserAdmin()) {
+                $attributes['allow_alter'] = 1;
+            } else {
+                $attributes['allow_alter'] = 0;
             }
         }
 
@@ -74,17 +84,16 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
     // include blacklists when there is a UI for it
     public function insertPrivilege($attributes) {
         $attributes = $this->verifyPrivilege($attributes);
+        // @todo: this should fallback on field default value
+        if (!isset($attributes['status_id'])) {
+            $attributes['status_id'] = 0;
+        }
+        $attributes = $this->getFillableFields($attributes);
 
-        $status_id = (isset($attributes['status_id']) ? $attributes['status_id'] : null);
         $insert = new Insert($this->getTable());
         $insert
-            ->columns(array('table_name','permissions','group_id'))
-            ->values(array(
-                'table_name' => $attributes['table_name'],
-                'permissions' => $attributes['permissions'],
-                'group_id' => $attributes['group_id'],
-                'status_id' => $status_id
-                ));
+            ->columns(array_keys($attributes))
+            ->values($attributes);
         $this->insertWith($insert);
 
         $privilegeId = $this->lastInsertValue;
@@ -92,14 +101,21 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         return $this->fetchById($privilegeId);
     }
 
+    public function getFillableFields($attributes)
+    {
+        return $data = array_intersect_key($attributes, array_flip($this->fillable));
+    }
+
     // @todo This currently only supports permissions,
     // include blacklists when there is a UI for it
     public function updatePrivilege($attributes) {
         $attributes = $this->verifyPrivilege($attributes);
 
+        $data = $this->getFillableFields($attributes);
+
         $update = new Update($this->getTable());
         $update->where->equalTo('id', $attributes['id']);
-        $update->set(array('permissions' => $attributes['permissions'], 'read_field_blacklist' => $attributes['read_field_blacklist'], 'write_field_blacklist' =>$attributes['write_field_blacklist']));
+        $update->set($data);
         $this->updateWith($update);
 
         return $this->fetchById($attributes['id']);
@@ -156,6 +172,11 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
             $privileges[] = $item;
         }
+
+        // sort ascending
+        usort($privileges, function($a, $b) {
+            return strcmp($a['table_name'], $b['table_name']);
+        });
 
         return $privileges;
     }

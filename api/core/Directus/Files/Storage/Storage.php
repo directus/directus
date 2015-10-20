@@ -77,7 +77,6 @@ class Storage {
         $settings = $this->filesSettings;
         $fileData = $this->FilesStorage->getUploadInfo($localFile);
 
-
         // Generate thumbnail if image
         $thumbnailTempName = null;
         $info = pathinfo($targetFileName);
@@ -144,12 +143,15 @@ class Storage {
           $fileData['storage_adapter'] = $filesAdapter['id'];
           $fileData['charset'] = '';
 
-          $img = Thumbnail::generateThumbnail('http://img.youtube.com/vi/' . $video_id . '/0.jpg', 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
-          $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-          Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
-          if(!is_null($thumbnailTempName)) {
-            $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
-          }
+          // $img = Thumbnail::generateThumbnail('http://img.youtube.com/vi/' . $video_id . '/0.jpg', 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
+          // $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+          // Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
+          // if(!is_null($thumbnailTempName)) {
+          //   $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
+          // }
+
+          $linkContent = file_get_contents('http://img.youtube.com/vi/' . $video_id . '/0.jpg');
+          $fileData['data'] = 'data:image/jpeg;base64,' . base64_encode($linkContent);
 
           if ($content !== false) {
             $fileData['title'] = $this->get_string_between($content,"<title type='text'>","</title>");
@@ -201,12 +203,14 @@ class Storage {
             $fileData['tags'] = $array[0]['tags'];
             $vimeo_thumb = $array[0]['thumbnail_large'];
 
-            $img = Thumbnail::generateThumbnail($vimeo_thumb, 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
-            $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-            Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
-            if(!is_null($thumbnailTempName)) {
-              $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
-            }
+            // $img = Thumbnail::generateThumbnail($vimeo_thumb, 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
+            // $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
+            // Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
+            // if(!is_null($thumbnailTempName)) {
+            //   $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
+            // }
+            $linkContent = file_get_contents($vimeo_thumb);
+            $fileData['data'] = 'data:image/jpeg;base64,' . base64_encode($linkContent);
           } else {
             // Unable to get Vimeo details
             $fileData['title'] = "Unable to Retrieve Vimeo Title";
@@ -215,15 +219,48 @@ class Storage {
           }
         } else {
           //Arnt youtube or voimeo so try to curl photo and use uploadfile
-          $content = file_get_contents($link);
-          $tmpFile = tempnam(sys_get_temp_dir(), 'DirectusFile');
-          file_put_contents($tmpFile, $content);
-          $stripped_url = preg_replace('/\\?.*/', '', $link);
-          $realfilename = basename($stripped_url);
-          return self::acceptFile($tmpFile, $realfilename);
+          // $content = file_get_contents($link);
+          // $tmpFile = tempnam(sys_get_temp_dir(), 'DirectusFile');
+          // file_put_contents($tmpFile, $content);
+          // $stripped_url = preg_replace('/\\?.*/', '', $link);
+          // $realfilename = basename($stripped_url);
+          // return self::acceptFile($tmpFile, $realfilename);
+          // return self::acceptFile();
+          $fileData = $this->FilesStorage->getLinkInfo($link);
         }
 
         return $fileData;
+    }
+
+    public function saveData($fileData, $fileName, $destination = null) {
+        if (strpos($fileData, 'data:') === 0) {
+            $fileData = base64_decode(explode(',', $fileData)[1]);
+        }
+
+        if (!$destination) {
+            $destination = $this->storageAdaptersByRole['DEFAULT']['destination'];
+        }
+        $tempFile = $destination . $fileName;
+        file_put_contents($tempFile, $fileData);
+        $fileData = array('caption'=>'','tags'=>'','location'=>'');
+        $fileData = array_merge($fileData, $this->acceptFile($tempFile, $fileName));
+
+        $data = array(
+            'type' => $fileData['type'],
+            'name' => $fileData['name'],
+            'title' => $fileData['title'],
+            'tags' => $fileData['tags'],
+            'caption' => $fileData['caption'],
+            'location' => $fileData['location'],
+            'charset' => $fileData['charset'],
+            'size' => $fileData['size'],
+            'width' => $fileData['width'],
+            'height' => $fileData['height'],
+            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            'storage_adapter' => $fileData['storage_adapter']
+        );
+
+        return $data;
     }
 
     public function saveFile($fileName, $destStorageAdapterId, $newName = null) {
@@ -241,6 +278,7 @@ class Storage {
             $destName = ($newName == null) ? $fileName : $newName;
             $finalPath = $this->FilesStorage->acceptFile($tempLocation.$fileName, $destName, $filesAdapter['destination']);
             $finalName = basename($finalPath);
+            unlink($tempLocation.$fileName);
           } else{
             $finalName = $fileName;
           }

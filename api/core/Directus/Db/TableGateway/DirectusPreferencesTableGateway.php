@@ -47,6 +47,10 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             }
         }
         // Global default values
+        $primaryKeyFieldName = TableSchema::getTablePrimaryKey($table);
+        if ($primaryKeyFieldName) {
+            self::$defaultPreferencesValues['sort'] = $primaryKeyFieldName;
+        }
         foreach(self::$defaultPreferencesValues as $field => $defaultValue) {
             if(!isset($preferences[$field]) || ("0" !== $preferences[$field] && empty($preferences[$field]))) {
                 if(!isset($preferences[$field])) {
@@ -139,6 +143,33 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         return $preferences;
     }
 
+    /*
+     * Temporary while I figured out why the method above
+     * doesn't not construct preferences on table without preferences.
+     */
+    public function fetchByUserAndTable($user_id, $table) {
+        $select = new Select($this->table);
+        $select->limit(1);
+        $select
+            ->where
+                ->equalTo('table_name', $table)
+                ->equalTo('user', $user_id);
+
+        $preferences = $this
+            ->selectWith($select)
+            ->current();
+
+        if(!$preferences) {
+          return $this->constructPreferences($user_id, $table);
+        }
+
+        if($preferences) {
+            $preferences = $preferences->toArray();
+        }
+
+        return $preferences;
+    }
+
     public function updateDefaultByName($user_id, $table, $data) {
         $update = new Update($this->table);
         unset($data['id']);
@@ -169,8 +200,6 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                     "directus_preferences",
                     "directus_privileges",
                     "directus_settings",
-                    "directus_social_feeds",
-                    "directus_social_posts",
                     "directus_storage_adapters",
                     "directus_tables",
                     "directus_tab_privileges",
@@ -186,8 +215,6 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
                     "directus_preferences",
                     "directus_privileges",
                     "directus_settings",
-                    "directus_social_feeds",
-                    "directus_social_posts",
                     "directus_storage_adapters",
                     "directus_tables",
                     "directus_tab_privileges",
