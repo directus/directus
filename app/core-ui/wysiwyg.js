@@ -397,7 +397,7 @@ var template = '<style type="text/css"> \
           for (var i in value) {
             if(i==="src") {
               if(type == 'youtube') {
-                value[i] = "http://youtube.com/embed/" + value[i];
+                value[i] = "//youtube.com/embed/" + value[i];
               } else {
                 value[i] = "//player.vimeo.com/video/" + value[i] + "?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23";
               }
