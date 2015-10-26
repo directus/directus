@@ -562,10 +562,11 @@ define(function(require, exports, module) {
 
       _.each(options.extensions, function(item) {
         try {
-          this.extensions[item] = ExtensionManager.getInstance(item);
+          if (typeof item != 'undefined') {
+            this.extensions[item] = ExtensionManager.getInstance(item);
+          }
         } catch (e) {
-          console.log(item + ' failed to load:', e.stack);
-          this.tabs.get(item).set({'error': e});
+          console.log('failed to load:', e.stack);
           return;
         }
         //this.extensions[item.id].bind('all', logRoute);
