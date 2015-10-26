@@ -56,7 +56,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
   <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
   <meta name="theme-color" content="#ffffff">
 
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
   <!-- build:css assets/css/directus.min.css -->
   <link rel="stylesheet" href="assets/css/directus.css">
   <!--/build -->
