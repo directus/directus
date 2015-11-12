@@ -205,6 +205,9 @@ define(function(require, exports, module) {
         return false;
       }
 
+      // @TODO: make default Attribute available to the baseModel
+      this.parseDefaultValue(UI, schema.options);
+
       return {
         UI: UI,
         schema: schema
@@ -262,6 +265,32 @@ define(function(require, exports, module) {
 
     getList: function(model, attr, noDefault) {
       return this.getUIValue('list', model, attr, noDefault);
+    },
+
+    parseDefaultValue: function(UI, model) {
+      if (!UI.variables) {
+        return;
+      }
+
+      model.get = function(attr) {
+        var attribute = this.attributes[attr];
+
+        if (this.defaultAttributes) {
+          var defaultAttribute = this.defaultAttributes[attr];
+          if (!attribute && defaultAttribute) {
+            return defaultAttribute;
+          }
+        }
+
+        return attribute;
+      };
+
+      _.each(UI.variables, function(variable) {
+        if (typeof variable.def != 'undefined' && model.has(variable.id)) {
+          if (!model.defaultAttributes) model.defaultAttributes = {};
+          model.defaultAttributes[variable.id] = variable.def;
+        }
+      });
     },
 
     // Finds the UI for the provided model/attribute and
