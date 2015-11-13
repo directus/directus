@@ -108,7 +108,10 @@ function(app, Backbone, Sortable) {
     drop: function() {
       var collection = this.collection;
       this.$('tr').each(function(i) {
-        collection.get($(this).attr('data-cid')).set({sort: i},{silent: true});
+        // Use data-id instead of data-cid
+        // As collection models will be synced from the server its cid will be generated again
+        // But the dom element will be still pointing to the older cid
+        collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
       });
 
       if (this.options.saveAfterDrop) {
