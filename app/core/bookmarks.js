@@ -248,7 +248,7 @@ function(app, Backbone, EntriesManager) {
 
       // @todo: make this global application events cleaner
       var self = this;
-      app.on('tables:preferences', function(widget, collection) {debugger;
+      app.on('tables:preferences', function(widget, collection) {
         if (app.router.loadedPreference) {
           app.router.loadedPreference = undefined;
           self.setActive('tables/' + collection.table.id);
