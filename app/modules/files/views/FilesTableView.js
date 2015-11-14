@@ -147,6 +147,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         if(typeof(data[0]) == 'object') {
           fileInfo.model.save(data[0], {
             success: function() {
+              that.collection.sort();
               $(document).on('ajaxStart.directus', function() {
                 app.trigger('progress');
               });
