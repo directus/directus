@@ -220,7 +220,7 @@ gulp.task('singlepage', function () {
 // Composer - Gulp Task
 // --------------------
 gulp.task('composer', function(cb) {
-  var child = cp.spawn('composer', ['install', '--ansi'], {cwd: './api'});
+  var child = cp.spawn('composer', ['install', '--ansi', '--prefer-dist'], {cwd: './dist/api'});
 
   child.stdout.on('data', function(chunk) {
     process.stdout.write(chunk);
@@ -239,7 +239,8 @@ gulp.task('move', function() {
     './api/core/**',
     './api/logs/!*',
     './api/migrations/**/*',
-    './api/vendor/**/*.*',
+    // './api/vendor/**/*.*',
+    './api/composer.json',
     './api/.htaccess',
     './api/api.php',
     './api/config_sample.php',
@@ -310,7 +311,9 @@ gulp.task('jscs', function() {
 // Build - Gulp Task
 // Run all the tasks
 // ------------------- 'composer',
-gulp.task('build', ['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move']);
+gulp.task('build', function(cb) {
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'composer', cb]);
+});
 
 // Default task
 gulp.task('default', ['watch', 'build']);
