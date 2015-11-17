@@ -4,6 +4,8 @@ namespace Directus;
 
 use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Filesystem\Filesystem;
+use Directus\Filesystem\FilesystemFactory;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
@@ -92,6 +94,7 @@ class Bootstrap {
     }
 
     private static function config() {
+        self::requireConstants('BASE_PATH', __FUNCTION__);
         $config = require APPLICATION_PATH . "/api/configuration.php";
         return $config;
     }
@@ -260,6 +263,12 @@ class Bootstrap {
             }
         }
         return $acl;
+    }
+
+    private static function filesystem()
+    {
+        $config = self::get('config');
+        return new Filesystem(FilesystemFactory::createAdapter($config['filesystem']));
     }
 
     /**

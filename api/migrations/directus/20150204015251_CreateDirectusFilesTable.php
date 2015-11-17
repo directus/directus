@@ -114,11 +114,9 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
           "default"=>NULL
         )
       );
-      $t->column("storage_adapter", "integer", array(
-          "limit"=>11,
-          "unsigned"=>true,
-          "default"=>NULL,
-          "COMMENT"=>"FK `directus_storage_adapters`.`id`"
+      $t->column("storage_adapter", "string", array(
+          "limit"=>50,
+          "default"=>NULL
         )
       );
       $t->column("needs_index", "tinyinteger", array(

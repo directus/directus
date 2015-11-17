@@ -358,7 +358,7 @@ define(function(require, exports, module) {
         app.trigger('alert:error', 'There seems to be a problem...', details);
       });
 
-      this.listenTo(this,  'sync', ModelHelper.setIdAttribute);
+      this.listenTo(this, 'sync', ModelHelper.setIdAttribute);
     },
 
     clone: function() {

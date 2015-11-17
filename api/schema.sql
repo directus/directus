@@ -114,7 +114,7 @@ CREATE TABLE `directus_files` (
   `embed_id` varchar(200) DEFAULT NULL,
   `user` int(11) NOT NULL,
   `date_uploaded` datetime DEFAULT NULL,
-  `storage_adapter` int(11) unsigned DEFAULT NULL COMMENT 'FK `directus_storage_adapters`.`id`',
+  `storage_adapter` varchar(50) DEFAULT NULL,
   `needs_index` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';
@@ -213,7 +213,7 @@ CREATE TABLE `directus_privileges` (
   `allow_edit` tinyint(1) DEFAULT '1' COMMENT '0=no editing, 1=edit your records, 2=edit everyones records',
   `allow_delete` tinyint(1) DEFAULT '1' COMMENT '0=no deleting, 1=delete your records, 2=delete everyones records',
   `allow_alter` tinyint(1) DEFAULT '1' COMMENT '0=no altering, 1=allow altering',
-  `status_id` tinyint(1) NOT NULL DEFAULT NULL COMMENT 'NULL=permissions apply to records with any status, [0,1,2,etc]=permissions apply to records with this status',
+  `status_id` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'NULL=permissions apply to records with any status, [0,1,2,etc]=permissions apply to records with this status',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

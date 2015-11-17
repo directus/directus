@@ -44,15 +44,13 @@ function(app, Backbone, Widgets, moment) {
         var type = model.get('type').substring(0, model.get('type').indexOf('/'));
         var subtype = model.get('type').split('/').pop();
 
-        if(type == 'image' || type == 'embed' || subtype == "pdf") {
+        // While loading
+        if (!data.id) {
+          data.thumbnail = '<div class="default-loading"><span class="icon icon-three-dots"></span></div>';
+        } else if(type == 'image' || type == 'embed' || subtype == "pdf") {
           data.thumbnail = '<img src="'+model.makeFileUrl(true)+'">';
         } else {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
-        }
-
-        // While loading
-        if(!data.id){
-          data.thumbnail = '<div class="default-loading"><span class="icon icon-three-dots"></span></div>';
         }
 
         if(type == "embed") {

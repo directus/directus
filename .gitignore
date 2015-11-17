@@ -32,21 +32,22 @@ build_test.html
 build_test_release
 
 extensions/*
-
+!extensions/.gitignore
 ui/*
-!ui/.gitkeep
+!ui/.gitignore
+/listviews/*
+!listviews/.gitignore
+!media/.gitignore
+!media/thumbs/.gitignore
+media_auth_proxy/client_auth_proxies/*
+!media_auth_proxy/client_auth_proxies/.gitignore
 
 utils
 seperator
-
-/listviews/*
-!listviews/.gitkeep
-
-media_auth_proxy/client_auth_proxies/*
-!media_auth_proxy/client_auth_proxies/.gitkeep
 
 .project
 
 # Ignore dev files
 assets/less/directus/config.codekit
 installation/config.codekit
+.idea

@@ -220,7 +220,7 @@ gulp.task('singlepage', function () {
 // Composer - Gulp Task
 // --------------------
 gulp.task('composer', function(cb) {
-  var child = cp.spawn('composer', ['install', '--ansi'], {cwd: './api'});
+  var child = cp.spawn('composer', ['install', '--ansi', '--prefer-dist'], {cwd: './dist/api'});
 
   child.stdout.on('data', function(chunk) {
     process.stdout.write(chunk);
@@ -237,18 +237,24 @@ gulp.task('composer', function(cb) {
 gulp.task('move', function() {
   var filesToMove = [
     './api/core/**',
-    './api/logs/!*',
+    './api/logs/*',
     './api/migrations/**/*',
-    './api/vendor/**/*.*',
+    // './api/vendor/**/*.*',
+    './api/composer.json',
     './api/.htaccess',
-    './api/!(composer.json|composer.lock|config.php|configuration.php|schema.sql)',
+    './api/api.php',
+    './api/config_sample.php',
+    './api/configuration_sample.php',
+    './api/globals.php',
+    './api/ruckusing.conf.php',
+    './api/schema.sql',
     // for login.php
     './assets/js/libs/jquery.js',
     './assets/js/libs/jquery.min.map',
     './assets/js/libs/wysihtml5.js',
     './assets/css/wysiwyg.css',
     './bin/**',
-    './extensions/**',
+    //'./extensions/**',
     './installation/**',
     // These two directories are moved separately below
     //'./listviews/**',
@@ -265,9 +271,13 @@ gulp.task('move', function() {
   ];
 
   var dirsToKeep = [
-    './ui/.gitkeep',
-    './media/**/.gitkeep',
-    './listviews/.gitkeep'
+    './ui/.gitignore',
+    './extensions/.htaccess',
+    './extensions/.gitignore',
+    './media/.htaccess',
+    './media/**/.gitignore',
+    './media_auth_proxy/client_auth_proxies/.gitignore',
+    './listviews/.gitignore'
   ];
 
   var mainFiles = gulp.src(filesToMove, { base: './' })
@@ -305,7 +315,9 @@ gulp.task('jscs', function() {
 // Build - Gulp Task
 // Run all the tasks
 // ------------------- 'composer',
-gulp.task('build', ['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move']);
+gulp.task('build', function(cb) {
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'composer', cb]);
+});
 
 // Default task
 gulp.task('default', ['watch', 'build']);
