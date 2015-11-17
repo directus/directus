@@ -237,7 +237,7 @@ gulp.task('composer', function(cb) {
 gulp.task('move', function() {
   var filesToMove = [
     './api/core/**',
-    './api/logs/!*',
+    './api/logs/*',
     './api/migrations/**/*',
     // './api/vendor/**/*.*',
     './api/composer.json',
@@ -254,7 +254,7 @@ gulp.task('move', function() {
     './assets/js/libs/wysihtml5.js',
     './assets/css/wysiwyg.css',
     './bin/**',
-    './extensions/**',
+    //'./extensions/**',
     './installation/**',
     // These two directories are moved separately below
     //'./listviews/**',
@@ -271,9 +271,13 @@ gulp.task('move', function() {
   ];
 
   var dirsToKeep = [
-    './ui/.gitkeep',
-    './media/**/.gitkeep',
-    './listviews/.gitkeep'
+    './ui/.gitignore',
+    './extensions/.htaccess',
+    './extensions/.gitignore',
+    './media/.htaccess',
+    './media/**/.gitignore',
+    './media_auth_proxy/client_auth_proxies/.gitignore',
+    './listviews/.gitignore'
   ];
 
   var mainFiles = gulp.src(filesToMove, { base: './' })
