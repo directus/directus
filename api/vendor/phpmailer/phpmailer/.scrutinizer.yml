@@ -1,0 +1,132 @@
+build:
+    environment:
+        php: '5.6.0'
+
+before_commands:
+    - "composer install --prefer-source"
+
+tools:
+    external_code_coverage:
+        enabled: true
+        timeout: 300
+        filter:
+            excluded_paths:
+                - 'docs/*'
+                - 'examples/*'
+                - 'extras/*'
+                - 'test/*'
+                - 'vendor/*'
+
+    php_code_coverage:
+        enabled:              false
+        filter:
+            excluded_paths:
+                - 'docs/*'
+                - 'examples/*'
+                - 'extras/*'
+                - 'test/*'
+                - 'vendor/*'
+
+    php_code_sniffer:
+        enabled:              true
+        config:
+            standard:         PSR2
+            sniffs:
+                generic:
+                    files:
+                        one_class_per_file_sniff: false
+        filter:
+            excluded_paths:
+                - 'docs/*'
+                - 'examples/*'
+                - 'extras/*'
+                - 'test/*'
+                - 'vendor/*'
+
+    # Copy/Paste Detector
+    php_cpd:
+        enabled:              true
+        excluded_dirs:
+            - docs
+            - examples
+            - extras
+            - test
+            - vendor
+
+    # PHP CS Fixer (http://http://cs.sensiolabs.org/).
+    php_cs_fixer:
+        enabled:              true
+        config:
+            level:            psr2
+        filter:
+            excluded_paths:
+                - 'docs/*'
+                - 'examples/*'
+                - 'extras/*'
+                - 'test/*'
+                - 'vendor/*'
+
+    # Analyzes the size and structure of a PHP project.
+    php_loc:
+        enabled:              true
+        excluded_dirs:
+            - docs
+            - examples
+            - extras
+            - test
+            - vendor
+
+    # PHP Mess Detector (http://phpmd.org).
+    php_mess_detector:
+        enabled:              true
+        config:
+            rulesets:
+                - codesize
+                - unusedcode
+                - naming
+                - design
+            naming_rules:
+                short_variable: { minimum: 2 }
+        filter:
+            excluded_paths:
+                - 'docs/*'
+                - 'examples/*'
+                - 'extras/*'
+                - 'test/*'
+                - 'vendor/*'
+
+    # Analyzes the size and structure of a PHP project.
+    php_pdepend:
+        enabled:              true
+        excluded_dirs:
+            - docs
+            - examples
+            - extras
+            - test
+            - vendor
+
+    # Runs Scrutinizer's PHP Analyzer Tool
+    # https://scrutinizer-ci.com/docs/tools/php/php-analyzer/config_reference
+    php_analyzer:
+        enabled:              true
+        config:
+            checkstyle:
+                enabled: true
+                naming:
+                    enabled: true
+                    property_name: ^[_a-zA-Z][a-zA-Z0-9_]*$ #Allow underscores & caps
+                    method_name: ^(?:[_a-zA-Z]|__)[a-zA-Z0-9_]*$ #Allow underscores & caps
+                    parameter_name: ^[a-z][a-zA-Z0-9_]*$ # Allow underscores
+                    local_variable: ^[a-zA-Z][a-zA-Z0-9_]*$ #Allow underscores & caps
+                    exception_name: ^[a-zA-Z][a-zA-Z0-9]*Exception$
+                    isser_method_name: ^(?:[_a-zA-Z]|__)[a-zA-Z0-9]*$ #Allow underscores & caps
+        filter:
+            excluded_paths:
+                - 'docs/*'
+                - 'examples/*'
+                - 'extras/*'
+                - 'test/*'
+                - 'vendor/*'
+
+    # Security Advisory Checker
+    sensiolabs_security_checker: true

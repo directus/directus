@@ -1,0 +1,32 @@
+language: php
+php:
+  - 7.0
+  - 5.6
+  - 5.5
+  - 5.4
+  - 5.3
+  - hhvm
+ 
+matrix:
+  allow_failures:
+    - php: hhvm
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq postfix
+before_script:
+  - sudo service postfix stop
+  - smtp-sink -d "%d.%H.%M.%S" localhost:2500 1000 &
+  - mkdir -p build/logs
+  - cd test
+  - cp testbootstrap-dist.php testbootstrap.php
+  - chmod +x fakesendmail.sh
+  - sudo mkdir -p /var/qmail/bin
+  - sudo cp fakesendmail.sh /var/qmail/bin/sendmail
+  - sudo cp fakesendmail.sh /usr/sbin/sendmail
+  - echo 'sendmail_path = "/usr/sbin/sendmail -t -i "' > $(php --ini|grep -m 1 "ini files in:"|cut -d ":" -f 2)/sendmail.ini
+script:
+  - phpunit --configuration ../travis.phpunit.xml.dist
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover ../build/logs/clover.xml

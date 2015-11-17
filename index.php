@@ -55,16 +55,15 @@ function getNonces() {
 };
 
 function getStorageAdapters() {
-    global $ZendDb, $acl;
-    $DirectusStorageAdaptersTableGateway = new DirectusStorageAdaptersTableGateway($acl, $ZendDb);
-    $storageAdapters = $DirectusStorageAdaptersTableGateway->fetchAllByIdNoParams();
-    $adaptersByUniqueRole = array();
-    foreach($storageAdapters as $adapter) {
-        if(!empty($adapter['role'])) {
-            $storageAdapters[$adapter['role']] = $adapter;
-        }
-    }
-    return $storageAdapters;
+    $config = Bootstrap::get('config');
+    $storageAdapter = $config['filesystem'];
+    return [
+        $storageAdapter['adapter'] => [
+            'adapter' => $storageAdapter['adapter'],
+            'root_url' => $storageAdapter['root_url'],
+            'root_thumb_url' => $storageAdapter['root_thumb_url']
+        ]
+    ];
 }
 
 function parseTables($tableSchema) {

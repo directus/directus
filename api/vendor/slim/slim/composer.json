@@ -1,0 +1,22 @@
+{
+    "name": "slim/slim",
+    "type": "library",
+    "description": "Slim Framework, a PHP micro framework",
+    "keywords": ["microframework","rest","router"],
+    "homepage": "http://github.com/codeguy/Slim",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Josh Lockhart",
+            "email": "info@joshlockhart.com",
+            "homepage": "http://www.joshlockhart.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "ext-mcrypt": "*"
+    },
+    "autoload": {
+        "psr-0": { "Slim": "." }
+    }
+}

@@ -1,0 +1,21 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+
+before_script:
+  - mysql -uroot < tests/test.sql
+  - psql -Upostgres -f tests/test.sql
+  - touch tests/dummy/db/test.sqlite3
+  - curl -s http://getcomposer.org/installer | php
+  - php composer.phar install
+
+notifications:
+  email:
+    recipients:
+      - codycaughlan@gmail.com
+      - me@salimane.com
+    on_success: change
+    on_failure: always

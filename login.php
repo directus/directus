@@ -9,6 +9,9 @@ if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
 $loader = require 'api/vendor/autoload.php';
 $loader->add("Directus", dirname(__FILE__) . "/api/core/");
 
+define('BASE_PATH', dirname(__FILE__));
+define('API_PATH', BASE_PATH . '/api');
+
 require "api/config.php";
 require "api/globals.php";
 

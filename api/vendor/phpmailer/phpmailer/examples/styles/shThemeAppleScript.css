@@ -1,0 +1,21 @@
+.syntaxhighlighter.applescript{background:white;font-size:1em;color:black;}
+.syntaxhighlighter.applescript div,.syntaxhighlighter.applescript code{font:1em/1.25 Verdana,sans-serif !important;}
+.syntaxhighlighter.applescript .code .line{overflow:hidden !important;}
+.syntaxhighlighter.applescript .code .line.highlighted{background:#b5d5ff !important;}
+.syntaxhighlighter.applescript .color1{color:#000000 !important;}
+.syntaxhighlighter.applescript .color2{color:#000000 !important;}
+.syntaxhighlighter.applescript .color3{color:#000000 !important;font-weight:bold !important;}
+.syntaxhighlighter.applescript .keyword{color:#000000 !important;font-weight:bold !important;}
+.syntaxhighlighter.applescript .color4{color:#0000ff !important;font-style:italic !important;}
+.syntaxhighlighter.applescript .comments{color:#4c4d4d !important;}
+.syntaxhighlighter.applescript .plain{color:#408000 !important;}
+.syntaxhighlighter.applescript .string{color:#000000 !important;}
+.syntaxhighlighter.applescript .commandNames{color:#0000ff !important;font-weight:bold !important;}
+.syntaxhighlighter.applescript .parameterNames{color:#0000ff !important;}
+.syntaxhighlighter.applescript .classes{color:#0000ff !important;font-style:italic !important;}
+.syntaxhighlighter.applescript .properties{color:#6c04d4 !important;}
+.syntaxhighlighter.applescript .enumeratedValues{color:#4a1e7f !important;}
+.syntaxhighlighter.applescript .additionCommandNames{color:#0016b0 !important;font-weight:bold !important;}
+.syntaxhighlighter.applescript .additionParameterNames{color:#0016b0 !important;}
+.syntaxhighlighter.applescript .additionClasses{color:#0016b0 !important;font-style:italic !important;}
+.syntaxhighlighter.applescript .spaces{display:inline-block;height:0 !important;font-size:1.75em !important;line-height:0 !important;}

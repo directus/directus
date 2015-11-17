@@ -90,6 +90,18 @@ return array(
         'prefix' =>  'directus6_'
     ),
 
+    'filesystem' => array(
+        'adapter' => 'local',
+        'root' => BASE_PATH . '/media',
+        'root_url' => '/media',
+        'root_thumb_url' => '/media/thumbs',
+        //   'key'    => 's3-key',
+        //   'secret' => 's3-key',
+        //   'region' => 's3-region',
+        //   'version' => 's3-version',
+        //   'bucket' => 's3-bucket'
+    ),
+
     'HTTP' => array(
         'forceHttps' => false,
         'isHttpsFn' => function () {

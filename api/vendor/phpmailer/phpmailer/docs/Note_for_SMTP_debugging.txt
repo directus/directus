@@ -1,0 +1,17 @@
+If you are having problems connecting or sending emails through your SMTP server, the SMTP class can provide more information about the processing/errors taking place.
+Use the debug functionality of the class to see what's going on in your connections. To do that, set the debug level in your script. For example:
+
+$mail->SMTPDebug = 1;
+$mail->isSMTP();  // telling the class to use SMTP
+$mail->SMTPAuth   = true;                // enable SMTP authentication
+$mail->Port       = 26;                  // set the SMTP port
+$mail->Host       = "mail.yourhost.com"; // SMTP server
+$mail->Username   = "name@yourhost.com"; // SMTP account username
+$mail->Password   = "your password";     // SMTP account password
+
+Notes on this:
+$mail->SMTPDebug = 0; ... will disable debugging (you can also leave this out completely, 0 is the default)
+$mail->SMTPDebug = 1; ... will echo errors and server responses
+$mail->SMTPDebug = 2; ... will echo errors, server responses and client messages
+
+And finally, don't forget to disable debugging before going into production.
