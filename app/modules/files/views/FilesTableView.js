@@ -122,6 +122,9 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
       var name = app.statusMapping.status_name;
         var name = {title: file.name, size: file.size, type: file.type};
         name[app.statusMapping.status_name] = app.statusMapping.active_num;
+        // All files should be sort by date
+        // Setting a temporary date will make this uploading file first on the list.
+        name['date_uploaded'] = moment().utc().format('YYYY-MM-DD YYYY, hh:mm:ss') + ' UTC';
         var  model = new that.collection.model(name, {collection: that.collection, parse: true});
         that.collection.add(model);
         that.uploadFiles.push({model: model, fileInfo: file});
