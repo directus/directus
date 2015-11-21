@@ -278,7 +278,7 @@ define([
         e.stopPropagation();
         e.preventDefault();
 
-        if(self.sort.isDragging) {
+        if(self.sort && self.sort.isDragging) {
           self.sort.isDragging = false;
           return;
         }
