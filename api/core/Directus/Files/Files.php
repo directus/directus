@@ -272,6 +272,29 @@ class Files
     }
 
     /**
+     * Save embed url into Directus Media
+     *
+     * @param string $fileData - File Data/Info
+     * @param string $fileName - name of the file
+     *
+     * @return bool
+     */
+    public function saveEmbedData($fileData)
+    {
+        if (!array_key_exists('type', $fileData) || strpos($fileData['type'], 'embed/') !== 0) {
+            return false;
+        }
+
+        $fileName = isset($fileData['name']) ? $fileData['name'] : md5(time());
+        $imageData = $this->saveData($fileData['data'], $fileName);
+
+        $fileData['title'] = $imageData['title'];
+        $fileData['storage_adapter'] = $imageData['storage_adapter'];
+
+        return $fileData;
+    }
+
+    /**
      * Get file info
      *
      * @param string $path

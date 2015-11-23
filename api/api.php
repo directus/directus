@@ -712,7 +712,11 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
         // When the file is uploaded there's not a data key
         if (array_key_exists('data', $requestPayload)) {
             $Files = new \Directus\Files\Files();
-            $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
+            if (!array_key_exists('type', $requestPayload) || strpos($requestPayload['type'], 'embed/') === 0) {
+                $recordData = $Files->saveEmbedData($requestPayload);
+            } else {
+                $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
+            }
             // $requestPayload['file_name'] = $requestPayload['name'];
             $requestPayload = array_merge($requestPayload, $recordData);
         }
