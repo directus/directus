@@ -277,7 +277,7 @@ class Files
      * @param string $fileData - File Data/Info
      * @param string $fileName - name of the file
      *
-     * @return bool
+     * @return Array - file info
      */
     public function saveEmbedData($fileData)
     {
