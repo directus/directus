@@ -943,28 +943,40 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
 
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $Files = new \Directus\Files\Files();
-    $result = array();
-    if(isset($_POST['link'])) {
-        $fileData = array('caption'=>'','tags'=>'','location'=>'');
-        $fileData = array_merge($fileData, $Files->getLink($_POST['link']));
+    $result = array(
+        'message' => 'Invalid/Unsupported URL',
+        'success' => false
+    );
 
-        $result[] = array(
-            'type' => $fileData['type'],
-            'name' => $fileData['name'],
-            'title' => $fileData['title'],
-            'tags' => $fileData['tags'],
-            'caption' => $fileData['caption'],
-            'location' => $fileData['location'],
-            'charset' => $fileData['charset'],
-            'size' => $fileData['size'],
-            'width' => $fileData['width'],
-            'height' => $fileData['height'],
-            'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
-            'data' => (isset($fileData['data'])) ? $fileData['data'] : null
-            //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-            //'storage_adapter' => $fileData['storage_adapter']
-        );
+    $app->response->setStatus(400);
+
+    if (isset($_POST['link']) && is_string($_POST['link'])) {
+        $fileData = array('caption'=>'','tags'=>'','location'=>'');
+        $linkInfo = $Files->getLink($_POST['link']);
+
+        if ($linkInfo) {
+            $app->response->setStatus(200);
+            $fileData = array_merge($fileData, $linkInfo);
+
+            $result[] = array(
+                'type' => $fileData['type'],
+                'name' => $fileData['name'],
+                'title' => $fileData['title'],
+                'tags' => $fileData['tags'],
+                'caption' => $fileData['caption'],
+                'location' => $fileData['location'],
+                'charset' => $fileData['charset'],
+                'size' => $fileData['size'],
+                'width' => $fileData['width'],
+                'height' => $fileData['height'],
+                'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
+                'data' => (isset($fileData['data'])) ? $fileData['data'] : null
+                //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+                //'storage_adapter' => $fileData['storage_adapter']
+            );
+        }
     }
+
     JsonView::render($result);
 });
 

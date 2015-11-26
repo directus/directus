@@ -212,7 +212,11 @@ class Files
           // $realfilename = basename($stripped_url);
           // return self::acceptFile($tmpFile, $realfilename);
           // return self::acceptFile();
-          $fileData = $this->getLinkInfo($link);
+          try {
+            $fileData = $this->getLinkInfo($link);
+          } catch (\Exception $e) {
+            $fileData = false;
+          }
         }
 
         return $fileData;
@@ -288,8 +292,12 @@ class Files
         $fileName = isset($fileData['name']) ? $fileData['name'] : md5(time());
         $imageData = $this->saveData($fileData['data'], $fileName);
 
-        $fileData['title'] = $imageData['title'];
-        $fileData['storage_adapter'] = $imageData['storage_adapter'];
+        $keys = ['date_uploaded', 'storage_adapter'];
+        foreach($keys as $key) {
+            if (array_key_exists($key, $imageData)) {
+                $fileData[$key] = $imageData[$key];
+            }
+        }
 
         return $fileData;
     }
