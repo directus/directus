@@ -37,7 +37,8 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'thumbnail_size' => 200,
             'file_naming' => 'file_id',
             'thumbnail_crop_enabled' => 1,
-            'thumbnail_storage_adapter' => 'FileSystemAdapter'
+            'thumbnail_storage_adapter' => 'FileSystemAdapter',
+            'youtube_api_key' => ''
         );
     }
 
@@ -97,7 +98,8 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'files' => array(
                     'file_naming',
                     'thumbnail_quality',
-                    'thumbnail_crop_enabled'
+                    'thumbnail_crop_enabled',
+                    'youtube_api_key'
                 ),
             'global' => array(
                     'project_name',
