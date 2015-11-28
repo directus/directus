@@ -16,7 +16,11 @@
     <td class="sort">{{#unless system}}<span class="icon icon-list"></span>{{/unless}}</td>
     <td><span class="settings-column-name" title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
     {{#if system}}
-    <td colspan="5"><em>This is a system field</em></td>
+      {{#if systemDetails}}
+        <td colspan="5"><em>{{{systemDetails}}}</em></td>
+      {{else}}
+        <td colspan="5"><em>This is a system field</em></td>
+      {{/if}}
     {{else}}
     <td>
       <select name="ui" id="ui" data-id="{{id}}" class="input-selector">

@@ -17,10 +17,11 @@ define([
   'core/UIManager',
   'core/widgets/widgets',
   'schema/SchemaManager',
-  'sortable'
+  'sortable',
+  '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -517,6 +518,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         _.each(ui, function(ui) {
           if (!ui.system && ui.dataTypes.indexOf(row.type) > -1) {
             row.types.push({id: ui.id, isActive: (ui.id === row.ui)});
+          }
+
+          //If System column and column name in config mapping, show detailed message
+          if(ui.system && SettingsConfig.systemColumnDetails[row.column_name]) {
+            row.systemDetails = SettingsConfig.systemColumnDetails[row.column_name];
           }
         });
 
