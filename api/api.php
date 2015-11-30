@@ -955,6 +955,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
         $linkInfo = $Files->getLink($_POST['link']);
 
         if ($linkInfo) {
+            $currentUser = Auth::getUserInfo();
             $app->response->setStatus(200);
             $fileData = array_merge($fileData, $linkInfo);
 
@@ -970,7 +971,8 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
                 'width' => $fileData['width'],
                 'height' => $fileData['height'],
                 'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
-                'data' => (isset($fileData['data'])) ? $fileData['data'] : null
+                'data' => (isset($fileData['data'])) ? $fileData['data'] : null,
+                'user' => $currentUser['id']
                 //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
                 //'storage_adapter' => $fileData['storage_adapter']
             );
