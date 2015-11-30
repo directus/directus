@@ -131,10 +131,11 @@ class Files
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_URL,$url);
             $content=curl_exec($ch);
+
             $dataRetrieveErrored = false;      
             if ($content !== false) {
                 $content = json_decode($content);
-                if(!is_null($content) && sizeof($content->items) > 0) {
+                if(!is_null($content) && property_exists($content, 'items') && sizeof($content->items) > 0) {
                     $videoDataSnippet = $content->items[0]->snippet;
                     $fileData['title'] = $videoDataSnippet->title;
                     $fileData['caption'] = $videoDataSnippet->description;
@@ -144,6 +145,8 @@ class Files
                     $videoStart = new \DateTime('@0'); // Unix epoch
                     $videoStart->add(new \DateInterval($videoContentDetails->duration));
                     $fileData['size'] = $videoStart->format('U');
+                } else if(property_exists($content, 'error')) {
+                    throw new \Exception('Bad Youtube API Key');
                 } else {
                     $dataRetrieveErrored = true;
                 }
