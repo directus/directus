@@ -115,7 +115,6 @@ CREATE TABLE `directus_files` (
   `user` int(11) NOT NULL,
   `date_uploaded` datetime DEFAULT NULL,
   `storage_adapter` varchar(50) DEFAULT NULL,
-  `needs_index` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';
 
