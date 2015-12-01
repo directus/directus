@@ -92,6 +92,11 @@ return array(
 
     'filesystem' => array(
         'adapter' => 'local',
+        // By default media directory are located at the same level of directus root
+        // To make them a level up outsite the root directory
+        // use this instead
+        // Ex: 'root' => realpath(BASE_PATH.'/../media'),
+        // Note: BASE_PATH constant doesn't end with trailing slash
         'root' => BASE_PATH . '/media',
         'root_url' => '/media',
         'root_thumb_url' => '/media/thumbs',
