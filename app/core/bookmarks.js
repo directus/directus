@@ -84,24 +84,13 @@ function(app, Backbone, EntriesManager) {
         e.stopPropagation();
         e.preventDefault();
 
-        var url = $(e.target).parent().attr('href');
-        if(url) {
-          var urlArray = url.split('/');
-          var title = urlArray.pop();
-          urlArray.pop();
-          var table = urlArray.pop();
-          if(urlArray.length === 0) {
-            table = "directus_" + table;
-          }
-          if(title && table) {
-            var that = this;
-            app.router.openModal({type: 'confirm', text: 'Delete the bookmark "' + title + '"?', callback: function() {
-              var bookmarkModel = that.collection.findWhere({title: title});
-              if (bookmarkModel) {
-                bookmarkModel.destroy();
-              }
-            }});
-          }
+        var bookmarkId = $(e.target).parents('.sidebar-subitem').data('id');
+        var bookmark = this.collection.get(bookmarkId);
+        if (bookmark) {
+          var title = bookmark.get('title');
+          app.router.openModal({type: 'confirm', text: 'Delete the bookmark "' + title + '"?', callback: function() {
+            bookmark.destroy();
+          }});
         }
 
         return false;
