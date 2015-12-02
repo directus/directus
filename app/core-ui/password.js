@@ -31,7 +31,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                  {{/if}} \
                  <div style="display:block;"> \
                  <button class="btn btn-primary margin-left password-generate" style="margin-right:10px;" type="button">Generate New</button> \
-                 <button class="btn btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
+                 <!-- <button class="btn btn-primary margin-left password-toggle" type="button">Reveal Password</button> --> \
                  <span class="placard encrypted hide add-color margin-left-small bold">Encrypted!</span> \
                  </div> \
                  ';
