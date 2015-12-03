@@ -54,6 +54,6 @@ define([
       type: 'error',
       theme: 'directus'
     }, (moreOptions || {}));
-    Notification(options);
+    Notification.show(options);
   });
 });
