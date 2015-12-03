@@ -1,8 +1,12 @@
 define(['app', 'backbone', 'noty', 'noty_theme'], function(app, Backbone) {
   'use strict';
 
+  var defaultOptions = {
+    theme: 'directus'
+  };
+
   function createNotification(options, type) {
-    options || (options = {});
+    options = _.extend(defaultOptions, options || (options = {}));
 
     if (typeof type === 'string') {
       options.type = type;

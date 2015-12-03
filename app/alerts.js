@@ -50,10 +50,8 @@ define([
 
   app.on('alert:error', function(message, details, showDetails, moreOptions) {
     var options = _.extend({
-      text: '<b>' + message + '</b><br>' + details,
-      type: 'error',
-      theme: 'directus'
+      text: '<b>' + message + '</b><br>' + details
     }, (moreOptions || {}));
-    Notification.show(options);
+    Notification.error(options);
   });
 });
