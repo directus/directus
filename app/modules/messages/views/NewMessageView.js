@@ -4,10 +4,10 @@ define([
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
-  'noty'
+  'core/notification'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets) {
+function(app, Backbone, Directus, BasePageView, Widgets, Notification) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -31,7 +31,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
         this.model.save(data, {success: function(model, res) {
           if(res.warning) {
-            noty({text: res.warning, type: 'warning', timeout: 5000, theme: 'directus'});
+            Notification({text: res.warning, type: 'warning', timeout: 5000, theme: 'directus'});
           }
 
           app.router.go('#messages');

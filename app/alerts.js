@@ -1,10 +1,9 @@
 define([
-  "app",
-  "noty",
-  "noty_theme"
-], function(app) {
+  'app',
+  'core/notification'
+], function(app, Notification) {
 
-  "use strict";
+  'use strict';
   // Messages Container
   var messages = new Backbone.Layout({el: '#messages'});
 
@@ -55,6 +54,6 @@ define([
       type: 'error',
       theme: 'directus'
     }, (moreOptions || {}));
-    noty(options);
+    Notification(options);
   });
 });
