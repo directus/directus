@@ -48,10 +48,7 @@ define([
   app.on('progress', showProgressNotification);
   app.on('load', hideProgressNotification);
 
-  app.on('alert:error', function(message, details, showDetails, moreOptions) {
-    var options = _.extend({
-      text: '<b>' + message + '</b><br>' + details
-    }, (moreOptions || {}));
-    Notification.error(options);
+  app.on('alert:error', function(title, details, showDetails, moreOptions) {
+    Notification.error(title, details, moreOptions);
   });
 });

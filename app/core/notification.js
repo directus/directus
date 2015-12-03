@@ -1,39 +1,51 @@
-define(['app', 'backbone', 'noty', 'noty_theme'], function(app, Backbone) {
+define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbone, Utils) {
   'use strict';
 
   var defaultOptions = {
     theme: 'directus'
   };
 
-  function createNotification(options, type) {
+  function createNotification(title, details, type, options) {
     options = _.extend(defaultOptions, options || (options = {}));
 
     if (typeof type === 'string') {
       options.type = type;
     }
 
+    options.text = '<b>'+title+'</b><br>'+details;
+
     return noty(options);
   }
 
   //@TODO: Wrap Noty into a Notification Object
   function showNotification(options) {
-    return createNotification(options);
+    var args = Utils.argumentsToArray(arguments);
+    args.splice(2, 0, null);
+    return createNotification.apply(this, args);
   }
 
   function showError(options) {
-    return createNotification(options, 'error');
+    var args = Utils.argumentsToArray(arguments);
+    args.splice(2, 0, 'error');
+    return createNotification.apply(this, args);
   }
 
   function showInfo(options) {
-    return createNotification(options, 'information');
+    var args = Utils.argumentsToArray(arguments);
+    args.splice(2, 0, 'info');
+    return createNotification.apply(this, args);
   }
 
   function showWarning(options) {
-    return createNotification(options, 'warning');
+    var args = Utils.argumentsToArray(arguments);
+    args.splice(2, 0, 'warning');
+    return createNotification.apply(this, args);
   }
 
   function showSuccess(options) {
-    return createNotification(options, 'success');
+    var args = Utils.argumentsToArray(arguments);
+    args.splice(2, 0, 'success');
+    return createNotification.apply(this, args);
   }
 
   return {
