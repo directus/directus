@@ -18,7 +18,7 @@ class ForgotPasswordMail implements MailTypeInterface
 
     /**
      * Custom email Headers
-     * 
+     *
      * @var Array
      */
     private $headers = array();
@@ -26,7 +26,7 @@ class ForgotPasswordMail implements MailTypeInterface
     /**
      * @var String
      */
-    private $subject = 'You Reset Your Directus Password';
+    private $subject = 'Your new Directus password';
 
     public function __construct($emailAddress, $newPassword)
     {

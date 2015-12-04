@@ -100,15 +100,15 @@ class Mailer extends \PHPMailer
 
     private function getBodyFooter()
     {
-        $loginUrl = DIRECTUS_PATH . 'login.php';
         $projectTitle = $this->settings['global']['project_name'];
         $projectUrl = $this->settings['global']['project_url'];
+        $loginUrl = $projectUrl . 'login.php';
 
         $footer = "\n
             --- \n
             This email was sent by Directus – <a href=\"{$projectUrl}\">{$projectTitle}</a> \n
             <a href=\"{$loginUrl}\">Log in</a> to manage your email preferences \n";
-    
+
         return nl2br($footer);
     }
 }

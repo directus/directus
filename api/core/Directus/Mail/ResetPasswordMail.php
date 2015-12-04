@@ -59,7 +59,7 @@ class ResetPasswordMail implements MailTypeInterface
 
     public function getBody()
     {
-        $resetURL = $this->settings["global"]["project_url"].'/api/1/auth/reset_password/'.$this->resetToken;
+        $resetURL = $this->settings["global"]["project_url"].'api/1/auth/reset-password/'.$this->resetToken;
         $body = <<<EMAILBODY
 Hey there,
 
