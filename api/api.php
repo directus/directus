@@ -87,6 +87,7 @@ $authAndNonceRouteWhitelist = array(
     "auth_session",
     "auth_clear_session",
     "auth_nonces",
+    "auth_reset_password",
     "auth_permissions",
     "debug_acl_poc",
 );
@@ -302,6 +303,43 @@ $app->get("/$v/auth/clear-session/?", function() use ($app) {
 })->name('auth_clear_session');
 
 // debug helper
+$app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, $ZendDb) {
+    $DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+    $user = $DirectusUsersTableGateway->findOneBy('reset_token', $token);
+
+    if (!$user) {
+        $app->halt(200, 'Incorrect token.');
+    }
+
+    $expirationDate = new DateTime($user['reset_expiration']);
+    $currentDate = new DateTime;
+
+    if ($expirationDate < $currentDate) {
+        $app->halt(200, 'Expired token.');
+    }
+
+    $password = uniqid();
+    $set = [];
+    $set['salt'] = uniqid();
+    $set['password'] = Auth::hashPassword($password, $set['salt']);
+    $set['reset_token'] = '';
+
+    // Skip ACL
+    $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+    $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
+
+    if (1 !== $affectedRows) {
+        $app->halt(200, 'Error while resetting the password.');
+    }
+
+    $mail = new Directus\Mail\Mailer();
+    // @TODO: Change ForgotPasswordMail to a view/template
+    $mail->send(new Directus\Mail\ForgotPasswordMail($user['email'], $password));
+
+    $app->halt(200, 'New temporary password has been sent.');
+
+})->name('auth_reset_password');
+
 $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     if(!isset($_POST['email'])) {
         return JsonView::render(array(
@@ -320,10 +358,13 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
         ));
     }
 
-    $password = uniqid();
-    $set = array();
-    $set['salt'] = uniqid();
-    $set['password'] = Auth::hashPassword($password, $set['salt']);
+    $date = new DateTime;
+    $date->modify('+2 day');
+    $reset_expiration = $date->format('Y-m-d H:i:s');
+
+    $set = [];
+    $set['reset_token'] = bin2hex(openssl_random_pseudo_bytes(20));
+    $set['reset_expiration'] = $reset_expiration;
 
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
@@ -336,7 +377,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     }
 
     $mail = new Directus\Mail\Mailer();
-    $mail->send(new Directus\Mail\ForgotPasswordMail($user['email'], $password));
+    $mail->send(new Directus\Mail\ResetPasswordMail($user['email'], $set['reset_token']));
 
     $success = true;
     return JsonView::render(array(
