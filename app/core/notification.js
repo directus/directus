@@ -32,7 +32,7 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
 
   function showInfo(options) {
     var args = Utils.argumentsToArray(arguments);
-    args.splice(2, 0, 'info');
+    args.splice(2, 0, 'information');
     return createNotification.apply(this, args);
   }
 
