@@ -28,7 +28,7 @@ function(app, Backbone, Sortable, Notification) {
       },
       'mousedown .sort': function(e) {
         if($(e.target).closest('.disable-sorting').length > 0){
-          Notification({text: "<b>Sorting Disabled</b><br><i>Click the reordering icon to enable</i>", type: 'information', timeout: 4000, theme: 'directus'});
+          Notification.info('Sorting Disabled', '<i>Click the reordering icon to enable</i>', {timeout: 4000});
         }
       }
     },

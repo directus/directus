@@ -169,11 +169,11 @@ function(app, Backbone, Notification) {
         {
           this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;
-          Notification({text: "<b>Sorting Disabled</b><br><i>Drag-and-drop sorting is now disabled</i>", type: 'information', timeout: 3000, theme: 'directus'});
+          Notification.info('Sorting Disabled', '<i>Drag-and-drop sorting is now disabled</i>', {timeout: 3000});
         } else {
           this.$el.closest('table').removeClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = true;
-          Notification({text: "<b>Sorting Enabled</b><br><i>You can now sort items with drag-and-drop</i>", type: 'information', timeout: 3000, theme: 'directus'});
+          Notification.info('Sorting Enabled', '<i>You can now sort items with drag-and-drop</i>', {timeout: 3000});
         }
       },
       'click th:not(.sortableHeader)': function(e) {
@@ -181,7 +181,7 @@ function(app, Backbone, Notification) {
         {
           this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;
-          Notification({text: "<b>Sorting Disabled</b><br><i>Drag-and-drop sorting is now disabled</i>", type: 'information', timeout: 3000, theme: 'directus'});
+          Notification.info('Sorting Disabled', '<i>Drag-and-drop sorting is now disabled</i>', {timeout: 3000});
         }
       }
     },

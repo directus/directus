@@ -116,7 +116,7 @@ require(["config"], function() {
 
         Idle.start({
           timeout: function() {
-            Notification({text: 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds', type: 'warning', layout:'bottomRight', theme: 'directus'});
+            Notification.warning(null, 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
 
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
@@ -173,14 +173,14 @@ require(["config"], function() {
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
-        Notification({text: '<b>Directus can\'t reach the server</b><br><i>A new attempt will be made in 30 seconds</i>', type: 'error', layout:'bottomRight', theme: 'directus'});
+        Notification.error('Directus can\'t reach the server', '<i>A new attempt will be made in 30 seconds</i>');
       });
 
       app.messages.on('sync', function(collection, object) {
         if (object !== null && object.rows) {
           object.rows.forEach(function(msg) {
             var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
-            Notification({text: '<b>New Message — <i>' + msg.subject + '</i></b><br>' + message_excerpt + '<br><br><i>View message</i>', layout:'bottomRight', timeout: 5000, theme: 'directus',
+            Notification.show('New Message — <i>' + msg.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {timeout: 5000,
               callback: {
                 onCloseClick: function() {
                   Backbone.history.navigate('/messages/' + msg.id, true);

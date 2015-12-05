@@ -31,7 +31,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, Notification) {
 
         this.model.save(data, {success: function(model, res) {
           if(res.warning) {
-            Notification({text: res.warning, type: 'warning', timeout: 5000, theme: 'directus'});
+            Notification.warning(null, res.warning, {timeout: 5000});
           }
 
           app.router.go('#messages');
