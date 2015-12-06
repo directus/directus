@@ -442,9 +442,10 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
       unset($requestPayload['addTable']);
       try{
         $statusColumnName = STATUS_COLUMN_NAME;
+        $statusDraftValue = STATUS_DRAFT_NUM;
         $createTableQuery = "CREATE TABLE `{$requestPayload['table_name']}` (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            `{$statusColumnName}` tinyint(1) unsigned DEFAULT NULL,
+            `{$statusColumnName}` tinyint(1) unsigned DEFAULT {$statusDraftValue},
             PRIMARY KEY(id)
         );";
         $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
