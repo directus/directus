@@ -424,7 +424,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         data['table_related'] = 'directus_files';
         data['datatype'] = 'INT';
         data['relationship_type'] = 'MANYTOONE';
-        data['junction_key_right'] = attr;
+        data['junction_key_right'] = id;
       }
 
       this.collection.table.set({'primary_column':$('#table-settings').find('input[type=radio]:checked').attr('data-id')});
