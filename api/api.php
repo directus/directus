@@ -955,6 +955,14 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
         'comment'=> array_key_exists('comment', $col) ? $col['comment'] : ''
       );
 
+      // hotfix #1069 single_file UI not saving relational settings
+      $extraFields = ['data_type', 'relationship_type', 'table_related', 'junction_key_right'];
+      foreach($extraFields as $field) {
+        if (array_key_exists($field, $col)) {
+          $columnData[$field] = $col[$field];
+        }
+      }
+
       $existing = $ColumnsTableGateway->select(array('table_name' => $table, 'column_name' => $col['column_name']))->toArray();
       if(count($existing) > 0) {
         $columnData['id'] = $existing[0]['id'];

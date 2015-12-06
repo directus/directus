@@ -417,6 +417,16 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         value = $(e.target).is(':checked') ? 1 : 0;
       }
 
+      // hotfix #1069 single_file UI not saving relational settings
+      // If Single_file UI, force related table to be directus_files
+      // and relationship type to manytoone
+      if(value === 'single_file') {
+        data['table_related'] = 'directus_files';
+        data['datatype'] = 'INT';
+        data['relationship_type'] = 'MANYTOONE';
+        data['junction_key_right'] = attr;
+      }
+
       this.collection.table.set({'primary_column':$('#table-settings').find('input[type=radio]:checked').attr('data-id')});
 
       data[attr] = value;
