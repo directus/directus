@@ -108,14 +108,71 @@ define(function(require, exports, module) {
     },
 
     saveAll: function(options) {
+      this.save(this.toJSON(), options);
+    },
+
+    save: function(models, options) {
       options = options || {};
       var originalURL = this.url;
       var method = options.patch ? 'patch' : 'update';
+
+      var collection = this;
+      var success = function() {
+        collection.trigger('sync');
+        if (options.success) {
+          options.success.call(this);
+        }
+      };
+
+      options.data = JSON.stringify({rows: models});
 
       this.url += '/bulk';
       this.sync(method, this, options);
       this.url = originalURL;
       this.trigger('sync');
+    },
+
+    destroy: function(models, options) {
+      options || (options = {});
+      var originalURL = this.url;
+
+      options.data = JSON.stringify({rows: models});
+
+      var collection = this;
+      var success = function() {
+        collection.trigger('destroy sync');
+        if (options.success) {
+          options.success.call(this);
+        }
+      };
+
+      if (!options.wait) {
+        success();
+      } else {
+        options.success = success;
+      }
+
+      this.url += '/bulk';
+      this.sync('delete', this, options);
+      this.url = originalURL;
+    },
+
+    destroyAll: function(options) {
+      this.destroy(this.toJSON(), options);
+    },
+
+    clone: function() {
+      var options = {
+        table: this.table,
+        structure: this.structure,
+        privileges: this.privileges,
+        rowsPerPage: this.rowsPerPage
+      };
+
+      return new this.constructor(this.models, _.extend(options, {
+        model: this.model,
+        comparator: this.comparator
+      }));
     },
 
     setFilter: function(key, value, options) {

@@ -62,34 +62,27 @@ function(app, Backbone) {
         var startCount = collection.where(name).length;
       }
 
+      var models = [];
+      var actionCollection = collection.clone();
+      actionCollection.reset();
+      $checked.each(function() {
+        var model = collection.get(this.value);
+        var attributes = {};
+
+        attributes[app.statusMapping.status_name] = parseInt(value);
+        model.set(attributes);
+
+        actionCollection.add(model);
+        models.push(model);
+      });
+
       var success = function() {
-        expectedResponses--;
-        if (expectedResponses === 0) {
-          collection.trigger('visibility');
-          collection.trigger('select');
-          if(startCount) {
-            var name = {};
-            name[app.statusMapping.status_name] = parseInt(active);
-            if(collection.where(name).length != startCount) {
-              collection.updateActiveCount(startCount - collection.where({name: parseInt(active)}).length);
-            }
-          }
-        }
+        collection.trigger('visibility');
+        collection.trigger('select');
       };
 
-      $checked.each(function() {
-        var id = this.value;
-        var model = collection.get(id);
-        var options = {silent: true, patch:true, validate:false, success: success};
-        
-        try {
-          app.changeItemStatus(model, value, options);
-        } catch(e) {
-          setTimeout(function() {
-            app.router.openModal({type: 'alert', text: e.message});
-          }, 0);
-        }
-      });
+      var options = {silent: true, patch:true, validate:false, wait: true, success: success};
+      app.changeCollectionStatus(actionCollection, value, options);
     },
 
     serialize: function() {
@@ -109,7 +102,7 @@ function(app, Backbone) {
         if (!hasStatusColumn && key != app.statusMapping.deleted_num) {
           continue;
         }
-        
+
         var entry = mapping[key];
         entry.id = key;
         data.mapping.push(entry);

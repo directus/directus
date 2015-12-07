@@ -531,6 +531,37 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
     JsonView::render($entries);
 })->via('GET', 'POST', 'PUT');
 
+$app->map("/$v/tables/:table/rows/bulk/?", function ($table) use ($acl, $ZendDb, $params, $requestPayload, $app) {
+    $rows = array_key_exists('rows', $requestPayload) ? $requestPayload['rows'] : false;
+    if (!is_array($rows) || count($rows) <= 0) {
+        throw new Exception('Rows no specified');
+    }
+
+    $TableGateway = new TableGateway($acl, $table, $ZendDb);
+    $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
+
+    $rowIds = [];
+    foreach($rows as $row) {
+        if (!array_key_exists($primaryKeyFieldName, $row)) {
+            throw new Exception('Row without primary key field');
+        }
+        array_push($rowIds, $row[$primaryKeyFieldName]);
+    }
+
+    $where = new \Zend\Db\Sql\Where;
+
+    if ($app->request()->isDelete()) {
+        $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
+    } else {
+        foreach($rows as $row) {
+            $TableGateway->update($row, [$primaryKeyFieldName => $row[$primaryKeyFieldName]]);
+        }
+    }
+
+    $entries = $TableGateway->getEntries($params);
+    JsonView::render($entries);
+})->via('POST', 'PATCH', 'PUT', 'DELETE');
+
 $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use ($ZendDb, $acl, $params, $app) {
   $Table = new TableGateway($acl, $table, $ZendDb);
 

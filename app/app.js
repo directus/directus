@@ -197,6 +197,20 @@ define(function(require, exports, module) {
     }
   };
 
+  app.changeCollectionStatus = function(collection, value, options) {
+    var canDelete = collection.hasPermission('delete') || collection.hasPermission('bigdelete');
+    var model = collection.at(0);
+    // check if doesn't have status column
+    var canHardDelete = !!!model.has(app.statusMapping.status_name);
+    var goingToDelete = value == app.statusMapping.deleted_num;
+
+    if (goingToDelete && canHardDelete) {
+      collection.destroyAll(options);
+    } else {
+      collection.saveAll(options);
+    }
+  };
+
   // check if string has this format "D, d M Y H:i:s"
   app.isStringADate = function(date) {
     return (typeof date === "string") ? !!date.match(/^([a-zA-Z]{3})\, ([0-9]{2}) ([a-zA-Z]{3}) ([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/) : false;
