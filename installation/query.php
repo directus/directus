@@ -172,11 +172,11 @@ VALUES
   $mysqli->query($insert);
 
   $directusPrivilegesTableName = getTableName("directus_privileges");
-  $insert = "INSERT INTO `$directusPrivilegesTableName` (`table_name`, `permissions`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `unlisted`)
+  $insert = "INSERT INTO `$directusPrivilegesTableName` (`id`, `table_name`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `nav_listed`, `allow_view`, `allow_add`, `allow_edit`, `allow_delete`, `allow_alter`, `status_id`)
 VALUES
-  ('ui_gallery', 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', 1, NULL, NULL, NULL),
-  ('ui_users', 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', 1, NULL, NULL, NULL),
-  ('ui_files', 'add,edit,bigedit,delete,bigdelete,alter,view,bigview', 1, NULL, NULL, NULL);";
+  (DEFAULT, 'ui_gallery',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (DEFAULT, 'ui_users',1,NULL,NULL,1,2,1,2,2,1,NULL),
+  (DEFAULT, 'ui_files',1,NULL,NULL,1,2,1,2,2,1,NULL);";
   $mysqli->query($insert);
 
   $directusUITableName = getTableName("directus_ui");
