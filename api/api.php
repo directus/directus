@@ -49,6 +49,7 @@ use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGatewa
 use Directus\Db\TableSchema;
 // use Directus\Files;
 // use Directus\Files\Upload;
+use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
 use Directus\Util;
 use Directus\View\JsonView;
@@ -332,9 +333,12 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
         $app->halt(200, 'Error while resetting the password.');
     }
 
-    $mail = new Directus\Mail\Mailer();
-    // @TODO: Change ForgotPasswordMail to a view/template
-    $mail->send(new Directus\Mail\ForgotPasswordMail($user['email'], $password));
+    $data = ['newPassword' => $password];
+    Mail::send('mail/forgot-password.twig.html', $data, function($message) use ($user) {
+        $message->setSubject('Your new Directus password');
+        $message->setFrom('directus@getdirectus.com');
+        $message->setTo($user['email']);
+    });
 
     $app->halt(200, 'New temporary password has been sent.');
 
@@ -376,8 +380,12 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
         ));
     }
 
-    $mail = new Directus\Mail\Mailer();
-    $mail->send(new Directus\Mail\ResetPasswordMail($user['email'], $set['reset_token']));
+    $data = ['reset_token' => $set['reset_token']];
+    Mail::send('mail/reset-password.twig.html', $data, function($message) use ($user) {
+        $message->setSubject('You Reset Your Directus Password');
+        $message->setFrom('directus@getdirectus.com');
+        $message->setTo($user['email']);
+    });
 
     $success = true;
     return JsonView::render(array(
@@ -1153,20 +1161,18 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
       $Activity->recordMessage($requestPayload, $currentUser['id']);
     }
 
-    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
         $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
         if(isset($user) && $user['email_messages'] == 1) {
-            $messageNotificationMail = new Directus\Mail\NotificationMail(
-                                    $user['email'],
-                                    $requestPayload['subject'],
-                                    $requestPayload['message']
-                                );
-
-            $mail->send($messageNotificationMail);
-            $mail->ClearAllRecipients();
+            $data = ['message' => $requestPayload['message']];
+            $view = 'mail/notification.twig.html';
+            Mail::send($view, $data, function($message) use($user, $requestPayload) {
+                $message->setSubject($requestPayload['subject']);
+                $message->setFrom('directus@getdirectus.com');
+                $message->setTo($user['email']);
+            });
         }
     }
 
@@ -1247,19 +1253,18 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
       $i++;
     }
 
-    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
         $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
         if(isset($user) && $user['email_messages'] == 1) {
-            $NotificationMail = new Directus\Mail\NotificationMail(
-                                    $user['email'],
-                                    $requestPayload['subject'],
-                                    $requestPayload['message']
-                                );
-
-            $mail->send($NotificationMail);
+            $data = ['message' => $requestPayload['message']];
+            $view = 'mail/notification.twig.html';
+            Mail::send($view, $data, function($message) use($user, $requestPayload) {
+                $message->setSubject($requestPayload['subject']);
+                $message->setFrom('directus@getdirectus.com');
+                $message->setTo($user['email']);
+            });
       }
     }
   }
