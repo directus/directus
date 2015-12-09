@@ -662,15 +662,36 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
     },
 
+    getPrevTableId: function(tableIndex) {
+      if (tableIndex < 0) {
+        tableIndex = 0;
+      } else if (tableIndex > this.collection.length) {
+        tableIndex = this.collection.length;
+      }
+
+      var model = this.collection.at(tableIndex);
+      if (tableIndex == 0 || tableIndex == this.collection.length) {
+        return model.id;
+      }
+
+      if (model.id.substring(0,9) === 'directus_') {
+        return this.getPrevTableId(tableIndex-1);
+      }
+
+      return model.id;
+    },
+
     moveRowView: function(model) {
       var currentModelIndex = this.collection.indexOf(model);
       var afterModelIndex = currentModelIndex-1;
       var tbody = this.$el.find('tbody');
       var tableId = model.id || false;
+      // Get the previous table Id, ignoring `directus_` tables
+      var prevTableId = this.getPrevTableId(afterModelIndex);
 
       if (tableId) {
         var currentRow = tbody.find('[data-id="'+tableId+'"]');
-        var afterRow = tbody.find('tr:eq('+afterModelIndex+')');
+        var afterRow = tbody.find('[data-id="'+prevTableId+'"]');
         var currentRowIndex = currentRow.index();
 
         if(currentModelIndex === 0) {
