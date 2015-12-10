@@ -119,13 +119,15 @@ return array(
         }
     ),
 
-    // Define this to send emails e.g. forgot password
-    'SMTP' => array(
-        'host' => '',
-        'port' => 25,
-        'username' => '',
-        'password' => ''
+    'mail' => array(
+        'transport' => 'mail'
     ),
+    // 'SMTP' => array(
+    //   'host' => '',
+    //   'port' => 25,
+    //   'username' => '',
+    //   'password' => ''
+    // ),
 
     'dbHooks' => array(
         'postInsert' => function (".'$TableGateway, $record, $db, $acl'.") {

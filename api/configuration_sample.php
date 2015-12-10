@@ -36,12 +36,15 @@ return array(
   ),
 
   // Define this to send emails (eg. forgot password)
-  'SMTP' => array(
-    'host' => '',
-    'port' => 25,
-    'username' => '',
-    'password' => ''
+  'mail' => array(
+      'transport' => 'mail'
   ),
+  // 'SMTP' => array(
+  //   'host' => '',
+  //   'port' => 25,
+  //   'username' => '',
+  //   'password' => ''
+  // ),
 
   // Use these hooks to extend the base Directus functionality
   'dbHooks' => array(
