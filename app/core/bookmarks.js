@@ -30,13 +30,22 @@ function(app, Backbone, EntriesManager) {
       return 0;
     },
     setActive: function(route, pref) {
-      //deactive all tabs
       var activeModel;
       var prefSuffix = _.isString(pref) ? '/pref/' + pref : '';
+      var routeURL = encodeURI(route+prefSuffix);
       var found = false;
-      _.each(this.models, function(model) {
+
+      // Sort url desc so it match bookmarks first.
+      // This: tables/customers/pref/female
+      // will be selected first
+      // than: tables/customers
+      var models = _.sortBy(this.models, function(model) {
+        return model.get('url');
+      }).reverse();
+
+      _.each(models, function(model) {
         model.unset('active_bookmark', {silent: true});
-        if((route + prefSuffix).indexOf(model.get('url')) === 0 && !found) {
+        if((routeURL).indexOf(model.get('url')) === 0 && !found) {
           activeModel = model;
           found = true;
         }
