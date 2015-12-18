@@ -24,11 +24,13 @@ function(app, Backbone, EntriesManager) {
       this.url = app.API_URL + 'bookmarks/';
       this.isCustomBookmarks = options.isCustomBookmarks || false;
     },
+
     comparator: function(a, b) {
       if(a.get('title') < b.get('title')) return -1;
       if(a.get('title') > b.get('title')) return 1;
       return 0;
     },
+
     setActive: function(route, pref) {
       var activeModel;
       var prefSuffix = _.isString(pref) ? '/pref/' + pref : '';
@@ -55,12 +57,14 @@ function(app, Backbone, EntriesManager) {
         activeModel.set({'active_bookmark':true});
       }
     },
+
     addNewBookmark: function(data) {
       data.user = data.user.toString();
       if(this.findWhere(data) === undefined) {
         this.create(data);
       }
     },
+
     removeBookmark: function(data) {
       data.user = data.user.toString();
       var model = this.findWhere(data);
@@ -70,6 +74,7 @@ function(app, Backbone, EntriesManager) {
         this.remove(model);
       }
     },
+
     isBookmarked: function(title) {
       if(this.findWhere({'title':title}) !== undefined) {
         return true;
@@ -202,6 +207,7 @@ function(app, Backbone, EntriesManager) {
 
       return data;
     },
+
     initialize: function() {
 
       this.isCustomBookmarks = this.collection.isCustomBookmarks || false;
@@ -253,6 +259,7 @@ function(app, Backbone, EntriesManager) {
         }
       });
     },
+
     setActive: function(route, pref) {
       this.collection.setActive(route, pref);
       this.render();
