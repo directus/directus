@@ -69,10 +69,16 @@ define(function(require, exports, module) {
 
     getTotalCount: function() {
       var totalCount;
+      // Let's have the collection length
+      // to replace the table total when we add items
+      // because we are not updating this value
+      // we are just fetching it once
+      // @TODO: update this value on collection change
+      var collectionCount = this.length;
 
       // There is no active column. Use total
       if (!this.table.columns.get(app.statusMapping.status_name)) {
-        return this.table.get('total');
+        return Math.max(this.table.get('total'), collectionCount);
       }
 
       var visibleStates = this.getFilter(app.statusMapping.status_name).split(',');
@@ -85,7 +91,7 @@ define(function(require, exports, module) {
         }
       });
 
-      return totalCount;
+      return Math.max(totalCount, collectionCount);
 
     },
 
