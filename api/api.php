@@ -49,6 +49,7 @@ use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGatewa
 use Directus\Db\TableSchema;
 // use Directus\Files;
 // use Directus\Files\Upload;
+use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
 use Directus\Util;
 use Directus\View\JsonView;
@@ -87,6 +88,7 @@ $authAndNonceRouteWhitelist = array(
     "auth_session",
     "auth_clear_session",
     "auth_nonces",
+    "auth_reset_password",
     "auth_permissions",
     "debug_acl_poc",
 );
@@ -302,6 +304,46 @@ $app->get("/$v/auth/clear-session/?", function() use ($app) {
 })->name('auth_clear_session');
 
 // debug helper
+$app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, $ZendDb) {
+    $DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+    $user = $DirectusUsersTableGateway->findOneBy('reset_token', $token);
+
+    if (!$user) {
+        $app->halt(200, 'Incorrect token.');
+    }
+
+    $expirationDate = new DateTime($user['reset_expiration']);
+    $currentDate = new DateTime;
+
+    if ($expirationDate < $currentDate) {
+        $app->halt(200, 'Expired token.');
+    }
+
+    $password = uniqid();
+    $set = [];
+    $set['salt'] = uniqid();
+    $set['password'] = Auth::hashPassword($password, $set['salt']);
+    $set['reset_token'] = '';
+
+    // Skip ACL
+    $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+    $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
+
+    if (1 !== $affectedRows) {
+        $app->halt(200, 'Error while resetting the password.');
+    }
+
+    $data = ['newPassword' => $password];
+    Mail::send('mail/forgot-password.twig.html', $data, function($message) use ($user) {
+        $message->setSubject('Your new Directus password');
+        $message->setFrom('directus@getdirectus.com');
+        $message->setTo($user['email']);
+    });
+
+    $app->halt(200, 'New temporary password has been sent.');
+
+})->name('auth_reset_password');
+
 $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     if(!isset($_POST['email'])) {
         return JsonView::render(array(
@@ -320,10 +362,13 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
         ));
     }
 
-    $password = uniqid();
-    $set = array();
-    $set['salt'] = uniqid();
-    $set['password'] = Auth::hashPassword($password, $set['salt']);
+    $date = new DateTime;
+    $date->modify('+2 day');
+    $reset_expiration = $date->format('Y-m-d H:i:s');
+
+    $set = [];
+    $set['reset_token'] = bin2hex(openssl_random_pseudo_bytes(20));
+    $set['reset_expiration'] = $reset_expiration;
 
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
@@ -335,8 +380,12 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
         ));
     }
 
-    $mail = new Directus\Mail\Mailer();
-    $mail->send(new Directus\Mail\ForgotPasswordMail($user['email'], $password));
+    $data = ['reset_token' => $set['reset_token']];
+    Mail::send('mail/reset-password.twig.html', $data, function($message) use ($user) {
+        $message->setSubject('You Reset Your Directus Password');
+        $message->setFrom('directus@getdirectus.com');
+        $message->setTo($user['email']);
+    });
 
     $success = true;
     return JsonView::render(array(
@@ -401,9 +450,10 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
       unset($requestPayload['addTable']);
       try{
         $statusColumnName = STATUS_COLUMN_NAME;
+        $statusDraftValue = STATUS_DRAFT_NUM;
         $createTableQuery = "CREATE TABLE `{$requestPayload['table_name']}` (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            `{$statusColumnName}` tinyint(1) unsigned DEFAULT NULL,
+            `{$statusColumnName}` tinyint(1) unsigned DEFAULT {$statusDraftValue},
             PRIMARY KEY(id)
         );";
         $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
@@ -488,6 +538,37 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
     $entries = $Table->getEntries($params);
     JsonView::render($entries);
 })->via('GET', 'POST', 'PUT');
+
+$app->map("/$v/tables/:table/rows/bulk/?", function ($table) use ($acl, $ZendDb, $params, $requestPayload, $app) {
+    $rows = array_key_exists('rows', $requestPayload) ? $requestPayload['rows'] : false;
+    if (!is_array($rows) || count($rows) <= 0) {
+        throw new Exception('Rows no specified');
+    }
+
+    $TableGateway = new TableGateway($acl, $table, $ZendDb);
+    $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
+
+    $rowIds = [];
+    foreach($rows as $row) {
+        if (!array_key_exists($primaryKeyFieldName, $row)) {
+            throw new Exception('Row without primary key field');
+        }
+        array_push($rowIds, $row[$primaryKeyFieldName]);
+    }
+
+    $where = new \Zend\Db\Sql\Where;
+
+    if ($app->request()->isDelete()) {
+        $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
+    } else {
+        foreach($rows as $row) {
+            $TableGateway->update($row, [$primaryKeyFieldName => $row[$primaryKeyFieldName]]);
+        }
+    }
+
+    $entries = $TableGateway->getEntries($params);
+    JsonView::render($entries);
+})->via('POST', 'PATCH', 'PUT', 'DELETE');
 
 $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use ($ZendDb, $acl, $params, $app) {
   $Table = new TableGateway($acl, $table, $ZendDb);
@@ -712,7 +793,11 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
         // When the file is uploaded there's not a data key
         if (array_key_exists('data', $requestPayload)) {
             $Files = new \Directus\Files\Files();
-            $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
+            if (!array_key_exists('type', $requestPayload) || strpos($requestPayload['type'], 'embed/') === 0) {
+                $recordData = $Files->saveEmbedData($requestPayload);
+            } else {
+                $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
+            }
             // $requestPayload['file_name'] = $requestPayload['name'];
             $requestPayload = array_merge($requestPayload, $recordData);
         }
@@ -910,6 +995,14 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
         'comment'=> array_key_exists('comment', $col) ? $col['comment'] : ''
       );
 
+      // hotfix #1069 single_file UI not saving relational settings
+      $extraFields = ['data_type', 'relationship_type', 'table_related', 'junction_key_right'];
+      foreach($extraFields as $field) {
+        if (array_key_exists($field, $col)) {
+          $columnData[$field] = $col[$field];
+        }
+      }
+
       $existing = $ColumnsTableGateway->select(array('table_name' => $table, 'column_name' => $col['column_name']))->toArray();
       if(count($existing) > 0) {
         $columnData['id'] = $existing[0]['id'];
@@ -939,28 +1032,42 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
 
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $Files = new \Directus\Files\Files();
-    $result = array();
-    if(isset($_POST['link'])) {
-        $fileData = array('caption'=>'','tags'=>'','location'=>'');
-        $fileData = array_merge($fileData, $Files->getLink($_POST['link']));
+    $result = array(
+        'message' => 'Invalid/Unsupported URL',
+        'success' => false
+    );
 
-        $result[] = array(
-            'type' => $fileData['type'],
-            'name' => $fileData['name'],
-            'title' => $fileData['title'],
-            'tags' => $fileData['tags'],
-            'caption' => $fileData['caption'],
-            'location' => $fileData['location'],
-            'charset' => $fileData['charset'],
-            'size' => $fileData['size'],
-            'width' => $fileData['width'],
-            'height' => $fileData['height'],
-            'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
-            'data' => (isset($fileData['data'])) ? $fileData['data'] : null
-            //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-            //'storage_adapter' => $fileData['storage_adapter']
-        );
+    $app->response->setStatus(400);
+
+    if (isset($_POST['link']) && is_string($_POST['link'])) {
+        $fileData = array('caption'=>'','tags'=>'','location'=>'');
+        $linkInfo = $Files->getLink($_POST['link']);
+
+        if ($linkInfo) {
+            $currentUser = Auth::getUserInfo();
+            $app->response->setStatus(200);
+            $fileData = array_merge($fileData, $linkInfo);
+
+            $result[] = array(
+                'type' => $fileData['type'],
+                'name' => $fileData['name'],
+                'title' => $fileData['title'],
+                'tags' => $fileData['tags'],
+                'caption' => $fileData['caption'],
+                'location' => $fileData['location'],
+                'charset' => $fileData['charset'],
+                'size' => $fileData['size'],
+                'width' => $fileData['width'],
+                'height' => $fileData['height'],
+                'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
+                'data' => (isset($fileData['data'])) ? $fileData['data'] : null,
+                'user' => $currentUser['id']
+                //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+                //'storage_adapter' => $fileData['storage_adapter']
+            );
+        }
     }
+
     JsonView::render($result);
 });
 
@@ -1054,20 +1161,18 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
       $Activity->recordMessage($requestPayload, $currentUser['id']);
     }
 
-    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
         $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
         if(isset($user) && $user['email_messages'] == 1) {
-            $messageNotificationMail = new Directus\Mail\NotificationMail(
-                                    $user['email'],
-                                    $requestPayload['subject'],
-                                    $requestPayload['message']
-                                );
-
-            $mail->send($messageNotificationMail);
-            $mail->ClearAllRecipients();
+            $data = ['message' => $requestPayload['message']];
+            $view = 'mail/notification.twig.html';
+            Mail::send($view, $data, function($message) use($user, $requestPayload) {
+                $message->setSubject($requestPayload['subject']);
+                $message->setFrom('directus@getdirectus.com');
+                $message->setTo($user['email']);
+            });
         }
     }
 
@@ -1148,19 +1253,18 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
       $i++;
     }
 
-    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
         $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
         if(isset($user) && $user['email_messages'] == 1) {
-            $NotificationMail = new Directus\Mail\NotificationMail(
-                                    $user['email'],
-                                    $requestPayload['subject'],
-                                    $requestPayload['message']
-                                );
-
-            $mail->send($NotificationMail);
+            $data = ['message' => $requestPayload['message']];
+            $view = 'mail/notification.twig.html';
+            Mail::send($view, $data, function($message) use($user, $requestPayload) {
+                $message->setSubject($requestPayload['subject']);
+                $message->setFrom('directus@getdirectus.com');
+                $message->setTo($user['email']);
+            });
       }
     }
   }

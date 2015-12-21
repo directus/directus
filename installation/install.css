@@ -225,6 +225,17 @@ textarea {
 .config-paste {
   font-size: 12px;
 }
+
+.error-container {
+  background-color:#aa2929;
+  color: white;
+  padding:5px;
+  margin: 0 0 20px 0;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
+}
 @font-face {
   font-family: 'Directus';
   src: url('../assets/fonts/directus/directus-regular.eot');

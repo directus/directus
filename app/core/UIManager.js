@@ -105,7 +105,10 @@ define(function(require, exports, module) {
         uiId = system_fields[attr].ui;
       }
 
-      return this._getUI(uiId);
+      var UI = this._getUI(uiId);
+      this.parseDefaultValue(UI, model, schema.options);
+
+      return UI;
     },
 
     // Registers (@todo: one or) many UI's
@@ -205,9 +208,6 @@ define(function(require, exports, module) {
         return false;
       }
 
-      // @TODO: make default Attribute available to the baseModel
-      this.parseDefaultValue(UI, schema.options);
-
       return {
         UI: UI,
         schema: schema
@@ -267,30 +267,29 @@ define(function(require, exports, module) {
       return this.getUIValue('list', model, attr, noDefault);
     },
 
-    parseDefaultValue: function(UI, model) {
-      if (!UI.variables) {
+    parseDefaultValue: function(UI, model, settings) {
+      if (!_.isArray(UI.variables) || UI.variables.length <= 0) {
         return;
       }
 
-      model.get = function(attr) {
-        var attribute = this.attributes[attr];
+      _.each(UI.variables, function(variable) {
+        if (typeof variable.def != 'undefined') {
+          if (!settings.defaultAttributes) settings.defaultAttributes = {};
+          settings.defaultAttributes[variable.id] = variable.def;
+        }
+      });
 
-        if (this.defaultAttributes) {
+      settings.get = function(attr) {
+        var attribute = this.attributes[attr];
+        if (this.defaultAttributes && !attribute) {
           var defaultAttribute = this.defaultAttributes[attr];
-          if (!attribute && defaultAttribute) {
-            return defaultAttribute;
+          if (defaultAttribute) {
+            attribute = defaultAttribute;
           }
         }
 
         return attribute;
       };
-
-      _.each(UI.variables, function(variable) {
-        if (typeof variable.def != 'undefined' && model.has(variable.id)) {
-          if (!model.defaultAttributes) model.defaultAttributes = {};
-          model.defaultAttributes[variable.id] = variable.def;
-        }
-      });
     },
 
     // Finds the UI for the provided model/attribute and

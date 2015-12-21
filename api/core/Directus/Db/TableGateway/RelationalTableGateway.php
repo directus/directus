@@ -280,7 +280,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     $index = 0;
                     foreach($foreignRow as $row) {
                         if (!isset($row['data'][$this->primaryKeyFieldName]) && isset($row['data']['data'])) {
-                            $recordData[$colName][$index]['data'] = $Files->saveData($row['data']['data'], $row['data']['name']);
+                            if (array_key_exists('type', $row['data']) && strpos($row['data']['type'], 'embed/') === 0) {
+                                $recordData[$colName][$index]['data'] = $Files->saveEmbedData($row['data']);
+                            } else {
+                                $recordData[$colName][$index]['data'] = $Files->saveData($row['data']['data'], $row['data']['name']);
+                            }
                         }
 
                         unset($recordData[$colName][$index]['data']['data']);
@@ -288,7 +292,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     }
                 } else {
                     if (!isset($foreignRow[$this->primaryKeyFieldName]) && isset($foreignRow['data'])) {
-                        $recordData[$colName] = $Files->saveData($foreignRow['data'], $foreignRow['name']);
+                        if (array_key_exists('type', $foreignRow) && strpos($foreignRow['type'], 'embed/') === 0) {
+                            $recordData[$colName] = $Files->saveEmbedData($foreignRow);
+                        } else {
+                            $recordData[$colName] = $Files->saveData($foreignRow['data'], $foreignRow['name']);
+                        }
                     }
                     unset($recordData[$colName]['data']);
                 }

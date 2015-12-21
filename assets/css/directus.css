@@ -1532,6 +1532,7 @@ button {
 }
 .directus-alert-modal .directus-alert-modal-message {
   padding-bottom: 20px;
+  word-wrap: break-word;
 }
 .directus-alert-modal input {
   width: 100%;

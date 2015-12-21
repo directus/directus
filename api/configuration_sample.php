@@ -1,23 +1,24 @@
 <?php
-
-/**
- * High priority use case, not super planned out yet.
- * This will be useful in the future as we do a better job organizing our application configuration.
- * We need to distinguish between configuration and application constants.
- */
-
 return array(
 
+  // Unique session naming
   'session' => array(
     'prefix' =>  'directus6_'
   ),
 
   // @TODO: the option to have multiple filesystem
   'filesystem' => array(
-      'adapter' => 'local',
-      'root' => BASE_PATH . '/media',
-      'root_url' => '/media',
-      'root_thumb_url' => '/media/thumbs',
+    'adapter' => 'local',
+    // By default the media directory is located within the directus root
+    // To shift a outsite the Directus root directory use this instead
+    // 'root' => realpath(BASE_PATH.'/../media'),
+    // Note: BASE_PATH constant does not end with a trailing slash
+    'root' => BASE_PATH . '/media',
+    // This is the url where all files/media will be pointing to
+    // All orignial files will exist at your-domain.com/media
+    'root_url' => '/media',
+    // All thumbnails will exist at your-domain.com/media/thumbs
+    'root_thumb_url' => '/media/thumbs',
     //   'key'    => 's3-key',
     //   'secret' => 's3-key',
     //   'region' => 's3-region',
@@ -25,6 +26,7 @@ return array(
     //   'bucket' => 's3-bucket'
   ),
 
+  // HTTP Settings
   'HTTP' => array(
     'forceHttps' => false,
     'isHttpsFn' => function () {
@@ -33,17 +35,21 @@ return array(
     }
   ),
 
-  // Define this to send emails e.g. forgot password
-  'SMTP' => array(
-    'host' => '',
-    'port' => 25,
-    'username' => '',
-    'password' => ''
+  // Define this to send emails (eg. forgot password)
+  'mail' => array(
+      'transport' => 'mail'
   ),
+  // 'SMTP' => array(
+  //   'host' => '',
+  //   'port' => 25,
+  //   'username' => '',
+  //   'password' => ''
+  // ),
 
+  // Use these hooks to extend the base Directus functionality
   'dbHooks' => array(
     'postInsert' => function ($TableGateway, $record, $db, $acl) {
-
+      // ...
     },
     'postUpdate' => function ($TableGateway, $record, $db, $acl) {
       $tableName = $TableGateway->getTable();
@@ -53,11 +59,14 @@ return array(
     }
   ),
 
-  // These tables will not be loaded in the directus schema
+  // These tables will be excluded and won't be managed by Directus
   'tableBlacklist' => array(
-
+    // ...
   ),
 
+  // Below you can adjust the global Status Options
+  // These values are used within a table's status column (if included)
+  // By default, `active` is the status column's name
   'statusMapping' => array(
     '0' => array(
       'name' => 'Delete',

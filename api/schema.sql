@@ -115,7 +115,6 @@ CREATE TABLE `directus_files` (
   `user` int(11) NOT NULL,
   `date_uploaded` datetime DEFAULT NULL,
   `storage_adapter` varchar(50) DEFAULT NULL,
-  `needs_index` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';
 
@@ -271,7 +270,8 @@ VALUES
   (12,'files','thumbnail_size','200'),
   (13,'global','cms_thumbnail_url',''),
   (14,'files','file_naming','file_id'),
-  (15,'files','thumbnail_crop_enabled','1');
+  (15,'files','thumbnail_crop_enabled','1'),
+  (16,'files','youtube_api_key','');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -332,6 +332,9 @@ LOCK TABLES `directus_tables` WRITE;
 INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
 VALUES
   ('directus_messages_recipients',1,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+  ('directus_bookmarks',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+  ('directus_files',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+  ('directus_preferences',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
   ('directus_users',1,0,0,0,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_tables` ENABLE KEYS */;

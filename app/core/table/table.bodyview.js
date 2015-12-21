@@ -1,10 +1,11 @@
 define([
-  "app",
-  "backbone",
-  "sortable"
+  'app',
+  'backbone',
+  'sortable',
+  'core/notification'
 ],
 
-function(app, Backbone, Sortable) {
+function(app, Backbone, Sortable, Notification) {
 
   "use strict";
 
@@ -27,7 +28,7 @@ function(app, Backbone, Sortable) {
       },
       'mousedown .sort': function(e) {
         if($(e.target).closest('.disable-sorting').length > 0){
-          noty({text: "<b>Sorting Disabled</b><br><i>Click the reordering icon to enable</i>", type: 'information', timeout: 4000, theme: 'directus'});
+          Notification.info('Sorting Disabled', '<i>Click the reordering icon to enable</i>', {timeout: 4000});
         }
       }
     },

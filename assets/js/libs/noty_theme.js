@@ -155,7 +155,7 @@ $.noty.themes.directus = {
                 //this.$buttons.css({borderTop: '1px solid #0B90C4'});
                 break;
             case 'success':
-                this.$bar.css({backgroundColor: '#7ac943', borderColor: '#7ac943', color: 'FFF', borderBottom: '3px solid #981f23'});
+                this.$bar.css({backgroundColor: '#7ac943', borderColor: '#7ac943', color: '#FFF', borderBottom: '3px solid #62a930'});
                 //this.$buttons.css({borderTop: '1px solid #50C24E'});
                 break;
             default:

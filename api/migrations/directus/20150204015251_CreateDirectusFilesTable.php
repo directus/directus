@@ -19,7 +19,6 @@ CREATE TABLE `directus_files` (
   `user` int(11) NOT NULL,
   `date_uploaded` datetime DEFAULT NULL,
   `storage_adapter` int(11) unsigned DEFAULT NULL COMMENT 'FK `directus_storage_adapters`.`id`',
-  `needs_index` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';
 */
@@ -117,11 +116,6 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
       $t->column("storage_adapter", "string", array(
           "limit"=>50,
           "default"=>NULL
-        )
-      );
-      $t->column("needs_index", "tinyinteger", array(
-          "limit"=>4,
-          "default"=>1
         )
       );
 

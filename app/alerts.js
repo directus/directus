@@ -1,10 +1,9 @@
 define([
-  "app",
-  "noty",
-  "noty_theme"
-], function(app) {
+  'app',
+  'core/notification'
+], function(app, Notification) {
 
-  "use strict";
+  'use strict';
   // Messages Container
   var messages = new Backbone.Layout({el: '#messages'});
 
@@ -49,12 +48,7 @@ define([
   app.on('progress', showProgressNotification);
   app.on('load', hideProgressNotification);
 
-  app.on('alert:error', function(message, details, showDetails, moreOptions) {
-    var options = _.extend({
-      text: '<b>' + message + '</b><br>' + details,
-      type: 'error',
-      theme: 'directus'
-    }, (moreOptions || {}));
-    noty(options);
+  app.on('alert:error', function(title, details, showDetails, moreOptions) {
+    Notification.error(title, details, moreOptions);
   });
 });

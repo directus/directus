@@ -17,10 +17,11 @@ define([
   'core/UIManager',
   'core/widgets/widgets',
   'schema/SchemaManager',
-  'sortable'
+  'sortable',
+  '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -416,6 +417,16 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         value = $(e.target).is(':checked') ? 1 : 0;
       }
 
+      // hotfix #1069 single_file UI not saving relational settings
+      // If Single_file UI, force related table to be directus_files
+      // and relationship type to manytoone
+      if(value === 'single_file') {
+        data['table_related'] = 'directus_files';
+        data['datatype'] = 'INT';
+        data['relationship_type'] = 'MANYTOONE';
+        data['junction_key_right'] = id;
+      }
+
       this.collection.table.set({'primary_column':$('#table-settings').find('input[type=radio]:checked').attr('data-id')});
 
       data[attr] = value;
@@ -518,6 +529,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           if (!ui.system && ui.dataTypes.indexOf(row.type) > -1) {
             row.types.push({id: ui.id, isActive: (ui.id === row.ui)});
           }
+
+          //If System column and column name in config mapping, show detailed message
+          if(ui.system && SettingsConfig.systemColumnDetails[row.column_name]) {
+            row.systemDetails = SettingsConfig.systemColumnDetails[row.column_name];
+          }
         });
 
         if(primaryColumn === row.column_name) {
@@ -612,11 +628,12 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       //Get Selected master
       data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
 
-      if(!data.primary_column) {
-        app.router.openModal({type: 'alert', text: 'Please choose a primary column:', callback: function(tableName) {
-        }});
-        return;
-      }
+      // Stop asking for primary column
+      // if(!data.primary_column) {
+      //   app.router.openModal({type: 'alert', text: 'Please choose a primary column:', callback: function(tableName) {
+      //   }});
+      //   return;
+      // }
 
       this.model.save(data, {success: function(){
         app.router.go('settings','tables');
@@ -646,15 +663,36 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
     },
 
+    getPrevTableId: function(tableIndex) {
+      if (tableIndex < 0) {
+        tableIndex = 0;
+      } else if (tableIndex > this.collection.length) {
+        tableIndex = this.collection.length;
+      }
+
+      var model = this.collection.at(tableIndex);
+      if (tableIndex == 0 || tableIndex == this.collection.length) {
+        return model.id;
+      }
+
+      if (model.id.substring(0,9) === 'directus_') {
+        return this.getPrevTableId(tableIndex-1);
+      }
+
+      return model.id;
+    },
+
     moveRowView: function(model) {
       var currentModelIndex = this.collection.indexOf(model);
       var afterModelIndex = currentModelIndex-1;
       var tbody = this.$el.find('tbody');
       var tableId = model.id || false;
+      // Get the previous table Id, ignoring `directus_` tables
+      var prevTableId = this.getPrevTableId(afterModelIndex);
 
       if (tableId) {
         var currentRow = tbody.find('[data-id="'+tableId+'"]');
-        var afterRow = tbody.find('tr:eq('+afterModelIndex+')');
+        var afterRow = tbody.find('[data-id="'+prevTableId+'"]');
         var currentRowIndex = currentRow.index();
 
         if(currentModelIndex === 0) {

@@ -51,7 +51,7 @@
   </li>
   {{#if bookmarks.search}}
   {{#bookmarks.search}}
-  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+  <li data-id="{{id}}" class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
         {{capitalize title}}
         <span class="remove-snapshot">✕</span>
