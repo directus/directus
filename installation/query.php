@@ -171,6 +171,14 @@ VALUES
   ('ui_gallery', 'files', 'MANYTOMANY', 'multiple_files', 0, 0, 0, 0, 1, 'MANYTOMANY', 'directus_files', 'ui_files', 'ui_id', 'file_id', 9999, '');";
   $mysqli->query($insert);
 
+  $columnsTableName = getTableName("directus_tables");
+  $insert = "INSERT INTO `$columnsTableName` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
+VALUES
+  ('ui_gallery',0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+  ('ui_users',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+  ('ui_files',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);";
+  $mysqli->query($insert);
+
   $directusPrivilegesTableName = getTableName("directus_privileges");
   $insert = "INSERT INTO `$directusPrivilegesTableName` (`id`, `table_name`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `nav_listed`, `allow_view`, `allow_add`, `allow_edit`, `allow_delete`, `allow_alter`, `status_id`)
 VALUES
