@@ -34,7 +34,7 @@ class Files
         $Settings = new DirectusSettingsTableGateway($acl, $adapter);
         $this->filesSettings = $Settings->fetchCollection('files', array(
             'storage_adapter','storage_destination','thumbnail_storage_adapter',
-            'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
+            'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled', 'youtube_api_key'
         ));
     }
 
@@ -116,43 +116,57 @@ class Files
           $fileData['height'] = 340;
           $fileData['width'] = 560;
 
-          // Get Data
-          $url = "http://gdata.youtube.com/feeds/api/videos/". $video_id;
-          $ch = curl_init($url);
-          curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
-          curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 0);
-          $content = curl_exec($ch);
-          curl_close($ch);
-
-        //   $filesAdapter = $this->storageAdaptersByRole['TEMP'];
           $fileData['name'] = "youtube_" . $video_id . ".jpg";
           $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
           $fileData['storage_adapter'] = $this->getConfig('adapter');
           $fileData['charset'] = '';
+          
+          //If Youtube API Key set, hit up youtube API
+          if(array_key_exists('youtube_api_key', $settings) && !empty($settings['youtube_api_key'])) {
+            // Get Data
+            $youtubeFormatUrlString = "https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails";
+            $url = sprintf($youtubeFormatUrlString, $video_id, $settings['youtube_api_key']);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_URL,$url);
+            $content=curl_exec($ch);
 
-          // $img = Thumbnail::generateThumbnail('http://img.youtube.com/vi/' . $video_id . '/0.jpg', 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
-          // $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-          // Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
-          // if(!is_null($thumbnailTempName)) {
-          //   $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
-          // }
-
+            $dataRetrieveErrored = false;      
+            if ($content !== false) {
+                $content = json_decode($content);
+                if(!is_null($content) && property_exists($content, 'items') && sizeof($content->items) > 0) {
+                    $videoDataSnippet = $content->items[0]->snippet;
+                    $fileData['title'] = $videoDataSnippet->title;
+                    $fileData['caption'] = $videoDataSnippet->description;
+                    $fileData['tags'] = implode(',', $videoDataSnippet->tags);
+                    
+                    $videoContentDetails = $content->items[0]->contentDetails;
+                    $videoStart = new \DateTime('@0'); // Unix epoch
+                    $videoStart->add(new \DateInterval($videoContentDetails->duration));
+                    $fileData['size'] = $videoStart->format('U');
+                } else if(property_exists($content, 'error')) {
+                    throw new \Exception('Bad Youtube API Key');
+                } else {
+                    $dataRetrieveErrored = true;
+                }
+            } else {
+                $dataRetrieveErrored = true;
+            }
+            
+            // an error happened
+            if($dataRetrieveErrored) {
+                $fileData['title'] = "Unable to Retrieve YouTube Title";
+                $fileData['size'] = 0;
+            }
+          } else {
+              //No API Key is set, use generic title
+              $fileData['title'] = "Youtube Video: " . $video_id;
+              $fileData['size'] = 0;
+          }
+          
           $linkContent = file_get_contents('http://img.youtube.com/vi/' . $video_id . '/0.jpg');
           $fileData['data'] = 'data:image/jpeg;base64,' . base64_encode($linkContent);
-
-          if ($content !== false) {
-            $fileData['title'] = $this->get_string_between($content,"<title type='text'>","</title>");
-
-            // Not pretty hack to get duration
-            $pos_1 = strpos($content, "yt:duration seconds=") + 21;
-            $fileData['size'] = substr($content,$pos_1,10);
-            $fileData['size'] = preg_replace("/[^0-9]/", "", $fileData['size'] );
-
-          } else {
-            // an error happened
-            $fileData['title'] = "Unable to Retrieve YouTube Title";
-            $fileData['size'] = 0;
-          }
         } else if(strpos($link,'vimeo.com') !== false) {
         // Get ID from URL
           preg_match('/vimeo\.com\/([0-9]{1,10})/', $link, $matches);
@@ -212,7 +226,11 @@ class Files
           // $realfilename = basename($stripped_url);
           // return self::acceptFile($tmpFile, $realfilename);
           // return self::acceptFile();
-          $fileData = $this->getLinkInfo($link);
+          try {
+            $fileData = $this->getLinkInfo($link);
+          } catch (\Exception $e) {
+            $fileData = false;
+          }
         }
 
         return $fileData;
@@ -269,6 +287,33 @@ class Files
             'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
             'storage_adapter' => $fileData['storage_adapter']
         ];
+    }
+
+    /**
+     * Save embed url into Directus Media
+     *
+     * @param string $fileData - File Data/Info
+     * @param string $fileName - name of the file
+     *
+     * @return Array - file info
+     */
+    public function saveEmbedData($fileData)
+    {
+        if (!array_key_exists('type', $fileData) || strpos($fileData['type'], 'embed/') !== 0) {
+            return false;
+        }
+
+        $fileName = isset($fileData['name']) ? $fileData['name'] : md5(time());
+        $imageData = $this->saveData($fileData['data'], $fileName);
+
+        $keys = ['date_uploaded', 'storage_adapter'];
+        foreach($keys as $key) {
+            if (array_key_exists($key, $imageData)) {
+                $fileData[$key] = $imageData[$key];
+            }
+        }
+
+        return $fileData;
     }
 
     /**

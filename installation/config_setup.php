@@ -67,6 +67,7 @@ define('MEMCACHED_ENV_NAMESPACE', 'staging');
 
 define('STATUS_DELETED_NUM', 0);
 define('STATUS_ACTIVE_NUM', 1);
+define('STATUS_DRAFT_NUM', 2);
 define('STATUS_COLUMN_NAME', 'active');";
 
     return $configText;
@@ -92,7 +93,15 @@ return array(
 
     'filesystem' => array(
         'adapter' => 'local',
+        // By default media directory are located at the same level of directus root
+        // To make them a level up outsite the root directory
+        // use this instead
+        // Ex: 'root' => realpath(BASE_PATH.'/../media'),
+        // Note: BASE_PATH constant doesn't end with trailing slash
         'root' => BASE_PATH . '/media',
+        // This is the url where all the media will be pointing to
+        // here all assets will be (yourdomain)/media
+        // same with thumbnails (yourdomain)/media/thumbs
         'root_url' => '/media',
         'root_thumb_url' => '/media/thumbs',
         //   'key'    => 's3-key',
@@ -110,13 +119,15 @@ return array(
         }
     ),
 
-    // Define this to send emails e.g. forgot password
-    'SMTP' => array(
-        'host' => '',
-        'port' => 25,
-        'username' => '',
-        'password' => ''
+    'mail' => array(
+        'transport' => 'mail'
     ),
+    // 'SMTP' => array(
+    //   'host' => '',
+    //   'port' => 25,
+    //   'username' => '',
+    //   'password' => ''
+    // ),
 
     'dbHooks' => array(
         'postInsert' => function (".'$TableGateway, $record, $db, $acl'.") {

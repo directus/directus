@@ -18,7 +18,7 @@ class MimeType
      */
     public static function detectByContent($content)
     {
-        if (! class_exists('Finfo')) {
+        if ( ! class_exists('Finfo')) {
             return;
         }
 
@@ -39,7 +39,7 @@ class MimeType
     {
         static $extensionToMimeTypeMap;
 
-        if (! $extensionToMimeTypeMap) {
+        if ( ! $extensionToMimeTypeMap) {
             $extensionToMimeTypeMap = static::getExtensionToMimeTypeMap();
         }
 

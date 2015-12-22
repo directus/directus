@@ -18,7 +18,7 @@ trait StreamedCopyTrait
     {
         $response = $this->readStream($path);
 
-        if ($response === false || !is_resource($response['stream'])) {
+        if ($response === false || ! is_resource($response['stream'])) {
             return false;
         }
 

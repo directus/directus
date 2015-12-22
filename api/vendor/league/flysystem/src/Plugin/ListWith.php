@@ -47,10 +47,10 @@ class ListWith extends AbstractPlugin
      */
     protected function getMetadataByName(array $object, $key)
     {
-        $method = 'get'.ucfirst($key);
+        $method = 'get' . ucfirst($key);
 
-        if (! method_exists($this->filesystem, $method)) {
-            throw new \InvalidArgumentException('Could not get meta-data for key: '.$key);
+        if ( ! method_exists($this->filesystem, $method)) {
+            throw new \InvalidArgumentException('Could not get meta-data for key: ' . $key);
         }
 
         $object[$key] = $this->filesystem->{$method}($object['path']);

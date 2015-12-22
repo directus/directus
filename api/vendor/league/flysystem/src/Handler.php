@@ -126,8 +126,8 @@ abstract class Handler
         } catch (BadMethodCallException $e) {
             throw new BadMethodCallException(
                 'Call to undefined method '
-                .get_called_class()
-                .'::'.$method
+                . get_called_class()
+                . '::' . $method
             );
         }
     }

@@ -22,7 +22,7 @@ class FileExistsException extends Exception
     {
         $this->path = $path;
 
-        parent::__construct('File already exists at path: '.$this->getPath(), $code, $previous);
+        parent::__construct('File already exists at path: ' . $this->getPath(), $code, $previous);
     }
 
     /**

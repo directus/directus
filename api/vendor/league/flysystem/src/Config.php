@@ -34,7 +34,7 @@ class Config
      */
     public function get($key, $default = null)
     {
-        if (! array_key_exists($key, $this->settings)) {
+        if ( ! array_key_exists($key, $this->settings)) {
             return $this->getDefault($key, $default);
         }
 
@@ -63,7 +63,7 @@ class Config
      */
     protected function getDefault($key, $default)
     {
-        if (! $this->fallback) {
+        if ( ! $this->fallback) {
             return $default;
         }
 

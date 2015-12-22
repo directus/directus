@@ -27,8 +27,8 @@ abstract class AbstractAdapter implements AdapterInterface
     {
         $is_empty = empty($prefix);
 
-        if (! $is_empty) {
-            $prefix = rtrim($prefix, $this->pathSeparator).$this->pathSeparator;
+        if ( ! $is_empty) {
+            $prefix = rtrim($prefix, $this->pathSeparator) . $this->pathSeparator;
         }
 
         $this->pathPrefix = $is_empty ? null : $prefix;
@@ -60,7 +60,7 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         if ($prefix = $this->getPathPrefix()) {
-            $path = $prefix.$path;
+            $path = $prefix . $path;
         }
 
         return $path;

@@ -24,6 +24,7 @@ use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 // use Directus\Db\TableGateway\DirectusTabPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
+use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableSchema;
 
 // No access, forward to login page
@@ -116,7 +117,7 @@ function parsePreferences($tableSchema) {
 function getUsers() {
     global $ZendDb, $acl;
     $tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
-    return $tableGateway->getEntries(
+    $users = $tableGateway->getEntries(
         array(
             'table_name'=>'directus_users',
             'perPage'=>1000,
@@ -124,6 +125,27 @@ function getUsers() {
             'columns_visible'=>array(STATUS_COLUMN_NAME,'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
         )
     );
+
+    // Lets get the gravatar if no avatar is set.
+    // TODO: Add this on insert/update of any user.
+    $usersRowsToUpdate = [];
+    foreach($users['rows'] as $user) {
+        $hasAvatar = array_key_exists('avatar', $user) ? $user['avatar'] : false;
+        $hasEmail = array_key_exists('email', $user) ? $user['email'] : false;
+        if (!$hasAvatar && $hasEmail) {
+            $avatar = DirectusUsersTableGateway::get_avatar($user['email']);
+            if ($avatar) {
+                $user['avatar'] = $avatar;
+                array_push($usersRowsToUpdate, $user);
+            }
+        }
+    }
+
+    if ($usersRowsToUpdate) {
+        $tableGateway->updateCollection($usersRowsToUpdate);
+    }
+
+    return $users;
 }
 
 function getCurrentUserInfo($users) {

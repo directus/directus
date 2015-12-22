@@ -143,7 +143,7 @@ $(function(){
             message(errorMessage, true);
             return;
           }
-          message("Temporary password sent to your email address")
+          message("Reset instructions have been sent.")
         },
         error: function(jqXHR, textStatus, errorThrown) {
           message("Server error occurred!", true);
