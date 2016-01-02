@@ -38,6 +38,9 @@
 
   /* Support for IE. */
   font-feature-settings: 'liga';
+  &.vertical-middle {
+    vertical-align: middle;
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////

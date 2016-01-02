@@ -27,8 +27,8 @@ select {
   width: 100%;
   .char-count {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 14px;
+    right: 14px;
     color: $mediumGrey;
   }
 }
@@ -99,30 +99,24 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     margin-right: $smallPad;
     position: relative;
     vertical-align: bottom;
+    span:before {
+      content: "check_box_outline_blank";
+      @extend .material-icons;
+    }
     span {
-      background-color: $white;
-      border: solid 1px $lightGrey;
+      color: $mediumGrey;
       display:inline-block;
-      width:14px;
-      height:14px;
+      width:18px;
+      height:22px;
       margin:0px $extraSmallPad 0 0;
       vertical-align:middle;
     }
   }
   &:checked {
     +label {
-      span {
-        background-color: $darkGrey;
-        border-color: $darkGrey;
-      }
-      &:before {
-        @extend .icon;
-        color: $white;
-        content: "\2713";
-        font-size: 29px;
-        left: 2px;
-        position: absolute;
-        top: -6px;
+      span:before {
+        content: "check_box";
+        @extend .material-icons;
       }
     }
   }
@@ -130,7 +124,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
 input[type="radio"] {
   display: inline-block;
   width: auto;
-  margin-right: 10px;
+  margin-right: 8px;
   cursor: pointer;
 }
 input,
@@ -141,8 +135,8 @@ select,
   background-color: $fieldColor;
   border: none;
   display: block;
-  padding: $smallPad;
-  font-size: 13px;
+  padding: 14px;
+  font-size: 14px;
   outline: none;
   resize: none;
   -webkit-box-sizing: border-box;
@@ -159,6 +153,10 @@ select,
   }
   &:focus {
     color: darken($darkGrey, 10%);
+  }
+  &.legacy {
+    padding: $smallPad;
+    font-size: 13px;
   }
 }
 .wysiwyg {
@@ -254,13 +252,14 @@ select,
       background-color: $white;
       color: $darkGrey;
       font-weight: 600;
-      padding: 40px $standardPad $largePad $largePad;
+      padding: 44px $standardPad $largePad $largePad;
       vertical-align: top;
       width: 200px;
       label {
         position: relative;
         text-transform: capitalize;
         //top: -5px;
+        font-size: 14px;
         font-weight: 600;
         .note {
           display: block;
@@ -268,6 +267,12 @@ select,
           font-style: italic;
           text-transform: none;
           font-size: 12px;
+          a {
+            border-bottom: dotted 1px $mediumGrey;
+            &:hover {
+              color: $darkGrey;
+            }
+          }
         }
       }
       .batch-edit-on {
@@ -312,9 +317,12 @@ select,
       }
       textarea {
         min-height: 100px;
-        padding: $smallPad;
+        padding: 14px;
         resize: vertical;
         line-height: 20px;
+        &.wysihtml5-style {
+          padding: 0;
+        }
       }
       select {
         max-width: 200px;

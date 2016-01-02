@@ -85,32 +85,23 @@ var template = '<style type="text/css"> \
                   } \
                   </style> \
                   <div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="display: none;"> \
-                  <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
-                    {{#if bold}}<button data-wysihtml5-command="bold" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><b>B</b></button>{{/if}} \
-                    {{#if italic}}<button data-wysihtml5-command="italic" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Italic"><i>I</i></button>{{/if}} \
-                    {{#if underline}}<button data-wysihtml5-command="underline" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Underline"><u>U</u></button>{{/if}} \
-                    {{#if strikethrough}}<button data-wysihtml5-command="strikethrough" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Strikethrough"><s>S</s></button>{{/if}} \
-                  </div> \
-                  <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
+                  <div class="btn-group btn-white btn-group-attached btn-group-action wysiwyg-toolbar active"> \
+                    {{#if bold}}<button data-wysihtml5-command="bold" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><i class="material-icons">format_bold</i></button>{{/if}} \
+                    {{#if italic}}<button data-wysihtml5-command="italic" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Italic"><i class="material-icons">format_italic</i></button>{{/if}} \
+                    {{#if underline}}<button data-wysihtml5-command="underline" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Underline"><i class="material-icons">format_underlined</i></button>{{/if}} \
+                    {{#if strikethrough}}<button data-wysihtml5-command="strikethrough" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Strikethrough"><i class="material-icons">strikethrough_s</i></button>{{/if}} \
                     {{#if h1}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" type="button" class="btn btn-small btn-silver" data-tag="H1" rel="tooltip" data-placement="bottom" title="H1">H1</button>{{/if}} \
                     {{#if h2}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" type="button" class="btn btn-small btn-silver" data-tag="H2" rel="tooltip" data-placement="bottom" title="H2">H2</button>{{/if}} \
                     {{#if h3}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" type="button" class="btn btn-small btn-silver" data-tag="H3" rel="tooltip" data-placement="bottom" title="H3">H3</button>{{/if}} \
                     {{#if h4}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" type="button" class="btn btn-small btn-silver" data-tag="H4" rel="tooltip" data-placement="bottom" title="H4">H4</button>{{/if}} \
                     {{#if h5}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" type="button" class="btn btn-small btn-silver" data-tag="H5" rel="tooltip" data-placement="bottom" title="H5">H5</button>{{/if}} \
                     {{#if h6}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" type="button" class="btn btn-small btn-silver" data-tag="H6" rel="tooltip" data-placement="bottom" title="H6">H6</button>{{/if}} \
-                    {{#if blockquote}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote" type="button" class="btn btn-small btn-silver" data-tag="Quote" rel="tooltip" data-placement="bottom" title="Quote">Quote</button>{{/if}} \
-                    {{#if orderedList}}<button data-wysihtml5-command="insertOrderedList" type="button" class="btn btn-small btn-silver" data-tag="List" rel="tooltip" data-placement="bottom" title="List">List</button>{{/if}} \
-                  </div> \
-                  <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
-                    {{#if ul}}<button data-wysihtml5-command="insertUnorderedList" type="button" class="btn btn-small btn-silver" data-tag="UL" rel="tooltip" data-placement="bottom" title="UL">UL</button>{{/if}} \
-                    {{#if ol}}<button data-wysihtml5-command="insertOrderedList" type="button" class="btn btn-small btn-silver" data-tag="OL" rel="tooltip" data-placement="bottom" title="OL">OL</button>{{/if}} \
-                  </div> \
-                  <div class="btn-group btn-white btn-group-attached btn-group-action active"> \
-                    {{#if rule}} \
-                      <button data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Rule">HR</button> \
-                    {{/if}} \
+                    {{#if blockquote}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote" type="button" class="btn btn-small btn-silver" data-tag="Quote" rel="tooltip" data-placement="bottom" title="Quote"><i class="material-icons">format_quote</i></button>{{/if}} \
+                    {{#if ul}}<button data-wysihtml5-command="insertUnorderedList" type="button" class="btn btn-small btn-silver" data-tag="UL" rel="tooltip" data-placement="bottom" title="UL"><i class="material-icons">format_list_bulleted</i></button>{{/if}} \
+                    {{#if ol}}<button data-wysihtml5-command="insertOrderedList" type="button" class="btn btn-small btn-silver" data-tag="OL" rel="tooltip" data-placement="bottom" title="OL"><i class="material-icons">format_list_numbered</i></button>{{/if}} \
+                    {{#if rule}}<button data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Rule"><i class="material-icons">remove</i></button>{{/if}} \
                     {{#if createlink}} \
-                    <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link">Link</button> \
+                    <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link"><i class="material-icons">insert_link</i></button> \
                     <div data-wysihtml5-dialog="createLink" style="display: none;z-index:108" class="directus-alert-modal"> \
                       <div class="directus-alert-modal-message">Please Insert a Link</div> \
                       <input type="text" data-wysihtml5-dialog-field="href" value="http://"> \
@@ -121,7 +112,7 @@ var template = '<style type="text/css"> \
                     </div> \
                     {{/if}} \
                     {{#if insertimage}} \
-                      <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image">Image</button> \
+                      <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image"><i class="material-icons">insert_photo</i></button> \
                       <div data-wysihtml5-dialog="insertImage" style="display: none;z-index:108" class="directus-alert-modal"> \
                         <div><button id="existingFileButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing File</button></div> \
                         <div style="position:relative;margin-bottom:10px;width:100%;background-color:#F4F4F4;text-align:center;font-weight:600;padding-top:10px;padding-bottom:10px;">Choose From Computer<input id="fileAddInput" type="file" class="large" style="position:absolute;top:0;left:0;cursor:pointer;opacity:0.0;width:100%;height:100%;z-index:9;" /></div> \
@@ -133,7 +124,7 @@ var template = '<style type="text/css"> \
                       </div> \
                     {{/if}} \
                     {{#if embedVideo}} \
-                      <button data-wysihtml5-command="embedVideo" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Embed Video">Embed</button> \
+                      <button data-wysihtml5-command="embedVideo" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Embed Video"><i class="material-icons">movie</i></button> \
                       <div data-wysihtml5-dialog="embedVideo" style="display: none;z-index:108" class="directus-alert-modal"> \
                         <div><button id="existingLinkButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing Link</button></div> \
                         <div><input type="text" class="videoEmbedWidth" id="embedWidthInput" value="{{embed_width}}" style="font-weight:600;"></div><br/> \
@@ -149,7 +140,7 @@ var template = '<style type="text/css"> \
                       </div> \
                     {{/if}} \
                     {{#if html}} \
-                      <button data-wysihtml5-action="change_view" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Toggle HTML">HTML</button> \
+                      <button data-wysihtml5-action="change_view" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Toggle HTML"><i class="material-icons">code</i></button> \
                     {{/if}} \
                   </div> \
                 </div> \

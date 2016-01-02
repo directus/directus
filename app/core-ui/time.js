@@ -34,7 +34,7 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   input.time { \
                     display: inline; \
                     display: -webkit-inline-flex; \
-                    width: 110px; \
+                    width: 130px; \
                     padding-right: 4px; \
                     margin-right: 5px; \
                   } \

@@ -26,11 +26,11 @@ define(['app', 'backbone'], function(app, Backbone) {
                     margin-right: 20px; \
                     padding: 0 0 4px 0; \
                     font-weight: 600; \
-                    font-size: 12px; \
+                    font-size: 14px; \
                     cursor: pointer; \
                   } \
                   </style> \
-                  <div style="margin-top:4px;"> \
+                  <div style="margin-top: 14px;margin-bottom: 10px;"> \
                   {{#options}} \
                     <label class="radiobuttons" for="radio-{{value}}"><input style="margin-top:-3px;" type="radio" name="{{../name}}" value="{{value}}" id="radio-{{value}}" {{#if selected}}checked{{/if}}>{{value}}</label> \
                   {{/options}} \

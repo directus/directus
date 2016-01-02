@@ -124,7 +124,7 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
 
     events: {
       'click td.tableName > div': 'toggleRowPermissions',
-      'click td.editFields > span': 'editFields',
+      'click td.editFields > i': 'editFields',
       'click td > span': function(e) {
         var $target = $(e.target).parent(),
             $tr = $target.closest('tr'),
@@ -512,10 +512,10 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
     <div class="simple-select dark-grey-color simple-gray right"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="statusSelect" name="status" class="change-visibility"> \
-        <optgroup label="Status"> \
-          <option data-status value="all">All States</option> \
+        <optgroup label="Status-Specific Editing"> \
+          <option data-status value="all">Status: All Options</option> \
           {{#mapping}} \
-            <option data-status value="{{id}}">View {{capitalize name}}</option> \
+            <option data-status value="{{id}}">Status: {{capitalize name}} Only</option> \
           {{/mapping}} \
         </optgroup> \
       </select> \

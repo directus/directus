@@ -376,7 +376,9 @@ th {
   src: url(../fonts/material-design/MaterialIcons-Regular.eot);
   /* For IE6-8 */
   src: local("Material Icons"), local("MaterialIcons-Regular"), url(../fonts/material-design/MaterialIcons-Regular.woff2) format("woff2"), url(../fonts/material-design/MaterialIcons-Regular.woff) format("woff"), url(../fonts/material-design/MaterialIcons-Regular.ttf) format("truetype"); }
-.material-icons {
+.material-icons, .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="radio"] + label span:before,
+input[type="checkbox"].custom-check + label span:before, input[type="radio"].custom-check + label span:before, .custom-check input[type="checkbox"]:checked + label span:before, .custom-check input[type="radio"]:checked + label span:before,
+input[type="checkbox"].custom-check:checked + label span:before, input[type="radio"].custom-check:checked + label span:before {
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
@@ -399,6 +401,9 @@ th {
   -moz-osx-font-smoothing: grayscale;
   /* Support for IE. */
   font-feature-settings: 'liga'; }
+  .material-icons.vertical-middle, .custom-check input[type="checkbox"] + label span.vertical-middle:before, .custom-check input[type="radio"] + label span.vertical-middle:before,
+  input[type="checkbox"].custom-check + label span.vertical-middle:before, input[type="radio"].custom-check + label span.vertical-middle:before {
+    vertical-align: middle; }
 
 @font-face {
   font-family: 'Directus';
@@ -406,8 +411,7 @@ th {
   /* IE9 Compat Modes */
   src: url("../fonts/directus/directus-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/directus/directus-regular.woff") format("woff"), url("../fonts/directus/directus-regular.ttf") format("truetype"), url("../fonts/directus/directus-regular.svg#entypo") format("svg");
   /* Legacy iOS */ }
-.icon, .custom-check input[type="checkbox"]:checked + label:before, .custom-check input[type="radio"]:checked + label:before,
-input[type="checkbox"].custom-check:checked + label:before, input[type="radio"].custom-check:checked + label:before, .login-panel p #forgot-password:after {
+.icon {
   display: inline-block;
   font-family: "Directus";
   font-size: 300%;
@@ -1301,7 +1305,10 @@ input[type="checkbox"].custom-check:checked + label:before, input[type="radio"].
 
 .row {
   clear: both;
-  margin: 0px 0px -20px; }
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  margin-left: -20px; }
 
 .col-1, .col-2, .col-3, .col-4, .col-full {
   float: left;
@@ -1594,7 +1601,9 @@ input, button {
     -ms-transform: scale(1.1);
     -webkit-transform: scale(1.1);
     transform: scale(1.1); }
-  .large-circle .material-icons {
+  .large-circle .material-icons, .large-circle .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .large-circle span:before, .large-circle .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .large-circle span:before,
+  .large-circle input[type="checkbox"].custom-check + label span:before,
+  input[type="checkbox"].custom-check + label .large-circle span:before, .large-circle input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .large-circle span:before {
     display: inline-block;
     margin-top: 4px; }
   .large-circle.white-circle {
@@ -1691,7 +1700,7 @@ a.secondary-info, .history-container ul li a.history-follow {
   border-top: 1px solid #ececec; }
 
 .big-label-text {
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 100;
   color: #aaaaaa; }
 
@@ -1720,7 +1729,7 @@ img.grayscale {
   right: 0px; }
 
 .content-body {
-  /* flex: 1; */
+  /* flex: 1; display: flex; */
   margin-bottom: 40px;
   margin-top: 63px; }
 
@@ -1832,8 +1841,7 @@ body.initial-load #page-blocker-smoke {
   100% {
     transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); } }
-.pulsate, .external-drop-indicator, .cards .card .header-image .default-loading .icon, .cards .card .header-image .default-loading .custom-check input[type="checkbox"]:checked + label:before, .custom-check .cards .card .header-image .default-loading input[type="checkbox"]:checked + label:before, .cards .card .header-image .default-loading .custom-check input[type="radio"]:checked + label:before, .custom-check .cards .card .header-image .default-loading input[type="radio"]:checked + label:before,
-.cards .card .header-image .default-loading input[type="checkbox"].custom-check:checked + label:before, .cards .card .header-image .default-loading input[type="radio"].custom-check:checked + label:before, .cards .card .header-image .default-loading .login-panel p #forgot-password:after, .login-panel p .cards .card .header-image .default-loading #forgot-password:after, #sidebar .unread-color {
+.pulsate, .external-drop-indicator, .sortableHeader, .cards .card .header-image .default-loading .icon, #sidebar .unread-color {
   -webkit-animation: pulsate 2s ease-out;
   -webkit-animation-iteration-count: infinite;
   opacity: 0.6; }
@@ -1999,7 +2007,7 @@ input[type="date"]::-webkit-inner-spin-button {
     background-clip: padding-box;
     border-left-width: 1px; }
   .btn-group.btn-white .btn:last-child {
-    border-right-width: 1px; }
+    border-right: 1px solid #ececec; }
 .btn-group .btn {
   -webkit-border-top-right-radius: 0px;
   -webkit-border-bottom-right-radius: 0px;
@@ -2086,6 +2094,10 @@ input[type="date"]::-webkit-inner-spin-button {
     -moz-background-clip: padding-box;
     -webkit-background-clip: padding-box;
     background-clip: padding-box; }
+.btn-group.wysiwyg-toolbar .btn {
+  padding: 5px 6px 5px 6px;
+  font-size: 14px;
+  min-height: 32px; }
 
 .btn {
   -webkit-border-top-right-radius: 3px;
@@ -2108,10 +2120,12 @@ input[type="date"]::-webkit-inner-spin-button {
   border-bottom: 2px solid #919191;
   color: #ffffff;
   cursor: pointer;
-  padding: 10px 15px 10px 15px;
+  padding: 12px 15px 10px 15px;
   letter-spacing: 0;
   font-weight: 600;
-  -webkit-font-smoothing: antialiased !important; }
+  -webkit-font-smoothing: antialiased !important;
+  text-transform: uppercase;
+  letter-spacing: 0.02em; }
   .btn:hover {
     background-color: #919191;
     border-bottom: 2px solid #777777; }
@@ -2120,6 +2134,20 @@ input[type="date"]::-webkit-inner-spin-button {
     border-bottom: 2px solid #5e5e5e; }
   .btn.active {
     background-color: #333333; }
+  .btn.btn-white, .btn-group.btn-white .btn {
+    color: #666666;
+    background-color: #ffffff;
+    border-color: #ececec;
+    border-top: 1px solid #ececec;
+    border-bottom: 1px solid #ececec; }
+    .btn.btn-white:hover, .btn-group.btn-white .btn:hover {
+      background-color: #ececec; }
+    .btn.btn-white.active, .btn-group.btn-white .btn.active, .btn.btn-white.wysihtml5-command-active, .btn-group.btn-white .btn.wysihtml5-command-active {
+      border-top-color: #666666;
+      border-bottom-color: #666666;
+      border-left-color: #666666;
+      background-color: #666666;
+      color: #ffffff; }
   .btn.btn-round {
     -webkit-border-top-right-radius: 50%;
     -webkit-border-bottom-right-radius: 50%;
@@ -2140,10 +2168,14 @@ input[type="date"]::-webkit-inner-spin-button {
     padding: 10px; }
   .btn.btn-small {
     padding: 5px 10px 5px 10px; }
-  .btn .icon, .btn .custom-check input[type="checkbox"]:checked + label:before, .custom-check .btn input[type="checkbox"]:checked + label:before, .btn .custom-check input[type="radio"]:checked + label:before, .custom-check .btn input[type="radio"]:checked + label:before,
-  .btn input[type="checkbox"].custom-check:checked + label:before, .btn input[type="radio"].custom-check:checked + label:before, .btn .login-panel p #forgot-password:after, .login-panel p .btn #forgot-password:after {
+  .btn .icon {
     font-size: 400%;
     line-height: 16%; }
+  .btn .material-icons, .btn .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .btn span:before, .btn .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .btn span:before,
+  .btn input[type="checkbox"].custom-check + label span:before,
+  input[type="checkbox"].custom-check + label .btn span:before, .btn input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .btn span:before {
+    vertical-align: middle;
+    font-size: 18px; }
 
 #existingFileButton {
   color: #333333; }
@@ -2273,14 +2305,13 @@ select {
   width: 100%; }
   .char-count-container .char-count {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 14px;
+    right: 14px;
     color: #aaaaaa; }
 
 .standard-select {
   position: relative; }
-  .standard-select .icon, .standard-select .custom-check input[type="checkbox"]:checked + label:before, .custom-check .standard-select input[type="checkbox"]:checked + label:before, .standard-select .custom-check input[type="radio"]:checked + label:before, .custom-check .standard-select input[type="radio"]:checked + label:before,
-  .standard-select input[type="checkbox"].custom-check:checked + label:before, .standard-select input[type="radio"].custom-check:checked + label:before, .standard-select .login-panel p #forgot-password:after, .login-panel p .standard-select #forgot-password:after {
+  .standard-select .icon {
     bottom: 0px;
     line-height: 22px;
     padding: 0px 6px 0px 0px;
@@ -2314,8 +2345,7 @@ select {
 .simple-select {
   display: inline-block;
   position: relative; }
-  .simple-select .icon, .simple-select .custom-check input[type="checkbox"]:checked + label:before, .custom-check .simple-select input[type="checkbox"]:checked + label:before, .simple-select .custom-check input[type="radio"]:checked + label:before, .custom-check .simple-select input[type="radio"]:checked + label:before,
-  .simple-select input[type="checkbox"].custom-check:checked + label:before, .simple-select input[type="radio"].custom-check:checked + label:before, .simple-select .login-panel p #forgot-password:after, .login-panel p .simple-select #forgot-password:after {
+  .simple-select .icon {
     bottom: 0px;
     display: block;
     font-size: 200%;
@@ -2353,32 +2383,25 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     margin-right: 10px;
     position: relative;
     vertical-align: bottom; }
+    .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="radio"] + label span:before,
+    input[type="checkbox"].custom-check + label span:before, input[type="radio"].custom-check + label span:before {
+      content: "check_box_outline_blank"; }
     .custom-check input[type="checkbox"] + label span, .custom-check input[type="radio"] + label span,
     input[type="checkbox"].custom-check + label span, input[type="radio"].custom-check + label span {
-      background-color: #ffffff;
-      border: solid 1px #ececec;
+      color: #aaaaaa;
       display: inline-block;
-      width: 14px;
-      height: 14px;
+      width: 18px;
+      height: 22px;
       margin: 0px 5px 0 0;
       vertical-align: middle; }
-  .custom-check input[type="checkbox"]:checked + label span, .custom-check input[type="radio"]:checked + label span,
-  input[type="checkbox"].custom-check:checked + label span, input[type="radio"].custom-check:checked + label span {
-    background-color: #666666;
-    border-color: #666666; }
-  .custom-check input[type="checkbox"]:checked + label:before, .custom-check input[type="radio"]:checked + label:before,
-  input[type="checkbox"].custom-check:checked + label:before, input[type="radio"].custom-check:checked + label:before {
-    color: #ffffff;
-    content: "\2713";
-    font-size: 29px;
-    left: 2px;
-    position: absolute;
-    top: -6px; }
+  .custom-check input[type="checkbox"]:checked + label span:before, .custom-check input[type="radio"]:checked + label span:before,
+  input[type="checkbox"].custom-check:checked + label span:before, input[type="radio"].custom-check:checked + label span:before {
+    content: "check_box"; }
 
 input[type="radio"] {
   display: inline-block;
   width: auto;
-  margin-right: 10px;
+  margin-right: 8px;
   cursor: pointer; }
 
 input,
@@ -2393,8 +2416,8 @@ select,
   background-color: #f1f1f1;
   border: none;
   display: block;
-  padding: 10px;
-  font-size: 13px;
+  padding: 14px;
+  font-size: 14px;
   outline: none;
   resize: none;
   -webkit-box-sizing: border-box;
@@ -2410,6 +2433,12 @@ select,
   select:focus,
   .input:focus {
     color: #4d4d4d; }
+  input.legacy,
+  textarea.legacy,
+  select.legacy,
+  .input.legacy {
+    padding: 10px;
+    font-size: 13px; }
 
 .wysiwyg .btn-toolbar {
   margin-bottom: 5px; }
@@ -2436,8 +2465,7 @@ select,
 
 .simple-select.simple-gray {
   margin-top: 0; }
-  .simple-select.simple-gray .icon, .simple-select.simple-gray .custom-check input[type="checkbox"]:checked + label:before, .custom-check .simple-select.simple-gray input[type="checkbox"]:checked + label:before, .simple-select.simple-gray .custom-check input[type="radio"]:checked + label:before, .custom-check .simple-select.simple-gray input[type="radio"]:checked + label:before,
-  .simple-select.simple-gray input[type="checkbox"].custom-check:checked + label:before, .simple-select.simple-gray input[type="radio"].custom-check:checked + label:before, .simple-select.simple-gray .login-panel p #forgot-password:after, .login-panel p .simple-select.simple-gray #forgot-password:after {
+  .simple-select.simple-gray .icon {
     top: 8px; }
   .simple-select.simple-gray select {
     -webkit-border-top-right-radius: 0;
@@ -2494,12 +2522,13 @@ select,
     background-color: #ffffff;
     color: #666666;
     font-weight: 600;
-    padding: 40px 20px 30px 30px;
+    padding: 44px 20px 30px 30px;
     vertical-align: top;
     width: 200px; }
     .two-column-form .fields .label label {
       position: relative;
       text-transform: capitalize;
+      font-size: 14px;
       font-weight: 600; }
       .two-column-form .fields .label label .note {
         display: block;
@@ -2507,6 +2536,10 @@ select,
         font-style: italic;
         text-transform: none;
         font-size: 12px; }
+        .two-column-form .fields .label label .note a {
+          border-bottom: dotted 1px #aaaaaa; }
+          .two-column-form .fields .label label .note a:hover {
+            color: #666666; }
     .two-column-form .fields .label .batch-edit-on {
       font-weight: 700;
       display: block;
@@ -2538,9 +2571,11 @@ select,
         margin-bottom: -1px; }
     .two-column-form .fields .field textarea {
       min-height: 100px;
-      padding: 10px;
+      padding: 14px;
       resize: vertical;
       line-height: 20px; }
+      .two-column-form .fields .field textarea.wysihtml5-style {
+        padding: 0; }
     .two-column-form .fields .field select {
       max-width: 200px;
       margin-top: 2px;
@@ -2576,8 +2611,7 @@ select,
             margin-right: 120px; }
           .two-column-form .fields .field .file .content .row .remove-media:hover {
             color: #c1272d; }
-          .two-column-form .fields .field .file .content .row .remove-media .icon, .two-column-form .fields .field .file .content .row .remove-media .custom-check input[type="checkbox"]:checked + label:before, .custom-check .two-column-form .fields .field .file .content .row .remove-media input[type="checkbox"]:checked + label:before, .two-column-form .fields .field .file .content .row .remove-media .custom-check input[type="radio"]:checked + label:before, .custom-check .two-column-form .fields .field .file .content .row .remove-media input[type="radio"]:checked + label:before,
-          .two-column-form .fields .field .file .content .row .remove-media input[type="checkbox"].custom-check:checked + label:before, .two-column-form .fields .field .file .content .row .remove-media input[type="radio"].custom-check:checked + label:before, .two-column-form .fields .field .file .content .row .remove-media .login-panel p #forgot-password:after, .login-panel p .two-column-form .fields .field .file .content .row .remove-media #forgot-password:after {
+          .two-column-form .fields .field .file .content .row .remove-media .icon {
             display: inline-block;
             line-height: 12px;
             margin-right: 5px;
@@ -2646,14 +2680,16 @@ select,
         border-color: transparent transparent #aaaaaa transparent; }
       .table-striped thead tr th.permissions {
         width: 10%; }
-      .table-striped thead tr th .icon, .table-striped thead tr th .custom-check input[type="checkbox"]:checked + label:before, .custom-check .table-striped thead tr th input[type="checkbox"]:checked + label:before, .table-striped thead tr th .custom-check input[type="radio"]:checked + label:before, .custom-check .table-striped thead tr th input[type="radio"]:checked + label:before,
-      .table-striped thead tr th input[type="checkbox"].custom-check:checked + label:before, .table-striped thead tr th input[type="radio"].custom-check:checked + label:before, .table-striped thead tr th .login-panel p #forgot-password:after, .login-panel p .table-striped thead tr th #forgot-password:after {
+      .table-striped thead tr th .icon {
         display: inline-block;
         height: 0px;
         line-height: 12px;
         vertical-align: top; }
-      .table-striped thead tr th.sort {
-        font-size: 10px; }
+      .table-striped thead tr th.sort .material-icons, .table-striped thead tr th.sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .table-striped thead tr th.sort span:before, .table-striped thead tr th.sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .table-striped thead tr th.sort span:before,
+      .table-striped thead tr th.sort input[type="checkbox"].custom-check + label span:before,
+      input[type="checkbox"].custom-check + label .table-striped thead tr th.sort span:before, .table-striped thead tr th.sort input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .table-striped thead tr th.sort span:before {
+        font-size: 18px;
+        vertical-align: middle; }
   .table-striped thead #set-visible-columns {
     position: absolute;
     top: 8px;
@@ -2680,12 +2716,15 @@ select,
       width: 5px;
       padding-top: 0;
       padding-bottom: 0;
-      padding-right: 0; }
+      padding-right: 0;
+      text-align: left; }
       .table-striped tbody .sort:hover {
         color: #666666; }
-      .table-striped tbody .sort .icon, .table-striped tbody .sort .custom-check input[type="checkbox"]:checked + label:before, .custom-check .table-striped tbody .sort input[type="checkbox"]:checked + label:before, .table-striped tbody .sort .custom-check input[type="radio"]:checked + label:before, .custom-check .table-striped tbody .sort input[type="radio"]:checked + label:before,
-      .table-striped tbody .sort input[type="checkbox"].custom-check:checked + label:before, .table-striped tbody .sort input[type="radio"].custom-check:checked + label:before, .table-striped tbody .sort .login-panel p #forgot-password:after, .login-panel p .table-striped tbody .sort #forgot-password:after {
-        margin-top: -4px; }
+      .table-striped tbody .sort .material-icons, .table-striped tbody .sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .table-striped tbody .sort span:before, .table-striped tbody .sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .table-striped tbody .sort span:before,
+      .table-striped tbody .sort input[type="checkbox"].custom-check + label span:before,
+      input[type="checkbox"].custom-check + label .table-striped tbody .sort span:before, .table-striped tbody .sort input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .table-striped tbody .sort span:before {
+        font-size: 18px;
+        vertical-align: middle; }
   .table-striped tfoot tr {
     border-bottom: none;
     height: 100px;
@@ -2965,7 +3004,7 @@ select,
       .history-container ul li .history-comment {
         position: relative;
         display: inline-block;
-        padding: 12px 10px 10px 10px;
+        padding: 12px 22px 10px 20px;
         background-color: #f1f1f1;
         max-width: 500px;
         margin-left: 10px;
@@ -2994,12 +3033,13 @@ select,
           border-color: transparent #f1f1f1; }
         .history-container ul li .history-comment #messages-response-button {
           position: absolute;
-          right: 10px;
-          bottom: 10px; }
+          right: 15px;
+          bottom: 15px; }
         .history-container ul li .history-comment textarea {
           border: none;
           width: 100%;
-          min-height: 70px;
+          min-height: 80px;
+          padding: 5px 0 0 0;
           -webkit-font-smoothing: antialiased !important; }
       .history-container ul li .history-follow {
         margin-left: 10px;
@@ -3033,57 +3073,48 @@ select,
         -moz-background-clip: padding-box;
         -webkit-background-clip: padding-box;
         background-clip: padding-box; }
-        .history-container ul li .history-icon .icon, .history-container ul li .history-icon .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon input[type="radio"]:checked + label:before,
-        .history-container ul li .history-icon input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon #forgot-password:after {
+        .history-container ul li .history-icon .icon {
           font-size: 200%;
           line-height: 60%;
           position: absolute; }
         .history-container ul li .history-icon.add {
           background-color: #7ac943; }
-          .history-container ul li .history-icon.add .icon, .history-container ul li .history-icon.add .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon.add input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon.add .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon.add input[type="radio"]:checked + label:before,
-          .history-container ul li .history-icon.add input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon.add input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon.add .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon.add #forgot-password:after {
+          .history-container ul li .history-icon.add .icon {
             top: 1px;
             left: 5px; }
         .history-container ul li .history-icon.edit {
           background-color: #3fa9f5; }
-          .history-container ul li .history-icon.edit .icon, .history-container ul li .history-icon.edit .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon.edit input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon.edit .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon.edit input[type="radio"]:checked + label:before,
-          .history-container ul li .history-icon.edit input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon.edit input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon.edit .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon.edit #forgot-password:after {
+          .history-container ul li .history-icon.edit .icon {
             top: 1px;
             left: 5px; }
         .history-container ul li .history-icon.delete {
           background-color: #c1272d; }
-          .history-container ul li .history-icon.delete .icon, .history-container ul li .history-icon.delete .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon.delete input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon.delete .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon.delete input[type="radio"]:checked + label:before,
-          .history-container ul li .history-icon.delete input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon.delete input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon.delete .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon.delete #forgot-password:after {
+          .history-container ul li .history-icon.delete .icon {
             top: 1px;
             left: 5px; }
         .history-container ul li .history-icon.message {
           background-color: #a63c96; }
-          .history-container ul li .history-icon.message .icon, .history-container ul li .history-icon.message .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon.message input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon.message .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon.message input[type="radio"]:checked + label:before,
-          .history-container ul li .history-icon.message input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon.message input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon.message .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon.message #forgot-password:after {
+          .history-container ul li .history-icon.message .icon {
             top: 2px;
             left: 4px; }
         .history-container ul li .history-icon.comment {
           background-color: #a63c96; }
-          .history-container ul li .history-icon.comment .icon, .history-container ul li .history-icon.comment .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon.comment input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon.comment .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon.comment input[type="radio"]:checked + label:before,
-          .history-container ul li .history-icon.comment input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon.comment input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon.comment .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon.comment #forgot-password:after {
+          .history-container ul li .history-icon.comment .icon {
             top: 1px;
             left: 5px; }
         .history-container ul li .history-icon.attach {
           background-color: #ff7bac; }
-          .history-container ul li .history-icon.attach .icon, .history-container ul li .history-icon.attach .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon.attach input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon.attach .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon.attach input[type="radio"]:checked + label:before,
-          .history-container ul li .history-icon.attach input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon.attach input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon.attach .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon.attach #forgot-password:after {
+          .history-container ul li .history-icon.attach .icon {
             top: 1px;
             left: 4px; }
         .history-container ul li .history-icon.login {
           background-color: #5b5b5b; }
-          .history-container ul li .history-icon.login .icon, .history-container ul li .history-icon.login .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon.login input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon.login .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon.login input[type="radio"]:checked + label:before,
-          .history-container ul li .history-icon.login input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon.login input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon.login .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon.login #forgot-password:after {
+          .history-container ul li .history-icon.login .icon {
             top: 1px;
             left: 5px; }
         .history-container ul li .history-icon.system {
           background-color: #fdcd30; }
-          .history-container ul li .history-icon.system .icon, .history-container ul li .history-icon.system .custom-check input[type="checkbox"]:checked + label:before, .custom-check .history-container ul li .history-icon.system input[type="checkbox"]:checked + label:before, .history-container ul li .history-icon.system .custom-check input[type="radio"]:checked + label:before, .custom-check .history-container ul li .history-icon.system input[type="radio"]:checked + label:before,
-          .history-container ul li .history-icon.system input[type="checkbox"].custom-check:checked + label:before, .history-container ul li .history-icon.system input[type="radio"].custom-check:checked + label:before, .history-container ul li .history-icon.system .login-panel p #forgot-password:after, .login-panel p .history-container ul li .history-icon.system #forgot-password:after {
+          .history-container ul li .history-icon.system .icon {
             top: 1px;
             left: 4px; }
 
@@ -3194,15 +3225,21 @@ select,
 
 .disable-sorting .sortableHeader {
   cursor: pointer; }
-  .disable-sorting .sortableHeader .icon, .disable-sorting .sortableHeader .custom-check input[type="checkbox"]:checked + label:before, .custom-check .disable-sorting .sortableHeader input[type="checkbox"]:checked + label:before, .disable-sorting .sortableHeader .custom-check input[type="radio"]:checked + label:before, .custom-check .disable-sorting .sortableHeader input[type="radio"]:checked + label:before,
-  .disable-sorting .sortableHeader input[type="checkbox"].custom-check:checked + label:before, .disable-sorting .sortableHeader input[type="radio"].custom-check:checked + label:before, .disable-sorting .sortableHeader .login-panel p #forgot-password:after, .login-panel p .disable-sorting .sortableHeader #forgot-password:after {
+  .disable-sorting .sortableHeader .material-icons, .disable-sorting .sortableHeader .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting .sortableHeader span:before, .disable-sorting .sortableHeader .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting .sortableHeader span:before,
+  .disable-sorting .sortableHeader input[type="checkbox"].custom-check + label span:before,
+  input[type="checkbox"].custom-check + label .disable-sorting .sortableHeader span:before, .disable-sorting .sortableHeader input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .disable-sorting .sortableHeader span:before {
     color: #aaaaaa; }
-  .disable-sorting .sortableHeader:hover .icon, .disable-sorting .sortableHeader:hover .custom-check input[type="checkbox"]:checked + label:before, .custom-check .disable-sorting .sortableHeader:hover input[type="checkbox"]:checked + label:before, .disable-sorting .sortableHeader:hover .custom-check input[type="radio"]:checked + label:before, .custom-check .disable-sorting .sortableHeader:hover input[type="radio"]:checked + label:before,
-  .disable-sorting .sortableHeader:hover input[type="checkbox"].custom-check:checked + label:before, .disable-sorting .sortableHeader:hover input[type="radio"].custom-check:checked + label:before, .disable-sorting .sortableHeader:hover .login-panel p #forgot-password:after, .login-panel p .disable-sorting .sortableHeader:hover #forgot-password:after {
+  .disable-sorting .sortableHeader:hover .material-icons, .disable-sorting .sortableHeader:hover .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting .sortableHeader:hover span:before, .disable-sorting .sortableHeader:hover .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting .sortableHeader:hover span:before,
+  .disable-sorting .sortableHeader:hover input[type="checkbox"].custom-check + label span:before,
+  input[type="checkbox"].custom-check + label .disable-sorting .sortableHeader:hover span:before, .disable-sorting .sortableHeader:hover input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .disable-sorting .sortableHeader:hover span:before {
     color: #666666; }
 .disable-sorting td.sort {
   color: #ececec; }
-  .disable-sorting td.sort .icon-list {
+  .disable-sorting td.sort .material-icons, .disable-sorting td.sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting td.sort span:before, .disable-sorting td.sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting td.sort span:before,
+  .disable-sorting td.sort input[type="checkbox"].custom-check + label span:before,
+  input[type="checkbox"].custom-check + label .disable-sorting td.sort span:before, .disable-sorting td.sort input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .disable-sorting td.sort span:before {
+    font-size: 18px;
+    vertical-align: middle;
     -o-transform: none !important;
     -moz-transform: none !important;
     -ms-transform: none !important;
@@ -3251,7 +3288,9 @@ tbody.remove-hover-state .sort {
   100% {
     -webkit-transform: translateX(-2px) rotate(-2deg);
     transform: translateX(-2px) rotate(-2deg); } }
-.reorder-effect, tbody.remove-hover-state .sort .icon-list {
+.reorder-effect, tbody.remove-hover-state .sort .material-icons, tbody.remove-hover-state .sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label tbody.remove-hover-state .sort span:before, tbody.remove-hover-state .sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label tbody.remove-hover-state .sort span:before,
+tbody.remove-hover-state .sort input[type="checkbox"].custom-check + label span:before,
+input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:before, tbody.remove-hover-state .sort input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label tbody.remove-hover-state .sort span:before {
   display: inline-block;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
@@ -3323,8 +3362,7 @@ tbody.remove-hover-state .sort {
         height: 199px;
         line-height: 190px;
         text-align: center; }
-        .cards .card .header-image .default-loading .icon, .cards .card .header-image .default-loading .custom-check input[type="checkbox"]:checked + label:before, .custom-check .cards .card .header-image .default-loading input[type="checkbox"]:checked + label:before, .cards .card .header-image .default-loading .custom-check input[type="radio"]:checked + label:before, .custom-check .cards .card .header-image .default-loading input[type="radio"]:checked + label:before,
-        .cards .card .header-image .default-loading input[type="checkbox"].custom-check:checked + label:before, .cards .card .header-image .default-loading input[type="radio"].custom-check:checked + label:before, .cards .card .header-image .default-loading .login-panel p #forgot-password:after, .login-panel p .cards .card .header-image .default-loading #forgot-password:after {
+        .cards .card .header-image .default-loading .icon {
           line-height: 130%; }
       .cards .card .header-image .tool-item {
         background-color: #ffffff;
@@ -3374,8 +3412,7 @@ tbody.remove-hover-state .sort {
           .cards .card .info .extra li .sub-line {
             font-size: 10px;
             margin-top: -5px; }
-          .cards .card .info .extra li .icon, .cards .card .info .extra li .custom-check input[type="checkbox"]:checked + label:before, .custom-check .cards .card .info .extra li input[type="checkbox"]:checked + label:before, .cards .card .info .extra li .custom-check input[type="radio"]:checked + label:before, .custom-check .cards .card .info .extra li input[type="radio"]:checked + label:before,
-          .cards .card .info .extra li input[type="checkbox"].custom-check:checked + label:before, .cards .card .info .extra li input[type="radio"].custom-check:checked + label:before, .cards .card .info .extra li .login-panel p #forgot-password:after, .login-panel p .cards .card .info .extra li #forgot-password:after {
+          .cards .card .info .extra li .icon {
             float: right;
             font-size: 30px;
             position: absolute;
@@ -3393,7 +3430,9 @@ tbody.remove-hover-state .sort {
     height: 100px;
     overflow: hidden;
     position: relative; }
-    .feature-cards .feature-card:hover .material-icons {
+    .feature-cards .feature-card:hover .material-icons, .feature-cards .feature-card:hover .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card:hover span:before,
+    .feature-cards .feature-card:hover input[type="checkbox"].custom-check + label span:before,
+    input[type="checkbox"].custom-check + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .feature-cards .feature-card:hover span:before {
       color: lightgray; }
     .feature-cards .feature-card .left-col {
       color: #ececec;
@@ -3402,7 +3441,9 @@ tbody.remove-hover-state .sort {
       position: absolute;
       top: 0;
       left: 0; }
-      .feature-cards .feature-card .left-col .material-icons {
+      .feature-cards .feature-card .left-col .material-icons, .feature-cards .feature-card .left-col .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card .left-col span:before,
+      .feature-cards .feature-card .left-col input[type="checkbox"].custom-check + label span:before,
+      input[type="checkbox"].custom-check + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .feature-cards .feature-card .left-col span:before {
         -webkit-transition: all 100ms ease-in-out;
         -moz-transition: all 100ms ease-in-out;
         -o-transition: all 100ms ease-in-out;
@@ -3429,8 +3470,7 @@ tbody.remove-hover-state .sort {
     padding: 11px 20px 10px 20px; }
     .group-list .group-item.big-item {
       padding: 20px; }
-    .group-list .group-item > .icon, .group-list .custom-check .group-item > input[type="checkbox"]:checked + label:before, .custom-check .group-list .group-item > input[type="checkbox"]:checked + label:before, .group-list .custom-check .group-item > input[type="radio"]:checked + label:before, .custom-check .group-list .group-item > input[type="radio"]:checked + label:before,
-    .group-list .group-item > input[type="checkbox"].custom-check:checked + label:before, .group-list .group-item > input[type="radio"].custom-check:checked + label:before, .group-list .login-panel p .group-item > #forgot-password:after, .login-panel p .group-list .group-item > #forgot-password:after {
+    .group-list .group-item > .icon {
       font-size: 38px;
       line-height: 5px;
       margin-right: 20px;
@@ -3438,8 +3478,7 @@ tbody.remove-hover-state .sort {
     .group-list .group-item .stack {
       color: #666666;
       height: 17px; }
-      .group-list .group-item .stack .icon, .group-list .group-item .stack .custom-check input[type="checkbox"]:checked + label:before, .custom-check .group-list .group-item .stack input[type="checkbox"]:checked + label:before, .group-list .group-item .stack .custom-check input[type="radio"]:checked + label:before, .custom-check .group-list .group-item .stack input[type="radio"]:checked + label:before,
-      .group-list .group-item .stack input[type="checkbox"].custom-check:checked + label:before, .group-list .group-item .stack input[type="radio"].custom-check:checked + label:before, .group-list .group-item .stack .login-panel p #forgot-password:after, .login-panel p .group-list .group-item .stack #forgot-password:after {
+      .group-list .group-item .stack .icon {
         color: #ececec;
         display: inline-block;
         font-size: 32px;
@@ -3587,8 +3626,7 @@ body.initial-load #sidebar {
     border-bottom: 1px solid #272727; }
     #sidebar .directusLogo:hover {
       color: #aaaaaa; }
-    #sidebar .directusLogo .icon, #sidebar .directusLogo .custom-check input[type="checkbox"]:checked + label:before, .custom-check #sidebar .directusLogo input[type="checkbox"]:checked + label:before, #sidebar .directusLogo .custom-check input[type="radio"]:checked + label:before, .custom-check #sidebar .directusLogo input[type="radio"]:checked + label:before,
-    #sidebar .directusLogo input[type="checkbox"].custom-check:checked + label:before, #sidebar .directusLogo input[type="radio"].custom-check:checked + label:before, #sidebar .directusLogo .login-panel p #forgot-password:after, .login-panel p #sidebar .directusLogo #forgot-password:after {
+    #sidebar .directusLogo .icon {
       line-height: 36px; }
   #sidebar #mainSidebar {
     bottom: 0;
@@ -3665,18 +3703,10 @@ body.initial-load #sidebar {
         color: #ffffff;
         cursor: auto;
         padding-left: 18px; }
-    #sidebar #mainSidebar li .icon, #sidebar #mainSidebar li .custom-check input[type="checkbox"]:checked + label:before, .custom-check #sidebar #mainSidebar li input[type="checkbox"]:checked + label:before, #sidebar #mainSidebar li .custom-check input[type="radio"]:checked + label:before, .custom-check #sidebar #mainSidebar li input[type="radio"]:checked + label:before,
-    #sidebar #mainSidebar li input[type="checkbox"].custom-check:checked + label:before, #sidebar #mainSidebar li input[type="radio"].custom-check:checked + label:before, #sidebar #mainSidebar li .login-panel p #forgot-password:after, .login-panel p #sidebar #mainSidebar li #forgot-password:after {
-      display: block;
-      float: left;
-      line-height: 7px;
-      margin-bottom: -2px;
-      margin-right: 10px;
-      text-align: right;
-      width: 25px; }
   #sidebar #featureSidebar {
     bottom: 0px;
     position: absolute;
+    border-top: 1px solid #272727;
     width: 100%; }
     #sidebar #featureSidebar li {
       text-decoration: center;
@@ -3691,9 +3721,11 @@ body.initial-load #sidebar {
           opacity: .2; }
       #sidebar #featureSidebar li a {
         display: block;
-        padding: 15px; }
+        padding: 16px; }
       #sidebar #featureSidebar li.active {
         color: #ffffff; }
+      #sidebar #featureSidebar li.border-left {
+        border-left: 1px solid #272727; }
       #sidebar #featureSidebar li.has-image {
         width: 56px; }
         #sidebar #featureSidebar li.has-image .material-design {
@@ -3733,7 +3765,7 @@ body.initial-load #sidebar {
 .has-toolbar .secondary-row {
   min-height: 34px; }
 .has-toolbar .content-body {
-  margin-top: 104px; }
+  margin-top: 114px; }
 
 .header1 {
   position: relative;
@@ -3767,8 +3799,7 @@ body.initial-load #sidebar {
       color: #d0d0d0;
       vertical-align: middle;
       margin-top: -3px; }
-    .header1 h1 .icon, .header1 h1 .custom-check input[type="checkbox"]:checked + label:before, .custom-check .header1 h1 input[type="checkbox"]:checked + label:before, .header1 h1 .custom-check input[type="radio"]:checked + label:before, .custom-check .header1 h1 input[type="radio"]:checked + label:before,
-    .header1 h1 input[type="checkbox"].custom-check:checked + label:before, .header1 h1 input[type="radio"].custom-check:checked + label:before, .header1 h1 .login-panel p #forgot-password:after, .login-panel p .header1 h1 #forgot-password:after {
+    .header1 h1 .icon {
       color: #aaaaaa;
       display: inline-block;
       font-size: 70px;
@@ -3776,8 +3807,7 @@ body.initial-load #sidebar {
       margin: 0px 10px;
       vertical-align: top;
       cursor: pointer; }
-      .header1 h1 .icon.icon-circled-left:hover, .header1 h1 .custom-check input[type="checkbox"]:checked + label.icon-circled-left:hover:before, .custom-check .header1 h1 input[type="checkbox"]:checked + label.icon-circled-left:hover:before, .header1 h1 .custom-check input[type="radio"]:checked + label.icon-circled-left:hover:before, .custom-check .header1 h1 input[type="radio"]:checked + label.icon-circled-left:hover:before,
-      .header1 h1 input[type="checkbox"].custom-check:checked + label.icon-circled-left:hover:before, .header1 h1 input[type="radio"].custom-check:checked + label.icon-circled-left:hover:before, .header1 h1 .login-panel p .icon-circled-left#forgot-password:hover:after, .login-panel p .header1 h1 .icon-circled-left#forgot-password:hover:after {
+      .header1 h1 .icon.icon-circled-left:hover {
         color: #666666; }
     .header1 h1 .endnode {
       color: #666666; }
@@ -3786,8 +3816,7 @@ body.initial-load #sidebar {
   .header1 li {
     float: left;
     list-style: none; }
-  .header1 .input-and-button.point.point .large-circle .icon, .header1 .input-and-button.point.point .large-circle .custom-check input[type="checkbox"]:checked + label:before, .custom-check .header1 .input-and-button.point.point .large-circle input[type="checkbox"]:checked + label:before, .header1 .input-and-button.point.point .large-circle .custom-check input[type="radio"]:checked + label:before, .custom-check .header1 .input-and-button.point.point .large-circle input[type="radio"]:checked + label:before,
-  .header1 .input-and-button.point.point .large-circle input[type="checkbox"].custom-check:checked + label:before, .header1 .input-and-button.point.point .large-circle input[type="radio"].custom-check:checked + label:before, .header1 .input-and-button.point.point .large-circle .login-panel p #forgot-password:after, .login-panel p .header1 .input-and-button.point.point .large-circle #forgot-password:after {
+  .header1 .input-and-button.point.point .large-circle .icon {
     position: relative;
     z-index: 2; }
   .header1 .input-and-button.point.point .large-circle:before {
@@ -3884,8 +3913,7 @@ body.initial-load #sidebar {
       float: right; }
     .header1 .primary-row .tools .btn-round {
       padding: 8px; }
-    .header1 .primary-row .tools .select-and-circle label.icon, .header1 .primary-row .tools .select-and-circle .custom-check input[type="checkbox"]:checked + label:before, .custom-check .header1 .primary-row .tools .select-and-circle input[type="checkbox"]:checked + label:before, .header1 .primary-row .tools .select-and-circle .custom-check input[type="radio"]:checked + label:before, .custom-check .header1 .primary-row .tools .select-and-circle input[type="radio"]:checked + label:before,
-    .header1 .primary-row .tools .select-and-circle input[type="checkbox"].custom-check:checked + label:before, .header1 .primary-row .tools .select-and-circle input[type="radio"].custom-check:checked + label:before, .header1 .primary-row .tools .select-and-circle .login-panel p label#forgot-password:after, .login-panel p .header1 .primary-row .tools .select-and-circle label#forgot-password:after {
+    .header1 .primary-row .tools .select-and-circle label.icon {
       line-height: 85%; }
     .header1 .primary-row .tools .select-and-circle label.icon-triangle-down {
       color: #7ac943; }
@@ -3920,8 +3948,7 @@ body.initial-load #sidebar {
         display: block;
         float: left;
         position: relative; }
-        .header1 .secondary-row.filter-options .filter-form .simple-select .icon, .header1 .secondary-row.filter-options .filter-form .simple-select .custom-check input[type="checkbox"]:checked + label:before, .custom-check .header1 .secondary-row.filter-options .filter-form .simple-select input[type="checkbox"]:checked + label:before, .header1 .secondary-row.filter-options .filter-form .simple-select .custom-check input[type="radio"]:checked + label:before, .custom-check .header1 .secondary-row.filter-options .filter-form .simple-select input[type="radio"]:checked + label:before,
-        .header1 .secondary-row.filter-options .filter-form .simple-select input[type="checkbox"].custom-check:checked + label:before, .header1 .secondary-row.filter-options .filter-form .simple-select input[type="radio"].custom-check:checked + label:before, .header1 .secondary-row.filter-options .filter-form .simple-select .login-panel p #forgot-password:after, .login-panel p .header1 .secondary-row.filter-options .filter-form .simple-select #forgot-password:after {
+        .header1 .secondary-row.filter-options .filter-form .simple-select .icon {
           color: #666666;
           line-height: 28px;
           right: 6px; }
@@ -4015,8 +4042,7 @@ body.initial-load #sidebar {
         color: #666666;
         text-align: center;
         cursor: pointer; }
-        .header1 .secondary-row .tools .snapshotOption .icon, .header1 .secondary-row .tools .snapshotOption .custom-check input[type="checkbox"]:checked + label:before, .custom-check .header1 .secondary-row .tools .snapshotOption input[type="checkbox"]:checked + label:before, .header1 .secondary-row .tools .snapshotOption .custom-check input[type="radio"]:checked + label:before, .custom-check .header1 .secondary-row .tools .snapshotOption input[type="radio"]:checked + label:before,
-        .header1 .secondary-row .tools .snapshotOption input[type="checkbox"].custom-check:checked + label:before, .header1 .secondary-row .tools .snapshotOption input[type="radio"].custom-check:checked + label:before, .header1 .secondary-row .tools .snapshotOption .login-panel p #forgot-password:after, .login-panel p .header1 .secondary-row .tools .snapshotOption #forgot-password:after {
+        .header1 .secondary-row .tools .snapshotOption .icon {
           line-height: 75%; }
       .header1 .secondary-row .tools .tool {
         height: 32px; }
@@ -4183,8 +4209,7 @@ body.initial-load #sidebar {
         .main-container .header1 h1 .breadcrumb-delimiter {
           line-height: 20px;
           margin: 0px 5px; }
-        .main-container .header1 h1 .icon, .main-container .header1 h1 .custom-check input[type="checkbox"]:checked + label:before, .custom-check .main-container .header1 h1 input[type="checkbox"]:checked + label:before, .main-container .header1 h1 .custom-check input[type="radio"]:checked + label:before, .custom-check .main-container .header1 h1 input[type="radio"]:checked + label:before,
-        .main-container .header1 h1 input[type="checkbox"].custom-check:checked + label:before, .main-container .header1 h1 input[type="radio"].custom-check:checked + label:before, .main-container .header1 h1 .login-panel p #forgot-password:after, .login-panel p .main-container .header1 h1 #forgot-password:after {
+        .main-container .header1 h1 .icon {
           line-height: 22px; }
       .main-container .header1 .primary-row .tools {
         margin-top: 0; }
@@ -4220,8 +4245,7 @@ body.initial-load #sidebar {
     height: 60px; }
     .feature-cards .feature-card .left-col {
       width: 100px; }
-      .feature-cards .feature-card .left-col .icon, .feature-cards .feature-card .left-col .custom-check input[type="checkbox"]:checked + label:before, .custom-check .feature-cards .feature-card .left-col input[type="checkbox"]:checked + label:before, .feature-cards .feature-card .left-col .custom-check input[type="radio"]:checked + label:before, .custom-check .feature-cards .feature-card .left-col input[type="radio"]:checked + label:before,
-      .feature-cards .feature-card .left-col input[type="checkbox"].custom-check:checked + label:before, .feature-cards .feature-card .left-col input[type="radio"].custom-check:checked + label:before, .feature-cards .feature-card .left-col .login-panel p #forgot-password:after, .login-panel p .feature-cards .feature-card .left-col #forgot-password:after {
+      .feature-cards .feature-card .left-col .icon {
         font-size: 100px;
         line-height: 80px; }
     .feature-cards .feature-card .right-col {
@@ -4239,7 +4263,7 @@ body.initial-load #sidebar {
 .login-box {
   left: 50%;
   margin-left: -175px;
-  margin-top: -100px;
+  margin-top: -150px;
   position: absolute;
   top: 50%;
   width: 350px; }
@@ -4309,27 +4333,30 @@ body.initial-load #sidebar {
     .login-panel p #forgot-password {
       background: transparent;
       border: none;
-      font-size: 12px;
       padding: 0px;
       position: absolute;
-      right: 10px;
-      top: 5px; }
-      .login-panel p #forgot-password:hover:after {
+      right: 7px;
+      top: 7px;
+      color: #aaaaaa; }
+      .login-panel p #forgot-password .material-icons, .login-panel p #forgot-password .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-panel p #forgot-password span:before, .login-panel p #forgot-password .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-panel p #forgot-password span:before,
+      .login-panel p #forgot-password input[type="checkbox"].custom-check + label span:before,
+      input[type="checkbox"].custom-check + label .login-panel p #forgot-password span:before, .login-panel p #forgot-password input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .login-panel p #forgot-password span:before {
+        font-size: 24px; }
+      .login-panel p #forgot-password:hover {
         color: #666666; }
-      .login-panel p #forgot-password:after {
-        color: #aaaaaa;
-        content: "\2753";
-        line-height: 25px; }
 
 .message .message-content {
   margin-left: 40px; }
   .message .message-content .users {
     font-style: italic;
-    font-weight: 600; }
+    font-weight: 600;
+    font-size: 14px; }
   .message .message-content .title {
-    font-weight: 600; }
+    font-weight: 100;
+    font-size: 18px; }
   .message .message-content .subject {
-    color: #aaaaaa; }
+    color: #aaaaaa;
+    font-size: 14px; }
 .message.unread {
   background-color: #ffffff;
   color: #666666; }
@@ -4380,7 +4407,7 @@ ul.general-container {
     ul.general-container li .general-datetime {
       color: #aaaaaa;
       position: absolute;
-      top: 20px;
+      top: 44px;
       right: 20px; }
     ul.general-container li .general-icon {
       position: absolute;
@@ -4391,43 +4418,37 @@ ul.general-container {
       color: #ffffff; }
       ul.general-container li .general-icon.add {
         background-color: #7ac943; }
-        ul.general-container li .general-icon.add .icon, ul.general-container li .general-icon.add .custom-check input[type="checkbox"]:checked + label:before, .custom-check ul.general-container li .general-icon.add input[type="checkbox"]:checked + label:before, ul.general-container li .general-icon.add .custom-check input[type="radio"]:checked + label:before, .custom-check ul.general-container li .general-icon.add input[type="radio"]:checked + label:before,
-        ul.general-container li .general-icon.add input[type="checkbox"].custom-check:checked + label:before, ul.general-container li .general-icon.add input[type="radio"].custom-check:checked + label:before, ul.general-container li .general-icon.add .login-panel p #forgot-password:after, .login-panel p ul.general-container li .general-icon.add #forgot-password:after {
+        ul.general-container li .general-icon.add .icon {
           position: absolute;
           top: 0;
           left: 12px; }
       ul.general-container li .general-icon.edit {
         background-color: #3fa9f5; }
-        ul.general-container li .general-icon.edit .icon, ul.general-container li .general-icon.edit .custom-check input[type="checkbox"]:checked + label:before, .custom-check ul.general-container li .general-icon.edit input[type="checkbox"]:checked + label:before, ul.general-container li .general-icon.edit .custom-check input[type="radio"]:checked + label:before, .custom-check ul.general-container li .general-icon.edit input[type="radio"]:checked + label:before,
-        ul.general-container li .general-icon.edit input[type="checkbox"].custom-check:checked + label:before, ul.general-container li .general-icon.edit input[type="radio"].custom-check:checked + label:before, ul.general-container li .general-icon.edit .login-panel p #forgot-password:after, .login-panel p ul.general-container li .general-icon.edit #forgot-password:after {
+        ul.general-container li .general-icon.edit .icon {
           position: absolute;
           top: 1px;
           left: 12px; }
       ul.general-container li .general-icon.delete {
         background-color: #c1272d; }
-        ul.general-container li .general-icon.delete .icon, ul.general-container li .general-icon.delete .custom-check input[type="checkbox"]:checked + label:before, .custom-check ul.general-container li .general-icon.delete input[type="checkbox"]:checked + label:before, ul.general-container li .general-icon.delete .custom-check input[type="radio"]:checked + label:before, .custom-check ul.general-container li .general-icon.delete input[type="radio"]:checked + label:before,
-        ul.general-container li .general-icon.delete input[type="checkbox"].custom-check:checked + label:before, ul.general-container li .general-icon.delete input[type="radio"].custom-check:checked + label:before, ul.general-container li .general-icon.delete .login-panel p #forgot-password:after, .login-panel p ul.general-container li .general-icon.delete #forgot-password:after {
+        ul.general-container li .general-icon.delete .icon {
           position: absolute;
           top: 0;
           left: 11px; }
       ul.general-container li .general-icon.message {
         background-color: #a63c96; }
-        ul.general-container li .general-icon.message .icon, ul.general-container li .general-icon.message .custom-check input[type="checkbox"]:checked + label:before, .custom-check ul.general-container li .general-icon.message input[type="checkbox"]:checked + label:before, ul.general-container li .general-icon.message .custom-check input[type="radio"]:checked + label:before, .custom-check ul.general-container li .general-icon.message input[type="radio"]:checked + label:before,
-        ul.general-container li .general-icon.message input[type="checkbox"].custom-check:checked + label:before, ul.general-container li .general-icon.message input[type="radio"].custom-check:checked + label:before, ul.general-container li .general-icon.message .login-panel p #forgot-password:after, .login-panel p ul.general-container li .general-icon.message #forgot-password:after {
+        ul.general-container li .general-icon.message .icon {
           position: absolute;
           top: 1px;
           left: 10px; }
       ul.general-container li .general-icon.attach {
         background-color: #ff7bac; }
-        ul.general-container li .general-icon.attach .icon, ul.general-container li .general-icon.attach .custom-check input[type="checkbox"]:checked + label:before, .custom-check ul.general-container li .general-icon.attach input[type="checkbox"]:checked + label:before, ul.general-container li .general-icon.attach .custom-check input[type="radio"]:checked + label:before, .custom-check ul.general-container li .general-icon.attach input[type="radio"]:checked + label:before,
-        ul.general-container li .general-icon.attach input[type="checkbox"].custom-check:checked + label:before, ul.general-container li .general-icon.attach input[type="radio"].custom-check:checked + label:before, ul.general-container li .general-icon.attach .login-panel p #forgot-password:after, .login-panel p ul.general-container li .general-icon.attach #forgot-password:after {
+        ul.general-container li .general-icon.attach .icon {
           position: absolute;
           top: 1px;
           left: 10px; }
       ul.general-container li .general-icon.login {
         background-color: #5b5b5b; }
-        ul.general-container li .general-icon.login .icon, ul.general-container li .general-icon.login .custom-check input[type="checkbox"]:checked + label:before, .custom-check ul.general-container li .general-icon.login input[type="checkbox"]:checked + label:before, ul.general-container li .general-icon.login .custom-check input[type="radio"]:checked + label:before, .custom-check ul.general-container li .general-icon.login input[type="radio"]:checked + label:before,
-        ul.general-container li .general-icon.login input[type="checkbox"].custom-check:checked + label:before, ul.general-container li .general-icon.login input[type="radio"].custom-check:checked + label:before, ul.general-container li .general-icon.login .login-panel p #forgot-password:after, .login-panel p ul.general-container li .general-icon.login #forgot-password:after {
+        ul.general-container li .general-icon.login .icon {
           position: absolute;
           top: 1px;
           left: 12px; }

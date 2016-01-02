@@ -1,12 +1,18 @@
 @mixin btn-white() {
   color: $darkGrey;
   background-color: $white;
-  border: solid 1px $lightGrey;
+  border-color: $lightGrey;
+  border-top: 1px solid $lightGrey;
+  border-bottom: 1px solid $lightGrey;
   &:hover {
     background-color: $lightGrey
   }
   &.active, &.wysihtml5-command-active {
-    background-color: $mediumGrey;
+    border-top-color: $darkGrey;
+    border-bottom-color: $darkGrey;
+    border-left-color: $darkGrey;
+    background-color: $darkGrey;
+    color: $white;
   }
 }
 
@@ -33,7 +39,8 @@
         border-left-width: 1px;
       }
       &:last-child {
-        border-right-width: 1px;
+        //border-right-width: 1px;
+        border-right: 1px solid $lightGrey;
       }
     }
   }
@@ -60,6 +67,13 @@
       }
     }
   }
+  &.wysiwyg-toolbar {
+    .btn {
+      padding: 5px 6px 5px 6px;
+      font-size: 14px;
+      min-height: 32px;
+    }
+  }
 }
 .btn {
   @include border-radius(3px, 3px, 3px, 3px);
@@ -68,12 +82,12 @@
   border-bottom: 2px solid darken($mediumGrey, 10%);
   color: $white;
   cursor: pointer;
-  padding: 10px 15px 10px 15px;
-  //letter-spacing: 0.4px;
+  padding: 12px 15px 10px 15px;
   letter-spacing: 0;
   font-weight: 600;
   -webkit-font-smoothing: antialiased !important;
-  //text-transform: uppercase;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   &:hover {
     background-color: darken($mediumGrey, 10%);
     border-bottom: 2px solid darken($mediumGrey, 20%);
@@ -86,7 +100,7 @@
     background-color: $extraDarkGrey;
   }
   &.btn-white {
-    @extend .btn-white;
+    @include btn-white();
   }
   &.btn-round {
     @include border-radius(50%, 50%, 50%, 50%);
@@ -99,6 +113,10 @@
   .icon {
     font-size: 400%;
     line-height: 16%;
+  }
+  .material-icons {
+    vertical-align: middle;
+    font-size: 18px;
   }
 }
 

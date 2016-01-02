@@ -1,7 +1,7 @@
 .login-box {
   left:50%;
   margin-left: -175px;
-  margin-top:-100px;
+  margin-top:-150px;
   position: absolute;
   top:50%;
   width:350px;
@@ -86,21 +86,16 @@
     #forgot-password {
       background: transparent;
       border: none;
-      font-size: 12px;
       padding: 0px;
       position: absolute;
-      right: 10px;
-      top: 5px;
-      &:hover {
-        &:after {
-          color: $darkGrey;
-        }
+      right: 7px;
+      top: 7px;
+      color: $mediumGrey;
+      .material-icons {
+        font-size: 24px;
       }
-      &:after {
-        @extend .icon;
-        color: $mediumGrey;
-        content: "\2753";
-        line-height: 25px;
+      &:hover {
+        color: $darkGrey;
       }
     }
   }

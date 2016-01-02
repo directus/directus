@@ -64,14 +64,16 @@ define([
                     color: #bbbbbb; \
                   } \
                   div.single-image-thumbnail.empty span { \
-                    margin-top: 0; \
+                    margin-top: 28px; \
+                    text-align: center; \
                     display: inline-block; \
                     line-height: 18px; \
                   } \
-                  div.single-image-thumbnail.empty span div.icon { \
+                  div.single-image-thumbnail.empty span i.material-icons { \
                     display: block; \
-                    font-size: 100px; \
-                    line-height: 90px; \
+                    font-size: 60px; \
+                    width: auto; \
+                    margin-bottom: 5px; \
                   } \
                   div.single-image-thumbnail.empty.dragover, \
                   div.single-image-thumbnail.empty:hover { \
@@ -151,7 +153,7 @@ define([
                       <button class="btn btn-primary" data-action="remove-single-file" type="button">Remove File</button> \
                     </div> \
                     {{else}} \
-                    <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div> \
+                    <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>Drag and drop<br>file here</span></div> \
                     <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
                     <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
                     {{/if}} \

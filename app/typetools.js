@@ -46,6 +46,7 @@ define(['moment'], function(moment) {
     },
 
     caseSpecial: [
+      'API',
       'CMS',
       'FAQ',
       'iPhone',

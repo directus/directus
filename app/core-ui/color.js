@@ -36,12 +36,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                   } \
                   input.color-box { \
                     margin-left: 10px; \
-                    width: 24px; \
-                    padding-top: 6px; \
-                    padding-bottom: 6px; \
-                    height: 26px; \
+                    width: 42px; \
+                    height: 46px; \
+                    padding: 10px; \
                     display: inline-block; \
-                    top: -11px; \
                     left: 0; \
                     position: absolute; \
                   } \
