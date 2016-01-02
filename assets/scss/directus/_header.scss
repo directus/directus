@@ -21,7 +21,7 @@
   width: 100%;
   z-index: 50;
   /* Switch to mixin */
-  background: -webkit-linear-gradient(top, fade(@extraDarkGrey, 15%) 0%,fade(@extraDarkGrey, 0%) 100%);
+  background: -webkit-linear-gradient(top, fade($extraDarkGrey, 15%) 0%,fade($extraDarkGrey, 0%) 100%);
   opacity: 0.0;
   pointer-events: none;
 }
@@ -36,9 +36,9 @@
 }
 
 .header1 {
-  .border-box;
+  @extend .border-box;
   position: relative;
-  background-color: @lightGrey;
+  background-color: $lightGrey;
   clear: both;
   float: left;
   padding-top: 20px;
@@ -52,13 +52,13 @@
     margin: 0px;
   }
   h1 {
-    color: @mediumGrey;
+    color: $mediumGrey;
     float: left;
     height: 38px;
     text-transform: capitalize;
     font-size: 28px;
     .icon {
-      color: @mediumGrey;
+      color: $mediumGrey;
       display: inline-block;
       font-size: 70px;
       line-height: 25px;
@@ -66,21 +66,21 @@
       vertical-align: top;
       cursor: pointer;
       &.icon-circled-left:hover {
-        color: @darkGrey; // Removed due to breadcrumb >'s hovering
+        color: $darkGrey; // Removed due to breadcrumb >'s hovering
       }
       &#removeOverlay {
         margin: 0;
       }
       &.breadcrumb-delimiter {
         cursor: auto;
-        color: lighten(@mediumGrey, 15%);
+        color: lighten($mediumGrey, 15%);
       }
     }
     .endnode {
-      color: @darkGrey;
+      color: $darkGrey;
     }
     .focused {
-      color: @darkGrey;
+      color: $darkGrey;
     }
   }
   li {
@@ -96,7 +96,7 @@
             z-index: 2;
           }
           &:before {
-            .triangle-bottom(14px, 14px, @darkGrey);
+            @include triangle-bottom(14px, 14px, $darkGrey);
             bottom: -5px;
             content: "";
             display: block;
@@ -109,10 +109,10 @@
     }
     &:hover, &.active {
       input {
-        color: @darkGrey;
+        color: $darkGrey;
       }
       button {
-        background-color: @darkGrey;
+        background-color: $darkGrey;
       }
     }
   }
@@ -122,46 +122,46 @@
       padding: 0px;
       .tool {
         float: left;
-        margin-left: @smallPad;
+        margin-left: $smallPad;
         &:first-child {
           margin-left: 0px;
         }
         .action {
-          margin-left: @smallPad;
+          margin-left: $smallPad;
           &:first-child {
             margin-left: 0px;
           }
         }
         .change-visibility {
-          // margin-left: @smallPad;
+          // margin-left: $smallPad;
           width: 110px;
         }
       }
       &.big-space {
         .tool {
-          margin-left: @standardPad;
+          margin-left: $standardPad;
           &:first-child {
             margin-left: 0px;
           }
           &.div-right {
-            padding-right: @standardPad;
+            padding-right: $standardPad;
           }
           &.div-left {
-            padding-left: @standardPad;
+            padding-left: $standardPad;
           }
         }
       }
     }
     &.right {
       .tool {
-        margin-right: @smallPad;
+        margin-right: $smallPad;
         &:last-child {
           margin-right: 0px;
         }
       }
       &.big-space {
         .tool {
-          margin-right: @standardPad;
+          margin-right: $standardPad;
           &:last-child {
             margin-left: 0px;
           }
@@ -176,32 +176,32 @@
     }
     input {
       border: none;
-      color: @mediumGrey;
+      color: $mediumGrey;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
     .tool {
       &.div-right {
-        border-right: solid 1px @white;
+        border-right: solid 1px $white;
         height: 32px;
-        padding-right: @smallPad;
+        padding-right: $smallPad;
       }
       &.div-left {
-        border-left: solid 1px @white;
+        border-left: solid 1px $white;
         height: 32px;
-        padding-left: @smallPad;
+        padding-left: $smallPad;
       }
     }
     .tool-item {
-      background-color: @white;
-      color: @mediumGrey;
+      background-color: $white;
+      color: $mediumGrey;
       cursor: pointer;
       // &.add-color-background:hover {
-      //   background-color: @white !important;
-      //   color: @addColor !important;
+      //   background-color: $white !important;
+      //   color: $addColor !important;
       // }
       // &:hover {
-      //   background-color: @darkGrey;
+      //   background-color: $darkGrey;
       // }
     }
     .simple-select {
@@ -211,24 +211,24 @@
       cursor: pointer;
     }
     .saved-success {
-      color: @white;
+      color: $white;
       .simple-select {
-        color: @white;
+        color: $white;
       }
       .tool-item {
-        background-color: @white;
+        background-color: $white;
       }
     }
     .btn {
       &.disabled {
         //opacity: 0.1;
-        color: fade(@white, 25%);
+        color: fade($white, 25%);
         &:hover {
-          background-color: @mediumGrey;
+          background-color: $mediumGrey;
         }
       }
       &:hover {
-        background-color: @darkGrey;
+        background-color: $darkGrey;
       }
     }
   }
@@ -253,13 +253,13 @@
             line-height: 85%;
           }
           &.icon-triangle-down {
-            color: @addColor;
+            color: $addColor;
           }
         }
       }
       .simple-select {
         margin-bottom: -13px;
-        margin-left: @extraSmallPad;
+        margin-left: $extraSmallPad;
         font-weight: 700;
       }
       input {
@@ -271,20 +271,20 @@
     }
   }
   .secondary-row {
-    @textActionMarginTop: 7px;
-    color: @mediumGrey;
+    $textActionMarginTop: 7px;
+    color: $mediumGrey;
     font-weight: 600;
     margin: 15px 0 0 0;
     //overflow: hidden;
     &.batch-actions {
       &.left {
         li {
-          margin-left: @standardPad;
+          margin-left: $standardPad;
           &.div-right {
-            padding-right: @standardPad;
+            padding-right: $standardPad;
           }
           &.div-left {
-            padding-left: @standardPad;
+            padding-left: $standardPad;
           }
         }
       }
@@ -295,18 +295,18 @@
       }
       .filter-form {
         float: left;
-        //margin-left: @smallPad;
+        //margin-left: $smallPad;
         height: 33px;
-        background-color: @white;
+        background-color: $white;
         .simple-select {
-          //margin-right: @extraSmallPad;
+          //margin-right: $extraSmallPad;
           margin-top: 0px;
           max-width: 150px;
           display: block;
           float: left;
           position: relative;
           .icon {
-            color: @darkGrey;
+            color: $darkGrey;
             line-height: 28px;
             right: 6px;
           }
@@ -331,7 +331,7 @@
         }
         select, input[type="text"] {
           //.border-radius();
-          background-color: @white;
+          background-color: $white;
           border: 0px;
           padding: 8px 22px 8px 8px;
           margin: 0;
@@ -343,19 +343,19 @@
       li {
         display: inline-block;
         font-weight: 600;
-        background-color: @lightGrey;
+        background-color: $lightGrey;
         //.border-radius(2px, 2px, 2px, 2px);
         position: relative;
         margin: 0 0 0 10px;
         //padding: 3px;
-        color: @mediumGrey;
+        color: $mediumGrey;
         overflow: visible;
         height: 27px;
         .filter-name {
           position: absolute;
           top: -13px;
           left: 1px;
-          color: @mediumGrey;
+          color: $mediumGrey;
           font-size: 9px;
           text-transform: uppercase;
           white-space: nowrap;
@@ -365,19 +365,19 @@
           //display: none;
         }
         .filter-remove {
-          color: @mediumGrey;
+          color: $mediumGrey;
           top: 8px;
           position: relative;
           margin: 0 6px 0 -16px;
           cursor: pointer;
           &:hover {
-            color: @deleteColor;
+            color: $deleteColor;
           }
         }
         input {
           width: 120px;
-          background-color: @white;
-          color: @darkGrey;
+          background-color: $white;
+          color: $darkGrey;
           padding: 7px 0 0 7px;
           &[type="checkbox"] {
             width: 30px;
@@ -397,35 +397,35 @@
       font-size: 12px;
     }
     .vertical-center {
-      margin-top: @textActionMarginTop;
+      margin-top: $textActionMarginTop;
     }
     .pagination-number {
       margin-top: 11px;
     }
     .action {
       display: inline-block;
-      color: @darkGrey;
+      color: $darkGrey;
       cursor: pointer;
       &.delete {
-        color: @deleteColor
+        color: $deleteColor
       }
       &.inactive {
-        color: @mediumGrey;
+        color: $mediumGrey;
       }
     }
     .text-spacer {
-      padding: 0px @smallPad;
+      padding: 0px $smallPad;
     }
     .tools {
       font-size: 12px;
       .action {
-        margin-top: @textActionMarginTop;
+        margin-top: $textActionMarginTop;
       }
       .snapshotOption {
-        background-color: @white;
+        background-color: $white;
         width: 34px;
         height: 33px;
-        color: @darkGrey;
+        color: $darkGrey;
         text-align: center;
         cursor: pointer;
         .icon {

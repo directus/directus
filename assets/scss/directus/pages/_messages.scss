@@ -9,12 +9,12 @@
       font-weight: 600;
     }
     .subject {
-      color: @mediumGrey;
+      color: $mediumGrey;
     }
   }
   &.unread {
-    background-color: @white;
-    color: @darkGrey;
+    background-color: $white;
+    color: $darkGrey;
     .message-content {
       .title {
         font-weight: 700;
@@ -22,7 +22,7 @@
     }
     .general-datetime {
       font-weight: 700;
-      color: @darkGrey;
+      color: $darkGrey;
     }
   }
 }
@@ -42,20 +42,20 @@
 
 ul.general-container {
   // .card-border;
-  //border-bottom: 2px solid darken(@lightGrey, 5%);
-  background-color: darken(@white, 2%);
-  color: lighten(@darkGrey, 10%);
+  //border-bottom: 2px solid darken($lightGrey, 5%);
+  background-color: darken($white, 2%);
+  color: lighten($darkGrey, 10%);
   padding: 0;
   &.selectable {
     li:hover {
-      background-color: @tableHoverYellow;
+      background-color: $tableHoverYellow;
       cursor: pointer;
     }
   }
   li {
     position: relative;
-    padding: @standardPad;
-    border-top: 1px solid @lightGrey;
+    padding: $standardPad;
+    border-top: 1px solid $lightGrey;
     min-height: 40px;
     padding-right: 150px;
     list-style: none;
@@ -81,10 +81,10 @@ ul.general-container {
       height: 40px;
     }
     .general-datetime {
-      color: @mediumGrey;
+      color: $mediumGrey;
       position: absolute;
-      top: @standardPad;
-      right: @standardPad;
+      top: $standardPad;
+      right: $standardPad;
     }
     .general-icon {
       position: absolute;
@@ -92,9 +92,9 @@ ul.general-container {
       left: 0;
       width: 40px;
       height: 40px;
-      color: @white;
+      color: $white;
       &.add {
-        background-color: @addColor;
+        background-color: $addColor;
         .icon {
           position: absolute;
           top: 0;
@@ -102,7 +102,7 @@ ul.general-container {
         }
       }
       &.edit {
-        background-color: @editColor;
+        background-color: $editColor;
         .icon {
           position: absolute;
           top: 1px;
@@ -110,7 +110,7 @@ ul.general-container {
         }
       }
       &.delete {
-        background-color: @deleteColor;
+        background-color: $deleteColor;
         .icon {
           position: absolute;
           top: 0;
@@ -118,7 +118,7 @@ ul.general-container {
         }
       }
       &.message {
-        background-color: @messageColor;
+        background-color: $messageColor;
         .icon {
           position: absolute;
           top: 1px;
@@ -126,7 +126,7 @@ ul.general-container {
         }
       }
       &.attach {
-        background-color: @attachColor;
+        background-color: $attachColor;
         .icon {
           position: absolute;
           top: 1px;
@@ -134,7 +134,7 @@ ul.general-container {
         }
       }
       &.login {
-        background-color: @loginColor;
+        background-color: $loginColor;
         .icon {
           position: absolute;
           top: 1px;

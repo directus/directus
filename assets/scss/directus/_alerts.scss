@@ -1,0 +1,41 @@
+.alerts {
+  @extend .clean-list;
+  bottom: $standardPad;
+  position: fixed;
+  right: $standardPad;
+  width: 400px;
+  z-index: 10;
+  .alert {
+    background-color: $lightGrey;
+    color: $white;
+    margin-bottom: $smallPad;
+    padding: $standardPad;
+    &:last-child {
+      margin: 0px;
+    }
+    &.add {
+      background-color: $addColor;
+    }
+    &.edit {
+      background-color: $editColor;
+    }
+    &.delete {
+      background-color: $deleteColor;
+    }
+    &.attach {
+      background-color: $attachColor;
+    }
+    &.error {
+      background-color: $errorColor;
+    }
+    &.login {
+      background-color: $loginColor;
+    }
+  }
+}
+.noty_text {
+  word-break: break-all;
+  ul {
+    padding-left: 20px;
+  }
+}

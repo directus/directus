@@ -44,19 +44,19 @@
   float: right;
 }
 .margin-left-small {
-  margin-left: @smallPad;
+  margin-left: $smallPad;
 }
 .margin-top-small {
-  margin-top: @smallPad;
+  margin-top: $smallPad;
 }
 .margin-bottom-small {
-  margin-bottom: @smallPad;
+  margin-bottom: $smallPad;
 }
 .margin-right-small {
-  margin-right: @smallPad;
+  margin-right: $smallPad;
 }
 .margin-right {
-  margin-right: @gutterWidth;
+  margin-right: $gutterWidth;
 }
 
 ////////////
@@ -65,7 +65,7 @@
 
 .directus-modal-backdrop {
   z-index: 998;
-  background-color: @lightGrey;
+  background-color: $lightGrey;
   opacity: 0.9;
   width: 100%;
   height: 100%;
@@ -85,13 +85,13 @@
   margin-left: -250px;
   margin-top: -170px;
   padding: 30px 30px 30px 30px;
-  background-color: @white;
-  color: @extraDarkGrey;
+  background-color: $white;
+  color: $extraDarkGrey;
   font-size: 14px;
   font-weight: 600;
   z-index: 110;
   //.border-radius(3px, 3px, 3px, 3px);
-  box-shadow: 0 2px 6px @mediumGrey;
+  box-shadow: 0 2px 6px $mediumGrey;
   -webkit-font-smoothing: antialiased;
   .directus-alert-modal-message {
     padding-bottom: 20px;
@@ -107,28 +107,28 @@
     button {
       padding: 10px 15px 10px 15px;
       text-align: center;
-      color: @white;
-      background-color: @mediumGrey;
+      color: $white;
+      background-color: $mediumGrey;
       border-top: none;
       border-left: none;
       border-right: none;
-      border-bottom: 3px solid darken(@mediumGrey, 5%);
+      border-bottom: 3px solid darken($mediumGrey, 5%);
 
-      .border-radius(3px, 3px, 3px, 3px);
+      @include border-radius(3px, 3px, 3px, 3px);
       margin-left: 20px;
       min-width: 120px;
       font-weight: 600;
       -webkit-font-smoothing: antialiased;
       &:hover {
-        background-color: darken(@mediumGrey, 5%);
-        border-bottom: 3px solid darken(@mediumGrey, 10%);
+        background-color: darken($mediumGrey, 5%);
+        border-bottom: 3px solid darken($mediumGrey, 10%);
       }
       &.primary {
-        background-color: @addColor;
-        border-bottom: 3px solid darken(@addColor, 5%);
+        background-color: $addColor;
+        border-bottom: 3px solid darken($addColor, 5%);
         &:hover {
-          background-color: darken(@addColor, 5%);
-          border-bottom: 3px solid darken(@addColor, 10%);
+          background-color: darken($addColor, 5%);
+          border-bottom: 3px solid darken($addColor, 10%);
         }
       }
     }
@@ -145,10 +145,10 @@
   }
 }
 .large-circle {
-  .transition;
-  .border-radius(50px, 50px, 50px, 50px);
-  background-color: @white;
-  color: @mediumGrey;
+  @include transition;
+  @include border-radius(50px, 50px, 50px, 50px);
+  background-color: $white;
+  color: $mediumGrey;
   display: inline-block;
   height: 32px;
   padding: 0px;
@@ -182,9 +182,9 @@
     }
   }
   &.white-circle {
-    background-color: @white;
+    background-color: $white;
     bottom: 10px;
-    color: @darkGrey;
+    color: $darkGrey;
     display: none;
     position: absolute;
     right: 10px;
@@ -202,13 +202,13 @@
   display: inline-block;
   cursor: pointer;
   font-weight: 600;
-  background-color: @darkGrey;
-  color: @white;
-  margin: @smallPad @smallPad 0 0;
-  padding: @extraSmallPad @smallPad;
-  .border-radius(2px, 2px, 2px, 2px);
+  background-color: $darkGrey;
+  color: $white;
+  margin: $smallPad $smallPad 0 0;
+  padding: $extraSmallPad $smallPad;
+  @include border-radius(2px, 2px, 2px, 2px);
   &:hover {
-    background-color: @deleteColor;
+    background-color: $deleteColor;
   }
 }
 
@@ -219,60 +219,60 @@
   font-style: italic;
 }
 .primary-info {
-  color: @darkGrey;
+  color: $darkGrey;
   font-size: 16px;
   font-weight: 600;
 }
 .secondary-info {
-  color: @mediumGrey !important;
+  color: $mediumGrey !important;
   font-size: 12px;
   font-weight: 600;
 }
 a.secondary-info {
   cursor: pointer;
   &:hover {
-    color: @darkGrey;
+    color: $darkGrey;
   }
 }
 .delete-color, .error-color {
-  color: @deleteColor;
+  color: $deleteColor;
 }
 .dark-grey-color {
-  color: @darkGrey;
+  color: $darkGrey;
 }
 .medium-grey-color {
-  color: @mediumGrey;
+  color: $mediumGrey;
 }
 .light-grey-color {
-  color: @mediumGrey;
+  color: $mediumGrey;
 }
 .unread-color, .add-color {
-  color: @addColor;
+  color: $addColor;
 }
 .light-add-color {
-  color: lighten(@addColor, 30%);
+  color: lighten($addColor, 30%);
 }
 .yellow-color {
-  color: @systemColor;
+  color: $systemColor;
 }
 .bold {
   font-weight: 600;
   -webkit-font-smoothing: antialiased;
 }
 .add-color-background {
-  background-color: @addColor !important; // changed to accommodate white buttons
-  color: @white !important;
+  background-color: $addColor !important; // changed to accommodate white buttons
+  color: $white !important;
 }
 .add-color-border {
-  border-color: @addColor !important;
+  border-color: $addColor !important;
 }
 .border-top {
-  border-top: 1px solid @lightGrey;
+  border-top: 1px solid $lightGrey;
 }
 .big-label-text {
   font-size: 16px;
   font-weight: 100;
-  color: @mediumGrey;
+  color: $mediumGrey;
 }
 img.grayscale {
   filter: url(filters.svg#grayscale); // Firefox 3.5+ TODO: (NEEDS DYNAMIC PATH)
@@ -293,9 +293,9 @@ img.grayscale {
 //  CONTAINERS
 ////////////
 .main-container {
-  .transition (all, 400ms, ease-in-out);
-  .clear-fix;
-  margin-left: @standardSidebarWidth;
+  @include transition (all, 400ms, ease-in-out);
+  @extend .clear-fix;
+  margin-left: $standardSidebarWidth;
   padding: 0px 40px;
   position: relative;
   right: 0px;
@@ -315,7 +315,7 @@ img.grayscale {
   margin-top: 200px;
   line-height: 35px;
   h1 {
-    color: @white;
+    color: $white;
     font-size: 50px;
     line-height: 60px;
   }
@@ -328,25 +328,25 @@ img.grayscale {
   display: none !important;
 }
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px @fieldColor inset;
-    color: @mediumGrey !important;
+    -webkit-box-shadow: 0 0 0px 1000px $fieldColor inset;
+    color: $mediumGrey !important;
 }
 ::-webkit-input-placeholder {
-    color: @mediumGrey;
+    color: $mediumGrey;
     -webkit-font-smoothing: antialiased !important;
 }
 :-moz-placeholder {
-    color: @mediumGrey;
+    color: $mediumGrey;
     -webkit-font-smoothing: antialiased !important;
     opacity: 1;
 }
 ::-moz-placeholder {
-    color: @mediumGrey;
+    color: $mediumGrey;
     -webkit-font-smoothing: antialiased !important;
     opacity: 1;
 }
 :-ms-input-placeholder {
-    color: @mediumGrey;
+    color: $mediumGrey;
     -webkit-font-smoothing: antialiased !important;
 }
 
@@ -366,7 +366,7 @@ ul {
 }
 
 .card-border {
-  border-bottom: 3px solid darken(@lightGrey, 5%);
+  border-bottom: 3px solid darken($lightGrey, 5%);
 }
 
 .invisible-blocker {
@@ -389,7 +389,7 @@ body.initial-load {
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: @lightGrey;
+  background-color: $lightGrey;
   z-index: 109;
   cursor: progress;
   -webkit-transition: opacity 400ms ease-in-out;
@@ -401,8 +401,8 @@ body.initial-load {
   position: fixed;
   width: 60px;
   height: 60px;
-  color: @mediumGrey;
-  background-color: @darkGrey;
+  color: $mediumGrey;
+  background-color: $darkGrey;
   bottom: 20px;
   right: 20px;
   // margin-top: -50px;
@@ -444,9 +444,9 @@ body.initial-load {
 }
 
 .external-drop-indicator {
-  .pulsate;
+  @extend .pulsate;
   position: fixed;
-  background-color: @addColor;
+  background-color: $addColor;
   z-index: 1000;
 }
 .external-drop-indicator.top {
@@ -491,19 +491,19 @@ input[type="date"]::-webkit-inner-spin-button {
   margin-top: 6px;
 }
 .message-recipients {
-  .card-border;
-  background-color: @white;
-  padding: @standardPad;
-  //margin-bottom: @standardPad;
+  @extend .card-border;
+  background-color: $white;
+  padding: $standardPad;
+  //margin-bottom: $standardPad;
 }
 .message-response {
-  padding-top: @standardPad;
+  padding-top: $standardPad;
   min-height: 50px;
-  border-bottom: 1px solid @lightGrey;
+  border-bottom: 1px solid $lightGrey;
   .message-body {
     clear: both;
     margin-top: 20px;
-    padding: @standardPad 0 @largePad 0;
+    padding: $standardPad 0 $largePad 0;
     max-width: 600px;
   }
 }
@@ -512,7 +512,7 @@ input[type="date"]::-webkit-inner-spin-button {
   margin-top: 6px;
 }
 .message-reply {
-  margin-top: @standardPad;
+  margin-top: $standardPad;
 }
 
 
@@ -524,8 +524,8 @@ input[type="date"]::-webkit-inner-spin-button {
   color: #bbbbbb !important;
 }
 .tt-suggestions {
-  background-color: @white;
-  border: 1px solid @lightGrey;
+  background-color: $white;
+  border: 1px solid $lightGrey;
   width: 200px;
   padding: 0;
   margin: 0;
@@ -539,7 +539,7 @@ input[type="date"]::-webkit-inner-spin-button {
     overflow: hidden;
     text-overflow: ellipsis;
     &.tt-is-under-cursor, &.tt-cursor {
-      background-color: @tableHoverYellow;
+      background-color: $tableHoverYellow;
     }
     img {
       vertical-align: middle;
@@ -558,20 +558,20 @@ input[type="date"]::-webkit-inner-spin-button {
   overflow: auto;
   display: inline-block;
   border-radius: 2px;
-  background-color: @mediumGrey;
-  color: @white;
-  margin-right: @smallPad;
-  margin-top: @smallPad;
+  background-color: $mediumGrey;
+  color: $white;
+  margin-right: $smallPad;
+  margin-top: $smallPad;
   font-weight: 600;
-  padding-right: @smallPad;
+  padding-right: $smallPad;
   cursor: pointer;
   &:hover {
-    background-color: @deleteColor;
+    background-color: $deleteColor;
   }
   img {
     width: 30px;
     height: 30px;
-    margin-right: @smallPad;
+    margin-right: $smallPad;
     vertical-align: middle;
   }
   .recipient-name {

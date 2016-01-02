@@ -9,9 +9,9 @@
 }
 [data-tool-tip-for] {
   display: none;
-  color: @white;
+  color: $white;
   position: absolute;
-  background-color: @addColor;
+  background-color: $addColor;
   padding: 7px 10px;
   font-size: 12px;
   font-weight: 700;
@@ -34,12 +34,12 @@
 .bottom > .tool-tip-pointer {
   top: -10px;
   border-width: 0 6px 10px 6px;
-  border-color: transparent transparent @addColor transparent;
+  border-color: transparent transparent $addColor transparent;
 }
 .top > .tool-tip-pointer {
   bottom: -10px;
   border-width: 10px 6px 0px 6px;
-  border-color: @addColor transparent transparent transparent;
+  border-color: $addColor transparent transparent transparent;
 }
 .left > .tool-tip-pointer,
 .right > .tool-tip-pointer {
@@ -49,10 +49,10 @@
 .left > .tool-tip-pointer {
   right: -10px;
   border-width: 6px 0px 6px 10px;
-  border-color: transparent transparent transparent @addColor;
+  border-color: transparent transparent transparent $addColor;
 }
 .right > .tool-tip-pointer {
   left: -10px;
   border-width: 6px 10px 6px 0px;
-  border-color: transparent @addColor transparent transparent;
+  border-color: transparent $addColor transparent transparent;
 }

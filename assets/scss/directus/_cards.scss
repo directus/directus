@@ -4,7 +4,7 @@
     &.inactive {
       opacity: 0.4;
     }
-    .card-border;
+    @extend .card-border;
     font-size: 12px;
     list-style: none;
     .header-image {
@@ -12,7 +12,7 @@
       height: 200px;
       position: relative;
       width: 200px;
-      background-color: @lightGrey;
+      background-color: $lightGrey;
       text-align: center;
       &:hover {
         cursor: pointer;
@@ -21,14 +21,14 @@
         }
       }
       .embed-icon {
-        color: @white;
+        color: $white;
         position: absolute;
         bottom: 12px;
         right: 18px;
         z-index: 2;
       }
       .default-info {
-        border: solid 1px @lightGrey;
+        border: solid 1px $lightGrey;
         border-bottom: 0px;
         font-size: 45px;
         font-weight: 700;
@@ -37,7 +37,7 @@
         text-align: center;
       }
       .default-loading {
-        border: solid 1px @lightGrey;
+        border: solid 1px $lightGrey;
         border-bottom: 0px;
         font-size: 45px;
         font-weight: 700;
@@ -45,7 +45,7 @@
         line-height: 190px;
         text-align: center;
         .icon {
-          .pulsate;
+          @extend .pulsate;
           line-height: 130%;
         }
       }
@@ -53,9 +53,9 @@
         // display: block; // This inhibits centering of images
       }
       .tool-item {
-        background-color: @white;
+        background-color: $white;
         bottom: 10px;
-        color: @darkGrey;
+        color: $darkGrey;
         display: none;
         position: absolute;
         right: 10px;
@@ -74,20 +74,20 @@
     }
     .media-card-progress {
       position: absolute;
-      background-color: @addColor;
+      background-color: $addColor;
       z-index: 10;
       bottom:0px;
       height:4px;
       width:100%;
     }
     .info {
-      //border: solid 1px @lightGrey;
-      background-color: @white;
+      //border: solid 1px $lightGrey;
+      background-color: $white;
       border-top: none;
       margin-top: 4px;
       min-height: 100px;
       .featured, .extra {
-        padding: 8px @standardPad 8px @standardPad;
+        padding: 8px $standardPad 8px $standardPad;
       }
       .featured {
         margin-top: -4px;
@@ -100,7 +100,7 @@
       .extra {
         padding-top: 0;
         li {
-          border-bottom: solid 1px @white;
+          border-bottom: solid 1px $white;
           list-style: none;
           padding: 5px 17px 5px 0px;
           position: relative;
@@ -132,25 +132,25 @@
 .feature-cards {
   padding-left: 0px;
   .feature-card {
-    .card-border;
-    background-color: @white;
+    @extend .card-border;
+    background-color: $white;
     list-style: none;
-    padding: @standardPad;
+    padding: $standardPad;
     height: 100px;
     overflow: hidden;
     position: relative;
     &:hover .icon {
-      color: darken(@lightGrey, 10%);
+      color: darken($lightGrey, 10%);
     }
     .left-col {
-      color: @lightGrey;
+      color: $lightGrey;
       text-align: center;
       width: 180px;
       position: absolute;
       top: 0;
       left: 0;
       .icon {
-        .transition;
+        @include transition();
         display: inline-block;
         font-size: 200px;
         line-height: 100px;

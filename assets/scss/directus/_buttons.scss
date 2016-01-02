@@ -1,23 +1,23 @@
-.btn-white() {
-  color: @darkGrey;
-  background-color: @white;
-  border: solid 1px @lightGrey;
+@mixin btn-white() {
+  color: $darkGrey;
+  background-color: $white;
+  border: solid 1px $lightGrey;
   &:hover {
-    background-color: @lightGrey
+    background-color: $lightGrey
   }
   &.active, &.wysihtml5-command-active {
-    background-color: @mediumGrey;
+    background-color: $mediumGrey;
   }
 }
 
 .btn-toolbar {
-  .clear-fix;
+  @extend .clear-fix;
   clear: both;
   float: none;
-  margin-bottom: @smallPad;
+  margin-bottom: $smallPad;
   .btn-group {
     float: left;
-    margin-right: @extraSmallPad;
+    margin-right: $extraSmallPad;
     &:last-child {
       margin-right: 0px;
     }
@@ -26,10 +26,10 @@
 .btn-group {
   &.btn-white {
     .btn {
-      .btn-white;
+      @extend .btn-white;
       border-right-width: 0px;
       &:first-child {
-        .border-radius(0px, 0px, 4px, 4px);
+        @include border-radius(0px, 0px, 4px, 4px);
         border-left-width: 1px;
       }
       &:last-child {
@@ -38,35 +38,35 @@
     }
   }
   .btn {
-    .border-radius(0px, 0px, 0px, 0px);
-    border-left: solid 1px @lightGrey;
+    @include border-radius(0px, 0px, 0px, 0px);
+    border-left: solid 1px $lightGrey;
     border-right-width: 0px;
     display: block;
     float: left;
     &:first-child {
-      .border-radius(0px, 0px, 4px, 4px);
+      @include border-radius(0px, 0px, 4px, 4px);
       border-left-width: 0px;
     }
     &:last-child {
-      .border-radius(4px, 4px, 0px, 0px);
+      @include border-radius(4px, 4px, 0px, 0px);
       border-right-width: 1px;
     }
     &.btn-round {
       &:first-child {
-        .border-radius(0px, 0px, 50%, 50%);
+        @include border-radius(0px, 0px, 50%, 50%);
       }
       &:last-child {
-        .border-radius(50%, 50%, 0px, 0px);
+        @include border-radius(50%, 50%, 0px, 0px);
       }
     }
   }
 }
 .btn {
-  .border-radius(3px, 3px, 3px, 3px);
-  background-color: @mediumGrey;
+  @include border-radius(3px, 3px, 3px, 3px);
+  background-color: $mediumGrey;
   border: none;
-  border-bottom: 2px solid darken(@mediumGrey, 10%);
-  color: @white;
+  border-bottom: 2px solid darken($mediumGrey, 10%);
+  color: $white;
   cursor: pointer;
   padding: 10px 15px 10px 15px;
   //letter-spacing: 0.4px;
@@ -75,23 +75,23 @@
   -webkit-font-smoothing: antialiased !important;
   //text-transform: uppercase;
   &:hover {
-    background-color: darken(@mediumGrey, 10%);
-    border-bottom: 2px solid darken(@mediumGrey, 20%);
+    background-color: darken($mediumGrey, 10%);
+    border-bottom: 2px solid darken($mediumGrey, 20%);
   }
   &:active {
-    background-color: darken(@mediumGrey, 20%);
-    border-bottom: 2px solid darken(@mediumGrey, 30%);
+    background-color: darken($mediumGrey, 20%);
+    border-bottom: 2px solid darken($mediumGrey, 30%);
   }
   &.active {
-    background-color: @extraDarkGrey;
+    background-color: $extraDarkGrey;
   }
   &.btn-white {
-    .btn-white;
+    @extend .btn-white;
   }
   &.btn-round {
-    .border-radius(50%, 50%, 50%, 50%);
+    @include border-radius(50%, 50%, 50%, 50%);
     border: 0px;
-    padding: @smallPad;
+    padding: $smallPad;
   }
   &.btn-small {
     padding: 5px 10px 5px 10px;
@@ -106,7 +106,7 @@
 // Overrides
 
 #existingFileButton {
-  color: @extraDarkGrey;
+  color: $extraDarkGrey;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -121,11 +121,11 @@
   padding: 2px;
   width: 30px;
   height: 15px;
-  background-color: lighten(@mediumGrey, 15%);
+  background-color: lighten($mediumGrey, 15%);
   border-radius: 15px;
   transition: background 0.4s;
   &:hover {
-    background-color: lighten(@mediumGrey, 5%);
+    background-color: lighten($mediumGrey, 5%);
   }
 }
 .toggle-switch:before,
@@ -148,19 +148,19 @@
   left: 4px;
   bottom: 4px;
   width: 13px;
-  background-color: lighten(@mediumGrey, 15%);
+  background-color: lighten($mediumGrey, 15%);
   border-radius: 13px;
   transition: margin 0.4s, background 0.4s;
 }
 .toggle-switch.on {
-  background-color: @addColor;
+  background-color: $addColor;
   &:hover {
-    background-color: darken(@addColor, 10%);
+    background-color: darken($addColor, 10%);
   }
 }
 .toggle-switch.on:after {
   margin-left: 15px;
-  background-color: @addColor;
+  background-color: $addColor;
   left: 2px;
 }
 
@@ -183,7 +183,7 @@ input.toggle-switch-input + label {
   padding: 2px;
   width: 30px;
   height: 15px;
-  background-color: @lightGrey;
+  background-color: $lightGrey;
   border-radius: 15px;
   transition: background 0.4s;
 }
@@ -207,14 +207,14 @@ input.toggle-switch-input + label:after {
   left: 4px;
   bottom: 4px;
   width: 13px;
-  background-color: @lightGrey;
+  background-color: $lightGrey;
   border-radius: 13px;
   transition: margin 0.4s, background 0.4s;
 }
 input.toggle-switch-input:checked + label {
-  background-color: @addColor;
+  background-color: $addColor;
 }
 input.toggle-switch-input:checked + label:after {
   margin-left: 15px;
-  background-color: @addColor;
+  background-color: $addColor;
 }

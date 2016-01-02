@@ -23,7 +23,7 @@
   width: 100%;
   .visible-columns-cell:hover,
   .sortable-column:hover {
-    color: @darkGrey;
+    color: $darkGrey;
     cursor: pointer;
   }
   .sortable-column {
@@ -32,18 +32,18 @@
   thead {
     tr {
       -webkit-font-smoothing: antialiased;
-      background-color: darken(@white, 3%);
+      background-color: darken($white, 3%);
       &:hover {
-        background-color: darken(@white, 5%);
+        background-color: darken($white, 5%);
         cursor: default;
       }
       th {
-        color: @mediumGrey;
-        // border-bottom: 1px solid @lightGrey;
+        color: $mediumGrey;
+        // border-bottom: 1px solid $lightGrey;
         text-transform: uppercase;
         font-size: 11px;
         font-weight: 600;
-        padding: 11px @smallPad @smallPad @smallPad;
+        padding: 11px $smallPad $smallPad $smallPad;
         position: relative;
         &.asc, &.desc {
           .sorter {
@@ -59,10 +59,10 @@
           }
         }
         &.asc .sorter:before {
-          .triangle-bottom(6px, 6px, @mediumGrey);
+          @include triangle-bottom(6px, 6px, $mediumGrey);
         }
         &.desc .sorter:before {
-          .triangle-top(6px, 6px, @mediumGrey);
+          @include triangle-top(6px, 6px, $mediumGrey);
         }
         &.permissions {
           width: 10%;
@@ -84,8 +84,8 @@
       right: 10px;
       font-size:13px;
       display: none;
-      color:@mediumGrey;
-      &:hover {color: @darkGrey; }
+      color:$mediumGrey;
+      &:hover {color: $darkGrey; }
     }
   }
   .visible-columns-cell {
@@ -95,24 +95,24 @@
   }
   thead:hover #set-visible-columns {
     display: block;
-    background-color: @extraLightGrey;
+    background-color: $extraLightGrey;
     padding-left: 10px;
   }
   tbody {
-    .card-border;
-    background-color: @white;
+    @extend .card-border;
+    background-color: $white;
     .secondary-info {
       -webkit-font-smoothing: antialiased;
     }
     .sort {
-      color: @mediumGrey;
+      color: $mediumGrey;
       font-size: 10px;
       width: 5px;
       padding-top: 0;
       padding-bottom: 0;
       padding-right: 0;
       &:hover {
-        color: @darkGrey;
+        color: $darkGrey;
       }
       .icon {
         margin-top: -4px;
@@ -146,21 +146,21 @@
           font-weight: 600;
           font-size: 11px;
         }
-        .border-radius(3px, 3px, 3px, 3px);
+        @include border-radius(3px, 3px, 3px, 3px);
         span.value {
           display:block;
           margin-bottom:2px;
           font-size:14px;
-          color: @extraDarkGrey;
+          color: $extraDarkGrey;
         }
         li {
-          color: @mediumGrey;
+          color: $mediumGrey;
         }
         li:hover {
-          color: @extraDarkGrey;
+          color: $extraDarkGrey;
         }
-        color: @mediumGrey;
-        background-color:@white;
+        color: $mediumGrey;
+        background-color:$white;
         width:72px;
         text-align:center;
         padding: 7px 5px 5px 5px;
@@ -173,7 +173,7 @@
         left: 10px;
         border-style: solid;
         border-width: 0 5px 5px;
-        border-color: @white transparent;
+        border-color: $white transparent;
         display: block;
         width: 0;
         z-index: 1;
@@ -182,8 +182,8 @@
   }
   tr {
     -webkit-font-smoothing: auto;
-    border-bottom: solid 1px @extraLightGrey;
-    color: @darkGrey;
+    border-bottom: solid 1px $extraLightGrey;
+    color: $darkGrey;
     font-weight: 400;
     font-size: 12px;
     // background highlight
@@ -191,13 +191,13 @@
     -webkit-transition: background-color 600ms ease;
     transition: background-color 600ms ease;
     &.highlight {
-      background-color: @tableHoverYellow;
+      background-color: $tableHoverYellow;
     }
     &:hover {
       cursor: pointer;
       // Resolved transform3d bug in chrome (weird black borders on tr)
       td {
-        background-color: @tableHoverYellow;
+        background-color: $tableHoverYellow;
       }
       .settings {
         display: block;
@@ -218,7 +218,7 @@
     }
     &.system {
       height: 55px;
-      color: @mediumGrey;
+      color: $mediumGrey;
     }
     th, td {
       padding-left: 10px;
@@ -246,19 +246,19 @@
   }
 }
 .related-table {
-  margin-bottom: @smallPad;
+  margin-bottom: $smallPad;
   max-height: 800px;
   overflow: auto;
   thead {
     &:hover #set-visible-columns {
-      background-color: @lightGrey;
-      color: @darkGrey;
+      background-color: $lightGrey;
+      color: $darkGrey;
     }
     tr th {
-      background-color: @lightGrey;
-      color: @darkGrey;
+      background-color: $lightGrey;
+      color: $darkGrey;
       &:hover {
-        background-color: @lightGrey;
+        background-color: $lightGrey;
       }
     }
   }
@@ -266,16 +266,16 @@
     border-bottom: none;
     tr {
       &:hover td {
-        background-color: @tableHoverYellow;
+        background-color: $tableHoverYellow;
       }
       td {
-        background-color: darken(@white, 2%);
+        background-color: darken($white, 2%);
         &.delete {
           text-align: left;
           width: 15px;
           font-size: 16px;
           &:hover {
-            color: @deleteColor;
+            color: $deleteColor;
           }
         }
       }
@@ -299,11 +299,11 @@
   right: -2px;
   top: 38px;
   width: 200px;
-  background-color: @extraDarkGrey;
-  color: @mediumGrey;
+  background-color: $extraDarkGrey;
+  color: $mediumGrey;
   z-index: 1;
   &:after {
-    .triangle-top(12px, 6px, @extraDarkGrey);
+    @include triangle-top(12px, 6px, $extraDarkGrey);
     content: "";
     margin-top: -6px;
     position: absolute;
@@ -317,7 +317,7 @@
     border-top: none;
     border-right: none;
     border-left: none;
-    border-bottom: 3px solid lighten(@extraDarkGrey, 5%);
+    border-bottom: 3px solid lighten($extraDarkGrey, 5%);
     margin: 0 0 55px 0;
     label {
       padding: 5px 0 5px 0;
@@ -332,10 +332,10 @@
     .btn {
       float: right;
       margin-left: 10px;
-      background-color: lighten(@extraDarkGrey, 10%);
+      background-color: lighten($extraDarkGrey, 10%);
       border-bottom: 2px solid #222222;
       &:hover {
-        background-color: lighten(@extraDarkGrey, 15%);
+        background-color: lighten($extraDarkGrey, 15%);
         border-bottom: 2px solid #000000;
       }
     }
@@ -345,7 +345,7 @@
     input {
       display: inline-block;
       width: auto;
-      margin-right: @smallPad;
+      margin-right: $smallPad;
     }
   }
 }
@@ -373,14 +373,14 @@
   height: 30px;
   min-width: 150px;
   margin-top: -4px;
-  background-color: @white;
+  background-color: $white;
   font-weight: normal;
 }
 .history-container {
-  .card-border;
-  background-color: @white;
-  padding: @standardPad;
-  color: @darkGrey;
+  @extend .card-border;
+  background-color: $white;
+  padding: $standardPad;
+  color: $darkGrey;
   ul {
     margin: 0 !important;
     padding: 0;
@@ -393,9 +393,9 @@
     }
     li {
       position: relative;
-      padding-top: @standardPad;
-      border-top: 1px solid @lightGrey;
-      margin-top: @standardPad;
+      padding-top: $standardPad;
+      border-top: 1px solid $lightGrey;
+      margin-top: $standardPad;
       min-height: 40px;
       padding-left: 50px;
       padding-right: 150px;
@@ -426,7 +426,7 @@
         background-color: inherit;
         padding: 4px;
         &:hover {
-          background-color: @extraLightGrey;
+          background-color: $extraLightGrey;
           cursor: pointer;
         }
         img {
@@ -436,12 +436,12 @@
         }
       }
       .mention-tag {
-        background-color: @extraLightGrey;
+        background-color: $extraLightGrey;
         padding: 0 4px 0 4px;
         margin: 0 1px 0 1px;
         cursor: pointer;
         &:hover {
-          background-color: @lightGrey;
+          background-color: $lightGrey;
         }
       }
       .avatar {
@@ -453,7 +453,7 @@
         height: 40px;
       }
       .history-datetime {
-        color: @mediumGrey;
+        color: $mediumGrey;
         position: absolute;
         top: 30px;
         right: 0;
@@ -462,8 +462,8 @@
         position: relative;
         display: inline-block;
         padding: 12px 10px 10px 10px;
-        background-color: @fieldColor;
-        //.border-radius(3px, 3px, 3px, 3px);
+        background-color: $fieldColor;
+        //@include border-radius(3px, 3px, 3px, 3px);
         max-width: 500px;
         //min-width: 300px;
         margin-left: 10px;
@@ -476,7 +476,7 @@
           left:50px; /* controls horizontal position */
           border-width:40px 0 0 40px; /* vary these values to change the angle of the vertex */
           border-style:solid;
-          border-color: @fieldColor transparent;
+          border-color: $fieldColor transparent;
           /* reduce the damage in FF3.0 */
           display:block;
           width:0;
@@ -484,7 +484,7 @@
           left:-10px; /* value = - border-left-width - border-right-width */
           bottom:auto;
           border-width: 10px 10px 10px 0; /* vary these values to change the angle of the vertex */
-          border-color:transparent @fieldColor;
+          border-color:transparent $fieldColor;
         }
         #messages-response-button {
           position: absolute;
@@ -499,7 +499,7 @@
         }
       }
       .history-follow {
-        .secondary-info;
+        @extend .secondary-info;
         margin-left: 10px;
         margin-top: 10px;
         input {
@@ -510,7 +510,7 @@
       .history-text {
         padding-top: 10px;
         a {
-          color: @mediumGrey;
+          color: $mediumGrey;
         }
       }
       .history-icon {
@@ -519,64 +519,64 @@
         left: 24px;
         width: 20px;
         height: 20px;
-        color: @white;
-        .border-radius(10px, 10px, 10px, 10px);
+        color: $white;
+        @include border-radius(10px, 10px, 10px, 10px);
         .icon {
           font-size: 200%;
           line-height: 60%;
           position: absolute;
         }
         &.add {
-          background-color: @addColor;
+          background-color: $addColor;
           .icon {
             top: 1px;
             left: 5px;
           }
         }
         &.edit {
-          background-color: @editColor;
+          background-color: $editColor;
           .icon {
             top: 1px;
             left: 5px;
           }
         }
         &.delete {
-          background-color: @deleteColor;
+          background-color: $deleteColor;
           .icon {
             top: 1px;
             left: 5px;
           }
         }
         &.message {
-          background-color: @messageColor;
+          background-color: $messageColor;
           .icon {
             top: 2px;
             left: 4px;
           }
         }
         &.comment {
-          background-color: @messageColor;
+          background-color: $messageColor;
           .icon {
             top: 1px;
             left: 5px;
           }
         }
         &.attach {
-          background-color: @attachColor;
+          background-color: $attachColor;
           .icon {
             top: 1px;
             left: 4px;
           }
         }
         &.login {
-          background-color: @loginColor;
+          background-color: $loginColor;
           .icon {
             top: 1px;
             left: 5px;
           }
         }
         &.system {
-          background-color: @systemColor;
+          background-color: $systemColor;
           .icon {
             top: 1px;
             left: 4px;
@@ -621,8 +621,8 @@
     position: absolute;
     top: -2px;
     left: -14px;
-    background-color: @lightGrey;
-    color: @mediumGrey;
+    background-color: $lightGrey;
+    color: $mediumGrey;
     text-align: center;
     font-size: 10px;
     padding-right: 5px;
@@ -631,7 +631,7 @@
   }
   .activity-chart table {
     width: 100%;
-    //border-top: 2px solid @extraLightGrey;
+    //border-top: 2px solid $extraLightGrey;
     font-style: italic;
     font-size: 12px;
   }
@@ -640,7 +640,7 @@
     position: relative;
   }
   .bgfiller {
-    background-color: @extraLightGrey;
+    background-color: $extraLightGrey;
     height: 100%;
     width: 50%;
     min-width: 10px;
@@ -668,13 +668,13 @@
   .bar-date {
     position: absolute;
     bottom: -18px;
-    color: @mediumGrey;
+    color: $mediumGrey;
     font-size: 9px;
     text-align: center;
     width: 100%;
   }
   .activity-totals {
-    //border-top: 1px solid @white;
+    //border-top: 1px solid $white;
     padding: 35px 15px 0 15px;
     overflow: hidden;
     //display: none;
@@ -719,21 +719,21 @@
 // Drag and drop (sortable) styling
 
 .sortableHeader {
-  color: @extraDarkGrey !important;
+  color: $extraDarkGrey !important;
 }
 
 .disable-sorting {
   .sortableHeader {
     cursor: pointer;
     .icon {
-      color: @mediumGrey;
+      color: $mediumGrey;
     }
     &:hover .icon {
-      color: @darkGrey;
+      color: $darkGrey;
     }
   }
   td.sort {
-    color: @lightGrey;
+    color: $lightGrey;
     .icon-list {
       -o-transform: none !important;
       -moz-transform: none !important;
@@ -748,7 +748,7 @@
       animation: none !important;
     }
     &:hover {
-      color: @lightGrey;
+      color: $lightGrey;
     }
   }
 }
@@ -769,18 +769,18 @@
 }
 tbody.remove-hover-state {
   tr:hover td {
-    background-color: @white;
+    background-color: $white;
   }
   .sort {
-    color: @mediumGrey !important;
+    color: $mediumGrey !important;
     .icon-list {
-      .reorder-effect;
+      @extend .reorder-effect;
     }
   }
 }
 .sortable-ghost td {
   //opacity: 0.5 !important;
-  background-color: @tableHoverYellow !important;
+  background-color: $tableHoverYellow !important;
 }
 .remove-hover-state {
   cursor: move !important;
@@ -789,7 +789,7 @@ tbody.remove-hover-state {
   opacity: 0.5;
 }
 .ui-file-container.remove-hover-state img {
-  .jiggly;
+  @extend .jiggly;
 }
 .sortable-file-ghost {
   opacity: 1.0 !important;

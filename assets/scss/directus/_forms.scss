@@ -29,7 +29,7 @@ select {
     position: absolute;
     top: 10px;
     right: 10px;
-    color: @mediumGrey;
+    color: $mediumGrey;
   }
 }
 .standard-select {
@@ -44,12 +44,12 @@ select {
     top: 0px;
   }
   select {
-    .border-radius(0px, 0px, 0px, 0px);
-    background-color: @white;
-    border: solid 1px @lightGrey;
-    color: @darkGrey;
+    @include border-radius(0px, 0px, 0px, 0px);
+    background-color: $white;
+    border: solid 1px $lightGrey;
+    color: $darkGrey;
     cursor: pointer;
-    padding: @extraSmallPad 25px @extraSmallPad @smallPad;
+    padding: $extraSmallPad 25px $extraSmallPad $smallPad;
     -webkit-appearance: none;
   }
 }
@@ -61,7 +61,7 @@ select {
     display: block;
     font-size: 200%;
     line-height: 52%;
-    //padding: 0px @extraSmallPad 0px @extraSmallPad;
+    //padding: 0px $extraSmallPad 0px $extraSmallPad;
     pointer-events: none;
     position: absolute;
     right: 7px;
@@ -96,28 +96,28 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     cursor: pointer;
     display: inline-block;
     font-weight: 600;
-    margin-right: @smallPad;
+    margin-right: $smallPad;
     position: relative;
     vertical-align: bottom;
     span {
-      background-color: @white;
-      border: solid 1px @lightGrey;
+      background-color: $white;
+      border: solid 1px $lightGrey;
       display:inline-block;
       width:14px;
       height:14px;
-      margin:0px @extraSmallPad 0 0;
+      margin:0px $extraSmallPad 0 0;
       vertical-align:middle;
     }
   }
   &:checked {
     +label {
       span {
-        background-color: @darkGrey;
-        border-color: @darkGrey;
+        background-color: $darkGrey;
+        border-color: $darkGrey;
       }
       &:before {
-        .icon;
-        color: @white;
+        @extend .icon;
+        color: $white;
         content: "\2713";
         font-size: 29px;
         left: 2px;
@@ -137,11 +137,11 @@ input,
 textarea,
 select,
 .input {
-  .transition;
-  background-color: @fieldColor;
+  @include transition();
+  background-color: $fieldColor;
   border: none;
   display: block;
-  padding: @smallPad;
+  padding: $smallPad;
   font-size: 13px;
   outline: none;
   resize: none;
@@ -149,21 +149,21 @@ select,
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   &:hover {
-    //border: solid 1px @mediumGrey;
+    //border: solid 1px $mediumGrey;
   }
   &:disabled {
-    color: @mediumGrey;
+    color: $mediumGrey;
   }
   &:disabled:hover {
-    //border: solid 1px @lightGrey;
+    //border: solid 1px $lightGrey;
   }
   &:focus {
-    color: darken(@darkGrey, 10%);
+    color: darken($darkGrey, 10%);
   }
 }
 .wysiwyg {
   .btn-toolbar {
-    margin-bottom: @extraSmallPad;
+    margin-bottom: $extraSmallPad;
   }
 }
 .directus-media-ui {
@@ -199,15 +199,15 @@ select,
     top: 8px;
   }
   select {
-    .border-radius();
-    background-color: @white; // class name no longer applicable
+    @include border-radius();
+    background-color: $white; // class name no longer applicable
     border: 0px;
     //margin: 0px 4px 0px 0px;
-    padding: 8px @smallPad;
+    padding: 8px $smallPad;
   }
 }
 .two-column-form {
-  @maxFieldWidth: 700px;
+  $maxFieldWidth: 700px;
   .medium {
     width: 300px;
   }
@@ -215,10 +215,10 @@ select,
     width: 100px;
   }
   h2 {
-    margin-bottom: @smallPad;
+    margin-bottom: $smallPad;
   }
   .fields {
-    .card-border;
+    @extend .card-border;
     list-style: none;
     margin: 0px;
     padding: 0px;
@@ -249,12 +249,12 @@ select,
       }
     }
     .label {
-      .border-box;
-      .clear-fix;
-      background-color: @white;
-      color: @darkGrey;
+      @extend .border-box;
+      @extend .clear-fix;
+      background-color: $white;
+      color: $darkGrey;
       font-weight: 600;
-      padding: 40px @standardPad @largePad @largePad;
+      padding: 40px $standardPad $largePad $largePad;
       vertical-align: top;
       width: 200px;
       label {
@@ -264,7 +264,7 @@ select,
         font-weight: 600;
         .note {
           display: block;
-          color: @mediumGrey;
+          color: $mediumGrey;
           font-style: italic;
           text-transform: none;
           font-size: 12px;
@@ -282,13 +282,13 @@ select,
       }
     }
     .field {
-      .clear-fix;
-      background-color: @white;
-      padding: @largePad;
+      @extend .clear-fix;
+      background-color: $white;
+      padding: $largePad;
       position: relative;
       font-weight: 400;
       input[type="text"], textarea, .input {
-        max-width: @maxFieldWidth;
+        max-width: $maxFieldWidth;
         display: inline-block;
         width: 100%;
       }
@@ -298,11 +298,11 @@ select,
         -webkit-font-smoothing: auto;
         a {
           text-decoration: underline;
-          color: @addColor;
+          color: $addColor;
         }
         img {
           &:hover {
-            border: 1px dotted @mediumGrey;
+            border: 1px dotted $mediumGrey;
             margin-left: -1px;
             margin-top: -1px;
             margin-right: -1px;
@@ -312,7 +312,7 @@ select,
       }
       textarea {
         min-height: 100px;
-        padding: @smallPad;
+        padding: $smallPad;
         resize: vertical;
         line-height: 20px;
       }
@@ -336,7 +336,7 @@ select,
       }
       .file {
         min-height: 100px;
-        max-width: @maxFieldWidth;
+        max-width: $maxFieldWidth;
         position: relative;
         .thumbnail {
           left: 0px;
@@ -344,27 +344,27 @@ select,
           top: 0px;
         }
         .content {
-          margin-left: @standardPad + 100;
+          margin-left: $standardPad + 100;
           .row {
-            border-bottom: solid 1px @mediumGrey;
+            border-bottom: solid 1px $mediumGrey;
             margin: 0px;
-            padding-bottom: @smallPad;
+            padding-bottom: $smallPad;
             position: relative;
             &:last-child {
               border: none;
-              padding: @smallPad 0px 0px 0px;
+              padding: $smallPad 0px 0px 0px;
             }
             .info {
               margin-right: 120px;
             }
             .remove-media {
               &:hover {
-                color: @deleteColor;
+                color: $deleteColor;
               }
               .icon {
                 display: inline-block;
                 line-height: 12px;
-                margin-right: @extraSmallPad;
+                margin-right: $extraSmallPad;
                 vertical-align: top;
               }
             }
