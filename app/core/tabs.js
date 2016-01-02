@@ -51,7 +51,7 @@ function(app, Backbone) {
     events: {
      'click a[href$="#logout"]': function(e) {
         e.preventDefault();
-        app.router.openModal({type: 'confirm', text: 'Are you sure you want to logout?', callback: function() {
+        app.router.openModal({type: 'confirm', text: 'Are you sure you want to sign out?', callback: function() {
           window.location.href = app.API_URL + "auth/logout";
         }});
         return false;
