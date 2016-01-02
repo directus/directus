@@ -1,6 +1,6 @@
 html, body {
-  background-color: @lightGrey;
-  color: @darkGrey;
+  background-color: $lightGrey;
+  color: $darkGrey;
   font-size: 12px;
   font-weight: 600;
   // height: 100%; // Removed due to excess scrolling...
@@ -19,10 +19,10 @@ body {
 h1, h2, h3, h4 {
   font-weight: 400;
   margin: 0px;
-  font-family: @helveticaFont !important;
+  font-family: $helveticaFont !important;
 }
 h1 {
-  //color: @lightGrey;
+  //color: $lightGrey;
   font-size: 30px;
 }
 h2 { font-size: 24px; }
@@ -30,7 +30,7 @@ h3 { font-size: 18px; }
 h4 { font-size: 16px; }
 
 p {
-  margin: @smallPad 0px;
+  margin: $smallPad 0px;
 }
 
 a {

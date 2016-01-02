@@ -37,7 +37,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
       '{{#rows}}' +
       '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}} {{#if inactive}}inactive{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
         '<div class="header-image add-color-border">' +
-          '{{avatar}} <div class="tool-item large-circle"><span class="icon icon-pencil"></span></div></div>' +
+          '{{avatar}} <div class="tool-item large-circle"><i class="material-icons">edit</i></div></div>' +
         '<div class="info">' +
           '<div class="featured">' +
             '<div class="primary-info">' +
@@ -216,7 +216,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
     leftToolbar: function() {
       if(app.users.getCurrentUser().get('group').id == 1) {
         return [
-          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
+          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}})
         ];
       }
       return [];

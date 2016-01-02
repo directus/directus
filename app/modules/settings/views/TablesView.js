@@ -39,7 +39,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-check", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "check", buttonClass: "add-color-background"}})
       ];
     },
 
@@ -391,7 +391,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     template: 'modules/settings/settings-columns',
 
     events: {
-      'click span[data-action=ui]': 'editUI',
+      'click i[data-action=ui]': 'editUI',
       'click span[data-action=relationship]': 'editRelationship',
       'change select,input': 'bindForm',
       'click button[data-action=new-field]': 'newField'
@@ -799,7 +799,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     leftToolbar: function() {
       if(!this.widgets.addWidget) {
-        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}});
+        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}});
       }
       return [this.widgets.addWidget];
     },

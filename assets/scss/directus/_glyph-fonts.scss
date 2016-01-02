@@ -1,3 +1,48 @@
+//////////////////////////////////////////////////////////////////////////////
+// Mterial Design Icons
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/material-design/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url(../fonts/material-design/MaterialIcons-Regular.woff2) format('woff2'),
+       url(../fonts/material-design/MaterialIcons-Regular.woff) format('woff'),
+       url(../fonts/material-design/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Directus Font
+
 @font-face {
   font-family: 'Directus';
   src: url('../fonts/directus/directus-regular.eot'); /* IE9 Compat Modes */
@@ -7,9 +52,11 @@
        url('../fonts/directus/directus-regular.svg#entypo') format('svg'); /* Legacy iOS */
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
 .icon {
   display: inline-block;
-  font-family: @glyphFont;
+  font-family: $glyphFont;
   font-size: 300%;
   font-style: normal;
   font-weight: 100 !important;
@@ -22,32 +69,32 @@
 
 .icon-pencil.color {
   &:before {
-   color: @editColor;
+   color: $editColor;
   }
 }
 .icon-plus.color {
   &:before {
-   color: @addColor;
+   color: $addColor;
   }
 }
 .icon-cross.color {
   &:before {
-   color: @deleteColor;
+   color: $deleteColor;
   }
 }
 .icon-attach.color {
   &:before {
-   color: @attachColor;
+   color: $attachColor;
   }
 }
 .icon-key.color {
   &:before {
-   color: @loginColor;
+   color: $loginColor;
   }
 }
 .icon-warning.color {
   &:before {
-   color: @errorColor;
+   color: $errorColor;
   }
 }
 

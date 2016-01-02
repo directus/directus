@@ -27,7 +27,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
       if (this.collection.hasPermission('add')) {
         if(!this.widgets.addWidget) {
-          this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}});
+          this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}});
         }
 
         widgets.push(this.widgets.addWidget);

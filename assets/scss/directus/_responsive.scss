@@ -2,41 +2,41 @@
 //////////////////////////////////////////////////////////////////////////////
 // Small Desktop
 
-@hamburger-height: 7px;
+$hamburger-height: 7px;
 
 @keyframes tox-1-on {
     0%   {left:0px; top:0px;}
-    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
-    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
+    50%  {left:0px; top:$hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:$hamburger-height*1; transform: rotateZ(45deg);}
 }
 @keyframes tox-2-on {
-    0%   {left:0px; top:@hamburger-height*1;}
-    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
-    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
+    0%   {left:0px; top:$hamburger-height*1;}
+    50%  {left:0px; top:$hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:$hamburger-height*1; transform: rotateZ(45deg);}
 }
 @keyframes tox-3-on {
-    0%   {left:0px; top:@hamburger-height*2;}
-    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
-    100% {left:0px; top:@hamburger-height*1; transform: rotateZ(-45deg);}
+    0%   {left:0px; top:$hamburger-height*2;}
+    50%  {left:0px; top:$hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:$hamburger-height*1; transform: rotateZ(-45deg);}
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Off
 
 @keyframes tox-1-off {
-    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
-    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
+    0%   {left:0px; top:$hamburger-height*1; transform: rotateZ(45deg);}
+    50%  {left:0px; top:$hamburger-height*1; transform: rotateZ(0deg);}
     100% {left:0px; top:0px;}
 }
 @keyframes tox-2-off {
-    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(45deg);}
-    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
-    100% {left:0px; top:@hamburger-height*1;}
+    0%   {left:0px; top:$hamburger-height*1; transform: rotateZ(45deg);}
+    50%  {left:0px; top:$hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:$hamburger-height*1;}
 }
 @keyframes tox-3-off {
-    0%   {left:0px; top:@hamburger-height*1; transform: rotateZ(-45deg);}
-    50%  {left:0px; top:@hamburger-height*1; transform: rotateZ(0deg);}
-    100% {left:0px; top:@hamburger-height*2;}
+    0%   {left:0px; top:$hamburger-height*1; transform: rotateZ(-45deg);}
+    50%  {left:0px; top:$hamburger-height*1; transform: rotateZ(0deg);}
+    100% {left:0px; top:$hamburger-height*2;}
 }
 
 @media only screen and (max-width : 800px) {
@@ -45,7 +45,7 @@
 			left: 0 !important;
 		}
 		.main-container {
-			margin-left: @standardSidebarWidth;
+			margin-left: $standardSidebarWidth;
 		}
 		.responsive-nav-toggle {
 			.line-1 {
@@ -66,13 +66,13 @@
 		position: relative;
 		display: inline-block;
 		width: 30px;
-		height: @hamburger-height*3;
+		height: $hamburger-height*3;
 		float: left;
-		margin-top: @hamburger-height;
+		margin-top: $hamburger-height;
 		margin-right: 20px;
 		cursor: pointer;
 		&:hover .hamburger-line {
-			background-color: @darkGrey;
+			background-color: $darkGrey;
 		}
 		// &.active .line-1 {
 		// 	animation-name: tox-1-on;
@@ -88,23 +88,23 @@
 		// }
 		.hamburger-line {
 			position: absolute;
-			background-color: @mediumGrey;
+			background-color: $mediumGrey;
 			height: 2px;
 			width: 30px;
 
-			@tox-duration: 600ms;
+			$tox-duration: 600ms;
 
-			animation-duration: @tox-duration;
-			-webkit-animation-duration: @tox-duration;
+			animation-duration: $tox-duration;
+			-webkit-animation-duration: $tox-duration;
 			-webkit-animation-iteration-count: 1;
 			animation-fill-mode: forwards;
 			-webkit-animation-fill-mode: forwards;
 
 			transform: rotateZ(0deg);
-			-webkit-transition: @tox-duration ease-in-out;
-			-moz-transition: @tox-duration ease-in-out;
-			-o-transition: @tox-duration ease-in-out;
-			transition: @tox-duration ease-in-out;
+			-webkit-transition: $tox-duration ease-in-out;
+			-moz-transition: $tox-duration ease-in-out;
+			-o-transition: $tox-duration ease-in-out;
+			transition: $tox-duration ease-in-out;
 		}
 		.line-1 {
 			top: 0;
@@ -126,7 +126,7 @@
 		}
 	}
 	#sidebar {
-		left: -@standardSidebarWidth !important;
+		left: -$standardSidebarWidth !important;
 	}
 	.cards {
 		.card {

@@ -1,36 +1,36 @@
 .group-list {
-  color: @mediumGrey;
+  color: $mediumGrey;
   &, ul {
     list-style: none;
     margin: 0px;
     padding: 0px;
   }
   ul {
-    margin-top: @smallPad;
+    margin-top: $smallPad;
   }
   .group {
-    
+    //
   }
   .group-item {
-    .clear-fix;
-    //background-color: @extraLightGrey;
-    border-bottom: solid 1px @lightGrey;
+    @extend .clear-fix;
+    //background-color: $extraLightGrey;
+    border-bottom: solid 1px $lightGrey;
     margin: 0px;
-    padding: @smallPad+1 @standardPad @smallPad @standardPad;
+    padding: $smallPad+1 $standardPad $smallPad $standardPad;
     &.big-item {
-      padding: @standardPad;
+      padding: $standardPad;
     }
     > .icon {
       font-size: 38px;
       line-height: 5px;
-      margin-right: @standardPad;
+      margin-right: $standardPad;
       margin-top: 3px;
     }
     .stack {
-      color: @darkGrey;
+      color: $darkGrey;
       height: 17px;
       .icon {
-        color: @lightGrey;
+        color: $lightGrey;
         display: inline-block;
         font-size: 32px;
         line-height: 14px;
@@ -38,7 +38,7 @@
         vertical-align: top;
       }
       .stack-item {
-        color: @mediumGrey;
+        color: $mediumGrey;
       }
     }
   }

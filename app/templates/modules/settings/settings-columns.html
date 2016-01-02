@@ -29,7 +29,8 @@
         {{/types}}
       </select>
       {{#if uiHasVariables}}
-        <span class="icon icon-cog open-ui-options" data-action="ui" data-id="{{id}}"></span>
+        <!-- <span class="icon icon-cog open-ui-options" data-action="ui" data-id="{{id}}"></span> -->
+        <i class="material-icons open-ui-options" data-action="ui" data-id="{{id}}">tune</i>
         {{#unless valid}}<span class="icon icon-warning"></span>{{/unless}}
       {{/if}}
       {{#if uiHasRelationship}}
