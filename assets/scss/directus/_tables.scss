@@ -11,7 +11,8 @@
   }
   .open-ui-options {
     margin-left: 4px;
-    margin-top: -4px;
+    vertical-align: inherit;
+    margin-bottom: 2px;
     &:hover {
       color: #000000;
     }
@@ -36,6 +37,9 @@
       &:hover {
         background-color: darken($white, 5%);
         cursor: default;
+        #set-visible-columns {
+          background-color: darken($white, 5%);
+        }
       }
       th {
         color: $mediumGrey;
@@ -79,10 +83,11 @@
       }
     }
     #set-visible-columns {
+      // -webkit-transition: background-color 600ms ease;
+      // transition: background-color 600ms ease;
       position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size:13px;
+      top: 8px;
+      right: 12px;
       display: none;
       color:$mediumGrey;
       &:hover {color: $darkGrey; }
@@ -95,7 +100,7 @@
   }
   thead:hover #set-visible-columns {
     display: block;
-    background-color: $extraLightGrey;
+    background-color: darken($white, 3%);
     padding-left: 10px;
   }
   tbody {
@@ -188,8 +193,8 @@
     font-size: 12px;
     // background highlight
     background-color: #FFFFFF;
-    -webkit-transition: background-color 600ms ease;
-    transition: background-color 600ms ease;
+    // -webkit-transition: background-color 600ms ease;
+    // transition: background-color 600ms ease;
     &.highlight {
       background-color: $tableHoverYellow;
     }

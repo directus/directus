@@ -166,20 +166,16 @@
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
   }
-  .icon {
+  .material-icons {
     display: inline-block;
-    font-size: 40px;
-    margin-top: -8px;
-    &.icon-check {
-      font-size: 46px;
-    }
-    &.icon-star,
-    &.icon-search {
-      font-size: 33px;
-    }
-    &.icon-paper-plane {
-      margin-left: -3px;
-    }
+    margin-top: 4px;
+    // &.icon-check {
+    // }
+    // &.icon-star,
+    // &.icon-search {
+    // }
+    // &.icon-paper-plane {
+    // }
   }
   &.white-circle {
     background-color: $white;

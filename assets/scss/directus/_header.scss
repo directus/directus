@@ -57,6 +57,22 @@
     height: 38px;
     text-transform: capitalize;
     font-size: 28px;
+    #removeOverlay {
+      margin-top: -3px;
+      vertical-align: middle;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-top: -3px;
+      &:hover {
+        color: $darkGrey;
+      }
+    }
+    .breadcrumb-delimiter {
+      cursor: default;
+      color: lighten($mediumGrey, 15%);
+      vertical-align: middle;
+      margin-top: -3px;
+    }
     .icon {
       color: $mediumGrey;
       display: inline-block;
@@ -67,13 +83,6 @@
       cursor: pointer;
       &.icon-circled-left:hover {
         color: $darkGrey; // Removed due to breadcrumb >'s hovering
-      }
-      &#removeOverlay {
-        margin: 0;
-      }
-      &.breadcrumb-delimiter {
-        cursor: auto;
-        color: lighten($mediumGrey, 15%);
       }
     }
     .endnode {

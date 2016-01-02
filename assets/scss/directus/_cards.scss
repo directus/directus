@@ -139,7 +139,7 @@
     height: 100px;
     overflow: hidden;
     position: relative;
-    &:hover .icon {
+    &:hover .material-icons {
       color: darken($lightGrey, 10%);
     }
     .left-col {
@@ -149,11 +149,11 @@
       position: absolute;
       top: 0;
       left: 0;
-      .icon {
+      .material-icons {
         @include transition();
         display: inline-block;
-        font-size: 200px;
-        line-height: 100px;
+        font-size: 100px;
+        line-height: 140px;
       }
     }
     .right-col {

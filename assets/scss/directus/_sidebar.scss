@@ -159,7 +159,7 @@ body.initial-load #sidebar {
 				a {
 					color: $white;
 					cursor: auto;
-					padding-left: 16px;
+					padding-left: 18px;
 					// Triangle Indent
 					// &:after {
 					// 	@include triangle-left(6px, 12px, $lightGrey);
@@ -186,29 +186,17 @@ body.initial-load #sidebar {
 	#featureSidebar {
 		bottom: 0px;
 		position: absolute;
-		.settings-link {
-			text-align: center;
-			padding: 10px 0 5px 0;
+		// background-color: lighten($black, 5%) !important;
+		width: 100%;
+		li {
+			text-decoration: center;
 			float: left;
-			width: 100%;
-			background-color: $black;
-			.material-icons {
-				font-size: 18px;
-			}
+			height: 56px; // 170
+			position: relative;
 			&:hover {
 				color: $white;
-			}
-		}
-		li {
-			background-color: lighten($black, 8%);
-			float: left;
-			height: 85px;
-			position: relative;
-			width: 85px;
-			&:hover {
-				background-color: lighten($black, 10%);
 				&.has-image {
-					.icon {
+					.material-design {
 						display: block;
 					}
 					img {
@@ -218,14 +206,19 @@ body.initial-load #sidebar {
 			}
 			a {
 				display: block;
-				padding: 29px;
+				padding: 15px;
 			}
 			&.active {
-				background-color: lighten($black, 10%) !important;
+				color: $white;
+				// background-color: lighten($black, 5%) !important;
 			}
 			&.has-image {
-				.icon {
+				width: 56px; // 170
+				.material-design {
 					display: none;
+				}
+				a {
+					padding: 15px;
 				}
 			}
 			img {
@@ -235,62 +228,6 @@ body.initial-load #sidebar {
 				top: 0px;
 				width: 100%;
 				height: 100%;
-			}
-			.material-icons {
-				font-size: 48px;
-				margin-top: -12px;
-    			margin-left: -10px;
-			}
-			.icon {
-				display: block;
-				font-size: 60px;
-				height: 25px;
-				line-height: 17px;
-				margin-left: 0px;
-				margin-right: 18px;
-				margin-top: -1px;
-				position: relative;
-				text-align: center;
-				width: 25px;
-				&.icon-thunder-cloud {
-					@include animation(fadeout, 1s);
-				}
-				&.icon-cycle {
-					-webkit-animation-name:             rotate;
-					-webkit-animation-duration:         1.5s;
-					-webkit-animation-iteration-count:  infinite;
-					-webkit-animation-timing-function: linear;
-					color: $white;
-					line-height: 10px;
-					margin-left: -7px;
-					height: 22px;
-					width: 40px;
-					margin-top: 2px;
-				}
-				&.icon-attach {
-					margin-left: -5px;
-				}
-				&.icon-users {
-					margin-left: -5px;
-				}
-				&.icon-chat {
-					margin-left: -5px;
-				}
-				&.icon-bell {
-					margin-left: -1px;
-				}
-				&.icon-power-button {
-					margin-top: -2px;
-				}
-			}
-			.feature-nav-alert {
-				@include border-radius(50%, 50%, 50%, 50%);
-				bottom: 5px;
-				display: block;
-				height: 10px;
-				position: absolute;
-				right: 5px;
-				width: 10px;
 			}
 		}
 	}
