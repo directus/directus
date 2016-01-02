@@ -78,7 +78,10 @@
           vertical-align: top;
         }
         &.sort {
-          font-size: 10px;
+          .material-icons {
+            font-size: 18px;
+            vertical-align: middle;
+          }
         }
       }
     }
@@ -116,11 +119,13 @@
       padding-top: 0;
       padding-bottom: 0;
       padding-right: 0;
+      text-align: left;
       &:hover {
         color: $darkGrey;
       }
-      .icon {
-        margin-top: -4px;
+      .material-icons {
+        font-size: 18px;
+        vertical-align: middle;
       }
     }
   }
@@ -466,7 +471,7 @@
       .history-comment {
         position: relative;
         display: inline-block;
-        padding: 12px 10px 10px 10px;
+        padding: 12px 22px 10px 20px;
         background-color: $fieldColor;
         //@include border-radius(3px, 3px, 3px, 3px);
         max-width: 500px;
@@ -493,13 +498,14 @@
         }
         #messages-response-button {
           position: absolute;
-          right: 10px;
-          bottom: 10px;
+          right: 15px;
+          bottom: 15px;
         }
         textarea {
           border: none;
           width: 100%;
-          min-height: 70px;
+          min-height: 80px;
+          padding: 5px 0 0 0;
           -webkit-font-smoothing: antialiased !important;
         }
       }
@@ -725,21 +731,25 @@
 
 .sortableHeader {
   color: $extraDarkGrey !important;
+  @extend .pulsate;
 }
 
 .disable-sorting {
   .sortableHeader {
     cursor: pointer;
-    .icon {
+    .material-icons {
       color: $mediumGrey;
     }
-    &:hover .icon {
+    &:hover .material-icons {
       color: $darkGrey;
     }
   }
   td.sort {
     color: $lightGrey;
-    .icon-list {
+    .material-icons {
+      font-size: 18px;
+      vertical-align: middle;
+      // Legacy below
       -o-transform: none !important;
       -moz-transform: none !important;
       -ms-transform: none !important;
@@ -778,7 +788,7 @@ tbody.remove-hover-state {
   }
   .sort {
     color: $mediumGrey !important;
-    .icon-list {
+    .material-icons {
       @extend .reorder-effect;
     }
   }

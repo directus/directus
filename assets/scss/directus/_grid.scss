@@ -6,7 +6,11 @@
 .row {
   @extend .clear-fix;
   clear: both;
-  margin: 0px 0px 0px -$standardPad;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  margin-left: -$standardPad;
+
 }
 .col-1, .col-2,  .col-3,  .col-4, .col-full {
   float: left;

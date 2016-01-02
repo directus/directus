@@ -266,7 +266,7 @@ a.secondary-info {
   border-top: 1px solid $lightGrey;
 }
 .big-label-text {
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 100;
   color: $mediumGrey;
 }
@@ -297,7 +297,7 @@ img.grayscale {
   right: 0px;
 }
 .content-body {
-  /* flex: 1; */
+  /* flex: 1; display: flex; */
   margin-bottom: 40px;
   margin-top: 63px;
 }

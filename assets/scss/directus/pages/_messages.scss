@@ -4,12 +4,15 @@
     .users {
       font-style: italic;
       font-weight: 600;
+      font-size: 14px;
     }
     .title {
-      font-weight: 600;
+      font-weight: 100;
+      font-size: 18px;
     }
     .subject {
       color: $mediumGrey;
+      font-size: 14px;
     }
   }
   &.unread {
@@ -83,7 +86,7 @@ ul.general-container {
     .general-datetime {
       color: $mediumGrey;
       position: absolute;
-      top: $standardPad;
+      top: $standardPad + 24;
       right: $standardPad;
     }
     .general-icon {
