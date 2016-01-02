@@ -4263,7 +4263,7 @@ body.initial-load #sidebar {
 .login-box {
   left: 50%;
   margin-left: -175px;
-  margin-top: -150px;
+  margin-top: -170px;
   position: absolute;
   top: 50%;
   width: 350px; }
@@ -4301,7 +4301,7 @@ body.initial-load #sidebar {
 
 .login-panel {
   background-color: #ffffff;
-  padding: 20px;
+  padding: 40px;
   position: relative; }
   .login-panel input {
     -webkit-transition: all 100ms ease-in-out;
@@ -4312,14 +4312,16 @@ body.initial-load #sidebar {
     background-color: #f1f1f1;
     border: none;
     display: block;
-    padding: 10px;
+    padding: 14px;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    font-weight: 400;
     outline: none;
     resize: none;
     box-sizing: border-box;
     width: 100%;
     color: #666666;
-    -webkit-text-fill-color: #666666;
-    font-size: 14px; }
+    -webkit-text-fill-color: #666666; }
     .login-panel input:focus {
       color: #4d4d4d;
       -webkit-text-fill-color: #4d4d4d; }
@@ -4335,9 +4337,9 @@ body.initial-load #sidebar {
       border: none;
       padding: 0px;
       position: absolute;
-      right: 7px;
-      top: 7px;
-      color: #aaaaaa; }
+      right: 10px;
+      top: 12px;
+      color: #d0d0d0; }
       .login-panel p #forgot-password .material-icons, .login-panel p #forgot-password .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-panel p #forgot-password span:before, .login-panel p #forgot-password .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-panel p #forgot-password span:before,
       .login-panel p #forgot-password input[type="checkbox"].custom-check + label span:before,
       input[type="checkbox"].custom-check + label .login-panel p #forgot-password span:before, .login-panel p #forgot-password input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .login-panel p #forgot-password span:before {

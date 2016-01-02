@@ -1,7 +1,7 @@
 .login-box {
   left:50%;
   margin-left: -175px;
-  margin-top:-150px;
+  margin-top:-170px;
   position: absolute;
   top:50%;
   width:350px;
@@ -47,7 +47,7 @@
   background-color: $white;
   //box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05);
   //.border-radius($baseRadius, $baseRadius, $baseRadius, $baseRadius);
-  padding:20px;
+  padding: 40px;
   position: relative;
   // &:after {
   //   .triangle-bottom(12px, 12px, fade($white, 30%));
@@ -61,14 +61,16 @@
     background-color: $fieldColor;
     border: none;
     display: block;
-    padding: $smallPad;
+    padding: 14px;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    font-weight: 400;
     outline: none;
     resize: none;
     box-sizing: border-box;
     width: 100%;
     color: $darkGrey;
     -webkit-text-fill-color: $darkGrey;
-    font-size: 14px;
     &:focus {
       color: darken($darkGrey, 10%);
       -webkit-text-fill-color: darken($darkGrey, 10%);
@@ -88,9 +90,9 @@
       border: none;
       padding: 0px;
       position: absolute;
-      right: 7px;
-      top: 7px;
-      color: $mediumGrey;
+      right: 10px;
+      top: 12px;
+      color: lighten($mediumGrey, 15%);
       .material-icons {
         font-size: 24px;
       }
