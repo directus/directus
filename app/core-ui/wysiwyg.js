@@ -935,4 +935,3 @@ var wysihtml5ParserRules = {
         }
     }
 };
-

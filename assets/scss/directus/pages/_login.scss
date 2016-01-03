@@ -90,9 +90,15 @@
       border: none;
       padding: 0px;
       position: absolute;
+<<<<<<< Updated upstream
       right: 10px;
       top: 12px;
       color: lighten($mediumGrey, 15%);
+=======
+      right: 7px;
+      top: 7px;
+      color: $mediumGrey;
+>>>>>>> Stashed changes
       .material-icons {
         font-size: 24px;
       }
