@@ -108,7 +108,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
       display:inline-block;
       width:18px;
       height:22px;
-      margin:0px $extraSmallPad 0 0;
+      margin: -2px $extraSmallPad 0 0;
       vertical-align:middle;
     }
   }

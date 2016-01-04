@@ -311,7 +311,7 @@ img.grayscale {
   margin-top: 200px;
   line-height: 35px;
   h1 {
-    color: $white;
+    color: lighten($mediumGrey, 15%);
     font-size: 50px;
     line-height: 60px;
   }
@@ -485,6 +485,16 @@ input[type="date"]::-webkit-inner-spin-button {
 .avatar-name {
   float: left;
   margin-top: 6px;
+}
+.big-avatar {
+  height: 60px;
+  float:left;
+  margin-right:15px;
+}
+.big-avatar-name {
+  float: left;
+  margin-top: 20px;
+  font-size: 14px;
 }
 .message-recipients {
   @extend .card-border;

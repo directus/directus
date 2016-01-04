@@ -1741,7 +1741,7 @@ img.grayscale {
   margin-top: 200px;
   line-height: 35px; }
   .nothing-here h1 {
-    color: #ffffff;
+    color: #d0d0d0;
     font-size: 50px;
     line-height: 60px; }
 
@@ -1896,6 +1896,16 @@ input[type="date"]::-webkit-inner-spin-button {
 .avatar-name {
   float: left;
   margin-top: 6px; }
+
+.big-avatar {
+  height: 60px;
+  float: left;
+  margin-right: 15px; }
+
+.big-avatar-name {
+  float: left;
+  margin-top: 20px;
+  font-size: 14px; }
 
 .message-recipients {
   background-color: #ffffff;
@@ -2392,7 +2402,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
       display: inline-block;
       width: 18px;
       height: 22px;
-      margin: 0px 5px 0 0;
+      margin: -2px 5px 0 0;
       vertical-align: middle; }
   .custom-check input[type="checkbox"]:checked + label span:before, .custom-check input[type="radio"]:checked + label span:before,
   input[type="checkbox"].custom-check:checked + label span:before, input[type="radio"].custom-check:checked + label span:before {
@@ -2692,7 +2702,7 @@ select,
         vertical-align: middle; }
   .table-striped thead #set-visible-columns {
     position: absolute;
-    top: 8px;
+    top: 9px;
     right: 12px;
     display: none;
     color: #aaaaaa; }

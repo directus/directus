@@ -392,7 +392,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     events: {
       'click i[data-action=ui]': 'editUI',
-      'click span[data-action=relationship]': 'editRelationship',
+      'click i[data-action=relationship]': 'editRelationship',
       'change select,input': 'bindForm',
       'click button[data-action=new-field]': 'newField'
     },
