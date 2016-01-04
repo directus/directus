@@ -2702,7 +2702,7 @@ select,
         vertical-align: middle; }
   .table-striped thead #set-visible-columns {
     position: absolute;
-    top: 8px;
+    top: 9px;
     right: 12px;
     display: none;
     color: #aaaaaa; }
