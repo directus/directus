@@ -2392,7 +2392,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
       display: inline-block;
       width: 18px;
       height: 22px;
-      margin: 0px 5px 0 0;
+      margin: -2px 5px 0 0;
       vertical-align: middle; }
   .custom-check input[type="checkbox"]:checked + label span:before, .custom-check input[type="radio"]:checked + label span:before,
   input[type="checkbox"].custom-check:checked + label span:before, input[type="radio"].custom-check:checked + label span:before {
