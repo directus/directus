@@ -125,7 +125,6 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         // Don't include tables that can't have privileges changed
         /*$blacklist = array(
             'directus_columns',
-            'directus_ip_whitelist',
             'directus_messages_recipients',
             'directus_preferences',
             'directus_privileges',

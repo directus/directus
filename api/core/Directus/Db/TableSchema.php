@@ -668,7 +668,6 @@ class TableSchema {
                 (
                     ST.TABLE_NAME NOT IN (
                         "directus_columns",
-                        "directus_ip_whitelist",
                         "directus_preferences",
                         "directus_privileges",
                         "directus_settings",

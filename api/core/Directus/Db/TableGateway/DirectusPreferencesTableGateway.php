@@ -196,7 +196,6 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
         ->isNull('title');
       $select->where('table_name NOT IN(
                     "directus_columns",
-                    "directus_ip_whitelist",
                     "directus_preferences",
                     "directus_privileges",
                     "directus_settings",
@@ -211,7 +210,6 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
       $tables = $metadata->getTableNames(DB_NAME);
 
       $tables = array_diff($tables, array("directus_columns",
-                    "directus_ip_whitelist",
                     "directus_preferences",
                     "directus_privileges",
                     "directus_settings",
