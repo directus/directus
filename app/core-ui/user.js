@@ -39,7 +39,7 @@ define(['app','backbone'], function(app, Backbone) {
 
       if(user) {
         var avatar = user.getAvatar();
-        this.$el.append('<img src="' + avatar + '" class="avatar"><span class="avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>');
+        this.$el.append('<img src="' + avatar + '" class="big-avatar"><span class="big-avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>');
       } else {
         this.$el.append('<span class="avatar-name medium-grey-color">No user</span>');
       }
