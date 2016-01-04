@@ -7,8 +7,8 @@
  */
 function uc_convert($text){
 	$phrase = preg_replace('!\s+!', ' ', trim(ucwords(strtolower(str_replace('_', ' ', $text)))));
-	$uc_caps        = array("Nda", "Api", "Youtube", "Faq", "Iphone", "Ipad", "Ipod", "Pdf", "Pdfs", "Url", "Ip", "Ftp", "Db", "Cv", "Id", "Ph", "Php", "Html", "Js", "Css", "Ios", "Iso", "Rngr");
-	$special_caps   = array("NDA", "API", "YouTube", "FAQ", "iPhone", "iPad", "iPod", "PDF", "PDFs", "URL", "IP", "FTP", "DB", "CV", "ID", "pH", "PHP", "HTML", "JS", "CSS", "iOS", "ISO", "RNGR");
+	$uc_caps        = array("Ssn", "Ein", "Nda", "Api", "Youtube", "Faq", "Iphone", "Ipad", "Ipod", "Pdf", "Pdfs", "Url", "Ip", "Ftp", "Db", "Cv", "Id", "Ph", "Php", "Html", "Js", "Css", "Ios", "Iso", "Rngr");
+	$special_caps   = array("SSN", "EIN", "NDA", "API", "YouTube", "FAQ", "iPhone", "iPad", "iPod", "PDF", "PDFs", "URL", "IP", "FTP", "DB", "CV", "ID", "pH", "PHP", "HTML", "JS", "CSS", "iOS", "ISO", "RNGR");
 
 	foreach($uc_caps as $key => $value){
 		$uc_caps[$key] = ("/\b".$value."\b/");
