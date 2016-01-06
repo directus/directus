@@ -168,7 +168,7 @@ VALUES
   ('example_gallery', 'single_file', 'INT', 'single_file', 0, 0, 0, 0, 0, 'MANYTOONE', 'directus_files', NULL, NULL, 'single_file', 9999, ''),
   ('example_gallery', 'user', 'INT', 'many_to_one', 0, 0, 0, 0, 0, 'MANYTOONE', 'directus_users', NULL, NULL, 'user', 9999, ''),
   ('example_gallery', 'users', 'MANYTOMANY', 'many_to_many', 0, 0, 0, 0, 1, 'MANYTOMANY', 'directus_users', 'example_users', 'ui_id', 'user_id', 9999, ''),
-  ('example_gallery', 'files', 'MANYTOMANY', 'multiple_files', 0, 0, 0, 0, 1, 'MANYTOMANY', 'directus_files', 'example_files', 'ui_id', 'file_id', 9999, '');";
+  ('example_gallery', 'files', 'MANYTOMANY', 'multiple_files', 0, 0, 0, 0, 0, 'MANYTOMANY', 'directus_files', 'example_files', 'ui_id', 'file_id', 9999, '');";
   $mysqli->query($insert);
 
   $columnsTableName = getTableName("directus_tables");
