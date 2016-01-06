@@ -56,9 +56,9 @@ function AddDefaultUser($email, $password, $mysqli) {
   $hash = sha1( $composite );
   $tableName = getTableName("directus_users");
 
-  $insert = "INSERT INTO `$tableName` (`id`, `active`, `email`, `password`, `salt`, `group`)
+  $insert = "INSERT INTO `$tableName` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `group`)
 VALUES
-  (1, 1, '$email', '$hash', '$salt', 1);";
+  (1, 1, 'Admin', 'User', '$email', '$hash', '$salt', 1);";
 
   $mysqli->query($insert);
 }
