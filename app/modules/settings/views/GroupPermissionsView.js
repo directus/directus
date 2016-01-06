@@ -201,8 +201,38 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
       }
     },
 
-    // @todo: update this for newest permission model
     toggleRowPermissions: function(e) {
+        var $target = $(e.target).parent(),
+            $tr = $target.closest('tr'),
+            cid = $tr.data('cid'),
+            model = this.collection.get(cid),
+            hasFullPermission = true,
+            fullPermissions = {
+                'allow_add': 1,
+                'allow_edit': 2,
+                'allow_delete': 2,
+                'allow_alter': 1,
+                'allow_view': 2
+            };
+
+        _.each(fullPermissions, function(value, key) {
+            if (value != model.get(key)) {
+                hasFullPermission = false;
+            }
+        });
+
+        if (!hasFullPermission) {
+            model.set(fullPermissions);
+        } else {
+            _.each(fullPermissions, function(value, key) {
+                model.set(key, 0);
+            });
+        }
+
+        model.save();
+    },
+    // @todo: update this for newest permission model
+    OldtoggleRowPermissions: function(e) {
       var $target = $(e.target).parent(),
         $tr = $target.closest('tr'),
         cid = $tr.data('cid'),
