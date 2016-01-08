@@ -1,5 +1,6 @@
 {
   "require": {
+    "php": ">=5.5.0",
     "slim/slim": "2.3.2",
     "slim/extras": "dev-develop",
     "zendframework/zend-db": "2.2.*@dev",
