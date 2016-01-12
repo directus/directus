@@ -33,8 +33,7 @@ class Files
         // Fetch files settings
         $Settings = new DirectusSettingsTableGateway($acl, $adapter);
         $this->filesSettings = $Settings->fetchCollection('files', array(
-            'storage_adapter','storage_destination','thumbnail_storage_adapter',
-            'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled', 'youtube_api_key'
+            'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
         ));
     }
 
@@ -120,7 +119,7 @@ class Files
           $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
           $fileData['storage_adapter'] = $this->getConfig('adapter');
           $fileData['charset'] = '';
-          
+
           //If Youtube API Key set, hit up youtube API
           if(array_key_exists('youtube_api_key', $settings) && !empty($settings['youtube_api_key'])) {
             // Get Data
@@ -132,7 +131,7 @@ class Files
             curl_setopt($ch, CURLOPT_URL,$url);
             $content=curl_exec($ch);
 
-            $dataRetrieveErrored = false;      
+            $dataRetrieveErrored = false;
             if ($content !== false) {
                 $content = json_decode($content);
                 if(!is_null($content) && property_exists($content, 'items') && sizeof($content->items) > 0) {
@@ -140,7 +139,7 @@ class Files
                     $fileData['title'] = $videoDataSnippet->title;
                     $fileData['caption'] = $videoDataSnippet->description;
                     $fileData['tags'] = implode(',', $videoDataSnippet->tags);
-                    
+
                     $videoContentDetails = $content->items[0]->contentDetails;
                     $videoStart = new \DateTime('@0'); // Unix epoch
                     $videoStart->add(new \DateInterval($videoContentDetails->duration));
@@ -153,7 +152,7 @@ class Files
             } else {
                 $dataRetrieveErrored = true;
             }
-            
+
             // an error happened
             if($dataRetrieveErrored) {
                 $fileData['title'] = "Unable to Retrieve YouTube Title";
@@ -164,7 +163,7 @@ class Files
               $fileData['title'] = "Youtube Video: " . $video_id;
               $fileData['size'] = 0;
           }
-          
+
           $linkContent = file_get_contents('http://img.youtube.com/vi/' . $video_id . '/0.jpg');
           $fileData['data'] = 'data:image/jpeg;base64,' . base64_encode($linkContent);
         } else if(strpos($link,'vimeo.com') !== false) {
