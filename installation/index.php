@@ -351,50 +351,58 @@ if($step == 3 && isset($_POST['install'])) {
                         }
                         if(isset($_SESSION['send_config_email']) && $_SESSION['send_config_email'] == "yes") {
                           require_once('config_setup.php');
-                          $mailBody = '<html><h3>Main Configuration</h3>
-      <hr>
-      <table>
+                          $mailBody = '<html>
+      <p style="color:#333333;font-size:12px;font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;font-weight: 300;">
+      <table style="margin-bottom:20px;" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="center">
+            <img src="data:image/gif;base64,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">
+          </td>
+        </tr>
+      </table>
+      <h3>Main Configuration</h3>
+      <hr style="border:0;height:0;border-top:1px solid rgba(0, 0, 0, 0.1);border-bottom:1px solid rgba(255, 255, 255, 0.3);">
+      <table style="margin-bottom:20px;">
         <tbody>
           <tr>
-            <td class="item">Site Name</td>
-            <td class="result">'.$_SESSION['site_name'].'</td>
+            <td style="width: 140px;">Project Name</td>
+            <td>'.$_SESSION['site_name'].'</td>
           </tr>
           <tr>
-            <td class="item">Admin Email</td>
-            <td class="result"><span>'.$_SESSION['email'].'</span>
-            </td>
+            <td style="width: 140px;">Admin Email</td>
+            <td>'.$_SESSION['email'].'</td>
           </tr>
           <tr>
-            <td class="item">Admin Password</td>
-            <td class="result">***</td>
+            <td style="width: 140px;">Admin Password</td>
+            <td>***</td>
           </tr>
         </tbody>
       </table>
 
       <h3>Database Configuration</h3>
-      <hr>
-      <table>
+      <hr style="border:0;height:0;border-top:1px solid rgba(0, 0, 0, 0.1);border-bottom:1px solid rgba(255, 255, 255, 0.3);">
+      <table style="margin-bottom:20px;">
         <tbody>
           <tr>
-            <td class="item">Host Name</td>
-            <td class="result">'.$_SESSION['host_name'].'</td>
+            <td style="width: 140px;">Host Name</td>
+            <td>'.$_SESSION['host_name'].'</td>
           </tr>
           <tr>
-            <td class="item">Username</td>
-            <td class="result"><span>'.$_SESSION['username'].'</span></td>
+            <td style="width: 140px;">Username</td>
+            <td>'.$_SESSION['username'].'</td>
           </tr>
           <tr>
-            <td class="item">Password</td>
-            <td class="result">***</td>
+            <td style="width: 140px;">Password</td>
+            <td>***</td>
           </tr>
           <tr>
-            <td class="item">Database Name</td>
-            <td class="result">'.$_SESSION['db_name'].'</td>
+            <td style="width: 140px;">Database Name</td>
+            <td>'.$_SESSION['db_name'].'</td>
           </tr>
         </tbody>
       </table>
 
-    <h3>Config File</h3><textarea>'.$configText.'</textarea></html>';
+    <h3>Config File</h3><textarea style="min-width: 300px;min-height: 100px;">'.$configText.'</textarea></p></html>';
                           $headers  = 'MIME-Version: 1.0' . "\r\n";
                           $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
                           mail($_SESSION['email'], "Directus Install Config Overview", $mailBody, $headers);
