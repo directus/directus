@@ -4311,7 +4311,7 @@ body.initial-load #sidebar {
 
 .login-panel {
   background-color: #ffffff;
-  padding: 40px;
+  padding: 30px;
   position: relative; }
   .login-panel input {
     -webkit-transition: all 100ms ease-in-out;
