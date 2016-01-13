@@ -170,11 +170,13 @@ class Console
         $composite = $salt . $options['pass'];
         $hash = sha1( $composite );
 
-        $insert = "INSERT INTO directus_users (`id`, `active`, `email`, `password`, `salt`, `group`)
+        $insert = "INSERT INTO directus_users (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `group`)
         VALUES
-        (DEFAULT, 1, :email, :hash, :salt, 1);";
+        (DEFAULT, 1, :first_name, :last_name, :email, :hash, :salt, 1);";
 
         $statement = $this->dbh->prepare($insert);
+        $statement->bindParam(':first_name', 'Admin');
+        $statement->bindParam(':last_name', 'User');
         $statement->bindParam(':email', $options['email']);
         $statement->bindParam(':hash', $hash);
         $statement->bindParam(':salt', $salt);

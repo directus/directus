@@ -9,6 +9,7 @@ use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\MemcacheProvider;
 use Zend\Db\Adapter\ParameterContainer;
+use Directus\Util\ArrayUtils;
 
 class TableSchema {
 
@@ -539,7 +540,7 @@ class TableSchema {
 
             if (array_key_exists('table_related', $row)) {
                 $row['relationship'] = array();
-                $row['relationship']['type'] = $row['relationship_type'];
+                $row['relationship']['type'] = ArrayUtils::get($row, 'relationship_type');
                 $row['relationship']['table_related'] = $row['table_related'];
 
                 unset($row['relationship_type']);
@@ -667,7 +668,6 @@ class TableSchema {
                 (
                     ST.TABLE_NAME NOT IN (
                         "directus_columns",
-                        "directus_ip_whitelist",
                         "directus_preferences",
                         "directus_privileges",
                         "directus_settings",
@@ -886,7 +886,7 @@ class TableSchema {
 
         if (array_key_exists('table_related', $row)) {
             $row['relationship'] = array();
-            $row['relationship']['type'] = $row['relationship_type'];
+            $row['relationship']['type'] = ArrayUtils::get($row, 'relationship_type');
             $row['relationship']['table_related'] = $row['table_related'];
 
             unset($row['relationship_type']);

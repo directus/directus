@@ -57,7 +57,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
   <meta name="theme-color" content="#ffffff">
 
   <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="assets/css/directus.min.css">
+  <link rel="stylesheet" href="assets/css/directus.min.css"/>
   <style>
     html,body {
       margin:0;
@@ -78,7 +78,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
     </p>
     <p class="">
       <input type="password" name="password" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
-      <span id="forgot-password" title="Forgot Password" class="btn btn-primary"></span>
+      <span id="forgot-password" title="Forgot Password" class="btn btn-primary"><i class="material-icons">help</i></span>
     </p>
     <p class="clearfix no-margin">
       <button type="submit" class="btn primary">Sign in</button>
