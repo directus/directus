@@ -175,8 +175,10 @@ class Console
         (DEFAULT, 1, :first_name, :last_name, :email, :hash, :salt, 1);";
 
         $statement = $this->dbh->prepare($insert);
-        $statement->bindParam(':first_name', 'Admin');
-        $statement->bindParam(':last_name', 'User');
+        $defaultFirstName = 'Admin';
+        $defaultLastName = 'User';
+        $statement->bindParam(':first_name', $defaultFirstName);
+        $statement->bindParam(':last_name', $defaultLastName);
         $statement->bindParam(':email', $options['email']);
         $statement->bindParam(':hash', $hash);
         $statement->bindParam(':salt', $salt);
