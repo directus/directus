@@ -38,7 +38,7 @@ function(app, Backbone, Widgets, BasePageView) {
     serialize: function() {
       return {rows: this.collection.toJSON()};
     },
-    
+
     addRowView: function(model, render) {
       var view = this.insertView('tbody', new GroupsRow({model: model}));
       if (render !== false) {
@@ -57,7 +57,7 @@ function(app, Backbone, Widgets, BasePageView) {
     }
 
   });
-  
+
   var GroupsRow = Backbone.Layout.extend({
 
     template: 'modules/settings/settings-groups-rows',
@@ -101,7 +101,6 @@ function(app, Backbone, Widgets, BasePageView) {
             model.url = app.API_URL + 'groups';
             model.set({name: groupName});
             model.save({}, {success: function(model) {
-              console.log(model);
               model.fetch({success: function(){
                 that.collection.add(model);
               }});
