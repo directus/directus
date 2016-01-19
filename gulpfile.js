@@ -6,7 +6,7 @@ var uglify    = require('gulp-uglify');
 var mincss    = require('gulp-minify-css');
 var concat    = require('gulp-concat');
 var rename    = require('gulp-rename');
-var less      = require('gulp-less');
+var scss      = require('gulp-scss');
 var size      = require('gulp-size');
 var rjs       = require('gulp-requirejs');
 var prohtml   = require('gulp-processhtml');
@@ -53,8 +53,8 @@ function runSequence(commands, prefix) {
 // CSS - Gulp Task
 // --------------------
 gulp.task('styles', function() {
-  return gulp.src(['assets/less/directus/directus.less'])
-    .pipe(less())
+  return gulp.src(['assets/scss/compile.scss'])
+    .pipe(scss())
     .pipe(rename('directus.css'))
     .pipe(gulp.dest('dist/assets/css'))
     .pipe(gulp.dest('assets/css'))
@@ -292,7 +292,7 @@ gulp.task('move', function() {
 
 // Rerun the task when a file changes
 gulp.task('watch', function() {
-  gulp.watch('assets/less/directus/**/*.less', ['styles']);
+  gulp.watch('assets/scss/directus/**/*.scss', ['styles']);
   gulp.watch('app/**/*.js', ['scripts:app', 'scripts:directus']);
   gulp.watch(vendorFiles, ['scripts:vendor', 'scripts:directus']);
   gulp.watch('assets/fonts/**/*.*', ['fonts']);
