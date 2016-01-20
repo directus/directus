@@ -14,6 +14,7 @@ define(function(require, exports, module) {
         "hidden":true,
         "single":false,
         "is_junction_table":false,
+        "footer": 1,
         "count":0,
         statusName:0,
         "url": "api/1/tables/directus_users/",
