@@ -51,7 +51,7 @@ class StringUtils
     {
         $length = (int)$length;
         if ($length <= 0) {
-            throw new \InvalidArgumentException('Random Lenght must be greater than 0.');
+            throw new \InvalidArgumentException('Random Length must be greater than 0.');
         }
 
         if (function_exists('openssl_random_pseudo_bytes')) {
