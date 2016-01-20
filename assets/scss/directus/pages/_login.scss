@@ -47,7 +47,7 @@
   background-color: $white;
   //box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.05);
   //.border-radius($baseRadius, $baseRadius, $baseRadius, $baseRadius);
-  padding: 40px;
+  padding: 30px;
   position: relative;
   // &:after {
   //   .triangle-bottom(12px, 12px, fade($white, 30%));
@@ -90,15 +90,12 @@
       border: none;
       padding: 0px;
       position: absolute;
-<<<<<<< Updated upstream
       right: 10px;
       top: 12px;
       color: lighten($mediumGrey, 15%);
-=======
-      right: 7px;
-      top: 7px;
-      color: $mediumGrey;
->>>>>>> Stashed changes
+      // right: 7px;
+      // top: 7px;
+      // color: $mediumGrey;
       .material-icons {
         font-size: 24px;
       }
