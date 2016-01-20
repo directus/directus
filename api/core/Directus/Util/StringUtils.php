@@ -49,6 +49,11 @@ class StringUtils
      */
     public static function random($length = 16)
     {
+        $length = (int)$length;
+        if ($length <= 0) {
+            throw new \InvalidArgumentException('Random Lenght must be greater than 0.');
+        }
+
         if (function_exists('openssl_random_pseudo_bytes')) {
             $string = '';
             while (($len = strlen($string)) < $length) {

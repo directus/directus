@@ -419,7 +419,13 @@ $app->post("/$v/hash/?", function() use ($app) {
 });
 
 $app->post("/$v/random/?", function() use ($app) {
-    $randomString = \Directus\Util\StringUtils::random();
+    // default random string length
+    $length = 16;
+    if (array_key_exists('length', $_POST)) {
+        $length = (int)$_POST['length'];
+    }
+
+    $randomString = \Directus\Util\StringUtils::random($length);
 
     return JsonView::render(array(
         'random' => $randomString

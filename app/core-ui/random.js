@@ -17,6 +17,7 @@ define(['app', 'backbone', 'core/notification'], function(app, Backbone, Notific
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
+    {id: 'string_length', ui: 'numeric', char_length: 200, def: 16},
     // Allow the user to input their own value
     {id: 'allow_any_value', ui: 'checkbox', def: '1'},
     // Initial Placeholder text for the UI
@@ -42,6 +43,9 @@ define(['app', 'backbone', 'core/notification'], function(app, Backbone, Notific
     events: {
       'click .string-generate': function(e) {
         var $password = this.$el.find('input.password-primary');
+        var length = this.options.settings.has('string_length')
+                      ? this.options.settings.get('string_length')
+                      : 16;
 
         var randomSuccess = _.bind(function(data, textStatus, jqXHR) {
           if(!_.isEmpty(data) && !_.isEmpty(data.random)) {
@@ -55,7 +59,7 @@ define(['app', 'backbone', 'core/notification'], function(app, Backbone, Notific
         $.ajax({
           type: "POST",
           url: app.API_URL + 'random/',
-          data: {},
+          data: {length: length},
           success: randomSuccess,
           dataType: 'json',
           error: function(data, textStatus, jqXHR) {
