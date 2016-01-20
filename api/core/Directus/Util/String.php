@@ -2,7 +2,7 @@
 
 namespace Directus\Util;
 
-class String
+class StringUtils
 {
     // Source: http://stackoverflow.com/a/10473026/1772076
     /**
