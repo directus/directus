@@ -1,0 +1,4 @@
+*.log
+.DS*
+.idea
+tmp/
