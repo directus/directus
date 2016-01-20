@@ -34,6 +34,7 @@ define(function(require, exports, module) {
     require('core-ui/wysiwyg'),
     require('core-ui/directus_messages_recipients'),
     require('core-ui/password'),
+    require('core-ui/random'),
     require('core-ui/many_to_one_typeahead'),
     require('core-ui/enum'),
     require('core-ui/multi_select'),

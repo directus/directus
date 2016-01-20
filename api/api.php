@@ -215,7 +215,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     $groupId = $user['group'];
     $directusGroupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
     $group = $directusGroupsTableGateway->find($groupId);
-    
+
     // if (1 == $group['restrict_to_ip_whitelist']) {
     //     $directusIPWhitelist = new DirectusIPWhitelist($acl, $ZendDb);
     //     if (!$directusIPWhitelist->hasIP($_SERVER['REMOTE_ADDR'])) {
@@ -415,6 +415,14 @@ $app->post("/$v/hash/?", function() use ($app) {
     return JsonView::render(array(
         'success' => true,
         'password' => $hashedPassword
+    ));
+});
+
+$app->post("/$v/random/?", function() use ($app) {
+    $randomString = \Directus\Util\StringUtils::random();
+
+    return JsonView::render(array(
+        'random' => $randomString
     ));
 });
 
