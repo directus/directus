@@ -93,10 +93,42 @@ $authAndNonceRouteWhitelist = array(
     "debug_acl_poc",
 );
 
-$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist) {
+/**
+ * Bootstrap Providers
+ */
+
+/**
+ * @var \Zend\Db\Adapter
+ */
+$ZendDb = Bootstrap::get('ZendDb');
+
+/**
+ * @var \Directus\Acl
+ */
+$acl = Bootstrap::get('acl');
+
+$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
     if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
+        $req = $app->request();
+        $authUser = $req->headers('PHP_AUTH_USER');
+        // $authPass = $req->headers('PHP_AUTH_PW');
+
+        if ($authUser) {
+            $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+            $user = $DirectusUsersTableGateway->select(array('token' => $authUser));
+            if (!$user->count()) {
+                $app->halt(401, 'You must be logged in to access the API.');
+            }
+
+            $user = $user->toArray();
+            $user = reset($user);
+            $GLOBALS['_SESSION'] = $_SESSION;
+
+            Auth::setLoggedUser($user['id']);
+        }
+
         /** Enforce required authentication. */
         if(!Auth::loggedIn()) {
             $app->halt(401, "You must be logged in to access the API.");
@@ -117,19 +149,9 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
     }
 });
 
-/**
- * Bootstrap Providers
- */
-
-/**
- * @var \Zend\Db\Adapter
- */
-$ZendDb = Bootstrap::get('ZendDb');
-
-/**
- * @var \Directus\Acl
- */
-$acl = Bootstrap::get('acl');
+$app->hook('slim.after', function() use ($app) {
+    $_SESSION = $GLOBALS['_SESSION'];
+});
 
 /**
  * Authentication

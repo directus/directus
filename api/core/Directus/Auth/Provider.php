@@ -73,6 +73,16 @@ class Provider {
     }
 
     /**
+     * Force a user id to be the logged user
+     *
+     * @param  int $uid             The User account's ID.
+     * @return boolean
+     */
+    public static function setLoggedUser($uid) {
+        self::completeLogin($uid);
+    }
+
+    /**
      * De-authenticate the logged-in user.
      * @return null
      * @throws  \Directus\Auth\UserIsntLoggedInException
