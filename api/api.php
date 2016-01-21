@@ -111,14 +111,20 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
     if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
-        $req = $app->request();
-        $authUser = $req->headers('PHP_AUTH_USER');
-        // $authPass = $req->headers('PHP_AUTH_PW');
+        $headers = $app->request()->headers();
 
-        if ($authUser) {
-            $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
-            $user = $DirectusUsersTableGateway->select(array('token' => $authUser));
-            if (!$user->count()) {
+        if ($headers->has('Php-Auth-User')) {
+            $authUser = $headers->get('Php-Auth-User');
+            $authPassword = $headers->get('Php-Auth-Pw');
+
+            $userFound = false;
+            if (empty($authPassword)) {
+                $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+                $user = $DirectusUsersTableGateway->select(array('token' => $authUser));
+                $userFound = $user->count() > 0 ? true : false;
+            }
+
+            if (!$userFound) {
                 $app->halt(401, 'You must be logged in to access the API.');
             }
 
