@@ -124,7 +124,14 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
             $user = $user->toArray();
             $user = reset($user);
+
+            // Uf the request it's done by authentication
+            // Store the session information in a global variable
+            // And we retrieve this information back to session at the end of the execution.
+            // See slim.after hook.
             $GLOBALS['_SESSION'] = $_SESSION;
+            // Reset SESSION values
+            $_SESSION = [];
 
             Auth::setLoggedUser($user['id']);
         }
@@ -150,7 +157,11 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 });
 
 $app->hook('slim.after', function() use ($app) {
-    $_SESSION = $GLOBALS['_SESSION'];
+    // retrieve session from global
+    // if the session exists on globals it means this is a request with basic authentication
+    if (array_key_exists('_SESSION', $GLOBALS)) {
+        $_SESSION = $GLOBALS['_SESSION'];
+    }
 });
 
 /**
