@@ -3722,7 +3722,8 @@ body.initial-load #sidebar {
       text-decoration: center;
       float: left;
       height: 56px;
-      position: relative; }
+      position: relative;
+      background-color: #1a1a1a; }
       #sidebar #featureSidebar li:hover {
         color: #ffffff; }
         #sidebar #featureSidebar li:hover.has-image .material-design {
