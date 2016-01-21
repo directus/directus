@@ -313,10 +313,16 @@ $hamburger-height: 7px;
 			}
 		}
 	}
-
-	#page-blocker-smoke {
-		left: 60px;
-	}
+    .invisible-blocker {
+        &.sidebar-active {
+            #page-blocker-smoke {
+                left: 170px;
+            }
+        }
+    	#page-blocker-smoke {
+            left: 0;
+    	}
+    }
 
 }
 

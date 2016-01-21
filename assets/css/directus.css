@@ -4269,8 +4269,10 @@ body.initial-load #sidebar {
       .feature-cards .feature-card .right-col p {
         display: none; }
 
-  #page-blocker-smoke {
-    left: 60px; } }
+  .invisible-blocker.sidebar-active #page-blocker-smoke {
+    left: 170px; }
+  .invisible-blocker #page-blocker-smoke {
+    left: 0; } }
 .login-box {
   left: 50%;
   margin-left: -175px;
