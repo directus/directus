@@ -115,7 +115,19 @@ function load_registered_events($listeners) {
         }
 
         foreach($handlers as $handler) {
-            \Directus\Event\Event::addListener($event, $handler);
+            \Directus\Hook\Hook::addListener($event, $handler);
+        }
+    }
+}
+
+function load_registered_filters($listeners) {
+	foreach($listeners as $event => $handlers) {
+        if (!is_array($handlers)) {
+            $handlers = [$handlers];
+        }
+
+        foreach($handlers as $handler) {
+            \Directus\Hook\Hook::addFilter($event, $handler);
         }
     }
 }

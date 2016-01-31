@@ -238,7 +238,9 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
               }
             }
 
+            $recordData = \Directus\Hook\Hook::apply('postInsert', $recordData);
             Hooks::runHook('postInsert', array($TableGateway, $recordData, $this->adapter, $this->acl));
+            \Directus\Hook\Hook::run('postInsert', $TableGateway, $recordData, $this->adapter, $this->acl);
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);

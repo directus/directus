@@ -48,6 +48,7 @@ use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
 use Directus\Event\Event;
+use Directus\Hook\Hook;
 // use Directus\Files;
 // use Directus\Files\Upload;
 use Directus\Mail\Mail;
@@ -72,8 +73,12 @@ $requestNonceProvider = new RequestNonceProvider();
  * Load Registered Events
  */
 $config = Bootstrap::get('config');
-if (array_key_exists('dbHooks', $config)) {
-    load_registered_events($config['dbHooks']);
+if (array_key_exists('hooks', $config)) {
+    load_registered_events($config['hooks']);
+}
+
+if (array_key_exists('filters', $config)) {
+    load_registered_filters($config['filters']);
 }
 
 /**
@@ -119,6 +124,7 @@ $acl = Bootstrap::get('acl');
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
     // API/Server is about to initialize
     Event::emit('init');
+    Hook::run('init');
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
