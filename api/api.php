@@ -47,6 +47,7 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
+use Directus\Event\Event;
 // use Directus\Files;
 // use Directus\Files\Upload;
 use Directus\Mail\Mail;
@@ -66,6 +67,14 @@ $v = API_VERSION;
 
 $app = Bootstrap::get('app');
 $requestNonceProvider = new RequestNonceProvider();
+
+/**
+ * Load Registered Events
+ */
+$config = Bootstrap::get('config');
+if (array_key_exists('dbHooks', $config)) {
+    load_registered_events($config['dbHooks']);
+}
 
 /**
  * Catch user-related exceptions & produce client responses.
@@ -108,6 +117,9 @@ $ZendDb = Bootstrap::get('ZendDb');
 $acl = Bootstrap::get('acl');
 
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
+    // API/Server is about to initialize
+    Event::emit('init');
+
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
     if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
@@ -154,6 +166,10 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             }
         }
 
+        // User is authenticated
+        // And Directus is about to start
+        Event::emit('directus.start');
+
         /** Include new request nonces in the response headers */
         $response = $app->response();
         $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
@@ -168,6 +184,9 @@ $app->hook('slim.after', function() use ($app) {
     if (array_key_exists('_SESSION', $GLOBALS)) {
         $_SESSION = $GLOBALS['_SESSION'];
     }
+
+    // API/Server is about to shutdown
+    Event::emit('shutdown');
 });
 
 /**

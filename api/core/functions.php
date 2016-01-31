@@ -108,3 +108,14 @@ function debug($data, $title=null) {
 	echo '</div>';
 }
 
+function load_registered_events($listeners) {
+	foreach($listeners as $event => $handlers) {
+        if (!is_array($handlers)) {
+            $handlers = [$handlers];
+        }
+
+        foreach($handlers as $handler) {
+            \Directus\Event\Event::addListener($event, $handler);
+        }
+    }
+}

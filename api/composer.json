@@ -6,7 +6,8 @@
     "zendframework/zend-db": "2.2.*@dev",
     "directus/migrations": "dev-master",
     "league/flysystem": "^1.0",
-    "swiftmailer/swiftmailer": "^5.4"
+    "swiftmailer/swiftmailer": "^5.4",
+    "league/event": "^2.1"
   },
   "_require": {
     "rackspace/php-opencloud": "dev-master",
