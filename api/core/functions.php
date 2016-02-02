@@ -108,26 +108,18 @@ function debug($data, $title=null) {
 	echo '</div>';
 }
 
-function load_registered_events($listeners) {
+function load_registered_hooks($listeners, $areFilters = false) {
 	foreach($listeners as $event => $handlers) {
         if (!is_array($handlers)) {
             $handlers = [$handlers];
         }
 
         foreach($handlers as $handler) {
-            \Directus\Hook\Hook::addListener($event, $handler);
-        }
-    }
-}
-
-function load_registered_filters($listeners) {
-	foreach($listeners as $event => $handlers) {
-        if (!is_array($handlers)) {
-            $handlers = [$handlers];
-        }
-
-        foreach($handlers as $handler) {
-            \Directus\Hook\Hook::addFilter($event, $handler);
+			if (!$areFilters) {
+				\Directus\Hook\Hook::addListener($event, $handler);
+			} else {
+				\Directus\Hook\Hook::addFilter($event, $handler);
+			}
         }
     }
 }

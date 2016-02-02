@@ -74,11 +74,12 @@ $requestNonceProvider = new RequestNonceProvider();
  */
 $config = Bootstrap::get('config');
 if (array_key_exists('hooks', $config)) {
-    load_registered_events($config['hooks']);
+    load_registered_hooks($config['hooks'], false);
 }
 
 if (array_key_exists('filters', $config)) {
-    load_registered_filters($config['filters']);
+    // set seconds parameter "true" to add as filters
+    load_registered_hooks($config['filters'], true);
 }
 
 /**
