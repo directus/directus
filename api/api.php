@@ -47,7 +47,6 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
-use Directus\Event\Event;
 use Directus\Hook\Hook;
 // use Directus\Files;
 // use Directus\Files\Upload;
@@ -70,7 +69,7 @@ $app = Bootstrap::get('app');
 $requestNonceProvider = new RequestNonceProvider();
 
 /**
- * Load Registered Events
+ * Load Registered Hooks
  */
 $config = Bootstrap::get('config');
 if (array_key_exists('hooks', $config)) {
@@ -124,7 +123,6 @@ $acl = Bootstrap::get('acl');
 
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
     // API/Server is about to initialize
-    Event::emit('init');
     Hook::run('init');
 
     /** Skip routes which don't require these protections */
@@ -175,7 +173,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         // User is authenticated
         // And Directus is about to start
-        Event::emit('directus.start');
+        Hook::run('directus.start');
 
         /** Include new request nonces in the response headers */
         $response = $app->response();
@@ -193,7 +191,7 @@ $app->hook('slim.after', function() use ($app) {
     }
 
     // API/Server is about to shutdown
-    Event::emit('shutdown');
+    Hook::emit('shutdown');
 });
 
 /**
