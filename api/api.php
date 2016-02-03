@@ -191,7 +191,7 @@ $app->hook('slim.after', function() use ($app) {
     }
 
     // API/Server is about to shutdown
-    Hook::emit('shutdown');
+    Hook::run('shutdown');
 });
 
 /**
