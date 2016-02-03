@@ -12,9 +12,9 @@ use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\Exception\DuplicateEntryException;
-use Directus\Db\Hooks;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
+use Directus\Hook\Hook;
 use Directus\Util\Date;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
@@ -207,7 +207,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
             $TableGateway->updateWith($Update);
 
-            Hooks::runHook('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
+            Hook::run('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
         } else {
             $d = $recordData;
             unset($d['data']);
@@ -239,8 +239,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
 
             $recordData = \Directus\Hook\Hook::apply('postInsert', $recordData);
-            Hooks::runHook('postInsert', array($TableGateway, $recordData, $this->adapter, $this->acl));
-            \Directus\Hook\Hook::run('postInsert', $TableGateway, $recordData, $this->adapter, $this->acl);
+            Hook::run('postInsert', $TableGateway, $recordData, $this->adapter, $this->acl);
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
