@@ -207,7 +207,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
             $TableGateway->updateWith($Update);
 
-            Hook::run('postUpdate', array($TableGateway, $recordData, $this->adapter, $this->acl));
+            Hook::run('postUpdate', $TableGateway, $recordData, $this->adapter, $this->acl);
         } else {
             $d = $recordData;
             unset($d['data']);
