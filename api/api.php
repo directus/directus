@@ -615,7 +615,7 @@ $app->map("/$v/tables/:table/rows/bulk/?", function ($table) use ($acl, $ZendDb,
         $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
     } else {
         foreach($rows as $row) {
-            $TableGateway->update($row, [$primaryKeyFieldName => $row[$primaryKeyFieldName]]);
+            $TableGateway->updateCollection($row);
         }
     }
 
