@@ -73,8 +73,14 @@ function(app, Backbone) {
 
     comparator: function(rowA, rowB) {
       var UIManager = require('core/UIManager');
-      var column = this.getFilter('sort') || 'id';
+      var column = 'id';
       var valueA, valueB;
+
+      if (this.getFilter('sort')) {
+        column = this.getFilter('sort')
+      } else if (this.hasColumn && this.hasColumn('sort')) {
+        column = 'sort';
+      }
 
       // @todo find a better way to check is a entriesjunctioncollection
       if(rowA.collection.nestedCollection && ['sort', 'id'].indexOf(column) < 0) {
@@ -99,10 +105,10 @@ function(app, Backbone) {
 
             //Merge the column values, eg first_name, last_name
             if (_.isArray(options.sortBy)) {
-              valueA = _.map(options.sortBy, function(value) { 
+              valueA = _.map(options.sortBy, function(value) {
                 return rowA.get(value);
               }).join('');
-              valueB = _.map(options.sortBy, function(value) { 
+              valueB = _.map(options.sortBy, function(value) {
                 return rowB.get(value);
               }).join('');
             } else {
