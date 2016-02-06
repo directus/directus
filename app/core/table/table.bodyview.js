@@ -116,7 +116,8 @@ function(app, Backbone, Sortable, Notification) {
       });
 
       if (this.options.saveAfterDrop) {
-        collection.save({columns:['id','sort']});
+        // collection.save({columns:['id','sort']});
+        collection.save();
       }
 
       this.collection.setOrder('sort','ASC',{silent: true});

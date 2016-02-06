@@ -122,6 +122,12 @@ define(function(require, exports, module) {
       var originalURL = this.url;
       var method = options.patch ? 'patch' : 'update';
 
+      // if there's not models set
+      // get all the collection models
+      if (!models) {
+        models = this.toJSON();
+      }
+
       var collection = this;
       var success = function() {
         collection.trigger('sync');
