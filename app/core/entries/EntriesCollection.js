@@ -114,7 +114,7 @@ define(function(require, exports, module) {
     },
 
     saveAll: function(options) {
-      this.save(this.toJSON(), options);
+      return this.save(this.toJSON(), options);
     },
 
     save: function(models, options) {
@@ -139,7 +139,7 @@ define(function(require, exports, module) {
       options.data = JSON.stringify({rows: models});
 
       this.url += '/bulk';
-      this.sync(method, this, options);
+      var xhr = this.sync(method, this, options);
       this.url = originalURL;
       // @removed we need to wait on success
       // to trigger sync
@@ -151,6 +151,8 @@ define(function(require, exports, module) {
       // but will stay as reference if something happen soon
       // and reveal the reason why it was here.
       // this.trigger('sync');
+
+      return xhr;
     },
 
     destroy: function(models, options) {

@@ -374,7 +374,7 @@ require(["config"], function() {
           }
         }
 
-        sync(method, model, options);
+        return sync(method, model, options);
       };
 
       // Toggle responsive navigation
