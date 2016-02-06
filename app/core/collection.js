@@ -73,7 +73,7 @@ function(app, Backbone) {
 
     comparator: function(rowA, rowB) {
       var UIManager = require('core/UIManager');
-      var column = 'id';
+      var column = rowA.idAttribute || 'id';
       var valueA, valueB;
 
       if (this.getFilter('sort')) {
@@ -83,7 +83,7 @@ function(app, Backbone) {
       }
 
       // @todo find a better way to check is a entriesjunctioncollection
-      if(rowA.collection.nestedCollection && ['sort', 'id'].indexOf(column) < 0) {
+      if(rowA.collection.nestedCollection && ['sort', rowA.idAttribute || 'id'].indexOf(column) < 0) {
         rowA = rowA.get('data');
         rowB = rowB.get('data');
       }
