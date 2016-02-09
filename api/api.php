@@ -47,6 +47,7 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
+use Directus\Exception\ExceptionHandler;
 use Directus\Hook\Hook;
 // use Directus\Files;
 // use Directus\Files\Upload;
@@ -88,11 +89,13 @@ if (array_key_exists('filters', $config)) {
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
+    Hook::run('application.error', $exception);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
 // // Catch runtime erros etc. as well
 // set_exception_handler($exceptionHandler);
+$exceptionHandler = new ExceptionHandler;
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.
