@@ -44,7 +44,12 @@ class Mail
 
     public static function send($viewPath, $data, $callback)
     {
-        $instance = new static(Bootstrap::get('mailer'));
+        $mailer = Bootstrap::get('mailer');
+        if (!$mailer) {
+            throw new InvalidArgumentException('Mail configuration not defined.');
+        }
+
+        $instance = new static($mailer);
 
         $message = Swift_Message::newInstance();
         call_user_func($callback, $message);
