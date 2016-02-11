@@ -2,8 +2,9 @@
 
 namespace Directus\Mail;
 
-use \Clousure;
-use \Swift_Message;
+use InvalidArgumentException;
+use Clousure;
+use Swift_Message;
 use Directus\Bootstrap;
 
 class Mail
