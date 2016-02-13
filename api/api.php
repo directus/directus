@@ -126,7 +126,7 @@ $acl = Bootstrap::get('acl');
 
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
     // API/Server is about to initialize
-    Hook::run('init');
+    Hook::run('application.init');
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
@@ -194,7 +194,7 @@ $app->hook('slim.after', function() use ($app) {
     }
 
     // API/Server is about to shutdown
-    Hook::run('shutdown');
+    Hook::run('application.shutdown');
 });
 
 /**
@@ -536,9 +536,9 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
             `{$statusColumnName}` tinyint(1) unsigned DEFAULT {$statusDraftValue},
             PRIMARY KEY(id)
         );";
-        Hook::run('create.table.before');
+        Hook::run('create.table:before');
         $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
-        Hook::run('create.table.after');
+        Hook::run('create.table:after');
       }catch(\Exception $e){
       }
     }
