@@ -536,9 +536,9 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
             `{$statusColumnName}` tinyint(1) unsigned DEFAULT {$statusDraftValue},
             PRIMARY KEY(id)
         );";
-        Hook::run('before_create_table');
+        Hook::run('create.table.before');
         $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
-        Hook::run('after_create_table');
+        Hook::run('create.table.after');
       }catch(\Exception $e){
       }
     }
