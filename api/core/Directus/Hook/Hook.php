@@ -49,13 +49,16 @@ class Hook
         static::$filters[$name][$priority][] = $function;
     }
 
-    public static function run($name)
+    public static function run($name, $data = [])
     {
         $listeners = static::getListeners($name);
 
-        $arguments = array_slice(func_get_args(), 1);
+        if (!is_array($data)) {
+            $data = [$data];
+        }
+
         foreach ($listeners as $listener) {
-            call_user_func_array($listener, $arguments);
+            call_user_func_array($listener, $data);
         }
     }
 
