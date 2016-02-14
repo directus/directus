@@ -520,15 +520,19 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
         throw new Exception('Permission denied');
     }
 
-    if(isset($requestPayload['addTable'])) {
+    if (isset($requestPayload['addTable'])) {
       $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
       $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+
       if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
           $app->response->setStatus(400);
           return JsonView::render(array('message'=> 'Invalid table name'));
       }
+
       unset($requestPayload['addTable']);
-      try{
+      Hook::run('table.create:before');
+
+      try {
         $statusColumnName = STATUS_COLUMN_NAME;
         $statusDraftValue = STATUS_DRAFT_NUM;
         $createTableQuery = "CREATE TABLE `{$requestPayload['table_name']}` (
@@ -536,11 +540,13 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
             `{$statusColumnName}` tinyint(1) unsigned DEFAULT {$statusDraftValue},
             PRIMARY KEY(id)
         );";
-        Hook::run('create.table:before');
+
+        Hook::run('table.create');
         $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
-        Hook::run('create.table:after');
       }catch(\Exception $e){
       }
+
+      Hook::run('table.create:after');
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
