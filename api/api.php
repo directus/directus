@@ -530,7 +530,7 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
       }
 
       unset($requestPayload['addTable']);
-      Hook::run('table.create:before');
+      Hook::run('table.create:before', $requestPayload['table_name']);
 
       try {
         $statusColumnName = STATUS_COLUMN_NAME;
@@ -541,12 +541,12 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
             PRIMARY KEY(id)
         );";
 
-        Hook::run('table.create');
+        Hook::run('table.create', $requestPayload['table_name']);
         $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
       }catch(\Exception $e){
       }
 
-      Hook::run('table.create:after');
+      Hook::run('table.create:after', $requestPayload['table_name']);
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
