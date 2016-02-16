@@ -34,7 +34,15 @@
   }
 }
 .noty_text {
-  // word-break: break-all;
+    -ms-word-break: break-all;
+    -ms-word-wrap: break-all;
+    -webkit-word-break: break-word;
+    -webkit-word-wrap: break-word;
+    word-break: break-word;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
   ul {
     padding-left: 20px;
   }
