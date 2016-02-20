@@ -47,6 +47,8 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableSchema;
+use Directus\Exception\ExceptionHandler;
+use Directus\Hook\Hook;
 // use Directus\Files;
 // use Directus\Files\Upload;
 use Directus\Mail\Mail;
@@ -68,17 +70,32 @@ $app = Bootstrap::get('app');
 $requestNonceProvider = new RequestNonceProvider();
 
 /**
+ * Load Registered Hooks
+ */
+$config = Bootstrap::get('config');
+if (array_key_exists('hooks', $config)) {
+    load_registered_hooks($config['hooks'], false);
+}
+
+if (array_key_exists('filters', $config)) {
+    // set seconds parameter "true" to add as filters
+    load_registered_hooks($config['filters'], true);
+}
+
+/**
  * Catch user-related exceptions & produce client responses.
  */
 
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
+    Hook::run('application.error', $exception);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
 // // Catch runtime erros etc. as well
 // set_exception_handler($exceptionHandler);
+$exceptionHandler = new ExceptionHandler;
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.
@@ -93,30 +110,6 @@ $authAndNonceRouteWhitelist = array(
     "debug_acl_poc",
 );
 
-$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist) {
-    /** Skip routes which don't require these protections */
-    $routeName = $app->router()->getCurrentRoute()->getName();
-    if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
-        /** Enforce required authentication. */
-        if(!Auth::loggedIn()) {
-            $app->halt(401, "You must be logged in to access the API.");
-        }
-
-        /** Enforce required request nonces. */
-        if(!$requestNonceProvider->requestHasValidNonce()) {
-            if('development' !== DIRECTUS_ENV) {
-                $app->halt(401, "Invalid request (nonce).");
-            }
-        }
-
-        /** Include new request nonces in the response headers */
-        $response = $app->response();
-        $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
-        $nonce_options = $requestNonceProvider->getOptions();
-        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
-    }
-});
-
 /**
  * Bootstrap Providers
  */
@@ -130,6 +123,79 @@ $ZendDb = Bootstrap::get('ZendDb');
  * @var \Directus\Acl
  */
 $acl = Bootstrap::get('acl');
+
+$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
+    // API/Server is about to initialize
+    Hook::run('application.init');
+
+    /** Skip routes which don't require these protections */
+    $routeName = $app->router()->getCurrentRoute()->getName();
+    if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
+        $headers = $app->request()->headers();
+
+        if ($headers->has('Php-Auth-User')) {
+            $authUser = $headers->get('Php-Auth-User');
+            $authPassword = $headers->get('Php-Auth-Pw');
+
+            $userFound = false;
+            if (empty($authPassword)) {
+                $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+                $user = $DirectusUsersTableGateway->select(array('token' => $authUser));
+                $userFound = $user->count() > 0 ? true : false;
+            }
+
+            if (!$userFound) {
+                $app->halt(401, 'You must be logged in to access the API.');
+            }
+
+            $user = $user->toArray();
+            $user = reset($user);
+
+            // Uf the request it's done by authentication
+            // Store the session information in a global variable
+            // And we retrieve this information back to session at the end of the execution.
+            // See slim.after hook.
+            $GLOBALS['_SESSION'] = $_SESSION;
+            // Reset SESSION values
+            $_SESSION = [];
+
+            Auth::setLoggedUser($user['id']);
+        }
+
+        /** Enforce required authentication. */
+        if(!Auth::loggedIn()) {
+            $app->halt(401, "You must be logged in to access the API.");
+        }
+
+        /** Enforce required request nonces. */
+        if(!$requestNonceProvider->requestHasValidNonce()) {
+            if('development' !== DIRECTUS_ENV) {
+                $app->halt(401, "Invalid request (nonce).");
+            }
+        }
+
+        // User is authenticated
+        // And Directus is about to start
+        Hook::run('directus.start');
+
+        /** Include new request nonces in the response headers */
+        $response = $app->response();
+        $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
+        $nonce_options = $requestNonceProvider->getOptions();
+        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
+    }
+});
+
+$app->hook('slim.after', function() use ($app) {
+    // retrieve session from global
+    // if the session exists on globals it means this is a request with basic authentication
+    if (array_key_exists('_SESSION', $GLOBALS)) {
+        $_SESSION = $GLOBALS['_SESSION'];
+    }
+
+    // API/Server is about to shutdown
+    Hook::run('application.shutdown');
+});
 
 /**
  * Authentication
@@ -215,7 +281,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     $groupId = $user['group'];
     $directusGroupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
     $group = $directusGroupsTableGateway->find($groupId);
-    
+
     // if (1 == $group['restrict_to_ip_whitelist']) {
     //     $directusIPWhitelist = new DirectusIPWhitelist($acl, $ZendDb);
     //     if (!$directusIPWhitelist->hasIP($_SERVER['REMOTE_ADDR'])) {
@@ -418,6 +484,20 @@ $app->post("/$v/hash/?", function() use ($app) {
     ));
 });
 
+$app->post("/$v/random/?", function() use ($app) {
+    // default random string length
+    $length = 16;
+    if (array_key_exists('length', $_POST)) {
+        $length = (int)$_POST['length'];
+    }
+
+    $randomString = \Directus\Util\StringUtils::random($length);
+
+    return JsonView::render(array(
+        'random' => $randomString
+    ));
+});
+
 $app->get("/$v/privileges/:groupId/", function ($groupId) use ($acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
@@ -440,15 +520,19 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
         throw new Exception('Permission denied');
     }
 
-    if(isset($requestPayload['addTable'])) {
+    if (isset($requestPayload['addTable'])) {
       $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
       $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+
       if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
           $app->response->setStatus(400);
           return JsonView::render(array('message'=> 'Invalid table name'));
       }
+
       unset($requestPayload['addTable']);
-      try{
+      Hook::run('table.create:before', $requestPayload['table_name']);
+
+      try {
         $statusColumnName = STATUS_COLUMN_NAME;
         $statusDraftValue = STATUS_DRAFT_NUM;
         $createTableQuery = "CREATE TABLE `{$requestPayload['table_name']}` (
@@ -456,9 +540,13 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
             `{$statusColumnName}` tinyint(1) unsigned DEFAULT {$statusDraftValue},
             PRIMARY KEY(id)
         );";
+
+        Hook::run('table.create', $requestPayload['table_name']);
         $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
       }catch(\Exception $e){
       }
+
+      Hook::run('table.create:after', $requestPayload['table_name']);
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
@@ -562,7 +650,7 @@ $app->map("/$v/tables/:table/rows/bulk/?", function ($table) use ($acl, $ZendDb,
         $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
     } else {
         foreach($rows as $row) {
-            $TableGateway->update($row, [$primaryKeyFieldName => $row[$primaryKeyFieldName]]);
+            $TableGateway->updateCollection($row);
         }
     }
 

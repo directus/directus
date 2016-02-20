@@ -114,13 +114,19 @@ define(function(require, exports, module) {
     },
 
     saveAll: function(options) {
-      this.save(this.toJSON(), options);
+      return this.save(this.toJSON(), options);
     },
 
     save: function(models, options) {
       options = options || {};
       var originalURL = this.url;
       var method = options.patch ? 'patch' : 'update';
+
+      // if there's not models set
+      // get all the collection models
+      if (!models) {
+        models = this.toJSON();
+      }
 
       var collection = this;
       var success = function() {
@@ -133,9 +139,20 @@ define(function(require, exports, module) {
       options.data = JSON.stringify({rows: models});
 
       this.url += '/bulk';
-      this.sync(method, this, options);
+      var xhr = this.sync(method, this, options);
       this.url = originalURL;
-      this.trigger('sync');
+      // @removed we need to wait on success
+      // to trigger sync
+      // -----------------------------------
+      // This was removed due to a issue with sorting
+      // On listing page.
+      // It will save the sort correctly
+      // But it will render with old values
+      // but will stay as reference if something happen soon
+      // and reveal the reason why it was here.
+      // this.trigger('sync');
+
+      return xhr;
     },
 
     destroy: function(models, options) {

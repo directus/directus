@@ -388,7 +388,9 @@ CREATE TABLE `directus_users` (
   `city` varchar(255) DEFAULT NULL,
   `state` varchar(2) DEFAULT NULL,
   `zip` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `directus_users_email_unique` (`email`),
+  UNIQUE KEY `directus_users_token_unique` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `directus_users` WRITE;

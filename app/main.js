@@ -369,22 +369,24 @@ require(["config"], function() {
                   new_nonces = new_nonces.split(',');
                   nonces.pool.push.apply(nonces.pool, new_nonces);
                 }
-              }
+              };
             }
           }
         }
 
-        sync(method, model, options);
+        return sync(method, model, options);
       };
 
       // Toggle responsive navigation
       $(document).on("click", ".responsive-nav-toggle", function(e) {
         $('#main').toggleClass('sidebar-active');
+        $('.invisible-blocker').toggleClass('sidebar-active');
       });
 
       // Close sidebar when clicking
       $(document).on("click", "#sidebar", function(e) {
         $('#main').removeClass('sidebar-active');
+        $('.invisible-blocker').removeClass('sidebar-active');
       });
 
       // Cancel default file drop

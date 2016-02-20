@@ -184,6 +184,7 @@ body.initial-load #sidebar {
 			float: left;
 			height: 56px; // 170
 			position: relative;
+            background-color: $black;
 			&:hover {
 				color: $white;
 				&.has-image {

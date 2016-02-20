@@ -108,6 +108,10 @@ class Bootstrap {
 
     private static function mailer() {
         $config = self::get('config');
+        if (!array_key_exists('mail', $config)) {
+            return null;
+        }
+
         $mailConfig = $config['mail'];
         // $smtp = $config['SMTP'];
         switch ($mailConfig['transport']) {

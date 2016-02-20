@@ -176,6 +176,18 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
       );
 
       $t->finish();
+
+      $this->add_index("directus_users", "email", array(
+        "unique"=>true,
+        "name"=>"directus_users_email_unique"
+        )
+      );
+
+      $this->add_index("directus_users", "token", array(
+        "unique"=>true,
+        "name"=>"directus_users_token_unique"
+        )
+      );
     }//up()
 
     public function down()
