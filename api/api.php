@@ -89,7 +89,7 @@ if (array_key_exists('filters', $config)) {
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    Hook::run('application.error', $exception);
+    Hook::run('application.error', [$app, $exception]);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
@@ -126,7 +126,7 @@ $acl = Bootstrap::get('acl');
 
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
     // API/Server is about to initialize
-    Hook::run('application.init');
+    Hook::run('application.init', $app);
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
@@ -194,7 +194,7 @@ $app->hook('slim.after', function() use ($app) {
     }
 
     // API/Server is about to shutdown
-    Hook::run('application.shutdown');
+    Hook::run('application.shutdown', $app);
 });
 
 /**
