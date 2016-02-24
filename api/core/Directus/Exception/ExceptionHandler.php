@@ -30,7 +30,7 @@ class ExceptionHandler
     {
         if (error_reporting() & $level) {
             $e = new ErrorException($message, 0, $level, $file, $line);
-            Hook::run('application.error', [$app, $e]);
+            Hook::run('application.error', $e);
         }
     }
 
@@ -46,7 +46,7 @@ class ExceptionHandler
             $e = new FatalThrowableError($e);
         }
 
-        Hook::run('application.error', [$app, $e]);
+        Hook::run('application.error', $e);
     }
 
     /**
@@ -57,7 +57,7 @@ class ExceptionHandler
     public function handleShutdown()
     {
         if (! is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
-            Hook::run('application.error', [$app, $e]);
+            Hook::run('application.error', $e);
         }
     }
 
