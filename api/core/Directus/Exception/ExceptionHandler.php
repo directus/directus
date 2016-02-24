@@ -3,6 +3,7 @@
 namespace Directus\Exception;
 
 use ErrorException;
+use Directus\Exception\FatalThrowableError;
 use Directus\Hook\Hook;
 
 class ExceptionHandler

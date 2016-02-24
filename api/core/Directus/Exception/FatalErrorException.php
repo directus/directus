@@ -2,7 +2,7 @@
 
 namespace Directus\Exception;
 
-class FatalErrorException extends ErrorException
+class FatalErrorException extends \ErrorException
 {
-    
+
 }
