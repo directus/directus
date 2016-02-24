@@ -176,7 +176,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         // User is authenticated
         // And Directus is about to start
-        Hook::run('directus.start');
+        Hook::run('directus.start', $app);
 
         /** Include new request nonces in the response headers */
         $response = $app->response();
