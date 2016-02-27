@@ -317,7 +317,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     if($response['success']) {
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
-        $set = array('last_login' => new Expression('NOW()'));
+        $userSession = Auth::getUserInfo();
+        $set = array('last_login' => new Expression('NOW()'), 'access_token' => $userSession['access_token']);
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
