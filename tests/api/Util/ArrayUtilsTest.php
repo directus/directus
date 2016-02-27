@@ -23,5 +23,6 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $items = ['name' => 'Jim', 'age' => 79, 'sex' => 'M', 'country' => 'N/A'];
         $this->assertTrue(ArrayUtils::contains($items, ['name', 'age']));
         $this->assertFalse(ArrayUtils::contains($items, ['name', 'age', 'city']));
+        $this->assertTrue(ArrayUtils::contains($items, 'name', 'age'));
     }
 }
