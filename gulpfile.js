@@ -220,7 +220,7 @@ gulp.task('singlepage', function () {
 // Composer - Gulp Task
 // --------------------
 gulp.task('composer', function(cb) {
-  var child = cp.spawn('composer', ['install', '--ansi', '--prefer-dist'], {cwd: './dist/api'});
+  var child = cp.spawn('composer', ['install', '--ansi', '--prefer-dist', '--no-dev'], {cwd: './dist/api'});
 
   child.stdout.on('data', function(chunk) {
     process.stdout.write(chunk);

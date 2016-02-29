@@ -3,6 +3,8 @@ assets/bower
 api/config.php
 api/configuration.php
 
+documents
+
 assets/css/*.map
 
 Icon
