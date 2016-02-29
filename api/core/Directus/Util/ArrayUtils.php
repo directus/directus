@@ -40,4 +40,25 @@ class ArrayUtils
         return $result;
     }
 
+    /**
+     * Return whether or not a set of keys exists in an array
+     * @param  array        $array
+     * @param  array|mixed  $keys
+     * @return bool
+     */
+    public static function contains($array, $keys)
+    {
+        if (!is_array($keys)) {
+            $keys = array($keys);
+        }
+
+        foreach($keys as $key) {
+            if (!array_key_exists($key, $array)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

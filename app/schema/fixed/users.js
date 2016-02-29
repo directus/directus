@@ -275,6 +275,22 @@ define(function(require, exports, module) {
             "ui":"random"
           },
           {
+            "id":"access_token",
+            "column_name":"access_token",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "is_nullable":"YES",
+            "default_value":"",
+            "comment":"",
+            "sort":8,
+            "system":true,
+            "master":false,
+            "hidden_list":true,
+            "hidden_input":true,
+            "required":false,
+            "ui":"textinput"
+          },
+          {
             "id":"reset_token",
             "column_name":"reset_token",
             "type":"VARCHAR",

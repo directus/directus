@@ -89,7 +89,7 @@ if (array_key_exists('filters', $config)) {
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    Hook::run('application.error', $exception);
+    Hook::run('application.error', [$app, $exception]);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
@@ -126,7 +126,7 @@ $acl = Bootstrap::get('acl');
 
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
     // API/Server is about to initialize
-    Hook::run('application.init');
+    Hook::run('application.init', $app);
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
@@ -176,7 +176,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         // User is authenticated
         // And Directus is about to start
-        Hook::run('directus.start');
+        Hook::run('directus.start', $app);
 
         /** Include new request nonces in the response headers */
         $response = $app->response();
@@ -194,7 +194,7 @@ $app->hook('slim.after', function() use ($app) {
     }
 
     // API/Server is about to shutdown
-    Hook::run('application.shutdown');
+    Hook::run('application.shutdown', $app);
 });
 
 /**
@@ -317,7 +317,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     if($response['success']) {
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
-        $set = array('last_login' => new Expression('NOW()'));
+        $userSession = Auth::getUserInfo();
+        $set = array('last_login' => new Expression('NOW()'), 'access_token' => $userSession['access_token']);
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
