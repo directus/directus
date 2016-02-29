@@ -371,6 +371,7 @@ CREATE TABLE `directus_users` (
   `password` varchar(255) DEFAULT '',
   `salt` varchar(255) DEFAULT '',
   `token` varchar(255) DEFAULT '',
+  `session_token` varchar(255) DEFAULT NULL,
   `reset_token` varchar(255) DEFAULT '',
   `reset_expiration` datetime DEFAULT NULL,
   `position` varchar(500) DEFAULT '',
@@ -388,7 +389,9 @@ CREATE TABLE `directus_users` (
   `city` varchar(255) DEFAULT NULL,
   `state` varchar(2) DEFAULT NULL,
   `zip` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `directus_users_email_unique` (`email`),
+  UNIQUE KEY `directus_users_token_unique` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `directus_users` WRITE;

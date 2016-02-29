@@ -3525,7 +3525,15 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
       background-color: #5b5b5b; }
 
 .noty_text {
-  word-break: break-all; }
+  -ms-word-break: break-all;
+  -ms-word-wrap: break-all;
+  -webkit-word-break: break-word;
+  -webkit-word-wrap: break-word;
+  word-break: break-word;
+  word-wrap: break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto; }
   .noty_text ul {
     padding-left: 20px; }
 
@@ -3722,7 +3730,8 @@ body.initial-load #sidebar {
       text-decoration: center;
       float: left;
       height: 56px;
-      position: relative; }
+      position: relative;
+      background-color: #1a1a1a; }
       #sidebar #featureSidebar li:hover {
         color: #ffffff; }
         #sidebar #featureSidebar li:hover.has-image .material-design {
@@ -4268,8 +4277,10 @@ body.initial-load #sidebar {
       .feature-cards .feature-card .right-col p {
         display: none; }
 
-  #page-blocker-smoke {
-    left: 60px; } }
+  .invisible-blocker.sidebar-active #page-blocker-smoke {
+    left: 170px; }
+  .invisible-blocker #page-blocker-smoke {
+    left: 0; } }
 .login-box {
   left: 50%;
   margin-left: -175px;

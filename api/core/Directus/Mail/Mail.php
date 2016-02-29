@@ -2,8 +2,9 @@
 
 namespace Directus\Mail;
 
-use \Clousure;
-use \Swift_Message;
+use InvalidArgumentException;
+use Clousure;
+use Swift_Message;
 use Directus\Bootstrap;
 
 class Mail
@@ -38,13 +39,19 @@ class Mail
         extract($data);
         include $viewContentPath;
         include $viewFooterPath;
-
-        return nl2br(ob_get_clean());
+$content = nl2br(ob_get_clean());
+file_put_contents('mail.txt', $content);
+        return $content;
     }
 
     public static function send($viewPath, $data, $callback)
     {
-        $instance = new static(Bootstrap::get('mailer'));
+        $mailer = Bootstrap::get('mailer');
+        if (!$mailer) {
+            throw new InvalidArgumentException('Mail configuration not defined.');
+        }
+
+        $instance = new static($mailer);
 
         $message = Swift_Message::newInstance();
         call_user_func($callback, $message);

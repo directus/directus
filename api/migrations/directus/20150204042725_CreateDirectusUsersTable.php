@@ -87,6 +87,11 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
           "default"=>""
         )
       );
+      $t->column("access_token", "string", array(
+          "limit"=>255,
+          "default"=>""
+        )
+      );
       $t->column("reset_token", "string", array(
           "limit"=>255,
           "default"=>""
@@ -176,6 +181,18 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
       );
 
       $t->finish();
+
+      $this->add_index("directus_users", "email", array(
+        "unique"=>true,
+        "name"=>"directus_users_email_unique"
+        )
+      );
+
+      $this->add_index("directus_users", "token", array(
+        "unique"=>true,
+        "name"=>"directus_users_token_unique"
+        )
+      );
     }//up()
 
     public function down()
