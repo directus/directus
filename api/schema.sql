@@ -371,7 +371,7 @@ CREATE TABLE `directus_users` (
   `password` varchar(255) DEFAULT '',
   `salt` varchar(255) DEFAULT '',
   `token` varchar(255) DEFAULT '',
-  `session_token` varchar(255) DEFAULT NULL,
+  `access_token` varchar(255) DEFAULT NULL,
   `reset_token` varchar(255) DEFAULT '',
   `reset_expiration` datetime DEFAULT NULL,
   `position` varchar(500) DEFAULT '',
