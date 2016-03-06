@@ -32,7 +32,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     headerOptions: {
       route: {
 
-        title: 'New Column',
+        title: 'New Field',
         isOverlay: true
       }
     },
