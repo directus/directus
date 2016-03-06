@@ -32,7 +32,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     headerOptions: {
       route: {
 
-        title: 'New Column',
+        title: 'New Field',
         isOverlay: true
       }
     },
@@ -167,7 +167,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       {
         data.SHOW_CHAR_LENGTH = true;
         if (!this.model.get('char_length')) {
-          this.model.set({char_length: 1});
+          this.model.set({char_length: 100});
         }
         data.char_length = this.model.get('char_length');
       } else {
