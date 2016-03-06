@@ -70,7 +70,7 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
      * @source http://gravatar.com/site/implement/images/php/
      */
     public static function get_avatar( $email, $s = 100, $d = 'identicon', $r = 'g', $img = false, $atts = array() ) {
-        $url = 'http://www.gravatar.com/avatar/';
+        $url = '//gravatar.com/avatar/';
         $url .= md5( strtolower( trim( $email ) ) );
 
         //If no Gravatar Exist, set field to null
