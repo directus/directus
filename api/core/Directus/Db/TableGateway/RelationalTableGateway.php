@@ -275,10 +275,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
         $file = $filesTableGateway->getEntries($params);
 
-        Hook::run('files.deleting', $file);
         $Files = new \Directus\Files\Files();
         $Files->delete($file);
-        Hook::run('files.deleting:after', $file);
 
         return true;
     }

@@ -53,14 +53,18 @@ class Files
     public function delete($file)
     {
         if ($this->exists($file['name'])) {
+            Hook::run('files.deleting', array($file));
             $this->filesystem->getAdapter()->delete($file['name']);
+            Hook::run('files.deleting:after', array($file));
         }
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         if ($ext) {
             $thumbPath = 'thumbs/'.$file['id'].'.'.$ext;
             if ($this->exists($thumbPath)) {
+                Hook::run('files.thumbnail.deleting', array($file));
                 $this->filesystem->getAdapter()->delete($thumbPath);
+                Hook::run('files.thumbnail.deleting:after', array($file));
             }
         }
     }
