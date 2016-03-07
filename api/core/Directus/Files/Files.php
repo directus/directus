@@ -5,6 +5,7 @@ namespace Directus\Files;
 use Directus\Bootstrap;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
+use Directus\Hook\Hook;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Util\Formatting;
 use Directus\Files\Thumbnail;
@@ -253,16 +254,11 @@ class Files
         $fileName = $this->getFileName($fileName);
         $filePath = $this->getConfig('root') . '/' . $fileName;
 
-        try {
-            $this->filesystem->getAdapter()->write($fileName, $fileData);//, new FlysystemConfig());}
-            $this->createThumbnails($fileName);
-        } catch (FileNotFoundException $e) {
-            echo $e->getMessage();
-            exit;
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            exit;
-        }
+        Hook::run('files.saving', ['name' => $fileName, 'data' => $fileData]);
+        $this->filesystem->getAdapter()->write($fileName, $fileData);//, new FlysystemConfig());}
+        Hook::run('files.saving:after', ['name' => $fileName, 'data' => $fileData]);
+
+        $this->createThumbnails($fileName);
 
         $fileData = $this->getFileInfo($fileName);
         $fileData['title'] = Formatting::fileNameToFileTitle($fileName);
@@ -434,7 +430,9 @@ class Files
                 //   $thumbnailTempName = $this->getConfig('root') . '/thumbs/THUMB_' . $imageName;
                 $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
                 $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
+                Hook::run('files.thumbnail.saving', array('name' => $imageName, 'data' => $thumbImg));
                 $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);//, new FlysystemConfig());
+                Hook::run('files.thumbnail.saving:after', array('name' => $imageName, 'data' => $thumbImg));
             }
         }
     }
@@ -458,7 +456,11 @@ class Files
 
         $targetName = $this->getFileName($targetName);
         $finalPath = rtrim($mediaPath, '/').'/'.$targetName;
-        $this->filesystem->getAdapter()->write($targetName, file_get_contents($filePath));
+        $data = file_get_contents($filePath);
+
+        Hook::run('files.saving', array('name' => $targetName, 'data' => $data));
+        $this->filesystem->getAdapter()->write($targetName, $data);
+        Hook::run('files.saving:after', array('name' => $targetName, 'data' => $data));
 
         $fileData['name'] = basename($finalPath);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
