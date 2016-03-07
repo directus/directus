@@ -50,10 +50,19 @@ class Files
         return $this->filesystem->getAdapter()->rename($path, $newPath);
     }
 
-    public function delete($path)
+    public function delete($file)
     {
-        $filePath = $this->getConfig('root') . '/' . $path;
-        return $this->filesystem->getAdapter()->delete($path);
+        if ($this->exists($file['name'])) {
+            $this->filesystem->getAdapter()->delete($file['name']);
+        }
+
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        if ($ext) {
+            $thumbPath = 'thumbs/'.$file['id'].'.'.$ext;
+            if ($this->exists($thumbPath)) {
+                $this->filesystem->getAdapter()->delete($thumbPath);
+            }
+        }
     }
 
     /**
