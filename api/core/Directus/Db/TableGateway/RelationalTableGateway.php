@@ -70,6 +70,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Upload file if necessary
         $TableGateway->copyFiles($tableName, $recordData);
+        // Delete file if necessary
+        $TableGateway->deleteFiles($tableName, $recordData);
 
         //Dont do for directus users since id is pk
         if($recordIsNew && $tableName != 'directus_users') {
@@ -249,6 +251,36 @@ class RelationalTableGateway extends AclAwareTableGateway {
         Hook::run($hookName, $fullRecordData);
 
         return $recordGateway;
+    }
+
+    /**
+     * @param string $table
+     * @param array $recordData
+     * @return bool
+     */
+    public function deleteFiles($tableName, $recordData)
+    {
+        if ($tableName != 'directus_files' ) {
+            return false;
+        }
+
+        if (!isset($recordData[STATUS_COLUMN_NAME]) || $recordData[STATUS_COLUMN_NAME] != STATUS_DELETED_NUM) {
+            return false;
+        }
+
+        $filesTableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
+        $primaryKeyFieldName = $filesTableGateway->primaryKeyFieldName;
+
+        $params = array();
+        $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
+        $file = $filesTableGateway->getEntries($params);
+
+        Hook::run('files.deleting', $file['name']);
+        $Files = new \Directus\Files\Files();
+        $Files->delete($file['name']);
+        Hook::run('files.deleting:after', $file['name']);
+
+        return true;
     }
 
     /**

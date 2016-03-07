@@ -50,6 +50,12 @@ class Files
         return $this->filesystem->getAdapter()->rename($path, $newPath);
     }
 
+    public function delete($path)
+    {
+        $filePath = $this->getConfig('root') . '/' . $path;
+        return $this->filesystem->getAdapter()->delete($path);
+    }
+
     /**
      * Copy $_FILES data into directus media
      *
