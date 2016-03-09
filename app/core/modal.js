@@ -29,6 +29,9 @@ function(app, Backbone) {
           data.showInput = true;
           break;
         case 'yesnocancel':
+          data.isYesNoCancelConfirm = true;
+          break;
+        case 'yesno':
           data.isYesNoConfirm = true;
           break;
         case 'alert':
