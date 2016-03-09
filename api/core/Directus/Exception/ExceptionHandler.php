@@ -57,6 +57,10 @@ class ExceptionHandler
     public function handleShutdown()
     {
         if (! is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+            $e = new ErrorException(
+                $error['message'], $error['type'], 0, $error['file'], $error['line']
+            );
+
             Hook::run('application.error', $e);
         }
     }
