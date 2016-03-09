@@ -132,17 +132,26 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
     $routeName = $app->router()->getCurrentRoute()->getName();
     if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
         $headers = $app->request()->headers();
-
-        if ($headers->has('Php-Auth-User')) {
+        $authToken = false;
+        if ($app->request()->get('access_token')) {
+            $authToken = $app->request()->get('access_token');
+        } elseif ($headers->has('Php-Auth-User')) {
             $authUser = $headers->get('Php-Auth-User');
             $authPassword = $headers->get('Php-Auth-Pw');
-
-            $userFound = false;
-            if (empty($authPassword)) {
-                $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
-                $user = $DirectusUsersTableGateway->select(array('token' => $authUser));
-                $userFound = $user->count() > 0 ? true : false;
+            if ($authUser && empty($authPassword)) {
+                $authToken = $authUser;
             }
+        } elseif ($headers->has('Authorization')) {
+            $authorizationHeader = $headers->get('Authorization');
+            if (preg_match("/Bearer\s+(.*)$/i", $authorizationHeader, $matches)) {
+                $authToken = $matches[1];
+            }
+        }
+
+        if ($authToken) {
+            $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+            $user = $DirectusUsersTableGateway->select(array('token' => $authToken));
+            $userFound = $user->count() > 0 ? true : false;
 
             if (!$userFound) {
                 $app->halt(401, 'You must be logged in to access the API.');
