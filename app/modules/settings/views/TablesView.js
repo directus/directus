@@ -18,10 +18,11 @@ define([
   'core/widgets/widgets',
   'schema/SchemaManager',
   'sortable',
+  'core/notification',
   '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, SettingsConfig) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -766,6 +767,31 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       'click td': function(e) {
         var tableName = $(e.target).closest('tr').attr('data-id');
         app.router.go(['settings','tables',tableName]);
+      },
+      'click .destroy': function(event) {
+        event.stopPropagation();
+
+        var self = this;
+        var tableName = $(event.target).closest('tr').attr('data-id') || this.model.get('table_name');
+
+        if (!tableName) {
+          app.router.openModal({type: 'alert', text: 'Invalid table.'});
+          return;
+        }
+
+        app.router.openModal({type: 'yesno', text: 'Are you sure? This item will be removed from the system!', callback: function(will) {
+          if (will != 'yes') {
+            return;
+          }
+          app.router.openModal({type: 'prompt', text: 'Cannot be undo', callback: function(confirmedTableName) {
+            if (confirmedTableName !== tableName) {
+              app.router.openModal({type: 'alert', text: 'Table name did not match.'});
+              return;
+            }
+
+            self.destroyTable();
+         }});
+        }});
       }
     },
 
@@ -782,6 +808,21 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         element.removeClass('delete-color');
         element.addClass('on');
       }
+    },
+
+    destroyTable: function() {
+      var options = {};
+      var self = this;
+
+      options.success = function(model, response) {
+        if (response.success == true) {
+          self.remove();
+        } else {
+          Notification.error(response.message);
+        }
+      };
+
+      this.model.destroy(options);
     },
 
     serialize: function() {

@@ -1056,6 +1056,23 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
 
 // GET and PUT table details
 $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {
+  if ($app->request()->isDelete()) {
+      $tableGateway = new TableGateway($acl, $table, $ZendDb);
+      $success = $tableGateway->drop();
+
+      $response = array(
+        'message' => 'Unable to destroy the table.',
+        'success' => false
+      );
+
+      if ($success) {
+          $response['success'] = true;
+          $response['message'] = 'Table '.$table.' was destroyed.';
+      }
+
+      return JsonView::render($response);
+  }
+
   $TableGateway = new TableGateway($acl, 'directus_tables', $ZendDb,null,null,null,'table_name');
   $ColumnsTableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
   /* PUT updates the table */
@@ -1111,7 +1128,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
   }
   $response = TableSchema::getTable($table);
   JsonView::render($response);
-})->via('GET', 'PUT')->name('table_meta');
+})->via('GET', 'PUT', 'DELETE')->name('table_meta');
 
 /**
  * UPLOAD COLLECTION

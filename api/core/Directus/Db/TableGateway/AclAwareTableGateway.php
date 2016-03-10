@@ -19,17 +19,19 @@ use Directus\Util\Date;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
+use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Directus\MemcacheProvider;
 
-class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
+class AclAwareTableGateway extends TableGateway {
 
     protected $acl;
 
@@ -250,6 +252,36 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         })->current();
 
         return $recordData;
+    }
+
+    public function drop($tableName = null) {
+        if ($tableName == null) {
+            $tableName = $this->table;
+        }
+
+        if (!$this->acl->hasTablePrivilege($tableName, 'alter')) {
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+            throw new UnauthorizedTableAddException($aclErrorPrefix . "Table alter access forbidden on table $tableName");
+        }
+
+        // remove table privileges
+        if ($tableName != 'directus_privileges') {
+            $privilegesTableGateway = new TableGateway('directus_privileges', $this->adapter);
+            $privilegesTableGateway->delete(array('table_name' => $tableName));
+        }
+
+        if (!\Directus\Db\TableSchema::getTable($tableName)) {
+            return false;
+        }
+
+        // get drop table query
+        $sql = new Sql($this->adapter);
+        $drop = new Ddl\DropTable($tableName);
+        $query = $sql->getSqlStringForSqlObject($drop);
+
+        return $this->adapter->query(
+            $query
+        )->execute();
     }
 
     /*
