@@ -447,6 +447,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var self = this;
       columnModel.destroy({success: function(model, response) {
         self.$el.find('[data-id='+model.get('id')+']').remove();
+        Notification.success('Column <b>'+columnName+'</b> was removed.');
       }, wait: true});
     },
 
@@ -843,6 +844,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       options.success = function(model, response) {
         if (response.success == true) {
           self.remove();
+          Notification.success('Table <b>'+model.get('table_name')+'</b> was removed.');
         } else {
           Notification.error(response.message);
         }
