@@ -45,7 +45,7 @@
     <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="Allow Null: {{is_nullable}}" title="Required"></td>
     <!-- <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}" title="Primary"></td> -->
     <td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment" placeholder="Add a note..."></td>
-    <td class="delete" title="Permanently Delete Field">{{#unless system}}<i class="material-icons">close</i>{{/unless}}</td>
+    <td title="Permanently Delete Field">{{#unless system}}<i class="destroy material-icons">close</i>{{/unless}}</td>
     {{/if}}
   </tr>
   {{/rows}}
