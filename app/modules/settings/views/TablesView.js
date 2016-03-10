@@ -19,10 +19,11 @@ define([
   'schema/SchemaManager',
   'sortable',
   'core/notification',
+  'core/dobleConfirmation',
   '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, SettingsConfig) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DobleConfirmation, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -395,6 +396,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       'click i[data-action=ui]': 'editUI',
       'click i[data-action=relationship]': 'editRelationship',
       'change select,input': 'bindForm',
+      'click .destroy': 'verifyDestroyColumn',
       'click button[data-action=new-field]': 'newField'
     },
 
@@ -432,6 +434,39 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       data[attr] = value;
       model.set(data);
+    },
+
+    destroyColumn: function(columnName) {
+      var columnModel = this.collection.get(columnName);
+
+      if (!columnModel) {
+        Notification.error('Error', 'Column '+columnName+' not found.');
+        return;
+      }
+
+      var self = this;
+      columnModel.destroy({success: function(model, response) {
+        self.$el.find('[data-id='+model.get('id')+']').remove();
+      }, wait: true});
+    },
+
+    verifyDestroyColumn: function(event) {
+      event.stopPropagation();
+
+      var self = this;
+      var columnName = $(event.target).closest('tr').attr('data-id');
+      var destroyColumn = function() {
+        self.destroyColumn(columnName);
+      };
+
+      DobleConfirmation({
+        value: columnName,
+        emptyValueMessage: 'Invalid column.',
+        firstQuestion: 'Are you sure? This column will be permanently removed from the table!',
+        secondQuestion: 'This cannot be undone. To confirm, please type the name of the column to delete below.',
+        notMatchMessage: 'Column name did not match.',
+        callback: destroyColumn
+      }, this);
     },
 
     sort: function() {
@@ -774,24 +809,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var self = this;
         var tableName = $(event.target).closest('tr').attr('data-id') || this.model.get('table_name');
 
-        if (!tableName) {
-          app.router.openModal({type: 'alert', text: 'Invalid table.'});
-          return;
-        }
-
-        app.router.openModal({type: 'yesno', text: 'Are you sure? This item will be removed from the system!', callback: function(will) {
-          if (will != 'yes') {
-            return;
-          }
-          app.router.openModal({type: 'prompt', text: 'Cannot be undo', callback: function(confirmedTableName) {
-            if (confirmedTableName !== tableName) {
-              app.router.openModal({type: 'alert', text: 'Table name did not match.'});
-              return;
-            }
-
-            self.destroyTable();
-         }});
-        }});
+        DobleConfirmation({
+          value: tableName,
+          emptyValueMessage: 'Invalid table.',
+          firstQuestion: 'Are you sure? This table will be permanently removed from the system!',
+          secondQuestion: 'This cannot be undone. To confirm, please type the name of the table to delete below.',
+          notMatchMessage: 'Table name did not match.',
+          callback: this.destroyTable
+        }, this);
       }
     },
 
@@ -814,6 +839,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var options = {};
       var self = this;
 
+      options.wait = true;
       options.success = function(model, response) {
         if (response.success == true) {
           self.remove();

@@ -259,9 +259,26 @@ class AclAwareTableGateway extends TableGateway {
             $tableName = $this->table;
         }
 
+        if (!\Directus\Db\TableSchema::getTable($tableName)) {
+            return false;
+        }
+
         if (!$this->acl->hasTablePrivilege($tableName, 'alter')) {
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
             throw new UnauthorizedTableAddException($aclErrorPrefix . "Table alter access forbidden on table $tableName");
+        }
+
+        // get drop table query
+        $sql = new Sql($this->adapter);
+        $drop = new Ddl\DropTable($tableName);
+        $query = $sql->getSqlStringForSqlObject($drop);
+
+        $dropped = $this->adapter->query(
+            $query
+        )->execute();
+
+        if (!$dropped) {
+            return false;
         }
 
         // remove table privileges
@@ -270,18 +287,64 @@ class AclAwareTableGateway extends TableGateway {
             $privilegesTableGateway->delete(array('table_name' => $tableName));
         }
 
-        if (!\Directus\Db\TableSchema::getTable($tableName)) {
+        // remove column from directus_tables
+        $tablesTableGateway = new TableGateway('directus_tables', $this->adapter);
+        $tablesTableGateway->delete(array(
+            'table_name' => $tableName
+        ));
+
+        // remove column from directus_preferences
+        $preferencesTableGateway = new TableGateway('directus_preferences', $this->adapter);
+        $preferencesTableGateway->delete(array(
+            'table_name' => $tableName
+        ));
+
+        return $dropped;
+    }
+
+    public function dropColumn($columnName, $tableName = null) {
+        if ($tableName == null) {
+            $tableName = $this->table;
+        }
+
+        if (!\Directus\Db\TableSchema::hasTableColumn($tableName, $columnName)) {
             return false;
+        }
+
+        if (!$this->acl->hasTablePrivilege($tableName, 'alter')) {
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+            throw new UnauthorizedTableAddException($aclErrorPrefix . "Table alter access forbidden on table $tableName");
         }
 
         // get drop table query
         $sql = new Sql($this->adapter);
-        $drop = new Ddl\DropTable($tableName);
-        $query = $sql->getSqlStringForSqlObject($drop);
+        $alterTable = new Ddl\AlterTable($tableName);
+        $dropColumn = $alterTable->dropColumn($columnName);
+        $query = $sql->getSqlStringForSqlObject($dropColumn);
 
-        return $this->adapter->query(
+        $dropped = $this->adapter->query(
             $query
         )->execute();
+
+        if (!$dropped) {
+            return false;
+        }
+
+        // remove column from directus_columns
+        $columnsTableGateway = new TableGateway('directus_columns', $this->adapter);
+        $columnsTableGateway->delete(array(
+            'table_name' => $tableName,
+            'column_name' => $columnName
+        ));
+
+        // remove column from directus_ui
+        $uisTableGateway = new TableGateway('directus_ui', $this->adapter);
+        $uisTableGateway->delete(array(
+            'table_name' => $tableName,
+            'column_name' => $columnName
+        ));
+
+        return $dropped;
     }
 
     /*

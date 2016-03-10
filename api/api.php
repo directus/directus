@@ -790,6 +790,23 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
 // GET or PUT one column
 
 $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $params, $requestPayload, $app) {
+    if ($app->request()->isDelete()) {
+        $tableGateway = new TableGateway($acl, $table, $ZendDb);
+        $success = $tableGateway->dropColumn($column);
+
+        $response = array(
+          'message' => 'Unable to destroy the column ['.$column.'].',
+          'success' => false
+        );
+
+        if ($success) {
+            $response['success'] = true;
+            $response['message'] = 'Column ['.$column.'] was destroyed.';
+        }
+
+        return JsonView::render($response);
+    }
+
     $params['column_name'] = $column;
     $params['table_name'] = $table;
     // This `type` variable is used on the client-side
@@ -803,13 +820,14 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
           $row['table_name'] = $table;
         }
     }
+
     if($app->request()->isPut()) {
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
         $TableGateway->updateCollection($requestPayload);
     }
     $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
-})->via('GET', 'PUT');
+})->via('GET', 'PUT', 'DELETE');
 
 $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $requestPayload, $app) {
   $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
@@ -1061,13 +1079,13 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       $success = $tableGateway->drop();
 
       $response = array(
-        'message' => 'Unable to destroy the table.',
+        'message' => 'Unable to destroy the table ['.$table.'].',
         'success' => false
       );
 
       if ($success) {
           $response['success'] = true;
-          $response['message'] = 'Table '.$table.' was destroyed.';
+          $response['message'] = 'Table ['.$table.'] was destroyed.';
       }
 
       return JsonView::render($response);
