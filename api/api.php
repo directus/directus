@@ -795,13 +795,13 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $success = $tableGateway->dropColumn($column);
 
         $response = array(
-          'message' => 'Unable to destroy the column ['.$column.'].',
+          'message' => 'Unable to remove the column ['.$column.'].',
           'success' => false
         );
 
         if ($success) {
             $response['success'] = true;
-            $response['message'] = 'Column ['.$column.'] was destroyed.';
+            $response['message'] = 'Column ['.$column.'] was removed.';
         }
 
         return JsonView::render($response);
@@ -1079,13 +1079,13 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       $success = $tableGateway->drop();
 
       $response = array(
-        'message' => 'Unable to destroy the table ['.$table.'].',
+        'message' => 'Unable to remove the table ['.$table.'].',
         'success' => false
       );
 
       if ($success) {
           $response['success'] = true;
-          $response['message'] = 'Table ['.$table.'] was destroyed.';
+          $response['message'] = 'Table ['.$table.'] was removed.';
       }
 
       return JsonView::render($response);
