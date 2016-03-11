@@ -464,7 +464,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         value: columnName,
         emptyValueMessage: 'Invalid column.',
         firstQuestion: 'Are you sure? This column and all of its content will be permanently removed from the table!',
-        secondQuestion: 'This cannot be undone. To confirm, please type the name of the column to delete below.',
+        secondQuestion: 'This cannot be undone. To confirm, please type the name of the column to delete: (column_name)',
         notMatchMessage: 'Column name did not match.',
         callback: destroyColumn
       }, this);
@@ -814,7 +814,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           value: tableName,
           emptyValueMessage: 'Invalid table.',
           firstQuestion: 'Are you sure? This table, its columns, and all of its content will be permanently removed from the system!',
-          secondQuestion: 'This cannot be undone. To confirm, please type the name of the table to delete below.',
+          secondQuestion: 'This cannot be undone. To confirm, please type the name of the table to delete: (table_name)',
           notMatchMessage: 'Table name did not match.',
           callback: this.destroyTable
         }, this);
