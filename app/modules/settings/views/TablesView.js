@@ -447,7 +447,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var self = this;
       columnModel.destroy({success: function(model, response) {
         self.$el.find('[data-id='+model.get('id')+']').remove();
-        Notification.success('Column <b>'+columnName+'</b> was removed.');
+        Notification.success('Column removed', '<b>'+columnName+'</b> was removed.');
       }, wait: true});
     },
 
@@ -464,7 +464,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         value: columnName,
         emptyValueMessage: 'Invalid column.',
         firstQuestion: 'Are you sure? This column will be permanently removed from the table!',
-        secondQuestion: 'This cannot be undone. To confirm, please type the name of the column to delete below.',
+        secondQuestion: 'This cannot be undone. To confirm, please type the name of the column to delete: '+columnName,
         notMatchMessage: 'Column name did not match.',
         callback: destroyColumn
       }, this);
@@ -814,7 +814,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           value: tableName,
           emptyValueMessage: 'Invalid table.',
           firstQuestion: 'Are you sure? This table will be permanently removed from the system!',
-          secondQuestion: 'This cannot be undone. To confirm, please type the name of the table to delete below.',
+          secondQuestion: 'This cannot be undone. To confirm, please type the name of the table to delete: '+tableName,
           notMatchMessage: 'Table name did not match.',
           callback: this.destroyTable
         }, this);
@@ -844,7 +844,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       options.success = function(model, response) {
         if (response.success == true) {
           self.remove();
-          Notification.success('Table <b>'+model.get('table_name')+'</b> was removed.');
+          Notification.success('Table removed', '<b>'+model.get('table_name')+'</b> was removed.');
         } else {
           Notification.error(response.message);
         }

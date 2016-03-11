@@ -40,7 +40,7 @@ function(
 
       app.router.openModal({type: 'prompt', text: opts.secondQuestion, callback: function(confirmedValue) {
         if (confirmedValue !== opts.value) {
-          app.router.openModal({type: 'alert', text: opts.notMatchMessage});
+          Notification.error('Did not match', opts.notMatchMessage);
           return;
         }
 
