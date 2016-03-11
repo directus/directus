@@ -112,8 +112,7 @@
     .secondary-info {
       -webkit-font-smoothing: antialiased;
     }
-    .delete {
-      width: 30px;
+    .delete-hover {
       &:hover {
         i {
           color: $deleteColor;

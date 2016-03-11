@@ -2718,12 +2718,10 @@ select,
     background-color: #ffffff; }
     .table-striped tbody .secondary-info, .table-striped tbody .history-container ul li .history-follow, .history-container ul li .table-striped tbody .history-follow {
       -webkit-font-smoothing: antialiased; }
-    .table-striped tbody .delete {
-      width: 30px; }
-      .table-striped tbody .delete:hover i {
-        color: #c1272d; }
-      .table-striped tbody .delete i {
-        vertical-align: inherit; }
+    .table-striped tbody .delete-hover:hover i {
+      color: #c1272d; }
+    .table-striped tbody .delete-hover i {
+      vertical-align: inherit; }
     .table-striped tbody .sort {
       color: #aaaaaa;
       font-size: 10px;
