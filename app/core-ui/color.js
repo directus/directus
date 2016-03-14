@@ -26,7 +26,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
+    // Disables editing of the field while still letting users see the value
     {id: 'readonly', ui: 'checkbox'},
+    // Shows a color box representation on the Item Listing page
     {id: 'show_color_on_list', ui: 'checkbox'}
   ];
 
