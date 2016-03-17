@@ -68,4 +68,42 @@ class StringUtils
         $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
     }
+
+    /**
+     * Convert a string separated by $separator to camel case.
+     *
+     * @param $string
+     * @param bool $first
+     * @param string $separator
+     *
+     * @return string
+     */
+    public static function toCamelCase($string, $first = false, $separator = '_')
+    {
+        $parts = explode($separator, $string);
+        $newParts = array_map(function($string) {
+            return ucwords($string);
+        }, $parts);
+
+        $newString = implode('', $newParts);
+
+        if ($first === false) {
+            $newString[0] = strtolower($newString[0]);
+        }
+
+        return $newString;
+    }
+
+    /**
+     *  Convert a string separated by underscore to camel case.
+     *
+     * @param $string
+     * @param bool $first
+     *
+     * @return string
+     */
+    public static function underscoreToCamelCase($string, $first = false)
+    {
+        return static::toCamelCase($string, $first);
+    }
 }

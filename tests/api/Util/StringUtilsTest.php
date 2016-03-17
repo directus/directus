@@ -39,4 +39,19 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
     {
         StringUtils::random(0);
     }
+
+    public function testUnderscoreToCamelCase()
+    {
+        $this->assertSame('camelCase', StringUtils::underscoreToCamelCase('camel_case'));
+        $this->assertSame('CamelCase', StringUtils::underscoreToCamelCase('camel_case', true));
+    }
+
+    public function testToCamelCase()
+    {
+        $this->assertSame('camelCase', StringUtils::toCamelCase('camel_case'));
+        $this->assertSame('CamelCase', StringUtils::toCamelCase('camel_case', true));
+
+        $this->assertSame('camelCase', StringUtils::toCamelCase('camel-case', false, '-'));
+        $this->assertSame('CamelCase', StringUtils::toCamelCase('camel-case', true, '-'));
+    }
 }
