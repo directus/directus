@@ -273,9 +273,9 @@ class Files
         $fileName = $this->getFileName($fileName);
         $filePath = $this->getConfig('root') . '/' . $fileName;
 
-        Hook::run('files.saving', ['name' => $fileName, 'data' => $fileData]);
+        Hook::run('files.saving', ['name' => $fileName, 'size' => strlen($fileData)]);
         $this->filesystem->getAdapter()->write($fileName, $fileData);//, new FlysystemConfig());}
-        Hook::run('files.saving:after', ['name' => $fileName, 'data' => $fileData]);
+        Hook::run('files.saving:after', ['name' => $fileName, 'size' => strlen($fileData)]);
 
         $this->createThumbnails($fileName);
 
