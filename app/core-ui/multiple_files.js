@@ -24,8 +24,11 @@ define([
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
+    // Toggles an "Add" button for adding new files directly into the UI
     {id: 'add_button', ui: 'checkbox', def: '1'},
+    // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
     {id: 'choose_button', ui: 'checkbox', def: '1'},
+    // Toggles "Remove" buttons for each file that let's you delete the file
     {id: 'remove_button', ui: 'checkbox', def: '1'},
   ];
 

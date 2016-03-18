@@ -17,6 +17,7 @@ define(['app','backbone'], function(app, Backbone) {
   Module.dataTypes = ['TEXT','VARCHAR','CHAR'];
 
   Module.variables = [
+    // When on, all entered tags are converted to lowercase
     {id: 'force_lowercase', ui: 'checkbox', def: '1'}
   ];
 
