@@ -89,7 +89,7 @@ if (array_key_exists('filters', $config)) {
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    Hook::run('application.error', [$app, $exception]);
+    Hook::run('application.error', [$exception]);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
