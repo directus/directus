@@ -14,16 +14,15 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
 
   var template = '<style type="text/css"> \
                   textarea.md-editor { \
-                    width: 50% !important; \
-                    float: left; \
+                    margin-top:1em; \
                   }\
                   .md-editor-preview { \
                     padding: 1em;\
-                    width: 50%;\
-                    float: left;\
-                    box-sizing: border-box;\
+                    display: none; \
                   }\
                   </style> \
+                  <button class="btn btn-small active" type="button" data-action="md-edit">Editor</button> \
+                  <button class="btn btn-small" type="button" data-action="md-preview">Preview</button> \
                   <textarea rows="{{rows}}" class="md-editor" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>\
                     {{rawValue}} \
                   </textarea> \
@@ -51,7 +50,19 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
 
     events: {
       'keyup': 'renderMarkdown',
-      'change textarea.md-editor': 'renderMarkdown'
+      'change textarea.md-editor': 'renderMarkdown',
+      'click button[data-action="md-preview"]': function (e) {
+        this.$('.md-editor').hide();
+        this.$('.md-editor-preview').show();
+        this.$('.btn').removeClass('active');
+        e.currentTarget.className += ' active';
+      },
+      'click button[data-action="md-edit"]': function (e) {
+        this.$('.md-editor-preview').hide();
+        this.$('.md-editor').show();
+        this.$('.btn').removeClass('active');
+        e.currentTarget.className += ' active';
+      }
     },
 
     renderMarkdown: function() {
