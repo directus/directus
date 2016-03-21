@@ -12,7 +12,22 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
 
   var Module = {};
 
-  var template = '<textarea rows="{{rows}}" class="markdown" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>{{rawValue}}</textarea><h3>Preview</h3><div class="preview">{{value}}</div>';
+  var template = '<style type="text/css"> \
+                  textarea.md-editor { \
+                    width: 50% !important; \
+                    float: left; \
+                  }\
+                  .md-editor-preview { \
+                    padding: 1em;\
+                    width: 50%;\
+                    float: left;\
+                    box-sizing: border-box;\
+                  }\
+                  </style> \
+                  <textarea rows="{{rows}}" class="md-editor" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>\
+                    {{rawValue}} \
+                  </textarea> \
+                  <div class="md-editor-preview">{{value}}</div>';
 
   Module.id = 'markdown';
   Module.dataTypes = ['TEXT', 'VARCHAR'];
@@ -36,20 +51,15 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
 
     events: {
       'keyup': 'renderMarkdown',
-      'change textarea.markdown': 'renderMarkdown'
+      'change textarea.md-editor': 'renderMarkdown'
     },
 
     renderMarkdown: function() {
-      marked.setOptions({
-        gfm: !!+this.options.settings.get('github_flavored_markdown'),
-        tables: !!+this.options.settings.get('tables'),
-        breaks: !!+this.options.settings.get('breaks'),
-        sanitize: !!+this.options.settings.get('sanitize')
-      });
-
-      console.log(marked.defaults);
-      var value = marked(this.$('textarea').val());
-      this.$('.preview').html(value);
+//      console.log(marked.defaults);
+      var value = this.$('.md-editor').val();
+      if (value) {
+        this.$('.md-editor-preview').html(marked(value));
+      }
     },
 
     template: Handlebars.compile(template, { noEscape: true }),
@@ -66,7 +76,7 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
     serialize: function() {
       return {
         rawValue: this.options.value,
-        value: marked(this.options.value),
+        value: this.options.value ? marked(this.options.value):'',
         name: this.options.name,
         rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '12',
         comment: this.options.schema.get('comment'),
