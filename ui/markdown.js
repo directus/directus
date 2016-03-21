@@ -76,7 +76,7 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
     serialize: function() {
       return {
         rawValue: this.options.value,
-        value: this.options.value ? marked(this.options.value):'',
+        value: (this.options.value) ? marked(this.options.value):'',
         name: this.options.name,
         rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '12',
         comment: this.options.schema.get('comment'),
@@ -93,7 +93,8 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
   };
 
   Module.list = function(options) {
-    var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
+    var raw_val = marked(options.value);
+    var val = _.isString(raw_val) ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
     return val;
   };
 
