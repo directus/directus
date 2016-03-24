@@ -19,11 +19,11 @@ define([
   'schema/SchemaManager',
   'sortable',
   'core/notification',
-  'core/dobleConfirmation',
+  'core/doubleConfirmation',
   '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DobleConfirmation, SettingsConfig) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -460,7 +460,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         self.destroyColumn(columnName);
       };
 
-      DobleConfirmation({
+      DoubleConfirmation({
         value: columnName,
         emptyValueMessage: 'Invalid column.',
 
@@ -811,7 +811,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var self = this;
         var tableName = $(event.target).closest('tr').attr('data-id') || this.model.get('table_name');
 
-        DobleConfirmation({
+        DoubleConfirmation({
           value: tableName,
           emptyValueMessage: 'Invalid table.',
           firstQuestion: 'Are you sure? This table, its columns, and all of its content will be permanently removed from the system!',
