@@ -124,6 +124,8 @@ $ZendDb = Bootstrap::get('ZendDb');
  */
 $acl = Bootstrap::get('acl');
 
+Hook::run('application.boot', $app);
+
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
     // API/Server is about to initialize
     Hook::run('application.init', $app);
