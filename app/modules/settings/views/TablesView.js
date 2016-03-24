@@ -844,8 +844,10 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       options.wait = true;
       options.success = function(model, response) {
         if (response.success == true) {
+          var tableName = model.get('table_name');
           self.remove();
-          Notification.success('Table removed', '<b>'+model.get('table_name')+'</b> was removed.');
+          app.schemaManager.unregisterFullSchema(tableName);
+          Notification.success('Table removed', '<b>'+tableName+'</b> was removed.');
         } else {
           Notification.error(response.message);
         }
