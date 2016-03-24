@@ -275,6 +275,8 @@ class AclAwareTableGateway extends TableGateway {
         $drop = new Ddl\DropTable($tableName);
         $query = $sql->getSqlStringForSqlObject($drop);
 
+        Hook::run('table.drop:before', [$tableName]);
+
         $dropped = $this->adapter->query(
             $query
         )->execute();
@@ -282,6 +284,8 @@ class AclAwareTableGateway extends TableGateway {
         if (!$dropped) {
             return false;
         }
+
+        Hook::run('table.drop:after', [$tableName]);
 
         // remove table privileges
         if ($tableName != 'directus_privileges') {
