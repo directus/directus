@@ -62,7 +62,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
         $hookName = sprintf('table.%s.%s:before', ($recordIsNew ? 'insert' : 'update'), $tableName);
-        Hook::run($hookName);
+        Hook::run($hookName, array($recordData));
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
 
@@ -248,7 +248,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $recordGateway->populate($fullRecordData, true);
 
         $hookName = sprintf('table.%s.%s', ($recordIsNew ? 'insert' : 'update'), $tableName);
-        Hook::run($hookName, $fullRecordData);
+        Hook::run($hookName, array($fullRecordData));
 
         return $recordGateway;
     }
