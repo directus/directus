@@ -552,7 +552,7 @@ class AclAwareTableGateway extends TableGateway {
         $updateState = $update->getRawState();
         $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($updateTable);
-        $updateData = $updateState['values'];
+        $updateData = $updateState['set'];
 
         /**
          * ACL Enforcement
