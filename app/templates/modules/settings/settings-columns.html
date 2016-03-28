@@ -3,11 +3,12 @@
 <tr>
     <th class="sort"><i class="material-icons">reorder</i></th>
     <th class="field-field">Field</th>
-    <th class="field-input_type">Input Type</th>
+    <th class="field-input_type">User Interface</th>
     <th class="field-hidden" style="width:50px;">Hidden</th>
     <th class="field-required" style="width:50px;">Required</th>
     <!-- <th class="field-master" style="width:50px;">Primary</th> -->
     <th class="field-note">Note</th>
+    <th class="field-delete" style="width:50px">Delete</th>
 </tr>
 </thead>
 <tbody>
@@ -44,6 +45,7 @@
     <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="Allow Null: {{is_nullable}}" title="Required"></td>
     <!-- <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}" title="Primary"></td> -->
     <td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment" placeholder="Add a note..."></td>
+    <td title="Permanently Delete Field" class="delete-hover">{{#unless system}}<i class="destroy material-icons">close</i>{{/unless}}</td>
     {{/if}}
   </tr>
   {{/rows}}

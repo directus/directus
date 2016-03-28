@@ -112,6 +112,16 @@
     .secondary-info {
       -webkit-font-smoothing: antialiased;
     }
+    .delete-hover {
+      &:hover {
+        i {
+          color: $deleteColor;
+        }
+      }
+      i {
+        vertical-align: inherit;
+      }
+    }
     .sort {
       color: $mediumGrey;
       font-size: 10px;

@@ -89,7 +89,7 @@ if (array_key_exists('filters', $config)) {
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    Hook::run('application.error', [$app, $exception]);
+    Hook::run('application.error', [$exception]);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
@@ -124,6 +124,8 @@ $ZendDb = Bootstrap::get('ZendDb');
  */
 $acl = Bootstrap::get('acl');
 
+Hook::run('application.boot', $app);
+
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
     // API/Server is about to initialize
     Hook::run('application.init', $app);
@@ -132,17 +134,26 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
     $routeName = $app->router()->getCurrentRoute()->getName();
     if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
         $headers = $app->request()->headers();
-
-        if ($headers->has('Php-Auth-User')) {
+        $authToken = false;
+        if ($app->request()->get('access_token')) {
+            $authToken = $app->request()->get('access_token');
+        } elseif ($headers->has('Php-Auth-User')) {
             $authUser = $headers->get('Php-Auth-User');
             $authPassword = $headers->get('Php-Auth-Pw');
-
-            $userFound = false;
-            if (empty($authPassword)) {
-                $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
-                $user = $DirectusUsersTableGateway->select(array('token' => $authUser));
-                $userFound = $user->count() > 0 ? true : false;
+            if ($authUser && empty($authPassword)) {
+                $authToken = $authUser;
             }
+        } elseif ($headers->has('Authorization')) {
+            $authorizationHeader = $headers->get('Authorization');
+            if (preg_match("/Bearer\s+(.*)$/i", $authorizationHeader, $matches)) {
+                $authToken = $matches[1];
+            }
+        }
+
+        if ($authToken) {
+            $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+            $user = $DirectusUsersTableGateway->select(array('token' => $authToken));
+            $userFound = $user->count() > 0 ? true : false;
 
             if (!$userFound) {
                 $app->halt(401, 'You must be logged in to access the API.');
@@ -781,6 +792,23 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
 // GET or PUT one column
 
 $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $params, $requestPayload, $app) {
+    if ($app->request()->isDelete()) {
+        $tableGateway = new TableGateway($acl, $table, $ZendDb);
+        $success = $tableGateway->dropColumn($column);
+
+        $response = array(
+          'message' => 'Unable to remove the column ['.$column.'].',
+          'success' => false
+        );
+
+        if ($success) {
+            $response['success'] = true;
+            $response['message'] = 'Column ['.$column.'] was removed.';
+        }
+
+        return JsonView::render($response);
+    }
+
     $params['column_name'] = $column;
     $params['table_name'] = $table;
     // This `type` variable is used on the client-side
@@ -794,13 +822,14 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
           $row['table_name'] = $table;
         }
     }
+
     if($app->request()->isPut()) {
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
         $TableGateway->updateCollection($requestPayload);
     }
     $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
-})->via('GET', 'PUT');
+})->via('GET', 'PUT', 'DELETE');
 
 $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $requestPayload, $app) {
   $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
@@ -1047,6 +1076,23 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
 
 // GET and PUT table details
 $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {
+  if ($app->request()->isDelete()) {
+      $tableGateway = new TableGateway($acl, $table, $ZendDb);
+      $success = $tableGateway->drop();
+
+      $response = array(
+        'message' => 'Unable to remove the table ['.$table.'].',
+        'success' => false
+      );
+
+      if ($success) {
+          $response['success'] = true;
+          $response['message'] = 'Table ['.$table.'] was removed.';
+      }
+
+      return JsonView::render($response);
+  }
+
   $TableGateway = new TableGateway($acl, 'directus_tables', $ZendDb,null,null,null,'table_name');
   $ColumnsTableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
   /* PUT updates the table */
@@ -1102,7 +1148,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
   }
   $response = TableSchema::getTable($table);
   JsonView::render($response);
-})->via('GET', 'PUT')->name('table_meta');
+})->via('GET', 'PUT', 'DELETE')->name('table_meta');
 
 /**
  * UPLOAD COLLECTION

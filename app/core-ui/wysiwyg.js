@@ -17,7 +17,9 @@ define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Ov
   Module.dataTypes = ['VARCHAR', 'TEXT'];
 
   Module.variables = [
+    // Disables editing of the field while still letting users see the value
     {id: 'readonly', ui: 'checkbox'},
+    // The input's height in pixels before scrolling. Default: 500px
     {id: 'height', ui: 'numeric', def: '500'},
     {id: 'bold', ui: 'checkbox', def: '1'},
     {id: 'italic', ui: 'checkbox', def: '1'},

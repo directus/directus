@@ -61,8 +61,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
-        $hookName = sprintf('table.%s.%s:before', ($recordIsNew ? 'insert' : 'update'), $tableName);
-        Hook::run($hookName);
+        // $hookName = sprintf('table.%s.%s:before', ($recordIsNew ? 'insert' : 'update'), $tableName);
+        // Hook::run($hookName, array($recordData));
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
 
@@ -70,6 +70,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Upload file if necessary
         $TableGateway->copyFiles($tableName, $recordData);
+        // Delete file if necessary
+        $TableGateway->deleteFiles($tableName, $recordData);
 
         //Dont do for directus users since id is pk
         if($recordIsNew && $tableName != 'directus_users') {
@@ -245,10 +247,38 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $recordGateway = new AclAwareRowGateway($this->acl, $TableGateway->primaryKeyFieldName, $tableName, $this->adapter);
         $recordGateway->populate($fullRecordData, true);
 
-        $hookName = sprintf('table.%s.%s', ($recordIsNew ? 'insert' : 'update'), $tableName);
-        Hook::run($hookName, $fullRecordData);
+        // $hookName = sprintf('table.%s.%s', ($recordIsNew ? 'insert' : 'update'), $tableName);
+        // Hook::run($hookName, array($fullRecordData));
 
         return $recordGateway;
+    }
+
+    /**
+     * @param string $table
+     * @param array $recordData
+     * @return bool
+     */
+    public function deleteFiles($tableName, $recordData)
+    {
+        if ($tableName != 'directus_files' ) {
+            return false;
+        }
+
+        if (!isset($recordData[STATUS_COLUMN_NAME]) || $recordData[STATUS_COLUMN_NAME] != STATUS_DELETED_NUM) {
+            return false;
+        }
+
+        $filesTableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
+        $primaryKeyFieldName = $filesTableGateway->primaryKeyFieldName;
+
+        $params = array();
+        $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
+        $file = $filesTableGateway->getEntries($params);
+
+        $Files = new \Directus\Files\Files();
+        $Files->delete($file);
+
+        return true;
     }
 
     /**

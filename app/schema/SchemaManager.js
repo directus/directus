@@ -202,6 +202,13 @@ define(function(require, exports, module) {
       };
     },
 
+    unregisterFullSchema: function(tableName) {
+        tableSchemas.tables.remove(tableName);
+        delete columnSchemas.tables[tableName];
+        delete preferences[tableName];
+        delete privileges[tableName];
+    },
+
     getEntriesInstance: function(tableName) {
 
     }

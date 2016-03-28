@@ -19,7 +19,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.isAPIHashed = false;
 
   Module.variables = [
+    // Toggles the second input ("Confirm Password"). On by default.
     {id: 'require_confirmation', ui: 'checkbox', def: '1'},
+    // The name of the column to be used as a salt in the password hash
     {id: 'salt_field', ui: 'textinput', def: 'salt'}
   ];
 

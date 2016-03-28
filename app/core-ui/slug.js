@@ -17,8 +17,11 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
+    // Disables editing of the field while still letting users see the value
     {id: 'readonly', ui: 'checkbox', def: '1'},
+    // Adjusts the max width of the input (Small, Medium, Large)
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+    // Enter the column name of the field the slug will pull it's value from
     {id: 'mirrored_field', ui: 'textinput', char_length:200}
   ];
 

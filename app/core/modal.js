@@ -29,6 +29,9 @@ function(app, Backbone) {
           data.showInput = true;
           break;
         case 'yesnocancel':
+          data.isYesNoCancelConfirm = true;
+          break;
+        case 'yesno':
           data.isYesNoConfirm = true;
           break;
         case 'alert':
@@ -50,12 +53,12 @@ function(app, Backbone) {
         this.save();
       },
       'click #noBtn': function() {
-        this.options.callback('no');
         this.close();
+        this.options.callback('no');
       },
       'click #yesBtn': function() {
-        this.options.callback('yes');
         this.close();
+        this.options.callback('yes');
       },
       'click #okBtn': function() {
         this.close();

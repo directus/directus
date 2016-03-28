@@ -2,6 +2,8 @@ Options +SymLinksIfOwnerMatch
 
 RewriteEngine On
 
+RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
 # Yield static media
 RewriteCond %{REQUEST_FILENAME} !-f
 

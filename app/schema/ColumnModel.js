@@ -16,6 +16,11 @@ define(function(require, exports, module) {
           throw new Error("Column '"+ result.id + "' in table '" + tableName + "' does not have a UI");
         }
 
+        // if the url was set explicit with an string
+        // let's add the column name.
+        if (!_.isFunction(this.url)) {
+          this.url += '/'+result.column_name;
+        }
 
         // Can this be done elsewhere so we can break the app dependency?
         /*if (!app.uiManager.hasUI(ui)) {
