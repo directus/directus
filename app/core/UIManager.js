@@ -43,7 +43,6 @@ define(function(require, exports, module) {
     require('core-ui/directus_file'),
     require('core-ui/directus_file_title'),
     require('core-ui/map'),
-    require('core-ui/markdown'),
     require('core-ui/multiple_files'),
     require('core-ui/translation'),
     require('core-ui/template_chooser')
