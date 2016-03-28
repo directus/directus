@@ -1,5 +1,7 @@
 # Migrations
-Migrations based on Ruckusing (This would be a Ruckusing-fork)
+Migrations based on [Ruckusing](https://github.com/ruckus/ruckusing-migrations).
+
+It still the same, but I'm planning on create a Migrations library based on my taste and needs, without strong dependencies in third-party library, just like Ruckusing does.
 
 # Introduction
 

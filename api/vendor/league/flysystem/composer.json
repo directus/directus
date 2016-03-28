@@ -18,10 +18,9 @@
     },
     "require-dev": {
         "ext-fileinfo": "*",
-        "phpunit/phpunit": "~4.8",
+        "phpunit/phpunit": "~4.8 || ~5.0",
         "mockery/mockery": "~0.9",
-        "phpspec/phpspec": "^2.2",
-        "phpspec/prophecy-phpunit": "~1.0"
+        "phpspec/phpspec": "^2.2"
     },
     "autoload": {
         "psr-4": {

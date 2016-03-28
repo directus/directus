@@ -19,17 +19,19 @@ use Directus\Util\Date;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
+use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Directus\MemcacheProvider;
 
-class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
+class AclAwareTableGateway extends TableGateway {
 
     protected $acl;
 
@@ -208,6 +210,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             $TableGateway->updateWith($Update);
 
             Hook::run('postUpdate', [$TableGateway, $recordData, $this->adapter, $this->acl]);
+            // Hook::run('table.update.'.$tableName, [$recordData]);
         } else {
             $d = $recordData;
             unset($d['data']);
@@ -239,6 +242,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
             }
 
             Hook::run('postInsert', [$TableGateway, $recordData, $this->adapter, $this->acl]);
+            // Hook::run('table.insert.'.$tableName, [$recordData]);
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
@@ -250,6 +254,103 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         })->current();
 
         return $recordData;
+    }
+
+    public function drop($tableName = null) {
+        if ($tableName == null) {
+            $tableName = $this->table;
+        }
+
+        if (!\Directus\Db\TableSchema::getTable($tableName)) {
+            return false;
+        }
+
+        if (!$this->acl->hasTablePrivilege($tableName, 'alter')) {
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+            throw new UnauthorizedTableAddException($aclErrorPrefix . "Table alter access forbidden on table $tableName");
+        }
+
+        // get drop table query
+        $sql = new Sql($this->adapter);
+        $drop = new Ddl\DropTable($tableName);
+        $query = $sql->getSqlStringForSqlObject($drop);
+
+        Hook::run('table.drop:before', [$tableName]);
+
+        $dropped = $this->adapter->query(
+            $query
+        )->execute();
+
+        if (!$dropped) {
+            return false;
+        }
+
+        Hook::run('table.drop:after', [$tableName]);
+
+        // remove table privileges
+        if ($tableName != 'directus_privileges') {
+            $privilegesTableGateway = new TableGateway('directus_privileges', $this->adapter);
+            $privilegesTableGateway->delete(array('table_name' => $tableName));
+        }
+
+        // remove column from directus_tables
+        $tablesTableGateway = new TableGateway('directus_tables', $this->adapter);
+        $tablesTableGateway->delete(array(
+            'table_name' => $tableName
+        ));
+
+        // remove column from directus_preferences
+        $preferencesTableGateway = new TableGateway('directus_preferences', $this->adapter);
+        $preferencesTableGateway->delete(array(
+            'table_name' => $tableName
+        ));
+
+        return $dropped;
+    }
+
+    public function dropColumn($columnName, $tableName = null) {
+        if ($tableName == null) {
+            $tableName = $this->table;
+        }
+
+        if (!\Directus\Db\TableSchema::hasTableColumn($tableName, $columnName)) {
+            return false;
+        }
+
+        if (!$this->acl->hasTablePrivilege($tableName, 'alter')) {
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+            throw new UnauthorizedTableAddException($aclErrorPrefix . "Table alter access forbidden on table $tableName");
+        }
+
+        // get drop table query
+        $sql = new Sql($this->adapter);
+        $alterTable = new Ddl\AlterTable($tableName);
+        $dropColumn = $alterTable->dropColumn($columnName);
+        $query = $sql->getSqlStringForSqlObject($dropColumn);
+
+        $dropped = $this->adapter->query(
+            $query
+        )->execute();
+
+        if (!$dropped) {
+            return false;
+        }
+
+        // remove column from directus_columns
+        $columnsTableGateway = new TableGateway('directus_columns', $this->adapter);
+        $columnsTableGateway->delete(array(
+            'table_name' => $tableName,
+            'column_name' => $columnName
+        ));
+
+        // remove column from directus_ui
+        $uisTableGateway = new TableGateway('directus_ui', $this->adapter);
+        $uisTableGateway->delete(array(
+            'table_name' => $tableName,
+            'column_name' => $columnName
+        ));
+
+        return $dropped;
     }
 
     /*
@@ -403,6 +504,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
 
         $insertState = $insert->getRawState();
         $insertTable = $this->getRawTableNameFromQueryStateTable($insertState['table']);
+        $insertData = $insertState['values'];
 
         if(!$this->acl->hasTablePrivilege($insertTable, 'add')) {
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
@@ -415,7 +517,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
 
         try {
-            return parent::executeInsert($insert);
+            Hook::run('table.insert.'.$insertTable.':before', [$insertData]);
+            $result = parent::executeInsert($insert);
+            Hook::run('table.insert.'.$insertTable.':after', [$insertData]);
+
+            return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
                 if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
@@ -446,6 +552,7 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         $updateState = $update->getRawState();
         $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($updateTable);
+        $updateData = $updateState['set'];
 
         /**
          * ACL Enforcement
@@ -505,7 +612,11 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
 
         try {
-            return parent::executeUpdate($update);
+            Hook::run('table.update.'.$updateTable.':after', [$updateData]);
+            $result = parent::executeUpdate($update);
+            Hook::run('table.update.'.$updateTable.':after', [$updateData]);
+
+            return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
                 // @TODO: these lines are the same as the executeInsert,
@@ -587,7 +698,10 @@ class AclAwareTableGateway extends \Zend\Db\TableGateway\TableGateway {
         }
 
         try {
-            return parent::executeDelete($delete);
+            Hook::run('table.delete.'.$deleteTable.':before');
+            $result = parent::executeDelete($delete);
+            Hook::run('table.delete.'.$deleteTable.':after');
+            return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($delete), 0, $e);

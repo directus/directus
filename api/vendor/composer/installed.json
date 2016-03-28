@@ -105,12 +105,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/WellingGuzman/Migrations.git",
-            "reference": "9849510a701a23c8e690f9f7ff52f586ad37614c"
+            "reference": "971e9d722c27f9453a13f3636c2885500fbf1817"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/9849510a701a23c8e690f9f7ff52f586ad37614c",
-            "reference": "9849510a701a23c8e690f9f7ff52f586ad37614c",
+            "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/971e9d722c27f9453a13f3636c2885500fbf1817",
+            "reference": "971e9d722c27f9453a13f3636c2885500fbf1817",
             "shasum": ""
         },
         "require": {
@@ -119,7 +119,7 @@
         "require-dev": {
             "phpunit/phpunit": "3.7.*"
         },
-        "time": "2015-05-27 01:39:19",
+        "time": "2016-01-31 05:12:11",
         "bin": [
             "ruckus.php"
         ],
@@ -266,17 +266,17 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.16",
-        "version_normalized": "1.0.16.0",
+        "version": "1.0.20",
+        "version_normalized": "1.0.20.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "183e1a610664baf6dcd6fceda415baf43cbdc031"
+            "reference": "e87a786e3ae12a25cf78a71bb07b4b384bfaa83a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/183e1a610664baf6dcd6fceda415baf43cbdc031",
-            "reference": "183e1a610664baf6dcd6fceda415baf43cbdc031",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/e87a786e3ae12a25cf78a71bb07b4b384bfaa83a",
+            "reference": "e87a786e3ae12a25cf78a71bb07b4b384bfaa83a",
             "shasum": ""
         },
         "require": {
@@ -289,8 +289,7 @@
             "ext-fileinfo": "*",
             "mockery/mockery": "~0.9",
             "phpspec/phpspec": "^2.2",
-            "phpspec/prophecy-phpunit": "~1.0",
-            "phpunit/phpunit": "~4.8"
+            "phpunit/phpunit": "~4.8 || ~5.0"
         },
         "suggest": {
             "ext-fileinfo": "Required for MimeType",
@@ -306,7 +305,7 @@
             "league/flysystem-webdav": "Allows you to use WebDAV storage",
             "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter"
         },
-        "time": "2015-12-19 20:16:43",
+        "time": "2016-03-14 21:54:11",
         "type": "library",
         "extra": {
             "branch-alias": {

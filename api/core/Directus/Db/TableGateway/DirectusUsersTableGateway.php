@@ -70,11 +70,12 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
      * @source http://gravatar.com/site/implement/images/php/
      */
     public static function get_avatar( $email, $s = 100, $d = 'identicon', $r = 'g', $img = false, $atts = array() ) {
-        $url = 'http://www.gravatar.com/avatar/';
+        $url = '//gravatar.com/avatar/';
         $url .= md5( strtolower( trim( $email ) ) );
 
         //If no Gravatar Exist, set field to null
-        $response = get_headers($url."?d=404");
+        // @TODO: remove this part, not that necessary
+        $response = get_headers('https:'.$url."?d=404");
         if ($response[0] == "HTTP/1.0 404 Not Found"){
             $img = false;
             $url = null;

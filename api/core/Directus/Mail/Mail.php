@@ -39,9 +39,8 @@ class Mail
         extract($data);
         include $viewContentPath;
         include $viewFooterPath;
-$content = nl2br(ob_get_clean());
-file_put_contents('mail.txt', $content);
-        return $content;
+
+        return nl2br(ob_get_clean());
     }
 
     public static function send($viewPath, $data, $callback)

@@ -311,6 +311,10 @@ class TableSchema {
 
         $info = $result->current();
 
+        if (!$info) {
+            return false;
+        }
+
         if ($info) {
             $info['hidden'] = (boolean) $info['hidden'];
             $info['single'] = (boolean) $info['single'];

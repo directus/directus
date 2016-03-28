@@ -1,3 +1,0 @@
-Jan 19 20:34:52 [info] CREATE TABLE `directus_schema_migrations` (
-`version` varchar(255))  DEFAULT CHARSET=utf8;
-Jan 19 20:34:52 [info] CREATE UNIQUE INDEX `idx_directus_schema_migrations_version` ON `directus_schema_migrations`(`version`)
