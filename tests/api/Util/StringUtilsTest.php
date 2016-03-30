@@ -54,4 +54,12 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertSame('camelCase', StringUtils::toCamelCase('camel-case', false, '-'));
         $this->assertSame('CamelCase', StringUtils::toCamelCase('camel-case', true, '-'));
     }
+
+    public function testCharSequence()
+    {
+        $this->assertSame('a', StringUtils::charSequence());
+        $this->assertSame('b', StringUtils::charSequence('a'));
+        $this->assertSame('a', StringUtils::charSequence('z'));
+        $this->assertSame('ab', StringUtils::charSequence('aa'));
+    }
 }

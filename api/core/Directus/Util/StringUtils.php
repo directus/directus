@@ -106,4 +106,38 @@ class StringUtils
     {
         return static::toCamelCase($string, $first);
     }
+
+    public static function charSequence($chars = '')
+    {
+        $letters = range('a', 'z');
+        $arr = str_split($chars);
+
+        // Replace each character with numeric equivalent
+        foreach ($arr as $key => $char) {
+            $arr[$key] = array_search($char, $letters);
+        }
+
+        $digits = count($arr)-1; // Count digits
+        for ($i=$digits; $i > -1; $i--) { // Starting at the right-most spot, move left
+            if ($i == $digits) { // If this is the right most spot
+                $arr[$i]++; // Increment it
+            }
+
+            if ($arr[$i] == 26) { // If this spot has moved past "z"
+                $arr[$i] = 0;	// Set it to "a"
+                if ($i != 0) { // Unless it is the left most spot
+                    $arr[$i - 1]++;  // Carry the one to the next spot
+                }
+            }
+        }
+
+        // Rebuild characters from numeric equivalent
+        foreach ($arr as $key => $char) {
+            $arr[$key] = $letters[$char];
+        }
+
+        $charsSequence = implode($arr);
+
+        return $charsSequence;
+    }
 }
