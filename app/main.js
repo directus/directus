@@ -433,7 +433,7 @@ require(["config"], function() {
             type = 'Server ' + xhr.status;
             messageTitle = "Server Error";
             details = encodeURIComponent(xhr.responseText);
-            app.logErrorToServer(type, messageTitle, details);
+            // app.logErrorToServer(type, messageTitle, details);
             break;
         }
 
@@ -450,7 +450,7 @@ require(["config"], function() {
       window.onerror = function(message, file, line) {
         var type = 'JS';
         var details = 'Error: ' + message + '\nFile: ' + file + '\n Line:' + line;
-        app.logErrorToServer(type, 'Error', details);
+        // app.logErrorToServer(type, 'Error', details);
         app.trigger('alert:error', 'Error', details);
       };
 
