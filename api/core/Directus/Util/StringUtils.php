@@ -110,33 +110,41 @@ class StringUtils
     public static function charSequence($chars = '')
     {
         $letters = range('a', 'z');
-        $arr = str_split($chars);
+        $charsArray = str_split($chars);
 
         // Replace each character with numeric equivalent
-        foreach ($arr as $key => $char) {
-            $arr[$key] = array_search($char, $letters);
+        foreach ($charsArray as $key => $char) {
+            $charsArray[$key] = array_search($char, $letters);
         }
 
-        $digits = count($arr)-1; // Count digits
-        for ($i=$digits; $i > -1; $i--) { // Starting at the right-most spot, move left
-            if ($i == $digits) { // If this is the right most spot
-                $arr[$i]++; // Increment it
+        // Count digits
+        $digits = count($charsArray)-1;
+        // Starting at the right-most spot, move left
+        for ($i=$digits; $i > -1; $i--) {
+            // If this is the right most spot
+            if ($i == $digits) {
+                // Increment it
+                $charsArray[$i]++;
             }
 
-            if ($arr[$i] == 26) { // If this spot has moved past "z"
-                $arr[$i] = 0; // Set it to "a"
-                if ($i != 0) { // Unless it is the left most spot
-                    $arr[$i - 1]++;  // Carry the one to the next spot
+            // If this spot has moved past "z"
+            if ($charsArray[$i] == 26) {
+                // Set it to "a"
+                $charsArray[$i] = 0;
+                // Unless it is the left most spot
+                if ($i != 0) {
+                    // Carry the one to the next spot
+                    $charsArray[$i - 1]++;
                 }
             }
         }
 
         // Rebuild characters from numeric equivalent
-        foreach ($arr as $key => $char) {
-            $arr[$key] = $letters[$char];
+        foreach ($charsArray as $key => $char) {
+            $charsArray[$key] = $letters[$char];
         }
 
-        $charsSequence = implode($arr);
+        $charsSequence = implode($charsArray);
 
         return $charsSequence;
     }
