@@ -109,6 +109,7 @@ class StringUtils
 
     public static function charSequence($chars = '')
     {
+        $chars = strtolower($chars);
         $letters = range('a', 'z');
         $charsArray = str_split($chars);
 
