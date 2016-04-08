@@ -124,7 +124,7 @@ class StringUtils
             }
 
             if ($arr[$i] == 26) { // If this spot has moved past "z"
-                $arr[$i] = 0;	// Set it to "a"
+                $arr[$i] = 0; // Set it to "a"
                 if ($i != 0) { // Unless it is the left most spot
                     $arr[$i - 1]++;  // Carry the one to the next spot
                 }
