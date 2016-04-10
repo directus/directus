@@ -10,7 +10,7 @@ class ArrayUtils
      * @param  array   $array
      * @param  string  $key
      * @param  mixed   $default
-     * 
+     *
      * @return mixed
      */
     public static function get($array, $key, $default = null)
