@@ -32,6 +32,15 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, strlen(StringUtils::random(1)));
     }
 
+    public function testRandomString()
+    {
+        $length = 10;
+        $this->assertEquals(10, strlen(StringUtils::randomString($length)));
+        $this->assertEquals(16, strlen(StringUtils::randomString()));
+        $this->assertInternalType('string', StringUtils::randomString());
+        $this->assertEquals(1, strlen(StringUtils::randomString(1)));
+    }
+
     /**
      * @expectedException     InvalidArgumentException
      */

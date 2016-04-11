@@ -65,7 +65,20 @@ class StringUtils
             return $string;
         }
 
+        return static::randomChars($length);
+    }
+
+    /**
+     * Random string shuffled from a list of alphanumeric characters
+     *
+     * @param int $length
+     *
+     * @return string
+     */
+    public static function randomString($length = 16)
+    {
         $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
         return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
     }
 
