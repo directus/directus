@@ -25,19 +25,11 @@ We're currently a very small team looking to grow our network of contributors. I
 
 ## Documentation ##
 
-View the Directus documentation here:
+### [Directus Documentation Repo](https://github.com/directus/docs)
+Available directly on GitHub with a history of changes from version 6+. For those interested in helping build, correct, or clarify the Directus docs – please submit pull-requests.
 
-
-[GitHub Wiki](https://github.com/RNGR/Directus/wiki)
-
-1. [Installation & Configuration](https://github.com/RNGR/Directus/wiki/1.-Installation-&-Configuration)
-2. [Settings & Customization](https://github.com/RNGR/Directus/wiki/2.-Settings-&-Customization)
-3. [Inputs and Interfaces](https://github.com/RNGR/Directus/wiki/3.-Inputs-and-Interfaces)
-4. [Getting Started Using Directus](https://github.com/RNGR/Directus/wiki/4.-Getting-Started-Using-Directus)
-5. [Extending Directus](https://github.com/RNGR/Directus/wiki/5.-Extending-Directus)
-6. [Development Build](https://github.com/RNGR/Directus/wiki/6.-Development-Build)
-7. [Directus REST API](https://github.com/RNGR/Directus/wiki/7.-Directus-REST-API)
-8. [Ports, Libraries, and Frameworks to Consider](https://github.com/RNGR/Directus/wiki/Ports,-Libraries,-and-Frameworks-to-Consider)
+### [Web Formatted Version](http://getdirectus.com/docs)
+The same as above but web-formatted on our website.
 
 ## Issues ##
 
