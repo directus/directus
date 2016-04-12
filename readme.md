@@ -25,9 +25,9 @@ We're currently a very small team looking to grow our network of contributors. I
 
 ## Documentation ##
 
-**[Directus Documentation Repo](https://github.com/directus/docs)** – Available directly on GitHub with a history of changes from version 6+. For those interested in helping build, correct, or clarify the Directus docs – please submit pull-requests.
+**[Directus Documentation Repo](https://github.com/directus/docs)** – _Available directly on GitHub with a history of changes from version 6+. For those interested in helping build, correct, or clarify the Directus docs – please submit pull-requests._
 
-**[Web Formatted Version](http://getdirectus.com/docs)** – The same as above but web-formatted on our website.
+**[Web Formatted Version](http://getdirectus.com/docs)** – _The same as above but web-formatted on our website._
 
 ## Issues ##
 
