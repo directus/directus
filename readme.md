@@ -58,7 +58,7 @@ While Directus has been abstracted to allow for different database adapters in t
 
 ## Copyright and License ##
 
-Code and documentation copyright 2015 [RANGER Studio LLC](http://rngr.org/). Code released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html).
+Code and documentation copyright 2016 [RANGER Studio LLC](http://rngr.org/). Code released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html).
 
 ## Screenshots ##
 
