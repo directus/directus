@@ -13,6 +13,8 @@ Welcome to Directus, a free and open-source headless CMS written in Backbone.js 
 * Lead Developer: [@WellingGuzman](https://github.com/WellingGuzman)
 * Developers: [@coolov](https://github.com/coolov), [@freen](https://github.com/freen), [@jel-massih](https://github.com/jel-massih), [@Lasha](https://github.com/Lasha)
 
+[![GitHub issues](https://img.shields.io/github/issues/directus/directus.svg)](https://github.com/directus/directus/issues)
+[![GitHub license](https://img.shields.io/badge/license-GPL-blue.svg)](https://raw.githubusercontent.com/directus/directus/master/license.md)
 [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/ranger-studio-llc/directus)
 
 ## New Contributors ##
