@@ -5,6 +5,13 @@ namespace Directus\Util;
 class Date
 {
     /**
+     * Seconds in a day
+     *
+     * @var int
+     */
+    const DAY_IN_SECONDS = 86400;
+
+    /**
      * Given a date/time in UTC and a target timezone, yields a DateTime object converted from
      * UTC to the target timezone.
      *
@@ -31,21 +38,27 @@ class Date
     /**
      * Days left to $timestamp (date)
      *
-     * @param $timestamp
+     * @param $date
+     * @param $toDate - day left to this date
      *
      * @return int
      */
-    public static function daysLeft($timestamp)
+    public static function daysLeft($date, $toDate = null)
     {
-        $timestamp = is_int($timestamp) ? $timestamp : strtotime($timestamp);
-        $diff = $timestamp - time();
+        if ($toDate == null) {
+            $toDate = time();
+        }
+
+        $timestamp = is_int($date) ? $date : strtotime($date);
+        $toDateTimestamp = is_int($toDate) ? $toDate : strtotime($date);
+        $diff = $timestamp - $toDateTimestamp;
 
         if ($diff < 0) {
             $diff = 0;
         }
 
-        $diff /= (60*60*24);
+        $diff /= static::DAY_IN_SECONDS;
 
-        return floor($diff);
+        return (int) floor($diff);
     }
 }
