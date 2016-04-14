@@ -27,4 +27,25 @@ class Date
 
         return $datetime;
     }
+
+    /**
+     * Days left to $timestamp (date)
+     *
+     * @param $timestamp
+     *
+     * @return int
+     */
+    public static function daysLeft($timestamp)
+    {
+        $timestamp = is_int($timestamp) ? $timestamp : strtotime($timestamp);
+        $diff = $timestamp - time();
+
+        if ($diff < 0) {
+            $diff = 0;
+        }
+
+        $diff /= (60*60*24);
+
+        return floor($diff);
+    }
 }
