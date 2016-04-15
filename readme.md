@@ -13,6 +13,10 @@ Welcome to Directus, a free and open-source headless CMS written in Backbone.js 
 * Lead Developer: [@WellingGuzman](https://github.com/WellingGuzman)
 * Developers: [@coolov](https://github.com/coolov), [@freen](https://github.com/freen), [@jel-massih](https://github.com/jel-massih), [@Lasha](https://github.com/Lasha)
 
+[![GitHub issues](https://img.shields.io/github/issues/directus/directus.svg)](https://github.com/directus/directus/issues)
+[![GitHub license](https://img.shields.io/badge/license-GPL-blue.svg)](https://raw.githubusercontent.com/directus/directus/master/license.md)
+[![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/ranger-studio-llc/directus)
+
 ## New Contributors ##
 We're currently a very small team looking to grow our network of contributors. If you're interested in helping advance the Directus framework please reach out to [@BenHaynes](https://github.com/BenHaynes). We're actively seeking developers, designers, and testers who are willing to contribute time to: 
 * The core codebase
@@ -23,19 +27,9 @@ We're currently a very small team looking to grow our network of contributors. I
 
 ## Documentation ##
 
-View the Directus documentation here:
+**[Directus Documentation Repo](https://github.com/directus/docs)** – _Available directly on GitHub with a history of changes from version 6+. For those interested in helping build, correct, or clarify the Directus docs – please submit pull-requests._
 
-
-[GitHub Wiki](https://github.com/RNGR/Directus/wiki)
-
-1. [Installation & Configuration](https://github.com/RNGR/Directus/wiki/1.-Installation-&-Configuration)
-2. [Settings & Customization](https://github.com/RNGR/Directus/wiki/2.-Settings-&-Customization)
-3. [Inputs and Interfaces](https://github.com/RNGR/Directus/wiki/3.-Inputs-and-Interfaces)
-4. [Getting Started Using Directus](https://github.com/RNGR/Directus/wiki/4.-Getting-Started-Using-Directus)
-5. [Extending Directus](https://github.com/RNGR/Directus/wiki/5.-Extending-Directus)
-6. [Development Build](https://github.com/RNGR/Directus/wiki/6.-Development-Build)
-7. [Directus REST API](https://github.com/RNGR/Directus/wiki/7.-Directus-REST-API)
-8. [Ports, Libraries, and Frameworks to Consider](https://github.com/RNGR/Directus/wiki/Ports,-Libraries,-and-Frameworks-to-Consider)
+**[Web Formatted Version](http://getdirectus.com/docs)** – _The same as above but web-formatted on our website._
 
 ## Issues ##
 
@@ -64,7 +58,7 @@ While Directus has been abstracted to allow for different database adapters in t
 
 ## Copyright and License ##
 
-Code and documentation copyright 2015 [RANGER Studio LLC](http://rngr.org/). Code released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html).
+Code and documentation copyright 2016 [RANGER Studio LLC](http://rngr.org/). Code released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html).
 
 ## Screenshots ##
 
