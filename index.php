@@ -26,6 +26,9 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableSchema;
+use Directus\Hook\Hook;
+
+Hook::run('directus.index.start');
 
 // No access, forward to login page
 unset($_SESSION['_directus_login_redirect']);

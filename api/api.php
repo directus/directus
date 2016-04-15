@@ -171,6 +171,8 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             $_SESSION = [];
 
             Auth::setLoggedUser($user['id']);
+            Hook::run('directus.authenticated', [$app, $user]);
+            Hook::run('directus.authenticated.token', [$app, $user]);
         }
 
         /** Enforce required authentication. */
@@ -326,6 +328,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     }
 
     if($response['success']) {
+        Hook::run('directus.authenticated', [$app, $user]);
+        Hook::run('directus.authenticated.admin', [$app, $user]);
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = Auth::getUserInfo();
@@ -1415,46 +1419,46 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
 /**
  * EXCEPTION LOG
  */
-$app->post("/$v/exception/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    print_r($requestPayload);die();
-    $data = array(
-        'server_addr'   =>$_SERVER['SERVER_ADDR'],
-        'server_port'   =>$_SERVER['SERVER_PORT'],
-        'user_agent'    =>$_SERVER['HTTP_USER_AGENT'],
-        'http_host'     =>$_SERVER['HTTP_HOST'],
-        'request_uri'   =>$_SERVER['REQUEST_URI'],
-        'remote_addr'   =>$_SERVER['REMOTE_ADDR'],
-        'page'          =>$requestPayload['page'],
-        'message'       =>$requestPayload['message'],
-        'user_email'    =>$requestPayload['user_email'],
-        'type'          =>$requestPayload['type']
-    );
-
-    $ctx = stream_context_create(array(
-        'http' => array(
-            'method' => 'POST',
-            'content' => "json=".json_encode($data)."&details=".$requestPayload['details']
-        ))
-    );
-
-    $fp = @fopen($url, 'rb', false, $ctx);
-
-    if (!$fp) {
-        $response = "Failed to log error. File pointer could not be initialized.";
-        $app->getLog()->warn($response);
-    }
-
-    $response = @stream_get_contents($fp);
-
-    if ($response === false) {
-        $response = "Failed to log error. stream_get_contents failed.";
-        $app->getLog()->warn($response);
-    }
-
-    $result = array('response'=>$response);
-
-    JsonView::render($result);
-});
+//$app->post("/$v/exception/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
+//    print_r($requestPayload);die();
+//    $data = array(
+//        'server_addr'   =>$_SERVER['SERVER_ADDR'],
+//        'server_port'   =>$_SERVER['SERVER_PORT'],
+//        'user_agent'    =>$_SERVER['HTTP_USER_AGENT'],
+//        'http_host'     =>$_SERVER['HTTP_HOST'],
+//        'request_uri'   =>$_SERVER['REQUEST_URI'],
+//        'remote_addr'   =>$_SERVER['REMOTE_ADDR'],
+//        'page'          =>$requestPayload['page'],
+//        'message'       =>$requestPayload['message'],
+//        'user_email'    =>$requestPayload['user_email'],
+//        'type'          =>$requestPayload['type']
+//    );
+//
+//    $ctx = stream_context_create(array(
+//        'http' => array(
+//            'method' => 'POST',
+//            'content' => "json=".json_encode($data)."&details=".$requestPayload['details']
+//        ))
+//    );
+//
+//    $fp = @fopen($url, 'rb', false, $ctx);
+//
+//    if (!$fp) {
+//        $response = "Failed to log error. File pointer could not be initialized.";
+//        $app->getLog()->warn($response);
+//    }
+//
+//    $response = @stream_get_contents($fp);
+//
+//    if ($response === false) {
+//        $response = "Failed to log error. stream_get_contents failed.";
+//        $app->getLog()->warn($response);
+//    }
+//
+//    $result = array('response'=>$response);
+//
+//    JsonView::render($result);
+//});
 
 /**
  * UI COLLECTION

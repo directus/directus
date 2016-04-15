@@ -40,29 +40,30 @@ define(function(require, exports, module) {
       }
     },
 
-    logErrorToServer: function(type, message, details) {
-      var user = app.users.getCurrentUser(), email = 'n/a';
-
-      if (user) {
-        email = user.get('email');
-      }
-
-      var data = {
-        type: type,
-        message: message,
-        details: details,
-        page: location.href,
-        user_email: email
-      };
-
-      $.post(app.API_URL + 'exception', JSON.stringify(data))
-        .done(function(response) {
-          console.log(response.response);
-        })
-        .error(function(obj) {
-          console.log('FAILED TO LOG ERROR'+obj.responseText);
-        });
-    },
+    //  @TODO: remove this
+    //logErrorToServer: function(type, message, details) {
+    //  var user = app.users.getCurrentUser(), email = 'n/a';
+    //
+    //  if (user) {
+    //    email = user.get('email');
+    //  }
+    //
+    //  var data = {
+    //    type: type,
+    //    message: message,
+    //    details: details,
+    //    page: location.href,
+    //    user_email: email
+    //  };
+    //
+    //  $.post(app.API_URL + 'exception', JSON.stringify(data))
+    //    .done(function(response) {
+    //      console.log(response.response);
+    //    })
+    //    .error(function(obj) {
+    //      console.log('FAILED TO LOG ERROR'+obj.responseText);
+    //    });
+    //},
 
     // http://stackoverflow.com/a/1830844
     isNumber: function(n) {
