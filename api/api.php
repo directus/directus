@@ -171,6 +171,8 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             $_SESSION = [];
 
             Auth::setLoggedUser($user['id']);
+            Hook::run('directus.authenticated', [$app, $user]);
+            Hook::run('directus.authenticated.token', [$app, $user]);
         }
 
         /** Enforce required authentication. */
@@ -326,6 +328,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     }
 
     if($response['success']) {
+        Hook::run('directus.authenticated', [$app, $user]);
+        Hook::run('directus.authenticated.admin', [$app, $user]);
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = Auth::getUserInfo();
