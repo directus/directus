@@ -82,6 +82,7 @@ class Provider {
      * @return boolean
      */
     public static function setLoggedUser($uid) {
+        self::$authenticated = false;
         self::completeLogin($uid);
     }
 
