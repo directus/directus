@@ -38,28 +38,28 @@ class Date
     /**
      * Days left to $timestamp (date)
      *
-     * @param $date
-     * @param $toDate - day left to this date
+     * @param $toDate - days left to this date.
+     * @param $fromDate - days left from this date
      *
      * @return int
      */
-    public static function daysLeft($date, $toDate = null)
+    public static function daysLeft($toDate, $fromDate = null)
     {
-        if ($toDate == null) {
-            $toDate = time();
-        }
-
-        if ($date instanceof \DateTime) {
-            $date = $date->getTimestamp();
+        if ($fromDate == null) {
+            $fromDate = time();
         }
 
         if ($toDate instanceof \DateTime) {
             $toDate = $toDate->getTimestamp();
         }
 
-        $timestamp = is_int($date) ? $date : strtotime($date);
+        if ($fromDate instanceof \DateTime) {
+            $fromDate = $fromDate->getTimestamp();
+        }
+
         $toDateTimestamp = is_int($toDate) ? $toDate : strtotime($toDate);
-        $diff = $timestamp - $toDateTimestamp;
+        $fromDateTimestamp = is_int($fromDate) ? $fromDate : strtotime($fromDate);
+        $diff = $toDateTimestamp - $fromDateTimestamp;
 
         if ($diff < 0) {
             $diff = 0;
