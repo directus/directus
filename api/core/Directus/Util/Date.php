@@ -50,7 +50,7 @@ class Date
         }
 
         $timestamp = is_int($date) ? $date : strtotime($date);
-        $toDateTimestamp = is_int($toDate) ? $toDate : strtotime($date);
+        $toDateTimestamp = is_int($toDate) ? $toDate : strtotime($toDate);
         $diff = $timestamp - $toDateTimestamp;
 
         if ($diff < 0) {
