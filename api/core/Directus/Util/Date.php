@@ -49,6 +49,14 @@ class Date
             $toDate = time();
         }
 
+        if ($date instanceof \DateTime) {
+            $date = $date->getTimestamp();
+        }
+
+        if ($toDate instanceof \DateTime) {
+            $toDate = $toDate->getTimestamp();
+        }
+
         $timestamp = is_int($date) ? $date : strtotime($date);
         $toDateTimestamp = is_int($toDate) ? $toDate : strtotime($toDate);
         $diff = $timestamp - $toDateTimestamp;
