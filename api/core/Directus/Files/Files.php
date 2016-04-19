@@ -449,9 +449,9 @@ class Files
                 //   $thumbnailTempName = $this->getConfig('root') . '/thumbs/THUMB_' . $imageName;
                 $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
                 $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
-                Hook::run('files.thumbnail.saving', array('name' => $imageName, 'data' => $thumbImg));
+                Hook::run('files.thumbnail.saving', array('name' => $imageName, 'size' => strlen($thumbImg)));
                 $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);//, new FlysystemConfig());
-                Hook::run('files.thumbnail.saving:after', array('name' => $imageName, 'data' => $thumbImg));
+                Hook::run('files.thumbnail.saving:after', array('name' => $imageName, 'size' => strlen($thumbImg)));
             }
         }
     }
@@ -477,9 +477,9 @@ class Files
         $finalPath = rtrim($mediaPath, '/').'/'.$targetName;
         $data = file_get_contents($filePath);
 
-        Hook::run('files.saving', array('name' => $targetName, 'data' => $data));
+        Hook::run('files.saving', array('name' => $targetName, 'size' => strlen($data)));
         $this->filesystem->getAdapter()->write($targetName, $data);
-        Hook::run('files.saving:after', array('name' => $targetName, 'data' => $data));
+        Hook::run('files.saving:after', array('name' => $targetName, 'size' => strlen($data)));
 
         $fileData['name'] = basename($finalPath);
         $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
