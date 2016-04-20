@@ -37,6 +37,9 @@ return array(
 
   // Define this to send emails (eg. forgot password)
   'mail' => array(
+      'from' => array(
+          'directus@localhost' => 'Directus'
+      ),
       'transport' => 'mail'
   ),
   // 'SMTP' => array(

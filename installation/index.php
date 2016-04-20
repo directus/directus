@@ -417,6 +417,8 @@ if($step == 3 && isset($_POST['install'])) {
                             'db_pass' => $_SESSION['db_password'],
                             'db_prefix' => '',//$_SESSION['db_prefix'],
                             'directus_path' => $_SESSION['directus_path'],
+                            'email' => $_SESSION['email'],
+                            'site_name' => $_SESSION['site_name'],
                         ));
 
                         // @TODO: put all this data into an array.
