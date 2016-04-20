@@ -232,8 +232,8 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               }
             } elseif (isset($target['relationship']) && $target['relationship']['type'] == "MANYTOONE") {
               $relatedTable = $target['relationship']['table_related'];
-              $keyLeft = $this->getTable() . "." . $target['relationship']['junction_key_right'];
-              $keyRight = $relatedTable . ".id";
+              $keyRight = $this->getTable() . "." . $target['relationship']['junction_key_right'];
+              $keyLeft = $relatedTable . ".id";
               $filterColumn = $target['options']['visible_column'];
               $joinedFilterColumn = $relatedTable . "." . $filterColumn;
 
