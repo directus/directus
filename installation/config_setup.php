@@ -120,6 +120,9 @@ return array(
     ),
 
     'mail' => array(
+        'from' => array(
+            '{$data['email']}' => '{$data['site_name']}'
+        ),
         'transport' => 'mail'
     ),
     // 'SMTP' => array(
