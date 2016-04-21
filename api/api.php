@@ -418,7 +418,6 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
     $data = ['newPassword' => $password];
     Mail::send('mail/forgot-password.twig.html', $data, function($message) use ($user) {
         $message->setSubject('Your new Directus password');
-        $message->setFrom('directus@getdirectus.com');
         $message->setTo($user['email']);
     });
 
@@ -465,7 +464,6 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     $data = ['reset_token' => $set['reset_token']];
     Mail::send('mail/reset-password.twig.html', $data, function($message) use ($user) {
         $message->setSubject('You Reset Your Directus Password');
-        $message->setFrom('directus@getdirectus.com');
         $message->setTo($user['email']);
     });
 
@@ -1309,7 +1307,6 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
             $view = 'mail/notification.twig.html';
             Mail::send($view, $data, function($message) use($user, $requestPayload) {
                 $message->setSubject($requestPayload['subject']);
-                $message->setFrom('directus@getdirectus.com');
                 $message->setTo($user['email']);
             });
         }
@@ -1401,7 +1398,6 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
             $view = 'mail/notification.twig.html';
             Mail::send($view, $data, function($message) use($user, $requestPayload) {
                 $message->setSubject($requestPayload['subject']);
-                $message->setFrom('directus@getdirectus.com');
                 $message->setTo($user['email']);
             });
       }
