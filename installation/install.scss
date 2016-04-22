@@ -1,0 +1,247 @@
+// sass --watch install.scss:install.css
+
+//////////////////////////////////////////////////////////////////////////////
+// Variables
+
+$primary: #b26cee;
+$bad: #c1272d;
+
+$lightGrey: #cccccc; // Light Grey
+$mediumGrey: #aaaaaa; // Medium Grey
+$darkGrey: #666666; // Dark Grey
+$extraDarkGrey: #333333; // Extra Dark Grey
+$black: #1a1a1a; // Directus Black
+
+//////////////////////////////////////////////////////////////////////////////
+// Mixins
+
+@mixin border-radius ($radius: 3px) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    border-radius: $radius;
+}
+@mixin transition ($prop: all, $time: 200ms, $ease: linear) {
+    -webkit-transition: $prop $time $ease;
+    -moz-transition: $prop $time $ease;
+    -o-transition: $prop $time $ease;
+    -ms-transition: $prop $time $ease;
+    transition: $prop $time $ease;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Tags and Structure
+
+body {
+    background-color: #F4F4F4;
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+    -webkit-font-smoothing: antialiased !important;
+    font-size: 16px;
+    color: #bbbbbb;
+    font-weight: 600;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+}
+h1 {
+    font-weight: 400;
+    font-size: 24px;
+    margin: 10px 0 30px 0;
+    color: $darkGrey;
+}
+hr {
+    border: 0;
+    color: #bbbbbb;
+    background-color: #bbbbbb;
+    height: 1px;
+}
+label {
+    font-size: 13px;
+    text-transform: uppercase;
+}
+input[type=checkbox] {
+    margin: 0 10px 0 0;
+    top: -1px;
+    position: relative;
+}
+textarea {
+    width: 100%;
+    min-height: 200px;
+    font-size: 10px;
+    outline: none;
+    border-color: #bbbbbb;
+    white-space: pre;
+    word-wrap: normal;
+    overflow-x: scroll;
+    margin: 10px 0 10px 0;
+}
+.header {
+    background-color: #ffffff;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    text-align: center;
+    position: relative;
+    img {
+        margin-top: 40px;
+    }
+    .breadcrumb {
+        padding-bottom: 35px;
+        color: #bbbbbb;
+        font-size: 14px;
+        font-weight: 600;
+        .separator {
+            margin: -5px 20px 0 20px;
+            font-size: 10px;
+            color: #eeeeee;
+            vertical-align: middle;
+            display: inline-block;
+        }
+        .complete {
+            color: $darkGrey;
+        }
+        .current {
+            color: $primary;
+        }
+    }
+}
+.container {
+    width: 100%;
+    margin: 60px auto 10px;
+    max-width: 340px;
+    position: relative;
+    &.step-1 {
+        max-width: 650px;
+        color: $darkGrey;
+        letter-spacing: 0.6px;
+        line-height: 30px;
+    }
+}
+input[type=text],
+input[type=email],
+input[type=password] {
+    @include border-radius;
+    padding: 10px 12px;
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: $darkGrey;
+    border: #BBBBBB 1px solid;
+    outline: none;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    &:focus {
+        border: 1px solid $primary;
+    }
+    &.bad {
+        border: 1px solid $bad !important;
+    }
+}
+.button {
+    @include border-radius;
+    @include transition (all, 200ms, linear);
+    width: 100%;
+    font-size: 15px;
+    outline: none;
+    display: block;
+    background-color: $mediumGrey;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 20px 15px 20px 15px;
+    margin: 30px 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-weight: 600;
+    &:hover {
+        background-color: #4f4f4f;
+    }
+    &.primary {
+        background-color: $primary;
+        &:hover {
+            background-color: darken($primary, 5%);
+        }
+        &.disabled {
+            background-color: $lightGrey;
+            &:hover {
+                cursor: not-allowed;
+            }
+        }
+    }
+}
+.no-button {
+    width: 100%;
+    outline: none;
+    display: block;
+    background-color: transparent;
+    border: none;
+    color: $mediumGrey;
+    cursor: pointer;
+    margin: 10px 0 10px 0;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+// Classes
+//////////////////////////////////////////////////////////////////////////////
+
+.hide {
+    display: none;
+}
+.note {
+    font-style: italic;
+    font-size: 11px;
+}
+.label-important {
+    color: $bad;
+    font-weight: bold;
+}
+.label-success {
+    color: $primary;
+    font-weight: bold;
+}
+.step-3 {
+    h3 {
+        font-size: 16px;
+        margin-bottom: 0px;
+        margin-top: 30px;
+        font-weight: 400;
+    }
+    table {
+        font-size: 12px;
+        width: 100%;
+        .item {
+            font-weight: bold;
+            //width: 200px;
+            height: 22px;
+        }
+        .result {
+            text-align: right;
+        }
+    }
+    input[type=checkbox] {
+        margin: 0;
+    }
+}
+.config-paste {
+    font-size: 12px;
+}
+.error-container {
+    background-color: $bad;
+    color: white;
+    padding: 20px;
+    margin: 0 0 20px 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.error{
+    border: 1px solid $bad !important;;
+}
