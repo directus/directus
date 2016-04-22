@@ -124,6 +124,7 @@ input[type=text],
 input[type=email],
 input[type=password] {
     @include border-radius;
+    @include transition (all, 200ms, linear);
     padding: 10px 12px;
     width: 100%;
     margin-top: 5px;

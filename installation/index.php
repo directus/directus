@@ -102,11 +102,11 @@ if($step == 3 && isset($_POST['install'])) {
         <img src="directus-logo.png">
         <h1>Install Directus</h1>
         <div class="breadcrumb">
-            <span class="<?PHP if($step == 1){echo "current";} elseif($step > 1){echo "complete";}?>">1. Project Info</span>
+            <span class="<?PHP if($step == 1){echo "current";} elseif($step > 1){echo "complete";}?>">1. Project</span>
             <span class="separator">●</span>
             <span class="<?PHP if($step == 2){echo "current";} elseif($step > 2){echo "complete";}?>">2. Database</span>
             <span class="separator">●</span>
-            <span class="<?PHP if($step == 3){echo "current";} elseif($step > 3){echo "complete";}?>">3. Confirmation</span>
+            <span class="<?PHP if($step == 3){echo "current";} elseif($step > 3){echo "complete";}?>">3. Confirm</span>
         </div>
     </div>
     <div class="container">
@@ -136,9 +136,9 @@ if($step == 3 && isset($_POST['install'])) {
                 $directus_path = preg_replace('#/(installation/.*)#i', '', $_SERVER['REQUEST_URI']) . '/';
                 ?>
                 <div class="container">
-                    <label for="site_name">Project Name</label><input type="text" id="site_name" name="site_name" value="<?php echo(isset($_SESSION['site_name']) ? $_SESSION['site_name'] : ''); ?>"><br>
-                    <label for="directus_path">Project Path</label><input type="text" id="directus_path" name="directus_path" value="<?php echo(isset($_SESSION['directus_path']) ? $_SESSION['directus_path'] : $directus_path); ?>"><br>
-                    <label for="email">Admin Email</label><input type="email" id="email" name="email" value="<?php echo(isset($_SESSION['email']) ? $_SESSION['email'] : ''); ?>"><br>
+                    <label for="site_name">Project Name</label><input type="text" id="site_name" name="site_name" placeholder="My Project Name" value="<?php echo(isset($_SESSION['site_name']) ? $_SESSION['site_name'] : ''); ?>" autofocus><br>
+                    <label for="directus_path">Project Path</label><input type="text" id="directus_path" name="directus_path" placeholder="Path to Directus directory" value="<?php echo(isset($_SESSION['directus_path']) ? $_SESSION['directus_path'] : $directus_path); ?>"><br>
+                    <label for="email">Admin Email</label><input type="email" id="email" name="email" placeholder="admin@example.com" value="<?php echo(isset($_SESSION['email']) ? $_SESSION['email'] : ''); ?>"><br>
                     <label for="password">Admin Password</label><input type="password" id="password" name="password" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
                     <label for="password_confirm">Confirm Admin Password</label><input type="password" id="password_confirm" name="password_confirm" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
                 </div>
@@ -154,12 +154,12 @@ if($step == 3 && isset($_POST['install'])) {
                         There was an error while attempting to connect to the database. Please review the above configuration and try again.
                     </div>
                 <?php } ?>
-                <label for="host_name">Host Name</label><input type="text" id="host_name" class="<?php if($code == 2002){echo "error";}?>" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : 'localhost'); ?>"><br>
-                <label for="username">Username</label><input type="text" id="username" class="<?php if($code == 1045){echo "error";}?>" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
-                <label for="password">Password</label><input type="password" id="password" class="<?php if($code == 1045){echo "error";}?>" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
-                <label for="db_name">Database Name</label><input type="text" id="db_name" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
+                <label for="host_name">Host Name</label><input type="text" id="host_name" placeholder="eg: localhost" class="<?php if($code == 2002){echo "error";}?>" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : 'localhost'); ?>" autofocus><br>
+                <label for="username">Username</label><input type="text" id="username" placeholder="With access/modify privileges" class="<?php if($code == 1045){echo "error";}?>" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
+                <label for="password">Password</label><input type="password" id="password" placeholder="" class="<?php if($code == 1045){echo "error";}?>" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
+                <label for="db_name">Database Name</label><input type="text" id="db_name" placeholder="" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
 
-                <input type="checkbox" name="install_sample" value="yes" <?php echo(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == 'yes' ? 'checked' : ''); ?>>Install Sample Data<br>
+                <input type="checkbox" name="install_sample" value="yes" <?php echo(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == 'yes' ? 'checked' : ''); ?>>Install Sample Schema<br>
             </div>
             <?php
         }

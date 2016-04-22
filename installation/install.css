@@ -87,6 +87,11 @@ input[type=password] {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+  -webkit-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  -ms-transition: all 200ms linear;
+  transition: all 200ms linear;
   padding: 10px 12px;
   width: 100%;
   margin-top: 5px;
