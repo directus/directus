@@ -316,13 +316,14 @@
           position: relative;
           .icon {
             color: $darkGrey;
-            line-height: 28px;
+            line-height: 29px;
             right: 6px;
           }
           select {
             padding-right: 20px;
             outline: none;
             max-width: 120px;
+            border-radius: 0;
           }
         }
         input {

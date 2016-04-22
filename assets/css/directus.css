@@ -2131,7 +2131,6 @@ input[type="date"]::-webkit-inner-spin-button {
   color: #ffffff;
   cursor: pointer;
   padding: 12px 15px 10px 15px;
-  letter-spacing: 0;
   font-weight: 600;
   -webkit-font-smoothing: antialiased !important;
   text-transform: uppercase;
@@ -2358,8 +2357,8 @@ select {
   .simple-select .icon {
     bottom: 0px;
     display: block;
-    font-size: 200%;
-    line-height: 52%;
+    font-size: 300%;
+    line-height: 40%;
     pointer-events: none;
     position: absolute;
     right: 7px;
@@ -3971,12 +3970,13 @@ body.initial-load #sidebar {
         position: relative; }
         .header1 .secondary-row.filter-options .filter-form .simple-select .icon {
           color: #666666;
-          line-height: 28px;
+          line-height: 29px;
           right: 6px; }
         .header1 .secondary-row.filter-options .filter-form .simple-select select {
           padding-right: 20px;
           outline: none;
-          max-width: 120px; }
+          max-width: 120px;
+          border-radius: 0; }
       .header1 .secondary-row.filter-options .filter-form input {
         display: inline-block;
         max-width: 120px; }
