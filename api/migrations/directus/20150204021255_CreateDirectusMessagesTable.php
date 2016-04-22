@@ -50,9 +50,9 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
           "null"=>false
         )
       );
-      $t->column("datetime", "datetime", array(
+      $t->column("datetime", "TIMESTAMP", array(
           "null"=>false,
-          "default"=>"0000-00-00 00:00:00"
+          "default"=>"CURRENT_TIMESTAMP"
         )
       );
       $t->column("attachment", "integer", array(
