@@ -889,7 +889,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     addTableConfirmation: function() {
-      app.router.openModal({type: 'prompt', text: 'What would you like to name this table?', callback: _.bind(this.addTable, this)});
+      app.router.openModal({type: 'prompt', text: 'Enter the name of a new or existing table to add:', callback: _.bind(this.addTable, this)});
     },
 
     addTable: function(tableName) {
