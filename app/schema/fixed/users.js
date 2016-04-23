@@ -20,42 +20,12 @@ define(function(require, exports, module) {
         "url": "api/1/tables/directus_users/",
         "columns": [
           {
-            "id":"avatar",
-            "column_name":"avatar",
-            "type":"VARCHAR",
-            "is_nullable":"YES",
-            "comment":"",
-            "sort":16,
-            "system":false,
-            "master":false,
-            "hidden_list":false,
-            "hidden_input":true,
-            "required":false,
-            "ui":"directus_user_avatar"
-          },
-          {
-            "id":"name",
-            "column_name":"first_name",
-            "type":"ALIAS",
-            "sort":0,
-            "is_nullable":"NO",
-            "ui":"directus_user",
-            "system":false,
-            "master":false,
-            "hidden_list":true,
-            "hidden_input":true,
-            "required":false,
-            "options": {
-              "format": "full"
-            }
-          },
-          {
             "id":"id",
             "column_name":"id",
             "type":"TINYINT",
             "is_nullable":"NO",
             "comment":"",
-            "sort":1,
+            "sort":0,
             "system":true,
             "master":false,
             "hidden_list":false,
@@ -71,7 +41,7 @@ define(function(require, exports, module) {
             "is_nullable":"NO",
             "default_value":"1",
             "comment":"",
-            "sort":2,
+            "sort":1,
             "system":true,
             "master":false,
             "hidden_list":false,
@@ -79,6 +49,36 @@ define(function(require, exports, module) {
             "required":false,
             "ui":"checkbox",
             "hidden":true
+          },
+          {
+            "id":"avatar",
+            "column_name":"avatar",
+            "type":"VARCHAR",
+            "is_nullable":"YES",
+            "comment":"",
+            "sort":2,
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":true,
+            "required":false,
+            "ui":"directus_user_avatar"
+          },
+          {
+            "id":"name",
+            "column_name":"first_name",
+            "type":"ALIAS",
+            "sort":3,
+            "is_nullable":"NO",
+            "ui":"directus_user",
+            "system":false,
+            "master":false,
+            "hidden_list":true,
+            "hidden_input":true,
+            "required":false,
+            "options": {
+              "format": "full"
+            }
           },
           {
             "id":"first_name",
@@ -106,7 +106,7 @@ define(function(require, exports, module) {
             "is_nullable":"NO",
             "default_value":"",
             "comment":"",
-            "sort":4,
+            "sort":5,
             "system":false,
             "master":false,
             "hidden_list":false,
@@ -125,45 +125,7 @@ define(function(require, exports, module) {
             "is_nullable":"NO",
             "default_value":"",
             "comment":"",
-            "sort":5,
-            "ui":"textinput",
-            "system":false,
-            "master":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "medium"
-            }
-          },
-          {
-            "id":"phone",
-            "column_name":"phone",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "is_nullable":"YES",
-            "default_value":"",
-            "comment":"",
-            "sort":10,
-            "ui":"textinput",
-            "system":false,
-            "master":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "medium"
-            }
-          },
-          {
-            "id":"location",
-            "column_name":"location",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "is_nullable":"YES",
-            "default_value":"",
-            "comment":"",
-            "sort":11,
+            "sort":6,
             "ui":"textinput",
             "system":false,
             "master":false,
@@ -182,7 +144,7 @@ define(function(require, exports, module) {
             "is_nullable":"YES",
             "default_value":"",
             "comment":"",
-            "sort":9,
+            "sort":30,
             "ui":"textinput",
             "system":false,
             "master":false,
@@ -194,19 +156,118 @@ define(function(require, exports, module) {
             }
           },
           {
-            "id":"last_access",
-            "column_name":"last_access",
-            "type":"DATETIME",
+            "id":"phone",
+            "column_name":"phone",
+            "type":"VARCHAR",
+            "char_length":"255",
             "is_nullable":"YES",
-            "default_value":"0000-00-00 00:00:00",
+            "default_value":"",
             "comment":"",
-            "sort":16,
+            "sort":31,
+            "ui":"textinput",
             "system":false,
             "master":false,
             "hidden_list":false,
-            "hidden_input":true,
+            "hidden_input":false,
             "required":false,
-            "ui":"datetime"
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"location",
+            "column_name":"location",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "is_nullable":"YES",
+            "default_value":"",
+            "comment":"",
+            "sort":32,
+            "ui":"textinput",
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"address",
+            "column_name":"address",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "is_nullable":"YES",
+            "default_value":"",
+            "comment":"",
+            "sort":33,
+            "ui":"textinput",
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"city",
+            "column_name":"city",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "is_nullable":"YES",
+            "default_value":"",
+            "comment":"",
+            "sort":34,
+            "ui":"textinput",
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"state",
+            "column_name":"state",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "is_nullable":"YES",
+            "default_value":"",
+            "comment":"",
+            "sort":35,
+            "ui":"textinput",
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "small"
+            }
+          },
+          {
+            "id":"zip",
+            "column_name":"zip",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "is_nullable":"YES",
+            "default_value":"",
+            "comment":"",
+            "sort":36,
+            "ui":"textinput",
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "small"
+            }
           },
           {
             "id":"email_messages",
@@ -231,7 +292,7 @@ define(function(require, exports, module) {
             "is_nullable":"NO",
             "default_value":"",
             "comment":"Passwords are encrypted, if forgotten they must be reset",
-            "sort":7,
+            "sort":10,
             "system":true,
             "master":false,
             "hidden_list":true,
@@ -250,7 +311,7 @@ define(function(require, exports, module) {
             "is_nullable":"NO",
             "default_value":"",
             "comment":"",
-            "sort":8,
+            "sort":11,
             "system":true,
             "master":false,
             "hidden_list":true,
@@ -265,8 +326,8 @@ define(function(require, exports, module) {
             "char_length":"255",
             "is_nullable":"YES",
             "default_value":"",
-            "comment":"",
-            "sort":8,
+            "comment":"This is your user's API authentication token. Keep it safe!",
+            "sort":12,
             "system":true,
             "master":false,
             "hidden_list":false,
@@ -282,7 +343,7 @@ define(function(require, exports, module) {
             "is_nullable":"YES",
             "default_value":"",
             "comment":"",
-            "sort":8,
+            "sort":13,
             "system":true,
             "master":false,
             "hidden_list":true,
@@ -298,7 +359,7 @@ define(function(require, exports, module) {
             "is_nullable":"YES",
             "default_value":"",
             "comment":"",
-            "sort":9,
+            "sort":14,
             "system":true,
             "master":false,
             "hidden_list":false,
@@ -312,8 +373,23 @@ define(function(require, exports, module) {
             "type":"DATETIME",
             "is_nullable":"YES",
             "comment":"",
-            "sort":10,
+            "sort":15,
             "system":true,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":true,
+            "required":false,
+            "ui":"datetime"
+          },
+          {
+            "id":"last_access",
+            "column_name":"last_access",
+            "type":"DATETIME",
+            "is_nullable":"YES",
+            "default_value":"0000-00-00 00:00:00",
+            "comment":"",
+            "sort":20,
+            "system":false,
             "master":false,
             "hidden_list":false,
             "hidden_input":true,
@@ -327,7 +403,7 @@ define(function(require, exports, module) {
             "is_nullable":"YES",
             "default_value":"0000-00-00 00:00:00",
             "comment":"",
-            "sort":12,
+            "sort":21,
             "system":false,
             "master":false,
             "hidden_list":false,
@@ -343,7 +419,7 @@ define(function(require, exports, module) {
             "is_nullable":"NO",
             "default_value":"",
             "comment":"",
-            "sort":13,
+            "sort":22,
             "system":false,
             "master":false,
             "hidden_list":false,
@@ -359,7 +435,7 @@ define(function(require, exports, module) {
             "is_nullable":"YES",
             "default_value":"",
             "comment":"",
-            "sort":14,
+            "sort":23,
             "system":true,
             "master":false,
             "hidden_list":false,
@@ -392,7 +468,7 @@ define(function(require, exports, module) {
             }
           }
         ]
-      }
+      };
     }
   };
 
