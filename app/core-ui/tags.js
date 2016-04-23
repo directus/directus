@@ -22,7 +22,7 @@ define(['app','backbone'], function(app, Backbone) {
   ];
 
   var template = '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;"><button class="btn btn-small btn-primary margin-left" type="button">Add</button> \
+                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;"><button class="btn btn-primary margin-left" type="button">Add</button> \
                  <div style="width:84%;">{{#tags}}<span class="tag">{{this}}</span>{{/tags}}</div>';
 
   Module.Input = Backbone.Layout.extend({

@@ -20,8 +20,7 @@
   height: 10px;
   width: 100%;
   z-index: 50;
-  /* Switch to mixin */
-  background: -webkit-linear-gradient(top, fade($extraDarkGrey, 15%) 0%,fade($extraDarkGrey, 0%) 100%);
+  background: linear-gradient(transparentize($extraDarkGrey, 0.85), transparentize($extraDarkGrey, 1));
   opacity: 0.0;
   pointer-events: none;
 }
@@ -231,7 +230,7 @@
     .btn {
       &.disabled {
         //opacity: 0.1;
-        color: fade($white, 25%);
+        color: transparentize($white, 0.75);
         &:hover {
           background-color: $mediumGrey;
         }
