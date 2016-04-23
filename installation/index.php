@@ -42,10 +42,10 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
     $_SESSION['db_password'] = $_POST['password'];
     $_SESSION['db_name'] = $_POST['db_name'];
     $_SESSION['db_prefix'] = '';//$_POST['db_prefix'];
-    if(isset($_POST['install_sample'])) {
-        $_SESSION['install_sample'] = $_POST['install_sample'];
+    if(isset($_POST['initial_schema'])) {
+        $_SESSION['initial_schema'] = $_POST['initial_schema'];
     } else {
-        $_SESSION['install_sample'] = "no";
+        $_SESSION['initial_schema'] = "none";
     }
     if($connection) {
         $_SESSION['step'] = 3;
@@ -158,8 +158,11 @@ if($step == 3 && isset($_POST['install'])) {
                 <label for="username">Username</label><input type="text" id="username" placeholder="With access/modify privileges" class="<?php if($code == 1045){echo "error";}?>" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
                 <label for="password">Password</label><input type="password" id="password" placeholder="" class="<?php if($code == 1045){echo "error";}?>" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
                 <label for="db_name">Database Name</label><input type="text" id="db_name" placeholder="" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
-
-                <input type="checkbox" name="install_sample" value="yes" <?php echo(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == 'yes' ? 'checked' : ''); ?>>Install Sample Schema<br>
+                <label for="initial_schema">Initial Schema</label>
+                <select name="initial_schema" id="initial_schema">
+                    <option value="none" <?php echo(isset($_SESSION['initial_schema']) && $_SESSION['initial_schema'] == 'none' ? 'checked' : ''); ?>>None (Blank Database)</option>
+                    <option value="ui_gallery" <?php echo(isset($_SESSION['initial_schema']) && $_SESSION['initial_schema'] == 'ui_gallery' ? 'checked' : ''); ?>>UI Gallery</option>
+                </select>
             </div>
             <?php
         }
@@ -299,7 +302,7 @@ if($step == 3 && isset($_POST['install'])) {
             AddSettings($mysqli);
             AddDefaultUser($_SESSION['email'], $_SESSION['password'], $mysqli);
             AddStorageAdapters($mysqli);
-            if(isset($_SESSION['install_sample']) && $_SESSION['install_sample'] == "yes") {
+            if(isset($_SESSION['initial_schema']) && $_SESSION['initial_schema'] == "ui_gallery") {
                 InstallSampleData($mysqli);
             }
             if(isset($_SESSION['send_config_email']) && $_SESSION['send_config_email'] == "yes") {
@@ -383,7 +386,7 @@ if($step == 3 && isset($_POST['install'])) {
                 'db_password',
                 'db_name',
                 'db_prefix',
-                'install_sample',
+                'initial_schema',
                 'default_dest',
                 'default_url',
                 'thumb_dest',

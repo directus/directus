@@ -81,6 +81,7 @@ textarea {
     letter-spacing: 0.6px;
     line-height: 30px; }
 
+select,
 input[type=text],
 input[type=email],
 input[type=password] {
@@ -101,11 +102,21 @@ input[type=password] {
   border: #BBBBBB 1px solid;
   outline: none;
   background-color: #ffffff;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; }
+  select option,
+  input[type=text] option,
+  input[type=email] option,
+  input[type=password] option {
+    padding: 10px 12px; }
+  select:focus,
   input[type=text]:focus,
   input[type=email]:focus,
   input[type=password]:focus {
     border: 1px solid #b26cee; }
+  select.bad,
   input[type=text].bad,
   input[type=email].bad,
   input[type=password].bad {

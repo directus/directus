@@ -120,6 +120,7 @@ textarea {
         line-height: 30px;
     }
 }
+select,
 input[type=text],
 input[type=email],
 input[type=password] {
@@ -135,6 +136,12 @@ input[type=password] {
     outline: none;
     background-color: #ffffff;
     box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    option {
+        padding: 10px 12px;
+    }
     &:focus {
         border: 1px solid $primary;
     }
