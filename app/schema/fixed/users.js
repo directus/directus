@@ -51,6 +51,32 @@ define(function(require, exports, module) {
             "hidden":true
           },
           {
+            "column_name":"avatar_file_id",
+            "sort":2,
+            "type":"INT",
+            "is_nullable":"YES",
+            "comment":"",
+            "ui":"single_file",
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "column_type":"int(11)",
+            "column_key":"",
+            "is_writable":true,
+            "id":"avatar_file_id",
+            "options":{
+              "id":"single_file",
+              "allowed_filetypes":"image\/"
+            },
+            "relationship":{
+              "type":"MANYTOONE",
+              "table_related":"directus_files",
+              "junction_key_right":"avatar_file_id"
+            }
+          },
+          {
             "id":"avatar",
             "column_name":"avatar",
             "type":"VARCHAR",
@@ -455,6 +481,9 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":false,
             "required":true,
+            "is_writable": true,
+            "column_type": "int(11)",
+            "column_key": "",
             "ui":"many_to_one",
             "options": {
               "id": "many_to_one",
@@ -464,7 +493,8 @@ define(function(require, exports, module) {
             },
             "relationship":{
               "type":"MANYTOONE",
-              "table_related":"directus_groups"
+              "table_related":"directus_groups",
+              "junction_key_right":"group_id"
             }
           }
         ]
