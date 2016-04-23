@@ -156,7 +156,7 @@ CREATE TABLE `directus_messages` (
   `from` int(11) DEFAULT NULL,
   `subject` varchar(255) NOT NULL DEFAULT '',
   `message` text NOT NULL,
-  `datetime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `datetime` TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `attachment` int(11) DEFAULT NULL,
   `response_to` int(11) DEFAULT NULL,
   `comment_metadata` varchar(255) DEFAULT NULL,

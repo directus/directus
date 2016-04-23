@@ -381,9 +381,9 @@ class Local extends AbstractAdapter
     }
 
     /**
-     * @param $file
+     * @param SplFileInfo $file
      */
-    protected function deleteFileInfoObject($file)
+    protected function deleteFileInfoObject(SplFileInfo $file)
     {
         switch ($file->getType()) {
             case 'dir':
