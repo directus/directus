@@ -2874,10 +2874,10 @@ select,
   right: 24px; }
 
 .set-columns {
+  position: fixed;
+  top: 173px;
+  right: 40px;
   display: block;
-  position: absolute;
-  right: -2px;
-  top: 38px;
   width: 200px;
   background-color: #333333;
   color: #aaaaaa;
@@ -3696,7 +3696,7 @@ body.initial-load #sidebar {
       display: block;
       font-size: 12px;
       line-height: 13px;
-      padding: 7px 12px 8px 10px;
+      padding: 6px 12px 6px 10px;
       position: relative;
       white-space: nowrap;
       overflow: hidden;

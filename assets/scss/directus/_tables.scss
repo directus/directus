@@ -314,10 +314,12 @@
 }
 .set-columns {
   // overflow: hidden; // For triangle
+  position: fixed;
+  top: 173px;
+  right: 40px;
   display: block;
-  position: absolute;
-  right: -2px;
-  top: 38px;
+  // right: -2px;
+  // top: 38px;
   width: 200px;
   background-color: $extraDarkGrey;
   color: $mediumGrey;

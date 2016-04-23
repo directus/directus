@@ -12,13 +12,14 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
+  var template = '<input type="text" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
 
   Module.id = 'numeric';
   Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR', 'DOUBLE', 'BIGINT'];
 
   Module.variables = [
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+    {id: 'placeholder_text', ui: 'textinput', char_length:200},
     {id: 'allow_null', ui: 'checkbox', def: '0'}
   ];
 
@@ -61,6 +62,7 @@ define(['app', 'backbone'], function(app, Backbone) {
         value: value,
         name: this.options.name,
         size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
+        placeholder: (this.options.settings) ? this.options.settings.get('placeholder_text') : '',
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite
       };
