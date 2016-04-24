@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WellingGuzman/Migrations.git",
-                "reference": "971e9d722c27f9453a13f3636c2885500fbf1817"
+                "reference": "f98c8c999a9d0369a3ee500fb6faf683ba2df9b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/971e9d722c27f9453a13f3636c2885500fbf1817",
-                "reference": "971e9d722c27f9453a13f3636c2885500fbf1817",
+                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/f98c8c999a9d0369a3ee500fb6faf683ba2df9b8",
+                "reference": "f98c8c999a9d0369a3ee500fb6faf683ba2df9b8",
                 "shasum": ""
             },
             "require": {
@@ -56,20 +56,21 @@
             ],
             "description": "Framework for generating and managing database migrations",
             "homepage": "https://github.com/wellingguzman/migrations",
-            "time": "2016-01-31 05:12:11"
+            "abandoned": true,
+            "time": "2016-04-24 17:35:12"
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.20",
+            "version": "1.0.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "e87a786e3ae12a25cf78a71bb07b4b384bfaa83a"
+                "reference": "35a83cf67d80d7040f306c77b0a84b9fbcc4fbfb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/e87a786e3ae12a25cf78a71bb07b4b384bfaa83a",
-                "reference": "e87a786e3ae12a25cf78a71bb07b4b384bfaa83a",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/35a83cf67d80d7040f306c77b0a84b9fbcc4fbfb",
+                "reference": "35a83cf67d80d7040f306c77b0a84b9fbcc4fbfb",
                 "shasum": ""
             },
             "require": {
@@ -139,7 +140,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-03-14 21:54:11"
+            "time": "2016-04-22 10:56:25"
         },
         {
             "name": "slim/extras",
