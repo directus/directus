@@ -686,7 +686,7 @@ class MySQLBase extends Ruckusing_Adapter_Base implements Ruckusing_Adapter_Inte
                 $this->identifier($table_name),
                 $this->identifier($column_name),
                 $this->identifier($new_column_name), $current_type);
-        
+
         $sql .= $this->add_column_options($current_type, $column_info);
 
         return $this->execute_ddl($sql);
@@ -1108,6 +1108,8 @@ class MySQLBase extends Ruckusing_Adapter_Base implements Ruckusing_Adapter_Inte
                 $default_format = '%d';
             } elseif (is_bool($options['default'])) {
                 $default_format = "'%d'";
+            } elseif ($this->is_internal_default($options['default'])) {
+                $default_format = "%s";
             } else {
                 $default_format = "'%s'";
             }
@@ -1340,6 +1342,21 @@ class MySQLBase extends Ruckusing_Adapter_Base implements Ruckusing_Adapter_Inte
         } else {
             return false;
         }
+    }
+
+    /**
+     * Detect whether or not the string represents an internal default value
+     * such as CURRENT_TIMESTAMP
+     *
+     * @param string $str
+     *
+     * @return boolean
+     */
+    private function is_internal_default($str)
+    {
+        return in_array(strtoupper($str), array(
+            'CURRENT_TIMESTAMP'
+        ));
     }
 
     /**

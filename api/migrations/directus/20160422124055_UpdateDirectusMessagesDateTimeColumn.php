@@ -5,7 +5,7 @@ class UpdateDirectusMessagesDateTimeColumn extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        $this->change_column('directus_messages', 'datetime', 'TIMESTAMP', array(
+        $this->change_column('directus_messages', 'datetime', 'timestamp', array(
             'null' => false,
             'default' => 'CURRENT_TIMESTAMP'
         ));
@@ -13,7 +13,7 @@ class UpdateDirectusMessagesDateTimeColumn extends Ruckusing_Migration_Base
 
     public function down()
     {
-        $this->change_column('directus_messages', 'datetime', 'datetime', array(
+        $this->change_column('directus_messages', 'timestamp', 'datetime', array(
             'null' => false,
             'default' => '0000-00-00 00:00:00'
         ));

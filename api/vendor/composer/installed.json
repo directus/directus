@@ -105,12 +105,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/WellingGuzman/Migrations.git",
-            "reference": "971e9d722c27f9453a13f3636c2885500fbf1817"
+            "reference": "f98c8c999a9d0369a3ee500fb6faf683ba2df9b8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/971e9d722c27f9453a13f3636c2885500fbf1817",
-            "reference": "971e9d722c27f9453a13f3636c2885500fbf1817",
+            "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/f98c8c999a9d0369a3ee500fb6faf683ba2df9b8",
+            "reference": "f98c8c999a9d0369a3ee500fb6faf683ba2df9b8",
             "shasum": ""
         },
         "require": {
@@ -119,7 +119,7 @@
         "require-dev": {
             "phpunit/phpunit": "3.7.*"
         },
-        "time": "2016-01-31 05:12:11",
+        "time": "2016-04-24 17:35:12",
         "bin": [
             "ruckus.php"
         ],
@@ -149,7 +149,8 @@
             }
         ],
         "description": "Framework for generating and managing database migrations",
-        "homepage": "https://github.com/wellingguzman/migrations"
+        "homepage": "https://github.com/wellingguzman/migrations",
+        "abandoned": true
     },
     {
         "name": "zendframework/zend-stdlib",
