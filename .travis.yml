@@ -8,8 +8,6 @@ php:
   - hhvm
 
 matrix:
-  exclude:
-    - php: hhvm
   allow_failures:
     - php: 7.0
     - php: hhvm
@@ -25,4 +23,3 @@ install:
 
 script:
   - npm test
-  - phpunit
