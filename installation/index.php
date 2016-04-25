@@ -97,7 +97,7 @@ if($step == 3 && isset($_POST['install'])) {
     <meta name="author" content="RANGER Studio LLC">
 
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,600" type="text/css">
     <link rel="stylesheet" href="install.css?v=<?=$assetsVersion;?>">
 </head>
 <body>
