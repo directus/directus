@@ -258,20 +258,19 @@ LOCK TABLES `directus_settings` WRITE;
 INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
 VALUES
   (1,'global','cms_user_auto_sign_out','60'),
-  (3,'global','project_name','Directus'),
-  (4,'global','project_url','http://examplesite.dev/'),
-  (5,'global','cms_color','#7ac943'),
-  (6,'global','rows_per_page','200'),
-  (7,'files','storage_adapter','FileSystemAdapter'),
-  (8,'files','storage_destination',''),
-  (9,'files','thumbnail_storage_adapter','FileSystemAdapter'),
-  (10,'files','thumbnail_storage_destination',''),
-  (11,'files','thumbnail_quality','100'),
-  (12,'files','thumbnail_size','200'),
-  (13,'global','cms_thumbnail_url',''),
-  (14,'files','file_naming','file_id'),
-  (15,'files','thumbnail_crop_enabled','1'),
-  (16,'files','youtube_api_key','');
+  (2,'global','project_name','Directus'),
+  (3,'global','project_url','http://examplesite.dev/'),
+  (4,'global','rows_per_page','200'),
+  (5,'files','storage_adapter','FileSystemAdapter'),
+  (6,'files','storage_destination',''),
+  (7,'files','thumbnail_storage_adapter','FileSystemAdapter'),
+  (8,'files','thumbnail_storage_destination',''),
+  (9,'files','thumbnail_quality','100'),
+  (10,'files','thumbnail_size','200'),
+  (11,'global','cms_thumbnail_url',''),
+  (12,'files','file_naming','file_id'),
+  (13,'files','thumbnail_crop_enabled','1'),
+  (14,'files','youtube_api_key','');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;

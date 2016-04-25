@@ -23,7 +23,6 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'cms_user_auto_sign_out' => 60,
             'project_name' => 'Directus',
             'project_url' => 'http://localhost/',
-            'cms_color' => '#7ac943',
             'rows_per_page' => 200,
             'cms_thumbnail_url' => ''
         );
@@ -104,7 +103,6 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'global' => array(
                     'project_name',
                     'project_url',
-                    'cms_color',
                     'cms_user_auto_sign_out',
                     'rows_per_page',
                     'cms_thumbnail_url'
