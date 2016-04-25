@@ -2,6 +2,9 @@
 
 namespace Directus\Util;
 
+use DateTime;
+use DateTimeZone;
+
 class Date
 {
     /**
@@ -22,12 +25,12 @@ class Date
      */
     public static function convertUtcDateTimeToTimeZone($datetime, $targetTimeZone)
     {
-        if (!($datetime instanceof \DateTime)) {
-            $datetime = new \DateTime($datetime, new \DateTimeZone('UTC'));
+        if (!($datetime instanceof DateTime)) {
+            $datetime = new DateTime($datetime, new DateTimeZone('UTC'));
         }
 
-        if (!($targetTimeZone instanceof \DateTimeZone)) {
-            $targetTimeZone = new \DateTimeZone($targetTimeZone);
+        if (!($targetTimeZone instanceof DateTimeZone)) {
+            $targetTimeZone = new DateTimeZone($targetTimeZone);
         }
 
         $datetime->setTimeZone($targetTimeZone);
@@ -49,11 +52,11 @@ class Date
             $fromDate = time();
         }
 
-        if ($toDate instanceof \DateTime) {
+        if ($toDate instanceof DateTime) {
             $toDate = $toDate->getTimestamp();
         }
 
-        if ($fromDate instanceof \DateTime) {
+        if ($fromDate instanceof DateTime) {
             $fromDate = $fromDate->getTimestamp();
         }
 
