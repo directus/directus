@@ -65,7 +65,101 @@ class StringUtils
             return $string;
         }
 
+        return static::randomChars($length);
+    }
+
+    /**
+     * Random string shuffled from a list of alphanumeric characters
+     *
+     * @param int $length
+     *
+     * @return string
+     */
+    public static function randomString($length = 16)
+    {
         $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
         return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
+    }
+
+    /**
+     * Convert a string separated by $separator to camel case.
+     *
+     * @param $string
+     * @param bool $first
+     * @param string $separator
+     *
+     * @return string
+     */
+    public static function toCamelCase($string, $first = false, $separator = '_')
+    {
+        $parts = explode($separator, $string);
+        $newParts = array_map(function($string) {
+            return ucwords($string);
+        }, $parts);
+
+        $newString = implode('', $newParts);
+
+        if ($first === false) {
+            $newString[0] = strtolower($newString[0]);
+        }
+
+        return $newString;
+    }
+
+    /**
+     *  Convert a string separated by underscore to camel case.
+     *
+     * @param $string
+     * @param bool $first
+     *
+     * @return string
+     */
+    public static function underscoreToCamelCase($string, $first = false)
+    {
+        return static::toCamelCase($string, $first);
+    }
+
+    public static function charSequence($chars = '')
+    {
+        $chars = strtolower($chars);
+        $letters = range('a', 'z');
+        $charsArray = str_split($chars);
+
+        // Replace each character with numeric equivalent
+        foreach ($charsArray as $key => $char) {
+            $charsArray[$key] = array_search($char, $letters);
+        }
+
+        // Count digits
+        $digits = count($charsArray)-1;
+        // Starting at the right-most spot, move left
+        for ($i=$digits; $i > -1; $i--) {
+            // If this is the right most spot
+            if ($i == $digits) {
+                // Increment it
+                $charsArray[$i]++;
+            }
+
+            // If this spot has moved past "z"
+            if ($charsArray[$i] == 26) {
+                // Set it to "a"
+                $charsArray[$i] = 0;
+                // Unless it is the left most spot
+                if ($i != 0) {
+                    // Carry the one to the next spot
+                    $charsArray[$i - 1]++;
+                }
+            }
+        }
+
+        // Rebuild characters from numeric equivalent
+        foreach ($charsArray as $key => $char) {
+            $charsArray[$key] = $letters[$char];
+        }
+
+        $charsSequence = implode($charsArray);
+
+        return $charsSequence;
     }
 }
