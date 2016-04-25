@@ -39,11 +39,13 @@ if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isse
     ini_set('display_errors', 0);
     $conn = mysqli_init();
     mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
-    $connection = mysqli_real_connect($conn, $_POST['host_name'], $_POST['username'], $_POST['password'], $_POST['db_name']);
+    $connection = mysqli_real_connect($conn, $_POST['host_name'], $_POST['username'], $_POST['password'], $_POST['db_name'], $_POST['port']);
+    $_SESSION['database'] = $_POST['database'];
     $_SESSION['host_name'] = $_POST['host_name'];
     $_SESSION['username'] = $_POST['username'];
     $_SESSION['db_password'] = $_POST['password'];
     $_SESSION['db_name'] = $_POST['db_name'];
+    $_SESSION['port'] = $_POST['port'];
     $_SESSION['db_prefix'] = '';//$_POST['db_prefix'];
     if(isset($_POST['initial_schema'])) {
         $_SESSION['initial_schema'] = $_POST['initial_schema'];
@@ -157,10 +159,15 @@ if($step == 3 && isset($_POST['install'])) {
                         There was an error while attempting to connect to the database. Please review the above configuration and try again.
                     </div>
                 <?php } ?>
+                <label for="database">Database</label>
+                <select name="database" id="database">
+                    <option value="mysql" <?php echo(isset($_SESSION['database']) && $_SESSION['database'] == 'mysql' ? 'checked' : ''); ?>>MySQL/Percona</option>
+                </select>
                 <label for="host_name">Host Name</label><input type="text" id="host_name" placeholder="eg: localhost" class="<?php if($code == 2002){echo "error";}?>" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : 'localhost'); ?>" autofocus><br>
                 <label for="username">Username</label><input type="text" id="username" placeholder="With access/modify privileges" class="<?php if($code == 1045){echo "error";}?>" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
                 <label for="password">Password</label><input type="password" id="password" placeholder="" class="<?php if($code == 1045){echo "error";}?>" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
                 <label for="db_name">Database Name</label><input type="text" id="db_name" placeholder="" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
+                <label for="port">Port</label><input type="text" id="port" placeholder="3306" class="<?php if($code == 2002){echo "error";}?>" name="port" value="<?php echo(isset($_SESSION['port']) ? $_SESSION['port'] : '3306'); ?>"><br>
                 <label for="initial_schema">Initial Schema</label>
                 <select name="initial_schema" id="initial_schema">
                     <option value="none" <?php echo(isset($_SESSION['initial_schema']) && $_SESSION['initial_schema'] == 'none' ? 'checked' : ''); ?>>None (Blank Database)</option>
@@ -198,6 +205,10 @@ if($step == 3 && isset($_POST['install'])) {
                 <table>
                     <tbody>
                     <tr>
+                        <td class="item">Database</td>
+                        <td class="result"><?php echo $_SESSION['database'];?></td>
+                    </tr>
+                    <tr>
                         <td class="item">Host Name</td>
                         <td class="result"><?php echo $_SESSION['host_name'];?></td>
                     </tr>
@@ -212,6 +223,10 @@ if($step == 3 && isset($_POST['install'])) {
                     <tr>
                         <td class="item">Database Name</td>
                         <td class="result"><?php echo $_SESSION['db_name'];?></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Port</td>
+                        <td class="result"><?php echo $_SESSION['port'];?></td>
                     </tr>
                     </tbody>
                 </table>
@@ -342,6 +357,10 @@ if($step == 3 && isset($_POST['install'])) {
                     <table style="margin-bottom:20px;">
                     <tbody>
                     <tr>
+                    <td style="width: 140px;">Database</td>
+                    <td>'.$_SESSION['database'].'</td>
+                    </tr>
+                    <tr>
                     <td style="width: 140px;">Host Name</td>
                     <td>'.$_SESSION['host_name'].'</td>
                     </tr>
@@ -356,6 +375,10 @@ if($step == 3 && isset($_POST['install'])) {
                     <tr>
                     <td style="width: 140px;">Database Name</td>
                     <td>'.$_SESSION['db_name'].'</td>
+                    </tr>
+                    <tr>
+                    <td style="width: 140px;">Port</td>
+                    <td>'.$_SESSION['port'].'</td>
                     </tr>
                     </tbody>
                     </table>

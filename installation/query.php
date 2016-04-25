@@ -1,5 +1,5 @@
 <?php
-$mysqli = new mysqli($_SESSION['host_name'], $_SESSION['username'], $_SESSION['db_password'], $_SESSION['db_name']);
+$mysqli = new mysqli($_SESSION['host_name'], $_SESSION['username'], $_SESSION['db_password'], $_SESSION['db_name'], $_SESSION['port']);
 if($mysqli && !file_exists('../api/vendor/autoload.php') || !file_exists('../api/ruckusing.conf.php')  || filesize('../api/ruckusing.conf.php') == 0) {
   $_SESSION['step'] = 3;
   header('refresh: 0');
@@ -16,7 +16,7 @@ $config = require '../api/ruckusing.conf.php';
 $dbconfig = getDatabaseConfig(array(
   'type' => 'mysql',
   'host' => $_SESSION['host_name'],
-  'port' => 3306,
+  'port' => $_SESSION['port'],
   'name' => $_SESSION['db_name'],
   'user' => $_SESSION['username'],
   'pass' => $_SESSION['db_password'],
