@@ -1,6 +1,6 @@
 <?php
 
-use Directus\Util\Date as DateUtils;
+use Directus\Util\DateUtils;
 
 class DateUtilsTest extends PHPUnit_Framework_TestCase
 {

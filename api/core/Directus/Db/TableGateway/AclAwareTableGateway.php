@@ -15,7 +15,7 @@ use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
 use Directus\Hook\Hook;
-use Directus\Util\Date;
+use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
@@ -127,7 +127,7 @@ class AclAwareTableGateway extends TableGateway {
     protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
         foreach($fields as $field) {
             $col =& $row[$field];
-            $datetime = Date::convertUtcDateTimeToTimeZone($col, $targetTimeZone);
+            $datetime = DateUtils::convertUtcDateTimeToTimeZone($col, $targetTimeZone);
             $col = $yieldObjects ? $datetime : $datetime->format("Y-m-d H:i:s T");
         }
         return $row;

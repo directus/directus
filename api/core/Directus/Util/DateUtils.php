@@ -5,7 +5,7 @@ namespace Directus\Util;
 use DateTime;
 use DateTimeZone;
 
-class Date
+class DateUtils
 {
     /**
      * Seconds in a day
