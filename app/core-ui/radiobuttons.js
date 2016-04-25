@@ -25,7 +25,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     display:inline-block; \
                     margin-right: 20px; \
                     padding: 0 0 4px 0; \
-                    font-weight: 600; \
+                    font-weight: 500; \
                     font-size: 14px; \
                     cursor: pointer; \
                   } \

@@ -96,21 +96,25 @@
       // transition: background-color 600ms ease;
       position: absolute;
       top: 9px;
-      right: 12px;
+      right: 4px;
       display: none;
       color:$mediumGrey;
       &:hover {color: $darkGrey; }
     }
+    &.force-hover #set-visible-columns,
+    &:hover #set-visible-columns {
+      display: block;
+      background-color: darken($white, 3%);
+      padding-left: 10px;
+      padding-right: 10px;
+    }
   }
   .visible-columns-cell {
     width: 0;
-    right: 0;
     display: table;
-  }
-  thead:hover #set-visible-columns {
-    display: block;
-    background-color: darken($white, 3%);
-    padding-left: 10px;
+    top: 0;
+    right: 16px;
+    position: absolute;
   }
   tbody {
     @extend .card-border;
@@ -163,6 +167,25 @@
         padding-left: 0;
       }
       .footer-function {
+        color: $mediumGrey;
+        background-color:$white;
+        text-align:center;
+        padding: 10px 10px 8px 10px;
+        position:relative;
+        display: inline-block;
+        &:after {
+          content: "";
+          position: absolute;
+          top: -6px;
+          left: 50%;
+          border-style: solid;
+          border-width: 0 12px 6px 12px;
+          border-color: $white transparent;
+          display: block;
+          width: 0;
+          z-index: 1;
+          margin-left: -12px;
+        }
         .method {
           font-weight: 500;
           font-size: 11px;
@@ -185,24 +208,6 @@
         li:hover {
           color: $extraDarkGrey;
         }
-        color: $mediumGrey;
-        background-color:$white;
-        width:72px;
-        text-align:center;
-        padding: 7px 5px 5px 5px;
-        position:relative;
-      }
-      .footer-function:after {
-        content: "";
-        position: absolute;
-        top: -5px;
-        left: 10px;
-        border-style: solid;
-        border-width: 0 5px 5px;
-        border-color: $white transparent;
-        display: block;
-        width: 0;
-        z-index: 1;
       }
     }
   }
@@ -338,7 +343,7 @@
     content: "";
     margin-top: -6px;
     position: absolute;
-    right: 12px;
+    right: 10px;
     top: 0px;
   }
   fieldset {

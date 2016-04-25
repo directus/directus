@@ -14,6 +14,7 @@ body {
   //display: -webkit-flex;
   //flex-direction: row;
   -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
   margin:0;
 }
 
@@ -41,9 +42,4 @@ a {
 
 input, button {
   outline: none;
-}
-select {
-    -moz-appearance: none;
-    text-indent: 0.01px;
-    text-overflow: '';
 }

@@ -83,7 +83,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.list = function(options) {
     var val = options.value;
-    return val;
+    return val.toLocaleString();
   };
 
   return Module;

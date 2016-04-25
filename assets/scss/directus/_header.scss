@@ -322,13 +322,13 @@
           select {
             padding-right: 20px;
             outline: none;
-            max-width: 120px;
+            max-width: 160px;
             border-radius: 0;
           }
         }
         input {
           display: inline-block;
-          max-width: 120px;
+          max-width: 160px;
         }
         input[type="text"] {
           float: left;
@@ -375,10 +375,11 @@
           //display: none;
         }
         .filter-remove {
+          @include transition (color, $fastSpeed, ease-in-out);
           color: $mediumGrey;
-          top: 8px;
+          top: 5px;
           position: relative;
-          margin: 0 6px 0 -16px;
+          margin: 0 2px 0 -20px;
           cursor: pointer;
           &:hover {
             color: $deleteColor;

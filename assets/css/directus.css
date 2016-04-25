@@ -1406,6 +1406,7 @@ html, body {
 
 body {
   -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
   margin: 0; }
 
 h1, h2, h3, h4 {
@@ -1434,11 +1435,6 @@ a {
 
 input, button {
   outline: none; }
-
-select {
-  -moz-appearance: none;
-  text-indent: 0.01px;
-  text-overflow: ''; }
 
 .hidden {
   visibility: hidden; }
@@ -2215,7 +2211,6 @@ input[type="date"]::-webkit-inner-spin-button {
   width: 30px;
   height: 15px;
   background-color: #d0d0d0;
-  border-radius: 3px;
   transition: background 0.4s; }
   .toggle-switch:hover {
     background-color: #aaaaaa; }
@@ -2228,7 +2223,6 @@ input[type="date"]::-webkit-inner-spin-button {
     bottom: 2px;
     right: 2px;
     background-color: #fff;
-    border-radius: 2px;
     transition: background 0.4s; }
   .toggle-switch:after {
     display: block;
@@ -2239,7 +2233,6 @@ input[type="date"]::-webkit-inner-spin-button {
     bottom: 4px;
     width: 13px;
     background-color: #d0d0d0;
-    border-radius: 2px;
     transition: margin 0.4s, background 0.4s; }
   .toggle-switch.on {
     background-color: #7ac943; }
@@ -2382,7 +2375,10 @@ select {
     -webkit-font-smoothing: antialiased !important;
     font-weight: 500;
     padding: 0 20px 0 0;
-    outline: none; }
+    outline: none;
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: ''; }
     .simple-select select:focus {
       border: none; }
     .simple-select select:hover {
@@ -2411,7 +2407,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     input[type="checkbox"].custom-check + label span, input[type="radio"].custom-check + label span {
       color: #aaaaaa;
       display: inline-block;
-      width: 18px;
+      width: 20px;
       height: 22px;
       margin: -2px 5px 0 0;
       vertical-align: middle; }
@@ -2557,7 +2553,8 @@ select,
         text-transform: none;
         font-size: 12px;
         padding-top: 5px;
-        max-width: 400px; }
+        max-width: 400px;
+        font-weight: 400; }
         .two-column-form .fields .label label .note a {
           border-bottom: dotted 1px #aaaaaa; }
           .two-column-form .fields .label label .note a:hover {
@@ -2724,19 +2721,22 @@ select,
   .table-striped thead #set-visible-columns {
     position: absolute;
     top: 9px;
-    right: 12px;
+    right: 4px;
     display: none;
     color: #aaaaaa; }
     .table-striped thead #set-visible-columns:hover {
       color: #666666; }
-  .table-striped .visible-columns-cell {
-    width: 0;
-    right: 0;
-    display: table; }
-  .table-striped thead:hover #set-visible-columns {
+  .table-striped thead.force-hover #set-visible-columns, .table-striped thead:hover #set-visible-columns {
     display: block;
     background-color: #f7f7f7;
-    padding-left: 10px; }
+    padding-left: 10px;
+    padding-right: 10px; }
+  .table-striped .visible-columns-cell {
+    width: 0;
+    display: table;
+    top: 0;
+    right: 16px;
+    position: absolute; }
   .table-striped tbody {
     background-color: #ffffff; }
     .table-striped tbody .secondary-info, .table-striped tbody .history-container ul li .history-follow, .history-container ul li .table-striped tbody .history-follow {
@@ -2773,6 +2773,12 @@ select,
       vertical-align: top;
       padding-left: 0; }
     .table-striped tfoot tr .footer-function {
+      color: #aaaaaa;
+      background-color: #ffffff;
+      text-align: center;
+      padding: 10px 10px 8px 10px;
+      position: relative;
+      display: inline-block;
       -webkit-border-top-right-radius: 3px;
       -webkit-border-bottom-right-radius: 3px;
       -webkit-border-bottom-left-radius: 3px;
@@ -2787,13 +2793,19 @@ select,
       border-top-left-radius: 3px;
       -moz-background-clip: padding-box;
       -webkit-background-clip: padding-box;
-      background-clip: padding-box;
-      color: #aaaaaa;
-      background-color: #ffffff;
-      width: 72px;
-      text-align: center;
-      padding: 7px 5px 5px 5px;
-      position: relative; }
+      background-clip: padding-box; }
+      .table-striped tfoot tr .footer-function:after {
+        content: "";
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        border-style: solid;
+        border-width: 0 12px 6px 12px;
+        border-color: #ffffff transparent;
+        display: block;
+        width: 0;
+        z-index: 1;
+        margin-left: -12px; }
       .table-striped tfoot tr .footer-function .method {
         font-weight: 500;
         font-size: 11px; }
@@ -2810,17 +2822,6 @@ select,
         color: #aaaaaa; }
       .table-striped tfoot tr .footer-function li:hover {
         color: #333333; }
-    .table-striped tfoot tr .footer-function:after {
-      content: "";
-      position: absolute;
-      top: -5px;
-      left: 10px;
-      border-style: solid;
-      border-width: 0 5px 5px;
-      border-color: #ffffff transparent;
-      display: block;
-      width: 0;
-      z-index: 1; }
   .table-striped tr {
     -webkit-font-smoothing: auto;
     border-bottom: solid 1px #f4f4f4;
@@ -2917,7 +2918,7 @@ select,
     content: "";
     margin-top: -6px;
     position: absolute;
-    right: 12px;
+    right: 10px;
     top: 0px; }
   .set-columns fieldset {
     padding: 15px 20px 15px 20px;
@@ -4052,11 +4053,11 @@ body.initial-load #sidebar {
         .header1 .secondary-row.filter-options .filter-form .simple-select select {
           padding-right: 20px;
           outline: none;
-          max-width: 120px;
+          max-width: 160px;
           border-radius: 0; }
       .header1 .secondary-row.filter-options .filter-form input {
         display: inline-block;
-        max-width: 120px; }
+        max-width: 160px; }
       .header1 .secondary-row.filter-options .filter-form input[type="text"] {
         float: left;
         width: auto; }
@@ -4092,10 +4093,15 @@ body.initial-load #sidebar {
           overflow: hidden;
           width: 100%; }
         .header1 .secondary-row .filters li .filter-remove {
+          -webkit-transition: color 100ms ease-in-out;
+          -moz-transition: color 100ms ease-in-out;
+          -o-transition: color 100ms ease-in-out;
+          -ms-transition: color 100ms ease-in-out;
+          transition: color 100ms ease-in-out;
           color: #aaaaaa;
-          top: 8px;
+          top: 5px;
           position: relative;
-          margin: 0 6px 0 -16px;
+          margin: 0 2px 0 -20px;
           cursor: pointer; }
           .header1 .secondary-row .filters li .filter-remove:hover {
             color: #c1272d; }

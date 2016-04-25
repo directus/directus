@@ -75,6 +75,9 @@ select {
     font-weight: 500;
     padding: 0 20px 0 0;
     outline: none;
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
     &:focus {
       border: none;
     }
@@ -106,7 +109,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     span {
       color: $mediumGrey;
       display:inline-block;
-      width:18px;
+      width:20px;
       height:22px;
       margin: -2px $extraSmallPad 0 0;
       vertical-align:middle;
@@ -270,6 +273,7 @@ select,
           font-size: 12px;
           padding-top: 5px;
           max-width: 400px;
+          font-weight: 400;
           a {
             border-bottom: dotted 1px $mediumGrey;
             &:hover {

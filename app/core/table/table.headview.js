@@ -49,7 +49,10 @@ function(app, Backbone, Notification) {
         if(this.visibleColumnsView) {
           this.visibleColumnsView = null;
           this.removeView('#visible_columns_entry');
+          this.$el.closest('thead').removeClass('force-hover');
           return;
+        } else {
+          this.$el.closest('thead').addClass('force-hover');
         }
 
         var structure = this.options.collection.structure;
@@ -144,6 +147,7 @@ function(app, Backbone, Notification) {
         this.visibleColumnsView.cancelSelection = function() {
           that.visibleColumnsView = null;
           this.remove();
+          that.$el.closest('thead').removeClass('force-hover');
         };
 
         this.visibleColumnsView.save = function() {
