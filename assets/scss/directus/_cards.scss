@@ -150,7 +150,7 @@
     overflow: hidden;
     position: relative;
     &:hover .material-icons {
-      color: darken($darkGrey, 20%) !important;
+      color: darken($mediumGrey, 20%) !important;
     }
     .left-col {
       color: $lightGrey;
@@ -162,7 +162,7 @@
       .material-icons {
         @include transition();
         display: inline-block;
-        color: $darkGrey;
+        color: $mediumGrey;
         font-size: 70px;
         line-height: 140px;
       }

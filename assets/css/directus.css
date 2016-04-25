@@ -3504,7 +3504,7 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
     .feature-cards .feature-card:hover .material-icons, .feature-cards .feature-card:hover .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card:hover span:before,
     .feature-cards .feature-card:hover input[type="checkbox"].custom-check + label span:before,
     input[type="checkbox"].custom-check + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .feature-cards .feature-card:hover span:before {
-      color: #333333 !important; }
+      color: #777777 !important; }
     .feature-cards .feature-card .left-col {
       color: #ececec;
       text-align: center;
@@ -3521,7 +3521,7 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
         -ms-transition: all 100ms ease-in-out;
         transition: all 100ms ease-in-out;
         display: inline-block;
-        color: #666666;
+        color: #aaaaaa;
         font-size: 70px;
         line-height: 140px; }
     .feature-cards .feature-card .right-col {
@@ -3882,8 +3882,8 @@ body.initial-load #sidebar {
     float: left;
     height: 38px;
     text-transform: capitalize;
-    font-size: 30px;
-    line-height: 36px; }
+    font-size: 26px;
+    line-height: 38px; }
     .header1 h1 #removeOverlay {
       margin-top: -3px;
       vertical-align: middle;
