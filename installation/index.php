@@ -1,9 +1,12 @@
 <?php
 ob_start();
 session_start();
+require '../api/globals.php';
+
 $code = 0;
 $errorString = null;
 $bad_paths = array();
+$assetsVersion = defined('DIRECTUS_VERSION') ? DIRECTUS_VERSION : date('Ymd', time());
 
 if(isset($_SESSION['step'])) {
     $step = $_SESSION['step'];
@@ -93,7 +96,7 @@ if($step == 3 && isset($_POST['install'])) {
 
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="install.css?v=1.0">
+    <link rel="stylesheet" href="install.css?v=<?=$assetsVersion;?>">
 </head>
 <body>
 <form name="input" action="index.php" method="post">
