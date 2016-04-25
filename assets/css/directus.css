@@ -1435,6 +1435,11 @@ a {
 input, button {
   outline: none; }
 
+select {
+  -moz-appearance: none;
+  text-indent: 0.01px;
+  text-overflow: ''; }
+
 .hidden {
   visibility: hidden; }
 
@@ -2603,7 +2608,6 @@ select,
     .two-column-form .fields .field select {
       max-width: 200px;
       margin-top: 2px;
-      height: 38px;
       width: 100%; }
     .two-column-form .fields .field select[multiple] {
       height: auto; }
@@ -2900,7 +2904,7 @@ select,
   top: 171px;
   right: 40px;
   display: block;
-  width: 200px;
+  width: 220px;
   background-color: #333333;
   color: #aaaaaa;
   z-index: 1; }

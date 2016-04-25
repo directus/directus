@@ -42,3 +42,8 @@ a {
 input, button {
   outline: none;
 }
+select {
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+}

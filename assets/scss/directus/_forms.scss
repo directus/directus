@@ -338,7 +338,7 @@ select,
       select {
         max-width: 200px;
         margin-top: 2px;
-        height: 38px;
+        // height: 38px; // Fixes cropped text in FireFox
         width: 100%;
       }
       select[multiple] {
