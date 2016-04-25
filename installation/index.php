@@ -236,7 +236,7 @@ if($step == 3 && isset($_POST['install'])) {
                 <table>
                     <tbody>
                     <tr>
-                        <td class="item">PHP Version >= 5.5.0</td>
+                        <td class="item">PHP Version >= 5.4.0</td>
                         <td class="result"><span class="label label-success">Yes</span></td>
                     </tr>
                     <tr>
