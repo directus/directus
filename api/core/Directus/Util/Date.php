@@ -43,10 +43,11 @@ class Date
      *
      * @param $toDate - days left to this date.
      * @param $fromDate - days left from this date
+     * @param $negativeDiff - Returns negative value or zero if diff is negative
      *
      * @return int
      */
-    public static function daysLeft($toDate, $fromDate = null)
+    public static function daysLeft($toDate, $fromDate = null, $negativeDiff = false)
     {
         if (!($toDate instanceof DateTime)) {
             $toDateTimestamp = is_int($toDate) ? $toDate : strtotime($toDate);
@@ -66,7 +67,7 @@ class Date
         $intervalDate = $fromDate->diff($toDate);
         $diff = $intervalDate->format('%r%a');
 
-        if ($diff < 0) {
+        if (!$negativeDiff && $diff < 0) {
             $diff = 0;
         }
 
