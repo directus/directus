@@ -3499,11 +3499,11 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
     .feature-cards .feature-card:hover .material-icons, .feature-cards .feature-card:hover .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card:hover span:before,
     .feature-cards .feature-card:hover input[type="checkbox"].custom-check + label span:before,
     input[type="checkbox"].custom-check + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .feature-cards .feature-card:hover span:before {
-      color: lightgray; }
+      color: #333333 !important; }
     .feature-cards .feature-card .left-col {
       color: #ececec;
       text-align: center;
-      width: 180px;
+      width: 150px;
       position: absolute;
       top: 0;
       left: 0; }
@@ -3516,11 +3516,12 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
         -ms-transition: all 100ms ease-in-out;
         transition: all 100ms ease-in-out;
         display: inline-block;
-        font-size: 90px;
+        color: #666666;
+        font-size: 70px;
         line-height: 140px; }
     .feature-cards .feature-card .right-col {
       max-width: 400px;
-      margin-left: 160px;
+      margin-left: 130px;
       font-weight: 400; }
 
 .group-list {

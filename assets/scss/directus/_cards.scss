@@ -150,25 +150,26 @@
     overflow: hidden;
     position: relative;
     &:hover .material-icons {
-      color: darken($lightGrey, 10%);
+      color: darken($darkGrey, 20%) !important;
     }
     .left-col {
       color: $lightGrey;
       text-align: center;
-      width: 180px;
+      width: 150px;
       position: absolute;
       top: 0;
       left: 0;
       .material-icons {
         @include transition();
         display: inline-block;
-        font-size: 90px;
+        color: $darkGrey;
+        font-size: 70px;
         line-height: 140px;
       }
     }
     .right-col {
       max-width: 400px;
-      margin-left: 160px;
+      margin-left: 130px;
       font-weight: 400;
     }
   }
