@@ -54,3 +54,5 @@ installation/config.codekit
 .idea
 assets/scss/.sass-cache
 assets/scss/.DS_Store
+.sass-cache
+.gulp-scss-cache
