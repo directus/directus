@@ -116,7 +116,7 @@ if($step == 3 && isset($_POST['install'])) {
         <?php
         if($step == 1) {
             $error = null;
-            if (version_compare(PHP_VERSION, '5.4.10', '<')) {
+            if (version_compare(PHP_VERSION, '5.4.0', '<')) {
                 $error = 'Your host needs to use PHP 5.4.10 or higher to run this version of Directus!';
             }
 
