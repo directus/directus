@@ -48,28 +48,28 @@ class Date
      */
     public static function daysLeft($toDate, $fromDate = null)
     {
+        if (!($toDate instanceof DateTime)) {
+            $toDateTimestamp = is_int($toDate) ? $toDate : strtotime($toDate);
+            $toDate = new DateTime();
+            $toDate->setTimestamp($toDateTimestamp);
+        }
+
         if ($fromDate == null) {
-            $fromDate = time();
+            $fromDate = new DateTime();
+            $fromDate->setTimestamp(time());
+        } else if (!($fromDate instanceof DateTime)) {
+            $fromDateTimestamp = is_int($fromDate) ? $fromDate : strtotime($fromDate);
+            $fromDate = new DateTime();
+            $fromDate->setTimestamp($fromDateTimestamp);
         }
 
-        if ($toDate instanceof DateTime) {
-            $toDate = $toDate->getTimestamp();
-        }
-
-        if ($fromDate instanceof DateTime) {
-            $fromDate = $fromDate->getTimestamp();
-        }
-
-        $toDateTimestamp = is_int($toDate) ? $toDate : strtotime($toDate);
-        $fromDateTimestamp = is_int($fromDate) ? $fromDate : strtotime($fromDate);
-        $diff = $toDateTimestamp - $fromDateTimestamp;
+        $intervalDate = $fromDate->diff($toDate);
+        $diff = $intervalDate->format('%r%a');
 
         if ($diff < 0) {
             $diff = 0;
         }
 
-        $diff /= static::DAY_IN_SECONDS;
-
-        return (int) floor($diff);
+        return $diff;
     }
 }
