@@ -50,7 +50,7 @@ define(function(require, exports, module) {
         "type":"VARCHAR",
         "required":true,
         "system":false,
-        "char_length":200,
+        "char_length":100,
         "hidden_list":false,
         "hidden_input":false
       },

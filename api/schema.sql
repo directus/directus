@@ -154,7 +154,7 @@ UNLOCK TABLES;
 CREATE TABLE `directus_messages` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `from` int(11) DEFAULT NULL,
-  `subject` varchar(255) NOT NULL DEFAULT '',
+  `subject` varchar(100) NOT NULL DEFAULT '',
   `message` text NOT NULL,
   `datetime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `attachment` int(11) DEFAULT NULL,
@@ -384,7 +384,7 @@ CREATE TABLE `directus_users` (
   `avatar` varchar(500) DEFAULT NULL,
   `avatar_file_id` int(11) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
   `state` varchar(2) DEFAULT NULL,

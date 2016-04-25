@@ -9,8 +9,10 @@
   <div class="info">
     <div class="featured">
       <div class="primary-info">{{title_short}}</div>
-      <div class="secondary-info ellipsis">{{#if dimensions}}{{dimensions}}, {{/if}}{{size}}, {{uppercase type}}</div>
-      <div class="secondary-info ellipsis italic">{{date_uploaded}}</div>
+      <div class="secondary-info ellipsis italic">Added {{date_uploaded}}</div>
+    </div>
+    <div class="extra">
+        <div class="secondary-info ellipsis">{{size}} <span class="light-grey-color">●</span> {{uppercase type}}{{#if dimensions}} <span class="light-grey-color">●</span> {{dimensions}}{{/if}}</div>
     </div>
   </div>
 </li>

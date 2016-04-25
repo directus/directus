@@ -26,7 +26,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   ];
 
   var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>'+
-                 '<span class="label char-count hide">{{characters}}</span>';
+                 '<span class="char-count hide">{{characters}}</span>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -40,7 +40,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     events: {
       'change input': function() {
-        this.$el.find('.label').show();
+        this.$el.find('.char-count').show();
       }
     },
 

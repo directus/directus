@@ -202,7 +202,7 @@ define(function(require, exports, module) {
           var $fieldset = $('#edit_field_' + item.attr);
           $fieldset.addClass('error');
           if ($fieldset.find('.error-color').length < 1) {
-            $fieldset.append('<span class="error-color">'+item.message+'</span>');
+            $fieldset.append('<span class="error-color validation-error">'+item.message+'</span>');
           }
         });
       }, this);

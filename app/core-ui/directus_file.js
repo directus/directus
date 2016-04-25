@@ -23,21 +23,22 @@ define(['app', 'backbone'], function(app, Backbone) {
                     max-height: 200px; \
                     padding: 10px; \
                     background-color: #ffffff; \
-                    border: 1px solid #ededed; \
-                    color: #ededed; \
+                    border: 1px solid #aaaaaa; \
+                    color: #aaaaaa; \
                     text-align: center; \
                     cursor: pointer; \
                     margin-bottom: 10px; \
                   } \
                   div.ui-thumbnail.empty { \
-                    width: 300px; \
-                    height: 100px; \
+                    max-width: 276px; \
+                    width: 100%; \
+                    height: 140px; \
                     background-color: #ffffff; \
-                    border: 2px dashed #ededed; \
+                    border: 2px dashed #aaaaaa; \
                     padding: 9px; \
                     font-size: 16px; \
-                    font-weight: 600; \
-                    line-height: 100px; \
+                    font-weight: 500; \
+                    line-height: 144px; \
                   } \
                   div.ui-thumbnail.empty.dragover, \
                   div.ui-thumbnail.empty:hover { \
@@ -74,6 +75,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   .url-import { \
                     width: 100%; \
                     margin-top: 10px; \
+                    margin-bottom: 4px; \
                     display: inline-block; \
                   } \
                   .swap-method-btn { \
@@ -110,10 +112,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </div> \
                   {{/if}} \
                   <div class="swap-container" {{#if url}}style="display:none"{{/if}}> \
-                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click to upload</div> \
+                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drop file here or click to choose</div> \
                     <input id="fileAddInput" type="file" class="large hide" /> \
-                    <div class="secondary-info url-import">Or paste in a YouTube, Vimeo, or file link:</div> \
-                    <input id="urlInput" type="text" class="swap-method medium" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                    <div class="secondary-info url-import">Or paste in a YouTube, Vimeo, or file URL:</div> \
+                    <input id="urlInput" type="text" class="swap-method medium" placeholder="eg: https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
                   </div>';
 
   Module.Input = Backbone.Layout.extend({

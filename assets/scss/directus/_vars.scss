@@ -1,9 +1,8 @@
-////////////
+//////////////////////////////////////////////////////////////////////////////
 //  COLORS
-////////////
-$white: #ffffff;
 
 //Greys
+$white: #ffffff;
 $extraLightGrey: #f4f4f4; // Extra Light Gray – previously #fbfbfb
 $lightGrey: #ececec; // Light Grey
 $mediumGrey: #aaaaaa; // Medium Grey
@@ -12,7 +11,6 @@ $extraDarkGrey: #333333; // Extra Dark Grey
 $black: #1a1a1a; // Directus Black
 
 $fieldColor: lighten($lightGrey, 2%);
-
 $tableHoverYellow: #fffddd;
 
 // Actions
@@ -25,20 +23,20 @@ $loginColor: #5b5b5b;
 $errorColor: #fbb03b;
 $systemColor: #fdcd30;
 
-////////////
+//////////////////////////////////////////////////////////////////////////////
 //  FONTS
-////////////
-$openFont: 'Open Sans', sans-serif;
-$helveticaFont: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
 
-////////////
+$primaryFont:'Roboto', sans-serif;
+// $titleFont: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+
+//////////////////////////////////////////////////////////////////////////////
 //  GLYPHS
-////////////
+
 $glyphFont: 'Directus';
 
-////////////
+//////////////////////////////////////////////////////////////////////////////
 //  GRID
-////////////
+
 $colWidth: 90px;
 $gutterWidth: 20px;
 
@@ -48,9 +46,9 @@ $standardPad: $gutterWidth;
 $largePad: $gutterWidth + 10;
 $extraLargePad: $gutterWidth + 15;
 
-////////////
+//////////////////////////////////////////////////////////////////////////////
 //  MISC
-////////////
-$standardSidebarWidth: 170px;
 
+$standardSidebarWidth: 170px;
 $baseRadius: 2px;
+$fastSpeed: 100ms;

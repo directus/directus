@@ -55,7 +55,8 @@
     float: left;
     height: 38px;
     text-transform: capitalize;
-    font-size: 28px;
+    font-size: 30px;
+    line-height: 36px;
     #removeOverlay {
       margin-top: -3px;
       vertical-align: middle;
@@ -215,7 +216,7 @@
     .simple-select {
       display: inline-block;
       vertical-align: middle;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
     }
     .saved-success {
@@ -258,7 +259,7 @@
       .select-and-circle {
         label {
           &.icon {
-            line-height: 85%;
+            line-height: 65%;
           }
           &.icon-triangle-down {
             color: $addColor;
@@ -268,7 +269,7 @@
       .simple-select {
         margin-bottom: -13px;
         margin-left: $extraSmallPad;
-        font-weight: 700;
+        font-weight: 500;
       }
       input {
         margin-right: 10px;
@@ -281,7 +282,7 @@
   .secondary-row {
     $textActionMarginTop: 7px;
     color: $mediumGrey;
-    font-weight: 600;
+    font-weight: 500;
     margin: 15px 0 0 0;
     //overflow: hidden;
     &.batch-actions {
@@ -351,7 +352,7 @@
       padding: 0px;
       li {
         display: inline-block;
-        font-weight: 600;
+        font-weight: 500;
         background-color: $lightGrey;
         //.border-radius(2px, 2px, 2px, 2px);
         position: relative;

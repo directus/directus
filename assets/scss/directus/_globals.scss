@@ -88,13 +88,16 @@
   background-color: $white;
   color: $extraDarkGrey;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   z-index: 110;
   //.border-radius(3px, 3px, 3px, 3px);
   box-shadow: 0 2px 6px $mediumGrey;
   -webkit-font-smoothing: antialiased;
   .directus-alert-modal-message {
-    padding-bottom: 20px;
+    font-weight: 400;
+    line-height: 24px;
+    font-size: 16px;
+    padding-bottom: 10px;
     word-wrap: break-word;
   }
   input {
@@ -105,6 +108,8 @@
     margin-top: 20px;
     text-align: right;
     button {
+      @include transition (background-color, $fastSpeed, ease-in-out);
+      @include border-radius(3px, 3px, 3px, 3px);
       padding: 10px 15px 10px 15px;
       text-align: center;
       color: $white;
@@ -112,23 +117,22 @@
       border-top: none;
       border-left: none;
       border-right: none;
-      border-bottom: 3px solid darken($mediumGrey, 5%);
-
-      @include border-radius(3px, 3px, 3px, 3px);
+      border-bottom: none;
+      // border-bottom: 3px solid darken($mediumGrey, 5%);
       margin-left: 20px;
       min-width: 120px;
-      font-weight: 600;
+      font-weight: 500;
       -webkit-font-smoothing: antialiased;
       &:hover {
-        background-color: darken($mediumGrey, 5%);
-        border-bottom: 3px solid darken($mediumGrey, 10%);
+        background-color: darken($mediumGrey, 10%);
+        // border-bottom: 3px solid darken($mediumGrey, 10%);
       }
       &.primary {
         background-color: $addColor;
-        border-bottom: 3px solid darken($addColor, 5%);
+        // border-bottom: 3px solid darken($addColor, 5%);
         &:hover {
-          background-color: darken($addColor, 5%);
-          border-bottom: 3px solid darken($addColor, 10%);
+          background-color: darken($addColor, 10%);
+          // border-bottom: 3px solid darken($addColor, 10%);
         }
       }
     }
@@ -168,7 +172,7 @@
   }
   .material-icons {
     display: inline-block;
-    margin-top: 4px;
+    margin-top: 3px;
     // &.icon-check {
     // }
     // &.icon-star,
@@ -197,11 +201,11 @@
 .tag {
   display: inline-block;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
   background-color: $darkGrey;
   color: $white;
   margin: $smallPad $smallPad 0 0;
-  padding: $extraSmallPad $smallPad;
+  padding: $extraSmallPad $smallPad $extraSmallPad+1 $smallPad;
   @include border-radius(2px, 2px, 2px, 2px);
   &:hover {
     background-color: $deleteColor;
@@ -217,12 +221,12 @@
 .primary-info {
   color: $darkGrey;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .secondary-info {
   color: $mediumGrey !important;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
 }
 a.secondary-info {
   cursor: pointer;
@@ -240,7 +244,7 @@ a.secondary-info {
   color: $mediumGrey;
 }
 .light-grey-color {
-  color: $mediumGrey;
+  color: $lightGrey;
 }
 .unread-color, .add-color {
   color: $addColor;
@@ -252,7 +256,7 @@ a.secondary-info {
   color: $systemColor;
 }
 .bold {
-  font-weight: 600;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
 }
 .add-color-background {
@@ -362,7 +366,7 @@ ul {
 }
 
 .card-border {
-  border-bottom: 3px solid darken($lightGrey, 5%);
+  border-bottom: 3px solid darken($lightGrey, 12%);
 }
 
 .invisible-blocker {
@@ -394,6 +398,7 @@ body.initial-load {
   transition: opacity 400ms ease-in-out;
 }
 .spinner {
+  display: none;
   position: fixed;
   width: 60px;
   height: 60px;
@@ -568,7 +573,7 @@ input[type="date"]::-webkit-inner-spin-button {
   color: $white;
   margin-right: $smallPad;
   margin-top: $smallPad;
-  font-weight: 600;
+  font-weight: 500;
   padding-right: $smallPad;
   cursor: pointer;
   &:hover {
@@ -588,6 +593,6 @@ input[type="date"]::-webkit-inner-spin-button {
 }
 
 .settings-column-name {
-  font-weight: 600;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
 }

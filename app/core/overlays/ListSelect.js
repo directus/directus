@@ -21,7 +21,7 @@ define([
                     widgetOptions: {
                         buttonId: "addBtn",
                         iconClass: "check",
-                        buttonClass: "add-color-background"
+                        buttonClass: "add-color-background icon-offset"
                     }
                 })
             ];

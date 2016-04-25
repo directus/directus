@@ -34,7 +34,7 @@ function(app, Backbone, Widgets, moment) {
           "id": model.get('id'),
           "cid": model.cid,
           'title': model.get('title'),
-          'title_short': (model.get('title').length > 28)? model.get('title').substr(0,25) + "..." : model.get('title'),
+          'title_short': (model.get('title').length > 35)? model.get('title').substr(0,32) + "..." : model.get('title'),
           'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
           'size': model.get('size'),
           'type': (model.has('type')) ? model.get('type').split('/').pop() : '',
@@ -51,6 +51,10 @@ function(app, Backbone, Widgets, moment) {
           data.thumbnail = '<img src="'+model.makeFileUrl(true)+'">';
         } else {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
+        }
+
+        if(!model.get('width') || !model.get('height')){
+          data.dimensions = "";
         }
 
         if(type == "embed") {

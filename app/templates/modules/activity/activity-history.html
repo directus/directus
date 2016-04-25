@@ -5,7 +5,7 @@
       {{userAvatar current_user}}
       <div class="history-comment">
         <textarea id="commentTextarea" placeholder="Leave a comment..."></textarea>
-        <button id="messages-response-button" class="btn">Submit</button>
+        <button id="messages-response-button" class="btn btn-small">Submit</button>
       </div>
       <span id="tagInsert" class="mention-list"></span>
       <!-- <div class="history-follow"><input type="checkbox">Follow this item's activity</div> -->
@@ -20,7 +20,7 @@
         </div>
       {{else}}
         {{userAvatar user_avatar}}
-        <div class="history-icon {{color}}"><div class="icon {{icon}}"></div></div>
+        <div class="history-icon {{color}}"><!-- <div class="icon {{icon}}"></div> --><i class="material-icons">{{icon}}</i></div>
         <div class="history-text">{{userName user_avatar}} {{action_text}}</div>
       {{/if}}
       <div class="history-datetime">{{time}}</div>

@@ -11,19 +11,19 @@
     font-size: 14px;
     background: $mediumGrey;
     color: $white;
-    border-bottom: 2px solid darken($mediumGrey, 10%);
+    // border-bottom: 2px solid darken($mediumGrey, 10%);
     &:hover {
-      background-color: darken($mediumGrey, 10%);
-      border-bottom: 2px solid darken($mediumGrey, 20%);
+      background-color: darken($mediumGrey, 20%);
+      // border-bottom: 2px solid darken($mediumGrey, 20%);
     }
     &:active {
-      background-color: darken($mediumGrey, 20%);
-      border-bottom: 2px solid darken($mediumGrey, 30%);
+      background-color: darken($mediumGrey, 30%);
+      // border-bottom: 2px solid darken($mediumGrey, 30%);
     }
   }
   p.error {
     color: $deleteColor;
-    font-weight: 600;
+    font-weight: 500;
     margin: 0;
     padding: 15px 0 0 10px;
     text-align: center;
@@ -41,6 +41,8 @@
   bottom: 10px;
   color: $darkGrey;
   cursor: help;
+  font-size: 10px;
+  font-family: "Lucida Console", Monaco, monospace;
 }
 .login-panel {
   @extend .card-border;

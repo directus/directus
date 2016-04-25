@@ -34,6 +34,7 @@
     tr {
       -webkit-font-smoothing: antialiased;
       background-color: darken($white, 3%);
+      height: 40px;
       &:hover {
         background-color: darken($white, 5%);
         cursor: default;
@@ -46,8 +47,8 @@
         // border-bottom: 1px solid $lightGrey;
         text-transform: uppercase;
         font-size: 11px;
-        font-weight: 600;
-        padding: 11px $smallPad $smallPad $smallPad;
+        font-weight: 500;
+        padding: ($smallPad + 2) $smallPad ($smallPad - 2) $smallPad;
         position: relative;
         &.asc, &.desc {
           .sorter {
@@ -70,6 +71,11 @@
         }
         &.permissions {
           width: 10%;
+        }
+        &.check-box {
+          label {
+            margin-top: -3px;
+          }
         }
         .icon {
           display: inline-block;
@@ -158,12 +164,12 @@
       }
       .footer-function {
         .method {
-          font-weight: 600;
+          font-weight: 500;
           font-size: 11px;
         }
         ul {
           padding:0;
-          font-weight: 600;
+          font-weight: 500;
           font-size: 11px;
         }
         @include border-radius(3px, 3px, 3px, 3px);
@@ -205,7 +211,7 @@
     border-bottom: solid 1px $extraLightGrey;
     color: $darkGrey;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 13px;
     // background highlight
     background-color: #FFFFFF;
     // -webkit-transition: background-color 600ms ease;
@@ -224,7 +230,7 @@
       }
     }
     &.featured {
-      font-weight: 700;
+      font-weight: 500;
       -webkit-font-smoothing: antialiased;
     }
     &.inactive {
@@ -246,8 +252,8 @@
     }
     td {
       vertical-align: middle;
-      padding-bottom: 9px;
-      padding-top: 8px;
+      padding-bottom: 12px;
+      padding-top: 12px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -282,6 +288,9 @@
       }
     }
   }
+  tbody {
+    border-bottom: none;
+  }
   .table-striped {
     border-bottom: none;
     tr {
@@ -315,7 +324,7 @@
 .set-columns {
   // overflow: hidden; // For triangle
   position: fixed;
-  top: 173px;
+  top: 171px;
   right: 40px;
   display: block;
   // right: -2px;
@@ -352,13 +361,13 @@
     right: 20px;
     font-size: 12px;
     .btn {
-      float: right;
-      margin-left: 10px;
-      background-color: lighten($extraDarkGrey, 10%);
-      border-bottom: 2px solid #222222;
+      float: left;
+      margin-right: 10px;
+      background-color: lighten($extraDarkGrey, 15%);
+      // border-bottom: 2px solid #222222;
       &:hover {
-        background-color: lighten($extraDarkGrey, 15%);
-        border-bottom: 2px solid #000000;
+        background-color: lighten($extraDarkGrey, 25%);
+        // border-bottom: 2px solid #000000;
       }
     }
   }
@@ -410,7 +419,7 @@
     .history-add-comment {
       padding-right: 180px;
       .history-comment {
-        width: 100%;
+        width: 90%;
       }
     }
     li {
@@ -476,14 +485,15 @@
       }
       .history-datetime {
         color: $mediumGrey;
-        position: absolute;
-        top: 30px;
-        right: 0;
+        margin-left: 10px;
+        margin-top: 4px;
+        font-style: italic;
+        font-size: 12px;
       }
       .history-comment {
         position: relative;
         display: inline-block;
-        padding: 12px 22px 10px 20px;
+        padding: 20px;
         background-color: $fieldColor;
         //@include border-radius(3px, 3px, 3px, 3px);
         max-width: 500px;
@@ -491,6 +501,7 @@
         margin-left: 10px;
         height: auto;
         min-height: 18px;
+        font-weight: 400;
         &:after {
           content:"";
           position:absolute;
@@ -517,8 +528,11 @@
           border: none;
           width: 100%;
           min-height: 80px;
-          padding: 5px 0 0 0;
+          padding: 0 0 30px 0;
           -webkit-font-smoothing: antialiased !important;
+          &.tall {
+            min-height: 140px;
+          }
         }
       }
       .history-follow {
@@ -531,7 +545,8 @@
         }
       }
       .history-text {
-        padding-top: 10px;
+        padding-top: 2px;
+        padding-left: 10px;
         a {
           color: $mediumGrey;
         }
@@ -540,68 +555,68 @@
         position: absolute;
         top: 44px;
         left: 24px;
-        width: 20px;
-        height: 20px;
+        width: 21px;
+        height: 21px;
         color: $white;
-        @include border-radius(10px, 10px, 10px, 10px);
-        .icon {
-          font-size: 200%;
+        @include border-radius(20px, 20px, 20px, 20px);
+        .material-icons {
+          font-size: 100%;
           line-height: 60%;
           position: absolute;
         }
         &.add {
           background-color: $addColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.edit {
           background-color: $editColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.delete {
           background-color: $deleteColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.message {
           background-color: $messageColor;
-          .icon {
+          .material-icons {
             top: 2px;
             left: 4px;
           }
         }
         &.comment {
           background-color: $messageColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.attach {
           background-color: $attachColor;
-          .icon {
-            top: 1px;
+          .material-icons {
+            top: 6px;
             left: 4px;
           }
         }
         &.login {
           background-color: $loginColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.system {
           background-color: $systemColor;
-          .icon {
-            top: 1px;
+          .material-icons {
+            top: 6px;
             left: 4px;
           }
         }

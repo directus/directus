@@ -6,8 +6,8 @@
       <label for="check{{ id }}"><span></span></label>
     </div>
     <div class="message-content">
+      <div class="title">{{subject}}{{#unless read}}<span class="unread-color pulsate"> ●</span>{{/unless}}</div>
       <div class="users">To: {{recipients}}</div>
-      <div class="title">{{subject}}</div>
       <div class="subject">{{message}}</div>
     </div>
     <span class="general-datetime" title="{{date_updated}}">{{niceDate}}</span>

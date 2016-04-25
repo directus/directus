@@ -42,6 +42,13 @@
     vertical-align: middle;
   }
 }
+.large-circle {
+  &.icon-offset {
+    .material-icons {
+      margin-top: 4px;
+    }
+  }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // Directus Font

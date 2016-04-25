@@ -72,7 +72,7 @@ select {
     border: none;
     -webkit-appearance: none;
     -webkit-font-smoothing: antialiased !important;
-    font-weight: 600;
+    font-weight: 500;
     padding: 0 20px 0 0;
     outline: none;
     &:focus {
@@ -95,7 +95,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
   +label {
     cursor: pointer;
     display: inline-block;
-    font-weight: 600;
+    font-weight: 500;
     margin-right: $smallPad;
     position: relative;
     vertical-align: bottom;
@@ -232,7 +232,8 @@ select,
       left:0px;
       right:0px;
       bottom:0px;
-      background-color:rgba(255,255,255,0.5);
+      background-color:rgba(255,255,255,0.75);
+      cursor: not-allowed;
       z-index:1;
     }
     .table {
@@ -251,7 +252,7 @@ select,
       @extend .clear-fix;
       background-color: $white;
       color: $darkGrey;
-      font-weight: 600;
+      font-weight: 500;
       padding: 44px $standardPad $largePad $largePad;
       vertical-align: top;
       width: 200px;
@@ -260,13 +261,15 @@ select,
         text-transform: capitalize;
         //top: -5px;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         .note {
           display: block;
           color: $mediumGrey;
           font-style: italic;
           text-transform: none;
           font-size: 12px;
+          padding-top: 5px;
+          max-width: 400px;
           a {
             border-bottom: dotted 1px $mediumGrey;
             &:hover {
@@ -275,13 +278,21 @@ select,
           }
         }
       }
+      .validation-error {
+        margin-top: 4px;
+        display: inline-block;
+      }
       .batch-edit-on {
-        font-weight: 700;
+        vertical-align: middle;
+        font-weight: 500;
         display: block;
         z-index: 2;
+        margin-bottom: 10px;
+        margin-top: -10px;
         input {
           display: inline-block;
           width: auto;
+          margin-right: 4px;
         }
 
       }

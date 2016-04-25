@@ -72,7 +72,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
   </style>
 </head>
 
-<body class="font-primary">
+<body>
 
 <!-- Main container. -->
 <form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post" class="login-box" autocomplete="off">
@@ -93,7 +93,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
   </div>
   <p class="error" style="display:none;"></p>
   <p class="message" style="display:none;"></p>
-  <div class="directus-version" title="<?php echo $cacheBuster; ?>">Version: <?php echo(DIRECTUS_VERSION) ?></div>
+  <div class="directus-version" title="<?php echo $cacheBuster; ?>">Version <?php echo(DIRECTUS_VERSION) ?></div>
   <!-- <button type="submit" class="btn btn-primary">Sign in</button> -->
   <!-- <button id="forgot-password" class="btn btn-primary">Forgot Password</button> -->
 </form>
