@@ -21,12 +21,13 @@ if(isset($_POST['backButton'])) {
     }
 }
 
-if($step == 1 && isset($_POST['email']) && isset($_POST['site_name']) && isset($_POST['password']) && isset($_POST['password_confirm'])) {
-    if(!empty($_POST['email']) && !empty($_POST['site_name']) && !empty($_POST['password']) && !empty($_POST['directus_path'])) {
-        if($_POST['password'] == $_POST['password_confirm'] && strlen($_POST['password']) > 0) {
-            $_SESSION['email'] = $_POST['email'];
-            $_SESSION['site_name'] = $_POST['site_name'];
-            $_SESSION['password'] = $_POST['password'];
+if($step == 1 && isset($_POST['directus_email']) && isset($_POST['directus_name']) && isset($_POST['directus_password']) && isset($_POST['directus_password_confirm'])) {
+    if(!empty($_POST['directus_email']) && !empty($_POST['directus_name']) && !empty($_POST['directus_password']) && !empty($_POST['directus_path'])) {
+        if($_POST['directus_password'] == $_POST['directus_password_confirm'] && strlen($_POST['directus_password']) > 0) {
+            $_SESSION['directus_email'] = $_POST['directus_email'];
+            $_SESSION['directus_name'] = $_POST['directus_name'];
+            $_SESSION['directus_password'] = $_POST['directus_password'];
+            $_SESSION['directus_password_confirm'] = $_POST['directus_password_confirm'];
             $_SESSION['directus_path'] = $_POST['directus_path'];
             $_SESSION['step'] = 2;
             $step = 2;
@@ -34,23 +35,23 @@ if($step == 1 && isset($_POST['email']) && isset($_POST['site_name']) && isset($
     }
 }
 
-if($step == 2 && isset($_POST['host_name']) && isset($_POST['username']) && isset($_POST['db_name'])) {
+if($step == 2 && isset($_POST['db_host']) && isset($_POST['db_user']) && isset($_POST['db_name'])) {
     //Check for db connection
     ini_set('display_errors', 0);
     $conn = mysqli_init();
     mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
-    $connection = mysqli_real_connect($conn, $_POST['host_name'], $_POST['username'], $_POST['password'], $_POST['db_name'], $_POST['port']);
-    $_SESSION['database'] = $_POST['database'];
-    $_SESSION['host_name'] = $_POST['host_name'];
-    $_SESSION['username'] = $_POST['username'];
-    $_SESSION['db_password'] = $_POST['password'];
+    $connection = mysqli_real_connect($conn, $_POST['db_host'], $_POST['db_user'], $_POST['db_password'], $_POST['db_name'], $_POST['db_port']);
+    $_SESSION['db_type'] = $_POST['db_type'];
+    $_SESSION['db_host'] = $_POST['db_host'];
+    $_SESSION['db_user'] = $_POST['db_user'];
+    $_SESSION['db_password'] = $_POST['db_password'];
     $_SESSION['db_name'] = $_POST['db_name'];
-    $_SESSION['port'] = $_POST['port'];
+    $_SESSION['db_port'] = $_POST['db_port'];
     $_SESSION['db_prefix'] = '';//$_POST['db_prefix'];
-    if(isset($_POST['initial_schema'])) {
-        $_SESSION['initial_schema'] = $_POST['initial_schema'];
+    if(isset($_POST['db_schema'])) {
+        $_SESSION['db_schema'] = $_POST['db_schema'];
     } else {
-        $_SESSION['initial_schema'] = "none";
+        $_SESSION['db_schema'] = "none";
     }
     if($connection) {
         $_SESSION['step'] = 3;
@@ -97,7 +98,7 @@ if($step == 3 && isset($_POST['install'])) {
     <meta name="author" content="RANGER Studio LLC">
 
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,600" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic,400italic,500italic" type="text/css">
     <link rel="stylesheet" href="install.css?v=<?=$assetsVersion;?>">
 </head>
 <body>
@@ -141,11 +142,11 @@ if($step == 3 && isset($_POST['install'])) {
                 $directus_path = preg_replace('#/(installation/.*)#i', '', $_SERVER['REQUEST_URI']) . '/';
                 ?>
                 <div class="container">
-                    <label for="site_name">Project Name</label><input type="text" id="site_name" name="site_name" placeholder="My Project Name" value="<?php echo(isset($_SESSION['site_name']) ? $_SESSION['site_name'] : ''); ?>" autofocus><br>
+                    <label for="directus_name">Project Name</label><input type="text" id="directus_name" name="directus_name" placeholder="My Project Name" value="<?php echo(isset($_SESSION['directus_name']) ? $_SESSION['directus_name'] : ''); ?>" autofocus><br>
                     <label for="directus_path">Project Path</label><input type="text" id="directus_path" name="directus_path" placeholder="Path to Directus directory" value="<?php echo(isset($_SESSION['directus_path']) ? $_SESSION['directus_path'] : $directus_path); ?>"><br>
-                    <label for="email">Admin Email</label><input type="email" id="email" name="email" placeholder="admin@example.com" value="<?php echo(isset($_SESSION['email']) ? $_SESSION['email'] : ''); ?>"><br>
-                    <label for="password">Admin Password</label><input type="password" id="password" name="password" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
-                    <label for="password_confirm">Confirm Admin Password</label><input type="password" id="password_confirm" name="password_confirm" value="<?php echo(isset($_SESSION['password']) ? $_SESSION['password'] : ''); ?>"><br>
+                    <label for="directus_email">Admin Email</label><input type="email" id="directus_email" name="directus_email" placeholder="admin@example.com" value="<?php echo(isset($_SESSION['directus_email']) ? $_SESSION['directus_email'] : ''); ?>"><br>
+                    <label for="directus_password">Admin Password</label><input type="password" id="directus_password" name="directus_password" value="<?php echo(isset($_SESSION['directus_password']) ? $_SESSION['directus_password'] : ''); ?>"><br>
+                    <label for="directus_password_confirm">Confirm Admin Password</label><input type="password" id="directus_password_confirm" name="directus_password_confirm" value="<?php echo(isset($_SESSION['directus_password_confirm']) ? $_SESSION['directus_password_confirm'] : ''); ?>"><br>
                 </div>
             <?php
             }
@@ -159,20 +160,32 @@ if($step == 3 && isset($_POST['install'])) {
                         There was an error while attempting to connect to the database. Please review the above configuration and try again.
                     </div>
                 <?php } ?>
-                <label for="database">Database</label>
-                <select name="database" id="database">
-                    <option value="mysql" <?php echo(isset($_SESSION['database']) && $_SESSION['database'] == 'mysql' ? 'checked' : ''); ?>>MySQL/Percona</option>
-                </select>
-                <label for="host_name">Host Name</label><input type="text" id="host_name" placeholder="eg: localhost" class="<?php if($code == 2002){echo "error";}?>" name="host_name" value="<?php echo(isset($_SESSION['host_name']) ? $_SESSION['host_name'] : 'localhost'); ?>" autofocus><br>
-                <label for="username">Username</label><input type="text" id="username" placeholder="With access/modify privileges" class="<?php if($code == 1045){echo "error";}?>" name="username" value="<?php echo(isset($_SESSION['username']) ? $_SESSION['username'] : ''); ?>"><br>
-                <label for="password">Password</label><input type="password" id="password" placeholder="" class="<?php if($code == 1045){echo "error";}?>" name="password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
+                <label for="db_type">Database Type</label>
+                <div class="select-container">
+                    <select name="db_type" id="db_type">
+                        <option value="mysql" <?php echo(isset($_SESSION['db_type']) && $_SESSION['db_type'] == 'mysql' ? 'checked' : ''); ?>>MySQL/Percona</option>
+                    </select>
+                    <i class="material-icons select-arrow">arrow_drop_down</i>
+                </div>
+                <div>
+                    <div class="input-left">
+                        <label for="db_host">Host</label><input type="text" id="db_host" placeholder="eg: localhost" class="<?php if($code == 2002){echo "error";}?>" name="db_host" value="<?php echo(isset($_SESSION['db_host']) ? $_SESSION['db_host'] : 'localhost'); ?>" autofocus><br>
+                    </div>
+                    <div class="input-right">
+                        <label for="db_port">Port</label><input type="number" id="db_port" placeholder="3306" min="0" max="99999" class="<?php if($code == 2002){echo "error";}?>" name="db_port" value="<?php echo(isset($_SESSION['db_port']) ? $_SESSION['db_port'] : '3306'); ?>"><br>
+                    </div>
+                </div>
+                <label for="db_user">User</label><input type="text" id="db_user" placeholder="With access/modify privileges" class="<?php if($code == 1045){echo "error";}?>" name="db_user" value="<?php echo(isset($_SESSION['db_user']) ? $_SESSION['db_user'] : ''); ?>"><br>
+                <label for="db_password">Password</label><input type="password" id="db_password" placeholder="" class="<?php if($code == 1045){echo "error";}?>" name="db_password" value="<?php echo(isset($_SESSION['db_password']) ? $_SESSION['db_password'] : ''); ?>"><br>
                 <label for="db_name">Database Name</label><input type="text" id="db_name" placeholder="" class="<?php if($code == 1049){echo "error";}?>" name="db_name" value="<?php echo(isset($_SESSION['db_name']) ? $_SESSION['db_name'] : ''); ?>"><br>
-                <label for="port">Port</label><input type="text" id="port" placeholder="3306" class="<?php if($code == 2002){echo "error";}?>" name="port" value="<?php echo(isset($_SESSION['port']) ? $_SESSION['port'] : '3306'); ?>"><br>
-                <label for="initial_schema">Initial Schema</label>
-                <select name="initial_schema" id="initial_schema">
-                    <option value="none" <?php echo(isset($_SESSION['initial_schema']) && $_SESSION['initial_schema'] == 'none' ? 'checked' : ''); ?>>None (Blank Database)</option>
-                    <option value="ui_gallery" <?php echo(isset($_SESSION['initial_schema']) && $_SESSION['initial_schema'] == 'ui_gallery' ? 'checked' : ''); ?>>UI Gallery</option>
-                </select>
+                <label for="db_schema">Initial Schema</label>
+                <div class="select-container">
+                    <select name="db_schema" id="db_schema">
+                        <option value="none" <?php echo(isset($_SESSION['db_schema']) && $_SESSION['db_schema'] == 'none' ? 'checked' : ''); ?>>None (Clean Database)</option>
+                        <option value="ui_gallery" <?php echo(isset($_SESSION['db_schema']) && $_SESSION['db_schema'] == 'ui_gallery' ? 'checked' : ''); ?>>UI Gallery</option>
+                    </select>
+                    <i class="material-icons select-arrow">arrow_drop_down</i>
+                </div>
             </div>
             <?php
         }
@@ -180,17 +193,17 @@ if($step == 3 && isset($_POST['install'])) {
         if($step == 3) {
             ?>
             <div class="step-3">
-                <h3>Main Configuration</h3>
+                <h3>Project Configuration</h3>
                 <hr>
                 <table>
                     <tbody>
                     <tr>
-                        <td class="item">Site Name</td>
-                        <td class="result"><?php echo $_SESSION['site_name'];?></td>
+                        <td class="item">Project Name</td>
+                        <td class="result"><?php echo $_SESSION['directus_name'];?></td>
                     </tr>
                     <tr>
                         <td class="item">Admin Email</td>
-                        <td class="result"><span><?php echo $_SESSION['email'];?></span>
+                        <td class="result"><span><?php echo $_SESSION['directus_email'];?></span>
                         </td>
                     </tr>
                     <tr>
@@ -206,15 +219,15 @@ if($step == 3 && isset($_POST['install'])) {
                     <tbody>
                     <tr>
                         <td class="item">Database</td>
-                        <td class="result"><?php echo $_SESSION['database'];?></td>
+                        <td class="result"><?php echo $_SESSION['db_type'];?></td>
                     </tr>
                     <tr>
                         <td class="item">Host Name</td>
-                        <td class="result"><?php echo $_SESSION['host_name'];?></td>
+                        <td class="result"><?php echo $_SESSION['db_host'];?></td>
                     </tr>
                     <tr>
                         <td class="item">Username</td>
-                        <td class="result"><span><?php echo $_SESSION['username'];?></span></td>
+                        <td class="result"><span><?php echo $_SESSION['db_user'];?></span></td>
                     </tr>
                     <tr>
                         <td class="item">Password</td>
@@ -226,7 +239,7 @@ if($step == 3 && isset($_POST['install'])) {
                     </tr>
                     <tr>
                         <td class="item">Port</td>
-                        <td class="result"><?php echo $_SESSION['port'];?></td>
+                        <td class="result"><?php echo $_SESSION['db_port'];?></td>
                     </tr>
                     </tbody>
                 </table>
@@ -304,7 +317,7 @@ if($step == 3 && isset($_POST['install'])) {
                 <table>
                     <tbody>
                     <tr>
-                        <td class="item"><?php echo $_SESSION['email'];?></td>
+                        <td class="item"><?php echo $_SESSION['directus_email'];?></td>
                         <td class="result"><input type="checkbox" value="yes" name="send_config_email" checked></td>
                     </tr>
                     </tbody>
@@ -318,9 +331,9 @@ if($step == 3 && isset($_POST['install'])) {
             $setupResponse = $main->execute(array('', 'db:setup'));
             $migrateResponse = $main->execute(array('', 'db:migrate'));
             AddSettings($mysqli);
-            AddDefaultUser($_SESSION['email'], $_SESSION['password'], $mysqli);
+            AddDefaultUser($_SESSION['directus_email'], $_SESSION['directus_password'], $mysqli);
             AddStorageAdapters($mysqli);
-            if(isset($_SESSION['initial_schema']) && $_SESSION['initial_schema'] == "ui_gallery") {
+            if(isset($_SESSION['db_schema']) && $_SESSION['db_schema'] == "ui_gallery") {
                 InstallSampleData($mysqli);
             }
             if(isset($_SESSION['send_config_email']) && $_SESSION['send_config_email'] == "yes") {
@@ -340,11 +353,11 @@ if($step == 3 && isset($_POST['install'])) {
                     <tbody>
                     <tr>
                     <td style="width: 140px;">Project Name</td>
-                    <td>'.$_SESSION['site_name'].'</td>
+                    <td>'.$_SESSION['directus_name'].'</td>
                     </tr>
                     <tr>
                     <td style="width: 140px;">Admin Email</td>
-                    <td>'.$_SESSION['email'].'</td>
+                    <td>'.$_SESSION['directus_email'].'</td>
                     </tr>
                     <tr>
                     <td style="width: 140px;">Admin Password</td>
@@ -358,15 +371,15 @@ if($step == 3 && isset($_POST['install'])) {
                     <tbody>
                     <tr>
                     <td style="width: 140px;">Database</td>
-                    <td>'.$_SESSION['database'].'</td>
+                    <td>'.$_SESSION['db_type'].'</td>
                     </tr>
                     <tr>
                     <td style="width: 140px;">Host Name</td>
-                    <td>'.$_SESSION['host_name'].'</td>
+                    <td>'.$_SESSION['db_host'].'</td>
                     </tr>
                     <tr>
                     <td style="width: 140px;">Username</td>
-                    <td>'.$_SESSION['username'].'</td>
+                    <td>'.$_SESSION['db_user'].'</td>
                     </tr>
                     <tr>
                     <td style="width: 140px;">Password</td>
@@ -378,22 +391,22 @@ if($step == 3 && isset($_POST['install'])) {
                     </tr>
                     <tr>
                     <td style="width: 140px;">Port</td>
-                    <td>'.$_SESSION['port'].'</td>
+                    <td>'.$_SESSION['db_port'].'</td>
                     </tr>
                     </tbody>
                     </table>
                     <h3>Config File</h3><textarea style="min-width: 300px;min-height: 100px;">'.$configText.'</textarea></p></html>';
                 $headers  = 'MIME-Version: 1.0' . "\r\n";
                 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-                mail($_SESSION['email'], "Directus Install Config Overview", $mailBody, $headers);
+                mail($_SESSION['directus_email'], "Directus Install Config Overview", $mailBody, $headers);
             }
             $mysqli->close();
 
             require_once('config_setup.php');
             WriteConfig(array(
-                'db_host' => $_SESSION['host_name'],
+                'db_host' => $_SESSION['db_host'],
                 'db_name' => $_SESSION['db_name'],
-                'db_user' => $_SESSION['username'],
+                'db_user' => $_SESSION['db_user'],
                 'db_pass' => $_SESSION['db_password'],
                 'db_prefix' => '',//$_SESSION['db_prefix'],
                 'directus_path' => $_SESSION['directus_path'],
@@ -403,16 +416,16 @@ if($step == 3 && isset($_POST['install'])) {
             // so we can clear all session unset($_SESSION['installation']);
             $install_data = array(
                 'step',
-                'email',
-                'site_name',
-                'password',
+                'directus_email',
+                'directus_name',
+                'directus_password',
                 'directus_path',
-                'host_name',
-                'username',
+                'db_host',
+                'db_user',
                 'db_password',
                 'db_name',
                 'db_prefix',
-                'initial_schema',
+                'db_schema',
                 'default_dest',
                 'default_url',
                 'thumb_dest',

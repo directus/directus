@@ -29,17 +29,62 @@ $black: #1a1a1a; // Directus Black
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// Material Design Icons
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../assets/fonts/material-design/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url(../assets/fonts/material-design/MaterialIcons-Regular.woff2) format('woff2'),
+       url(../assets/fonts/material-design/MaterialIcons-Regular.woff) format('woff'),
+       url(../assets/fonts/material-design/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  &.vertical-middle {
+    vertical-align: middle;
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // Tags and Structure
 
 body {
     background-color: #F4F4F4;
     margin: 0;
     padding: 0;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased !important;
     font-size: 16px;
     color: #bbbbbb;
-    font-weight: 600;
+    font-weight: 500;
 }
 a {
     color: inherit;
@@ -91,8 +136,8 @@ textarea {
     .breadcrumb {
         padding-bottom: 35px;
         color: #bbbbbb;
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 16px;
+        font-weight: 500;
         .separator {
             margin: -5px 20px 0 20px;
             font-size: 10px;
@@ -110,7 +155,7 @@ textarea {
 }
 .container {
     width: 100%;
-    margin: 60px auto 10px;
+    margin: 40px auto 10px;
     max-width: 340px;
     position: relative;
     &.step-1 {
@@ -123,7 +168,8 @@ textarea {
 select,
 input[type=text],
 input[type=email],
-input[type=password] {
+input[type=password],
+input[type=number] {
     @include border-radius;
     @include transition (all, 200ms, linear);
     padding: 10px 12px;
@@ -132,6 +178,7 @@ input[type=password] {
     margin-bottom: 20px;
     font-size: 16px;
     color: $darkGrey;
+    -webkit-text-fill-color: $darkGrey;
     border: #BBBBBB 1px solid;
     outline: none;
     background-color: #ffffff;
@@ -148,6 +195,26 @@ input[type=password] {
     &.bad {
         border: 1px solid $bad !important;
     }
+    &:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+        color: $darkGrey !important;
+    }
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+    &[type='number'] {
+        -moz-appearance:textfield;
+    }
+}
+.select-container {
+    position: relative;
+}
+.select-arrow {
+    position: absolute;
+    top: 10px;
+    right: 4px;
+    font-size: 29px;
 }
 .button {
     @include border-radius;
@@ -193,7 +260,7 @@ input[type=password] {
     letter-spacing: 0.02em;
     text-align: center;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 // Classes
@@ -208,11 +275,22 @@ input[type=password] {
 }
 .label-important {
     color: $bad;
-    font-weight: bold;
+    font-weight: 500;
 }
 .label-success {
     color: $primary;
     font-weight: bold;
+}
+.input-left {
+    float: left;
+    display: inline-block;
+    width: 65%;
+    padding-right: 5%;
+}
+.input-right {
+    float: left;
+    display: inline-block;
+    width: 30%;
 }
 .step-3 {
     h3 {
@@ -225,7 +303,7 @@ input[type=password] {
         font-size: 12px;
         width: 100%;
         .item {
-            font-weight: bold;
+            font-weight: 500;
             //width: 200px;
             height: 22px;
         }

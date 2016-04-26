@@ -27,11 +27,11 @@ $(window).ready(function() {
   });
 
   function CheckStep1() {
-    var name = $('input[name=site_name]').val();
+    var name = $('input[name=directus_name]').val();
     var path = $('input[name=directus_path]').val();
-    var email = $('input[name=email]').val();
-    var pass = $('input[name=password]').val();
-    var passconfirm = $('input[name=password_confirm]').val();
+    var email = $('input[name=directus_email]').val();
+    var pass = $('input[name=directus_password]').val();
+    var passconfirm = $('input[name=directus_password_confirm]').val();
 
     if(name && email && pass && passconfirm && pass === passconfirm) {
       $('button[type=submit]').removeClass('disabled');
@@ -40,8 +40,8 @@ $(window).ready(function() {
     }
   }
   function CheckStep2() {
-    var name = $('input[name=host_name]').val();
-    var user = $('input[name=username]').val();
+    var name = $('input[name=db_host]').val();
+    var user = $('input[name=db_user]').val();
     // password could be empty
     // var pass = $('input[name=password]').val();
     var dbname = $('input[name=db_name]').val();

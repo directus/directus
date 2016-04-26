@@ -1,3 +1,36 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../assets/fonts/material-design/MaterialIcons-Regular.eot);
+  /* For IE6-8 */
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url(../assets/fonts/material-design/MaterialIcons-Regular.woff2) format("woff2"), url(../assets/fonts/material-design/MaterialIcons-Regular.woff) format("woff"), url(../assets/fonts/material-design/MaterialIcons-Regular.ttf) format("truetype"); }
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga'; }
+  .material-icons.vertical-middle {
+    vertical-align: middle; }
+
 body {
   background-color: #F4F4F4;
   margin: 0;
@@ -6,7 +39,7 @@ body {
   -webkit-font-smoothing: antialiased !important;
   font-size: 16px;
   color: #bbbbbb;
-  font-weight: 600; }
+  font-weight: 500; }
 
 a {
   color: inherit;
@@ -57,8 +90,8 @@ textarea {
   .header .breadcrumb {
     padding-bottom: 35px;
     color: #bbbbbb;
-    font-size: 14px;
-    font-weight: 600; }
+    font-size: 16px;
+    font-weight: 500; }
     .header .breadcrumb .separator {
       margin: -5px 20px 0 20px;
       font-size: 10px;
@@ -72,7 +105,7 @@ textarea {
 
 .container {
   width: 100%;
-  margin: 60px auto 10px;
+  margin: 40px auto 10px;
   max-width: 340px;
   position: relative; }
   .container.step-1 {
@@ -84,7 +117,8 @@ textarea {
 select,
 input[type=text],
 input[type=email],
-input[type=password] {
+input[type=password],
+input[type=number] {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -99,6 +133,7 @@ input[type=password] {
   margin-bottom: 20px;
   font-size: 16px;
   color: #666666;
+  -webkit-text-fill-color: #666666;
   border: #BBBBBB 1px solid;
   outline: none;
   background-color: #ffffff;
@@ -109,18 +144,53 @@ input[type=password] {
   select option,
   input[type=text] option,
   input[type=email] option,
-  input[type=password] option {
+  input[type=password] option,
+  input[type=number] option {
     padding: 10px 12px; }
   select:focus,
   input[type=text]:focus,
   input[type=email]:focus,
-  input[type=password]:focus {
+  input[type=password]:focus,
+  input[type=number]:focus {
     border: 1px solid #b26cee; }
   select.bad,
   input[type=text].bad,
   input[type=email].bad,
-  input[type=password].bad {
+  input[type=password].bad,
+  input[type=number].bad {
     border: 1px solid #c1272d !important; }
+  select:-webkit-autofill,
+  input[type=text]:-webkit-autofill,
+  input[type=email]:-webkit-autofill,
+  input[type=password]:-webkit-autofill,
+  input[type=number]:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+    color: #666666 !important; }
+  select::-webkit-outer-spin-button, select::-webkit-inner-spin-button,
+  input[type=text]::-webkit-outer-spin-button,
+  input[type=text]::-webkit-inner-spin-button,
+  input[type=email]::-webkit-outer-spin-button,
+  input[type=email]::-webkit-inner-spin-button,
+  input[type=password]::-webkit-outer-spin-button,
+  input[type=password]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none; }
+  select[type='number'],
+  input[type=text][type='number'],
+  input[type=email][type='number'],
+  input[type=password][type='number'],
+  input[type=number][type='number'] {
+    -moz-appearance: textfield; }
+
+.select-container {
+  position: relative; }
+
+.select-arrow {
+  position: absolute;
+  top: 10px;
+  right: 4px;
+  font-size: 29px; }
 
 .button {
   -webkit-border-radius: 3px;
@@ -167,7 +237,7 @@ input[type=password] {
   letter-spacing: 0.02em;
   text-align: center;
   text-transform: uppercase;
-  font-weight: 600; }
+  font-weight: 500; }
 
 .hide {
   display: none; }
@@ -178,11 +248,22 @@ input[type=password] {
 
 .label-important {
   color: #c1272d;
-  font-weight: bold; }
+  font-weight: 500; }
 
 .label-success {
   color: #b26cee;
   font-weight: bold; }
+
+.input-left {
+  float: left;
+  display: inline-block;
+  width: 65%;
+  padding-right: 5%; }
+
+.input-right {
+  float: left;
+  display: inline-block;
+  width: 30%; }
 
 .step-3 h3 {
   font-size: 16px;
@@ -193,7 +274,7 @@ input[type=password] {
   font-size: 12px;
   width: 100%; }
   .step-3 table .item {
-    font-weight: bold;
+    font-weight: 500;
     height: 22px; }
   .step-3 table .result {
     text-align: right; }
