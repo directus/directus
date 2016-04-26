@@ -419,6 +419,7 @@ if($step == 3 && isset($_POST['install'])) {
                 'directus_email',
                 'directus_name',
                 'directus_password',
+                'directus_password_confirm',
                 'directus_path',
                 'db_host',
                 'db_user',
