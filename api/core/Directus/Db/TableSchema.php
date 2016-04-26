@@ -119,12 +119,15 @@ class TableSchema {
         return $columns;
     }
 
-    public static function getAllAliasTableColumns($table) {
+    public static function getAllAliasTableColumns($table, $onlyNames = false) {
         $columns = array();
         $schemaArray = self::loadSchema($table);
         foreach($schemaArray as $column) {
             if(!self::columnIsCollectionAssociation($column)) {
                 continue;
+            }
+            if ($onlyNames) {
+                $column = $column['column_name'];
             }
             $columns[] = $column;
         }
@@ -181,10 +184,13 @@ class TableSchema {
         return $columns;
     }
 
-    public static function hasTableColumn($table, $column) {
-      $columns = self::getTableColumns($table, null, true);
+    public static function hasTableColumn($table, $column, $includeAlias = false) {
+      $columns = array_flip(self::getTableColumns($table, null, true));
+      if ($includeAlias) {
+          $columns = array_merge($columns, array_flip(self::getAllAliasTableColumns($table, true)));
+      }
 
-      if (array_key_exists($column, array_flip($columns))) {
+      if (array_key_exists($column, $columns)) {
         return true;
       }
 

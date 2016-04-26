@@ -313,7 +313,7 @@ class AclAwareTableGateway extends TableGateway {
             $tableName = $this->table;
         }
 
-        if (!\Directus\Db\TableSchema::hasTableColumn($tableName, $columnName)) {
+        if (!TableSchema::hasTableColumn($tableName, $columnName, true)) {
             return false;
         }
 
@@ -322,35 +322,33 @@ class AclAwareTableGateway extends TableGateway {
             throw new UnauthorizedTableAddException($aclErrorPrefix . "Table alter access forbidden on table $tableName");
         }
 
-        // get drop table query
-        $sql = new Sql($this->adapter);
-        $alterTable = new Ddl\AlterTable($tableName);
-        $dropColumn = $alterTable->dropColumn($columnName);
-        $query = $sql->getSqlStringForSqlObject($dropColumn);
+        // Drop table column if is a non-alias column
+        if (!array_key_exists($columnName, array_flip(TableSchema::getAllAliasTableColumns($tableName, true)))) {
+            $sql = new Sql($this->adapter);
+            $alterTable = new Ddl\AlterTable($tableName);
+            $dropColumn = $alterTable->dropColumn($columnName);
+            $query = $sql->getSqlStringForSqlObject($dropColumn);
 
-        $dropped = $this->adapter->query(
-            $query
-        )->execute();
-
-        if (!$dropped) {
-            return false;
+            $this->adapter->query(
+                $query
+            )->execute();
         }
 
-        // remove column from directus_columns
+        // Remove column from directus_columns
         $columnsTableGateway = new TableGateway('directus_columns', $this->adapter);
         $columnsTableGateway->delete(array(
             'table_name' => $tableName,
             'column_name' => $columnName
         ));
 
-        // remove column from directus_ui
+        // Remove column from directus_ui
         $uisTableGateway = new TableGateway('directus_ui', $this->adapter);
         $uisTableGateway->delete(array(
             'table_name' => $tableName,
             'column_name' => $columnName
         ));
 
-        return $dropped;
+        return true;
     }
 
     /*
