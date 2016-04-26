@@ -76,7 +76,7 @@ define('STATUS_COLUMN_NAME', 'active');";
 function WriteConfig($data, $base = '..') {
     $configText = buildConfig($data);
     file_put_contents($base . '/api/config.php', $configText);
-
+    $directusPath = rtrim($data['directus_path'], '/');
     $configuration = "<?php
 
 /**
@@ -102,8 +102,8 @@ return array(
         // This is the url where all the media will be pointing to
         // here all assets will be (yourdomain)/media
         // same with thumbnails (yourdomain)/media/thumbs
-        'root_url' => '{$data['directus_path']}/media',
-        'root_thumb_url' => '{$data['directus_path']}/media/thumbs',
+        'root_url' => '{$directusPath}/media',
+        'root_thumb_url' => '{$directusPath}/media/thumbs',
         //   'key'    => 's3-key',
         //   'secret' => 's3-key',
         //   'region' => 's3-region',
