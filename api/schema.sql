@@ -233,8 +233,7 @@ VALUES
   (10,'directus_ui',1,NULL,NULL,1,2,1,2,2,1,NULL),
   (11,'directus_users',1,NULL,NULL,1,2,1,2,2,1,NULL),
   (12,'directus_messages_recipients',1,NULL,NULL,1,2,1,2,2,1,NULL),
-  (13,'directus_storage_adapters',1,NULL,NULL,1,2,1,2,2,1,NULL),
-  (14,'directus_bookmarks',1,NULL,NULL,1,2,1,2,2,1,NULL);
+  (13,'directus_bookmarks',1,NULL,NULL,1,2,1,2,2,1,NULL);
 
 /*!40000 ALTER TABLE `directus_privileges` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -261,48 +260,15 @@ VALUES
   (2,'global','project_name','Directus'),
   (3,'global','project_url','http://examplesite.dev/'),
   (4,'global','rows_per_page','200'),
-  (5,'files','storage_adapter','FileSystemAdapter'),
-  (6,'files','storage_destination',''),
-  (7,'files','thumbnail_storage_adapter','FileSystemAdapter'),
-  (8,'files','thumbnail_storage_destination',''),
-  (9,'files','thumbnail_quality','100'),
-  (10,'files','thumbnail_size','200'),
-  (11,'global','cms_thumbnail_url',''),
-  (12,'files','file_naming','file_id'),
-  (13,'files','thumbnail_crop_enabled','1'),
-  (14,'files','youtube_api_key','');
+  (5,'files','thumbnail_quality','100'),
+  (6,'files','thumbnail_size','200'),
+  (7,'global','cms_thumbnail_url',''),
+  (8,'files','file_naming','file_id'),
+  (9,'files','thumbnail_crop_enabled','1'),
+  (10,'files','youtube_api_key','');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-# Dump of table directus_storage_adapters
-# ------------------------------------------------------------
-
-CREATE TABLE `directus_storage_adapters` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `adapter_name` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  `role` varchar(255) CHARACTER SET latin1 DEFAULT NULL COMMENT 'DEFAULT, THUMBNAIL, or Null. DEFAULT and THUMBNAIL should only occur once each.',
-  `public` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 for yes, 0 for no.',
-  `destination` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  `url` varchar(2000) CHARACTER SET latin1 DEFAULT '' COMMENT 'Trailing slash required.',
-  `params` varchar(2000) CHARACTER SET latin1 DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-LOCK TABLES `directus_storage_adapters` WRITE;
-/*!40000 ALTER TABLE `directus_storage_adapters` DISABLE KEYS */;
-
-INSERT INTO `directus_storage_adapters` (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
-VALUES
-  (1,'files','FileSystemAdapter','DEFAULT',1,'/Library/WebServer/www/media/directus/','http://localhost/media/',NULL),
-  (2,'thumbnails','FileSystemAdapter','THUMBNAIL',1,'/Library/WebServer/www/media/directus/thumbnails/','http://localhost/media/thumb/',NULL),
-  (3,'temp','FileSystemAdapter','TEMP',1,'/Library/WebServer/www/media/directus/temp/','http://localhost/media/temp/',NULL);
-
-/*!40000 ALTER TABLE `directus_storage_adapters` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 
 # Dump of table directus_tables

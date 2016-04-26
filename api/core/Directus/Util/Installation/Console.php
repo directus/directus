@@ -219,16 +219,12 @@ class Console
                       (2,'global','project_name','".$site_name."'),
                       (3,'global','project_url','http://examplesite.dev/'),
                       (4,'global','rows_per_page','200'),
-                      (5,'files','storage_adapter','FileSystemAdapter'),
-                      (6,'files','storage_destination',''),
-                      (7,'files','thumbnail_storage_adapter','FileSystemAdapter'),
-                      (8,'files','thumbnail_storage_destination',''),
-                      (9,'files','thumbnail_quality','100'),
-                      (10,'files','thumbnail_size','200'),
-                      (11,'global','cms_thumbnail_url',''),
-                      (12,'files','file_naming','file_id'),
-                      (13,'files','thumbnail_crop_enabled','1'),
-                      (14,'files','youtube_api_key','');";
+                      (5,'files','thumbnail_quality','100'),
+                      (6,'files','thumbnail_size','200'),
+                      (7,'global','cms_thumbnail_url',''),
+                      (8,'files','file_naming','file_id'),
+                      (9,'files','thumbnail_crop_enabled','1'),
+                      (10,'files','youtube_api_key','');";
 
         $statement = $this->dbh->prepare($insert);
         $statement->execute();

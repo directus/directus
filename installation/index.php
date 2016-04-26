@@ -76,23 +76,6 @@ if($step == 3 && isset($_POST['install'])) {
     }
     $_SESSION['step'] = 4;
     $step = 4;
-
-    // Media paths
-    $abspath = str_replace('\\', '/', dirname( dirname(__FILE__) ) . '/');
-    $isHTTPS = false;
-    if ((isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) ||
-            (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) {
-        $isHTTPS = true;
-    }
-
-    $site_url = ($isHTTPS) ? "https://" : "http://" . $_SERVER['HTTP_HOST'] . $_SESSION['directus_path'];
-
-    $_SESSION['default_dest'] = $abspath.'media/';
-    $_SESSION['default_url'] = $site_url.'media/';//
-    $_SESSION['thumb_dest'] = $abspath.'media/thumbs/';
-    $_SESSION['thumb_url'] = $site_url.'media/thumbs/';
-    $_SESSION['temp_dest'] = $abspath.'media/temp/';
-    $_SESSION['temp_url'] = $site_url.'media/temp/';
 }
 ?><!doctype html>
 <html lang="en">
@@ -339,7 +322,6 @@ if($step == 3 && isset($_POST['install'])) {
             $migrateResponse = $main->execute(array('', 'db:migrate'));
             AddSettings();
             AddDefaultUser($_SESSION['directus_email'], $_SESSION['directus_password']);
-            AddStorageAdapters();
             if(isset($_SESSION['db_schema']) && $_SESSION['db_schema'] == "ui_gallery") {
                 InstallSampleData();
             }
@@ -433,12 +415,6 @@ if($step == 3 && isset($_POST['install'])) {
                 'db_name',
                 'db_prefix',
                 'db_schema',
-                'default_dest',
-                'default_url',
-                'thumb_dest',
-                'thumb_url',
-                'temp_dest',
-                'temp_url',
                 'send_config_email'
             );
 

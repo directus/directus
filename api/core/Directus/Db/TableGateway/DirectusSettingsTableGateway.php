@@ -28,15 +28,11 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
         );
 
         $this->_defaults['files'] = array(
-            'storage_adapter' => 'FileSystemAdapter',
-            'storage_destination' => '',
-            'thumbnail_storage_destination' => '',
             'allowed_thumbnails' => '',
             'thumbnail_quality' => 100,
             'thumbnail_size' => 200,
             'file_naming' => 'file_id',
             'thumbnail_crop_enabled' => 1,
-            'thumbnail_storage_adapter' => 'FileSystemAdapter',
             'youtube_api_key' => ''
         );
     }

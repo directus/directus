@@ -1202,7 +1202,6 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
                 'data' => (isset($fileData['data'])) ? $fileData['data'] : null,
                 'user' => $currentUser['id']
                 //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-                //'storage_adapter' => $fileData['storage_adapter']
             );
         }
     }

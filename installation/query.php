@@ -45,15 +45,12 @@ function AddSettings()
         (2,'global','project_name','".$_SESSION['site_name']."'),
         (3,'global','project_url','http://examplesite.dev/'),
         (4,'global','rows_per_page','200'),
-        (5,'files','storage_adapter','FileSystemAdapter'),
-        (6,'files','storage_destination',''),
-        (7,'files','thumbnail_storage_adapter','FileSystemAdapter'),
-        (8,'files','thumbnail_storage_destination',''),
-        (9,'files','thumbnail_quality','100'),
-        (10,'files','thumbnail_size','200'),
-        (11,'global','cms_thumbnail_url',''),
-        (12,'files','file_naming','file_id'),
-        (13,'files','thumbnail_crop_enabled','1');");
+        (5,'files','thumbnail_quality','100'),
+        (6,'files','thumbnail_size','200'),
+        (7,'global','cms_thumbnail_url',''),
+        (8,'files','file_naming','file_id'),
+        (9,'files','thumbnail_crop_enabled','1'),
+        (10,'files','youtube_api_key','');");
 }
 
 function AddDefaultUser($email, $password)
@@ -69,28 +66,6 @@ function AddDefaultUser($email, $password)
         (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `group`)
         VALUES
         (1, 1, 'Admin', 'User', '$email', '$hash', '$salt', 1);";
-
-    $pdo->query($insert);
-}
-
-function AddStorageAdapters()
-{
-    global $pdo;
-
-    $dd = $_SESSION['default_dest'];
-    $du = $_SESSION['default_url'];
-    $td = $_SESSION['thumb_dest'];
-    $tu = $_SESSION['thumb_url'];
-    $tempd = $_SESSION['temp_dest'];
-    $tempu = $_SESSION['temp_url'];
-    $tableName = getTableName('directus_storage_adapters');
-
-    $insert = "INSERT INTO `$tableName`
-        (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
-        VALUES
-        (1, 'files', 'FileSystemAdapter', 'DEFAULT', 1, '$dd', '$du', NULL),
-        (2, 'thumbnails', 'FileSystemAdapter', 'THUMBNAIL', 1, '$td', '$tu', NULL),
-        (3, 'temp', 'FileSystemAdapter', 'TEMP', 1, '$tempd', '$tempu', NULL);";
 
     $pdo->query($insert);
 }
