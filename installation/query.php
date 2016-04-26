@@ -1,6 +1,8 @@
 <?php
-$mysqli = new mysqli($_SESSION['db_host'], $_SESSION['db_user'], $_SESSION['db_password'], $_SESSION['db_name'], $_SESSION['db_port']);
-if($mysqli && !file_exists('../api/vendor/autoload.php') || !file_exists('../api/ruckusing.conf.php')  || filesize('../api/ruckusing.conf.php') == 0) {
+//$mysqli = new mysqli($_SESSION['db_host'], $_SESSION['db_user'], $_SESSION['db_password'], $_SESSION['db_name'], $_SESSION['db_port']);
+$dns = sprintf('%s:host=%s;port=%s;dbname=%s', $_SESSION['db_type'], $_SESSION['db_host'], $_SESSION['db_port'], $_SESSION['db_name']);
+$pdo = new PDO($dns, $_SESSION['db_user'], $_SESSION['db_password']);
+if($pdo && !file_exists('../api/vendor/autoload.php') || !file_exists('../api/ruckusing.conf.php')  || filesize('../api/ruckusing.conf.php') == 0) {
   $_SESSION['step'] = 3;
   header('refresh: 0');
   exit;
@@ -14,7 +16,7 @@ use Ruckusing\Framework as Ruckusing_Framework;
 $config = require '../api/ruckusing.conf.php';
 
 $dbconfig = getDatabaseConfig(array(
-  'type' => 'mysql',
+  'type' => $_SESSION['db_type'],
   'host' => $_SESSION['db_host'],
   'port' => $_SESSION['db_port'],
   'name' => $_SESSION['db_name'],
@@ -31,8 +33,10 @@ function getTableName($table_name) {
   return $prefix . $table_name;
 }
 
-function AddSettings($mysqli) {
-  $mysqli->query("INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
+function AddSettings() {
+  global $pdo;
+
+  $pdo->query("INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
   VALUES
   (1,'global','cms_user_auto_sign_out','60'),
   (2,'global','project_name','".$_SESSION['site_name']."'),
@@ -49,7 +53,9 @@ function AddSettings($mysqli) {
   (13,'files','thumbnail_crop_enabled','1');");
 }
 
-function AddDefaultUser($email, $password, $mysqli) {
+function AddDefaultUser($email, $password) {
+  global $pdo;
+
   $salt = uniqid();
   $composite = $salt . $password;
   $hash = sha1( $composite );
@@ -59,11 +65,13 @@ function AddDefaultUser($email, $password, $mysqli) {
 VALUES
   (1, 1, 'Admin', 'User', '$email', '$hash', '$salt', 1);";
 
-  $mysqli->query($insert);
+  $pdo->query($insert);
 }
 
-function AddStorageAdapters($mysqli)
+function AddStorageAdapters()
 {
+  global $pdo;
+
   $dd = $_SESSION['default_dest'];
   $du = $_SESSION['default_url'];
   $td = $_SESSION['thumb_dest'];
@@ -71,17 +79,20 @@ function AddStorageAdapters($mysqli)
   $tempd = $_SESSION['temp_dest'];
   $tempu = $_SESSION['temp_url'];
   $tableName = getTableName("directus_storage_adapters");
+
   $insert = "INSERT INTO `$tableName` (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
   VALUES
     (1, 'files', 'FileSystemAdapter', 'DEFAULT', 1, '$dd', '$du', NULL),
     (2, 'thumbnails', 'FileSystemAdapter', 'THUMBNAIL', 1, '$td', '$tu', NULL),
     (3, 'temp', 'FileSystemAdapter', 'TEMP', 1, '$tempd', '$tempu', NULL);";
 
-  $mysqli->query($insert);
+  $pdo->query($insert);
 }
 
-function InstallSampleData($mysqli) {
+function InstallSampleData() {
+  global $pdo;
   $galleryTableName = getTableName("example_gallery");
+
   $create = "CREATE TABLE `$galleryTableName` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `active` tinyint(4) DEFAULT NULL,
@@ -109,7 +120,7 @@ function InstallSampleData($mysqli) {
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 
-  $mysqli->query($create);
+  $pdo->query($create);
 
   $uiUsersTableName = getTableName("example_users");
   $create = "CREATE TABLE `$uiUsersTableName` (
@@ -118,7 +129,7 @@ function InstallSampleData($mysqli) {
   `user_id` int(4) DEFAULT NULL,
   PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-  $mysqli->query($create);
+  $pdo->query($create);
 
   $uiFilesTableName = getTableName("example_files");
   $create = "CREATE TABLE `$uiFilesTableName` (
@@ -127,17 +138,17 @@ function InstallSampleData($mysqli) {
   `ui_id` int(4) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-  $mysqli->query($create);
+  $pdo->query($create);
 
   $insert = "INSERT INTO `$uiUsersTableName` (`ui_id`, `user_id`)
 VALUES
   (1, 1);";
-  $mysqli->query($insert);
+  $pdo->query($insert);
 
   $insert = "INSERT INTO `$galleryTableName` (`id`, `active`, `wysiwyg`, `checkbox`, `color`, `date`, `datetime`, `enum`, `multiselect`, `numeric`, `password`, `salt`, `radiobuttons`, `select`, `slider`, `slug`, `system`, `tags`, `textarea`, `textinput`, `time`, `single_file`, `user`)
 VALUES
   (1, 1, '<u>Test</u>', 1, '#27cd2b', '2014-07-10', '2014-07-10 11:53:00', 'ENTRY 2', 'Option 1,Option 2', 634, '74d26f2ab730ac48ee8a9c8f494508a542a6273e', '537d2d1852208', 'Option 2', 'Select 2', 46, 'test-field', 2, 'tag1,tag 2,tag 3', 'Test Text Area', 'test field', '11:58:00', NULL, 1);";
-  $mysqli->query($insert);
+  $pdo->query($insert);
 
   $columnsTableName = getTableName("directus_columns");
   $insert = "INSERT INTO `$columnsTableName` ( `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
@@ -168,7 +179,7 @@ VALUES
   ('example_gallery', 'user', 'INT', 'many_to_one', 0, 0, 0, 0, 0, 'MANYTOONE', 'directus_users', NULL, NULL, 'user', 9999, ''),
   ('example_gallery', 'users', 'MANYTOMANY', 'many_to_many', 0, 0, 0, 0, 1, 'MANYTOMANY', 'directus_users', 'example_users', 'ui_id', 'user_id', 9999, ''),
   ('example_gallery', 'files', 'MANYTOMANY', 'multiple_files', 0, 0, 0, 0, 0, 'MANYTOMANY', 'directus_files', 'example_files', 'ui_id', 'file_id', 9999, '');";
-  $mysqli->query($insert);
+  $pdo->query($insert);
 
   $columnsTableName = getTableName("directus_tables");
   $insert = "INSERT INTO `$columnsTableName` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
@@ -176,7 +187,7 @@ VALUES
   ('example_gallery',0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
   ('example_users',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
   ('example_files',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);";
-  $mysqli->query($insert);
+  $pdo->query($insert);
 
   $directusPrivilegesTableName = getTableName("directus_privileges");
   $insert = "INSERT INTO `$directusPrivilegesTableName` (`id`, `table_name`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `nav_listed`, `allow_view`, `allow_add`, `allow_edit`, `allow_delete`, `allow_alter`, `status_id`)
@@ -184,7 +195,7 @@ VALUES
   (DEFAULT, 'example_gallery',1,NULL,NULL,1,2,1,2,2,1,NULL),
   (DEFAULT, 'example_users',1,NULL,NULL,1,2,1,2,2,1,NULL),
   (DEFAULT, 'example_files',1,NULL,NULL,1,2,1,2,2,1,NULL);";
-  $mysqli->query($insert);
+  $pdo->query($insert);
 
   $directusUITableName = getTableName("directus_ui");
   $insert = "INSERT INTO `$directusUITableName` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
@@ -222,7 +233,7 @@ VALUES
   ('example_gallery', 'files', 'multiple_files', 'choose_button', '1'),
   ('example_gallery', 'files', 'multiple_files', 'remove_button', '1');";
 
-  $mysqli->query($insert);
+  $pdo->query($insert);
 }
 
 ?>

@@ -38,9 +38,16 @@ if($step == 1 && isset($_POST['directus_email']) && isset($_POST['directus_name'
 if($step == 2 && isset($_POST['db_host']) && isset($_POST['db_user']) && isset($_POST['db_name'])) {
     //Check for db connection
     ini_set('display_errors', 0);
-    $conn = mysqli_init();
-    mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
-    $connection = mysqli_real_connect($conn, $_POST['db_host'], $_POST['db_user'], $_POST['db_password'], $_POST['db_name'], $_POST['db_port']);
+    $dns = sprintf('%s:host=%s;port=%s;dbname=%s', $_POST['db_type'], $_POST['db_host'], $_POST['db_port'], $_POST['db_name']);
+    try {
+        $connection = new PDO($dns, $_POST['db_user'], $_POST['db_password'], array(
+            PDO::ATTR_TIMEOUT => 5
+        ));
+    } catch (PDOException $e) {
+        $connection = null;
+        $pdo_error_code = $e->getCode();
+    }
+
     $_SESSION['db_type'] = $_POST['db_type'];
     $_SESSION['db_host'] = $_POST['db_host'];
     $_SESSION['db_user'] = $_POST['db_user'];
@@ -57,7 +64,7 @@ if($step == 2 && isset($_POST['db_host']) && isset($_POST['db_user']) && isset($
         $_SESSION['step'] = 3;
         $step = 3;
     } else {
-        $code = mysqli_connect_errno();
+        $code = $pdo_error_code;
     }
 }
 
@@ -330,11 +337,11 @@ if($step == 3 && isset($_POST['install'])) {
             require_once('query.php');
             $setupResponse = $main->execute(array('', 'db:setup'));
             $migrateResponse = $main->execute(array('', 'db:migrate'));
-            AddSettings($mysqli);
-            AddDefaultUser($_SESSION['directus_email'], $_SESSION['directus_password'], $mysqli);
-            AddStorageAdapters($mysqli);
+            AddSettings();
+            AddDefaultUser($_SESSION['directus_email'], $_SESSION['directus_password']);
+            AddStorageAdapters();
             if(isset($_SESSION['db_schema']) && $_SESSION['db_schema'] == "ui_gallery") {
-                InstallSampleData($mysqli);
+                InstallSampleData();
             }
             if(isset($_SESSION['send_config_email']) && $_SESSION['send_config_email'] == "yes") {
                 require_once('config_setup.php');
@@ -400,7 +407,6 @@ if($step == 3 && isset($_POST['install'])) {
                 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
                 mail($_SESSION['directus_email'], "Directus Install Config Overview", $mailBody, $headers);
             }
-            $mysqli->close();
 
             require_once('config_setup.php');
             WriteConfig(array(
