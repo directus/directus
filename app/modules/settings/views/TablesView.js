@@ -437,7 +437,9 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     destroyColumn: function(columnName) {
-      var columnModel = this.collection.get(columnName);
+      var originalColumnModel = this.collection.get(columnName);
+      var columnModel = originalColumnModel.clone();
+      columnModel.url = originalColumnModel.url;
 
       if (!columnModel) {
         Notification.error('Error', 'Column '+columnName+' not found.');
@@ -445,10 +447,21 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       var self = this;
-      columnModel.destroy({success: function(model, response) {
-        self.$el.find('[data-id='+model.get('id')+']').remove();
-        Notification.success('Column removed', '<b>'+columnName+'</b> was removed.');
-      }, wait: true});
+      var onSuccess = function(model, response) {
+        if (!response.success) {
+          Notification.error('Column not removed', response.message);
+        } else {
+          self.collection.remove(originalColumnModel);
+          self.$el.find('[data-id=' + model.get('id') + ']').remove();
+          Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+        }
+      };
+
+      var onError = function(model, resp, options) {
+        Notification.error('Column not removed', resp.responseJSON.message);
+      };
+
+      columnModel.destroy({success: onSuccess, error: onError, wait: true});
     },
 
     verifyDestroyColumn: function(event) {
