@@ -4,6 +4,15 @@ use Directus\Util\StringUtils;
 
 class StringUtilsTest extends PHPUnit_Framework_TestCase
 {
+    public function testContains()
+    {
+        $this->assertTrue(StringUtils::contains('I am learning the abc', 'abc'));
+        $this->assertFalse(StringUtils::contains('I am John', 'Jack'));
+
+        $this->assertTrue(StringUtils::contains('JavaScript, Java, PHP, C', ['Java', 'C']));
+        $this->assertFalse(StringUtils::contains('JavaScript, Java, PHP, C', ['C#', 'C++']));
+    }
+
     public function testStartsWith()
     {
         $string = 'john_mcclane';

@@ -4,6 +4,24 @@ namespace Directus\Util;
 
 class StringUtils
 {
+    /**
+     * Check whether or not a given string contains a given substring.
+     *
+     * @param  string  $haystack
+     * @param  string|array $needles
+     * @return bool
+     */
+    public static function contains($haystack, $needles)
+    {
+        foreach ((array) $needles as $needle) {
+            if ($needle != '' && mb_strpos($haystack, $needle) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Source: http://stackoverflow.com/a/10473026/1772076
     /**
      * Return whether or not a string start with a specific string
