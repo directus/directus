@@ -120,46 +120,18 @@ class StringUtils
         return static::toCamelCase($string, $first);
     }
 
+    /**
+     * Returns the next sequence for a string
+     *
+     * @param string $chars
+     * @return string
+     */
     public static function charSequence($chars = '')
     {
-        $chars = strtolower($chars);
-        $letters = range('a', 'z');
-        $charsArray = str_split($chars);
-
-        // Replace each character with numeric equivalent
-        foreach ($charsArray as $key => $char) {
-            $charsArray[$key] = array_search($char, $letters);
+        if (!$chars) {
+            return 'a';
         }
 
-        // Count digits
-        $digits = count($charsArray)-1;
-        // Starting at the right-most spot, move left
-        for ($i=$digits; $i > -1; $i--) {
-            // If this is the right most spot
-            if ($i == $digits) {
-                // Increment it
-                $charsArray[$i]++;
-            }
-
-            // If this spot has moved past "z"
-            if ($charsArray[$i] == 26) {
-                // Set it to "a"
-                $charsArray[$i] = 0;
-                // Unless it is the left most spot
-                if ($i != 0) {
-                    // Carry the one to the next spot
-                    $charsArray[$i - 1]++;
-                }
-            }
-        }
-
-        // Rebuild characters from numeric equivalent
-        foreach ($charsArray as $key => $char) {
-            $charsArray[$key] = $letters[$char];
-        }
-
-        $charsSequence = implode($charsArray);
-
-        return $charsSequence;
+        return ++$chars;
     }
 }

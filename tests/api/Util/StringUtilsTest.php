@@ -68,7 +68,7 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('a', StringUtils::charSequence());
         $this->assertSame('b', StringUtils::charSequence('a'));
-        $this->assertSame('a', StringUtils::charSequence('z'));
+        $this->assertSame('aa', StringUtils::charSequence('z'));
         $this->assertSame('ab', StringUtils::charSequence('aa'));
     }
 }
