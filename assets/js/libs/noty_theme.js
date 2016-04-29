@@ -6,7 +6,7 @@
 
 //   @fieldColor: lighten(@lightGrey, 2%);
 
-//   @tableHoverYellow: #fffddd;
+//   @tableRowHover: #fffddd;
 
 //   // Actions
 //   @addColor: #7ac943;

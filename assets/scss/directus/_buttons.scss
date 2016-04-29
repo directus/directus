@@ -78,23 +78,23 @@
 .btn {
   @include transition (background-color, $fastSpeed, ease-in-out);
   @include border-radius(4px, 4px, 4px, 4px);
-  background-color: $mediumGrey;
+  background-color: $primaryColor;
   border: none;
   // border-bottom: 2px solid darken($mediumGrey, 10%);
   color: $white;
   cursor: pointer;
-  padding: 14px 24px 14px 24px;
+  padding: 15px 25px 15px 25px;
   font-size: 14px;
   font-weight: 500;
   -webkit-font-smoothing: antialiased !important;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   &:hover {
-    background-color: darken($mediumGrey, 20%);
+    background-color: darken($primaryColor, 10%);
     // border-bottom: 2px solid darken($mediumGrey, 20%);
   }
   &:active {
-    background-color: darken($mediumGrey, 30%);
+    background-color: darken($primaryColor, 20%);
     // border-bottom: 2px solid darken($mediumGrey, 30%);
   }
   &.active {
@@ -122,6 +122,11 @@
     font-size: 18px;
   }
 }
+.rounded-button {
+    @include border-radius(4px, 4px, 4px, 4px);
+    padding: 10px 10px 10px 10px;
+    background-color: $white;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // Overrides
@@ -134,6 +139,7 @@
 // Switches
 
 .toggle-switch {
+  @extend .rounded-corners;
   display: block;
   position: relative;
   cursor: pointer;
@@ -143,7 +149,6 @@
   width: 30px;
   height: 15px;
   background-color: lighten($mediumGrey, 15%);
-  // border-radius: 3px;
   transition: background 0.4s;
   &:hover {
     background-color: $mediumGrey;
@@ -157,7 +162,7 @@
     bottom: 2px;
     right: 2px;
     background-color: #fff;
-    // border-radius: 2px;
+    border-radius: 2px;
     transition: background 0.4s;
   }
   &:after {
@@ -169,17 +174,17 @@
     bottom: 4px;
     width: 13px;
     background-color: lighten($mediumGrey, 15%);
-    // border-radius: 2px;
+    border-radius: 2px;
     transition: margin 0.4s, background 0.4s;
   }
   &.on {
-    background-color: $addColor;
+    background-color: $primaryColor;
     &:hover {
-      background-color: darken($addColor, 15%);
+      background-color: darken($primaryColor, 15%);
     }
     &:after {
       margin-left: 15px;
-      background-color: $addColor;
+      background-color: $primaryColor;
       left: 2px;
     }
   }
@@ -233,9 +238,9 @@ input.toggle-switch-input + label:after {
   transition: margin 0.4s, background 0.4s;
 }
 input.toggle-switch-input:checked + label {
-  background-color: $addColor;
+  background-color: $primaryColor;
 }
 input.toggle-switch-input:checked + label:after {
   margin-left: 15px;
-  background-color: $addColor;
+  background-color: $primaryColor;
 }

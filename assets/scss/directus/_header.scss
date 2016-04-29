@@ -7,6 +7,7 @@
   right: 0px;
   top: 0px;
   z-index: 50;
+  background-color: $lightGrey;
 
   -webkit-transition: left 400ms ease-in-out;
   -moz-transition: left 400ms ease-in-out;
@@ -146,9 +147,16 @@
           width: 110px;
         }
       }
+      .tool-separator {
+        float: left;
+        margin-left: 20px;
+        border-left: solid 1px darken($lightGrey, 10%);
+        width: 0px;
+        padding: 10px 0 10px 10px;
+      }
       &.big-space {
         .tool {
-          margin-left: $standardPad;
+          margin-left: 10px;
           &:first-child {
             margin-left: 0px;
           }
@@ -156,7 +164,7 @@
             padding-right: $standardPad;
           }
           &.div-left {
-            padding-left: $standardPad;
+            //padding-left: $standardPad;
           }
         }
       }
@@ -196,9 +204,9 @@
         padding-right: $smallPad;
       }
       &.div-left {
-        border-left: solid 1px $white;
-        height: 32px;
-        padding-left: $smallPad;
+        //border-left: solid 1px $white;
+        //height: 32px;
+        //padding-left: $smallPad;
       }
     }
     .tool-item {
@@ -214,6 +222,7 @@
       // }
     }
     .simple-select {
+      @extend .card-shadow;
       display: inline-block;
       vertical-align: middle;
       font-weight: 500;
@@ -262,7 +271,7 @@
             line-height: 65%;
           }
           &.icon-triangle-down {
-            color: $addColor;
+            color: $primaryColor;
           }
         }
       }
@@ -306,14 +315,16 @@
         float: left;
         //margin-left: $smallPad;
         height: 33px;
-        background-color: $white;
+        //background-color: $white;
         .simple-select {
+          @extend .card-shadow;
           //margin-right: $extraSmallPad;
           margin-top: 0px;
           max-width: 150px;
           display: block;
           float: left;
           position: relative;
+
           .icon {
             color: $darkGrey;
             line-height: 29px;
@@ -323,7 +334,7 @@
             padding-right: 20px;
             outline: none;
             max-width: 160px;
-            border-radius: 0;
+            @include border-radius(4px, 4px, 4px, 4px);
           }
         }
         input {
@@ -340,10 +351,10 @@
           margin-left: 4px;
         }
         select, input[type="text"] {
-          //.border-radius();
+          @include border-radius(4px, 4px, 4px, 4px);
           background-color: $white;
           border: 0px;
-          padding: 8px 22px 8px 8px;
+          padding: 10px;
           margin: 0;
         }
       }
@@ -405,7 +416,7 @@
       }
     }
     li {
-      font-size: 12px;
+      font-size: 14px;
     }
     .vertical-center {
       margin-top: $textActionMarginTop;
@@ -428,9 +439,9 @@
       padding: 0px $smallPad;
     }
     .tools {
-      font-size: 12px;
+      font-size: 14px;
       .action {
-        margin-top: $textActionMarginTop;
+        // margin-top: $textActionMarginTop;
       }
       .snapshotOption {
         background-color: $white;
@@ -444,7 +455,7 @@
         }
       }
       .tool {
-        height: 32px; // TODO: This keeps the secondary toolbar height in check...
+        //height: 32px; // TODO: This keeps the secondary toolbar height in check...
       }
     }
   }

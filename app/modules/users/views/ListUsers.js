@@ -35,10 +35,10 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
       '<div class="section-header"><span class="big-label-text">{{title}}</div>' +
       '<ul class="cards row">' +
       '{{#rows}}' +
-      '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}} {{#if inactive}}inactive{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
-        '<div class="header-image add-color-border">' +
+      '<li class="card card-shadow col-2 gutter-bottom {{#if online}}active{{/if}} {{#if inactive}}inactive{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
+        '<div class="header-image add-color-border rounded-corners">' +
           '{{avatar}} <div class="tool-item large-circle"><i class="material-icons">edit</i></div></div>' +
-        '<div class="info">' +
+        '<div class="info rounded-corners">' +
           '<div class="featured">' +
             '<div class="primary-info">' +
               '<div>{{first_name}}</div>' +

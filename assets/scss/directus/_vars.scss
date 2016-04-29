@@ -10,8 +10,9 @@ $darkGrey: #666666; // Dark Grey
 $extraDarkGrey: #333333; // Extra Dark Grey
 $black: #1a1a1a; // Directus Black
 
-$fieldColor: lighten($lightGrey, 2%);
-$tableHoverYellow: #fffddd;
+$primaryColor: #4ca6de;
+$fieldColor: lighten($mediumGrey, 20%);
+$tableRowHover: lighten($primaryColor, 40%); // fffddd
 
 // Actions
 $addColor: #7ac943;

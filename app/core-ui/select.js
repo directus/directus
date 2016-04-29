@@ -12,7 +12,10 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<select name="{{name}}" style="margin-top: 4px;margin-bottom: 6px;" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
+  var template = '<div class="select-container"> \
+                    <select name="{{name}}" style="margin-top: 4px;margin-bottom: 6px;" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
+                    <i class="material-icons select-arrow">arrow_drop_down</i> \
+                  </div>';
 
   Module.id = 'select';
   Module.dataTypes = ['VARCHAR', 'INT'];
