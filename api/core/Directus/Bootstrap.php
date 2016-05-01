@@ -4,6 +4,7 @@ namespace Directus;
 
 use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Db\Connection;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
@@ -204,8 +205,8 @@ class Bootstrap {
         );
 
         try {
-            $db = new \Zend\Db\Adapter\Adapter($dbConfig);
-            $db->getDriver()->getConnection()->connect();
+            $db = new Connection($dbConfig);
+            $db->connect();
         } catch (\Exception $e) {
             echo 'Database connection failed.';
             exit;

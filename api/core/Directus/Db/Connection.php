@@ -4,13 +4,8 @@ namespace Directus\Db;
 
 use Zend\Db\Adapter\Adapter;
 
-class Connection
+class Connection extends Adapter
 {
-    /**
-     * @var \Zend\Db\Adapter
-     */
-    protected $adapter;
-
     /**
      * Database configuration
      * @var array
@@ -24,7 +19,8 @@ class Connection
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->adapter = new Adapter($config);
+
+        parent::__construct($config);
     }
 
     /**
@@ -35,6 +31,6 @@ class Connection
      */
     public function __call($name, $arguments)
     {
-        return call_user_func_array([$this->adapter->getDriver()->getConnection(), $name], $arguments);
+        return call_user_func_array([$this->getDriver()->getConnection(), $name], $arguments);
     }
 }
