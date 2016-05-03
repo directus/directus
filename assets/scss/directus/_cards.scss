@@ -7,6 +7,16 @@
     @extend .card-border;
     font-size: 12px;
     list-style: none;
+    cursor: pointer;
+    &:hover {
+        .info {
+            .featured {
+                .primary-info {
+                    color: $primaryColor;
+                }
+            }
+        }
+    }
     .header-image {
       overflow: hidden;
       height: 200px;
@@ -99,6 +109,7 @@
         margin-top: -4px;
       }
       .primary-info {
+        @include transition();
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;

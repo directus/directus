@@ -16,7 +16,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
     tagName: 'span',
 
     events: {
-      'click .header-image': function(e) {
+      'click .header-image, .primary-info': function(e) {
         var id = $(e.target).closest('li.card').attr('data-id');
         var user = app.users.getCurrentUser();
         var userGroup = user.get('group');

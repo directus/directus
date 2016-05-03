@@ -3493,9 +3493,12 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
   padding-left: 0px; }
   .cards .card {
     font-size: 12px;
-    list-style: none; }
+    list-style: none;
+    cursor: pointer; }
     .cards .card.inactive {
       opacity: 0.4; }
+    .cards .card:hover .info .featured .primary-info {
+      color: #4ca6de; }
     .cards .card .header-image {
       overflow: hidden;
       height: 200px;
@@ -3570,6 +3573,11 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
       .cards .card .info .featured {
         margin-top: -4px; }
       .cards .card .info .primary-info {
+        -webkit-transition: all 100ms ease-in-out;
+        -moz-transition: all 100ms ease-in-out;
+        -o-transition: all 100ms ease-in-out;
+        -ms-transition: all 100ms ease-in-out;
+        transition: all 100ms ease-in-out;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
