@@ -156,7 +156,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             $userFound = $user->count() > 0 ? true : false;
 
             if (!$userFound) {
-                $app->halt(401, 'You must be logged in to access the API.');
+                $app->halt(401, 'You must be logged in to access the API');
             }
 
             $user = $user->toArray();
@@ -177,13 +177,13 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         /** Enforce required authentication. */
         if(!Auth::loggedIn()) {
-            $app->halt(401, "You must be logged in to access the API.");
+            $app->halt(401, "You must be logged in to access the API");
         }
 
         /** Enforce required request nonces. */
         if(!$requestNonceProvider->requestHasValidNonce()) {
             if('development' !== DIRECTUS_ENV) {
-                $app->halt(401, "Invalid request (nonce).");
+                $app->halt(401, "Invalid request (nonce)");
             }
         }
 
@@ -251,7 +251,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     if(!$requestNonceProvider->requestHasValidNonce()) {
         if('development' !== DIRECTUS_ENV) {
             header("HTTP/1.0 401 Unauthorized");
-            return JsonView::render(array('message' => 'Unauthorized (nonce).'));
+            return JsonView::render(array('message' => 'Unauthorized (nonce)'));
         }
     }
     $extensionsDirectory = APPLICATION_PATH . "/extensions";
@@ -260,7 +260,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
     header($nonceOptions['nonce_response_header'] . ': ' . implode($newNonces, ","));
     if(!is_array($responseData)) {
-        throw new \RuntimeException("Extension $extensionName must return array, got " . gettype($responseData) . " instead.");
+        throw new \RuntimeException("Extension $extensionName must return array, got " . gettype($responseData) . " instead");
     }
     return JsonView::render($responseData);
 }
@@ -273,7 +273,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
 $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonceProvider) {
 
     $response = array(
-        'message' => "Wrong username/password",
+        'message' => "Incorrect email or password",
         'success' => false,
         'all_nonces' => $requestNonceProvider->getAllNonces()
     );
@@ -412,7 +412,7 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
     $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
 
     if (1 !== $affectedRows) {
-        $app->halt(200, 'Error while resetting the password.');
+        $app->halt(200, 'Error resetting the password');
     }
 
     $data = ['newPassword' => $password];
@@ -422,7 +422,7 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
         $message->setTo($user['email']);
     });
 
-    $app->halt(200, 'New temporary password has been sent.');
+    $app->halt(200, 'New temporary password sent');
 
 })->name('auth_reset_password');
 
@@ -430,7 +430,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     if(!isset($_POST['email'])) {
         return JsonView::render(array(
             'success' => false,
-            'message' => 'Invalid email address.'
+            'message' => 'Invalid email address'
         ));
     }
 
@@ -440,7 +440,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     if(false === $user) {
         return JsonView::render(array(
             'success' => false,
-            'message' => "An account with that email address doesn't exist."
+            'message' => "No account found with this email address"
         ));
     }
 
@@ -464,7 +464,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
 
     $data = ['reset_token' => $set['reset_token']];
     Mail::send('mail/reset-password.twig.html', $data, function($message) use ($user) {
-        $message->setSubject('You Reset Your Directus Password');
+        $message->setSubject('Directus Password Reset');
         $message->setFrom('directus@getdirectus.com');
         $message->setTo($user['email']);
     });
@@ -489,7 +489,7 @@ $app->post("/$v/hash/?", function() use ($app) {
     if(!(isset($_POST['password']) && !empty($_POST['password']))) {
         return JsonView::render(array(
             'success' => false,
-            'message' => 'Must provide password.'
+            'message' => 'Must provide password'
         ));
     }
     $salt = isset($_POST['salt']) && !empty($_POST['salt']) ? $_POST['salt'] : '';
@@ -801,13 +801,13 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $success = $tableGateway->dropColumn($column);
 
         $response = array(
-          'message' => 'Unable to remove the column ['.$column.'].',
+          'message' => 'Unable to remove the column ['.$column.']',
           'success' => false
         );
 
         if ($success) {
             $response['success'] = true;
-            $response['message'] = 'Column ['.$column.'] was removed.';
+            $response['message'] = 'Column ['.$column.'] was removed';
         }
 
         return JsonView::render($response);
