@@ -4,7 +4,6 @@
     &.inactive {
       opacity: 0.4;
     }
-    @extend .card-border;
     font-size: 12px;
     list-style: none;
     cursor: pointer;
@@ -156,7 +155,6 @@
 .feature-cards {
   padding-left: 0px;
   .feature-card {
-    @extend .card-border;
     @extend .card-shadow;
     @extend .rounded-corners;
     background-color: $white;

@@ -1,15 +1,18 @@
 .directus-table-container {
-  overflow: hidden;
+  //overflow: hidden;
+}
+.table-shadow {
   @extend .rounded-corners;
   @extend .card-shadow;
+  overflow: hidden;
 }
 #directus_columns {
   .input-selector {
     width: 150px;
     display: inline-block;
-    height: 30px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    // height: 30px;
+    // padding-top: 0px;
+    // padding-bottom: 0px;
   }
   .open-ui-options {
     margin-left: 4px;
@@ -22,7 +25,6 @@
 }
 
 .table-striped {
-  @extend .card-shadow;
   text-align: left;
   width: 100%;
   .visible-columns-cell:hover,
@@ -121,7 +123,6 @@
     position: absolute;
   }
   tbody {
-    @extend .card-border;
     background-color: $white;
     .secondary-info {
       -webkit-font-smoothing: antialiased;
@@ -251,10 +252,10 @@
       td {
         opacity: 0.5;
       }
-      // td.check,
-      // td.sort {
-      //   opacity: 1.0;
-      // }
+      td.check,
+      td.sort {
+        opacity: 1.0;
+      }
     }
     &.system {
       height: 55px;
@@ -286,7 +287,7 @@
   }
 }
 .related-table {
-  margin-bottom: $smallPad;
+  margin-bottom: $gutterWidth;
   max-height: 800px;
   overflow: auto;
   thead {
@@ -426,7 +427,6 @@
   font-weight: normal;
 }
 .history-container {
-  @extend .card-border;
   @extend .rounded-corners;
   @extend .card-shadow;
   background-color: $white;
@@ -463,19 +463,22 @@
       }
       .mention-list {
         width: 100%;
-        max-width: 500px;
+        max-width: 530px;
         background-color: #ffffff;
         display: block;
-        margin-top: -3px;
+        margin-top: 7px;
         margin-left: 10px;
-        padding: 6px 10px 6px 10px;
+        padding: 5px;
+        border: 1px solid $fieldColor;
+        @extend .rounded-corners;
         &:empty {
           display: none;
         }
       }
       .mention-choice {
+        @extend .rounded-corners;
         background-color: inherit;
-        padding: 4px;
+        padding: 5px;
         &:hover {
           background-color: $extraLightGrey;
           cursor: pointer;
@@ -487,12 +490,12 @@
         }
       }
       .mention-tag {
-        background-color: $extraLightGrey;
-        padding: 0 4px 0 4px;
-        margin: 0 1px 0 1px;
+        @include transition;
+        @extend .rounded-corners;
+        color: $primaryColor;
         cursor: pointer;
         &:hover {
-          background-color: $lightGrey;
+          color: darken($primaryColor, 10%);
         }
       }
       .avatar {
@@ -786,7 +789,9 @@
 
 .sortableHeader {
   color: $extraDarkGrey !important;
-  @extend .pulsate;
+  .material-icons {
+    @extend .pulsate;
+  }
 }
 
 .disable-sorting {

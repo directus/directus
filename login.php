@@ -96,10 +96,10 @@ $(function(){
     function message(message, error) {
         error = error || false;
         if(error) {
-            $login_error.html("<i class=\"material-icons\">error</i>" + message);
+            $login_error.html("<i class=\"material-icons\">warning</i>" + message);
             $login_error.show();
         } else {
-            $login_message.html("<i class=\"material-icons\">error</i>" + message);
+            $login_message.html("<i class=\"material-icons\">warning</i>" + message);
             $login_message.show();
         }
     }

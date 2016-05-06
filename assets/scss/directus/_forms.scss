@@ -3,9 +3,9 @@
 ////////////
 select {
   cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  // -webkit-appearance: none;
+  // -moz-appearance: none;
+  // appearance: none;
 }
 .icon-select {
   position: relative;
@@ -116,13 +116,21 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
       height:22px;
       margin: -2px $extraSmallPad 0 0;
       vertical-align:middle;
+      &:hover {
+        color: $primaryColor;
+      }
     }
   }
   &:checked {
     +label {
-      span:before {
-        content: "check_box";
-        @extend .material-icons;
+      span {
+        &:before {
+          content: "check_box";
+          color: $primaryColor;
+        }
+        &:hover {
+          color: $darkGrey;
+        }
       }
     }
   }
@@ -150,7 +158,8 @@ select,
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   &:hover {
-    //border: solid 1px $mediumGrey;
+    // color: darken($darkGrey, 20%);
+    border-color: $mediumGrey;
   }
   &:disabled {
     color: $mediumGrey;
@@ -197,11 +206,14 @@ select,
   display: inline-block;
   select {
     padding-right: 35px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 }
 .select-arrow {
     position: absolute;
-    top: 12px;
+    top: 8px;
     right: 4px;
     font-size: 29px;
     background-color: $white;
@@ -239,7 +251,6 @@ select,
     margin-bottom: $smallPad;
   }
   .fields {
-    @extend .card-border;
     list-style: none;
     margin: 0px;
     padding: 0px;
@@ -266,7 +277,6 @@ select,
       z-index:1;
     }
     .table {
-      @extend .card-shadow;
       display: table;
       position: relative;
       width: 100%;
@@ -368,7 +378,7 @@ select,
       }
       select {
         max-width: 200px;
-        margin-top: 2px;
+        // margin-top: 2px;
         // height: 38px; // Fixes cropped text in FireFox
         width: 100%;
       }

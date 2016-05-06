@@ -1,17 +1,17 @@
 @mixin btn-white() {
   color: $darkGrey;
   background-color: $white;
-  border-color: $lightGrey;
-  border-top: 1px solid $lightGrey;
-  border-bottom: 1px solid $lightGrey;
+  border-color: $fieldColor;
+  border-top: 1px solid $fieldColor;
+  border-bottom: 1px solid $fieldColor;
   &:hover {
     background-color: $lightGrey
   }
   &.active, &.wysihtml5-command-active {
-    border-top-color: $darkGrey;
-    border-bottom-color: $darkGrey;
-    border-left-color: $darkGrey;
-    background-color: $darkGrey;
+    border-top-color: $primaryColor;
+    border-bottom-color: $primaryColor;
+    border-left-color: $primaryColor;
+    background-color: $primaryColor;
     color: $white;
   }
 }
@@ -40,13 +40,13 @@
       }
       &:last-child {
         //border-right-width: 1px;
-        border-right: 1px solid $lightGrey;
+        border-right: 1px solid $fieldColor;
       }
     }
   }
   .btn {
     @include border-radius(0px, 0px, 0px, 0px);
-    border-left: solid 1px $lightGrey;
+    border-left: solid 1px $fieldColor;
     border-right-width: 0px;
     display: block;
     float: left;

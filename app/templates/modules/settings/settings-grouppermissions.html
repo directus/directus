@@ -1,69 +1,71 @@
-<table class="table table-striped directus-table not-responsive" id="directus-grouppermissions">
-	<thead>
-		<tr>
-			<th class="field-note">Table</th>
-			<th class="permissions">Fields</th>
-			<th class="permissions">View</th>
-			<th class="permissions">Add</th>
-			<th class="permissions">Edit</th>
-			<th class="permissions">Delete</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{#tables}}
-		<tr class="" data-table-name="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
-			<td class="tableName"><div style="display:inline-block">{{title}}</div></td>
-			<td class="editFields" title="Field-Level Permissions"><i class="material-icons vertical-middle">tune</i></td>
-			{{#with permissions}}
-			<td data-value="view">
-        {{#if viewValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
-				{{#if bigview}}
-          <span class="add-color big-priv has-privilege" title="Can View Any Items"><i class="material-icons vertical-middle">people</i></span>
-        {{else}}
-          {{#if view}}
-            <span class="yellow-color has-privilege" title="Can View Their Items"><i class="material-icons vertical-middle">person</i></span></span>
-          {{else}}
-            <span class="delete-color" title="Can Not View Items"><i class="material-icons vertical-middle">do_not_disturb</i></span>
-          {{/if}}
-        {{/if}}{{/if}}
-			</td>
-			<td data-value="add">
-				{{#if addValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
-        {{#if add}}<span class="add-color has-privilege" title="Can Add Items"><i class="material-icons vertical-middle">person</i></span>
-				{{else}}<span class="delete-color" title="Can Not Add Items"><i class="material-icons vertical-middle">do_not_disturb</i></span>{{/if}}{{/if}}
-			</td>
-			<td data-value="edit">
-        {{#if editValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
-				{{#if bigedit}}
-          <span class="add-color big-priv has-privilege" title="Can Edit Any Items"><i class="material-icons vertical-middle">people</i></span>
-        {{else}}
-          {{#if edit}}
-            <span class="yellow-color has-privilege" title="Can Edit Their Items"><i class="material-icons vertical-middle">person</i></span>
-          {{else}}
-            <span class="delete-color" title="Can Not Edit Items"><i class="material-icons vertical-middle">do_not_disturb</i></span>
-          {{/if}}
-        {{/if}}{{/if}}
-			</td>
-			<td data-value="delete">
-        {{#if deleteValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
-          {{#if harddelete}}
-            <span class="hard-color hard-priv has-privilege" title="Can Delete Any Items"><i class="material-icons vertical-middle">person</i></span>
-          {{else}}
-  			    {{#if bigdelete}}
-            <span class="add-color big-priv has-privilege" title="Can Delete Any Items"><i class="material-icons vertical-middle">people</i></span>
+<div class="table-shadow">
+    <table class="table table-striped directus-table not-responsive" id="directus-grouppermissions">
+    	<thead>
+    		<tr>
+    			<th class="field-note">Table</th>
+    			<th class="permissions">Fields</th>
+    			<th class="permissions">View</th>
+    			<th class="permissions">Add</th>
+    			<th class="permissions">Edit</th>
+    			<th class="permissions">Delete</th>
+    		</tr>
+    	</thead>
+    	<tbody>
+    		{{#tables}}
+    		<tr class="" data-table-name="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
+    			<td class="tableName"><div style="display:inline-block">{{title}}</div></td>
+    			<td class="editFields" title="Field-Level Permissions"><i class="material-icons vertical-middle">tune</i></td>
+    			{{#with permissions}}
+    			<td data-value="view">
+            {{#if viewValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
+    				{{#if bigview}}
+              <span class="add-color big-priv has-privilege" title="Can View Any Items"><i class="material-icons vertical-middle">people</i></span>
             {{else}}
-              {{#if delete}}
-              <span class="yellow-color has-privilege" title="Can Delete Their Items: {{user_create_column}}"><i class="material-icons vertical-middle">person</i></span>
+              {{#if view}}
+                <span class="yellow-color has-privilege" title="Can View Their Items"><i class="material-icons vertical-middle">person</i></span></span>
               {{else}}
-              <span class="delete-color" title="Can Not Delete Items"><i class="material-icons vertical-middle">do_not_disturb</i></span>
+                <span class="delete-color" title="Can Not View Items"><i class="material-icons vertical-middle">do_not_disturb</i></span>
+              {{/if}}
+            {{/if}}{{/if}}
+    			</td>
+    			<td data-value="add">
+    				{{#if addValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
+            {{#if add}}<span class="add-color has-privilege" title="Can Add Items"><i class="material-icons vertical-middle">person</i></span>
+    				{{else}}<span class="delete-color" title="Can Not Add Items"><i class="material-icons vertical-middle">do_not_disturb</i></span>{{/if}}{{/if}}
+    			</td>
+    			<td data-value="edit">
+            {{#if editValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
+    				{{#if bigedit}}
+              <span class="add-color big-priv has-privilege" title="Can Edit Any Items"><i class="material-icons vertical-middle">people</i></span>
+            {{else}}
+              {{#if edit}}
+                <span class="yellow-color has-privilege" title="Can Edit Their Items"><i class="material-icons vertical-middle">person</i></span>
+              {{else}}
+                <span class="delete-color" title="Can Not Edit Items"><i class="material-icons vertical-middle">do_not_disturb</i></span>
+              {{/if}}
+            {{/if}}{{/if}}
+    			</td>
+    			<td data-value="delete">
+            {{#if deleteValConsistent}}<span class="unknown-priv"><span title="Can Add Items" class="icon icon-minus"></span></span>{{else}}
+              {{#if harddelete}}
+                <span class="hard-color hard-priv has-privilege" title="Can Delete Any Items"><i class="material-icons vertical-middle">person</i></span>
+              {{else}}
+      			    {{#if bigdelete}}
+                <span class="add-color big-priv has-privilege" title="Can Delete Any Items"><i class="material-icons vertical-middle">people</i></span>
+                {{else}}
+                  {{#if delete}}
+                  <span class="yellow-color has-privilege" title="Can Delete Their Items: {{user_create_column}}"><i class="material-icons vertical-middle">person</i></span>
+                  {{else}}
+                  <span class="delete-color" title="Can Not Delete Items"><i class="material-icons vertical-middle">do_not_disturb</i></span>
+                  {{/if}}
+                {{/if}}
               {{/if}}
             {{/if}}
-          {{/if}}
-        {{/if}}
-			</td>
-      {{/with}}
-		</tr>
-		{{/tables}}
-		<!--<tr class="add table-fields" data-table-group="demo-table1"></tr>-->
-	</tbody>
-</table>
+    			</td>
+          {{/with}}
+    		</tr>
+    		{{/tables}}
+    		<!--<tr class="add table-fields" data-table-group="demo-table1"></tr>-->
+    	</tbody>
+    </table>
+</div>

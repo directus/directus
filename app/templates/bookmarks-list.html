@@ -44,20 +44,20 @@
 
 <div class="sidebar-section searches-sidebar">
   <div class="sidebar-group">Bookmarks</div>
-  <li class="sidebar-subitem" title="Add Bookmark">
-      <a id="saveSnapshotBtn" href="#">
-        Add Bookmark
-      </a>
-  </li>
+  <i id="saveSnapshotBtn" class="material-icons add-bookmark" title="Bookmark this page">add_circle_outline</i>
   {{#if bookmarks.search}}
   {{#bookmarks.search}}
   <li data-id="{{id}}" class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
         {{capitalize title}}
-        <span class="remove-snapshot">✕</span>
+        <i class="material-icons remove-snapshot">highlight_off</i>
       </a>
   </li>
   {{/bookmarks.search}}
+  {{else}}
+  <li class="sidebar-subitem italic">
+      <span class="no-link">No Bookmarks</span>
+  </li>
   {{/if}}
 </div>
 

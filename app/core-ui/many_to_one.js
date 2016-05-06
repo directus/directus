@@ -26,10 +26,13 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"}
   ];
 
-  var template = '<select {{#unless canEdit}}disabled{{/unless}}> \
-                  <option value="">{{placeholder_text}}</option> \
-                  {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>{{/data}} \
-                  </select>';
+  var template = '<div class="select-container"> \
+                    <select {{#unless canEdit}}disabled{{/unless}}> \
+                    <option value="">{{placeholder_text}}</option> \
+                    {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>{{/data}} \
+                  </select> \
+                  <i class="material-icons select-arrow">arrow_drop_down</i> \
+                  </div>';
 
   //name="{{name}}"
 

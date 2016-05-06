@@ -28,11 +28,6 @@ body.initial-load #sidebar {
         margin: 0px;
         li {
             list-style: none;
-            &:hover {
-                color: $white;
-                //background-color: $extraDarkGrey;
-                cursor: pointer;
-            }
         }
     }
 
@@ -56,7 +51,7 @@ body.initial-load #sidebar {
             -o-transition: all 400ms ease-in-out;
             transition: all 400ms ease-in-out;
 
-            margin: 6px auto;
+            margin: 4px auto;
             opacity: 1;
             background-image: url(../img/directus-logo-sprite-small.png);
             width: 80px;
@@ -102,12 +97,25 @@ body.initial-load #sidebar {
         width: 100%;
         color: lighten($mediumGrey, 5%);
         padding-bottom: 150px;
+        .add-bookmark {
+            @include transition;
+            position: absolute;
+            top: -4px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 19px;
+            color: $darkGrey;
+            &:hover {
+                color: $white;
+            }
+        }
         .responsive-nav {
             display: none;
         }
         .sidebar-section, .sidebar-extension {
             margin-bottom: 25px;
             margin-top: 20px;
+            position: relative;
             .sidebar-group {
                 color: #666666;
                 margin-left: 17px;
@@ -123,7 +131,8 @@ body.initial-load #sidebar {
                 }
             }
         }
-        .sidebar-subitem a {
+        .sidebar-subitem a,
+        .sidebar-subitem .no-link {
             padding-left: 20px; // 43px for icons
             padding-right: 20px;
             position: relative;
@@ -149,7 +158,11 @@ body.initial-load #sidebar {
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+            .no-link {
+                font-size: 13px;
+            }
             a {
+                @include transition;
                 display: block;
                 font-size: 13px;
                 font-weight: 500;
@@ -159,20 +172,24 @@ body.initial-load #sidebar {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                cursor: pointer;
                 .remove-snapshot {
+                    @include transition;
                     position: absolute;
-                    top: 7px;
-                    right: 10px;
-                    color: $mediumGrey;
+                    top: 3px;
+                    right: 7px;
+                    color: $darkGrey;
                     opacity: 0;
                     -webkit-font-smoothing: antialiased !important;
                     font-weight: 400;
+                    font-size: 19px;
                     padding: 0 3px 0 3px;
                     &:hover {
                         color: $deleteColor;
                     }
                 }
                 &:hover {
+                    color: $white;
                     .remove-snapshot {
                         opacity: 1.0;
                     }

@@ -24,10 +24,10 @@
   }
   p.error {
     @extend .card-shadow;
-    @include border-radius(4px, 4px, 4px, 4px);
-    background-color: $white;
+    @extend .rounded-corners;
+    background-color: $mediumGrey;
     padding: 10px 10px 7px 10px;
-    color: $darkGrey;
+    color: $white;
     font-weight: 500;
     text-align: center;
     display: inline-block;
@@ -40,7 +40,7 @@
         font-size: 22px;
         vertical-align: middle;
         margin-top: -4px;
-        color: $primaryColor;
+        color: $white;
     }
   }
   p.message {
@@ -60,8 +60,7 @@
   font-family: "Lucida Console", Monaco, monospace;
 }
 .login-panel {
-  @include border-radius(4px, 4px, 4px, 4px);
-  @extend .card-border;
+  @extend .rounded-corners;
   @extend .card-shadow;
   background-color: $white;
   padding: 30px;
@@ -74,7 +73,7 @@
   //   position: absolute;
   // }
   input {
-    @include border-radius(4px, 4px, 4px, 4px);
+    @extend .rounded-corners;
     @include transition();
     background-color: $white;
     border: 1px solid $fieldColor;

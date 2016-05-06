@@ -92,7 +92,16 @@ define(['app','backbone'], function(app, Backbone) {
   };
 
   Module.list = function(options) {
-    return options.model.attributes.tags;
+    var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
+    console.log(tags);
+    if(tags.length){
+      for (var i = 0; i < tags.length; i++) {
+        tags[i] = '<span class="tag-static">' + tags[i] + '</span>';
+      }
+      return tags.join(' ');
+    } else {
+      return options.model.attributes.tags;
+    }
   };
 
   return Module;

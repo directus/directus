@@ -46,7 +46,6 @@
 }
 
 ul.general-container {
-  // .card-border;
   //border-bottom: 2px solid darken($lightGrey, 5%);
   @extend .card-shadow;
   background-color: darken($white, 4%);

@@ -216,7 +216,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
     leftToolbar: function() {
       if(app.users.getCurrentUser().get('group').id == 1) {
         return [
-          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}})
+          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: "New User"}})
         ];
       }
       return [];

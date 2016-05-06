@@ -16,9 +16,9 @@ function(app, Backbone, PreferenceModel) {
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status" class="change-visibility"> \
         <optgroup label="Status"> \
-          <option data-status value="{{allKeys}}">View All</option> \
+          <option data-status value="{{allKeys}}">All Items</option> \
           {{#mapping}} \
-            <option data-status value="{{id}}" {{#if isSelected}} selected {{/if}}>View {{capitalize name}}</option> \
+            <option data-status value="{{id}}" {{#if isSelected}} selected {{/if}}>{{capitalize name}} Items</option> \
           {{/mapping}} \
         </optgroup> \
       </select> \
