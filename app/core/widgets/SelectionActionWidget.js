@@ -10,10 +10,11 @@ function(app, Backbone) {
     template: Handlebars.compile(' \
       <ul class="tools left big-space"> \
         {{#mapping}} \
-          <li class="tool"><span data-value="{{id}}" style="color: {{color}}" class="action actionBtn">{{name}}</span></li> \
+          <li class="tool rounded-button action actionBtn card-shadow" data-value="{{id}}" style="color:{{color}}">{{name}}</li> \
         {{/mapping}} \
         {{#if batchEdit}} \
-        <li class="tool div-left"><span id="batchEditBtn" class="action">Batch Edit</span></li> \
+        <li class="tool-separator">&nbsp;</li> \
+        <li class="tool div-left rounded-button action card-shadow" id="batchEditBtn">Batch Edit</li> \
         {{/if}} \
       </ul> \
     '),
@@ -25,7 +26,7 @@ function(app, Backbone) {
 
     events: {
       'click .actionBtn': function(e) {
-        var value = $(e.target).closest('span').attr('data-value');
+        var value = $(e.target).closest('li').attr('data-value');
         if(value == 0) {
           var that = this;
           app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system!', callback: function() {
@@ -48,7 +49,7 @@ function(app, Backbone) {
     },
 
     doAction: function(e) {
-      var value = $(e.target).closest('span').attr('data-value');
+      var value = $(e.target).closest('li').attr('data-value');
       var collection = this.collection;
       var active = collection.getFilter('active');
 

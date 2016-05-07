@@ -3,18 +3,18 @@
     margin-left: 40px;
     .title {
       font-weight: 400;
-      font-size: 20px;
+      font-size: 16px;
       margin-bottom: 2px;
     }
     .users {
-      font-style: italic;
-      font-weight: 500;
+      font-weight: 400;
       font-size: 14px;
       margin-bottom: 4px;
     }
     .subject {
       color: $mediumGrey;
       font-size: 14px;
+      font-weight: 400;
     }
   }
   &.unread {
@@ -22,6 +22,9 @@
     color: $darkGrey;
     .message-content {
       .title {
+        font-weight: 500;
+      }
+      .users {
         font-weight: 500;
       }
     }
@@ -43,14 +46,14 @@
 }
 
 ul.general-container {
-  // .card-border;
   //border-bottom: 2px solid darken($lightGrey, 5%);
+  @extend .card-shadow;
   background-color: darken($white, 4%);
   color: lighten($darkGrey, 10%);
   padding: 0;
   &.selectable {
     li:hover {
-      background-color: $tableHoverYellow;
+      background-color: $tableRowHover;
       cursor: pointer;
     }
   }

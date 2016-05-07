@@ -4,9 +4,18 @@
     &.inactive {
       opacity: 0.4;
     }
-    @extend .card-border;
     font-size: 12px;
     list-style: none;
+    cursor: pointer;
+    &:hover {
+        .info {
+            .featured {
+                .primary-info {
+                    color: $primaryColor;
+                }
+            }
+        }
+    }
     .header-image {
       overflow: hidden;
       height: 200px;
@@ -14,6 +23,7 @@
       width: 200px;
       background-color: $lightGrey;
       text-align: center;
+      border-radius: 4px 4px 0 0;
       &:hover {
         cursor: pointer;
         .tool-item {
@@ -85,8 +95,10 @@
       //border: solid 1px $lightGrey;
       background-color: $white;
       border-top: none;
-      margin-top: 4px;
       min-height: 100px;
+      border-radius: 0 0 4px 4px;
+      border-top: 1px solid $lightGrey;
+      padding-top: 4px;
       .featured, .extra {
         padding: 14px 0 14px 0;
         margin-left: 14px;
@@ -96,6 +108,7 @@
         margin-top: -4px;
       }
       .primary-info {
+        @include transition();
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -142,7 +155,8 @@
 .feature-cards {
   padding-left: 0px;
   .feature-card {
-    @extend .card-border;
+    @extend .card-shadow;
+    @extend .rounded-corners;
     background-color: $white;
     list-style: none;
     padding: $standardPad;
@@ -150,7 +164,7 @@
     overflow: hidden;
     position: relative;
     &:hover .material-icons {
-      color: darken($mediumGrey, 20%) !important;
+      color: darken($primaryColor, 10%) !important;
     }
     .left-col {
       color: $lightGrey;
@@ -162,7 +176,7 @@
       .material-icons {
         @include transition();
         display: inline-block;
-        color: $mediumGrey;
+        color: $primaryColor;
         font-size: 70px;
         line-height: 140px;
       }

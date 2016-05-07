@@ -7,6 +7,7 @@
   right: 0px;
   top: 0px;
   z-index: 50;
+  background-color: $lightGrey;
 
   -webkit-transition: left 400ms ease-in-out;
   -moz-transition: left 400ms ease-in-out;
@@ -47,6 +48,15 @@
   .navigation-back {
     display: none;
   }
+  .btn-header { // large-circle (remove)
+    padding: 10px 15px 10px 10px;
+    margin-top: -1px;
+    .material-icons {
+      font-size: 24px;
+      margin-top: -6px;
+      margin-bottom: -3px
+    }
+  }
   h1, ul {
     margin: 0px;
   }
@@ -57,6 +67,12 @@
     text-transform: capitalize;
     font-size: 26px;
     line-height: 38px;
+    a {
+      @include transition;
+      &:hover {
+        color: $darkGrey;
+      }
+    }
     #removeOverlay {
       margin-top: -3px;
       vertical-align: middle;
@@ -116,14 +132,6 @@
         }
       }
     }
-    &:hover, &.active {
-      input {
-        color: $darkGrey;
-      }
-      button {
-        background-color: $darkGrey;
-      }
-    }
   }
   .tools {
     position: relative;
@@ -146,9 +154,16 @@
           width: 110px;
         }
       }
+      .tool-separator {
+        float: left;
+        margin-left: 20px;
+        border-left: solid 1px darken($lightGrey, 10%);
+        width: 0px;
+        padding: 10px 0 10px 10px;
+      }
       &.big-space {
         .tool {
-          margin-left: $standardPad;
+          margin-left: 10px;
           &:first-child {
             margin-left: 0px;
           }
@@ -156,7 +171,7 @@
             padding-right: $standardPad;
           }
           &.div-left {
-            padding-left: $standardPad;
+            //padding-left: $standardPad;
           }
         }
       }
@@ -177,12 +192,6 @@
         }
       }
     }
-    button, input {
-      display: block;
-    }
-    button {
-      border: none;
-    }
     input {
       border: none;
       color: $mediumGrey;
@@ -196,48 +205,43 @@
         padding-right: $smallPad;
       }
       &.div-left {
-        border-left: solid 1px $white;
-        height: 32px;
-        padding-left: $smallPad;
+        //border-left: solid 1px $white;
+        //height: 32px;
+        //padding-left: $smallPad;
       }
     }
-    .tool-item {
-      background-color: $white;
-      color: $mediumGrey;
-      cursor: pointer;
-      // &.add-color-background:hover {
-      //   background-color: $white !important;
-      //   color: $addColor !important;
-      // }
-      // &:hover {
-      //   background-color: $darkGrey;
-      // }
-    }
+    // .tool-item {
+    //   background-color: $white;
+    //   color: $mediumGrey;
+    //   cursor: pointer;
+    //   // &.add-color-background:hover {
+    //   //   background-color: $white !important;
+    //   //   color: $addColor !important;
+    //   // }
+    //   // &:hover {
+    //   //   background-color: $darkGrey;
+    //   // }
+    // }
     .simple-select {
+      @extend .card-shadow;
       display: inline-block;
       vertical-align: middle;
       font-weight: 500;
       cursor: pointer;
     }
-    .saved-success {
-      color: $white;
-      .simple-select {
-        color: $white;
-      }
-      .tool-item {
-        background-color: $white;
-      }
-    }
+    // .saved-success {
+    //   color: $white;
+    //   .simple-select {
+    //     color: $white;
+    //   }
+    //   .tool-item {
+    //     background-color: $white;
+    //   }
+    // }
     .btn {
       &.disabled {
         //opacity: 0.1;
         color: transparentize($white, 0.75);
-        &:hover {
-          background-color: $mediumGrey;
-        }
-      }
-      &:hover {
-        background-color: $darkGrey;
       }
     }
   }
@@ -262,7 +266,7 @@
             line-height: 65%;
           }
           &.icon-triangle-down {
-            color: $addColor;
+            color: $primaryColor;
           }
         }
       }
@@ -306,24 +310,26 @@
         float: left;
         //margin-left: $smallPad;
         height: 33px;
-        background-color: $white;
+        // background-color: $white;
         .simple-select {
+          @extend .card-shadow;
           //margin-right: $extraSmallPad;
           margin-top: 0px;
           max-width: 150px;
           display: block;
           float: left;
           position: relative;
+
           .icon {
             color: $darkGrey;
             line-height: 29px;
             right: 6px;
           }
           select {
-            padding-right: 20px;
+            padding-right: 30px;
             outline: none;
             max-width: 160px;
-            border-radius: 0;
+            @include border-radius(4px, 4px, 4px, 4px);
           }
         }
         input {
@@ -340,11 +346,14 @@
           margin-left: 4px;
         }
         select, input[type="text"] {
-          //.border-radius();
+          @include border-radius(4px, 4px, 4px, 4px);
           background-color: $white;
           border: 0px;
-          padding: 8px 22px 8px 8px;
+          padding: 10px;
           margin: 0;
+        }
+        input[type="text"] {
+          padding-right: 0;
         }
       }
     }
@@ -361,9 +370,18 @@
         color: $mediumGrey;
         overflow: visible;
         height: 27px;
+        .filter-background {
+          @extend .rounded-corners;
+          @extend .card-shadow;
+          background-color: $white;
+          height: 36px;
+          padding-right: 28px;
+          display: inline-block;
+          position: relative;
+        }
         .filter-name {
           position: absolute;
-          top: -13px;
+          top: -11px;
           left: 1px;
           color: $mediumGrey;
           font-size: 9px;
@@ -377,13 +395,19 @@
         .filter-remove {
           @include transition (color, $fastSpeed, ease-in-out);
           color: $mediumGrey;
-          top: 5px;
-          position: relative;
-          margin: 0 2px 0 -20px;
+          position: absolute;
+          right: 0px;
+          top: 6px;
+          margin: 0 2px 0 -25px;
           cursor: pointer;
           &:hover {
             color: $deleteColor;
           }
+        }
+        .simple-select {
+          -webkit-box-shadow: none !important;
+          -moz-box-shadow: none !important;
+          box-shadow: none !important;
         }
         input {
           width: 120px;
@@ -391,10 +415,8 @@
           color: $darkGrey;
           padding: 7px 0 0 7px;
           &[type="checkbox"] {
-            width: 30px;
-            margin-top: 10px;
-            margin-left: 8px;
-            margin-right: 10px;
+            width: 20px;
+            margin: 12px 0 0 10px;
           }
           &[type="date"] {
             max-width: 120px;
@@ -405,7 +427,7 @@
       }
     }
     li {
-      font-size: 12px;
+      font-size: 14px;
     }
     .vertical-center {
       margin-top: $textActionMarginTop;
@@ -428,9 +450,9 @@
       padding: 0px $smallPad;
     }
     .tools {
-      font-size: 12px;
+      font-size: 14px;
       .action {
-        margin-top: $textActionMarginTop;
+        // margin-top: $textActionMarginTop;
       }
       .snapshotOption {
         background-color: $white;
@@ -444,7 +466,7 @@
         }
       }
       .tool {
-        height: 32px; // TODO: This keeps the secondary toolbar height in check...
+        //height: 32px; // TODO: This keeps the secondary toolbar height in check...
       }
     }
   }

@@ -53,7 +53,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'saveConfirm',
+      'click .saved-success > #save': 'saveConfirm',
       'change #saveSelect': 'saveConfirm',
       'submit': function(e) {
         // prevent user submit the form using Enter key

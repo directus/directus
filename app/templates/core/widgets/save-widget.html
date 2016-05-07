@@ -1,8 +1,6 @@
 <span class="select-and-circle {{#unless isUpToDate}}saved-success{{/unless}}">
-  <span id="save">
-    <span class="tool-item large-circle add-color-background icon-offset" title="Save">
-      <i class="material-icons">check</i>
-    </span>
+  <button type="button" id="save" class="tool-item btn btn-header" title="Save">
+    <i class="material-icons">check</i> Save Item
     <!-- <span class="simple-select medium-grey-color">
       {{#if isUpToDate}}
         All Changes Saved
@@ -10,7 +8,7 @@
         Save Changes
       {{/if}}
     </span> -->
-  </span>
+  </button>
   {{#unless basicSave}}
     <label for="status" class="icon-select icon icon-triangle-down">
       <select id="saveSelect" name="status">

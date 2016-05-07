@@ -3,6 +3,9 @@
 ////////////
 select {
   cursor: pointer;
+  // -webkit-appearance: none;
+  // -moz-appearance: none;
+  // appearance: none;
 }
 .icon-select {
   position: relative;
@@ -113,13 +116,21 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
       height:22px;
       margin: -2px $extraSmallPad 0 0;
       vertical-align:middle;
+      &:hover {
+        color: $primaryColor;
+      }
     }
   }
   &:checked {
     +label {
-      span:before {
-        content: "check_box";
-        @extend .material-icons;
+      span {
+        &:before {
+          content: "check_box";
+          color: $primaryColor;
+        }
+        &:hover {
+          color: $darkGrey;
+        }
       }
     }
   }
@@ -134,9 +145,10 @@ input,
 textarea,
 select,
 .input {
+  @include border-radius(4px, 4px, 4px, 4px);
   @include transition();
-  background-color: $fieldColor;
-  border: none;
+  background-color: $white;
+  border: 1px solid $fieldColor;
   display: block;
   padding: 14px;
   font-size: 14px;
@@ -146,7 +158,8 @@ select,
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   &:hover {
-    //border: solid 1px $mediumGrey;
+    // color: darken($darkGrey, 20%);
+    border-color: $mediumGrey;
   }
   &:disabled {
     color: $mediumGrey;
@@ -155,7 +168,8 @@ select,
     //border: solid 1px $lightGrey;
   }
   &:focus {
-    color: darken($darkGrey, 10%);
+    color: darken($darkGrey, 20%);
+    border-color: $primaryColor;
   }
   &.legacy {
     padding: $smallPad;
@@ -187,6 +201,24 @@ select,
 ////////////
 //  CUSTOM FORMS
 ////////////
+.select-container {
+  position: relative;
+  display: inline-block;
+  select {
+    padding-right: 35px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
+.select-arrow {
+    position: absolute;
+    top: 8px;
+    right: 4px;
+    font-size: 29px;
+    background-color: $white;
+    pointer-events:none;
+}
 
 .table-striped tr td.field-comment-container {
   // padding-right: 20px;
@@ -200,11 +232,11 @@ select,
     top: 8px;
   }
   select {
-    @include border-radius();
+    @include border-radius(4px, 4px, 4px, 4px);
     background-color: $white; // class name no longer applicable
     border: 0px;
     //margin: 0px 4px 0px 0px;
-    padding: 8px $smallPad;
+    padding: 10px;
   }
 }
 .two-column-form {
@@ -219,7 +251,6 @@ select,
     margin-bottom: $smallPad;
   }
   .fields {
-    @extend .card-border;
     list-style: none;
     margin: 0px;
     padding: 0px;
@@ -228,6 +259,12 @@ select,
       margin-top: 1px;
       position: relative;
       width: 100%;
+      //@extend .card-shadow;
+      // &:first-child {
+      //   .label {
+      //     border-radius: 4px;
+      //   }
+      // }
     }
     .fieldset-smoke {
       position:absolute;
@@ -318,7 +355,7 @@ select,
         -webkit-font-smoothing: auto;
         a {
           text-decoration: underline;
-          color: $addColor;
+          color: $primaryColor;
         }
         img {
           &:hover {
@@ -341,7 +378,7 @@ select,
       }
       select {
         max-width: 200px;
-        margin-top: 2px;
+        // margin-top: 2px;
         // height: 38px; // Fixes cropped text in FireFox
         width: 100%;
       }

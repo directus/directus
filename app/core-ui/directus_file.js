@@ -23,18 +23,19 @@ define(['app', 'backbone'], function(app, Backbone) {
                     max-height: 200px; \
                     padding: 10px; \
                     background-color: #ffffff; \
-                    border: 1px solid #aaaaaa; \
+                    border: 1px solid #dddddd; \
                     color: #aaaaaa; \
                     text-align: center; \
                     cursor: pointer; \
                     margin-bottom: 10px; \
+                    border-radius: 4px; \
                   } \
                   div.ui-thumbnail.empty { \
                     max-width: 276px; \
                     width: 100%; \
                     height: 140px; \
                     background-color: #ffffff; \
-                    border: 2px dashed #aaaaaa; \
+                    border: 2px dashed #dddddd; \
                     padding: 9px; \
                     font-size: 16px; \
                     font-weight: 500; \
@@ -43,7 +44,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   div.ui-thumbnail.empty.dragover, \
                   div.ui-thumbnail.empty:hover { \
                     background-color: #fefefe; \
-                    border: 2px dashed #cccccc; \
+                    border: 2px dashed #aaaaaa; \
                     cursor: pointer; \
                   } \
                   div.ui-thumbnail img { \
