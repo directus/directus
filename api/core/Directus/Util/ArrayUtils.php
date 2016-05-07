@@ -61,4 +61,39 @@ class ArrayUtils
         return true;
     }
 
+    /**
+     * Flatten a multi-dimensional associative array with a dots.
+     *
+     * @param  array   $array
+     * @param  string  $prepend
+     * @return array
+     */
+    public static function dot($array, $prepend = '')
+    {
+        return static::flatKey('.', $array, $prepend);
+    }
+
+    /**
+     * Flatten a multi-dimensional associative array with a character.
+     *
+     * @param  string $separator
+     * @param  array   $array
+     * @param  string  $prepend
+     * @return array
+     */
+    public static function flatKey($separator, $array, $prepend = '')
+    {
+        $results = [];
+
+        foreach ($array as $key => $value) {
+            if (is_array($value) && ! empty($value)) {
+                $results = array_merge($results, static::flatKey($separator, $value, $prepend.$key.$separator));
+            } else {
+                $results[$prepend.$key] = $value;
+            }
+        }
+
+        return $results;
+    }
+
 }
