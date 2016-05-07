@@ -579,8 +579,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     public function applyParamsToTableEntriesSelect(array $params, Select $select, array $schema, $hasActiveColumn = false) {
-        $select->group('id')
-            ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
+        $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
         if (isset($params['perPage']) && isset($params['currentPage'])) {
             $select->limit($params['perPage'])
                 ->offset($params['currentPage'] * $params['perPage']);
