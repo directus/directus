@@ -25,8 +25,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
         if(isset($params['group_by'])) {
           $select->group($tableName . '.' . $params['group_by']);
-        } else {
-          $select->group($tableName . '.'.$this->primaryKeyFieldName);
         }
 
         //If this is a relational order, than it is an array.

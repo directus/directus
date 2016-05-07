@@ -689,7 +689,6 @@ class TableSchema {
                     AND
                     ST.TABLE_NAME NOT IN ('.$blacklist.')
                 )
-            GROUP BY ST.TABLE_NAME
             ORDER BY ST.TABLE_NAME';
 
         $sth = $zendDb->query($sql);

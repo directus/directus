@@ -59,7 +59,7 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
                 ->columns(array('id','read','count' => new Expression('COUNT(`id`)'),'max_id' => new Expression('MAX(`message_id`)')))
                 ->where->equalTo('recipient', $uid);
             $select
-                ->group('read');
+                ->group(array('id', 'read'));
             $result = $this->selectWith($select)->toArray();
             return $result;
         };
