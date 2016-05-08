@@ -26,7 +26,7 @@
     <label for="db_schema">Initial Schema</label>
     <div class="select-container">
         <select name="db_schema" id="db_schema">
-            <option value="none">None (Clean Database)</option>
+            <option value="">None (Clean Database)</option>
             <?php foreach($step->getData('db_schemas') as $dbSchemas): ?>
             <option value="<?=$dbSchemas['id'];?>" <?php echo($step->getData('db_schema') && $step->getData('db_schema') == $dbSchemas['id'] ? 'selected' : ''); ?>><?=$dbSchemas['name'];?></option>
             <?php endforeach; ?>
