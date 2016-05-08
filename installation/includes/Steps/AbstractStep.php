@@ -100,13 +100,6 @@ abstract class AbstractStep implements StepInterface
     {
         $fields = $this->fields;
         foreach ($fields as $field) {
-//            $name = $field['name'];
-//            $value = array_key_exists($name, $data) ? $data[$name] : null;
-//            if (!$value) {
-//                $label = $field['label'];
-//                throw new \InvalidArgumentException("The $label parameter is required");
-//            }
-
             if (isset($field['rules'])) {
                 foreach(explode('|', $field['rules']) as $rule) {
                     $name = $field['name'];
