@@ -1,7 +1,5 @@
 <div class="container">
-    <?php if ($step->getResponse()): ?>
-    <p><?=$step->getResponse()->getErrorMessage(); ?></p>
-    <?php endif; ?>
+    <?php include __DIR__.'/partials/errors.php'; ?>
     <label for="directus_name">Project Name</label><input type="text" id="directus_name" name="directus_name" placeholder="My Project Name" value="<?php echo($step->getSafeData('directus_name') ? $step->getSafeData('directus_name') : ''); ?>" autofocus><br>
     <label for="directus_path">Project Path</label><input type="text" id="directus_path" name="directus_path" placeholder="Path to Directus directory" value="<?php echo($step->getSafeData('directus_path') ? $step->getSafeData('directus_path') : $root_path); ?>"><br>
     <label for="directus_email">Admin Email</label><input type="email" id="directus_email" name="directus_email" placeholder="admin@example.com" value="<?php echo($step->getSafeData('directus_email') ? $step->getSafeData('directus_email') : ''); ?>"><br>

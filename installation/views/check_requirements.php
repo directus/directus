@@ -1,6 +1,4 @@
 <div class="container">
-    <?php if ($step->getResponse()): ?>
-        <h2><?=$step->getResponse()->getErrorMessage(); ?></h2>
-    <?php endif; ?>
+    <?php include __DIR__.'/partials/errors.php'; ?>
     <p>Refresh this page when the problems above are resolved.</p>
 </div>

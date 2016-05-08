@@ -1,8 +1,6 @@
 <?php $code = 0; ?>
 <div class="container">
-    <?php if ($step->getResponse()): ?>
-        <p><?=$step->getResponse()->getErrorMessage(); ?></p>
-    <?php endif; ?>
+    <?php include __DIR__.'/partials/errors.php'; ?>
     <label for="db_type">Database Type</label>
     <div class="select-container">
         <select name="db_type" id="db_type">

@@ -6,19 +6,61 @@ use Directus\Installation\DataContainer;
 
 abstract class AbstractStep implements StepInterface
 {
+    /**
+     * @var AbstractStep
+     */
     static protected $instance = null;
+
     /**
      * Data Container
      * @var \Directus\Installation\DataContainer
      */
     protected $dataContainer;
+
+    /**
+     * Whether the step is done. (passed)
+     * @var bool
+     */
     protected $isDone = false;
+
+    /**
+     * Step number
+     * @var string
+     */
     protected $number;
+
+    /**
+     * Step name
+     * @var string
+     */
     protected $name;
+
+    /**
+     * Step title
+     * @var string
+     */
     protected $title;
+
+    /**
+     * Short version of the step title
+     * @var string
+     */
     protected $shortTitle;
+
+    /**
+     * @var string
+     */
     protected $viewName;
+
+    /**
+     * Steps fields
+     * @var array
+     */
     protected $fields = [];
+
+    /**
+     * @var \Directus\Installation\Steps\StepResponse
+     */
     protected $response;
 
     public function __construct()
@@ -198,9 +240,7 @@ abstract class AbstractStep implements StepInterface
 
             $this->validate($formData);
         } catch(\Exception $e) {
-            $response->setError([
-                'message' => $e->getMessage()
-            ]);
+            $response->addError($e->getMessage());
         }
 
         return $response;
