@@ -18,7 +18,8 @@
   },
     "autoload": {
         "psr-4": {
-            "Directus\\": "core/Directus/"
+            "Directus\\": "core/Directus/",
+            "Directus\\Installation\\": "../installation/includes/"
         }
     }
 }
