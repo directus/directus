@@ -18,7 +18,7 @@ class View
             }
         }
 
-        $stepsData = new \Directus\Installation\Data($stepsData);
+        $stepsData = new DataContainer($stepsData);
 
         $output = static::getStepView($step, $state, ['state' => $state, 'step' => $step, 'data' => $stepsData]);
 

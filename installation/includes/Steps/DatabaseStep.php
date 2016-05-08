@@ -63,8 +63,8 @@ class DatabaseStep extends AbstractStep
 
     public function preRun(&$state)
     {
-        $this->data->set('db_types', Schema::getSupportedDatabases());
-        $this->data->set('db_schemas', Schema::getTemplates());
+        $this->dataContainer->set('db_types', Schema::getSupportedDatabases());
+        $this->dataContainer->set('db_schemas', Schema::getTemplates());
 
         return null;
     }

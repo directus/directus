@@ -2,7 +2,7 @@
 
 namespace Directus\Installation;
 
-class Data
+class DataContainer
 {
     /**
      * All data attributes

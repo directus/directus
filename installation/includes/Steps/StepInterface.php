@@ -2,7 +2,7 @@
 
 namespace Directus\Installation\Steps;
 
-use Directus\Installation\Data;
+use Directus\Installation\DataContainer;
 
 interface StepInterface
 {
@@ -14,7 +14,8 @@ interface StepInterface
     public function isDone();
     public function isPending();
     public function setDone($done);
-    public function setData(Data $data);
+    public function setDataContainer(DataContainer $dataContainer);
+    public function getDataContainer();
     public function getData($key);
     public function getResponse();
     public function preRun(&$state);

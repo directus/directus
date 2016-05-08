@@ -2,15 +2,16 @@
 
 namespace Directus\Installation\Steps;
 
-use Directus\Installation\Data;
+use Directus\Installation\DataContainer;
 
 abstract class AbstractStep implements StepInterface
 {
     static protected $instance = null;
     /**
-     * @var \Directus\Installation\Data
+     * Data Container
+     * @var \Directus\Installation\DataContainer
      */
-    protected $data;
+    protected $dataContainer;
     protected $isDone = false;
     protected $number;
     protected $name;
@@ -22,7 +23,7 @@ abstract class AbstractStep implements StepInterface
 
     public function __construct()
     {
-        $this->data = new Data();
+        $this->dataContainer = new DataContainer();
     }
 
     public function getNumber()
@@ -65,18 +66,23 @@ abstract class AbstractStep implements StepInterface
         $this->isDone = (bool) $done;
     }
 
-    public function setData(Data $data)
+    public function setDataContainer(DataContainer $dataContainer)
     {
-        $this->data = $data;
+        $this->dataContainer = $dataContainer;
+    }
+
+    public function getDataContainer()
+    {
+        return $this->dataContainer;
     }
 
     public function getData($key = null)
     {
         if ($key != null) {
-            return $this->data ? $this->data->get($key) : null;
+            return $this->dataContainer ? $this->dataContainer->get($key) : null;
         }
 
-        return $this->data ? $this->data->get() : [];
+        return $this->dataContainer ? $this->dataContainer->get() : [];
     }
 
     public function getField($name)
@@ -111,7 +117,7 @@ abstract class AbstractStep implements StepInterface
                         throw new \InvalidArgumentException($validated);
                     }
 
-                    $this->data->set($name, $value);
+                    $this->dataContainer->set($name, $value);
                 }
             }
         }
