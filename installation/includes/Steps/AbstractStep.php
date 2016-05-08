@@ -85,6 +85,18 @@ abstract class AbstractStep implements StepInterface
         return $this->dataContainer ? $this->dataContainer->get() : [];
     }
 
+    public function getSafeData($key = null)
+    {
+        if ($key != null) {
+            $data = $this->dataContainer ? $this->dataContainer->get($key) : null;
+            if (is_string($data)) {
+                return htmlentities($data, ENT_QUOTES);
+            }
+        }
+
+        return $this->getData($key);
+    }
+
     public function getField($name)
     {
         foreach($this->fields as $field) {

@@ -32,7 +32,7 @@ class StepResponse
         return array_key_exists('error', $this->data) ? $this->data['error'] : null;
     }
 
-    public function getErrorMessage()
+    public function getErrorMessage($raw = false)
     {
         $error = $this->getError();
 
@@ -40,7 +40,15 @@ class StepResponse
             return false;
         }
 
-        return array_key_exists('message', $error) ? $error['message'] : '';
+        $message = '';
+        if (array_key_exists('message', $error)) {
+            $message = $error['message'];
+            if ($raw !== true) {
+                $message = htmlentities($message, ENT_QUOTES);
+            }
+        }
+
+        return $message;
     }
 
     public function getData($key = null)

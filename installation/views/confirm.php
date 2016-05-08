@@ -5,11 +5,11 @@
         <tbody>
         <tr>
             <td class="item">Project Name</td>
-            <td class="result"><?php echo $data->get('directus_name');?></td>
+            <td class="result"><?php echo $data->getSafe('directus_name');?></td>
         </tr>
         <tr>
             <td class="item">Admin Email</td>
-            <td class="result"><span><?php echo $data->get('directus_email');?></span>
+            <td class="result"><span><?php echo $data->getSafe('directus_email');?></span>
             </td>
         </tr>
         <tr>
@@ -25,15 +25,15 @@
         <tbody>
         <tr>
             <td class="item">Database</td>
-            <td class="result"><?php echo $data->get('db_type');?></td>
+            <td class="result"><?php echo $data->getSafe('db_type');?></td>
         </tr>
         <tr>
             <td class="item">Host Name</td>
-            <td class="result"><?php echo $data->get('db_host');?></td>
+            <td class="result"><?php echo $data->getSafe('db_host');?></td>
         </tr>
         <tr>
             <td class="item">Username</td>
-            <td class="result"><span><?php echo $data->get('db_user');?></span></td>
+            <td class="result"><span><?php echo $data->getSafe('db_user');?></span></td>
         </tr>
         <tr>
             <td class="item">Password</td>
@@ -41,11 +41,11 @@
         </tr>
         <tr>
             <td class="item">Database Name</td>
-            <td class="result"><?php echo $data->get('db_name');?></td>
+            <td class="result"><?php echo $data->getSafe('db_name');?></td>
         </tr>
         <tr>
             <td class="item">Port</td>
-            <td class="result"><?php echo $data->get('db_port');?></td>
+            <td class="result"><?php echo $data->getSafe('db_port');?></td>
         </tr>
         </tbody>
     </table>
@@ -123,7 +123,7 @@
     <table>
         <tbody>
         <tr>
-            <td class="item"><?php echo $data->get('directus_email');?></td>
+            <td class="item"><?php echo $data->getSafe('directus_email');?></td>
             <td class="result"><input type="checkbox" value="yes" name="send_config_email" checked></td>
         </tr>
         </tbody>

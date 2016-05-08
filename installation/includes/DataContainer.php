@@ -35,6 +35,17 @@ class DataContainer
         return $this->attributes;
     }
 
+    public function getSafe($key = null)
+    {
+        $item = $this->get($key);
+
+        if (is_string($item)) {
+            $item = htmlentities($item, ENT_QUOTES);
+        }
+
+        return $item;
+    }
+
     /**
      * Set a new data attribute
      * @param $key
