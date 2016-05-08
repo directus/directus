@@ -7,7 +7,6 @@ if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
 
 // Composer Autoloader
 $loader = require 'api/vendor/autoload.php';
-$loader->add("Directus", dirname(__FILE__) . "/api/core/");
 
 // Non-autoloaded components
 require 'api/api.php';
