@@ -15,6 +15,27 @@ use Zend\Db\Sql\Sql;
 class Schema
 {
     /**
+     * Directus core tables
+     * @var array
+     */
+    protected static $directusTables = [
+        'activity',
+        'bookmarks',
+        'columns',
+        'files',
+        'groups',
+        'messages',
+        'messages_recipients',
+        'preferences',
+        'privileges',
+        'schema_migrations',
+        'settings',
+        'tables',
+        'ui',
+        'users'
+    ];
+
+    /**
      * Create a new table
      * @param string $name
      * @return void
@@ -39,6 +60,14 @@ class Schema
             $sql->getSqlStringForSqlObject($table),
             $connection::QUERY_MODE_EXECUTE
         );
+    }
+
+    public static function getDirectusTables()
+    {
+        return array_map(function($table) {
+            // @TODO: Directus tables prefix will be dynamic
+            return 'directus_'.$table;
+        }, static::$directusTables);
     }
 
     public static function getSupportedDatabases()
