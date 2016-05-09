@@ -4563,6 +4563,12 @@ body.initial-load #sidebar {
   .invisible-blocker #page-blocker-smoke {
     left: 0; } }
 .login-box {
+  -webkit-transition: all 100ms ease-in-out;
+  -moz-transition: all 100ms ease-in-out;
+  -o-transition: all 100ms ease-in-out;
+  -ms-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
+  opacity: 1;
   left: 50%;
   margin-left: -175px;
   margin-top: -170px;
