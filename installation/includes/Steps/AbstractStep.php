@@ -66,6 +66,7 @@ abstract class AbstractStep implements StepInterface
     public function __construct()
     {
         $this->dataContainer = new DataContainer();
+        $this->response = new StepResponse([]);
     }
 
     public function getNumber()
@@ -231,7 +232,10 @@ abstract class AbstractStep implements StepInterface
 
     public function run($formData, $step, &$state)
     {
-        $this->response = $response = new StepResponse($formData);
+        $response = $this->response;
+        foreach($formData as  $key => $value) {
+            $response->setData($key, $value);
+        }
 
         try {
             if (!is_array($this->fields) || count($this->fields) <= 0) {

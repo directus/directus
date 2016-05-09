@@ -90,6 +90,11 @@ class DatabaseStep extends AbstractStep
         $connection = new Connection($dbConfig);
         $connection->connect();
 
+        if ($connection->isStrictModeEnabled()) {
+            $nextStep = install_get_step($this->getNumber()+1);
+            $nextStep->getResponse()->addWarning('Strict mode is enabled.');
+        }
+
         if (isset($data['db_schema']) && !InstallerUtils::schemaTemplateExists($data['db_schema'], BASE_PATH)) {
             throw new \InvalidArgumentException("Schema Template '{$data['db_schema']}' does not exits.");
         }

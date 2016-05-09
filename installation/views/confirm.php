@@ -1,4 +1,5 @@
 <div class="container step-3">
+    <?php include __DIR__.'/partials/warnings.php'; ?>
     <?php include __DIR__.'/partials/errors.php'; ?>
     <h3>Project Configuration</h3>
     <hr>
