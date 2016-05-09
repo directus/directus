@@ -46,6 +46,7 @@ class Schema
 
         // Primary column
         $primaryColumn = new Integer('id', 11);
+        $primaryColumn->setOption('autoincrement', '');
         $table->addColumn($primaryColumn);
         $table->addConstraint(new PrimaryKey('id'));
         // Status column
