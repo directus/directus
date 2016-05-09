@@ -34,6 +34,10 @@
             <td class="result"><?php echo $data->getSafe('db_host');?></td>
         </tr>
         <tr>
+            <td class="item">Port</td>
+            <td class="result"><?php echo $data->getSafe('db_port');?></td>
+        </tr>
+        <tr>
             <td class="item">Username</td>
             <td class="result"><span><?php echo $data->getSafe('db_user');?></span></td>
         </tr>
@@ -46,8 +50,8 @@
             <td class="result"><?php echo $data->getSafe('db_name');?></td>
         </tr>
         <tr>
-            <td class="item">Port</td>
-            <td class="result"><?php echo $data->getSafe('db_port');?></td>
+            <td class="item">Schema</td>
+            <td class="result"><?php echo $data->getSafe('db_schema') ? $data->getSafe('db_schema') : 'none';?></td>
         </tr>
         </tbody>
     </table>
