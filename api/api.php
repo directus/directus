@@ -45,6 +45,7 @@ use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
+use Directus\Db\Schema;
 use Directus\Db\TableSchema;
 use Directus\Exception\ExceptionHandler;
 use Directus\Hook\Hook;
@@ -545,22 +546,10 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
       }
 
       unset($requestPayload['addTable']);
+
       Hook::run('table.create:before', $requestPayload['table_name']);
-
-      try {
-        $statusColumnName = STATUS_COLUMN_NAME;
-        $statusDraftValue = STATUS_DRAFT_NUM;
-        $createTableQuery = "CREATE TABLE `{$requestPayload['table_name']}` (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            `{$statusColumnName}` tinyint(1) unsigned DEFAULT {$statusDraftValue},
-            PRIMARY KEY(id)
-        );";
-
-        Hook::run('table.create', $requestPayload['table_name']);
-        $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
-      }catch(\Exception $e){
-      }
-
+      Schema::createTable($requestPayload['table_name']);
+      Hook::run('table.create', $requestPayload['table_name']);
       Hook::run('table.create:after', $requestPayload['table_name']);
     }
 
