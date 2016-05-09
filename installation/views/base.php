@@ -10,11 +10,11 @@
 
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic,400italic,500italic" type="text/css">
-    <link rel="stylesheet" href="<?=$root_path;?>installation/install.css?v=<?=date('Ymd', time());?>">
+    <link rel="stylesheet" href="<?=$root_path;?>installation/assets/install.css?v=<?=date('Ymd', time());?>">
 </head>
 <body>
     <div class="header">
-        <img src="<?=$root_path;?>installation/directus-logo.png">
+        <img src="<?=$root_path;?>installation/assets/directus-logo.png">
         <h1><?=$step->getTitle();?></h1>
         <div class="breadcrumb">
             <?php foreach($steps as $index => $aStep): ?>
@@ -33,7 +33,7 @@
         </form>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script type="text/javascript" src="<?=$root_path;?>installation/install.js"></script>
+    <script type="text/javascript" src="<?=$root_path;?>installation/assets/install.js"></script>
     <script>
         var step = <?= $current_step; ?>;
         var directus_path = '<?= $root_path; ?>';

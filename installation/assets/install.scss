@@ -35,12 +35,12 @@ $black: #1a1a1a; // Directus Black
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(../assets/fonts/material-design/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: url(../../assets/fonts/material-design/MaterialIcons-Regular.eot); /* For IE6-8 */
   src: local('Material Icons'),
        local('MaterialIcons-Regular'),
-       url(../assets/fonts/material-design/MaterialIcons-Regular.woff2) format('woff2'),
-       url(../assets/fonts/material-design/MaterialIcons-Regular.woff) format('woff'),
-       url(../assets/fonts/material-design/MaterialIcons-Regular.ttf) format('truetype');
+       url(../../assets/fonts/material-design/MaterialIcons-Regular.woff2) format('woff2'),
+       url(../../assets/fonts/material-design/MaterialIcons-Regular.woff) format('woff'),
+       url(../../assets/fonts/material-design/MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {
