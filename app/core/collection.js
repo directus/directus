@@ -80,6 +80,8 @@ function(app, Backbone) {
         column = this.getFilter('sort')
       } else if (this.hasColumn && this.hasColumn('sort')) {
         column = 'sort';
+      } else if (this.junctionStructure && this.junctionStructure.get('sort')) {
+          column = 'sort';
       }
 
       // @todo find a better way to check is a entriesjunctioncollection

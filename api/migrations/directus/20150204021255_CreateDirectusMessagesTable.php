@@ -50,7 +50,7 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
           "null"=>false
         )
       );
-      $t->column("datetime", "TIMESTAMP", array(
+      $t->column("datetime", "timestamp", array(
           "null"=>false,
           "default"=>"CURRENT_TIMESTAMP"
         )
