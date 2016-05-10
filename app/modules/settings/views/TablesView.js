@@ -447,7 +447,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var self = this;
       columnModel.destroy({success: function(model, response) {
         self.$el.find('[data-id='+model.get('id')+']').remove();
-        Notification.success('Column removed', '<b>'+columnName+'</b> was removed.');
+        Notification.success('Column removed', '<b>'+columnName+'</b> was removed.', 3000);
       }, wait: true});
     },
 
@@ -855,7 +855,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
               bookmarks.remove(model);
           }
 
-          Notification.success('Table removed', '<b>'+tableName+'</b> was removed.');
+          Notification.success('Table removed', '<b>'+tableName+'</b> was removed.', 3000);
         } else {
           Notification.error(response.message);
         }
