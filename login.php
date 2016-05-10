@@ -180,7 +180,7 @@ $(function(){
                     message(data.message, true);
                     return;
                 }
-
+                $('.login-box').css('opacity', 0);
                 window.location = "<?= DIRECTUS_PATH ?>"+path;
             },
             error: function(jqXHR, textStatus, errorThrown) {

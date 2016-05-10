@@ -1,4 +1,6 @@
 .login-box {
+  @include transition();
+  opacity: 1;
   left:50%;
   margin-left: -175px;
   margin-top:-170px;
