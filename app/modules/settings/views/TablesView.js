@@ -845,8 +845,16 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       options.success = function(model, response) {
         if (response.success == true) {
           var tableName = model.get('table_name');
+          var bookmarks = app.router.bookmarks;
+
           self.remove();
           app.schemaManager.unregisterFullSchema(tableName);
+
+          var model = bookmarks.findWhere({title: app.capitalize(tableName), section: 'table'});
+          if (model) {
+              bookmarks.remove(model);
+          }
+
           Notification.success('Table removed', '<b>'+tableName+'</b> was removed.');
         } else {
           Notification.error(response.message);
