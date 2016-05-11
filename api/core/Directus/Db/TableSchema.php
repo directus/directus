@@ -242,7 +242,8 @@ class TableSchema {
         $result = $statement->execute();
 
         $tables = array();
-        foreach($result as $tableName) {
+        foreach($result as $row) {
+            $tableName = $row['table_name'];
             if(self::canGroupViewTable($tableName)) {
                 $tables[] = $tableName;
             }
