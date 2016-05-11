@@ -109,7 +109,9 @@ function parsePreferences($tableSchema) {
     $preferences = array();
 
     foreach ($tableSchema as $table) {
-        $preferences[] = $table['preferences'];
+        if (isset($table['preferences'])) {
+            $preferences[] = $table['preferences'];
+        }
     }
 
     return $preferences;
