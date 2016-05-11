@@ -5,7 +5,7 @@ define(function(require, exports) {
   var Backbone = require('backbone');
 
   var addPrimaryColumnToModel = function(model) {
-    if (model.collection.junctionStructure) {
+    if (model.collection && model.collection.junctionStructure) {
       model = model.collection.junctionStructure;
     }
 
