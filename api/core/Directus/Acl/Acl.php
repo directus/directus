@@ -291,8 +291,7 @@ class Acl {
         $cmsOwnerColumn = $this->getCmsOwnerColumnByTable($table);
         $select = new Select($table);
         $select
-            ->columns(array($TableGateway->primaryKeyFieldName, $cmsOwnerColumn))
-            ->group($cmsOwnerColumn);
+            ->columns(array($TableGateway->primaryKeyFieldName, $cmsOwnerColumn));
         $select->where($predicate);
         $results = $TableGateway->selectWith($select);
         foreach($results as $row) {
