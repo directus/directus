@@ -180,32 +180,27 @@ define(function(require, exports, module) {
   // TODO: Move to a Directus backbone model
   // change status or delete item
   app.changeItemStatus = function(model, value, options) {
-    var name = app.statusMapping.status_name;
-    var name = {};
-    var canDelete = model.collection.hasPermission('delete') || model.collection.hasPermission('bigdelete');
-    // check if doesn't have status column
-    var canHardDelete = !!!model.has(app.statusMapping.status_name);
+    var hasStatusColumn = model.has(app.statusMapping.status_name);
     var goingToDelete = value == app.statusMapping.deleted_num;
 
-    if (goingToDelete && canHardDelete) {
+    if (goingToDelete && !hasStatusColumn) {
       // https://github.com/RNGR/Directus/issues/960
       // Pass {wait: true} if you'd like to wait for the server to respond
       // before removing the model from the collection.
-      model.destroy({success: options.success, wait: true});
+      model.destroy(options);
     } else {
-      name[app.statusMapping.status_name] = value;
-      model.save(name, options);
+      var attributes = {};
+      attributes[app.statusMapping.status_name] = value;
+      model.save(attributes, options);
     }
   };
 
   app.changeCollectionStatus = function(collection, value, options) {
-    var canDelete = collection.hasPermission('delete') || collection.hasPermission('bigdelete');
     var model = collection.at(0);
-    // check if doesn't have status column
-    var canHardDelete = !!!model.has(app.statusMapping.status_name);
+    var hasStatusColumn = model.has(app.statusMapping.status_name);
     var goingToDelete = value == app.statusMapping.deleted_num;
 
-    if (goingToDelete && canHardDelete) {
+    if (goingToDelete && !hasStatusColumn) {
       collection.destroyAll(options);
     } else {
       collection.saveAll(options);

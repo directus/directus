@@ -120,19 +120,35 @@ define(function(require, exports, module) {
     save: function(models, options) {
       options = options || {};
       var originalURL = this.url;
+      var collection = this;
       var method = options.patch ? 'patch' : 'update';
+      var success = options.success;
 
       // if there's not models set
       // get all the collection models
       if (!models) {
-        models = this.toJSON();
+        models = collection.models;
       }
 
-      var collection = this;
-      var success = function() {
+      var sync = function () {
+        _.each(models, function(model) {
+          if (!(model instanceof Backbone.Model)) {
+            model = collection.get(model);
+          }
+
+          model.trigger('sync', model, model.collection, options);
+        });
+
         collection.trigger('sync');
-        if (options.success) {
-          options.success.call(this);
+      };
+
+      options.success = function(resp) {
+        if (options.wait) {
+          sync();
+        }
+
+        if (success) {
+          success(collection, resp, options);
         }
       };
 
@@ -151,33 +167,56 @@ define(function(require, exports, module) {
       // but will stay as reference if something happen soon
       // and reveal the reason why it was here.
       // this.trigger('sync');
+      // waiting should do the trick :)
+
+      if (!options.wait) {
+        sync();
+      }
 
       return xhr;
     },
 
     destroy: function(models, options) {
       options || (options = {});
+      var collection = this;
       var originalURL = this.url;
+      var success = options.success;
+
+      if (!models) {
+        models = collection.models;
+      }
 
       options.data = JSON.stringify({rows: models});
 
-      var collection = this;
-      var success = function() {
+      var destroy = function() {
+        _.each(models, function(model) {
+          if (!(model instanceof Backbone.Model)) {
+            model = collection.get(model);
+          }
+
+          model.trigger('destroy', model, model.collection, options);
+        });
+
         collection.trigger('destroy sync');
-        if (options.success) {
-          options.success.call(this);
-        }
       };
 
-      if (!options.wait) {
-        success();
-      } else {
-        options.success = success;
-      }
+      options.success = function(resp) {
+        if (options.wait) {
+          destroy();
+        }
+
+        if (success) {
+          success(collection, resp, options);
+        }
+      };
 
       this.url += '/bulk';
       this.sync('delete', this, options);
       this.url = originalURL;
+
+      if (!options.wait) {
+        destroy();
+      }
     },
 
     destroyAll: function(options) {

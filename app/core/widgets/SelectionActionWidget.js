@@ -51,26 +51,19 @@ function(app, Backbone) {
       var value = $(e.target).closest('span').attr('data-value');
       var collection = this.collection;
       var active = collection.getFilter('active');
-
       var $checked = $('.select-row:checked');
-      var expectedResponses = $checked.length;
-
-
-      if(!isNaN(active)) {
-        var name = {};
-        name[app.statusMapping.status_name] = parseInt(active);
-        var startCount = collection.where(name).length;
-      }
-
       var models = [];
       var actionCollection = collection.clone();
+
       actionCollection.reset();
       $checked.each(function() {
         var model = collection.get(this.value);
         var attributes = {};
 
-        attributes[app.statusMapping.status_name] = parseInt(value);
-        model.set(attributes);
+        if (model.has(app.statusMapping.status_name)) {
+          attributes[app.statusMapping.status_name] = parseInt(value);
+          model.set(attributes);
+        }
 
         actionCollection.add(model);
         models.push(model);
@@ -81,8 +74,12 @@ function(app, Backbone) {
         collection.trigger('select');
       };
 
-      var options = {silent: true, patch:true, validate:false, wait: true, success: success};
-      app.changeCollectionStatus(actionCollection, value, options);
+      var options = {patch: true, validate: false, wait: true, success: success};
+      if (actionCollection.size() == 1) {
+        app.changeItemStatus(actionCollection.first(), value, options);
+      } else {
+        app.changeCollectionStatus(actionCollection, value, options);
+      }
     },
 
     serialize: function() {
