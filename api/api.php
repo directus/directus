@@ -125,7 +125,7 @@ $acl = Bootstrap::get('acl');
 
 Hook::run('application.boot', $app);
 
-$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
+$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl) {
     // API/Server is about to initialize
     Hook::run('application.init', $app);
 
@@ -172,6 +172,13 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             Auth::setLoggedUser($user['id']);
             Hook::run('directus.authenticated', [$app, $user]);
             Hook::run('directus.authenticated.token', [$app, $user]);
+
+            // Reload all user permissions
+            // At this point ACL has run and loaded all permissions
+            // This behavior works as expected when you are logged to the CMS/Management
+            // When logged through API we need to reload all their permissions
+            $privilegesTable = new DirectusPrivilegesTableGateway($acl, $ZendDb);
+            $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($user['group']));
         }
 
         /** Enforce required authentication. */
