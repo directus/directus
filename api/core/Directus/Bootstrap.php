@@ -278,12 +278,8 @@ class Bootstrap {
             $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
             $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
             if($currentUser) {
-                $Privileges = new DirectusPrivilegesTableGateway($acl, $db);
-                $getPrivileges = function() use ($currentUser, $Privileges) {
-                    return (array) $Privileges->fetchGroupPrivileges($currentUser['group']);
-                };
-                $groupPrivileges = $Privileges->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($currentUser['group']), $getPrivileges, 1800);
-                $acl->setGroupPrivileges($groupPrivileges);
+                $privilegesTable = new DirectusPrivilegesTableGateway($acl, $db);
+                $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($currentUser['group']));
             }
         }
         return $acl;
