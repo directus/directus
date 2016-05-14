@@ -6,6 +6,7 @@ namespace Directus\Db;
 
 
 use Directus\Bootstrap;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Ddl\Column\Boolean;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
@@ -63,12 +64,42 @@ class Schema
         );
     }
 
-    public static function getDirectusTables()
+    /**
+     * Add the core table prefix to to a table name.
+     *
+     * @param $tables
+     *
+     * @return string|array
+     */
+    public static function addCoreTablePrefix($tables)
     {
-        return array_map(function($table) {
+        $filterFunction = function($table) {
             // @TODO: Directus tables prefix will be dynamic
             return 'directus_'.$table;
-        }, static::$directusTables);
+        };
+
+        if (!is_array($tables)) {
+            return $filterFunction($tables);
+        }
+
+        return array_map($filterFunction, $tables);
+    }
+
+    /**
+     * Get all Directus core tables name
+     *
+     * @param array $filterNames
+     *
+     * @return array
+     */
+    public static function getDirectusTables(array $filterNames = [])
+    {
+        $tables = static::$directusTables;
+        if ($filterNames) {
+            $tables = ArrayUtils::pick($tables, $filterNames);
+        }
+
+        return static::addCoreTablePrefix($tables);
     }
 
     public static function getSupportedDatabases()
