@@ -5,7 +5,6 @@ $loader = require 'vendor/autoload.php';
 
 // Non-autoload components
 require dirname(__FILE__) . '/config.php';
-require dirname(__FILE__) . '/core/functions.php';
 
 // Define directus environment
 defined('DIRECTUS_ENV')

@@ -20,6 +20,9 @@
         "psr-4": {
             "Directus\\": "core/Directus/",
             "Directus\\Installation\\": "../installation/includes/"
-        }
+        },
+        "files": [
+            "core/functions.php"
+        ]
     }
 }
