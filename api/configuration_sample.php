@@ -50,7 +50,7 @@ return array(
   // ),
 
   // Use these hooks to extend the base Directus functionality
-  'dbHooks' => array(
+  'hooks' => array(
     'postInsert' => function ($TableGateway, $record, $db, $acl) {
       // ...
     },
