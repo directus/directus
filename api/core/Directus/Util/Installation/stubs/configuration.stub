@@ -50,7 +50,7 @@ return array(
     //   'password' => ''
     // ),
 
-    'dbHooks' => array(
+    'hooks' => array(
         'postInsert' => function ($TableGateway, $record, $db, $acl) {
 
         },
