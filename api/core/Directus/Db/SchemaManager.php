@@ -12,7 +12,7 @@ use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Db\Sql\Sql;
 
-class Schema
+class SchemaManager
 {
     /**
      * Directus core tables

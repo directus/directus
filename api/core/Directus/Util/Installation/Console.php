@@ -134,7 +134,7 @@ class Console
         $options = array();
 
         foreach($argv as $arg) {
-            if(preg_match("/^(-{1,2})([A-Za-z0-9-_]+)(=)?([A-Za-z0-9-_@\.\ ]+)*$/", $arg, $argMatch)) {
+            if(preg_match("/^(-{1,2})([A-Za-z0-9-_]+)(=)?(.+)*$/", $arg, $argMatch)) {
                 $value = '';
                 if (count($argMatch) == 5) {
                     $value = $argMatch[4];
