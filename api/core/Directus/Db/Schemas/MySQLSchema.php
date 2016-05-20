@@ -5,6 +5,7 @@ namespace Directus\Db\Schemas;
 
 use Directus\Bootstrap;
 use Directus\Db\SchemaManager;
+use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\IsNotNull;
@@ -58,17 +59,11 @@ class MySQLSchema extends AbstractSchema
             $select::JOIN_LEFT
         );
 
+        $ignoredTables = SchemaManager::getDirectusTables(DirectusPreferencesTableGateway::$IGNORED_TABLES);
         $select->where([
             'ST.TABLE_SCHEMA' => $zendDb->getCurrentSchema(),
             'ST.TABLE_TYPE' => 'BASE TABLE',
-            new NotIn('ST.TABLE_NAME', array_merge(SchemaManager::getDirectusTables([
-                'columns',
-                'preferences',
-                'privileges',
-                'settings',
-                'tables',
-                'ui'
-            ]), (array)$blacklist)),
+            new NotIn('ST.TABLE_NAME', array_merge($ignoredTables, (array)$blacklist)),
         ]);
 
         $sql = new Sql($zendDb);
