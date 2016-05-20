@@ -150,10 +150,8 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
         if($preferences) {
             $preferences = $preferences->toArray();
-        }
-
-        if($preferences) {
-          return $this->constructPreferences($user_id, $table, $preferences);
+        } else {
+            $preferences = $this->constructPreferences($user_id, $table, $preferences);
         }
 
         return $preferences;
