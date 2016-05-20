@@ -90,9 +90,9 @@ class InstallerUtils
         require_once $directusPath.'/api/config.php';
         $config = require $directusPath.'/api/ruckusing.conf.php';
         $dbConfig = getDatabaseConfig(array(
-            'type' => 'mysql',
+            'type' => DB_TYPE,
             'host' => DB_HOST,
-            'port' => 3306,
+            'port' => DB_PORT,
             'name' => DB_NAME,
             'user' => DB_USER,
             'pass' => DB_PASSWORD,
@@ -200,9 +200,9 @@ class InstallerUtils
 
         $config = require $directusPath.'/api/ruckusing.conf.php';
         $dbConfig = getDatabaseConfig(array(
-            'type' => 'mysql',
+            'type' => DB_TYPE,
             'host' => DB_HOST,
-            'port' => 3306,
+            'port' => DB_PORT,
             'name' => DB_NAME,
             'user' => DB_USER,
             'pass' => DB_PASSWORD,

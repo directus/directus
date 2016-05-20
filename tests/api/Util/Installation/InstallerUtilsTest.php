@@ -37,6 +37,7 @@ class InstallerUtilsTest extends PHPUnit_Framework_TestCase
     {
         InstallerUtils::createConfig([
             'db_type' => 'mysql',
+            'db_port' => 3306,
             'db_host' => 'localhost',
             'db_name' => 'directus',
             'db_user' => 'root',

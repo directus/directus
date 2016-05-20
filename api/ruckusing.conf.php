@@ -16,7 +16,9 @@ if (!function_exists('getDatabaseConfig')) {
     {
         $db = array(
             'env' => defined('DIRECTUS_ENV') ? DIRECTUS_ENV : 'development',
+            'type' => defined('DB_TYPE') ? DB_TYPE : 'mysql',
             'host' => defined('DB_HOST') ? DB_HOST : 'localhost',
+            'port' => defined('DB_PORT') ? DB_PORT : 3306,
             'name' => defined('DB_NAME') ? DB_NAME : 'directus',
             'user' => defined('DB_USER') ? DB_USER : 'root',
             'pass' => defined('DB_PASSWORD') ? DB_PASSWORD : '',
@@ -33,9 +35,9 @@ if (!function_exists('getDatabaseConfig')) {
         return array(
             'db' => array(
                 $db['env'] => array(
-                    'type' => 'mysql',
+                    'type' => $db['type'],
                     'host' => $db['host'],
-                    'port' => 3306,
+                    'port' => $db['port'],
                     'database' => $db['name'],
                     'user' => $db['user'],
                     'password' => $db['pass'],
