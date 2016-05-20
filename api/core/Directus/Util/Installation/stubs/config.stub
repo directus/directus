@@ -14,6 +14,7 @@ define('API_VERSION', 1);
 define('DIRECTUS_ENV',  'development');
 
 // MySQL Settings
+define('DB_TYPE',        '{{db_type}}');
 define('DB_HOST',        '{{db_host}}');
 define('DB_NAME',        '{{db_name}}');
 define('DB_USER',        '{{db_user}}');

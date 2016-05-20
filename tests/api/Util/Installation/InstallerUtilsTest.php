@@ -36,6 +36,7 @@ class InstallerUtilsTest extends PHPUnit_Framework_TestCase
     public function testCreateFiles()
     {
         InstallerUtils::createConfig([
+            'db_type' => 'mysql',
             'db_host' => 'localhost',
             'db_name' => 'directus',
             'db_user' => 'root',
