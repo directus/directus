@@ -3,7 +3,7 @@
 namespace Directus\Installation\Steps;
 
 use Directus\Db\Connection;
-use Directus\Db\Schema;
+use Directus\Db\SchemaManager;
 use Directus\Util\Installation\InstallerUtils;
 
 class DatabaseStep extends AbstractStep
@@ -63,8 +63,8 @@ class DatabaseStep extends AbstractStep
 
     public function preRun(&$state)
     {
-        $this->dataContainer->set('db_types', Schema::getSupportedDatabases());
-        $this->dataContainer->set('db_schemas', Schema::getTemplates());
+        $this->dataContainer->set('db_types', SchemaManager::getSupportedDatabases());
+        $this->dataContainer->set('db_schemas', SchemaManager::getTemplates());
 
         return null;
     }
@@ -73,7 +73,7 @@ class DatabaseStep extends AbstractStep
     {
         parent::validate($data);
 
-        if (isset($data['db_type']) && !array_key_exists($data['db_type'], Schema::getSupportedDatabases())) {
+        if (isset($data['db_type']) && !array_key_exists($data['db_type'], SchemaManager::getSupportedDatabases())) {
             throw new \InvalidArgumentException("Database type '{$data['db_type']}' not supported.");
         }
 

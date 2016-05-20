@@ -5,6 +5,8 @@ namespace Directus;
 use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\Connection;
+use Directus\Db\SchemaManager;
+use Directus\Db\Schemas\MySQLSchema;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
@@ -192,10 +194,11 @@ class Bootstrap {
      * @return \Zend\Db\Adapter
      */
     private static function zenddb() {
-        self::requireConstants(array('DIRECTUS_ENV','DB_HOST','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
+        self::requireConstants(array('DIRECTUS_ENV','DB_TYPE','DB_HOST','DB_PORT','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
         $dbConfig = array(
-            'driver' => 'Pdo_Mysql',
+            'driver' => 'Pdo_'.DB_TYPE,
             'host' => DB_HOST,
+            'port' => DB_PORT,
             'database' => DB_NAME,
             'username' => DB_USER,
             'password' => DB_PASSWORD,
@@ -245,6 +248,25 @@ class Bootstrap {
 ////        $pdo = $db->getDriver()->getConnection()->getResource();
 ////        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 //        return $db;
+    }
+
+    private static function schema()
+    {
+        $adapter = self::get('ZendDb');
+        $databaseName = $adapter->getPlatform()->getName();
+
+        switch ($databaseName) {
+            case 'MySQL':
+                return new MySQLSchema($adapter);
+            // case 'SQLServer':
+            //    return new SQLServerSchema($adapter);
+            // case 'SQLite':
+            //     return new SQLiteSchema($adapter);
+            // case 'PostgreSQL':
+            //     return new PostgresSchema($adapter);
+        }
+
+        throw new \Exception('Unknown/Unsupported database: '.$databaseName);
     }
 
     /**

@@ -64,6 +64,7 @@ class SchemaManager
         );
     }
 
+
     /**
      * Add the core table prefix to to a table name.
      *
@@ -83,6 +84,20 @@ class SchemaManager
         }
 
         return array_map($filterFunction, $tables);
+    }
+
+    /**
+     * Proxy method calls to the current database schema object
+     *
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        $schema = Bootstrap::get('schema');
+
+        return call_user_func_array([$schema, $name], $arguments);
     }
 
     /**

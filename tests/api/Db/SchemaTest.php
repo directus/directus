@@ -1,6 +1,6 @@
 <?php
 
-use Directus\Db\Schema;
+use Directus\Db\SchemaManager as Schema;
 
 class SchemaTest extends PHPUnit_Framework_TestCase
 {

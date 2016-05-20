@@ -149,56 +149,27 @@ class TableSchema {
             // return false;
         }
 
-        // Omit columns which are on this table's read field blacklist for the group of
-        // the currently authenticated user.
-        $acl = Bootstrap::get('acl');
-        $readFieldBlacklist = $acl->getTablePrivilegeList($table, $acl::FIELD_READ_BLACKLIST);
-
-        $select = new Select();
-        $select->columns([
-            'column_name'
-        ]);
-
-        $select->from(['S' => new TableIdentifier('COLUMNS', 'INFORMATION_SCHEMA')]);
-        $select->join(
-            ['D' => 'directus_columns'],
-            'D.column_name = S.column_name AND D.table_name = S.table_name',
-            ['system', 'master'],
-            $select::JOIN_LEFT
-        );
-        $conditions = [
-            'S.table_name' => $table,
-            'S.table_schema' => DB_NAME
-        ];
-
-        if ($readFieldBlacklist) {
-            $conditions[] = new NotIn('S.column_name', $readFieldBlacklist);
-        }
-
-        $select->where($conditions);
-
-        $zendDb = Bootstrap::get('ZendDb');
-
-        $sql = new Sql($zendDb);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        $result = SchemaManager::getColumnsNames($table);
 
         $columns = array();
         $primaryKeyFieldName = self::getTablePrimaryKey($table);
         if (!$primaryKeyFieldName) {
             $primaryKeyFieldName = 'id';
         }
+
         $ignoreColumns = ($skipIgnore !== true) ? array($primaryKeyFieldName,STATUS_COLUMN_NAME,'sort') : array();
         $i = 0;
-        foreach($result as $row) {
-            $i++;
-            if(!in_array($row['column_name'], $ignoreColumns)) {
-                array_push($columns, $row['column_name']);
+        foreach($result as $columnName) {
+            if (!in_array($columnName, $ignoreColumns)) {
+                array_push($columns, $columnName);
             }
+
+            $i++;
             if($i === $limit) {
                 break;
             }
         }
+
         return $columns;
     }
 
@@ -225,25 +196,10 @@ class TableSchema {
      *
      */
     public static function getTablenames($params=null) {
-        $zendDb = Bootstrap::get('zendDb');
-        $select = new Select();
-
-        $select->columns([
-            'table_name' => 'TABLE_NAME'
-        ]);
-        $select->from(new TableIdentifier('TABLES', 'INFORMATION_SCHEMA'));
-        $select->where([
-            'TABLE_SCHEMA' => $zendDb->getCurrentSchema(),
-            'TABLE_TYPE' => 'BASE TABLE'
-        ]);
-
-        $sql = new Sql($zendDb);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        $result = SchemaManager::getTablesName();
 
         $tables = array();
-        foreach($result as $row) {
-            $tableName = $row['table_name'];
+        foreach($result as $tableName) {
             if(self::canGroupViewTable($tableName)) {
                 $tables[] = $tableName;
             }
@@ -381,30 +337,7 @@ class TableSchema {
             return self::$_primaryKeys[$tableName];
         }
 
-        $zendDb = Bootstrap::get('zendDb');
-        $select = new Select();
-        $columnName = null;
-
-        // @todo: make this part of loadSchema
-        // without the need to use acl and create a infinite nested function call
-        $select->columns([
-             'column_name' => 'COLUMN_NAME'
-        ]);
-        $select->from(new TableIdentifier('COLUMNS', 'INFORMATION_SCHEMA'));
-        $select->where([
-            'TABLE_NAME' => $tableName,
-            'TABLE_SCHEMA' => $zendDb->getCurrentSchema(),
-            'COLUMN_KEY' => 'PRI'
-        ]);
-
-        $sql = new Sql($zendDb);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        $column = $result->current();
-        if ($column) {
-            $columnName = $column['column_name'];
-        }
+        $columnName = SchemaManager::getPrimaryKey($tableName);
 
         return self::$_primaryKeys[$tableName] = $columnName;
     }
@@ -430,126 +363,16 @@ class TableSchema {
         // the currently authenticated user.
         $acl = Bootstrap::get('acl');
 
+        $columns = SchemaManager::getColumns($tbl_name, $params);
         if(!self::canGroupViewTable($tbl_name)) {
             // return array();
             return false;
         }
 
-        $readFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_READ_BLACKLIST);
-        $readFieldBlacklistParams = self::createParamArray($readFieldBlacklist, ':readfield_blacklist_');
-        $readFieldBlacklistKeys = implode(',', array_keys($readFieldBlacklistParams));
-
-        if (empty($readFieldBlacklistKeys)) {
-            $readFieldBlacklistKeys = "''";
-        }
-
-        $zendDb = Bootstrap::get('ZendDb');
-        $return = array();
-        $column_name = isset($params['column_name']) ? $params['column_name'] : -1;
-        $hasMaster = false;
-
-        $selectOne = new Select();
-        $selectOne->quantifier($selectOne::QUANTIFIER_DISTINCT);
-        $selectOne->columns([
-            'id' => 'COLUMN_NAME',
-            'column_name' => 'COLUMN_NAME',
-            'type' => new Expression('UCASE(C.DATA_TYPE)'),
-            'char_length' => 'CHARACTER_MAXIMUM_LENGTH',
-            'is_nullable' => 'IS_NULLABLE',
-            'default_value' => 'COLUMN_DEFAULT',
-            'comment' => new Expression('IFNULL(comment, COLUMN_COMMENT)'),
-            'sort' => new Expression('IFNULL(sort, ORDINAL_POSITION)'),
-            'column_type' => 'COLUMN_TYPE'
-        ]);
-        $selectOne->from(['C' => new TableIdentifier('COLUMNS', 'INFORMATION_SCHEMA')]);
-        $selectOne->join(
-            ['D' => 'directus_columns'],
-            'C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name',
-            [
-                'ui',
-                'system' => new Expression('IFNULL(system, 0)'),
-                'master' => new Expression('IFNULL(master, 0)'),
-                'hidden_list' => new Expression('IFNULL(hidden_list, 0)'),
-                'hidden_input' => new Expression('IFNULL(hidden_input, 0)'),
-                'relationship_type',
-                'table_related',
-                'junction_table',
-                'junction_key_left',
-                'junction_key_right',
-                'required' => new Expression('IFNULL(D.required, 0)'),
-            ],
-            $selectOne::JOIN_LEFT
-        );
-
-        $where = new Where();
-        $where
-            ->equalTo('C.TABLE_SCHEMA', $zendDb->getCurrentSchema())
-            ->equalTo('C.TABLE_NAME', $tbl_name)
-            ->nest()
-                ->addPredicate(new \Zend\Db\Sql\Predicate\Expression("'$column_name' = '-1'"))
-                ->OR
-                ->equalTo('C.column_name', $column_name)
-            ->unnest();
-
-        // @TODO: too many read field black list.
-        // which one are the correct ones or what are the purpose of the others?
-        $blacklist = array_keys($readFieldBlacklistParams);
-        if (count($blacklist)) {
-            $where->addPredicate(new NotIn('C.COLUMN_NAME', $blacklist));
-        }
-        $selectOne->where($where);
-
-        $selectTwo = new Select();
-        $selectTwo->columns([
-            'id' => 'column_name',
-            'column_name',
-            'type' => new Expression('UCASE(data_type)'),
-            'char_length' => new Expression('NULL'),
-            'is_nullable' => new Expression("'NO'"),
-            'default_value' => new Expression('NULL'),
-            'comment',
-            'sort',
-            'column_type' => new Expression('NULL'),
-            'ui',
-            'system',
-            'master',
-            'hidden_list',
-            'hidden_input',
-            'relationship_type',
-            'table_related',
-            'junction_table',
-            'junction_key_left',
-            'junction_key_right',
-            'required' => new Expression('IFNULL(required, 0)')
-        ]);
-        $selectTwo->from('directus_columns');
-        $where = new Where();
-        $where
-            ->equalTo('TABLE_NAME', $tbl_name)
-            ->addPredicate(new In('data_type', ['alias', 'MANYTOMANY', 'ONETOMANY']))
-            ->nest()
-            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression("'$column_name' = '-1'"))
-            ->OR
-            ->equalTo('column_name', $column_name)
-            ->unnest()
-            ->addPredicate(new IsNotNull('data_type'));
-
-        if (count($blacklist)) {
-            $where->addPredicate(new NotIn('C.COLUMN_NAME', $blacklist));
-        }
-
-        $selectTwo->where($where);
-        $selectTwo->order('sort');
-
-        $selectOne->combine($selectTwo);
-
-        $sql = new Sql($zendDb);
-        $statement = $sql->prepareStatementForSqlObject($selectOne);
-        $result = $statement->execute();
-
         $writeFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_WRITE_BLACKLIST);
 
-        foreach ($result as $row) {
+        $return = [];
+        foreach ($columns as $row) {
             foreach ($row as $key => $value) {
                 if (is_null($value)) {
                     unset ($row[$key]);
@@ -631,13 +454,10 @@ class TableSchema {
         //if (!$hasMaster) {
         //    $return[3]['master'] = true;
         //}
-        if ($column_name != -1) {
-            if(count($return) > 0) {
-                return $return[0];
-            } else {
-                throw new \Exception("No Schema Found for table ".$tbl_name." with params: ".json_encode($params));
-            }
+        if (count($return) == 1) {
+            $return = $return[0];
         }
+
         return $return;
     }
 
@@ -691,56 +511,10 @@ class TableSchema {
     }
 
     public static function getTableSchemas() {
-        $zendDb = Bootstrap::get('zendDb');
-        $config = Bootstrap::get('config');
-        $blacklist = '""';
-        if (array_key_exists('tableBlacklist', $config)) {
-            $blacklist = $config['tableBlacklist'];
-            // $blacklist = '"'.implode($blacklist, '","').'"';
-        }
+        $allTables = SchemaManager::getTables();
 
-        $select = new Select();
-        $select->columns([
-            'id' => 'TABLE_NAME',
-            'table_name' => 'TABLE_NAME',
-            'date_created' => 'CREATE_TIME',
-            'comment' => 'TABLE_COMMENT',
-            'count' => 'TABLE_ROWS'
-        ]);
-        $select->from(['ST' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')]);
-        $select->join(
-            ['DT' => 'directus_tables'],
-            'DT.table_name = ST.TABLE_NAME',
-            [
-                'hidden' => new Expression('IFNULL(hidden, 0)'),
-                'single' => new Expression('IFNULL(single, 0)'),
-                'is_junction_table',
-                'user_create_column',
-                'user_update_column',
-                'date_create_column',
-                'date_update_column',
-                'footer',
-                'list_view',
-                'column_groupings',
-                'filter_column_blacklist',
-                'primary_column'
-            ],
-            $select::JOIN_LEFT
-        );
-
-        $select->where([
-            'ST.TABLE_SCHEMA' => $zendDb->getCurrentSchema(),
-            'ST.TABLE_TYPE' => 'BASE TABLE',
-            new NotIn('ST.TABLE_NAME', array_merge(Schema::getDirectusTables(), (array)$blacklist)),
-        ]);
-
-        $sql = new Sql($zendDb);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        $tables = array();
-
-        foreach($result as $row) {
+        $tables = [];
+        foreach($allTables as $index => $row) {
             // Only include tables w ACL privileges
             if(self::canGroupViewTable($row['table_name'])) {
                 $tables[] = self::formatTableRow($row);
@@ -753,87 +527,7 @@ class TableSchema {
     public static function getColumnSchemas() {
         $acl = Bootstrap::get('acl');
         $zendDb = Bootstrap::get('ZendDb');
-
-        $selectOne = new Select();
-        $selectOne->columns([
-            'column_name' => 'COLUMN_NAME',
-            'sort' => new Expression('IFNULL(sort, ORDINAL_POSITION)'),
-            'type' => new Expression('UCASE(C.DATA_TYPE)'),
-            'char_length' => 'CHARACTER_MAXIMUM_LENGTH',
-            'is_nullable' => 'IS_NULLABLE',
-            'default_value' => 'COLUMN_DEFAULT',
-            'comment' => new Expression('IFNULL(comment, COLUMN_COMMENT)'),
-            'column_type' => 'COLUMN_TYPE',
-            'column_key' => 'COLUMN_KEY'
-        ]);
-
-        $selectOne->from(['C' => new TableIdentifier('COLUMNS', 'INFORMATION_SCHEMA')]);
-        $selectOne->join(
-            ['D' => 'directus_columns'],
-            'C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name',
-            [
-                'ui',
-                'system' => new Expression('IFNULL(system, 0)'),
-                'master' => new Expression('IFNULL(master, 0)'),
-                'hidden_list' => new Expression('IFNULL(hidden_list, 0)'),
-                'hidden_input' => new Expression('IFNULL(hidden_input, 0)'),
-                'relationship_type',
-                'table_related',
-                'junction_table',
-                'junction_key_left',
-                'junction_key_right',
-                'required' => new Expression('IFNULL(D.required, 0)'),
-            ],
-            $selectOne::JOIN_LEFT
-        );
-
-        $selectOne->join(
-            ['T' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')],
-            'C.TABLE_NAME = T.TABLE_NAME',
-            ['table_name' => 'TABLE_NAME'],
-            $selectOne::JOIN_LEFT
-        );
-
-        $selectOne->where([
-            'C.TABLE_SCHEMA' => $zendDb->getCurrentSchema(),
-            'T.TABLE_TYPE' => 'BASE TABLE'
-        ]);
-
-        $selectTwo = new Select();
-        $selectTwo->columns([
-            'column_name',
-            'sort',
-            'type' => new Expression('UCASE(data_type)'),
-            'char_length' => new Expression('NULL'),
-            'is_nullable' => new Expression("'NO'"),
-            'default_value' => new Expression('NULL'),
-            'comment',
-            'column_type' => new Expression('NULL'),
-            'column_key' => new Expression('NULL'),
-            'ui',
-            'system',
-            'master',
-            'hidden_list',
-            'hidden_input',
-            'relationship_type',
-            'table_related',
-            'junction_table',
-            'junction_key_left',
-            'junction_key_right',
-            'required' => new Expression('IFNULL(required, 0)'),
-            'table_name'
-        ]);
-        $selectTwo->from('directus_columns');
-        $where = new Where();
-        $where
-            ->addPredicate(new In('data_type', ['alias', 'MANYTOMANY', 'ONETOMANY']));
-
-        $selectOne->combine($selectTwo);
-        $selectOne->order('table_name');
-
-        $sql = new Sql($zendDb);
-        $statement = $sql->prepareStatementForSqlObject($selectOne);
-        $result = $statement->execute();
+        $result = SchemaManager::getAllColumns();
 
         // Group columns by table name
         $tables = array();
