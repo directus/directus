@@ -23,9 +23,9 @@ class ArrayUtils
 
     /**
      * Return a copy of the object, filtered to only have values for the whitelisted keys (or array of valid keys).
-     * @param  AssocArray  $array
-     * @param  Array       $keys
-     * @return AssocArray
+     * @param  array  $array
+     * @param  array  $keys
+     * @return array
      */
     public static function pick($array, $keys)
     {
