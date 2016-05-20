@@ -25,13 +25,13 @@ $acl = \Directus\Bootstrap::get('acl');
 
 $Settings = new DirectusSettingsTableGateway($acl, $db);
 $filesSettings = $Settings->fetchCollection('media', array(
-    'storage_adapter','storage_destination','thumbnail_storage_adapter',
-    'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
+    'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
 ));
 
 $StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $db);
 $storageAdaptersById = $StorageAdapters->fetchAllWithIdKeys();
 foreach($storageAdaptersById as $id => $storageAdapter) {
+    // @TODO: fix this, this class was removed time ago.
 	$storageAdaptersById[$id] = \Directus\Files\Storage\Storage::getStorage($storageAdapter);
 }
 out("\nLoaded " . count($storageAdaptersById) . " storage adapters.");

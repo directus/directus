@@ -8,8 +8,8 @@ function(app, Backbone) {
 
   return Backbone.Layout.extend({
     template: Handlebars.compile(' \
-      <button type="button" id="{{buttonId}}" class="tool-item large-circle {{buttonClass}}"> \
-        <span class="icon {{iconClass}}"></span> \
+      <button type="button" id="{{buttonId}}" class="tool-item btn btn-header {{buttonClass}}"> \
+        <i class="material-icons">{{iconClass}}</i> {{buttonText}} \
       </button>'
     ),
 

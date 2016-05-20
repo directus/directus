@@ -18,6 +18,7 @@ define(['app', 'backbone'],function(app, Backbone) {
   Module.dataTypes = ['TEXT', 'VARCHAR'];
 
   Module.variables = [
+    // The number of text rows available for the input before scrolling
     {id: 'rows', ui: 'numeric', char_length: 3}
   ];
 

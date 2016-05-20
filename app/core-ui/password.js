@@ -19,7 +19,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.isAPIHashed = false;
 
   Module.variables = [
+    // Toggles the second input ("Confirm Password"). On by default.
     {id: 'require_confirmation', ui: 'checkbox', def: '1'},
+    // The name of the column to be used as a salt in the password hash
     {id: 'salt_field', ui: 'textinput', def: 'salt'}
   ];
 
@@ -31,7 +33,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                  {{/if}} \
                  <div style="display:block;"> \
                  <button class="btn btn-primary margin-left password-generate" style="margin-right:10px;" type="button">Generate New</button> \
-                 <button class="btn btn-primary margin-left password-toggle" type="button">Reveal Password</button> \
+                 <!-- <button class="btn btn-primary margin-left password-toggle" type="button">Reveal Password</button> --> \
                  <span class="placard encrypted hide add-color margin-left-small bold">Encrypted!</span> \
                  </div> \
                  ';

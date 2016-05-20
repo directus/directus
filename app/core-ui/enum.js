@@ -12,7 +12,10 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   var Module = {};
 
-  var template = '<select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">Select from below</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
+  var template = '<div class="select-container"> \
+                    <select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">Select from below</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
+                    <i class="material-icons select-arrow">arrow_drop_down</i> \
+                  </div>';
 
   Module.id = 'enum';
   Module.dataTypes = ['ENUM','SET'];

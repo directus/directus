@@ -20,7 +20,7 @@
         </div>
       {{else}}
         {{userAvatar user_avatar}}
-        <div class="history-icon {{color}}"><div class="icon {{icon}}"></div></div>
+        <div class="history-icon {{color}}"><!-- <div class="icon {{icon}}"></div> --><i class="material-icons">{{icon}}</i></div>
         <div class="history-text">{{userName user_avatar}} {{action_text}}</div>
       {{/if}}
       <div class="history-datetime">{{time}}</div>

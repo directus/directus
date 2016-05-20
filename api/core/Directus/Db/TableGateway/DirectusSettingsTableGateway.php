@@ -23,21 +23,17 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'cms_user_auto_sign_out' => 60,
             'project_name' => 'Directus',
             'project_url' => 'http://localhost/',
-            'cms_color' => '#7ac943',
             'rows_per_page' => 200,
             'cms_thumbnail_url' => ''
         );
 
         $this->_defaults['files'] = array(
-            'storage_adapter' => 'FileSystemAdapter',
-            'storage_destination' => '',
-            'thumbnail_storage_destination' => '',
             'allowed_thumbnails' => '',
             'thumbnail_quality' => 100,
             'thumbnail_size' => 200,
             'file_naming' => 'file_id',
             'thumbnail_crop_enabled' => 1,
-            'thumbnail_storage_adapter' => 'FileSystemAdapter'
+            'youtube_api_key' => ''
         );
     }
 
@@ -97,12 +93,12 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'files' => array(
                     'file_naming',
                     'thumbnail_quality',
-                    'thumbnail_crop_enabled'
+                    'thumbnail_crop_enabled',
+                    'youtube_api_key'
                 ),
             'global' => array(
                     'project_name',
                     'project_url',
-                    'cms_color',
                     'cms_user_auto_sign_out',
                     'rows_per_page',
                     'cms_thumbnail_url'

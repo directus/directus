@@ -1,4 +1,4 @@
-define(['app/typetools'], function(typetools) {
+define(['typetools'], function(typetools) {
   describe("Typetool testing", function() {
     it("should return number with commas", function() {
       expect(typetools.numberWithCommas(0)).toBe('0');

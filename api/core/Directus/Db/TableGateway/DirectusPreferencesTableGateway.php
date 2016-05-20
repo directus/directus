@@ -6,8 +6,10 @@ use Directus\Acl\Acl;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway;
+use Directus\Db\Schema;
 use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
@@ -194,32 +196,14 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
       $select->where->equalTo('user', $user_id)
         ->isNull('title');
-      $select->where('table_name NOT IN(
-                    "directus_columns",
-                    "directus_ip_whitelist",
-                    "directus_preferences",
-                    "directus_privileges",
-                    "directus_settings",
-                    "directus_storage_adapters",
-                    "directus_tables",
-                    "directus_tab_privileges",
-                    "directus_ui"
-                )');
 
+      $coreTables = Schema::getDirectusTables();
+      $select->where->addPredicate(new NotIn('table_name', $coreTables));
       $metadata = new \Zend\Db\Metadata\Metadata($this->getAdapter());
 
       $tables = $metadata->getTableNames(DB_NAME);
 
-      $tables = array_diff($tables, array("directus_columns",
-                    "directus_ip_whitelist",
-                    "directus_preferences",
-                    "directus_privileges",
-                    "directus_settings",
-                    "directus_storage_adapters",
-                    "directus_tables",
-                    "directus_tab_privileges",
-                    "directus_ui"
-        ));
+      $tables = array_diff($tables, $coreTables);
 
       $rows = $this->selectWith($select)->toArray();
 

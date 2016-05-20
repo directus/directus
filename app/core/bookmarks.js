@@ -24,19 +24,30 @@ function(app, Backbone, EntriesManager) {
       this.url = app.API_URL + 'bookmarks/';
       this.isCustomBookmarks = options.isCustomBookmarks || false;
     },
+
     comparator: function(a, b) {
       if(a.get('title') < b.get('title')) return -1;
       if(a.get('title') > b.get('title')) return 1;
       return 0;
     },
+
     setActive: function(route, pref) {
-      //deactive all tabs
       var activeModel;
       var prefSuffix = _.isString(pref) ? '/pref/' + pref : '';
+      var routeURL = encodeURI(route+prefSuffix);
       var found = false;
-      _.each(this.models, function(model) {
+
+      // Sort url desc so it match bookmarks first.
+      // This: tables/customers/pref/female
+      // will be selected first
+      // than: tables/customers
+      var models = _.sortBy(this.models, function(model) {
+        return model.get('url');
+      }).reverse();
+
+      _.each(models, function(model) {
         model.unset('active_bookmark', {silent: true});
-        if((route + prefSuffix).indexOf(model.get('url')) === 0 && !found) {
+        if((routeURL).indexOf(model.get('url')) === 0 && !found) {
           activeModel = model;
           found = true;
         }
@@ -46,12 +57,14 @@ function(app, Backbone, EntriesManager) {
         activeModel.set({'active_bookmark':true});
       }
     },
+
     addNewBookmark: function(data) {
       data.user = data.user.toString();
       if(this.findWhere(data) === undefined) {
         this.create(data);
       }
     },
+
     removeBookmark: function(data) {
       data.user = data.user.toString();
       var model = this.findWhere(data);
@@ -61,6 +74,7 @@ function(app, Backbone, EntriesManager) {
         this.remove(model);
       }
     },
+
     isBookmarked: function(title) {
       if(this.findWhere({'title':title}) !== undefined) {
         return true;
@@ -84,24 +98,13 @@ function(app, Backbone, EntriesManager) {
         e.stopPropagation();
         e.preventDefault();
 
-        var url = $(e.target).parent().attr('href');
-        if(url) {
-          var urlArray = url.split('/');
-          var title = urlArray.pop();
-          urlArray.pop();
-          var table = urlArray.pop();
-          if(urlArray.length === 0) {
-            table = "directus_" + table;
-          }
-          if(title && table) {
-            var that = this;
-            app.router.openModal({type: 'confirm', text: 'Delete the bookmark "' + title + '"?', callback: function() {
-              var bookmarkModel = that.collection.findWhere({title: title});
-              if (bookmarkModel) {
-                bookmarkModel.destroy();
-              }
-            }});
-          }
+        var bookmarkId = $(e.target).parents('.sidebar-subitem').data('id');
+        var bookmark = this.collection.get(bookmarkId);
+        if (bookmark) {
+          var title = bookmark.get('title');
+          app.router.openModal({type: 'confirm', text: 'Delete the bookmark "' + title + '"?', callback: function() {
+            bookmark.destroy();
+          }});
         }
 
         return false;
@@ -204,6 +207,7 @@ function(app, Backbone, EntriesManager) {
 
       return data;
     },
+
     initialize: function() {
 
       this.isCustomBookmarks = this.collection.isCustomBookmarks || false;
@@ -248,13 +252,14 @@ function(app, Backbone, EntriesManager) {
 
       // @todo: make this global application events cleaner
       var self = this;
-      app.on('tables:preferences', function(widget, collection) {debugger;
+      app.on('tables:preferences', function(widget, collection) {
         if (app.router.loadedPreference) {
           app.router.loadedPreference = undefined;
           self.setActive('tables/' + collection.table.id);
         }
       });
     },
+
     setActive: function(route, pref) {
       this.collection.setActive(route, pref);
       this.render();

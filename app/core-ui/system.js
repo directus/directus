@@ -24,9 +24,9 @@ define(['app','backbone'], function(app, Backbone) {
     <label for="check3"><span></span>Deleted</label> \
   <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';*/
 
-  var template = '<div class="status-group" style="padding: 10px 0;"> \
+  var template = '<div class="status-group" style="padding: 12px 0;"> \
                   {{#mapping}} \
-                    <label style="margin-right:40px;display:inline-block;color:{{color}}" class="bold"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if active}}checked{{/if}}>{{name}}</label> \
+                    <label style="font-size:14px;margin-right:40px;display:inline-block;color:{{color}}" class="bold"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if active}}checked{{/if}}>{{name}}</label> \
                   {{/mapping}} \
                   </div>';
 

@@ -34,6 +34,7 @@ define(function(require, exports, module) {
     require('core-ui/wysiwyg'),
     require('core-ui/directus_messages_recipients'),
     require('core-ui/password'),
+    require('core-ui/random'),
     require('core-ui/many_to_one_typeahead'),
     require('core-ui/enum'),
     require('core-ui/multi_select'),
@@ -42,6 +43,7 @@ define(function(require, exports, module) {
     require('core-ui/directus_file'),
     require('core-ui/directus_file_title'),
     require('core-ui/map'),
+    //require('core-ui/markdown'),
     require('core-ui/multiple_files'),
     require('core-ui/translation'),
     require('core-ui/template_chooser')
@@ -105,7 +107,10 @@ define(function(require, exports, module) {
         uiId = system_fields[attr].ui;
       }
 
-      return this._getUI(uiId);
+      var UI = this._getUI(uiId);
+      this.parseDefaultValue(UI, model, schema.options);
+
+      return UI;
     },
 
     // Registers (@todo: one or) many UI's
@@ -262,6 +267,31 @@ define(function(require, exports, module) {
 
     getList: function(model, attr, noDefault) {
       return this.getUIValue('list', model, attr, noDefault);
+    },
+
+    parseDefaultValue: function(UI, model, settings) {
+      if (!_.isArray(UI.variables) || UI.variables.length <= 0) {
+        return;
+      }
+
+      _.each(UI.variables, function(variable) {
+        if (typeof variable.def != 'undefined') {
+          if (!settings.defaultAttributes) settings.defaultAttributes = {};
+          settings.defaultAttributes[variable.id] = variable.def;
+        }
+      });
+
+      settings.get = function(attr) {
+        var attribute = this.attributes[attr];
+        if (this.defaultAttributes && !attribute) {
+          var defaultAttribute = this.defaultAttributes[attr];
+          if (defaultAttribute) {
+            attribute = defaultAttribute;
+          }
+        }
+
+        return attribute;
+      };
     },
 
     // Finds the UI for the provided model/attribute and

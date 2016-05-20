@@ -1,10 +1,11 @@
 define([
-  "app",
-  "backbone",
-  "sortable"
+  'app',
+  'backbone',
+  'sortable',
+  'core/notification'
 ],
 
-function(app, Backbone, Sortable) {
+function(app, Backbone, Sortable, Notification) {
 
   "use strict";
 
@@ -27,7 +28,7 @@ function(app, Backbone, Sortable) {
       },
       'mousedown .sort': function(e) {
         if($(e.target).closest('.disable-sorting').length > 0){
-          noty({text: "<b>Sorting Disabled</b><br><i>Click the reordering icon to enable</i>", type: 'information', timeout: 4000, theme: 'directus'});
+          Notification.info('Sorting Disabled', '<i>Click the reordering icon to enable</i>', {timeout: 4000});
         }
       }
     },
@@ -108,14 +109,17 @@ function(app, Backbone, Sortable) {
     drop: function() {
       var collection = this.collection;
       this.$('tr').each(function(i) {
-        collection.get($(this).attr('data-cid')).set({sort: i},{silent: true});
+        // Use data-id instead of data-cid
+        // As collection models will be synced from the server its cid will be generated again
+        // But the dom element will be still pointing to the older cid
+        collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
       });
 
-      if (this.options.saveAfterDrop) {
-        collection.save({columns:['id','sort']});
-      }
-
       this.collection.setOrder('sort','ASC',{silent: true});
+      if (this.options.saveAfterDrop) {
+        // collection.save({columns:['id','sort']});
+        collection.save();
+      }
     },
 
     initialize: function(options) {

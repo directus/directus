@@ -69,10 +69,16 @@ define(function(require, exports, module) {
 
     getTotalCount: function() {
       var totalCount;
+      // Let's have the collection length
+      // to replace the table total when we add items
+      // because we are not updating this value
+      // we are just fetching it once
+      // @TODO: update this value on collection change
+      var collectionCount = this.length;
 
       // There is no active column. Use total
       if (!this.table.columns.get(app.statusMapping.status_name)) {
-        return this.table.get('total');
+        return Math.max(this.table.get('total'), collectionCount);
       }
 
       var visibleStates = this.getFilter(app.statusMapping.status_name).split(',');
@@ -85,7 +91,7 @@ define(function(require, exports, module) {
         }
       });
 
-      return totalCount;
+      return Math.max(totalCount, collectionCount);
 
     },
 
@@ -105,6 +111,91 @@ define(function(require, exports, module) {
           this.table.set({'trash': this.table.get('trash') - diff});
           break;
       }
+    },
+
+    saveAll: function(options) {
+      return this.save(this.toJSON(), options);
+    },
+
+    save: function(models, options) {
+      options = options || {};
+      var originalURL = this.url;
+      var method = options.patch ? 'patch' : 'update';
+
+      // if there's not models set
+      // get all the collection models
+      if (!models) {
+        models = this.toJSON();
+      }
+
+      var collection = this;
+      var success = function() {
+        collection.trigger('sync');
+        if (options.success) {
+          options.success.call(this);
+        }
+      };
+
+      options.data = JSON.stringify({rows: models});
+
+      this.url += '/bulk';
+      var xhr = this.sync(method, this, options);
+      this.url = originalURL;
+      // @removed we need to wait on success
+      // to trigger sync
+      // -----------------------------------
+      // This was removed due to a issue with sorting
+      // On listing page.
+      // It will save the sort correctly
+      // But it will render with old values
+      // but will stay as reference if something happen soon
+      // and reveal the reason why it was here.
+      // this.trigger('sync');
+
+      return xhr;
+    },
+
+    destroy: function(models, options) {
+      options || (options = {});
+      var originalURL = this.url;
+
+      options.data = JSON.stringify({rows: models});
+
+      var collection = this;
+      var success = function() {
+        collection.trigger('destroy sync');
+        if (options.success) {
+          options.success.call(this);
+        }
+      };
+
+      if (!options.wait) {
+        success();
+      } else {
+        options.success = success;
+      }
+
+      this.url += '/bulk';
+      this.sync('delete', this, options);
+      this.url = originalURL;
+    },
+
+    destroyAll: function(options) {
+      this.destroy(this.toJSON(), options);
+    },
+
+    clone: function() {
+      var options = {
+        table: this.table,
+        structure: this.structure,
+        privileges: this.privileges,
+        rowsPerPage: this.rowsPerPage
+      };
+
+      return new this.constructor(this.models, _.extend(options, {
+        model: this.model,
+        comparator: this.comparator
+      }));
     },
 
     setFilter: function(key, value, options) {

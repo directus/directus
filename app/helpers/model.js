@@ -6,15 +6,14 @@ define(function(require, exports) {
 
   var addPrimaryColumnToModel = function(model) {
     if (model.collection.junctionStructure) {
-      model.idAttribute = model.collection.junctionStructure.table.get('primary_column');
-    } else if (model.table) {
-      model.idAttribute = model.table.get('primary_column');
-    } else {
-      model.idAttribute = 'id';
+      model = model.collection.junctionStructure;
     }
 
-    model.id = model.get(model.idAttribute);
-    model.collection._byId[model.id] = model;
+    if (model.table && model.table.has('primary_column') && model.table.get('primary_column') != 'id') {
+      model.idAttribute = model.table.get('primary_column');
+      model.id = model.get(model.idAttribute);
+      model.collection._byId[model.id] = model;
+    }
   }
 
   return {

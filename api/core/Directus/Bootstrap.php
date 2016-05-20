@@ -4,6 +4,7 @@ namespace Directus;
 
 use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Db\Connection;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
@@ -85,6 +86,7 @@ class Bootstrap {
             'path' => APPLICATION_PATH . '/api/logs'
         );
         $app = new Slim(array(
+            'templates.path'=> APPLICATION_PATH.'/api/views/',
             'mode'          => DIRECTUS_ENV,
             'debug'         => false,
             'log.enable'    => true,
@@ -107,10 +109,33 @@ class Bootstrap {
 
     private static function mailer() {
         $config = self::get('config');
-        $smtp = $config['SMTP'];
-        $transport = \Swift_SmtpTransport::newInstance($smtp['host'], $smtp['port'])
-            ->setUsername($smtp['username'])
-            ->setPassword($smtp['password']);
+        if (!array_key_exists('mail', $config)) {
+            return null;
+        }
+
+        $mailConfig = $config['mail'];
+        // $smtp = $config['SMTP'];
+        switch ($mailConfig['transport']) {
+            case 'smtp':
+                $transport = \Swift_SmtpTransport::newInstance($mailConfig['host'], $mailConfig['port']);
+                if (array_key_exists($mailConfig['username'])) {
+                    $transport->setUsername($mailConfig['username']);
+                }
+                if (array_key_exists($mailConfig['password'])) {
+                    $transport->setPassword($mailConfig['password']);
+                }
+                break;
+            case 'sendmail':
+                $transport = \Swift_SendmailTransport::newInstance($mailConfig['sendmail']);
+                break;
+            case 'mail':
+            default:
+                $transport = \Swift_MailTransport::newInstance();
+                break;
+        }
+        // $transport = \Swift_SmtpTransport::newInstance($smtp['host'], $smtp['port'])
+        //     ->setUsername($smtp['username'])
+        //     ->setPassword($smtp['password']);
         $mailer = \Swift_Mailer::newInstance($transport);
         return $mailer;
     }
@@ -180,8 +205,8 @@ class Bootstrap {
         );
 
         try {
-            $db = new \Zend\Db\Adapter\Adapter($dbConfig);
-            $db->getDriver()->getConnection()->connect();
+            $db = new Connection($dbConfig);
+            $db->connect();
         } catch (\Exception $e) {
             echo 'Database connection failed.';
             exit;

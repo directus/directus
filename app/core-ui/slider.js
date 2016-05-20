@@ -35,6 +35,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                   span.slider-value { \
                     margin-left: 10px; \
                   } \
+                  input.slider { \
+                    display: inline-block; \
+                    vertical-align: middle; \
+                  } \
                   </style> \
                   <input type="range" class="slider" value="{{value}}" name="{{name}}" id="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}"> <span class="slider-value">{{value}}</span>';
 
@@ -60,7 +64,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
-      
+
       if (this.options.model.isNew() && this.options.schema.has('default_value')) {
         this.options.value = this.options.schema.get('default_value');
       }

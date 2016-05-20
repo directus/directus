@@ -1,5 +1,5 @@
 <div class="message-recipients" style="margin-bottom:20px;">
-    <b>To:</b> {{#if collapseRecipients}}
+    To: {{#if collapseRecipients}}
     <a href="#" id="messages-show-recipients">{{recipientsCount}} Repcepients</a>
     <div id="messages-recipients" style="display:none">
         {{#each recipients}}{{userAvatar this}}{{/each}}
@@ -15,7 +15,7 @@
     <li class="history-add-comment">
       {{userAvatar current_user}}
       <div class="history-comment">
-        <textarea id="messages-response" placeholder="Leave a reply..."></textarea>
+        <textarea id="messages-response" placeholder="Leave a reply..." class="tall"></textarea>
         <button id="messages-response-button" class="btn btn-small">Submit</button>
       </div>
     </li>
@@ -24,7 +24,7 @@
     <li>
         {{userAvatar from}}
         <div class="history-comment">
-            {{{nl2br message}}}
+            {{{message}}}
         </div>
         <div class="history-datetime">{{contextualDate datetime}}</div>
     </li>
@@ -34,7 +34,7 @@
         {{userAvatar from}}
         <!--{{userFull from}}-->
         <div class="history-comment">
-            {{{nl2br message}}}
+            {{{message}}}
         </div>
         <div class="history-datetime">{{contextualDate datetime}}</div>
     </li>

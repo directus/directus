@@ -1,15 +1,28 @@
 {
   "require": {
+    "php": ">=5.4.0",
     "slim/slim": "2.3.2",
     "slim/extras": "dev-develop",
     "zendframework/zend-db": "2.2.*@dev",
     "directus/migrations": "dev-master",
-    "phpmailer/phpmailer": "~5.2",
-    "league/flysystem": "^1.0"
+    "league/flysystem": "^1.0",
+    "swiftmailer/swiftmailer": "^5.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~3.7.0"
   },
   "_require": {
     "rackspace/php-opencloud": "dev-master",
     "amazonwebservices/aws-sdk-for-php": "1.6.2",
     "aws/aws-sdk-php": "2.6.*@dev"
-  }
+  },
+    "autoload": {
+        "psr-4": {
+            "Directus\\": "core/Directus/",
+            "Directus\\Installation\\": "../installation/includes/"
+        },
+        "files": [
+            "core/functions.php"
+        ]
+    }
 }

@@ -1,0 +1,151 @@
+.message {
+  .message-content {
+    margin-left: 40px;
+    .title {
+      font-weight: 400;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+    .users {
+      font-weight: 400;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .subject {
+      color: $mediumGrey;
+      font-size: 14px;
+      font-weight: 400;
+    }
+  }
+  &.unread {
+    background-color: $white;
+    color: $darkGrey;
+    .message-content {
+      .title {
+        font-weight: 500;
+      }
+      .users {
+        font-weight: 500;
+      }
+    }
+    .general-datetime {
+      font-weight: 500;
+      color: $darkGrey;
+    }
+  }
+}
+
+.message-recipients {
+  .avatar {
+    height: 40px;
+    float: none;
+    margin-left: 10px;
+    margin-right: 0;
+    vertical-align: middle;
+  }
+}
+
+ul.general-container {
+  //border-bottom: 2px solid darken($lightGrey, 5%);
+  @extend .card-shadow;
+  background-color: darken($white, 4%);
+  color: lighten($darkGrey, 10%);
+  padding: 0;
+  &.selectable {
+    li:hover {
+      background-color: $tableRowHover;
+      cursor: pointer;
+    }
+  }
+  li {
+    position: relative;
+    padding: $standardPad;
+    border-top: 1px solid $lightGrey;
+    min-height: 40px;
+    padding-right: 150px;
+    list-style: none;
+    &:first-child {
+      border-top: none;
+    }
+    .check-box {
+      bottom: 0px;
+      position: absolute;
+      top: 0px;
+      input + label {
+        margin-top: -11px;
+        position: absolute;
+        top: 50%;
+      }
+    }
+    .avatar {
+      float: none;
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 40px;
+      height: 40px;
+    }
+    .general-datetime {
+      color: $mediumGrey;
+      position: absolute;
+      top: $standardPad + 24;
+      right: $standardPad;
+    }
+    .general-icon {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 40px;
+      height: 40px;
+      color: $white;
+      &.add {
+        background-color: $addColor;
+        .icon {
+          position: absolute;
+          top: 0;
+          left: 12px;
+        }
+      }
+      &.edit {
+        background-color: $editColor;
+        .icon {
+          position: absolute;
+          top: 1px;
+          left: 12px;
+        }
+      }
+      &.delete {
+        background-color: $deleteColor;
+        .icon {
+          position: absolute;
+          top: 0;
+          left: 11px;
+        }
+      }
+      &.message {
+        background-color: $messageColor;
+        .icon {
+          position: absolute;
+          top: 1px;
+          left: 10px;
+        }
+      }
+      &.attach {
+        background-color: $attachColor;
+        .icon {
+          position: absolute;
+          top: 1px;
+          left: 10px;
+        }
+      }
+      &.login {
+        background-color: $loginColor;
+        .icon {
+          position: absolute;
+          top: 1px;
+          left: 12px;
+        }
+      }
+    }
+  }
+}

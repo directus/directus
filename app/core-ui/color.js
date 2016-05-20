@@ -26,7 +26,9 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
+    // Disables editing of the field while still letting users see the value
     {id: 'readonly', ui: 'checkbox'},
+    // Shows a color box representation on the Item Listing page
     {id: 'show_color_on_list', ui: 'checkbox'}
   ];
 
@@ -36,12 +38,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                   } \
                   input.color-box { \
                     margin-left: 10px; \
-                    width: 24px; \
-                    padding-top: 6px; \
-                    padding-bottom: 6px; \
-                    height: 26px; \
+                    width: 42px; \
+                    height: 44px; \
+                    padding: 10px; \
                     display: inline-block; \
-                    top: -11px; \
                     left: 0; \
                     position: absolute; \
                   } \

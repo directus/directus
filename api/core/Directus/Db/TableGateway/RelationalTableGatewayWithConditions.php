@@ -25,8 +25,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
         if(isset($params['group_by'])) {
           $select->group($tableName . '.' . $params['group_by']);
-        } else {
-          $select->group($tableName . '.'.$this->primaryKeyFieldName);
         }
 
         //If this is a relational order, than it is an array.
@@ -232,9 +230,10 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               }
             } elseif (isset($target['relationship']) && $target['relationship']['type'] == "MANYTOONE") {
               $relatedTable = $target['relationship']['table_related'];
-              $keyLeft = $this->getTable() . "." . $target['relationship']['junction_key_left'];
-              $keyRight = $relatedTable . ".id";
-              $filterColumn = $target['options']['filter_column'];
+
+              $keyRight = $this->getTable() . "." . $target['relationship']['junction_key_right'];
+              $keyLeft = $relatedTable . ".id";
+              $filterColumn = $target['options']['visible_column'];
               $joinedFilterColumn = $relatedTable . "." . $filterColumn;
 
               // do not let join this table twice

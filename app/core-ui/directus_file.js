@@ -23,26 +23,28 @@ define(['app', 'backbone'], function(app, Backbone) {
                     max-height: 200px; \
                     padding: 10px; \
                     background-color: #ffffff; \
-                    border: 1px solid #ededed; \
-                    color: #ededed; \
+                    border: 1px solid #dddddd; \
+                    color: #aaaaaa; \
                     text-align: center; \
                     cursor: pointer; \
                     margin-bottom: 10px; \
+                    border-radius: 4px; \
                   } \
                   div.ui-thumbnail.empty { \
-                    width: 300px; \
-                    height: 100px; \
+                    max-width: 276px; \
+                    width: 100%; \
+                    height: 140px; \
                     background-color: #ffffff; \
-                    border: 2px dashed #ededed; \
+                    border: 2px dashed #dddddd; \
                     padding: 9px; \
                     font-size: 16px; \
-                    font-weight: 600; \
-                    line-height: 100px; \
+                    font-weight: 500; \
+                    line-height: 144px; \
                   } \
                   div.ui-thumbnail.empty.dragover, \
                   div.ui-thumbnail.empty:hover { \
                     background-color: #fefefe; \
-                    border: 2px dashed #cccccc; \
+                    border: 2px dashed #aaaaaa; \
                     cursor: pointer; \
                   } \
                   div.ui-thumbnail img { \
@@ -74,6 +76,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   .url-import { \
                     width: 100%; \
                     margin-top: 10px; \
+                    margin-bottom: 4px; \
                     display: inline-block; \
                   } \
                   .swap-method-btn { \
@@ -92,7 +95,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   <div class="ui-thumbnail has-file"> \
                     {{#if thumbUrl}} \
                       {{#if youtube}} \
-                        <iframe width="300" height="200" src="http://www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe> \
+                        <iframe width="300" height="200" src="//www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe> \
                       {{else}} \
                         {{#if vimeo}} \
                           <iframe src="//player.vimeo.com/video/{{vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
@@ -110,10 +113,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </div> \
                   {{/if}} \
                   <div class="swap-container" {{#if url}}style="display:none"{{/if}}> \
-                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click to upload</div> \
+                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drop file here or click to choose</div> \
                     <input id="fileAddInput" type="file" class="large hide" /> \
-                    <div class="secondary-info url-import">Or paste in a YouTube, Vimeo, or file link:</div> \
-                    <input id="urlInput" type="text" class="swap-method medium" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                    <div class="secondary-info url-import">Or paste in a YouTube, Vimeo, or file URL:</div> \
+                    <input id="urlInput" type="text" class="swap-method medium" placeholder="eg: https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
                   </div>';
 
   Module.Input = Backbone.Layout.extend({

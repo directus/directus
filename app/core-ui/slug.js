@@ -17,13 +17,16 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
 
   Module.variables = [
+    // Disables editing of the field while still letting users see the value
     {id: 'readonly', ui: 'checkbox', def: '1'},
+    // Adjusts the max width of the input (Small, Medium, Large)
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+    // Enter the column name of the field the slug will pull it's value from
     {id: 'mirrored_field', ui: 'textinput', char_length:200}
   ];
 
   var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>'+
-                 '<span class="label char-count hide">{{characters}}</span>';
+                 '<span class="char-count hide">{{characters}}</span>';
 
   Module.Input = Backbone.Layout.extend({
 
@@ -37,7 +40,7 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     events: {
       'change input': function() {
-        this.$el.find('.label').show();
+        this.$el.find('.char-count').show();
       }
     },
 

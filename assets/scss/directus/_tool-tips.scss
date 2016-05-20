@@ -1,0 +1,58 @@
+#tool-tips {
+  bottom: 0px;
+  pointer-events: none;
+  left: 0px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  display: none;
+}
+[data-tool-tip-for] {
+  display: none;
+  color: $white;
+  position: absolute;
+  background-color: $addColor;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+  word-spacing: 1px;
+  z-index: 1000;
+}
+.tool-tip-pointer {
+  display: block;
+  height: 0px;
+  position: absolute;
+  width: 0px;
+  border-style: solid;
+}
+.bottom > .tool-tip-pointer,
+.top > .tool-tip-pointer {
+    left: 50%;
+    margin-left: -6px;
+}
+.bottom > .tool-tip-pointer {
+  top: -10px;
+  border-width: 0 6px 10px 6px;
+  border-color: transparent transparent $addColor transparent;
+}
+.top > .tool-tip-pointer {
+  bottom: -10px;
+  border-width: 10px 6px 0px 6px;
+  border-color: $addColor transparent transparent transparent;
+}
+.left > .tool-tip-pointer,
+.right > .tool-tip-pointer {
+    top: 50%;
+    margin-top: -6px;
+}
+.left > .tool-tip-pointer {
+  right: -10px;
+  border-width: 6px 0px 6px 10px;
+  border-color: transparent transparent transparent $addColor;
+}
+.right > .tool-tip-pointer {
+  left: -10px;
+  border-width: 6px 10px 6px 0px;
+  border-color: transparent $addColor transparent transparent;
+}

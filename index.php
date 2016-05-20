@@ -7,7 +7,6 @@ if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
 
 // Composer Autoloader
 $loader = require 'api/vendor/autoload.php';
-$loader->add("Directus", dirname(__FILE__) . "/api/core/");
 
 // Non-autoloaded components
 require 'api/api.php';
@@ -16,7 +15,6 @@ use Directus\View\JsonView;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\DirectusStorageAdaptersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableGateway\DirectusBookmarksTableGateway;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
@@ -24,7 +22,11 @@ use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 // use Directus\Db\TableGateway\DirectusTabPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
+use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableSchema;
+use Directus\Hook\Hook;
+
+Hook::run('directus.index.start');
 
 // No access, forward to login page
 unset($_SESSION['_directus_login_redirect']);
@@ -107,7 +109,9 @@ function parsePreferences($tableSchema) {
     $preferences = array();
 
     foreach ($tableSchema as $table) {
-        $preferences[] = $table['preferences'];
+        if (isset($table['preferences'])) {
+            $preferences[] = $table['preferences'];
+        }
     }
 
     return $preferences;
@@ -116,7 +120,7 @@ function parsePreferences($tableSchema) {
 function getUsers() {
     global $ZendDb, $acl;
     $tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
-    return $tableGateway->getEntries(
+    $users = $tableGateway->getEntries(
         array(
             'table_name'=>'directus_users',
             'perPage'=>1000,
@@ -124,6 +128,27 @@ function getUsers() {
             'columns_visible'=>array(STATUS_COLUMN_NAME,'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
         )
     );
+
+    // Lets get the gravatar if no avatar is set.
+    // TODO: Add this on insert/update of any user.
+    $usersRowsToUpdate = [];
+    foreach($users['rows'] as $user) {
+        $hasAvatar = array_key_exists('avatar', $user) ? $user['avatar'] : false;
+        $hasEmail = array_key_exists('email', $user) ? $user['email'] : false;
+        if (!$hasAvatar && $hasEmail) {
+            $avatar = DirectusUsersTableGateway::get_avatar($user['email']);
+            if ($avatar) {
+                $user['avatar'] = $avatar;
+                array_push($usersRowsToUpdate, $user);
+            }
+        }
+    }
+
+    if ($usersRowsToUpdate) {
+        $tableGateway->updateCollection($usersRowsToUpdate);
+    }
+
+    return $users;
 }
 
 function getCurrentUserInfo($users) {
@@ -341,12 +366,7 @@ $templateVars = array(
     'data' => json_encode($data),
     'path' => DIRECTUS_PATH,
     'customFooterHTML' => getCusomFooterHTML(),
-    'cssFilePath' => getCSSFilePath(),
-    'cms_color' => '#89c33d'
+    'cssFilePath' => getCSSFilePath()
 );
-
-if(isset($data['settings']) && isset($data['settings'][0]) && isset($data['settings'][0]['cms_color'])) {
-  $templateVars['cms_color'] = $data['settings'][0]['cms_color'];
-}
 
 echo template(file_get_contents('main.html'), $templateVars);

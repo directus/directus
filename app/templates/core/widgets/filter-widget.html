@@ -19,19 +19,22 @@
   {{#filters}}
     <li class="filter-form" data-filter-id-master="{{columnName}}">
       {{#if relatedEntries}}
-        <span class="simple-select dark-grey-color">
-          <span class="icon icon-triangle-down"></span>
-          <select name="keywords" id="advKeywords" class="medium filter_ui">
-          {{#relatedEntries}}
-            <option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
-          {{/relatedEntries}}
-          </select>
-        </span>
+        <div class="filter-background">
+          <span class="simple-select dark-grey-color">
+            <span class="icon icon-triangle-down"></span>
+            <select name="keywords" id="advKeywords" class="medium filter_ui">
+              <option value="" disabled>Choose one</option>
+            {{#relatedEntries}}
+              <option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
+            {{/relatedEntries}}
+            </select>
+          </span>
+        </div>
       {{else}}
         <span class="filter-ui" data-value="{{value}}" style="float:left">{{{filter_ui}}}</span>
       {{/if}}
       <span class="filterColumnName filter-name" data-filter-id="{{columnName}}">{{capitalize columnName}}</span>
-      <span class="removeFilterClass filter-remove">✕</span>
+      <i class="removeFilterClass filter-remove material-icons">close</i>
     </li>
   {{/filters}}
   </ul>

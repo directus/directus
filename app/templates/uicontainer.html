@@ -1,11 +1,14 @@
 <div class="table">
   <div class="trow">
     <div class="label" id="edit_field_{{id}}">
-    	<label>{{capitalize id}}{{#if required}}*{{/if}} <span class="note">{{{comment}}}</span></label>
-
     	{{#if batchEdit}}
-    		<label class="batch-edit-on">Edit <input type="checkbox" data-attr="{{id}}" name="batchedit"></label>
-    	{{/if}}
+        <label class="batch-edit-on"><input type="checkbox" data-attr="{{id}}" name="batchedit"> Batch Edit</label>
+        {{/if}}
+
+        <label>
+            {{capitalize id}}{{#if required}}*{{/if}}
+            {{#if comment}}<span class="note">{{{comment}}}</span>{{/if}}
+        </label>
     </div>
 
   </div>

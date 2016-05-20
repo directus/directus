@@ -21,7 +21,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     events: {
-      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'saveConfirm',
+      'click .saved-success > #save': 'saveConfirm',
       'change #saveSelect': 'saveConfirm'
     },
 

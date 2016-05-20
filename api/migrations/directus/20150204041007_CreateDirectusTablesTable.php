@@ -111,6 +111,9 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
       $this->execute("INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`)
 VALUES
   ('directus_messages_recipients', 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+  ('directus_bookmarks',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL),
+  ('directus_files',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL),
+  ('directus_preferences',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL),
   ('directus_users', 1, 0, 0, 0, NULL, NULL, NULL, 'id', NULL, NULL, NULL);");
     }//up()
 

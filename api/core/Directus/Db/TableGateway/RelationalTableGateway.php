@@ -7,6 +7,7 @@ use Directus\Db\Exception;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableSchema;
+use Directus\Hook\Hook;
 use Directus\Util\Formatting;
 use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
@@ -53,19 +54,24 @@ class RelationalTableGateway extends AclAwareTableGateway {
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = array()) {
         $log = $this->logger();
 
-        $schemaArray = TableSchema::getSchemaArray($tableName);
-
-        $currentUser = AuthProvider::getUserRecord();
-
         $TableGateway = $this;
         if($tableName !== $this->table) {
             $TableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
         }
 
+        $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
+
+        // $hookName = sprintf('table.%s.%s:before', ($recordIsNew ? 'insert' : 'update'), $tableName);
+        // Hook::run($hookName, array($recordData));
+
+        $schemaArray = TableSchema::getSchemaArray($tableName);
+
+        $currentUser = AuthProvider::getUserRecord();
+
         // Upload file if necessary
         $TableGateway->copyFiles($tableName, $recordData);
-
-        $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
+        // Delete file if necessary
+        $TableGateway->deleteFiles($tableName, $recordData);
 
         //Dont do for directus users since id is pk
         if($recordIsNew && $tableName != 'directus_users') {
@@ -241,7 +247,38 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $recordGateway = new AclAwareRowGateway($this->acl, $TableGateway->primaryKeyFieldName, $tableName, $this->adapter);
         $recordGateway->populate($fullRecordData, true);
 
+        // $hookName = sprintf('table.%s.%s', ($recordIsNew ? 'insert' : 'update'), $tableName);
+        // Hook::run($hookName, array($fullRecordData));
+
         return $recordGateway;
+    }
+
+    /**
+     * @param string $table
+     * @param array $recordData
+     * @return bool
+     */
+    public function deleteFiles($tableName, $recordData)
+    {
+        if ($tableName != 'directus_files' ) {
+            return false;
+        }
+
+        if (!isset($recordData[STATUS_COLUMN_NAME]) || $recordData[STATUS_COLUMN_NAME] != STATUS_DELETED_NUM) {
+            return false;
+        }
+
+        $filesTableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
+        $primaryKeyFieldName = $filesTableGateway->primaryKeyFieldName;
+
+        $params = array();
+        $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
+        $file = $filesTableGateway->getEntries($params);
+
+        $Files = new \Directus\Files\Files();
+        $Files->delete($file);
+
+        return true;
     }
 
     /**
@@ -280,7 +317,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     $index = 0;
                     foreach($foreignRow as $row) {
                         if (!isset($row['data'][$this->primaryKeyFieldName]) && isset($row['data']['data'])) {
-                            $recordData[$colName][$index]['data'] = $Files->saveData($row['data']['data'], $row['data']['name']);
+                            if (array_key_exists('type', $row['data']) && strpos($row['data']['type'], 'embed/') === 0) {
+                                $recordData[$colName][$index]['data'] = $Files->saveEmbedData($row['data']);
+                            } else {
+                                $recordData[$colName][$index]['data'] = $Files->saveData($row['data']['data'], $row['data']['name']);
+                            }
                         }
 
                         unset($recordData[$colName][$index]['data']['data']);
@@ -288,7 +329,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     }
                 } else {
                     if (!isset($foreignRow[$this->primaryKeyFieldName]) && isset($foreignRow['data'])) {
-                        $recordData[$colName] = $Files->saveData($foreignRow['data'], $foreignRow['name']);
+                        if (array_key_exists('type', $foreignRow) && strpos($foreignRow['type'], 'embed/') === 0) {
+                            $recordData[$colName] = $Files->saveEmbedData($foreignRow);
+                        } else {
+                            $recordData[$colName] = $Files->saveData($foreignRow['data'], $foreignRow['name']);
+                        }
                     }
                     unset($recordData[$colName]['data']);
                 }
@@ -534,8 +579,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
     }
 
     public function applyParamsToTableEntriesSelect(array $params, Select $select, array $schema, $hasActiveColumn = false) {
-        $select->group('id')
-            ->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
+        $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
         if (isset($params['perPage']) && isset($params['currentPage'])) {
             $select->limit($params['perPage'])
                 ->offset($params['currentPage'] * $params['perPage']);

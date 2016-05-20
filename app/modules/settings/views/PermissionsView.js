@@ -89,7 +89,7 @@ function(app, Backbone, Widgets, BasePageView) {
     },
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: "New User Group"}})
       ];
     },
     events: {

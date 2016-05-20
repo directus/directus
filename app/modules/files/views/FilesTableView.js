@@ -20,7 +20,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
     },
     leftToolbar: function() {
       return [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: "New File"}})
       ];
     },
     rightToolbar: function() {
@@ -122,6 +122,9 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
       var name = app.statusMapping.status_name;
         var name = {title: file.name, size: file.size, type: file.type};
         name[app.statusMapping.status_name] = app.statusMapping.active_num;
+        // All files should be sort by date
+        // Setting a temporary date will make this uploading file first on the list.
+        name['date_uploaded'] = moment().utc().format('YYYY-MM-DD YYYY, hh:mm:ss') + ' UTC';
         var  model = new that.collection.model(name, {collection: that.collection, parse: true});
         that.collection.add(model);
         that.uploadFiles.push({model: model, fileInfo: file});
@@ -147,6 +150,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable
         if(typeof(data[0]) == 'object') {
           fileInfo.model.save(data[0], {
             success: function() {
+              that.collection.sort();
               $(document).on('ajaxStart.directus', function() {
                 app.trigger('progress');
               });

@@ -1,0 +1,30 @@
+.row-plain {
+  @extend .clear-fix;
+  clear: both;
+  margin: 0px 0px 0px 0px;
+}
+.row {
+  @extend .clear-fix;
+  clear: both;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  margin-left: -$standardPad;
+
+}
+.col-1, .col-2,  .col-3,  .col-4, .col-full {
+  float: left;
+  margin-left: $standardPad;
+}
+.col-1 { width: $colWidth;}
+.col-2 { width: $colWidth + $gutterWidth + $colWidth; }
+.col-3 { width: $colWidth + $gutterWidth + $colWidth + $gutterWidth + $colWidth; }
+.col-4 { width: $colWidth + $gutterWidth + $colWidth + $gutterWidth + $colWidth + $gutterWidth + $colWidth; }
+
+.gutter-bottom {
+  margin-bottom: $gutterWidth;
+}
+
+.gutter-bottom-big {
+  margin-bottom: $gutterWidth * 2;
+}

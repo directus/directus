@@ -2,11 +2,9 @@
 
 // Composer Autoloader
 $loader = require 'vendor/autoload.php';
-$loader->add("Directus", dirname(__FILE__) . "/core/");
 
 // Non-autoload components
 require dirname(__FILE__) . '/config.php';
-require dirname(__FILE__) . '/core/functions.php';
 
 // Define directus environment
 defined('DIRECTUS_ENV')
@@ -46,14 +44,18 @@ use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
+use Directus\Db\Schema;
 use Directus\Db\TableSchema;
+use Directus\Exception\ExceptionHandler;
+use Directus\Hook\Hook;
 // use Directus\Files;
 // use Directus\Files\Upload;
+use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
 use Directus\Util;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
-use Directus\Db\TableGateway\DirectusIPWhitelist;
+// use Directus\Db\TableGateway\DirectusIPWhitelist;
 use Zend\Db\Sql\Expression;
 
 // API Version shortcut for routes:
@@ -67,17 +69,32 @@ $app = Bootstrap::get('app');
 $requestNonceProvider = new RequestNonceProvider();
 
 /**
+ * Load Registered Hooks
+ */
+$config = Bootstrap::get('config');
+if (array_key_exists('hooks', $config)) {
+    load_registered_hooks($config['hooks'], false);
+}
+
+if (array_key_exists('filters', $config)) {
+    // set seconds parameter "true" to add as filters
+    load_registered_hooks($config['filters'], true);
+}
+
+/**
  * Catch user-related exceptions & produce client responses.
  */
 
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
+    Hook::run('application.error', [$exception]);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
 // // Catch runtime erros etc. as well
 // set_exception_handler($exceptionHandler);
+$exceptionHandler = new ExceptionHandler;
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.
@@ -87,33 +104,10 @@ $authAndNonceRouteWhitelist = array(
     "auth_session",
     "auth_clear_session",
     "auth_nonces",
+    "auth_reset_password",
     "auth_permissions",
     "debug_acl_poc",
 );
-
-$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist) {
-    /** Skip routes which don't require these protections */
-    $routeName = $app->router()->getCurrentRoute()->getName();
-    if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
-        /** Enforce required authentication. */
-        if(!Auth::loggedIn()) {
-            $app->halt(401, "You must be logged in to access the API.");
-        }
-
-        /** Enforce required request nonces. */
-        if(!$requestNonceProvider->requestHasValidNonce()) {
-            if('development' !== DIRECTUS_ENV) {
-                $app->halt(401, "Invalid request (nonce).");
-            }
-        }
-
-        /** Include new request nonces in the response headers */
-        $response = $app->response();
-        $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
-        $nonce_options = $requestNonceProvider->getOptions();
-        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
-    }
-});
 
 /**
  * Bootstrap Providers
@@ -128,6 +122,92 @@ $ZendDb = Bootstrap::get('ZendDb');
  * @var \Directus\Acl
  */
 $acl = Bootstrap::get('acl');
+
+Hook::run('application.boot', $app);
+
+$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
+    // API/Server is about to initialize
+    Hook::run('application.init', $app);
+
+    /** Skip routes which don't require these protections */
+    $routeName = $app->router()->getCurrentRoute()->getName();
+    if(!in_array($routeName, $authAndNonceRouteWhitelist)) {
+        $headers = $app->request()->headers();
+        $authToken = false;
+        if ($app->request()->get('access_token')) {
+            $authToken = $app->request()->get('access_token');
+        } elseif ($headers->has('Php-Auth-User')) {
+            $authUser = $headers->get('Php-Auth-User');
+            $authPassword = $headers->get('Php-Auth-Pw');
+            if ($authUser && empty($authPassword)) {
+                $authToken = $authUser;
+            }
+        } elseif ($headers->has('Authorization')) {
+            $authorizationHeader = $headers->get('Authorization');
+            if (preg_match("/Bearer\s+(.*)$/i", $authorizationHeader, $matches)) {
+                $authToken = $matches[1];
+            }
+        }
+
+        if ($authToken) {
+            $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+            $user = $DirectusUsersTableGateway->select(array('token' => $authToken));
+            $userFound = $user->count() > 0 ? true : false;
+
+            if (!$userFound) {
+                $app->halt(401, 'You must be logged in to access the API');
+            }
+
+            $user = $user->toArray();
+            $user = reset($user);
+
+            // Uf the request it's done by authentication
+            // Store the session information in a global variable
+            // And we retrieve this information back to session at the end of the execution.
+            // See slim.after hook.
+            $GLOBALS['_SESSION'] = $_SESSION;
+            // Reset SESSION values
+            $_SESSION = [];
+
+            Auth::setLoggedUser($user['id']);
+            Hook::run('directus.authenticated', [$app, $user]);
+            Hook::run('directus.authenticated.token', [$app, $user]);
+        }
+
+        /** Enforce required authentication. */
+        if(!Auth::loggedIn()) {
+            $app->halt(401, "You must be logged in to access the API");
+        }
+
+        /** Enforce required request nonces. */
+        if(!$requestNonceProvider->requestHasValidNonce()) {
+            if('development' !== DIRECTUS_ENV) {
+                $app->halt(401, "Invalid request (nonce)");
+            }
+        }
+
+        // User is authenticated
+        // And Directus is about to start
+        Hook::run('directus.start', $app);
+
+        /** Include new request nonces in the response headers */
+        $response = $app->response();
+        $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
+        $nonce_options = $requestNonceProvider->getOptions();
+        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
+    }
+});
+
+$app->hook('slim.after', function() use ($app) {
+    // retrieve session from global
+    // if the session exists on globals it means this is a request with basic authentication
+    if (array_key_exists('_SESSION', $GLOBALS)) {
+        $_SESSION = $GLOBALS['_SESSION'];
+    }
+
+    // API/Server is about to shutdown
+    Hook::run('application.shutdown', $app);
+});
 
 /**
  * Authentication
@@ -170,7 +250,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     if(!$requestNonceProvider->requestHasValidNonce()) {
         if('development' !== DIRECTUS_ENV) {
             header("HTTP/1.0 401 Unauthorized");
-            return JsonView::render(array('message' => 'Unauthorized (nonce).'));
+            return JsonView::render(array('message' => 'Unauthorized (nonce)'));
         }
     }
     $extensionsDirectory = APPLICATION_PATH . "/extensions";
@@ -179,7 +259,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
     header($nonceOptions['nonce_response_header'] . ': ' . implode($newNonces, ","));
     if(!is_array($responseData)) {
-        throw new \RuntimeException("Extension $extensionName must return array, got " . gettype($responseData) . " instead.");
+        throw new \RuntimeException("Extension $extensionName must return array, got " . gettype($responseData) . " instead");
     }
     return JsonView::render($responseData);
 }
@@ -192,7 +272,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
 $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonceProvider) {
 
     $response = array(
-        'message' => "Wrong username/password",
+        'message' => "Incorrect email or password",
         'success' => false,
         'all_nonces' => $requestNonceProvider->getAllNonces()
     );
@@ -214,16 +294,16 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     $directusGroupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
     $group = $directusGroupsTableGateway->find($groupId);
 
-    if (1 == $group['restrict_to_ip_whitelist']) {
-        $directusIPWhitelist = new DirectusIPWhitelist($acl, $ZendDb);
-        if (!$directusIPWhitelist->hasIP($_SERVER['REMOTE_ADDR'])) {
-            return JsonView::render(array(
-                'message' => 'Request not allowed from IP address',
-                'success' => false,
-                'all_nonces' => $requestNonceProvider->getAllNonces()
-            ));
-        }
-    }
+    // if (1 == $group['restrict_to_ip_whitelist']) {
+    //     $directusIPWhitelist = new DirectusIPWhitelist($acl, $ZendDb);
+    //     if (!$directusIPWhitelist->hasIP($_SERVER['REMOTE_ADDR'])) {
+    //         return JsonView::render(array(
+    //             'message' => 'Request not allowed from IP address',
+    //             'success' => false,
+    //             'all_nonces' => $requestNonceProvider->getAllNonces()
+    //         ));
+    //     }
+    // }
 
     if (!$user) {
         return JsonView::render($response);
@@ -247,9 +327,12 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     }
 
     if($response['success']) {
+        Hook::run('directus.authenticated', [$app, $user]);
+        Hook::run('directus.authenticated.admin', [$app, $user]);
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
-        $set = array('last_login' => new Expression('NOW()'));
+        $userSession = Auth::getUserInfo();
+        $set = array('last_login' => new Expression('NOW()'), 'access_token' => $userSession['access_token']);
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
@@ -302,11 +385,51 @@ $app->get("/$v/auth/clear-session/?", function() use ($app) {
 })->name('auth_clear_session');
 
 // debug helper
+$app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, $ZendDb) {
+    $DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
+    $user = $DirectusUsersTableGateway->findOneBy('reset_token', $token);
+
+    if (!$user) {
+        $app->halt(200, 'Incorrect token.');
+    }
+
+    $expirationDate = new DateTime($user['reset_expiration']);
+    $currentDate = new DateTime;
+
+    if ($expirationDate < $currentDate) {
+        $app->halt(200, 'Expired token.');
+    }
+
+    $password = uniqid();
+    $set = [];
+    $set['salt'] = uniqid();
+    $set['password'] = Auth::hashPassword($password, $set['salt']);
+    $set['reset_token'] = '';
+
+    // Skip ACL
+    $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+    $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
+
+    if (1 !== $affectedRows) {
+        $app->halt(200, 'Error resetting the password');
+    }
+
+    $data = ['newPassword' => $password];
+    Mail::send('mail/forgot-password.twig.html', $data, function($message) use ($user) {
+        $message->setSubject('Your new Directus password');
+        $message->setFrom('directus@getdirectus.com');
+        $message->setTo($user['email']);
+    });
+
+    $app->halt(200, 'New temporary password sent');
+
+})->name('auth_reset_password');
+
 $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     if(!isset($_POST['email'])) {
         return JsonView::render(array(
             'success' => false,
-            'message' => 'Invalid email address.'
+            'message' => 'Invalid email address'
         ));
     }
 
@@ -316,14 +439,17 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     if(false === $user) {
         return JsonView::render(array(
             'success' => false,
-            'message' => "An account with that email address doesn't exist."
+            'message' => "No account found with this email address"
         ));
     }
 
-    $password = uniqid();
-    $set = array();
-    $set['salt'] = uniqid();
-    $set['password'] = Auth::hashPassword($password, $set['salt']);
+    $date = new DateTime;
+    $date->modify('+2 day');
+    $reset_expiration = $date->format('Y-m-d H:i:s');
+
+    $set = [];
+    $set['reset_token'] = bin2hex(openssl_random_pseudo_bytes(20));
+    $set['reset_expiration'] = $reset_expiration;
 
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
@@ -335,8 +461,12 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
         ));
     }
 
-    $mail = new Directus\Mail\Mailer();
-    $mail->send(new Directus\Mail\ForgotPasswordMail($user['email'], $password));
+    $data = ['reset_token' => $set['reset_token']];
+    Mail::send('mail/reset-password.twig.html', $data, function($message) use ($user) {
+        $message->setSubject('Directus Password Reset');
+        $message->setFrom('directus@getdirectus.com');
+        $message->setTo($user['email']);
+    });
 
     $success = true;
     return JsonView::render(array(
@@ -358,7 +488,7 @@ $app->post("/$v/hash/?", function() use ($app) {
     if(!(isset($_POST['password']) && !empty($_POST['password']))) {
         return JsonView::render(array(
             'success' => false,
-            'message' => 'Must provide password.'
+            'message' => 'Must provide password'
         ));
     }
     $salt = isset($_POST['salt']) && !empty($_POST['salt']) ? $_POST['salt'] : '';
@@ -366,6 +496,20 @@ $app->post("/$v/hash/?", function() use ($app) {
     return JsonView::render(array(
         'success' => true,
         'password' => $hashedPassword
+    ));
+});
+
+$app->post("/$v/random/?", function() use ($app) {
+    // default random string length
+    $length = 16;
+    if (array_key_exists('length', $_POST)) {
+        $length = (int)$_POST['length'];
+    }
+
+    $randomString = \Directus\Util\StringUtils::random($length);
+
+    return JsonView::render(array(
+        'random' => $randomString
     ));
 });
 
@@ -391,24 +535,21 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
         throw new Exception('Permission denied');
     }
 
-    if(isset($requestPayload['addTable'])) {
+    if (isset($requestPayload['addTable'])) {
       $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
       $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+
       if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
           $app->response->setStatus(400);
           return JsonView::render(array('message'=> 'Invalid table name'));
       }
+
       unset($requestPayload['addTable']);
-      try{
-        $statusColumnName = STATUS_COLUMN_NAME;
-        $createTableQuery = "CREATE TABLE `{$requestPayload['table_name']}` (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            `{$statusColumnName}` tinyint(1) unsigned DEFAULT NULL,
-            PRIMARY KEY(id)
-        );";
-        $ZendDb->query($createTableQuery, $ZendDb::QUERY_MODE_EXECUTE);
-      }catch(\Exception $e){
-      }
+
+      Hook::run('table.create:before', $requestPayload['table_name']);
+      Schema::createTable($requestPayload['table_name']);
+      Hook::run('table.create', $requestPayload['table_name']);
+      Hook::run('table.create:after', $requestPayload['table_name']);
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
@@ -488,6 +629,37 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
     $entries = $Table->getEntries($params);
     JsonView::render($entries);
 })->via('GET', 'POST', 'PUT');
+
+$app->map("/$v/tables/:table/rows/bulk/?", function ($table) use ($acl, $ZendDb, $params, $requestPayload, $app) {
+    $rows = array_key_exists('rows', $requestPayload) ? $requestPayload['rows'] : false;
+    if (!is_array($rows) || count($rows) <= 0) {
+        throw new Exception('Rows no specified');
+    }
+
+    $TableGateway = new TableGateway($acl, $table, $ZendDb);
+    $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
+
+    $rowIds = [];
+    foreach($rows as $row) {
+        if (!array_key_exists($primaryKeyFieldName, $row)) {
+            throw new Exception('Row without primary key field');
+        }
+        array_push($rowIds, $row[$primaryKeyFieldName]);
+    }
+
+    $where = new \Zend\Db\Sql\Where;
+
+    if ($app->request()->isDelete()) {
+        $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
+    } else {
+        foreach($rows as $row) {
+            $TableGateway->updateCollection($row);
+        }
+    }
+
+    $entries = $TableGateway->getEntries($params);
+    JsonView::render($entries);
+})->via('POST', 'PATCH', 'PUT', 'DELETE');
 
 $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use ($ZendDb, $acl, $params, $app) {
   $Table = new TableGateway($acl, $table, $ZendDb);
@@ -611,6 +783,23 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
 // GET or PUT one column
 
 $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $params, $requestPayload, $app) {
+    if ($app->request()->isDelete()) {
+        $tableGateway = new TableGateway($acl, $table, $ZendDb);
+        $success = $tableGateway->dropColumn($column);
+
+        $response = array(
+          'message' => 'Unable to remove the column ['.$column.']',
+          'success' => false
+        );
+
+        if ($success) {
+            $response['success'] = true;
+            $response['message'] = 'Column ['.$column.'] was removed';
+        }
+
+        return JsonView::render($response);
+    }
+
     $params['column_name'] = $column;
     $params['table_name'] = $table;
     // This `type` variable is used on the client-side
@@ -624,13 +813,14 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
           $row['table_name'] = $table;
         }
     }
+
     if($app->request()->isPut()) {
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
         $TableGateway->updateCollection($requestPayload);
     }
     $response = TableSchema::getSchemaArray($table, $params);
     JsonView::render($response);
-})->via('GET', 'PUT');
+})->via('GET', 'PUT', 'DELETE');
 
 $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use ($ZendDb, $acl, $requestPayload, $app) {
   $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
@@ -712,7 +902,11 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
         // When the file is uploaded there's not a data key
         if (array_key_exists('data', $requestPayload)) {
             $Files = new \Directus\Files\Files();
-            $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
+            if (!array_key_exists('type', $requestPayload) || strpos($requestPayload['type'], 'embed/') === 0) {
+                $recordData = $Files->saveEmbedData($requestPayload);
+            } else {
+                $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
+            }
             // $requestPayload['file_name'] = $requestPayload['name'];
             $requestPayload = array_merge($requestPayload, $recordData);
         }
@@ -873,6 +1067,23 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
 
 // GET and PUT table details
 $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {
+  if ($app->request()->isDelete()) {
+      $tableGateway = new TableGateway($acl, $table, $ZendDb);
+      $success = $tableGateway->drop();
+
+      $response = array(
+        'message' => 'Unable to remove the table ['.$table.'].',
+        'success' => false
+      );
+
+      if ($success) {
+          $response['success'] = true;
+          $response['message'] = 'Table ['.$table.'] was removed.';
+      }
+
+      return JsonView::render($response);
+  }
+
   $TableGateway = new TableGateway($acl, 'directus_tables', $ZendDb,null,null,null,'table_name');
   $ColumnsTableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
   /* PUT updates the table */
@@ -910,6 +1121,14 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
         'comment'=> array_key_exists('comment', $col) ? $col['comment'] : ''
       );
 
+      // hotfix #1069 single_file UI not saving relational settings
+      $extraFields = ['data_type', 'relationship_type', 'table_related', 'junction_key_right'];
+      foreach($extraFields as $field) {
+        if (array_key_exists($field, $col)) {
+          $columnData[$field] = $col[$field];
+        }
+      }
+
       $existing = $ColumnsTableGateway->select(array('table_name' => $table, 'column_name' => $col['column_name']))->toArray();
       if(count($existing) > 0) {
         $columnData['id'] = $existing[0]['id'];
@@ -920,7 +1139,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
   }
   $response = TableSchema::getTable($table);
   JsonView::render($response);
-})->via('GET', 'PUT')->name('table_meta');
+})->via('GET', 'PUT', 'DELETE')->name('table_meta');
 
 /**
  * UPLOAD COLLECTION
@@ -939,28 +1158,41 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
 
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $Files = new \Directus\Files\Files();
-    $result = array();
-    if(isset($_POST['link'])) {
-        $fileData = array('caption'=>'','tags'=>'','location'=>'');
-        $fileData = array_merge($fileData, $Files->getLink($_POST['link']));
+    $result = array(
+        'message' => 'Invalid/Unsupported URL',
+        'success' => false
+    );
 
-        $result[] = array(
-            'type' => $fileData['type'],
-            'name' => $fileData['name'],
-            'title' => $fileData['title'],
-            'tags' => $fileData['tags'],
-            'caption' => $fileData['caption'],
-            'location' => $fileData['location'],
-            'charset' => $fileData['charset'],
-            'size' => $fileData['size'],
-            'width' => $fileData['width'],
-            'height' => $fileData['height'],
-            'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
-            'data' => (isset($fileData['data'])) ? $fileData['data'] : null
-            //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-            //'storage_adapter' => $fileData['storage_adapter']
-        );
+    $app->response->setStatus(400);
+
+    if (isset($_POST['link']) && is_string($_POST['link'])) {
+        $fileData = array('caption'=>'','tags'=>'','location'=>'');
+        $linkInfo = $Files->getLink($_POST['link']);
+
+        if ($linkInfo) {
+            $currentUser = Auth::getUserInfo();
+            $app->response->setStatus(200);
+            $fileData = array_merge($fileData, $linkInfo);
+
+            $result[] = array(
+                'type' => $fileData['type'],
+                'name' => $fileData['name'],
+                'title' => $fileData['title'],
+                'tags' => $fileData['tags'],
+                'caption' => $fileData['caption'],
+                'location' => $fileData['location'],
+                'charset' => $fileData['charset'],
+                'size' => $fileData['size'],
+                'width' => $fileData['width'],
+                'height' => $fileData['height'],
+                'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
+                'data' => (isset($fileData['data'])) ? $fileData['data'] : null,
+                'user' => $currentUser['id']
+                //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            );
+        }
     }
+
     JsonView::render($result);
 });
 
@@ -1054,20 +1286,18 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
       $Activity->recordMessage($requestPayload, $currentUser['id']);
     }
 
-    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
         $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
         if(isset($user) && $user['email_messages'] == 1) {
-            $messageNotificationMail = new Directus\Mail\NotificationMail(
-                                    $user['email'],
-                                    $requestPayload['subject'],
-                                    $requestPayload['message']
-                                );
-
-            $mail->send($messageNotificationMail);
-            $mail->ClearAllRecipients();
+            $data = ['message' => $requestPayload['message']];
+            $view = 'mail/notification.twig.html';
+            Mail::send($view, $data, function($message) use($user, $requestPayload) {
+                $message->setSubject($requestPayload['subject']);
+                $message->setFrom('directus@getdirectus.com');
+                $message->setTo($user['email']);
+            });
         }
     }
 
@@ -1148,19 +1378,18 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
       $i++;
     }
 
-    $mail = new Directus\Mail\Mailer();
     foreach($userRecipients as $recipient) {
         $usersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
         if(isset($user) && $user['email_messages'] == 1) {
-            $NotificationMail = new Directus\Mail\NotificationMail(
-                                    $user['email'],
-                                    $requestPayload['subject'],
-                                    $requestPayload['message']
-                                );
-
-            $mail->send($NotificationMail);
+            $data = ['message' => $requestPayload['message']];
+            $view = 'mail/notification.twig.html';
+            Mail::send($view, $data, function($message) use($user, $requestPayload) {
+                $message->setSubject($requestPayload['subject']);
+                $message->setFrom('directus@getdirectus.com');
+                $message->setTo($user['email']);
+            });
       }
     }
   }
@@ -1176,46 +1405,46 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
 /**
  * EXCEPTION LOG
  */
-$app->post("/$v/exception/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    print_r($requestPayload);die();
-    $data = array(
-        'server_addr'   =>$_SERVER['SERVER_ADDR'],
-        'server_port'   =>$_SERVER['SERVER_PORT'],
-        'user_agent'    =>$_SERVER['HTTP_USER_AGENT'],
-        'http_host'     =>$_SERVER['HTTP_HOST'],
-        'request_uri'   =>$_SERVER['REQUEST_URI'],
-        'remote_addr'   =>$_SERVER['REMOTE_ADDR'],
-        'page'          =>$requestPayload['page'],
-        'message'       =>$requestPayload['message'],
-        'user_email'    =>$requestPayload['user_email'],
-        'type'          =>$requestPayload['type']
-    );
-
-    $ctx = stream_context_create(array(
-        'http' => array(
-            'method' => 'POST',
-            'content' => "json=".json_encode($data)."&details=".$requestPayload['details']
-        ))
-    );
-
-    $fp = @fopen($url, 'rb', false, $ctx);
-
-    if (!$fp) {
-        $response = "Failed to log error. File pointer could not be initialized.";
-        $app->getLog()->warn($response);
-    }
-
-    $response = @stream_get_contents($fp);
-
-    if ($response === false) {
-        $response = "Failed to log error. stream_get_contents failed.";
-        $app->getLog()->warn($response);
-    }
-
-    $result = array('response'=>$response);
-
-    JsonView::render($result);
-});
+//$app->post("/$v/exception/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
+//    print_r($requestPayload);die();
+//    $data = array(
+//        'server_addr'   =>$_SERVER['SERVER_ADDR'],
+//        'server_port'   =>$_SERVER['SERVER_PORT'],
+//        'user_agent'    =>$_SERVER['HTTP_USER_AGENT'],
+//        'http_host'     =>$_SERVER['HTTP_HOST'],
+//        'request_uri'   =>$_SERVER['REQUEST_URI'],
+//        'remote_addr'   =>$_SERVER['REMOTE_ADDR'],
+//        'page'          =>$requestPayload['page'],
+//        'message'       =>$requestPayload['message'],
+//        'user_email'    =>$requestPayload['user_email'],
+//        'type'          =>$requestPayload['type']
+//    );
+//
+//    $ctx = stream_context_create(array(
+//        'http' => array(
+//            'method' => 'POST',
+//            'content' => "json=".json_encode($data)."&details=".$requestPayload['details']
+//        ))
+//    );
+//
+//    $fp = @fopen($url, 'rb', false, $ctx);
+//
+//    if (!$fp) {
+//        $response = "Failed to log error. File pointer could not be initialized.";
+//        $app->getLog()->warn($response);
+//    }
+//
+//    $response = @stream_get_contents($fp);
+//
+//    if ($response === false) {
+//        $response = "Failed to log error. stream_get_contents failed.";
+//        $app->getLog()->warn($response);
+//    }
+//
+//    $result = array('response'=>$response);
+//
+//    JsonView::render($result);
+//});
 
 /**
  * UI COLLECTION

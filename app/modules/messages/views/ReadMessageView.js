@@ -43,6 +43,9 @@ function(app, Backbone, BasePageView) {
           url: app.API_URL + 'messages/rows/'
         });
 
+        // @TODO: Get ID after create message
+        // Create an API endpoint for new messages
+        // returning a JSON with the new message
         model.save();
         collection.add(model);
         this.render();

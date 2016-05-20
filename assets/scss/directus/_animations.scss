@@ -1,0 +1,47 @@
+@mixin fade-in() {
+  from {
+    opacity:0;
+  }
+  to {
+    opacity:1;
+  }
+}
+@mixin fade-out() {
+  from {
+    opacity:1;
+  }
+  to {
+    opacity:0;
+  }
+}
+
+/*
+.fade-in() {
+  from {
+    zoom: 0%;
+  }
+  to {
+    zoom: 100%;
+  }
+}
+*/
+@-webkit-keyframes fadein {@include fade-in();}
+@-moz-keyframes fadein {@include fade-in;}
+@-ms-keyframes fadein {@include fade-in;}
+@-o-keyframes fadein {@include fade-in;}
+@keyframes fadein {@include fade-in;}
+
+@-webkit-keyframes fadeout {@include fade-out;}
+@-moz-keyframes fadeout {@include fade-out;}
+@-ms-keyframes fadeout {@include fade-out;}
+@-o-keyframes fadeout {@include fade-out;}
+@keyframes fadeout {@include fade-out;}
+
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}

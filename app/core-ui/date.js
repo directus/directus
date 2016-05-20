@@ -100,7 +100,7 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     var value = options.value;
     var format = options.settings.get('format');
     if (format) {
-      value = moment().format(removeTimeFromFormat(format));
+      value = moment(value).format(removeTimeFromFormat(format));
     }
     return value;
   };

@@ -204,18 +204,18 @@ function(app, Backbone, Directus, moment) {
 
         switch(model.get('action')) {
           case 'DELETE':
-            data.icon = "icon-trash";
+            data.icon = "delete";
             data.color = "delete";
             data.action_text = "deleted this item";
             break;
           case 'UPDATE':
-            data.icon = "icon-pencil";
+            data.icon = "edit";
             data.color = "edit";
             data.action_text = "edited this item";
             break;
           case 'ADD':
             data.add = true;
-            data.icon = "icon-check";
+            data.icon = "check";
             data.color = "add";
             data.action_text = "created this item";
             break;

@@ -4,10 +4,10 @@ define([
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
-  'noty'
+  'core/notification'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets) {
+function(app, Backbone, Directus, BasePageView, Widgets, Notification) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -19,7 +19,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-paper-plane", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "send", buttonClass: "", buttonText: "Send Message"}})
       ];
     },
     events: {
@@ -31,7 +31,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
         this.model.save(data, {success: function(model, res) {
           if(res.warning) {
-            noty({text: res.warning, type: 'warning', timeout: 5000, theme: 'directus'});
+            Notification.warning(null, res.warning, {timeout: 5000});
           }
 
           app.router.go('#messages');

@@ -3,15 +3,21 @@
   {{#if isPrompt}}
     {{#if showInput}}<input type="text">{{/if}}
     <div class="directus-alert-modal-buttons">
-      <button id="cancel" type="button">Cancel</button>
       <button id="save" type="button" class="primary">OK</button>
+      <button id="cancel" type="button">Cancel</button>
+    </div>
+  {{/if}}
+  {{#if isYesNoCancelConfirm}}
+    <div class="directus-alert-modal-buttons">
+      <button id="yesBtn" type="button" class="primary">Yes</button>
+      <button id="noBtn" type="button">No</button>
+      <button id="cancel" type="button">Cancel</button>
     </div>
   {{/if}}
   {{#if isYesNoConfirm}}
     <div class="directus-alert-modal-buttons">
       <button id="yesBtn" type="button" class="primary">Yes</button>
       <button id="noBtn" type="button">No</button>
-      <button id="cancel" type="button">Cancel</button>
     </div>
   {{/if}}
   {{#if isAlert}}

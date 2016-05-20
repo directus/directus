@@ -29,17 +29,20 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   // UI Options that Can be set in Column Settings Page
   Module.variables = [
-    // True if this UI is Readonly
+    // Disables editing of the field while still letting users see the value (true = readonly)
     {id: 'readonly', ui: 'checkbox'},
-    // Size of the Textbox, Uses classes
+    // Adjusts the max width of the input (Small, Medium, Large)
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    // Initial Placeholder text for the UI
+    // Grayed out default placeholder text in the input when it's empty
     {id: 'placeholder_text', ui: 'textinput', char_length:200},
-    // Whether to use comma delimted black/white list or to use Regex for input validation
+    // Chooses the type of validation used on this field
+    // * Character Blacklist: Choose the specific characters **not** allowed in the input
+    // * Character Whitelist: Choose the specific characters allowed in the input
+    // * RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything
     {id: 'validation_type', ui: 'select', options: {options: {'bl':'Character Blacklist','wl':'Character Whitelist','rgx':'Regex'} }, def:'rgx'},
-    // Vallidation String (Regex if Regex or comma delimted list of black/whitelist)
-    {id: 'validation_string', ui: 'textinput', char_length:200, comment: 'All Characters below will be enforced'},
-    // Message to show if fails validation
+    // Holds the CSV list of Whitelist/Blacklist characters or the RegEx value (based on the above option)
+    {id: 'validation_string', ui: 'textinput', char_length:200, comment: 'All characters below will be enforced'},
+    // A message that is shown to the user if the validation fails
     {id: 'validation_message', ui: 'textinput', char_length:200}
   ];
 

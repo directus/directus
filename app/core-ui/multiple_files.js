@@ -24,8 +24,11 @@ define([
   Module.dataTypes = ['MANYTOMANY'];
 
   Module.variables = [
+    // Toggles an "Add" button for adding new files directly into the UI
     {id: 'add_button', ui: 'checkbox', def: '1'},
+    // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
     {id: 'choose_button', ui: 'checkbox', def: '1'},
+    // Toggles "Remove" buttons for each file that let's you delete the file
     {id: 'remove_button', ui: 'checkbox', def: '1'},
   ];
 
@@ -98,14 +101,16 @@ define([
           color: #bbbbbb; \
         } \
         div.single-image-thumbnail.empty span { \
-          margin-top: 0; \
+          margin-top: 28px; \
+          text-align: center; \
           display: inline-block; \
           line-height: 18px; \
         } \
-        div.single-image-thumbnail.empty span div.icon { \
+        div.single-image-thumbnail.empty span i.material-icons { \
           display: block; \
-          font-size: 100px; \
-          line-height: 90px; \
+          font-size: 60px; \
+          width: auto; \
+          margin-bottom: 5px; \
         } \
         div.single-image-thumbnail.empty.dragover, \
         div.single-image-thumbnail.empty:hover { \
@@ -114,7 +119,7 @@ define([
           cursor: pointer; \
         } \
       </style> \
-      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><div class="icon icon-picture"></div>Drag and drop<br>file here</span></div></div> \
+      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>Drag and drop<br>file here</span></div></div> \
       <div class="related-table"></div> \
       <div class="multiple-image-actions"> \
         {{#if showAddButton}}<span data-action="add">Upload</span>{{/if}} \
@@ -278,7 +283,7 @@ define([
         e.stopPropagation();
         e.preventDefault();
 
-        if(self.sort.isDragging) {
+        if(self.sort && self.sort.isDragging) {
           self.sort.isDragging = false;
           return;
         }

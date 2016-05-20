@@ -29,6 +29,9 @@ function(app, Backbone) {
           data.showInput = true;
           break;
         case 'yesnocancel':
+          data.isYesNoCancelConfirm = true;
+          break;
+        case 'yesno':
           data.isYesNoConfirm = true;
           break;
         case 'alert':
@@ -50,12 +53,12 @@ function(app, Backbone) {
         this.save();
       },
       'click #noBtn': function() {
-        this.options.callback('no');
         this.close();
+        this.options.callback('no');
       },
       'click #yesBtn': function() {
-        this.options.callback('yes');
         this.close();
+        this.options.callback('yes');
       },
       'click #okBtn': function() {
         this.close();
@@ -75,8 +78,8 @@ function(app, Backbone) {
     },
 
     close: function() {
+      $(document).off('keydown.modal');
       this.remove();
-      $(document).off('keydown', _.bind(this.onKeydown, this));
     },
 
     save: function() {
@@ -98,7 +101,7 @@ function(app, Backbone) {
 
     initialize: function (options) {
       this.options = options;
-      $(document).on('keydown', _.bind(this.onKeydown, this));
+      $(document).on('keydown.modal', _.bind(this.onKeydown, this));
     }
   });
 

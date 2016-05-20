@@ -3,12 +3,15 @@
 namespace Directus\Auth;
 
 use Directus\Bootstrap;
+use Directus\Util\StringUtils;
+use Directus\Util\ArrayUtils;
 
 class Provider {
 
     const USER_RECORD_CACHE_SESSION_KEY = 'auth_provider_user_record_cache';
 
     protected static $prependedSessionKey = false;
+    protected static $authenticated;
 
     public static $userCacheRefreshProvider;
 
@@ -73,6 +76,16 @@ class Provider {
     }
 
     /**
+     * Force a user id to be the logged user
+     *
+     * @param  int $uid             The User account's ID.
+     * @return boolean
+     */
+    public static function setLoggedUser($uid) {
+        self::completeLogin($uid);
+    }
+
+    /**
      * De-authenticate the logged-in user.
      * @return null
      * @throws  \Directus\Auth\UserIsntLoggedInException
@@ -89,11 +102,36 @@ class Provider {
      * @return boolean
      */
     public static function loggedIn() {
+        if (self::$authenticated != null) {
+            return self::$authenticated;
+        }
+
         self::prependSessionKey();
         if(php_sapi_name() != 'cli' && "" === session_id()) {
             session_start();
         }
-        return isset($_SESSION[self::$SESSION_KEY]) && !empty($_SESSION[self::$SESSION_KEY]);
+        self::$authenticated = $isLoggedIn = false;
+        $ZendDb = Bootstrap::get('ZendDb');
+        $session = array();
+        if (isset($_SESSION[self::$SESSION_KEY]) && !empty($_SESSION[self::$SESSION_KEY])) {
+            $session = $_SESSION[self::$SESSION_KEY];
+        }
+
+        if (is_array($session) && ArrayUtils::contains($session, array('id', 'access_token'))) {
+            $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+
+            $user = $DirectusUsersTableGateway->select(array(
+                'id' => $session['id'],
+                'access_token' => $session['access_token']
+            ));
+
+            if ($user->count()) {
+                self::$authenticated = $isLoggedIn = true;
+            }
+        }
+
+
+        return $isLoggedIn;
     }
 
     /**
@@ -159,8 +197,9 @@ class Provider {
         if(self::loggedIn()) {
             throw new UserAlreadyLoggedInException("Attempting to authenticate a user when a user is already authenticated.");
         }
-        $user = array( 'id' => $uid );
+        $user = array( 'id' => $uid, 'access_token' => sha1($uid.StringUtils::random()) );
         $_SESSION[self::$SESSION_KEY] = $user;
+        self::$authenticated = true;
     }
 
     /**

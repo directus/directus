@@ -652,6 +652,7 @@ $.noty.layouts.bottomRight = {
         object  : '<ul id="noty_bottomRight_layout_container" />',
         selector: 'ul#noty_bottomRight_layout_container',
         style   : function() {
+
             $(this).css({
                 bottom       : 20,
                 right        : 20,
@@ -678,9 +679,10 @@ $.noty.layouts.bottomRight = {
     },
     css      : {
         display: 'none',
+        border: 'none',
         width  : '310px'
     },
-    addClass : ''
+    addClass : 'noty_box'
 };
 $.noty.layouts.center = {
     name     : 'center',

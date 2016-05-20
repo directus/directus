@@ -2,7 +2,6 @@
 
 // Composer Autoloader
 $loader = require '../api/vendor/autoload.php';
-$loader->add("Directus", dirname(__FILE__) . "/../api/core/");
 
 // Non-autoload components
 require dirname(__FILE__) . '/../api/config.php';

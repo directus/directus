@@ -40,29 +40,30 @@ define(function(require, exports, module) {
       }
     },
 
-    logErrorToServer: function(type, message, details) {
-      var user = app.users.getCurrentUser(), email = 'n/a';
-
-      if (user) {
-        email = user.get('email');
-      }
-
-      var data = {
-        type: type,
-        message: message,
-        details: details,
-        page: location.href,
-        user_email: email
-      };
-
-      $.post(app.API_URL + 'exception', JSON.stringify(data))
-        .done(function(response) {
-          console.log(response.response);
-        })
-        .error(function(obj) {
-          console.log('FAILED TO LOG ERROR'+obj.responseText);
-        });
-    },
+    //  @TODO: remove this
+    //logErrorToServer: function(type, message, details) {
+    //  var user = app.users.getCurrentUser(), email = 'n/a';
+    //
+    //  if (user) {
+    //    email = user.get('email');
+    //  }
+    //
+    //  var data = {
+    //    type: type,
+    //    message: message,
+    //    details: details,
+    //    page: location.href,
+    //    user_email: email
+    //  };
+    //
+    //  $.post(app.API_URL + 'exception', JSON.stringify(data))
+    //    .done(function(response) {
+    //      console.log(response.response);
+    //    })
+    //    .error(function(obj) {
+    //      console.log('FAILED TO LOG ERROR'+obj.responseText);
+    //    });
+    //},
 
     // http://stackoverflow.com/a/1830844
     isNumber: function(n) {
@@ -194,6 +195,20 @@ define(function(require, exports, module) {
     } else {
       name[app.statusMapping.status_name] = value;
       model.save(name, options);
+    }
+  };
+
+  app.changeCollectionStatus = function(collection, value, options) {
+    var canDelete = collection.hasPermission('delete') || collection.hasPermission('bigdelete');
+    var model = collection.at(0);
+    // check if doesn't have status column
+    var canHardDelete = !!!model.has(app.statusMapping.status_name);
+    var goingToDelete = value == app.statusMapping.deleted_num;
+
+    if (goingToDelete && canHardDelete) {
+      collection.destroyAll(options);
+    } else {
+      collection.saveAll(options);
     }
   };
 

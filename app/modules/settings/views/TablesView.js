@@ -17,10 +17,13 @@ define([
   'core/UIManager',
   'core/widgets/widgets',
   'schema/SchemaManager',
-  'sortable'
+  'sortable',
+  'core/notification',
+  'core/doubleConfirmation',
+  '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -31,14 +34,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     headerOptions: {
       route: {
 
-        title: 'New Column',
+        title: 'New Field',
         isOverlay: true
       }
     },
 
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-check", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "check", buttonClass: "", buttonText: "Save Item"}})
       ];
     },
 
@@ -166,7 +169,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       {
         data.SHOW_CHAR_LENGTH = true;
         if (!this.model.get('char_length')) {
-          this.model.set({char_length: 1});
+          this.model.set({char_length: 100});
         }
         data.char_length = this.model.get('char_length');
       } else {
@@ -390,9 +393,10 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     template: 'modules/settings/settings-columns',
 
     events: {
-      'click span[data-action=ui]': 'editUI',
-      'click span[data-action=relationship]': 'editRelationship',
+      'click i[data-action=ui]': 'editUI',
+      'click i[data-action=relationship]': 'editRelationship',
       'change select,input': 'bindForm',
+      'click .destroy': 'verifyDestroyColumn',
       'click button[data-action=new-field]': 'newField'
     },
 
@@ -416,10 +420,68 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         value = $(e.target).is(':checked') ? 1 : 0;
       }
 
+      // hotfix #1069 single_file UI not saving relational settings
+      // If Single_file UI, force related table to be directus_files
+      // and relationship type to manytoone
+      if(value === 'single_file') {
+        data['table_related'] = 'directus_files';
+        data['datatype'] = 'INT';
+        data['relationship_type'] = 'MANYTOONE';
+        data['junction_key_right'] = id;
+      }
+
       this.collection.table.set({'primary_column':$('#table-settings').find('input[type=radio]:checked').attr('data-id')});
 
       data[attr] = value;
       model.set(data);
+    },
+
+    destroyColumn: function(columnName) {
+      var originalColumnModel = this.collection.get(columnName);
+      var columnModel = originalColumnModel.clone();
+      columnModel.url = originalColumnModel.url;
+
+      if (!columnModel) {
+        Notification.error('Error', 'Column '+columnName+' not found.');
+        return;
+      }
+
+      var self = this;
+      var onSuccess = function(model, response) {
+        if (!response.success) {
+          Notification.error('Column not removed', response.message);
+        } else {
+          self.collection.remove(originalColumnModel);
+          self.$el.find('[data-id=' + model.get('id') + ']').remove();
+          Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+        }
+      };
+
+      var onError = function(model, resp, options) {
+        Notification.error('Column not removed', resp.responseJSON.message);
+      };
+
+      columnModel.destroy({success: onSuccess, error: onError, wait: true});
+    },
+
+    verifyDestroyColumn: function(event) {
+      event.stopPropagation();
+
+      var self = this;
+      var columnName = $(event.target).closest('tr').attr('data-id');
+      var destroyColumn = function() {
+        self.destroyColumn(columnName);
+      };
+
+      DoubleConfirmation({
+        value: columnName,
+        emptyValueMessage: 'Invalid column.',
+
+        firstQuestion: 'Are you sure? This column and all of its content will be permanently removed from the table!',
+        secondQuestion: 'This cannot be undone. To confirm, please type the name of the column to delete: '+columnName,
+        notMatchMessage: 'Column name did not match.',
+        callback: destroyColumn
+      }, this);
     },
 
     sort: function() {
@@ -518,6 +580,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           if (!ui.system && ui.dataTypes.indexOf(row.type) > -1) {
             row.types.push({id: ui.id, isActive: (ui.id === row.ui)});
           }
+
+          //If System column and column name in config mapping, show detailed message
+          if(ui.system && SettingsConfig.systemColumnDetails[row.column_name]) {
+            row.systemDetails = SettingsConfig.systemColumnDetails[row.column_name];
+          }
         });
 
         if(primaryColumn === row.column_name) {
@@ -612,11 +679,12 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       //Get Selected master
       data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
 
-      if(!data.primary_column) {
-        app.router.openModal({type: 'alert', text: 'Please choose a primary column:', callback: function(tableName) {
-        }});
-        return;
-      }
+      // Stop asking for primary column
+      // if(!data.primary_column) {
+      //   app.router.openModal({type: 'alert', text: 'Please choose a primary column:', callback: function(tableName) {
+      //   }});
+      //   return;
+      // }
 
       this.model.save(data, {success: function(){
         app.router.go('settings','tables');
@@ -646,15 +714,36 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
     },
 
+    getPrevTableId: function(tableIndex) {
+      if (tableIndex < 0) {
+        tableIndex = 0;
+      } else if (tableIndex > this.collection.length) {
+        tableIndex = this.collection.length;
+      }
+
+      var model = this.collection.at(tableIndex);
+      if (tableIndex == 0 || tableIndex == this.collection.length) {
+        return model.id;
+      }
+
+      if (model.id.substring(0,9) === 'directus_') {
+        return this.getPrevTableId(tableIndex-1);
+      }
+
+      return model.id;
+    },
+
     moveRowView: function(model) {
       var currentModelIndex = this.collection.indexOf(model);
       var afterModelIndex = currentModelIndex-1;
       var tbody = this.$el.find('tbody');
       var tableId = model.id || false;
+      // Get the previous table Id, ignoring `directus_` tables
+      var prevTableId = this.getPrevTableId(afterModelIndex);
 
       if (tableId) {
         var currentRow = tbody.find('[data-id="'+tableId+'"]');
-        var afterRow = tbody.find('tr:eq('+afterModelIndex+')');
+        var afterRow = tbody.find('[data-id="'+prevTableId+'"]');
         var currentRowIndex = currentRow.index();
 
         if(currentModelIndex === 0) {
@@ -728,6 +817,21 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       'click td': function(e) {
         var tableName = $(e.target).closest('tr').attr('data-id');
         app.router.go(['settings','tables',tableName]);
+      },
+      'click .destroy': function(event) {
+        event.stopPropagation();
+
+        var self = this;
+        var tableName = $(event.target).closest('tr').attr('data-id') || this.model.get('table_name');
+
+        DoubleConfirmation({
+          value: tableName,
+          emptyValueMessage: 'Invalid table.',
+          firstQuestion: 'Are you sure? This table, its columns, and all of its content will be permanently removed from the system!',
+          secondQuestion: 'This cannot be undone. To confirm, please type the name of the table to delete: '+tableName,
+          notMatchMessage: 'Table name did not match.',
+          callback: this.destroyTable
+        }, this);
       }
     },
 
@@ -746,6 +850,25 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
     },
 
+    destroyTable: function() {
+      var options = {};
+      var self = this;
+
+      options.wait = true;
+      options.success = function(model, response) {
+        if (response.success == true) {
+          var tableName = model.get('table_name');
+          self.remove();
+          app.schemaManager.unregisterFullSchema(tableName);
+          Notification.success('Table removed', '<b>'+tableName+'</b> was removed.');
+        } else {
+          Notification.error(response.message);
+        }
+      };
+
+      this.model.destroy(options);
+    },
+
     serialize: function() {
       return this.model.toJSON();
     }
@@ -761,7 +884,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     leftToolbar: function() {
       if(!this.widgets.addWidget) {
-        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "icon-plus", buttonClass: "add-color-background"}});
+        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: "Add"}});
       }
       return [this.widgets.addWidget];
     },
@@ -779,7 +902,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     addTableConfirmation: function() {
-      app.router.openModal({type: 'prompt', text: 'What would you like to name this table?', callback: _.bind(this.addTable, this)});
+      app.router.openModal({type: 'prompt', text: 'Enter the name of a new or existing table to add:', callback: _.bind(this.addTable, this)});
     },
 
     addTable: function(tableName) {

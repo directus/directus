@@ -124,7 +124,7 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
 
     events: {
       'click td.tableName > div': 'toggleRowPermissions',
-      'click td.editFields > span': 'editFields',
+      'click td.editFields > i': 'editFields',
       'click td > span': function(e) {
         var $target = $(e.target).parent(),
             $tr = $target.closest('tr'),
@@ -201,8 +201,38 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
       }
     },
 
-    // @todo: update this for newest permission model
     toggleRowPermissions: function(e) {
+        var $target = $(e.target).parent(),
+            $tr = $target.closest('tr'),
+            cid = $tr.data('cid'),
+            model = this.collection.get(cid),
+            hasFullPermission = true,
+            fullPermissions = {
+                'allow_add': 1,
+                'allow_edit': 2,
+                'allow_delete': 2,
+                'allow_alter': 1,
+                'allow_view': 2
+            };
+
+        _.each(fullPermissions, function(value, key) {
+            if (value != model.get(key)) {
+                hasFullPermission = false;
+            }
+        });
+
+        if (!hasFullPermission) {
+            model.set(fullPermissions);
+        } else {
+            _.each(fullPermissions, function(value, key) {
+                model.set(key, 0);
+            });
+        }
+
+        model.save();
+    },
+    // @todo: update this for newest permission model
+    OldtoggleRowPermissions: function(e) {
       var $target = $(e.target).parent(),
         $tr = $target.closest('tr'),
         cid = $tr.data('cid'),
@@ -512,10 +542,10 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
     <div class="simple-select dark-grey-color simple-gray right"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="statusSelect" name="status" class="change-visibility"> \
-        <optgroup label="Status"> \
-          <option data-status value="all">All States</option> \
+        <optgroup label="Status-Specific Editing"> \
+          <option data-status value="all">Status: All Options</option> \
           {{#mapping}} \
-            <option data-status value="{{id}}">View {{capitalize name}}</option> \
+            <option data-status value="{{id}}">Status: {{capitalize name}} Only</option> \
           {{/mapping}} \
         </optgroup> \
       </select> \

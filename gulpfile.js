@@ -6,7 +6,7 @@ var uglify    = require('gulp-uglify');
 var mincss    = require('gulp-minify-css');
 var concat    = require('gulp-concat');
 var rename    = require('gulp-rename');
-var less      = require('gulp-less');
+var scss      = require('gulp-scss');
 var size      = require('gulp-size');
 var rjs       = require('gulp-requirejs');
 var prohtml   = require('gulp-processhtml');
@@ -53,8 +53,8 @@ function runSequence(commands, prefix) {
 // CSS - Gulp Task
 // --------------------
 gulp.task('styles', function() {
-  return gulp.src(['assets/less/directus/directus.less'])
-    .pipe(less())
+  return gulp.src(['assets/scss/compile.scss'])
+    .pipe(scss())
     .pipe(rename('directus.css'))
     .pipe(gulp.dest('dist/assets/css'))
     .pipe(gulp.dest('assets/css'))
@@ -220,7 +220,7 @@ gulp.task('singlepage', function () {
 // Composer - Gulp Task
 // --------------------
 gulp.task('composer', function(cb) {
-  var child = cp.spawn('composer', ['install', '--ansi'], {cwd: './api'});
+  var child = cp.spawn('composer', ['install', '--ansi', '--prefer-dist', '--no-dev'], {cwd: './dist/api'});
 
   child.stdout.on('data', function(chunk) {
     process.stdout.write(chunk);
@@ -237,18 +237,24 @@ gulp.task('composer', function(cb) {
 gulp.task('move', function() {
   var filesToMove = [
     './api/core/**',
-    './api/logs/!*',
+    './api/logs/*',
     './api/migrations/**/*',
-    './api/vendor/**/*.*',
+    // './api/vendor/**/*.*',
+    './api/composer.json',
     './api/.htaccess',
-    './api/!(composer.json|composer.lock|config.php|configuration.php|schema.sql)',
+    './api/api.php',
+    './api/config_sample.php',
+    './api/configuration_sample.php',
+    './api/globals.php',
+    './api/ruckusing.conf.php',
+    './api/schema.sql',
     // for login.php
     './assets/js/libs/jquery.js',
     './assets/js/libs/jquery.min.map',
     './assets/js/libs/wysihtml5.js',
     './assets/css/wysiwyg.css',
     './bin/**',
-    './extensions/**',
+    //'./extensions/**',
     './installation/**',
     // These two directories are moved separately below
     //'./listviews/**',
@@ -265,9 +271,13 @@ gulp.task('move', function() {
   ];
 
   var dirsToKeep = [
-    './ui/.gitkeep',
-    './media/**/.gitkeep',
-    './listviews/.gitkeep'
+    './ui/.gitignore',
+    './extensions/.htaccess',
+    './extensions/.gitignore',
+    './media/.htaccess',
+    './media/**/.gitignore',
+    './media_auth_proxy/client_auth_proxies/.gitignore',
+    './listviews/.gitignore'
   ];
 
   var mainFiles = gulp.src(filesToMove, { base: './' })
@@ -282,7 +292,7 @@ gulp.task('move', function() {
 
 // Rerun the task when a file changes
 gulp.task('watch', function() {
-  gulp.watch('assets/less/directus/**/*.less', ['styles']);
+  gulp.watch('assets/scss/directus/**/*.scss', ['styles']);
   gulp.watch('app/**/*.js', ['scripts:app', 'scripts:directus']);
   gulp.watch(vendorFiles, ['scripts:vendor', 'scripts:directus']);
   gulp.watch('assets/fonts/**/*.*', ['fonts']);
@@ -293,7 +303,7 @@ gulp.task('watch', function() {
 
 gulp.task('deploy', function() {
   return gulp.src(['./dist/**/*'], {dot: true})
-        .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/RNGR/directus6'}));
+        .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/RNGR/Directus'}));
 });
 
 gulp.task('jscs', function() {
@@ -305,7 +315,9 @@ gulp.task('jscs', function() {
 // Build - Gulp Task
 // Run all the tasks
 // ------------------- 'composer',
-gulp.task('build', ['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move']);
+gulp.task('build', function(cb) {
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'composer', cb]);
+});
 
 // Default task
 gulp.task('default', ['watch', 'build']);

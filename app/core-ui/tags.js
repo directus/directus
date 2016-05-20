@@ -17,11 +17,12 @@ define(['app','backbone'], function(app, Backbone) {
   Module.dataTypes = ['TEXT','VARCHAR','CHAR'];
 
   Module.variables = [
+    // When on, all entered tags are converted to lowercase
     {id: 'force_lowercase', ui: 'checkbox', def: '1'}
   ];
 
   var template = '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;"><button class="btn btn-small btn-primary margin-left" type="button">Add</button> \
+                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;" placeholder="Type tag then hit enter..."><button class="btn btn-primary margin-left" type="button">Add</button> \
                  <div style="width:84%;">{{#tags}}<span class="tag">{{this}}</span>{{/tags}}</div>';
 
   Module.Input = Backbone.Layout.extend({
@@ -91,7 +92,16 @@ define(['app','backbone'], function(app, Backbone) {
   };
 
   Module.list = function(options) {
-    return options.model.attributes.tags;
+    var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
+    console.log(tags);
+    if(tags.length){
+      for (var i = 0; i < tags.length; i++) {
+        tags[i] = '<span class="tag-static">' + tags[i] + '</span>';
+      }
+      return tags.join(' ');
+    } else {
+      return options.model.attributes.tags;
+    }
   };
 
   return Module;

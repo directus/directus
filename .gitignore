@@ -3,6 +3,8 @@ assets/bower
 api/config.php
 api/configuration.php
 
+documents
+
 assets/css/*.map
 
 Icon
@@ -12,7 +14,6 @@ dist/*
 # Don't track composer phar/vendors
 composer.phar
 api/vendor
-api/composer.lock
 
 # Ignore log files, but track the log README
 api/logs/*.log
@@ -32,18 +33,18 @@ build_test.html
 build_test_release
 
 extensions/*
-
+!extensions/.gitignore
 ui/*
-!ui/.gitkeep
+!ui/.gitignore
+/listviews/*
+!listviews/.gitignore
+!media/.gitignore
+!media/thumbs/.gitignore
+media_auth_proxy/client_auth_proxies/*
+!media_auth_proxy/client_auth_proxies/.gitignore
 
 utils
 seperator
-
-/listviews/*
-!listviews/.gitkeep
-
-media_auth_proxy/client_auth_proxies/*
-!media_auth_proxy/client_auth_proxies/.gitkeep
 
 .project
 
@@ -51,3 +52,7 @@ media_auth_proxy/client_auth_proxies/*
 assets/less/directus/config.codekit
 installation/config.codekit
 .idea
+assets/scss/.sass-cache
+assets/scss/.DS_Store
+.sass-cache
+.gulp-scss-cache

@@ -106,6 +106,9 @@ define(function(require, exports, module) {
 
       var that = this;
       if(this.model.table && this.model.table.get('column_groupings')) {
+        // Does this honor user field permissions? Should switch to JSON with Settings interface
+        // Format:
+        // Section 1:title,key_image^Section 2:address,date_published
         var grouping = this.model.table.get('column_groupings');
         var i = 1;
         grouping.split('^').forEach(function(group) {
@@ -114,24 +117,25 @@ define(function(require, exports, module) {
             title = group.substring(0, group.indexOf(':'));
             group = group.substring(group.indexOf(':') + 1);
           }
-          var compileString = "<span>" + title + "</span><div></div>";
-          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big card-border', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
+          var compileString = '<div class="section-header"><span class="big-label-text">' + title + '</span></div><div class="table-shadow"></div>';
+          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
           group.split(',').forEach(function(subgroup) {
             if(views[subgroup] !== undefined) {
-              that.insertView('#grouping_' + i + ' div', views[subgroup]);
+              that.insertView('#grouping_' + i + ' div.table-shadow', views[subgroup]);
             }
           });
           i++;
         });
       } else {
         if(views[app.statusMapping.status_name]) {
-          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big card-border', id:'grouping_0'}}));
+          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_0'}}));
           this.insertView('#grouping_0', views[app.statusMapping.status_name]);
           delete views[app.statusMapping.status_name];
         }
 
+        this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_1'}}));
         for(var key in views) {
-          that.insertView('.fields', views[key]);
+          that.insertView('#grouping_1', views[key]);
         }
       }
     },
@@ -202,7 +206,7 @@ define(function(require, exports, module) {
           var $fieldset = $('#edit_field_' + item.attr);
           $fieldset.addClass('error');
           if ($fieldset.find('.error-color').length < 1) {
-            $fieldset.append('<span class="error-color">'+item.message+'</span>');
+            $fieldset.append('<span class="error-color validation-error">'+item.message+'</span>');
           }
         });
       }, this);
