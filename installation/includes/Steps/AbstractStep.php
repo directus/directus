@@ -237,6 +237,10 @@ abstract class AbstractStep implements StepInterface
             $response->setData($key, $value);
         }
 
+        // clear all previous error/warning messages
+        $response->clearErrors();
+        $response->clearWarnings();
+
         try {
             if (!is_array($this->fields) || count($this->fields) <= 0) {
                 throw new \InvalidArgumentException("{$this->title} fields are empty");
