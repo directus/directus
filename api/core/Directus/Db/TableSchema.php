@@ -269,42 +269,7 @@ class TableSchema {
             return false;
         }
 
-        $select = new Select();
-        $select->columns([
-            'id' => 'TABLE_NAME',
-            'table_name' => 'TABLE_NAME',
-            'date_created' => 'CREATE_TIME',
-            'comment' => 'TABLE_COMMENT',
-            'count' => 'TABLE_ROWS'
-        ]);
-
-        $select->from(['T' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')]);
-        $select->join(
-            ['DT' => 'directus_tables'],
-            'DT.table_name = T.TABLE_NAME',
-            [
-                'hidden' => new Expression('IFNULL(hidden, 0)'),
-                'single' => new Expression('IFNULL(single, 0)'),
-                'is_junction_table',
-                'user_create_column',
-                'user_update_column',
-                'date_create_column',
-                'date_update_column',
-                'footer',
-            ],
-            $select::JOIN_LEFT
-        );
-
-        $select->where([
-            'T.TABLE_NAME' => $tbl_name,
-            'T.TABLE_SCHEMA' => $zendDb->getCurrentSchema()
-        ]);
-
-        $sql = new Sql($zendDb);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        $info = $result->current();
+        $info = SchemaManager::getTable($tbl_name);
 
         if (!$info) {
             return false;

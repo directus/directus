@@ -149,7 +149,44 @@ class SQLiteSchema extends AbstractSchema
      */
     public function getTable($tableName)
     {
-        // TODO: Implement getTable() method.
+        $tablesObject = $this->metadata->getTable($tableName);
+        $directusTablesInfo = $this->getDirectusTableInfo($tableName);
+        if (!$directusTablesInfo) {
+            $directusTablesInfo = [];
+        }
+
+        return $this->formatTableFromInfo($tablesObject, $directusTablesInfo);
+    }
+
+    public function getDirectusTableInfo($tableName)
+    {
+        $select = new Select();
+        $select->columns([
+            'table_name',
+            'hidden' => new Expression('IFNULL(hidden, 0)'),
+            'single' => new Expression('IFNULL(single, 0)'),
+            'is_junction_table',
+            'user_create_column',
+            'user_update_column',
+            'date_create_column',
+            'date_update_column',
+            'footer',
+            'list_view',
+            'column_groupings',
+            'filter_column_blacklist',
+            'primary_column'
+        ]);
+        $select->from('directus_tables');
+
+        $select->where([
+            'table_name' => $tableName
+        ]);
+
+        $sql = new Sql($this->adapter);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
     }
 
     /**

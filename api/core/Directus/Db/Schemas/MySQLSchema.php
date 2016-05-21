@@ -115,7 +115,42 @@ class MySQLSchema extends AbstractSchema
      */
     public function getTable($tableName)
     {
-        // TODO: Implement getTable() method.
+        $select = new Select();
+        $select->columns([
+            'id' => 'TABLE_NAME',
+            'table_name' => 'TABLE_NAME',
+            'date_created' => 'CREATE_TIME',
+            'comment' => 'TABLE_COMMENT',
+            'count' => 'TABLE_ROWS'
+        ]);
+
+        $select->from(['T' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')]);
+        $select->join(
+            ['DT' => 'directus_tables'],
+            'DT.table_name = T.TABLE_NAME',
+            [
+                'hidden' => new Expression('IFNULL(hidden, 0)'),
+                'single' => new Expression('IFNULL(single, 0)'),
+                'is_junction_table',
+                'user_create_column',
+                'user_update_column',
+                'date_create_column',
+                'date_update_column',
+                'footer',
+            ],
+            $select::JOIN_LEFT
+        );
+
+        $select->where([
+            'T.TABLE_NAME' => $tableName,
+            'T.TABLE_SCHEMA' => $this->adapter->getCurrentSchema()
+        ]);
+
+        $sql = new Sql($this->adapter);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
     }
 
     /**
