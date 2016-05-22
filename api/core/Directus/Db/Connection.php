@@ -42,7 +42,7 @@ class Connection extends Adapter
                 $enabled = $this->isMySQLStrictModeEnabled();
                 break;
             default:
-                throw new \BadMethodCallException("Driver '{$this->driverName}' not supported");
+                return null;
         }
 
         return $enabled;
