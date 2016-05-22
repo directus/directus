@@ -179,6 +179,9 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             // When logged through API we need to reload all their permissions
             $privilegesTable = new DirectusPrivilegesTableGateway($acl, $ZendDb);
             $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($user['group']));
+            // @TODO: Adding an user should auto set its ID and GROUP
+            $acl->setUserId($user['id']);
+            $acl->setGroupId($user['group']);
         }
 
         /** Enforce required authentication. */
