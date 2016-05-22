@@ -21,6 +21,8 @@ define('DB_NAME',        'directus');
 define('DB_USER',        'root');
 define('DB_PASSWORD',    'password');
 define('DB_PREFIX',      '');
+define('DB_ENGINE',      'InnoDB');
+define('DB_CHARSET',     'utf8');
 
 
 define('DB_HOST_SLAVE',        ''); //Leave undefined to fall back on master
