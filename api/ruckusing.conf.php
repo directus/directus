@@ -23,6 +23,7 @@ if (!function_exists('getDatabaseConfig')) {
             'user' => defined('DB_USER') ? DB_USER : 'root',
             'pass' => defined('DB_PASSWORD') ? DB_PASSWORD : '',
             'prefix' => defined('DB_PREFIX') ? DB_PREFIX : '',
+            'engine' => defined('DB_ENGINE') ? DB_ENGINE : 'InnoDB',
             'charset' => defined('DB_CHARSET') ? DB_CHARSET: 'utf8',
             'directory' => 'directus',
             //'socket' => '/var/run/mysqld/mysqld.sock'
@@ -42,6 +43,7 @@ if (!function_exists('getDatabaseConfig')) {
                     'user' => $db['user'],
                     'password' => $db['pass'],
                     'charset' => $db['charset'],
+                    'engine' => $db['engine'],
                     'directory' => $db['directory']
                 )
             ),
