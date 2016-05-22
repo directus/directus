@@ -32,9 +32,12 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
         ));
         $this->rename_column('directus_privileges', 'unlisted', 'listed');
 
-        $results = $this->execute('SELECT id, permissions, listed FROM `directus_privileges`');
-        $records = array();
-        $updateQueryFormat = 'UPDATE `directus_privileges` SET listed=%d, to_view=%d, to_add=%d, to_edit=%d, to_delete=%d, to_alter=%d WHERE id=%d';
+        $tableName = $this->get_adapter()->identifier('directus_privileges');
+        $columns = array_map(function($columnName) {
+            return $this->get_adapter()->identifier($columnName);
+        }, array('id', 'permissions', 'listed'));
+
+        $results = $this->execute('SELECT '.implode(',', $columns).' FROM '.$tableName);
         foreach($results as $row) {
             $permissions = explode(',', $row['permissions']);
             $listed = $row['listed'] ? (int)$row['listed'] : 1;
@@ -67,8 +70,16 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
 
             $alter = in_array('alter', $permissions) ? 1 : 0;
 
-            $updateQuery = sprintf($updateQueryFormat, $listed, $view, $add, $edit, $delete, $alter, $row['id']);
-            $this->execute($updateQuery);
+            $this->update($tableName, [
+                'listed' => $listed,
+                'to_view' => $view,
+                'to_add' => $add,
+                'to_edit' => $edit,
+                'to_delete' => $delete,
+                'to_alter' => $alter
+            ], [
+                'id' => $row['id']
+            ]);
         }
 
         $this->remove_column('directus_privileges', 'permissions');

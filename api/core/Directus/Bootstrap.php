@@ -7,6 +7,7 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\Connection;
 use Directus\Db\SchemaManager;
 use Directus\Db\Schemas\MySQLSchema;
+use Directus\Db\Schemas\SQLiteSchema;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
@@ -260,8 +261,8 @@ class Bootstrap {
                 return new MySQLSchema($adapter);
             // case 'SQLServer':
             //    return new SQLServerSchema($adapter);
-            // case 'SQLite':
-            //     return new SQLiteSchema($adapter);
+             case 'SQLite':
+                 return new SQLiteSchema($adapter);
             // case 'PostgreSQL':
             //     return new PostgresSchema($adapter);
         }

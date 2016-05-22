@@ -19,10 +19,7 @@ class CreateDirectusBookmarksTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_bookmarks", array(
-        "options"=> "Engine=InnoDB DEFAULT CHARSET=utf8"
-        )
-      );
+      $t = $this->create_table("directus_bookmarks");
 
       //columns
       $t->column("user", "integer", array("limit"=>11, "default"=>NULL));

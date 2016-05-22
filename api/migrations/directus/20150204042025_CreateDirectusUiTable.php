@@ -10,7 +10,7 @@ CREATE TABLE `directus_ui` (
   `value` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique` (`table_name`,`column_name`,`ui_name`,`name`)
-  
+
 INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
 VALUES
   ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');
@@ -25,7 +25,6 @@ class CreateDirectusUiTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_ui", array(
           "id"=>false,
-          "options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8"
         )
       );
 
@@ -68,9 +67,13 @@ class CreateDirectusUiTable extends Ruckusing_Migration_Base
         )
       );
 
-      $this->execute("INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
-VALUES
-  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');");
+        $this->insert('directus_ui', [
+            'table_name' => 'directus_users',
+            'column_name' => 'avatar_file_id',
+            'ui_name' => 'single_file',
+            'name' => 'allowed_filetypes',
+            'value' => 'image/'
+        ]);
     }//up()
 
     public function down()

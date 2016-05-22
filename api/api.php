@@ -332,7 +332,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = Auth::getUserInfo();
-        $set = array('last_login' => new Expression('NOW()'), 'access_token' => $userSession['access_token']);
+        $datetime = new DateTime('NOW', new DateTimeZone('GMT'));
+        $set = array('last_login' => $datetime->format('Y-m-d H:i:s'), 'access_token' => $userSession['access_token']);
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);

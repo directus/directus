@@ -27,7 +27,7 @@ class CreateDirectusActivityTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_activity", array(
         "id"=> false,
-        "options"=> "Engine=InnoDB CHARSET=utf8 COMMENT='Contains history of revisions'"
+        "options"=> "COMMENT='Contains history of revisions'"
         )
       );
 
@@ -46,7 +46,7 @@ class CreateDirectusActivityTable extends Ruckusing_Migration_Base
       $t->column("row_id", "integer", array("limit"=>10, "default"=>0));
       $t->column("user", "integer", array("limit"=>10, "null"=>false, "default"=>0));
       $t->column("data", "text");
-      $t->column("delta", "text", array("null"=>false));
+      $t->column("delta", "text", array("null"=>true));
       $t->column("parent_id", "integer", array("limit"=>11, "default"=>NULL));
       $t->column("parent_changed", "tinyinteger", array("limit"=>1, "null"=>false, "comment"=>"Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)"));
       $t->column("datetime", "datetime", array("default"=>NULL));

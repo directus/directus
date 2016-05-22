@@ -16,7 +16,6 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_groups", array(
         "id"=>false,
-        "options"=>"Engine=InnoDB DEFAULT CHARSET=utf8"
         )
       );
 
@@ -47,7 +46,12 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
       );
       $t->finish();
 
-      $this->execute("INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`) VALUES (1,'Administrator',NULL,0);");
+      $this->insert('directus_groups', [
+          'id' => 1,
+          'name' => 'Administrator',
+          'description' => NULL,
+          'restrict_to_ip_whitelist' => 0
+      ]);
     }//up()
 
     public function down()

@@ -5,11 +5,28 @@ class InsertSystemTableUserColumn extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        $this->execute("INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`)
-      VALUES
-        ('directus_bookmarks',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL),
-        ('directus_files',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL),
-        ('directus_preferences',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL);");
+        $tables = [
+            'directus_bookmarks',
+            'directus_files',
+            'directus_preferences'
+        ];
+
+        foreach($tables as $tableName) {
+            $this->insert($tableName, [
+                'table_name' => $tableName,
+                'hidden' => 1,
+                'single' => 0,
+                'is_junction_table' => 0,
+                'footer' => 0,
+                'list_view' => NULL,
+                'column_groupings' => NULL,
+                'primary_column' => NULL,
+                'user_create_column' => 'user',
+                'user_update_column' => NULL,
+                'date_create_column' => NULL,
+                'date_update_column' => NULL
+            ]);
+        }
     }//up()
 
     public function down()

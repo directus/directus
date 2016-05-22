@@ -31,7 +31,7 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_files", array(
           "id"=>false,
-          "options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage'"
+          "options"=>"COMMENT='Directus Files Storage'"
         )
       );
 

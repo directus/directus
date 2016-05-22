@@ -32,7 +32,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_columns", array(
         "id"=>false,
-        "options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8"
         )
       );
 
@@ -140,10 +139,48 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         )
       );
 
-      $this->execute("INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
+      $this->insert('directus_columns', [
+          'table_name' => 'directus_users',
+          'column_name' => 'group',
+          'data_type' => NULL,
+          'ui' => 'many_to_one',
+          'system' => 0,
+          'master' => 0,
+          'hidden_input' => 0,
+          'hidden_list' => 0,
+          'required' => 0,
+          'relationship_type' => 'MANYTOONE',
+          'table_related' => 'directus_groups',
+          'junction_table' => NULL,
+          'junction_key_left' => NULL,
+          'junction_key_right' => 'group_id',
+          'sort' => NULL,
+          'comment' => ''
+      ]);
+
+      $this->insert('directus_columns', [
+        'table_name' => 'directus_users',
+        'column_name' => 'avatar_file_id',
+        'data_type' => 'INT',
+        'ui' => 'single_file',
+        'system' => 0,
+        'master' => 0,
+        'hidden_input' => 0,
+        'hidden_list' => 0,
+        'required' => 0,
+        'relationship_type' => 'MANYTOONE',
+        'table_related' => 'directus_files',
+        'junction_table' => NULL,
+        'junction_key_left' => NULL,
+        'junction_key_right' => 'avatar_file_id',
+        'sort' => NULL,
+        'comment' => ''
+      ]);
+
+      /*$this->execute("INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
 VALUES
   (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
-  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');");
+  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');");*/
     }//up()
 
     public function down()
@@ -153,7 +190,7 @@ VALUES
         "name"=>"table-column"
         )
       );
-      
+
       $this->drop_table("directus_columns");
     }//down()
 }
