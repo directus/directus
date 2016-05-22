@@ -70,7 +70,7 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
 
             $alter = in_array('alter', $permissions) ? 1 : 0;
 
-            $this->update($tableName, [
+            $this->update('directus_privileges', [
                 'listed' => $listed,
                 'to_view' => $view,
                 'to_add' => $add,
