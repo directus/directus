@@ -10,6 +10,8 @@ use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
+use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
+use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableSchema;
 use Directus\Util\Formatting;
@@ -141,6 +143,7 @@ class AclAwareRowGateway extends RowGateway {
         }
         $cmsOwnerId = $this->acl->getRecordCmsOwnerId($this, $this->table);
         if (!TableSchema::hasTableColumn($this->table, STATUS_COLUMN_NAME)) {
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
             throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . " forbidden to hard delete on table `{$this->table}` because it has status column.");
         }
 
