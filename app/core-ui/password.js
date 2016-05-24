@@ -9,7 +9,7 @@
 
 define(['app', 'backbone'], function(app, Backbone) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -17,6 +17,8 @@ define(['app', 'backbone'], function(app, Backbone) {
   Module.dataTypes = ['VARCHAR'];
   Module.skipSerializationIfNull = true;
   Module.isAPIHashed = false;
+  // Plain password before being saved.
+  Module.currentPlainPassword = '';
 
   Module.variables = [
     // Toggles the second input ("Confirm Password"). On by default.
@@ -33,7 +35,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                  {{/if}} \
                  <div style="display:block;"> \
                  <button class="btn btn-primary margin-left password-generate" style="margin-right:10px;" type="button">Generate New</button> \
-                 <!-- <button class="btn btn-primary margin-left password-toggle" type="button">Reveal Password</button> --> \
+                 <button class="btn btn-primary margin-left password-toggle" style="display:none;" type="button">Reveal Password</button> \
                  <span class="placard encrypted hide add-color margin-left-small bold">Encrypted!</span> \
                  </div> \
                  ';
@@ -76,6 +78,8 @@ define(['app', 'backbone'], function(app, Backbone) {
           for (var i = 0, n = charset.length; i < length; ++i) {
             pass += charset.charAt(Math.floor(Math.random() * n));
           }
+          this.currentPlainPassword = pass;
+          this.$el.find('.password-toggle').show();
           this.$el.data('isAPIHashed', false);
           this.$el.data('wasAPIHashed', false);
           this.$el.find('.encrypted').addClass('hide');
@@ -110,6 +114,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
         'blur input.password-primary' : function(e) {
           if(!_.isEmpty($.trim($(e.target).val()))) {
+            this.currentPlainPassword = $(e.target).val();
+            this.$el.find('.password-toggle').show();
             this.$el.data('wasAPIHashed', this.$el.data('isAPIHashed'));
             this.$el.data('isAPIHashed', false);
             this.$el.find('input[type=password]').data('oldVal', undefined);
@@ -142,6 +148,8 @@ define(['app', 'backbone'], function(app, Backbone) {
           this.$el.data('isAPIHashed', false);
           this.$el.find('.encrypted').addClass('hide');
           $password.val('');
+          this.currentPlainPassword = '';
+          this.$el.find('.password-toggle').hide();
           if($confirm.length) {
             $confirm.val('');
             $confirm.removeAttr('disabled');
@@ -215,8 +223,14 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     showPass: function() {
+      if (!this.currentPlainPassword) {
+        return;
+      }
+
       this.$el.find('input.password-primary').get(0).type = 'text';
       this.$el.find('input.password-confirm').get(0).type = 'text';
+      this.$el.find('input.password-primary').get(0).value = this.currentPlainPassword;
+      this.$el.find('input.password-confirm').get(0).value = this.currentPlainPassword;
       this.$el.find('.password-toggle').html('Mask Password');
     },
 
