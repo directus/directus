@@ -120,6 +120,25 @@ define(function(require, exports, module) {
       },this);
     },
 
+    // Get all the settings specified in the UI
+    // Do not confused this with UI variables
+    // UI Variables is used for each single UI
+    // UI Settings is used to add new Settings to Directus
+    getDirectusSettings: function() {
+      var allUISettings = [];
+
+      _.each(uis, function(ui) {
+        if (ui.settings) {
+          var settings = _.isArray(ui.settings) ? ui.settings : [ui.settings];
+          _.each(settings, function(setting) {
+            allUISettings.push(setting);
+          });
+        }
+      });
+
+      return allUISettings;
+    },
+
     // Loads an array of paths to UI's and registers them.
     // Returns a jQuery Deferred's Promise object
     load: function(paths) {

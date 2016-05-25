@@ -139,6 +139,7 @@ require(["config"], function() {
 
       // Register UI schemas
       SchemaManager.registerUISchemas(UIManager.getAllSettings());
+      SchemaManager.addSettings(UIManager.getDirectusSettings());
 
       // Register Table Schemas
       SchemaManager.register('tables', options.tables);

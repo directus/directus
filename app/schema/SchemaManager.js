@@ -144,6 +144,22 @@ define(function(require, exports, module) {
       }, this);
     },
 
+    addSetting: function(collection, data) {
+      var settingsCollection = columnSchemas['settings'][collection];
+      settingsCollection.add(new ColumnModel(data, {parse: true}));
+    },
+
+    addSettings: function(settings) {
+      _.each(settings, function(setting) {
+        if (!setting.collection) {
+          console.warn('Settings must have a collection name.');
+          return;
+        }
+
+        this.addSetting(setting.collection, _.omit(setting, 'collection'));
+      }, this);
+    },
+
     // Registers user preferences for tables (sort, visible columns etc)
     registerPreferences: function(data) {
       _.each(data, function(preference) {
