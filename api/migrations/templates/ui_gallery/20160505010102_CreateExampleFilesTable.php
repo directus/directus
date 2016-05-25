@@ -15,7 +15,6 @@ class CreateExampleFilesTable extends Ruckusing_Migration_Base
     {
         $t = $this->create_table('example_files', [
                 'id' => false,
-                'options' => 'Engine=InnoDB DEFAULT CHARSET=utf8'
             ]
         );
 

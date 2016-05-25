@@ -12,7 +12,7 @@ class InsertSystemTableUserColumn extends Ruckusing_Migration_Base
         ];
 
         foreach($tables as $tableName) {
-            $this->insert($tableName, [
+            $this->insert('directus_tables', [
                 'table_name' => $tableName,
                 'hidden' => 1,
                 'single' => 0,

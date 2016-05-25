@@ -15,7 +15,6 @@ class CreateExampleUsersTable extends Ruckusing_Migration_Base
     {
         $t = $this->create_table('example_users', [
                 'id' => false,
-                'options' => 'Engine=InnoDB DEFAULT CHARSET=utf8'
             ]
         );
 

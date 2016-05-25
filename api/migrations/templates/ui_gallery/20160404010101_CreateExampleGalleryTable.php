@@ -35,7 +35,6 @@ class CreateExampleGalleryTable extends Ruckusing_Migration_Base
     {
         $t = $this->create_table('example_gallery', [
                 'id' => false,
-                'options' => 'Engine=InnoDB DEFAULT CHARSET=utf8'
             ]
         );
 
@@ -152,14 +151,32 @@ class CreateExampleGalleryTable extends Ruckusing_Migration_Base
 
         $t->finish();
 
-        $insert = "INSERT INTO `example_gallery`
-        (`id`, `active`, `wysiwyg`, `checkbox`, `color`, `date`, `datetime`, `enum`, `multiselect`, `numeric`, `password`, `salt`, `radiobuttons`, `select`, `slider`, `slug`, `system`, `tags`, `textarea`, `textinput`, `time`, `single_file`, `user`)
-        VALUES
-        (1, 1, '<u>Test</u>', 1, '#27cd2b', '2014-07-10', '2014-07-10 11:53:00', 'ENTRY 2', 'Option 1,Option 2', 634, '74d26f2ab730ac48ee8a9c8f494508a542a6273e', '537d2d1852208', 'Option 2', 'Select 2', 46, 'test-field', 2, 'tag1,tag 2,tag 3', 'Test Text Area', 'test field', '11:58:00', NULL, 1);";
+        $this->insert('example_gallery',[
+            'active' => 1,
+            'wysiwyg' => '<u>Test</u>',
+            'checkbox' => 1,
+            'color' => '#27cd2b',
+            'date' => '2014-07-10',
+            'datetime' => '2014-07-10 11:53:00',
+            'enum' => 'ENTRY 2',
+            'multiselect' => 'Option 1,Option 2',
+            'numeric' => 634,
+            'password' => '74d26f2ab730ac48ee8a9c8f494508a542a6273e',
+            'salt' => '537d2d1852208',
+            'radiobuttons' => 'Option 2',
+            'select' => 'Select 2',
+            'slider' => 46,
+            'slug' => 'test-field',
+            'system' => 2,
+            'tags' => 'tag1,tag 2,tag 3',
+            'textarea' => 'Test Text Area',
+            'textinput' => 'test field',
+            'time' => '11:58:00',
+            'single_file' => NULL,
+            'user' => 1
+        ]);
 
-        $this->query($insert);
-
-        $insert = "INSERT INTO `directus_columns`
+        $insert = "INSERT INTO 'directus_columns`
         ( `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
         VALUES
         ('example_gallery', 'id', NULL, 'numeric', 0, 0, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, 1, ''),
@@ -191,23 +208,37 @@ class CreateExampleGalleryTable extends Ruckusing_Migration_Base
 
         $this->query($insert);
 
-        $insert = "INSERT INTO `directus_tables`
-        (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
-        VALUES
-        ('example_gallery',0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-        ('example_users',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-        ('example_files',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);";
-
-        $this->query($insert);
-
-        $insert = "INSERT INTO `directus_privileges`
-        (`id`, `table_name`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `nav_listed`, `allow_view`, `allow_add`, `allow_edit`, `allow_delete`, `allow_alter`, `status_id`)
-        VALUES
-        (DEFAULT, 'example_gallery',1,NULL,NULL,1,2,1,2,2,1,NULL),
-        (DEFAULT, 'example_users',1,NULL,NULL,1,2,1,2,2,1,NULL),
-        (DEFAULT, 'example_files',1,NULL,NULL,1,2,1,2,2,1,NULL);";
-
-        $this->query($insert);
+        $tables = ['example_gallery', 'example_users', 'example_files'];
+        foreach($tables as $tableName) {
+            $this->insert('directus_tables', [
+                'table_name' => $tableName,
+                'hidden' => $tableName == 'example_gallery' ? 0 : 1,
+                'single' => 0,
+                'is_junction_table' => $tableName == 'example_gallery' ? 0 : 1,
+                'footer' => 0,
+                'list_view' => NULL,
+                'column_groupings' => NULL,
+                'primary_column' => NULL,
+                'user_create_column' => NULL,
+                'user_update_column' => NULL,
+                'date_create_column' => NULL,
+                'date_update_column' => NULL,
+                'filter_column_blacklist' => NULL
+            ]);
+            $this->insert('directus_privileges', [
+                'table_name' => $tableName,
+                'group_id' => 1,
+                'read_field_blacklist' => NULL,
+                'write_field_blacklist' => NULL,
+                'nav_listed' => 1,
+                'allow_view' => 2,
+                'allow_add' => 1,
+                'allow_edit' => 2,
+                'allow_delete' => 2,
+                'allow_alter' => 1,
+                'status_id' => NULL
+            ]);
+        }
 
         $insert = "INSERT INTO `directus_ui`
         (`table_name`, `column_name`, `ui_name`, `name`, `value`)

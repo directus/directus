@@ -22,6 +22,7 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_messages", array(
           "id"=>false,
+          //"options"=>"ENGINE=MyISAM DEFAULT CHARSET=utf8"
         )
       );
 
@@ -51,7 +52,7 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
       );
       $t->column("datetime", "datetime", array(
           "null"=>false,
-          //"default"=>"0000-00-00 00:00:00"
+          "default"=>"0000-00-00 00:00:00"
         )
       );
       $t->column("attachment", "integer", array(

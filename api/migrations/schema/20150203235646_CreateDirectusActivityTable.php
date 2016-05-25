@@ -46,12 +46,15 @@ class CreateDirectusActivityTable extends Ruckusing_Migration_Base
       $t->column("row_id", "integer", array("limit"=>10, "default"=>0));
       $t->column("user", "integer", array("limit"=>10, "null"=>false, "default"=>0));
       $t->column("data", "text");
-      $t->column("delta", "text", array("null"=>true));
+      $t->column("delta", "text", array("null"=>false));
       $t->column("parent_id", "integer", array("limit"=>11, "default"=>NULL));
       $t->column("parent_changed", "tinyinteger", array("limit"=>1, "null"=>false, "comment"=>"Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)"));
       $t->column("datetime", "datetime", array("default"=>NULL));
       $t->column("logged_ip", "string", array("limit"=>20, "default"=>NULL));
       $t->finish();
+
+        $this->add_column('directus_activity', 'user_agent', 'string', array('limit' => 256));
+        $this->add_column('directus_activity', 'parent_table', 'string', array('limit' => 100, 'after' => 'parent_id'));
 
     }//up()
 
