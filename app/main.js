@@ -24,6 +24,7 @@ require(["config"], function() {
     'core/ListViewManager',
     'core/idle',
     'tool-tips',
+    'contextual-date',
     'core/notification'
   ],
 
