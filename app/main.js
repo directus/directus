@@ -28,7 +28,7 @@ require(["config"], function() {
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, Notification) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
 
     "use strict";
 
