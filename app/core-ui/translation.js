@@ -6,9 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app','core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -22,7 +22,7 @@ define(['app','backbone'], function(app, Backbone) {
     {id: 'left_column_name', ui: 'textinput', char_length: 255, comment: "Enter Column name pointing to Languages table PK"},
   ];
 
-  Module.Input = Backbone.Layout.extend({
+  Module.Input = UIView.extend({
 
   });
 

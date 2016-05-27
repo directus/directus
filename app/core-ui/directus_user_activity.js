@@ -6,16 +6,16 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone', 'moment'], function(app, Backbone, moment) {
+define(['app','core/UIView', 'moment'], function(app, UIView, moment) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
   Module.id = 'directus_user_activity';
   Module.system = true;
   Module.sortBy = 'last_login';
 
-  Module.Input = Backbone.Layout.extend({
+  Module.Input = UIView.extend({
   });
 
   Module.list = function(options) {

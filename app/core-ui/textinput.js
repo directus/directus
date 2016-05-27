@@ -15,9 +15,9 @@
 // options.name       String            Field name
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -51,16 +51,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                     <input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
                   <span class="char-count hide">{{characters}}</span></div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    // Base Tag that the template resides within
-    tagName: 'div',
-
-    // Attributes applied to the base tag
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     // Event Declarations
@@ -163,5 +154,4 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   return Module;
-
 });

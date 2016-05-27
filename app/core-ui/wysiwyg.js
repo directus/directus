@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Overlays) {
+define(['app', 'core/UIView', 'core/overlays/overlays'], function(app, UIView, Overlays) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -48,7 +48,7 @@ define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Ov
        return new Handlebars.SafeString(text.string.replace(/\n/g, '<br/>'));
    });
 
-var template = '<style type="text/css"> \
+  var template = '<style type="text/css"> \
                   div.ui-thumbnail { \
                     float: left; \
                     margin-top: 8px; \
@@ -152,14 +152,7 @@ var template = '<style type="text/css"> \
                   <input type="hidden" name="{{name}}" class="hidden_input" value="{{{markupValue}}}">\
                 </div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -431,7 +424,6 @@ var template = '<style type="text/css"> \
   };
 
   return Module;
-
 });
 
 

@@ -6,9 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone'],function(app, Backbone) {
+define(['app', 'core/UIView'],function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -22,14 +22,7 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   Module.variables = [];
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     serialize: function() {
@@ -55,7 +48,6 @@ define(['app', 'backbone'],function(app, Backbone) {
         options: enumArray
       };
     }
-
   });
 
   Module.validate = function(value, options) {

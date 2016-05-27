@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -28,14 +28,7 @@ define(['app', 'backbone'], function(app, Backbone) {
   var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>'+
                  '<span class="char-count hide">{{characters}}</span>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -72,6 +65,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     serialize: function() {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
+
       return {
         size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
         value: value,
@@ -87,6 +81,7 @@ define(['app', 'backbone'], function(app, Backbone) {
     if (options.schema.isRequired() && _.isEmpty(value)) {
       return 'This field is required';
     }
+
     if (options.settings.has('validation_regex')) {
       var regex = new RegExp(options.settings.get('validation_regex'));
       if (!regex.test(value)) {
@@ -100,5 +95,4 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   return Module;
-
 });

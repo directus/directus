@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app','core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -25,14 +25,7 @@ define(['app','backbone'], function(app, Backbone) {
                  <input type="text" class="medium" id="tag-input" style="margin-right:10px;" placeholder="Type tag then hit enter..."><button class="btn btn-primary margin-left" type="button">Add</button> \
                  <div style="width:84%;">{{#tags}}<span class="tag">{{this}}</span>{{/tags}}</div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile( template),
 
     events: {
@@ -71,6 +64,7 @@ define(['app','backbone'], function(app, Backbone) {
     serialize: function() {
       //Filter out empty tags
       this.tags = _.filter(this.tags, function(tag) { return(tag !== ''); });
+
       return {
         value: this.tags.join(','),
         name: this.options.name,
@@ -82,7 +76,6 @@ define(['app','backbone'], function(app, Backbone) {
     initialize: function() {
       this.tags = this.options.value ? this.options.value.split(',') : [];
     }
-
   });
 
   Module.validate = function(value, options) {
@@ -93,11 +86,12 @@ define(['app','backbone'], function(app, Backbone) {
 
   Module.list = function(options) {
     var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
-    console.log(tags);
+
     if(tags.length){
       for (var i = 0; i < tags.length; i++) {
         tags[i] = '<span class="tag-static">' + tags[i] + '</span>';
       }
+
       return tags.join(' ');
     } else {
       return options.model.attributes.tags;

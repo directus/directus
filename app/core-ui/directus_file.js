@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
   'use strict';
 
@@ -119,12 +119,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                     <input id="urlInput" type="text" class="swap-method medium" placeholder="eg: https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
                   </div>';
 
-  Module.Input = Backbone.Layout.extend({
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     serialize: function() {
-
       var data = {},
           userId,
           model = this.model,
@@ -177,12 +175,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       }
 
       return data;
-    },
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
     },
 
     events: {
@@ -240,6 +232,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       }
       this.listenTo(this.model, 'change', this.render);
     },
+
     afterRender: function() {
       var timer;
       var $dropzone = this.$el.find('.ui-thumbnail');

@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app','core/UIView'], function(app, UIView) {
 
   'use strict';
 
@@ -21,12 +21,7 @@ define(['app','backbone'], function(app, Backbone) {
 
   Module.variables = [];
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -59,7 +54,6 @@ define(['app','backbone'], function(app, Backbone) {
         readonly: !this.options.canWrite
       };
     }
-
   });
 
   Module.validate = function(value, options) {
@@ -74,7 +68,6 @@ define(['app','backbone'], function(app, Backbone) {
     //var val = options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100);
     return val;//val;
   };
-
 
   return Module;
 });

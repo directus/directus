@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -34,14 +34,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   {{/if}} \
                   <input type="hidden" name="{{name}}">';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -83,11 +76,8 @@ define(['app', 'backbone'], function(app, Backbone) {
 
     serialize: function() {
       var value = this.options.value || '';
-
       var values = value.split(this.options.settings.get('delimiter'));
-
       var options = this.options.settings.get('options');
-
       var cb_list = this.options.settings.get('type') == "cb_list";
 
       if (_.isString(options)) {
@@ -122,5 +112,4 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   return Module;
-
 });

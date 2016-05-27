@@ -9,7 +9,7 @@
 
 define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -37,13 +37,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
   //name="{{name}}"
 
   Module.Input = UIView.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
     events: {
       'change select': function(e) {
         var model = this.model.get(this.name);
@@ -56,7 +49,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
     template: Handlebars.compile(template),
 
     serialize: function() {
-
       var optionTemplate = function(){};
       if(this.options.settings.has('visible_column_template')) {
         optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
@@ -130,7 +122,6 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       //this.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }
-
   });
 
   Module.validate = function(value, options) {

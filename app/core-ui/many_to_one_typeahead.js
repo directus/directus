@@ -9,7 +9,7 @@
 
 define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIView, Utils) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -58,15 +58,7 @@ define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIVi
                 </style>';
 
   Module.Input = UIView.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
     events: {},
-
     template: Handlebars.compile(template),
 
     serialize: function() {
@@ -140,7 +132,6 @@ define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIVi
         model.clear();
         model.set({id: selectedId});
       });
-
     },
 
     initialize: function(options) {
@@ -149,7 +140,6 @@ define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIVi
       var value = this.model.get(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
     }
-
   });
 
   Module.validate = function(value, options) {};

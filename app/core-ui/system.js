@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app','core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -35,12 +35,7 @@ define(['app','backbone'], function(app, Backbone) {
 
   Module.variables = [];
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -84,19 +79,18 @@ define(['app','backbone'], function(app, Backbone) {
       });
 
       data.name = this.options.name;
-
       data.readonly = !this.options.canWrite;
+
       return data;
     }
-
   });
 
   Module.list = function(options) {
     var val = (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
     //var val = options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100);
+
     return val;//val;
   };
-
 
   return Module;
 });

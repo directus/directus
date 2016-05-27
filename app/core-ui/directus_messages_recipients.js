@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -22,14 +22,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                  <div style="width:100%;max-width:700px;" id="directus_messages_recipients-recipients">{{#tags}}<span class="label tag recipient-tag">{{this}}</span>{{/tags}}</div>\
                  <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -136,16 +129,12 @@ define(['app', 'backbone'], function(app, Backbone) {
       });
 
       this.searchEngine = engine;
-
       engine.initialize();
 
       this.$("#directus_messages_recipients-input").typeahead({
-
         limit: 5,
-
         template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar"><span class="recipient-name">{{name}}</span></div>')
-      },
-      {
+      }, {
         displayKey: 'name',
         source: engine.ttAdapter()
       });
@@ -163,7 +152,6 @@ define(['app', 'backbone'], function(app, Backbone) {
         me.searchEngine.add(me.datums);
         me.renderTags();
       });
-
     },
 
     initialize: function() {
@@ -178,5 +166,4 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   return Module;
-
 });

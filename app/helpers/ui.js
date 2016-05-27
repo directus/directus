@@ -13,5 +13,4 @@ define(function() {
   };
 
   return UIHelper;
-
 });

@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
   'use strict';
 
@@ -40,21 +40,13 @@ define(['app', 'backbone'], function(app, Backbone) {
                  </div> \
                  ';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     /**
      * Events vary depending on the presence or absence of the confirm password field.
      */
     events: function() {
-
       var $password = this.$el.find('input.password-primary'),
           $confirm = this.$el.find('input.password-confirm'),
           changeTargetClass = $confirm.length ? 'password-confirm' : 'password-primary';
@@ -138,7 +130,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       };
 
       eventsHash['change input.' + changeTargetClass] = function(e) {
-
         var primaryPass = $password.val();
         if(!primaryPass) {
           return;
@@ -202,7 +193,6 @@ define(['app', 'backbone'], function(app, Backbone) {
             clearFields();
           }
         });
-
       };
 
       return eventsHash;
@@ -239,7 +229,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       this.$el.find('input.password-confirm').get(0).type = 'password';
       this.$el.find('.password-toggle').html('Reveal Password');
     }
-
   });
 
   Module.validate = function(value,options) {
@@ -260,7 +249,6 @@ define(['app', 'backbone'], function(app, Backbone) {
         return "You Must Hash Your Password";
       }
     }
-
   };
 
   Module.list = function(options) {
@@ -268,5 +256,4 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   return Module;
-
 });

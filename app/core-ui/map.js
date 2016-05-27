@@ -16,9 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -70,15 +70,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="medium" readonly/>';
 
   //If ALIAS, only fills in fields set in options, if varchar, sets to {lat},{lng}
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
-
     events: {
     },
 
@@ -248,5 +241,4 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   };
 
   return Module;
-
 });

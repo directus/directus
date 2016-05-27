@@ -6,9 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Backbone, marked) {
+define(['app', 'core/UIView', '../assets/js/libs/marked.min.js'],function(app, UIView, marked) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -39,15 +39,7 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
     {id: 'sanitize', ui: 'checkbox'}
   ];
 
-
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field markdown-preview'
-    },
-
+  Module.Input = UIView.extend({
     events: {
       'keyup': 'renderMarkdown',
       'change textarea.md-editor': 'renderMarkdown',
@@ -66,7 +58,6 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
     },
 
     renderMarkdown: function() {
-//      console.log(marked.defaults);
       var value = this.$('.md-editor').val();
       if (value) {
         this.$('.md-editor-preview').html(marked(value));
@@ -94,7 +85,6 @@ define(['app', 'backbone', '../assets/js/libs/marked.min.js'],function(app, Back
         readonly: !this.options.canWrite
       };
     }
-
   });
 
   Module.validate = function(value, options) {

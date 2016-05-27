@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -36,18 +36,12 @@ define(['app', 'backbone'], function(app, Backbone) {
                   {{/options}} \
                   </div>';
 
-  Module.Input = Backbone.Layout.extend({
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
 
     serialize: function() {
       var options = [];
+
       if(this.options.settings.get('options')) {
         options = _.map(this.options.settings.get('options').split(','), function(item) {
           return {
@@ -63,7 +57,6 @@ define(['app', 'backbone'], function(app, Backbone) {
         comment: this.options.schema.get('comment')
       };
     }
-
   });
 
   // @TODO: Not working – not even being called
@@ -78,5 +71,4 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   return Module;
-
 });

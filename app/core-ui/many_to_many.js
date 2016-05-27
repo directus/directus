@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, Backbone, Onetomany, TableView, Overlays) {
+define(['app', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, Onetomany, TableView, Overlays) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -200,7 +200,6 @@ define(['app', 'backbone', 'core-ui/one_to_many', 'core/table/table.view', 'core
         });
       }
     }
-
   });
 
   Module.validate = function(value, options) {

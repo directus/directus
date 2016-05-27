@@ -26,9 +26,9 @@
 }
 */
 
-define(['app', 'backbone'],function(app, Backbone) {
+define(['app', 'core/UIView'],function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -47,8 +47,7 @@ define(['app', 'backbone'],function(app, Backbone) {
     {id: 'allow_null', ui: 'checkbox'}
   ];
 
-  Module.Input = Backbone.Layout.extend({
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     // Event Declarations
@@ -56,15 +55,10 @@ define(['app', 'backbone'],function(app, Backbone) {
       'input select': 'updateVisibleColumns'
     },
 
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
     // Update visible fields/inputs
     updateVisibleColumns: function(e) {
       var columnBlacklist = this.$el.find('select option:selected').data('columnBlacklist').split(",");
+
       $('.batchcontainer').show(); // Needs to be scoped/limited to this overlay
       for (var i = 0; i < columnBlacklist.length; i++) {
         $("#edit_field_" + columnBlacklist[i]).parent().parent().parent().hide();
@@ -102,11 +96,11 @@ define(['app', 'backbone'],function(app, Backbone) {
         placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
       };
     }
-
   });
 
   Module.list = function(options) {
     var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+
     return val;
   };
 

@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, moment, UIView) {
+define(['app', 'core/UIView', 'moment'], function(app, UIView, moment) {
 
   'use strict';
 
@@ -47,12 +47,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   }
 
   Module.Input = UIView.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
-
     template: Handlebars.compile(template),
 
     events: {
@@ -78,8 +72,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     },
 
     initialize: function() {
-      //this.value = moment(this.options.value);
-
       var value = this.model.get(this.name);
       if(undefined === value) {
         this.value = moment('0000-00-00');
@@ -87,7 +79,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
         this.value = moment(value);
       }
     }
-
   });
 
   Module.validate = function(value, options) {
@@ -99,12 +90,13 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
   Module.list = function(options) {
     var value = options.value;
     var format = options.settings.get('format');
+
     if (format) {
       value = moment(value).format(removeTimeFromFormat(format));
     }
+
     return value;
   };
 
   return Module;
-
 });

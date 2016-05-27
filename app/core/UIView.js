@@ -1,13 +1,15 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var Backbone = require('backbone');
 
   require('plugins/backbone.layoutmanager');
 
   module.exports = Backbone.Layout.extend({
+    // Base Tag that the template resides within
     tagName: 'div',
+    // Attributes applied to the base tag
     attributes: {
       class: 'field'
     },

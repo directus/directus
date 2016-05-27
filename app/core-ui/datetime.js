@@ -1,6 +1,6 @@
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'moment', 'core/UIView', 'helpers/ui'], function(app, Backbone, moment, UIView, UIHelper) {
+define(['app', 'core/UIView', 'moment', 'helpers/ui'], function(app, UIView, moment, UIHelper) {
 
   'use strict';
 

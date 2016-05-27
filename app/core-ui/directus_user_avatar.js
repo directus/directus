@@ -6,9 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app','core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -22,7 +22,7 @@ define(['app','backbone'], function(app, Backbone) {
     return template({user: parseInt(options.model.id,10)});
   };
 
-  Module.Input = Backbone.Layout.extend({
+  Module.Input = UIView.extend({
     tagName: 'fieldset',
     initialize: function(options) {
       var user = app.users.get(options.value);

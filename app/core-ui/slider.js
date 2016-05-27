@@ -16,9 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -42,14 +42,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </style> \
                   <input type="range" class="slider" value="{{value}}" name="{{name}}" id="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}"> <span class="slider-value">{{value}}</span>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -64,7 +57,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
-
       if (this.options.model.isNew() && this.options.schema.has('default_value')) {
         this.options.value = this.options.schema.get('default_value');
       }
@@ -82,7 +74,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function() {
       //
     }
-
   });
 
   Module.validate = function(value, options) {
@@ -97,5 +88,4 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   return Module;
-
 });

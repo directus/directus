@@ -16,7 +16,7 @@ define([
   ],
   function(app, Backbone, Sortable, UIView, Overlays) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -33,13 +33,6 @@ define([
   ];
 
   Module.Input = UIView.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
     events: {
       'click span[data-action=add]': 'addItem',
       'click span[data-action=insert]': 'insertItem',
@@ -159,7 +152,6 @@ define([
         }
       };
 
-
       app.router.overlayPage(view);
 
       view.save = function() {
@@ -172,9 +164,9 @@ define([
     insertItem: function() {
       var collection = app.files;
       var view = new Overlays.ListSelect({collection: collection});
-      app.router.overlayPage(view);
-
       var me = this;
+
+      app.router.overlayPage(view);
 
       view.save = function() {
         _.each(view.table.selection(), function(id) {

@@ -7,9 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'core/UIView'], function(app, Backbone, TableView, SchemaManager, UIView) {
+define(['app', 'core/UIView', 'core/table/table.view'], function(app, UIView, TableView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -27,13 +27,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
                   <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}';
 
   Module.Input = UIView.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
     template: Handlebars.compile(template),
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
@@ -45,6 +38,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       if (!this.canEdit) {
         return;
       }
+
       var cid = $(e.target).closest('tr').attr('data-cid');
       var model = this.relatedCollection.get(cid, true);
       this.editModel(model);
@@ -84,7 +78,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       };
 
       app.router.overlayPage(view);
-      
+
       view.save = function() {
         model.set(model.diff(view.editView.data()));
         app.router.removeOverlayPage(this);
@@ -92,7 +86,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     addModel: function(model) {
-
       var EditView = require("modules/tables/views/EditView");
       var collection = this.relatedCollection;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
@@ -125,6 +118,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         var data = view.editView.data();
         data[columnName] = id;
         model.set(data);
+
         if (model.isValid()) {
           app.router.removeOverlayPage(this);
           collection.add(model, {nest: true});
@@ -150,7 +144,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     initialize: function (options) {
-
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
            'ONETOMANY' !== this.columnSchema.relationship.get('type')) {
@@ -161,13 +154,11 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       var relatedCollection = this.model.get(this.name);
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
-
       var ids = [];
 
       ids = relatedCollection.pluck('id');
 
       if(ids.length > 0) {
-
         //Make sure column we are joining on is respected
         var filters = relatedCollection.filters;
         if(filters.columns_visible) {
@@ -175,6 +166,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         } else {
           filters.columns_visible = [joinColumn];
         }
+
         //Pass this filter to select only where column = val
         filters.related_table_filter = {column: joinColumn, val: this.model.id};
 
@@ -187,7 +179,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
       this.showAddButton = this.columnSchema.options.get('add_button') === "1";
-
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         selectable: false,
@@ -223,7 +214,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.relatedCollection = relatedCollection;
     }
-
   });
 
   Module.list = function() {

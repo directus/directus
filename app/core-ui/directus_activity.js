@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app','core/UIView'], function(app, UIView) {
 
   'use strict';
 
@@ -16,7 +16,7 @@ define(['app','backbone'], function(app, Backbone) {
   Module.system = true;
 
 
-  Module.Input = Backbone.Layout.extend({
+  Module.Input = UIView.extend({
   });
 
   Module.list = function(options) {

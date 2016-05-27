@@ -19,10 +19,11 @@
 define([
     'app',
     'backbone',
+    'core/UIView',
     'core/table/table.view',
     'core/overlays/overlays'
   ],
-  function(app, Backbone, TableView, Overlays) {
+  function(app, Backbone, UIView, TableView, Overlays) {
 
   'use strict';
 
@@ -165,14 +166,7 @@ define([
                     <span data-action="swap">Directus Files</span> \
                   </div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -209,7 +203,6 @@ define([
     },
 
     getLinkData: function(url) {
-
       if(!url) {
         return;
       }
@@ -361,9 +354,7 @@ define([
     },
 
     initialize: function() {
-
       this.userId = app.users.getCurrentUser().id;
-
       this.fileModel = this.options.value;
       this.fileModel.on('change', this.render, this);
       //this.collection = app.getEntries('directus_files');
@@ -372,7 +363,6 @@ define([
         this.listenTo(this.collection, 'reset', this.render);
       }
     }
-
   });
 
   Module.validate = function(value, options) {
@@ -400,5 +390,4 @@ define([
   };
 
   return Module;
-
 });

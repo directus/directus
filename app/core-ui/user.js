@@ -6,9 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app','core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -21,15 +21,8 @@ define(['app','backbone'], function(app, Backbone) {
     // {id: 'mirrored_field', ui: 'textinput', char_length:200}
   ];
 
-  Module.Input = Backbone.Layout.extend({
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     initialize: function(options) {
-
       // If editing a new item, use the current user
       if(options.model.isNew()){
         options.value = app.authenticatedUserId;

@@ -6,9 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone'],function(app, Backbone) {
+define(['app', 'core/UIView'],function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -25,15 +25,8 @@ define(['app', 'backbone'],function(app, Backbone) {
     {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
   ];
 
-  Module.Input = Backbone.Layout.extend({
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
 
     serialize: function() {
       var selectedValue = this.options.value;
@@ -45,9 +38,11 @@ define(['app', 'backbone'],function(app, Backbone) {
 
       options = _.map(options, function(value, key) {
         var item = {};
+
         item.value = value;
         item.key = key;
         item.selected = (item.key == selectedValue);
+
         return item;
       });
 
@@ -60,7 +55,6 @@ define(['app', 'backbone'],function(app, Backbone) {
         placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
       };
     }
-
   });
 
   Module.validate = function(value, options) {
@@ -71,6 +65,7 @@ define(['app', 'backbone'],function(app, Backbone) {
 
   Module.list = function(options) {
     var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+
     return val;
   };
 

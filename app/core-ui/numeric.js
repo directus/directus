@@ -6,9 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -23,15 +23,8 @@ define(['app', 'backbone'], function(app, Backbone) {
     {id: 'allow_null', ui: 'checkbox', def: '0'}
   ];
 
-  Module.Input = Backbone.Layout.extend({
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
 
     events: {
       'keyup input': 'checkChars',
@@ -71,7 +64,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function() {
       // this.hasDecimals = (['float', 'decimal', 'numeric'].indexOf(this.options.schema.get('type')) > -1);
     }
-
   });
 
   Module.validate = function(value, options) {

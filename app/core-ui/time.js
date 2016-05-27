@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, moment, UIView) {
+define(['app', 'moment', 'core/UIView'], function(app, moment, UIView) {
 
   'use strict';
 
@@ -49,7 +49,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   <a class="now secondary-info">Now</a>';
 
   Module.Input = UIView.extend({
-
     template: Handlebars.compile(template),
 
     events: {

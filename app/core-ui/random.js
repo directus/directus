@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/notification'], function(app, Backbone, Notification) {
+define(['app', 'core/UIView', 'core/notification'], function(app, UIView, Notification) {
 
   'use strict';
 
@@ -30,14 +30,7 @@ define(['app', 'backbone', 'core/notification'], function(app, Backbone, Notific
                   <span class="placard generated hide add-color margin-left-small bold">Generated!</span> \
                   </div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {

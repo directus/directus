@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIView'], function(app, UIView) {
 
   'use strict';
 
@@ -60,12 +60,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </style> \
                   <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><span class="position-offset"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="e.g. #bbbbbb"></span> <span class="invalid"></span>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
+  Module.Input = UIView.extend({
     template: Handlebars.compile(template),
 
     events: {
@@ -105,7 +100,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function() {
       //
     }
-
   });
 
   Module.validate = function(value, options) {
@@ -121,5 +115,4 @@ define(['app', 'backbone'], function(app, Backbone) {
   };
 
   return Module;
-
 });
