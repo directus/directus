@@ -16,9 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
+define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, moment, UIView) {
 
-  "use strict";
+  'use strict';
 
   var Module = {};
 
@@ -46,15 +46,9 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   } \
                   </style> \
                   <input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                  <a class="now">Now</a>';
+                  <a class="now secondary-info">Now</a>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
+  Module.Input = UIView.extend({
 
     template: Handlebars.compile(template),
 
@@ -68,21 +62,17 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
     },
 
     serialize: function() {
-      var data = {};
-
-      data.name = this.options.name;
-      data.comment = this.options.schema.get('comment');
-      data.value = this.value;
-
-      data.readonly = !this.options.canWrite;
-
-      return data;
+      return {
+        name: this.options.name,
+        comment: this.options.schema.get('comment'),
+        value: this.value,
+        readonly: !this.options.canWrite
+      };
     },
 
     initialize: function() {
       this.value = this.options.value;
     }
-
   });
 
   Module.validate = function(value, options) {
@@ -93,23 +83,25 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
   Module.list = function(options) {
     if(!options.value) {
-      return "-";
+      return '-';
     }
 
-    var include_seconds = (options.settings && options.settings.has('include_seconds') && options.settings.get('include_seconds') == '1')? true : false;
+    var settings = options.settings;
+    var include_seconds = (settings && settings.has('include_seconds') && settings.get('include_seconds') == 1)? true : false;
+    var date = new Date();
+    var timeParts = options.value.split(":");
 
-    var d = new Date();
-    var time = options.value.split(":");
-    d.setHours( parseInt(time[0],10) + (time[2] ? 12 : 0) );
-    d.setMinutes( parseInt(time[1],10) || 0 );
-    d.setSeconds( parseInt(time[2],10) || 0 );
-    var hours = d.getHours();
-    var minutes = d.getMinutes();
-    var seconds = (d.getSeconds() === 0) ? '00' : d.getSeconds();
+    date.setHours(parseInt(timeParts[0],10) + (timeParts[2] ? 12 : 0) );
+    date.setMinutes(parseInt(timeParts[1],10) || 0 );
+    date.setSeconds(parseInt(timeParts[2],10) || 0 );
+
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = (date.getSeconds() === 0) ? '00' : date.getSeconds();
 
     var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
-
     var suffix = (hours >= 12)? 'pm' : 'am';
+
     hours = (hours > 12)? hours -12 : hours;
     hours = (hours == '00')? 12 : hours;
 
@@ -117,5 +109,4 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   };
 
   return Module;
-
 });

@@ -7,15 +7,13 @@ define(function(require, exports, module) {
   require('plugins/backbone.layoutmanager');
 
   module.exports = Backbone.Layout.extend({
-
     tagName: 'div',
-
+    attributes: {
+      class: 'field'
+    },
     name: null,
-
     columnSchema: null,
-
     model: null,
-
     settings: null,
 
    /**
@@ -31,18 +29,13 @@ define(function(require, exports, module) {
     * @param options.settings   UI Settings
     */
     constructor: function UIView(options) {
-
       this.name = options.name;
       this.columnSchema = options.model.getStructure().get(this.name);
       this.settings = this.columnSchema.options;
-
       this.isRelational = (this.columnSchema.relationship !== undefined);
 
       // Default LayoutManager constructor
       UIView.__super__.constructor.call(this, options);
-
     }
-
   });
-
 });
