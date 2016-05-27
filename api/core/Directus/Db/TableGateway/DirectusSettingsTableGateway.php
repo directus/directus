@@ -88,28 +88,9 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
 
     // Since ZF2 doesn't support “INSERT…ON DUPLICATE KEY UDPATE” we need some raw SQL
     public function setValues($collection, $data) {
-
-        $whiteList = array(
-            'files' => array(
-                    'file_naming',
-                    'thumbnail_quality',
-                    'thumbnail_crop_enabled',
-                    'youtube_api_key'
-                ),
-            'global' => array(
-                    'project_name',
-                    'project_url',
-                    'cms_user_auto_sign_out',
-                    'rows_per_page',
-                    'cms_thumbnail_url'
-                )
-        );
-
         if ($collection !== 'files' && $collection !== 'global') {
             throw new \Exception("The settings collection $collection is not supported");
         }
-
-        $data = ArrayUtils::pick($data, $whiteList[$collection]);
 
         foreach ($data as $key => $value) {
             $parameters[] = '(' .
