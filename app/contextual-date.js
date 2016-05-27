@@ -1,7 +1,9 @@
-define(['moment', 'jquery'], function(moment, $) {
+define(['moment', 'jquery', 'core/interval'], function(moment, $) {
+  // time in milliseconds before update
+  var waitTime = 60000;
   // loop through all the contextual date updater
   // every 60s and update its contextual date
-  setInterval(function() {
+  var updateTime = function() {
     var $elements = $('.contextual-date-updater[data-date]');
 
     _.each($elements, function(element) {
@@ -16,5 +18,7 @@ define(['moment', 'jquery'], function(moment, $) {
         $element.text(date.fromNow());
       }
     });
-  }, 60000);
+  };
+
+  interval(updateTime, waitTime);
 });
