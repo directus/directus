@@ -31,8 +31,9 @@ define(function(require, exports, module) {
     * @param options.settings   UI Settings
     */
     constructor: function UIView(options) {
+      var structure = options.model.getStructure() || options.model.structure || options.structure;
       this.name = options.name;
-      this.columnSchema = options.model.getStructure().get(this.name);
+      this.columnSchema = structure.get(this.name);
       this.settings = this.columnSchema.options;
       this.isRelational = (this.columnSchema.relationship !== undefined);
 
