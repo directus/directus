@@ -42,6 +42,13 @@ define(['app', 'core/UIView'], function(app, UIView) {
     {id: 'showLatLng', ui: 'checkbox', comment: 'Display latlng Textbox below map'}
   ];
 
+  Module.settings = [{
+    'collection': 'global',
+    id: 'google_api_key',
+    ui: 'textinput',
+    char_length:200
+  }];
+
   var template =  '<style>#pac-input { \
         background-color: #fff; \
         padding: 0 11px 0 13px; \
@@ -156,8 +163,9 @@ define(['app', 'core/UIView'], function(app, UIView) {
         var latlngVal = e.latLng.lat() + "," + e.latLng.lng();
         that.$el.find('input').val(latlngVal);
 
+        var apiKey = that.getApiKey();
         //Query Geocode api to get street info about specified latlong
-        $.get('https://maps.googleapis.com/maps/api/geocode/json', {latlng: latlngVal, key: that.options.settings.get('apiKey'), result_type:"street_address"}, function(data) {
+        $.get('https://maps.googleapis.com/maps/api/geocode/json', {latlng: latlngVal, key: apiKey, result_type:"street_address"}, function(data) {
           if(data.results && data.results.length > 0) {
             data = data.results[0].address_components;
             var address = {};
@@ -201,6 +209,10 @@ define(['app', 'core/UIView'], function(app, UIView) {
       });
     },
 
+    getApiKey: function() {
+      return this.options.settings.get('apiKey') || app.settings.get('global').get('google_api_key');
+    },
+
     serialize: function() {
       var value = this.options.value || '';
 
@@ -226,7 +238,7 @@ define(['app', 'core/UIView'], function(app, UIView) {
       //Include the Google JSAPI for using Maps
       require(['https://www.google.com/jsapi'], function() {
         //Load Maps API using provided key, and call initializeMap() when API is loaded
-        google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + that.options.settings.get('apiKey'), callback: function() {that.initializeMap();}});
+        google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + that.getApiKey(), callback: function() {that.initializeMap();}});
       });
     }
   });
