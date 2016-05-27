@@ -12,7 +12,12 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
       options.type = type;
     }
 
-    options.text = '<b>'+title+'</b><br>'+details;
+    var titleText = '';
+    if (title) {
+      titleText += '<b>'+title+'</b><br>';
+    }
+
+    options.text = titleText+details;
 
     return noty(options);
   }
