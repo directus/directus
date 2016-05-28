@@ -1,4 +1,4 @@
-define(['moment', 'jquery', 'core/interval'], function(moment, $) {
+define(['moment', 'jquery', 'core/interval'], function(moment, $, interval) {
   // time in milliseconds before update
   var waitTime = 60000;
   // loop through all the contextual date updater
