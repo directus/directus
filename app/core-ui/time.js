@@ -95,14 +95,13 @@ define(['app', 'moment', 'core/UIView'], function(app, moment, UIView) {
     date.setSeconds(parseInt(timeParts[2],10) || 0 );
 
     var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var seconds = (date.getSeconds() === 0) ? '00' : date.getSeconds();
-
+    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
     var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
     var suffix = (hours >= 12)? 'pm' : 'am';
 
-    hours = (hours > 12)? hours -12 : hours;
-    hours = (hours == '00')? 12 : hours;
+    hours = (hours > 12) ? hours-12 : hours;
+    hours = (hours == '00') ? 12 : hours;
 
     return (options.value) ? hours+':'+minutes+secondsFormat+' '+suffix : '';
   };
