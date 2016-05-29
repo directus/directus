@@ -11,7 +11,7 @@ define(function(require, module, exports) {
     id: null,
     // (mysql) database data types that supports
     dataTypes: [],
-    // UI options
+    // UI Options that can be set in Column Settings Page
     variables: [],
     // UI global options. (Directus Settings)
     settings: [],
