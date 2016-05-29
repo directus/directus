@@ -9,6 +9,7 @@ define(function(require, exports, module) {
   module.exports = Backbone.Layout.extend({
     // Handlebars template source
     templateSource: null,
+    templateCompileOptions: {},
     // Base Tag that the template resides within
     tagName: 'div',
     // Attributes applied to the base tag
@@ -38,8 +39,9 @@ define(function(require, exports, module) {
       this.columnSchema = structure.get(this.name);
       this.settings = this.columnSchema.options;
       this.isRelational = (this.columnSchema.relationship !== undefined);
+     this.templateCompileOptions = this.templateCompileOptions || {};
       if (this.templateSource) {
-        this.template = Handlebars.compile(this.templateSource);
+        this.template = Handlebars.compile(this.templateSource, this.templateCompileOptions);
       }
 
       // Default LayoutManager constructor
