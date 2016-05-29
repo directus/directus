@@ -7,9 +7,9 @@ define(function(require, module, exports) {
 
   UIComponent.extend = Backbone.Model.extend;
   _.extend(UIComponent.prototype, Backbone.Events, {
-    // unique UI name
+    // Unique UI name
     id: null,
-    // (mysql) database data types that supports
+    // Supported Data Types for this UI
     dataTypes: [],
     // UI Options that can be set in Column Settings Page
     variables: [],
@@ -17,11 +17,14 @@ define(function(require, module, exports) {
     settings: [],
     // UI Input view (UIView instance)
     Input: null,
-    // value that represents the UI
+    // Returns String That should be used to represent this UI when being listed as part of a table
+    // @param options : Object : Contains Options/Attributes for this UI (value, collection [TableCollection], model [EntriesModel], schema, settings)
     list: function(options) {
       return options.value;
     },
-    // method called to validate the UI value
+    // Validate gets called when model is attepting to save. It returns an error message if there is a validation issue, none if it is valid
+    // @param value : String : Value for this UI
+    // @param options : Object : Contains Options for this UI (collection [TableCollection], model [EntriesModel], schema, settings)
     validate: function(value, options) {
       return true;
     },
