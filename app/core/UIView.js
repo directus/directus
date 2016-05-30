@@ -7,6 +7,8 @@ define(function(require, exports, module) {
   require('plugins/backbone.layoutmanager');
 
   module.exports = Backbone.Layout.extend({
+    // Handlebars template source
+    templateSource: null,
     // Base Tag that the template resides within
     tagName: 'div',
     // Attributes applied to the base tag
@@ -36,6 +38,9 @@ define(function(require, exports, module) {
       this.columnSchema = structure.get(this.name);
       this.settings = this.columnSchema.options;
       this.isRelational = (this.columnSchema.relationship !== undefined);
+      if (this.templateSource) {
+        this.template = Handlebars.compile(this.templateSource);
+      }
 
       // Default LayoutManager constructor
       UIView.__super__.constructor.call(this, options);

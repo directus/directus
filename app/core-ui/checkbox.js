@@ -7,22 +7,14 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app','core/UIView'], function(app, UIView) {
-
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
   'use strict';
 
-  var Module = {};
-
-  var template = '<input style="height:20px;width:20px; margin-top:12px;" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}}/> \
+  var templateSource = '<input style="height:20px;width:20px; margin-top:12px;" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}}/> \
                   <input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
-
-  Module.id = 'checkbox';
-  Module.dataTypes = ['TINYINT'];
-
-  Module.variables = [];
-
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var listTemplateSource = '<input type="checkbox" {{#if selected}}checked="true"{{/if}} disabled>';
+  var Input = UIView.extend({
+    templateSource: templateSource,
 
     events: {
       'change input[type=checkbox]': function(e) {
@@ -39,12 +31,12 @@ define(['app','core/UIView'], function(app, UIView) {
         value = this.options.schema.get('def');
       }
 
-      var selected = (parseInt(value,10) === 1) ? true : false;
+      var selected = (parseInt(value,10) === 1);
 
       if (
         this.options.model.isNew() &&
         this.options.schema.has('default_value')) {
-          selected = parseInt(this.options.schema.get('default_value'),10) === 1;
+          selected = parseInt(this.options.schema.get('default_value'), 10) === 1;
       }
 
       return {
@@ -56,18 +48,21 @@ define(['app','core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-    // If a checkbox is required, it MUST be checked to save – similar to "agree to terms" functionality
-    if (options.schema.isRequired() && value == 0) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'checkbox',
+    dataTypes: ['TINYINT'],
+    Input: Input,
+    validate: function(value, options) {
+      // If a checkbox is required, it MUST be checked to save
+      // similar to "agree to terms" functionality
+      if (options.schema.isRequired() && value == 0) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      return this.compileView(listTemplateSource, {selected: !!options.value});
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var val = (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
-    //var val = options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100);
-    return val;//val;
-  };
-
-  return Module;
+  return new Component();
 });
