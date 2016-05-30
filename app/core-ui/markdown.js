@@ -6,11 +6,9 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIView', '../assets/js/libs/marked.min.js'],function(app, UIView, marked) {
+define(['app', 'core/UIComponent', 'core/UIView', '../assets/js/libs/marked.min.js'],function(app, UIComponent, UIView, marked) {
 
   'use strict';
-
-  var Module = {};
 
   var template = '<style type="text/css"> \
                   textarea.md-editor { \
@@ -28,18 +26,7 @@ define(['app', 'core/UIView', '../assets/js/libs/marked.min.js'],function(app, U
                   <textarea rows="{{rows}}" class="md-editor" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>{{rawValue}}</textarea> \
                   <div class="md-editor-preview">{{value}}</div>';
 
-  Module.id = 'markdown';
-  Module.dataTypes = ['TEXT', 'VARCHAR'];
-
-  Module.variables = [
-    {id: 'rows', ui: 'numeric', char_length: 3, def: '14'},
-    {id: 'github_flavored_markdown', ui: 'checkbox'},
-    {id: 'tables', ui: 'checkbox'},
-    {id: 'breaks', ui: 'checkbox'},
-    {id: 'sanitize', ui: 'checkbox'}
-  ];
-
-  Module.Input = UIView.extend({
+  var Input = UIView.extend({
     events: {
       'keyup': 'renderMarkdown',
       'change textarea.md-editor': 'renderMarkdown',
@@ -64,7 +51,8 @@ define(['app', 'core/UIView', '../assets/js/libs/marked.min.js'],function(app, U
       }
     },
 
-    template: Handlebars.compile(template, { noEscape: true }),
+    templateSource: template,
+    templateCompileOptions: { noEscape: true },
 
     initialize: function() {
       marked.setOptions({
@@ -87,17 +75,28 @@ define(['app', 'core/UIView', '../assets/js/libs/marked.min.js'],function(app, U
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'markdown',
+    dataTypes: ['TEXT', 'VARCHAR'],
+    variables: [
+      {id: 'rows', ui: 'numeric', char_length: 3, def: '14'},
+      {id: 'github_flavored_markdown', ui: 'checkbox'},
+      {id: 'tables', ui: 'checkbox'},
+      {id: 'breaks', ui: 'checkbox'},
+      {id: 'sanitize', ui: 'checkbox'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      var raw_val = marked(options.value);
+
+      return _.isString(raw_val) ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var raw_val = marked(options.value);
-    var val = _.isString(raw_val) ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
-    return val;
-  };
-
-  return Module;
+  return new Component();
 });

@@ -19,24 +19,14 @@
 define([
     'app',
     'backbone',
+    'core/UIComponent',
     'core/UIView',
     'core/table/table.view',
     'core/overlays/overlays'
   ],
-  function(app, Backbone, UIView, TableView, Overlays) {
+  function(app, Backbone, UIComponent, UIView, TableView, Overlays) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'single_file';
-  Module.dataTypes = ['INT'];
-
-  Module.variables = [
-    {id: 'allowed_filetypes', ui: 'textinput', char_length:200}
-  ];
-
-  //{{capitalize fileModel.title}}
 
   var template =  '<style type="text/css"> \
                   .ui-file-container:after { \
@@ -166,8 +156,8 @@ define([
                     <span data-action="swap">Directus Files</span> \
                   </div>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'click button[data-action="remove-single-file"]': 'removeFile',
@@ -365,29 +355,34 @@ define([
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'single_file',
+    dataTypes: ['INT'],
+    variables: [
+      {id: 'allowed_filetypes', ui: 'textinput', char_length:200}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      var model = options.model;
+      //@TODO: Have this not be hardcoded
+      if(!model.get('type') && model.get(options.schema.id) instanceof Backbone.Model) {
+        model = model.get(options.schema.id);
+      }
+      var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
+      var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
+      var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
+
+      var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
+      var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document.png';
+
+      return '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var model = options.model;
-    //@TODO: Have this not be hardcoded
-    if(!model.get('type') && model.get(options.schema.id) instanceof Backbone.Model) {
-      model = model.get(options.schema.id);
-    }
-    var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
-    var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
-
-    var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
-    var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document.png';
-
-    var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
-
-    return img;
-  };
-
-  return Module;
+  return new Component();
 });

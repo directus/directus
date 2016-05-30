@@ -11,28 +11,15 @@ define([
     'app',
     'backbone',
     'sortable',
+    'core/UIComponent',
     'core/UIView',
     'core/overlays/overlays',
   ],
-  function(app, Backbone, Sortable, UIView, Overlays) {
+  function(app, Backbone, Sortable, UIComponent, UIView, Overlays) {
 
   'use strict';
 
-  var Module = {};
-
-  Module.id = 'multiple_files';
-  Module.dataTypes = ['MANYTOMANY'];
-
-  Module.variables = [
-    // Toggles an "Add" button for adding new files directly into the UI
-    {id: 'add_button', ui: 'checkbox', def: '1'},
-    // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
-    {id: 'choose_button', ui: 'checkbox', def: '1'},
-    // Toggles "Remove" buttons for each file that let's you delete the file
-    {id: 'remove_button', ui: 'checkbox', def: '1'},
-  ];
-
-  Module.Input = UIView.extend({
+  var Input = UIView.extend({
     events: {
       'click span[data-action=add]': 'addItem',
       'click span[data-action=insert]': 'insertItem',
@@ -354,15 +341,27 @@ define([
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && value.length === 0) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'multiple_files',
+    dataTypes: ['MANYTOMANY'],
+    variables: [
+      // Toggles an "Add" button for adding new files directly into the UI
+      {id: 'add_button', ui: 'checkbox', def: '1'},
+      // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
+      {id: 'choose_button', ui: 'checkbox', def: '1'},
+      // Toggles "Remove" buttons for each file that let's you delete the file
+      {id: 'remove_button', ui: 'checkbox', def: '1'},
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && value.length === 0) {
+        return 'This field is required';
+      }
+    },
+    list: function() {
+      return 'x';
     }
-  };
+  });
 
-  Module.list = function() {
-    return 'x';
-  };
-
-  return Module;
+  return new Component();
 });

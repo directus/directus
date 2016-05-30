@@ -7,18 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'radiobuttons';
-  Module.dataTypes = ['VARCHAR'];
-
-  Module.variables = [
-    {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a Comma Delimited list'}
-  ];
 
   var template = '<style type="text/css"> \
                   label.radiobuttons { \
@@ -36,8 +27,8 @@ define(['app', 'core/UIView'], function(app, UIView) {
                   {{/options}} \
                   </div>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     serialize: function() {
       var options = [];
@@ -59,16 +50,20 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  // @TODO: Not working – not even being called
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'radiobuttons',
+    dataTypes: ['VARCHAR'],
+    variables: [
+      {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a Comma Delimited list'}
+    ],
+    Input: Input,
+    // @TODO: Not working – not even being called
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
+      }
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return options.value;
-  };
-
-  return Module;
+  return new Component();
 });

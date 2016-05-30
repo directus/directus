@@ -1,31 +1,9 @@
 /*jshint multistr: true */
 
-define(['app', 'core/UIView', 'moment', 'helpers/ui'], function(app, UIView, moment, UIHelper) {
+define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui'], function(app, UIComponent, UIView, moment, UIHelper) {
 
   'use strict';
 
-  var Module = {};
-
-  // UI unique name
-  Module.id = 'datetime';
-
-  // List of column data types this UI supports
-  Module.dataTypes = ['DATETIME', 'DATE', 'TIMESTAMP'];
-
-  // UI Settings
-  Module.variables = [
-    {id: 'readonly', ui: 'checkbox'},
-    {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD HH:mm:ss'},
-    {id: 'useTime', ui: 'checkbox', def: 0},
-    {id: 'include_seconds', ui: 'checkbox'},
-    {id: 'contextual_date_in_listview', ui: 'checkbox'},
-    {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
-  ];
-
-  // Directus Settings to be added.
-  Module.settings = [];
-
-  // Template source (Handlebars)
   var template =  '<style type="text/css"> \
                   input.date { \
                     display: inline; \
@@ -58,11 +36,8 @@ define(['app', 'core/UIView', 'moment', 'helpers/ui'], function(app, UIView, mom
   var dateFormat = 'YYYY-MM-DD';
   var timeFormat = 'HH:mm:ss';
 
-  // UI Input (View)
-  // This view represents the UI itself
-  Module.Input = UIView.extend({
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'blur  input.date':   'updateValue',
@@ -129,44 +104,52 @@ define(['app', 'core/UIView', 'moment', 'helpers/ui'], function(app, UIView, mom
         this.value = moment(value);
       }
     }
-
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
-    }
-
-    var date = moment(value);
-    if (!value || date.isValid()) {
-      return;
-    }
-
-    return 'Not a valid date';
-  };
-
-  // value used to represents the UI
-  Module.list = function(options) {
-    var value = options.value;
-    var format = options.settings.get('format');
-
-    if (options.settings.get('contextual_date_in_listview') == 1) {
-      var momentDate = moment(options.value);
-      value = '-';
-      if (momentDate.isValid()) {
-        value = momentDate.fromNow();
+  var Component = UIComponent.extend({
+    id: 'datetime',
+    dataTypes: ['DATETIME', 'DATE', 'TIMESTAMP'],
+    variables: [
+      {id: 'readonly', ui: 'checkbox'},
+      {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD HH:mm:ss'},
+      {id: 'useTime', ui: 'checkbox', def: 0},
+      {id: 'include_seconds', ui: 'checkbox'},
+      {id: 'contextual_date_in_listview', ui: 'checkbox'},
+      {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
       }
-    } else if (format) {
-      value = moment(value).format(format);
+
+      var date = moment(value);
+      if (!value || date.isValid()) {
+        return;
+      }
+
+      return 'Not a valid date';
+    },
+    list: function(options) {
+      var value = options.value;
+      var format = options.settings.get('format');
+
+      if (options.settings.get('contextual_date_in_listview') == 1) {
+        var momentDate = moment(options.value);
+        value = '-';
+        if (momentDate.isValid()) {
+          value = momentDate.fromNow();
+        }
+      } else if (format) {
+        value = moment(value).format(format);
+      }
+
+      return value;
+    },
+    sort: function(options) {
+      return options.value;
     }
+  });
 
-    return value;
-  };
-
-  // value used to sort the UI
-  Module.sort = function(options) {
-    return options.value;
-  };
-
-  return Module;
+  return new Component();
 });

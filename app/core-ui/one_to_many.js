@@ -7,27 +7,15 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView', 'core/table/table.view'], function(app, UIView, TableView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view'], function(app, UIComponent, UIView, TableView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'one_to_many';
-  Module.dataTypes = ['ONETOMANY'];
-
-  Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
-    {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: 'Maximum number of results to fetch'},
-    {id: 'add_button', ui: 'checkbox'},
-    {id: 'remove_button', ui: 'checkbox'}
-  ];
 
   var template = '<div class="related-table"></div> \
                   <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click button[data-action=add]': 'addRow',
@@ -216,9 +204,20 @@ define(['app', 'core/UIView', 'core/table/table.view'], function(app, UIView, Ta
     }
   });
 
-  Module.list = function() {
-    return 'x';
-  };
+  var Component = UIComponent.extend({
+    id: 'one_to_many',
+    dataTypes: ['ONETOMANY'],
+    variables: [
+      {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
+      {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: 'Maximum number of results to fetch'},
+      {id: 'add_button', ui: 'checkbox'},
+      {id: 'remove_button', ui: 'checkbox'}
+    ],
+    Input: Input,
+    list: function() {
+      return 'x';
+    }
+  });
 
-  return Module;
+  return new Component();
 });

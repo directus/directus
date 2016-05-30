@@ -7,20 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'multi_select';
-  Module.dataTypes = ['VARCHAR', 'TEXT'];
-
-  Module.variables = [
-    {id: 'type', ui: 'select', options: {options: {'select_list':'Select List','cb_list':'Checkbox List'} }},
-    {id: 'delimiter', ui: 'textinput', char_length:1, required: true  },
-    {id: 'options', ui: 'textarea', options:{'rows': 25}  }
-  ];
 
   var template = '{{#if cb_list}} \
                     {{#options}} \
@@ -34,8 +23,8 @@ define(['app', 'core/UIView'], function(app, UIView) {
                   {{/if}} \
                   <input type="hidden" name="{{name}}">';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'click select': function(e) {
@@ -101,15 +90,24 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'multi_select',
+    dataTypes: ['VARCHAR', 'TEXT'],
+    variables: [
+      {id: 'type', ui: 'select', options: {options: {'select_list':'Select List','cb_list':'Checkbox List'} }},
+      {id: 'delimiter', ui: 'textinput', char_length:1, required: true  },
+      {id: 'options', ui: 'textarea', options:{'rows': 25}  }
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
+  return new Component();
 });

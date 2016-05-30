@@ -6,25 +6,14 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-  var Module = {};
-
   var template = '<input type="text" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
 
-  Module.id = 'numeric';
-  Module.dataTypes = ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR', 'DOUBLE', 'BIGINT'];
-
-  Module.variables = [
-    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    {id: 'placeholder_text', ui: 'textinput', char_length:200},
-    {id: 'allow_null', ui: 'checkbox', def: '0'}
-  ];
-
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'keyup input': 'checkChars',
@@ -66,17 +55,25 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-    // _.isEmpty (in the installed version) does not support INTs properly
-    if (options.schema.isRequired() && !value) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'numeric',
+    dataTypes: ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR', 'DOUBLE', 'BIGINT'],
+    variables: [
+      {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+      {id: 'placeholder_text', ui: 'textinput', char_length:200},
+      {id: 'allow_null', ui: 'checkbox', def: '0'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      // _.isEmpty (in the installed version) does not support INTs properly
+      if (options.schema.isRequired() && !value) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      return options.value ? options.value.toLocaleString() : '0';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var val = options.value;
-    return val ? val.toLocaleString() : '0';
-  };
-
-  return Module;
+  return new Component();
 });

@@ -7,28 +7,10 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, Onetomany, TableView, Overlays) {
+define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, UIComponent, Onetomany, TableView, Overlays) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'many_to_many';
-  Module.dataTypes = ['MANYTOMANY'];
-
-  Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
-    {id: 'add_button', ui: 'checkbox', def: '1'},
-    {id: 'choose_button', ui: 'checkbox', def: '1'},
-    {id: 'remove_button', ui: 'checkbox', def: '1'},
-    {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
-    {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"},
-    {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"},
-    {id: 'min_entries', ui: 'numeric', char_length: 11, default_value:0, comment: "Minimum Allowed related Entries"},
-    {id: 'no_duplicates', ui: 'checkbox', def: '0', comment: "No Duplicates"}
-  ];
-
-  Module.Input = Onetomany.Input.extend({
+  var Input = Onetomany.Input.extend({
 
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
@@ -37,10 +19,10 @@ define(['app', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/ov
       'click td.delete': 'deleteRow'
     },
 
-    template: Handlebars.compile(
+    templateSource:
       '<div class="related-table"></div>' +
       '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New</button>{{/if}}' +
-      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing</button>{{/if}}</div>'),
+      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing</button>{{/if}}</div>',
 
     addRow: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
@@ -202,22 +184,37 @@ define(['app', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/ov
     }
   });
 
-  Module.validate = function(value, options) {
-    var minEntries = parseInt(options.settings.get('min_entries'));
+  var Component = UIComponent.extend({
+    id: 'many_to_many',
+    dataTypes: ['MANYTOMANY'],
+    variables: [
+      {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
+      {id: 'add_button', ui: 'checkbox', def: '1'},
+      {id: 'choose_button', ui: 'checkbox', def: '1'},
+      {id: 'remove_button', ui: 'checkbox', def: '1'},
+      {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
+      {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"},
+      {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"},
+      {id: 'min_entries', ui: 'numeric', char_length: 11, default_value:0, comment: "Minimum Allowed related Entries"},
+      {id: 'no_duplicates', ui: 'checkbox', def: '0', comment: "No Duplicates"}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      var minEntries = parseInt(options.settings.get('min_entries'));
 
-    if(value.length < minEntries) {
-      return 'This field requires at least ' + minEntries + ' entries.';
+      if(value.length < minEntries) {
+        return 'This field requires at least ' + minEntries + ' entries.';
+      }
+
+      // @TODO: Does not currently consider newly deleted items
+      if (options.schema.isRequired() && value.length == 0) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      return 'x';
     }
+  });
 
-    // @TODO: Does not currently consider newly deleted items
-    if (options.schema.isRequired() && value.length == 0) {
-      return 'This field is required';
-    }
-  };
-
-  Module.list = function() {
-    return 'x';
-  };
-
-  return Module;
+  return new Component();
 });

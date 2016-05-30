@@ -6,27 +6,17 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIView'],function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
 
   var template = '<div class="select-container" style="margin-top: 4px;margin-bottom: 6px;"> \
                     <select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
                     <i class="material-icons select-arrow">arrow_drop_down</i> \
                   </div>';
 
-  Module.id = 'select';
-  Module.dataTypes = ['VARCHAR', 'INT'];
-  Module.variables = [
-    {id: 'options', ui: 'textarea', options:{'rows': 25}, comment: "Enter JSON key value pairs with the saved value and text displayed."},
-    {id: 'allow_null', ui: 'checkbox'},
-    {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
-  ];
-
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     serialize: function() {
       var selectedValue = this.options.value;
@@ -57,17 +47,24 @@ define(['app', 'core/UIView'],function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'select',
+    dataTypes: ['VARCHAR', 'INT'],
+    variables: [
+      {id: 'options', ui: 'textarea', options:{'rows': 25}, comment: "Enter JSON key value pairs with the saved value and text displayed."},
+      {id: 'allow_null', ui: 'checkbox'},
+      {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-
-    return val;
-  };
-
-  return Module;
+  return new Component();
 });

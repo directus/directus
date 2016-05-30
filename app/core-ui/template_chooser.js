@@ -26,11 +26,9 @@
 }
 */
 
-define(['app', 'core/UIView'],function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
 
   var template = '<div class="select-container"> \
                     <select name="{{name}}" {{#if readonly}}disabled{{/if}}> \
@@ -40,15 +38,8 @@ define(['app', 'core/UIView'],function(app, UIView) {
                     <i class="material-icons select-arrow">arrow_drop_down</i> \
                   </div>';
 
-  Module.id = 'template_chooser';
-  Module.dataTypes = ['VARCHAR', 'INT', 'TINYINT'];
-  Module.variables = [
-    {id: 'options', ui: 'textarea', options:{'rows': 25}  },
-    {id: 'allow_null', ui: 'checkbox'}
-  ];
-
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     // Event Declarations
     events: {
@@ -98,11 +89,18 @@ define(['app', 'core/UIView'],function(app, UIView) {
     }
   });
 
-  Module.list = function(options) {
-    var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+  var Component = UIComponent.extend({
+    id: 'template_chooser',
+    dataTypes: ['VARCHAR', 'INT', 'TINYINT'],
+    variables: [
+      {id: 'options', ui: 'textarea', options:{'rows': 25}  },
+      {id: 'allow_null', ui: 'checkbox'}
+    ],
+    Input: Input,
+    list: function(options) {
+      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    }
+  });
 
-    return val;
-  };
-
-  return Module;
+  return new Component();
 });

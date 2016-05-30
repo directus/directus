@@ -7,42 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView', 'core/overlays/overlays'], function(app, UIView, Overlays) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/overlays/overlays'], function(app, UIComponent, UIView, Overlays) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'wysiwyg';
-  Module.dataTypes = ['VARCHAR', 'TEXT'];
-
-  Module.variables = [
-    // Disables editing of the field while still letting users see the value
-    {id: 'readonly', ui: 'checkbox'},
-    // The input's height in pixels before scrolling. Default: 500px
-    {id: 'height', ui: 'numeric', def: '500'},
-    {id: 'bold', ui: 'checkbox', def: '1'},
-    {id: 'italic', ui: 'checkbox', def: '1'},
-    {id: 'underline', ui: 'checkbox', def: '1'},
-    {id: 'strikethrough', ui: 'checkbox', def: '0'},
-    {id: 'rule', ui: 'checkbox', def: '0'},
-    {id: 'createlink', ui: 'checkbox', def: '0'},
-    {id: 'insertimage', ui: 'checkbox', def: '0'},
-    {id: 'embedVideo', ui: 'checkbox', def: '0'},
-    {id: 'embed_width', ui: 'numeric', def: 300},
-    {id: 'embed_height', ui: 'numeric', def: 200},
-    {id: 'html', ui: 'checkbox', def: '0'},
-    {id: 'orderedList', ui: 'checkbox', def: '0'},
-    {id: 'h1', ui: 'checkbox', def: '0'},
-    {id: 'h2', ui: 'checkbox', def: '0'},
-    {id: 'h3', ui: 'checkbox', def: '0'},
-    {id: 'h4', ui: 'checkbox', def: '0'},
-    {id: 'h5', ui: 'checkbox', def: '0'},
-    {id: 'h6', ui: 'checkbox', def: '0'},
-    {id: 'blockquote', ui: 'checkbox', def: '0'},
-    {id: 'ul', ui: 'checkbox', def: '0'},
-    {id: 'ol', ui: 'checkbox', def: '0'}
-  ];
 
    Handlebars.registerHelper('newlineToBr', function(text){
        return new Handlebars.SafeString(text.string.replace(/\n/g, '<br/>'));
@@ -151,9 +118,8 @@ define(['app', 'core/UIView', 'core/overlays/overlays'], function(app, UIView, O
                   <textarea id="wysihtml5-textarea-{{name}}" class="wysihtml5-style" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}}"></textarea> \
                   <input type="hidden" name="{{name}}" class="hidden_input" value="{{{markupValue}}}">\
                 </div>';
-
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'input textarea' : 'textChanged',
@@ -413,17 +379,48 @@ define(['app', 'core/UIView', 'core/overlays/overlays'], function(app, UIView, O
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'wysiwyg',
+    dataTypes: ['VARCHAR', 'TEXT'],
+    variables: [
+      // Disables editing of the field while still letting users see the value
+      {id: 'readonly', ui: 'checkbox'},
+      // The input's height in pixels before scrolling. Default: 500px
+      {id: 'height', ui: 'numeric', def: '500'},
+      {id: 'bold', ui: 'checkbox', def: '1'},
+      {id: 'italic', ui: 'checkbox', def: '1'},
+      {id: 'underline', ui: 'checkbox', def: '1'},
+      {id: 'strikethrough', ui: 'checkbox', def: '0'},
+      {id: 'rule', ui: 'checkbox', def: '0'},
+      {id: 'createlink', ui: 'checkbox', def: '0'},
+      {id: 'insertimage', ui: 'checkbox', def: '0'},
+      {id: 'embedVideo', ui: 'checkbox', def: '0'},
+      {id: 'embed_width', ui: 'numeric', def: 300},
+      {id: 'embed_height', ui: 'numeric', def: 200},
+      {id: 'html', ui: 'checkbox', def: '0'},
+      {id: 'orderedList', ui: 'checkbox', def: '0'},
+      {id: 'h1', ui: 'checkbox', def: '0'},
+      {id: 'h2', ui: 'checkbox', def: '0'},
+      {id: 'h3', ui: 'checkbox', def: '0'},
+      {id: 'h4', ui: 'checkbox', def: '0'},
+      {id: 'h5', ui: 'checkbox', def: '0'},
+      {id: 'h6', ui: 'checkbox', def: '0'},
+      {id: 'blockquote', ui: 'checkbox', def: '0'},
+      {id: 'ul', ui: 'checkbox', def: '0'},
+      {id: 'ol', ui: 'checkbox', def: '0'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0,100) : '';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0,100) : '';
-  };
-
-  return Module;
+  return new Component();
 });
 
 

@@ -16,21 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'color';
-  Module.dataTypes = ['VARCHAR'];
-
-  Module.variables = [
-    // Disables editing of the field while still letting users see the value
-    {id: 'readonly', ui: 'checkbox'},
-    // Shows a color box representation on the Item Listing page
-    {id: 'show_color_on_list', ui: 'checkbox'}
-  ];
 
   var template =  '<style type="text/css"> \
                   .position-offset { \
@@ -60,8 +48,8 @@ define(['app', 'core/UIView'], function(app, UIView) {
                   </style> \
                   <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><span class="position-offset"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="e.g. #bbbbbb"></span> <span class="invalid"></span>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'change .color-text': function(e) {
@@ -102,17 +90,28 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-    // This doesn't work since the input type="color" has a default color which is black: #000000
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'color',
+    dataTypes: ['VARCHAR'],
+    variables: [
+      // Disables editing of the field while still letting users see the value
+      {id: 'readonly', ui: 'checkbox'},
+      // Shows a color box representation on the Item Listing page
+      {id: 'show_color_on_list', ui: 'checkbox'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      // This doesn't work since the input type="color" has a default color which is black: #000000
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      var show_color_on_list = (options.settings && options.settings.has('show_color_on_list') && options.settings.get('show_color_on_list') == '1')? true : false;
+
+      return (show_color_on_list) ? '<div style="background-color:'+options.value+'; height:20px; width:40px; border:1px solid #ffffff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">&nbsp;</div>' : options.value;
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var show_color_on_list = (options.settings && options.settings.has('show_color_on_list') && options.settings.get('show_color_on_list') == '1')? true : false;
-    return (show_color_on_list) ? '<div style="background-color:'+options.value+'; height:20px; width:40px; border:1px solid #ffffff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">&nbsp;</div>' : options.value;
-  };
-
-  return Module;
+  return new Component();
 });

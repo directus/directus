@@ -16,20 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'slider';
-  Module.dataTypes = ['INT'];
-
-  Module.variables = [
-    {id: 'minimum', ui: 'numeric'},
-    {id: 'maximum', ui: 'numeric'},
-    {id: 'step', ui: 'numeric', comment: 'Specifies the allowed number intervals'}
-  ];
 
   var template =  '<style type="text/css"> \
                   span.slider-value { \
@@ -42,8 +31,8 @@ define(['app', 'core/UIView'], function(app, UIView) {
                   </style> \
                   <input type="range" class="slider" value="{{value}}" name="{{name}}" id="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}"> <span class="slider-value">{{value}}</span>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'change .slider': function(e) {
@@ -76,16 +65,22 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-    // Not needed since HTML5 slider defaults to "0"
-    if (options.schema.isRequired() && !value) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'slider',
+    dataTypes: ['INT'],
+    variables: [
+      {id: 'minimum', ui: 'numeric'},
+      {id: 'maximum', ui: 'numeric'},
+      {id: 'step', ui: 'numeric', comment: 'Specifies the allowed number intervals'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      // Not needed since HTML5 slider defaults to "0"
+      if (options.schema.isRequired() && !value) {
+        return 'This field is required';
+      }
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return options.value;
-  };
-
-  return Module;
+  return new Component();
 });

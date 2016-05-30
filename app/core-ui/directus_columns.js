@@ -15,21 +15,14 @@
 // options.name       String            Field name
 
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-  var Module = {};
-
-  Module.id = 'directus_columns';
-  Module.dataTypes = ['VARCHAR'];
-
-  Module.variables = [];
-
   var template =  '{{#columns}}<label><input type="checkbox" name="{{../name}}" value="{{columnName}}" {{#if selected}}checked{{/if}}>{{title}}</label>{{/columns}}';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {},
 
@@ -57,19 +50,15 @@ define(['app', 'core/UIView'], function(app, UIView) {
 
         return item;
       });
-
     }
-
   });
 
-  Module.validate = function(value) {
-    //
-  };
+  var Component = UIComponent.extend({
+    id: 'directus_columns',
+    dataTypes: ['VARCHAR'],
+    Input: Input,
+  });
 
-  Module.list = function(options) {
-    return options.value;
-  };
-
-  return Module;
+  return new Component();
 
 });

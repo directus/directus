@@ -6,22 +6,11 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-  var Module = {};
-
-  Module.id = 'user';
-  Module.dataTypes = ['INT'];
-
-  Module.variables = [
-    // {id: 'readonly', ui: 'checkbox', def: '1'},
-    // {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    // {id: 'mirrored_field', ui: 'textinput', char_length:200}
-  ];
-
-  Module.Input = UIView.extend({
+  var Input = UIView.extend({
     initialize: function(options) {
       // If editing a new item, use the current user
       if(options.model.isNew()){
@@ -39,17 +28,27 @@ define(['app','core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.list = function(options) {
-    var avatar, output, user = app.users.get(options.value);
+  var Component = UIComponent.extend({
+    id: 'user',
+    dataTypes: ['INT'],
+    variables: [
+      // {id: 'readonly', ui: 'checkbox', def: '1'},
+      // {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+      // {id: 'mirrored_field', ui: 'textinput', char_length:200}
+    ],
+    list: function(options) {
+      var avatar, output, user = app.users.get(options.value);
 
-    if(user) {
-      avatar = user.getAvatar();
-      output = '<img src="' + avatar + '" class="avatar"><span class="avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>';
-    } else {
-      output = '<span class="avatar-name medium-grey-color">No user</span>';
+      if(user) {
+        avatar = user.getAvatar();
+        output = '<img src="' + avatar + '" class="avatar"><span class="avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>';
+      } else {
+        output = '<span class="avatar-name medium-grey-color">No user</span>';
+      }
+
+      return output;
     }
-    return output;
-  };
+  });
 
-  return Module;
+  return new Component();
 });

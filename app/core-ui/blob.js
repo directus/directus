@@ -6,16 +6,11 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-  var Module = {};
-
-  Module.id = 'blob';
-  Module.dataTypes = ['BLOB','MEDIUMBLOB'];
-
-  Module.Input = UIView.extend({
+  var Input = UIView.extend({
     initialize: function() {
       var image = document.createElement('img');
       image.src = 'data:image/png;base64,'+this.options.value;
@@ -24,9 +19,14 @@ define(['app','core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.list = function(options) {
-    return 'BLOB';
-  };
+  var Component = UIComponent.extend({
+    id: 'blob',
+    dataTypes: ['BLOB','MEDIUMBLOB'],
+    Input: Input,
+    list: function(options) {
+      return 'BLOB';
+    }
+  });
 
-  return Module;
+  return new Component();
 });

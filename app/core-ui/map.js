@@ -16,38 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'map';
-  Module.dataTypes = ['VARCHAR', 'ALIAS'];
-
-  Module.variables = [
-    //Google API Key (Provided by Google)
-    {id: 'apiKey', ui: 'textinput', char_length:200},
-    //column names to fill with respective item
-    {id: 'street_number_field', ui: 'textinput', char_length:200},
-    {id: 'street_field', ui: 'textinput', char_length:200},
-    {id: 'city_field', ui: 'textinput', char_length:200},
-    {id: 'postal_code_field', ui: 'textinput', char_length:200},
-    {id: 'state_field', ui: 'textinput', char_length:200},
-    {id: 'stateCode_field', ui: 'textinput', char_length:200},
-    {id: 'country_field', ui: 'textinput', char_length:200},
-    {id: 'countryCode_field', ui: 'textinput', char_length:200},
-    //Height of Map Element in Pixels
-    {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: 'Height in Pixels'},
-    {id: 'showLatLng', ui: 'checkbox', comment: 'Display latlng Textbox below map'}
-  ];
-
-  Module.settings = [{
-    'collection': 'global',
-    id: 'google_api_key',
-    ui: 'textinput',
-    char_length:200
-  }];
 
   var template =  '<style>#pac-input { \
         background-color: #fff; \
@@ -77,8 +48,8 @@ define(['app', 'core/UIView'], function(app, UIView) {
   <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="medium" readonly/>';
 
   //If ALIAS, only fills in fields set in options, if varchar, sets to {lat},{lng}
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
     events: {
     },
 
@@ -243,14 +214,36 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  //Do not perform Validation
-  Module.validate = function(value) {
-    //
-  };
+  var Component = UIComponent.extend({
+    id: 'map',
+    dataTypes: ['VARCHAR', 'ALIAS'],
+    variables: [
+      //Google API Key (Provided by Google)
+      {id: 'apiKey', ui: 'textinput', char_length:200},
+      //column names to fill with respective item
+      {id: 'street_number_field', ui: 'textinput', char_length:200},
+      {id: 'street_field', ui: 'textinput', char_length:200},
+      {id: 'city_field', ui: 'textinput', char_length:200},
+      {id: 'postal_code_field', ui: 'textinput', char_length:200},
+      {id: 'state_field', ui: 'textinput', char_length:200},
+      {id: 'stateCode_field', ui: 'textinput', char_length:200},
+      {id: 'country_field', ui: 'textinput', char_length:200},
+      {id: 'countryCode_field', ui: 'textinput', char_length:200},
+      //Height of Map Element in Pixels
+      {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: 'Height in Pixels'},
+      {id: 'showLatLng', ui: 'checkbox', comment: 'Display latlng Textbox below map'}
+    ],
+    settings: [{
+      'collection': 'global',
+      id: 'google_api_key',
+      ui: 'textinput',
+      char_length:200
+    }],
+    Input: Input,
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    }
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
+  return new Component();
 });

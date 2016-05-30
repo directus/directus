@@ -7,16 +7,11 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-  var Module = {};
-
-  Module.id = 'directus_file';
-  Module.system = true;
-
-    var template = '<style type="text/css"> \
+  var template = '<style type="text/css"> \
                   div.ui-thumbnail { \
                     float: left; \
                     margin-top: 8px; \
@@ -119,14 +114,14 @@ define(['app', 'core/UIView'], function(app, UIView) {
                     <input id="urlInput" type="text" class="swap-method medium" placeholder="eg: https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
                   </div>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     serialize: function() {
       var data = {},
-          userId,
-          model = this.model,
-          authenticatedUser = app.users.getCurrentUser();
+        userId,
+        model = this.model,
+        authenticatedUser = app.users.getCurrentUser();
 
       data = model.toJSON();
 
@@ -145,10 +140,10 @@ define(['app', 'core/UIView'], function(app, UIView) {
       var storageAdapter = model.get('storage_adapter');
 
       if(storageAdapter !== null &&
-         storageAdapter !== undefined &&
-         storageAdapter !== '') {
-          data.url = model.makeFileUrl(false);
-          data.thumbUrl = model.makeFileUrl(true);
+        storageAdapter !== undefined &&
+        storageAdapter !== '') {
+        data.url = model.makeFileUrl(false);
+        data.thumbUrl = model.makeFileUrl(true);
       } else if (model.isNew()) {
         data.url = model.get('url') || model.get('data');
         data.thumbUrl = model.get('thumbnailData') || model.get('url');
@@ -275,23 +270,27 @@ define(['app', 'core/UIView'], function(app, UIView) {
     },
   });
 
-  Module.list = function(options) {
-    var model = options.model;
+  var Component = UIComponent.extend({
+    id: 'directus_file',
+    system: true,
+    Input: Input,
+    list: function(options) {
+      var model = options.model;
 
-    //Force model To be a Files Model
-    var FileModel = require('modules/files/FilesModel');
-    if(!(model instanceof FileModel)) {
-      model = new FileModel(model.attributes, {collection: model.collection});
+      //Force model To be a Files Model
+      var FileModel = require('modules/files/FilesModel');
+      if(!(model instanceof FileModel)) {
+        model = new FileModel(model.attributes, {collection: model.collection});
+      }
+
+      var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
+      var url = model.makeFileUrl(true);
+      var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
+      var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
+
+      return '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
     }
+  });
 
-    var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var url = model.makeFileUrl(true);
-    var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
-    var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
-
-    var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
-    return img;
-  };
-
-  return Module;
+  return new Component();
 });

@@ -7,29 +7,15 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'slug';
-  Module.dataTypes = ['VARCHAR'];
-
-  Module.variables = [
-    // Disables editing of the field while still letting users see the value
-    {id: 'readonly', ui: 'checkbox', def: '1'},
-    // Adjusts the max width of the input (Small, Medium, Large)
-    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    // Enter the column name of the field the slug will pull it's value from
-    {id: 'mirrored_field', ui: 'textinput', char_length:200}
-  ];
 
   var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>'+
                  '<span class="char-count hide">{{characters}}</span>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'change input': function() {
@@ -77,22 +63,34 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
-    }
-
-    if (options.settings.has('validation_regex')) {
-      var regex = new RegExp(options.settings.get('validation_regex'));
-      if (!regex.test(value)) {
-        return options.settings.get('validation_message');
+  var Component = UIComponent.extend({
+    id: 'slug',
+    dataTypes: ['VARCHAR'],
+    variables: [
+      // Disables editing of the field while still letting users see the value
+      {id: 'readonly', ui: 'checkbox', def: '1'},
+      // Adjusts the max width of the input (Small, Medium, Large)
+      {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+      // Enter the column name of the field the slug will pull it's value from
+      {id: 'mirrored_field', ui: 'textinput', char_length:200}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
       }
+
+      if (options.settings.has('validation_regex')) {
+        var regex = new RegExp(options.settings.get('validation_regex'));
+        if (!regex.test(value)) {
+          return options.settings.get('validation_message');
+        }
+      }
+    },
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
+  return new Component();
 });

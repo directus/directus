@@ -6,23 +6,18 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-	var Module = {};
-
-  Module.id = 'directus_file_size';
-  Module.system = true;
-
-  Module.options = {};
-
-  Module.list = function(options) {
-    return app.bytesToSize(options.value);
-  };
-
-  Module.Input = UIView.extend({
+	var Component = UIComponent.extend({
+    id: 'directus_file_size',
+    system: true,
+    Input: UIView,
+    list: function(options) {
+      return app.bytesToSize(options.value);
+    }
   });
 
-  return Module;
+  return new Component();
 });

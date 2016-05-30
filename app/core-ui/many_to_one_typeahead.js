@@ -7,21 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIView, Utils) {
+define(['app', 'backbone', 'core/UIComponent', 'core/UIView', 'utils'], function(app, Backbone, UIComponent, UIView, Utils) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'many_to_one_typeahead';
-  Module.dataTypes = ['INT'];
-
-  Module.variables = [
-    {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
-    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    {id: 'template', ui: 'textinput'},
-    {id: 'include_inactive', ui: 'checkbox', def: '0', comment: 'Include Inactive Items', required: false}
-  ];
 
   var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" {{#if readonly}}readonly{{/if}}/> \
                   <style> \
@@ -57,9 +45,9 @@ define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIVi
                 }\
                 </style>';
 
-  Module.Input = UIView.extend({
+  var Input = UIView.extend({
     events: {},
-    template: Handlebars.compile(template),
+    templateSource: template,
 
     serialize: function() {
       var relatedModel = this.model.get(this.name);
@@ -142,13 +130,23 @@ define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIVi
     }
   });
 
-  Module.validate = function(value, options) {};
+  var Component = UIComponent.extend({
+    id: 'many_to_one_typeahead',
+    dataTypes: ['INT'],
+    variables: [
+      {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
+      {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+      {id: 'template', ui: 'textinput'},
+      {id: 'include_inactive', ui: 'checkbox', def: '0', comment: 'Include Inactive Items', required: false}
+    ],
+    Input: Input,
+    list: function(options) {
+      if (options.value === undefined) return '';
+      if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
 
-  Module.list = function(options) {
-    if (options.value === undefined) return '';
-    if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
-    return options.value;
-  };
+      return options.value;
+    }
+  });
 
-  return Module;
+  return new Component();
 });

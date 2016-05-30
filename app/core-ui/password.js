@@ -7,25 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'password';
-  Module.dataTypes = ['VARCHAR'];
-  Module.skipSerializationIfNull = true;
-  Module.isAPIHashed = false;
-  // Plain password before being saved.
-  Module.currentPlainPassword = '';
-
-  Module.variables = [
-    // Toggles the second input ("Confirm Password"). On by default.
-    {id: 'require_confirmation', ui: 'checkbox', def: '1'},
-    // The name of the column to be used as a salt in the password hash
-    {id: 'salt_field', ui: 'textinput', def: 'salt'}
-  ];
 
   var template = '<input type="password" value="{{value}}" name="{{name}}" class="medium password-primary" style="display:block;margin-bottom:10px;" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
                  <input type="password" id="password_fake" class="hidden" autocomplete="off" style="display: none;"> \
@@ -40,8 +24,8 @@ define(['app', 'core/UIView'], function(app, UIView) {
                  </div> \
                  ';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     /**
      * Events vary depending on the presence or absence of the confirm password field.
@@ -231,29 +215,43 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value,options) {
-    var $el = $('input[name="' + options.schema.id + '"]').parent();
-    var data = $el.data();
-    var password = $el.find('input.password-primary').val(),
+  var Component = UIComponent.extend({
+    id: 'password',
+    dataTypes: ['VARCHAR'],
+    skipSerializationIfNull: true,
+    isAPIHashed: false,
+    // Plain password before being saved.
+    currentPlainPassword: '',
+    variables: [
+      // Toggles the second input ("Confirm Password"). On by default.
+      {id: 'require_confirmation', ui: 'checkbox', def: '1'},
+      // The name of the column to be used as a salt in the password hash
+      {id: 'salt_field', ui: 'textinput', def: 'salt'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      var $el = $('input[name="' + options.schema.id + '"]').parent();
+      var data = $el.data();
+      var password = $el.find('input.password-primary').val(),
         confirm = $el.find('input.password-confirm').val();
 
-    if(!password && options.schema.get('required')) {
-      return "You Must Specify a Password";
-    }
-
-    if(password) {
-      if(password !== confirm) {
-        return "Passwords must match.";
+      if(!password && options.schema.get('required')) {
+        return "You Must Specify a Password";
       }
-      if(!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
-        return "You Must Hash Your Password";
+
+      if(password) {
+        if(password !== confirm) {
+          return "Passwords must match.";
+        }
+        if(!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
+          return "You Must Hash Your Password";
+        }
       }
+    },
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
+  return new Component();
 });

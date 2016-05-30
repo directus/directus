@@ -7,11 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app','core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
 
 
   //Temporarily disable styling since breaks this ui when in overlay
@@ -30,13 +28,8 @@ define(['app','core/UIView'], function(app, UIView) {
                   {{/mapping}} \
                   </div>';
 
-  Module.id = 'system';
-  Module.dataTypes = ['TINYINT'];
-
-  Module.variables = [];
-
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'change input[type=radio]': function(e) {
@@ -85,12 +78,14 @@ define(['app','core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.list = function(options) {
-    var val = (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
-    //var val = options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100);
+  var Component = UIComponent.extend({
+    id: 'system',
+    dataTypes: ['TINYINT'],
+    Input: Input,
+    list: function(options) {
+      return (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
+    }
+  });
 
-    return val;//val;
-  };
-
-  return Module;
+  return new Component();
 });

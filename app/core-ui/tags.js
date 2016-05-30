@@ -7,26 +7,16 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app','core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'tags';
-  Module.dataTypes = ['TEXT','VARCHAR','CHAR'];
-
-  Module.variables = [
-    // When on, all entered tags are converted to lowercase
-    {id: 'force_lowercase', ui: 'checkbox', def: '1'}
-  ];
 
   var template = '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}"> \
                  <input type="text" class="medium" id="tag-input" style="margin-right:10px;" placeholder="Type tag then hit enter..."><button class="btn btn-primary margin-left" type="button">Add</button> \
                  <div style="width:84%;">{{#tags}}<span class="tag">{{this}}</span>{{/tags}}</div>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile( template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'keydown #tag-input': function(e) {
@@ -78,25 +68,33 @@ define(['app','core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
-    }
-  };
-
-  Module.list = function(options) {
-    var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
-
-    if(tags.length){
-      for (var i = 0; i < tags.length; i++) {
-        tags[i] = '<span class="tag-static">' + tags[i] + '</span>';
+  var Component = UIComponent.extend({
+    id: 'tags',
+    dataTypes: ['TEXT','VARCHAR','CHAR'],
+    variables: [
+      // When on, all entered tags are converted to lowercase
+      {id: 'force_lowercase', ui: 'checkbox', def: '1'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
       }
+    },
+    list: function(options) {
+      var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
 
-      return tags.join(' ');
-    } else {
-      return options.model.attributes.tags;
+      if(tags.length){
+        for (var i = 0; i < tags.length; i++) {
+          tags[i] = '<span class="tag-static">' + tags[i] + '</span>';
+        }
+
+        return tags.join(' ');
+      } else {
+        return options.model.attributes.tags;
+      }
     }
-  };
+  });
 
-  return Module;
+  return new Component();
 });

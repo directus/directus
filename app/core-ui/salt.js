@@ -7,24 +7,15 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'salt';
-  Module.dataTypes = ['VARCHAR'];
-  Module.skipSerializationIfNull = true;
-
-  Module.variables = [
-  ];
 
   var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="medium" readonly/> \
                  <span class="label char-count hide">{{characters}}</span>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {},
 
@@ -99,12 +90,15 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {
-  };
+  var Component = UIComponent.extend({
+    id: 'salt',
+    dataTypes: ['VARCHAR'],
+    skipSerializationIfNull: true,
+    Input: Input,
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    }
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
+  return new Component();
 });

@@ -16,18 +16,9 @@
 
 /*jshint multistr: true */
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'instructions';
-  Module.dataTypes = ['VARCHAR', 'TEXT'];
-
-  Module.variables = [
-    {id: 'instructions', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
-  ];
 
   var template =  '<style type="text/css"> \
                   .instructions-ui-content { \
@@ -40,8 +31,8 @@ define(['app', 'core/UIView'], function(app, UIView) {
                   </style> \
                   <div class="instructions-ui-content">{{{instructions}}}</div>';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       // 'change .color-box': function(e) {
@@ -72,15 +63,20 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value) {
-    //
-  };
+  var Component = UIComponent.extend({
+    id: 'instructions',
+    dataTypes: ['VARCHAR', 'TEXT'],
+    variables: [
+      {id: 'instructions', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
+    ],
+    Input: Input,
+    list: function(options) {
+      var instructions = (options.settings && options.settings.has('instructions'))? options.settings.get('instructions') : "...";
+      var regex = /(<([^>]+)>)/ig;
 
-  Module.list = function(options) {
-    var instructions = (options.settings && options.settings.has('instructions'))? options.settings.get('instructions') : "...";
-    var regex = /(<([^>]+)>)/ig;
-    return instructions.replace(regex, "");
-  };
+      return instructions.replace(regex, "");
+    }
+  });
 
-  return Module;
+  return new Component();
 });

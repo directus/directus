@@ -7,23 +7,16 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIView'], function(app, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'directus_messages_recipients';
-
-  Module.dataTypes = [];
-  Module.variables = [];
 
   var template = '<input type="text" id="directus_messages_recipients-input" placeholder="Type users or groups here...">\
                  <div style="width:100%;max-width:700px;" id="directus_messages_recipients-recipients">{{#tags}}<span class="label tag recipient-tag">{{this}}</span>{{/tags}}</div>\
                  <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
 
-  Module.Input = UIView.extend({
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'click .message-recipient': function(e) {
@@ -159,11 +152,13 @@ define(['app', 'core/UIView'], function(app, UIView) {
     }
   });
 
-  Module.validate = function(value, options) {};
+  var Component = UIComponent.extend({
+    id: 'directus_messages_recipients',
+    Input: Input,
+    list: function(options) {
+      return ''
+    }
+  });
 
-  Module.list = function(options) {
-    return '';
-  };
-
-  return Module;
+  return new Component();
 });
