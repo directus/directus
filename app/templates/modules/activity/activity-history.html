@@ -23,7 +23,7 @@
         <div class="history-icon {{color}}"><!-- <div class="icon {{icon}}"></div> --><i class="material-icons">{{icon}}</i></div>
         <div class="history-text">{{userName user_avatar}} {{action_text}}</div>
       {{/if}}
-      <div class="history-datetime">{{time}}</div>
+      <div class="history-datetime contextual-date-updater" data-date="{{timestamp}}">{{time}}</div>
     </li>
     {{/each}}
   </ul>
