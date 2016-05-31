@@ -269,7 +269,12 @@ define(function(require, exports, module) {
         tagName: 'td'
       };
 
-      var value = _.has(UIObject.UI, section) ? UIObject.UI[section](UIOptions) : UIObject.UI.list(UIOptions);
+      // Section is the name of a method that represents an value.
+      // list: represents the value that will be shown on a list.
+      var section = _.has(UIObject.UI, section) ? section : 'list';
+      this.triggerBeforeValue(section, UIObject.UI, UIOptions);
+      var value = UIObject.UI[section](UIOptions);
+      this.triggerAfterValue(section, UIObject.UI, UIOptions);
 
       if ((!value || value === "") && returnDefaultValue) {
         value = defaultValue;
@@ -333,7 +338,9 @@ define(function(require, exports, module) {
         throw new Error('The UI with id "' + UI.id + '" has no input view');
       }
 
+      this.triggerBeforeCreateInput(UI, options);
       var view = new UI.Input(options);
+      this.triggerAfterCreateInput(UI, options);
 
       return view;
     },
@@ -355,8 +362,53 @@ define(function(require, exports, module) {
           tagName: 'td'
         });
       }
-    }
+    },
+    triggerEvent: function(eventName, UI, options) {
+      var events = this.constructEventNames(eventName, UI, options);
+      var args = Array.prototype.slice.call(arguments, 2);
+      var appEvents = events.map(function(name) {
+        return 'UI:'+name;
+      });
 
+      var UIArgs = [events.join(' '), UI].concat(args);
+      var AppArgs = [appEvents.join(' '), UI].concat(args);
+
+      UI.trigger.apply(UI, UIArgs);
+      app.trigger.apply(app, AppArgs);
+    },
+
+    constructEventNames: function(eventName, UI, options) {
+      var structure = options.structure || options.collection.structure;
+      var appendNames = [
+        '',
+        ':'+UI.id,
+        ':'+structure.table.id+':'+UI.id,
+        ':'+structure.table.id+':'+options.name,
+        ':'+structure.table.id+':'+options.name+':'+UI.id
+      ];
+
+      return appendNames.map(function(name) {
+        return eventName+name;
+      });
+    },
+
+    triggerBeforeCreateInput: function(UI, options) {
+      return this.triggerEvent('beforeCreateInput', UI, options);
+    },
+
+    triggerAfterCreateInput: function(UI, options) {
+      return this.triggerEvent('afterCreateInput', UI, options);
+    },
+
+    triggerBeforeValue: function(section, UI, options) {
+      this.triggerEvent('beforeValue', UI, options);
+      this.triggerEvent('beforeValue:'+section, UI, options);
+    },
+
+    triggerAfterValue: function(section, UI, options) {
+      this.triggerEvent('afterValue', UI, options);
+      this.triggerEvent('afterValue:'+section, UI, options);
+    },
   };
 
 });
