@@ -115,6 +115,10 @@ define(function(require, exports, module) {
 
     // Registers (@todo: one or) many UI's
     register: function(uiArray) {
+      if (!_.isArray(uiArray)) {
+        uiArray = [uiArray];
+      }
+
       _.each(uiArray, function(ui) {
         var uiInstance = new ui();
         uis[uiInstance.id] = uiInstance;
