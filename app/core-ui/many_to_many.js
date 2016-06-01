@@ -7,9 +7,10 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/components/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, UIComponent, Onetomany, TableView, Overlays) {
+define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, UIComponent, Onetomany, TableView, Overlays) {
 
   'use strict';
+  console.log(Onetomany);debugger;
   var Input = Onetomany.Input.extend({
 
     events: {
