@@ -98,5 +98,5 @@ define(['app', 'core/UIComponent', 'core/UIView', '../assets/js/libs/marked.min.
     }
   });
 
-  return new Component();
+  return Component;
 });

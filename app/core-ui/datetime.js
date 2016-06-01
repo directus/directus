@@ -151,5 +151,5 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui'], funct
     }
   });
 
-  return new Component();
+  return Component;
 });

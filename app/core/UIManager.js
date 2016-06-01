@@ -115,10 +115,9 @@ define(function(require, exports, module) {
 
     // Registers (@todo: one or) many UI's
     register: function(uiArray) {
-      // TODO: Should UIs be object instance using new?
-      // instead of being instantiate on the define file
       _.each(uiArray, function(ui) {
-        uis[ui.id] = ui;
+        var uiInstance = new ui();
+        uis[uiInstance.id] = uiInstance;
       },this);
     },
 

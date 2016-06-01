@@ -420,7 +420,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/overlays/overlays'], fun
     }
   });
 
-  return new Component();
+  return Component;
 });
 
 

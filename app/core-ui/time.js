@@ -104,5 +104,5 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView'], function(app, momen
     }
   });
 
-  return new Component();
+  return Component;
 });

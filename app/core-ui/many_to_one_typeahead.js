@@ -148,5 +148,5 @@ define(['app', 'backbone', 'core/UIComponent', 'core/UIView', 'utils'], function
     }
   });
 
-  return new Component();
+  return Component;
 });

@@ -16,5 +16,5 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     Input: UIView,
   });
 
-  return new Component();
+  return Component;
 });

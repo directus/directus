@@ -219,5 +219,5 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view'], func
     }
   });
 
-  return new Component();
+  return Component;
 });

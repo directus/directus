@@ -41,5 +41,5 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     }
   });
 
-  return new Component();
+  return Component;
 });

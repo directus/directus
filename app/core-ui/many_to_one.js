@@ -161,5 +161,5 @@ define(['app', 'backbone', 'core/UIComponent', 'core/UIView'], function(app, Bac
     }
   });
 
-  return new Component();
+  return Component;
 });

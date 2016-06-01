@@ -10,8 +10,8 @@
 define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, UIComponent, Onetomany, TableView, Overlays) {
 
   'use strict';
-  console.log(Onetomany);debugger;
-  var Input = Onetomany.Input.extend({
+
+  var Input = Onetomany.prototype.Input.extend({
 
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
@@ -217,5 +217,5 @@ define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view
     }
   });
 
-  return new Component();
+  return Component;
 });

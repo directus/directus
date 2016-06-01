@@ -384,5 +384,5 @@ define([
     }
   });
 
-  return new Component();
+  return Component;
 });

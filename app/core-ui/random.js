@@ -88,5 +88,5 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification'], function
     }
   });
 
-  return new Component();
+  return Component;
 });
