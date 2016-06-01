@@ -384,11 +384,16 @@ define(function(require, exports, module) {
       var structure = options.structure || options.collection.structure;
       var appendNames = [
         '',
-        ':'+UI.id,
-        ':'+structure.table.id+':'+UI.id,
-        ':'+structure.table.id+':'+options.name,
-        ':'+structure.table.id+':'+options.name+':'+UI.id
+        ':'+UI.id
       ];
+
+      if (structure.table && structure.table.id) {
+        appendNames = appendNames.concat([
+          ':'+structure.table.id+':'+UI.id,
+          ':'+structure.table.id+':'+options.schema.id,
+          ':'+structure.table.id+':'+options.schema.id+':'+UI.id
+        ]);
+      }
 
       return appendNames.map(function(name) {
         return eventName+name;
