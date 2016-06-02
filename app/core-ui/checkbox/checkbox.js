@@ -10,11 +10,8 @@
 define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
   'use strict';
 
-  var templateSource = '<input style="height:20px;width:20px; margin-top:12px;" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}}/> \
-                  <input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">';
-  var listTemplateSource = '<input type="checkbox" {{#if selected}}checked="true"{{/if}} disabled>';
   var Input = UIView.extend({
-    templateSource: templateSource,
+    template: 'core-ui/checkbox/input',
 
     events: {
       'change input[type=checkbox]': function(e) {
@@ -60,6 +57,8 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       }
     },
     list: function(options) {
+      var listTemplateSource = '<input type="checkbox" {{#if selected}}checked="true"{{/if}} disabled>';
+
       return this.compileView(listTemplateSource, {selected: !!options.value});
     }
   });

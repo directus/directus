@@ -7,7 +7,7 @@ define(function(require, exports, module) {
     require('core-ui/textinput'),
     require('core-ui/directus_columns'),
     require('core-ui/instructions'),
-    require('core-ui/checkbox'),
+    require('core-ui/checkbox/checkbox'),
     require('core-ui/color'),
     require('core-ui/numeric'),
     require('core-ui/slider'),
