@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "95ef0d207c615110757c69c0f12f9f61",
-    "content-hash": "643b4918388783cd3e00633c6e78e6ba",
+    "hash": "23d5bea3202045a9bbf0747b9ef632ba",
+    "content-hash": "bb2ef801812b5c07727f81b05e2310ad",
     "packages": [
         {
             "name": "directus/migrations",
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WellingGuzman/Migrations.git",
-                "reference": "971e9d722c27f9453a13f3636c2885500fbf1817"
+                "reference": "f1231291db4ac525836cba7ae2f071550c1f26ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/971e9d722c27f9453a13f3636c2885500fbf1817",
-                "reference": "971e9d722c27f9453a13f3636c2885500fbf1817",
+                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/f1231291db4ac525836cba7ae2f071550c1f26ba",
+                "reference": "f1231291db4ac525836cba7ae2f071550c1f26ba",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +56,8 @@
             ],
             "description": "Framework for generating and managing database migrations",
             "homepage": "https://github.com/wellingguzman/migrations",
-            "time": "2016-01-31 05:12:11"
+            "abandoned": true,
+            "time": "2016-05-22 06:02:47"
         },
         {
             "name": "league/flysystem",
@@ -551,20 +552,23 @@
         },
         {
             "name": "phpunit/php-timer",
-            "version": "1.0.7",
+            "version": "1.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-timer.git",
-                "reference": "3e82f4e9fc92665fafd9157568e4dcb01d014e5b"
+                "reference": "38e9124049cf1a164f1e4537caf19c99bf1eb260"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/3e82f4e9fc92665fafd9157568e4dcb01d014e5b",
-                "reference": "3e82f4e9fc92665fafd9157568e4dcb01d014e5b",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/38e9124049cf1a164f1e4537caf19c99bf1eb260",
+                "reference": "38e9124049cf1a164f1e4537caf19c99bf1eb260",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4|~5"
             },
             "type": "library",
             "autoload": {
@@ -588,7 +592,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2015-06-21 08:01:12"
+            "time": "2016-05-12 18:03:57"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -764,16 +768,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.4",
+            "version": "v2.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "584e52cb8f788a887553ba82db6caacb1d6260bb"
+                "reference": "e4fbcc65f90909c999ac3b4dfa699ee6563a9940"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/584e52cb8f788a887553ba82db6caacb1d6260bb",
-                "reference": "584e52cb8f788a887553ba82db6caacb1d6260bb",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/e4fbcc65f90909c999ac3b4dfa699ee6563a9940",
+                "reference": "e4fbcc65f90909c999ac3b4dfa699ee6563a9940",
                 "shasum": ""
             },
             "require": {
@@ -809,7 +813,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-04 07:54:35"
+            "time": "2016-03-29 19:00:15"
         }
     ],
     "aliases": [],
@@ -822,7 +826,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.5.0"
+        "php": ">=5.4.0"
     },
     "platform-dev": []
 }
