@@ -946,17 +946,19 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     $Files = new TableGateway($acl, $table, $ZendDb);
     $get_new = $Files->getEntries($params);
 
-    if (array_key_exists('rows', $get_new)) {
-        foreach ($get_new['rows'] as &$row) {
-          if(isset($row['date_uploaded'])) {
-            $row['date_uploaded'] .= ' UTC';
-          }
-        }
-    } else {
-      if(isset($get_new['date_uploaded'])) {
-        $get_new['date_uploaded'] .= ' UTC';
-      }
-    }
+//    @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
+//    see: https://en.wikipedia.org/wiki/ISO_8601
+//    if (array_key_exists('rows', $get_new)) {
+//        foreach ($get_new['rows'] as &$row) {
+//          if(isset($row['date_uploaded'])) {
+//            $row['date_uploaded'] .= ' UTC';
+//          }
+//        }
+//    } else {
+//      if(isset($get_new['date_uploaded'])) {
+//        $get_new['date_uploaded'] .= ' UTC';
+//      }
+//    }
 
     JsonView::render($get_new);
 })->via('GET','PATCH','POST','PUT');

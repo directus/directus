@@ -88,9 +88,11 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 
-        foreach ($rowset as &$row) {
-            $row['datetime'] .= ' UTC';
-        }
+//        @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
+//        see: https://en.wikipedia.org/wiki/ISO_8601
+//        foreach ($rowset as &$row) {
+//            $row['datetime'] .= ' UTC';
+//        }
 
         $countTotalWhere = new Where;
         $countTotalWhere
@@ -121,10 +123,11 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
 
         $result = $this->selectWith($select);
         $result = $result->toArray();
-
-        foreach ($result as &$row) {
-            $row['datetime'] .= ' UTC';
-        }
+//        @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
+//        see: https://en.wikipedia.org/wiki/ISO_8601
+//        foreach ($result as &$row) {
+//            $row['datetime'] .= ' UTC';
+//        }
 
         return $result;
     }

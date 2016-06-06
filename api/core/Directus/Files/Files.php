@@ -103,7 +103,9 @@ class Files
             'size' => $fileData['size'],
             'width' => $fileData['width'],
             'height' => $fileData['height'],
-            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            //    @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
+            //    see: https://en.wikipedia.org/wiki/ISO_8601
+            'date_uploaded' => $fileData['date_uploaded'],// . ' UTC',
             'storage_adapter' => $fileData['storage_adapter']
         ];
     }
@@ -298,7 +300,9 @@ class Files
             'size' => $fileData['size'],
             'width' => $fileData['width'],
             'height' => $fileData['height'],
-            'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
+            //    @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
+            //    see: https://en.wikipedia.org/wiki/ISO_8601
+            'date_uploaded' => $fileData['date_uploaded'],// . ' UTC',
             'storage_adapter' => $fileData['storage_adapter']
         ];
     }
