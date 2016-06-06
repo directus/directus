@@ -367,6 +367,11 @@ class Bootstrap {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $uiDirectory = APPLICATION_PATH . '/ui';
         $uis = array();
+
+        if (!file_exists($uiDirectory)) {
+            return $uis;
+        }
+
         $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uiDirectory), \RecursiveIteratorIterator::SELF_FIRST);
         foreach($objects as $name => $object){
             if("js" == pathinfo($name, PATHINFO_EXTENSION)) {
@@ -375,6 +380,7 @@ class Bootstrap {
                 $uis[$uiName] = substr($uiPath, 0, -3);
             }
         }
+
         return $uis;
     }
 
