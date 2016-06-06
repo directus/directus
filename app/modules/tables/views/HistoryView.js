@@ -25,7 +25,7 @@ function(app, Backbone, Directus, moment) {
         var model = new app.messages.model({from: app.authenticatedUserId.id}, {collection: this.comments, parse: true});
         var subject = '[' + app.settings.get('global').get('project_name') + '] ' + app.capitalize(this.model.collection.table.id) + ': "' + this.model.get(this.model.table.get('primary_column')) + '"';
 
-        var date = new Date();
+        var date = moment().format("YYYY-MM-DD HH:mm:ss");
         model.set({datetime: date, subject: subject, message:this.$el.find('#commentTextarea').val(), comment_metadata: this.model.collection.table.id + ":" + this.model.get('id')})
         model.unset("responses");
         model.url = app.API_URL + "comments/";
@@ -224,12 +224,10 @@ function(app, Backbone, Directus, moment) {
       });
 
       var comments = this.comments.map(function(model) {
-        var date = new Date(model.get('datetime') + ' UTC');
-
         var data = {
           "table": "Comment",
-          "timestamp": date,
-          "time": moment(date).fromNow(),
+          "timestamp": model.get('datetime'),
+          "time": moment(model.get('datetime')).fromNow(),
           "user_avatar": model.get('from')
         };
 
