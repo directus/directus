@@ -4,10 +4,11 @@ define([
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
+  'moment',
   'core/notification'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets, Notification) {
+function(app, Backbone, Directus, BasePageView, Widgets, moment, Notification) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -27,7 +28,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, Notification) {
         var data = this.editView.data();
 
         data.read = "1";
-        data.date_updated = new Date();
+        data.date_updated = moment().format("YYYY-MM-DD HH:mm:ss")
 
         this.model.save(data, {success: function(model, res) {
           if(res.warning) {

@@ -1,9 +1,10 @@
 define([
   'app',
   'backbone',
+  'moment',
   'core/BasePageView'
 ],
-function(app, Backbone, BasePageView) {
+function(app, Backbone, moment, BasePageView) {
 
 
   var ReadView = Backbone.Layout.extend({
@@ -31,7 +32,8 @@ function(app, Backbone, BasePageView) {
           'from': app.users.getCurrentUser().get('id'),
           'subject': 'RE: ' + this.model.get('subject'),
           'recipients': recipients.join(','),
-          'datetime': new Date().toISOString(),
+          // @TODO: Server must set this attribute
+          'datetime': moment().format("YYYY-MM-DD HH:mm:ss"),//new Date().toISOString(),
           'response_to': this.model.id,
           'message': $('#messages-response').val(),
           'responses': []
