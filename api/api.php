@@ -1099,7 +1099,7 @@ $app->get("/$v/tables/?", function() use ($ZendDb, $acl, $app) {
     $tablesNames = TableSchema::getTablenames(false);
 
     $tables = array_map(function($table) {
-        return array('name' => $table);
+        return array('table_name' => $table);
     }, $tablesNames);
 
     JsonView::render($tables);
