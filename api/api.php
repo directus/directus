@@ -1088,6 +1088,23 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
     JsonView::render($get_new);
 })->via('GET','POST','PUT');
 
+/**
+ * /tables
+ * List of viewable tables for the authenticated user group
+ *
+ * return list of objects with the name of the table
+ * Ex. [{name: 'articles'}, {name: 'projects'}]
+ */
+$app->get("/$v/tables/?", function() use ($ZendDb, $acl, $app) {
+    $tablesNames = TableSchema::getTablenames(false);
+
+    $tables = array_map(function($table) {
+        return array('name' => $table);
+    }, $tablesNames);
+
+    JsonView::render($tables);
+});
+
 // GET and PUT table details
 $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {
   if ($app->request()->isDelete()) {

@@ -8,6 +8,7 @@ use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\MemcacheProvider;
+use Directus\Util\StringUtils;
 use Zend\Db\Adapter\ParameterContainer;
 use Directus\Util\ArrayUtils;
 
@@ -200,7 +201,7 @@ class TableSchema {
      * Get all table names
      *
      */
-    public static function getTablenames($params=null) {
+    public static function getTablenames($includeCoreTables = true) {
         $zendDb = Bootstrap::get('zendDb');
 
         $sql = 'SHOW TABLES';
@@ -212,9 +213,16 @@ class TableSchema {
         foreach($result as $row) {
             $row = array_values($row);
             $name = $row[0];
-            if(self::canGroupViewTable($name)) {
-                $tables[] = $name;
+
+            if (!self::canGroupViewTable($name)) {
+                continue;
             }
+
+            if ($includeCoreTables !== true && StringUtils::startsWith($name, 'directus_')) {
+                continue;
+            }
+
+            $tables[] = $name;
         }
 
         return $tables;
