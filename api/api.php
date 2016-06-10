@@ -829,9 +829,11 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
     unset($requestPayload['type']);
     // Add table name to dataset. @TODO more clarification would be useful
     // Also This would return an Error because of $row not always would be an array.
-    foreach ($requestPayload as &$row) {
-        if(is_array($row)) {
-          $row['table_name'] = $table;
+    if ($requestPayload) {
+        foreach ($requestPayload as &$row) {
+            if (is_array($row)) {
+                $row['table_name'] = $table;
+            }
         }
     }
 
