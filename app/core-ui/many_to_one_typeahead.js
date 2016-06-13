@@ -112,7 +112,7 @@ define(['app', 'backbone', 'core/UIView', 'utils'], function(app, Backbone, UIVi
           url: url,
           ttl: 0
         },
-        remote: url + '&q=%QUERY',
+        remote: Utils.addParam(url, 'q', '%QUERY', true, false),
         dupDetector: function(remoteMatch, localMatch) {
           return remoteMatch.value === localMatch.value;
         }
