@@ -362,7 +362,7 @@ class AclAwareTableGateway extends TableGateway {
       $data_type = $tableData['data_type'];
       // TODO: list all types which need manytoone ui
       // Hard-coded
-      $manytoones = array('single_file', 'many_to_one_typeahead', 'MANYTOONE');
+      $manytoones = array('single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE');
 
       if (in_array($data_type, $directus_types)) {
           //This is a 'virtual column'. Write to directus schema instead of MYSQL
