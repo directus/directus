@@ -1,5 +1,15 @@
 <?php
 
+$url = 'ranger--test.directus.io';
+$parts = explode('.', $url);
+if (count($parts) == 2) {
+    $domain = $parts[0];
+
+}
+
+echo '<pre>';
+print_r(dns_get_record('api.welli.ng', DNS_CNAME));
+echo '</pre>';exit;
 //If config file doesnt exist, go to install file
 if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
   header('Location: installation/index.php');
