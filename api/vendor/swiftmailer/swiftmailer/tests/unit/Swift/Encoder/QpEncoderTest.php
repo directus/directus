@@ -372,10 +372,31 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
             );
     }
 
+    public function testTextIsPreWrapped()
+    {
+        $encoder = $this->createEncoder();
+
+        $input = str_repeat('a', 70)."\r\n".
+                 str_repeat('a', 70)."\r\n".
+                 str_repeat('a', 70);
+
+        $this->assertEquals(
+            $input, $encoder->encodeString($input)
+            );
+    }
+
     // -- Creation methods
 
     private function _createCharStream()
     {
         return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();
+    }
+
+    private function createEncoder()
+    {
+        $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
+        $charStream = new Swift_CharacterStream_NgCharacterStream($factory, 'utf-8');
+
+        return new Swift_Encoder_QpEncoder($charStream);
     }
 }

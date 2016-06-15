@@ -44,9 +44,9 @@ class Ruckusing_Adapter_Sqlite3_Base extends Ruckusing_Adapter_Base implements R
      * @param array $dsn
      * @param $logger
      */
-    public function __construct($dsn, $logger)
+    public function __construct($dsn, $logger, $config)
     {
-        parent::__construct($dsn);
+        parent::__construct($dsn, $config);
         $this->connect($dsn);
         $this->set_logger($logger);
         $this->_in_transaction = false;
@@ -855,7 +855,7 @@ class Ruckusing_Adapter_Sqlite3_Base extends Ruckusing_Adapter_Base implements R
             throw new Ruckusing_Exception('Transaction not started', Ruckusing_Exception::QUERY_ERROR);
         }
         $this->execute_ddl("COMMIT");
-        $this->_in_transaction = true;
+        $this->_in_transaction = false;
     }
 
     /**

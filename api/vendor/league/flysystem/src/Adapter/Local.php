@@ -7,9 +7,11 @@ use FilesystemIterator;
 use finfo as Finfo;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use League\Flysystem\Exception;
 use League\Flysystem\NotSupportedException;
 use League\Flysystem\UnreadableFileException;
 use League\Flysystem\Util;
+use LogicException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -31,8 +33,8 @@ class Local extends AbstractAdapter
      */
     protected static $permissions = [
         'file' => [
-            'public' => 0744,
-            'private' => 0700,
+            'public' => 0644,
+            'private' => 0600,
         ],
         'dir' => [
             'public' => 0755,
@@ -69,12 +71,11 @@ class Local extends AbstractAdapter
      */
     public function __construct($root, $writeFlags = LOCK_EX, $linkHandling = self::DISALLOW_LINKS, array $permissions = [])
     {
-        // permissionMap needs to be set before ensureDirectory() is called.
         $this->permissionMap = array_replace_recursive(static::$permissions, $permissions);
         $realRoot = $this->ensureDirectory($root);
 
         if ( ! is_dir($realRoot) || ! is_readable($realRoot)) {
-            throw new \LogicException('The root path ' . $root . ' is not readable.');
+            throw new LogicException('The root path ' . $root . ' is not readable.');
         }
 
         $this->setPathPrefix($realRoot);
@@ -88,6 +89,8 @@ class Local extends AbstractAdapter
      * @param string $root root directory path
      *
      * @return string real path to root
+     *
+     * @throws Exception in case the root directory can not be created
      */
     protected function ensureDirectory($root)
     {
@@ -95,6 +98,10 @@ class Local extends AbstractAdapter
             $umask = umask(0);
             mkdir($root, $this->permissionMap['dir']['public'], true);
             umask($umask);
+
+            if ( ! is_dir($root)) {
+                throw new Exception(sprintf('Impossible to create the root directory "%s".', $root));
+            }
         }
 
         return realpath($root);

@@ -311,9 +311,9 @@ class Swift_DependencyContainer
             return $reflector->newInstanceArgs(
                 $this->createDependenciesFor($itemName)
                 );
-        } else {
-            return $reflector->newInstance();
         }
+
+        return $reflector->newInstance();
     }
 
     /** Create and register a shared instance of $itemName */
@@ -366,8 +366,8 @@ class Swift_DependencyContainer
             }
 
             return $collection;
-        } else {
-            return $this->lookup($item);
         }
+
+        return $this->lookup($item);
     }
 }

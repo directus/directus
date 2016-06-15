@@ -15,7 +15,7 @@ use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
 use Directus\Hook\Hook;
-use Directus\Util\Date;
+use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\AbstractSql;
@@ -127,7 +127,7 @@ class AclAwareTableGateway extends TableGateway {
     protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
         foreach($fields as $field) {
             $col =& $row[$field];
-            $datetime = Date::convertUtcDateTimeToTimeZone($col, $targetTimeZone);
+            $datetime = DateUtils::convertUtcDateTimeToTimeZone($col, $targetTimeZone);
             $col = $yieldObjects ? $datetime : $datetime->format("Y-m-d H:i:s T");
         }
         return $row;
@@ -362,7 +362,7 @@ class AclAwareTableGateway extends TableGateway {
       $data_type = $tableData['data_type'];
       // TODO: list all types which need manytoone ui
       // Hard-coded
-      $manytoones = array('single_file', 'MANYTOONE');
+      $manytoones = array('single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE');
 
       if (in_array($data_type, $directus_types)) {
           //This is a 'virtual column'. Write to directus schema instead of MYSQL

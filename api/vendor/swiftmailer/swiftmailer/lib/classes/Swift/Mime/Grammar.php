@@ -129,11 +129,11 @@ class Swift_Mime_Grammar
     {
         if (array_key_exists($name, self::$_grammar)) {
             return self::$_grammar[$name];
-        } else {
-            throw new Swift_RfcComplianceException(
-                "No such grammar '".$name."' defined."
-                );
         }
+
+        throw new Swift_RfcComplianceException(
+            "No such grammar '".$name."' defined."
+        );
     }
 
     /**

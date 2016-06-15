@@ -1,0 +1,18 @@
+{
+    "name": "directus/database",
+    "description": "Directus Database Component",
+    "keywords": ["directus", "database"],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.0",
+        "zendframework/zend-db": "2.2.*@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~3.7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Directus\\Db\\": ""
+        }
+    }
+}

@@ -57,8 +57,8 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
             '--'.$boundary."\r\n".
             'Content-Type: image/gif; name=image.gif'."\r\n".
             'Content-Transfer-Encoding: base64'."\r\n".
-            'Content-Disposition: inline; filename=image.gif'."\r\n".
             'Content-ID: <'.preg_quote($imgId, '~').'>'."\r\n".
+            'Content-Disposition: inline; filename=image.gif'."\r\n".
             "\r\n".
             preg_quote(base64_encode('<data>'), '~').
             "\r\n\r\n".
@@ -106,8 +106,8 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         '--'.$boundary."\r\n".
         'Content-Type: image/gif; name=image.gif'."\r\n".
         'Content-Transfer-Encoding: base64'."\r\n".
-        'Content-Disposition: inline; filename=image.gif'."\r\n".
         'Content-ID: <'.preg_quote($imgId, '~').'>'."\r\n".
+        'Content-Disposition: inline; filename=image.gif'."\r\n".
         "\r\n".
         preg_quote(base64_encode('<data>'), '~').
         "\r\n\r\n".

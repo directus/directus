@@ -140,11 +140,6 @@ class Swift_MailerTest extends \SwiftMailerTestCase
         return $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
     }
 
-    private function _createIterator()
-    {
-        return $this->getMockery('Swift_Mailer_RecipientIterator')->shouldIgnoreMissing();
-    }
-
     private function _createMailer(Swift_Transport $transport)
     {
         return new Swift_Mailer($transport);

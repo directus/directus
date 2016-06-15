@@ -1,17 +1,13 @@
 language: php
 
-php:
-  - 5.3
-  - 5.4
-  - 5.5
-  - 5.6
-  - hhvm-nightly
+sudo: false
 
 before_script:
     - cp tests/acceptance.conf.php.default tests/acceptance.conf.php
     - cp tests/smoke.conf.php.default tests/smoke.conf.php
     - composer self-update
     - composer update --no-interaction --prefer-source
+    - gem install mime-types -v 2.99.1
     - gem install mailcatcher
     - mailcatcher --smtp-port 4456
 
@@ -19,7 +15,14 @@ script:
     - phpunit --verbose
 
 matrix:
-  allow_failures:
-    - php: 5.6
-    - php: hhvm-nightly
-  fast_finish: true
+    include:
+        - php: 5.3
+        - php: 5.4
+        - php: 5.5
+        - php: 5.6
+        - php: 7.0
+        - php: hhvm
+    allow_failures:
+        - php: 7.0
+        - php: hhvm
+    fast_finish: true

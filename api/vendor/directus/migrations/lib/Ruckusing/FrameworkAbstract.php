@@ -95,8 +95,8 @@ abstract class FrameworkAbstract implements FrameworkInterface
      */
     public function __construct($config, $argv = array(), Ruckusing_Util_Logger $log = null)
     {
-        set_error_handler(array('Ruckusing\RuckusingException', 'errorHandler'), E_ALL);
-        set_exception_handler(array('Ruckusing\RuckusingException', 'exceptionHandler'));
+        // set_error_handler(array('Ruckusing\RuckusingException', 'errorHandler'), E_ALL);
+        // set_exception_handler(array('Ruckusing\RuckusingException', 'exceptionHandler'));
 
         //parse arguments
         $this->parse_args($argv);
@@ -426,7 +426,7 @@ abstract class FrameworkAbstract implements FrameworkInterface
                 $adapter_class = "Ruckusing\Adapter\PgSQLBase";
                 break;
             case 'sqlite':
-                $adapter_class = "Ruckusing\Adapter\Sqlite3Base";
+                $adapter_class = "Ruckusing\Adapter\SQLite3\Base";
                 break;
         }
 

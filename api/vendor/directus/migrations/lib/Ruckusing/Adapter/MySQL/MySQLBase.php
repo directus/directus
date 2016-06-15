@@ -348,14 +348,68 @@ class MySQLBase extends Ruckusing_Adapter_Base implements Ruckusing_Adapter_Inte
         $this->execute($sql);
     }
 
-    public function get_columns($columns)
+    public function update($tableName, $data, $conditions = array())
+    {
+        $sqlFormat = 'UPDATE %s SET %s';
+        if ($conditions) {
+            $sqlFormat .= ' WHERE %s';
+        }
+
+        $tableName = $this->identifier($this->get_table_name($tableName));
+        $sets = array();
+        foreach($data as $key => $value) {
+            $sets[$key] = $this->get_value($value);
+        }
+        $setValues = $this->parse_set_values($sets);
+
+        if ($conditions) {
+            $where = array();
+            foreach($conditions as $field => $value) {
+                $where[$field] = $this->get_value($value);
+            }
+            $where = array();
+            foreach($conditions as $field => $value) {
+                $field = $this->identifier($field);
+                $value = $this->get_value($value);
+
+                $where[] = sprintf('%s = %s', $field, $value);
+            }
+            $where = implode(' AND ', $where);
+            $query = sprintf($sqlFormat, $tableName, $setValues, $where);
+        } else {
+            $query = sprintf($sqlFormat, $tableName, $setValues);
+        }
+
+        $this->execute($query);
+    }
+
+    public function parse_set_values($values)
+    {
+        $sets = array();
+        foreach($values as $field => $value) {
+            $field = $this->identifier($field);
+            $value = $this->get_value($value);
+            $sets[] = sprintf('%s = %s', $field, $value);
+        }
+
+        return implode(', ', $sets);
+    }
+
+    public function parse_columns($columns)
     {
         $arrayCount = array_filter($columns,'is_array');
         if(count($arrayCount)>0) {
             $columns = array_pop($columns);
         }
 
-        return "(" . implode(',', array_map(array($this, 'identifier'), array_keys($columns))) . ")";
+        return array_map(array($this, 'identifier'), array_keys($columns));
+    }
+
+    public function get_columns($columns)
+    {
+        $columns = $this->parse_columns($columns);
+
+        return "(" . implode(',', $columns) . ")";
     }
 
     public function parse_values($data)
@@ -956,6 +1010,8 @@ class MySQLBase extends Ruckusing_Adapter_Base implements Ruckusing_Adapter_Inte
     public function type_to_sql($type, $options = array())
     {
         $natives = $this->native_database_types();
+        // case insensitive
+        $type = strtolower($type);
 
         if (!array_key_exists($type, $natives)) {
             $error = sprintf("Error:I dont know what column type of '%s' maps to for MySQL.", $type);

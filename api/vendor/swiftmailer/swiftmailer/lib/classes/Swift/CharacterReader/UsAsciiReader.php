@@ -67,9 +67,9 @@ class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
         $byte = reset($bytes);
         if (1 == count($bytes) && $byte >= 0x00 && $byte <= 0x7F) {
             return 0;
-        } else {
-            return -1;
         }
+
+        return -1;
     }
 
     /**

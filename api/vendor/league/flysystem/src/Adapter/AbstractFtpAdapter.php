@@ -81,6 +81,11 @@ abstract class AbstractFtpAdapter extends AbstractAdapter
     protected $systemType;
 
     /**
+     * @var bool
+     */
+    protected $alternativeRecursion = false;
+
+    /**
      * Constructor.
      *
      * @param array $config
@@ -317,6 +322,8 @@ abstract class AbstractFtpAdapter extends AbstractAdapter
     {
         return $this->listDirectoryContents($directory, $recursive);
     }
+
+    abstract protected function listDirectoryContents($directory, $recursive = false);
 
     /**
      * Normalize a directory listing.

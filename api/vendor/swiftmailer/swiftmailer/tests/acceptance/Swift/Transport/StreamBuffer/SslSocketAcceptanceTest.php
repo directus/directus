@@ -36,6 +36,6 @@ class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest
             'protocol' => 'ssl',
             'blocking' => 1,
             'timeout' => 15,
-            ));
+        ));
     }
 }

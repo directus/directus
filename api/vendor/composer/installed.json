@@ -105,12 +105,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/WellingGuzman/Migrations.git",
-            "reference": "f98c8c999a9d0369a3ee500fb6faf683ba2df9b8"
+            "reference": "0dda4cb1aa42d7d4292c3dff684e57bf06b66a69"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/f98c8c999a9d0369a3ee500fb6faf683ba2df9b8",
-            "reference": "f98c8c999a9d0369a3ee500fb6faf683ba2df9b8",
+            "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/0dda4cb1aa42d7d4292c3dff684e57bf06b66a69",
+            "reference": "0dda4cb1aa42d7d4292c3dff684e57bf06b66a69",
             "shasum": ""
         },
         "require": {
@@ -119,7 +119,7 @@
         "require-dev": {
             "phpunit/phpunit": "3.7.*"
         },
-        "time": "2016-04-24 17:35:12",
+        "time": "2016-05-22 08:02:18",
         "bin": [
             "ruckus.php"
         ],
@@ -267,17 +267,17 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.21",
-        "version_normalized": "1.0.21.0",
+        "version": "1.0.24",
+        "version_normalized": "1.0.24.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "35a83cf67d80d7040f306c77b0a84b9fbcc4fbfb"
+            "reference": "9aca859a303fdca30370f42b8c611d9cf0dedf4b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/35a83cf67d80d7040f306c77b0a84b9fbcc4fbfb",
-            "reference": "35a83cf67d80d7040f306c77b0a84b9fbcc4fbfb",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/9aca859a303fdca30370f42b8c611d9cf0dedf4b",
+            "reference": "9aca859a303fdca30370f42b8c611d9cf0dedf4b",
             "shasum": ""
         },
         "require": {
@@ -306,7 +306,7 @@
             "league/flysystem-webdav": "Allows you to use WebDAV storage",
             "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter"
         },
-        "time": "2016-04-22 10:56:25",
+        "time": "2016-06-03 19:11:39",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -352,17 +352,17 @@
     },
     {
         "name": "swiftmailer/swiftmailer",
-        "version": "v5.4.1",
-        "version_normalized": "5.4.1.0",
+        "version": "v5.4.2",
+        "version_normalized": "5.4.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/swiftmailer/swiftmailer.git",
-            "reference": "0697e6aa65c83edf97bb0f23d8763f94e3f11421"
+            "reference": "d8db871a54619458a805229a057ea2af33c753e8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/0697e6aa65c83edf97bb0f23d8763f94e3f11421",
-            "reference": "0697e6aa65c83edf97bb0f23d8763f94e3f11421",
+            "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/d8db871a54619458a805229a057ea2af33c753e8",
+            "reference": "d8db871a54619458a805229a057ea2af33c753e8",
             "shasum": ""
         },
         "require": {
@@ -371,7 +371,7 @@
         "require-dev": {
             "mockery/mockery": "~0.9.1,<0.9.4"
         },
-        "time": "2015-06-06 14:19:39",
+        "time": "2016-05-01 08:45:47",
         "type": "library",
         "extra": {
             "branch-alias": {

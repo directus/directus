@@ -349,12 +349,13 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     {
         $lowerA = strtolower($a);
         $lowerB = strtolower($b);
-        $aPos = array_key_exists($lowerA, $this->_order)
-            ? $this->_order[$lowerA]
-            : -1;
-        $bPos = array_key_exists($lowerB, $this->_order)
-            ? $this->_order[$lowerB]
-            : -1;
+        $aPos = array_key_exists($lowerA, $this->_order) ? $this->_order[$lowerA] : -1;
+        $bPos = array_key_exists($lowerB, $this->_order) ? $this->_order[$lowerB] : -1;
+
+        if (-1 === $aPos && -1 === $bPos) {
+            // just be sure to be determinist here
+            return $a > $b ? -1 : 1;
+        }
 
         if ($aPos == -1) {
             return 1;
@@ -362,7 +363,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
             return -1;
         }
 
-        return ($aPos < $bPos) ? -1 : 1;
+        return $aPos < $bPos ? -1 : 1;
     }
 
     /** Test if the given Header is always displayed */

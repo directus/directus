@@ -126,7 +126,7 @@ $acl = Bootstrap::get('acl');
 
 Hook::run('application.boot', $app);
 
-$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb) {
+$app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl) {
     // API/Server is about to initialize
     Hook::run('application.init', $app);
 
@@ -173,6 +173,16 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             Auth::setLoggedUser($user['id']);
             Hook::run('directus.authenticated', [$app, $user]);
             Hook::run('directus.authenticated.token', [$app, $user]);
+
+            // Reload all user permissions
+            // At this point ACL has run and loaded all permissions
+            // This behavior works as expected when you are logged to the CMS/Management
+            // When logged through API we need to reload all their permissions
+            $privilegesTable = new DirectusPrivilegesTableGateway($acl, $ZendDb);
+            $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($user['group']));
+            // @TODO: Adding an user should auto set its ID and GROUP
+            $acl->setUserId($user['id']);
+            $acl->setGroupId($user['group']);
         }
 
         /** Enforce required authentication. */
@@ -819,9 +829,11 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
     unset($requestPayload['type']);
     // Add table name to dataset. @TODO more clarification would be useful
     // Also This would return an Error because of $row not always would be an array.
-    foreach ($requestPayload as &$row) {
-        if(is_array($row)) {
-          $row['table_name'] = $table;
+    if ($requestPayload) {
+        foreach ($requestPayload as &$row) {
+            if (is_array($row)) {
+                $row['table_name'] = $table;
+            }
         }
     }
 
@@ -936,17 +948,19 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     $Files = new TableGateway($acl, $table, $ZendDb);
     $get_new = $Files->getEntries($params);
 
-    if (array_key_exists('rows', $get_new)) {
-        foreach ($get_new['rows'] as &$row) {
-          if(isset($row['date_uploaded'])) {
-            $row['date_uploaded'] .= ' UTC';
-          }
-        }
-    } else {
-      if(isset($get_new['date_uploaded'])) {
-        $get_new['date_uploaded'] .= ' UTC';
-      }
-    }
+//    @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
+//    see: https://en.wikipedia.org/wiki/ISO_8601
+//    if (array_key_exists('rows', $get_new)) {
+//        foreach ($get_new['rows'] as &$row) {
+//          if(isset($row['date_uploaded'])) {
+//            $row['date_uploaded'] .= ' UTC';
+//          }
+//        }
+//    } else {
+//      if(isset($get_new['date_uploaded'])) {
+//        $get_new['date_uploaded'] .= ' UTC';
+//      }
+//    }
 
     JsonView::render($get_new);
 })->via('GET','PATCH','POST','PUT');
@@ -1075,6 +1089,23 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
 
     JsonView::render($get_new);
 })->via('GET','POST','PUT');
+
+/**
+ * /tables
+ * List of viewable tables for the authenticated user group
+ *
+ * return list of objects with the name of the table
+ * Ex. [{name: 'articles'}, {name: 'projects'}]
+ */
+$app->get("/$v/tables/?", function() use ($ZendDb, $acl, $app) {
+    $tablesNames = TableSchema::getTablenames(false);
+
+    $tables = array_map(function($table) {
+        return array('table_name' => $table);
+    }, $tablesNames);
+
+    JsonView::render($tables);
+});
 
 // GET and PUT table details
 $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {

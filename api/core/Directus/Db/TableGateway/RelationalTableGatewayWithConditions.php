@@ -25,8 +25,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
 
         if(isset($params['group_by'])) {
           $select->group($tableName . '.' . $params['group_by']);
-        } else {
-          $select->group($tableName . '.'.$this->primaryKeyFieldName);
         }
 
         //If this is a relational order, than it is an array.
@@ -95,7 +93,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               $tableName = $params['table_name'];
             }
 
-            $select->where->in($tableName.'.'.STATUS_COLUMN_NAME, $haystack);
+            $select->where->in(STATUS_COLUMN_NAME, $haystack);
         }
 
         // Select only ids from the ids if provided
@@ -103,7 +101,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             $entriesIds = array_filter(explode(',', $params['ids']), 'is_numeric');
 
             if (count($entriesIds) > 0) {
-                $select->where->in($this->getTable() . '.'.$this->primaryKeyFieldName, $entriesIds);
+                $select->where->in($this->primaryKeyFieldName, $entriesIds);
             }
         }
 
@@ -113,7 +111,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             ->nest
                 ->expression('-1 = ?', $params[$this->primaryKeyFieldName])
                 ->or
-                ->equalTo($tableName . '.'.$this->primaryKeyFieldName, $params[$this->primaryKeyFieldName])
+                ->equalTo($this->primaryKeyFieldName, $params[$this->primaryKeyFieldName])
             ->unnest;
 
         // very very rudimentary ability to supply where conditions to fetch...

@@ -6,6 +6,7 @@ use Directus\Auth\Provider as Auth;
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableSchema;
+use Directus\MemcacheProvider;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -54,6 +55,21 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         }
 
         return $attributes;
+    }
+
+    /**
+     * Get Permissions for the given Group ID
+     * @param $groupId
+     *
+     * @return array
+     */
+    public function getGroupPrivileges($groupId)
+    {
+        $getPrivileges = function() use ($groupId) {
+            return (array) $this->fetchGroupPrivileges($groupId);
+        };
+
+        return $this->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($groupId), $getPrivileges, 1800);
     }
 
     public function fetchGroupPrivileges($group_id) {
@@ -142,7 +158,6 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
         $select = new Select($this->table);
         $select->where->equalTo('group_id', $groupId);
-        $select->group(array('group_id', 'table_name', 'status_id'));
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 

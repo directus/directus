@@ -1,6 +1,21 @@
 Changelog
 =========
 
+5.4.2 (2016-05-01)
+------------------
+
+ * fixed support for IPv6 sockets
+ * added auto-retry when sending messages from the memory spool
+ * fixed consecutive read calls in Swift_ByteStream_FileByteStream
+ * added support for iso-8859-15 encoding
+ * fixed PHP mail extra params on missing reversePath
+ * added methods to set custom stream context options
+ * fixed charset changes in QpContentEncoderProxy
+ * added return-path header to the ignoredHeaders list of DKIMSigner
+ * fixed crlf for subject using mail
+ * fixed add soft line break only when necessary
+ * fixed escaping command-line args to Sendmail
+
 5.4.1 (2015-06-06)
 ------------------
 

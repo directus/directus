@@ -278,12 +278,8 @@ class Bootstrap {
             $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
             $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
             if($currentUser) {
-                $Privileges = new DirectusPrivilegesTableGateway($acl, $db);
-                $getPrivileges = function() use ($currentUser, $Privileges) {
-                    return (array) $Privileges->fetchGroupPrivileges($currentUser['group']);
-                };
-                $groupPrivileges = $Privileges->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($currentUser['group']), $getPrivileges, 1800);
-                $acl->setGroupPrivileges($groupPrivileges);
+                $privilegesTable = new DirectusPrivilegesTableGateway($acl, $db);
+                $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($currentUser['group']));
             }
         }
         return $acl;
@@ -347,6 +343,11 @@ class Bootstrap {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $uiDirectory = APPLICATION_PATH . '/ui';
         $uis = array();
+
+        if (!file_exists($uiDirectory)) {
+            return $uis;
+        }
+
         $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uiDirectory), \RecursiveIteratorIterator::SELF_FIRST);
         foreach($objects as $name => $object){
             if("js" == pathinfo($name, PATHINFO_EXTENSION)) {
@@ -355,6 +356,7 @@ class Bootstrap {
                 $uis[$uiName] = substr($uiPath, 0, -3);
             }
         }
+
         return $uis;
     }
 

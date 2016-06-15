@@ -50,7 +50,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
         $encoder = $this->_getEncoder('7bit');
 
         $chars = array();
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 50; ++$i) {
             $chars[] = 'a';
         }
         $input = implode(' ', $chars); //99 chars long
@@ -75,7 +75,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
            ->zeroOrMoreTimes()
            ->andReturnUsing($collection);
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 50; ++$i) {
             $os->shouldReceive('read')
                ->once()
                ->andReturn('a ');

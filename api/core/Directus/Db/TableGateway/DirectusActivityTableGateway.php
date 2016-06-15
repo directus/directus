@@ -88,9 +88,11 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 
-        foreach ($rowset as &$row) {
-            $row['datetime'] .= ' UTC';
-        }
+//        @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
+//        see: https://en.wikipedia.org/wiki/ISO_8601
+//        foreach ($rowset as &$row) {
+//            $row['datetime'] .= ' UTC';
+//        }
 
         $countTotalWhere = new Where;
         $countTotalWhere
@@ -121,10 +123,11 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
 
         $result = $this->selectWith($select);
         $result = $result->toArray();
-
-        foreach ($result as &$row) {
-            $row['datetime'] .= ' UTC';
-        }
+//        @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
+//        see: https://en.wikipedia.org/wiki/ISO_8601
+//        foreach ($result as &$row) {
+//            $row['datetime'] .= ' UTC';
+//        }
 
         return $result;
     }
@@ -137,8 +140,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
           'user'              => $userid,
           'datetime'          => gmdate('Y-m-d H:i:s'),
           'parent_id'         => null,
-          'logged_ip'         => $_SERVER['REMOTE_ADDR'],
-          'user_agent'        => $_SERVER['HTTP_USER_AGENT']
+          'logged_ip'         => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+          'user_agent'        => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
       );
 
       $insert = new Insert($this->getTable());
@@ -166,8 +169,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
           'delta'             => "[]",
           'identifier'        => $data['subject'],
           'row_id'            => $data['id'],
-          'logged_ip'         => $_SERVER['REMOTE_ADDR'],
-          'user_agent'        => $_SERVER['HTTP_USER_AGENT']
+          'logged_ip'         => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+          'user_agent'        => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
       );
 
       $insert = new Insert($this->getTable());

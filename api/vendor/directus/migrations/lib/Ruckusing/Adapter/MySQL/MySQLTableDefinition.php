@@ -220,6 +220,9 @@ class MySQLTableDefinition
         } else {
             $opt_str = null;
         }
+        if (isset($this->_adapter->db_info['engine'])) {
+            $opt_str .= ' ENGINE='.$this->_adapter->db_info['engine'].' ';
+        }
         if(isset($this->_adapter->db_info['charset'])){
             $opt_str .= " DEFAULT CHARSET=".$this->_adapter->db_info['charset'];
         } else {

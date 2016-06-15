@@ -286,6 +286,15 @@ class Base
         return $this->_adapter->insert($table_name, $data);
     }
 
+    public function update($tableName, $data, $conditions = array())
+    {
+        if (!is_array($data)) {
+            return false;
+        }
+
+        return $this->_adapter->update($tableName, $data, $conditions);
+    }
+
     /**
      * Select one query
      *

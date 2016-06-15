@@ -82,7 +82,7 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
     {
         $needed = $this->_width - $size;
 
-        return ($needed > -1) ? $needed : -1;
+        return $needed > -1 ? $needed : -1;
     }
 
     /**
