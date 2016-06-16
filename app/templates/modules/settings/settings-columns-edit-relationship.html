@@ -1,0 +1,34 @@
+<ul class="fields">
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Data Type</label>
+        </div>
+        <div class="field required">
+          <select id="dataType" name="data_type">
+            {{#data_types}}
+              <option {{#if selected}}selected{{/if}}>{{title}}</option>
+            {{/data_types}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li class="batchcontainer required">
+    <div class="table">
+      <div class="trow">
+        <div class="label">
+          <label>Related Table</label>
+        </div>
+        <div class="field required">
+          <select name="table_related" id="table_related">
+            {{#tables}}
+            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+            {{/tables}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </li>
+</ul>

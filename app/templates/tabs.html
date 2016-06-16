@@ -1,0 +1,26 @@
+<ul>
+	<li class="{{#if active}}active{{/if}} has-image" title="Edit User">
+	    <a href="#users/{{currentUserId}}">
+	      <img src="{{avatar}}" alt>
+	      <i class="material-icons">edit</i>
+	    </a>
+	</li>
+	<li class="{{#if active}}active{{/if}} " title="Sign Out">
+	    <a href="#logout">
+	      <i class="material-icons">power_settings_new</i>
+	    </a>
+	</li>
+	{{#if showSettings}}
+	<li class="{{#if active}}active{{/if}} border-left" title="Settings">
+ 		<a href="#settings">
+ 			<i class="material-icons">settings</i>
+ 		</a>
+ 	</li>
+ 	{{else}}
+ 	<li class="border-left" title="Directus User Guide">
+ 		<a href="http://getdirectus.com/" target="_blank">
+	 		<i class="material-icons">help_outline</i>
+	 	</a>
+ 	</li>
+	{{/if}}
+</ul>

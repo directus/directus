@@ -1,0 +1,38 @@
+<div class="header1">
+  <div id="header-shadow">&nbsp;</div>
+  <div class="primary-row row-plain">
+    <div class="responsive-nav-toggle">
+      <div class="hamburger-line line-1"></div>
+      <div class="hamburger-line line-2"></div>
+      <div class="hamburger-line line-3"></div>
+    </div>
+    <h1 class="font-primary">
+      {{#if route}}
+        {{#if route.isOverlay}}
+          <i class="material-icons" id="removeOverlay">arrow_back</i>
+          <!-- i class="material-icons breadcrumb-delimiter">chevron_right</i> -->
+        {{else}}
+          {{#if route.lastBreadcrumbAnchor}}
+          <a class="navigation-back" href="{{route.lastBreadcrumbAnchor}}">
+            <i class="material-icons" id="removeOverlay">arrow_back</i>
+            <!-- i class="material-icons breadcrumb-delimiter">chevron_right</i> -->
+          </a>
+          {{/if}}
+          <span class="navigation-breadcrumb">
+          {{#each route.breadcrumbs}}
+              <a href="{{anchor}}" class="" >{{{capitalize title}}}</a>
+              <i class="material-icons breadcrumb-delimiter">chevron_right</i>
+          {{/each}}
+        </span>
+        {{/if}}
+        <span class="endnode">{{{capitalize route.title}}}</span>
+      {{/if}}
+    </h1>
+    <ul class="tools left" id="tools-left-insert"></ul>
+    <ul class="tools right" id="tools-right-insert"></ul>
+  </div>
+  <div class="secondary-row row-plain filter-options">
+    <div id="tools-secondary-left-insert" class="tools left"></div>
+    <div id="tools-secondary-right-insert" class="tools right"></div>
+  </div>
+</div>

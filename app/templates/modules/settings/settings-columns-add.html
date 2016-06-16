@@ -1,0 +1,222 @@
+<ul class="fields">
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Field Name
+                        <span class="note">The name of the database column and field label. Should be human-readable, lowercase, and use underscores for spaces</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <input type="text" id="columnName" name="column_name" value="{{column_name}}" class="medium" placeholder="eg: first_name"/>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        User Interface (UI)
+                        <span class="note">The input, interface, or display method for the field. This can be changed later, but only to other UIs that work with the chosen datatype below</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select id="uiType" name="ui_type">
+                        {{#ui_types}}
+                        <option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
+                        {{/ui_types}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Data Type
+                        <span class="note">This determines how the data is stored in the database. Options here are limited by the selected UI above. Once selected, this can not be changed</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select id="dataType" name="data_type">
+                        {{#data_types}}
+                        <option {{#if selected}}selected{{/if}}>{{title}}</option>
+                        {{/data_types}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+
+{{#if SHOW_CHAR_LENGTH}}
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Length
+                        <span class="note">Examples: A VARCHAR with a length of 10 can hold a max of 10 characters while an INT with length of 3 can hold numbers up to 999</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <input type="text" id="charLength" value="{{char_length}}" name="char_length" class="small">
+                </div>
+            </div>
+        </div>
+    </li>
+{{/if}}
+
+{{#if MANYTOONE}}
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Related Table
+                        <span class="note">This sets the table containing the data the field will access. It can be the same table though you should avoid deeply nested, complex, or recursive relationships</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select name="table_related" id="table_related">
+                        {{#tables}}
+                        <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                        {{/tables}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+{{/if}}
+
+{{#if ONETOMANY}}
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Related Table
+                        <span class="note">This sets the table containing the data the field will access. It can be the same table though you should avoid deeply nested, complex, or recursive relationships</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select name="table_related" id="table_related">
+                        {{#tables}}
+                        <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                        {{/tables}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Junction Column
+                        <span class="note">Also called a mapping, join, or associative table – this stores the many-to-many relationships between two other tables. Typically this will have three columns: `id`, `table_a_id`, and `table_b_id` – however adding a `sort` column allows these relationships to be ordered within the UI</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select id="junction_key_right" name="junction_key_right">
+                        {{#columns}}
+                        <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                        {{/columns}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+{{/if}}
+
+{{#if MANYTOMANY}}
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Related Table
+                        <span class="note">This sets the table containing the data the field will access. It can be the same table though you should avoid deeply nested, complex, or recursive relationships</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select id="table_related" name="table_related">
+                        {{#tables}}
+                        <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                        {{/tables}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Junction Table
+                        <span class="note">Also called a join or associative table – this stores the many-to-many relationships between two tables. Typically this has three columns: `id`, `table_a_id`, and `table_b_id` – however adding a `sort` column allows these relationships to be ordered within the UI</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select id="table_junction" name="table_junction">
+                        {{#tables}}
+                        <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                        {{/tables}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Left Column
+                        <span class="note">This is the column within the junction table that stores the `id` of <u>this</u> table</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select id="junction_key_left" name="junction_key_left">
+                        {{#columns_left}}
+                        <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                        {{/columns_left}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <li class="batchcontainer required">
+        <div class="table">
+            <div class="trow">
+                <div class="label">
+                    <label>
+                        Right Column
+                        <span class="note">This is the column within the junction table that stores the `id` of the <u>related</u> table</span>
+                    </label>
+                </div>
+                <div class="field required">
+                    <select id="junction_key_right" name="junction_key_right">
+                        {{#columns_right}}
+                        <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                        {{/columns_right}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </li>
+{{/if}}
+
+</ul>

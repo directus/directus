@@ -1,0 +1,26 @@
+<span class="select-and-circle {{#unless isUpToDate}}saved-success{{/unless}}">
+  <span id="save">
+    <span class="tool-item large-circle add-color-background" title="Save">
+      <i class="material-icons">check</i>
+    </span>
+    <!-- <span class="simple-select light-grey-color">
+      {{#if isUpToDate}}
+        All Changes Saved
+      {{else}}
+        Save Changes
+      {{/if}}
+    </span> -->
+  </span>
+  {{#unless basicSave}}
+    <label for="status" class="icon-select icon icon-triangle-down">
+      <select id="saveSelect" name="status">
+        <option selected></option>
+        <option value="save-form-stay">Save And Stay</option>
+        {{#unless singlePage}}
+        <option value="save-form-add">Save And Add</option>
+        <option value="save-form-copy">Save As Copy</option>
+        {{/unless}}
+      </select>
+    </label>
+  {{/unless}}
+</span>

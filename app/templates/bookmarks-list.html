@@ -1,0 +1,78 @@
+{{#if isCustomBookmarks}}
+  {{#each bookmarks}}
+    {{#if isCustomBookmark}}
+    <div class="sidebar-section tables-sidebar">
+      <div class="sidebar-group">{{@key}}</div>
+      {{#each this}}
+      <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+          <a href="{{url}}">
+            {{capitalize title}}
+          </a>
+      </li>
+      {{/each}}
+    </div>
+    {{/if}}
+  {{/each}}
+{{else}}
+<div class="sidebar-section tables-sidebar">
+  <div class="sidebar-group">Tables</div>
+  {{#unless bookmarks.table}}
+   <li class="sidebar-subitem disabled" title="There are no tables you have permission to view"><a>No Tables</a></li>
+  {{/unless}}
+  {{#bookmarks.table}}
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+      <a href="{{url}}">
+        {{capitalize title}}
+      </a>
+  </li>
+  {{/bookmarks.table}}
+</div>
+{{/if}}
+
+{{#if bookmarks.extension}}
+<div class="sidebar-section searches-sidebar">
+  <div class="sidebar-group">Extensions</div>
+  {{#bookmarks.extension}}
+  <li class="{{#if active_bookmark}}active{{/if}}sidebar-subitem" title="{{capitalize title}}">
+      <a href="{{url}}">
+        <span class="sidebar-label">{{capitalize title}}</span>
+      </a>
+  </li>
+  {{/bookmarks.extension}}
+</div>
+{{/if}}
+
+<div class="sidebar-section searches-sidebar">
+  <div class="sidebar-group">Bookmarks</div>
+  <li class="sidebar-subitem" title="Add Bookmark">
+      <a id="saveSnapshotBtn" href="#">
+        Add Bookmark
+      </a>
+  </li>
+  {{#if bookmarks.search}}
+  {{#bookmarks.search}}
+  <li data-id="{{id}}" class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+      <a href="{{url}}">
+        {{capitalize title}}
+        <span class="remove-snapshot">✕</span>
+      </a>
+  </li>
+  {{/bookmarks.search}}
+  {{/if}}
+</div>
+
+{{#if bookmarks.other}}
+<div class="sidebar-section other-sidebar">
+  <div class="sidebar-group">System</div>
+  {{#bookmarks.other}}
+  <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
+      <a href="{{url}}">
+        <span class="sidebar-label">{{capitalize title}}</span>
+        {{#if unread}}
+        <span class="unread-color">●</span>
+        {{/if}}
+      </a>
+  </li>
+  {{/bookmarks.other}}
+</div>
+{{/if}}
