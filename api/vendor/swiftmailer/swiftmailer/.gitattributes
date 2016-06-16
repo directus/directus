@@ -1,9 +1,0 @@
-*.crt -crlf
-*.key -crlf
-*.srl -crlf
-*.pub -crlf
-*.priv -crlf
-*.txt -crlf
-
-# ignore /notes in the git-generated distributed .zip archive
-/notes export-ignore
