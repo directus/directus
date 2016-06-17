@@ -100,13 +100,12 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
     var d = new Date();
     var time = options.value.split(":");
-    d.setHours( parseInt(time[0],10) + (time[2] ? 12 : 0) );
+    d.setHours( parseInt(time[0],10) );
     d.setMinutes( parseInt(time[1],10) || 0 );
     d.setSeconds( parseInt(time[2],10) || 0 );
     var hours = d.getHours();
-    var minutes = d.getMinutes();
-    var seconds = (d.getSeconds() === 0) ? '00' : d.getSeconds();
-
+    var minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+    var seconds = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
     var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
 
     var suffix = (hours >= 12)? 'pm' : 'am';
