@@ -87,7 +87,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView'], function(app, momen
       var date = new Date();
       var timeParts = options.value.split(":");
 
-      date.setHours(parseInt(timeParts[0],10) + (timeParts[2] ? 12 : 0) );
+      date.setHours(parseInt(timeParts[0],10));
       date.setMinutes(parseInt(timeParts[1],10) || 0 );
       date.setSeconds(parseInt(timeParts[2],10) || 0 );
 
