@@ -57,6 +57,9 @@ hr {
   background-color: #bbbbbb;
   height: 1px; }
 
+form {
+  margin-bottom: 60px; }
+
 label {
   font-size: 13px;
   text-transform: uppercase; }
@@ -133,7 +136,6 @@ input[type=number] {
   margin-bottom: 20px;
   font-size: 16px;
   color: #666666;
-  -webkit-text-fill-color: #666666;
   border: #BBBBBB 1px solid;
   outline: none;
   background-color: #ffffff;
