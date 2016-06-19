@@ -44,6 +44,9 @@ define(function(require, exports, module) {
         }
 
         result.header = result.master || result.header === true || result.header === "true" || result.header == 1;
+        // UI Settings input should not be require by default
+        // if required and is_nullable is not set
+        // should fallback to required = false, is_nullable = YES
         result.required = result.required === true;
         result.is_nullable = result.is_nullable ? result.is_nullable : 'YES';
 
