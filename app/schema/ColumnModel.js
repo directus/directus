@@ -46,6 +46,9 @@ define(function(require, exports, module) {
         if (result.master) result.header = true;
         result.header = (result.header === "true" || result.header === true || result.header === 1 || result.header === "1") ? true : false;
 
+        result.required = result.required === true;
+        result.is_nullable = result.is_nullable ? result.is_nullable : 'YES';
+
         return _.omit(result, 'options', 'relationship');
       },
 
