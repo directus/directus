@@ -62,7 +62,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     list: function(options) {
       var listTemplateSource = '<input type="checkbox" {{#if selected}}checked="true"{{/if}} disabled>';
 
-      return this.compileView(listTemplateSource, {selected: !!options.value});
+      return this.compileView(listTemplateSource, {selected: parseInt(options.value, 10) === 1});
     }
   });
 
