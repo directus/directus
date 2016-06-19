@@ -290,6 +290,10 @@ class TableSchema {
         $acl = Bootstrap::get('acl');
         $zendDb = Bootstrap::get('ZendDb');
 
+        // TODO: getTable should return an empty object
+        // or and empty array instead of false
+        // in any given situation that the table
+        // can be find or used.
         if(!self::canGroupViewTable($tbl_name)) {
             return false;
         }

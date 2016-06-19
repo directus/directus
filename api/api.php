@@ -1180,6 +1180,9 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
     $ColumnsTableGateway->updateCollection($column_settings);
   }
   $response = TableSchema::getTable($table);
+  if (!$response) {
+    $response = [];
+  }
   JsonView::render($response);
 })->via('GET', 'PUT', 'DELETE')->name('table_meta');
 
