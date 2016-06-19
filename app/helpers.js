@@ -51,6 +51,10 @@ require([
     return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + moment(date).fromNow() + '</div>');
   });
 
+  Handlebars.registerHelper('formatDate', function(date, format) {
+    return moment(date).format(format);
+  });
+
   Handlebars.registerHelper('avatarSmall', function(userId) {
     var user = app.users.get(userId);
     if (user === undefined) return unknowUserMessage;
