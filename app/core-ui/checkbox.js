@@ -72,7 +72,7 @@ define(['app','backbone'], function(app, Backbone) {
   };
 
   Module.list = function(options) {
-    var val = (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
+    var val = (parseInt(options.value, 10) === 1) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
     //var val = options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100);
     return val;//val;
   };
