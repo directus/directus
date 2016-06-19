@@ -19,7 +19,9 @@ define(['app','backbone'], function(app, Backbone) {
   Module.id = 'checkbox';
   Module.dataTypes = ['TINYINT'];
 
-  Module.variables = [];
+  Module.variables = [
+    {id: 'mandatory', ui: 'checkbox', comment: 'if this field should always be checked by the user.'}
+  ];
 
   Module.Input = Backbone.Layout.extend({
 
@@ -44,7 +46,7 @@ define(['app','backbone'], function(app, Backbone) {
         value = this.options.schema.get('def');
       }
 
-      var selected = (parseInt(value,10) === 1) ? true : false;
+      var selected = parseInt(value,10) === 1;
 
       if (
         this.options.model.isNew() &&
@@ -64,7 +66,7 @@ define(['app','backbone'], function(app, Backbone) {
 
   Module.validate = function(value, options) {
     // If a checkbox is required, it MUST be checked to save – similar to "agree to terms" functionality
-    if (options.schema.isRequired() && value == 0) {
+    if (options.settings.get('mandatory') && value == 0) {
       return 'This field is required';
     }
   };
