@@ -108,6 +108,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       },
       'change select#table_related': function(e) {
         this.model.set({table_related: $(e.target).val()});
+        this.render();
       },
       'change #junction_key_right': function(e) {
         this.model.set({junction_key_right: $(e.target).val()});
@@ -117,6 +118,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       },
       'change #table_junction': function(e) {
         this.model.set({junction_table: $(e.target).val()});
+        this.render();
       }
     },
 
@@ -265,7 +267,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     initialize: function() {
-      this.model.on('change', this.render, this);
       this.render();
     }
   });
