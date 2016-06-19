@@ -102,6 +102,9 @@ hr {
     background-color: #bbbbbb;
     height: 1px;
 }
+form {
+    margin-bottom: 60px;
+}
 label {
     font-size: 13px;
     text-transform: uppercase;
@@ -178,7 +181,6 @@ input[type=number] {
     margin-bottom: 20px;
     font-size: 16px;
     color: $darkGrey;
-    -webkit-text-fill-color: $darkGrey;
     border: #BBBBBB 1px solid;
     outline: none;
     background-color: #ffffff;
@@ -186,6 +188,7 @@ input[type=number] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    //-webkit-text-fill-color: $darkGrey; // Controls autocomplete, needs to differ from actual entry
     option {
         padding: 10px 12px;
     }
