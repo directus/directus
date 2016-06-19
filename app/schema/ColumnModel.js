@@ -43,9 +43,7 @@ define(function(require, exports, module) {
           this.relationship.parent = this;
         }
 
-        if (result.master) result.header = true;
-        result.header = (result.header === "true" || result.header === true || result.header === 1 || result.header === "1") ? true : false;
-
+        result.header = result.master || result.header === true || result.header === "true" || result.header == 1;
         result.required = result.required === true;
         result.is_nullable = result.is_nullable ? result.is_nullable : 'YES';
 
