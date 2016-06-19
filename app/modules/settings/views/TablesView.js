@@ -219,7 +219,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         data.tables = tables;
 
         if(this.selectedDataType == 'MANYTOMANY') {
-          data.junctionTables = _.chain(tables).filter(function(model) { return model.is_junction_table; })
+          data.junctionTables = _.chain(tables)
             .map(function(model) {
               if(!junctionTable){
                 junctionTable = model.id;
