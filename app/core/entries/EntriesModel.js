@@ -124,7 +124,13 @@ define(function(require, exports, module) {
         switch (relationshipType) {
           case 'MANYTOMANY':
           case 'ONETOMANY':
-            var columns = ui.get('visible_columns') ? ui.get('visible_columns').split(',') : [];
+            var columns = [];
+            if (ui.get('visible_columns')) {
+              // Clean whitespaces
+              columns = ui.get('visible_columns').split(',').map(function(column) {
+                return column.trim();
+              });
+            }
             var value = attributes[id] || [];
             var options = {
               table: SchemaManager.getTable(tableRelated),

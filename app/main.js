@@ -6,7 +6,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
-require(["config"], function() {
+require(["config", 'polyfills'], function() {
 
   require([
     "app",
