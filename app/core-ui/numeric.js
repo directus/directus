@@ -19,7 +19,6 @@ define(['app', 'backbone'], function(app, Backbone) {
 
   Module.variables = [
     {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    {id: 'allow_null', ui: 'checkbox', def: '0'}
   ];
 
   Module.Input = Backbone.Layout.extend({
