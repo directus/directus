@@ -292,12 +292,13 @@ var template = '<style type="text/css"> \
     afterRender: function() {
       var that = this;
       $.ajax({
-        //url: "//cdn.jsdelivr.net/wysihtml5/0.3.0/wysihtml5-0.3.0.min.js",
         url: window.location.origin + window.directusData.path +"assets/js/libs/wysihtml5.js",
         dataType: "script",
         success: function() {
           that.initEditor();
-          if (that.options.settings.get("readonly") === "on") that.editor.readonly();
+          if (that.options.settings.get("readonly") == 1) {
+            that.editor.disable();
+          }
         }
       });
     },
