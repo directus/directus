@@ -53,7 +53,7 @@ define(['app', 'backbone'],function(app, Backbone) {
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
-        allow_null: this.options.settings.get('allow_null'),
+        allow_null: this.options.settings.get('allow_null') == 1,
         placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
       };
     }
