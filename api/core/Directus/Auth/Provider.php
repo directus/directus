@@ -67,8 +67,8 @@ class Provider {
      */
     public static function login($uid, $password, $salt, $passwordAttempt) {
         self::prependSessionKey();
-        $hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
-        if($password === $hashedPasswordAttempt) {
+        //$hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
+        if(password_verify($passwordAttempt, $password)) {
             self::completeLogin($uid);
             return true;
         }
@@ -167,6 +167,7 @@ class Provider {
         $userInfo = self::getUserInfo();
         return $userRefreshProvider($userInfo['id']);
 
+        /* All of this is unreachable
         if(!isset($_SESSION[self::USER_RECORD_CACHE_SESSION_KEY])) {
             self::expireCachedUserRecord();
         }
@@ -177,6 +178,7 @@ class Provider {
             $cachedUserRecord = $userRefreshProvider($userInfo['id']);
         }
         return $cachedUserRecord;
+        */
     }
 
     public static function setUserCacheRefreshProvider($callable) {
@@ -210,8 +212,7 @@ class Provider {
      * @return string
      */
     public static function hashPassword($password, $salt = '') {
-        $composite = $salt . $password;
-        return sha1( $composite );
+        return password_hash($password, PASSWORD_DEFAULT, ["cost" => 12]);
     }
 
 }
