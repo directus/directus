@@ -51,9 +51,7 @@ function AddSettings($mysqli) {
 }
 
 function AddDefaultUser($email, $password, $mysqli) {
-  $salt = uniqid();
-  $composite = $salt . $password;
-  $hash = sha1( $composite );
+  $hash = password_hash($password, PASSWORD_DEFAULT, ["cost" => 12]);
   $tableName = getTableName("directus_users");
 
   $insert = "INSERT INTO `$tableName` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `group`)

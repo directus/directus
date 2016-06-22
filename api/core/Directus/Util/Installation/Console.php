@@ -166,9 +166,7 @@ class Console
             exit;
         }
 
-        $salt = uniqid();
-        $composite = $salt . $options['pass'];
-        $hash = sha1( $composite );
+        $hash = password_hash($options['pass'], PASSWORD_DEFAULT, ["cost" => 12]);
 
         $insert = "INSERT INTO directus_users (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `group`)
         VALUES
