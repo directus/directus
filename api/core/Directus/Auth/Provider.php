@@ -5,6 +5,7 @@ namespace Directus\Auth;
 use Directus\Bootstrap;
 use Directus\Util\StringUtils;
 use Directus\Util\ArrayUtils;
+use Zend\Db\TableGateway\TableGateway;
 
 class Provider {
 
@@ -68,6 +69,13 @@ class Provider {
     public static function login($uid, $password, $salt, $passwordAttempt) {
         self::prependSessionKey();
         //$hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
+        if (self::needsReHashPassword($password, $salt, $passwordAttempt)) {
+            $password = self::hashPassword($passwordAttempt);
+            $zendDb = Bootstrap::get('zendDb');
+            $usersTable = new TableGateway('directus_users', $zendDb);
+            $usersTable->update(['password' => $password], ['id' => $uid]);
+        }
+
         if(password_verify($passwordAttempt, $password)) {
             self::completeLogin($uid);
             return true;
@@ -213,6 +221,23 @@ class Provider {
      */
     public static function hashPassword($password, $salt = '') {
         return password_hash($password, PASSWORD_DEFAULT, ["cost" => 12]);
+    }
+
+    /**
+     * Check if the password hash needs to be rehashed
+     * @param  string $password        The User account's (actual) hashed password string.
+     * @param  string $salt            The User account's salt string.
+     * @param  string $passwordAttempt The User's attempted, unhashed password string.
+     * @return boolean
+     */
+    public static function needsReHashPassword($password, $salt, $passwordAttempt)
+    {
+        // if this was the old hash algorithm (sha1), it needs to be rehashed
+        if (sha1($salt.$passwordAttempt) === $password) {
+            return true;
+        }
+
+        return false;
     }
 
 }
