@@ -1,3 +1,5 @@
+**For security issues, please email support@getdirectus.com directly.**
+
 To help us resolve your issue more quickly, please use the following template:
 
 For feature requests please chat with us through [getdirectus.com](http://getdirectus.com).
