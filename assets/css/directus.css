@@ -1699,7 +1699,8 @@ img.grayscale {
   .nothing-here h1 {
     color: #d0d0d0;
     font-size: 50px;
-    line-height: 60px; }
+    line-height: 60px;
+    letter-spacing: -1px; }
 
 .media-thumb .img.portrait {
   height: 50px; }
