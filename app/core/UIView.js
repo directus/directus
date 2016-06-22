@@ -7,6 +7,8 @@ define(function(require, exports, module) {
   require('plugins/backbone.layoutmanager');
 
   module.exports = Backbone.Layout.extend({
+    // base template route
+    prefix: 'app/core-ui/',
     // Handlebars template source
     templateSource: null,
     templateCompileOptions: {},

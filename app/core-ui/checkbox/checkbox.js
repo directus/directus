@@ -11,7 +11,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
   'use strict';
 
   var Input = UIView.extend({
-    template: 'core-ui/checkbox/input',
+    template: 'checkbox/input',
 
     events: {
       'change input[type=checkbox]': function(e) {
