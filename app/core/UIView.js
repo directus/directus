@@ -39,7 +39,7 @@ define(function(require, exports, module) {
       this.columnSchema = structure.get(this.name);
       this.settings = this.columnSchema.options;
       this.isRelational = (this.columnSchema.relationship !== undefined);
-     this.templateCompileOptions = this.templateCompileOptions || {};
+      this.templateCompileOptions = this.templateCompileOptions || {};
       if (this.templateSource) {
         this.template = Handlebars.compile(this.templateSource, this.templateCompileOptions);
       }
