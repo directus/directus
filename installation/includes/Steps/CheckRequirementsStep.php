@@ -28,7 +28,7 @@ class CheckRequirementsStep extends AbstractStep
             $errors[] = 'Your host needs to have GD Library enabled to run this version of Directus!';
         }
 
-        if (!file_exists(BASE_PATH.'/api/vendor/autoload.php')) {
+        if (!file_exists(BASE_PATH.'/vendor/autoload.php')) {
             $errors[] = 'Composer dependencies must be installed first.';
         }
 

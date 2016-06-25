@@ -154,7 +154,7 @@ if (!function_exists('load_registered_hooks')) {
 
 function getLocale() {
     // TODO: get locale from user.
-    return 'en';
+    return 'es';
 }
 
 function getDefaultPhrases() {
@@ -164,7 +164,7 @@ function getDefaultPhrases() {
 }
 
 function getPhrases($locale = 'en') {
-    $langFile = BASE_PATH.'/content/locales/'.$locale.'.json';
+    $langFile = BASE_PATH.'/customs/locales/'.$locale.'.json';
 
     if (file_exists($langFile)) {
         $phrases = json_decode(file_get_contents($langFile), true);

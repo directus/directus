@@ -3,7 +3,7 @@
 define('ROOTPATH', dirname(dirname(__FILE__)));
 error_reporting(0);
 
-$loader = require ROOTPATH . '/api/vendor/autoload.php';
+$loader = require ROOTPATH . '/vendor/autoload.php';
 $loader->add("Ruckusing", ROOTPATH . "/api/vendor/ruckusing/ruckusing-migrations/lib/");
 
 use Ruckusing\FrameworkRunner as Ruckusing_Framework;

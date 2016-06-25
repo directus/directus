@@ -23,9 +23,9 @@ require.config({
     "vendor":     "../assets/vendor",
 
     // Extensions
-    "extensions": '../extensions',
-    "listviews":  '../listviews',
-    "ui":         '../ui'
+    "extensions": '../customs/extensions',
+    "listviews":  '../customs/listviews',
+    "ui":         '../customs/ui'
   },
 
   shim: {

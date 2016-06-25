@@ -18,11 +18,11 @@
   },
     "autoload": {
         "psr-4": {
-            "Directus\\": "core/Directus/",
-            "Directus\\Installation\\": "../installation/includes/"
+            "Directus\\": "api/core/Directus/",
+            "Directus\\Installation\\": "installation/includes/"
         },
         "files": [
-            "core/functions.php"
+            "api/core/functions.php"
         ]
     }
 }

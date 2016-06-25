@@ -6,7 +6,7 @@ if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
 }
 
 // Composer Autoloader
-$loader = require 'api/vendor/autoload.php';
+$loader = require 'vendor/autoload.php';
 
 // Non-autoloaded components
 require 'api/api.php';

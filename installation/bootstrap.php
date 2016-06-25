@@ -2,7 +2,7 @@
 
 require __DIR__.'/includes/install.functions.php';
 
-$vendorAutoload = BASE_PATH.'/api/vendor/autoload.php';
+$vendorAutoload = BASE_PATH.'/vendor/autoload.php';
 $installationAutoload = __DIR__.'/autoload.php';
 
 if (!file_exists($vendorAutoload)) {

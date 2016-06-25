@@ -74,7 +74,7 @@
         </tr>
         <tr>
             <td class="item">Composer Dependencies Installed (../api/composer.json)</td>
-            <td class="result"><?php if(file_exists('../api/vendor/autoload.php')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/Directus/wiki/6.-Development-Build#step-4-install-dependencies" target="_blank"> ?</a>');} ?></td>
+            <td class="result"><?php if(file_exists('../vendor/autoload.php')) {echo('<span class="label label-success">Yes</span>');} else {echo('<span class="label label-important">No</span><a href="https://github.com/RNGR/Directus/wiki/6.-Development-Build#step-4-install-dependencies" target="_blank"> ?</a>');} ?></td>
         </tr>
         <tr>
             <td class="item">Logs Writable (../api/logs/)</td>

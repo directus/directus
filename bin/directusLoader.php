@@ -1,7 +1,7 @@
 <?php
 
 // Composer Autoloader
-$loader = require __DIR__ . '/../api/vendor/autoload.php';
+$loader = require __DIR__ . '/../vendor/autoload.php';
 
 // Non-autoload components
 require __DIR__ . '/../api/config.php';

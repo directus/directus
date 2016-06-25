@@ -340,7 +340,7 @@ class Bootstrap {
     private static function extensions() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $extensions = array();
-        $extensionsDirectory = APPLICATION_PATH . '/extensions/';
+        $extensionsDirectory = APPLICATION_PATH . '/customs/extensions/';
         foreach (new \DirectoryIterator($extensionsDirectory) as $file) {
             if($file->isDot()) {
                 continue;
@@ -365,7 +365,7 @@ class Bootstrap {
      */
     private static function uis() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-        $uiDirectory = APPLICATION_PATH . '/ui';
+        $uiDirectory = APPLICATION_PATH . '/customs/ui';
         $uis = array();
 
         if (!file_exists($uiDirectory)) {
@@ -392,7 +392,7 @@ class Bootstrap {
     private static function listViews() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $listViews = array();
-        $listViewsDirectory = APPLICATION_PATH . '/listviews/';
+        $listViewsDirectory = APPLICATION_PATH . '/customs/listviews/';
         foreach (new \DirectoryIterator($listViewsDirectory) as $file) {
             if($file->isDot()) {
                 continue;

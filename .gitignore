@@ -13,7 +13,7 @@ dist/*
 
 # Don't track composer phar/vendors
 composer.phar
-api/vendor
+vendor
 
 # Ignore log files, but track the log README
 api/logs/*.log
