@@ -7,14 +7,14 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/notification'], function(app, UIComponent, UIView, Notification) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t'], function(app, UIComponent, UIView, Notification, __t) {
 
   'use strict';
 
   var template = '<input type="text" value="{{value}}" name="{{name}}" class="medium password-primary" style="display:block;margin-bottom:10px;" placeholder="{{ placeholder }}" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
                   <div> \
-                  <button class="btn btn-primary margin-left string-generate" style="margin-right:10px;" type="button">Generate New</button> \
-                  <span class="placard generated hide add-color margin-left-small bold">Generated!</span> \
+                  <button class="btn btn-primary margin-left string-generate" style="margin-right:10px;" type="button">{{t "generate_new"}}</button> \
+                  <span class="placard generated hide add-color margin-left-small bold">{{t "generated"}}</span> \
                   </div>';
 
   var Input = UIView.extend({
@@ -32,7 +32,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification'], function
             $password.val(data.random);
             this.$el.find('.generated').removeClass('hide');
           } else {
-            Notification.error('Random', 'Error generating a random string.');
+            Notification.error('Random', __t('error_generating_a_random_string'));
           }
         }, this);
 
@@ -43,7 +43,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification'], function
           success: randomSuccess,
           dataType: 'json',
           error: function(data, textStatus, jqXHR) {
-            Notification.error('Random', 'Error generating a random string.');
+            Notification.error('Random', __t('error_generating_a_random_string'));
           }
         });
       }

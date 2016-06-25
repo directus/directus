@@ -4,10 +4,11 @@ define([
   "core/directus",
   'core/BasePageView',
   'core/widgets/widgets',
+  'core/t',
   'moment'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets, moment) {
+function(app, Backbone, Directus, BasePageView, Widgets, __t, moment) {
 
   "use strict";
 
@@ -56,7 +57,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
       '{{/rows}}</ul>{{/groups}}' +
       '{{#unless groups}}' +
         '<div class="nothing-here secondary-info">' +
-        '<h1>Nothing to see here...</h1>' +
+        '<h1>{{t "listing_items_not_found"}}</h1>' +
         '<!-- Maybe add a new file? -->' +
         '</div>' +
       '{{/unless}}'
@@ -210,13 +211,13 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
 
     headerOptions: {
       route: {
-        title: "Users"
+        title: __t('users'),
       }
     },
     leftToolbar: function() {
       if(app.users.getCurrentUser().get('group').id == 1) {
         return [
-          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: "New User"}})
+          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_user')}})
         ];
       }
       return [];

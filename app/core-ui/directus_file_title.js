@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -49,7 +49,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     id: 'directus_file_title',
     system: true,
     variables: [
-      {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }}
+      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }}
     ],
     Input: Input,
     list: function(options) {

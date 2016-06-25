@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -14,10 +14,10 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     id: 'translation',
     dataTypes: ['ONETOMANY'],
     variables: [
-      {id: 'languages_table', ui: 'textinput', char_length: 255, comment: "Enter Table that contains all languages supported"},
-      {id: 'languages_name_column', ui: 'textinput', char_length: 255, comment: "Language Title Field"},
-      {id: 'default_language_id', ui: 'numeric', comment: "Default language ID in language table"},
-      {id: 'left_column_name', ui: 'textinput', char_length: 255, comment: "Enter Column name pointing to Languages table PK"},
+      {id: 'languages_table', ui: 'textinput', char_length: 255, comment: __t('translation_languages_table_comment')},
+      {id: 'languages_name_column', ui: 'textinput', char_length: 255, comment: __t('translation_languages_name_column_comment')},
+      {id: 'default_language_id', ui: 'numeric', comment: __t('translation_default_language_id_comment')},
+      {id: 'left_column_name', ui: 'textinput', char_length: 255, comment: __t('translation_left_column_name_comment')},
     ],
     Input: UIView,
 

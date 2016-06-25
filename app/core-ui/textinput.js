@@ -15,7 +15,7 @@
 // options.name       String            Field name
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -96,16 +96,16 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       // Disables editing of the field while still letting users see the value (true = readonly)
       {id: 'readonly', ui: 'checkbox'},
       // Adjusts the max width of the input (Small, Medium, Large)
-      {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       // Grayed out default placeholder text in the input when it's empty
       {id: 'placeholder_text', ui: 'textinput', char_length:200},
       // Chooses the type of validation used on this field
       // * Character Blacklist: Choose the specific characters **not** allowed in the input
       // * Character Whitelist: Choose the specific characters allowed in the input
       // * RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything
-      {id: 'validation_type', ui: 'select', options: {options: {'bl':'Character Blacklist','wl':'Character Whitelist','rgx':'Regex'} }, def:'rgx'},
+      {id: 'validation_type', ui: 'select', options: {options: {'bl':__t('character_backlist'),'wl':__t('character_whitelist'),'rgx':__t('regex')} }, def:'rgx'},
       // Holds the CSV list of Whitelist/Blacklist characters or the RegEx value (based on the above option)
-      {id: 'validation_string', ui: 'textinput', char_length:200, comment: 'All characters below will be enforced'},
+      {id: 'validation_string', ui: 'textinput', char_length:200, comment: __t('textinput_validation_string_comment')},
       // A message that is shown to the user if the validation fails
       {id: 'validation_message', ui: 'textinput', char_length:200}
     ],

@@ -1,6 +1,6 @@
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui'], function(app, UIComponent, UIView, moment, UIHelper) {
+define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/t'], function(app, UIComponent, UIView, moment, UIHelper, __t) {
 
   'use strict';
 
@@ -25,7 +25,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui'], funct
                   </style> \
                   <input type="date" {{#if readonly}}disabled{{/if}} class="date" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
                   {{#if useTime}}<input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" {{#if hasDate}}value="{{valueTime}}"{{/if}}>{{/if}} \
-                  {{#unless readonly}}<a class="now secondary-info">Now</a>{{/unless}} \
+                  {{#unless readonly}}<a class="now secondary-info">{{t "date_now"}}</a>{{/unless}} \
                   <input class="merged" type="hidden" {{#if hasDate}}value="{{valueMerged}}"{{/if}} name="{{name}}" id="{{name}}">';
 
   // The HTML5 date tag accepts RFC3339
@@ -120,7 +120,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui'], funct
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
 
       var date = moment(value);

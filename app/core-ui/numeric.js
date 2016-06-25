@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -59,7 +59,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     id: 'numeric',
     dataTypes: ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR', 'DOUBLE', 'BIGINT'],
     variables: [
-      {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       {id: 'placeholder_text', ui: 'textinput', char_length:200},
       {id: 'allow_null', ui: 'checkbox', def: '0'}
     ],
@@ -67,7 +67,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     validate: function(value, options) {
       // _.isEmpty (in the installed version) does not support INTs properly
       if (options.schema.isRequired() && !value) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

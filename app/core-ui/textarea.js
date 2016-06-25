@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -36,7 +36,9 @@ define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIV
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        // TODO: fix this line, it is too repetitive
+        // over all the UIs
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

@@ -5,12 +5,12 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Field Name
-                            <span class="note">The name of the database column and field label. Should be human-readable, lowercase, and use underscores for spaces</span>
+                            {{t "field_name"}}
+                            <span class="note">{{t "columns_add_field_name_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
-                        <input type="text" id="columnName" name="column_name" value="{{column_name}}" class="medium" placeholder="eg: first_name"/>
+                        <input type="text" id="columnName" name="column_name" value="{{column_name}}" class="medium" placeholder="{{t 'columns_add_field_name_placeholder'}}"/>
                     </div>
                 </div>
             </div>
@@ -21,8 +21,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            User Interface (UI)
-                            <span class="note">The input, interface, or display method for the field. This can be changed later, but only to other UIs that work with the chosen datatype below</span>
+                            {{t "user_interface_ui"}}
+                            <span class="note">{{t "columns_add_user_interface_ui_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -41,8 +41,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Data Type
-                            <span class="note">This determines how the data is stored in the database. Options here are limited by the selected UI above. Once selected, this can not be changed</span>
+                            {{t "data_type"}}
+                            <span class="note">{{t "columns_add_data_type_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -62,8 +62,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Length
-                            <span class="note">Examples: A VARCHAR with a length of 10 can hold a max of 10 characters while an INT with length of 3 can hold numbers up to 999</span>
+                            {{t "length"}}
+                            <span class="note">{{t "columns_add_length_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -80,8 +80,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Related Table
-                            <span class="note">This sets the table containing the data the field will access. It can be the same table though you should avoid deeply nested, complex, or recursive relationships</span>
+                            {{t "related_table"}}
+                            <span class="note">{{t "columns_add_related_table_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -102,8 +102,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Related Table
-                            <span class="note">This sets the table containing the data the field will access. It can be the same table though you should avoid deeply nested, complex, or recursive relationships</span>
+                            {{t "related_table"}}
+                            <span class="note">{{t "columns_add_related_table_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -122,8 +122,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Junction Column
-                            <span class="note">Also called a mapping, join, or associative table – this stores the many-to-many relationships between two other tables. Typically this will have three columns: `id`, `table_a_id`, and `table_b_id` – however adding a `sort` column allows these relationships to be ordered within the UI</span>
+                            {{t "junction_column"}}
+                            <span class="note">{{t "columns_add_junction_table_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -144,8 +144,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Related Table
-                            <span class="note">This sets the table containing the data the field will access. It can be the same table though you should avoid deeply nested, complex, or recursive relationships</span>
+                            {{t "related_table"}}
+                            <span class="note">{{t "columns_add_related_table_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -164,8 +164,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Junction Table
-                            <span class="note">Also called a join or associative table – this stores the many-to-many relationships between two tables. Typically this has three columns: `id`, `table_a_id`, and `table_b_id` – however adding a `sort` column allows these relationships to be ordered within the UI</span>
+                            {{t "junction_table"}}
+                            <span class="note">{{t "columns_add_junction_table_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -184,8 +184,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Left Column
-                            <span class="note">This is the column within the junction table that stores the `id` of <u>this</u> table</span>
+                            {{t "left_column"}}
+                            <span class="note">{{t "columns_add_left_column_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">
@@ -204,8 +204,8 @@
                 <div class="trow">
                     <div class="label">
                         <label>
-                            Right Column
-                            <span class="note">This is the column within the junction table that stores the `id` of the <u>related</u> table</span>
+                            {{t "right_column"}}
+                            <span class="note">{{t "columns_add_right_column_note"}}</span>
                         </label>
                     </div>
                     <div class="field required">

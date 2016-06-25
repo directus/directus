@@ -6,7 +6,7 @@
         {{/if}}
 
         <label>
-            {{capitalize id}}{{#if required}}*{{/if}}
+            {{#if isCoreTable}}{{tCapitalize id}}{{else}}{{capitalize id}}{{/if}}{{#if required}}*{{/if}}
             {{#if comment}}<span class="note">{{{comment}}}</span>{{/if}}
         </label>
     </div>

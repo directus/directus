@@ -3,32 +3,32 @@
         <thead>
         <tr>
             <th class="sort"><i class="material-icons">reorder</i></th>
-            <th class="field-field">Field</th>
-            <th class="field-input_type">User Interface</th>
-            <th class="field-hidden" style="width:50px;">Hidden</th>
-            <th class="field-required" style="width:50px;">Required</th>
-            <!-- <th class="field-master" style="width:50px;">Primary</th> -->
-            <th class="field-note">Note</th>
-            <th class="field-delete" style="width:50px">Delete</th>
+            <th class="field-field">{{t "field"}}</th>
+            <th class="field-input_type">{{t "user_interface"}}</th>
+            <th class="field-hidden" style="width:50px;">{{t "hidden"}}</th>
+            <th class="field-required" style="width:50px;">{{t "required"}}</th>
+            <!-- <th class="field-master" style="width:50px;">{{t "primary"}}</th> -->
+            <th class="field-note">{{t "note"}}</th>
+            <th class="field-delete" style="width:50px">{{t "delete"}}</th>
         </tr>
         </thead>
         <tbody>
           {{#rows}}
           <tr class="{{#if alias}}alias{{/if}}{{#if system}}system{{/if}}" data-id="{{id}}">
-            <td class="sort" title="Change Input Order">{{#unless system}}<i class="material-icons">drag_handle</i>{{/unless}}</td>
+            <td class="sort" title="{{t 'tables_change_input_order'}}">{{#unless system}}<i class="material-icons">drag_handle</i>{{/unless}}</td>
             <td><span class="settings-column-name" title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
             {{#if system}}
               {{#if systemDetails}}
                 <td colspan="5"><em>{{{systemDetails}}}</em></td>
               {{else}}
-                <td colspan="5"><em>This is a system field</em></td>
+                <td colspan="5"><em>{{t "system_column_details_default"}}</em></td>
               {{/if}}
             {{else}}
             <td>
 
               <div class="select-container">
                 <select name="ui" id="ui" data-id="{{id}}" class="input-selector">
-                  <optgroup label="Choose a Input Interface">
+                  <optgroup label="{{t 'choose_a_input_interface'}}">
                     {{#types}}
                     <option {{#if isActive}}selected{{/if}} value="{{id}}">{{{capitalize id}}}</option>
                     {{/types}}
@@ -45,11 +45,11 @@
               {{/if}}
             </td>
             <td>
-                <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}" title="Hidden">
+                <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden'}}">
             </td>
-            <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="Allow Null: {{is_nullable}}" title="Required"></td>
+            <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="{{t 'allow_null' is_nullable=is_nullable}}"></td>
             <!-- <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}" title="Primary"></td> -->
-            <td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment" placeholder="Add a note..."></td>
+            <td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment" placeholder="{{t 'placeholder_add_a_note'}}"></td>
             <td title="Permanently Delete Field" class="delete-hover">{{#unless system}}<i class="destroy material-icons">close</i>{{/unless}}</td>
             {{/if}}
           </tr>
@@ -57,4 +57,4 @@
         </tbody>
     </table>
 </div>
-<button class="btn btn-link margin-top-standard" type="button" data-action="new-field">Add New Field</button>
+<button class="btn btn-link margin-top-standard" type="button" data-action="new-field">{{t "add_new_field"}}</button>

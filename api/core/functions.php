@@ -151,3 +151,39 @@ if (!function_exists('load_registered_hooks')) {
         }
     }
 }
+
+function getLocale() {
+    // TODO: get locale from user.
+    return 'en';
+}
+
+function getDefaultPhrases() {
+    $phrasesPath = BASE_PATH.'/app/locales/en.json';
+
+    return json_decode(file_get_contents($phrasesPath), true);
+}
+
+function getPhrases($locale = 'en') {
+    $langFile = BASE_PATH.'/content/locales/'.$locale.'.json';
+
+    if (file_exists($langFile)) {
+        $phrases = json_decode(file_get_contents($langFile), true);
+    } else {
+        $phrases = getDefaultPhrases();
+    }
+
+    return $phrases;
+}
+
+if (!function_exists('__t')) {
+    function __t($key)
+    {
+        static $phrases;
+
+        if (!$phrases) {
+            $phrases = getPhrases(getLocale());
+        }
+
+        return isset($phrases[$key]) ? $phrases[$key] : $key;
+    }
+}

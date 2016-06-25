@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -42,7 +42,7 @@ define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIV
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
         allow_null: this.options.settings.get('allow_null'),
-        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
+        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
       };
     }
   });
@@ -51,14 +51,14 @@ define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIV
     id: 'select',
     dataTypes: ['VARCHAR', 'INT'],
     variables: [
-      {id: 'options', ui: 'textarea', options:{'rows': 25}, comment: "Enter JSON key value pairs with the saved value and text displayed."},
+      {id: 'options', ui: 'textarea', options:{'rows': 25}, comment: __t('select_options_comment')},
       {id: 'allow_null', ui: 'checkbox'},
-      {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
+      {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
     ],
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

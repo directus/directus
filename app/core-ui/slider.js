@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -71,13 +71,13 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     variables: [
       {id: 'minimum', ui: 'numeric'},
       {id: 'maximum', ui: 'numeric'},
-      {id: 'step', ui: 'numeric', comment: 'Specifies the allowed number intervals'}
+      {id: 'step', ui: 'numeric', comment: __t('slider_step_comment')}
     ],
     Input: Input,
     validate: function(value, options) {
       // Not needed since HTML5 slider defaults to "0"
       if (options.schema.isRequired() && !value) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     }
   });

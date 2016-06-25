@@ -1,11 +1,11 @@
-<div class="section-header"><span class="big-label-text">Item History</span></div>
+<div class="section-header"><span class="big-label-text">{{t "item_history"}}</span></div>
 <div class="history-container">
   <ul>
     <li class="history-add-comment">
       {{userAvatar current_user}}
       <div class="history-comment">
-        <textarea id="commentTextarea" placeholder="Leave a comment..."></textarea>
-        <button id="messages-response-button" class="btn btn-small">Submit</button>
+        <textarea id="commentTextarea" placeholder="{{t 'leave_a_comment_placeholder'}}"></textarea>
+        <button id="messages-response-button" class="btn btn-small">{{t "submit"}}</button>
       </div>
       <span id="tagInsert" class="mention-list"></span>
       <!-- <div class="history-follow"><input type="checkbox">Follow this item's activity</div> -->

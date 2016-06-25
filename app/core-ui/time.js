@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'moment', 'core/UIComponent', 'core/UIView'], function(app, moment, UIComponent, UIView) {
+define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, moment, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -36,7 +36,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView'], function(app, momen
                   } \
                   </style> \
                   <input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                  <a class="now secondary-info">Now</a>';
+                  <a class="now secondary-info">{{t "date_now"}}</a>';
 
   var Input = UIView.extend({
     templateSource: template,
@@ -74,7 +74,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView'], function(app, momen
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

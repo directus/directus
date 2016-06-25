@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays'], function(app, UIComponent, Onetomany, TableView, Overlays) {
+define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view', 'core/overlays/overlays', 'core/t'], function(app, UIComponent, Onetomany, TableView, Overlays, __t) {
 
   'use strict';
 
@@ -22,8 +22,8 @@ define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view
 
     templateSource:
       '<div class="related-table"></div>' +
-      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">Add New</button>{{/if}}' +
-      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">Choose Existing</button>{{/if}}</div>',
+      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">{{t "add_new"}}</button>{{/if}}' +
+      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">{{t "choose_existing"}}</button>{{/if}}</div>',
 
     addRow: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
@@ -105,7 +105,11 @@ define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view
     initialize: function(options) {
       if (!this.columnSchema.relationship ||
            'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
-        throw "The column " + this.columnSchema.id + " need to have a relationship of the type MANYTOMANY inorder to use the one_to_many ui";
+        throw __t('m2m_the_column_need_to_have_m2m_relationship', {
+          column: this.columnSchema.id,
+          type: 'MANYTOMANY',
+          ui: Component.id
+        });
       }
 
       this.canEdit = !(options.inModal || false);
@@ -193,23 +197,25 @@ define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view
       {id: 'add_button', ui: 'checkbox', def: '1'},
       {id: 'choose_button', ui: 'checkbox', def: '1'},
       {id: 'remove_button', ui: 'checkbox', def: '1'},
-      {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
-      {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"},
-      {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: "Enter Template For filter dropdown display"},
-      {id: 'min_entries', ui: 'numeric', char_length: 11, default_value:0, comment: "Minimum Allowed related Entries"},
-      {id: 'no_duplicates', ui: 'checkbox', def: '0', comment: "No Duplicates"}
+      {id: 'filter_type', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
+      {id: 'filter_column', ui: 'textinput', char_length: 255, comment: __t('m2m_filter_column_comment')},
+      {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: __t('m2m_visible_column_template_comment')},
+      {id: 'min_entries', ui: 'numeric', char_length: 11, default_value:0, comment: __t('m2m_min_entries_comment')},
+      {id: 'no_duplicates', ui: 'checkbox', def: '0', comment: __t('m2m_no_duplicates_comment')}
     ],
     Input: Input,
     validate: function(value, options) {
       var minEntries = parseInt(options.settings.get('min_entries'));
 
       if(value.length < minEntries) {
-        return 'This field requires at least ' + minEntries + ' entries.';
+        return __t('this_field_requires_at_least_x_entries', {
+          count: minEntries
+        });
       }
 
       // @TODO: Does not currently consider newly deleted items
       if (options.schema.isRequired() && value.length == 0) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

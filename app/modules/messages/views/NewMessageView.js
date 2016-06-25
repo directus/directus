@@ -1,25 +1,26 @@
 define([
   'app',
   'backbone',
+  'core/t',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
   'core/notification'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets, Notification) {
+function(app, Backbone, __t, Directus, BasePageView, Widgets, Notification) {
 
   return BasePageView.extend({
     headerOptions: {
       route: {
-        title: "Compose",
-        breadcrumbs: [{title: 'Messages', anchor: '#messages'}]
+        title: __t('message_compose'),
+        breadcrumbs: [{title: __t('messages'), anchor: '#messages'}]
       }
     },
 
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "send", buttonClass: "", buttonText: "Send Message"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "send", buttonClass: "", buttonText: __t('send_message')}})
       ];
     },
     events: {

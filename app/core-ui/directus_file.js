@@ -104,14 +104,14 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
                   </div> \
                   </a> \
                   <div class="ui-img-details"> \
-                    <span class="ui-text-hover" data-action="swap">Swap file</span> \
+                    <span class="ui-text-hover" data-action="swap">{{t "directus_files_swap_file"}}</span> \
                   </div> \
                   {{/if}} \
                   <div class="swap-container" {{#if url}}style="display:none"{{/if}}> \
-                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drop file here or click to choose</div> \
+                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">{{t "directus_files_drop_or_choose_file"}}</div> \
                     <input id="fileAddInput" type="file" class="large hide" /> \
-                    <div class="secondary-info url-import">Or paste in a YouTube, Vimeo, or file URL:</div> \
-                    <input id="urlInput" type="text" class="swap-method medium" placeholder="eg: https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                    <div class="secondary-info url-import">{{t "directus_files_paste_youtube_vimeo_url"}}:</div> \
+                    <input id="urlInput" type="text" class="swap-method medium" placeholder="{{t "example_abbr"}} https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-primary margin-left-small" id="retriveUrlBtn" type="button">{{t "directus_files_retrieve"}}</button> \
                   </div>';
 
   var Input = UIView.extend({

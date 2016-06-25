@@ -17,7 +17,7 @@ function(app, Backbone) {
     },
 
     filterUIMappings: {
-      default: '<div class="filter-background"><input type="text" value="{{value}}" placeholder="Filter..." name="keywords" maxlength="100" class="filter_ui"></div>',
+      default: '<div class="filter-background"><input type="text" value="{{value}}" placeholder="{{t "widget_filter_value_placeholder"}}" name="keywords" maxlength="100" class="filter_ui"></div>',
       date: '<div class="filter-background"><input type="date" value="{{value}}" class="date filter_ui" name="keywords" id="advKeywords"></div>',
       checkbox: '<div class="filter-background"><input type="checkbox" {{#if value}}checked{{/if}} class="filter_ui" name="keywords" id="advKeywords"></div>'
     },

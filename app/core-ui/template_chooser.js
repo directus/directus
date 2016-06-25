@@ -26,7 +26,7 @@
 }
 */
 
-define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -64,7 +64,7 @@ define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIV
         try {
           options = $.parseJSON(options);
         } catch (err) {
-          console.log("Your 'Template Chooser' UI has malformed JSON");
+          console.log(__t('your_template_chooser_has_a_malformed_json'));
         }
       }
 
@@ -84,7 +84,7 @@ define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIV
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
         allow_null: this.options.settings.get('allow_null'),
-        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
+        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
       };
     }
   });

@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'core/UIComponent', 'core/UIView', 'moment'], function(app, UIComponent, UIView, moment) {
+define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function(app, UIComponent, UIView, moment, __t) {
 
   'use strict';
 
@@ -30,7 +30,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment'], function(app, UICom
                   } \
                   </style> \
                   <input type="date" class="date" {{#if readonly}}disabled{{/if}} name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
-                  <a class="now secondary-info">Now</a>';
+                  <a class="now secondary-info">{{t "date_now"}}</a>';
 
   function removeTimeFromFormat(format) {
     return format.replace(/(A|a|H|h|m|s|S|z|Z|x|X)/g, '');
@@ -81,7 +81,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment'], function(app, UICom
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

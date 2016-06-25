@@ -16,7 +16,7 @@
 
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -54,7 +54,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         value: value,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        instructions: (this.options.settings && this.options.settings.has('instructions')) ? this.options.settings.get('instructions') : 'Please have your admin setup this field.'
+        instructions: (this.options.settings && this.options.settings.has('instructions')) ? this.options.settings.get('instructions') : __t('instructions_please_have_your_admin_setup_this_field')
       };
     },
 

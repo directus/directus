@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -54,13 +54,13 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     id: 'radiobuttons',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a Comma Delimited list'}
+      {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': __t('radiobuttons_options_comment')}
     ],
     Input: Input,
     // @TODO: Not working – not even being called
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     }
   });

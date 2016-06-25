@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
   'use strict';
 
   var Input = UIView.extend({
@@ -56,7 +56,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       // If a checkbox is mandatory, it MUST be checked to save
       // similar to "agree to terms" functionality
       if (options.settings.get('mandatory') && value == 0) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

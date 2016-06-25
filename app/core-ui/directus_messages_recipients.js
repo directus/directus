@@ -11,7 +11,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
 
   'use strict';
 
-  var template = '<input type="text" id="directus_messages_recipients-input" placeholder="Type users or groups here...">\
+  var template = '<input type="text" id="directus_messages_recipients-input" placeholder="{{t "directus_messages_recipients_placeholder"}}">\
                  <div style="width:100%;max-width:700px;" id="directus_messages_recipients-recipients">{{#tags}}<span class="label tag recipient-tag">{{this}}</span>{{/tags}}</div>\
                  <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
 

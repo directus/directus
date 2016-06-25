@@ -1,12 +1,13 @@
 define([
   'app',
   'backbone',
+  'core/t',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets) {
+function(app, Backbone, __t, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
     events: {
@@ -20,7 +21,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
         route.pop();
         app.router.go(route);
       };
-      
+
       var value = app.statusMapping.deleted_num;
       var options = {success: success, patch: true, wait: true, validate: false};
       try {
@@ -125,8 +126,8 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
     headerOptions: {
       route: {
-        title: 'Edit File',
-        breadcrumbs: [{ title: 'Files', anchor: '#files'}],
+        title: __t('edit_file'),
+        breadcrumbs: [{ title: __t('files'), anchor: '#files'}],
         isOverlay: false
       },
       basicSave: false,
@@ -135,7 +136,7 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
     initialize: function(options) {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
-      this.headerOptions.route.title = this.model.get('id') ? 'Editing File' : 'Uploading New File';
+      this.headerOptions.route.title = this.model.get('id') ? __t('editing_file') : __t('uploading_new_file');
       this.collection = app.files;
     }
   });

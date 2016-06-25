@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -70,7 +70,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       // Disables editing of the field while still letting users see the value
       {id: 'readonly', ui: 'checkbox', def: '1'},
       // Adjusts the max width of the input (Small, Medium, Large)
-      {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       // Enter the column name of the field the slug will pull it's value from
       {id: 'mirrored_field', ui: 'textinput', char_length:200}
     ],

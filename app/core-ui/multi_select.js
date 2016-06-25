@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -94,14 +94,14 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     id: 'multi_select',
     dataTypes: ['VARCHAR', 'TEXT'],
     variables: [
-      {id: 'type', ui: 'select', options: {options: {'select_list':'Select List','cb_list':'Checkbox List'} }},
+      {id: 'type', ui: 'select', options: {options: {'select_list':__t('select_list'),'cb_list':__t('checkbox_list')} }},
       {id: 'delimiter', ui: 'textinput', char_length:1, required: true  },
       {id: 'options', ui: 'textarea', options:{'rows': 25}  }
     ],
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

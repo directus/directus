@@ -7,12 +7,12 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
   var template = '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;" placeholder="Type tag then hit enter..."><button class="btn btn-primary margin-left" type="button">Add</button> \
+                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;" placeholder="{{t "tags_placeholder"}}"><button class="btn btn-primary margin-left" type="button">{{t "add"}}</button> \
                  <div style="width:84%;">{{#tags}}<span class="tag">{{this}}</span>{{/tags}}</div>';
 
   var Input = UIView.extend({
@@ -78,7 +78,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

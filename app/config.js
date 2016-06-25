@@ -15,6 +15,7 @@ require.config({
     "moment":     "../assets/js/libs/moment.min",
     "noty":     "../assets/js/libs/noty",
     "noty_theme": "../assets/js/libs/noty_theme",
+    "polyglot":   "../assets/js/libs/polyglot.min",
 
     // JavaScript folders.
     "libs":       "../assets/js/libs",
@@ -48,6 +49,10 @@ require.config({
 
     "noty_theme": {
       deps: ["jquery", "noty"]
+    },
+
+    "polyglot": {
+      exports: 'Polyglot'
     },
 
     "plugins/jquery.flashrow": ['jquery'],

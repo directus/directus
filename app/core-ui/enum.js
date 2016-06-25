@@ -6,12 +6,12 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
   var template = '<div class="select-container"> \
-                    <select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">Select from below</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
+                    <select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">{{t "select_from_below"}}</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
                     <i class="material-icons select-arrow">arrow_drop_down</i> \
                   </div>';
 
@@ -49,7 +49,7 @@ define(['app', 'core/UIComponent', 'core/UIView'],function(app, UIComponent, UIV
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

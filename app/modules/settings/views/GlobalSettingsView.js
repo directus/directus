@@ -11,18 +11,19 @@ define([
   'backbone',
   'core/directus',
   'core/BasePageView',
-  'core/widgets/widgets'
+  'core/widgets/widgets',
+  'core/t',
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets) {
+function(app, Backbone, Directus, BasePageView, Widgets, __t) {
 
   "use strict";
 
   var Global = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Settings',
-        breadcrumbs: [{ title: 'Settings', anchor: '#settings'}]
+        title: __t('settings'),
+        breadcrumbs: [{ title: __t('settings'), anchor: '#settings'}]
       },
     },
 

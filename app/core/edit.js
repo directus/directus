@@ -22,7 +22,15 @@ define(function(require, exports, module) {
     },
 
     serialize: function() {
-      return {id: this.model.id, comment: this.model.get('comment'), batchEdit: this.options.batchEdit, required: this.model.get('required')};
+      return {
+        id: this.model.id,
+        comment: this.model.get('comment'),
+        batchEdit: this.options.batchEdit,
+        required: this.model.get('required'),
+        // Let assume for now that all tables that start with directus_ are core tables
+        // TODO: we should store all our core tables names
+        isCoreTable: this.model.collection.table.id.indexOf('directus_') === 0
+      };
     },
 
     afterRender: function() {

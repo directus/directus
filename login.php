@@ -70,19 +70,19 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
 <form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post" class="login-box" autocomplete="off">
     <div class='login-panel'>
         <p class="">
-        <input type="email" name="email" placeholder="Email Address" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
+        <input type="email" name="email" placeholder="<?=__t('placeholder_email_address');?>" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
         </p>
         <p class="">
-            <input type="password" name="password" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
-            <span id="forgot-password" title="Forgot Password" class="btn btn-primary"><i class="material-icons">help</i></span>
+            <input type="password" name="password" placeholder="<?=__t('password_placeholder');?>" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
+            <span id="forgot-password" title="<?=__t('forgot_password');?>" class="btn btn-primary"><i class="material-icons">help</i></span>
         </p>
         <p class="clearfix no-margin">
-            <button type="submit" class="btn primary">Sign in</button>
+            <button type="submit" class="btn primary"><?=__t('sign_in');?></button>
         </p>
     </div>
     <p class="error" style="display:none;"></p>
     <p class="message" style="display:none;"></p>
-    <div class="directus-version" title="<?php echo $cacheBuster; ?>">Version <?php echo(DIRECTUS_VERSION) ?></div>
+    <div class="directus-version" title="<?php echo $cacheBuster; ?>"><?=__t('version');?> <?php echo(DIRECTUS_VERSION) ?></div>
 </form>
 
 <script type="text/javascript" src="<?= DIRECTUS_PATH ?>assets/js/libs/jquery.js"></script>
@@ -103,7 +103,7 @@ $(function(){
         }
     }
 
-    <?php if(isset($_GET['inactive'])) {echo 'message("Logged out due to inactivity", true);';}?>
+    <?php if(isset($_GET['inactive'])) {echo 'message("'+__t('logged_out_due_to_inactivity')+'", true);';}?>
 
     function clear_messages() {
         $login_error.hide();
@@ -118,28 +118,28 @@ $(function(){
             email = $.trim($form.find('input[name=email]').val());
 
         if(email.length == 0) {
-            message("Enter a valid email address", true);
+            message("<?=__t('enter_a_valid_email_address');?>", true);
             return false;
         }
 
-        if(confirm('Are you sure you want to reset your password?')) {
+        if(confirm("<?=__t('are_you_sure_you_want_to_reset_your_password');?>")) {
             $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/forgot-password' ?>', {
                 data: { email: email },
                 dataType: 'json',
                 type: 'POST',
                 success: function(data, textStatus, jqXHR) {
                     if(!data.success) {
-                        var errorMessage = "Oops, an error occurred";
+                        var errorMessage = "<?=__t('oops_an_error_ocurred');?>";
                         if(data.message) {
                                 errorMessage = data.message;
                         }
                         message(errorMessage, true);
                         return;
                     }
-                    message("Reset instructions have been sent")
+                    message("<?=__t('reset_instructions_have_been_sent');?>")
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    message("Server error occurred!", true);
+                    message("<?=__t('server_error_occurred');?>", true);
                 }
             });
         }
@@ -153,7 +153,7 @@ $(function(){
             password = $.trim($(this).find('input[name=password]').val());
 
         if(email.length == 0 || password.length == 0) {
-            return message("Enter your email and password", true);
+            return message("<?=__t('enter_your_email_and_password');?>", true);
         }
 
         $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/login' ?>', {
@@ -184,7 +184,7 @@ $(function(){
                 window.location = "<?= DIRECTUS_PATH ?>"+path;
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                message("Server error occurred", true);
+                message("<?=__t('server_error_occurred');?>", true);
             }
         });
     });

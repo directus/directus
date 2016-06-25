@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/UIComponent', 'core/UIView', 'utils'], function(app, Backbone, UIComponent, UIView, Utils) {
+define(['app', 'backbone', 'core/UIComponent', 'core/UIView', 'utils', 'core/t'], function(app, Backbone, UIComponent, UIView, Utils, __t) {
 
   'use strict';
 
@@ -135,9 +135,9 @@ define(['app', 'backbone', 'core/UIComponent', 'core/UIView', 'utils'], function
     dataTypes: ['INT'],
     variables: [
       {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
-      {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
+      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       {id: 'template', ui: 'textinput'},
-      {id: 'include_inactive', ui: 'checkbox', def: '0', comment: 'Include Inactive Items', required: false}
+      {id: 'include_inactive', ui: 'checkbox', def: '0', comment: __t('m2o_typeahead_include_inactive_comment'), required: false}
     ],
     Input: Input,
     list: function(options) {

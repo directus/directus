@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -46,7 +46,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
                     margin-left: 10px; \
                   } \
                   </style> \
-                  <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><span class="position-offset"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="e.g. #bbbbbb"></span> <span class="invalid"></span>';
+                  <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><span class="position-offset"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="{{t "example_abbr"}}. #bbbbbb"></span> <span class="invalid"></span>';
 
   var Input = UIView.extend({
     templateSource: template,
@@ -59,7 +59,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
           this.$el.find('span.invalid').html("");
           this.$el.find('input.color-text').removeClass("invalid");
         } else {
-          this.$el.find('span.invalid').html("Invalid color <i>e.g. #bbbbbb</i>");
+          this.$el.find('span.invalid').html(__t('color_invalid_color')+" <i>"+__t('example_abbr')+". #bbbbbb</i>");
           this.$el.find('input.color-text').addClass("invalid");
         }
       },
@@ -103,7 +103,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     validate: function(value, options) {
       // This doesn't work since the input type="color" has a default color which is black: #000000
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

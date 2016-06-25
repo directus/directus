@@ -7,12 +7,12 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view'], function(app, UIComponent, UIView, TableView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/t'], function(app, UIComponent, UIView, TableView, __t) {
 
   'use strict';
 
   var template = '<div class="related-table"></div> \
-                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}';
+                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary" data-action="add" type="button">{{tVarCapitalize "add_new_x_item" table=tableTitle}}</button>{{/if}}';
 
   var Input = UIView.extend({
     templateSource: template,
@@ -135,7 +135,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view'], func
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
            'ONETOMANY' !== this.columnSchema.relationship.get('type')) {
-        throw "The column " + this.columnSchema.id + " need to have a relationship of the type ONETOMANY inorder to use the one_to_many ui";
+        throw __t('m2m_the_column_need_to_have_m2m_relationship', {
+          column: this.columnSchema.id,
+          type: 'ONETOMANY',
+          ui: Component.id
+        });
       }
 
       this.canEdit = !(options.inModal || false);
@@ -209,7 +213,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view'], func
     dataTypes: ['ONETOMANY'],
     variables: [
       {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
-      {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: 'Maximum number of results to fetch'},
+      {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: __t('o2m_result_limit_comment')},
       {id: 'add_button', ui: 'checkbox'},
       {id: 'remove_button', ui: 'checkbox'}
     ],

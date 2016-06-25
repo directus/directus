@@ -7,20 +7,20 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
-  var template = '<input type="password" value="{{value}}" name="{{name}}" class="medium password-primary" style="display:block;margin-bottom:10px;" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
+  var template = '<input type="password" value="{{value}}" name="{{name}}" class="medium password-primary" style="display:block;margin-bottom:10px;" placeholder="{{t "password_placeholder"}}" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
                  <input type="password" id="password_fake" class="hidden" autocomplete="off" style="display: none;"> \
                  <span class="password-text"></span> \
                  {{#if require_confirmation}} \
-                 <input type="password" value="{{value}}" class="medium password-confirm" style="display:block;margin-bottom:10px;" placeholder="Confirm Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
+                 <input type="password" value="{{value}}" class="medium password-confirm" style="display:block;margin-bottom:10px;" placeholder="{{t "password_confirm_placeholder"}}" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
                  {{/if}} \
                  <div style="display:block;"> \
-                 <button class="btn btn-primary margin-left password-generate" style="margin-right:10px;" type="button">Generate New</button> \
-                 <button class="btn btn-primary margin-left password-toggle" style="display:none;" type="button">Reveal Password</button> \
-                 <span class="placard encrypted hide add-color margin-left-small bold">Encrypted!</span> \
+                 <button class="btn btn-primary margin-left password-generate" style="margin-right:10px;" type="button">{{t "generate_new"}}</button> \
+                 <button class="btn btn-primary margin-left password-toggle" style="display:none;" type="button">{{t "reveal_password"}}</button> \
+                 <span class="placard encrypted hide add-color margin-left-small bold">{{t "password_encrypted"}}</span> \
                  </div> \
                  ';
 
@@ -79,7 +79,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         },
 
         'click .password-toggle' : function(e) {
-          if($(e.target).html() == 'Mask Password'){
+          if($(e.target).html() == __t('mask_password')){
             this.hidePass(e);
           } else {
             this.showPass(e);
@@ -133,7 +133,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
 
         if($confirm.length) {
           if(primaryPass !== $confirm.val()) {
-            alert("Passwords do not Match!");
+            alert(__t('password_do_not_match'));
             return false;
           }
         }
@@ -145,7 +145,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
           if($saltInput.length) {
             hashParams.salt = $.trim($saltInput.val());
             if(_.isEmpty(hashParams.salt)) {
-              alert("Salt is not Defined! (Malformed Table Setup)");
+              alert(__t('password_salt_is_not_defined'));
               return false;
             }
           }
@@ -205,13 +205,13 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       this.$el.find('input.password-confirm').get(0).type = 'text';
       this.$el.find('input.password-primary').get(0).value = this.currentPlainPassword;
       this.$el.find('input.password-confirm').get(0).value = this.currentPlainPassword;
-      this.$el.find('.password-toggle').html('Mask Password');
+      this.$el.find('.password-toggle').html(__t('mask_password'));
     },
 
     hidePass: function() {
       this.$el.find('input.password-primary').get(0).type = 'password';
       this.$el.find('input.password-confirm').get(0).type = 'password';
-      this.$el.find('.password-toggle').html('Reveal Password');
+      this.$el.find('.password-toggle').html(__t('reveal_password'));
     }
   });
 
@@ -236,15 +236,15 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         confirm = $el.find('input.password-confirm').val();
 
       if(!password && options.schema.get('required')) {
-        return "You Must Specify a Password";
+        return __t('you_must_specify_a_password');
       }
 
       if(password) {
         if(password !== confirm) {
-          return "Passwords must match.";
+          return __t('password_must_match');
         }
         if(!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
-          return "You Must Hash Your Password";
+          return __t('you_must_hash_your_password');
         }
       }
     },

@@ -141,7 +141,7 @@ define([
                       <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
                       <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
                       <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
-                      <button class="btn btn-primary" data-action="remove-single-file" type="button">Remove File</button> \
+                      <button class="btn btn-primary" data-action="remove-single-file" type="button">{{t "remove_file"}}</button> \
                     </div> \
                     {{else}} \
                     <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>Drag and drop<br>file here</span></div> \
@@ -151,9 +151,9 @@ define([
                     <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   </div> \
                   <div class="single-image-actions"> \
-                    <span data-action="computer">Upload</span>, \
-                    <span data-action="url">URL Import</span>, or \
-                    <span data-action="swap">Directus Files</span> \
+                    <span data-action="computer">{{t "file_upload"}}</span>, \
+                    <span data-action="url">{{t "url_import"}}</span>, or \
+                    <span data-action="swap">{{t "directus_files"}}</span> \
                   </div>';
 
   var Input = UIView.extend({
@@ -186,7 +186,7 @@ define([
       },
       'click span[data-action="url"]': function(e) {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Enter the URL to a file:', callback: function(url) {
+        app.router.openModal({type: 'prompt', text: __t('enter_the_url_to_a_file'), callback: function(url) {
           that.getLinkData(url);
         }});
       },
@@ -286,7 +286,7 @@ define([
         e.preventDefault();
 
         if (e.dataTransfer.files.length > 1) {
-          alert('One file only please');
+          alert(__t('one_file_only_please'));
           return;
         }
 
@@ -364,7 +364,7 @@ define([
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
-        return 'This field is required';
+        return __t('this_field_is_required');
       }
     },
     list: function(options) {

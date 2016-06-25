@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -23,7 +23,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         var avatar = user.getAvatar();
         this.$el.append('<img src="' + avatar + '" class="big-avatar"><span class="big-avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>');
       } else {
-        this.$el.append('<span class="avatar-name medium-grey-color">No user</span>');
+        this.$el.append('<span class="avatar-name medium-grey-color">'+__t('no_user')+'</span>');
       }
     }
   });
@@ -36,6 +36,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       // {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
       // {id: 'mirrored_field', ui: 'textinput', char_length:200}
     ],
+    Input: Input,
     list: function(options) {
       var avatar, output, user = app.users.get(options.value);
 
@@ -43,7 +44,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         avatar = user.getAvatar();
         output = '<img src="' + avatar + '" class="avatar"><span class="avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>';
       } else {
-        output = '<span class="avatar-name medium-grey-color">No user</span>';
+        output = '<span class="avatar-name medium-grey-color">'+__t('no_user')+'</span>';
       }
 
       return output;

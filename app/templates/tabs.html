@@ -1,23 +1,23 @@
 <ul>
-	<li class="{{#if active}}active{{/if}} has-image" title="Edit User">
+	<li class="{{#if active}}active{{/if}} has-image" title="{{t 'edit_user'}}">
 	    <a href="#users/{{currentUserId}}">
 	      <img src="{{avatar}}" alt>
 	      <i class="material-icons">edit</i>
 	    </a>
 	</li>
-	<li class="{{#if active}}active{{/if}} " title="Sign Out">
+	<li class="{{#if active}}active{{/if}} " title="{{t 'sign_out'}}">
 	    <a href="#logout">
 	      <i class="material-icons">power_settings_new</i>
 	    </a>
 	</li>
 	{{#if showSettings}}
-	<li class="{{#if active}}active{{/if}} border-left" title="Settings">
+	<li class="{{#if active}}active{{/if}} border-left" title="{{t 'settings'}}">
  		<a href="#settings">
  			<i class="material-icons">settings</i>
  		</a>
  	</li>
  	{{else}}
- 	<li class="border-left" title="Directus User Guide">
+ 	<li class="border-left" title="{{t 'directus_user_guide'}}">
  		<a href="http://getdirectus.com/" target="_blank">
 	 		<i class="material-icons">help_outline</i>
 	 	</a>

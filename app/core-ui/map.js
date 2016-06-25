@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -230,8 +230,8 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       {id: 'country_field', ui: 'textinput', char_length:200},
       {id: 'countryCode_field', ui: 'textinput', char_length:200},
       //Height of Map Element in Pixels
-      {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: 'Height in Pixels'},
-      {id: 'showLatLng', ui: 'checkbox', comment: 'Display latlng Textbox below map'}
+      {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: __t('map_mapHeight_comment')},
+      {id: 'showLatLng', ui: 'checkbox', comment: __t('map_showLatLng_comment')}
     ],
     settings: [{
       'collection': 'global',

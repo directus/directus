@@ -2,8 +2,9 @@ require([
   "app",
   "handlebars",
   "core/UIManager",
+  'core/t',
   'moment'
-], function(app, Handlebars, UIManager, moment) {
+], function(app, Handlebars, UIManager, __t, moment) {
 
   "use strict";
 
@@ -11,6 +12,26 @@ require([
 
   Handlebars.registerHelper('imagesPath', function() {
     return app.PATH + 'assets/img/';
+  });
+
+  Handlebars.registerHelper('t', function(key, options) {
+    return __t(key, options.hash);
+  });
+
+  Handlebars.registerHelper('tCapitalize', function(key, options) {
+    return app.capitalize(__t(key, options.hash));
+  });
+
+  Handlebars.registerHelper('tVarCapitalize', function(key, options) {
+    for (var index in options.hash) {
+      if (!options.hash.hasOwnProperty(index)) {
+        continue;
+      }
+
+      options.hash[index] = app.capitalize(options.hash[index]);
+    }
+
+    return __t(key, options.hash);
   });
 
   //Raw handlebars data, helpful with data types

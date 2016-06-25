@@ -10,10 +10,11 @@
 define([
   "app",
   "backbone",
-  "core/EntriesManager"
+  "core/EntriesManager",
+  'core/t',
 ],
 
-function(app, Backbone, EntriesManager) {
+function(app, Backbone, EntriesManager, __t) {
 
   "use strict";
 
@@ -113,9 +114,9 @@ function(app, Backbone, EntriesManager) {
 
     saveSnapshot: function() {
       var that = this;
-      app.router.openModal({type: 'prompt', text: 'What would you like to name this bookmark?', callback: function(name ) {
+      app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_bookmark'), callback: function(name ) {
         if(name === null || name === "") {
-          alert('Please Fill In a Valid Name');
+          alert(__t('please_fill_in_a_valid_name'));
           return;
         }
 
@@ -198,6 +199,13 @@ function(app, Backbone, EntriesManager) {
           bookmarks[bookmark.section].push(bookmark);
         }
       });
+
+      if (_.isArray(bookmarks.other)) {
+        _.each(bookmarks.other, function(bookmark) {
+          console.log(bookmark);
+          bookmark.title = __t(bookmark.title.toLowerCase());
+        });
+      }
 
       var data = {bookmarks: bookmarks, isCustomBookmarks: this.isCustomBookmarks};
 
