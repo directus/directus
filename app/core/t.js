@@ -5,7 +5,6 @@ define(['underscore', 'polyglot'], function(_, Polyglot) {
   var polyglot = new Polyglot({locale: locale, phrases: phrases});
 
   return function(key, data) {
-    console.log(key, polyglot.has(key));
     return polyglot.has(key) ? polyglot.t(key, data) : key;
   };
 });

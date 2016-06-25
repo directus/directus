@@ -202,7 +202,6 @@ function(app, Backbone, EntriesManager, __t) {
 
       if (_.isArray(bookmarks.other)) {
         _.each(bookmarks.other, function(bookmark) {
-          console.log(bookmark);
           bookmark.title = __t(bookmark.title.toLowerCase());
         });
       }
