@@ -3,15 +3,14 @@
 // Composer Autoloader
 // TODO: it doens't work, it depends on the old storage adapters.
 // that unfortunately doesn't exists anymore.
-$loader = require __DIR__.'/../../vendor/autoload.php';
+$loader = require __DIR__.'/../vendor/autoload.php';
 
 // Non-autoload components
-require dirname(__FILE__) . '/../../api/config.php';
-//require dirname(__FILE__) . '../../api/core/db.php';
-//require dirname(__FILE__) . '../../api/core/functions.php';
+require dirname(__FILE__) . '/../api/config.php';
+//require dirname(__FILE__) . '../api/core/db.php';
+//require dirname(__FILE__) . '../api/core/functions.php';
 
-define('STORAGE_PATH',  dirname(__DIR__));
-define('BASE_PATH', dirname(STORAGE_PATH));
+define('BASE_PATH', dirname(__DIR__));
 
 // Define directus environment
 defined('DIRECTUS_ENV')
