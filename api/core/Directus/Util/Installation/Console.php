@@ -27,19 +27,19 @@ class Console
     {
         switch($this->command) {
             case 'config':
-                echo 'Creating config file...';
+                echo __t('creating_config_files').'...';
                 $this->createConfig();
-                echo 'Done.'.PHP_EOL;
+                echo __t('done').PHP_EOL;
                 break;
             case 'database':
-                echo 'Creating database...';
+                echo __t('creating_database').'...';
                 $this->createDatabase();
-                echo 'Done.'.PHP_EOL;
+                echo __t('done').PHP_EOL;
                 break;
             case 'install':
-                echo 'Installing Settings...';
+                echo __t('installing_settings').'...';
                 $this->install();
-                echo 'Done.'.PHP_EOL;
+                echo __t('done').PHP_EOL;
                 break;
         }
     }
@@ -113,7 +113,7 @@ class Console
         }
 
         if (!isset($data['directus_password']) || !isset($data['directus_email'])) {
-            echo PHP_EOL.'Missing email or password'.PHP_EOL;
+            echo PHP_EOL.__t('missing_email_or_password').PHP_EOL;
             exit;
         }
 

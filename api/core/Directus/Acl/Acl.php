@@ -102,7 +102,7 @@ class Acl {
 
     public function getErrorMessagePrefix() {
         // %s and not %d so that null will appear as "null"
-        $aclErrorPrefix = "[Group #%s User #%s] ";
+        $aclErrorPrefix = "[".__t('group')." #%s ".__t('user')." #%s] ";
         $aclErrorPrefix = sprintf($aclErrorPrefix, $this->getGroupId(), $this->getUserId());
         return $aclErrorPrefix;
     }
@@ -125,7 +125,9 @@ class Acl {
         if(self::FIELD_READ_BLACKLIST === $blacklist && count($fieldBlacklist) && in_array('*', $offsets)) {
             // Cannot select all, given a non-empty field read blacklist.
             $prefix = $this->getErrorMessagePrefix();
-            throw new UnauthorizedFieldReadException($prefix . "Cannot select all (`*`) from table `$table` with non-empty read field blacklist.");
+            throw new UnauthorizedFieldReadException($prefix . __t('cannot_select_all_from_table_x_with_nonempty_read_field_blacklist', [
+                    'table' => $table
+            ]));
         }
         /**
          * Enforce granular offset attempts.
@@ -144,10 +146,16 @@ class Acl {
             switch($blacklist) {
                 case self::FIELD_WRITE_BLACKLIST:
                     $prefix = $this->getErrorMessagePrefix();
-                    throw new UnauthorizedFieldWriteException($prefix . "Write (set) access forbidden to table `$table` indices: $forbiddenIndices");
+                    throw new UnauthorizedFieldWriteException($prefix . __t('write_access_forbidden_to_table_x_indices_y', [
+                            'table' => $table,
+                            'indices' => $forbiddenIndices
+                    ]));
                 case self::FIELD_READ_BLACKLIST:
                     $prefix = $this->getErrorMessagePrefix();
-                    throw new UnauthorizedFieldReadException($prefix . "Read (get) access forbidden to table `$table` indices: $forbiddenIndices");
+                    throw new UnauthorizedFieldWriteException($prefix . __t('read_access_forbidden_to_table_x_indices_y', [
+                            'table' => $table,
+                            'indices' => $forbiddenIndices
+                    ]));
             }
         }
     }
@@ -161,7 +169,7 @@ class Acl {
      */
     public function getTablePrivilegeList($table, $list) {
         if(!$this->isTableListValue($list)) {
-            throw new \InvalidArgumentException("Invalid list: $list");
+            throw new \InvalidArgumentException(__t('invalid_list_x', ['list' => $list]));
         }
         $privilegeList = self::$base_acl[$list];
         $groupHasTablePrivileges = array_key_exists($table, $this->groupPrivileges);
@@ -188,14 +196,20 @@ class Acl {
 
         if($groupHasTablePrivileges) {
             if(!isset($this->groupPrivileges[$table][$list]) || !is_array($this->groupPrivileges[$table][$list])) {
-                throw new \RuntimeException('Expected permissions list `$list` for table `$table` to be set and type array.');
+                throw new \RuntimeException(__t('expected_permission_list_x_for_table_y_to_be_set_and_type_array', [
+                    'list' => $list,
+                    'table' => $table
+                ]));
             }
             $privilegeList = $this->groupPrivileges[$table][$list];
         } else {
             $groupHasFallbackTablePrivileges = array_key_exists('*', $this->groupPrivileges);
             if($groupHasFallbackTablePrivileges) {
                 if(!isset($this->groupPrivileges['*'][$list]) || !is_array($this->groupPrivileges['*'][$list])) {
-                    throw new \RuntimeException('Expected permissions list `$list` for table `$table` to be set and type array.');
+                    throw new \RuntimeException(__t('expected_permission_list_x_for_table_y_to_be_set_and_type_array', [
+                        'list' => $list,
+                        'table' => $table
+                    ]));
                 }
                 $privilegeList = $this->groupPrivileges['*'][$list];
             }
@@ -207,8 +221,8 @@ class Acl {
             $disallowedReadBlacklistFields = array_intersect($mandatoryReadFields, $privilegeList);
             if(count($disallowedReadBlacklistFields)) {
                 trigger_error(
-                    "Table $table contains read blacklist items which are designated as mandatory read fields: "
-                    . print_r($disallowedReadBlacklistFields, true)
+                    __t('table_x_contains_read_blacklist_items_which_are_designated_as_mandatory_read_fields', ['table' => $table])
+                    .": ".print_r($disallowedReadBlacklistFields, true)
                 );
                 // Filter out mandatory read items
                 $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
@@ -271,7 +285,11 @@ class Acl {
     public function getRecordCmsOwnerId($record, $table) {
         $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, "Zend\Db\RowGateway\RowGateway");
         if(!($isRowGateway || is_array($record))) {
-            throw new \InvalidArgumentException("Parameter must be either an array or an instance/subclass of Zend\Db\RowGateway\RowGateway (instance of " . get_class($record) . " given)");
+            // TODO: get_class only works on object
+            // if $record is an array get_class will return false
+            throw new \InvalidArgumentException('record_must_be_array_or_rowgateway_x_given', [
+                'type' => get_class($record)
+            ]);
         }
         $ownerColumnName = $this->getCmsOwnerColumnByTable($table);
         if(false === $ownerColumnName) {

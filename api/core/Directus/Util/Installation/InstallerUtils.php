@@ -19,7 +19,9 @@ class InstallerUtils
     {
         $requiredAttributes = ['db_host', 'db_name', 'db_user', 'db_password', 'directus_path'];
         if (!ArrayUtils::contains($data, $requiredAttributes)) {
-            $message = sprintf('Creating config files required %s', implode(', ', $requiredAttributes));
+            $message = sprintf(__t('creating_config_files_required_x', [
+                'attributes' => implode(', ', $requiredAttributes)
+            ]));
             throw new \InvalidArgumentException($message);
         }
 

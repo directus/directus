@@ -11,6 +11,8 @@
     "messages": "Messages",
     "activity": "Activity",
     "users": "Users",
+    "group": "Group",
+    "user": "User",
     "please_fill_in_a_valid_name": "Please Fill In a Valid Name",
     "visit_project": "Visit Project",
     "there_are_no_tables_you_have_permission_to_view": "There are no tables you have permission to view",
@@ -302,6 +304,7 @@
     "unauthorized_nonce": "Unauthorized (nonce)",
     "extension_x_must_return_array_got_y_instead": "Extension %{extension_name} must return array, got %{type} instead",
     "incorrect_email_or_password": "Incorrect email or password",
+    "missing_email_or_password": "Missing email or password",
     "login_error_user_is_not_active": "You do not have access to this system",
     "password_reset_incorrect_token": "Incorrect token.",
     "password_reset_expired_token": "Expired token.",
@@ -326,6 +329,38 @@
     "invalid_unsupported_url": "Invalid/Unsupported URL",
     "message_not_found": "Message not found",
 
+    "cannot_select_all_from_table_x_with_nonempty_read_field_blacklist": "Cannot select all (`*`) from table %{table_name} with non-empty read field blacklist."
+    "write_access_forbidden_to_table_x_indices_y": "Write (set) access forbidden to table `%{table}` indices: %{indices}",
+    "read_access_forbidden_to_table_x_indices_y": "Read (get) access forbidden to table `%{table}` indices: %{indices}",
+    "invalid_list_x": "Invalid list: %{list}",
+    "expected_permission_list_x_for_table_y_to_be_set_and_type_array": "Expected permissions list `%{list}` for table `%{table}` to be set and type array.",
+    "table_x_contains_read_blacklist_items_which_are_designated_as_mandatory_read_fields": "Table $table contains read blacklist items which are designated as mandatory read fields",
+    "record_must_be_array_or_gateway_x_given": "Parameter must be either an array or an instance/subclass of Zend\Db\RowGateway\RowGateway (instance of %{type} given)",
+
+    "attempting_to_inspect_the_authenticated_user_when_a_user_is_not_authenticated": "Attempting to inspect the authenticated user when a user isn't authenticated.",
+    "you_must_define_session_prefix_in_configuration": "You must define session.prefix in api/configuration.php - see example configuration file.",
+    "undefined_user_cache_refresh_provider": "Undefined user cache refresh provider.",
+    "argument_must_be_callable": "Argument must be callable",
+    "attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'": "Attempting to authenticate a user when a user is already authenticated.",
+
+    "x_video_id_not_detected": "%{service} video ID not detected. Please paste the whole URL.",
+    "unable_to_retrieve_x_title": "Unable to Retrieve %{service} Title",
+    "x_video": "%{service} Video",
+    "bad_x_api_key": "Bad %{service} API Key",
+    "mail_configuration_not_defined": "Mail configuration not defined.",
+
+    "random_length_must_be_greater_than_zero": "Random Length must be greater than 0",
+
+    "creating_config_file_required_x": "Creating config files required %{attributes}",
+    "creating_config_file": "Creating config file",
+    "creating_database": "Creating database",
+    "installing_settings": "Installing Settings",
+
+    "internal_server_error": "Internal server error",
+    "predispatch_callable_must_be_callable": "PreDispatch callable must be callable",
+
+
+    "done": "Done",
 
     "ok": "OK",
     "cancel": "Cancel",

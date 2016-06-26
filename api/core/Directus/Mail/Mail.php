@@ -47,7 +47,7 @@ class Mail
     {
         $mailer = Bootstrap::get('mailer');
         if (!$mailer) {
-            throw new InvalidArgumentException('Mail configuration not defined.');
+            throw new InvalidArgumentException(__t('mail_configuration_no_defined'));
         }
 
         $instance = new static($mailer);
