@@ -4,6 +4,12 @@ namespace Directus\Util;
 
 class StringUtils
 {
+    // Formats for string placeholder replacement
+    // ex: {{variable}}
+    const PLACEHOLDER_DOUBLE_MUSTACHE = '{{%s}}';
+    // ex: %{variable}
+    const PLACEHOLDER_PERCENTAGE_MUSTACHE = '%%{%s}';
+
     // Source: http://stackoverflow.com/a/10473026/1772076
     /**
      * Return whether or not a string start with a specific string
@@ -66,6 +72,23 @@ class StringUtils
         }
 
         $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
         return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
+    }
+
+    /**
+     * Replace a string placeholder with the given data.
+     * @param $string
+     * @param array $data
+     * @param string $placeHolderFormat
+     * @return string
+     */
+    public static function replacePlaceholder($string, $data = [], $placeHolderFormat = self::PLACEHOLDER_DOUBLE_MUSTACHE)
+    {
+        foreach ($data as $key => $value) {
+            $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
+        }
+
+        return $string;
     }
 }

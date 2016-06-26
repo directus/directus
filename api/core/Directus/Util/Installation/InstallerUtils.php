@@ -4,6 +4,7 @@ namespace Directus\Util\Installation;
 
 use Directus\Bootstrap;
 use Directus\Util\ArrayUtils;
+use Directus\Util\StringUtils;
 use Ruckusing\Framework as Ruckusing_Framework;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -66,9 +67,7 @@ class InstallerUtils
             $data = ArrayUtils::dot($data);
         }
 
-        foreach ($data as $key => $value) {
-            $content = str_replace('{{'.$key.'}}', $value, $content);
-        }
+        $content = StringUtils::replacePlaceholder($content, $data);
 
         return $content;
     }
