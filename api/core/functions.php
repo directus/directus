@@ -176,7 +176,7 @@ function getPhrases($locale = 'en') {
 }
 
 if (!function_exists('__t')) {
-    function __t($key)
+    function __t($key, $data = [])
     {
         static $phrases;
 
@@ -184,6 +184,9 @@ if (!function_exists('__t')) {
             $phrases = getPhrases(getLocale());
         }
 
-        return isset($phrases[$key]) ? $phrases[$key] : $key;
+        $phrase = isset($phrases[$key]) ? $phrases[$key] : $key;
+        $phrase = \Directus\Util\StringUtils::replacePlaceholder($phrase, $data, \Directus\Util\StringUtils::PLACEHOLDER_PERCENTAGE_MUSTACHE);
+
+        return $phrase;
     }
 }

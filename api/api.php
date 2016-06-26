@@ -155,7 +155,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             $userFound = $user->count() > 0 ? true : false;
 
             if (!$userFound) {
-                $app->halt(401, 'You must be logged in to access the API');
+                $app->halt(401, __t('you_must_be_logged_in_to_access_api'));
             }
 
             $user = $user->toArray();
@@ -186,13 +186,13 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         /** Enforce required authentication. */
         if(!Auth::loggedIn()) {
-            $app->halt(401, "You must be logged in to access the API");
+            $app->halt(401, __t('you_must_be_logged_in_to_access_api'));
         }
 
         /** Enforce required request nonces. */
         if(!$requestNonceProvider->requestHasValidNonce()) {
             if('development' !== DIRECTUS_ENV) {
-                $app->halt(401, "Invalid request (nonce)");
+                $app->halt(401, __t('invalid_request_nonce'));
             }
         }
 
@@ -254,22 +254,25 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     $extensionName = $_REQUEST['run_extension'];
     if(!Bootstrap::extensionExists($extensionName)) {
         header("HTTP/1.0 404 Not Found");
-        return JsonView::render(array('message' => 'No such extension.'));
+        return JsonView::render(array('message' => __t('no_such_extensions')));
     }
     // Validate request nonce
     if(!$requestNonceProvider->requestHasValidNonce()) {
         if('development' !== DIRECTUS_ENV) {
             header("HTTP/1.0 401 Unauthorized");
-            return JsonView::render(array('message' => 'Unauthorized (nonce)'));
+            return JsonView::render(array('message' => __t('unauthorized_nonce')));
         }
     }
-    $extensionsDirectory = APPLICATION_PATH . "/extensions";
+    $extensionsDirectory = APPLICATION_PATH . "/customs/extensions";
     $responseData = require "$extensionsDirectory/$extensionName/api.php";
     $nonceOptions = $requestNonceProvider->getOptions();
     $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
     header($nonceOptions['nonce_response_header'] . ': ' . implode($newNonces, ","));
     if(!is_array($responseData)) {
-        throw new \RuntimeException("Extension $extensionName must return array, got " . gettype($responseData) . " instead");
+        throw new \RuntimeException(__t('extension_x_must_return_array_got_y_instead', [
+           "extension_name" => $extensionName,
+            "type" => gettype($responseData)
+        ]));
     }
     return JsonView::render($responseData);
 }
@@ -282,7 +285,7 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
 $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonceProvider) {
 
     $response = array(
-        'message' => "Incorrect email or password",
+        'message' => __t('incorrect_email_or_password'),
         'success' => false,
         'all_nonces' => $requestNonceProvider->getAllNonces()
     );
@@ -332,7 +335,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     if ($response['success'] && !$isUserActive) {
         Auth::logout();
         $response['success'] = false;
-        $response['message'] = 'You do not have access to this system';
+        $response['message'] = __t('login_error_user_is_not_active');
         return JsonView::render($response);
     }
 
@@ -401,14 +404,14 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
     $user = $DirectusUsersTableGateway->findOneBy('reset_token', $token);
 
     if (!$user) {
-        $app->halt(200, 'Incorrect token.');
+        $app->halt(200, __t('password_reset_incorrect_token'));
     }
 
     $expirationDate = new DateTime($user['reset_expiration']);
     $currentDate = new DateTime;
 
     if ($expirationDate < $currentDate) {
-        $app->halt(200, 'Expired token.');
+        $app->halt(200, __t('password_reset_expired_token'));
     }
 
     $password = uniqid();
@@ -422,17 +425,17 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
     $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
 
     if (1 !== $affectedRows) {
-        $app->halt(200, 'Error resetting the password');
+        $app->halt(200, __t('password_reset_error'));
     }
 
     $data = ['newPassword' => $password];
     Mail::send('mail/forgot-password.twig.html', $data, function($message) use ($user) {
-        $message->setSubject('Your new Directus password');
+        $message->setSubject(__t('password_reset_new_password_email_subject'));
         $message->setFrom('directus@getdirectus.com');
         $message->setTo($user['email']);
     });
 
-    $app->halt(200, 'New temporary password sent');
+    $app->halt(200, __t('password_reset_new_temporary_password_sent'));
 
 })->name('auth_reset_password');
 
@@ -440,7 +443,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     if(!isset($_POST['email'])) {
         return JsonView::render(array(
             'success' => false,
-            'message' => 'Invalid email address'
+            'message' => __t('password_forgot_invalid_email')
         ));
     }
 
@@ -450,7 +453,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     if(false === $user) {
         return JsonView::render(array(
             'success' => false,
-            'message' => "No account found with this email address"
+            'message' => __t('password_forgot_no_account_found')
         ));
     }
 
@@ -474,7 +477,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
 
     $data = ['reset_token' => $set['reset_token']];
     Mail::send('mail/reset-password.twig.html', $data, function($message) use ($user) {
-        $message->setSubject('Directus Password Reset');
+        $message->setSubject(__t('password_forgot_password_reset_email_subject'));
         $message->setFrom('directus@getdirectus.com');
         $message->setTo($user['email']);
     });
@@ -499,7 +502,7 @@ $app->post("/$v/hash/?", function() use ($app) {
     if(!(isset($_POST['password']) && !empty($_POST['password']))) {
         return JsonView::render(array(
             'success' => false,
-            'message' => 'Must provide password'
+            'message' => __t('hash_must_provide_string')
         ));
     }
     $salt = isset($_POST['salt']) && !empty($_POST['salt']) ? $_POST['salt'] : '';
@@ -529,7 +532,7 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($acl, $ZendDb, $p
     $myGroupId = $currentUser['group'];
 
     if ($myGroupId != 1) {
-        throw new Exception('Permission denied');
+        throw new Exception(__t('permission_denied'));
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
@@ -543,7 +546,7 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
     $myGroupId = $currentUser['group'];
 
     if ($myGroupId != 1) {
-        throw new Exception('Permission denied');
+        throw new Exception(__t('permission_denied'));
     }
 
     if (isset($requestPayload['addTable'])) {
@@ -552,7 +555,7 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
 
       if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
           $app->response->setStatus(400);
-          return JsonView::render(array('message'=> 'Invalid table name'));
+          return JsonView::render(array('message'=> __t('invalid_table_name')));
       }
 
       unset($requestPayload['addTable']);
@@ -574,7 +577,7 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
     $myGroupId = $currentUser['group'];
 
     if ($myGroupId != 1) {
-        throw new Exception('Permission denied');
+        throw new Exception(__t('permission_denied'));
     }
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
@@ -644,7 +647,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
 $app->map("/$v/tables/:table/rows/bulk/?", function ($table) use ($acl, $ZendDb, $params, $requestPayload, $app) {
     $rows = array_key_exists('rows', $requestPayload) ? $requestPayload['rows'] : false;
     if (!is_array($rows) || count($rows) <= 0) {
-        throw new Exception('Rows no specified');
+        throw new Exception(__t('rows_no_specified'));
     }
 
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
@@ -653,7 +656,7 @@ $app->map("/$v/tables/:table/rows/bulk/?", function ($table) use ($acl, $ZendDb,
     $rowIds = [];
     foreach($rows as $row) {
         if (!array_key_exists($primaryKeyFieldName, $row)) {
-            throw new Exception('Row without primary key field');
+            throw new Exception(__t('row_without_primary_key_field'));
         }
         array_push($rowIds, $row[$primaryKeyFieldName]);
     }
@@ -780,7 +783,9 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
          * @todo  build this into the method when we shift its location to the new layer
          */
         if(!$acl->hasTablePrivilege($table_name, 'alter')) {
-            throw new UnauthorizedTableAlterException("Table alter access forbidden on table `$table_name`");
+            throw new UnauthorizedTableAlterException(__t('permission_table_alter_access_forbidden_on_table', [
+                'table_name' => $table_name
+            ]));
         }
 
         $tableGateway = new TableGateway($acl, $table_name, $ZendDb);
@@ -799,13 +804,13 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $success = $tableGateway->dropColumn($column);
 
         $response = array(
-          'message' => 'Unable to remove the column ['.$column.']',
+          'message' => __t('unable_to_remove_column_x', ['column_name' => $column]),
           'success' => false
         );
 
         if ($success) {
             $response['success'] = true;
-            $response['message'] = 'Column ['.$column.'] was removed';
+            $response['message'] = __t('column_x_was_removed');
         }
 
         return JsonView::render($response);
@@ -1083,13 +1088,13 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       $success = $tableGateway->drop();
 
       $response = array(
-        'message' => 'Unable to remove the table ['.$table.'].',
+        'message' => __t('unable_to_remove_table_x',['table_name' => $table]),
         'success' => false
       );
 
       if ($success) {
           $response['success'] = true;
-          $response['message'] = 'Table ['.$table.'] was removed.';
+          $response['message'] = __t('table_x_was_removed');
       }
 
       return JsonView::render($response);
@@ -1170,7 +1175,7 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $Files = new \Directus\Files\Files();
     $result = array(
-        'message' => 'Invalid/Unsupported URL',
+        'message' => __t('invalid_unsupported_url'),
         'success' => false
     );
 
@@ -1235,7 +1240,7 @@ $app->get("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
 
     if (!isset($message)) {
         header("HTTP/1.0 404 Not Found");
-        return JsonView::render(array('message' => 'Message not found.'));
+        return JsonView::render(array('message' => ___t('message_not_found')));
     }
 
     JsonView::render($message);
