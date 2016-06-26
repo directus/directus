@@ -152,27 +152,33 @@ if (!function_exists('load_registered_hooks')) {
     }
 }
 
-function getLocale() {
-    // TODO: get locale from user.
-    return 'es';
-}
-
-function getDefaultPhrases() {
-    $phrasesPath = BASE_PATH.'/app/locales/en.json';
-
-    return json_decode(file_get_contents($phrasesPath), true);
-}
-
-function getPhrases($locale = 'en') {
-    $langFile = BASE_PATH.'/customs/locales/'.$locale.'.json';
-
-    if (file_exists($langFile)) {
-        $phrases = json_decode(file_get_contents($langFile), true);
-    } else {
-        $phrases = getDefaultPhrases();
+if (!function_exists('get_locale')) {
+    function get_locale() {
+        // TODO: get locale from user.
+        return 'es';
     }
+}
 
-    return $phrases;
+if (!function_exists('get_default_phrases')) {
+    function get_default_phrases() {
+        $phrasesPath = BASE_PATH.'/app/locales/en.json';
+
+        return json_decode(file_get_contents($phrasesPath), true);
+    }
+}
+
+if (!function_exists('get_phrases')) {
+    function get_phrases($locale = 'en') {
+        $langFile = BASE_PATH.'/customs/locales/'.$locale.'.json';
+
+        if (file_exists($langFile)) {
+            $phrases = json_decode(file_get_contents($langFile), true);
+        } else {
+            $phrases = get_default_phrases();
+        }
+
+        return $phrases;
+    }
 }
 
 if (!function_exists('__t')) {
@@ -181,7 +187,7 @@ if (!function_exists('__t')) {
         static $phrases;
 
         if (!$phrases) {
-            $phrases = getPhrases(getLocale());
+            $phrases = get_phrases(get_locale());
         }
 
         $phrase = isset($phrases[$key]) ? $phrases[$key] : $key;
