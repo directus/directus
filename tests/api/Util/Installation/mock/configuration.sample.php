@@ -19,12 +19,12 @@ return array(
         // use this instead
         // Ex: 'root' => realpath(BASE_PATH.'/../media'),
         // Note: BASE_PATH constant doesn't end with trailing slash
-        'root' => BASE_PATH . '/media',
+        'root' => BASE_PATH . '/storage/uploads',
         // This is the url where all the media will be pointing to
         // here all assets will be (yourdomain)/media
         // same with thumbnails (yourdomain)/media/thumbs
-        'root_url' => '/directus/media',
-        'root_thumb_url' => '/directus/media/thumbs',
+        'root_url' => '/directus/storage/uploads',
+        'root_thumb_url' => '/directus/storage/uploads/thumbs',
         //   'key'    => 's3-key',
         //   'secret' => 's3-key',
         //   'region' => 's3-region',

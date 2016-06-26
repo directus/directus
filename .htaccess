@@ -16,11 +16,17 @@ AddType font/woff .woff
     RewriteRule ^listviews/([^/]+)/assets - [L,NC]
     RewriteRule ^listviews/([^/]+)/ListView.js - [L,NC]
 
+    # Media fallback
+    RewriteRule ^media/(.*)$ /storage/uploads/$1 [R=301,L]
+
+    # Files proxy fallback
+    RewriteRule ^media_auth_proxy/(.*)$ /storage/media_auth_proxy/$1 [L]
+
     # Files Proxy
     # - Only define one of the URL segments /.../ here so that the request format
     #   can be more flexibly maintained in the PHP/Slim router
-    RewriteCond %{REQUEST_URI} media_auth_proxy/([^/]+)/(.+)$
-    RewriteRule ^ /media_auth_proxy/index.php [L]
+    RewriteCond %{REQUEST_URI} storage/media_auth_proxy/([^/]+)/(.+)$
+    RewriteRule ^ /storage/media_auth_proxy/index.php [L]
 
     # Directus Front Controller
     RewriteCond %{REQUEST_FILENAME} !-f

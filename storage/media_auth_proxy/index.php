@@ -1,12 +1,17 @@
 <?php
 
 // Composer Autoloader
-$loader = require '../vendor/autoload.php';
+// TODO: it doens't work, it depends on the old storage adapters.
+// that unfortunately doesn't exists anymore.
+$loader = require __DIR__.'/../../vendor/autoload.php';
 
 // Non-autoload components
-require dirname(__FILE__) . '/../api/config.php';
-require dirname(__FILE__) . '/../api/core/db.php';
-require dirname(__FILE__) . '/../api/core/functions.php';
+require dirname(__FILE__) . '/../../api/config.php';
+//require dirname(__FILE__) . '../../api/core/db.php';
+//require dirname(__FILE__) . '../../api/core/functions.php';
+
+define('STORAGE_PATH',  dirname(__DIR__));
+define('BASE_PATH', dirname(STORAGE_PATH));
 
 // Define directus environment
 defined('DIRECTUS_ENV')
@@ -84,7 +89,7 @@ $app->hook('slim.before.dispatch', function() use ($app) {
     }
 });
 
-$app->get("/:id/:format(/:filename)", function($id, $format, $filename) use ($app, $acl, $ZendDb) {
+$app->get("/:id/:format(/:filename)", function($id, $format, $filename = null) use ($app, $acl, $ZendDb) {
     $notFound = function () {
         http_response_code(404);
         echo "<h1>404 Not found</h1>";
