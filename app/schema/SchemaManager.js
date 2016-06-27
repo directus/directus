@@ -106,7 +106,7 @@ define(function(require, exports, module) {
         var tableName = options.schema.id;
 
         if (tableSchemas[namespace].get(tableName)) {
-          console.warn('Warning: ' + tableName + ' allready exists in the schema manager, the schema will be ignored');
+          console.warn('Warning: ' + tableName + ' already exists in the schema manager, the schema will be ignored');
           return;
         }
 
