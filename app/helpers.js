@@ -18,7 +18,14 @@ require([
     return __t(key, options.hash);
   });
 
-  Handlebars.registerHelper('tCapitalize', function(key, options) {
+  Handlebars.registerHelper('tCoreField', function(key, options) {
+    if (options.hash.table) {
+      var tableKey = options.hash.table+'_'+key;
+      if (__t.polyglot.has(tableKey)) {
+        key = tableKey;
+      }
+    }
+
     return app.capitalize(__t(key, options.hash));
   });
 
