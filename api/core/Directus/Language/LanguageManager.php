@@ -8,6 +8,7 @@ class LanguageManager
 
     public function __construct(array $languages = [])
     {
+        $languages = array_merge(['en'], $languages);
         $this->fillLanguages($languages);
     }
 
@@ -15,12 +16,17 @@ class LanguageManager
     {
         foreach($languages as $langCode) {
             if (!$this->isLanguageAvailable($langCode) && $this->isLanguageSupported($langCode)) {
-                $this->languagesAvailable[$langCode] = new Language([
-                    'code' => $langCode,
-                    'name' => $this->getLanguageName($langCode)
-                ]);
+                $this->languagesAvailable[$langCode] = $this->createLanguage($langCode);
             }
         }
+    }
+
+    public function createLanguage($langCode)
+    {
+        return new Language([
+            'code' => $langCode,
+            'name' => $this->getLanguageName($langCode)
+        ]);
     }
 
     public function isLanguageAvailable($langCode)
