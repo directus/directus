@@ -176,7 +176,7 @@ class CreateExampleGalleryTable extends Ruckusing_Migration_Base
             'user' => 1
         ]);
 
-        $insert = "INSERT INTO 'directus_columns`
+        $insert = "INSERT INTO `directus_columns`
         ( `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
         VALUES
         ('example_gallery', 'id', NULL, 'numeric', 0, 0, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, 1, ''),
@@ -236,7 +236,7 @@ class CreateExampleGalleryTable extends Ruckusing_Migration_Base
                 'allow_edit' => 2,
                 'allow_delete' => 2,
                 'allow_alter' => 1,
-                'status_id' => NULL
+                'status_id' => 0
             ]);
         }
 
