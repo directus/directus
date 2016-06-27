@@ -367,6 +367,8 @@ $templateVars = array(
     'cacheBuster' => $cacheBuster,
     'data' => json_encode($data),
     'path' => DIRECTUS_PATH,
+    'locale' => get_user_locale(),
+    'dir' => 'ltr',
     'customFooterHTML' => getCusomFooterHTML(),
     'cssFilePath' => getCSSFilePath()
 );
