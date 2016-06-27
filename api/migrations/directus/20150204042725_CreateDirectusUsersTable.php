@@ -179,6 +179,12 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         )
       );
 
+      $t->column("locale", "string", array(
+          "limit"=>32,
+          "default"=>'en'
+        )
+      );
+
       $t->finish();
 
       $this->add_index("directus_users", "email", array(

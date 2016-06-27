@@ -14,6 +14,7 @@ use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTablesTableGateway;
+use Directus\Language\LanguageManager;
 use Slim\Slim;
 use Slim\Extras\Log\DateTimeFileWriter;
 
@@ -403,6 +404,21 @@ class Bootstrap {
             }
         }
         return $listViews;
+    }
+
+    /**
+     * @return \Directus\Language\LanguageManager
+     */
+    private static function languagesManager()
+    {
+        $localesPath = BASE_PATH.'/customs/locales/*.json';
+
+        $languages = [];
+        foreach (glob($localesPath) as $filename) {
+            $languages[] = pathinfo($filename, PATHINFO_FILENAME);
+        }
+
+        return new LanguageManager($languages);
     }
 
 

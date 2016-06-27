@@ -6,7 +6,7 @@ use Directus\Util\Installation\InstallerUtils;
 
 class ConfirmStep extends AbstractStep
 {
-    protected $number = 3;
+    protected $number = 4;
     protected $name = 'confirm';
     protected $title = 'Confirm';
     protected $shortTitle = 'Confirm';
@@ -32,6 +32,8 @@ class ConfirmStep extends AbstractStep
             }
         }
 
+        unset($stepsData['languages']);
+        unset($_SESSION['install_locale']);
         InstallerUtils::createConfig($stepsData, BASE_PATH . '/api');
         InstallerUtils::createTables(BASE_PATH);
         InstallerUtils::addDefaultSettings($stepsData, BASE_PATH);

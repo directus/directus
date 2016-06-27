@@ -2,31 +2,37 @@ $(window).ready(function() {
 
   switch(step) {
     case 1:
-      CheckStep1();
+      CheckLanguageStep();
       break;
     case 2:
-      CheckStep2();
+      CheckProjectStep();
       break;
     case 3:
-      CheckStep3();
+      CheckDatabaseStep();
+      break;
+    case 4:
+      CheckConfirmationStep();
       break;
   }
 
   $('input').on('change keypress paste focus textInput input', function(e) {
     switch(step) {
       case 1:
-        CheckStep1();
-        break;
+       CheckLanguageStep();
+       break;
       case 2:
-        CheckStep2();
+        CheckProjectStep();
         break;
       case 3:
-        CheckStep3();
+        CheckDatabaseStep();
+        break;
+      case 4:
+        CheckConfirmationStep();
         break;
     }
   });
 
-  function CheckStep1() {
+  function CheckProjectStep() {
     var name = $('input[name=directus_name]').val();
     var path = $('input[name=directus_path]').val();
     var email = $('input[name=directus_email]').val();
@@ -39,7 +45,7 @@ $(window).ready(function() {
       $('button[type=submit]').addClass('disabled');
     }
   }
-  function CheckStep2() {
+  function CheckDatabaseStep() {
     var name = $('input[name=db_host]').val();
     var user = $('input[name=db_user]').val();
     // password could be empty
@@ -53,8 +59,12 @@ $(window).ready(function() {
     }
   }
 
-  function CheckStep3() {
+  function CheckConfirmationStep() {
     $('button[type=submit]').removeClass('disabled').html('Install').attr('name', 'install');
+  }
+
+  function CheckLanguageStep() {
+    $('button[type=submit]').removeClass('disabled');
   }
 
   $('button').click(function(e) {

@@ -4,7 +4,7 @@ namespace Directus\Installation\Steps;
 
 class ProjectStep extends AbstractStep
 {
-    protected $number = 1;
+    protected $number = 2;
     protected $name = 'project';
     protected $title = 'Project Info';
     protected $shortTitle = 'Project';

@@ -359,9 +359,6 @@
     "internal_server_error": "Internal server error",
     "predispatch_callable_must_be_callable": "PreDispatch callable must be callable",
 
-
-    "done": "Done",
-
     "ok": "OK",
     "cancel": "Cancel",
     "yes": "Yes",

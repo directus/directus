@@ -8,7 +8,7 @@ use Directus\Util\Installation\InstallerUtils;
 
 class DatabaseStep extends AbstractStep
 {
-    protected $number = 2;
+    protected $number = 3;
     protected $name = 'database';
     protected $title = 'Database';
     protected $shortTitle = 'Database';

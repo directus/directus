@@ -12,6 +12,8 @@ return array(
         'prefix' =>  'directus6_'
     ),
 
+    'default_language' => 'en',
+
     'filesystem' => array(
         'adapter' => 'local',
         // By default media directory are located at the same level of directus root

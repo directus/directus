@@ -7,6 +7,7 @@ $installationAutoload = __DIR__.'/autoload.php';
 
 if (!file_exists($vendorAutoload)) {
     $vendorAutoload = $installationAutoload;
+    include BASE_PATH.'/api/core/functions.php';
 }
 
 require $vendorAutoload;

@@ -152,10 +152,60 @@ if (!function_exists('load_registered_hooks')) {
     }
 }
 
-if (!function_exists('get_locale')) {
-    function get_locale() {
-        // TODO: get locale from user.
-        return 'es';
+if (!function_exists('get_user_locale')) {
+    function get_user_locale() {
+        $defaultLocale = 'en';
+
+        if (isset($_SESSION['install_locale'])) {
+            $locale = $_SESSION['install_locale'];
+        } elseif (get_auth_locale()) {
+            $locale = get_auth_locale();
+        } elseif (get_default_locale()) {
+            $locale = get_default_locale();
+        } else {
+            $locale = $defaultLocale;
+        }
+
+        return $locale;
+    }
+}
+
+if (!function_exists('get_default_locale')) {
+    function get_default_locale()
+    {
+        // if there's not config files created
+        if (!defined('BASE_PATH') || !defined('APPLICATION_PATH')) {
+            return null;
+        }
+
+        $config = \Directus\Bootstrap::get('config');
+
+        return isset($config['default_language']) ? $config['default_language'] : null;
+    }
+}
+
+if (!function_exists('get_auth_locale')) {
+    function get_auth_locale() {
+        // if there's not config files created
+        if (!defined('BASE_PATH') || !defined('APPLICATION_PATH')) {
+            return null;
+        }
+
+        if (!Directus\Auth\Provider::loggedIn()) {
+            return null;
+        }
+
+        $userInfo = \Directus\Auth\Provider::getUserRecord();
+
+        return isset($userInfo['locale']) ? $userInfo['locale'] : null;
+    }
+}
+
+if (!function_exists('get_locales_available')) {
+    function get_locales_available() {
+        $languagesManager = \Directus\Bootstrap::get('languagesManager');
+
+        return $languagesManager->getLanguagesAvailable();
     }
 }
 
@@ -187,7 +237,7 @@ if (!function_exists('__t')) {
         static $phrases;
 
         if (!$phrases) {
-            $phrases = get_phrases(get_locale());
+            $phrases = get_phrases(get_user_locale());
         }
 
         $phrase = isset($phrases[$key]) ? $phrases[$key] : $key;

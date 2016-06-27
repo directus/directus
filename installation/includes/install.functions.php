@@ -16,6 +16,7 @@ function install_get_default_state() {
         'current_step' => 0,
         'steps' => [
             new \Directus\Installation\Steps\CheckRequirementsStep(),
+            new \Directus\Installation\Steps\LanguageStep(),
             new \Directus\Installation\Steps\ProjectStep(),
             new \Directus\Installation\Steps\DatabaseStep(),
             new \Directus\Installation\Steps\ConfirmStep(),

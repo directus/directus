@@ -496,6 +496,25 @@ define(function(require, exports, module) {
               "table_related":"directus_groups",
               "junction_key_right":"group_id"
             }
+          },
+          {
+            "id":"locale",
+            "column_name":"locale",
+            "type":"VARCHAR",
+            "char_length":"32",
+            "is_nullable":"YES",
+            "default_value":"en",
+            "comment":"",
+            "sort":37,
+            "ui":"textinput",
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
           }
         ]
       };

@@ -50,6 +50,10 @@ class InstallerUtils
      */
     protected static function createConfigurationFile($data, $path)
     {
+        if (!isset($data['default_language'])) {
+            $data['default_language'] = 'en';
+        }
+
         $configurationStub = file_get_contents(__DIR__.'/stubs/configuration.stub');
         $configurationStub = static::replacePlaceholderValues($configurationStub, $data);
 
@@ -155,7 +159,8 @@ class InstallerUtils
             'email' => $data['directus_email'],
             'password' => $hash,
             'salt' => $salt,
-            'group' => 1
+            'group' => 1,
+            'locale' => $data['default_language']
         ]);
     }
 

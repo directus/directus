@@ -15,21 +15,21 @@
 <body>
     <div class="header">
         <img src="<?=$root_path;?>installation/assets/directus-logo.png">
-        <h1><?=$step->getTitle();?></h1>
+        <h1><?=__t($step->getTitle());?></h1>
         <div class="breadcrumb">
             <?php foreach($steps as $index => $aStep): ?>
             <?php if ($index > 0): ?>
             <span class="separator">●</span>
             <?php endif; ?>
-            <span class="<?=($step->getName() === $aStep->getName())?'current':'';?>"><?=($index);?>. <?=$aStep->getShortTitle();;?></span>
+            <span class="<?=($step->getName() === $aStep->getName())?'current':'';?>"><?=($index);?>. <?=__t($aStep->getShortTitle());?></span>
             <?php endforeach; ?>
         </div>
     </div>
     <div class="container">
         <form method="post" action="<?=$root_path;?>installation/index.php?step=<?= $current_step; ?>">
             <?= $content; ?>
-            <button type="submit" class="button primary disabled">Continue</button>
-            <a href="<?=$root_path;?>installation/index.php?step=<?= $current_step-1; ?>" class="no-button<?=($current_step > 1)?'':' hide'?>">Go Back</a>
+            <button type="submit" class="button primary disabled"><?=__t('Continue');?></button>
+            <a href="<?=$root_path;?>installation/index.php?step=<?= $current_step-1; ?>" class="no-button<?=($current_step > 1)?'':' hide'?>"><?=__t('Go Back');?></a>
         </form>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
