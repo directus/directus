@@ -141,6 +141,10 @@ define(function(require, exports, module) {
       var namespace = 'settings';
       _.each(data, function(settings) {
         columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.structure, {parse: true});
+        // TODO: columns must have its table information
+        columnSchemas[namespace][settings.id].table = {
+          id: 'directus_settings'
+        };
       }, this);
     },
 
