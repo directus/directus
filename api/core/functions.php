@@ -154,7 +154,7 @@ if (!function_exists('load_registered_hooks')) {
 
 if (!function_exists('get_user_locale')) {
     function get_user_locale() {
-        $defaultLocale = 'en';
+        $locale = $defaultLocale = 'en';
 
         if (isset($_SESSION['install_locale'])) {
             $locale = $_SESSION['install_locale'];
@@ -162,7 +162,9 @@ if (!function_exists('get_user_locale')) {
             $locale = get_auth_locale();
         } elseif (get_default_locale()) {
             $locale = get_default_locale();
-        } else {
+        }
+
+        if (!is_locale_available($locale)) {
             $locale = $defaultLocale;
         }
 
@@ -206,6 +208,14 @@ if (!function_exists('get_locales_available')) {
         $languagesManager = \Directus\Bootstrap::get('languagesManager');
 
         return $languagesManager->getLanguagesAvailable();
+    }
+}
+
+if (!function_exists('is_locale_available')) {
+    function is_locale_available($locale) {
+        $languagesManager = \Directus\Bootstrap::get('languagesManager');
+
+        return $languagesManager->isLanguageAvailable($locale);
     }
 }
 

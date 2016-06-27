@@ -14,7 +14,7 @@ class LanguageManager
     public function fillLanguages(array $languages = [])
     {
         foreach($languages as $langCode) {
-            if (!$this->isLanguageAvailable($langCode)) {
+            if (!$this->isLanguageAvailable($langCode) && $this->isLanguageSupported($langCode)) {
                 $this->languagesAvailable[$langCode] = new Language([
                     'code' => $langCode,
                     'name' => $this->getLanguageName($langCode)
@@ -43,6 +43,13 @@ class LanguageManager
         $languages = $this->getLanguageList();
 
         return array_key_exists($langCode, $languages) ? $languages[$langCode] : null;
+    }
+
+    public function isLanguageSupported($langCode)
+    {
+        $languagesSupported = $this->getLanguageList();
+
+        return array_key_exists($langCode, $languagesSupported);
     }
 
     public function getLanguageList()
