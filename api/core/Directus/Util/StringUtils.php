@@ -89,7 +89,7 @@ class StringUtils
             return $string;
         }
 
-        return static::randomChars($length);
+        return static::randomString($length);
     }
 
     /**
