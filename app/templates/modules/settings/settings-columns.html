@@ -5,7 +5,8 @@
             <th class="sort"><i class="material-icons">reorder</i></th>
             <th class="field-field">{{t "field"}}</th>
             <th class="field-input_type">{{t "user_interface"}}</th>
-            <th class="field-hidden" style="width:50px;">{{t "hidden"}}</th>
+            <th class="field-hidden-input" style="width:60px;">{{t "hidden_input"}}</th>
+            <th class="field-hidden-list" style="width:60px;">{{t "hidden_list"}}</th>
             <th class="field-required" style="width:50px;">{{t "required"}}</th>
             <!-- <th class="field-master" style="width:50px;">{{t "primary"}}</th> -->
             <th class="field-note">{{t "note"}}</th>
@@ -19,9 +20,9 @@
             <td><span class="settings-column-name" title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
             {{#if system}}
               {{#if systemDetails}}
-                <td colspan="5"><em>{{{systemDetails}}}</em></td>
+                <td colspan="6"><em>{{{systemDetails}}}</em></td>
               {{else}}
-                <td colspan="5"><em>{{t "system_column_details_default"}}</em></td>
+                <td colspan="6"><em>{{t "system_column_details_default"}}</em></td>
               {{/if}}
             {{else}}
             <td>
@@ -45,7 +46,10 @@
               {{/if}}
             </td>
             <td>
-                <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden'}}">
+                <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden_input'}}">
+            </td>
+            <td>
+                <input type="checkbox" name="hidden_list" id="hidden_list" {{#if hidden_list}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden_list'}}">
             </td>
             <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="{{t 'allow_null' is_nullable=is_nullable}}"></td>
             <!-- <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}" title="Primary"></td> -->
