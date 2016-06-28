@@ -1,9 +1,9 @@
 <?php
-$projectTitle = $settings['global']['project_name'];
+$projectTitle = $settings['global']['project'];
 $projectUrl = $settings['global']['project_url'];
 $loginUrl = $projectUrl . 'login.php';
 ?>
 
 ---
-This email was sent by Directus – <a href="<?= $projectUrl;?>"><?= $projectTitle; ?></a>
-<a href="<?= $loginUrl; ?>">Log in</a> to manage your email preferences
+<?=__t('This email was sent by Directus');?> – <a href="<?= $projectUrl;?>"><?= $projectTitle; ?></a>
+<a href="<?= $loginUrl; ?>"><?=__t('Log in');?></a> <?=__t('to manage your email preferences');?>

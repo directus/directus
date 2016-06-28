@@ -1,21 +1,26 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var Backbone = require('backbone');
 
   require('plugins/backbone.layoutmanager');
 
   module.exports = Backbone.Layout.extend({
-
+    // base template route
+    prefix: 'app/core-ui/',
+    // Handlebars template source
+    templateSource: null,
+    templateCompileOptions: {},
+    // Base Tag that the template resides within
     tagName: 'div',
-
+    // Attributes applied to the base tag
+    attributes: {
+      class: 'field'
+    },
     name: null,
-
     columnSchema: null,
-
     model: null,
-
     settings: null,
 
    /**
@@ -31,18 +36,18 @@ define(function(require, exports, module) {
     * @param options.settings   UI Settings
     */
     constructor: function UIView(options) {
-
+      var structure = options.model.getStructure() || options.model.structure || options.structure;
       this.name = options.name;
-      this.columnSchema = options.model.getStructure().get(this.name);
+      this.columnSchema = structure.get(this.name);
       this.settings = this.columnSchema.options;
-
       this.isRelational = (this.columnSchema.relationship !== undefined);
+      this.templateCompileOptions = this.templateCompileOptions || {};
+      if (this.templateSource) {
+        this.template = Handlebars.compile(this.templateSource, this.templateCompileOptions);
+      }
 
       // Default LayoutManager constructor
       UIView.__super__.constructor.call(this, options);
-
     }
-
   });
-
 });

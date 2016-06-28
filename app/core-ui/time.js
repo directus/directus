@@ -16,19 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
+define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, moment, UIComponent, UIView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'time';
-  Module.dataTypes = ['TIME'];
-
-  Module.variables = [
-    {id: 'readonly', ui: 'checkbox'},
-    {id: 'include_seconds', ui: 'checkbox'}
-  ];
+  'use strict';
 
   var template =  '<style type="text/css"> \
                   input.time { \
@@ -46,17 +36,10 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
                   } \
                   </style> \
                   <input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                  <a class="now">Now</a>';
+                  <a class="now secondary-info">{{t "date_now"}}</a>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'click .now': 'makeNow'
@@ -68,53 +51,58 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
     },
 
     serialize: function() {
-      var data = {};
-
-      data.name = this.options.name;
-      data.comment = this.options.schema.get('comment');
-      data.value = this.value;
-
-      data.readonly = !this.options.canWrite;
-
-      return data;
+      return {
+        name: this.options.name,
+        comment: this.options.schema.get('comment'),
+        value: this.value,
+        readonly: !this.options.canWrite
+      };
     },
 
     initialize: function() {
       this.value = this.options.value;
     }
-
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'time',
+    dataTypes: ['TIME'],
+    variables: [
+      {id: 'readonly', ui: 'checkbox'},
+      {id: 'include_seconds', ui: 'checkbox'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function(options) {
+      if(!options.value) {
+        return '-';
+      }
+
+      var settings = options.settings;
+      var include_seconds = (settings && settings.has('include_seconds') && settings.get('include_seconds') == 1)? true : false;
+      var date = new Date();
+      var timeParts = options.value.split(":");
+
+      date.setHours(parseInt(timeParts[0],10));
+      date.setMinutes(parseInt(timeParts[1],10) || 0 );
+      date.setSeconds(parseInt(timeParts[2],10) || 0 );
+
+      var hours = date.getHours();
+      var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+      var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
+      var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
+      var suffix = (hours >= 12)? 'pm' : 'am';
+
+      hours = (hours > 12) ? hours-12 : hours;
+      hours = (hours == '00') ? 12 : hours;
+
+      return (options.value) ? hours+':'+minutes+secondsFormat+' '+suffix : '';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    if(!options.value) {
-      return "-";
-    }
-
-    var include_seconds = (options.settings && options.settings.has('include_seconds') && options.settings.get('include_seconds') == '1')? true : false;
-
-    var d = new Date();
-    var time = options.value.split(":");
-    d.setHours( parseInt(time[0],10) );
-    d.setMinutes( parseInt(time[1],10) || 0 );
-    d.setSeconds( parseInt(time[2],10) || 0 );
-    var hours = d.getHours();
-    var minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
-    var seconds = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
-    var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
-
-    var suffix = (hours >= 12)? 'pm' : 'am';
-    hours = (hours > 12)? hours -12 : hours;
-    hours = (hours == '00')? 12 : hours;
-
-    return (options.value) ? hours+':'+minutes+secondsFormat+' '+suffix : '';
-  };
-
-  return Module;
-
+  return Component;
 });

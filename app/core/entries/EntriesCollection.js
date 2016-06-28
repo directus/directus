@@ -25,9 +25,10 @@ define(function(require, exports, module) {
     getColumns: function() {
       var filters = this.getFilters();
       var columns = [];
+      var structure = this.structure;
 
       if (filters.columns_visible === undefined) {
-        columns = this.structure.pluck('id');
+        columns = structure.pluck('id');
       } else {
         columns = filters.columns_visible;
         // @todo: ensure that this always be an array everywhere.
@@ -35,6 +36,10 @@ define(function(require, exports, module) {
           columns = columns.split();
         }
       }
+
+      columns = columns.filter(function(column) {
+        return structure.get(column) && !structure.get(column).get('hidden_list');
+      });
 
       if (this.preferences) {
         columns = _.intersection(columns, this.preferences.get('columns_visible').split(','));

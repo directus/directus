@@ -6,18 +6,15 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-  var Module = {};
-
-  Module.id = 'alias';
-  Module.dataTypes = ['ALIAS', 'ONETOMANY', 'MANYTOMANY'];
-
-  Module.Input = Backbone.Layout.extend({
-
+  var Component = UIComponent.extend({
+    id: 'alias',
+    dataTypes: ['ALIAS', 'ONETOMANY', 'MANYTOMANY'],
+    Input: UIView,
   });
 
-  return Module;
+  return Component;
 });

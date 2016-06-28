@@ -220,7 +220,7 @@ gulp.task('singlepage', function () {
 // Composer - Gulp Task
 // --------------------
 gulp.task('composer', function(cb) {
-  var child = cp.spawn('composer', ['install', '--ansi', '--prefer-dist', '--no-dev'], {cwd: './dist/api'});
+  var child = cp.spawn('composer', ['install', '--ansi', '--prefer-dist', '--no-dev'], {cwd: './dist/'});
 
   child.stdout.on('data', function(chunk) {
     process.stdout.write(chunk);
@@ -240,7 +240,7 @@ gulp.task('move', function() {
     './api/logs/*',
     './api/migrations/**/*',
     // './api/vendor/**/*.*',
-    './api/composer.json',
+    './composer.json',
     './api/.htaccess',
     './api/api.php',
     './api/config_sample.php',

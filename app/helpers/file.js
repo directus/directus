@@ -17,7 +17,7 @@ define(function() {
       img.onload = function() {
         fn(true, image);
       }
-      
+
       img.onerror = function() {
         fn(false, image);
       }

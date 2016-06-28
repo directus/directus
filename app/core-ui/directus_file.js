@@ -7,42 +7,39 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-  var Module = {};
-
-  Module.id = 'directus_file';
-  Module.system = true;
-
-    var template = '<style type="text/css"> \
+  var template = '<style type="text/css"> \
                   div.ui-thumbnail { \
                     float: left; \
                     margin-top: 8px; \
                     max-height: 200px; \
                     padding: 10px; \
                     background-color: #ffffff; \
-                    border: 1px solid #ededed; \
-                    color: #ededed; \
+                    border: 1px solid #dddddd; \
+                    color: #aaaaaa; \
                     text-align: center; \
                     cursor: pointer; \
                     margin-bottom: 10px; \
+                    border-radius: 4px; \
                   } \
                   div.ui-thumbnail.empty { \
-                    width: 300px; \
-                    height: 100px; \
+                    max-width: 276px; \
+                    width: 100%; \
+                    height: 140px; \
                     background-color: #ffffff; \
-                    border: 2px dashed #ededed; \
+                    border: 2px dashed #dddddd; \
                     padding: 9px; \
                     font-size: 16px; \
-                    font-weight: 600; \
-                    line-height: 100px; \
+                    font-weight: 500; \
+                    line-height: 144px; \
                   } \
                   div.ui-thumbnail.empty.dragover, \
                   div.ui-thumbnail.empty:hover { \
                     background-color: #fefefe; \
-                    border: 2px dashed #cccccc; \
+                    border: 2px dashed #aaaaaa; \
                     cursor: pointer; \
                   } \
                   div.ui-thumbnail img { \
@@ -74,6 +71,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   .url-import { \
                     width: 100%; \
                     margin-top: 10px; \
+                    margin-bottom: 4px; \
                     display: inline-block; \
                   } \
                   .swap-method-btn { \
@@ -106,26 +104,24 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </div> \
                   </a> \
                   <div class="ui-img-details"> \
-                    <span class="ui-text-hover" data-action="swap">Swap file</span> \
+                    <span class="ui-text-hover" data-action="swap">{{t "directus_files_swap_file"}}</span> \
                   </div> \
                   {{/if}} \
                   <div class="swap-container" {{#if url}}style="display:none"{{/if}}> \
-                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">Drag file here, or click to upload</div> \
+                    <div id="fileDropArea" class="swap-method ui-thumbnail empty ui-thumbnail-dropzone">{{t "directus_files_drop_or_choose_file"}}</div> \
                     <input id="fileAddInput" type="file" class="large hide" /> \
-                    <div class="secondary-info url-import">Or paste in a YouTube, Vimeo, or file link:</div> \
-                    <input id="urlInput" type="text" class="swap-method medium" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
+                    <div class="secondary-info url-import">{{t "directus_files_paste_youtube_vimeo_url"}}:</div> \
+                    <input id="urlInput" type="text" class="swap-method medium" placeholder="{{t "example_abbr"}} https://www.youtube.com/watch?v=dQw4w9WgXcQ" /><button class="swap-method btn btn-primary margin-left-small" id="retriveUrlBtn" type="button">{{t "directus_files_retrieve"}}</button> \
                   </div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     serialize: function() {
-
       var data = {},
-          userId,
-          model = this.model,
-          authenticatedUser = app.users.getCurrentUser();
+        userId,
+        model = this.model,
+        authenticatedUser = app.users.getCurrentUser();
 
       data = model.toJSON();
 
@@ -144,10 +140,10 @@ define(['app', 'backbone'], function(app, Backbone) {
       var storageAdapter = model.get('storage_adapter');
 
       if(storageAdapter !== null &&
-         storageAdapter !== undefined &&
-         storageAdapter !== '') {
-          data.url = model.makeFileUrl(false);
-          data.thumbUrl = model.makeFileUrl(true);
+        storageAdapter !== undefined &&
+        storageAdapter !== '') {
+        data.url = model.makeFileUrl(false);
+        data.thumbUrl = model.makeFileUrl(true);
       } else if (model.isNew()) {
         data.url = model.get('url') || model.get('data');
         data.thumbUrl = model.get('thumbnailData') || model.get('url');
@@ -174,12 +170,6 @@ define(['app', 'backbone'], function(app, Backbone) {
       }
 
       return data;
-    },
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
     },
 
     events: {
@@ -237,6 +227,7 @@ define(['app', 'backbone'], function(app, Backbone) {
       }
       this.listenTo(this.model, 'change', this.render);
     },
+
     afterRender: function() {
       var timer;
       var $dropzone = this.$el.find('.ui-thumbnail');
@@ -279,23 +270,27 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
   });
 
-  Module.list = function(options) {
-    var model = options.model;
+  var Component = UIComponent.extend({
+    id: 'directus_file',
+    system: true,
+    Input: Input,
+    list: function(options) {
+      var model = options.model;
 
-    //Force model To be a Files Model
-    var FileModel = require('modules/files/FilesModel');
-    if(!(model instanceof FileModel)) {
-      model = new FileModel(model.attributes, {collection: model.collection});
+      //Force model To be a Files Model
+      var FileModel = require('modules/files/FilesModel');
+      if(!(model instanceof FileModel)) {
+        model = new FileModel(model.attributes, {collection: model.collection});
+      }
+
+      var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
+      var url = model.makeFileUrl(true);
+      var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
+      var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
+
+      return '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
     }
+  });
 
-    var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var url = model.makeFileUrl(true);
-    var isImage = _.contains(['image/jpeg','image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
-    var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
-
-    var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
-    return img;
-  };
-
-  return Module;
+  return Component;
 });

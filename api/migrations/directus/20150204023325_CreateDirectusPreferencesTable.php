@@ -25,7 +25,6 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_preferences", array(
           "id"=>false,
-          "options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8"
         )
       );
 

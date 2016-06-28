@@ -16,19 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, moment, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function(app, UIComponent, UIView, moment, __t) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'date';
-  Module.dataTypes = ['DATE'];
-
-  Module.variables = [
-    {id: 'readonly', ui: 'checkbox'},
-    {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD'},
-  ];
 
   var template =  '<style type="text/css"> \
                   input.date { \
@@ -40,20 +30,14 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
                   } \
                   </style> \
                   <input type="date" class="date" {{#if readonly}}disabled{{/if}} name="{{name}}" id="{{name}}" {{#if hasDate}}value="{{valueDate}}"{{/if}}> \
-                  <a class="now secondary-info">Now</a>';
+                  <a class="now secondary-info">{{t "date_now"}}</a>';
 
   function removeTimeFromFormat(format) {
     return format.replace(/(A|a|H|h|m|s|S|z|Z|x|X)/g, '');
   }
 
-  Module.Input = UIView.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'click .now': 'makeNow'
@@ -78,8 +62,6 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
     },
 
     initialize: function() {
-      //this.value = moment(this.options.value);
-
       var value = this.model.get(this.name);
       if(undefined === value) {
         this.value = moment('0000-00-00');
@@ -87,24 +69,32 @@ define(['app', 'backbone', 'moment', 'core/UIView'], function(app, Backbone, mom
         this.value = moment(value);
       }
     }
-
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'date',
+    dataTypes: ['DATE'],
+    variables: [
+      {id: 'readonly', ui: 'checkbox'},
+      {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD'},
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function(options) {
+      var value = options.value;
+      var format = options.settings.get('format');
+
+      if (format) {
+        value = moment(value).format(removeTimeFromFormat(format));
+      }
+
+      return value;
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var value = options.value;
-    var format = options.settings.get('format');
-    if (format) {
-      value = moment(value).format(removeTimeFromFormat(format));
-    }
-    return value;
-  };
-
-  return Module;
-
+  return Component;
 });

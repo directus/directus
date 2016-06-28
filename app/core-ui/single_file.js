@@ -19,23 +19,14 @@
 define([
     'app',
     'backbone',
+    'core/UIComponent',
+    'core/UIView',
     'core/table/table.view',
     'core/overlays/overlays'
   ],
-  function(app, Backbone, TableView, Overlays) {
+  function(app, Backbone, UIComponent, UIView, TableView, Overlays) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'single_file';
-  Module.dataTypes = ['INT'];
-
-  Module.variables = [
-    {id: 'allowed_filetypes', ui: 'textinput', char_length:200}
-  ];
-
-  //{{capitalize fileModel.title}}
 
   var template =  '<style type="text/css"> \
                   .ui-file-container:after { \
@@ -150,7 +141,7 @@ define([
                       <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
                       <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
                       <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
-                      <button class="btn btn-primary" data-action="remove-single-file" type="button">Remove File</button> \
+                      <button class="btn btn-primary" data-action="remove-single-file" type="button">{{t "remove_file"}}</button> \
                     </div> \
                     {{else}} \
                     <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>Drag and drop<br>file here</span></div> \
@@ -160,20 +151,13 @@ define([
                     <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   </div> \
                   <div class="single-image-actions"> \
-                    <span data-action="computer">Upload</span>, \
-                    <span data-action="url">URL Import</span>, or \
-                    <span data-action="swap">Directus Files</span> \
+                    <span data-action="computer">{{t "file_upload"}}</span>, \
+                    <span data-action="url">{{t "url_import"}}</span>, or \
+                    <span data-action="swap">{{t "directus_files"}}</span> \
                   </div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'click button[data-action="remove-single-file"]': 'removeFile',
@@ -202,14 +186,13 @@ define([
       },
       'click span[data-action="url"]': function(e) {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'Enter the URL to a file:', callback: function(url) {
+        app.router.openModal({type: 'prompt', text: __t('enter_the_url_to_a_file'), callback: function(url) {
           that.getLinkData(url);
         }});
       },
     },
 
     getLinkData: function(url) {
-
       if(!url) {
         return;
       }
@@ -303,7 +286,7 @@ define([
         e.preventDefault();
 
         if (e.dataTransfer.files.length > 1) {
-          alert('One file only please');
+          alert(__t('one_file_only_please'));
           return;
         }
 
@@ -361,9 +344,7 @@ define([
     },
 
     initialize: function() {
-
       this.userId = app.users.getCurrentUser().id;
-
       this.fileModel = this.options.value;
       this.fileModel.on('change', this.render, this);
       //this.collection = app.getEntries('directus_files');
@@ -372,33 +353,36 @@ define([
         this.listenTo(this.collection, 'reset', this.render);
       }
     }
-
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'single_file',
+    dataTypes: ['INT'],
+    variables: [
+      {id: 'allowed_filetypes', ui: 'textinput', char_length:200}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function(options) {
+      var model = options.model;
+      //@TODO: Have this not be hardcoded
+      if(!model.get('type') && model.get(options.schema.id) instanceof Backbone.Model) {
+        model = model.get(options.schema.id);
+      }
+      var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
+      var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
+      var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
+
+      var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
+      var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document.png';
+
+      return '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var model = options.model;
-    //@TODO: Have this not be hardcoded
-    if(!model.get('type') && model.get(options.schema.id) instanceof Backbone.Model) {
-      model = model.get(options.schema.id);
-    }
-    var orientation = (parseInt(model.get('width'),10) > parseInt(model.get('height'),10)) ? 'landscape' : 'portrait';
-    var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
-    var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
-
-    var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
-    var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document.png';
-
-    var img = '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
-
-    return img;
-  };
-
-  return Module;
-
+  return Component;
 });

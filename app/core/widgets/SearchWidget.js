@@ -11,7 +11,7 @@ function(app, Backbone) {
       <button type="button" class="tool-item large-circle"> \
         <span class="icon icon-search"></span> \
       </button> \
-      <input class="font-primary" type="text" value="keyword">'
+      <input type="text" value="keyword">'
     ),
 
     tagName: 'li',

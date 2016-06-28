@@ -45,7 +45,7 @@ class Provider {
         }
         $config = Bootstrap::get('config');
         if(!isset($config['session']) || !isset($config['session']['prefix']) || empty($config['session']['prefix'])) {
-            throw new \RuntimeException("You must define session.prefix in api/configuration.php - see example configuration file.");
+            throw new \RuntimeException(__t('you_must_define_session_prefix_in_configuration'));
         }
         self::$SESSION_KEY = $config['session']['prefix'] . self::$SESSION_KEY;
         self::$prependedSessionKey = true;
@@ -54,7 +54,7 @@ class Provider {
     protected static function enforceUserIsAuthenticated() {
         self::prependSessionKey();
         if(!self::loggedIn()) {
-            throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when a user isn't authenticated.");
+            throw new UserIsntLoggedInException(__t('attempting_to_inspect_the_authenticated_user_when_a_user_is_not_authenticated'));
         }
     }
 
@@ -166,7 +166,7 @@ class Provider {
 
         $userRefreshProvider = self::$userCacheRefreshProvider;
         if(!is_callable($userRefreshProvider)) {
-            throw new \RuntimeException("Undefined user cache refresh provider.");
+            throw new \RuntimeException(__t('undefined_user_cache_refresh_provider'));
         }
 
         /**
@@ -192,7 +192,7 @@ class Provider {
     public static function setUserCacheRefreshProvider($callable) {
         self::prependSessionKey();
         if(!is_callable($callable)) {
-            throw new \InvalidArgumentException("Argument must be callable");
+            throw new \InvalidArgumentException(__t('argument_must_be_callable'));
         }
         self::$userCacheRefreshProvider = $callable;
     }
@@ -206,7 +206,7 @@ class Provider {
     private static function completeLogin($uid) {
         self::prependSessionKey();
         if(self::loggedIn()) {
-            throw new UserAlreadyLoggedInException("Attempting to authenticate a user when a user is already authenticated.");
+            throw new UserAlreadyLoggedInException(__t('attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'));
         }
         $user = array( 'id' => $uid, 'access_token' => sha1($uid.StringUtils::random()) );
         $_SESSION[self::$SESSION_KEY] = $user;

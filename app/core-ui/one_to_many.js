@@ -7,34 +7,15 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'core/UIView'], function(app, Backbone, TableView, SchemaManager, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/t'], function(app, UIComponent, UIView, TableView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'one_to_many';
-  Module.dataTypes = ['ONETOMANY'];
-
-  Module.variables = [
-    {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
-    {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: 'Maximum number of results to fetch'},
-    {id: 'add_button', ui: 'checkbox'},
-    {id: 'remove_button', ui: 'checkbox'}
-  ];
+  'use strict';
 
   var template = '<div class="related-table"></div> \
-                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary" data-action="add" type="button">Add New {{{capitalize tableTitle}}} Item</button>{{/if}}';
+                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary" data-action="add" type="button">{{tVarCapitalize "add_new_x_item" table=tableTitle}}</button>{{/if}}';
 
-  Module.Input = UIView.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click button[data-action=add]': 'addRow',
@@ -45,6 +26,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       if (!this.canEdit) {
         return;
       }
+
       var cid = $(e.target).closest('tr').attr('data-cid');
       var model = this.relatedCollection.get(cid, true);
       this.editModel(model);
@@ -84,7 +66,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
       };
 
       app.router.overlayPage(view);
-      
+
       view.save = function() {
         model.set(model.diff(view.editView.data()));
         app.router.removeOverlayPage(this);
@@ -92,7 +74,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     addModel: function(model) {
-
       var EditView = require("modules/tables/views/EditView");
       var collection = this.relatedCollection;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
@@ -125,6 +106,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         var data = view.editView.data();
         data[columnName] = id;
         model.set(data);
+
         if (model.isValid()) {
           app.router.removeOverlayPage(this);
           collection.add(model, {nest: true});
@@ -150,24 +132,25 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
     },
 
     initialize: function (options) {
-
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
            'ONETOMANY' !== this.columnSchema.relationship.get('type')) {
-        throw "The column " + this.columnSchema.id + " need to have a relationship of the type ONETOMANY inorder to use the one_to_many ui";
+        throw __t('m2m_the_column_need_to_have_m2m_relationship', {
+          column: this.columnSchema.id,
+          type: 'ONETOMANY',
+          ui: Component.id
+        });
       }
 
       this.canEdit = !(options.inModal || false);
 
       var relatedCollection = this.model.get(this.name);
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
-
       var ids = [];
 
       ids = relatedCollection.pluck('id');
 
       if(ids.length > 0) {
-
         //Make sure column we are joining on is respected
         var filters = relatedCollection.filters;
         if(filters.columns_visible) {
@@ -175,6 +158,7 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
         } else {
           filters.columns_visible = [joinColumn];
         }
+
         //Pass this filter to select only where column = val
         filters.related_table_filter = {column: joinColumn, val: this.model.id};
 
@@ -187,7 +171,6 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
       this.showAddButton = this.columnSchema.options.get('add_button') === "1";
-
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         selectable: false,
@@ -223,12 +206,22 @@ define(['app', 'backbone', 'core/table/table.view', 'schema/SchemaManager', 'cor
 
       this.relatedCollection = relatedCollection;
     }
-
   });
 
-  Module.list = function() {
-    return 'x';
-  };
+  var Component = UIComponent.extend({
+    id: 'one_to_many',
+    dataTypes: ['ONETOMANY'],
+    variables: [
+      {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
+      {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: __t('o2m_result_limit_comment')},
+      {id: 'add_button', ui: 'checkbox'},
+      {id: 'remove_button', ui: 'checkbox'}
+    ],
+    Input: Input,
+    list: function() {
+      return 'x';
+    }
+  });
 
-  return Module;
+  return Component;
 });

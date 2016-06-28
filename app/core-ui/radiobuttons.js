@@ -7,25 +7,16 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'radiobuttons';
-  Module.dataTypes = ['VARCHAR'];
-
-  Module.variables = [
-    {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': 'Use a Comma Delimited list'}
-  ];
+  'use strict';
 
   var template = '<style type="text/css"> \
                   label.radiobuttons { \
                     display:inline-block; \
                     margin-right: 20px; \
                     padding: 0 0 4px 0; \
-                    font-weight: 600; \
+                    font-weight: 500; \
                     font-size: 14px; \
                     cursor: pointer; \
                   } \
@@ -36,18 +27,12 @@ define(['app', 'backbone'], function(app, Backbone) {
                   {{/options}} \
                   </div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    template: Handlebars.compile(template),
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
+  var Input = UIView.extend({
+    templateSource: template,
 
     serialize: function() {
       var options = [];
+
       if(this.options.settings.get('options')) {
         options = _.map(this.options.settings.get('options').split(','), function(item) {
           return {
@@ -63,20 +48,22 @@ define(['app', 'backbone'], function(app, Backbone) {
         comment: this.options.schema.get('comment')
       };
     }
-
   });
 
-  // @TODO: Not working – not even being called
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'radiobuttons',
+    dataTypes: ['VARCHAR'],
+    variables: [
+      {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': __t('radiobuttons_options_comment')}
+    ],
+    Input: Input,
+    // @TODO: Not working – not even being called
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return __t('this_field_is_required');
+      }
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return options.value;
-  };
-
-  return Module;
-
+  return Component;
 });

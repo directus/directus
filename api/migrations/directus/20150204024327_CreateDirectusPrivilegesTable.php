@@ -21,7 +21,6 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_privileges", array(
         "id"=>false,
-        "options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8"
         )
       );
 
@@ -77,25 +76,35 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
 
       $t->finish();
 
-      $this->execute("INSERT INTO `directus_privileges` (`id`, `table_name`, `permissions`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `unlisted`)
-VALUES
-  (1,'directus_activity','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (2,'directus_columns','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (3,'directus_groups','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (4,'directus_files','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (5,'directus_messages','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (6,'directus_preferences','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (7,'directus_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (8,'directus_settings','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (9,'directus_tables','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (10,'directus_ui','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (11,'directus_users','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (12,'directus_social_feeds','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (13,'directus_messages_recipients','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (14,'directus_social_posts','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (15,'directus_storage_adapters','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (16,'directus_tab_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (17,'directus_bookmarks','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL);");
+      $tables = [
+          'directus_activity',
+          'directus_columns',
+          'directus_groups',
+          'directus_files',
+          'directus_messages',
+          'directus_preferences',
+          'directus_privileges',
+          'directus_settings',
+          'directus_tables',
+          'directus_ui',
+          'directus_users',
+          'directus_social_feeds',
+          'directus_messages_recipients',
+          'directus_social_posts',
+          'directus_tab_privileges',
+          'directus_bookmarks'
+      ];
+
+      foreach($tables as $table) {
+          $this->insert('directus_privileges', [
+              'table_name' => $table,
+              'permissions' => 'add,edit,bigedit,delete,bigdelete,alter,view,bigview',
+              'group_id' => 1,
+              'read_field_blacklist' => NULL,
+              'write_field_blacklist' => NULL,
+              'unlisted' => NULL
+          ]);
+      }
     }//up()
 
     public function down()

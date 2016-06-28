@@ -7,31 +7,15 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'directus_file_title';
-  Module.system = true;
-
-  Module.variables = [
-    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }}
-  ];
+  'use strict';
 
   var template = '{{#unless readonly}}<div class="char-count-container"><input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
                   <span class="char-count hide">{{characters}}</span></div>{{else}}<span>{{value}}</span>{{/unless}}';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'focus input': function() { this.$el.find('.char-count').removeClass('hide'); },
@@ -61,13 +45,17 @@ define(['app', 'backbone'], function(app, Backbone) {
     }
   });
 
-  Module.validate = function(value, options) {
-  };
+  var Component = UIComponent.extend({
+    id: 'directus_file_title',
+    system: true,
+    variables: [
+      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }}
+    ],
+    Input: Input,
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    }
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
-
+  return Component;
 });

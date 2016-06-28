@@ -1,6 +1,7 @@
 define([
   'app',
   'backbone',
+  'core/t',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
@@ -8,7 +9,7 @@ define([
   'modules/tables/views/TranslationView'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, TranslationView) {
+function(app, Backbone, __t, Directus, BasePageView, Widgets, HistoryView, TranslationView) {
 
   var EditView = Backbone.Layout.extend({
     template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry"></div><div id="historyFormEntry"></div>'),
@@ -53,7 +54,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'click .saved-success > span > .tool-item, .saved-success > span > .simple-select': 'saveConfirm',
+      'click .saved-success > #save': 'saveConfirm',
       'change #saveSelect': 'saveConfirm',
       'submit': function(e) {
         // prevent user submit the form using Enter key
@@ -244,10 +245,10 @@ function(app, Backbone, Directus, BasePageView, Widgets, HistoryView, Translatio
       this.headerOptions.basicSave = false;
       if(this.single) {
         this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;
-        this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}];
+        this.headerOptions.route.breadcrumbs = [{ title: __t('tables'), anchor: '#tables'}];
       } else {
-        this.headerOptions.route.title = this.model.get(this.model.idAttribute) ? 'Editing Item' : 'Creating New Item';
-        this.headerOptions.route.breadcrumbs = [{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
+        this.headerOptions.route.title = this.model.get(this.model.idAttribute) ? __t('editing_item') : __t('creating_new_item');
+        this.headerOptions.route.breadcrumbs = [{ title: __t('tables'), anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
       }
     }
   });

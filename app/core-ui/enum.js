@@ -6,28 +6,17 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone'],function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComponent, UIView, __t) {
 
-  "use strict";
+  'use strict';
 
-  var Module = {};
+  var template = '<div class="select-container"> \
+                    <select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">{{t "select_from_below"}}</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
+                    <i class="material-icons select-arrow">arrow_drop_down</i> \
+                  </div>';
 
-  var template = '<select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">Select from below</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
-
-  Module.id = 'enum';
-  Module.dataTypes = ['ENUM','SET'];
-
-  Module.variables = [];
-
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     serialize: function() {
       var selectedValue = this.options.value;
@@ -52,19 +41,21 @@ define(['app', 'backbone'],function(app, Backbone) {
         options: enumArray
       };
     }
-
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'enum',
+    dataTypes: ['ENUM','SET'],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function(options) {
+      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
-    return val;
-  };
-
-  return Module;
+  return Component;
 });

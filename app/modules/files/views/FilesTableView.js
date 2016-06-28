@@ -3,6 +3,7 @@ define([
   'backbone',
   'core/modal',
   'core/edit',
+  'core/t',
   'core/BasePageView',
   'core/table/table.view',
   'core/widgets/widgets',
@@ -10,17 +11,17 @@ define([
   'modules/files/views/FilesCardView'
 ],
 
-function(app, Backbone, DirectusModal, DirectusEdit, BasePageView, DirectusTable, Widgets, EditFilesView, FilesCardView) {
+function(app, Backbone, DirectusModal, DirectusEdit, __t, BasePageView, DirectusTable, Widgets, EditFilesView, FilesCardView) {
 
   return BasePageView.extend({
     headerOptions: {
       route: {
-        title: "Files"
+        title: __t('files')
       }
     },
     leftToolbar: function() {
       return [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_file')}})
       ];
     },
     rightToolbar: function() {

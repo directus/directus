@@ -18,7 +18,6 @@ class CreateDirectusTabPrivilegesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_tab_privileges", array(
           "id"=>false,
-          "options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8"
         )
       );
 

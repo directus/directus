@@ -1,12 +1,14 @@
 define([
   'app',
   'backbone',
+  'core/t',
   'core/notification'
 ],
 
 function(
   app,
   Backbone,
+  __t,
   Notification
 ) {
 
@@ -17,10 +19,10 @@ function(
     var opts = _.extend({
       value: false,
       name: '',
-      firstQuestion: 'Are you sure?.',
-      secondQuestion: 'This cannot be undone.',
-      emptyValueMessage: 'Invalid value.',
-      notMatchMessage: 'Values did not match.',
+      firstQuestion: __t('confirm_question'),
+      secondQuestion: __t('confirm_question_confirm'),
+      emptyValueMessage: __t('confirm_invalid_value'),
+      notMatchMessage: __t('confirm_value_did_not_match'),
       callback: function() {}
     }, options);
 
@@ -40,7 +42,7 @@ function(
 
       app.router.openModal({type: 'prompt', text: opts.secondQuestion, callback: function(confirmedValue) {
         if (confirmedValue !== opts.value) {
-          Notification.error('Did not match', opts.notMatchMessage);
+          Notification.error(__t('confirm_did_not_match'), opts.notMatchMessage);
           return;
         }
 

@@ -1,5 +1,5 @@
 //@todo: Make vanilla-js (not a require module) and move to vendor folder
-define(['moment'], function(moment) {
+define(['moment', 'core/t'], function(moment, __t) {
 
   "use strict";
 
@@ -101,15 +101,15 @@ define(['moment'], function(moment) {
     ],
 
     actionMap: {
-      'ADD':    'added',
-      'DELETE': 'deleted',
-      'UPDATE': 'updated'
+      'ADD':    __t('action_added'),
+      'DELETE': __t('action_deleted'),
+      'UPDATE': __t('action_updated')
     },
 
     prepositionMap: {
-      'ADD':    'to',
-      'DELETE': 'from',
-      'UPDATE': 'within'
+      'ADD':    __t('preposition_to'),
+      'DELETE': __t('preposition_from'),
+      'UPDATE': __t('preposition_within')
     },
 
     bytesToSize: function(bytes, precision) {

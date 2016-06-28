@@ -11,6 +11,14 @@ use Directus\MemcacheProvider;
 use Directus\Util\StringUtils;
 use Zend\Db\Adapter\ParameterContainer;
 use Directus\Util\ArrayUtils;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate\In;
+use Zend\Db\Sql\Predicate\IsNotNull;
+use Zend\Db\Sql\Predicate\NotIn;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\TableIdentifier;
+use Zend\Db\Sql\Where;
 
 class TableSchema {
 
@@ -120,12 +128,15 @@ class TableSchema {
         return $columns;
     }
 
-    public static function getAllAliasTableColumns($table) {
+    public static function getAllAliasTableColumns($table, $onlyNames = false) {
         $columns = array();
         $schemaArray = self::loadSchema($table);
         foreach($schemaArray as $column) {
             if(!self::columnIsCollectionAssociation($column)) {
                 continue;
+            }
+            if ($onlyNames) {
+                $column = $column['column_name'];
             }
             $columns[] = $column;
         }
@@ -139,53 +150,37 @@ class TableSchema {
             // return false;
         }
 
-        // Omit columns which are on this table's read field blacklist for the group of
-        // the currently authenticated user.
-        $acl = Bootstrap::get('acl');
-        $readFieldBlacklist = $acl->getTablePrivilegeList($table, $acl::FIELD_READ_BLACKLIST);
-        $readFieldBlacklist = implode(', ', $readFieldBlacklist);
-
-        $sql = 'SELECT S.column_name, D.system, D.master
-            FROM INFORMATION_SCHEMA.COLUMNS S
-            LEFT JOIN directus_columns D
-            ON (D.column_name = S.column_name AND D.table_name = S.table_name)
-            WHERE
-                S.table_name = :table_name AND
-                S.table_schema = :table_schema AND
-                S.column_name NOT IN (:field_read_blacklist)';
-
-        $zendDb = Bootstrap::get('ZendDb');
-        $parameterContainer = new ParameterContainer;
-
-        $sth = $zendDb->query($sql);
-        $parameterContainer->offsetSet(':table_name', $table, ParameterContainer::TYPE_STRING);
-        $parameterContainer->offsetSet(':table_schema', DB_NAME, ParameterContainer::TYPE_STRING);
-        $parameterContainer->offsetSet(':field_read_blacklist', $readFieldBlacklist, ParameterContainer::TYPE_STRING);
-        $result = $sth->execute($parameterContainer);
+        $result = SchemaManager::getColumnsNames($table);
 
         $columns = array();
         $primaryKeyFieldName = self::getTablePrimaryKey($table);
         if (!$primaryKeyFieldName) {
             $primaryKeyFieldName = 'id';
         }
+
         $ignoreColumns = ($skipIgnore !== true) ? array($primaryKeyFieldName,STATUS_COLUMN_NAME,'sort') : array();
         $i = 0;
-        foreach($result as $row) {
-            $i++;
-            if(!in_array($row['column_name'], $ignoreColumns)) {
-                array_push($columns, $row['column_name']);
+        foreach($result as $columnName) {
+            if (!in_array($columnName, $ignoreColumns)) {
+                array_push($columns, $columnName);
             }
+
+            $i++;
             if($i === $limit) {
                 break;
             }
         }
+
         return $columns;
     }
 
-    public static function hasTableColumn($table, $column) {
-      $columns = self::getTableColumns($table, null, true);
+    public static function hasTableColumn($table, $column, $includeAlias = false) {
+      $columns = array_flip(self::getTableColumns($table, null, true));
+      if ($includeAlias) {
+          $columns = array_merge($columns, array_flip(self::getAllAliasTableColumns($table, true)));
+      }
 
-      if (array_key_exists($column, array_flip($columns))) {
+      if (array_key_exists($column, $columns)) {
         return true;
       }
 
@@ -201,28 +196,14 @@ class TableSchema {
      * Get all table names
      *
      */
-    public static function getTablenames($includeCoreTables = true) {
-        $zendDb = Bootstrap::get('zendDb');
-
-        $sql = 'SHOW TABLES';
-        $sth = $zendDb->query($sql);
-        $result = $sth->execute();
+    public static function getTablenames($params=null) {
+        $result = SchemaManager::getTablesName();
 
         $tables = array();
-
-        foreach($result as $row) {
-            $row = array_values($row);
-            $name = $row[0];
-
-            if (!self::canGroupViewTable($name)) {
-                continue;
+        foreach($result as $tableName) {
+            if(self::canGroupViewTable($tableName)) {
+                $tables[] = $tableName;
             }
-
-            if ($includeCoreTables !== true && StringUtils::startsWith($name, 'directus_')) {
-                continue;
-            }
-
-            $tables[] = $name;
         }
 
         return $tables;
@@ -237,26 +218,21 @@ class TableSchema {
         $Preferences = new DirectusPreferencesTableGateway($acl, $zendDb);
         $getTablesFn = function () use ($Preferences, $zendDb) {
             $return = array();
-            $name = $zendDb->getCurrentSchema();
+            $schemaName = $zendDb->getCurrentSchema();
 
-            $sql = 'SELECT S.TABLE_NAME as id
-                FROM INFORMATION_SCHEMA.TABLES S
-                WHERE
-                    S.TABLE_SCHEMA = :schema AND
-                    (S.TABLE_NAME NOT LIKE "directus\_%" OR
-                    S.TABLE_NAME = "directus_activity" OR
-                    S.TABLE_NAME = "directus_files" OR
-                    S.TABLE_NAME = "directus_messages" OR
-                    S.TABLE_NAME = "directus_groups" OR
-                    S.TABLE_NAME = "directus_users" OR
-                    S.TABLE_NAME = "directus_messages_recipients"
-                    )
-                GROUP BY S.TABLE_NAME
-                ORDER BY S.TABLE_NAME';
-            $sth = $zendDb->query($sql);
-            $parameterContainer = new ParameterContainer;
-            $parameterContainer->offsetSet(':schema', $name, ParameterContainer::TYPE_STRING);
-            $result = $sth->execute($parameterContainer);
+            $select = new Select();
+            $select->columns([
+                'id' => 'TABLE_NAME'
+            ]);
+            $select->from(['S' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')]);
+            $select->where([
+                'TABLE_SCHEMA' => $schemaName,
+                new NotIn('TABLE_NAME', Schema::getDirectusTables())
+            ]);
+
+            $sql = new Sql($zendDb);
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
 
             $currentUser = Auth::getUserInfo();
 
@@ -298,30 +274,7 @@ class TableSchema {
             return false;
         }
 
-        $sql = "SELECT T.TABLE_NAME AS id,
-            T.TABLE_NAME AS table_name,
-            CREATE_TIME AS date_created,
-            TABLE_COMMENT AS comment,
-            ifnull(hidden,0) as hidden,
-            ifnull(single,0) as single,
-            is_junction_table,
-            user_create_column,
-            user_update_column,
-            date_create_column,
-            date_update_column,
-            footer,
-            TABLE_ROWS AS count
-            FROM INFORMATION_SCHEMA.TABLES T
-            LEFT JOIN directus_tables DT ON (DT.table_name = T.TABLE_NAME)
-            WHERE T.TABLE_SCHEMA = :schema AND T.TABLE_NAME = :table_name";
-        $sth = $zendDb->query($sql);
-
-        $parameterContainer = new ParameterContainer;
-        $parameterContainer->offsetSet(':table_name', $tbl_name, ParameterContainer::TYPE_STRING);
-        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
-        $result = $sth->execute($parameterContainer);
-
-        $info = $result->current();
+        $info = SchemaManager::getTable($tbl_name);
 
         if (!$info) {
             return false;
@@ -354,34 +307,9 @@ class TableSchema {
             return self::$_primaryKeys[$tableName];
         }
 
-        $zendDb = Bootstrap::get('ZendDb');
+        $columnName = SchemaManager::getPrimaryKey($tableName);
 
-        // @todo: make this part of loadSchema
-        // without the need to use acl and create a infinite nested function call
-        $sql = 'SELECT  COLUMN_NAME as column_name
-                FROM
-                    INFORMATION_SCHEMA.COLUMNS C
-                WHERE
-                    C.TABLE_SCHEMA = :schema
-                AND
-                    C.table_name = :table_name';
-
-        $parameterContainer = new ParameterContainer();
-        $parameterContainer->offsetSet(':table_name', $tableName, ParameterContainer::TYPE_STRING);
-        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
-
-        $sth = $zendDb->query($sql);
-        $result = $sth->execute($parameterContainer);
-        $result = $result->current();
-
-        if (!$result) {
-            self::$_primaryKeys[$tableName] = null;
-            return false;
-        }
-
-        self::$_primaryKeys[$tableName] = $result['column_name'];
-
-        return $result['column_name'];
+        return self::$_primaryKeys[$tableName] = $columnName;
     }
 
     protected static function createParamArray($values, $prefix) {
@@ -405,106 +333,16 @@ class TableSchema {
         // the currently authenticated user.
         $acl = Bootstrap::get('acl');
 
+        $columns = SchemaManager::getColumns($tbl_name, $params);
         if(!self::canGroupViewTable($tbl_name)) {
             // return array();
             return false;
         }
 
-        $readFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_READ_BLACKLIST);
-        $readFieldBlacklistParams = self::createParamArray($readFieldBlacklist, ':readfield_blacklist_');
-        $readFieldBlacklistKeys = implode(',', array_keys($readFieldBlacklistParams));
-
-        if (empty($readFieldBlacklistKeys)) {
-            $readFieldBlacklistKeys = "''";
-        }
-
-        $zendDb = Bootstrap::get('ZendDb');
-        $return = array();
-        $column_name = isset($params['column_name']) ? $params['column_name'] : -1;
-        $hasMaster = false;
-        $sql =
-        '(SELECT
-            DISTINCT C.column_name as id,
-            C.column_name AS column_name,
-            UCASE(C.data_type) as type,
-            CHARACTER_MAXIMUM_LENGTH as char_length,
-            IS_NULLABLE as is_nullable,
-            COLUMN_DEFAULT as default_value,
-            ifnull(comment, COLUMN_COMMENT) as comment,
-            ifnull(sort, ORDINAL_POSITION) as sort,
-            ui,
-            ifnull(system,0) as system,
-            ifnull(master,0) as master,
-            ifnull(hidden_list,0) as hidden_list,
-            ifnull(hidden_input,0) as hidden_input,
-            relationship_type,
-            table_related,
-            junction_table,
-            junction_key_left,
-            junction_key_right,
-            ifnull(D.required,0) as required,
-            COLUMN_TYPE as column_type
-        FROM
-            INFORMATION_SCHEMA.COLUMNS C
-        LEFT JOIN
-            directus_columns AS D ON (C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name)
-        WHERE
-            C.TABLE_SCHEMA = :schema
-        AND
-            C.table_name = :table_name
-        AND
-            (:column_name = -1 OR C.column_name = :column_name)
-        AND
-            (C.column_name NOT IN ('.$readFieldBlacklistKeys.'))
-        )
-        UNION (SELECT
-            DC.`column_name` AS id,
-            DC.column_name AS column_name,
-            UCASE(data_type) as type,
-            NULL AS char_length,
-            "NO" as is_nullable,
-            NULL AS default_value,
-            comment,
-            sort,
-            ui,
-            system,
-            master,
-            hidden_list,
-            hidden_input,
-            relationship_type,
-            table_related,
-            junction_table,
-            junction_key_left,
-            junction_key_right,
-            DC.required,
-            NULL as column_type
-        FROM
-            `directus_columns` DC
-        WHERE
-            DC.`table_name` = :table_name AND (data_type="alias" OR data_type="MANYTOMANY" OR data_type = "ONETOMANY")
-        AND
-            (:column_name = -1 OR DC.column_name = :column_name)
-        AND
-            (DC.column_name NOT IN ('.$readFieldBlacklistKeys.'))
-        AND
-            data_type IS NOT NULL) ORDER BY sort';
-
-        $parameterContainer = new ParameterContainer;
-        $parameterContainer->offsetSet(':table_name', $tbl_name, ParameterContainer::TYPE_STRING);
-        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
-        $parameterContainer->offsetSet(':column_name', $column_name, ParameterContainer::TYPE_INTEGER);
-
-        foreach($readFieldBlacklistParams as $key => $value) {
-            $parameterContainer->offsetSet($key, $value, ParameterContainer::TYPE_STRING);
-        }
-
-        $sth = $zendDb->query($sql);
-
-        $result = $sth->execute($parameterContainer);
-
         $writeFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_WRITE_BLACKLIST);
 
-        foreach ($result as $row) {
+        $return = [];
+        foreach ($columns as $row) {
             foreach ($row as $key => $value) {
                 if (is_null($value)) {
                     unset ($row[$key]);
@@ -586,13 +424,10 @@ class TableSchema {
         //if (!$hasMaster) {
         //    $return[3]['master'] = true;
         //}
-        if ($column_name != -1) {
-            if(count($return) > 0) {
-                return $return[0];
-            } else {
-                throw new \Exception("No Schema Found for table ".$tbl_name." with params: ".json_encode($params));
-            }
+        if (count($return) == 1) {
+            $return = $return[0];
         }
+
         return $return;
     }
 
@@ -646,64 +481,10 @@ class TableSchema {
     }
 
     public static function getTableSchemas() {
-        $zendDb = Bootstrap::get('zendDb');
-        $config = Bootstrap::get('config');
-        $blacklist = '""';
-        if (array_key_exists('tableBlacklist', $config)) {
-            $blacklist = $config['tableBlacklist'];
-            $blacklist = '"'.implode($blacklist, '","').'"';
-        }
+        $allTables = SchemaManager::getTables();
 
-        $sql =
-            'SELECT
-                ST.TABLE_NAME as id,
-                ST.TABLE_NAME as table_name,
-                CREATE_TIME AS date_created,
-                TABLE_COMMENT AS comment,
-                ifnull(hidden,0) as hidden,
-                ifnull(single,0) as single,
-                is_junction_table,
-                user_create_column,
-                user_update_column,
-                date_create_column,
-                date_update_column,
-                footer,
-                list_view,
-                column_groupings,
-                filter_column_blacklist,
-                primary_column,
-                TABLE_ROWS AS count
-            FROM
-                INFORMATION_SCHEMA.TABLES ST
-            LEFT JOIN
-                directus_tables DT ON (DT.table_name = ST.TABLE_NAME)
-            WHERE
-                ST.TABLE_SCHEMA = :schema
-                AND ST.TABLE_TYPE = "BASE TABLE"
-                AND
-                (
-                    ST.TABLE_NAME NOT IN (
-                        "directus_columns",
-                        "directus_preferences",
-                        "directus_privileges",
-                        "directus_settings",
-                        "directus_storage_adapters",
-                        "directus_tables",
-                        "directus_tab_privileges",
-                        "directus_ui"
-                    )
-                    AND
-                    ST.TABLE_NAME NOT IN ('.$blacklist.')
-                )
-            ORDER BY ST.TABLE_NAME';
-
-        $sth = $zendDb->query($sql);
-        $parameterContainer = new ParameterContainer;
-        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
-        $result = $sth->execute($parameterContainer);
-        $tables = array();
-
-        foreach($result as $row) {
+        $tables = [];
+        foreach($allTables as $index => $row) {
             // Only include tables w ACL privileges
             if(self::canGroupViewTable($row['table_name'])) {
                 $tables[] = self::formatTableRow($row);
@@ -716,75 +497,7 @@ class TableSchema {
     public static function getColumnSchemas() {
         $acl = Bootstrap::get('acl');
         $zendDb = Bootstrap::get('ZendDb');
-
-        $sql =
-            '(
-                SELECT
-                    C.table_name,
-                    C.column_name AS column_name,
-                    ifnull(sort, ORDINAL_POSITION) as sort,
-                    UCASE(C.data_type) as type,
-                    CHARACTER_MAXIMUM_LENGTH as char_length,
-                    IS_NULLABLE as is_nullable,
-                    COLUMN_DEFAULT as default_value,
-                    ifnull(comment, COLUMN_COMMENT) as comment,
-                    ui,
-                    ifnull(system,0) as system,
-                    ifnull(master,0) as master,
-                    ifnull(hidden_list,0) as hidden_list,
-                    ifnull(hidden_input,0) as hidden_input,
-                    relationship_type,
-                    table_related,
-                    junction_table,
-                    junction_key_left,
-                    junction_key_right,
-                    ifnull(D.required,0) as required,
-                    COLUMN_TYPE as column_type,
-                    COLUMN_KEY as column_key
-                FROM
-                    INFORMATION_SCHEMA.COLUMNS C
-                LEFT JOIN
-                    INFORMATION_SCHEMA.TABLES T ON C.TABLE_NAME = T.TABLE_NAME
-                LEFT JOIN
-                    directus_columns AS D ON (C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name)
-                WHERE
-                    C.TABLE_SCHEMA = :schema AND (T.TABLE_SCHEMA = :schema AND T.TABLE_TYPE = "BASE TABLE")
-
-            ) UNION ALL (
-
-                SELECT
-                    `table_name`,
-                    `column_name` AS column_name,
-                    sort,
-                    UCASE(data_type) as type,
-                    NULL AS char_length,
-                    "NO" as is_nullable,
-                    NULL AS default_value,
-                    comment,
-                    ui,
-                    system,
-                    master,
-                    hidden_list,
-                    hidden_input,
-                    relationship_type,
-                    table_related,
-                    junction_table,
-                    junction_key_left,
-                    junction_key_right,
-                    DC.required,
-                    NULL as column_type,
-                    NULL as column_key
-                FROM
-                    `directus_columns` DC
-                WHERE
-                    `data_type` IN ("alias", "MANYTOMANY", "ONETOMANY")
-
-            ) ORDER BY `table_name`';
-
-        $sth = $zendDb->query($sql);
-        $parameterContainer = new ParameterContainer;
-        $parameterContainer->offsetSet(':schema', $zendDb->getCurrentSchema(), ParameterContainer::TYPE_STRING);
-        $result = $sth->execute($parameterContainer);
+        $result = SchemaManager::getAllColumns();
 
         // Group columns by table name
         $tables = array();
@@ -974,13 +687,31 @@ class TableSchema {
      *  @param $datatype_name
      */
      public static function getUIOptions( $tbl_name, $col_name, $datatype_name ) {
-        $ui;
         $result = array();
         $item = array();
         $zendDb = Bootstrap::get('zendDb');
-        $sth = $zendDb->query("SELECT ui_name as id, name, value FROM directus_ui WHERE column_name='$col_name' AND table_name='$tbl_name' AND ui_name='$datatype_name' ORDER BY ui_name");
-        $rows = $sth->execute();
-        foreach($rows as $row) {//$sth->fetch(PDO::FETCH_ASSOC)) {
+        $select = new Select();
+        $select->columns([
+            'id' => 'ui_name',
+            'name',
+            'value'
+        ]);
+        $select->from('directus_ui');
+        $select->where([
+
+        ]);
+        $select->where([
+            'column_name' => $col_name,
+            'table_name' => $tbl_name,
+            'ui_name' => $datatype_name
+        ]);
+        $select->order('ui_name');
+
+        $sql = new Sql($zendDb);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $rows = $statement->execute();
+
+        foreach($rows as $row) {
             //first case
             if (!isset($ui)) { $item['id'] = $ui = $row['id']; }
             //new ui = new item

@@ -1,12 +1,13 @@
 define([
   'app',
   'backbone',
+  'core/t',
   'core/BasePageView',
   'core/widgets/widgets',
   'moment'
 ],
 
-function(app, Backbone, BasePageView, Widgets, moment) {
+function(app, Backbone, __t, BasePageView, Widgets, moment) {
 
   var ListView = Backbone.Layout.extend({
 
@@ -78,12 +79,12 @@ function(app, Backbone, BasePageView, Widgets, moment) {
 
     headerOptions: {
       route: {
-        title: "Messages"
+        title: __t('messages')
       }
     },
     leftToolbar: function() {
       return [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_message')}})
       ];
     },
     rightToolbar: function() {

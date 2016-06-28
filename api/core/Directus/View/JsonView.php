@@ -23,7 +23,7 @@ class JsonView {
      */
     public static function preDispatch($callable) {
         if (!is_callable($callable)) {
-            throw new \InvalidArgumentException('PreDispatch callable must be callable');
+            throw new \InvalidArgumentException(__t('predispatch_callable_must_be_callable'));
         }
         self::$preDispatch = $callable;
     }

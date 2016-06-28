@@ -10,10 +10,11 @@ define([
   'app',
   'backbone',
   'core/widgets/widgets',
+  'core/t',
   'core/BasePageView'
 ],
 
-function(app, Backbone, Widgets, BasePageView) {
+function(app, Backbone, Widgets, __t, BasePageView) {
 
   "use strict";
 
@@ -83,19 +84,19 @@ function(app, Backbone, Widgets, BasePageView) {
   var Permissions = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Group Permissions',
+        title: __t('group_permissions'),
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
     },
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_user_group')}})
       ];
     },
     events: {
       'click #addBtn': function() {
         var that = this;
-        app.router.openModal({type: 'prompt', text: 'What would you like to name this group?', callback: function(groupName) {
+        app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_group'), callback: function(groupName) {
           if(groupName && !app.schemaManager.getPrivileges('directus_permission')) {
             var model = new Backbone.Model();
             model.url = app.API_URL + 'groups';

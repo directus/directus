@@ -11,35 +11,16 @@ define([
     'app',
     'backbone',
     'sortable',
+    'core/UIComponent',
     'core/UIView',
     'core/overlays/overlays',
+    'core/t',
   ],
-  function(app, Backbone, Sortable, UIView, Overlays) {
+  function(app, Backbone, Sortable, UIComponent, UIView, Overlays, __t) {
 
-  "use strict";
+  'use strict';
 
-  var Module = {};
-
-  Module.id = 'multiple_files';
-  Module.dataTypes = ['MANYTOMANY'];
-
-  Module.variables = [
-    // Toggles an "Add" button for adding new files directly into the UI
-    {id: 'add_button', ui: 'checkbox', def: '1'},
-    // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
-    {id: 'choose_button', ui: 'checkbox', def: '1'},
-    // Toggles "Remove" buttons for each file that let's you delete the file
-    {id: 'remove_button', ui: 'checkbox', def: '1'},
-  ];
-
-  Module.Input = UIView.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  var Input = UIView.extend({
     events: {
       'click span[data-action=add]': 'addItem',
       'click span[data-action=insert]': 'insertItem',
@@ -119,12 +100,12 @@ define([
           cursor: pointer; \
         } \
       </style> \
-      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>Drag and drop<br>file here</span></div></div> \
+      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>{{t "drag_and_drop"}}<br>{{t "file_here"}}</span></div></div> \
       <div class="related-table"></div> \
       <div class="multiple-image-actions"> \
-        {{#if showAddButton}}<span data-action="add">Upload</span>{{/if}} \
-        {{#if showAddButton}}{{#if showChooseButton}} or {{/if}}{{/if}} \
-        {{#if showChooseButton}}<span data-action="insert">Directus Files</span>{{/if}} \
+        {{#if showAddButton}}<span data-action="add">{{t "file_upload"}}</span>{{/if}} \
+        {{#if showAddButton}}{{#if showChooseButton}} {{t "or"}}  {{/if}}{{/if}} \
+        {{#if showChooseButton}}<span data-action="insert">{{t "directus_files"}}</span>{{/if}} \
       </div>'),
 
     addItem: function() {
@@ -159,7 +140,6 @@ define([
         }
       };
 
-
       app.router.overlayPage(view);
 
       view.save = function() {
@@ -172,9 +152,9 @@ define([
     insertItem: function() {
       var collection = app.files;
       var view = new Overlays.ListSelect({collection: collection});
-      app.router.overlayPage(view);
-
       var me = this;
+
+      app.router.overlayPage(view);
 
       view.save = function() {
         _.each(view.table.selection(), function(id) {
@@ -333,7 +313,11 @@ define([
     initialize: function(options) {
       if (!this.columnSchema.relationship ||
            'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
-        throw "The column " + this.columnSchema.id + " needs to have a relationship of the type MANYTOMANY in order to use the multiple_files ui";
+        throw __t('m2m_the_column_need_to_have_m2m_relationship', {
+          column: this.columnSchema.id,
+          type: 'MANYTOMANY',
+          ui: Component.id
+        });
       }
 
       var relatedCollection = this.model.get(this.name);
@@ -362,15 +346,27 @@ define([
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && value.length === 0) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'multiple_files',
+    dataTypes: ['MANYTOMANY'],
+    variables: [
+      // Toggles an "Add" button for adding new files directly into the UI
+      {id: 'add_button', ui: 'checkbox', def: '1'},
+      // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
+      {id: 'choose_button', ui: 'checkbox', def: '1'},
+      // Toggles "Remove" buttons for each file that let's you delete the file
+      {id: 'remove_button', ui: 'checkbox', def: '1'},
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && value.length === 0) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function() {
+      return 'x';
     }
-  };
+  });
 
-  Module.list = function() {
-    return 'x';
-  };
-
-  return Module;
+  return Component;
 });

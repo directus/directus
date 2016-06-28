@@ -129,7 +129,7 @@ class Files
 
           // Can't find the video ID
           if($video_id === FALSE){
-            die("YouTube video ID not detected. Please paste the whole URL.");
+            die(__t('x_video_id_not_detected', ['service' => 'YouTube']));
           }
 
           $fileData['url'] = $video_id;
@@ -167,7 +167,7 @@ class Files
                     $videoStart->add(new \DateInterval($videoContentDetails->duration));
                     $fileData['size'] = $videoStart->format('U');
                 } else if(property_exists($content, 'error')) {
-                    throw new \Exception('Bad Youtube API Key');
+                    throw new \Exception(__t('bad_x_api_key', ['service' => 'YouTube']));
                 } else {
                     $dataRetrieveErrored = true;
                 }
@@ -177,12 +177,12 @@ class Files
 
             // an error happened
             if($dataRetrieveErrored) {
-                $fileData['title'] = "Unable to Retrieve YouTube Title";
+                $fileData['title'] = __t('unable_to_retrieve_x_title', ['service' => 'YouTube']);
                 $fileData['size'] = 0;
             }
           } else {
               //No API Key is set, use generic title
-              $fileData['title'] = "Youtube Video: " . $video_id;
+              $fileData['title'] = __t('x_video', ['service' => 'YouTube']).": " . $video_id;
               $fileData['size'] = 0;
           }
 
@@ -195,7 +195,7 @@ class Files
 
           // Can't find the video ID
           if($video_id === FALSE){
-            die("Vimeo video ID not detected. Please paste the whole URL.");
+            die(__t('x_video_id_not_detected', ['service' => 'Vimeo']));
           }
 
           $fileData['url'] = $video_id;
@@ -234,7 +234,7 @@ class Files
             $fileData['data'] = 'data:image/jpeg;base64,' . base64_encode($linkContent);
           } else {
             // Unable to get Vimeo details
-            $fileData['title'] = "Unable to Retrieve Vimeo Title";
+            $fileData['title'] = __t('unable_to_retrieve_x_title', ['service' => 'Vimeo']);
             $fileData['height'] = 340;
             $fileData['width'] = 560;
           }

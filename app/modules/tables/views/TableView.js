@@ -1,19 +1,20 @@
 define([
   'app',
   'backbone',
+  'core/t',
   'core/BasePageView',
   'core/ListViewManager',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, BasePageView, ListViewManager, Widgets) {
+function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
 
   return BasePageView.extend({
 
     headerOptions: {
       route: {
         title: 'Table View',
-        breadcrumbs: [{title: 'Tables', anchor: '#tables'}]
+        breadcrumbs: [{title: __t('tables'), anchor: '#tables'}]
       },
     },
 
@@ -27,7 +28,7 @@ function(app, Backbone, BasePageView, ListViewManager, Widgets) {
 
       if (this.collection.hasPermission('add')) {
         if(!this.widgets.addWidget) {
-          this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}});
+          this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_item')}});
         }
 
         widgets.push(this.widgets.addWidget);

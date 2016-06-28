@@ -4,10 +4,11 @@ define([
   "core/directus",
   'core/BasePageView',
   'core/widgets/widgets',
+  'core/t',
   'moment'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets, moment) {
+function(app, Backbone, Directus, BasePageView, Widgets, __t, moment) {
 
   "use strict";
 
@@ -16,7 +17,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
     tagName: 'span',
 
     events: {
-      'click .header-image': function(e) {
+      'click .header-image, .primary-info': function(e) {
         var id = $(e.target).closest('li.card').attr('data-id');
         var user = app.users.getCurrentUser();
         var userGroup = user.get('group');
@@ -35,10 +36,10 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
       '<div class="section-header"><span class="big-label-text">{{title}}</div>' +
       '<ul class="cards row">' +
       '{{#rows}}' +
-      '<li class="card col-2 gutter-bottom {{#if online}}active{{/if}} {{#if inactive}}inactive{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
-        '<div class="header-image add-color-border">' +
+      '<li class="card card-shadow col-2 gutter-bottom {{#if online}}active{{/if}} {{#if inactive}}inactive{{/if}}" data-id="{{id}}" data-cid="{{cid}}">' +
+        '<div class="header-image add-color-border rounded-corners">' +
           '{{avatar}} <div class="tool-item large-circle"><i class="material-icons">edit</i></div></div>' +
-        '<div class="info">' +
+        '<div class="info rounded-corners">' +
           '<div class="featured">' +
             '<div class="primary-info">' +
               '<div>{{first_name}}</div>' +
@@ -56,7 +57,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
       '{{/rows}}</ul>{{/groups}}' +
       '{{#unless groups}}' +
         '<div class="nothing-here secondary-info">' +
-        '<h1>Nothing to see here...</h1>' +
+        '<h1>{{t "listing_items_not_found"}}</h1>' +
         '<!-- Maybe add a new file? -->' +
         '</div>' +
       '{{/unless}}'
@@ -210,13 +211,13 @@ function(app, Backbone, Directus, BasePageView, Widgets, moment) {
 
     headerOptions: {
       route: {
-        title: "Users"
+        title: __t('users'),
       }
     },
     leftToolbar: function() {
       if(app.users.getCurrentUser().get('group').id == 1) {
         return [
-          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}})
+          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_user')}})
         ];
       }
       return [];

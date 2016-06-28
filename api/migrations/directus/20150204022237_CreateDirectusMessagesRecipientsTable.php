@@ -19,7 +19,6 @@ class CreateDirectusMessagesRecipientsTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_messages_recipients", array(
           "id"=>false,
-          "options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8"
         )
       );
 

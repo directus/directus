@@ -6,25 +6,18 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
-  "use strict";
+  'use strict';
 
-	var Module = {};
-
-  Module.id = 'directus_file_size';
-  Module.system = true;
-
-  Module.options = {};
-
-  Module.list = function(options) {
-    return app.bytesToSize(options.value);
-  };
-
-
-  Module.Input = Backbone.Layout.extend({
+	var Component = UIComponent.extend({
+    id: 'directus_file_size',
+    system: true,
+    Input: UIView,
+    list: function(options) {
+      return app.bytesToSize(options.value);
+    }
   });
 
-  return Module;
-
+  return Component;
 });

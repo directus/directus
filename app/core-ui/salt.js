@@ -7,37 +7,22 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'salt';
-  Module.dataTypes = ['VARCHAR'];
-  Module.skipSerializationIfNull = true;
-
-  Module.variables = [
-  ];
+  'use strict';
 
   var template = '<input type="text" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="medium" readonly/> \
                  <span class="label char-count hide">{{characters}}</span>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {},
 
     initialize: function(options) {
       this.options = options;
       this.value = this.options.value;
+
       if(_.isEmpty(this.options.value)) {
         this.value = this.uniqid();
         this.model.set(options.name, this.value);
@@ -45,12 +30,11 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
-      var data = {
+      return {
         value: this.value,
         name: this.options.name,
         comment: this.options.schema.get('comment')
       };
-      return data;
     },
 
     // credit: http://phpjs.org/functions/uniqid/
@@ -74,9 +58,11 @@ define(['app', 'backbone'], function(app, Backbone) {
         if (reqWidth < seed.length) { // so long we split
           return seed.slice(seed.length - reqWidth);
         }
+
         if (reqWidth > seed.length) { // so short we pad
           return [1 + (reqWidth - seed.length)].join('0') + seed;
         }
+
         return seed;
       };
 
@@ -84,10 +70,12 @@ define(['app', 'backbone'], function(app, Backbone) {
       if (!this.php_js) {
         this.php_js = {};
       }
+
       // END REDUNDANT
       if (!this.php_js.uniqidSeed) { // init seed with big random int
         this.php_js.uniqidSeed = Math.floor(Math.random() * 0x75bcd15);
       }
+
       this.php_js.uniqidSeed++;
 
       retId = prefix; // start with prefix, add current milliseconds hex string
@@ -100,16 +88,17 @@ define(['app', 'backbone'], function(app, Backbone) {
 
       return retId;
     }
-
   });
 
-  Module.validate = function(value,options) {
-  };
+  var Component = UIComponent.extend({
+    id: 'salt',
+    dataTypes: ['VARCHAR'],
+    skipSerializationIfNull: true,
+    Input: Input,
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    }
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
-
+  return Component;
 });

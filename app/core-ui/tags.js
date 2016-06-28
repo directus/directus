@@ -7,33 +7,16 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'tags';
-  Module.dataTypes = ['TEXT','VARCHAR','CHAR'];
-
-  Module.variables = [
-    // When on, all entered tags are converted to lowercase
-    {id: 'force_lowercase', ui: 'checkbox', def: '1'}
-  ];
+  'use strict';
 
   var template = '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;"><button class="btn btn-small btn-primary margin-left" type="button">Add</button> \
+                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;" placeholder="{{t "tags_placeholder"}}"><button class="btn btn-primary margin-left" type="button">{{t "add"}}</button> \
                  <div style="width:84%;">{{#tags}}<span class="tag">{{this}}</span>{{/tags}}</div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile( template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'keydown #tag-input': function(e) {
@@ -71,6 +54,7 @@ define(['app','backbone'], function(app, Backbone) {
     serialize: function() {
       //Filter out empty tags
       this.tags = _.filter(this.tags, function(tag) { return(tag !== ''); });
+
       return {
         value: this.tags.join(','),
         name: this.options.name,
@@ -82,18 +66,35 @@ define(['app','backbone'], function(app, Backbone) {
     initialize: function() {
       this.tags = this.options.value ? this.options.value.split(',') : [];
     }
-
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'tags',
+    dataTypes: ['TEXT','VARCHAR','CHAR'],
+    variables: [
+      // When on, all entered tags are converted to lowercase
+      {id: 'force_lowercase', ui: 'checkbox', def: '1'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function(options) {
+      var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
+
+      if(tags.length){
+        for (var i = 0; i < tags.length; i++) {
+          tags[i] = '<span class="tag-static">' + tags[i] + '</span>';
+        }
+
+        return tags.join(' ');
+      } else {
+        return options.model.attributes.tags;
+      }
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return options.model.attributes.tags;
-  };
-
-  return Module;
+  return Component;
 });

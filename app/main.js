@@ -24,10 +24,11 @@ require(["config", 'polyfills'], function() {
     'core/ListViewManager',
     'core/idle',
     'tool-tips',
+    'contextual-date',
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, Notification) {
+  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
 
     "use strict";
 
@@ -139,6 +140,7 @@ require(["config", 'polyfills'], function() {
 
       // Register UI schemas
       SchemaManager.registerUISchemas(UIManager.getAllSettings());
+      SchemaManager.addSettings(UIManager.getDirectusSettings());
 
       // Register Table Schemas
       SchemaManager.register('tables', options.tables);

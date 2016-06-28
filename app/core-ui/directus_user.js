@@ -6,38 +6,11 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
-  "use strict";
+  'use strict';
 
-  var Module = {};
-
-  Module.id = 'directus_user';
-  Module.system = true;
-  Module.sortBy = ['first_name','last_name'];
-
-  Module.list = function(options) {
-    var html;
-    switch(options.settings.get("format")) {
-      case 'full':
-        html = '{{userFull user}}';
-        break;
-      default:
-        html = '{{userShort user}}';
-        break;
-    }
-
-    var template = Handlebars.compile(html);
-    return template({user: parseInt(options.value,10)});
-  };
-
-  Module.Input = Backbone.Layout.extend({
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  var Input = UIView.extend({
     initialize: function(options) {
       var user = app.users.get(options.value);
       if(user) {
@@ -47,5 +20,26 @@ define(['app','backbone'], function(app, Backbone) {
     }
   });
 
-  return Module;
+  var Component = UIComponent.extend({
+    id: 'directus_user',
+    system: true,
+    sortBy: ['first_name','last_name'],
+    Input: Input,
+    list: function(options) {
+      var html;
+
+      switch(options.settings.get('format')) {
+        case 'full':
+          html = '{{userFull user}}';
+          break;
+        default:
+          html = '{{userShort user}}';
+          break;
+      }
+
+      return this.compileView(html, {user: parseInt(options.value,10)});
+    }
+  });
+
+  return Component;
 });

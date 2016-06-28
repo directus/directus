@@ -2,9 +2,7 @@
 <?php
 
 // Composer Autoloader
-$loader = require __DIR__ . '/../api/vendor/autoload.php';
-$loader->add("Directus", __DIR__ . '/../api/core/');
-$loader->add("Ruckusing", "../api/vendor/ruckusing/ruckusing-migrations/lib/");
+$loader = require __DIR__ . '/../vendor/autoload.php';
 
 use Directus\Util\Installation\Console;
 

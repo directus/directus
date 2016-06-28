@@ -1,10 +1,11 @@
 define([
   'app',
   'backbone',
+  'core/t',
   'core/notification'
 ],
 
-function(app, Backbone, Notification) {
+function(app, Backbone, __t, Notification) {
 
   "use strict";
 
@@ -49,7 +50,10 @@ function(app, Backbone, Notification) {
         if(this.visibleColumnsView) {
           this.visibleColumnsView = null;
           this.removeView('#visible_columns_entry');
+          this.$el.closest('thead').removeClass('force-hover');
           return;
+        } else {
+          this.$el.closest('thead').addClass('force-hover');
         }
 
         var structure = this.options.collection.structure;
@@ -144,6 +148,7 @@ function(app, Backbone, Notification) {
         this.visibleColumnsView.cancelSelection = function() {
           that.visibleColumnsView = null;
           this.remove();
+          that.$el.closest('thead').removeClass('force-hover');
         };
 
         this.visibleColumnsView.save = function() {
@@ -169,11 +174,11 @@ function(app, Backbone, Notification) {
         {
           this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;
-          Notification.info('Sorting Disabled', '<i>Drag-and-drop sorting is now disabled</i>', {timeout: 3000});
+          Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
         } else {
           this.$el.closest('table').removeClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = true;
-          Notification.info('Sorting Enabled', '<i>You can now sort items with drag-and-drop</i>', {timeout: 3000});
+          Notification.info(__t('table_sort_enabled'), '<i>'+__t('table_sort_enabled_message')+'</i>', {timeout: 3000});
         }
       },
       'click th:not(.sortableHeader)': function(e) {
@@ -181,7 +186,7 @@ function(app, Backbone, Notification) {
         {
           this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;
-          Notification.info('Sorting Disabled', '<i>Drag-and-drop sorting is now disabled</i>', {timeout: 3000});
+          Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
         }
       }
     },

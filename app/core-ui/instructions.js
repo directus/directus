@@ -16,18 +16,9 @@
 
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'instructions';
-  Module.dataTypes = ['VARCHAR', 'TEXT'];
-
-  Module.variables = [
-    {id: 'instructions', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
-  ];
+  'use strict';
 
   var template =  '<style type="text/css"> \
                   .instructions-ui-content { \
@@ -40,13 +31,8 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </style> \
                   <div class="instructions-ui-content">{{{instructions}}}</div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       // 'change .color-box': function(e) {
@@ -68,26 +54,29 @@ define(['app', 'backbone'], function(app, Backbone) {
         value: value,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        instructions: (this.options.settings && this.options.settings.has('instructions')) ? this.options.settings.get('instructions') : 'Please have your admin setup this field.'
+        instructions: (this.options.settings && this.options.settings.has('instructions')) ? this.options.settings.get('instructions') : __t('instructions_please_have_your_admin_setup_this_field')
       };
     },
 
     initialize: function() {
       //
     }
-
   });
 
-  Module.validate = function(value) {
-    //
-  };
+  var Component = UIComponent.extend({
+    id: 'instructions',
+    dataTypes: ['VARCHAR', 'TEXT'],
+    variables: [
+      {id: 'instructions', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
+    ],
+    Input: Input,
+    list: function(options) {
+      var instructions = (options.settings && options.settings.has('instructions'))? options.settings.get('instructions') : "...";
+      var regex = /(<([^>]+)>)/ig;
 
-  Module.list = function(options) {
-    var instructions = (options.settings && options.settings.has('instructions'))? options.settings.get('instructions') : "...";
-    var regex = /(<([^>]+)>)/ig;
-    return instructions.replace(regex, "");
-  };
+      return instructions.replace(regex, "");
+    }
+  });
 
-  return Module;
-
+  return Component;
 });

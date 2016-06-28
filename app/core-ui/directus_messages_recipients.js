@@ -7,30 +7,16 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
-  "use strict";
+  'use strict';
 
-  var Module = {};
-
-  Module.id = 'directus_messages_recipients';
-
-  Module.dataTypes = [];
-  Module.variables = [];
-
-  var template = '<input type="text" id="directus_messages_recipients-input" placeholder="Type users or groups here...">\
+  var template = '<input type="text" id="directus_messages_recipients-input" placeholder="{{t "directus_messages_recipients_placeholder"}}">\
                  <div style="width:100%;max-width:700px;" id="directus_messages_recipients-recipients">{{#tags}}<span class="label tag recipient-tag">{{this}}</span>{{/tags}}</div>\
                  <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'click .message-recipient': function(e) {
@@ -136,16 +122,12 @@ define(['app', 'backbone'], function(app, Backbone) {
       });
 
       this.searchEngine = engine;
-
       engine.initialize();
 
       this.$("#directus_messages_recipients-input").typeahead({
-
         limit: 5,
-
         template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar"><span class="recipient-name">{{name}}</span></div>')
-      },
-      {
+      }, {
         displayKey: 'name',
         source: engine.ttAdapter()
       });
@@ -163,7 +145,6 @@ define(['app', 'backbone'], function(app, Backbone) {
         me.searchEngine.add(me.datums);
         me.renderTags();
       });
-
     },
 
     initialize: function() {
@@ -171,12 +152,13 @@ define(['app', 'backbone'], function(app, Backbone) {
     }
   });
 
-  Module.validate = function(value, options) {};
+  var Component = UIComponent.extend({
+    id: 'directus_messages_recipients',
+    Input: Input,
+    list: function(options) {
+      return ''
+    }
+  });
 
-  Module.list = function(options) {
-    return '';
-  };
-
-  return Module;
-
+  return Component;
 });

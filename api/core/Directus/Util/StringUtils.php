@@ -4,6 +4,12 @@ namespace Directus\Util;
 
 class StringUtils
 {
+    // Formats for string placeholder replacement
+    // ex: {{variable}}
+    const PLACEHOLDER_DOUBLE_MUSTACHE = '{{%s}}';
+    // ex: %{variable}
+    const PLACEHOLDER_PERCENTAGE_MUSTACHE = '%%{%s}';
+
     /**
      * Check whether or not a given string contains a given substring.
      *
@@ -69,7 +75,7 @@ class StringUtils
     {
         $length = (int)$length;
         if ($length <= 0) {
-            throw new \InvalidArgumentException('Random Length must be greater than 0.');
+            throw new \InvalidArgumentException(__t('random_length_must_be_greater_then_zero'));
         }
 
         if (function_exists('openssl_random_pseudo_bytes')) {
@@ -151,5 +157,21 @@ class StringUtils
         }
 
         return ++$chars;
+    }
+
+    /**
+     * Replace a string placeholder with the given data.
+     * @param $string
+     * @param array $data
+     * @param string $placeHolderFormat
+     * @return string
+     */
+    public static function replacePlaceholder($string, $data = [], $placeHolderFormat = self::PLACEHOLDER_DOUBLE_MUSTACHE)
+    {
+        foreach ($data as $key => $value) {
+            $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
+        }
+
+        return $string;
     }
 }

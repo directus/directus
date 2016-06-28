@@ -7,48 +7,15 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/overlays/overlays'], function(app, Backbone, Overlays) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/overlays/overlays'], function(app, UIComponent, UIView, Overlays) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'wysiwyg';
-  Module.dataTypes = ['VARCHAR', 'TEXT'];
-
-  Module.variables = [
-    // Disables editing of the field while still letting users see the value
-    {id: 'readonly', ui: 'checkbox'},
-    // The input's height in pixels before scrolling. Default: 500px
-    {id: 'height', ui: 'numeric', def: '500'},
-    {id: 'bold', ui: 'checkbox', def: '1'},
-    {id: 'italic', ui: 'checkbox', def: '1'},
-    {id: 'underline', ui: 'checkbox', def: '1'},
-    {id: 'strikethrough', ui: 'checkbox', def: '0'},
-    {id: 'rule', ui: 'checkbox', def: '0'},
-    {id: 'createlink', ui: 'checkbox', def: '0'},
-    {id: 'insertimage', ui: 'checkbox', def: '0'},
-    {id: 'embedVideo', ui: 'checkbox', def: '0'},
-    {id: 'embed_width', ui: 'numeric', def: 300},
-    {id: 'embed_height', ui: 'numeric', def: 200},
-    {id: 'html', ui: 'checkbox', def: '0'},
-    {id: 'orderedList', ui: 'checkbox', def: '0'},
-    {id: 'h1', ui: 'checkbox', def: '0'},
-    {id: 'h2', ui: 'checkbox', def: '0'},
-    {id: 'h3', ui: 'checkbox', def: '0'},
-    {id: 'h4', ui: 'checkbox', def: '0'},
-    {id: 'h5', ui: 'checkbox', def: '0'},
-    {id: 'h6', ui: 'checkbox', def: '0'},
-    {id: 'blockquote', ui: 'checkbox', def: '0'},
-    {id: 'ul', ui: 'checkbox', def: '0'},
-    {id: 'ol', ui: 'checkbox', def: '0'}
-  ];
+  'use strict';
 
    Handlebars.registerHelper('newlineToBr', function(text){
        return new Handlebars.SafeString(text.string.replace(/\n/g, '<br/>'));
    });
 
-var template = '<style type="text/css"> \
+  var template = '<style type="text/css"> \
                   div.ui-thumbnail { \
                     float: left; \
                     margin-top: 8px; \
@@ -82,83 +49,77 @@ var template = '<style type="text/css"> \
                   div.ui-thumbnail img { \
                     max-height: 200px; \
                   } \
-                  .wysihtml5-textarea-body iframe { \
-                    width: 100%; \
+                  .wysiwyg-ui iframe { \
+                    padding: 0; \
                   } \
                   </style> \
-                  <div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="display: none;"> \
-                  <div class="btn-group btn-white btn-group-attached btn-group-action wysiwyg-toolbar active"> \
-                    {{#if bold}}<button data-wysihtml5-command="bold" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Bold"><i class="material-icons">format_bold</i></button>{{/if}} \
-                    {{#if italic}}<button data-wysihtml5-command="italic" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Italic"><i class="material-icons">format_italic</i></button>{{/if}} \
-                    {{#if underline}}<button data-wysihtml5-command="underline" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Underline"><i class="material-icons">format_underlined</i></button>{{/if}} \
-                    {{#if strikethrough}}<button data-wysihtml5-command="strikethrough" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Strike-through"><i class="material-icons">strikethrough_s</i></button>{{/if}} \
-                    {{#if h1}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" type="button" class="btn btn-small btn-silver" data-tag="H1" rel="tooltip" data-placement="bottom" title="H1">H1</button>{{/if}} \
-                    {{#if h2}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" type="button" class="btn btn-small btn-silver" data-tag="H2" rel="tooltip" data-placement="bottom" title="H2">H2</button>{{/if}} \
-                    {{#if h3}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" type="button" class="btn btn-small btn-silver" data-tag="H3" rel="tooltip" data-placement="bottom" title="H3">H3</button>{{/if}} \
-                    {{#if h4}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" type="button" class="btn btn-small btn-silver" data-tag="H4" rel="tooltip" data-placement="bottom" title="H4">H4</button>{{/if}} \
-                    {{#if h5}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" type="button" class="btn btn-small btn-silver" data-tag="H5" rel="tooltip" data-placement="bottom" title="H5">H5</button>{{/if}} \
-                    {{#if h6}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" type="button" class="btn btn-small btn-silver" data-tag="H6" rel="tooltip" data-placement="bottom" title="H6">H6</button>{{/if}} \
-                    {{#if blockquote}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote" type="button" class="btn btn-small btn-silver" data-tag="Quote" rel="tooltip" data-placement="bottom" title="Quote"><i class="material-icons">format_quote</i></button>{{/if}} \
-                    {{#if ul}}<button data-wysihtml5-command="insertUnorderedList" type="button" class="btn btn-small btn-silver" data-tag="UL" rel="tooltip" data-placement="bottom" title="Bullet List"><i class="material-icons">format_list_bulleted</i></button>{{/if}} \
-                    {{#if ol}}<button data-wysihtml5-command="insertOrderedList" type="button" class="btn btn-small btn-silver" data-tag="OL" rel="tooltip" data-placement="bottom" title="Number List"><i class="material-icons">format_list_numbered</i></button>{{/if}} \
-                    {{#if rule}}<button data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Rule"><i class="material-icons">remove</i></button>{{/if}} \
-                    {{#if createlink}} \
-                    <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Create Link"><i class="material-icons">insert_link</i></button> \
-                    <div data-wysihtml5-dialog="createLink" style="display: none;z-index:108" class="directus-alert-modal"> \
-                      <div class="directus-alert-modal-message">Please Insert a Link</div> \
-                      <input type="text" data-wysihtml5-dialog-field="href" value="http://"> \
-                      <div class="directus-alert-modal-buttons"> \
-                        <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
-                        <button data-wysihtml5-dialog-action="save" type="button" class="primary">OK</button> \
+                  <div class="wysiwyg-ui"> \
+                    <div id="wysihtml5-toolbar-{{name}}" class="btn-toolbar" style="display: none;"> \
+                    <div class="btn-group btn-white btn-group-attached btn-group-action wysiwyg-toolbar active"> \
+                      {{#if bold}}<button data-wysihtml5-command="bold" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "bold"}}"><i class="material-icons">format_bold</i></button>{{/if}} \
+                      {{#if italic}}<button data-wysihtml5-command="italic" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "italic"}}"><i class="material-icons">format_italic</i></button>{{/if}} \
+                      {{#if underline}}<button data-wysihtml5-command="underline" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "underline"}}"><i class="material-icons">format_underlined</i></button>{{/if}} \
+                      {{#if strikethrough}}<button data-wysihtml5-command="strikethrough" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "strikethrough"}}"><i class="material-icons">strikethrough_s</i></button>{{/if}} \
+                      {{#if h1}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" type="button" class="btn btn-small btn-silver" data-tag="H1" rel="tooltip" data-placement="bottom" title="H1">H1</button>{{/if}} \
+                      {{#if h2}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" type="button" class="btn btn-small btn-silver" data-tag="H2" rel="tooltip" data-placement="bottom" title="H2">H2</button>{{/if}} \
+                      {{#if h3}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" type="button" class="btn btn-small btn-silver" data-tag="H3" rel="tooltip" data-placement="bottom" title="H3">H3</button>{{/if}} \
+                      {{#if h4}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" type="button" class="btn btn-small btn-silver" data-tag="H4" rel="tooltip" data-placement="bottom" title="H4">H4</button>{{/if}} \
+                      {{#if h5}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" type="button" class="btn btn-small btn-silver" data-tag="H5" rel="tooltip" data-placement="bottom" title="H5">H5</button>{{/if}} \
+                      {{#if h6}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" type="button" class="btn btn-small btn-silver" data-tag="H6" rel="tooltip" data-placement="bottom" title="H6">H6</button>{{/if}} \
+                      {{#if blockquote}}<button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote" type="button" class="btn btn-small btn-silver" data-tag="Quote" rel="tooltip" data-placement="bottom" title="{{t "quote"}}"><i class="material-icons">format_quote</i></button>{{/if}} \
+                      {{#if ul}}<button data-wysihtml5-command="insertUnorderedList" type="button" class="btn btn-small btn-silver" data-tag="UL" rel="tooltip" data-placement="bottom" title="{{t "bullet_list"}}"><i class="material-icons">format_list_bulleted</i></button>{{/if}} \
+                      {{#if ol}}<button data-wysihtml5-command="insertOrderedList" type="button" class="btn btn-small btn-silver" data-tag="OL" rel="tooltip" data-placement="bottom" title="{{t "number_list"}}"><i class="material-icons">format_list_numbered</i></button>{{/if}} \
+                      {{#if rule}}<button data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<hr>" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "insert_rule"}}"><i class="material-icons">remove</i></button>{{/if}} \
+                      {{#if createlink}} \
+                      <button data-wysihtml5-command="createLink" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "create_link"}}"><i class="material-icons">insert_link</i></button> \
+                      <div data-wysihtml5-dialog="createLink" style="display: none;z-index:108" class="directus-alert-modal"> \
+                        <div class="directus-alert-modal-message">{{t "please_insert_a_link"}}</div> \
+                        <input type="text" data-wysihtml5-dialog-field="href" value="http://"> \
+                        <div class="directus-alert-modal-buttons"> \
+                          <button data-wysihtml5-dialog-action="cancel" type="button">{{t "cancel"}}</button> \
+                          <button data-wysihtml5-dialog-action="save" type="button" class="primary">{{t "ok"}}</button> \
+                        </div> \
                       </div> \
+                      {{/if}} \
+                      {{#if insertimage}} \
+                        <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "insert_image"}}"><i class="material-icons">insert_photo</i></button> \
+                        <div data-wysihtml5-dialog="insertImage" style="display: none;z-index:108" class="directus-alert-modal"> \
+                          <div><button id="existingFileButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">{{t "choose_existing_file"}}</button></div> \
+                          <div style="position:relative;margin-bottom:10px;width:100%;background-color:#F4F4F4;text-align:center;font-weight:600;padding-top:10px;padding-bottom:10px;">{{t "choose_from_computer"}}<input id="fileAddInput" type="file" class="large" style="position:absolute;top:0;left:0;cursor:pointer;opacity:0.0;width:100%;height:100%;z-index:9;" /></div> \
+                          <div><input type="text" data-wysihtml5-dialog-field="src" id="insertImageInput" value="http://" style="font-weight:600;"></div> \
+                          <div class="directus-alert-modal-buttons"> \
+                            <button data-wysihtml5-dialog-action="cancel" type="button">{{t "cancel"}}</button> \
+                            <button data-wysihtml5-dialog-action="save" id="insertImageButton" type="button" class="primary">{{t "ok"}}</button> \
+                          </div> \
+                        </div> \
+                      {{/if}} \
+                      {{#if embedVideo}} \
+                        <button data-wysihtml5-command="embedVideo" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "embed_video"}}"><i class="material-icons">movie</i></button> \
+                        <div data-wysihtml5-dialog="embedVideo" style="display: none;z-index:108" class="directus-alert-modal"> \
+                          <div><button id="existingLinkButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">{{t "choose_existing_link"}}</button></div> \
+                          <div><input type="text" class="videoEmbedWidth" id="embedWidthInput" value="{{embed_width}}" style="font-weight:600;"></div><br/> \
+                          <div><input type="text" class="videoEmbedHeight" id="embedHeightInput" value="{{embed_height}}" style="font-weight:600;"></div><br/> \
+                          <div><input type="text" class="videoEmbedInput" data-type="youtube" id="insertYoutubeEmbedInput" placeholder="{{t "youtube_video_id"}}" style="font-weight:600;"></div><br/> \
+                          <div><input type="text" class="videoEmbedInput" data-type="vimeo" id="insertVimeoEmbedInput" placeholder="{{t "vimeo_video_id"}}" style="font-weight:600;"></div> \
+                          <div><input type="hidden"  data-wysihtml5-dialog-field="src" id="insertEmbedInput"></div> \
+                          <div><input type="hidden"  data-wysihtml5-dialog-field="data-type" id="insertEmbedInputType"></div> \
+                          <div class="directus-alert-modal-buttons"> \
+                            <button data-wysihtml5-dialog-action="cancel" type="button">{{t "cancel"}}</button> \
+                            <button data-wysihtml5-dialog-action="save" id="insertEmbedButton" type="button" class="primary">{{t "ok"}}</button> \
+                          </div> \
+                        </div> \
+                      {{/if}} \
+                      {{#if html}} \
+                        <button data-wysihtml5-action="change_view" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="{{t "toggle_html"}}"><i class="material-icons">code</i></button> \
+                      {{/if}} \
                     </div> \
-                    {{/if}} \
-                    {{#if insertimage}} \
-                      <button data-wysihtml5-command="insertImage" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Insert Image"><i class="material-icons">insert_photo</i></button> \
-                      <div data-wysihtml5-dialog="insertImage" style="display: none;z-index:108" class="directus-alert-modal"> \
-                        <div><button id="existingFileButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing File</button></div> \
-                        <div style="position:relative;margin-bottom:10px;width:100%;background-color:#F4F4F4;text-align:center;font-weight:600;padding-top:10px;padding-bottom:10px;">Choose From Computer<input id="fileAddInput" type="file" class="large" style="position:absolute;top:0;left:0;cursor:pointer;opacity:0.0;width:100%;height:100%;z-index:9;" /></div> \
-                        <div><input type="text" data-wysihtml5-dialog-field="src" id="insertImageInput" value="http://" style="font-weight:600;"></div> \
-                        <div class="directus-alert-modal-buttons"> \
-                          <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
-                          <button data-wysihtml5-dialog-action="save" id="insertImageButton" type="button" class="primary">OK</button> \
-                        </div> \
-                      </div> \
-                    {{/if}} \
-                    {{#if embedVideo}} \
-                      <button data-wysihtml5-command="embedVideo" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Embed Video"><i class="material-icons">movie</i></button> \
-                      <div data-wysihtml5-dialog="embedVideo" style="display: none;z-index:108" class="directus-alert-modal"> \
-                        <div><button id="existingLinkButton" type="button" class="btn" style="float:none;margin-bottom:10px;background-color: #F4F4F4;font-weight:600;width:100%;border: none;">Choose Existing Link</button></div> \
-                        <div><input type="text" class="videoEmbedWidth" id="embedWidthInput" value="{{embed_width}}" style="font-weight:600;"></div><br/> \
-                        <div><input type="text" class="videoEmbedHeight" id="embedHeightInput" value="{{embed_height}}" style="font-weight:600;"></div><br/> \
-                        <div><input type="text" class="videoEmbedInput" data-type="youtube" id="insertYoutubeEmbedInput" placeholder="Youtube Video ID" style="font-weight:600;"></div><br/> \
-                        <div><input type="text" class="videoEmbedInput" data-type="vimeo" id="insertVimeoEmbedInput" placeholder="Vimeo Video ID" style="font-weight:600;"></div> \
-                        <div><input type="hidden"  data-wysihtml5-dialog-field="src" id="insertEmbedInput"></div> \
-                        <div><input type="hidden"  data-wysihtml5-dialog-field="data-type" id="insertEmbedInputType"></div> \
-                        <div class="directus-alert-modal-buttons"> \
-                          <button data-wysihtml5-dialog-action="cancel" type="button">Cancel</button> \
-                          <button data-wysihtml5-dialog-action="save" id="insertEmbedButton" type="button" class="primary">OK</button> \
-                        </div> \
-                      </div> \
-                    {{/if}} \
-                    {{#if html}} \
-                      <button data-wysihtml5-action="change_view" type="button" class="btn btn-small btn-silver" data-tag="bold" rel="tooltip" data-placement="bottom" title="Toggle HTML"><i class="material-icons">code</i></button> \
-                    {{/if}} \
                   </div> \
-                </div> \
-                <div style="display:none;z-index:998;position:absolute;width:100%;height:100%;top:-5px;left:-5px;" id="iframe_blocker"></div> \
-                <textarea id="wysihtml5-textarea-{{name}}" class="wysihtml5-style" style="height:{{height}}px" placeholder="Enter your text ..." value="{{markupValue}}"></textarea> \
-                <input type="hidden" name="{{name}}" class="hidden_input" value="{{{markupValue}}}">';
-
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+                  <div style="display:none;z-index:998;position:absolute;width:100%;height:100%;top:-5px;left:-5px;" id="iframe_blocker"></div> \
+                  <textarea id="wysihtml5-textarea-{{name}}" class="wysihtml5-style" style="height:{{height}}px" placeholder="{{t "placeholder_enter_your_text"}}" value="{{markupValue}}"></textarea> \
+                  <input type="hidden" name="{{name}}" class="hidden_input" value="{{{markupValue}}}">\
+                </div>';
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'input textarea' : 'textChanged',
@@ -419,18 +380,48 @@ var template = '<style type="text/css"> \
     }
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'wysiwyg',
+    dataTypes: ['VARCHAR', 'TEXT'],
+    variables: [
+      // Disables editing of the field while still letting users see the value
+      {id: 'readonly', ui: 'checkbox'},
+      // The input's height in pixels before scrolling. Default: 500px
+      {id: 'height', ui: 'numeric', def: '500'},
+      {id: 'bold', ui: 'checkbox', def: '1'},
+      {id: 'italic', ui: 'checkbox', def: '1'},
+      {id: 'underline', ui: 'checkbox', def: '1'},
+      {id: 'strikethrough', ui: 'checkbox', def: '0'},
+      {id: 'rule', ui: 'checkbox', def: '0'},
+      {id: 'createlink', ui: 'checkbox', def: '0'},
+      {id: 'insertimage', ui: 'checkbox', def: '0'},
+      {id: 'embedVideo', ui: 'checkbox', def: '0'},
+      {id: 'embed_width', ui: 'numeric', def: 300},
+      {id: 'embed_height', ui: 'numeric', def: 200},
+      {id: 'html', ui: 'checkbox', def: '0'},
+      {id: 'orderedList', ui: 'checkbox', def: '0'},
+      {id: 'h1', ui: 'checkbox', def: '0'},
+      {id: 'h2', ui: 'checkbox', def: '0'},
+      {id: 'h3', ui: 'checkbox', def: '0'},
+      {id: 'h4', ui: 'checkbox', def: '0'},
+      {id: 'h5', ui: 'checkbox', def: '0'},
+      {id: 'h6', ui: 'checkbox', def: '0'},
+      {id: 'blockquote', ui: 'checkbox', def: '0'},
+      {id: 'ul', ui: 'checkbox', def: '0'},
+      {id: 'ol', ui: 'checkbox', def: '0'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return 'This field is required';
+      }
+    },
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0,100) : '';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0,100) : '';
-  };
-
-  return Module;
-
+  return Component;
 });
 
 

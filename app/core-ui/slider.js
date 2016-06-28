@@ -16,20 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'slider';
-  Module.dataTypes = ['INT'];
-
-  Module.variables = [
-    {id: 'minimum', ui: 'numeric'},
-    {id: 'maximum', ui: 'numeric'},
-    {id: 'step', ui: 'numeric', comment: 'Specifies the allowed number intervals'}
-  ];
+  'use strict';
 
   var template =  '<style type="text/css"> \
                   span.slider-value { \
@@ -42,15 +31,8 @@ define(['app', 'backbone'], function(app, Backbone) {
                   </style> \
                   <input type="range" class="slider" value="{{value}}" name="{{name}}" id="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}"> <span class="slider-value">{{value}}</span>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'change .slider': function(e) {
@@ -64,7 +46,6 @@ define(['app', 'backbone'], function(app, Backbone) {
     },
 
     serialize: function() {
-
       if (this.options.model.isNew() && this.options.schema.has('default_value')) {
         this.options.value = this.options.schema.get('default_value');
       }
@@ -82,20 +63,24 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function() {
       //
     }
-
   });
 
-  Module.validate = function(value, options) {
-    // Not needed since HTML5 slider defaults to "0"
-    if (options.schema.isRequired() && !value) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'slider',
+    dataTypes: ['INT'],
+    variables: [
+      {id: 'minimum', ui: 'numeric'},
+      {id: 'maximum', ui: 'numeric'},
+      {id: 'step', ui: 'numeric', comment: __t('slider_step_comment')}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      // Not needed since HTML5 slider defaults to "0"
+      if (options.schema.isRequired() && !value) {
+        return __t('this_field_is_required');
+      }
     }
-  };
+  });
 
-  Module.list = function(options) {
-    return options.value;
-  };
-
-  return Module;
-
+  return Component;
 });

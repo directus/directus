@@ -15,9 +15,9 @@
   {{/each}}
 {{else}}
 <div class="sidebar-section tables-sidebar">
-  <div class="sidebar-group">Tables</div>
+  <div class="sidebar-group">{{t "tables"}}</div>
   {{#unless bookmarks.table}}
-   <li class="sidebar-subitem disabled" title="There are no tables you have permission to view"><a>No Tables</a></li>
+   <li class="sidebar-subitem disabled" title="{{t 'there_are_no_tables_you_have_permission_to_view'}}"><a>{{t "no_tables"}}</a></li>
   {{/unless}}
   {{#bookmarks.table}}
   <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
@@ -31,7 +31,7 @@
 
 {{#if bookmarks.extension}}
 <div class="sidebar-section searches-sidebar">
-  <div class="sidebar-group">Extensions</div>
+  <div class="sidebar-group">{{t "extensions"}}</div>
   {{#bookmarks.extension}}
   <li class="{{#if active_bookmark}}active{{/if}}sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
@@ -43,27 +43,27 @@
 {{/if}}
 
 <div class="sidebar-section searches-sidebar">
-  <div class="sidebar-group">Bookmarks</div>
-  <li class="sidebar-subitem" title="Add Bookmark">
-      <a id="saveSnapshotBtn" href="#">
-        Add Bookmark
-      </a>
-  </li>
+  <div class="sidebar-group">{{t "bookmarks"}}</div>
+  <i id="saveSnapshotBtn" class="material-icons add-bookmark" title="{{t 'bookmark_this_page'}}">add_circle_outline</i>
   {{#if bookmarks.search}}
   {{#bookmarks.search}}
   <li data-id="{{id}}" class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">
         {{capitalize title}}
-        <span class="remove-snapshot">✕</span>
+        <i class="material-icons remove-snapshot" title="Delete Bookmark: {{capitalize title}}">highlight_off</i>
       </a>
   </li>
   {{/bookmarks.search}}
+  {{else}}
+  <li class="sidebar-subitem italic">
+      <span class="no-link">{{t "no_bookmarks"}}</span>
+  </li>
   {{/if}}
 </div>
 
 {{#if bookmarks.other}}
 <div class="sidebar-section other-sidebar">
-  <div class="sidebar-group">System</div>
+  <div class="sidebar-group">{{t "system"}}</div>
   {{#bookmarks.other}}
   <li class="{{#if active_bookmark}}active{{/if}} sidebar-subitem" title="{{capitalize title}}">
       <a href="{{url}}">

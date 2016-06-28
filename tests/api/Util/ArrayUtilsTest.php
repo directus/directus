@@ -25,4 +25,28 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(ArrayUtils::contains($items, ['name', 'age', 'city']));
         $this->assertTrue(ArrayUtils::contains($items, 'name', 'age'));
     }
+
+    public function testFlatKeys()
+    {
+        $array = [
+            'user' => [
+                'name' => 'John',
+                'country' => [
+                    'name' => 'yes'
+                ]
+            ]
+        ];
+
+        $result = ArrayUtils::dot($array);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('user.name', $result);
+        $this->assertArrayHasKey('user.country.name', $result);
+
+        $result = ArrayUtils::flatKey('_', $array);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('user_name', $result);
+        $this->assertArrayHasKey('user_country_name', $result);
+    }
 }

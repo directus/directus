@@ -6,23 +6,11 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
-  "use strict";
+  'use strict';
 
-  var Module = {};
-
-  Module.id = 'directus_user_avatar';
-  Module.system = true;
-  Module.sortBy = ['email'];
-
-  Module.list = function(options) {
-    var html = '{{userAvatar user}}';
-    var template = Handlebars.compile(html);
-    return template({user: parseInt(options.model.id,10)});
-  };
-
-  Module.Input = Backbone.Layout.extend({
+  var Input = UIView.extend({
     tagName: 'fieldset',
     initialize: function(options) {
       var user = app.users.get(options.value);
@@ -33,5 +21,17 @@ define(['app','backbone'], function(app, Backbone) {
     }
   });
 
-  return Module;
+  var Component = UIComponent.extend({
+    id: 'directus_user_avatar',
+    system: true,
+    sortBy: ['email'],
+    Input: Input,
+    list: function(options) {
+      var html = '{{userAvatar user}}';
+
+      return this.compileView(html, {user: parseInt(options.model.id,10)});
+    }
+  });
+
+  return Component;
 });

@@ -3,6 +3,9 @@
 ////////////
 select {
   cursor: pointer;
+  // -webkit-appearance: none;
+  // -moz-appearance: none;
+  // appearance: none;
 }
 .icon-select {
   position: relative;
@@ -59,8 +62,8 @@ select {
   .icon {
     bottom: 0px;
     display: block;
-    font-size: 200%;
-    line-height: 52%;
+    font-size: 300%;
+    line-height: 40%;
     //padding: 0px $extraSmallPad 0px $extraSmallPad;
     pointer-events: none;
     position: absolute;
@@ -72,9 +75,12 @@ select {
     border: none;
     -webkit-appearance: none;
     -webkit-font-smoothing: antialiased !important;
-    font-weight: 600;
+    font-weight: 500;
     padding: 0 20px 0 0;
     outline: none;
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
     &:focus {
       border: none;
     }
@@ -95,7 +101,7 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
   +label {
     cursor: pointer;
     display: inline-block;
-    font-weight: 600;
+    font-weight: 500;
     margin-right: $smallPad;
     position: relative;
     vertical-align: bottom;
@@ -106,17 +112,25 @@ input[type="checkbox"].custom-check, input[type="radio"].custom-check {
     span {
       color: $mediumGrey;
       display:inline-block;
-      width:18px;
+      width:20px;
       height:22px;
       margin: -2px $extraSmallPad 0 0;
       vertical-align:middle;
+      &:hover {
+        color: $primaryColor;
+      }
     }
   }
   &:checked {
     +label {
-      span:before {
-        content: "check_box";
-        @extend .material-icons;
+      span {
+        &:before {
+          content: "check_box";
+          color: $primaryColor;
+        }
+        &:hover {
+          color: $darkGrey;
+        }
       }
     }
   }
@@ -131,9 +145,10 @@ input,
 textarea,
 select,
 .input {
+  @include border-radius(4px, 4px, 4px, 4px);
   @include transition();
-  background-color: $fieldColor;
-  border: none;
+  background-color: $white;
+  border: 1px solid $fieldColor;
   display: block;
   padding: 14px;
   font-size: 14px;
@@ -143,7 +158,8 @@ select,
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   &:hover {
-    //border: solid 1px $mediumGrey;
+    // color: darken($darkGrey, 20%);
+    border-color: $mediumGrey;
   }
   &:disabled {
     color: $mediumGrey;
@@ -152,7 +168,8 @@ select,
     //border: solid 1px $lightGrey;
   }
   &:focus {
-    color: darken($darkGrey, 10%);
+    color: darken($darkGrey, 20%);
+    border-color: $primaryColor;
   }
   &.legacy {
     padding: $smallPad;
@@ -184,6 +201,24 @@ select,
 ////////////
 //  CUSTOM FORMS
 ////////////
+.select-container {
+  position: relative;
+  display: inline-block;
+  select {
+    padding-right: 35px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
+.select-arrow {
+    position: absolute;
+    top: 8px;
+    right: 4px;
+    font-size: 29px;
+    background-color: $white;
+    pointer-events:none;
+}
 
 .table-striped tr td.field-comment-container {
   // padding-right: 20px;
@@ -197,11 +232,11 @@ select,
     top: 8px;
   }
   select {
-    @include border-radius();
+    @include border-radius(4px, 4px, 4px, 4px);
     background-color: $white; // class name no longer applicable
     border: 0px;
     //margin: 0px 4px 0px 0px;
-    padding: 8px $smallPad;
+    padding: 10px;
   }
 }
 .two-column-form {
@@ -216,7 +251,6 @@ select,
     margin-bottom: $smallPad;
   }
   .fields {
-    @extend .card-border;
     list-style: none;
     margin: 0px;
     padding: 0px;
@@ -225,6 +259,12 @@ select,
       margin-top: 1px;
       position: relative;
       width: 100%;
+      //@extend .card-shadow;
+      // &:first-child {
+      //   .label {
+      //     border-radius: 4px;
+      //   }
+      // }
     }
     .fieldset-smoke {
       position:absolute;
@@ -232,7 +272,8 @@ select,
       left:0px;
       right:0px;
       bottom:0px;
-      background-color:rgba(255,255,255,0.5);
+      background-color:rgba(255,255,255,0.75);
+      cursor: not-allowed;
       z-index:1;
     }
     .table {
@@ -251,7 +292,7 @@ select,
       @extend .clear-fix;
       background-color: $white;
       color: $darkGrey;
-      font-weight: 600;
+      font-weight: 500;
       padding: 44px $standardPad $largePad $largePad;
       vertical-align: top;
       width: 200px;
@@ -260,13 +301,16 @@ select,
         text-transform: capitalize;
         //top: -5px;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         .note {
           display: block;
           color: $mediumGrey;
           font-style: italic;
           text-transform: none;
           font-size: 12px;
+          padding-top: 5px;
+          max-width: 400px;
+          font-weight: 400;
           a {
             border-bottom: dotted 1px $mediumGrey;
             &:hover {
@@ -275,13 +319,21 @@ select,
           }
         }
       }
+      .validation-error {
+        margin-top: 4px;
+        display: inline-block;
+      }
       .batch-edit-on {
-        font-weight: 700;
+        vertical-align: middle;
+        font-weight: 500;
         display: block;
         z-index: 2;
+        margin-bottom: 10px;
+        margin-top: -10px;
         input {
           display: inline-block;
           width: auto;
+          margin-right: 4px;
         }
 
       }
@@ -303,7 +355,7 @@ select,
         -webkit-font-smoothing: auto;
         a {
           text-decoration: underline;
-          color: $addColor;
+          color: $primaryColor;
         }
         img {
           &:hover {
@@ -326,8 +378,8 @@ select,
       }
       select {
         max-width: 200px;
-        margin-top: 2px;
-        height: 38px;
+        // margin-top: 2px;
+        // height: 38px; // Fixes cropped text in FireFox
         width: 100%;
       }
       select[multiple] {

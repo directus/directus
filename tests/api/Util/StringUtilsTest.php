@@ -80,4 +80,25 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertSame('aa', StringUtils::charSequence('z'));
         $this->assertSame('ab', StringUtils::charSequence('aa'));
     }
+
+    public function testReplacePlaceholder()
+    {
+        $string = 'I went to {{place}}';
+        $data = ['place' => 'Portland'];
+        $expected = 'I went to Portland';
+        $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data));
+        $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data, StringUtils::PLACEHOLDER_DOUBLE_MUSTACHE));
+
+        $string = 'I went to %{place}';
+        $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data, StringUtils::PLACEHOLDER_PERCENTAGE_MUSTACHE));
+
+        $string = 'Took a flight from {{from_airport}} to {{to_airport}}';
+        $data = ['from_airport' => 'SFO', 'to_airport' => 'PDX'];
+        $expected = 'Took a flight from SFO to PDX';
+        $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data));
+        $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data, StringUtils::PLACEHOLDER_DOUBLE_MUSTACHE));
+
+        $string = 'Took a flight from %{from_airport} to %{to_airport}';
+        $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data, StringUtils::PLACEHOLDER_PERCENTAGE_MUSTACHE));
+    }
 }

@@ -15,28 +15,14 @@
 // options.name       String            Field name
 
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
-  var Module = {};
-
-  Module.id = 'directus_columns';
-  Module.dataTypes = ['VARCHAR'];
-
-  Module.variables = [];
-
   var template =  '{{#columns}}<label><input type="checkbox" name="{{../name}}" value="{{columnName}}" {{#if selected}}checked{{/if}}>{{title}}</label>{{/columns}}';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {},
 
@@ -64,19 +50,15 @@ define(['app', 'backbone'], function(app, Backbone) {
 
         return item;
       });
-
     }
-
   });
 
-  Module.validate = function(value) {
-    //
-  };
+  var Component = UIComponent.extend({
+    id: 'directus_columns',
+    dataTypes: ['VARCHAR'],
+    Input: Input,
+  });
 
-  Module.list = function(options) {
-    return options.value;
-  };
-
-  return Module;
+  return Component;
 
 });

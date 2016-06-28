@@ -16,31 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  Module.id = 'map';
-  Module.dataTypes = ['VARCHAR', 'ALIAS'];
-
-  Module.variables = [
-    //Google API Key (Provided by Google)
-    {id: 'apiKey', ui: 'textinput', char_length:200},
-    //column names to fill with respective item
-    {id: 'street_number_field', ui: 'textinput', char_length:200},
-    {id: 'street_field', ui: 'textinput', char_length:200},
-    {id: 'city_field', ui: 'textinput', char_length:200},
-    {id: 'postal_code_field', ui: 'textinput', char_length:200},
-    {id: 'state_field', ui: 'textinput', char_length:200},
-    {id: 'stateCode_field', ui: 'textinput', char_length:200},
-    {id: 'country_field', ui: 'textinput', char_length:200},
-    {id: 'countryCode_field', ui: 'textinput', char_length:200},
-    //Height of Map Element in Pixels
-    {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: 'Height in Pixels'},
-    {id: 'showLatLng', ui: 'checkbox', comment: 'Display latlng Textbox below map'}
-  ];
+  'use strict';
 
   var template =  '<style>#pac-input { \
         background-color: #fff; \
@@ -70,15 +48,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="medium" readonly/>';
 
   //If ALIAS, only fills in fields set in options, if varchar, sets to {lat},{lng}
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
-
+  var Input = UIView.extend({
+    templateSource: template,
     events: {
     },
 
@@ -163,8 +134,9 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
         var latlngVal = e.latLng.lat() + "," + e.latLng.lng();
         that.$el.find('input').val(latlngVal);
 
+        var apiKey = that.getApiKey();
         //Query Geocode api to get street info about specified latlong
-        $.get('https://maps.googleapis.com/maps/api/geocode/json', {latlng: latlngVal, key: that.options.settings.get('apiKey'), result_type:"street_address"}, function(data) {
+        $.get('https://maps.googleapis.com/maps/api/geocode/json', {latlng: latlngVal, key: apiKey, result_type:"street_address"}, function(data) {
           if(data.results && data.results.length > 0) {
             data = data.results[0].address_components;
             var address = {};
@@ -208,6 +180,10 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
       });
     },
 
+    getApiKey: function() {
+      return this.options.settings.get('apiKey') || app.settings.get('global').get('google_api_key');
+    },
+
     serialize: function() {
       var value = this.options.value || '';
 
@@ -233,20 +209,41 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
       //Include the Google JSAPI for using Maps
       require(['https://www.google.com/jsapi'], function() {
         //Load Maps API using provided key, and call initializeMap() when API is loaded
-        google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + that.options.settings.get('apiKey'), callback: function() {that.initializeMap();}});
+        google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + that.getApiKey(), callback: function() {that.initializeMap();}});
       });
     }
   });
 
-  //Do not perform Validation
-  Module.validate = function(value) {
-    //
-  };
+  var Component = UIComponent.extend({
+    id: 'map',
+    dataTypes: ['VARCHAR', 'ALIAS'],
+    variables: [
+      //Google API Key (Provided by Google)
+      {id: 'apiKey', ui: 'textinput', char_length:200},
+      //column names to fill with respective item
+      {id: 'street_number_field', ui: 'textinput', char_length:200},
+      {id: 'street_field', ui: 'textinput', char_length:200},
+      {id: 'city_field', ui: 'textinput', char_length:200},
+      {id: 'postal_code_field', ui: 'textinput', char_length:200},
+      {id: 'state_field', ui: 'textinput', char_length:200},
+      {id: 'stateCode_field', ui: 'textinput', char_length:200},
+      {id: 'country_field', ui: 'textinput', char_length:200},
+      {id: 'countryCode_field', ui: 'textinput', char_length:200},
+      //Height of Map Element in Pixels
+      {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: __t('map_mapHeight_comment')},
+      {id: 'showLatLng', ui: 'checkbox', comment: __t('map_showLatLng_comment')}
+    ],
+    settings: [{
+      'collection': 'global',
+      id: 'google_api_key',
+      ui: 'textinput',
+      char_length:200
+    }],
+    Input: Input,
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    }
+  });
 
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
-
+  return Component;
 });

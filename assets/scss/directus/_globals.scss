@@ -58,81 +58,8 @@
 .margin-right {
   margin-right: $gutterWidth;
 }
-
-////////////
-//  Alerts
-////////////
-
-.directus-modal-backdrop {
-  z-index: 998;
-  background-color: $lightGrey;
-  opacity: 0.9;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.directus-alert-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 440px;
-  min-height: 90px;
-  margin-left: -250px;
-  margin-top: -170px;
-  padding: 30px 30px 30px 30px;
-  background-color: $white;
-  color: $extraDarkGrey;
-  font-size: 14px;
-  font-weight: 600;
-  z-index: 110;
-  //.border-radius(3px, 3px, 3px, 3px);
-  box-shadow: 0 2px 6px $mediumGrey;
-  -webkit-font-smoothing: antialiased;
-  .directus-alert-modal-message {
-    padding-bottom: 20px;
-    word-wrap: break-word;
-  }
-  input {
-    width: 100%;
-    font-weight: normal;
-  }
-  .directus-alert-modal-buttons {
-    margin-top: 20px;
-    text-align: right;
-    button {
-      padding: 10px 15px 10px 15px;
-      text-align: center;
-      color: $white;
-      background-color: $mediumGrey;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      border-bottom: 3px solid darken($mediumGrey, 5%);
-
-      @include border-radius(3px, 3px, 3px, 3px);
-      margin-left: 20px;
-      min-width: 120px;
-      font-weight: 600;
-      -webkit-font-smoothing: antialiased;
-      &:hover {
-        background-color: darken($mediumGrey, 5%);
-        border-bottom: 3px solid darken($mediumGrey, 10%);
-      }
-      &.primary {
-        background-color: $addColor;
-        border-bottom: 3px solid darken($addColor, 5%);
-        &:hover {
-          background-color: darken($addColor, 5%);
-          border-bottom: 3px solid darken($addColor, 10%);
-        }
-      }
-    }
-  }
+.margin-top-standard {
+    margin-top: $standardPad;
 }
 
 ////////////
@@ -168,7 +95,7 @@
   }
   .material-icons {
     display: inline-block;
-    margin-top: 4px;
+    margin-top: 3px;
     // &.icon-check {
     // }
     // &.icon-star,
@@ -195,17 +122,31 @@
   }
 }
 .tag {
+  @include transition;
   display: inline-block;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
   background-color: $darkGrey;
   color: $white;
   margin: $smallPad $smallPad 0 0;
-  padding: $extraSmallPad $smallPad;
+  padding: $extraSmallPad $smallPad $extraSmallPad+1 $smallPad;
   @include border-radius(2px, 2px, 2px, 2px);
   &:hover {
     background-color: $deleteColor;
   }
+}
+.tag-static {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  font-weight: 300;
+  background-color: $mediumGrey;
+  color: $white;
+  margin: 0 5px 0 0;
+  padding: 4px 8px 3px 8px;
+  @include border-radius(2px, 2px, 2px, 2px);
+  text-transform: uppercase;
 }
 
 ////////////
@@ -214,15 +155,21 @@
 .italic {
   font-style: italic;
 }
+.link-underline {
+  border-bottom: 1px dotted $mediumGrey;
+  &:hover {
+    border-bottom: 1px dotted $primaryColor;
+  }
+}
 .primary-info {
   color: $darkGrey;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .secondary-info {
   color: $mediumGrey !important;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
 }
 a.secondary-info {
   cursor: pointer;
@@ -240,27 +187,23 @@ a.secondary-info {
   color: $mediumGrey;
 }
 .light-grey-color {
-  color: $mediumGrey;
+  color: $lightGrey;
 }
-.unread-color, .add-color {
-  color: $addColor;
+.add-color {
+  color: $primaryColor;
 }
-.light-add-color {
-  color: lighten($addColor, 30%);
+.unread-color {
+  color: $primaryColor;
 }
 .yellow-color {
   color: $systemColor;
 }
 .bold {
-  font-weight: 600;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
 }
-.add-color-background {
-  background-color: $addColor !important; // changed to accommodate white buttons
-  color: $white !important;
-}
 .add-color-border {
-  border-color: $addColor !important;
+  border-color: $primaryColor !important;
 }
 .border-top {
   border-top: 1px solid $lightGrey;
@@ -299,7 +242,7 @@ img.grayscale {
 .content-body {
   /* flex: 1; display: flex; */
   margin-bottom: 40px;
-  margin-top: 63px;
+  margin-top: 68px;
 }
 .overlay {
   h3 {
@@ -314,6 +257,7 @@ img.grayscale {
     color: lighten($mediumGrey, 15%);
     font-size: 50px;
     line-height: 60px;
+    letter-spacing: -1px;
   }
 }
 .media-thumb {
@@ -324,7 +268,7 @@ img.grayscale {
   display: none !important;
 }
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px $fieldColor inset;
+    -webkit-box-shadow: 0 0 0px 1000px $white inset;
     color: $mediumGrey !important;
 }
 ::-webkit-input-placeholder {
@@ -345,26 +289,34 @@ input:-webkit-autofill {
     color: $mediumGrey;
     -webkit-font-smoothing: antialiased !important;
 }
+::selection {
+  background: lighten($primaryColor, 30%);
+}
+::-moz-selection {
+  background: lighten($primaryColor, 30%);
+}
 
 ////////////
 //  OTHER
 ////////////
 
+.rounded-corners {
+    @include border-radius(4px, 4px, 4px, 4px);
+}
+.card-shadow {
+  -webkit-box-shadow: 0px 1px 6px 0px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0px 1px 6px 0px rgba(0,0,0,0.1);
+  box-shadow: 0px 1px 6px 0px rgba(0,0,0,0.1);
+}
 hr {
   border: none;
   color: #ffffff;
   background-color: #ffffff;
   height: 1px;
 }
-
 ul {
   list-style-type: disc;
 }
-
-.card-border {
-  border-bottom: 3px solid darken($lightGrey, 5%);
-}
-
 .invisible-blocker {
   position: fixed;
   left: 0;
@@ -394,6 +346,7 @@ body.initial-load {
   transition: opacity 400ms ease-in-out;
 }
 .spinner {
+  display: none;
   position: fixed;
   width: 60px;
   height: 60px;
@@ -407,13 +360,11 @@ body.initial-load {
   animation: rotateplane 1.2s infinite ease-in-out;
   z-index: 110;
 }
-
 @-webkit-keyframes rotateplane {
   0% { -webkit-transform: perspective(120px) }
   50% { -webkit-transform: perspective(120px) rotateY(180deg) }
   100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
 }
-
 @keyframes rotateplane {
   0% {
     transform: perspective(120px) rotateX(0deg) rotateY(0deg);
@@ -426,23 +377,20 @@ body.initial-load {
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
   }
 }
-
 .pulsate {
   -webkit-animation: pulsate 2s ease-out;
   -webkit-animation-iteration-count: infinite;
   opacity: 0.6;
 }
-
 @-webkit-keyframes pulsate {
   0% {opacity: 0.6;}
   50% {opacity: 1.0;}
   100% {opacity: 0.6;}
 }
-
 .external-drop-indicator {
   @extend .pulsate;
   position: fixed;
-  background-color: $addColor;
+  background-color: $primaryColor;
   z-index: 1000;
 }
 .external-drop-indicator.top {
@@ -478,6 +426,7 @@ input[type="date"]::-webkit-inner-spin-button {
 }
 
 .avatar {
+  @extend .rounded-corners;
   height: 30px;
   float:left;
   margin-right:10px;
@@ -497,7 +446,6 @@ input[type="date"]::-webkit-inner-spin-button {
   font-size: 14px;
 }
 .message-recipients {
-  @extend .card-border;
   background-color: $white;
   padding: $standardPad;
   //margin-bottom: $standardPad;
@@ -524,7 +472,7 @@ input[type="date"]::-webkit-inner-spin-button {
 
 .twitter-typeahead {
   display: block;
-  //width: 300px;
+  width: 100%;
 }
 .tt-hint {
   color: #bbbbbb !important;
@@ -545,7 +493,7 @@ input[type="date"]::-webkit-inner-spin-button {
     overflow: hidden;
     text-overflow: ellipsis;
     &.tt-is-under-cursor, &.tt-cursor {
-      background-color: $tableHoverYellow;
+      background-color: $tableRowHover;
     }
     img {
       vertical-align: middle;
@@ -568,7 +516,7 @@ input[type="date"]::-webkit-inner-spin-button {
   color: $white;
   margin-right: $smallPad;
   margin-top: $smallPad;
-  font-weight: 600;
+  font-weight: 500;
   padding-right: $smallPad;
   cursor: pointer;
   &:hover {
@@ -588,6 +536,6 @@ input[type="date"]::-webkit-inner-spin-button {
 }
 
 .settings-column-name {
-  font-weight: 600;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
 }

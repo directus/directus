@@ -106,7 +106,7 @@ define(function(require, exports, module) {
         var tableName = options.schema.id;
 
         if (tableSchemas[namespace].get(tableName)) {
-          console.warn('Warning: ' + tableName + ' allready exists in the schema manager, the schema will be ignored');
+          console.warn('Warning: ' + tableName + ' already exists in the schema manager, the schema will be ignored');
           return;
         }
 
@@ -141,6 +141,26 @@ define(function(require, exports, module) {
       var namespace = 'settings';
       _.each(data, function(settings) {
         columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.structure, {parse: true});
+        // TODO: columns must have its table information
+        columnSchemas[namespace][settings.id].table = {
+          id: 'directus_settings'
+        };
+      }, this);
+    },
+
+    addSetting: function(collection, data) {
+      var settingsCollection = columnSchemas['settings'][collection];
+      settingsCollection.add(new ColumnModel(data, {parse: true}));
+    },
+
+    addSettings: function(settings) {
+      _.each(settings, function(setting) {
+        if (!setting.collection) {
+          console.warn('Settings must have a collection name.');
+          return;
+        }
+
+        this.addSetting(setting.collection, _.omit(setting, 'collection'));
       }, this);
     },
 

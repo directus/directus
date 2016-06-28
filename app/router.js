@@ -24,6 +24,7 @@ define(function(require, exports, module) {
       Users            = require('modules/users/users'),
       Messages         = require('modules/messages/messages'),
       Modal            = require('core/modal'),
+      __t              = require('core/t'),
       moment           = require('moment');
 
   var Router = Backbone.Router.extend({
@@ -446,17 +447,17 @@ define(function(require, exports, module) {
       if (_.contains(this.navBlacklist,'settings'))
         return this.notFound();
 
-      this.setTitle(app.settings.get('global').get('project_name') + ' | Settings');
+      this.setTitle(app.settings.get('global').get('project_name') + ' | '+__t('settings'));
 
       switch(name) {
         case 'tables':
           this.v.main.setView('#content', new Settings.Tables({collection: SchemaManager.getTables()}));
           break;
         case 'global':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: 'Global', structure: SchemaManager.getColumns('settings', 'global')}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: __t('global'), structure: SchemaManager.getColumns('settings', 'global')}));
           break;
         case 'files':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('files'), title: 'Files', structure: SchemaManager.getColumns('settings', 'files')}));
+          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('files'), title: __t('files'), structure: SchemaManager.getColumns('settings', 'files')}));
           break;
         case 'permissions':
           this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));

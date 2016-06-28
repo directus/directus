@@ -15,53 +15,17 @@
 // options.name       String            Field name
 /*jshint multistr: true */
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
-  "use strict";
-
-  var Module = {};
-
-  // Module.id is the name for this UI
-  Module.id = 'textinput';
-
-  // Supported Data Types for this UI
-  Module.dataTypes = ['VARCHAR', 'DATE', 'TIME', 'ENUM'];
-
-  // UI Options that Can be set in Column Settings Page
-  Module.variables = [
-    // Disables editing of the field while still letting users see the value (true = readonly)
-    {id: 'readonly', ui: 'checkbox'},
-    // Adjusts the max width of the input (Small, Medium, Large)
-    {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-    // Grayed out default placeholder text in the input when it's empty
-    {id: 'placeholder_text', ui: 'textinput', char_length:200},
-    // Chooses the type of validation used on this field
-    // * Character Blacklist: Choose the specific characters **not** allowed in the input
-    // * Character Whitelist: Choose the specific characters allowed in the input
-    // * RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything
-    {id: 'validation_type', ui: 'select', options: {options: {'bl':'Character Blacklist','wl':'Character Whitelist','rgx':'Regex'} }, def:'rgx'},
-    // Holds the CSV list of Whitelist/Blacklist characters or the RegEx value (based on the above option)
-    {id: 'validation_string', ui: 'textinput', char_length:200, comment: 'All characters below will be enforced'},
-    // A message that is shown to the user if the validation fails
-    {id: 'validation_message', ui: 'textinput', char_length:200}
-  ];
+  'use strict';
 
   // Template Used for this UI
   var template = '<div class="char-count-container {{size}}"> \
                     <input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
                   <span class="char-count hide">{{characters}}</span></div>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    // Base Tag that the template resides within
-    tagName: 'div',
-
-    // Attributes applied to the base tag
-    attributes: {
-      'class': 'field'
-    },
-
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     // Event Declarations
     events: {
@@ -125,43 +89,58 @@ define(['app', 'backbone'], function(app, Backbone) {
     }
   });
 
-  // Validate gets called when model is attepting to save. It returns an error message if there is a validation issue, none if it is valid
-  // @param value : String : Value for this UI
-  // @param options : Object : Contains Options for this UI (collection [TableCollection], model [EntriesModel], schema, settings)
-  Module.validate = function(value, options) {
-    var validationMessage = options.settings.get('validation_message') || app.DEFAULT_VALIDATION_MESSAGE;
-    if (options.schema.get('required') && _.isEmpty(value)) {
-      return validationMessage;
+  var Component = UIComponent.extend({
+    id: 'textinput',
+    dataTypes: ['VARCHAR', 'DATE', 'TIME', 'ENUM'],
+    variables: [
+      // Disables editing of the field while still letting users see the value (true = readonly)
+      {id: 'readonly', ui: 'checkbox'},
+      // Adjusts the max width of the input (Small, Medium, Large)
+      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
+      // Grayed out default placeholder text in the input when it's empty
+      {id: 'placeholder_text', ui: 'textinput', char_length:200},
+      // Chooses the type of validation used on this field
+      // * Character Blacklist: Choose the specific characters **not** allowed in the input
+      // * Character Whitelist: Choose the specific characters allowed in the input
+      // * RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything
+      {id: 'validation_type', ui: 'select', options: {options: {'bl':__t('character_blacklist'),'wl':__t('character_whitelist'),'rgx':__t('regex')} }, def:'rgx'},
+      // Holds the CSV list of Whitelist/Blacklist characters or the RegEx value (based on the above option)
+      {id: 'validation_string', ui: 'textinput', char_length:200, comment: __t('textinput_validation_string_comment')},
+      // A message that is shown to the user if the validation fails
+      {id: 'validation_message', ui: 'textinput', char_length:200}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      var validationMessage = options.settings.get('validation_message') || app.DEFAULT_VALIDATION_MESSAGE;
+      if (options.schema.get('required') && _.isEmpty(value)) {
+        return validationMessage;
+      }
+
+      switch(options.settings.get('validation_type')) {
+        case ('wl') :
+          var Regex = new RegExp("^["+options.settings.get('validation_string')+"]+$");
+          if(!value.match(Regex)) {
+            return validationMessage;
+          }
+          break;
+        case ('bl') :
+          var chars = options.settings.get('validation_string').split("");
+          if(chars.length > 0 && value.match(chars.join("|"))) {
+            return validationMessage;
+          }
+          break;
+        case ('rgx'):
+          var regex = new RegExp(options.settings.get('validation_string'));
+          if (!regex.test(value)) {
+            return validationMessage;
+          }
+          break;
+      }
+    },
+    list: function(options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
     }
+  });
 
-    switch(options.settings.get('validation_type')) {
-      case ('wl') :
-        var Regex = new RegExp("^["+options.settings.get('validation_string')+"]+$");
-        if(!value.match(Regex)) {
-          return validationMessage;
-        }
-        break;
-      case ('bl') :
-        var chars = options.settings.get('validation_string').split("");
-        if(chars.length > 0 && value.match(chars.join("|"))) {
-          return validationMessage;
-        }
-        break;
-      case ('rgx'):
-        var regex = new RegExp(options.settings.get('validation_string'));
-        if (!regex.test(value)) {
-          return validationMessage;
-        }
-        break;
-    }
-  };
-
-  // Returns String That should be used to represent this UI when being listed as part of a table
-  // @param options : Object : Contains Options/Attributes for this UI (value, collection [TableCollection], model [EntriesModel], schema, settings)
-  Module.list = function(options) {
-    return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-  };
-
-  return Module;
-
+  return Component;
 });

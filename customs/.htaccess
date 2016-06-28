@@ -1,0 +1,2 @@
+# Prevent directory listing
+IndexIgnore *

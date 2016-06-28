@@ -1,8 +1,9 @@
 html, body {
   background-color: $lightGrey;
   color: $darkGrey;
-  font-size: 12px;
-  font-weight: 600;
+  font-family: $primaryFont;
+  font-size: 14px;
+  font-weight: 500;
   // height: 100%; // Removed due to excess scrolling...
   width: 100%;
 }
@@ -13,19 +14,20 @@ body {
   //display: -webkit-flex;
   //flex-direction: row;
   -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
   margin:0;
 }
 
 h1, h2, h3, h4 {
-  font-weight: 400;
+  font-weight: 300;
   margin: 0px;
-  font-family: $helveticaFont !important;
+  font-family: $primaryFont !important;
 }
 h1 {
   //color: $lightGrey;
   font-size: 30px;
 }
-h2 { font-size: 24px; }
+h2 { font-size: 26px; }
 h3 { font-size: 18px; }
 h4 { font-size: 16px; }
 

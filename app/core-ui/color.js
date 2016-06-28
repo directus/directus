@@ -16,21 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
 
   'use strict';
-
-  var Module = {};
-
-  Module.id = 'color';
-  Module.dataTypes = ['VARCHAR'];
-
-  Module.variables = [
-    // Disables editing of the field while still letting users see the value
-    {id: 'readonly', ui: 'checkbox'},
-    // Shows a color box representation on the Item Listing page
-    {id: 'show_color_on_list', ui: 'checkbox'}
-  ];
 
   var template =  '<style type="text/css"> \
                   .position-offset { \
@@ -39,7 +27,7 @@ define(['app', 'backbone'], function(app, Backbone) {
                   input.color-box { \
                     margin-left: 10px; \
                     width: 42px; \
-                    height: 46px; \
+                    height: 44px; \
                     padding: 10px; \
                     display: inline-block; \
                     left: 0; \
@@ -58,15 +46,10 @@ define(['app', 'backbone'], function(app, Backbone) {
                     margin-left: 10px; \
                   } \
                   </style> \
-                  <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><span class="position-offset"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="e.g. #bbbbbb"></span> <span class="invalid"></span>';
+                  <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><span class="position-offset"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="{{t "example_abbr"}}. #bbbbbb"></span> <span class="invalid"></span>';
 
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'change .color-text': function(e) {
@@ -76,7 +59,7 @@ define(['app', 'backbone'], function(app, Backbone) {
           this.$el.find('span.invalid').html("");
           this.$el.find('input.color-text').removeClass("invalid");
         } else {
-          this.$el.find('span.invalid').html("Invalid color <i>e.g. #bbbbbb</i>");
+          this.$el.find('span.invalid').html(__t('color_invalid_color')+" <i>"+__t('example_abbr')+". #bbbbbb</i>");
           this.$el.find('input.color-text').addClass("invalid");
         }
       },
@@ -105,21 +88,30 @@ define(['app', 'backbone'], function(app, Backbone) {
     initialize: function() {
       //
     }
-
   });
 
-  Module.validate = function(value, options) {
-    // This doesn't work since the input type="color" has a default color which is black: #000000
-    if (options.schema.isRequired() && _.isEmpty(value)) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'color',
+    dataTypes: ['VARCHAR'],
+    variables: [
+      // Disables editing of the field while still letting users see the value
+      {id: 'readonly', ui: 'checkbox'},
+      // Shows a color box representation on the Item Listing page
+      {id: 'show_color_on_list', ui: 'checkbox'}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      // This doesn't work since the input type="color" has a default color which is black: #000000
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function(options) {
+      var show_color_on_list = (options.settings && options.settings.has('show_color_on_list') && options.settings.get('show_color_on_list') == '1')? true : false;
+
+      return (show_color_on_list) ? '<div style="background-color:'+options.value+'; height:20px; width:40px; border:1px solid #ffffff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">&nbsp;</div>' : options.value;
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var show_color_on_list = (options.settings && options.settings.has('show_color_on_list') && options.settings.get('show_color_on_list') == '1')? true : false;
-    return (show_color_on_list) ? '<div style="background-color:'+options.value+'; height:20px; width:40px; border:1px solid #ffffff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">&nbsp;</div>' : options.value;
-  };
-
-  return Module;
-
+  return Component;
 });

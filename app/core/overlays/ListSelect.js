@@ -21,7 +21,8 @@ define([
                     widgetOptions: {
                         buttonId: "addBtn",
                         iconClass: "check",
-                        buttonClass: "add-color-background"
+                        buttonClass: "",
+                        buttonText: "Choose"
                     }
                 })
             ];

@@ -106,13 +106,11 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
         }
 
         // Where
-        $select
-            ->where
-            ->nest
-                ->expression('-1 = ?', $params[$this->primaryKeyFieldName])
-                ->or
-                ->equalTo($this->primaryKeyFieldName, $params[$this->primaryKeyFieldName])
-            ->unnest;
+        if (isset($params[$this->primaryKeyFieldName]) && $params[$this->primaryKeyFieldName] != -1) {
+            $select
+                ->where
+                ->equalTo($this->primaryKeyFieldName, $params[$this->primaryKeyFieldName]);
+        }
 
         // very very rudimentary ability to supply where conditions to fetch...
         // at the moment, only 'equalTo' and 'between' are supported... also, the 'total' key returned
@@ -230,9 +228,10 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
               }
             } elseif (isset($target['relationship']) && $target['relationship']['type'] == "MANYTOONE") {
               $relatedTable = $target['relationship']['table_related'];
-              $keyLeft = $this->getTable() . "." . $target['relationship']['junction_key_left'];
-              $keyRight = $relatedTable . ".id";
-              $filterColumn = $target['options']['filter_column'];
+
+              $keyRight = $this->getTable() . "." . $target['relationship']['junction_key_right'];
+              $keyLeft = $relatedTable . ".id";
+              $filterColumn = $target['options']['visible_column'];
               $joinedFilterColumn = $relatedTable . "." . $filterColumn;
 
               // do not let join this table twice

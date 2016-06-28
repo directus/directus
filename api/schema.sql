@@ -154,7 +154,7 @@ UNLOCK TABLES;
 CREATE TABLE `directus_messages` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `from` int(11) DEFAULT NULL,
-  `subject` varchar(255) NOT NULL DEFAULT '',
+  `subject` varchar(100) NOT NULL DEFAULT '',
   `message` text NOT NULL,
   `datetime` TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `attachment` int(11) DEFAULT NULL,
@@ -233,8 +233,7 @@ VALUES
   (10,'directus_ui',1,NULL,NULL,1,2,1,2,2,1,NULL),
   (11,'directus_users',1,NULL,NULL,1,2,1,2,2,1,NULL),
   (12,'directus_messages_recipients',1,NULL,NULL,1,2,1,2,2,1,NULL),
-  (13,'directus_storage_adapters',1,NULL,NULL,1,2,1,2,2,1,NULL),
-  (14,'directus_bookmarks',1,NULL,NULL,1,2,1,2,2,1,NULL);
+  (13,'directus_bookmarks',1,NULL,NULL,1,2,1,2,2,1,NULL);
 
 /*!40000 ALTER TABLE `directus_privileges` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -258,52 +257,18 @@ LOCK TABLES `directus_settings` WRITE;
 INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
 VALUES
   (1,'global','cms_user_auto_sign_out','60'),
-  (3,'global','project_name','Directus'),
-  (4,'global','project_url','http://examplesite.dev/'),
-  (5,'global','cms_color','#7ac943'),
-  (6,'global','rows_per_page','200'),
-  (7,'files','storage_adapter','FileSystemAdapter'),
-  (8,'files','storage_destination',''),
-  (9,'files','thumbnail_storage_adapter','FileSystemAdapter'),
-  (10,'files','thumbnail_storage_destination',''),
-  (11,'files','thumbnail_quality','100'),
-  (12,'files','thumbnail_size','200'),
-  (13,'global','cms_thumbnail_url',''),
-  (14,'files','file_naming','file_id'),
-  (15,'files','thumbnail_crop_enabled','1'),
-  (16,'files','youtube_api_key','');
+  (2,'global','project_name','Directus'),
+  (3,'global','project_url','http://examplesite.dev/'),
+  (4,'global','rows_per_page','200'),
+  (5,'files','thumbnail_quality','100'),
+  (6,'files','thumbnail_size','200'),
+  (7,'global','cms_thumbnail_url',''),
+  (8,'files','file_naming','file_id'),
+  (9,'files','thumbnail_crop_enabled','1'),
+  (10,'files','youtube_api_key','');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-# Dump of table directus_storage_adapters
-# ------------------------------------------------------------
-
-CREATE TABLE `directus_storage_adapters` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `adapter_name` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  `role` varchar(255) CHARACTER SET latin1 DEFAULT NULL COMMENT 'DEFAULT, THUMBNAIL, or Null. DEFAULT and THUMBNAIL should only occur once each.',
-  `public` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 for yes, 0 for no.',
-  `destination` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  `url` varchar(2000) CHARACTER SET latin1 DEFAULT '' COMMENT 'Trailing slash required.',
-  `params` varchar(2000) CHARACTER SET latin1 DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-LOCK TABLES `directus_storage_adapters` WRITE;
-/*!40000 ALTER TABLE `directus_storage_adapters` DISABLE KEYS */;
-
-INSERT INTO `directus_storage_adapters` (`id`, `key`, `adapter_name`, `role`, `public`, `destination`, `url`, `params`)
-VALUES
-  (1,'files','FileSystemAdapter','DEFAULT',1,'/Library/WebServer/www/media/directus/','http://localhost/media/',NULL),
-  (2,'thumbnails','FileSystemAdapter','THUMBNAIL',1,'/Library/WebServer/www/media/directus/thumbnails/','http://localhost/media/thumb/',NULL),
-  (3,'temp','FileSystemAdapter','TEMP',1,'/Library/WebServer/www/media/directus/temp/','http://localhost/media/temp/',NULL);
-
-/*!40000 ALTER TABLE `directus_storage_adapters` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 
 # Dump of table directus_tables
@@ -384,11 +349,12 @@ CREATE TABLE `directus_users` (
   `avatar` varchar(500) DEFAULT NULL,
   `avatar_file_id` int(11) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
   `state` varchar(2) DEFAULT NULL,
   `zip` varchar(10) DEFAULT NULL,
+  `locale` varchar(32) DEFAULT 'en',
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_email_unique` (`email`),
   UNIQUE KEY `directus_users_token_unique` (`token`)
@@ -397,9 +363,9 @@ CREATE TABLE `directus_users` (
 LOCK TABLES `directus_users` WRITE;
 /*!40000 ALTER TABLE `directus_users` DISABLE KEYS */;
 
-INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `token`, `reset_token`, `reset_expiration`, `position`, `email_messages`, `last_login`, `last_access`, `last_page`, `ip`, `group`, `avatar`, `location`, `phone`, `address`, `city`, `state`, `zip`)
+INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `token`, `reset_token`, `reset_expiration`, `position`, `email_messages`, `last_login`, `last_access`, `last_page`, `ip`, `group`, `avatar`, `location`, `phone`, `address`, `city`, `state`, `zip`, `locale`)
 VALUES
-  (1,1,'','','admin@example.com','1202c7d0d07308471bc9118bf13647d225c625e8','5329e597d9afa','','',NULL,'',1,'2014-07-30 18:58:24','2014-07-30 18:59:00','{\"path\":\"tables/1\",\"route\":\"entry\"}','',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+  (1,1,'','','admin@example.com','1202c7d0d07308471bc9118bf13647d225c625e8','5329e597d9afa','','',NULL,'',1,'2014-07-30 18:58:24','2014-07-30 18:59:00','{\"path\":\"tables/1\",\"route\":\"entry\"}','',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'en');
 
 /*!40000 ALTER TABLE `directus_users` ENABLE KEYS */;
 UNLOCK TABLES;

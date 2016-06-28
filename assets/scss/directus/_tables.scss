@@ -1,13 +1,18 @@
 .directus-table-container {
+  //overflow: hidden;
+}
+.table-shadow {
+  @extend .rounded-corners;
+  @extend .card-shadow;
   overflow: hidden;
 }
 #directus_columns {
   .input-selector {
     width: 150px;
     display: inline-block;
-    height: 30px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    // height: 30px;
+    // padding-top: 0px;
+    // padding-bottom: 0px;
   }
   .open-ui-options {
     margin-left: 4px;
@@ -28,17 +33,19 @@
     cursor: pointer;
   }
   .sortable-column {
+    @include transition (all, $fastSpeed, ease-in-out);
     min-width: 100px;
   }
   thead {
     tr {
       -webkit-font-smoothing: antialiased;
       background-color: darken($white, 3%);
+      height: 40px;
       &:hover {
-        background-color: darken($white, 5%);
+        //background-color: darken($white, 5%);
         cursor: default;
         #set-visible-columns {
-          background-color: darken($white, 5%);
+          //background-color: darken($white, 5%);
         }
       }
       th {
@@ -46,8 +53,8 @@
         // border-bottom: 1px solid $lightGrey;
         text-transform: uppercase;
         font-size: 11px;
-        font-weight: 600;
-        padding: 11px $smallPad $smallPad $smallPad;
+        font-weight: 500;
+        padding: ($smallPad + 2) $smallPad ($smallPad - 2) $smallPad;
         position: relative;
         &.asc, &.desc {
           .sorter {
@@ -71,6 +78,11 @@
         &.permissions {
           width: 10%;
         }
+        &.check-box {
+          label {
+            margin-top: -3px;
+          }
+        }
         .icon {
           display: inline-block;
           height: 0px;
@@ -90,24 +102,27 @@
       // transition: background-color 600ms ease;
       position: absolute;
       top: 9px;
-      right: 12px;
+      right: 4px;
       display: none;
       color:$mediumGrey;
       &:hover {color: $darkGrey; }
     }
+    &.force-hover #set-visible-columns,
+    &:hover #set-visible-columns {
+      display: block;
+      background-color: darken($white, 3%);
+      padding-left: 10px;
+      padding-right: 10px;
+    }
   }
   .visible-columns-cell {
     width: 0;
-    right: 0;
     display: table;
-  }
-  thead:hover #set-visible-columns {
-    display: block;
-    background-color: darken($white, 3%);
-    padding-left: 10px;
+    top: 0;
+    right: 16px;
+    position: absolute;
   }
   tbody {
-    @extend .card-border;
     background-color: $white;
     .secondary-info {
       -webkit-font-smoothing: antialiased;
@@ -140,9 +155,10 @@
     }
   }
   tfoot {
+    height: 0;
     tr {
       border-bottom: none;
-      height: 100px;
+      height: 0;
       background-color: transparent;
       &:hover {
         background-color: initial;
@@ -154,16 +170,39 @@
       }
       td {
         vertical-align: top;
-        padding-left: 0;
+        position: relative;
+        padding: 0;
+        height: 0;
       }
       .footer-function {
+        color: $mediumGrey;
+        background-color:$white;
+        text-align:center;
+        padding: 10px 10px 8px 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: inline-block;
+        &:after {
+          content: "";
+          position: absolute;
+          top: -6px;
+          left: 50%;
+          border-style: solid;
+          border-width: 0 12px 6px 12px;
+          border-color: $white transparent;
+          display: block;
+          width: 0;
+          z-index: 1;
+          margin-left: -12px;
+        }
         .method {
-          font-weight: 600;
+          font-weight: 500;
           font-size: 11px;
         }
         ul {
           padding:0;
-          font-weight: 600;
+          font-weight: 500;
           font-size: 11px;
         }
         @include border-radius(3px, 3px, 3px, 3px);
@@ -179,24 +218,6 @@
         li:hover {
           color: $extraDarkGrey;
         }
-        color: $mediumGrey;
-        background-color:$white;
-        width:72px;
-        text-align:center;
-        padding: 7px 5px 5px 5px;
-        position:relative;
-      }
-      .footer-function:after {
-        content: "";
-        position: absolute;
-        top: -5px;
-        left: 10px;
-        border-style: solid;
-        border-width: 0 5px 5px;
-        border-color: $white transparent;
-        display: block;
-        width: 0;
-        z-index: 1;
       }
     }
   }
@@ -205,36 +226,36 @@
     border-bottom: solid 1px $extraLightGrey;
     color: $darkGrey;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 13px;
     // background highlight
     background-color: #FFFFFF;
     // -webkit-transition: background-color 600ms ease;
     // transition: background-color 600ms ease;
     &.highlight {
-      background-color: $tableHoverYellow;
+      background-color: $tableRowHover;
     }
     &:hover {
       cursor: pointer;
       // Resolved transform3d bug in chrome (weird black borders on tr)
       td {
-        background-color: $tableHoverYellow;
+        background-color: $tableRowHover;
       }
       .settings {
         display: block;
       }
     }
     &.featured {
-      font-weight: 700;
+      font-weight: 500;
       -webkit-font-smoothing: antialiased;
     }
     &.inactive {
       td {
         opacity: 0.5;
       }
-      // td.check,
-      // td.sort {
-      //   opacity: 1.0;
-      // }
+      td.check,
+      td.sort {
+        opacity: 1.0;
+      }
     }
     &.system {
       height: 55px;
@@ -246,8 +267,8 @@
     }
     td {
       vertical-align: middle;
-      padding-bottom: 9px;
-      padding-top: 8px;
+      padding-bottom: 12px;
+      padding-top: 12px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -266,7 +287,7 @@
   }
 }
 .related-table {
-  margin-bottom: $smallPad;
+  margin-bottom: $gutterWidth;
   max-height: 800px;
   overflow: auto;
   thead {
@@ -282,11 +303,14 @@
       }
     }
   }
+  tbody {
+    border-bottom: none;
+  }
   .table-striped {
     border-bottom: none;
     tr {
       &:hover td {
-        background-color: $tableHoverYellow;
+        background-color: $tableRowHover;
       }
       td {
         background-color: darken($white, 2%);
@@ -313,23 +337,19 @@
   right: 24px;
 }
 .set-columns {
+  @extend .rounded-corners;
   // overflow: hidden; // For triangle
+  position: fixed;
+  top: 181px;
+  right: 50px;
   display: block;
-  position: absolute;
-  right: -2px;
-  top: 38px;
+  // right: -2px;
+  // top: 38px;
   width: 200px;
-  background-color: $extraDarkGrey;
-  color: $mediumGrey;
+  background-color: $extraLightGrey;
+  color: $darkGrey;
   z-index: 1;
-  &:after {
-    @include triangle-top(12px, 6px, $extraDarkGrey);
-    content: "";
-    margin-top: -6px;
-    position: absolute;
-    right: 12px;
-    top: 0px;
-  }
+  border: 1px solid darken($lightGrey, 10%);
   fieldset {
     padding: 15px 20px 15px 20px;
     max-height: 300px;
@@ -337,10 +357,14 @@
     border-top: none;
     border-right: none;
     border-left: none;
-    border-bottom: 3px solid lighten($extraDarkGrey, 5%);
+    border-bottom: 1px solid darken($lightGrey, 10%);
     margin: 0 0 55px 0;
     label {
       padding: 5px 0 5px 0;
+      cursor: pointer;
+      &:hover {
+        color: $extraDarkGrey;
+      }
     }
   }
   .btn-row {
@@ -350,13 +374,19 @@
     right: 20px;
     font-size: 12px;
     .btn {
-      float: right;
-      margin-left: 10px;
-      background-color: lighten($extraDarkGrey, 10%);
-      border-bottom: 2px solid #222222;
+      float: left;
+      background-color: $mediumGrey;
+      // border-bottom: 2px solid #222222;
+      &.btn-primary {
+        background-color: $primaryColor;
+        margin-right: 10px;
+        &:hover {
+          background-color: darken($primaryColor, 10%);
+        }
+      }
       &:hover {
-        background-color: lighten($extraDarkGrey, 15%);
-        border-bottom: 2px solid #000000;
+        background-color: lighten($extraDarkGrey, 25%);
+        // border-bottom: 2px solid #000000;
       }
     }
   }
@@ -397,7 +427,8 @@
   font-weight: normal;
 }
 .history-container {
-  @extend .card-border;
+  @extend .rounded-corners;
+  @extend .card-shadow;
   background-color: $white;
   padding: $standardPad;
   color: $darkGrey;
@@ -408,7 +439,7 @@
     .history-add-comment {
       padding-right: 180px;
       .history-comment {
-        width: 100%;
+        width: 90%;
       }
     }
     li {
@@ -432,19 +463,22 @@
       }
       .mention-list {
         width: 100%;
-        max-width: 500px;
+        max-width: 530px;
         background-color: #ffffff;
         display: block;
-        margin-top: -3px;
+        margin-top: 7px;
         margin-left: 10px;
-        padding: 6px 10px 6px 10px;
+        padding: 5px;
+        border: 1px solid $fieldColor;
+        @extend .rounded-corners;
         &:empty {
           display: none;
         }
       }
       .mention-choice {
+        @extend .rounded-corners;
         background-color: inherit;
-        padding: 4px;
+        padding: 5px;
         &:hover {
           background-color: $extraLightGrey;
           cursor: pointer;
@@ -456,12 +490,12 @@
         }
       }
       .mention-tag {
-        background-color: $extraLightGrey;
-        padding: 0 4px 0 4px;
-        margin: 0 1px 0 1px;
+        @include transition;
+        @extend .rounded-corners;
+        color: $primaryColor;
         cursor: pointer;
         &:hover {
-          background-color: $lightGrey;
+          color: darken($primaryColor, 10%);
         }
       }
       .avatar {
@@ -474,37 +508,47 @@
       }
       .history-datetime {
         color: $mediumGrey;
-        position: absolute;
-        top: 30px;
-        right: 0;
+        margin-left: 10px;
+        margin-top: 4px;
+        font-style: italic;
+        font-size: 12px;
       }
       .history-comment {
         position: relative;
         display: inline-block;
-        padding: 12px 22px 10px 20px;
-        background-color: $fieldColor;
-        //@include border-radius(3px, 3px, 3px, 3px);
+        padding: 20px;
+        background-color: $white;
+        @include border-radius(4px, 4px, 4px, 4px);
+        border: 1px solid $fieldColor;
         max-width: 500px;
         //min-width: 300px;
         margin-left: 10px;
         height: auto;
         min-height: 18px;
+        font-weight: 400;
+        &:after,
+        &:before {
+            right: 100%;
+            top: 20px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
         &:after {
-          content:"";
-          position:absolute;
-          bottom:-20px; /* value = - border-top-width - border-bottom-width */
-          left:50px; /* controls horizontal position */
-          border-width:40px 0 0 40px; /* vary these values to change the angle of the vertex */
-          border-style:solid;
-          border-color: $fieldColor transparent;
-          /* reduce the damage in FF3.0 */
-          display:block;
-          width:0;
-          top:10px;
-          left:-10px; /* value = - border-left-width - border-right-width */
-          bottom:auto;
-          border-width: 10px 10px 10px 0; /* vary these values to change the angle of the vertex */
-          border-color:transparent $fieldColor;
+            border-color: rgba(255, 255, 255, 0);
+            border-right-color: #ffffff;
+            border-width: 9px;
+            margin-top: -9px;
+        }
+        &:before {
+            border-color: rgba(255, 0, 0, 0);
+            border-right-color: $fieldColor;
+            border-width: 10px;
+            margin-top: -10px;
         }
         #messages-response-button {
           position: absolute;
@@ -515,8 +559,11 @@
           border: none;
           width: 100%;
           min-height: 80px;
-          padding: 5px 0 0 0;
+          padding: 0 0 30px 0;
           -webkit-font-smoothing: antialiased !important;
+          &.tall {
+            min-height: 140px;
+          }
         }
       }
       .history-follow {
@@ -529,7 +576,8 @@
         }
       }
       .history-text {
-        padding-top: 10px;
+        padding-top: 2px;
+        padding-left: 10px;
         a {
           color: $mediumGrey;
         }
@@ -538,68 +586,68 @@
         position: absolute;
         top: 44px;
         left: 24px;
-        width: 20px;
-        height: 20px;
+        width: 21px;
+        height: 21px;
         color: $white;
-        @include border-radius(10px, 10px, 10px, 10px);
-        .icon {
-          font-size: 200%;
+        @include border-radius(20px, 20px, 20px, 20px);
+        .material-icons {
+          font-size: 100%;
           line-height: 60%;
           position: absolute;
         }
         &.add {
           background-color: $addColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.edit {
           background-color: $editColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.delete {
           background-color: $deleteColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.message {
           background-color: $messageColor;
-          .icon {
+          .material-icons {
             top: 2px;
             left: 4px;
           }
         }
         &.comment {
           background-color: $messageColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.attach {
           background-color: $attachColor;
-          .icon {
-            top: 1px;
+          .material-icons {
+            top: 6px;
             left: 4px;
           }
         }
         &.login {
           background-color: $loginColor;
-          .icon {
-            top: 1px;
-            left: 5px;
+          .material-icons {
+            top: 6px;
+            left: 4px;
           }
         }
         &.system {
           background-color: $systemColor;
-          .icon {
-            top: 1px;
+          .material-icons {
+            top: 6px;
             left: 4px;
           }
         }
@@ -741,7 +789,9 @@
 
 .sortableHeader {
   color: $extraDarkGrey !important;
-  @extend .pulsate;
+  .material-icons {
+    @extend .pulsate;
+  }
 }
 
 .disable-sorting {
@@ -805,7 +855,7 @@ tbody.remove-hover-state {
 }
 .sortable-ghost td {
   //opacity: 0.5 !important;
-  background-color: $tableHoverYellow !important;
+  background-color: $tableRowHover !important;
 }
 .remove-hover-state {
   cursor: move !important;

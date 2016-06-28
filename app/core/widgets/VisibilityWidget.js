@@ -15,10 +15,10 @@ function(app, Backbone, PreferenceModel) {
     <div class="simple-select dark-grey-color simple-gray left" title="Choose which items are displayed"> \
       <span class="icon icon-triangle-down"></span> \
       <select id="visibilitySelect" name="status" class="change-visibility"> \
-        <optgroup label="Status"> \
-          <option data-status value="{{allKeys}}">View All</option> \
+        <optgroup label="{{t "status"}}"> \
+          <option data-status value="{{allKeys}}">{{t "widget_visibility_all_items"}}</option> \
           {{#mapping}} \
-            <option data-status value="{{id}}" {{#if isSelected}} selected {{/if}}>View {{capitalize name}}</option> \
+            <option data-status value="{{id}}" {{#if isSelected}} selected {{/if}}>{{capitalize name}} {{t "status_items"}}</option> \
           {{/mapping}} \
         </optgroup> \
       </select> \

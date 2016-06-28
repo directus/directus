@@ -264,14 +264,16 @@ $hamburger-height: 7px;
 	.two-column-form {
 		.fields {
 			.field {
-				padding: 20px 10px 20px 10px;
+                display: block !important;
+				padding: 10px 30px 30px 30px;
 				.medium {
 					width: auto;
 				}
 			}
 			.label {
-				width: 100px;
-				padding: 30px 10px 20px 10px;
+                display: block !important;
+				width: 100%;
+				padding: 30px 30px 10px 30px;
 			}
 		}
 	}
@@ -294,9 +296,9 @@ $hamburger-height: 7px;
 		height: 60px;
 		.left-col {
 			width: 100px;
-			.icon {
-				font-size: 100px;
-				line-height: 80px;
+			.material-icons {
+				font-size: 70px;
+				line-height: 100px;
 			}
 		}
 		.right-col {

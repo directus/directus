@@ -6,31 +6,17 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'backbone'],function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComponent, UIView, __t) {
 
-  "use strict";
+  'use strict';
 
-  var Module = {};
+  var template = '<div class="select-container" style="margin-top: 4px;margin-bottom: 6px;"> \
+                    <select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
+                    <i class="material-icons select-arrow">arrow_drop_down</i> \
+                  </div>';
 
-  var template = '<select name="{{name}}" style="margin-top: 4px;margin-bottom: 6px;" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>';
-
-  Module.id = 'select';
-  Module.dataTypes = ['VARCHAR', 'INT'];
-  Module.variables = [
-    {id: 'options', ui: 'textarea', options:{'rows': 25}, comment: "Enter JSON key value pairs with the saved value and text displayed."},
-    {id: 'allow_null', ui: 'checkbox'},
-    {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"}
-  ];
-
-  Module.Input = Backbone.Layout.extend({
-
-    template: Handlebars.compile(template),
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
+  var Input = UIView.extend({
+    templateSource: template,
 
     serialize: function() {
       var selectedValue = this.options.value;
@@ -42,9 +28,11 @@ define(['app', 'backbone'],function(app, Backbone) {
 
       options = _.map(options, function(value, key) {
         var item = {};
+
         item.value = value;
         item.key = key;
         item.selected = (item.key == selectedValue);
+
         return item;
       });
 
@@ -53,23 +41,30 @@ define(['app', 'backbone'],function(app, Backbone) {
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
-        allow_null: this.options.settings.get('allow_null') == 1,
-        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
+        allow_null: this.options.settings.get('allow_null'),
+        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
       };
     }
-
   });
 
-  Module.validate = function(value, options) {
-    if (options.schema.isRequired() && !value && value != 0) {
-      return 'This field is required';
+  var Component = UIComponent.extend({
+    id: 'select',
+    dataTypes: ['VARCHAR', 'INT'],
+    variables: [
+      {id: 'options', ui: 'textarea', options:{'rows': 25}, comment: __t('select_options_comment')},
+      {id: 'allow_null', ui: 'checkbox'},
+      {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (options.schema.isRequired() && _.isEmpty(value)) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function(options) {
+      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
     }
-  };
+  });
 
-  Module.list = function(options) {
-    var val = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
-    return val;
-  };
-
-  return Module;
+  return Component;
 });

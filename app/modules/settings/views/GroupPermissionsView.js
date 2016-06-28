@@ -11,10 +11,11 @@ define([
   'backbone',
   'core/BasePageView',
   'core/widgets/widgets',
+  'core/t',
   'schema/TableModel'
 ],
 
-function(app, Backbone, BasePageView, Widgets, TableModel) {
+function(app, Backbone, BasePageView, Widgets, __t, TableModel) {
 
   "use strict";
 
@@ -30,7 +31,7 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
   var EditFieldsOverlay = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Edit Fields',
+        title: __t('edit_fields'),
         isOverlay: true
       }
     },
@@ -411,7 +412,7 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
         data.hasWriteBlacklist = false;
 
         var modelTable = app.schemaManager.getTable(model.get('table_name'));
-        var userCreateColumnName = 'no column chosen';
+        var userCreateColumnName = __t('permissions_user_created_column_no_chosen');
         if (modelTable && modelTable.has('user_create_column')) {
           userCreateColumnName = modelTable.get('user_create_column') || userCreateColumnName;
         }
@@ -593,8 +594,8 @@ function(app, Backbone, BasePageView, Widgets, TableModel) {
   GroupPermissions.Page = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Settings',
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Group Permissions', anchor: '#settings/permissions'}]
+        title: __t('settings'),
+        breadcrumbs: [{title: __t('settings'), anchor: '#settings'}, {title: __t('group_permissions'), anchor: '#settings/permissions'}]
       },
     },
     rightToolbar: function() {

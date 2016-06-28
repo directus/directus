@@ -17,10 +17,11 @@ define([
   'modules/settings/views/AboutView',
   'modules/settings/views/PermissionsView',
   'modules/settings/views/SystemView',
-  'modules/settings/views/GroupPermissionsView'
+  'modules/settings/views/GroupPermissionsView',
+  'core/t',
 ],
 
-function(app, Backbone, Directus, BasePageView, Tables, Global, About, Permissions, System, GroupPermissions) {
+function(app, Backbone, Directus, BasePageView, Tables, Global, About, Permissions, System, GroupPermissions, __t) {
 
   "use strict";
 
@@ -40,7 +41,7 @@ function(app, Backbone, Directus, BasePageView, Tables, Global, About, Permissio
   Settings.Main = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Settings'
+        title: __t('settings')
       },
     },
     template: 'modules/settings/settings'

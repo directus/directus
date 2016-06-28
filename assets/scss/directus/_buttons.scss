@@ -1,17 +1,17 @@
 @mixin btn-white() {
   color: $darkGrey;
   background-color: $white;
-  border-color: $lightGrey;
-  border-top: 1px solid $lightGrey;
-  border-bottom: 1px solid $lightGrey;
+  border-color: $fieldColor;
+  border-top: 1px solid $fieldColor;
+  border-bottom: 1px solid $fieldColor;
   &:hover {
     background-color: $lightGrey
   }
   &.active, &.wysihtml5-command-active {
-    border-top-color: $darkGrey;
-    border-bottom-color: $darkGrey;
-    border-left-color: $darkGrey;
-    background-color: $darkGrey;
+    border-top-color: $primaryColor;
+    border-bottom-color: $primaryColor;
+    border-left-color: $primaryColor;
+    background-color: $primaryColor;
     color: $white;
   }
 }
@@ -40,13 +40,13 @@
       }
       &:last-child {
         //border-right-width: 1px;
-        border-right: 1px solid $lightGrey;
+        border-right: 1px solid $fieldColor;
       }
     }
   }
   .btn {
     @include border-radius(0px, 0px, 0px, 0px);
-    border-left: solid 1px $lightGrey;
+    border-left: solid 1px $fieldColor;
     border-right-width: 0px;
     display: block;
     float: left;
@@ -76,25 +76,26 @@
   }
 }
 .btn {
-  @include border-radius(3px, 3px, 3px, 3px);
-  background-color: $mediumGrey;
+  @include transition (background-color, $fastSpeed, ease-in-out);
+  @include border-radius(4px, 4px, 4px, 4px);
+  background-color: $primaryColor;
   border: none;
-  border-bottom: 2px solid darken($mediumGrey, 10%);
+  // border-bottom: 2px solid darken($mediumGrey, 10%);
   color: $white;
   cursor: pointer;
-  padding: 12px 15px 10px 15px;
-  letter-spacing: 0;
-  font-weight: 600;
+  padding: 15px 25px 15px 25px;
+  font-size: 14px;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased !important;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   &:hover {
-    background-color: darken($mediumGrey, 10%);
-    border-bottom: 2px solid darken($mediumGrey, 20%);
+    background-color: darken($primaryColor, 10%);
+    // border-bottom: 2px solid darken($mediumGrey, 20%);
   }
   &:active {
-    background-color: darken($mediumGrey, 20%);
-    border-bottom: 2px solid darken($mediumGrey, 30%);
+    background-color: darken($primaryColor, 20%);
+    // border-bottom: 2px solid darken($mediumGrey, 30%);
   }
   &.active {
     background-color: $extraDarkGrey;
@@ -108,7 +109,9 @@
     padding: $smallPad;
   }
   &.btn-small {
-    padding: 5px 10px 5px 10px;
+    padding: 7px 14px 7px 14px;
+    font-size: 13px;
+    letter-spacing: 0.04em;
   }
   .icon {
     font-size: 400%;
@@ -118,6 +121,11 @@
     vertical-align: middle;
     font-size: 18px;
   }
+}
+.rounded-button {
+    @include border-radius(4px, 4px, 4px, 4px);
+    padding: 10px 10px 10px 10px;
+    background-color: $white;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -131,6 +139,7 @@
 // Switches
 
 .toggle-switch {
+  @extend .rounded-corners;
   display: block;
   position: relative;
   cursor: pointer;
@@ -140,46 +149,45 @@
   width: 30px;
   height: 15px;
   background-color: lighten($mediumGrey, 15%);
-  border-radius: 15px;
   transition: background 0.4s;
   &:hover {
-    background-color: lighten($mediumGrey, 5%);
+    background-color: $mediumGrey;
   }
-}
-.toggle-switch:before,
-.toggle-switch:after {
-  display: block;
-  position: absolute;
-  content: "";
-}
-.toggle-switch:before {
-  top: 2px;
-  left: 2px;
-  bottom: 2px;
-  right: 2px;
-  background-color: #fff;
-  border-radius: 15px;
-  transition: background 0.4s;
-}
-.toggle-switch:after {
-  top: 4px;
-  left: 4px;
-  bottom: 4px;
-  width: 13px;
-  background-color: lighten($mediumGrey, 15%);
-  border-radius: 13px;
-  transition: margin 0.4s, background 0.4s;
-}
-.toggle-switch.on {
-  background-color: $addColor;
-  &:hover {
-    background-color: darken($addColor, 10%);
+  &:before {
+    display: block;
+    position: absolute;
+    content: "";
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    right: 2px;
+    background-color: #fff;
+    border-radius: 2px;
+    transition: background 0.4s;
   }
-}
-.toggle-switch.on:after {
-  margin-left: 15px;
-  background-color: $addColor;
-  left: 2px;
+  &:after {
+    display: block;
+    position: absolute;
+    content: "";
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: 13px;
+    background-color: lighten($mediumGrey, 15%);
+    border-radius: 2px;
+    transition: margin 0.4s, background 0.4s;
+  }
+  &.on {
+    background-color: $primaryColor;
+    &:hover {
+      background-color: darken($primaryColor, 15%);
+    }
+    &:after {
+      margin-left: 15px;
+      background-color: $primaryColor;
+      left: 2px;
+    }
+  }
 }
 
 // Below is toggle with input
@@ -230,9 +238,9 @@ input.toggle-switch-input + label:after {
   transition: margin 0.4s, background 0.4s;
 }
 input.toggle-switch-input:checked + label {
-  background-color: $addColor;
+  background-color: $primaryColor;
 }
 input.toggle-switch-input:checked + label:after {
   margin-left: 15px;
-  background-color: $addColor;
+  background-color: $primaryColor;
 }

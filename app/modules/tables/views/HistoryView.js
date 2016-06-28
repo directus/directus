@@ -1,11 +1,12 @@
 define([
   'app',
   'backbone',
+  'core/t',
   'core/directus',
   'moment'
 ],
 
-function(app, Backbone, Directus, moment) {
+function(app, Backbone, __t, Directus, moment) {
 
   return Backbone.Layout.extend({
     tagName: "ul",
@@ -204,20 +205,20 @@ function(app, Backbone, Directus, moment) {
 
         switch(model.get('action')) {
           case 'DELETE':
-            data.icon = "icon-trash";
+            data.icon = "delete";
             data.color = "delete";
-            data.action_text = "deleted this item";
+            data.action_text = __t('deleted_this_item');
             break;
           case 'UPDATE':
-            data.icon = "icon-pencil";
+            data.icon = "edit";
             data.color = "edit";
-            data.action_text = "edited this item";
+            data.action_text = __t('edited_this_item');
             break;
           case 'ADD':
             data.add = true;
-            data.icon = "icon-check";
+            data.icon = "check";
             data.color = "add";
-            data.action_text = "created this item";
+            data.action_text = __t('created_this_item');
             break;
         }
         return data;

@@ -7,40 +7,19 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
+define(['app', 'backbone', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, Backbone, UIComponent, UIView, __t) {
 
-  "use strict";
+  'use strict';
 
-  var Module = {};
+  var template = '<div class="select-container"> \
+                    <select {{#unless canEdit}}disabled{{/unless}}> \
+                    <option value="">{{placeholder_text}}</option> \
+                    {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>{{/data}} \
+                  </select> \
+                  <i class="material-icons select-arrow">arrow_drop_down</i> \
+                  </div>';
 
-  Module.id = 'many_to_one';
-  Module.dataTypes = ['INT'];
-
-  Module.variables = [
-    {id: 'readonly', ui: 'checkbox'},
-    {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: "Enter Visible Column Name"},
-    {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: "Enter Twig Template String"},
-    {id: 'visible_status_ids', ui: 'textinput', char_length: 64, required: true, def: 1, comment: "Enter the visible status ids"},
-    {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: "Enter Placeholder Text"},
-    {id: 'filter_type', ui: 'select', options: {options: {'dropdown':'Dropdown','textinput':'Text Input'} }},
-    {id: 'filter_column', ui: 'textinput', char_length: 255, comment: "Enter Column thats value is used for filter search"}
-  ];
-
-  var template = '<select {{#unless canEdit}}disabled{{/unless}}> \
-                  <option value="">{{placeholder_text}}</option> \
-                  {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>{{/data}} \
-                  </select>';
-
-  //name="{{name}}"
-
-  Module.Input = UIView.extend({
-
-    tagName: 'div',
-
-    attributes: {
-      'class': 'field'
-    },
-
+  var Input = UIView.extend({
     events: {
       'change select': function(e) {
         var model = this.model.get(this.name);
@@ -50,10 +29,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       }
     },
 
-    template: Handlebars.compile(template),
+    templateSource: template,
 
     serialize: function() {
-
       var optionTemplate = function(){};
       if(this.options.settings.has('visible_column_template')) {
         optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
@@ -82,7 +60,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
           selected: true
         }];
       }
+
       data = _.sortBy(data, 'name');
+
       return {
         canEdit: this.canEdit,
         name: this.options.name,
@@ -90,7 +70,7 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
         handleBarString: this.options.settings.get('value_template'),
         comment: this.options.schema.get('comment'),
         use_radio_buttons: (this.options.settings && this.options.settings.has('use_radio_buttons') && this.options.settings.get('use_radio_buttons') == '1') ? true : false,
-        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : "Select from Below"
+        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
       };
     },
 
@@ -100,7 +80,9 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       if(this.columnSchema.relationship) {
         relatedTable = this.columnSchema.relationship.get('table_related');
       } else {
-        console.error("Column is misconfigured in directus_columns! : " + this.name);
+        console.error(__t('column_misconfigured_in_directus_columns', {
+          column: this.name
+        }));
       }
       var value = this.model.get(this.name);
       this.canEdit = this.model.canEdit(this.name);
@@ -127,44 +109,59 @@ define(['app', 'backbone', 'core/UIView'], function(app, Backbone, UIView) {
       //this.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }
-
   });
 
-  Module.validate = function(value, options) {
-    if (!options.schema.isNullable() || options.schema.get('required')) {
-      // a numer is ok
-      if (!_.isNaN(parseInt(value,10))) {
-        return;
+  var Component = UIComponent.extend({
+    id: 'many_to_one',
+    dataTypes: ['INT'],
+    variables: [
+      {id: 'readonly', ui: 'checkbox'},
+      {id: 'visible_column', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_comment')},
+      {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_template_comment')},
+      {id: 'visible_status_ids', ui: 'textinput', char_length: 64, required: true, def: 1, comment: __t('m2o_visible_status_ids_comment')},
+      {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: __t('m2o_placeholder_text_comment')},
+      {id: 'filter_type', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
+      {id: 'filter_column', ui: 'textinput', char_length: 255, comment: __t('m2o_filter_column_comment')}
+    ],
+    Input: Input,
+    validate: function(value, options) {
+      if (!options.schema.isNullable() || options.schema.get('required')) {
+        // a numer is ok
+        if (!_.isNaN(parseInt(value,10))) {
+          return;
+        }
+        //empty is not ok
+        if (_.isEmpty(value)) {
+          return __t('this_field_cannot_be_empty');
+        }
+
+        // model value without proper id is not ok
+        if (value instanceof Backbone.Model && (_.isNaN(value.get('id')) || value.get('id') === undefined)) {
+          return __t('this_field_cannot_be_empty');
+        }
       }
-      //empty is not ok
-      if (_.isEmpty(value)) {
-        return 'The field cannot be empty';
+    },
+    list: function(options) {
+      if (options.value === undefined) return '';
+
+      if(options.settings.get('visible_column_template') !== undefined) {
+        var displayTemplate = Handlebars.compile(options.settings.get('visible_column_template'));
+        if (options.value instanceof Backbone.Model) {
+          return displayTemplate(options.value.attributes);
+        } else if(options.value instanceof Object) {
+          return displayTemplate(options.value);
+        }
       }
 
-      // model value without proper id is not ok
-      if (value instanceof Backbone.Model && (_.isNaN(value.get('id')) || value.get('id') === undefined)) {
-        return 'The field cannot be empty';
-      }
-    }
-  };
-
-  Module.list = function(options) {
-    if (options.value === undefined) return '';
-    if(options.settings.get('visible_column_template') !== undefined) {
-      var displayTemplate = Handlebars.compile(options.settings.get('visible_column_template'));
       if (options.value instanceof Backbone.Model) {
-        return displayTemplate(options.value.attributes);
-      } else if(options.value instanceof Object) {
-        return displayTemplate(options.value);
+        return options.value.get(options.settings.get('visible_column'));
+      }  else if(options.value instanceof Object) {
+        return options.value[options.settings.get('visible_column')];
       }
-    }
-    if (options.value instanceof Backbone.Model) {
-      return options.value.get(options.settings.get('visible_column'));
-    }  else if(options.value instanceof Object) {
-      return options.value[options.settings.get('visible_column')];
-    }
-    return options.value;
-  };
 
-  return Module;
+      return options.value;
+    }
+  });
+
+  return Component;
 });

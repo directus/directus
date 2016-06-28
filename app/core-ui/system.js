@@ -7,11 +7,9 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app','backbone'], function(app, Backbone) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
-  "use strict";
-
-  var Module = {};
+  'use strict';
 
 
   //Temporarily disable styling since breaks this ui when in overlay
@@ -30,18 +28,8 @@ define(['app','backbone'], function(app, Backbone) {
                   {{/mapping}} \
                   </div>';
 
-  Module.id = 'system';
-  Module.dataTypes = ['TINYINT'];
-
-  Module.variables = [];
-
-  Module.Input = Backbone.Layout.extend({
-
-    tagName: 'div',
-    attributes: {
-      'class': 'field'
-    },
-    template: Handlebars.compile(template),
+  var Input = UIView.extend({
+    templateSource: template,
 
     events: {
       'change input[type=radio]': function(e) {
@@ -84,19 +72,20 @@ define(['app','backbone'], function(app, Backbone) {
       });
 
       data.name = this.options.name;
-
       data.readonly = !this.options.canWrite;
+
       return data;
     }
-
   });
 
-  Module.list = function(options) {
-    var val = (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
-    //var val = options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100);
-    return val;//val;
-  };
+  var Component = UIComponent.extend({
+    id: 'system',
+    dataTypes: ['TINYINT'],
+    Input: Input,
+    list: function(options) {
+      return (options.value) ? '<input type="checkbox" checked="true" disabled>' : '<input type="checkbox" disabled>';
+    }
+  });
 
-
-  return Module;
+  return Component;
 });

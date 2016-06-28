@@ -20,10 +20,11 @@ define([
   'sortable',
   'core/notification',
   'core/doubleConfirmation',
+  'core/t',
   '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, SettingsConfig) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t,SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -34,14 +35,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     headerOptions: {
       route: {
 
-        title: 'New Field',
+        title: __t('new_field'),
         isOverlay: true
       }
     },
 
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "check", buttonClass: "add-color-background"}})
+        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "check", buttonClass: "", buttonText: __t('save_item')}})
       ];
     },
 
@@ -308,7 +309,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
   var EditRelationship = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Relationship Settings',
+        title: __t('relationship_settings'),
         isOverlay: true
       }
     },
@@ -438,7 +439,9 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     destroyColumn: function(columnName) {
-      var columnModel = this.collection.get(columnName);
+      var originalColumnModel = this.collection.get(columnName);
+      var columnModel = originalColumnModel.clone();
+      columnModel.url = originalColumnModel.url;
 
       if (!columnModel) {
         Notification.error('Error', 'Column '+columnName+' not found.');
@@ -446,10 +449,21 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       var self = this;
-      columnModel.destroy({success: function(model, response) {
-        self.$el.find('[data-id='+model.get('id')+']').remove();
-        Notification.success('Column removed', '<b>'+columnName+'</b> was removed.', 3000);
-      }, wait: true});
+      var onSuccess = function(model, response) {
+        if (!response.success) {
+          Notification.error('Column not removed', response.message);
+        } else {
+          self.collection.remove(originalColumnModel);
+          self.$el.find('[data-id=' + model.get('id') + ']').remove();
+          Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+        }
+      };
+
+      var onError = function(model, resp, options) {
+        Notification.error('Column not removed', resp.responseJSON.message);
+      };
+
+      columnModel.destroy({success: onSuccess, error: onError, wait: true});
     },
 
     verifyDestroyColumn: function(event) {
@@ -463,11 +477,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       DoubleConfirmation({
         value: columnName,
-        emptyValueMessage: 'Invalid column.',
+        emptyValueMessage: __t('invalid_column'),
 
-        firstQuestion: 'Are you sure? This column and all of its content will be permanently removed from the table!',
-        secondQuestion: 'This cannot be undone. To confirm, please type the name of the column to delete: '+columnName,
-        notMatchMessage: 'Column name did not match.',
+        firstQuestion: __t('question_delete_this_column'),
+        secondQuestion: __t('question_delete_this_column_confirm', {column_name: columnName}),
+        notMatchMessage: __t('column_name_did_not_match'),
         callback: destroyColumn
       }, this);
     },
@@ -636,7 +650,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     headerOptions: {
       route: {
         title: 'Classes',
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}, {title: 'Tables &amp; Inputs', anchor: '#settings/tables'}]
+        breadcrumbs: [{title: __t('settings'), anchor: '#settings'}, {title: __t('tables_and_inputs'), anchor: '#settings/tables'}]
       }
     },
 
@@ -814,10 +828,10 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
         DoubleConfirmation({
           value: tableName,
-          emptyValueMessage: 'Invalid table.',
-          firstQuestion: 'Are you sure? This table, its columns, and all of its content will be permanently removed from the system!',
-          secondQuestion: 'This cannot be undone. To confirm, please type the name of the table to delete: '+tableName,
-          notMatchMessage: 'Table name did not match.',
+          emptyValueMessage: __t('invalid_table'),
+          firstQuestion: __t('question_delete_this_table'),
+          secondQuestion: __t('question_delete_this_table_confirm', {table_name: tableName}),
+          notMatchMessage: __t('table_name_did_not_match'),
           callback: this.destroyTable
         }, this);
       }
@@ -873,14 +887,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
   SettingsTables.Views.List = BasePageView.extend({
     headerOptions: {
       route: {
-        title: 'Tables &amp; Inputs',
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+        title: __t('tables_and_inputs'),
+        breadcrumbs: [{title: __t('settings'), anchor: '#settings'}]
       },
     },
 
     leftToolbar: function() {
       if(!this.widgets.addWidget) {
-        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "add-color-background"}});
+        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('add')}});
       }
       return [this.widgets.addWidget];
     },
@@ -898,13 +912,13 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     addTableConfirmation: function() {
-      app.router.openModal({type: 'prompt', text: 'What would you like to name this table?', callback: _.bind(this.addTable, this)});
+      app.router.openModal({type: 'prompt', text: __t('enter_the_name_of_a_new_or_existing_table_to_add'), callback: _.bind(this.addTable, this)});
     },
 
     addTable: function(tableName) {
       // @TODO: better error message.
       if (!tableName) {
-        app.trigger('alert:error', 'Empty Table name.', '', true, {
+        app.trigger('alert:error', __t('empty_table_name'), '', true, {
           timeout: 5000
         });
         return;
@@ -914,8 +928,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       // and it has at least one character or one number
       if (!(/[a-z0-9]+/i.test(tableName) && /[_-]*/i.test(tableName))) {
         app.trigger('alert:error',
-                    'You must enter an valid table name.',
-                    'Letters (A-Z), Numbers and/or underscores and dashes',
+                    __t('you_must_enter_an_valid_table_name'),
+                    'letters_az_numbers_andor_underscores_and_dashes',
                     true, {
           timeout: 5000
         });

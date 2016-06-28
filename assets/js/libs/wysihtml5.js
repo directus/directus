@@ -8288,7 +8288,8 @@ wysihtml5.views.View = Base.extend(
       ],
       ADDITIONAL_CSS_RULES = [
         "html             { height: 100%; }",
-        "body             { min-height: 100%; padding: 0; margin: 0; margin-top: -1px; padding-top: 1px; }",
+        "body             { padding: 0; margin: 0; margin-top: -1px; padding-top: 1px; }", // removed: min-height: 100%;
+        "p:first-child    { margin-top: 0.5em; }", // Aded to format the first paragraph
         "._wysihtml5-temp { display: none; }",
         wysihtml5.browser.isGecko ?
           "body.placeholder { color: graytext !important; }" :

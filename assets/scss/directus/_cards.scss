@@ -4,9 +4,18 @@
     &.inactive {
       opacity: 0.4;
     }
-    @extend .card-border;
     font-size: 12px;
     list-style: none;
+    cursor: pointer;
+    &:hover {
+        .info {
+            .featured {
+                .primary-info {
+                    color: $primaryColor;
+                }
+            }
+        }
+    }
     .header-image {
       overflow: hidden;
       height: 200px;
@@ -14,10 +23,11 @@
       width: 200px;
       background-color: $lightGrey;
       text-align: center;
+      border-radius: 4px 4px 0 0;
       &:hover {
         cursor: pointer;
         .tool-item {
-          display: block;
+          opacity: 1.0;
         }
       }
       .embed-icon {
@@ -31,7 +41,7 @@
         border: solid 1px $lightGrey;
         border-bottom: 0px;
         font-size: 45px;
-        font-weight: 700;
+        font-weight: 500;
         height: 199px;
         line-height: 190px;
         text-align: center;
@@ -40,7 +50,7 @@
         border: solid 1px $lightGrey;
         border-bottom: 0px;
         font-size: 45px;
-        font-weight: 700;
+        font-weight: 500;
         height: 199px;
         line-height: 190px;
         text-align: center;
@@ -56,12 +66,13 @@
         background-color: $white;
         bottom: 10px;
         color: $darkGrey;
-        display: none;
         position: absolute;
         right: 10px;
         z-index: 3;
-        .icon-pencil {
-          margin-top: -6px;
+        opacity: 0;
+        .material-icons {
+          font-size: 18px;
+          margin-top: 6px;
         }
       }
     }
@@ -84,25 +95,37 @@
       //border: solid 1px $lightGrey;
       background-color: $white;
       border-top: none;
-      margin-top: 4px;
       min-height: 100px;
+      border-radius: 0 0 4px 4px;
+      border-top: 1px solid $lightGrey;
+      padding-top: 4px;
       .featured, .extra {
-        padding: 8px $standardPad 8px $standardPad;
+        padding: 14px 0 14px 0;
+        margin-left: 14px;
+        margin-right: 14px;
       }
       .featured {
         margin-top: -4px;
       }
       .primary-info {
-        //height: 1.5em;
+        @include transition();
         overflow: hidden;
-        height: 48px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin-bottom: 2px;
+        div {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
       }
       .extra {
-        padding-top: 0;
+        padding-top: 12px;
+        border-top: 1px solid $lightGrey;
         li {
           border-bottom: solid 1px $white;
           list-style: none;
-          padding: 5px 17px 5px 0px;
+          padding: 4px 22px 4px 0px;
           position: relative;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -132,7 +155,8 @@
 .feature-cards {
   padding-left: 0px;
   .feature-card {
-    @extend .card-border;
+    @extend .card-shadow;
+    @extend .rounded-corners;
     background-color: $white;
     list-style: none;
     padding: $standardPad;
@@ -140,25 +164,27 @@
     overflow: hidden;
     position: relative;
     &:hover .material-icons {
-      color: darken($lightGrey, 10%);
+      color: darken($primaryColor, 10%) !important;
     }
     .left-col {
       color: $lightGrey;
       text-align: center;
-      width: 180px;
+      width: 150px;
       position: absolute;
       top: 0;
       left: 0;
       .material-icons {
         @include transition();
         display: inline-block;
-        font-size: 100px;
+        color: $primaryColor;
+        font-size: 70px;
         line-height: 140px;
       }
     }
     .right-col {
       max-width: 400px;
-      margin-left: 160px;
+      margin-left: 130px;
+      font-weight: 400;
     }
   }
 }
