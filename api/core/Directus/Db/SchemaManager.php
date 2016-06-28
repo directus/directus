@@ -124,10 +124,6 @@ class SchemaManager
                 'id' => 'mysql',
                 'name' => 'MySQL/Percona'
             ],
-            'sqlite' => [
-                'id' => 'sqlite',
-                'name' => 'SQLite (Beta)'
-            ]
         ];
     }
 
