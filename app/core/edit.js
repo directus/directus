@@ -22,7 +22,12 @@ define(function(require, exports, module) {
     },
 
     serialize: function() {
-      var tableName = this.model.collection.table.id;
+      // editing UIs settings does not have a specified table assigned to it.
+      var tableInfo = this.model.collection.table;
+      var tableName;
+      if (tableInfo) {
+        tableName = tableInfo.id
+      }
 
       return {
         id: this.model.id,
@@ -31,7 +36,7 @@ define(function(require, exports, module) {
         required: this.model.get('required'),
         // Let assume for now that all tables that start with directus_ are core tables
         // TODO: we should store all our core tables names
-        isCoreTable: tableName.indexOf('directus_') === 0,
+        isCoreTable: tableName ? tableName.indexOf('directus_') === 0 : false,
         table: tableName
       };
     },
