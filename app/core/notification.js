@@ -11,9 +11,8 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
     // it means is the delay time (in milliseconds)
     // until the notification close
     if (!isNaN(parseInt(options)) && isFinite(options)) {
-      var timeout = options;
       options = {
-        timeout: timeout
+        timeout: options
       };
     }
 
