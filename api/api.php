@@ -52,7 +52,7 @@ use Directus\Hook\Hook;
 // use Directus\Files\Upload;
 use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
-use Directus\Util;
+use Directus\Util\StringUtils;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
 // use Directus\Db\TableGateway\DirectusIPWhitelist;
@@ -461,7 +461,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     $reset_expiration = $date->format('Y-m-d H:i:s');
 
     $set = [];
-    $set['reset_token'] = bin2hex(openssl_random_pseudo_bytes(20));
+    $set['reset_token'] = StringUtils::random(20);
     $set['reset_expiration'] = $reset_expiration;
 
     // Skip ACL
@@ -518,7 +518,7 @@ $app->post("/$v/random/?", function() use ($app) {
         $length = (int)$_POST['length'];
     }
 
-    $randomString = \Directus\Util\StringUtils::random($length);
+    $randomString = StringUtils::random($length);
 
     return JsonView::render(array(
         'random' => $randomString
