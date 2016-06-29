@@ -104,7 +104,7 @@ function(app, Backbone, EntriesManager, __t, Notification) {
         var bookmark = this.collection.get(bookmarkId);
         if (bookmark) {
           var title = bookmark.get('title');
-          app.router.openModal({type: 'confirm', text: 'Delete the bookmark "' + title + '"?', callback: function() {
+          app.router.openModal({type: 'confirm', text: __t('delete_the_bookmark_x', {title: title}), callback: function() {
             bookmark.destroy();
           }});
         }
