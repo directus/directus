@@ -7,4 +7,4 @@ define(function() {
   };
 
   return interval;
-})
+});
