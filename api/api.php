@@ -414,9 +414,10 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
         $app->halt(200, __t('password_reset_expired_token'));
     }
 
-    $password = uniqid();
+    $password = StringUtils::random();
     $set = [];
-    $set['salt'] = uniqid();
+    // @NOTE: this is not being used for hashing the password anymore
+    $set['salt'] = StringUtils::random();
     $set['password'] = Auth::hashPassword($password, $set['salt']);
     $set['reset_token'] = '';
 
