@@ -43,7 +43,8 @@ return array(
     ),
 
     'mail' => array(
-        'transport' => 'mail'
+        'transport' => 'mail',
+        'from' => 'admin@directus.local'
     ),
     // 'SMTP' => array(
     //   'host' => '',

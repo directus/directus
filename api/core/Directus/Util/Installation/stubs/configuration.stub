@@ -43,7 +43,8 @@ return array(
     ),
 
     'mail' => array(
-        'transport' => 'mail'
+        'transport' => 'mail',
+        'from' => '{{directus_email}}'
     ),
     // 'SMTP' => array(
     //   'host' => '',
