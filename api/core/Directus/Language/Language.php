@@ -16,7 +16,7 @@ class Language implements LanguageInterface
      */
     protected $name = 'English';
 
-    public function __construct(array $attributes)
+    public function __construct(array $attributes = [])
     {
         foreach($attributes as $key => $value) {
             if (property_exists($this, $key)) {
