@@ -33,34 +33,41 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
     return noty(options);
   }
 
+  function addTypeArgument(args, type) {
+    args = Utils.argumentsToArray(args);
+
+    if (args.length == 1) {
+      args.unshift(type);
+    }
+
+    args.splice(2, 0, type);
+
+    return args;
+  }
+
   //@TODO: Wrap Noty into a Notification Object
   function showNotification(options) {
     var args = Utils.argumentsToArray(arguments);
-    args.splice(2, 0, null);
     return createNotification.apply(this, args);
   }
 
   function showError(options) {
-    var args = Utils.argumentsToArray(arguments);
-    args.splice(2, 0, 'error');
+    var args = addTypeArgument(arguments, 'error');
     return createNotification.apply(this, args);
   }
 
   function showInfo(options) {
-    var args = Utils.argumentsToArray(arguments);
-    args.splice(2, 0, 'information');
+    var args = addTypeArgument(arguments, 'information');
     return createNotification.apply(this, args);
   }
 
   function showWarning(options) {
-    var args = Utils.argumentsToArray(arguments);
-    args.splice(2, 0, 'warning');
+    var args = addTypeArgument(arguments, 'warning');
     return createNotification.apply(this, args);
   }
 
   function showSuccess(options) {
-    var args = Utils.argumentsToArray(arguments);
-    args.splice(2, 0, 'success');
+    var args = addTypeArgument(arguments, 'success');
     return createNotification.apply(this, args);
   }
 
