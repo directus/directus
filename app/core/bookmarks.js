@@ -12,9 +12,10 @@ define([
   "backbone",
   "core/EntriesManager",
   'core/t',
+  'core/notification',
 ],
 
-function(app, Backbone, EntriesManager, __t) {
+function(app, Backbone, EntriesManager, __t, Notification) {
 
   "use strict";
 
@@ -116,7 +117,7 @@ function(app, Backbone, EntriesManager, __t) {
       var that = this;
       app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_bookmark'), callback: function(name ) {
         if(name === null || name === "") {
-          alert(__t('please_fill_in_a_valid_name'));
+          Notification.error(__t('please_fill_in_a_valid_name'));
           return;
         }
 
