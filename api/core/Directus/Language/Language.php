@@ -35,4 +35,11 @@ class Language implements LanguageInterface
         return $this->name;
     }
 
+    public function toArray()
+    {
+        return [
+            'code' => $this->code,
+            'name' => $this->name
+        ];
+    }
 }

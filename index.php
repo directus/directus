@@ -286,6 +286,12 @@ function getCSSFilePath() {
     return DIRECTUS_PATH . 'assets/css/directus.css';
 }
 
+function parseLocalesAvailable($localesAvailable) {
+    return array_map(function($language) {
+        return $language->toArray();
+    }, array_values($localesAvailable));
+}
+
 // ---------------------------------------------------------------------
 
 /**
@@ -355,6 +361,7 @@ $data = array(
     'privileges' => getPrivileges($groupId),
     'ui' => getUI(),
     'locale' => get_user_locale(),
+    'localesAvailable' => parseLocalesAvailable(get_locales_available()),
     'phrases' => get_phrases(get_user_locale()),
     'listViews' => getListViews(),
     'messages' => getInbox(),

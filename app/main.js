@@ -33,6 +33,8 @@ require(["config", 'polyfills'], function() {
     "use strict";
 
     var defaultOptions = {
+      locale: 'en',
+      localesAvailable: [],
       path: '/directus/',
       page: '',
       authenticatedUser: 7,
@@ -72,6 +74,7 @@ require(["config", 'polyfills'], function() {
     app.authenticatedUserId = window.directusData.authenticatedUser;
     app.storageAdapters = window.directusData.storage_adapters;
     app.statusMapping = window.directusData.statusMapping;
+    app.locales = options.localesAvailable;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function() { // our abort function

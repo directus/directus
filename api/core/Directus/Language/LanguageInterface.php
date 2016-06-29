@@ -15,4 +15,10 @@ interface LanguageInterface
      * @return string
      */
     public function getName();
+
+    /**
+     * Get an array representation of the language
+     * @return array
+     */
+    public function toArray();
 }
