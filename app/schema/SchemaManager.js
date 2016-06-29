@@ -2,6 +2,8 @@ define(function(require, exports, module) {
 
   "use strict";
 
+  var app = require('app');
+
   // Structures
   var ColumnModel        = require('./ColumnModel'),
       ColumnsCollection  = require('./ColumnsCollection'),
@@ -89,7 +91,7 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_groups },
         { schema: directusSchemas.directus_files.getFiles() },
         { schema: directusSchemas.directus_messages },
-        { schema: directusSchemas.directus_users.getUsers() }
+        { schema: directusSchemas.directus_users.getUsers(app.locales) }
       ];
 
       this.register('tables', defaultTables);

@@ -4,8 +4,22 @@ define(function(require, exports, module) {
 
   var app = require('app');
 
+  function parseLocales(locales) {
+    if (!locales) {
+      return null;
+    }
+
+    var result = {};
+    for (var key in locales) {
+      var locale = locales[key];
+      result[locale.code] = locale.name;
+    }
+
+    return JSON.stringify(result);
+  }
+
   module.exports = {
-    getUsers: function() {
+    getUsers: function(locales) {
       var statusName = app.statusMapping.status_name;
       return {
         "id":"directus_users",
@@ -506,14 +520,15 @@ define(function(require, exports, module) {
             "default_value":"en",
             "comment":"",
             "sort":37,
-            "ui":"textinput",
+            "ui":"select",
             "system":false,
             "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
-              "size": "medium"
+              "allow_null": false,
+              "options": parseLocales(locales)
             }
           }
         ]
