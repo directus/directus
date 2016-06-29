@@ -16,7 +16,7 @@ rm -f documents/coverage.xml
 #
 # Run phpunit
 #
-api/vendor/bin/phpunit --coverage-html documents/coverage-html-new --coverage-clover documents/coverage.xml
+vendor/bin/phpunit --coverage-html documents/coverage-html-new --coverage-clover documents/coverage.xml
 
 if [ -d documents/coverage-html-new ]; then
   rm -rf documents/coverage-html
