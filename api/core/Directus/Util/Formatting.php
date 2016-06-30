@@ -362,6 +362,8 @@ class Formatting
             chr(199).chr(155) => 'U', chr(199).chr(156) => 'u',
             );
 
+            // @TODO: find a substitute for get_locale (get_user_locale?)
+            // This function is a wordpress function and it doesn't exists in Directus
             // Used for locale-specific rules
             $locale = get_locale();
 
