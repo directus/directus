@@ -10,14 +10,42 @@ if (!function_exists('uc_convert')) {
     function uc_convert($text)
     {
         $phrase = preg_replace('!\s+!', ' ', trim(ucwords(strtolower(str_replace('_', ' ', $text)))));
-        $uc_caps = array("Ids", "Ssn", "Ein", "Nda", "Api", "Youtube", "Faq", "Iphone", "Ipad", "Ipod", "Pdf", "Pdfs", "Url", "Ip", "Ftp", "Db", "Cv", "Id", "Ph", "Php", "Html", "Js", "Css", "Ios", "Iso", "Rngr");
-        $special_caps = array("IDs", "SSN", "EIN", "NDA", "API", "YouTube", "FAQ", "iPhone", "iPad", "iPod", "PDF", "PDFs", "URL", "IP", "FTP", "DB", "CV", "ID", "pH", "PHP", "HTML", "JS", "CSS", "iOS", "ISO", "RNGR");
+        $specialCaps = [
+            "Ids" => 'IDs',
+            "Ssn" => 'SSN',
+            "Ein" => 'EIN',
+            "Nda" => 'NDA',
+            "Api" => 'API',
+            "Youtube" => 'YouTube',
+            "Faq" => 'FAQ',
+            "Iphone" => 'iPhone',
+            "Ipad" => 'iPad',
+            "Ipod" => 'iPod',
+            "Pdf" => 'PDF',
+            "Pdfs" => 'PDFs',
+            "Url" => 'URL',
+            "Ip" => 'IP',
+            "Ftp" => 'FTP',
+            "Db" => 'DB',
+            "Cv" => 'CV',
+            "Id" => 'ID',
+            "Ph" => 'pH',
+            "Php" => 'PHP',
+            "Html" => 'HTML',
+            "Js" => 'JS',
+            "Css" => 'CSS',
+            "Ios" => 'iOS',
+            "Iso" => 'ISO',
+            "Rngr" => 'RNGR'
+        ];
 
-        foreach ($uc_caps as $key => $value) {
-            $uc_caps[$key] = ("/\b" . $value . "\b/");
+        $searchPattern = array_keys($specialCaps);
+        $replaceValues = array_values($specialCaps);
+        foreach ($searchPattern as $key => $value) {
+            $searchPattern[$key] = ("/\b" . $value . "\b/");
         }
 
-        return preg_replace($uc_caps, $special_caps, $phrase);
+        return preg_replace($searchPattern, $replaceValues, $phrase);
     }
 }
 
