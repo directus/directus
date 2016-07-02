@@ -23,21 +23,16 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
             'cms_user_auto_sign_out' => 60,
             'project_name' => 'Directus',
             'project_url' => 'http://localhost/',
-            'cms_color' => '#7ac943',
             'rows_per_page' => 200,
             'cms_thumbnail_url' => ''
         );
 
         $this->_defaults['files'] = array(
-            'storage_adapter' => 'FileSystemAdapter',
-            'storage_destination' => '',
-            'thumbnail_storage_destination' => '',
             'allowed_thumbnails' => '',
             'thumbnail_quality' => 100,
             'thumbnail_size' => 200,
             'file_naming' => 'file_id',
             'thumbnail_crop_enabled' => 1,
-            'thumbnail_storage_adapter' => 'FileSystemAdapter',
             'youtube_api_key' => ''
         );
     }
@@ -93,29 +88,9 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway {
 
     // Since ZF2 doesn't support “INSERT…ON DUPLICATE KEY UDPATE” we need some raw SQL
     public function setValues($collection, $data) {
-
-        $whiteList = array(
-            'files' => array(
-                    'file_naming',
-                    'thumbnail_quality',
-                    'thumbnail_crop_enabled',
-                    'youtube_api_key'
-                ),
-            'global' => array(
-                    'project_name',
-                    'project_url',
-                    'cms_color',
-                    'cms_user_auto_sign_out',
-                    'rows_per_page',
-                    'cms_thumbnail_url'
-                )
-        );
-
         if ($collection !== 'files' && $collection !== 'global') {
             throw new \Exception("The settings collection $collection is not supported");
         }
-
-        $data = ArrayUtils::pick($data, $whiteList[$collection]);
 
         foreach ($data as $key => $value) {
             $parameters[] = '(' .

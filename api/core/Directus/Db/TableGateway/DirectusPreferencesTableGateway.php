@@ -4,10 +4,12 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Bootstrap;
+use Directus\Db\SchemaManager;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
@@ -16,6 +18,20 @@ use Zend\Db\Sql\Insert;
 class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
     public static $_tableName = "directus_preferences";
+
+    /**
+     * List of table that does not need preferences.
+     *
+     * @var array
+     */
+    public static $IGNORED_TABLES = [
+          'columns',
+          'preferences',
+          'privileges',
+          'settings',
+          'tables',
+          'ui'
+    ];
 
     public function __construct(Acl $acl, AdapterInterface $adapter) {
         parent::__construct($acl, self::$_tableName, $adapter);
@@ -134,10 +150,8 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
         if($preferences) {
             $preferences = $preferences->toArray();
-        }
-
-        if($preferences) {
-          return $this->constructPreferences($user_id, $table, $preferences);
+        } else {
+            $preferences = $this->constructPreferences($user_id, $table, $preferences);
         }
 
         return $preferences;
@@ -194,30 +208,15 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
 
       $select->where->equalTo('user', $user_id)
         ->isNull('title');
-      $select->where('table_name NOT IN(
-                    "directus_columns",
-                    "directus_preferences",
-                    "directus_privileges",
-                    "directus_settings",
-                    "directus_storage_adapters",
-                    "directus_tables",
-                    "directus_tab_privileges",
-                    "directus_ui"
-                )');
 
+      $coreTables = SchemaManager::getDirectusTables(static::$IGNORED_TABLES);
+
+      $select->where->addPredicate(new NotIn('table_name', $coreTables));
       $metadata = new \Zend\Db\Metadata\Metadata($this->getAdapter());
 
-      $tables = $metadata->getTableNames(DB_NAME);
+      $tables = $metadata->getTableNames();
 
-      $tables = array_diff($tables, array("directus_columns",
-                    "directus_preferences",
-                    "directus_privileges",
-                    "directus_settings",
-                    "directus_storage_adapters",
-                    "directus_tables",
-                    "directus_tab_privileges",
-                    "directus_ui"
-        ));
+      $tables = array_diff($tables, $coreTables);
 
       $rows = $this->selectWith($select)->toArray();
 

@@ -68,7 +68,6 @@ class Hook
 
         foreach ($listeners as $listener) {
             $value = call_user_func_array($listener, [$value]);
-            $arguments = [$value];
         }
 
         return $value;

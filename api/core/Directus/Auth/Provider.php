@@ -5,6 +5,7 @@ namespace Directus\Auth;
 use Directus\Bootstrap;
 use Directus\Util\StringUtils;
 use Directus\Util\ArrayUtils;
+use Zend\Db\TableGateway\TableGateway;
 
 class Provider {
 
@@ -44,7 +45,7 @@ class Provider {
         }
         $config = Bootstrap::get('config');
         if(!isset($config['session']) || !isset($config['session']['prefix']) || empty($config['session']['prefix'])) {
-            throw new \RuntimeException("You must define session.prefix in api/configuration.php - see example configuration file.");
+            throw new \RuntimeException(__t('you_must_define_session_prefix_in_configuration'));
         }
         self::$SESSION_KEY = $config['session']['prefix'] . self::$SESSION_KEY;
         self::$prependedSessionKey = true;
@@ -53,7 +54,7 @@ class Provider {
     protected static function enforceUserIsAuthenticated() {
         self::prependSessionKey();
         if(!self::loggedIn()) {
-            throw new UserIsntLoggedInException("Attempting to inspect the authenticated user when a user isn't authenticated.");
+            throw new UserIsntLoggedInException(__t('attempting_to_inspect_the_authenticated_user_when_a_user_is_not_authenticated'));
         }
     }
 
@@ -67,8 +68,15 @@ class Provider {
      */
     public static function login($uid, $password, $salt, $passwordAttempt) {
         self::prependSessionKey();
-        $hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
-        if($password === $hashedPasswordAttempt) {
+        //$hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
+        if (self::needsReHashPassword($password, $salt, $passwordAttempt)) {
+            $password = self::hashPassword($passwordAttempt);
+            $zendDb = Bootstrap::get('zendDb');
+            $usersTable = new TableGateway('directus_users', $zendDb);
+            $usersTable->update(['password' => $password], ['id' => $uid]);
+        }
+
+        if(password_verify($passwordAttempt, $password)) {
             self::completeLogin($uid);
             return true;
         }
@@ -158,7 +166,7 @@ class Provider {
 
         $userRefreshProvider = self::$userCacheRefreshProvider;
         if(!is_callable($userRefreshProvider)) {
-            throw new \RuntimeException("Undefined user cache refresh provider.");
+            throw new \RuntimeException(__t('undefined_user_cache_refresh_provider'));
         }
 
         /**
@@ -167,6 +175,7 @@ class Provider {
         $userInfo = self::getUserInfo();
         return $userRefreshProvider($userInfo['id']);
 
+        /* All of this is unreachable
         if(!isset($_SESSION[self::USER_RECORD_CACHE_SESSION_KEY])) {
             self::expireCachedUserRecord();
         }
@@ -177,12 +186,13 @@ class Provider {
             $cachedUserRecord = $userRefreshProvider($userInfo['id']);
         }
         return $cachedUserRecord;
+        */
     }
 
     public static function setUserCacheRefreshProvider($callable) {
         self::prependSessionKey();
         if(!is_callable($callable)) {
-            throw new \InvalidArgumentException("Argument must be callable");
+            throw new \InvalidArgumentException(__t('argument_must_be_callable'));
         }
         self::$userCacheRefreshProvider = $callable;
     }
@@ -196,7 +206,7 @@ class Provider {
     private static function completeLogin($uid) {
         self::prependSessionKey();
         if(self::loggedIn()) {
-            throw new UserAlreadyLoggedInException("Attempting to authenticate a user when a user is already authenticated.");
+            throw new UserAlreadyLoggedInException(__t('attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'));
         }
         $user = array( 'id' => $uid, 'access_token' => sha1($uid.StringUtils::random()) );
         $_SESSION[self::$SESSION_KEY] = $user;
@@ -210,8 +220,24 @@ class Provider {
      * @return string
      */
     public static function hashPassword($password, $salt = '') {
-        $composite = $salt . $password;
-        return sha1( $composite );
+        return password_hash($password, PASSWORD_DEFAULT, ["cost" => 12]);
+    }
+
+    /**
+     * Check if the password hash needs to be rehashed
+     * @param  string $password        The User account's (actual) hashed password string.
+     * @param  string $salt            The User account's salt string.
+     * @param  string $passwordAttempt The User's attempted, unhashed password string.
+     * @return boolean
+     */
+    public static function needsReHashPassword($password, $salt, $passwordAttempt)
+    {
+        // if this was the old hash algorithm (sha1), it needs to be rehashed
+        if (sha1($salt.$passwordAttempt) === $password) {
+            return true;
+        }
+
+        return false;
     }
 
 }

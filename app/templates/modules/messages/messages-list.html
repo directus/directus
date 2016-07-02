@@ -6,8 +6,8 @@
       <label for="check{{ id }}"><span></span></label>
     </div>
     <div class="message-content">
-      <div class="users">To: {{recipients}}</div>
-      <div class="title">{{subject}}</div>
+      <div class="title">{{subject}}{{#unless read}}<span class="unread-color pulsate"> ●</span>{{/unless}}</div>
+      <div class="users">{{t "message_to"}}: {{recipients}}</div>
       <div class="subject">{{message}}</div>
     </div>
     <span class="general-datetime" title="{{date_updated}}">{{niceDate}}</span>
@@ -17,7 +17,7 @@
 
 {{#unless messages}}
 <div class="nothing-here secondary-info">
-  <h1>Nothing to see here...</h1>
+  <h1>{{t "listing_items_not_found"}}</h1>
   <!-- Maybe send someone a message? -->
 </div>
 {{/unless}}

@@ -4,12 +4,17 @@ namespace Directus;
 
 use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Db\Connection;
+use Directus\Db\SchemaManager;
+use Directus\Db\Schemas\MySQLSchema;
+use Directus\Db\Schemas\SQLiteSchema;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTablesTableGateway;
+use Directus\Language\LanguageManager;
 use Slim\Slim;
 use Slim\Extras\Log\DateTimeFileWriter;
 
@@ -191,10 +196,11 @@ class Bootstrap {
      * @return \Zend\Db\Adapter
      */
     private static function zenddb() {
-        self::requireConstants(array('DIRECTUS_ENV','DB_HOST','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
+        self::requireConstants(array('DIRECTUS_ENV','DB_TYPE','DB_HOST','DB_PORT','DB_NAME','DB_USER','DB_PASSWORD'), __FUNCTION__);
         $dbConfig = array(
-            'driver' => 'Pdo_Mysql',
+            'driver' => 'Pdo_'.DB_TYPE,
             'host' => DB_HOST,
+            'port' => DB_PORT,
             'database' => DB_NAME,
             'username' => DB_USER,
             'password' => DB_PASSWORD,
@@ -204,8 +210,8 @@ class Bootstrap {
         );
 
         try {
-            $db = new \Zend\Db\Adapter\Adapter($dbConfig);
-            $db->getDriver()->getConnection()->connect();
+            $db = new Connection($dbConfig);
+            $db->connect();
         } catch (\Exception $e) {
             echo 'Database connection failed.';
             exit;
@@ -244,6 +250,25 @@ class Bootstrap {
 ////        $pdo = $db->getDriver()->getConnection()->getResource();
 ////        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 //        return $db;
+    }
+
+    private static function schema()
+    {
+        $adapter = self::get('ZendDb');
+        $databaseName = $adapter->getPlatform()->getName();
+
+        switch ($databaseName) {
+            case 'MySQL':
+                return new MySQLSchema($adapter);
+            // case 'SQLServer':
+            //    return new SQLServerSchema($adapter);
+             case 'SQLite':
+                 return new SQLiteSchema($adapter);
+            // case 'PostgreSQL':
+            //     return new PostgresSchema($adapter);
+        }
+
+        throw new \Exception('Unknown/Unsupported database: '.$databaseName);
     }
 
     /**
@@ -316,7 +341,7 @@ class Bootstrap {
     private static function extensions() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $extensions = array();
-        $extensionsDirectory = APPLICATION_PATH . '/extensions/';
+        $extensionsDirectory = APPLICATION_PATH . '/customs/extensions/';
         foreach (new \DirectoryIterator($extensionsDirectory) as $file) {
             if($file->isDot()) {
                 continue;
@@ -341,7 +366,7 @@ class Bootstrap {
      */
     private static function uis() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-        $uiDirectory = APPLICATION_PATH . '/ui';
+        $uiDirectory = APPLICATION_PATH . '/customs/ui';
         $uis = array();
 
         if (!file_exists($uiDirectory)) {
@@ -368,7 +393,7 @@ class Bootstrap {
     private static function listViews() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $listViews = array();
-        $listViewsDirectory = APPLICATION_PATH . '/listviews/';
+        $listViewsDirectory = APPLICATION_PATH . '/customs/listviews/';
         foreach (new \DirectoryIterator($listViewsDirectory) as $file) {
             if($file->isDot()) {
                 continue;
@@ -379,6 +404,21 @@ class Bootstrap {
             }
         }
         return $listViews;
+    }
+
+    /**
+     * @return \Directus\Language\LanguageManager
+     */
+    private static function languagesManager()
+    {
+        $localesPath = BASE_PATH.'/customs/locales/*.json';
+
+        $languages = [];
+        foreach (glob($localesPath) as $filename) {
+            $languages[] = pathinfo($filename, PATHINFO_FILENAME);
+        }
+
+        return new LanguageManager($languages);
     }
 
 

@@ -17,7 +17,7 @@ class ChangeDirectusFilesAdapterStorage extends Ruckusing_Migration_Base
             'limit' => 11,
             'unsigned' => true,
             'default' => NULL,
-            'COMMENT' =>'FK `directus_storage_adapters`.`id`'
+            //'COMMENT' =>'FK `directus_storage_adapters`.`id`'
         ));
     }//down()
 }

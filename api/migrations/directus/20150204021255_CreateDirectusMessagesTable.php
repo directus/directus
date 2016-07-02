@@ -22,7 +22,6 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_messages", array(
           "id"=>false,
-          "options"=>"ENGINE=MyISAM DEFAULT CHARSET=utf8"
         )
       );
 

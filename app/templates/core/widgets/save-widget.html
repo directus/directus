@@ -1,24 +1,22 @@
 <span class="select-and-circle {{#unless isUpToDate}}saved-success{{/unless}}">
-  <span id="save">
-    <span class="tool-item large-circle add-color-background" title="Save">
-      <i class="material-icons">check</i>
-    </span>
-    <!-- <span class="simple-select light-grey-color">
+  <button type="button" id="save" class="tool-item btn btn-header" title="Save">
+    <i class="material-icons">check</i> {{t "save_item"}}
+    <!-- <span class="simple-select medium-grey-color">
       {{#if isUpToDate}}
         All Changes Saved
       {{else}}
         Save Changes
       {{/if}}
     </span> -->
-  </span>
+  </button>
   {{#unless basicSave}}
     <label for="status" class="icon-select icon icon-triangle-down">
       <select id="saveSelect" name="status">
         <option selected></option>
-        <option value="save-form-stay">Save And Stay</option>
+        <option value="save-form-stay">{{t "widget_save_save_and_stay"}}</option>
         {{#unless singlePage}}
-        <option value="save-form-add">Save And Add</option>
-        <option value="save-form-copy">Save As Copy</option>
+        <option value="save-form-add">{{t "widget_save_save_and_add"}}</option>
+        <option value="save-form-copy">{{t "widget_save_save_as_copy"}}</option>
         {{/unless}}
       </select>
     </label>

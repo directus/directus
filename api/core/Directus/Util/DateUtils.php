@@ -19,7 +19,7 @@ class DateUtils
      * UTC to the target timezone.
      *
      * @param  mixed $datetime       \DateTime instance or String.
-     * @param  mized $targetTimeZone \DateTimeZone instance or String.
+     * @param  mixed $targetTimeZone \DateTimeZone instance or String.
      *
      * @return \DateTime
      */

@@ -24,11 +24,9 @@ class ArrayUtils
 
     /**
      * Return a copy of the object, filtered to only have values for the whitelisted keys (or array of valid keys).
-     *
-     * @param  AssocArray  $array
-     * @param  Array       $keys
-     *
-     * @return AssocArray
+     * @param  array  $array
+     * @param  array  $keys
+     * @return array
      */
     public static function pick($array, $keys)
     {
@@ -64,6 +62,41 @@ class ArrayUtils
         }
 
         return true;
+    }
+
+    /**
+     * Flatten a multi-dimensional associative array with a dots.
+     *
+     * @param  array   $array
+     * @param  string  $prepend
+     * @return array
+     */
+    public static function dot($array, $prepend = '')
+    {
+        return static::flatKey('.', $array, $prepend);
+    }
+
+    /**
+     * Flatten a multi-dimensional associative array with a character.
+     *
+     * @param  string $separator
+     * @param  array   $array
+     * @param  string  $prepend
+     * @return array
+     */
+    public static function flatKey($separator, $array, $prepend = '')
+    {
+        $results = [];
+
+        foreach ($array as $key => $value) {
+            if (is_array($value) && ! empty($value)) {
+                $results = array_merge($results, static::flatKey($separator, $value, $prepend.$key.$separator));
+            } else {
+                $results[$prepend.$key] = $value;
+            }
+        }
+
+        return $results;
     }
 
 }

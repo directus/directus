@@ -40,7 +40,6 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_users", array(
           "id"=>false,
-          "options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8"
         )
       );
 
@@ -177,6 +176,12 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
       $t->column("zip", "string", array(
           "limit"=>10,
           "default"=>NULL
+        )
+      );
+
+      $t->column("locale", "string", array(
+          "limit"=>32,
+          "default"=>'en'
         )
       );
 

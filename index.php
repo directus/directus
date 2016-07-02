@@ -6,8 +6,7 @@ if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
 }
 
 // Composer Autoloader
-$loader = require 'api/vendor/autoload.php';
-$loader->add("Directus", dirname(__FILE__) . "/api/core/");
+$loader = require 'vendor/autoload.php';
 
 // Non-autoloaded components
 require 'api/api.php';
@@ -16,7 +15,6 @@ use Directus\View\JsonView;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\DirectusStorageAdaptersTableGateway;
 use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
 use Directus\Db\TableGateway\DirectusBookmarksTableGateway;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
@@ -111,7 +109,9 @@ function parsePreferences($tableSchema) {
     $preferences = array();
 
     foreach ($tableSchema as $table) {
-        $preferences[] = $table['preferences'];
+        if (isset($table['preferences'])) {
+            $preferences[] = $table['preferences'];
+        }
     }
 
     return $preferences;
@@ -286,6 +286,12 @@ function getCSSFilePath() {
     return DIRECTUS_PATH . 'assets/css/directus.css';
 }
 
+function parseLocalesAvailable($localesAvailable) {
+    return array_map(function($language) {
+        return $language->toArray();
+    }, array_values($localesAvailable));
+}
+
 // ---------------------------------------------------------------------
 
 /**
@@ -354,6 +360,9 @@ $data = array(
     'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),
     'ui' => getUI(),
+    'locale' => get_user_locale(),
+    'localesAvailable' => parseLocalesAvailable(get_locales_available()),
+    'phrases' => get_phrases(get_user_locale()),
     'listViews' => getListViews(),
     'messages' => getInbox(),
     'bookmarks' => getBookmarks(),
@@ -365,13 +374,10 @@ $templateVars = array(
     'cacheBuster' => $cacheBuster,
     'data' => json_encode($data),
     'path' => DIRECTUS_PATH,
+    'locale' => get_user_locale(),
+    'dir' => 'ltr',
     'customFooterHTML' => getCusomFooterHTML(),
-    'cssFilePath' => getCSSFilePath(),
-    'cms_color' => '#89c33d'
+    'cssFilePath' => getCSSFilePath()
 );
-
-if(isset($data['settings']) && isset($data['settings'][0]) && isset($data['settings'][0]['cms_color'])) {
-  $templateVars['cms_color'] = $data['settings'][0]['cms_color'];
-}
 
 echo template(file_get_contents('main.html'), $templateVars);

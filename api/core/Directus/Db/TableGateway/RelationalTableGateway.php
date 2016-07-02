@@ -604,13 +604,15 @@ class RelationalTableGateway extends AclAwareTableGateway {
         }
 
         // Where
-        $select
-            ->where
-            ->nest
+        if (isset($params[$this->primaryKeyFieldName]) && $params[$this->primaryKeyFieldName] != -1) {
+            $select
+                ->where
+                 ->nest
                 ->expression('-1 = ?', $params[$this->primaryKeyFieldName])
                 ->or
                 ->equalTo($this->primaryKeyFieldName, $params[$this->primaryKeyFieldName])
             ->unnest;
+        }
 
         if(isset($params['adv_search']) && !empty($params['adv_search'])) {
           $select->where($params['adv_search']);

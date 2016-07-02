@@ -23,8 +23,7 @@ $acl = \Directus\Bootstrap::get('acl');
 
 $Settings = new DirectusSettingsTableGateway($acl, $db);
 $filesSettings = $Settings->fetchCollection('media', array(
-    'storage_adapter','storage_destination','thumbnail_storage_adapter',
-    'thumbnail_storage_destination', 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
+    'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
 ));
 
 $StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $db);
