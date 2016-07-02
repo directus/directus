@@ -364,7 +364,7 @@ require(["config", 'polyfills'], function() {
           if (url) {
             var isApiRequest = url.substr(0, app.API_URL.length) == app.API_URL;
             if(isApiRequest) {
-              nonce = nonces.pool.pop();
+              nonce = nonces.pool.unshift();
               options.beforeSend = function(xhr) {
                 xhr.setRequestHeader(nonces.nonce_request_header, nonce);
               };
@@ -470,7 +470,7 @@ require(["config", 'polyfills'], function() {
       $(document).ajaxSend(function(event, jqXHR, settings) {
         var isApiRequest = settings.url.substr(0, app.API_URL.length) == app.API_URL;
         if(isApiRequest) {
-          nonce = nonces.pool.pop();
+          nonce = nonces.pool.unshift();
           jqXHR.setRequestHeader(nonces.nonce_request_header, nonce);
           // console.log('Using a nonce. New pool size: ' + nonces.pool.length);
         }
