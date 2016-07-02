@@ -209,6 +209,16 @@ gulp.task('templates', function() {
     .pipe(gulp.dest('dist/app/'));
 });
 
+
+// --------------------
+// Locales - Gulp Task
+// Languages
+// --------------------
+gulp.task('locales', function() {
+  return gulp.src('app/locales/*.json')
+    .pipe(gulp.dest('dist/app/locales/'));
+});
+
 var singlePageFiles = ['./main.html', './login.php'];
 gulp.task('singlepage', function () {
   return gulp.src(singlePageFiles)
@@ -316,7 +326,7 @@ gulp.task('jscs', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'composer', cb]);
+    runSequence(['scripts', 'templates', 'locales', 'singlepage', 'styles', 'fonts', 'images', 'move', 'composer', cb]);
 });
 
 // Default task
