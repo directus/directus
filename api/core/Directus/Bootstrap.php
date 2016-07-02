@@ -399,6 +399,11 @@ class Bootstrap {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $listViews = array();
         $listViewsDirectory = APPLICATION_PATH . '/customs/listviews/';
+
+        if (!file_exists($listViewsDirectory)) {
+            return $listViews;
+        }
+
         foreach (new \DirectoryIterator($listViewsDirectory) as $file) {
             if($file->isDot()) {
                 continue;
