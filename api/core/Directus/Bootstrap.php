@@ -342,6 +342,11 @@ class Bootstrap {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $extensions = array();
         $extensionsDirectory = APPLICATION_PATH . '/customs/extensions/';
+
+        if (!file_exists($extensionsDirectory)) {
+            return $extensions;
+        }
+
         foreach (new \DirectoryIterator($extensionsDirectory) as $file) {
             if($file->isDot()) {
                 continue;
