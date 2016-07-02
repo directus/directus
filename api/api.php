@@ -190,7 +190,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
         }
 
         /** Enforce required request nonces. */
-        if(!$requestNonceProvider->requestHasValidNonce()) {
+        if(!$requestNonceProvider->requestHasValidNonce() && !$authToken) {
             if('development' !== DIRECTUS_ENV) {
                 $app->halt(401, __t('invalid_request_nonce'));
             }
