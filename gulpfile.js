@@ -281,13 +281,13 @@ gulp.task('move', function() {
   ];
 
   var dirsToKeep = [
-    './ui/.gitignore',
-    './extensions/.htaccess',
-    './extensions/.gitignore',
+    './customs/ui/.gitignore',
+    './customs/extensions/.htaccess',
+    './customs/extensions/.gitignore',
     './media/.htaccess',
     './media/**/.gitignore',
     './media_auth_proxy/client_auth_proxies/.gitignore',
-    './listviews/.gitignore'
+    './customs/listviews/.gitignore'
   ];
 
   var mainFiles = gulp.src(filesToMove, { base: './' })
