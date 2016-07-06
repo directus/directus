@@ -51,6 +51,10 @@ return array(
 
   // Use these hooks to extend the base Directus functionality
   'hooks' => array(
+    'application.error' => function($e) {
+      $log = \Directus\Bootstrap::get('log');
+      $log->error($e);
+    },
     'postInsert' => function ($TableGateway, $record, $db, $acl) {
       // ...
     },
