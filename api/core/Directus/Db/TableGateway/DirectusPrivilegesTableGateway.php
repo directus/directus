@@ -137,7 +137,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         return $this->fetchById($attributes['id']);
     }
 
-    public function fetchPerTable($groupId) {
+    public function fetchPerTable($groupId, $tableName = null) {
         // Don't include tables that can't have privileges changed
         /*$blacklist = array(
             'directus_columns',
@@ -158,6 +158,10 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
 
         $select = new Select($this->table);
         $select->where->equalTo('group_id', $groupId);
+        if (!is_null($tableName)) {
+            $select->where->equalTo('table_name', $tableName);
+            $select->limit(1);
+        }
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
 
@@ -178,21 +182,26 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
             if (in_array($table, $blacklist)) {
                 continue;
             }
+
             if (array_key_exists($table, $privilegesHash)) {
-              continue;
+                continue;
             }
 
-            $item = array('table_name' => $table, 'group_id'=> $groupId, 'status_id' => null);
+            if (!is_null($tableName)) {
+                continue;
+            }
+
+            $item = array('table_name' => $table, 'group_id' => $groupId, 'status_id' => null);
 
             $privileges[] = $item;
         }
 
         // sort ascending
-        usort($privileges, function($a, $b) {
+        usort($privileges, function ($a, $b) {
             return strcmp($a['table_name'], $b['table_name']);
         });
 
-        return $privileges;
+        return is_null($tableName) ? $privileges : reset($privileges);
     }
 
     public function fetchGroupPrivilegesRaw($group_id) {

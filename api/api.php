@@ -534,7 +534,7 @@ $app->post("/$v/random/?", function() use ($app) {
     ));
 });
 
-$app->get("/$v/privileges/:groupId/", function ($groupId) use ($acl, $ZendDb, $params, $requestPayload, $app) {
+$app->get("/$v/privileges/:groupId(/:tableName)/?", function ($groupId, $tableName = null) use ($acl, $ZendDb, $params, $requestPayload, $app) {
     $currentUser = Auth::getUserRecord();
     $myGroupId = $currentUser['group'];
 
@@ -542,8 +542,8 @@ $app->get("/$v/privileges/:groupId/", function ($groupId) use ($acl, $ZendDb, $p
         throw new Exception(__t('permission_denied'));
     }
 
-    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
-    $response = $privileges->fetchPerTable($groupId);
+    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);
+    $response = $privileges->fetchPerTable($groupId, $tableName);
 
     return JsonView::render($response);
 });
