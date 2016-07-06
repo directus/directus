@@ -107,14 +107,15 @@ gulp.task('scripts:app', function() {
     paths: {
 
       // Libraries.
-      'jquery': '../assets/js/libs/jquery',
-      'underscore': '../assets/js/libs/underscore',
-      'handlebars': 'empty:',
-      'backbone': '../assets/js/libs/backbone',
-      'moment': '../assets/js/libs/moment.min',
-      'noty': '../assets/js/libs/noty',
-      'noty_theme' : "../assets/js/libs/noty_theme",
-      'sortable': '../assets/js/libs/sortable',
+      "jquery":     "../assets/js/libs/jquery",
+      "underscore": "../assets/js/libs/underscore",
+      "backbone":   "../assets/js/libs/backbone",
+      "handlebars": "../assets/js/libs/handlebars",
+      "sortable":   "../assets/js/libs/sortable",
+      "moment":     "../assets/js/libs/moment.min",
+      "noty":       "../assets/js/libs/noty",
+      "noty_theme": "../assets/js/libs/noty_theme",
+      "polyglot":   "../assets/js/libs/polyglot.min",
 
       // JavaScript folders.
       "libs":       "../assets/js/libs",
@@ -122,14 +123,17 @@ gulp.task('scripts:app', function() {
       "vendor":     "../assets/vendor",
 
       // Extensions
-      "extensions": '../extensions',
-      "listviews":  '../listviews',
-      "ui":         '../ui'
+      "extensions": '../customs/extensions',
+      "listviews":  '../customs/listviews',
+      "ui":         '../customs/ui'
     },
 
     shim: {
       'underscore': {
         exports: '_'
+      },
+      "handlebars": {
+        exports: "Handlebars"
       },
       'backbone': {
         deps: [
@@ -153,6 +157,9 @@ gulp.task('scripts:app', function() {
           "jquery",
           "noty"
         ]
+      },
+      "polyglot": {
+        exports: 'Polyglot'
       },
       "plugins/backbone.layoutmanager": {
         deps: [

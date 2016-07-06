@@ -1,11 +1,12 @@
 define([
   'app',
   'backbone',
+  'handlebars',
   'core/directus',
   "core/EntriesManager"
 ],
 
-function(app, Backbone, Directus, EntriesManager) {
+function(app, Backbone, Handlebars, Directus, EntriesManager) {
 
   return Backbone.Layout.extend({
     template: Handlebars.compile('<div class="section-header"><span class="big-label-text">Translations</span> \

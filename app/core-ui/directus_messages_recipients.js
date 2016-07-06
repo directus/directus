@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'handlebars', 'core/UIComponent', 'core/UIView'], function(app, Handlebars, UIComponent, UIView) {
 
   'use strict';
 

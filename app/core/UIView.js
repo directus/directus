@@ -3,6 +3,7 @@ define(function(require, exports, module) {
   'use strict';
 
   var Backbone = require('backbone');
+  var Handlebars = require('handlebars');
 
   require('plugins/backbone.layoutmanager');
 

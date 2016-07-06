@@ -1,8 +1,9 @@
 define([
   'app',
-  'backbone'
+  'backbone',
+  'handlebars'
 ],
-function(app, Backbone) {
+function(app, Backbone, Handlebars) {
 
   "use strict";
 

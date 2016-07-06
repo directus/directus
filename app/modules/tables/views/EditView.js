@@ -1,6 +1,7 @@
 define([
   'app',
   'backbone',
+  'handlebars',
   'core/t',
   'core/directus',
   'core/BasePageView',
@@ -9,7 +10,7 @@ define([
   'modules/tables/views/TranslationView'
 ],
 
-function(app, Backbone, __t, Directus, BasePageView, Widgets, HistoryView, TranslationView) {
+function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, HistoryView, TranslationView) {
 
   var EditView = Backbone.Layout.extend({
     template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry"></div><div id="historyFormEntry"></div>'),

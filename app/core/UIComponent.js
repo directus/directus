@@ -1,5 +1,6 @@
 define(function(require, module, exports) {
   var Backbone = require('backbone');
+  var Handlebars = require('handlebars');
   var UIComponentsOptions = ['id'];
   var UIComponent = function(options) {
     _.extend(this, _.pick(UIComponentsOptions, options));

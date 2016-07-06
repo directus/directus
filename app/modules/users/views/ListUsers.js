@@ -1,6 +1,7 @@
 define([
   "app",
   "backbone",
+  'handlebars',
   "core/directus",
   'core/BasePageView',
   'core/widgets/widgets',
@@ -8,7 +9,7 @@ define([
   'moment'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets, __t, moment) {
+function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment) {
 
   "use strict";
 

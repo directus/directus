@@ -1,10 +1,11 @@
 define([
   'app',
   'backbone',
+  'handlebars',
   'moment',
   'core/BasePageView'
 ],
-function(app, Backbone, moment, BasePageView) {
+function(app, Backbone, Handlebars, moment, BasePageView) {
 
 
   var ReadView = Backbone.Layout.extend({

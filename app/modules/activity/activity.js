@@ -1,6 +1,7 @@
 define([
   'app',
   'backbone',
+  'handlebars',
   'core/directus',
   'modules/activity/chart',
   "modules/files/files",
@@ -8,7 +9,7 @@ define([
   'moment'
 ],
 
-function(app, Backbone, Directus, Chart, Files, BasePageView, moment) {
+function(app, Backbone, Handlebars, Directus, Chart, Files, BasePageView, moment) {
 
   "use strict";
 

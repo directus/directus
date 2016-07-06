@@ -9,13 +9,14 @@
 define([
   'app',
   'backbone',
+  'handlebars',
   'core/BasePageView',
   'core/widgets/widgets',
   'core/t',
   'schema/TableModel'
 ],
 
-function(app, Backbone, BasePageView, Widgets, __t, TableModel) {
+function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
 
   "use strict";
 

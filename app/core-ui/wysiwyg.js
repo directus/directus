@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/overlays/overlays'], function(app, UIComponent, UIView, Overlays) {
+define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/overlays'], function(app, Handlebars, UIComponent, UIView, Overlays) {
 
   'use strict';
 

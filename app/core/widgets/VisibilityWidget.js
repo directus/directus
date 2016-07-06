@@ -1,9 +1,10 @@
 define([
   'app',
   'backbone',
+  'handlebars',
   'core/PreferenceModel'
 ],
-function(app, Backbone, PreferenceModel) {
+function(app, Backbone, Handlebars, PreferenceModel) {
 
   "use strict";
 

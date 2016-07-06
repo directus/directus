@@ -10,13 +10,14 @@
 define([
     'app',
     'backbone',
+    'handlebars',
     'sortable',
     'core/UIComponent',
     'core/UIView',
     'core/overlays/overlays',
     'core/t',
   ],
-  function(app, Backbone, Sortable, UIComponent, UIView, Overlays, __t) {
+  function(app, Backbone, Handlebars, Sortable, UIComponent, UIView, Overlays, __t) {
 
   'use strict';
 

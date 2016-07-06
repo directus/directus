@@ -3,6 +3,7 @@ define(function(require, exports, module) {
   "use strict";
 
   var app = require('app');
+  var Handlebars = require('handlebars');
   var UIManager = require('./UIManager');
 
   var UIContainer = Backbone.Layout.extend({
