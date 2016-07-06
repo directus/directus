@@ -190,11 +190,15 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
         }
 
         /** Enforce required request nonces. */
-        if(!$requestNonceProvider->requestHasValidNonce() && !$authToken) {
-            if('development' !== DIRECTUS_ENV) {
-                $app->halt(401, __t('invalid_request_nonce'));
-            }
-        }
+        // NOTE: do no use nonce until it's well implemented
+        // OR in fact if it's actually necessary.
+        // nonce needs to be checked
+        // otherwise an error is thrown
+         if(!$requestNonceProvider->requestHasValidNonce() && !$authToken) {
+        //     if('development' !== DIRECTUS_ENV) {
+        //         $app->halt(401, __t('invalid_request_nonce'));
+        //     }
+         }
 
         // User is authenticated
         // And Directus is about to start
@@ -257,12 +261,16 @@ if(isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
         return JsonView::render(array('message' => __t('no_such_extensions')));
     }
     // Validate request nonce
-    if(!$requestNonceProvider->requestHasValidNonce()) {
-        if('development' !== DIRECTUS_ENV) {
-            header("HTTP/1.0 401 Unauthorized");
-            return JsonView::render(array('message' => __t('unauthorized_nonce')));
-        }
-    }
+    // NOTE: do no use nonce until it's well implemented
+    // OR in fact if it's actually necessary.
+    // nonce needs to be checked
+    // otherwise an error is thrown
+     if(!$requestNonceProvider->requestHasValidNonce()) {
+    //     if('development' !== DIRECTUS_ENV) {
+    //         header("HTTP/1.0 401 Unauthorized");
+    //         return JsonView::render(array('message' => __t('unauthorized_nonce')));
+    //     }
+     }
     $extensionsDirectory = APPLICATION_PATH . "/customs/extensions";
     $responseData = require "$extensionsDirectory/$extensionName/api.php";
     $nonceOptions = $requestNonceProvider->getOptions();

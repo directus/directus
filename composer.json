@@ -9,7 +9,8 @@
     "swiftmailer/swiftmailer": "^5.4"
   },
   "require-dev": {
-    "phpunit/phpunit": "~3.7.0"
+    "phpunit/phpunit": "~3.7.0",
+      "squizlabs/php_codesniffer": "2.*"
   },
   "_require": {
     "rackspace/php-opencloud": "dev-master",
