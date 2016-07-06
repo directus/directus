@@ -61,7 +61,7 @@ class ExceptionView {
 
         // @todo log error nonetheless
         else {
-            $data = array('message' => __t('interal_server_error'));
+            $data = array('message' => __t('internal_server_error'));
             if('production' !== DIRECTUS_ENV) {
                 $data = array(
                     'code' => $exception->getCode(),
