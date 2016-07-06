@@ -77,7 +77,11 @@ class RequestNonceProvider {
      * @return string One unique nonce
      */
     private function makeNonce() {
-        return StringUtils::random();
+        do {
+            $nonce = StringUtils::random();
+        } while ($this->nonceExists($nonce));
+
+        return $nonce;
     }
 
     /**
@@ -129,6 +133,18 @@ class RequestNonceProvider {
             $this->valid_nonce_this_request = true;
         }
         return $this->valid_nonce_this_request;
+    }
+
+    /**
+     * Check whether a nonce exists in the nonce pool
+     * @param $nonce
+     * @return bool
+     */
+    public function nonceExists($nonce)
+    {
+        $index = array_search($nonce, $this->nonce_pool);
+
+        return $index !== false;
     }
 
     /**
