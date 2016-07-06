@@ -2,6 +2,8 @@
 
 namespace Directus\Auth;
 
+use Directus\Util\StringUtils;
+
 class RequestNonceProvider {
 
     /**
@@ -75,7 +77,7 @@ class RequestNonceProvider {
      * @return string One unique nonce
      */
     private function makeNonce() {
-        return uniqid();
+        return StringUtils::random();
     }
 
     /**
