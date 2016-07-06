@@ -78,7 +78,13 @@ class StringUtils
             throw new \InvalidArgumentException(__t('random_length_must_be_greater_then_zero'));
         }
 
-        if (function_exists('openssl_random_pseudo_bytes')) {
+        if (function_exists('random_string')) {
+            try {
+                $random = random_bytes($length);
+            } catch (\Exception $e) {
+                $random = static::randomString($length);
+            }
+        } else if (function_exists('openssl_random_pseudo_bytes')) {
             $string = '';
             while (($len = strlen($string)) < $length) {
                 $size = $length - $len;
@@ -86,10 +92,12 @@ class StringUtils
                 $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
             }
 
-            return $string;
+            $random = $string;
+        } else {
+            $random = static::randomString($length);
         }
 
-        return static::randomString($length);
+        return $random;
     }
 
     /**
