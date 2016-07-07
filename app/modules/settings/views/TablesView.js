@@ -61,6 +61,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var that = this;
         this.model.save({},{success: function(data) {
           that.model.set(data.toJSON());
+          that.model.url = app.API_URL + 'tables/' + that.collection.table.id + '/columns/' + data.get('id') + '/';
           app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
           that.collection.add(that.model);
           that.collection.trigger('change');
