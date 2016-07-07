@@ -371,8 +371,9 @@ class AclAwareTableGateway extends TableGateway {
           if(array_key_exists('ui', $tableData) && in_array($tableData['ui'], $manytoones)) {
             $tableData['relationship_type'] = 'MANYTOONE';
             $tableData['junction_key_right'] = $tableData['column_name'];
-            $this->addVirtualColumn($tableName, $tableData);
           }
+
+          $this->addVirtualColumn($tableName, $tableData);
       }
 
       return $tableData['column_name'];
