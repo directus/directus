@@ -74,7 +74,7 @@
         </tr>
         <tr>
             <td class="item"><?=__t('Composer Dependencies Installed');?> (../api/composer.json)</td>
-            <td class="result"><?php if(file_exists('../vendor/autoload.php')) {echo('<span class="label label-success">'.__t('Yes').'</span>');} else {echo('<span class="label label-important">'.__t('No.').'</span><a href="https://github.com/RNGR/Directus/wiki/6.-Development-Build#step-4-install-dependencies" target="_blank"> ?</a>');} ?></td>
+            <td class="result"><?php if(file_exists('../vendor/autoload.php')) {echo('<span class="label label-success">'.__t('Yes').'</span>');} else {echo('<span class="label label-important">'.__t('No.').'</span><a href="http://getdirectus.com/docs/developer/installation" target="_blank"> ?</a>');} ?></td>
         </tr>
         <tr>
             <td class="item"><?=__t('Logs Writable');?> (../api/logs/)</td>
@@ -82,7 +82,7 @@
         </tr>
         <tr>
             <td class="item"><?=__t('mod_rewrite Enabled');?></td>
-            <td class="result"><?php if(function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span><a href="https://github.com/RNGR/directus6/wiki/Installation-Guides#how-to-enable-mod_rewrite" target="_blank"> ?</a>');}?></td>
+            <td class="result"><?php if(function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span><a href="http://getdirectus.com/docs/developer/faq" target="_blank"> ?</a>');}?></td>
         </tr>
         <tr>
             <td class="item"><?=__t('Config Writable');?> (../api/config.php)</td>
