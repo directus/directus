@@ -23,7 +23,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
       var options = this.options.settings.get('options');
 
       if (_.isString(options)) {
-        options = $.parseJSON(options);
+        try {
+          options = $.parseJSON(options);
+        } catch (e) {
+          options = {};
+          console.error(e);
+        }
       }
 
       options = _.map(options, function(value, key) {
