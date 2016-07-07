@@ -257,9 +257,6 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
         dataType: "script",
         success: function() {
           that.initEditor();
-          if (that.options.settings.get("readonly") == 1) {
-            that.editor.disable();
-          }
         }
       });
     },
@@ -275,6 +272,11 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
       this.editor.setValue(String(value).replace(/"/g, '&quot;'));
       this.editor.on('change', function() {
         that.textChanged(that);
+      });
+      this.editor.on('load', function() {
+        if (that.options.settings.get('readonly') == 1) {
+          that.editor.disable();
+        }
       });
 
       var timer;
