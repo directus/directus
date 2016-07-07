@@ -263,8 +263,9 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
 
     initEditor: function() {
       var that = this;
+      var isReadOnly = this.options.settings.get('readonly') == 1;
       this.editor = new wysihtml5.Editor("wysihtml5-textarea-" + this.options.name, { // id of textarea element
-        toolbar:      "wysihtml5-toolbar-" + this.options.name, // id of toolbar element
+        toolbar:      !isReadOnly ? "wysihtml5-toolbar-" + this.options.name : null, // id of toolbar element
         stylesheets: app.PATH + "assets/css/wysiwyg.css",
         parserRules:  wysihtml5ParserRules // defined in parser rules set
       });
