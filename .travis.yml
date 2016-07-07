@@ -23,7 +23,7 @@ before_script:
   - npm install -g karma-cli
 
 install:
-  - cd api && composer install && cd ..
+  - composer install
 
 script:
   - npm test
