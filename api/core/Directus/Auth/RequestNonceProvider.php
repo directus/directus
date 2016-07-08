@@ -78,7 +78,7 @@ class RequestNonceProvider {
      */
     private function makeNonce() {
         do {
-            $nonce = StringUtils::random();
+            $nonce = StringUtils::randomString();
         } while ($this->nonceExists($nonce));
 
         return $nonce;
