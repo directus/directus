@@ -46,7 +46,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
-        allow_null: this.options.settings.get('allow_null'),
+        allow_null: this.options.settings.get('allow_null') == 1,
         placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
       };
     }
