@@ -24,16 +24,16 @@
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_activity` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(100) DEFAULT NULL,
   `action` varchar(100) NOT NULL,
   `identifier` varchar(100) DEFAULT NULL,
   `table_name` varchar(100) NOT NULL DEFAULT '',
-  `row_id` int(10) DEFAULT NULL,
-  `user` int(10) NOT NULL DEFAULT '0',
+  `row_id` int unsigned DEFAULT NULL,
+  `user` int unsigned NOT NULL DEFAULT '0',
   `data` text,
   `delta` text NOT NULL,
-  `parent_id` int(11) DEFAULT NULL,
+  `parent_id` int unsigned DEFAULT NULL,
   `parent_table` varchar(100) DEFAULT NULL,
   `parent_changed` tinyint(1) NOT NULL COMMENT 'Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)',
   `datetime` datetime DEFAULT NULL,
@@ -46,12 +46,12 @@ CREATE TABLE `directus_activity` (
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_bookmarks` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user` int(11) DEFAULT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user` int unsigned DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
   `icon_class` varchar(255) DEFAULT NULL,
-  `active` tinyint(4) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
   `section` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -61,7 +61,7 @@ CREATE TABLE `directus_bookmarks` (
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_columns` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `table_name` varchar(64) NOT NULL DEFAULT '',
   `column_name` varchar(64) NOT NULL DEFAULT '',
   `data_type` varchar(64) DEFAULT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE `directus_columns` (
   `junction_table` varchar(64) DEFAULT NULL,
   `junction_key_left` varchar(64) DEFAULT NULL,
   `junction_key_right` varchar(64) DEFAULT NULL,
-  `sort` int(11) DEFAULT NULL,
+  `sort` int DEFAULT NULL,
   `comment` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `table-column` (`table_name`,`column_name`)
@@ -98,7 +98,7 @@ UNLOCK TABLES;
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_files` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) DEFAULT '1',
   `name` varchar(255) DEFAULT NULL,
   `url` varchar(2000) DEFAULT NULL,
@@ -108,11 +108,11 @@ CREATE TABLE `directus_files` (
   `type` varchar(50) DEFAULT '',
   `charset` varchar(50) DEFAULT '',
   `tags` varchar(255) DEFAULT '',
-  `width` int(5) DEFAULT '0',
-  `height` int(5) DEFAULT '0',
-  `size` int(20) DEFAULT '0',
+  `width` int unsigned DEFAULT '0',
+  `height` int unsigned DEFAULT '0',
+  `size` int unsigned DEFAULT '0',
   `embed_id` varchar(200) DEFAULT NULL,
-  `user` int(11) NOT NULL,
+  `user` int unsigned NOT NULL,
   `date_uploaded` datetime DEFAULT NULL,
   `storage_adapter` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -124,7 +124,7 @@ CREATE TABLE `directus_files` (
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_groups` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   `description` varchar(500) DEFAULT NULL,
   `restrict_to_ip_whitelist` tinyint(1) NOT NULL DEFAULT '0',
@@ -152,13 +152,13 @@ UNLOCK TABLES;
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_messages` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `from` int(11) DEFAULT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `from` int unsigned DEFAULT NULL,
   `subject` varchar(100) NOT NULL DEFAULT '',
   `message` text NOT NULL,
   `datetime` TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `attachment` int(11) DEFAULT NULL,
-  `response_to` int(11) DEFAULT NULL,
+  `attachment` int unsigned DEFAULT NULL,
+  `response_to` int unsigned DEFAULT NULL,
   `comment_metadata` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -169,11 +169,11 @@ CREATE TABLE `directus_messages` (
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_messages_recipients` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `message_id` int(11) NOT NULL,
-  `recipient` int(11) NOT NULL,
-  `read` tinyint(11) NOT NULL,
-  `group` int(11) DEFAULT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `message_id` int unsigned NOT NULL,
+  `recipient` int unsigned NOT NULL,
+  `read` tinyint(1) NOT NULL,
+  `group` int DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -183,8 +183,8 @@ CREATE TABLE `directus_messages_recipients` (
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_preferences` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user` int(11) DEFAULT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user` int unsigned DEFAULT NULL,
   `table_name` varchar(64) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `columns_visible` varchar(300) DEFAULT NULL,
@@ -201,9 +201,9 @@ CREATE TABLE `directus_preferences` (
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_privileges` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `table_name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `group_id` int(11) NOT NULL,
+  `group_id` int unsigned NOT NULL,
   `read_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
   `write_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
   `nav_listed` tinyint(1) DEFAULT '1' COMMENT '0=not listed in navs, 1=listed in navs',
@@ -243,7 +243,7 @@ UNLOCK TABLES;
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_settings` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `collection` varchar(250) DEFAULT NULL,
   `name` varchar(250) DEFAULT NULL,
   `value` varchar(250) DEFAULT NULL,
@@ -310,7 +310,7 @@ UNLOCK TABLES;
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_ui` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `table_name` varchar(64) DEFAULT NULL,
   `column_name` varchar(64) DEFAULT NULL,
   `ui_name` varchar(200) DEFAULT NULL,
@@ -328,7 +328,7 @@ VALUES
 # ------------------------------------------------------------
 
 CREATE TABLE `directus_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) DEFAULT '1',
   `first_name` varchar(50) DEFAULT '',
   `last_name` varchar(50) DEFAULT '',
@@ -345,9 +345,9 @@ CREATE TABLE `directus_users` (
   `last_access` datetime DEFAULT NULL,
   `last_page` varchar(255) DEFAULT '',
   `ip` varchar(50) DEFAULT '',
-  `group` int(11) DEFAULT NULL,
+  `group` int DEFAULT NULL,
   `avatar` varchar(500) DEFAULT NULL,
-  `avatar_file_id` int(11) DEFAULT NULL,
+  `avatar_file_id` int DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,

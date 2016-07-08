@@ -37,7 +37,7 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>10,
+          "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
           "primary_key"=>true
@@ -85,17 +85,17 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("width", "integer", array(
-          "limit"=>5,
+          "unsigned"=>true,
           "default"=>0
         )
       );
       $t->column("height", "integer", array(
-          "limit"=>5,
+          "unsigned"=>true,
           "default"=>0
         )
       );
       $t->column("size", "integer", array(
-          "limit"=>20,
+          "unsigned"=>true,
           "default"=>0
         )
       );
@@ -105,7 +105,7 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("user", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "null"=>false
         )
       );

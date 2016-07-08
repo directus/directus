@@ -27,7 +27,7 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>10,
+          "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
           "primary_key"=>true
@@ -35,7 +35,7 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
       );
 
       $t->column("from", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );
@@ -55,12 +55,12 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("attachment", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );
       $t->column("response_to", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );

@@ -14,7 +14,7 @@ class ChangeDirectusFilesAdapterStorage extends Ruckusing_Migration_Base
     public function down()
     {
         $this->change_column('directus_files', 'storage_adapter', 'integer', array(
-            'limit' => 11,
+            "unsigned"=>true,
             'unsigned' => true,
             'default' => NULL,
             //'COMMENT' =>'FK `directus_storage_adapters`.`id`'
