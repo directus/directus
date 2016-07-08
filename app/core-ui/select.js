@@ -67,7 +67,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
       }
     },
     list: function(options) {
-      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : options.value;
     }
   });
 
