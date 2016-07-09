@@ -46,7 +46,7 @@ class SchemaManager
         $table = new CreateTable($name);
 
         // Primary column
-        $primaryColumn = new Integer('id', 11);
+        $primaryColumn = new Integer('id');
         $primaryColumn->setOption('autoincrement', '');
         $table->addColumn($primaryColumn);
         $table->addConstraint(new PrimaryKey('id'));
