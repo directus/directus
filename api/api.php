@@ -527,7 +527,7 @@ $app->post("/$v/random/?", function() use ($app) {
         $length = (int)$_POST['length'];
     }
 
-    $randomString = StringUtils::random($length);
+    $randomString = StringUtils::randomString($length);
 
     return JsonView::render(array(
         'random' => $randomString
