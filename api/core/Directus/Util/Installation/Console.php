@@ -46,7 +46,14 @@ class Console
 
     private function createConfig()
     {
-        $data = [];
+        // add default information
+        // prevent issue with the new installation
+        $data = [
+            'db_type' => 'mysql',
+            'host' => 'localhost',
+            'db_port' => 3306,
+        ];
+
         $data['directus_path'] = '/';
         $options = $this->options;
         foreach($options as $key => $value) {
