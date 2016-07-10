@@ -52,9 +52,9 @@ class Console
             'db_type' => 'mysql',
             'host' => 'localhost',
             'db_port' => 3306,
+            'directus_path' => '/',
         ];
 
-        $data['directus_path'] = '/';
         $options = $this->options;
         foreach($options as $key => $value) {
             switch($key) {
