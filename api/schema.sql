@@ -339,7 +339,7 @@ CREATE TABLE `directus_users` (
   `access_token` varchar(255) DEFAULT NULL,
   `reset_token` varchar(255) DEFAULT '',
   `reset_expiration` datetime DEFAULT NULL,
-  `position` varchar(500) DEFAULT '',
+  `position` varchar(255) DEFAULT '',
   `email_messages` tinyint(1) DEFAULT '1',
   `last_login` datetime DEFAULT NULL,
   `last_access` datetime DEFAULT NULL,
