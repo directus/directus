@@ -5,6 +5,8 @@
 Directus
 ====================
 
+[![Join the chat at https://gitter.im/directus/directus](https://badges.gitter.im/directus/directus.svg)](https://gitter.im/directus/directus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Welcome to Directus, a free and open-source headless CMS written in Backbone.js that provides a feature-rich environment for rapid development and management of custom database schemas. Directus makes no assumptions about how you should architect your schema – giving you the freedom to tailor the database to your specific project needs and provide an intuitive, one-to-one interface to your users. And instead of encompassing your entire project, Directus focuses on a lightweight core suite designed to integrate with the frameworks already in your workflow.
 
 **[Learn more at getdirectus.com](http://getdirectus.com)**
