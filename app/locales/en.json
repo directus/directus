@@ -138,9 +138,9 @@
     "listing_items_not_found": "Nothing to see here...",
 
     "table_sort_enabled": "Sorting Enabled",
-    "table_sort_enabled_message": "Drag-and-drop sorting is now disabled",
+    "table_sort_enabled_message": "You can now sort items with drag-and-drop",
     "table_sort_disabled": "Sorting Disabled",
-    "table_sort_disabled_message": "You can now sort items with drag-and-drop",
+    "table_sort_disabled_message": "Drag-and-drop sorting is now disabled",
 
     "item_history": "Item History",
     "leave_a_comment_placeholder": "Leave a comment...",
