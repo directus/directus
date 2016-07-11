@@ -206,12 +206,12 @@ CREATE TABLE `directus_privileges` (
   `group_id` int unsigned NOT NULL,
   `read_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
   `write_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
-  `nav_listed` tinyint(1) DEFAULT '1' COMMENT '0=not listed in navs, 1=listed in navs',
-  `allow_view` tinyint(1) DEFAULT '1' COMMENT '0=no viewing, 1=view your records, 2=view everyones records',
-  `allow_add` tinyint(1) DEFAULT '1' COMMENT '0=no adding, 1=add records',
-  `allow_edit` tinyint(1) DEFAULT '1' COMMENT '0=no editing, 1=edit your records, 2=edit everyones records',
-  `allow_delete` tinyint(1) DEFAULT '1' COMMENT '0=no deleting, 1=delete your records, 2=delete everyones records',
-  `allow_alter` tinyint(1) DEFAULT '1' COMMENT '0=no altering, 1=allow altering',
+  `nav_listed` tinyint(1) DEFAULT '0' COMMENT '0=not listed in navs, 1=listed in navs',
+  `allow_view` tinyint(1) DEFAULT '0' COMMENT '0=no viewing, 1=view your records, 2=view everyones records',
+  `allow_add` tinyint(1) DEFAULT '0' COMMENT '0=no adding, 1=add records',
+  `allow_edit` tinyint(1) DEFAULT '0' COMMENT '0=no editing, 1=edit your records, 2=edit everyones records',
+  `allow_delete` tinyint(1) DEFAULT '0' COMMENT '0=no deleting, 1=delete your records, 2=delete everyones records',
+  `allow_alter` tinyint(1) DEFAULT '0' COMMENT '0=no altering, 1=allow altering',
   `status_id` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'NULL=permissions apply to records with any status, [0,1,2,etc]=permissions apply to records with this status',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

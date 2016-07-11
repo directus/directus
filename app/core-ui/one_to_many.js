@@ -169,8 +169,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         relatedCollection.fetch({includeFilters: false, data: filters});
       }
 
-      this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
-      this.showAddButton = this.columnSchema.options.get('add_button') === "1";
+      this.showRemoveButton = this.columnSchema.options.get('remove_button') == 1;
+      this.showAddButton = this.columnSchema.options.get('add_button') == 1;
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         selectable: false,
