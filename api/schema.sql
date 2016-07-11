@@ -335,7 +335,7 @@ CREATE TABLE `directus_users` (
   `email` varchar(255) DEFAULT '',
   `password` varchar(255) DEFAULT '',
   `salt` varchar(255) DEFAULT '',
-  `token` varchar(255) DEFAULT '',
+  `token` varchar(255) NOT NULL,
   `access_token` varchar(255) DEFAULT NULL,
   `reset_token` varchar(255) DEFAULT '',
   `reset_expiration` datetime DEFAULT NULL,
