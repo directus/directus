@@ -11,7 +11,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
 
   'use strict';
 
-  var template = '<input type="text" value="{{value}}" name="{{name}}" class="medium password-primary" style="display:block;margin-bottom:10px;" placeholder="{{ placeholder }}" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
+  var template = '<input type="text" value="{{value}}" name="{{name}}" class="medium password-primary" style="display:block;margin-bottom:10px;" placeholder="{{ placeholder }}" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" {{#if readonly}}readonly{{/if}}/> \
                   <div> \
                   <button class="btn btn-primary margin-left string-generate" style="margin-right:10px;" type="button">{{t "generate_new"}}</button> \
                   <span class="placard generated hide add-color margin-left-small bold">{{t "generated"}}</span> \
@@ -61,9 +61,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
     },
 
     serialize: function() {
+      console.log(this.options.settings.get('allow_any_value'));
       return {
         name: this.options.name,
         value: this.options.value,
+        readonly: this.options.settings.get('allow_any_value') != 1,
         comment: this.options.schema.get('comment'),
         placeholder: (this.options.settings && this.options.settings.has('placeholder')) ? this.options.settings.get('require_confirma') : ''
       };
@@ -76,7 +78,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
     variables: [
       {id: 'string_length', ui: 'numeric', char_length: 200, def: 16},
       // Allow the user to input their own value
-      {id: 'allow_any_value', ui: 'checkbox', def: '1'},
+      {id: 'allow_any_value', ui: 'checkbox', def: 1},
       {id: 'auto_generate', ui: 'checkbox', def: 0},
       // Initial Placeholder text for the UI
       {id: 'placeholder_text', ui: 'textinput', char_length: 200, def: ''},

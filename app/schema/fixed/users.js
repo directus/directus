@@ -375,7 +375,8 @@ define(function(require, exports, module) {
             "required":true,
             "ui":"random",
             "options": {
-              "auto_generate": 1
+              "auto_generate": 1,
+              "allow_any_value": 1
             }
           },
           {
