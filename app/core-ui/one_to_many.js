@@ -153,10 +153,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       if(ids.length > 0) {
         //Make sure column we are joining on is respected
         var filters = relatedCollection.filters;
-        if(filters.columns_visible) {
-          filters.columns_visible.push(joinColumn);
-        } else {
-          filters.columns_visible = [joinColumn];
+        if (filters.columns_visible.length == 0) {
+          filters.columns_visible = relatedCollection.structure.at(0).get('id');
         }
 
         //Pass this filter to select only where column = val
