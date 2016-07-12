@@ -516,10 +516,10 @@ define(function(require, exports, module) {
             }
           },
           {
-            "id":"locale",
-            "column_name":"locale",
+            "id":"language",
+            "column_name":"language",
             "type":"VARCHAR",
-            "char_length":"32",
+            "char_length":"8",
             "is_nullable":"YES",
             "default_value":"en",
             "comment":"",

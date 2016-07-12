@@ -129,7 +129,7 @@ $(function(){
                 type: 'POST',
                 success: function(data, textStatus, jqXHR) {
                     if(!data.success) {
-                        var errorMessage = "<?=__t('oops_an_error_ocurred');?>";
+                        var errorMessage = "<?=__t('oops_an_error_occurred');?>";
                         if(data.message) {
                                 errorMessage = data.message;
                         }
