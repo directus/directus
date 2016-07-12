@@ -13,7 +13,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
   var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" {{#if readonly}}readonly{{/if}}/> \
                   <style> \
-                    .tt-hint {padding:10px;} \
+                    .tt-hint {padding:14px;} \
                     #edit_field_{{name}} .twitter-typeahead {\
                       width:100%;\
                     }\
@@ -134,9 +134,9 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
     id: 'many_to_one_typeahead',
     dataTypes: ['INT'],
     variables: [
-      {id: 'visible_column', ui: 'textinput', char_length: 64, required: true},
-      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
-      {id: 'template', ui: 'textinput'},
+      {id: 'visible_column', ui: 'textinput', comment: __t('m2o_typeahead_visible_column_comment'), char_length: 64, required: true},
+      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }, comment: __t('m2o_typeahead_size_comment')},
+      {id: 'template', ui: 'textinput', comment: __t('m2o_typeahead_template_comment')},
       {id: 'include_inactive', ui: 'checkbox', def: '0', comment: __t('m2o_typeahead_include_inactive_comment'), required: false}
     ],
     Input: Input,
