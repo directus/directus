@@ -13,7 +13,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
   var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" {{#if readonly}}readonly{{/if}}/> \
                   <style> \
-                    .tt-hint {padding:10px;} \
+                    .tt-hint {padding:14px;} \
                     #edit_field_{{name}} .twitter-typeahead {\
                       width:100%;\
                     }\
