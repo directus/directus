@@ -364,7 +364,7 @@ define(function(require, exports, module) {
             "column_name":"token",
             "type":"VARCHAR",
             "char_length":"255",
-            "is_nullable":"YES",
+            "is_nullable":"NO",
             "default_value":"",
             "comment":"This is your user's API authentication token. Keep it safe!",
             "sort":12,
@@ -372,8 +372,12 @@ define(function(require, exports, module) {
             "master":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
-            "ui":"random"
+            "required":true,
+            "ui":"random",
+            "options": {
+              "auto_generate": 1,
+              "allow_any_value": 1
+            }
           },
           {
             "id":"access_token",

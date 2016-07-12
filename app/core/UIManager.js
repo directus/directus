@@ -312,7 +312,7 @@ define(function(require, exports, module) {
 
       settings.get = function(attr) {
         var attribute = this.attributes[attr];
-        if (this.defaultAttributes && !attribute) {
+        if (this.defaultAttributes && attribute == undefined) {
           var defaultAttribute = this.defaultAttributes[attr];
           if (defaultAttribute) {
             attribute = defaultAttribute;
