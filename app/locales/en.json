@@ -338,7 +338,7 @@
     "read_access_forbidden_to_table_x_indices_y": "Read (get) access forbidden to table `%{table}` indices: %{indices}",
     "invalid_list_x": "Invalid list: %{list}",
     "expected_permission_list_x_for_table_y_to_be_set_and_type_array": "Expected permissions list `%{list}` for table `%{table}` to be set and type array.",
-    "table_x_contains_read_blacklist_items_which_are_designated_as_mandatory_read_fields": "Table $table contains read blacklist items which are designated as mandatory read fields",
+    "table_x_contains_read_blacklist_items_which_are_designated_as_mandatory_read_fields": "Table %{table} contains read blacklist items which are designated as mandatory read fields",
     "record_must_be_array_or_gateway_x_given": "Parameter must be either an array or an instance/subclass of Zend\\Db\\RowGateway\\RowGateway (instance of %{type} given)",
 
     "attempting_to_inspect_the_authenticated_user_when_a_user_is_not_authenticated": "Attempting to inspect the authenticated user when a user isn't authenticated.",
