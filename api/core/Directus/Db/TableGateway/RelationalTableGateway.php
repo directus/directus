@@ -8,6 +8,7 @@ use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableSchema;
 use Directus\Hook\Hook;
+use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
@@ -174,7 +175,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     'table_name'    => $tableName,
                     'action'        => $logEntryAction,
                     'user'          => $currentUser['id'],
-                    'datetime'      => gmdate('Y-m-d H:i:s'),
+                    'datetime'      => DateUtils::now(),
                     'parent_id'     => isset($parentData['id']) ? $parentData['id'] : null,
                     'parent_table'  => isset($parentData['table_name']) ? $parentData['table_name'] : null,
                     'data'          => json_encode($fullRecordData),
@@ -220,7 +221,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         'table_name'        => $tableName,
                         'action'            => $logEntryAction,
                         'user'              => $currentUser['id'],
-                        'datetime'          => gmdate('Y-m-d H:i:s'),
+                        'datetime'          => DateUtils::now(),
                         'parent_id'         => null,
                         'data'              => json_encode($fullRecordData),
                         'delta'             => json_encode($deltaRecordData),

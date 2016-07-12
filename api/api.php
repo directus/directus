@@ -53,6 +53,7 @@ use Directus\Hook\Hook;
 use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
 use Directus\Util\StringUtils;
+use Directus\Util\DateUtils;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
 // use Directus\Db\TableGateway\DirectusIPWhitelist;
@@ -353,8 +354,7 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = Auth::getUserInfo();
-        $datetime = new DateTime('NOW', new DateTimeZone('GMT'));
-        $set = array('last_login' => $datetime->format('Y-m-d H:i:s'), 'access_token' => $userSession['access_token']);
+        $set = array('last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']);
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
@@ -415,14 +415,12 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
         $app->halt(200, __t('password_reset_incorrect_token'));
     }
 
-    $expirationDate = new DateTime($user['reset_expiration']);
-    $currentDate = new DateTime;
-
-    if ($expirationDate < $currentDate) {
+    $expirationDate = new DateTime($user['reset_expiration'] , new DateTimeZone('UTC'));
+    if (DateUtils::hasPassed($expirationDate)) {
         $app->halt(200, __t('password_reset_expired_token'));
     }
 
-    $password = StringUtils::random();
+    $password = StringUtils::randomString();
     $set = [];
     // @NOTE: this is not being used for hashing the password anymore
     $set['salt'] = StringUtils::random();
@@ -465,13 +463,9 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
         ));
     }
 
-    $date = new DateTime;
-    $date->modify('+2 day');
-    $reset_expiration = $date->format('Y-m-d H:i:s');
-
     $set = [];
-    $set['reset_token'] = StringUtils::random(20);
-    $set['reset_expiration'] = $reset_expiration;
+    $set['reset_token'] = StringUtils::randomString(30);
+    $set['reset_expiration'] = DateUtils::inDays(2);
 
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
@@ -764,12 +758,10 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
 // ex: /activity/:table, /activity/recents/:days
 $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
-    $datetime = new DateTime('NOW', new DateTimeZone('GMT'));
-    $datetime->modify('-30 days');
     // @todo move this to backbone collection
     if (!$params['adv_search']) {
       unset($params['perPage']);
-      $params['adv_search'] = "datetime >= '" . $datetime->format('Y-m-d H:i:s') . "'";
+      $params['adv_search'] = "datetime >= '" . DateUtils::daysAgo(30) . "'";
     }
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
@@ -922,7 +914,7 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     switch ($app->request()->getMethod()) {
       case "POST":
         $requestPayload['user'] = $currentUser['id'];
-        $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
+        $requestPayload['date_uploaded'] = DateUtils::now();
 
         // When the file is uploaded there's not a data key
         if (array_key_exists('data', $requestPayload)) {
@@ -1440,6 +1432,7 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
     }
   }
 
+  $requestPayload['datetime'] = DateUtils::now();
   $newRecord = $TableGateway->manageRecordUpdate("directus_messages", $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
   $params['id'] = $newRecord['id'];
 

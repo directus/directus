@@ -15,6 +15,73 @@ class DateUtils
     const DAY_IN_SECONDS = 86400;
 
     /**
+     * DateTime modifier format days into the future
+     * @var string
+     */
+    const IN_DAYS = '+%s days';
+
+    /**
+     * DateTime modifier format days ago
+     * @var string
+     */
+    const DAYS_AGO = '-%s days';
+
+    /**
+     * Get the current date in $format and modified by $modify
+     * @param string $time
+     * @param null $modify
+     * @param string $format
+     * @return string
+     */
+    public static function date($time = null, $modify = null, $format = 'Y-m-d H:i:s')
+    {
+        if ($time == null) {
+            $time = time();
+        }
+
+        $datetime = new DateTime();
+        $datetime->setTimestamp($time);
+        $datetime->setTimezone(new DateTimeZone('UTC'));
+
+        if ($modify != null) {
+            $datetime->modify($modify);
+        }
+
+        return $datetime->format($format);
+    }
+
+    /**
+     * Get the current time in UTC
+     * @return string
+     */
+    public static function now()
+    {
+        return static::date();
+    }
+
+    /**
+     * Get a date in $days into the future from current time UTC
+     * @param $days
+     * @param $time
+     * @return string
+     */
+    public static function inDays($days, $time = null)
+    {
+        return static::date($time, sprintf(static::IN_DAYS, $days));
+    }
+
+    /**
+     * Get a date $days ago from current time UTC
+     * @param $days
+     * @param $time
+     * @return string
+     */
+    public static function daysAgo($days, $time = null)
+    {
+        return static::date($time, sprintf(static::DAYS_AGO, $days));
+    }
+
+    /**
      * Given a date/time in UTC and a target timezone, yields a DateTime object converted from
      * UTC to the target timezone.
      *
@@ -72,5 +139,21 @@ class DateUtils
         }
 
         return $diff;
+    }
+
+    /**
+     * Determine if a given date time has passed UTC
+     * @param $datetime
+     * @return bool
+     */
+    public static function hasPassed($datetime)
+    {
+        if (!($datetime instanceof DateTime)) {
+            $datetime = new DateTime($datetime, new DateTimeZone('UTC'));
+        }
+
+        $currentDateTime = static::now();
+
+        return $currentDateTime > $datetime;
     }
 }

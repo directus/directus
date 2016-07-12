@@ -4,6 +4,7 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\Util\DateUtils;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -35,7 +36,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
                 'from' => $from,
                 'subject' => $payload['subject'],
                 'message' => $payload['message'],
-                'datetime' => gmdate("Y-m-d H:i:s"),
+                'datetime' => DateUtils::now(),
                 'response_to' => $payload['response_to']
                 ));
         $rows = $this->insertWith($insert);

@@ -7,6 +7,7 @@ use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Hook;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
+use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Directus\Files\Thumbnail;
 use League\Flysystem\Config as FlysystemConfig;
@@ -138,7 +139,7 @@ class Files
           $fileData['width'] = 560;
 
           $fileData['name'] = "youtube_" . $video_id . ".jpg";
-          $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
+          $fileData['date_uploaded'] = DateUtils::now();
           $fileData['storage_adapter'] = $this->getConfig('adapter');
           $fileData['charset'] = '';
 
@@ -202,7 +203,7 @@ class Files
           $fileData['type'] = 'embed/vimeo';
 
           $fileData['name'] = "vimeo_" . $video_id . ".jpg";
-          $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
+          $fileData['date_uploaded'] = DateUtils::now();
           $fileData['storage_adapter'] = $this->getConfig('adapter');
           $fileData['charset'] = '';
 
@@ -284,7 +285,7 @@ class Files
         $fileData = $this->getFileInfo($fileName);
         $fileData['title'] = Formatting::fileNameToFileTitle($fileName);
         $fileData['name'] = basename($filePath);
-        $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
+        $fileData['date_uploaded'] = DateUtils::now();
         $fileData['storage_adapter'] = $this->config['adapter'];
 
         $fileData = array_merge($this->defaults, $fileData);
@@ -486,7 +487,7 @@ class Files
         Hook::run('files.saving:after', array('name' => $targetName, 'size' => strlen($data)));
 
         $fileData['name'] = basename($finalPath);
-        $fileData['date_uploaded'] = gmdate('Y-m-d H:i:s');
+        $fileData['date_uploaded'] = DateUtils::now();
         $fileData['storage_adapter'] = $this->config['adapter'];
 
         return $fileData;
