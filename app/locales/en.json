@@ -294,7 +294,7 @@
     "server_error_occurred": "Server error occurred",
     "enter_your_email_and_password": "Enter your email and password",
     "reset_instructions_have_been_sent": "Reset instructions have been sent",
-    "oops_an_error_ocurred": "Oops, an error occurred",
+    "oops_an_error_occurred": "Oops, an error occurred",
     "are_you_sure_you_want_to_reset_your_password": "Are you sure you want to reset your password?",
     "enter_a_valid_email_address": "Enter a valid email address",
     "logged_out_due_to_inactivity": "Logged out due to inactivity",
