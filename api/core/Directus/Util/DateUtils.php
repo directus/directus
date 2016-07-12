@@ -105,6 +105,22 @@ class DateUtils
         return $datetime;
     }
 
+    public static function convertToISOFormat($datetime, $timezone = 'UTC')
+    {
+        if (!($datetime instanceof DateTime)) {
+            $format = is_int($datetime) ? 'U' : 'Y-m-d H:i:s';
+            $datetime = DateTime::createFromFormat($format, $datetime, new DateTimeZone($timezone));
+        }
+
+        $date = null;
+        if ($datetime) {
+            $datetime->setTimezone(new DateTimeZone('UTC'));
+            $date = $datetime->format('c');
+        }
+
+        return $date;
+    }
+
     /**
      * Days left to $timestamp (date)
      *

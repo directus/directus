@@ -81,4 +81,17 @@ class DateUtilsTest extends PHPUnit_Framework_TestCase
         $expected = '2014-07-14 16:00:00';
         $this->assertEquals($expected, $datetime);
     }
+
+    public function testISO()
+    {
+        $time = 1405267200;
+        $expected = '2014-07-13T16:00:00+00:00';
+
+        $datetime = DateUtils::date($time);
+        $isoDatetime = DateUtils::convertToISOFormat($datetime);
+        $this->assertEquals($expected, $isoDatetime);
+
+        $isoDatetime = DateUtils::convertToISOFormat($time);
+        $this->assertEquals($expected, $isoDatetime);
+    }
 }

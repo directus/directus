@@ -5,6 +5,7 @@ use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
 use Directus\Db\Exception;
 use Directus\Db\RowGateway\AclAwareRowGateway;
+use Directus\Db\SchemaManager;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableSchema;
 use Directus\Hook\Hook;
@@ -699,6 +700,9 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Eager-load related ManyToOne records
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
 
+        // Convert dates into ISO 8601 Format
+        $results = $this->convertDates($results, $schemaArray);
+
         /**
          * Fetching a set of data
          */
@@ -734,6 +738,24 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $result = $this->loadToManyRelationships($result, $alias_fields);
 
         return $result;
+    }
+
+    public function convertDates(array $records, array $schemaArray)
+    {
+        if (!SchemaManager::isDirectusTable($this->table)) {
+            return $records;
+        }
+
+        foreach($records as &$row) {
+            foreach($schemaArray as $column) {
+                if (strtolower($column['type']) === 'datetime') {
+                    $columnName = $column['id'];
+                    $row[$columnName] = DateUtils::convertToISOFormat($row[$columnName]);
+                }
+            }
+        }
+
+        return $records;
     }
 
     /**

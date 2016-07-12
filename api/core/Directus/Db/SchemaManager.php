@@ -117,6 +117,16 @@ class SchemaManager
         return static::addCoreTablePrefix($tables);
     }
 
+    /**
+     * Check if a given table is a directus core table name
+     * @param $tableName
+     * @return bool
+     */
+    public static function isDirectusTable($tableName)
+    {
+        return in_array($tableName, static::getDirectusTables());
+    }
+
     public static function getSupportedDatabases()
     {
         return [
