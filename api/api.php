@@ -156,7 +156,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             $userFound = $user->count() > 0 ? true : false;
 
             if (!$userFound) {
-                $app->halt(401, __t('you_must_be_logged_in_to_access_api'));
+                $app->halt(401, __t('you_must_be_logged_in_to_access_the_api'));
             }
 
             $user = $user->toArray();
@@ -187,7 +187,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         /** Enforce required authentication. */
         if(!Auth::loggedIn()) {
-            $app->halt(401, __t('you_must_be_logged_in_to_access_api'));
+            $app->halt(401, __t('you_must_be_logged_in_to_access_the_api'));
         }
 
         /** Enforce required request nonces. */
