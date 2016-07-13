@@ -105,16 +105,23 @@ class DateUtils
         return $datetime;
     }
 
-    public static function convertToISOFormat($datetime, $timezone = 'UTC')
+    /**
+     * Convert date into ISO 8601 Format.
+     * @param $datetime
+     * @param string $datetimezone - $datetime timezone
+     * @param string $isotimezone - timezone for the result date
+     * @return null|string
+     */
+    public static function convertToISOFormat($datetime, $datetimezone = 'UTC', $isotimezone = 'UTC')
     {
         if (!($datetime instanceof DateTime)) {
             $format = is_int($datetime) ? 'U' : 'Y-m-d H:i:s';
-            $datetime = DateTime::createFromFormat($format, $datetime, new DateTimeZone($timezone));
+            $datetime = DateTime::createFromFormat($format, $datetime, new DateTimeZone($datetimezone));
         }
 
         $date = null;
         if ($datetime) {
-            $datetime->setTimezone(new DateTimeZone('UTC'));
+            $datetime->setTimezone(new DateTimeZone($isotimezone));
             $date = $datetime->format('c');
         }
 

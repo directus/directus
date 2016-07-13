@@ -88,6 +88,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
 
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
+        $rowset = $this->convertDates($rowset, $tableSchemaArray);
 
 //        @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
 //        see: https://en.wikipedia.org/wiki/ISO_8601

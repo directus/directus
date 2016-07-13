@@ -180,6 +180,12 @@ if (!function_exists('load_registered_hooks')) {
     }
 }
 
+if (!function_exists('get_user_timezone')) {
+    function get_user_timezone() {
+        return date_default_timezone_get();
+    }
+}
+
 if (!function_exists('get_user_locale')) {
     function get_user_locale() {
         $locale = $defaultLocale = 'en';
