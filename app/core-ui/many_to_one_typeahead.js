@@ -12,6 +12,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
   'use strict';
 
   var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" {{#if readonly}}readonly{{/if}}/> \
+                  <div id="formattedValue">{{formattedValue}}</div>{{#if formattedValue}}<span class="clear">×</span>{{/if}} \
                   <style> \
                     .tt-hint {padding:14px;} \
                     #edit_field_{{name}} .twitter-typeahead {\
@@ -46,22 +47,25 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
                 </style>';
 
   var Input = UIView.extend({
-    events: {},
+    events: {
+      'click .clear': function() {
+        this.model.get(this.name).clear();
+        this.render();
+      }
+    },
+
     templateSource: template,
 
     serialize: function() {
       var relatedModel = this.model.get(this.name);
-      var value = '';
-      // The item is not new, it has a value
-      if (!relatedModel.isNew()) {
-        value = relatedModel.get(this.visibleColumn);
-      }
+      var value = relatedModel.get(this.visibleColumn);
 
       return {
         name: this.options.name,
         size: this.columnSchema.options.get('size'),
         readonly: false,
         comment: this.options.schema.get('comment'),
+        formattedValue: this.getFormattedValue(),
         value: value
       };
     },
@@ -104,12 +108,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
       this.$(".for_display_only").typeahead({
         minLength: 1,
         items: 5,
-        valueKey: this.visibleColumn,
-        template: Handlebars.compile('<div>'+template+'</div>')
-      },
-      {
-        name: 'related-items',
-        displayKey: 'value',
+      }, {
         source: fetchItems.ttAdapter()
       });
 
@@ -119,7 +118,31 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
         model.clear();
         model.set({id: selectedId});
+        model.fetch({success:  function() {
+          self.updateFormattedValue();
+          self.render();
+          // clear after fetch
+          model.clear();
+          model.set({id: selectedId});
+        }});
       });
+    },
+
+    getFormattedValue: function() {
+      var relatedModel = this.model.get(this.name);
+      var templateSource = this.columnSchema.options.get('template');
+      var formattedValue = '';
+
+      if (templateSource && !relatedModel.isNew()) {
+        var template = Handlebars.compile(templateSource);
+        formattedValue = template(relatedModel.toJSON());
+      }
+
+      return formattedValue;
+    },
+
+    updateFormattedValue: function() {
+      this.$el.find('#formattedValue').html(this.getFormattedValue());
     },
 
     initialize: function(options) {
