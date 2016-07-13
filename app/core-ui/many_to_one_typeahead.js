@@ -11,11 +11,22 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
   'use strict';
 
-  var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" placeholder="{{t "m2o_typeahead_placeholder"}}" {{#if readonly}}readonly{{/if}}/> \
+  var template = '<input type="text" value="" class="for_display_only {{size}}{{#if disabled}} disabled{{/if}}" placeholder="{{t "m2o_typeahead_placeholder"}}" {{#if readonly}}readonly{{/if}}/> \
+                  {{#if disabled}}<em>There is not visible columns selected</em>{{/if}}\
+                  {{#if hasSelectedValue}}\
                   <div class="selected-item"> \
-                    <span id="formattedValue">{{formattedValue}}</span>{{#if formattedValue}}<i class="material-icons clear" title="{{t "m2o_typeahead_clear"}}">clear</i>{{/if}} \
+                    {{#if formattedValue}}\
+                      <span id="formattedValue">{{formattedValue}}</span>\
+                    {{else}}\
+                      <span>{{plainValue}}</span>\
+                    {{/if}} \
+                    <i class="material-icons clear" title="{{t "m2o_typeahead_clear"}}">clear</i> \
                   </div> \
+                  {{/if}}\
                   <style> \
+                    .for_display_only.disabled {\
+                      border-color: #F75D59\
+                    } \
                     #formattedValue { \
                       border-radius: 4px; \
                       padding: 8px 10px; \
@@ -96,15 +107,17 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
     serialize: function() {
       var relatedModel = this.model.get(this.name);
-      var value = get_multiple_attr(relatedModel, this.visibleColumn) || '';
 
       return {
         name: this.options.name,
         size: this.columnSchema.options.get('size'),
         readonly: false,
+        disabled: this.visibleColumn ? false : true,
+        selectedValue: relatedModel,
+        hasSelectedValue: !relatedModel.isNew(),
         comment: this.options.schema.get('comment'),
+        plainValue: this.visibleColumn ? get_multiple_attr(relatedModel, this.visibleColumn) : '',
         formattedValue: this.getFormattedValue(),
-        value: value
       };
     },
 
@@ -140,15 +153,17 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
         }
       });
 
-      fetchItems.initialize();
-      // fetchItems.clearPrefetchCache();
-      // engine.clearRemoteCache();
-      this.$(".for_display_only").typeahead({
-        minLength: 1,
-        items: 5,
-      }, {
-        source: fetchItems.ttAdapter()
-      });
+      if (this.visibleColumn) {
+        fetchItems.initialize();
+        // fetchItems.clearPrefetchCache();
+        // engine.clearRemoteCache();
+        this.$(".for_display_only").typeahead({
+          minLength: 1,
+          items: 5,
+        }, {
+          source: fetchItems.ttAdapter()
+        });
+      }
 
       this.$('.for_display_only').on('typeahead:selected', function(e, datum) {
         var model = self.model.get(self.name);
