@@ -11,9 +11,34 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
   'use strict';
 
-  var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" {{#if readonly}}readonly{{/if}}/> \
-                  <div id="formattedValue">{{formattedValue}}</div>{{#if formattedValue}}<span class="clear">×</span>{{/if}} \
+  var template = '<input type="text" value="{{value}}" class="for_display_only {{size}}" placeholder="{{t "m2o_typeahead_placeholder"}}" {{#if readonly}}readonly{{/if}}/> \
+                  <div class="selected-item"> \
+                    <span id="formattedValue">{{formattedValue}}</span>{{#if formattedValue}}<i class="material-icons clear" title="{{t "m2o_typeahead_clear"}}">clear</i>{{/if}} \
+                  </div> \
                   <style> \
+                    #formattedValue { \
+                      border-radius: 4px; \
+                      padding: 8px 10px; \
+                      background-color: rgba(76,166,222, 0.2); \
+                      cursor: pointer; \
+                    } \
+                    .selected-item { \
+                      margin-top: 15px; \
+                      color: #4ca6de; \
+                      font-weight: 500; \
+                    } \
+                    .selected-item:hover { \
+                    } \
+                    .selected-item .clear { \
+                      margin-left: 5px; \
+                      vertical-align: middle; \
+                      color: #666666; \
+                      margin-top: -2px; \
+                      cursor: pointer; \
+                    } \
+                    .selected-item .clear:hover { \
+                      color: #c1272d; \
+                    } \
                     .tt-hint {padding:14px;} \
                     #edit_field_{{name}} .twitter-typeahead {\
                       width:100%;\

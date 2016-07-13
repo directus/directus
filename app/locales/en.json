@@ -208,6 +208,8 @@
     "m2o_placeholder_text_comment": "Enter Placeholder Text",
     "m2o_filter_column_comment": "Enter Column thats value is used for filter search",
 
+    "m2o_typeahead_placeholder": "Search for an item...",
+    "m2o_typeahead_clear": "Clear this related item",
     "m2o_typeahead_visible_column_comment": "A CSV of columns used when filtering this field",
     "m2o_typeahead_size_comment": "Determines the size/width of the search field",
     "m2o_typeahead_template_comment": "A twig template for how items are displayed. eg: {{l_name}}, {{f_name}} – {{title}}",
