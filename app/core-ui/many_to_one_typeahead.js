@@ -46,6 +46,19 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
                 }\
                 </style>';
 
+  // @TODO: this should be a great feature on Models
+  function get_multiple_attr(model, attributes) {
+    if (attributes && attributes.length > 0) {
+      var columns = attributes.split(',');
+      var values = [];
+      _.each(columns, function (column) {
+        values.push(model.get(column));
+      });
+
+      return values.join(' ');
+    }
+  }
+
   var Input = UIView.extend({
     events: {
       'click .clear': function() {
@@ -58,7 +71,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
     serialize: function() {
       var relatedModel = this.model.get(this.name);
-      var value = relatedModel.get(this.visibleColumn);
+      var value = get_multiple_attr(relatedModel, this.visibleColumn) || '';
 
       return {
         name: this.options.name,
@@ -164,8 +177,17 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
     ],
     Input: Input,
     list: function(options) {
-      if (options.value === undefined) return '';
-      if (options.value instanceof Backbone.Model) return options.value.get(options.settings.get('visible_column'));
+      if (options.value === undefined || options.value.isNew()) {
+        return '';
+      }
+
+      if (options.value instanceof Backbone.Model) {
+        if (options.settings.get('template')) {
+          return this.compileView(options.settings.get('template'), options.value.toJSON());
+        } else {
+          return get_multiple_attr(options.value, options.settings.get('visible_column'));
+        }
+      }
 
       return options.value;
     }
