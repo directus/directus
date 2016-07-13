@@ -13,13 +13,9 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
   var template = '<input type="text" value="" class="for_display_only {{size}}{{#if disabled}} disabled{{/if}}" placeholder="{{t "m2o_typeahead_placeholder"}}" {{#if readonly}}readonly{{/if}}/> \
                   {{#if disabled}}<em>There is not visible columns selected</em>{{/if}}\
-                  {{#if hasSelectedValue}}\
+                  {{#if hasSelectedItem}}\
                   <div class="selected-item"> \
-                    {{#if formattedValue}}\
-                      <span id="formattedValue">{{formattedValue}}</span>\
-                    {{else}}\
-                      <span>{{plainValue}}</span>\
-                    {{/if}} \
+                    <span id="selectedValue">{{selectedValue}}</span>\
                     <i class="material-icons clear" title="{{t "m2o_typeahead_clear"}}">clear</i> \
                   </div> \
                   {{/if}}\
@@ -27,7 +23,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
                     .for_display_only.disabled {\
                       border-color: #F75D59\
                     } \
-                    #formattedValue { \
+                    #selectedValue { \
                       border-radius: 4px; \
                       padding: 8px 10px; \
                       background-color: rgba(76,166,222, 0.2); \
@@ -113,11 +109,10 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
         size: this.columnSchema.options.get('size'),
         readonly: false,
         disabled: this.visibleColumn ? false : true,
-        selectedValue: relatedModel,
-        hasSelectedValue: !relatedModel.isNew(),
+        selectedItem: relatedModel,
+        hasSelectedItem: !relatedModel.isNew(),
         comment: this.options.schema.get('comment'),
-        plainValue: this.visibleColumn ? get_multiple_attr(relatedModel, this.visibleColumn) : '',
-        formattedValue: this.getFormattedValue(),
+        selectedValue: this.getSelectedValue(),
       };
     },
 
@@ -172,7 +167,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
         model.clear();
         model.set({id: selectedId});
         model.fetch({success:  function() {
-          self.updateFormattedValue();
+          self.updateSelectedValue();
           self.render();
           // clear after fetch
           model.clear();
@@ -181,21 +176,21 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
       });
     },
 
-    getFormattedValue: function() {
+    getSelectedValue: function() {
       var relatedModel = this.model.get(this.name);
       var templateSource = this.columnSchema.options.get('template');
-      var formattedValue = '';
+      var selectedValue = this.visibleColumn ? get_multiple_attr(relatedModel, this.visibleColumn) : '';
 
       if (templateSource && !relatedModel.isNew()) {
         var template = Handlebars.compile(templateSource);
-        formattedValue = template(relatedModel.toJSON());
+        selectedValue = template(relatedModel.toJSON());
       }
 
-      return formattedValue;
+      return selectedValue;
     },
 
-    updateFormattedValue: function() {
-      this.$el.find('#formattedValue').html(this.getFormattedValue());
+    updateSelectedValue: function() {
+      this.$el.find('#selectedValue').html(this.getSelectedValue());
     },
 
     initialize: function(options) {
