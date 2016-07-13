@@ -3096,7 +3096,7 @@ select,
       .history-container ul li .history-comment {
         position: relative;
         display: inline-block;
-        padding: 20px;
+        padding: 20px 20px 18px 20px;
         background-color: #ffffff;
         -webkit-border-top-right-radius: 4px;
         -webkit-border-bottom-right-radius: 4px;

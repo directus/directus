@@ -516,7 +516,7 @@
       .history-comment {
         position: relative;
         display: inline-block;
-        padding: 20px;
+        padding: 20px 20px 18px 20px;
         background-color: $white;
         @include border-radius(4px, 4px, 4px, 4px);
         border: 1px solid $fieldColor;
