@@ -3142,6 +3142,8 @@ select,
           position: absolute;
           right: 15px;
           bottom: 15px; }
+          .history-container ul li .history-comment #messages-response-button.disabled {
+            background-color: #dddddd; }
         .history-container ul li .history-comment textarea {
           border: none;
           width: 100%;

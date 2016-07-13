@@ -554,6 +554,9 @@
           position: absolute;
           right: 15px;
           bottom: 15px;
+          &.disabled {
+            background-color: $fieldColor;
+          }
         }
         textarea {
           border: none;

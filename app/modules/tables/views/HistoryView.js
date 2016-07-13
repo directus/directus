@@ -27,7 +27,7 @@ function(app, Backbone, __t, Directus, moment) {
         var subject = '[' + app.settings.get('global').get('project_name') + '] ' + app.capitalize(this.model.collection.table.id) + ': "' + this.model.get(this.model.table.get('primary_column')) + '"';
 
         var date = moment().format("YYYY-MM-DD HH:mm:ss");
-        model.set({datetime: date, subject: subject, message:this.$el.find('#commentTextarea').val(), comment_metadata: this.model.collection.table.id + ":" + this.model.get('id')})
+        model.set({datetime: date, subject: subject, message:this.$el.find('#commentTextarea').val(), comment_metadata: this.model.collection.table.id + ":" + this.model.get('id')});
         model.unset("responses");
         model.url = app.API_URL + "comments/";
 
@@ -43,6 +43,13 @@ function(app, Backbone, __t, Directus, moment) {
         var text = $(e.target).val();
         var sub = text.substring(0, caretPos);
         var activeChunk = sub.substring(sub.lastIndexOf(" ") + 1);
+
+        // Enable submit button when content exists
+        if(text.length > 0){
+          $('#messages-response-button').removeClass('disabled');
+        } else {
+          $('#messages-response-button').addClass('disabled');
+        }
 
         if(activeChunk.substring(0,1) === "@") {
           var search = activeChunk.substring(1);
@@ -251,7 +258,7 @@ function(app, Backbone, __t, Directus, moment) {
           var offset = 0;
           while(true) {
             if(title) {
-              var atPos = title.indexOf('@[')
+              var atPos = title.indexOf('@[');
               if(atPos !== -1) {
                 var spacePos = title.substring(atPos).indexOf(' ');
                 if(spacePos !== -1) {
