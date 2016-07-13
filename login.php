@@ -103,7 +103,7 @@ $(function(){
         }
     }
 
-    <?php if(isset($_GET['inactive'])) {echo 'message("'+__t('logged_out_due_to_inactivity')+'", true);';}?>
+    <?php if(isset($_GET['inactive'])) {echo 'message("'.__t('logged_out_due_to_inactivity').'", true);';}?>
 
     function clear_messages() {
         $login_error.hide();
