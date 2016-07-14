@@ -4,9 +4,11 @@
 // Composer Autoloader
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
-use Directus\Util\Installation\Console;
+use Directus\Console\Cli;
 
-$cli = new Console(dirname(dirname(__FILE__)));
+define('BASE_PATH', dirname(dirname(__FILE__)));
+
+$cli = new Cli();
 
 $cli->run();
 
