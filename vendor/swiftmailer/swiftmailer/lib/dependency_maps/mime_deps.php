@@ -1,6 +1,6 @@
 <?php
 
-require dirname(__FILE__).'/../mime_types.php';
+require __DIR__.'/../mime_types.php';
 
 Swift_DependencyContainer::getInstance()
     ->register('properties.charset')

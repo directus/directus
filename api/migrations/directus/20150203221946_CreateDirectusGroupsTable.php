@@ -21,7 +21,6 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
 
       // columns
       $t->column("id", "integer", array(
-          "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,

@@ -24,7 +24,6 @@ class CreateDirectusMessagesRecipientsTable extends Ruckusing_Migration_Base
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
@@ -33,25 +32,25 @@ class CreateDirectusMessagesRecipientsTable extends Ruckusing_Migration_Base
       );
 
       $t->column("message_id", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "null"=>false
         )
       );
 
       $t->column("recipient", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "null"=>false
         )
       );
 
       $t->column("read", "tinyinteger", array(
-          "limit"=>11,
+          "limit"=>1,
           "null"=>false
         )
       );
 
       $t->column("group", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );

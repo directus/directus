@@ -257,15 +257,15 @@ if (!function_exists('get_default_phrases')) {
 
 if (!function_exists('get_phrases')) {
     function get_phrases($locale = 'en') {
+        $defaultPhrases = get_default_phrases();
         $langFile = BASE_PATH.'/customs/locales/'.$locale.'.json';
 
+        $phrases = [];
         if (file_exists($langFile)) {
             $phrases = json_decode(file_get_contents($langFile), true);
-        } else {
-            $phrases = get_default_phrases();
         }
 
-        return $phrases;
+        return is_array($phrases) ? array_merge($defaultPhrases, $phrases) : $defaultPhrases;
     }
 }
 

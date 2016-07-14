@@ -121,7 +121,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("sort", "integer", array(
-          "limit"=>11,
           "default"=>NULL
         )
       );

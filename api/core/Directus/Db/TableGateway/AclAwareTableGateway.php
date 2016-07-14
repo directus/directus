@@ -371,8 +371,9 @@ class AclAwareTableGateway extends TableGateway {
           if(array_key_exists('ui', $tableData) && in_array($tableData['ui'], $manytoones)) {
             $tableData['relationship_type'] = 'MANYTOONE';
             $tableData['junction_key_right'] = $tableData['column_name'];
-            $this->addVirtualColumn($tableName, $tableData);
           }
+
+          $this->addVirtualColumn($tableName, $tableData);
       }
 
       return $tableData['column_name'];
@@ -521,13 +522,15 @@ class AclAwareTableGateway extends TableGateway {
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            // @todo send developer warning
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
+                throw new DuplicateEntryException($e->getMessage());
+            }
+
             if('production' !== DIRECTUS_ENV) {
-                if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
-                  throw new DuplicateEntryException($e->getMessage());
-                }
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($insert), 0, $e);
             }
-            // @todo send developer warning
+
             throw $e;
         }
     }
@@ -616,14 +619,16 @@ class AclAwareTableGateway extends TableGateway {
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            // @TODO: these lines are the same as the executeInsert,
+            // let's put it together
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
+                throw new DuplicateEntryException($e->getMessage());
+            }
+
             if('production' !== DIRECTUS_ENV) {
-                // @TODO: these lines are the same as the executeInsert,
-                // let's put it together
-                if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
-                  throw new DuplicateEntryException($e->getMessage());
-                }
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($update), 0, $e);
             }
+
             // @todo send developer warning
             throw $e;
         }

@@ -45,7 +45,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
           "primary_key"=>true
@@ -83,7 +83,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
       );
       $t->column("token", "string", array(
           "limit"=>255,
-          "default"=>""
+          "null"=>false
         )
       );
       $t->column("access_token", "string", array(
@@ -129,7 +129,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("group", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );
@@ -139,7 +139,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("avatar_file_id", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );
@@ -179,8 +179,8 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         )
       );
 
-      $t->column("locale", "string", array(
-          "limit"=>32,
+      $t->column("language", "string", array(
+          "limit"=>8,
           "default"=>'en'
         )
       );

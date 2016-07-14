@@ -41,11 +41,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      */
     public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
     {
-        if (!function_exists('mcrypt_module_open')) {
-            throw new LogicException('The mcrypt functions need to be enabled to use the NTLM authenticator.');
-        }
-
-        if (!function_exists('openssl_random_pseudo_bytes')) {
+        if (!function_exists('openssl_random_pseudo_bytes') || !function_exists('openssl_encrypt')) {
             throw new LogicException('The OpenSSL extension must be enabled to use the NTLM authenticator.');
         }
 
@@ -568,17 +564,15 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     /**
      * DES Encryption.
      *
-     * @param string $value
+     * @param string $value An 8-byte string
      * @param string $key
      *
      * @return string
      */
     protected function desEncrypt($value, $key)
     {
-        $cipher = mcrypt_module_open(MCRYPT_DES, '', 'ecb', '');
-        mcrypt_generic_init($cipher, $key, mcrypt_create_iv(mcrypt_enc_get_iv_size($cipher), MCRYPT_DEV_RANDOM));
-
-        return mcrypt_generic($cipher, $value);
+        // 1 == OPENSSL_RAW_DATA - but constant is only available as of PHP 5.4.
+        return substr(openssl_encrypt($value, 'DES-ECB', $key, 1), 0, 8);
     }
 
     /**

@@ -1,6 +1,15 @@
 Changelog
 =========
 
+5.4.3 (2016-07-08)
+------------------
+
+ * fixed SimpleHeaderSet::has()/get() when the 0 index is removed
+ * removed the need to have mcrypt installed
+ * fixed broken MIME header encoding with quotes/colons and non-ascii chars
+ * allowed mail transport send for messages without To header
+ * fixed PHP 7 support
+
 5.4.2 (2016-05-01)
 ------------------
 

@@ -19,10 +19,10 @@ if (defined('SWIFT_INIT_LOADED')) {
 define('SWIFT_INIT_LOADED', true);
 
 // Load in dependency maps
-require dirname(__FILE__).'/dependency_maps/cache_deps.php';
-require dirname(__FILE__).'/dependency_maps/mime_deps.php';
-require dirname(__FILE__).'/dependency_maps/message_deps.php';
-require dirname(__FILE__).'/dependency_maps/transport_deps.php';
+require __DIR__.'/dependency_maps/cache_deps.php';
+require __DIR__.'/dependency_maps/mime_deps.php';
+require __DIR__.'/dependency_maps/message_deps.php';
+require __DIR__.'/dependency_maps/transport_deps.php';
 
 // Load in global library preferences
-require dirname(__FILE__).'/preferences.php';
+require __DIR__.'/preferences.php';

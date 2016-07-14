@@ -87,7 +87,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
         $evt = $this->_dispatcher->createSendEvent($transport, $message);
 
         $targetListener = $this->getMock('Swift_Events_SendListener');
-        $otherListener = $this->getMock('Swift_Events_TransportChangeListener');
+        $otherListener = $this->getMock('DummyListener');
 
         $this->_dispatcher->bindEventListener($targetListener);
         $this->_dispatcher->bindEventListener($otherListener);
@@ -131,5 +131,12 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
     private function _createDispatcher(array $map)
     {
         return new Swift_Events_SimpleEventDispatcher($map);
+    }
+}
+
+class DummyListener implements Swift_Events_EventListener
+{
+    public function sendPerformed(Swift_Events_SendEvent $evt)
+    {
     }
 }

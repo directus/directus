@@ -22,11 +22,11 @@ class CreateDirectusBookmarksTable extends Ruckusing_Migration_Base
       $t = $this->create_table("directus_bookmarks");
 
       //columns
-      $t->column("user", "integer", array("limit"=>11, "default"=>NULL));
+      $t->column("user", "integer", array("unsigned"=>true, "default"=>NULL));
       $t->column("title", "string", array("limit"=>255, "default"=>NULL));
       $t->column("url", "string", array("limit"=>255, "default"=>NULL));
       $t->column("icon_class", "string", array("limit"=>255, "default"=>NULL));
-      $t->column("active", "tinyinteger", array("limit"=>4, "default"=>NULL));
+      $t->column("active", "tinyinteger", array("limit"=>1, "default"=>NULL));
       $t->column("section", "string", array("limit"=>255, "default"=>NULL));
 
       $t->finish();

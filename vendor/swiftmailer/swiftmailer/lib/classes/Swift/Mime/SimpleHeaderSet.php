@@ -140,7 +140,16 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     {
         $lowerName = strtolower($name);
 
-        return array_key_exists($lowerName, $this->_headers) && array_key_exists($index, $this->_headers[$lowerName]);
+        if (!array_key_exists($lowerName, $this->_headers)) {
+            return false;
+        }
+
+        if (func_num_args() < 2) {
+            // index was not specified, so we only need to check that there is at least one header value set
+            return (bool) count($this->_headers[$lowerName]);
+        }
+
+        return array_key_exists($index, $this->_headers[$lowerName]);
     }
 
     /**
@@ -173,10 +182,18 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
      */
     public function get($name, $index = 0)
     {
-        if ($this->has($name, $index)) {
-            $lowerName = strtolower($name);
+        $name = strtolower($name);
 
-            return $this->_headers[$lowerName][$index];
+        if (func_num_args() < 2) {
+            if ($this->has($name)) {
+                $values = array_values($this->_headers[$name]);
+
+                return array_shift($values);
+            }
+        } else {
+            if ($this->has($name, $index)) {
+                return $this->_headers[$name][$index];
+            }
         }
     }
 
