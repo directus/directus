@@ -10,7 +10,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
 
   'use strict';
 
-  var template = '<textarea rows="{{rows}}" name="{{name}}" id="{{name}}" {{#if readonly}}readonly{{/if}}>{{value}}</textarea>';
+  var template = '<textarea rows="{{rows}}" name="{{name}}" id="{{name}}" placeholder="{{placeholder_text}}" {{#if readonly}}readonly{{/if}}>{{value}}</textarea>';
 
   var Input = UIView.extend({
     templateSource: template,
@@ -20,6 +20,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
         value: this.options.value,
         name: this.options.name,
         rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '12',
+        placeholder_text: (this.options.settings && this.options.settings.has('placeholder_text')) ? this.options.settings.get('placeholder_text') : '',
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite
       };
@@ -31,7 +32,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
     dataTypes: ['TEXT', 'VARCHAR'],
     variables: [
       // The number of text rows available for the input before scrolling
-      {id: 'rows', ui: 'numeric', char_length: 3}
+      {id: 'rows', ui: 'numeric', char_length: 3},
+      {id: 'placeholder_text', ui: 'textinput', char_length:200},
     ],
     Input: Input,
     validate: function(value, options) {
