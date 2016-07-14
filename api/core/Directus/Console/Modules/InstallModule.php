@@ -54,6 +54,7 @@ class InstallModule implements ModuleInterface
         .PHP_EOL."\t\t-p ".__t('Password for the DB connection user. Default: directus')
         .PHP_EOL."\t\t-t ".__t('Database Server Type. Default: mysql')
         .PHP_EOL."\t\t-P ".__t('Database Server Port. Default: 3306')
+        .PHP_EOL."\t\t-r ".__t('Directus root URI. Default: /')
         .PHP_EOL."\t\t-d ".__t('Installation path of Directus. Default: '.BASE_PATH),
       'database' => ''
         .PHP_EOL."\t\t-d ".__t('Installation path of Directus. Default: '.BASE_PATH),
@@ -122,7 +123,9 @@ class InstallModule implements ModuleInterface
         $data['db_name'] = 'directus';
         $data['db_user'] = 'directus';
         $data['db_password'] = 'directus';
-        $data['directus_path'] = BASE_PATH;
+        $data['directus_path'] = '/';
+
+        $directus_path = BASE_PATH.DIRECTORY_SEPARATOR;
 
         foreach($args as $key => $value) {
             switch($key) {
@@ -144,17 +147,20 @@ class InstallModule implements ModuleInterface
                 case 'p':
                     $data['db_password'] = $value;
                     break;
-                case 'd':
+                case 'r':
                     $data['directus_path'] = $value;
+                    break;
+                case 'd':
+                    $directus_path = $value;
                     break;
             }
         }
 
-        InstallerUtils::createConfig($data, $data['directus_path'].'/api');
+        InstallerUtils::createConfig($data, $directus_path.'api');
   }
 
   public function cmd_database($args, $extra) {
-    $directus_path = BASE_PATH;
+    $directus_path = BASE_PATH.DIRECTORY_SEPARATOR;
     foreach($args as $key => $value) {
         switch($key) {
             case 'd':
@@ -172,7 +178,8 @@ class InstallModule implements ModuleInterface
     $data['directus_email'] = 'admin@directus.com';
     $data['directus_password'] = 'directus';
     $data['directus_name'] = 'Directus';
-    $data['directus_path'] = BASE_PATH;
+
+    $directus_path = BASE_PATH.DIRECTORY_SEPARATOR;
 
     foreach($args as $key => $value) {
         switch($key) {
@@ -186,12 +193,12 @@ class InstallModule implements ModuleInterface
                 $data['directus_name'] = $value;
                 break;
             case 'd':
-                $data['directus_path'] = $value;
+                $directus_path = $value;
                 break;
         }
     }
 
-    InstallerUtils::addDefaultSettings($data, $data['directus_path']);
+    InstallerUtils::addDefaultSettings($data, $directus_path);
     InstallerUtils::addDefaultUser($data);
   }
 

@@ -20,7 +20,7 @@
 /**
  * CLI Install Module.
  *
- * This module provides the commands used to install and configure Directus.
+ * This module provides the commands to manage Directus users.
  *
  * @category   Interfaces
  * @package    Directus/Console/Modules
@@ -32,14 +32,16 @@
 
 namespace Directus\Console\Modules;
 
+use Directus\Bootstrap;
 use Directus\Console\Exception\UnsupportedCommandException;
 use Directus\Console\Exception\WrongArgumentsException;
-use Directus\Util\Installation\InstallerUtils;
+use Directus\Util\StringUtils;
+use Zend\Db\TableGateway\TableGateway;
 
-class InstallModule implements ModuleInterface
+class UserModule implements ModuleInterface
 {
 
-  private $__module_name = 'install';
+  private $__module_name = 'user';
   private $commands_help;
   private $help;
 
@@ -47,30 +49,15 @@ class InstallModule implements ModuleInterface
   {
 
     $this->help  = array (
-      'config' => ''
-        .PHP_EOL."\t\t-h ".__t('Hostname or IP address of the MySQL DB to be used. Default: localhost')
-        .PHP_EOL."\t\t-n ".__t('Name of the database to use for Directus. Default: directus')
-        .PHP_EOL."\t\t-u ".__t('Username for DB connection. Default: directus')
-        .PHP_EOL."\t\t-p ".__t('Password for the DB connection user. Default: directus')
-        .PHP_EOL."\t\t-t ".__t('Database Server Type. Default: mysql')
-        .PHP_EOL."\t\t-P ".__t('Database Server Port. Default: 3306')
-        .PHP_EOL."\t\t-d ".__t('Installation path of Directus. Default: '.BASE_PATH),
-      'database' => ''
-        .PHP_EOL."\t\t-d ".__t('Installation path of Directus. Default: '.BASE_PATH),
-      'install' => ''
-        .PHP_EOL."\t\t-e ".__t('Administrator e-mail address, used for administration login. Default: admin@directus.com')
-        .PHP_EOL."\t\t-p ".__t('Initial administrator password. Default: directus')
-        .PHP_EOL."\t\t-t ".__t('Name for this Directus installation. Default: Directus')
-        .PHP_EOL."\t\t-d ".__t('Installation path of Directus. Default: '.BASE_PATH)
+      'password' => ''
+        .PHP_EOL."\t\t-e ".__t('User e-mail address.')
+        .PHP_EOL."\t\t-p ".__t('New password for the user.')
+        .PHP_EOL."\t\t-d ".__t('Directus path. Default: ' . BASE_PATH)
     );
 
     $this->commands_help  = array (
-     'config' => __t('Configure Directus: ').PHP_EOL.PHP_EOL."\t\t"
-        .$this->__module_name.':config -h db_host -n db_name -u db_user -p db_pass -d directus_path'.PHP_EOL,
-     'database' => __t('Populate the DB with the schema: ').PHP_EOL.PHP_EOL."\t\t"
-        .$this->__module_name.':database -d directus_path'.PHP_EOL,
-     'install' => __t('Install the initial configurations: ').PHP_EOL.PHP_EOL."\t\t"
-        .$this->__module_name.':install -e admin_email -p admin_password -t site_name'.PHP_EOL,
+     'password' => __t('Change user password: ').PHP_EOL.PHP_EOL."\t\t"
+        .$this->__module_name.':password -e user_email -p new_password -d directus_path'.PHP_EOL
    );
 
   }
@@ -80,7 +67,7 @@ class InstallModule implements ModuleInterface
   }
 
   public function get_info() {
-    return $this->__module_name.__t(': commands to install and configure Directus');
+    return $this->__module_name.__t(': commands to manage Directus users');
   }
 
   public function get_commands() {
@@ -89,7 +76,7 @@ class InstallModule implements ModuleInterface
 
   public function get_command_help($command) {
     if (!array_key_exists($command, $this->help)) {
-      throw new UnsupportedCommandException( $this->__module_name.': '. $command . __t(' does not exists!'));
+      throw new UnsupportedCommandException( $this->__module_name.':'. $command . __t(' command does not exists!'));
     }
     return $this->help[$command];
   }
@@ -97,7 +84,7 @@ class InstallModule implements ModuleInterface
   public function run_command($command, $args, $extra) {
     $cmd_name = 'cmd_'.$command;
     if (!method_exists($this, $cmd_name)) {
-      throw new UnsupportedCommandException( $this->__module_name.': '. $command . __t(' does not exists!'));
+      throw new UnsupportedCommandException( $this->__module_name.':'. $command . __t(' command does not exists!'));
     }
     $this->$cmd_name($args, $extra);
   }
@@ -112,87 +99,48 @@ class InstallModule implements ModuleInterface
     echo PHP_EOL.PHP_EOL;
   }
 
-  public function cmd_config($args, $extra) {
+  public function cmd_password($args, $extra) {
 
-        $data = [];
+      $directus_path = BASE_PATH;
 
-        $data['db_type'] = 'mysql';
-        $data['db_port'] = '3306';
-        $data['db_host'] = 'localhost';
-        $data['db_name'] = 'directus';
-        $data['db_user'] = 'directus';
-        $data['db_password'] = 'directus';
-        $data['directus_path'] = BASE_PATH;
+      $data = [];
 
-        foreach($args as $key => $value) {
-            switch($key) {
-                case 't':
-                    $data['db_type'] = $value;
-                    break;
-                case 'P':
-                    $data['db_port'] = $value;
-                    break;
-                case 'h':
-                    $data['db_host'] = $value;
-                    break;
-                case 'n':
-                    $data['db_name'] = $value;
-                    break;
-                case 'u':
-                    $data['db_user'] = $value;
-                    break;
-                case 'p':
-                    $data['db_password'] = $value;
-                    break;
-                case 'd':
-                    $data['directus_path'] = $value;
-                    break;
-            }
-        }
+      foreach($args as $key => $value) {
+          switch($key) {
+              case 'e':
+                  $data['user_email'] = $value;
+                  break;
+              case 'p':
+                  $data['user_password'] = $value;
+                  break;
+              case 'd':
+                  $directus_path = $value;
+                  break;
+          }
+      }
 
-        InstallerUtils::createConfig($data, $data['directus_path'].'/api');
-  }
+      if (!isset($data['user_email'])) {
+        throw new WrongArgumentsException( $this->__module_name.':password '.  __t('missing user e-mail to change password for!'));
+      }
 
-  public function cmd_database($args, $extra) {
-    $directus_path = BASE_PATH;
-    foreach($args as $key => $value) {
-        switch($key) {
-            case 'd':
-                $directus_path = $value;
-                break;
-        }
+      if (!isset($data['user_password'])) {
+        throw new WrongArgumentsException( $this->__module_name.':password '.  __t('missing new password for user!'));
+      }
+
+      $salt = StringUtils::random();
+      $hash = sha1($salt.$data['user_password']);
+
+      require_once $directus_path.'/api/config.php';
+
+      $db = Bootstrap::get('ZendDb');
+      $tableGateway = new TableGateway('directus_users', $db);
+
+      $update = array(
+          'password' => $hash,
+          'salt' => $salt
+      );
+
+      $tableGateway->update($update, array('email' => $data['user_email']));
     }
-    InstallerUtils::createTables($directus_path);
-  }
-
-  public function cmd_install($args, $extra) {
-
-    $data = [];
-
-    $data['directus_email'] = 'admin@directus.com';
-    $data['directus_password'] = 'directus';
-    $data['directus_name'] = 'Directus';
-    $data['directus_path'] = BASE_PATH;
-
-    foreach($args as $key => $value) {
-        switch($key) {
-            case 'e':
-                $data['directus_email'] = $value;
-                break;
-            case 'p':
-                $data['directus_password'] = $value;
-                break;
-            case 't':
-                $data['directus_name'] = $value;
-                break;
-            case 'd':
-                $data['directus_path'] = $value;
-                break;
-        }
-    }
-
-    InstallerUtils::addDefaultSettings($data, $data['directus_path']);
-    InstallerUtils::addDefaultUser($data);
-  }
 
 }

@@ -87,6 +87,8 @@ class Cli
           $this->cmd_modules[$module]->run_command($command, $this->options, $this->extra);
       } catch  (WrongArgumentsException $e) {
           echo PHP_EOL.PHP_EOL.__t('Module ').$module.__t(' error: ').$e->getMessage().PHP_EOL.PHP_EOL;
+      } catch  (UnsupportedCommandException $e) {
+          echo PHP_EOL.PHP_EOL.__t('Module ').$module.__t(' error: ').$e->getMessage().PHP_EOL.PHP_EOL;
       }
 
     }
