@@ -28,9 +28,10 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
                       padding: 8px 10px; \
                       background-color: rgba(76,166,222, 0.2); \
                       cursor: pointer; \
+                      line-height: 36px; \
                     } \
                     .selected-item { \
-                      margin-top: 15px; \
+                      margin-top: 10px; \
                       color: #4ca6de; \
                       font-weight: 500; \
                     } \
