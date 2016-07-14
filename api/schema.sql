@@ -354,7 +354,7 @@ CREATE TABLE `directus_users` (
   `city` varchar(255) DEFAULT NULL,
   `state` varchar(2) DEFAULT NULL,
   `zip` varchar(10) DEFAULT NULL,
-  `locale` varchar(32) DEFAULT 'en',
+  `language` varchar(8) DEFAULT 'en',
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_email_unique` (`email`),
   UNIQUE KEY `directus_users_token_unique` (`token`)
@@ -363,7 +363,7 @@ CREATE TABLE `directus_users` (
 LOCK TABLES `directus_users` WRITE;
 /*!40000 ALTER TABLE `directus_users` DISABLE KEYS */;
 
-INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `token`, `reset_token`, `reset_expiration`, `position`, `email_messages`, `last_login`, `last_access`, `last_page`, `ip`, `group`, `avatar`, `location`, `phone`, `address`, `city`, `state`, `zip`, `locale`)
+INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `token`, `reset_token`, `reset_expiration`, `position`, `email_messages`, `last_login`, `last_access`, `last_page`, `ip`, `group`, `avatar`, `location`, `phone`, `address`, `city`, `state`, `zip`, `language`)
 VALUES
   (1,1,'','','admin@example.com','1202c7d0d07308471bc9118bf13647d225c625e8','5329e597d9afa','','',NULL,'',1,'2014-07-30 18:58:24','2014-07-30 18:59:00','{\"path\":\"tables/1\",\"route\":\"entry\"}','',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'en');
 

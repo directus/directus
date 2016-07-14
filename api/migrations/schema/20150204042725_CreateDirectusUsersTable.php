@@ -175,8 +175,8 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         )
       );
 
-      $t->column("locale", "string", array(
-          "limit"=>32,
+      $t->column("language", "string", array(
+          "limit"=>8,
           "default"=>'en'
         )
       );

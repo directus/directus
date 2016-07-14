@@ -158,7 +158,7 @@ class InstallerUtils
             'password' => $hash,
             'salt' => StringUtils::random(),
             'group' => 1,
-            'locale' => $data['default_language']
+            'language' => $data['default_language']
         ]);
     }
 
