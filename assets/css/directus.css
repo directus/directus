@@ -2587,7 +2587,8 @@ select,
     font-weight: 500;
     padding: 44px 20px 30px 30px;
     vertical-align: top;
-    width: 200px; }
+    width: 200px;
+    min-width: 200px; }
     .two-column-form .fields .label label {
       position: relative;
       text-transform: capitalize;

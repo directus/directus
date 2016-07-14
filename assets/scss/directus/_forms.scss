@@ -296,6 +296,7 @@ select,
       padding: 44px $standardPad $largePad $largePad;
       vertical-align: top;
       width: 200px;
+      min-width: 200px;
       label {
         position: relative;
         text-transform: capitalize;
