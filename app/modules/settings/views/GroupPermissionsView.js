@@ -140,28 +140,21 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
         model = this.collection.get(cid);
 
         if(this.selectedState == 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
-          var without = [];
-          var additional = [];
+          var permissionName = 'allow_'+$target.parent().data('value');
+          var attribute = {};
 
 
           if($target.hasClass('big-priv')) {
-            without.push($target.parent().data('value'));
-            without.push('big' + $target.parent().data('value'));
+            attribute[permissionName] = 0;
           } else if($target.hasClass('has-privilege')) {
-            additional.push('big' + $target.parent().data('value'));
-            without.push($target.parent().data('value'));
+            attribute[permissionName] = 2;
           } else {
-            without.push('big' + $target.parent().data('value'));
-            additional.push($target.parent().data('value'));
+            attribute[permissionName] = 1;
           }
 
           this.collection.each(function(cmodel) {
             if(cmodel.get('table_name') == model.get('table_name') && cmodel.get('group_id') == model.get('group_id')) {
-              var perms = cmodel.get('permissions').split(',');
-              perms = _.difference(perms, without);
-              perms = _.union(perms, additional);
-              perms = _.compact(perms);
-              cmodel.set('permissions', perms.join(','));
+              cmodel.set(attribute);
               cmodel.save();
             }
           });
@@ -476,7 +469,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
                   editValConsistent = false;
                 }
               }
-              else if(permissions.edit > -1) {
+              else if(permissions.edit) {
                 if(lastEdit != 1) {
                   editValConsistent = false;
                 }
@@ -487,12 +480,12 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
             }
 
             if(deleteValConsistent) {
-              if(permissions.bigdelete > -1) {
+              if(permissions.bigdelete) {
                 if(lastDelete != 2) {
                   deleteValConsistent = false;
                 }
               }
-              else if(permissions.delete > -1) {
+              else if(permissions.delete) {
                 if(lastDelete != 1) {
                   deleteValConsistent = false;
                 }
