@@ -34,7 +34,7 @@
     				{{else}}<span class="delete-color" title="{t 'permissions_can_not_add_items'}}"><i class="material-icons vertical-middle">do_not_disturb</i></span>{{/if}}{{/if}}
     			</td>
     			<td data-value="edit">
-            {{#if editValConsistent}}<span class="unknown-priv"><span title="{t 'permissions_can_edit_items'}}" class="icon icon-minus"></span></span>{{else}}
+            {{#if editValConsistent}}<span class="unknown-priv"><span title="{{t 'permissions_can_edit_items'}}" class="icon icon-minus"></span></span>{{else}}
     				{{#if bigedit}}
               <span class="add-color big-priv has-privilege" title="{{t 'permissions_can_edit_any_items'}}"><i class="material-icons vertical-middle">people</i></span>
             {{else}}
