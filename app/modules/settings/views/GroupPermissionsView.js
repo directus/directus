@@ -354,6 +354,19 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
       this.render();
     },
 
+    parsePermissions: function(model) {
+      return {
+        'add': (model.has('allow_add') && model.get('allow_add') != 0) ? true : false,
+        'edit': (model.has('allow_edit') && model.get('allow_edit') != 0) ? true : false,
+        'bigedit': (model.has('allow_edit') && model.get('allow_edit') == 2) ? true : false,
+        'delete': (model.has('allow_delete') && model.get('allow_delete') != 0) ? true : false,
+        'bigdelete': (model.has('allow_delete') && model.get('allow_delete') == 2) ? true : false,
+        'alter': (model.has('allow_alter') && model.get('allow_alter') != 0) ? true : false,
+        'view': (model.has('allow_view') && model.get('allow_view') != 0) ? true : false,
+        'bigview': (model.has('allow_view') && model.get('allow_view') == 2) ? true : false
+      };
+    },
+
     serialize: function() {
       var collection = this.collection;
       var that = this;
@@ -419,17 +432,8 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
         }
 
         // Default permissions
-        data.permissions = {
-          'add': (model.has('allow_add') && model.get('allow_add') != 0) ? true : false,
-          'edit': (model.has('allow_edit') && model.get('allow_edit') != 0) ? true : false,
-          'bigedit': (model.has('allow_edit') && model.get('allow_edit') == 2) ? true : false,
-          'delete': (model.has('allow_delete') && model.get('allow_delete') != 0) ? true : false,
-          'bigdelete': (model.has('allow_delete') && model.get('allow_delete') == 2) ? true : false,
-          'alter': (model.has('allow_alter') && model.get('allow_alter') != 0) ? true : false,
-          'view': (model.has('allow_view') && model.get('allow_view') != 0) ? true : false,
-          'bigview': (model.has('allow_view') && model.get('allow_view') == 2) ? true : false,
-          'user_create_column': userCreateColumnName
-        };
+        data.permissions = that.parsePermissions(model);
+        data.permissions.user_create_column = userCreateColumnName;
 
         if(that.selectedState == 'all' && tableStatusMapping[data.table_name].count > 1) {
           var viewValConsistent = true;
@@ -444,19 +448,19 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
             if(prop == 'all' || prop == 'count') {
               continue;
             }
-            var permissions = tableStatusMapping[data.table_name][prop].get('permissions').split(',');
+            var permissions = that.parsePermissions(tableStatusMapping[data.table_name][prop]);
 
             if(addValConsistent) {
-              addValConsistent = ((permissions.indexOf('add') > -1) == lastAdd);
+              addValConsistent = (permissions.add == lastAdd);
             }
 
             if(viewValConsistent) {
-              if(permissions.indexOf('bigview') > -1) {
+              if(permissions.bigview) {
                 if(lastView != 2) {
                   viewValConsistent = false;
                 }
               }
-              else if(permissions.indexOf('view') > -1) {
+              else if(permissions.view) {
                 if(lastView != 1) {
                   viewValConsistent = false;
                 }
@@ -467,12 +471,12 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
             }
 
             if(editValConsistent) {
-              if(permissions.indexOf('bigedit') > -1) {
+              if(permissions.bigedit) {
                 if(lastEdit != 2) {
                   editValConsistent = false;
                 }
               }
-              else if(permissions.indexOf('edit') > -1) {
+              else if(permissions.edit > -1) {
                 if(lastEdit != 1) {
                   editValConsistent = false;
                 }
@@ -483,12 +487,12 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
             }
 
             if(deleteValConsistent) {
-              if(permissions.indexOf('bigdelete') > -1) {
+              if(permissions.bigdelete > -1) {
                 if(lastDelete != 2) {
                   deleteValConsistent = false;
                 }
               }
-              else if(permissions.indexOf('delete') > -1) {
+              else if(permissions.delete > -1) {
                 if(lastDelete != 1) {
                   deleteValConsistent = false;
                 }
