@@ -21,10 +21,11 @@ define([
   'core/notification',
   'core/doubleConfirmation',
   'core/t',
+  'helpers/schema',
   '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t,SettingsConfig) {
+function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -266,6 +267,22 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       return false;
+    },
+
+    afterRender: function() {
+      var $el = this.$el;
+      var $inputColumnName = $el.find('input#columnName');
+      $inputColumnName.on('change keypress paste focus textInput input', function() {
+        var rawColumnName = $(this).val();
+        var cleanColumnName = SchemaHelper.cleanColumnName(rawColumnName);
+        var columnNameText = '';
+
+        if (cleanColumnName && rawColumnName != cleanColumnName) {
+          columnNameText = __t('this_column_will_be_saved_as_x', {column_name: cleanColumnName});
+        }
+
+        $el.find('#cleanColumnName').text(columnNameText);
+      });
     },
 
     initialize: function() {
@@ -925,6 +942,9 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         return;
       }
 
+      var rawTableName = tableName;
+      tableName = SchemaHelper.cleanTableName(tableName);
+
       // Make sure it's an alphanumeric table name
       // and it has at least one character or one number
       if (!(/[a-z0-9]+/i.test(tableName) && /[_-]*/i.test(tableName))) {
@@ -954,6 +974,9 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
         tableModel.fetch({
           success: function(model) {
+            if (rawTableName != tableName) {
+              Notification.success(__t('this_table_was_saved_as_x', {table_name: tableName}));
+            }
             that.registerTable(model);
           }
         });

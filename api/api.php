@@ -53,6 +53,7 @@ use Directus\Hook\Hook;
 use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
 use Directus\Util\StringUtils;
+use Directus\Util\SchemaUtils;
 use Directus\Util\DateUtils;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
@@ -562,6 +563,8 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
       unset($requestPayload['addTable']);
 
       Hook::run('table.create:before', $requestPayload['table_name']);
+      // Through API, table name remove spaces and symbols
+      $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
       SchemaManager::createTable($requestPayload['table_name']);
       Hook::run('table.create', $requestPayload['table_name']);
       Hook::run('table.create:after', $requestPayload['table_name']);
@@ -788,6 +791,8 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
         }
 
         $tableGateway = new TableGateway($acl, $table_name, $ZendDb);
+        // Through API, column name remove spaces and symbols
+        $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
         $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
     }
 

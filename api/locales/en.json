@@ -331,6 +331,8 @@
     "rows_no_specified": "Rows no specified",
     "row_without_primary_key_field": "Row without primary key field",
 
+    "this_column_will_be_saved_as_x": "This column will be saved as %{column_name}",
+    "this_table_was_saved_as_x": "This table was saved as %{table_name}",
     "unable_to_remove_column_x": "Unable to remove the column [%{column}]",
     "column_x_was_removed": "Column [%{column}] was removed",
     "unable_to_remove_table_x": "Unable to remove the table [%{table_name}]",
