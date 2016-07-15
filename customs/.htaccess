@@ -1,2 +1,4 @@
 # Prevent directory listing
 IndexIgnore *
+
+deny from all

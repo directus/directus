@@ -252,6 +252,11 @@ if(Auth::loggedIn()) {
 $params = $_GET;
 $requestPayload = json_decode($app->request()->getBody(), true);
 
+$endpoints = Bootstrap::getCustomEndpoints();
+foreach($endpoints as $endpoint) {
+    require $endpoint;
+}
+
 /**
  * Extension Alias
  */

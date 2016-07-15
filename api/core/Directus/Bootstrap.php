@@ -58,6 +58,24 @@ class Bootstrap {
     }
 
     /**
+     * Get all custom endpoints
+     * @return array - list of endpoint files loaded
+     * @throws \Exception
+     */
+    public static function getCustomEndpoints()
+    {
+        self::requireConstants('APPLICATION_PATH', __FUNCTION__);
+
+        $customEndpointsPath = APPLICATION_PATH . '/customs/endpoints/*.php';
+        $paths = [];
+        foreach (glob($customEndpointsPath) as $filename) {
+            $paths[] = $filename;
+        }
+
+        return $paths;
+    }
+
+    /**
      * Used to interrupt the bootstrapping of a singleton if the constants it
      * requires aren't defined.
      * @param  string|array $constants       One or more constant names
