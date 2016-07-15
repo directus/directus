@@ -25,5 +25,5 @@ before_script:
 
 script:
   - npm test
-  - vendor/bin/phpcs login.php index.php --standard=PSR2
+  - vendor/bin/phpcs api installation bin installation index.php login.php --standard=PSR2
   - vendor/bin/phpunit
