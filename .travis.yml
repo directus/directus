@@ -21,10 +21,9 @@ sudo: false
 before_script:
   - npm install
   - npm install -g karma-cli
-
-install:
   - composer install
 
 script:
   - npm test
-  - phpunit
+  - vendor/bin/phpcs login.php index.php --standard=PSR2
+  - vendor/bin/phpunit
