@@ -120,8 +120,12 @@ define(function(require, exports, module) {
       }
 
       _.each(uiArray, function(ui) {
-        var uiInstance = new ui();
-        uis[uiInstance.id] = uiInstance;
+        try {
+          var uiInstance = new ui();
+          uis[uiInstance.id] = uiInstance;
+        } catch (ex) {
+          console.warn(ex.message);
+        }
       },this);
     },
 
