@@ -23,22 +23,54 @@ class ArrayUtils
     }
 
     /**
-     * Return a copy of the object, filtered to only have values for the whitelisted keys (or array of valid keys).
-     * @param  array  $array
-     * @param  array  $keys
+     * Filter an array by keys
+     * @param $array
+     * @param $keys
+     * @param bool $omit
      * @return array
      */
-    public static function pick($array, $keys)
+    public static function filterByKey($array, $keys, $omit = false)
     {
         $result = [];
 
+        if (is_string($keys)) {
+            $keys = [$keys];
+        }
+
         foreach ($array as $key => $value) {
-            if (in_array($key, $keys)) {
+            $condition = in_array($key, $keys);
+            if ($omit) {
+                $condition = !$condition;
+            }
+
+            if ($condition) {
                 $result[$key] = $value;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Return a copy of the object, filtered to only have values for the whitelisted keys (or array of valid keys).
+     * @param  array         $array
+     * @param  string|array  $keys
+     * @return array
+     */
+    public static function pick($array, $keys)
+    {
+        return static::filterByKey($array, $keys);
+    }
+
+    /**
+     * Return a copy of the object, filtered to omit values for the blacklisted keys (or array of valid keys).
+     * @param  array         $array
+     * @param  string|array  $keys
+     * @return array
+     */
+    public static function omit($array, $keys)
+    {
+        return static::filterByKey($array, $keys, true);
     }
 
     /**
