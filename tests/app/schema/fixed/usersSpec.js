@@ -3,7 +3,7 @@ define(['schema/fixed/users'], function(schema) {
 
   beforeEach(function() {
     defaultAppOptions(require('app'));
-    users = schema.getUsers();
+    users = schema.getUsers({en: "English"});
   });
 
   describe('Users Table', function() {
@@ -49,7 +49,8 @@ define(['schema/fixed/users'], function(schema) {
         'last_login',
         'last_page',
         'ip',
-        'group'
+        'group',
+        'language'
       ];
 
       expect(columns.length).toBe(expectedColumns.length);

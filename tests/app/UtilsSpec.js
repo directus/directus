@@ -1,4 +1,4 @@
-define(['app/utils'], function(Utils) {
+define(['utils'], function(Utils) {
   describe('Utils test', function() {
     it('Should get a location', function() {
       var url = 'https://directus.io';
