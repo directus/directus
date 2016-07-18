@@ -37,13 +37,13 @@ namespace Directus\Console\Modules;
 interface ModuleInterface
 {
 
-  /**
+    /**
    *  Get the name of the module.
    *   *
    *  @return string The name this module should be known for.
    *
    */
-  public function get_module_name();
+  public function getModuleName();
 
   /**
    *  Get information about a CLI module.
@@ -54,7 +54,7 @@ interface ModuleInterface
    *  @return string A brief description of the module.
    *
    */
-  public function get_info();
+  public function getInfo();
 
   /**
    *  Returns a list of commands provided by the module.
@@ -75,7 +75,7 @@ interface ModuleInterface
    *  @return array[string]string A brief description of the module commands.
    *
    */
-  public function get_commands();
+  public function getCommands();
 
   /**
    *  Returns help for a command provided by this module.
@@ -88,7 +88,7 @@ interface ModuleInterface
    *
    *  @throws UnsupportedCommand Thrown when a module does not support a command.
    */
-  public function get_command_help($command);
+  public function getCommandHelp($command);
 
   /**
    *  Executed a command provided by this module
@@ -119,6 +119,5 @@ interface ModuleInterface
    *          sufficient or correct to execute the command.
    *  @throws CommandFailed if the module failed to execute a command.
    */
-  public function run_command($command, $args, $extra);
-
+  public function runCommand($command, $args, $extra);
 }
