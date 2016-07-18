@@ -94,8 +94,8 @@ class DateUtilsTest extends PHPUnit_Framework_TestCase
         $isoDatetime = DateUtils::convertToISOFormat($time);
         $this->assertEquals($expected, $isoDatetime);
 
-        $expected = '2014-07-13T08:00:00-08:00';
-        $isoDatetime = DateUtils::convertToISOFormat($time, 'UTC', 'PST');
+        $expected = '2014-07-13T12:00:00-04:00';
+        $isoDatetime = DateUtils::convertToISOFormat($time, 'UTC', 'America/Santo_Domingo');
         $this->assertEquals($expected, $isoDatetime);
     }
 }
