@@ -1,0 +1,10 @@
+filter:
+  paths: ['api/*', 'installation/*', 'bin/*', 'installation/*', 'index.php', 'login.php']
+
+checks:
+  php: true
+
+tools:
+  external_code_coverage:
+    timeout: 600
+    runs: 2
