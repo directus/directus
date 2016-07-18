@@ -41,7 +41,6 @@ class Cli
     {
         foreach (glob(dirname(__FILE__).DIRECTORY_SEPARATOR.'Modules'.DIRECTORY_SEPARATOR.'*Module.php') as $moduleFile) {
             $moduleName = 'Directus\Console\Modules\\'.basename($moduleFile, '.php');
-            echo 'Loading Module '.$moduleName;
             require($moduleFile);
             $moduleInstance = new $moduleName();
             $this->cmd_modules[$moduleInstance->getModuleName()] = $moduleInstance;

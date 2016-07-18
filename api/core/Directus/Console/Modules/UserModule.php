@@ -47,7 +47,7 @@ class UserModule extends ModuleBase
 
     public function __construct()
     {
-        echo PHP_EOL.'Loading User Module'.PHP_EOL;
+
         $this->help  = array(
           'password' => ''
             .PHP_EOL."\t\t-e ".__t('User e-mail address.')

@@ -47,7 +47,6 @@ class InstallModule extends ModuleBase
 
     public function __construct()
     {
-        echo PHP_EOL.'Loading User Module'.PHP_EOL;
 
         $this->help = array(
           'config' => ''
