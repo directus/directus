@@ -37,11 +37,6 @@ use Directus\Console\Exception\UnsupportedCommandException;
 class ModuleBase implements ModuleInterface
 {
 
-    private $__module_name = 'base';
-    private $__module_description = 'Base Module';
-    private $commands_help;
-    private $help;
-
     public function getModuleName()
     {
         return $this->__module_name;
@@ -49,7 +44,7 @@ class ModuleBase implements ModuleInterface
 
     public function getInfo()
     {
-        return $this->__module_name.': '.__t($__module_description);
+        return $this->__module_name.': '.__t($this->__module_description);
     }
 
     public function getCommands()

@@ -37,16 +37,17 @@ use Directus\Console\Exception\WrongArgumentsException;
 use Directus\Util\StringUtils;
 use Zend\Db\TableGateway\TableGateway;
 
-class UserModule extends ModuleInterface
+class UserModule extends ModuleBase
 {
 
-    private $__module_name = 'user';
-    private $__module_description = 'commands to manage Directus users';
-    private $commands_help;
-    private $help;
+    protected $__module_name = 'user';
+    protected $__module_description = 'commands to manage Directus users';
+    protected $commands_help;
+    protected $help;
 
     public function __construct()
     {
+        echo PHP_EOL.'Loading User Module'.PHP_EOL;
         $this->help  = array(
           'password' => ''
             .PHP_EOL."\t\t-e ".__t('User e-mail address.')
@@ -58,6 +59,9 @@ class UserModule extends ModuleInterface
          'password' => __t('Change user password: ').PHP_EOL.PHP_EOL."\t\t"
             .$this->__module_name.':password -e user_email -p new_password -d directus_path'.PHP_EOL
         );
+
+        $this->__module_name = 'user';
+        $this->__module_description = 'commands to manage Directus users';
     }
 
     public function cmdHelp($args, $extra)

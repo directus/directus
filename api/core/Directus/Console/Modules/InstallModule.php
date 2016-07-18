@@ -32,21 +32,24 @@
 
 namespace Directus\Console\Modules;
 
-use Directus\Console\Exception\UnsupportedCommandException;
 use Directus\Console\Exception\WrongArgumentsException;
 use Directus\Util\Installation\InstallerUtils;
 
-class InstallModule implements ModuleInterface
+class InstallModule extends ModuleBase
 {
 
-    private $__module_name = 'install';
-    private $__module_description = 'commands to install and configure Directus';
-    private $commands_help;
-    private $help;
+    protected $__module_name = 'install';
+    protected $__module_description = 'commands to install and configure Directus';
+
+    protected $commands_help;
+
+    protected $help;
 
     public function __construct()
     {
-        $this->help  = array(
+        echo PHP_EOL.'Loading User Module'.PHP_EOL;
+
+        $this->help = array(
           'config' => ''
             .PHP_EOL."\t\t-h ".__t('Hostname or IP address of the MySQL DB to be used. Default: localhost')
             .PHP_EOL."\t\t-n ".__t('Name of the database to use for Directus. Default: directus')
@@ -65,7 +68,7 @@ class InstallModule implements ModuleInterface
             .PHP_EOL."\t\t-d ".__t('Installation path of Directus. Default: '.BASE_PATH)
         );
 
-        $this->commands_help  = array(
+        $this->commands_help = array(
          'config' => __t('Configure Directus: ').PHP_EOL.PHP_EOL."\t\t"
             .$this->__module_name.':config -h db_host -n db_name -u db_user -p db_pass -d directus_path'.PHP_EOL,
          'database' => __t('Populate the DB with the schema: ').PHP_EOL.PHP_EOL."\t\t"
@@ -73,6 +76,7 @@ class InstallModule implements ModuleInterface
          'install' => __t('Install the initial configurations: ').PHP_EOL.PHP_EOL."\t\t"
             .$this->__module_name.':install -e admin_email -p admin_password -t site_name'.PHP_EOL,
         );
+
     }
 
     public function cmdHelp($args, $extra)
