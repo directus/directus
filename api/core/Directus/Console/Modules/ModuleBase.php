@@ -22,7 +22,7 @@
  *
  * This module provides the base implementation of the Module Interface.
  *
- * @category   Interfaces
+ * @category   Classes
  * @package    Directus/Console/Modules
  * @author     Fabio 'MrWHO' Torchetti <mrwho@wedjaa.net>
  * @copyright  2016 Wedjaa Inc

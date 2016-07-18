@@ -22,7 +22,7 @@
  *
  * This module provides the commands to manage Directus users.
  *
- * @category   Interfaces
+ * @category   Classes
  * @package    Directus/Console/Modules
  * @author     Fabio 'MrWHO' Torchetti <mrwho@wedjaa.net>
  * @copyright  2016 Wedjaa Inc
@@ -32,10 +32,11 @@
 
 namespace Directus\Console\Modules;
 
-use Directus\Bootstrap;
+use Directus\Console\Common\User;
 use Directus\Console\Exception\WrongArgumentsException;
-use Directus\Util\StringUtils;
-use Zend\Db\TableGateway\TableGateway;
+use Directus\Console\Common\Exception\PasswordChangeException;
+use Directus\Console\Exception\CommandFailedException;
+
 
 class UserModule extends ModuleBase
 {
@@ -103,19 +104,12 @@ class UserModule extends ModuleBase
             throw new WrongArgumentsException($this->__module_name.':password '.  __t('missing new password for user!'));
         }
 
-        $salt = StringUtils::random();
-        $hash = sha1($salt.$data['user_password']);
+        $user = new User($directus_path);
+        try {
+          $user->changePassword($data['user_email'], $data['user_password']);
+        } catch (PasswordChangeException $ex) {
+          throw new CommandFailedException(__t('Error changing user password').': '.$ex->getMessage());
+        }
 
-        require_once $directus_path.'/api/config.php';
-
-        $db = Bootstrap::get('ZendDb');
-        $tableGateway = new TableGateway('directus_users', $db);
-
-        $update = array(
-          'password' => $hash,
-          'salt' => $salt
-      );
-
-        $tableGateway->update($update, array('email' => $data['user_email']));
     }
 }

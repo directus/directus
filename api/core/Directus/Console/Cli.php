@@ -87,7 +87,7 @@ class Cli
             echo PHP_EOL.PHP_EOL.__t('Module ').$module.__t(' error: ').$e->getMessage().PHP_EOL.PHP_EOL;
         } catch (UnsupportedCommandException $e) {
             echo PHP_EOL.PHP_EOL.__t('Module ').$module.__t(' error: ').$e->getMessage().PHP_EOL.PHP_EOL;
-        }
+        } 
     }
 
     private function showHelp()

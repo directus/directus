@@ -22,7 +22,7 @@
  *
  * This module provides the commands used to install and configure Directus.
  *
- * @category   Interfaces
+ * @category   Classes
  * @package    Directus/Console/Modules
  * @author     Fabio 'MrWHO' Torchetti <mrwho@wedjaa.net>
  * @copyright  2016 Wedjaa Inc
@@ -33,7 +33,12 @@
 namespace Directus\Console\Modules;
 
 use Directus\Console\Exception\WrongArgumentsException;
+use Directus\Console\Exception\CommandFailedException;
 use Directus\Util\Installation\InstallerUtils;
+use Directus\Console\Common\User;
+use Directus\Console\Common\Setting;
+use Directus\Console\Common\Exception\PasswordChangeException;
+use Directus\Console\Common\Exception\UserUpdateException;
 
 class InstallModule extends ModuleBase
 {
@@ -47,7 +52,6 @@ class InstallModule extends ModuleBase
 
     public function __construct()
     {
-
         $this->help = array(
           'config' => ''
             .PHP_EOL."\t\t-h ".__t('Hostname or IP address of the MySQL DB to be used. Default: localhost')
@@ -75,7 +79,6 @@ class InstallModule extends ModuleBase
          'install' => __t('Install the initial configurations: ').PHP_EOL.PHP_EOL."\t\t"
             .$this->__module_name.':install -e admin_email -p admin_password -t site_name'.PHP_EOL,
         );
-
     }
 
     public function cmdHelp($args, $extra)
@@ -160,22 +163,44 @@ class InstallModule extends ModuleBase
 
         foreach ($args as $key => $value) {
             switch ($key) {
-            case 'e':
-                $data['directus_email'] = $value;
-                break;
-            case 'p':
-                $data['directus_password'] = $value;
-                break;
-            case 't':
-                $data['directus_name'] = $value;
-                break;
-            case 'd':
-                $directus_path = $value;
-                break;
-        }
+              case 'e':
+                  $data['directus_email'] = $value;
+                  break;
+              case 'p':
+                  $data['directus_password'] = $value;
+                  break;
+              case 't':
+                  $data['directus_name'] = $value;
+                  break;
+              case 'd':
+                  $directus_path = $value;
+                  break;
+          }
         }
 
-        InstallerUtils::addDefaultSettings($data, $directus_path);
-        InstallerUtils::addDefaultUser($data);
+        try {
+
+            $setting = new Setting($directus_path);
+
+            if ($setting->isConfigured()) {
+              $setting->setSetting('global', 'project_name', $data['directus_name']);
+            } else {
+              InstallerUtils::addDefaultSettings($data, $directus_path);
+            }
+
+            $user = new User($directus_path);
+            try {
+              $user->changeEmail(1, $data['directus_email']);
+              $user->changePassword($data['directus_email'], $data['directus_password']);
+            } catch (UserUpdateException $ex) {
+              throw new CommandFailedException(__t('Error changing admin e-mail').': '.$ex->getMessage());
+            } catch (PasswordChangeException $ex) {
+              throw new CommandFailedException(__t('Error changing user password').': '.$ex->getMessage());
+            }
+
+        } catch (PDOException $e) {
+            echo PHP_EOL."PDO Excetion!!".PHP_EOL;
+            echo PHP_EOL.PHP_EOL.__t('Module ').$module.__t(' error: ').$e->getMessage().PHP_EOL.PHP_EOL;
+        }
     }
 }
