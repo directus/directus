@@ -235,7 +235,7 @@ class InstallerUtils
             ],
             [
                 'collection' => 'global',
-                'name' => 'project',
+                'name' => 'project_name',
                 'value' => $data['directus_name']
             ],
             [
