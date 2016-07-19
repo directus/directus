@@ -19,12 +19,13 @@
 define([
     'app',
     'backbone',
+    'core/t',
     'core/UIComponent',
     'core/UIView',
     'core/table/table.view',
     'core/overlays/overlays'
   ],
-  function(app, Backbone, UIComponent, UIView, TableView, Overlays) {
+  function(app, Backbone, __t, UIComponent, UIView, TableView, Overlays) {
 
   'use strict';
 
