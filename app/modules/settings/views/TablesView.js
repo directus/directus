@@ -209,8 +209,9 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       //If Single_file UI, force related table to be directus_files
-      if(this.selectedUI === 'single_file') {
+      if (['single_file', 'multiple_files'].indexOf(this.selectedUI) > -1) {
         this.model.set({table_related: 'directus_files'});
+        data.hideRelatedTable = true;
       }
 
       if(['ONETOMANY', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
