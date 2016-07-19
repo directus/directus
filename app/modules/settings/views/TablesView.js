@@ -66,7 +66,13 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           app.router.removeOverlayPage(that); //, {title: 'Add new column', stretch: true}
           that.collection.add(that.model);
           that.collection.trigger('change');
-          openFieldUIView(data);
+
+          // Verify whether the UI requires options to be set
+          // in order to work.
+          var ui = UIManager._getUI(data.options.get('id'));
+          if (ui.requireVariables === true) {
+            openFieldUIOptionsView(data);
+          }
         }});
       }
     },
@@ -519,7 +525,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     editUI: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
-      openFieldUIView(column);
+      openFieldUIOptionsView(column);
     },
 
     editRelationship: function(e) {
@@ -995,7 +1001,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     }
   });
 
-  function openFieldUIView(column) {
+  function openFieldUIOptionsView(column) {
     var model = column.options;
     model.set({id: column.get('ui')});
     var schema = app.schemaManager.getColumns('ui', model.id);
