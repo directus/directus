@@ -748,7 +748,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         foreach($records as &$row) {
             foreach($schemaArray as $column) {
-                if (strtolower($column['type']) === 'datetime') {
+                if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
                     $columnName = $column['id'];
                     $row[$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
                 }
