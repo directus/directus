@@ -32,12 +32,13 @@ build_test
 build_test.html
 build_test_release
 
-extensions/*
-!extensions/.gitignore
-ui/*
-!ui/.gitignore
-/listviews/*
-!listviews/.gitignore
+customs/extensions/*
+!customs/extensions/.gitignore
+!customs/extensions/_example/
+customs/ui/*
+!customs/ui/.gitignore
+/customs/listviews/*
+!customs/listviews/.gitignore
 !media/.gitignore
 !media/thumbs/.gitignore
 media_auth_proxy/client_auth_proxies/*
