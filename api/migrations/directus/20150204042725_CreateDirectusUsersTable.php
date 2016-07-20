@@ -185,6 +185,12 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         )
       );
 
+      $t->column("timezone", "string", array(
+          "limit"=>32,
+          "default"=>'America/New_York'
+        )
+      );
+
       $t->finish();
 
       $this->add_index("directus_users", "email", array(

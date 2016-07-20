@@ -354,7 +354,8 @@ CREATE TABLE `directus_users` (
   `city` varchar(255) DEFAULT NULL,
   `state` varchar(2) DEFAULT NULL,
   `zip` varchar(10) DEFAULT NULL,
-  `locale` varchar(32) DEFAULT 'en',
+  `language` varchar(8) DEFAULT 'en',
+  `timezone` varchar(32) DEFAULT 'America/New_York',
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_email_unique` (`email`),
   UNIQUE KEY `directus_users_token_unique` (`token`)

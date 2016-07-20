@@ -91,7 +91,7 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_groups },
         { schema: directusSchemas.directus_files.getFiles() },
         { schema: directusSchemas.directus_messages },
-        { schema: directusSchemas.directus_users.getUsers(app.locales) }
+        { schema: directusSchemas.directus_users.getUsers(app.locales, app.timezones) }
       ];
 
       this.register('tables', defaultTables);

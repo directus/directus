@@ -4,22 +4,23 @@ define(function(require, exports, module) {
 
   var app = require('app');
 
-  function parseLocales(locales) {
-    if (!locales) {
+  function parseSelectOptions(list, callback) {
+    if (!list) {
       return null;
     }
 
     var result = {};
-    for (var key in locales) {
-      var locale = locales[key];
-      result[locale.code] = locale.name;
+    for (var key in list) {
+      if (list.hasOwnProperty(key)) {
+        callback(key, list, list[key], result);
+      }
     }
 
     return JSON.stringify(result);
   }
 
   module.exports = {
-    getUsers: function(locales) {
+    getUsers: function(locales, timezones) {
       var statusName = app.statusMapping.status_name;
       return {
         "id":"directus_users",
@@ -532,7 +533,31 @@ define(function(require, exports, module) {
             "required":false,
             "options": {
               "allow_null": false,
-              "options": parseLocales(locales)
+              "options": parseSelectOptions(locales, function(key, list, locale, result) {
+                result[locale.code] = locale.name;
+              })
+            }
+          },
+          {
+            "id":"timezone",
+            "column_name":"timezone",
+            "type":"VARCHAR",
+            "char_length":"32",
+            "is_nullable":"YES",
+            "default_value":"America/New_York",
+            "comment":"",
+            "sort":38,
+            "ui":"select",
+            "system":false,
+            "master":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "allow_null": false,
+              "options": parseSelectOptions(timezones, function(key, list, name, result) {
+                result[key] = name;
+              })
             }
           }
         ]

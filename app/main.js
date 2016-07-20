@@ -35,6 +35,7 @@ require(["config", 'polyfills'], function() {
     var defaultOptions = {
       locale: 'en',
       localesAvailable: [],
+      timezones: [],
       path: '/directus/',
       page: '',
       authenticatedUser: 7,
@@ -75,6 +76,7 @@ require(["config", 'polyfills'], function() {
     app.storageAdapters = window.directusData.storage_adapters;
     app.statusMapping = window.directusData.statusMapping;
     app.locales = options.localesAvailable;
+    app.timezones = options.timezones;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function() { // our abort function
