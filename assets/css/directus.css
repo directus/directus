@@ -3835,8 +3835,6 @@ body.initial-load #sidebar {
     height: 100px;
     overflow: hidden; }
   #sidebar .logo-container {
-    height: 60px !important;
-    padding: 20px 0px;
     line-height: 90px;
     text-align: center;
     font-size: 40px;
@@ -3848,6 +3846,7 @@ body.initial-load #sidebar {
       -o-transition: all 400ms ease-in-out;
       transition: all 400ms ease-in-out;
       margin: 4px auto;
+      padding: 20px 0px;
       opacity: 1;
       background-image: url(../img/directus-logo-sprite-small.png);
       width: 80px;
