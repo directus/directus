@@ -246,7 +246,7 @@ function getExtensions($currentUserGroup) {
 
     // Append relative path and filename for dynamic loading
     foreach ($extensions as &$extension) {
-        $extension = DIRECTUS_PATH . $extension . '.js';
+        $extension = ltrim($extension, '/');
     };
 
     return $extensions;
