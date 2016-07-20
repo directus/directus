@@ -50,7 +50,8 @@ define(['schema/fixed/users'], function(schema) {
         'last_page',
         'ip',
         'group',
-        'language'
+        'language',
+        'timezone'
       ];
 
       expect(columns.length).toBe(expectedColumns.length);
