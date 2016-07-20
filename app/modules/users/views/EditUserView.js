@@ -58,7 +58,6 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
         };
       } else {
         success = function(model, response, options) {
-          console.log("Success");
           var route = Backbone.history.fragment.split('/');
           route.pop();
           if (action === 'save-form-add') {
@@ -71,7 +70,6 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       }
 
       if (action === 'save-form-copy') {
-        console.log('cloning...');
         var clone = model.toJSON();
         delete clone.id;
         model = new collection.model(clone, {collection: collection, parse: true});
