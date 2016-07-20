@@ -61,7 +61,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
     },
 
     serialize: function() {
-      console.log(this.options.settings.get('allow_any_value'));
       return {
         name: this.options.name,
         value: this.options.value,
