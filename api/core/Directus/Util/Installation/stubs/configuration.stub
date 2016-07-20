@@ -19,14 +19,14 @@ return array(
         // By default media directory are located at the same level of directus root
         // To make them a level up outsite the root directory
         // use this instead
-        // Ex: 'root' => realpath(BASE_PATH.'/../media'),
+        // Ex: 'root' => realpath(BASE_PATH.'/../storage/uploads'),
         // Note: BASE_PATH constant doesn't end with trailing slash
-        'root' => BASE_PATH . '/media',
+        'root' => BASE_PATH . '/storage/uploads',
         // This is the url where all the media will be pointing to
-        // here all assets will be (yourdomain)/media
-        // same with thumbnails (yourdomain)/media/thumbs
-        'root_url' => '{{directus_path}}media',
-        'root_thumb_url' => '{{directus_path}}media/thumbs',
+        // here all assets will be (yourdomain)/storage/uploads
+        // same with thumbnails (yourdomain)/storage/uploads/thumbs
+        'root_url' => '{{directus_path}}storage/uploads',
+        'root_thumb_url' => '{{directus_path}}storage/uploads/thumbs',
         //   'key'    => 's3-key',
         //   'secret' => 's3-key',
         //   'region' => 's3-region',

@@ -39,10 +39,8 @@ customs/ui/*
 !customs/ui/.gitignore
 /customs/listviews/*
 !customs/listviews/.gitignore
-!media/.gitignore
-!media/thumbs/.gitignore
-media_auth_proxy/client_auth_proxies/*
-!media_auth_proxy/client_auth_proxies/.gitignore
+!storage/uploads/.gitignore
+!storage/uploads/thumbs/.gitignore
 
 utils
 seperator

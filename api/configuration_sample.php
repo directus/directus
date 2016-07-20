@@ -13,12 +13,12 @@ return array(
     // To shift a outsite the Directus root directory use this instead
     // 'root' => realpath(BASE_PATH.'/../media'),
     // Note: BASE_PATH constant does not end with a trailing slash
-    'root' => BASE_PATH . '/media',
+    'root' => BASE_PATH . '/storage/uploads',
     // This is the url where all files/media will be pointing to
     // All orignial files will exist at your-domain.com/media
-    'root_url' => '/media',
+    'root_url' => '/storage/uploads',
     // All thumbnails will exist at your-domain.com/media/thumbs
-    'root_thumb_url' => '/media/thumbs',
+    'root_thumb_url' => '/storage/uploads/thumbs',
     //   'key'    => 's3-key',
     //   'secret' => 's3-key',
     //   'region' => 's3-region',
