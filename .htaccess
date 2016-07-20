@@ -1,3 +1,6 @@
+# Hide directory listings
+Options -Indexes
+
 # No font warnings please
 AddType font/ttf .ttf
 AddType font/eot .eot
