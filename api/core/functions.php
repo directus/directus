@@ -338,6 +338,7 @@ if (!function_exists('get_timezones_list')) {
             'America/Caracas' => '(UTC-04:30) Caracas',
             'America/La_Paz' => '(UTC-04:00) La Paz',
             'America/Santiago' => '(UTC-04:00) Santiago',
+            'America/Santo_Domingo' => '(UTC-04:00) Santo Domingo',
             'Canada/Newfoundland' => '(UTC-03:30) Newfoundland',
             'America/Sao_Paulo' => '(UTC-03:00) Brasilia',
             'America/Argentina/Buenos_Aires' => '(UTC-03:00) Buenos Aires',
