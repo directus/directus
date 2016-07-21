@@ -210,7 +210,6 @@ class AclAwareTableGateway extends TableGateway {
             $TableGateway->updateWith($Update);
 
             Hook::run('postUpdate', [$TableGateway, $recordData, $this->adapter, $this->acl]);
-            // Hook::run('table.update.'.$tableName, [$recordData]);
         } else {
             $d = $recordData;
             unset($d['data']);
@@ -242,7 +241,6 @@ class AclAwareTableGateway extends TableGateway {
             }
 
             Hook::run('postInsert', [$TableGateway, $recordData, $this->adapter, $this->acl]);
-            // Hook::run('table.insert.'.$tableName, [$recordData]);
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
@@ -285,6 +283,7 @@ class AclAwareTableGateway extends TableGateway {
             return false;
         }
 
+        Hook::run('table.drop', [$tableName]);
         Hook::run('table.drop:after', [$tableName]);
 
         // remove table privileges
@@ -516,9 +515,13 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         try {
-            Hook::run('table.insert.'.$insertTable.':before', [$insertData]);
+            Hook::run('table.insert:before', [$insertTable, $insertData]);
+            Hook::run('table.insert.' . $insertTable . ':before', [$insertData]);
             $result = parent::executeInsert($insert);
-            Hook::run('table.insert.'.$insertTable.':after', [$insertData]);
+            Hook::run('table.insert', [$insertTable, $insertData]);
+            Hook::run('table.insert.' . $insertTable, [$insertData]);
+            Hook::run('table.insert:after', [$insertTable, $insertData]);
+            Hook::run('table.insert.' . $insertTable . ':after', [$insertData]);
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
@@ -613,9 +616,13 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         try {
-            Hook::run('table.update.'.$updateTable.':after', [$updateData]);
+            Hook::run('table.update:before', [$updateTable, $updateData]);
+            Hook::run('table.update.' . $updateTable . ':before', [$updateData]);
             $result = parent::executeUpdate($update);
-            Hook::run('table.update.'.$updateTable.':after', [$updateData]);
+            Hook::run('table.update', [$updateTable, $updateData]);
+            Hook::run('table.update:after', [$updateTable, $updateData]);
+            Hook::run('table.update.' . $updateTable, [$updateData]);
+            Hook::run('table.update.' . $updateTable . ':after', [$updateData]);
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
@@ -701,9 +708,13 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         try {
-            Hook::run('table.delete.'.$deleteTable.':before');
+            Hook::run('table.delete:before', [$deleteTable]);
+            Hook::run('table.delete.' . $deleteTable . ':before');
             $result = parent::executeDelete($delete);
-            Hook::run('table.delete.'.$deleteTable.':after');
+            Hook::run('table.delete', [$deleteTable]);
+            Hook::run('table.delete:after', [$deleteTable]);
+            Hook::run('table.delete.' . $deleteTable);
+            Hook::run('table.delete.' . $deleteTable . ':after');
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {

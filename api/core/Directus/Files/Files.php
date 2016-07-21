@@ -277,7 +277,7 @@ class Files
         $filePath = $this->getConfig('root') . '/' . $fileName;
 
         Hook::run('files.saving', ['name' => $fileName, 'size' => strlen($fileData)]);
-        $this->filesystem->getAdapter()->write($fileName, $fileData);//, new FlysystemConfig());}
+        $this->filesystem->getAdapter()->write($fileName, $fileData);
         Hook::run('files.saving:after', ['name' => $fileName, 'size' => strlen($fileData)]);
 
         $this->createThumbnails($fileName);
@@ -451,11 +451,10 @@ class Files
             $targetContent = $this->filesystem->getAdapter()->read($imageName);
             $img = Thumbnail::generateThumbnail($targetContent, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
             if($img) {
-                //   $thumbnailTempName = $this->getConfig('root') . '/thumbs/THUMB_' . $imageName;
                 $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
                 $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
                 Hook::run('files.thumbnail.saving', array('name' => $imageName, 'size' => strlen($thumbImg)));
-                $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);//, new FlysystemConfig());
+                $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);
                 Hook::run('files.thumbnail.saving:after', array('name' => $imageName, 'size' => strlen($thumbImg)));
             }
         }
