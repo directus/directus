@@ -278,7 +278,7 @@ define(function(require, exports, module) {
 
       // Section is the name of a method that represents an value.
       // list: represents the value that will be shown on a list.
-      var section = _.has(UIObject.UI, section) ? section : 'list';
+      var section = UIObject.UI[section] != null ? section : 'list';
       this.triggerBeforeValue(section, UIObject.UI, UIOptions);
       var value = UIObject.UI[section](UIOptions);
       this.triggerAfterValue(section, UIObject.UI, UIOptions);
