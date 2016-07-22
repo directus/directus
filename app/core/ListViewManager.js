@@ -4,7 +4,7 @@ define(function(require, exports, module) {
 
   var TableView = require('core/table/table.view');
   var jQuery = require('jquery');
-  
+
   /**
    * @private
    * Holds all UI's that are registered
@@ -38,7 +38,7 @@ define(function(require, exports, module) {
       var viewId = options.collection.table.get('list_view');
       var View;
 
-      if (viewId !== null && views.hasOwnProperty(viewId)) {
+      if (viewId != null && views.hasOwnProperty(viewId)) {
         View = views[viewId];
       } else {
         View = TableView;
