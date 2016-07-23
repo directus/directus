@@ -39,7 +39,7 @@ $hamburger-height: 7px;
     100% {left:0px; top:$hamburger-height*2;}
 }
 
-@media only screen and (max-width : 800px) {
+@media only screen and (max-width: 800px) {
 	#main.sidebar-active {
 		#sidebar {
 			left: 0 !important;
@@ -263,15 +263,22 @@ $hamburger-height: 7px;
 
 	.two-column-form {
 		.fields {
+            .table {
+                .trow {
+                    .label, .field {
+                        display: block;
+                    }
+                }
+            }
 			.field {
-                display: block !important;
+                // display: block !important;
 				padding: 10px 30px 30px 30px;
-				.medium {
-					width: auto;
-				}
+				// .medium {
+				//	    width: auto;
+				// }
 			}
 			.label {
-                display: block !important;
+                // display: block !important;
 				width: 100%;
 				padding: 30px 30px 10px 30px;
 			}
