@@ -33,6 +33,7 @@ require.config({
     "backbone":   "../assets/js/libs/backbone",
     "handlebars": "../assets/js/libs/handlebars",
     "sortable":  "../assets/js/libs/sortable",
+    "marked":    "../assets/js/libs/marked.min",
     "moment":     "../assets/js/libs/moment.min",
     "noty":     "../assets/js/libs/noty",
     "noty_theme": "../assets/js/libs/noty_theme",
@@ -70,6 +71,10 @@ require.config({
 
     "noty_theme": {
       deps: ["jquery", "noty"]
+    },
+
+    "marked": {
+      exports: 'marked'
     },
 
     "polyglot": {

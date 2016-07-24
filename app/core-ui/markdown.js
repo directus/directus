@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView', '../assets/js/libs/marked.min.js'],function(app, UIComponent, UIView, marked) {
+define(['app', 'core/UIComponent', 'core/UIView', 'marked'],function(app, UIComponent, UIView, marked) {
 
   'use strict';
 
