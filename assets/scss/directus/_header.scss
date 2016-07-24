@@ -256,6 +256,9 @@
           display: block;
           float:right;
         }
+        .tool {
+          float: right;
+        }
       }
       .btn-round {
         padding: 8px; // For pagination, anything else affected?
@@ -268,6 +271,12 @@
           &.icon-triangle-down {
             color: $primaryColor;
           }
+        }
+      }
+      .checkbox {
+        padding: 10px 0;
+        input {
+          margin: 2px 5px;
         }
       }
       .simple-select {

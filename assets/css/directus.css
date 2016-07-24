@@ -4207,12 +4207,18 @@ body.initial-load #sidebar {
     .header1 .primary-row .tools.right button, .header1 .primary-row .tools.right input {
       display: block;
       float: right; }
+    .header1 .primary-row .tools.right .tool {
+      float: right; }
     .header1 .primary-row .tools .btn-round {
       padding: 8px; }
     .header1 .primary-row .tools .select-and-circle label.icon {
       line-height: 65%; }
     .header1 .primary-row .tools .select-and-circle label.icon-triangle-down {
       color: #4ca6de; }
+    .header1 .primary-row .tools .checkbox {
+      padding: 10px 0; }
+      .header1 .primary-row .tools .checkbox input {
+        margin: 2px 5px; }
     .header1 .primary-row .tools .simple-select {
       margin-bottom: -13px;
       margin-left: 5px;

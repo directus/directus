@@ -124,6 +124,7 @@
   "permissions_can_delete_any_items": "Can Delete Any Items",
   "permissions_can_delete_their_items": "Can Delete Their Items: %{user_create_column}",
   "permissions_can_not_delete_items": "Can Not Delete Items",
+  "show_directus_tables": "Show Directus Tables",
   "new_user": "New User",
   "editing_item": "Editing Item",
   "creating_new_item": "Creating New Item",
