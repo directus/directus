@@ -333,12 +333,20 @@
 
   "this_column_will_be_saved_as_x": "This column will be saved as %{column_name}",
   "this_table_was_saved_as_x": "This table was saved as %{table_name}",
+  "unable_to_find_column_x": "Unable to find the column [%{column}]",
+  "unable_to_find_column_x_options_for_x": "Unable to find the column [%{column}] UI options for [%{ui}]",
   "unable_to_remove_column_x": "Unable to remove the column [%{column}]",
   "column_x_was_removed": "Column [%{column}] was removed",
+  "unable_to_find_table_x": "Unable to find the table [%{table_name}]",
   "unable_to_remove_table_x": "Unable to remove the table [%{table_name}]",
   "table_x_was_removed": "Table [%{table}] was removed",
   "invalid_unsupported_url": "Invalid/Unsupported URL",
   "message_not_found": "Message not found",
+
+  "unable_to_find_file_with_id_x": "Unable to find the file record with ID [%{id}]",
+  "unable_to_find_group_with_id_x": "Unable to find the group record with ID [%{id}]",
+  "unable_to_find_record_in_x_with_id_x": "Unable to find the record in [%{table}] with ID [%{id}]",
+  "unable_to_find_setting_collection_x": "Unable to find setting collection [%{collection}]",
 
   "cannot_select_all_from_table_x_with_nonempty_read_field_blacklist": "Cannot select all (`*`) from table %{table_name} with non-empty read field blacklist.",
   "write_access_forbidden_to_table_x_indices_y": "Write (set) access forbidden to table `%{table}` indices: %{indices}",

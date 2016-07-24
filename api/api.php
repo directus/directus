@@ -754,8 +754,14 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
     $params[$TableGateway->primaryKeyFieldName] = $id;
     // GET a table entry
     $Table = new TableGateway($acl, $table, $ZendDb);
-    $entries = $Table->getEntries($params);
-    JsonView::render($entries);
+    $response = $Table->getEntries($params);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_record_in_x_with_id_x',['table' => $table, 'id' => $id]),
+            'success' => false
+        );
+    }
+    JsonView::render($response);
 })->via('DELETE', 'GET', 'PUT','PATCH');
 
 /**
@@ -845,7 +851,14 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
         $TableGateway->updateCollection($requestPayload);
     }
+
     $response = TableSchema::getSchemaArray($table, $params);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_column_x',['column' => $column]),
+            'success' => false
+        );
+    }
     JsonView::render($response);
 })->via('GET', 'PUT', 'DELETE');
 
@@ -903,8 +916,15 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($ZendDb, $acl) {
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null;
     $Groups = new TableGateway($acl, 'directus_groups', $ZendDb);
-    $get_new = $Groups->find($id);
-    JsonView::render($get_new);
+    $response = $Groups->find($id);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_group_with_id_x',['id' => $id]),
+            'success' => false
+        );
+    }
+
+    JsonView::render($response);
 });
 
 /**
@@ -950,23 +970,15 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     }
 
     $Files = new TableGateway($acl, $table, $ZendDb);
-    $get_new = $Files->getEntries($params);
+    $response = $Files->getEntries($params);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_file_with_id_x',['id' => $id]),
+            'success' => false
+        );
+    }
 
-//    @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
-//    see: https://en.wikipedia.org/wiki/ISO_8601
-//    if (array_key_exists('rows', $get_new)) {
-//        foreach ($get_new['rows'] as &$row) {
-//          if(isset($row['date_uploaded'])) {
-//            $row['date_uploaded'] .= ' UTC';
-//          }
-//        }
-//    } else {
-//      if(isset($get_new['date_uploaded'])) {
-//        $get_new['date_uploaded'] .= ' UTC';
-//      }
-//    }
-
-    JsonView::render($get_new);
+    JsonView::render($response);
 })->via('GET','PATCH','POST','PUT');
 
 /**
@@ -1089,9 +1101,16 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
     }
 
     $settings_new = $Settings->fetchAll();
-    $get_new = is_null($id) ? $settings_new : $settings_new[$id];
+    // $get_new = is_null($id) ? $settings_new : $settings_new[$id];
+    $response = array_key_exists($id, $settings_new) ? $settings_new : null;
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_setting_collection_x',['collection' => $id]),
+            'success' => false
+        );
+    }
 
-    JsonView::render($get_new);
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 /**
@@ -1184,9 +1203,14 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
     }
     $ColumnsTableGateway->updateCollection($column_settings);
   }
+
   $response = TableSchema::getTable($table);
+
   if (!$response) {
-    $response = [];
+      $response = array(
+          'message' => __t('unable_to_find_table_x',['table_name' => $table]),
+          'success' => false
+      );
   }
   JsonView::render($response);
 })->via('GET', 'PUT', 'DELETE')->name('table_meta');
@@ -1518,8 +1542,15 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
         $TableGateway->updateCollection($column_settings);
     }
     $UiOptions = new DirectusUiTableGateway($acl, $ZendDb);
-    $get_new = $UiOptions->fetchOptions($table, $column, $ui);
-    JsonView::render($get_new);
+    $response = $UiOptions->fetchOptions($table, $column, $ui);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_column_x_options_for_x', ['column' => $column, 'ui' => $ui]),
+            'success' => false
+        );
+    }
+
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 $app->notFound(function() use ($app, $acl, $ZendDb) {

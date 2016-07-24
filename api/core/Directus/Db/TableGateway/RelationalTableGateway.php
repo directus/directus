@@ -713,15 +713,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
             return $set;
         }
 
-        /**
-         * Fetching one item
-         */
-
-        // @todo return null and let controller throw HTTP response
-        if (0 == count($results)) {
-            // throw new \DirectusException('Item not found!',404);
-            // @todo return null and let controller handle HTTP response
-            Bootstrap::get('app')->halt(404);
+        if (!$results) {
+            return $results;
         }
 
         list($result) = $results;
