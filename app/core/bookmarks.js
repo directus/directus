@@ -60,6 +60,15 @@ function(app, Backbone, EntriesManager, __t, Notification) {
       }
     },
 
+    addTable: function(tableModel) {
+      this.add(new Backbone.Model({
+        icon_class: '',
+        title: app.capitalize(tableModel.get('table_name')),
+        url: 'tables/' + tableModel.get('table_name'),
+        section: 'table'
+      }));
+    },
+
     addNewBookmark: function(data) {
       data.user = data.user.toString();
       if(this.findWhere(data) === undefined) {
@@ -68,7 +77,10 @@ function(app, Backbone, EntriesManager, __t, Notification) {
     },
 
     removeBookmark: function(data) {
-      data.user = data.user.toString();
+      if (data.user) {
+        data.user = data.user.toString();
+      }
+
       var model = this.findWhere(data);
 
       if(model !== undefined) {
@@ -264,6 +276,18 @@ function(app, Backbone, EntriesManager, __t, Notification) {
         if (app.router.loadedPreference) {
           app.router.loadedPreference = undefined;
           self.setActive('tables/' + collection.table.id);
+        }
+      });
+
+      app.on('tables:change:attributes:hidden', function(model, attribute) {
+        if (model.get(attribute) == true) {
+          // @TODO: bookmark must have an Identification attribute.
+          self.collection.removeBookmark({
+            section: 'table',
+            title: app.capitalize(model.get('table_name'))
+          });
+        } else if (!self.collection.get(model)) {
+          self.collection.addTable(model);
         }
       });
     },

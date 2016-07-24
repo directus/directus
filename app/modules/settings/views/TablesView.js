@@ -855,8 +855,13 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     toggleTableAttribute: function(tableModel, attr, element) {
       var data = {};
+
       data[attr] = !tableModel.get(attr);
       tableModel.save(data);
+
+      app.trigger('tables:change:attributes', tableModel, attr);
+      app.trigger('tables:change:attributes:' + attr, tableModel, attr);
+
       if(element.hasClass('add-color')) {
         element.addClass('delete-color');
         element.removeClass('add-color');
@@ -993,12 +998,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         group_id: app.getCurrentGroup()
       }]);
       app.schemaManager.registerPreferences([tableModel.preferences.toJSON()]);
-      app.router.bookmarks.add(new Backbone.Model({
-        icon_class: '',
-        title: app.capitalize(tableModel.get('table_name')),
-        url: 'tables/' + tableModel.get('table_name'),
-        section: 'table'
-      }));
+      app.router.bookmarks.addTable(tableModel);
     }
   });
 
