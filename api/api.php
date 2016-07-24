@@ -1522,6 +1522,26 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
     JsonView::render($get_new);
 })->via('GET','POST','PUT');
 
+$app->notFound(function() use ($app, $acl, $ZendDb) {
+    $app->response()->header('Content-Type', 'text/html; charset=utf-8');
+
+    $settingsTable = new DirectusSettingsTableGateway($acl, $ZendDb);
+    $settings = $settingsTable->fetchCollection('global');
+
+    $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
+    $projectLogoURL = '/assets/img/directus-logo-flat.svg';
+    if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
+        $projectLogoURL = $settings['cms_thumbnail_url'];
+    }
+
+    $data = [
+        'project_name' => $projectName,
+        'project_logo' => $projectLogoURL,
+    ];
+
+    $app->render('errors/404.twig.html', $data);
+});
+
 /**
  * Run the Router
  */
