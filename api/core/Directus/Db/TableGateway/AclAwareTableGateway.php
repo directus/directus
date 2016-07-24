@@ -193,14 +193,17 @@ class AclAwareTableGateway extends TableGateway {
     }
 
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
+        $tableName = is_null($tableName) ? $this->table : $tableName;
         foreach($recordData as $columnName => $columnValue) {
             if(is_array($columnValue)) {
-                $table = is_null($tableName) ? $this->table : $tableName;
-                throw new SuppliedArrayAsColumnValue("Attempting to write an array as the value for column `$table`.`$columnName`.");
+                // $table = is_null($tableName) ? $this->table : $tableName;
+                throw new SuppliedArrayAsColumnValue("Attempting to write an array as the value for column `$tableName`.`$columnName`.");
             }
         }
 
-        $tableName = is_null($tableName) ? $this->table : $tableName;
+        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+        $recordData = $this->parseRecordValuesByMysqlType($recordData, $columns);
+
         $TableGateway = new self($this->acl, $tableName, $this->adapter);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if($rowExists) {
@@ -723,5 +726,63 @@ class AclAwareTableGateway extends TableGateway {
             // @todo send developer warning
             throw $e;
         }
+    }
+
+    // @TODO: move parse records into an Schema-specific class
+    public function parseRecordValuesByMysqlType($record, $nonAliasSchemaColumns) {
+        foreach($nonAliasSchemaColumns as $column) {
+            $col = $column['id'];
+            if(array_key_exists($col, $record)) {
+                $record[$col] = $this->parseMysqlType($record[$col], $column['type']);
+            }
+        }
+
+        return $record;
+    }
+
+    /**
+     * Cast a php string to the same type as MySQL
+     * @param  string $mysql_data MySQL result data
+     * @param  string $mysql_type MySQL field type
+     * @return mixed              Value cast to PHP type
+     */
+    private function parseMysqlType($mysql_data, $mysql_type = null) {
+        $mysql_type = strtolower($mysql_type);
+
+        switch ($mysql_type) {
+            case null:
+                break;
+            case 'blob':
+            case 'mediumblob':
+                return base64_encode($mysql_data);
+            case 'year':
+            case 'bigint':
+            case 'smallint':
+            case 'mediumint':
+            case 'int':
+            case 'long':
+            case 'tinyint':
+                return ($mysql_data == null) ? null : (int) $mysql_data;
+            case 'float':
+                return (float) $mysql_data;
+            case 'date':
+            case 'datetime':
+                $nullDate = empty($mysql_data) || ("0000-00-00 00:00:00" == $mysql_data) || ('0000-00-00' === $mysql_data);
+                if($nullDate) {
+                    return null;
+                }
+                $date = new \DateTime($mysql_data);
+                $formatted = $date->format('Y-m-d H:i:s');
+                return $formatted;
+            case 'char':
+            case 'varchar':
+            case 'text':
+            case 'tinytext':
+            case 'mediumtext':
+            case 'longtext':
+            case 'var_string':
+                return $mysql_data;
+        }
+        return $mysql_data;
     }
 }
