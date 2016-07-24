@@ -281,14 +281,33 @@ function(app, Backbone, EntriesManager, __t, Notification) {
 
       app.on('tables:change:attributes:hidden', function(model, attribute) {
         if (model.get(attribute) == true) {
-          // @TODO: bookmark must have an Identification attribute.
-          self.collection.removeBookmark({
-            section: 'table',
-            title: app.capitalize(model.get('table_name'))
-          });
-        } else if (!self.collection.get(model)) {
-          self.collection.addTable(model);
+          self.removeBookmark(model);
+        } else {
+          self.addBookmark(model);
         }
+      });
+
+      app.on('tables:change:permissions', function(table, permission) {
+        if (permission.get('allow_view') > 0) {
+          self.addBookmark(table);
+        } else {
+          self.removeBookmark(table);
+        }
+      })
+    },
+
+    addBookmark: function(model) {
+      var title = app.capitalize(model.get('table_name'));
+      if (!this.collection.isBookmarked(title)) {
+        this.collection.addTable(model);
+      }
+    },
+
+    removeBookmark: function(model) {
+      // @TODO: bookmark must have an Identification attribute.
+      this.collection.removeBookmark({
+        section: 'table',
+        title: app.capitalize(model.get('table_name'))
       });
     },
 

@@ -156,6 +156,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
             if(cmodel.get('table_name') == model.get('table_name') && cmodel.get('group_id') == model.get('group_id')) {
               cmodel.set(attribute);
               cmodel.save();
+              that.triggerPermissionChanged(model);
             }
           });
 
@@ -180,6 +181,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
           if(fancySave) {
             that.collection.add(that.model);
           }
+          that.triggerPermissionChanged(model);
           app.schemaManager.updatePrivileges(model.get('table_name'), attributes);
         }});
       }
@@ -225,7 +227,14 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
         }
 
         model.save();
+        this.triggerPermissionChanged(model);
     },
+
+    triggerPermissionChanged: function(model) {
+      var tableModel = app.schemaManager.getTable(model.get('table_name'));
+      app.trigger('tables:change:permissions', tableModel, model);
+    },
+
     // @todo: update this for newest permission model
     OldtoggleRowPermissions: function(e) {
       var $target = $(e.target).parent(),
