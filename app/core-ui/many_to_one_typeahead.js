@@ -130,9 +130,11 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
         params['columns'] = this.visibleColumn;
       }
 
-      if(1 === parseInt(this.includeInactives, 10)) {
-        params['include_inactive'] = 1;
+      var status = 1;
+      if(this.options.settings.get('visible_status_ids')) {
+        status = this.options.settings.get('visible_status_ids');
       }
+      params[app.statusMapping.status_name] = status;
 
       var urlParams = Utils.encodeQueryParams(params);
       if(urlParams) {
@@ -212,7 +214,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
       {id: 'visible_column', ui: 'textinput', comment: __t('m2o_typeahead_visible_column_comment'), char_length: 64, required: true},
       {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }, comment: __t('m2o_typeahead_size_comment')},
       {id: 'template', ui: 'textinput', comment: __t('m2o_typeahead_template_comment')},
-      {id: 'include_inactive', ui: 'checkbox', def: '0', comment: __t('m2o_typeahead_include_inactive_comment'), required: false}
+      {id: 'visible_status_ids', ui: 'textinput', char_length: 64, required: true, def: 1, comment: __t('m2o_visible_status_ids_comment')}
     ],
     Input: Input,
     list: function(options) {

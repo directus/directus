@@ -690,9 +690,6 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   if(!isset($params['columns'])) {
     $params['columns'] = '';
   }
-  if(!array_key_exists('include_inactive', $params)) {
-    $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
-  }
 
   $columns = ($params['columns']) ? explode(',', $params['columns']) : array();
   if(count($columns) > 0) {
