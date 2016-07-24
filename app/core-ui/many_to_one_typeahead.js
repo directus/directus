@@ -12,7 +12,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
   'use strict';
 
   var template = '<input type="text" value="" class="for_display_only {{size}}{{#if disabled}} disabled{{/if}}" placeholder="{{t "m2o_typeahead_placeholder"}}" {{#if readonly}}readonly{{/if}}/> \
-                  {{#if disabled}}<em>There is not visible columns selected</em>{{/if}}\
+                  {{#if disabled}}<div class="disabled-input"></div><em>There is not visible columns selected</em></div>{{/if}}\
                   {{#if hasSelectedItem}}\
                   <div class="selected-item"> \
                     <span id="selectedValue">{{selectedValue}}</span>\
@@ -20,6 +20,9 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
                   </div> \
                   {{/if}}\
                   <style> \
+                    .disabled-input {\
+                      padding: 5px 0;\
+                    }\
                     .for_display_only.disabled {\
                       border-color: #F75D59\
                     } \
