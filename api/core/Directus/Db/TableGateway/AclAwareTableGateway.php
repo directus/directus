@@ -774,6 +774,8 @@ class AclAwareTableGateway extends TableGateway {
                 $date = new \DateTime($mysql_data);
                 $formatted = $date->format('Y-m-d H:i:s');
                 return $formatted;
+            case 'time':
+                return !empty($mysql_data) ? $mysql_data : null;
             case 'char':
             case 'varchar':
             case 'text':
