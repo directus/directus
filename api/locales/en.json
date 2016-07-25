@@ -363,9 +363,11 @@
   "argument_must_be_callable": "Argument must be callable",
   "attempting_to_authenticate_a_user_when_a_user_is_already_authenticated": "Attempting to authenticate a user when a user is already authenticated.",
 
-  "x_video_id_not_detected": "%{service} video ID not detected. Please paste the whole URL.",
+  "url_x_cannot_be_parse_by_x": "URL %{url} cannot be parse by %{class}",
+  "video": "Video",
+  "x_x_id_not_detected": "%{service} %{type} ID not detected. Please paste the whole URL.",
   "unable_to_retrieve_x_title": "Unable to Retrieve %{service} Title",
-  "x_video": "%{service} Video",
+  "x_type_x": "%{service} %{type}",
   "bad_x_api_key": "Bad %{service} API Key",
   "mail_configuration_not_defined": "Mail configuration not defined.",
 

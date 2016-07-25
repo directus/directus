@@ -13,27 +13,12 @@ function(app, Backbone, EntriesModel, File) {
     },
 
     makeFileUrl: function(thumbnail) {
-      var storageAdapters = app.storageAdapters;
-      var adapterId = this.get('storage_adapter');
-      var storageAdapter;
       var url;
 
-      if (!storageAdapters.hasOwnProperty(adapterId)) {
-        throw new Error("Files record's storage_adapter FK value maps to an undefined directus_storage_adapters record: " + adapterId);
-      }
-
-      storageAdapter = storageAdapters[adapterId];
-
       if (thumbnail) {
-        if(this.get('name')) {
-          if($.inArray(this.get('name').split('.').pop(),['tif', 'tiff', 'psd', 'pdf']) > -1) {
-            url = storageAdapter.root_thumb_url + '/' + this.get('id') + ".jpg";
-          } else {
-            url = storageAdapter.root_thumb_url + '/' + this.get('id') + "." + this.get('name').split('.').pop();
-          }
-        }
+        url = this.get('thumbnail_url');
       } else {
-        url = storageAdapter.root_url + '/' + this.get('name');
+        url = this.get('url');
       }
 
       return url;
@@ -45,7 +30,7 @@ function(app, Backbone, EntriesModel, File) {
         atts = _.clone(this.attributes);
       }
 
-      return _.omit(atts, 'thumbnailData', 'file_url', 'file_thumb_url');
+      return _.omit(atts, 'thumbnailData', 'file_url', 'file_thumb_url', 'thumbnail_url', 'html');
     },
 
     formatTitle: function(name) {

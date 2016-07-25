@@ -86,23 +86,17 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
                   } \
                   </style> \
                   {{#if url}} \
-                  <a target="_BLANK" href="{{url}}"> \
                   <div class="ui-thumbnail has-file"> \
-                    {{#if thumbUrl}} \
-                      {{#if youtube}} \
-                        <iframe width="300" height="200" src="//www.youtube.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe> \
-                      {{else}} \
-                        {{#if vimeo}} \
-                          <iframe src="//player.vimeo.com/video/{{vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="300" height="200" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
-                        {{else}} \
-                          <img src="{{thumbUrl}}"> \
-                        {{/if}} \
-                      {{/if}} \
+                    {{#if html}} \
+                      {{{html}}} \
                     {{else}} \
-                      <div class="default-info">{{type}}</div> \
+                      {{#if thumbUrl}} \
+                         <a target="_BLANK" href="{{url}}"><img src="{{thumbUrl}}"></a> \
+                      {{else}} \
+                        <div class="default-info">{{type}}</div> \
+                      {{/if}} \
                     {{/if}} \
                   </div> \
-                  </a> \
                   <div class="ui-img-details"> \
                     <span class="ui-text-hover" data-action="swap">{{t "directus_files_swap_file"}}</span> \
                   </div> \
@@ -146,7 +140,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         data.thumbUrl = model.makeFileUrl(true);
       } else if (model.isNew()) {
         data.url = model.get('url') || model.get('data');
-        data.thumbUrl = model.get('thumbnailData') || model.get('url');
+        data.thumbUrl = model.get('thumbnailData') || model.get('url') || model.get('data');
       }
 
       data.name = model.get('name');
@@ -162,11 +156,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
           data.type = subtype.toUpperCase();
         }
 
-        if(model.get('type') == 'embed/youtube') {
-          data.youtube = model.get('url');
-        } else if(model.get('type') == 'embed/vimeo') {
-          data.vimeo = model.get('url');
-        }
+        data.html = $(model.get('html')).css({width: 300, height: 200}).prop('outerHTML');
       }
 
       return data;

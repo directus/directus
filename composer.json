@@ -22,7 +22,8 @@
   "autoload": {
     "psr-4": {
       "Directus\\": "api/core/Directus/",
-      "Directus\\Installation\\": "installation/includes/"
+      "Directus\\Installation\\": "installation/includes/",
+      "Directus\\Embed\\Provider\\": "customs/embeds/"
     },
     "files": [
       "api/core/functions.php"

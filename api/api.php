@@ -1236,7 +1236,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
 
     $app->response->setStatus(400);
 
-    if (isset($_POST['link']) && is_string($_POST['link'])) {
+    if (isset($_POST['link']) && filter_var($_POST['link'], FILTER_VALIDATE_URL)) {
         $fileData = array('caption'=>'','tags'=>'','location'=>'');
         $linkInfo = $Files->getLink($_POST['link']);
 
@@ -1245,6 +1245,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
             $app->response->setStatus(200);
             $fileData = array_merge($fileData, $linkInfo);
 
+            $result = [];
             $result[] = array(
                 'type' => $fileData['type'],
                 'name' => $fileData['name'],
@@ -1256,7 +1257,8 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
                 'size' => $fileData['size'],
                 'width' => $fileData['width'],
                 'height' => $fileData['height'],
-                'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
+                'html' => isset($fileData['html']) ? $fileData['html'] : null,
+                'embed_id' => (isset($fileData['embed_id'])) ? $fileData['embed_id'] : '',
                 'data' => (isset($fileData['data'])) ? $fileData['data'] : null,
                 'user' => $currentUser['id']
                 //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',

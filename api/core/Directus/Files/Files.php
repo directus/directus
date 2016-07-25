@@ -3,14 +3,10 @@
 namespace Directus\Files;
 
 use Directus\Bootstrap;
-use Directus\Filesystem\Filesystem;
-use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Hook;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
-use Directus\Files\Thumbnail;
-use League\Flysystem\Config as FlysystemConfig;
 use League\Flysystem\FileNotFoundException;
 
 class Files
@@ -73,11 +69,11 @@ class Files
     /**
      * Copy $_FILES data into directus media
      *
-     * @param Array $_FILES data
+     * @param array $file $_FILES data
      *
-     * @return Array directus file info data
+     * @return array directus file info data
      */
-    public function upload(Array $file)
+    public function upload(array $file)
     {
         $filePath = $file['tmp_name'];
         $fileName = $file['name'];
@@ -116,146 +112,82 @@ class Files
      *
      * @param string $url
      *
-     * @return Array
+     * @return array
      */
-    public function getLink($link)
+    public function getLink($url)
     {
-        $settings = $this->filesSettings;
-        $fileData = array();
+        $info = [];
 
-        if (strpos($link,'youtube.com') !== false) {
-          // Get ID from URL
-          parse_str(parse_url($link, PHP_URL_QUERY), $array_of_vars);
-          $video_id = $array_of_vars['v'];
-
-          // Can't find the video ID
-          if($video_id === FALSE){
-            die(__t('x_video_id_not_detected', ['service' => 'YouTube']));
-          }
-
-          $fileData['url'] = $video_id;
-          $fileData['type'] = 'embed/youtube';
-          $fileData['height'] = 340;
-          $fileData['width'] = 560;
-
-          $fileData['name'] = "youtube_" . $video_id . ".jpg";
-          $fileData['date_uploaded'] = DateUtils::now();
-          $fileData['storage_adapter'] = $this->getConfig('adapter');
-          $fileData['charset'] = '';
-
-          //If Youtube API Key set, hit up youtube API
-          if(array_key_exists('youtube_api_key', $settings) && !empty($settings['youtube_api_key'])) {
-            // Get Data
-            $youtubeFormatUrlString = "https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails";
-            $url = sprintf($youtubeFormatUrlString, $video_id, $settings['youtube_api_key']);
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_URL,$url);
-            $content=curl_exec($ch);
-
-            $dataRetrieveErrored = false;
-            if ($content !== false) {
-                $content = json_decode($content);
-                if(!is_null($content) && property_exists($content, 'items') && sizeof($content->items) > 0) {
-                    $videoDataSnippet = $content->items[0]->snippet;
-                    $fileData['title'] = $videoDataSnippet->title;
-                    $fileData['caption'] = $videoDataSnippet->description;
-                    $fileData['tags'] = implode(',', $videoDataSnippet->tags);
-
-                    $videoContentDetails = $content->items[0]->contentDetails;
-                    $videoStart = new \DateTime('@0'); // Unix epoch
-                    $videoStart->add(new \DateInterval($videoContentDetails->duration));
-                    $fileData['size'] = $videoStart->format('U');
-                } else if(property_exists($content, 'error')) {
-                    throw new \Exception(__t('bad_x_api_key', ['service' => 'YouTube']));
-                } else {
-                    $dataRetrieveErrored = true;
-                }
-            } else {
-                $dataRetrieveErrored = true;
-            }
-
-            // an error happened
-            if($dataRetrieveErrored) {
-                $fileData['title'] = __t('unable_to_retrieve_x_title', ['service' => 'YouTube']);
-                $fileData['size'] = 0;
-            }
-          } else {
-              //No API Key is set, use generic title
-              $fileData['title'] = __t('x_video', ['service' => 'YouTube']).": " . $video_id;
-              $fileData['size'] = 0;
-          }
-
-          $linkContent = file_get_contents('http://img.youtube.com/vi/' . $video_id . '/0.jpg');
-          $fileData['data'] = 'data:image/jpeg;base64,' . base64_encode($linkContent);
-        } else if(strpos($link,'vimeo.com') !== false) {
-        // Get ID from URL
-          preg_match('/vimeo\.com\/([0-9]{1,10})/', $link, $matches);
-          $video_id = $matches[1];
-
-          // Can't find the video ID
-          if($video_id === FALSE){
-            die(__t('x_video_id_not_detected', ['service' => 'Vimeo']));
-          }
-
-          $fileData['url'] = $video_id;
-          $fileData['type'] = 'embed/vimeo';
-
-          $fileData['name'] = "vimeo_" . $video_id . ".jpg";
-          $fileData['date_uploaded'] = DateUtils::now();
-          $fileData['storage_adapter'] = $this->getConfig('adapter');
-          $fileData['charset'] = '';
-
-          // Get Data
-          $url = 'http://vimeo.com/api/v2/video/' . $video_id . '.php';
-          $ch = curl_init($url);
-          curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
-          curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 0);
-          $content = curl_exec($ch);
-          curl_close($ch);
-          $array = unserialize(trim($content));
-
-          if($content !== false) {
-            $fileData['title'] = $array[0]['title'];
-            $fileData['caption'] = strip_tags($array[0]['description']);
-            $fileData['size'] = $array[0]['duration'];
-            $fileData['height'] = $array[0]['height'];
-            $fileData['width'] = $array[0]['width'];
-            $fileData['tags'] = $array[0]['tags'];
-            $vimeo_thumb = $array[0]['thumbnail_large'];
-
-            // $img = Thumbnail::generateThumbnail($vimeo_thumb, 'jpeg', $settings['thumbnail_size'], $settings['thumbnail_crop_enabled']);
-            // $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-            // Thumbnail::writeImage('jpg', $thumbnailTempName, $img, $settings['thumbnail_quality']);
-            // if(!is_null($thumbnailTempName)) {
-            //   $this->ThumbnailStorage->acceptFile($thumbnailTempName, 'THUMB_'.$fileData['name'], $filesAdapter['destination']);
-            // }
-            $linkContent = file_get_contents($vimeo_thumb);
-            $fileData['data'] = 'data:image/jpeg;base64,' . base64_encode($linkContent);
-          } else {
-            // Unable to get Vimeo details
-            $fileData['title'] = __t('unable_to_retrieve_x_title', ['service' => 'Vimeo']);
-            $fileData['height'] = 340;
-            $fileData['width'] = 560;
-          }
-        } else {
-          //Arnt youtube or voimeo so try to curl photo and use uploadfile
-          // $content = file_get_contents($link);
-          // $tmpFile = tempnam(sys_get_temp_dir(), 'DirectusFile');
-          // file_put_contents($tmpFile, $content);
-          // $stripped_url = preg_replace('/\\?.*/', '', $link);
-          // $realfilename = basename($stripped_url);
-          // return self::acceptFile($tmpFile, $realfilename);
-          // return self::acceptFile();
-          try {
-            $fileData = $this->getLinkInfo($link);
-          } catch (\Exception $e) {
-            $fileData = false;
-          }
+        // @TODO: use oEmbed
+        // @TODO: better provider url validation
+        // checking for 'youtube.com' for a valid youtube video is wrong
+        // we can also be using youtube.com/img/a/youtube/image.jpg
+        // which should fallback to ImageProvider
+        // instead checking for a url with 'youtube.com/watch' with v param or youtu.be/
+        $embedManager = Bootstrap::get('embedManager');
+        try {
+            $info = $embedManager->parse($url);
+        } catch (\Exception $e) {
+            $info = $this->getImageFromURL($url);
         }
 
-        return $fileData;
+        if ($info) {
+            $info['date_uploaded'] = DateUtils::now();
+            $info['storage_adapter'] = $this->getConfig('adapter');
+            $info['charset'] = isset($info['charset']) ? $info['charset'] : '';
+        }
+
+        return $info;
+    }
+
+    /**
+     * Get Image from URL
+     *
+     * @param $url
+     * @return array
+     */
+    protected function getImageFromURL($url)
+    {
+        stream_context_set_default([
+            'http' => [
+                'method' => 'HEAD'
+            ]
+        ]);
+
+        $urlHeaders = get_headers($url, 1);
+
+        stream_context_set_default([
+            'http' => [
+                'method' => 'GET'
+            ]
+        ]);
+
+        $info = [];
+
+        $contentType = is_array($urlHeaders['Content-Type']) ? $urlHeaders['Content-Type'][0] : $urlHeaders['Content-Type'];
+        if (strpos($contentType, 'image/') === false) {
+            return $info;
+        }
+
+        $urlInfo = pathinfo($url);
+        $content = file_get_contents($url);
+        if (!$content) {
+            return $info;
+        }
+
+        list($width, $height) = getimagesizefromstring($content);
+
+        $data = 'data:' . $urlHeaders['Content-Type'] . ';base64,' . base64_encode($content);
+        $info['title'] = $urlInfo['filename'];
+        $info['name'] = $urlInfo['basename'];
+        $info['size'] = isset($urlHeaders['Content-Length']) ? $urlHeaders['Content-Length'] : 0;
+        $info['type'] = $urlHeaders['Content-Type'];
+        $info['width'] = $width;
+        $info['height'] = $height;
+        $info['data'] = $data;
+        $info['charset'] = 'binary';
+
+        return $info;
     }
 
     /**
@@ -520,6 +452,7 @@ class Files
     private function uniqueName($fileName, $targetPath, $attempt = 0)
     {
         $info = pathinfo($fileName);
+        // @TODO: this will fail when the filename doesn't have extension
         $ext = $info['extension'];
         $name = basename($fileName, ".$ext");
 
@@ -613,11 +546,11 @@ class Files
         $urlHeaders = get_headers($link, 1);
         $urlInfo = pathinfo($link);
 
-        // if(in_array($urlInfo['extension'], array('jpg','jpeg','png','gif','tif','tiff'))) {
         if (strpos($urlHeaders['Content-Type'], 'image/') === 0) {
             list($width, $height) = getimagesize($link);
         }
 
+        $urlInfo = pathinfo($link);
         $linkContent = file_get_contents($link);
         $url = 'data:' . $urlHeaders['Content-Type'] . ';base64,' . base64_encode($linkContent);
 

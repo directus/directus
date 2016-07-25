@@ -132,10 +132,10 @@ define([
                   <div class="ui-file-container"> \
                     {{#if url}} \
                     <div class="single-image-thumbnail has-file"> \
-                      {{#if fileModel.youtube}}<iframe width="280" height="160" src="//www.youtube.com/embed/{{fileModel.youtube}}?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe> \
+                      {{#if html}}\
+                        {{{html}}}\
                       {{else}} \
-                        {{#if fileModel.vimeo}} <iframe src="//player.vimeo.com/video/{{fileModel.vimeo}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="280" height="160" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> \
-                        {{else}}<a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a>{{/if}} \
+                        <a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a> \
                       {{/if}} \
                     </div> \
                     <div class="ui-img-details single_file"> \
@@ -312,16 +312,13 @@ define([
 
       var data = this.fileModel.toJSON();
       var type = this.fileModel.has('type') ? this.fileModel.get('type').substring(0, this.fileModel.get('type').indexOf('/')) : '';
-      // var subtype = this.fileModel.has('type') ? this.fileModel.get('type').split('/').pop() : '';
-      var isImage = _.contains(['image', 'embed'], type);// || _.contains(['pdf'], subtype);
+      var isImage = _.contains(['image', 'embed'], type);
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
       if(data.type) {
         if(data.type == 'embed/youtube') {
-          data.youtube = data.url;
           data.size = app.seconds_convert(data.size);
         } else if(data.type == 'embed/vimeo') {
-          data.vimeo = data.url;
           data.size = app.seconds_convert(data.size);
         } else {
           data.size = app.bytesToSize(data.size, 0);
@@ -329,11 +326,16 @@ define([
       } else {
         data.size = app.bytesToSize(data.size, 0);
       }
+      var html = this.fileModel.get('html');
+      if (html) {
+        html = $(html).css({width: 280, height: 160}).prop('outerHTML');
+      }
 
       data = {
         isImage: isImage,
         name: this.options.name,
         url: url,
+        html: html,
         thumbUrl: thumbUrl,
         comment: this.options.schema.get('comment'),
         allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',

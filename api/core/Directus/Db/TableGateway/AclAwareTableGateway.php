@@ -18,6 +18,7 @@ use Directus\Hook\Hook;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Delete;
@@ -455,6 +456,46 @@ class AclAwareTableGateway extends TableGateway {
     }
 
     /**
+     * Post select process
+     * @param array $selectState
+     * @param ResultSet $result
+     * @return ResultSet
+     */
+    protected function processSelect($selectState, $result)
+    {
+        // Add file url and thumb url
+        if ($selectState['table'] == 'directus_files') {
+            $files = $result->toArray();
+            foreach ($files as &$row) {
+                $config = Bootstrap::get('config');
+                $fileURL = $config['filesystem']['root_url'];
+                $thumbnailURL = $config['filesystem']['root_thumb_url'];
+                $thumbnailFilenameParts = explode('.', $row['name']);
+                $thumbnailExtension = array_pop($thumbnailFilenameParts);
+
+                $row['url'] = $fileURL . '/' . $row['name'];
+                if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
+                    $thumbnailExtension = 'jpg';
+                }
+
+                $row['thumbnail_url'] = $thumbnailURL . '/' . $row['id'] . '.' . $thumbnailExtension;
+
+                $embedManager = Bootstrap::get('embedManager');
+                $provider = $embedManager->getByType($row['type']);
+                $row['html'] = null;
+                if ($provider) {
+                    $row['html'] = $provider->getCode($row);
+                }
+            }
+
+            $filesArrayObject = new \ArrayObject($files);
+            $result->initialize($filesArrayObject->getIterator());
+        }
+
+        return $result;
+    }
+
+    /**
      * OVERRIDES
      */
 
@@ -481,7 +522,7 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         try {
-            return parent::executeSelect($select);
+            return $this->processSelect($selectState, parent::executeSelect($select));
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($select), 0, $e);

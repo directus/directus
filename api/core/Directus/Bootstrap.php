@@ -8,6 +8,7 @@ use Directus\Db\Connection;
 use Directus\Db\SchemaManager;
 use Directus\Db\Schemas\MySQLSchema;
 use Directus\Db\Schemas\SQLiteSchema;
+use Directus\Embed\EmbedManager;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
@@ -447,5 +448,51 @@ class Bootstrap {
         }
 
         return new LanguageManager($languages);
+    }
+
+    /**
+     * @return \Directus\Embed\EmbedManager
+     */
+    private static function embedManager()
+    {
+        $embedManager = new EmbedManager();
+
+        $acl = static::get('acl');
+        $adapter = static::get('ZendDb');
+
+        // Fetch files settings
+        $SettingsTable = new DirectusSettingsTableGateway($acl, $adapter);
+        try {
+            $settings = $SettingsTable->fetchCollection('files', array(
+                'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
+            ));
+        } catch (\Exception $e) {
+            $settings = [];
+            $log = static::get('log');
+            $log->warn($e);
+        }
+
+        $providers = [
+            \Directus\Embed\Provider\VimeoProvider::class,
+            \Directus\Embed\Provider\YoutubeProvider::class
+        ];
+
+        $path = implode(DIRECTORY_SEPARATOR, [
+            BASE_PATH,
+            'customs',
+            'embeds',
+            '*.php'
+        ]);
+
+        foreach(glob($path) as $filename) {
+            $providers[] = '\\Directus\\Embed\\Provider\\' . basename($filename, '.php');
+        }
+
+        foreach($providers as $providerClass) {
+            $provider = new $providerClass($settings);
+            $embedManager->register($provider);
+        }
+
+        return $embedManager;
     }
 }

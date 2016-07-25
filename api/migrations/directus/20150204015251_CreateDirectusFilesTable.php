@@ -53,11 +53,6 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
           "default"=>NULL
         )
       );
-      $t->column("url", "string", array(
-          "limit"=>2000,
-          "default"=>NULL
-        )
-      );
       $t->column("title", "string", array(
           "limit"=>255,
           "default"=>""
