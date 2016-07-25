@@ -231,8 +231,11 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
     },
 
     triggerPermissionChanged: function(model) {
-      var tableModel = app.schemaManager.getTable(model.get('table_name'));
-      app.trigger('tables:change:permissions', tableModel, model);
+      var tableName = model.get('table_name');
+      app.schemaManager.getOrFetchTable(tableName, function(tableModel) {
+        app.schemaManager.registerPrivileges([model.toJSON()]);
+        app.trigger('tables:change:permissions', tableModel, model);
+      });
     },
 
     // @todo: update this for newest permission model

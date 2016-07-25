@@ -193,12 +193,43 @@ define(function(require, exports, module) {
       return tableSchemas.tables.get(tableName);
     },
 
+    getOrFetchTable: function(tableName, callback) {
+      var tableModel = this.getTable(tableName);
+      var tablePreferences = this.getPreferences(tableName);
+      var tablePrivileges = this.getPrivileges(tableName);
+
+      if (tableModel && tablePreferences && tablePrivileges) {
+        return callback(tableModel);
+      }
+
+      tableModel = new TableModel({
+        id: tableName,
+        table_name: tableName
+      }, {
+        parse: true,
+        url: app.API_URL + 'tables/' + tableName
+      });
+
+      var self = this;
+      tableModel.fetch({
+        success: function(model) {
+          self.register('tables', [{schema: tableModel.toJSON()}]);
+          self.registerPreferences([tableModel.preferences.toJSON()]);
+          callback(model);
+        }
+      });
+    },
+
     getTables: function() {
       return tableSchemas.tables;
     },
 
     getPrivileges: function(tableName) {
       return privileges[tableName];
+    },
+
+    getPreferences: function(tableName) {
+      return preferences[tableName];
     },
 
     updatePrivileges: function(tableName, attributes) {
