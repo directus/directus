@@ -47,7 +47,7 @@ Think you discover a bug? First, read through our [Docs](https://github.com/dire
 
 
 ## Requirements ##
-NGINX or Apache Server, PHP 5.5+, MySQL 5.2+, PDO_MySQL, Mod_Rewrite, CURL, GD Library, mcrypt — and optionally: Imagick
+NGINX or Apache Server, PHP 5.5+, MySQL 5.2+, pdo_mysql, mod_rewrite, curl, gd, and mcrypt.
 
 
 ## Versioning ##
