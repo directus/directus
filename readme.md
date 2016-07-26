@@ -22,7 +22,7 @@ Welcome to Directus, a free and open-source headless CMS written in Backbone.js 
 
 
 #### New Contributors
-We're currently a very small team looking to grow our network of contributors. If you're interested in helping advance the Directus framework please reach out to [@BenHaynes](https://github.com/BenHaynes). We're actively seeking developers, designers, and testers who are willing to contribute time to: 
+We're currently a very small team looking to grow our network of contributors. If you're interested in helping advance the Directus framework please reach out to [@BenHaynes](https://github.com/BenHaynes) or chat with us at [getdirectus.com](http://getdirectus.com/). We're actively seeking developers, designers, and testers who are willing to contribute time to: 
 * The core codebase
 * Alternate database ports (PostgreSQL, SQLite, etc)
 * Alternate server-side ports (RoR, Python, etc)
@@ -31,13 +31,13 @@ We're currently a very small team looking to grow our network of contributors. I
 
 
 ## Feature Requests ##
-If you would like to request or vote for new Directus features please visit our [Feathub page](http://feathub.com/directus/directus).
+If you would like to request or vote for new Directus features please visit our [FeatHub page](http://feathub.com/directus/directus).
 
 [![Feature Requests](http://feathub.com/directus/directus?format=svg)](http://feathub.com/directus/directus)
 
 
 ## Having Problems? ##
-Think you discover a bug? First, read through our [Docs](https://github.com/directus/docs) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [pull-requests](https://github.com/directus/directus/pulls)!
+Think you discover a bug? First, read through our [Docs](https://github.com/directus/docs) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [pull-requests](https://github.com/directus/directus/pulls)! **For all security related issues, please chat with us directly through [getdirectus.com](http://getdirectus.com/).**
 
 
 ## Documentation ##
