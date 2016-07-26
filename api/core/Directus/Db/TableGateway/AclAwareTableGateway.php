@@ -214,6 +214,9 @@ class AclAwareTableGateway extends TableGateway {
         } else {
             $d = $recordData;
             unset($d['data']);
+            if ($tableName == 'directus_files') {
+                $d['user'] = Auth::getUserInfo('id');
+            }
             $TableGateway->insert($d);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
