@@ -2,12 +2,18 @@ define([
   'app',
   'backbone',
   'core/entries/EntriesModel',
+  'core/t',
   'moment'
 ],
 
-function(app, Backbone, EntriesModel, moment) {
+function(app, Backbone, EntriesModel,__t,  moment) {
 
   return EntriesModel.extend({
+
+    defaults: {
+      first_name: __t('a_missing_or_removed_user'),
+      last_name: ''
+    },
 
     getAvatar: function() {
       var currentUserAvatar = this.get('avatar');
@@ -18,7 +24,7 @@ function(app, Backbone, EntriesModel, moment) {
       } else {
         currentUserAvatar = currentUserAvatar.replace('?s=100','?s=200');
       }
-      
+
       return currentUserAvatar;
     },
 

@@ -16,6 +16,16 @@ function(app, Backbone, EntriesCollection, UsersModel) {
       return this.get(authenticatedUser.id);
     },
 
+    get: function(id) {
+      var user = EntriesCollection.__super__.get.call(this, id);
+      if (!_.isObject(id) && !user) {
+        user = new UsersModel({id: id});
+        this.add(user);
+      }
+
+      return user;
+    },
+
     initialize: function() {
       EntriesCollection.prototype.initialize.apply(this, arguments);
     }
