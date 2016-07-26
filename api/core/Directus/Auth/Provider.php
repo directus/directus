@@ -145,13 +145,20 @@ class Provider {
 
     /**
      * Retrieve metadata about the currently logged in user.
-     * @return array Authenticated user metadata.
+     * @param null|string $attribute
+     * @return mixed|array Authenticated user metadata.
      * @throws  \Directus\Auth\UserIsntLoggedInException
      */
-    public static function getUserInfo() {
+    public static function getUserInfo($attribute = null) {
         self::prependSessionKey();
         self::enforceUserIsAuthenticated();
-        return $_SESSION[self::$SESSION_KEY];
+
+        $info = $_SESSION[self::$SESSION_KEY];
+        if ($attribute !== null) {
+            return array_key_exists($attribute, $info) ? $info[$attribute] : null;
+        }
+
+        return $info;
     }
 
     public static function expireCachedUserRecord() {
