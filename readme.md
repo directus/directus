@@ -51,17 +51,15 @@ NGINX or Apache Server, PHP 5.5+, MySQL 5.2+, pdo_mysql, mod_rewrite, curl, gd, 
 
 
 ## Versioning ##
-For transparency and insight into our release cycle, releases will be numbered with the follow format:
+Directus releases are numbered with the following format and guidelines:
 
 `<major>.<minor>.<patch>`
-
-And constructed with the following guidelines:
 
 * Breaking backwards compatibility bumps the major
 * New additions without breaking backwards compatibility bumps the minor
 * Bug fixes and misc changes bump the patch
 
-_For more information on semantic versioning, please visit [http://semver.org/](http://semver.org/)._
+_For more information on semantic versioning, please visit [semver.org](http://semver.org/)._
 
 
 ## Database Types ##
