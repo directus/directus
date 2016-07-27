@@ -94,7 +94,7 @@
         </tr>
         <tr>
             <td class="item"><?=__t('Media Directory');?> (/media)</td>
-            <td class="result"><?php if(is_writable('../media')) { echo '<span class="label label-success">'.__t('Yes').'</span>';} else { echo '<span class="label label-important">'.__t('No').'</span>';}?></td>
+            <td class="result"><?php if(is_writable('../storage/uploads')) { echo '<span class="label label-success">'.__t('Yes').'</span>';} else { echo '<span class="label label-important">'.__t('No').'</span>';}?></td>
         </tr>
         <?php if(!is_writable('../media')): ?>
             <tr>

@@ -4,6 +4,7 @@ namespace Directus\Installation\Steps;
 
 use Directus\Db\Connection;
 use Directus\Db\SchemaManager;
+use Directus\Db\Schemas\MySQLSchema;
 use Directus\Util\Installation\InstallerUtils;
 
 class DatabaseStep extends AbstractStep
@@ -90,13 +91,17 @@ class DatabaseStep extends AbstractStep
         $connection = new Connection($dbConfig);
         $connection->connect();
 
-        if ($connection->isStrictModeEnabled()) {
-            $nextStep = install_get_step($this->getNumber()+1);
-            $nextStep->getResponse()->addWarning('Strict mode is enabled.');
+        // @FIXME: SchemaManager should accept a connection as parameter
+        // it shouldn't be a static class no more.
+        $schema = new MySQLSchema($connection);
+        if ($schema->someTableExists(SchemaManager::getCoreTables())) {
+            throw new \InvalidArgumentException(__t('installation_core_table_exists'));
         }
 
         if (isset($data['db_schema']) && !InstallerUtils::schemaTemplateExists($data['db_schema'], BASE_PATH)) {
-            throw new \InvalidArgumentException("Schema Template '{$data['db_schema']}' does not exits.");
+            throw new \InvalidArgumentException(__t('schema_template_x_does_not_exists', [
+                'template' => $data['db_schema']
+            ]));
         }
     }
 }

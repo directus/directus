@@ -148,7 +148,7 @@ class InstallerUtils
         $db = Bootstrap::get('ZendDb');
         $tableGateway = new TableGateway('directus_users', $db);
 
-        $hash = password_hash($data['directus_password'], PASSWORD_DEFAULT, ["cost" => 12]);
+        $hash = password_hash($data['directus_password'], PASSWORD_DEFAULT, ['cost' => 12]);
 
         $tableGateway->insert([
             'active' => 1,
@@ -156,9 +156,10 @@ class InstallerUtils
             'last_name' => 'User',
             'email' => $data['directus_email'],
             'password' => $hash,
-            'salt' => StringUtils::random(),
+            'salt' => StringUtils::randomString(),
             'group' => 1,
-            'locale' => $data['default_language']
+            'token' => StringUtils::randomString(32),
+            'language' => $data['default_language']
         ]);
     }
 

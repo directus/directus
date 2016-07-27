@@ -109,9 +109,32 @@ class MySQLSchema extends AbstractSchema
         return $this->getTable($tableName) ? true : false;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function tableExists($tableName)
     {
         return $this->hasTable($tableName);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function someTableExists(array $tablesName)
+    {
+        $select = new Select();
+        $select->columns(['TABLE_NAME']);
+        $select->from(['T' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')]);
+        $select->where([
+            new In('T.TABLE_NAME', $tablesName),
+            'T.TABLE_SCHEMA' => $this->adapter->getCurrentSchema()
+        ]);
+
+        $sql = new Sql($this->adapter);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->count();
     }
 
     /**

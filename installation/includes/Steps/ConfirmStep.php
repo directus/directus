@@ -2,6 +2,7 @@
 
 namespace Directus\Installation\Steps;
 
+use Directus\Db\Connection;
 use Directus\Util\Installation\InstallerUtils;
 
 class ConfirmStep extends AbstractStep
@@ -17,6 +18,33 @@ class ConfirmStep extends AbstractStep
           'label' => 'Send Config E-Mail'
       ]
     ];
+
+    public function preRun(&$state)
+    {
+        $database = null;
+        $steps = $state['steps'];
+        foreach($steps as $step) {
+            if ($step->getName() != 'database') {
+                continue;
+            }
+
+            $data = $step->getData();
+            $connection = new Connection([
+                'driver' => 'pdo_'.$data['db_type'],
+                'host' => $data['db_host'],
+                'port' => $data['db_port'],
+                'database' => $data['db_name'],
+                'username' => $data['db_user'],
+                'password' => $data['db_password'],
+                'charset' => 'utf8'
+            ]);
+
+            $connection->connect();
+            if ($connection->isStrictModeEnabled()) {
+                $this->response->addWarning(__t('mysql_strict_mode_warning'));
+            }
+        }
+    }
 
     public function run($formData, $step, &$state)
     {

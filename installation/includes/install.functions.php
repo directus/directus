@@ -64,24 +64,22 @@ function install_directus($root_path) {
     }
 
     $executed = install_do($install_step, $install_state);
-    Session::save($install_state);
-
-    if ($executed) {
+    if (!$executed) {
+        View::displayStep($install_step, $install_state);
+        Session::save($install_state);
+    } else {
+        Session::save($install_state);
         $install_step = install_get_step(($install_step->getNumber()+1));
         if ($install_step == false) {
             if (install_confirmed()) {
-                return install_goto_directus($install_state);
+                install_goto_directus($install_state);
+            } else {
+                install_redirect_step($param_step = 0);
             }
-
-            install_redirect_step($param_step = 0);
-            exit;
+        } else {
+            install_goto_step($install_step, $install_state);
         }
-
-        install_goto_step($install_step, $install_state);
-        exit;
     }
-
-    View::displayStep($install_step, $install_state);
 }
 
 /**

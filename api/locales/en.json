@@ -384,6 +384,10 @@
   "internal_server_error": "Internal server error",
   "predispatch_callable_must_be_callable": "PreDispatch callable must be callable",
 
+  "installation_core_table_exists": "Database has existing Directus Core tables.. Perhaps Directus is already installed.",
+  "schema_template_x_does_not_exists": "Schema Template '%{template}' does not exists.",
+  "mysql_strict_mode_warning": "MySQL Strict mode is enabled, this mode can make Directus throw errors at some point due to a limitations with the PDO and the MySQL Driver",
+
   "ok": "OK",
   "cancel": "Cancel",
   "yes": "Yes",

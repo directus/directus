@@ -35,6 +35,14 @@ interface SchemaInterface
     public function tableExists($tableName);
 
     /**
+     * Check if one of the table in the list exists
+     *
+     * @param array $tablesName
+     * @return bool
+     */
+    public function someTableExists(array $tablesName);
+
+    /**
      * Get the structure of the given table name.
      *
      * @param $tableName
