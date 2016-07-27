@@ -2,7 +2,7 @@
 
 To help us resolve your issue more quickly, please use the following template:
 
-For feature requests please chat with us through [getdirectus.com](http://getdirectus.com).
+For feature requests please use the [Directus FeatHub](http://feathub.com/directus/directus) to make a new request or vote for existing ones, or come chat with us through [getdirectus.com](http://getdirectus.com). Accepted feature requests will be added to GitHub Issues.
 
 ## Version Info
   - Directus version: (Or commit hash)
