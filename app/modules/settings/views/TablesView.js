@@ -817,20 +817,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     template: 'modules/settings/settings-tables-unregistered',
 
-    isValidModel: function(model) {
-      //Filter out _directus tables
-      if (model.id.substring(0,9) === 'directus_') return false;
-
-      //Filter out tables you don't have alter permissions on
-      var privileges = app.schemaManager.getPrivileges(model.id);
-
-      // filter out tables with empty privileges
-      if (privileges === undefined) return false;
-
-      // only return tables with view permissions
-      return privileges.has('allow_view') && privileges.get('allow_view') > 0;
-    },
-
     addRowView: function(model, render) {
       var view = this.insertView('tbody', new TablesRow({
         model: model,
