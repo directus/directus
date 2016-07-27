@@ -12,5 +12,21 @@ define(function() {
     return _.contains(['DATETIME', 'DATE', 'TIMESTAMP'], type);
   };
 
+  UIHelper.supportsNumeric = function(type) {
+    return _.contains([
+      'BIGINT',
+      'BIT',
+      'DECIMAL',
+      'DOUBLE',
+      'FLOAT',
+      'INTEGER',
+      'INT',
+      'MEDIUMINT',
+      'NUMERIC',
+      'SMALLINT',
+      'TINYINT'
+    ], type);
+  };
+
   return UIHelper;
 });

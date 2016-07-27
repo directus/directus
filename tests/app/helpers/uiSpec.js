@@ -15,5 +15,18 @@ define(['helpers/ui'], function(UIHelper) {
       expect(UIHelper.supportsDate('DATETIME')).toBe(true);
       expect(UIHelper.supportsDate('TIMESTAMP')).toBe(true);
     });
+
+    it('supports number', function() {
+      expect(UIHelper.supportsNumeric('INT'));
+      expect(UIHelper.supportsNumeric('BIT'));
+      expect(UIHelper.supportsNumeric('NUMERIC'));
+      expect(UIHelper.supportsNumeric('TINYINT'));
+      expect(UIHelper.supportsNumeric('MEDIUMINT'));
+      expect(UIHelper.supportsNumeric('BIGINT'));
+      expect(UIHelper.supportsNumeric('DECIMAL'));
+      expect(UIHelper.supportsNumeric('DOUBLE'));
+      expect(UIHelper.supportsNumeric('FLOAT'));
+      expect(UIHelper.supportsNumeric('SMALLINT'));
+    });
   });
 });

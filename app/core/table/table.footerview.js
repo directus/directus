@@ -1,9 +1,10 @@
 define([
-  "app",
-  "backbone"
+  'app',
+  'backbone',
+  'helpers/ui'
 ],
 
-function(app, Backbone) {
+function(app, Backbone, UIHelper) {
 
   "use strict";
 
@@ -35,7 +36,9 @@ function(app, Backbone) {
     },
 
     calculate: function(set, operation) {
-      var sum = _.reduce(set, function(memo, num){ return memo + num; }, 0);
+      var sum = _.reduce(set, function(memo, num){
+        return Number(memo) + Number(num);
+      }, 0);
       switch(operation) {
         case 'MIN':
           return String(_.min(set)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -56,21 +59,24 @@ function(app, Backbone) {
       });
 
       var hasANumericColumn = false;
-      var columns = _.map(columns, function(column) {
-        var isANumericColumn = this.collection.structure.get(column).get('ui') === 'numeric';
+      columns = _.map(columns, function(column) {
+        var columnInfo = this.collection.structure.get(column);
+        var showFooter = columnInfo.options.get('footer');
+        var isANumericColumn = UIHelper.supportsNumeric(columnInfo.get('type'));
+
         if (isANumericColumn) {
           hasANumericColumn = true;
         }
 
         var col = {
           title: column,
-          isNumeric: isANumericColumn,
+          showFooter: isANumericColumn && showFooter,
           selectedFunction: this.functions.hasOwnProperty(column) ? this.functions[column] : 'SUM'
         };
 
         col.otherFunctions = _.without(['MIN', 'MAX', 'AVG', 'SUM'], col.selectedFunction);
 
-        if (col.isNumeric) {
+        if (col.showFooter) {
           col.value = this.calculate(this.collection.pluck(column), col.selectedFunction);
         }
 

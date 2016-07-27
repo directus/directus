@@ -1,9 +1,17 @@
-define(function(require, module, exports) {
-  var Backbone = require('backbone');
-  var Handlebars = require('handlebars');
+define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Handlebars, UIHelper, __t) {
   var UIComponentsOptions = ['id'];
   var UIComponent = function(options) {
     _.extend(this, _.pick(UIComponentsOptions, options));
+
+    if (this.supportsNumber()) {
+      this.variables = this.variables || [];
+      this.variables.push({
+        id: 'footer',
+        ui: 'checkbox',
+        def: 0,
+        comment: __t('numeric_footer_comment')
+      });
+    }
   };
 
   UIComponent.extend = Backbone.Model.extend;
@@ -39,6 +47,11 @@ define(function(require, module, exports) {
       data || (data = {});
 
       return template(data);
+    },
+    supportsNumber: function() {
+      return _.some(this.dataTypes, function(type) {
+        return UIHelper.supportsNumeric(type);
+      });
     }
   });
 
