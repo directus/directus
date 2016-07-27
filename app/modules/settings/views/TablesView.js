@@ -796,7 +796,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     beforeRender: function() {
-      this.collection.each(function(model){
+      this.collection.each(function(model) {
         if (!this.isValidModel(model)) {
           return false;
         }
@@ -812,6 +812,59 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
     }
   });
+
+  var TablesUnRegistered = Tables.extend({
+
+    template: 'modules/settings/settings-tables-unregistered',
+
+    isValidModel: function(model) {
+      //Filter out _directus tables
+      if (model.id.substring(0,9) === 'directus_') return false;
+
+      //Filter out tables you don't have alter permissions on
+      var privileges = app.schemaManager.getPrivileges(model.id);
+
+      // filter out tables with empty privileges
+      if (privileges === undefined) return false;
+
+      // only return tables with view permissions
+      return privileges.has('allow_view') && privileges.get('allow_view') > 0;
+    },
+
+    addRowView: function(model, render) {
+      var view = this.insertView('tbody', new TablesRow({
+        model: model,
+        unregistered: true,
+        parent: this
+      }));
+      if (render !== false) {
+        view.render();
+      }
+    },
+
+    beforeRender: function() {
+      var self = this;
+      this.unregistedCount = 0;
+      this.collection.each(function(model) {
+        var inactiveTable = app.schemaManager.getPrivileges(model.id) == null;
+        if (!inactiveTable && !this.isValidModel(model)) {
+          return false;
+        }
+
+        if (inactiveTable) {
+          self.unregistedCount++;
+          this.addRowView(model, false, inactiveTable);
+        }
+      }, this);
+    },
+
+    serialize: function() {
+      return {
+        unregisteredCount: this.unregistedCount
+      }
+    }
+  });
+
 
   var TablesRow = Backbone.Layout.extend({
 
@@ -836,10 +889,28 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var tableName = $(e.target).closest('tr').attr('data-id');
         app.router.go(['settings','tables',tableName]);
       },
+      'click .add': function(event) {
+        event.stopPropagation();
+
+        var $row = $(event.target).closest('tr');
+        var tableName = $row.attr('data-id');
+        var parentView = this.parentView;
+        var self = this;
+        app.schemaManager.addTable(tableName, function(tableModel) {
+          app.router.bookmarks.addTable(tableModel);
+          // a new table has been added
+          // It wasn't actually added
+          // As it already exists on the collection
+          // this will trigger an event to add the table into the listing
+          self.model.collection.trigger('add', self.model);
+          if (parentView) {
+            parentView.render();
+          }
+        });
+      },
       'click .destroy': function(event) {
         event.stopPropagation();
 
-        var self = this;
         var tableName = $(event.target).closest('tr').attr('data-id') || this.model.get('table_name');
 
         DoubleConfirmation({
@@ -901,7 +972,15 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     serialize: function() {
-      return this.model.toJSON();
+      var data = this.model.toJSON();
+      data.unregisteredTable = this.unregistedTable;
+
+      return data;
+    },
+
+    initialize: function(options) {
+      this.unregistedTable = options.unregistered === true;
+      this.parentView = options.parent;
     }
   });
 
@@ -922,6 +1001,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     beforeRender: function() {
       this.setView('#page-content', new Tables({collection: this.collection}));
+      this.insertView('#page-content', new TablesUnRegistered({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
     },
     initialize: function() {
@@ -968,38 +1048,13 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       // @TODO: make this save a table info rather than permissions.
-      var that = this;
-      var model = new Backbone.Model();
-      model.url = app.API_URL + 'privileges/1';
-      // @todo: set default values in the server side
-      model.set({group_id: 1, allow_add:1, allow_edit:2, allow_delete:2, allow_alter:1, allow_view:2, table_name: tableName, addTable: true});
-      model.save({}, {success: function(model){
-        var tableModel = new TableModel({id: tableName, table_name: tableName}, {parse: true, url: app.API_URL + 'tables/' + tableName});
-        tableModel.fetch({
-          success: function(model) {
-            if (rawTableName != tableName) {
-              Notification.success(__t('this_table_was_saved_as_x', {table_name: tableName}));
-            }
-            that.registerTable(model);
-          }
-        });
-      }});
+      app.schemaManager.addTable(tableName, function(tableModel) {
+        if (rawTableName != tableName) {
+          Notification.success(__t('this_table_was_saved_as_x', {table_name: tableName}));
+        }
+        app.router.bookmarks.addTable(tableModel);
+      });
     },
-
-    registerTable: function(tableModel) {
-      app.schemaManager.register('tables', [{schema: tableModel.toJSON()}]);
-      app.schemaManager.registerPrivileges([{
-        table_name: tableModel.get('table_name'),
-        allow_add:1,
-        allow_edit:2,
-        allow_delete:2,
-        allow_alter:1,
-        allow_view:2,
-        group_id: app.getCurrentGroup()
-      }]);
-      app.schemaManager.registerPreferences([tableModel.preferences.toJSON()]);
-      app.router.bookmarks.addTable(tableModel);
-    }
   });
 
   function openFieldUIOptionsView(column) {

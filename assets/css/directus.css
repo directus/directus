@@ -2817,10 +2817,12 @@ select,
     background-color: #ffffff; }
     .table-striped tbody .secondary-info, .table-striped tbody .history-container ul li .history-follow, .history-container ul li .table-striped tbody .history-follow {
       -webkit-font-smoothing: antialiased; }
+    .table-striped tbody .delete-hover i, .table-striped tbody .add-hover i {
+      vertical-align: inherit; }
     .table-striped tbody .delete-hover:hover i {
       color: #c1272d; }
-    .table-striped tbody .delete-hover i {
-      vertical-align: inherit; }
+    .table-striped tbody .add-hover:hover i {
+      color: #7ac943; }
     .table-striped tbody .sort {
       color: #aaaaaa;
       font-size: 10px;

@@ -557,25 +557,27 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
     }
 
     if (isset($requestPayload['addTable'])) {
-      $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
-      $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+        $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
+        $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
 
-      if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
-          $app->response->setStatus(400);
-          return JsonView::render(array('message'=> __t('invalid_table_name')));
-      }
+        if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+            $app->response->setStatus(400);
+            return JsonView::render(array('message'=> __t('invalid_table_name')));
+        }
 
-      unset($requestPayload['addTable']);
+        unset($requestPayload['addTable']);
 
-      Hook::run('table.create:before', $requestPayload['table_name']);
-      // Through API, table name remove spaces and symbols
-      $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
-      SchemaManager::createTable($requestPayload['table_name']);
-      Hook::run('table.create', $requestPayload['table_name']);
-      Hook::run('table.create:after', $requestPayload['table_name']);
+        if (!SchemaManager::tableExists($requestPayload['table_name'])) {
+            Hook::run('table.create:before', $requestPayload['table_name']);
+            // Through API, table name remove spaces and symbols
+            $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
+            SchemaManager::createTable($requestPayload['table_name']);
+            Hook::run('table.create', $requestPayload['table_name']);
+            Hook::run('table.create:after', $requestPayload['table_name']);
+        }
     }
 
-    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);
     $response = $privileges->insertPrivilege($requestPayload);
 
     return JsonView::render($response);

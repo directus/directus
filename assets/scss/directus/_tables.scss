@@ -127,14 +127,23 @@
     .secondary-info {
       -webkit-font-smoothing: antialiased;
     }
+    .delete-hover, .add-hover {
+      i {
+        vertical-align: inherit;
+      }
+    }
     .delete-hover {
       &:hover {
         i {
           color: $deleteColor;
         }
       }
-      i {
-        vertical-align: inherit;
+    }
+    .add-hover {
+      &:hover {
+        i {
+          color: $addColor;
+        }
       }
     }
     .sort {

@@ -22,16 +22,22 @@ interface SchemaInterface
      * Check if the given table name exists
      *
      * @param $tableName
-     *
      * @return bool
      */
     public function hasTable($tableName);
 
     /**
+     * Alias for hasTable
+     *
+     * @param $tableName
+     * @return bool
+     */
+    public function tableExists($tableName);
+
+    /**
      * Get the structure of the given table name.
      *
      * @param $tableName
-     *
      * @return array
      */
     public function getTable($tableName);
@@ -41,7 +47,6 @@ interface SchemaInterface
      *
      * @param string $tableName
      * @param array $params
-     *
      * @return array
      */
     public function getColumns($tableName, $params = null);
@@ -50,7 +55,6 @@ interface SchemaInterface
      * Get all the column names on the given table name
      *
      * @param $tableName
-     *
      * @return array
      */
     public function getColumnsNames($tableName);
@@ -60,7 +64,6 @@ interface SchemaInterface
      *
      * @param $tableName
      * @param $columnName
-     *
      * @return bool
      */
     public function hasColumn($tableName, $columnName);
@@ -70,7 +73,6 @@ interface SchemaInterface
      *
      * @param $tableName
      * @param $columnName
-     *
      * @return array
      */
     public function getColumn($tableName, $columnName);
@@ -79,7 +81,6 @@ interface SchemaInterface
      * Check if the given table name has primary key column
      *
      * @param $tableName
-     *
      * @return bool
      */
     public function hasPrimaryKey($tableName);
@@ -88,7 +89,6 @@ interface SchemaInterface
      * Get the primary key of the given table name.
      *
      * @param $tableName
-     *
      * @return array
      */
     public function getPrimaryKey($tableName);
@@ -105,16 +105,14 @@ interface SchemaInterface
      *
      * @param $tableName
      * @param $columnName
-     *
      * @return array
      */
     public function getUIOptions($tableName, $columnName);
 
     /**
-     * Get
+     * Get the column UI
      *
      * @param $column
-     *
      * @return string
      */
     public function getColumnUI($column);

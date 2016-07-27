@@ -87,6 +87,18 @@ class SchemaManager
     }
 
     /**
+     * Check if a table name exists
+     * @param $tableName
+     * @return bool
+     */
+    public static function tableExists($tableName)
+    {
+        $schema = Bootstrap::get('schema');
+
+        return $schema->tableExists($tableName);
+    }
+
+    /**
      * Proxy method calls to the current database schema object
      *
      * @param $name

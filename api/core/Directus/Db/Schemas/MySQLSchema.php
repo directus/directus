@@ -107,7 +107,12 @@ class MySQLSchema extends AbstractSchema
      */
     public function hasTable($tableName)
     {
-        // TODO: Implement hasTable() method.
+        return $this->getTable($tableName) ? true : false;
+    }
+
+    public function tableExists($tableName)
+    {
+        return $this->hasTable($tableName);
     }
 
     /**

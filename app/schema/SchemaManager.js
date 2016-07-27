@@ -8,6 +8,7 @@ define(function(require, exports, module) {
   var ColumnModel        = require('./ColumnModel'),
       ColumnsCollection  = require('./ColumnsCollection'),
       TableModel         = require('./TableModel'),
+      Backbone           = require('backbone'),
       UIModel            = require('./UIModel'),
       DirectusCollection = require('core/collection'),
       PreferenceModel    = require('core/PreferenceModel');
@@ -148,6 +149,30 @@ define(function(require, exports, module) {
           id: 'directus_settings'
         };
       }, this);
+    },
+
+    addTable: function(tableName, callback) {
+      var model = new Backbone.Model();
+      model.url = app.API_URL + 'privileges/1';
+      // @todo: set default values in the server side
+      model.set({
+        group_id: 1,
+        allow_add:1,
+        allow_edit:2,
+        allow_delete:2,
+        allow_alter:1,
+        allow_view:2,
+        table_name: tableName,
+        addTable: true
+      });
+
+      var self = this;
+      model.save({}, {success: function(permission) {
+        self.registerPrivileges([permission.toJSON()]);
+        app.schemaManager.getOrFetchTable(tableName, function(table) {
+          callback(table);
+        });
+      }});
     },
 
     addSetting: function(collection, data) {

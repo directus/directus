@@ -147,6 +147,14 @@ class SQLiteSchema extends AbstractSchema
     /**
      * @inheritDoc
      */
+    public function tableExists($tableName)
+    {
+        return $this->hasTable($tableName);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getTable($tableName)
     {
         $tablesObject = $this->metadata->getTable($tableName);
