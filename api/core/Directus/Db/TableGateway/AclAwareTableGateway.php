@@ -708,11 +708,8 @@ class AclAwareTableGateway extends TableGateway {
         $canBigDelete = $this->acl->hasTablePrivilege($deleteTable, 'bigdelete');
         $canDelete = $this->acl->hasTablePrivilege($deleteTable, 'delete');
         $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-        // Is this table a junction table?
-        $deleteTableSchema = TableSchema::getTable($deleteTable);
-        $isDeleteTableAJunction = array_key_exists('is_junction_table', $deleteTableSchema) ? (bool)$deleteTableSchema['is_junction_table'] : false;
 
-        if ($isDeleteTableAJunction || !TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
+        if (!TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
           if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
             $canBigDelete = true;
           } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {

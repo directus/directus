@@ -28,7 +28,6 @@ define(function(require, exports, module) {
         "title":"Users",
         "hidden":true,
         "single":false,
-        "is_junction_table":false,
         "footer": 1,
         "count":0,
         statusName:0,

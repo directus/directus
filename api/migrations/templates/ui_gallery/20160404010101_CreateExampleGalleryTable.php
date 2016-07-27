@@ -214,7 +214,6 @@ class CreateExampleGalleryTable extends Ruckusing_Migration_Base
                 'table_name' => $tableName,
                 'hidden' => $tableName == 'example_gallery' ? 0 : 1,
                 'single' => 0,
-                'is_junction_table' => $tableName == 'example_gallery' ? 0 : 1,
                 'footer' => 0,
                 'list_view' => NULL,
                 'column_groupings' => NULL,

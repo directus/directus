@@ -201,7 +201,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
             tableRelated = model.id;
             this.model.set({table_related: model.id});
           }
-          return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table'), selected: (model.id === this.model.get('table_related'))};
+          return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
         }, this);
         data.tables = tables;
 
@@ -227,7 +227,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
             tableRelated = model.id;
             this.model.set({table_related: model.id});
           }
-          return {id: model.get('table_name'), is_junction_table: model.get('is_junction_table'), selected: (model.id === this.model.get('table_related'))};
+          return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
         }, this);
         data.tables = tables;
 
@@ -656,7 +656,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       return {
         hidden: this.model.get('hidden'),
         single: this.model.get('single'),
-        is_junction_table: this.model.get('is_junction_table'),
         footer: this.model.get('footer')
       };
     }

@@ -16,7 +16,6 @@ class InsertSystemTableUserColumn extends Ruckusing_Migration_Base
                 'table_name' => $tableName,
                 'hidden' => 1,
                 'single' => 0,
-                'is_junction_table' => 0,
                 'footer' => 0,
                 'list_view' => NULL,
                 'column_groupings' => NULL,

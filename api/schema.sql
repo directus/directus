@@ -278,7 +278,6 @@ CREATE TABLE `directus_tables` (
   `table_name` varchar(64) NOT NULL DEFAULT '',
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `single` tinyint(1) NOT NULL DEFAULT '0',
-  `is_junction_table` tinyint(1) NOT NULL DEFAULT '0',
   `footer` tinyint(1) DEFAULT '0',
   `list_view` varchar(200) DEFAULT NULL,
   `column_groupings` varchar(255) DEFAULT NULL,
@@ -294,13 +293,13 @@ CREATE TABLE `directus_tables` (
 LOCK TABLES `directus_tables` WRITE;
 /*!40000 ALTER TABLE `directus_tables` DISABLE KEYS */;
 
-INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
+INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
 VALUES
-  ('directus_messages_recipients',1,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-  ('directus_bookmarks',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-  ('directus_files',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-  ('directus_preferences',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-  ('directus_users',1,0,0,0,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
+  ('directus_messages_recipients',1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+  ('directus_bookmarks',1,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+  ('directus_files',1,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+  ('directus_preferences',1,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+  ('directus_users',1,0,0,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_tables` ENABLE KEYS */;
 UNLOCK TABLES;

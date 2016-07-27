@@ -284,7 +284,6 @@ class TableSchema {
             $info['hidden'] = (boolean) $info['hidden'];
             $info['single'] = (boolean) $info['single'];
             $info['footer'] = (boolean) $info['footer'];
-            $info['is_junction_table'] = (boolean) $info['is_junction_table'];
         }
         $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $zendDb);
         $info = array_merge($info, $relationalTableGateway->countActiveOld());
@@ -556,7 +555,6 @@ class TableSchema {
         $info['hidden'] = (boolean) $info['hidden'];
         $info['single'] = (boolean) $info['single'];
         $info['footer'] = (boolean) $info['footer'];
-        $info['is_junction_table'] = (boolean) $info['is_junction_table'];
         return $info;
     }
 

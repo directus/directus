@@ -13,7 +13,6 @@ define(['schema/fixed/users'], function(schema) {
       expect(users.title).toBe('Users');
       expect(users.hidden).toBe(true);
       expect(users.single).toBe(false);
-      expect(users.is_junction_table).toBe(false);
       expect(users.footer).toBe(1);
       expect(users.count).toBe(0);
       expect(users.statusName).toBe(0);

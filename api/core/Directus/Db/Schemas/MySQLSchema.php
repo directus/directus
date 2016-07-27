@@ -45,7 +45,6 @@ class MySQLSchema extends AbstractSchema
             [
                 'hidden' => new Expression('IFNULL(hidden, 0)'),
                 'single' => new Expression('IFNULL(single, 0)'),
-                'is_junction_table',
                 'user_create_column',
                 'user_update_column',
                 'date_create_column',
@@ -136,7 +135,6 @@ class MySQLSchema extends AbstractSchema
             [
                 'hidden' => new Expression('IFNULL(hidden, 0)'),
                 'single' => new Expression('IFNULL(single, 0)'),
-                'is_junction_table',
                 'user_create_column',
                 'user_update_column',
                 'date_create_column',

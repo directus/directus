@@ -6,7 +6,6 @@ CREATE TABLE `directus_tables` (
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `single` tinyint(1) NOT NULL DEFAULT '0',
   `default_status` tinyint(1) NOT NULL DEFAULT '1',
-  `is_junction_table` tinyint(1) NOT NULL DEFAULT '0',
   `footer` tinyint(1) DEFAULT '0',
   `list_view` varchar(200) DEFAULT NULL,
   `column_groupings` varchar(255) DEFAULT NULL,
@@ -57,12 +56,6 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
           "default"=>1
         )
       );
-      $t->column("is_junction_table", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
       $t->column("footer", "tinyinteger", array(
           "limit"=>1,
           "default"=>0
@@ -111,7 +104,6 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
           'table_name' => 'directus_messages_recipients',
           'hidden' => 1,
           'single' => 0,
-          'is_junction_table' => 0,
           'footer' => 0,
           'list_view' => NULL,
           'column_groupings' => NULL,
@@ -132,7 +124,6 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
               'table_name' => $table,
               'hidden' => 1,
               'single' => 0,
-              'is_junction_table' => 0,
               'footer' => 0,
               'list_view' => NULL,
               'column_groupings' => NULL,
@@ -148,7 +139,6 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
             'table_name' => 'directus_users',
             'hidden' => 1,
             'single' => 0,
-            'is_junction_table' => 0,
             'footer' => 0,
             'list_view' => NULL,
             'column_groupings' => NULL,

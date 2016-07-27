@@ -54,7 +54,7 @@ define(function(require, exports, module) {
     tables: new TableCollection([], {
       filters: {
         columns: ['table_name','comment','active','date_modified','single'],
-        conditions: {hidden: false, is_junction_table: false}
+        conditions: {hidden: false}
       }
     })
   };

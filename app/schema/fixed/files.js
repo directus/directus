@@ -11,7 +11,6 @@ define(function(require, exports, module) {
         "table_name":"directus_files",
         "hidden":true,
         "single":false,
-        "is_junction_table":false,
         "count":0,
         "url": "api/1/files",
         "title":"Files",
