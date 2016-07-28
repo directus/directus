@@ -16,8 +16,8 @@ class CheckRequirementsStep extends AbstractStep
         parent::preRun($state);
 
         $errors = [];
-        if (version_compare(PHP_VERSION, '5.4.0', '<')) {
-            $errors[] = 'Your host needs to use PHP 5.4.0 or higher to run this version of Directus!';
+        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+            $errors[] = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
         }
 
         if (!defined('PDO::ATTR_DRIVER_NAME')) {
