@@ -127,7 +127,7 @@ CREATE TABLE `directus_groups` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   `description` varchar(500) DEFAULT NULL,
-  `restrict_to_ip_whitelist` tinyint(1) NOT NULL DEFAULT '0',
+  `restrict_to_ip_whitelist` TEXT DEFAULT NULL,
   `show_activity` tinyint(1) NOT NULL DEFAULT '1',
   `show_messages` tinyint(1) NOT NULL DEFAULT '1',
   `show_users` tinyint(1) NOT NULL DEFAULT '1',
@@ -141,7 +141,7 @@ LOCK TABLES `directus_groups` WRITE;
 
 INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `show_activity`, `show_messages`, `show_users`, `show_files`, `nav_override`)
 VALUES
-  (1,'Administrator',NULL,0,1,1,1,1,NULL);
+  (1,'Administrator',NULL,NULL,1,1,1,1,NULL);
 
 /*!40000 ALTER TABLE `directus_groups` ENABLE KEYS */;
 UNLOCK TABLES;

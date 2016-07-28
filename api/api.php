@@ -163,6 +163,20 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             $user = $user->toArray();
             $user = reset($user);
 
+            // ------------------------------
+            // Check if group needs whitelist
+            $groupId = $user['group'];
+            $directusGroupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
+            if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
+                $app->contentType('application/javascript');
+                $app->response->setStatus(401);
+                JsonView::render([
+                    'message' => 'Request not allowed from IP address',
+                    'success' => false
+                ]);
+                $app->stop();
+            }
+
             // Uf the request it's done by authentication
             // Store the session information in a global variable
             // And we retrieve this information back to session at the end of the execution.
@@ -320,18 +334,13 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     // Check if group needs whitelist
     $groupId = $user['group'];
     $directusGroupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
-    $group = $directusGroupsTableGateway->find($groupId);
-
-    // if (1 == $group['restrict_to_ip_whitelist']) {
-    //     $directusIPWhitelist = new DirectusIPWhitelist($acl, $ZendDb);
-    //     if (!$directusIPWhitelist->hasIP($_SERVER['REMOTE_ADDR'])) {
-    //         return JsonView::render(array(
-    //             'message' => 'Request not allowed from IP address',
-    //             'success' => false,
-    //             'all_nonces' => $requestNonceProvider->getAllNonces()
-    //         ));
-    //     }
-    // }
+    if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
+        return JsonView::render([
+            'message' => 'Request not allowed from IP address',
+            'success' => false,
+            'all_nonces' => $requestNonceProvider->getAllNonces()
+        ]);
+    }
 
     if (!$user) {
         return JsonView::render($response);

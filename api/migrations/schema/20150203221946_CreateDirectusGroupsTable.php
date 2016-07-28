@@ -37,10 +37,8 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         "default"=>NULL
         )
       );
-      $t->column("restrict_to_ip_whitelist", "tinyinteger", array(
-        "limit" => 1,
-        "null" => false,
-        "default" => 0
+      $t->column("restrict_to_ip_whitelist", "text", array(
+        "null" => true,
         )
       );
       $t->finish();
