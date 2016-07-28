@@ -21,13 +21,12 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_privileges", array(
         "id"=>false,
-        "options"=>""
         )
       );
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
           "primary_key"=>true
@@ -39,8 +38,15 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
           "character"=>"latin1"
         )
       );
+      $t->column("permissions", "string", array(
+          "limit"=>500,
+          "default"=>NULL,
+          "character"=>"latin1",
+          "COMMENT"=>"Table-level permissions (insert, delete, etc.)"
+        )
+      );
       $t->column("group_id", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "null"=>false
         )
       );
@@ -56,7 +62,7 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
           "character"=>"latin1",
         )
       );
-      $t->column("listed", "tinyinteger", array(
+      $t->column("unlisted", "tinyinteger", array(
           "limit"=>1,
           "default"=>NULL
         )
@@ -69,32 +75,6 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
       );
 
       $t->finish();
-
-        $this->add_column('directus_privileges', 'allow_view', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
-        $this->add_column('directus_privileges', 'allow_add', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
-        $this->add_column('directus_privileges', 'allow_edit', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
-        $this->add_column('directus_privileges', 'allow_delete', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
-        $this->add_column('directus_privileges', 'allow_alter', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
 
       $tables = [
           'directus_activity',
@@ -118,36 +98,13 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
       foreach($tables as $table) {
           $this->insert('directus_privileges', [
               'table_name' => $table,
-              'allow_view' => 2,
-              'allow_add' => 1,
-              'allow_edit' => 2,
-              'allow_delete' => 2,
-              'allow_alter' => 1,
+              'permissions' => 'add,edit,bigedit,delete,bigdelete,alter,view,bigview',
               'group_id' => 1,
               'read_field_blacklist' => NULL,
               'write_field_blacklist' => NULL,
-              'listed' => NULL
+              'unlisted' => NULL
           ]);
       }
-
-      /*$this->execute("INSERT INTO `directus_privileges` (`id`, `table_name`, `permissions`, `group_id`, `read_field_blacklist`, `write_field_blacklist`, `unlisted`)
-VALUES
-  (1,'directus_activity','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (2,'directus_columns','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (3,'directus_groups','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (4,'directus_files','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (5,'directus_messages','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (6,'directus_preferences','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (7,'directus_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (8,'directus_settings','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (9,'directus_tables','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (10,'directus_ui','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (11,'directus_users','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (12,'directus_social_feeds','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (13,'directus_messages_recipients','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (14,'directus_social_posts','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (15,'directus_tab_privileges','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL),
-  (16,'directus_bookmarks','add,edit,bigedit,delete,bigdelete,alter,view,bigview',1,NULL,NULL,NULL);");*/
     }//up()
 
     public function down()

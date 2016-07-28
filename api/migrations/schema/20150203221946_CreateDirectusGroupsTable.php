@@ -16,13 +16,11 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_groups", array(
         "id"=>false,
-        "options"=>""
         )
       );
 
       // columns
       $t->column("id", "integer", array(
-          "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
@@ -45,34 +43,7 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         "default" => 0
         )
       );
-
       $t->finish();
-
-        $this->add_column('directus_groups', 'show_activity', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
-        $this->add_column('directus_groups', 'show_messages', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
-        $this->add_column('directus_groups', 'show_users', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
-        $this->add_column('directus_groups', 'show_files', 'tinyinteger', array(
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ));
-
-        $this->add_column('directus_groups', 'nav_blacklist', 'string', array(
-            'limit' => 500,
-            'default' => NULL
-        ));
 
       $this->insert('directus_groups', [
           'id' => 1,

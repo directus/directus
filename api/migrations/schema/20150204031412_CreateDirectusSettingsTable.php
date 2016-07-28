@@ -19,13 +19,11 @@ class CreateDirectusSettingsTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_settings", array(
           "id"=>false,
-          "options"=>""
         )
       );
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>10,
           "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,

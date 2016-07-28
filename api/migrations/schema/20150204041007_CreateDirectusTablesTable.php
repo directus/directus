@@ -27,7 +27,6 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_tables", array(
           "id"=>false,
-          "options"=>""
         )
       );
 

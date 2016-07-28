@@ -31,13 +31,13 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_files", array(
           "id"=>false,
-          //"options"=>"ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage'"
+          //"options"=>"COMMENT='Directus Files Storage'"
         )
       );
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>10,
+          "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
           "primary_key"=>true
@@ -50,11 +50,6 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
       );
       $t->column("name", "string", array(
           "limit"=>255,
-          "default"=>NULL
-        )
-      );
-      $t->column("url", "string", array(
-          "limit"=>2000,
           "default"=>NULL
         )
       );
@@ -85,17 +80,17 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("width", "integer", array(
-          "limit"=>5,
+          "unsigned"=>true,
           "default"=>0
         )
       );
       $t->column("height", "integer", array(
-          "limit"=>5,
+          "unsigned"=>true,
           "default"=>0
         )
       );
       $t->column("size", "integer", array(
-          "limit"=>20,
+          "unsigned"=>true,
           "default"=>0
         )
       );
@@ -105,7 +100,7 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("user", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "null"=>false
         )
       );

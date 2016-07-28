@@ -5,7 +5,9 @@ class DropDirectusIpWhitelist extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        $this->drop_table('directus_ip_whitelist');
+        if ($this->has_table('directus_ip_whitelist')) {
+            $this->drop_table('directus_ip_whitelist');
+        }
     }//up()
 
     public function down()

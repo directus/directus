@@ -22,13 +22,12 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_messages", array(
           "id"=>false,
-          //"options"=>"ENGINE=MyISAM DEFAULT CHARSET=utf8"
         )
       );
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>10,
+          "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
           "primary_key"=>true
@@ -36,7 +35,7 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
       );
 
       $t->column("from", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );
@@ -50,18 +49,18 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
           "null"=>false
         )
       );
-      $t->column("datetime", "datetime", array(
+      $t->column("datetime", "timestamp", array(
           "null"=>false,
-          "default"=>"0000-00-00 00:00:00"
+          "default"=>"CURRENT_TIMESTAMP"
         )
       );
       $t->column("attachment", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );
       $t->column("response_to", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );

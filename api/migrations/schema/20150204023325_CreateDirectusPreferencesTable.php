@@ -25,13 +25,11 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_preferences", array(
           "id"=>false,
-          "options"=>""
         )
       );
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>10,
           "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
@@ -39,7 +37,7 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
         )
       );
       $t->column("user", "integer", array(
-          "limit"=>11,
+          "unsigned"=>true,
           "default"=>NULL
         )
       );
