@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4b2b045dd4488933c086f92e3f2a8739",
+    "hash": "34516f8967a7be24d77618c764f89976",
     "content-hash": "bb2ef801812b5c07727f81b05e2310ad",
     "packages": [
         {
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WellingGuzman/Migrations.git",
-                "reference": "0dda4cb1aa42d7d4292c3dff684e57bf06b66a69"
+                "reference": "3f0f3a1eb7739b2d903dea8d53ca2d294edc654b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/0dda4cb1aa42d7d4292c3dff684e57bf06b66a69",
-                "reference": "0dda4cb1aa42d7d4292c3dff684e57bf06b66a69",
+                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/3f0f3a1eb7739b2d903dea8d53ca2d294edc654b",
+                "reference": "3f0f3a1eb7739b2d903dea8d53ca2d294edc654b",
                 "shasum": ""
             },
             "require": {
@@ -57,7 +57,7 @@
             "description": "Framework for generating and managing database migrations",
             "homepage": "https://github.com/wellingguzman/migrations",
             "abandoned": true,
-            "time": "2016-05-22 08:02:18"
+            "time": "2016-07-28 18:37:42"
         },
         {
             "name": "league/flysystem",
