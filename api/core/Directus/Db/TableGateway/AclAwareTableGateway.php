@@ -516,7 +516,19 @@ class AclAwareTableGateway extends TableGateway {
         $table = $this->getRawTableNameFromQueryStateTable($selectState['table']);
 
         // Enforce field read blacklist on Select's main table
-        $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        try {
+            // @TODO: Enforce must return a list of columns without the blacklist
+            // when asterisk (*) is used
+            // and only throw and error when all the selected columns are blacklisted
+            $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        } catch (\Exception $e) {
+            if ($selectState['columns'][0] != '*') {
+                throw $e;
+            }
+
+            $selectState['columns'] = TableSchema::getAllNonAliasTableColumns($table);
+            $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        }
 
         // Enforce field read blacklist on Select's join tables
         foreach($selectState['joins'] as $join) {
@@ -562,13 +574,20 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         try {
-            Hook::run('table.insert:before', [$insertTable, $insertData]);
-            Hook::run('table.insert.' . $insertTable . ':before', [$insertData]);
+            // Data to be inserted with the column name as assoc key.
+            $insertDataAssoc = array_combine($insertState['columns'], $insertData);
+
+            Hook::run('table.insert:before', [$insertTable, $insertDataAssoc]);
+            Hook::run('table.insert.' . $insertTable . ':before', [$insertDataAssoc]);
+
             $result = parent::executeInsert($insert);
-            Hook::run('table.insert', [$insertTable, $insertData]);
-            Hook::run('table.insert.' . $insertTable, [$insertData]);
-            Hook::run('table.insert:after', [$insertTable, $insertData]);
-            Hook::run('table.insert.' . $insertTable . ':after', [$insertData]);
+            $insertTableGateway = new self($this->acl, $insertTable, $this->adapter);
+            $resultData = $insertTableGateway->find($this->getLastInsertValue());
+
+            Hook::run('table.insert', [$insertTable, $resultData]);
+            Hook::run('table.insert.' . $insertTable, [$resultData]);
+            Hook::run('table.insert:after', [$insertTable, $resultData]);
+            Hook::run('table.insert.' . $insertTable . ':after', [$resultData]);
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {

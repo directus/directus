@@ -102,7 +102,7 @@ class Acl {
 
     public function getErrorMessagePrefix() {
         // %s and not %d so that null will appear as "null"
-        $aclErrorPrefix = "[".__t('group')." #%s ".__t('user')." #%s] ";
+        $aclErrorPrefix = '[Group #%s User #%s] ';
         $aclErrorPrefix = sprintf($aclErrorPrefix, $this->getGroupId(), $this->getUserId());
         return $aclErrorPrefix;
     }
@@ -125,9 +125,7 @@ class Acl {
         if(self::FIELD_READ_BLACKLIST === $blacklist && count($fieldBlacklist) && in_array('*', $offsets)) {
             // Cannot select all, given a non-empty field read blacklist.
             $prefix = $this->getErrorMessagePrefix();
-            throw new UnauthorizedFieldReadException($prefix . __t('cannot_select_all_from_table_x_with_nonempty_read_field_blacklist', [
-                    'table' => $table
-            ]));
+            throw new UnauthorizedFieldReadException($prefix . 'Cannot select all (`*`) from table ' . $table . ' with non-empty read field blacklist.');
         }
         /**
          * Enforce granular offset attempts.

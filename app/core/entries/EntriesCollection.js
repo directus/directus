@@ -273,16 +273,37 @@ define(function(require, exports, module) {
         permissionName = permissionType.substr(3);
       }
 
-      if (this.privileges.has('allow_' + permissionName) && permissionLevel <= this.privileges.get('allow_' + permissionName)) {
+      if (this.privileges && this.privileges.has('allow_' + permissionName) && permissionLevel <= this.privileges.get('allow_' + permissionName)) {
         return true;
       }
 
       return false;
     },
 
+    getFieldBlacklist: function(permission) {
+      var fieldBlacklist = [];
+      if (this.privileges) {
+        fieldBlacklist = this.privileges.get(permission + '_field_blacklist') || '';
+        fieldBlacklist = fieldBlacklist.split(',');
+      }
+
+      return fieldBlacklist;
+    },
+
+    getWriteFieldBlacklist: function() {
+      return this.getFieldBlacklist('write');
+    },
+
+    getReadFieldBlacklist: function() {
+      return this.getFieldBlacklist('read');
+    },
+
     isWriteBlacklisted: function(attribute) {
-      var writeBlacklist = (this.privileges.get('write_field_blacklist') || '').split(',');
-      return _.contains(writeBlacklist, attribute);
+      return _.contains(this.getWriteFieldBlacklist(), attribute);
+    },
+
+    isReadBlacklisted: function(attribute) {
+      return _.contains(this.getReadFieldBlacklist(), attribute);
     },
 
     initialize: function(models, options) {

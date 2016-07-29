@@ -332,7 +332,6 @@
     "invalid_unsupported_url": "URL invalida/no soportada",
     "message_not_found": "Mensaje no encontrado",
 
-    "cannot_select_all_from_table_x_with_nonempty_read_field_blacklist": "No puedes seleccionar todos los campos (`*`) de la tabla %{table_name} cuando la lista negra de lecturas de campos no esta en blanco.",
     "write_access_forbidden_to_table_x_indices_y": "Acceso de escritura (set) prohibido para la tabla `%{table}` indices: %{indices}",
     "read_access_forbidden_to_table_x_indices_y": "Acceso de lectura (get) prohibido para la tabla `%{table}` indices: %{indices}",
     "invalid_list_x": "Lista invalida: %{list}",

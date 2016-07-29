@@ -72,16 +72,15 @@ define(function(require, exports, module) {
           return;
         }
         //Skip magic owner column if we dont have bigedit
-        if(this.model.table && this.model.table.get('user_create_column') == column.id && !this.model.collection.hasPermission('bigedit')) {
+        if (this.model.table && this.model.table.get('user_create_column') == column.id && !this.model.collection.hasPermission('bigedit')) {
           return;
         }
-
-
 
         if(app.statusMapping.status_name == column.id) {
           if(this.options.collectionAdd) {
             this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
           }
+
           if(this.model.isNew()) {
             var tableStatusColumn = this.model.structure.get(app.statusMapping.status_name);
             if(tableStatusColumn && tableStatusColumn.get('default_value')) {
@@ -103,8 +102,11 @@ define(function(require, exports, module) {
         // Display:none; hidden fields
         var isHidden = _.contains(this.hiddenFields, column.id);
         if (isHidden) {
-          // return;
           view.$el.css({'display':'none'});
+        }
+
+        if (this.model.isWriteBlacklisted(column.id) || this.model.isReadBlacklisted(column.id)) {
+          return false;
         }
 
         if (column.isRequired()) {
@@ -213,6 +215,7 @@ define(function(require, exports, module) {
 
       this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
+
 
       // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {

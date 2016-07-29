@@ -287,7 +287,19 @@ define(function(require, exports, module) {
     },
 
     getWriteFieldBlacklist: function() {
-      return (this.collection.privileges.get('write_field_blacklist') || '').split(',');
+      return this.collection.getWriteFieldBlacklist();
+    },
+
+    getReadFieldBlacklist: function() {
+      return this.collection.getWriteFieldBlacklist();
+    },
+
+    isWriteBlacklisted: function(attribute) {
+      return this.collection.isWriteBlacklisted(attribute);
+    },
+
+    isReadBlacklisted: function(attribute) {
+      return this.collection.isReadBlacklisted(attribute);
     },
 
     canDelete: function() {
