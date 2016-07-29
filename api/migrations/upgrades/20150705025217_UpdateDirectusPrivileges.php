@@ -5,7 +5,7 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        if (!$this->has_column('directus_privileges', 'to_view')) {
+        if (!$this->has_column('directus_privileges', 'to_view') && !$this->has_column('directus_privileges', 'allow_view')) {
             $this->add_column('directus_privileges', 'to_view', 'tinyinteger', array(
                 'limit' => 1,
                 'null' => false,
@@ -13,7 +13,7 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
             ));
         }
 
-        if (!$this->has_column('directus_privileges', 'to_add')) {
+        if (!$this->has_column('directus_privileges', 'to_add') && !$this->has_column('directus_privileges', 'allow_add')) {
             $this->add_column('directus_privileges', 'to_add', 'tinyinteger', array(
                 'limit' => 1,
                 'null' => false,
@@ -21,7 +21,7 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
             ));
         }
 
-        if (!$this->has_column('directus_privileges', 'to_edit')) {
+        if (!$this->has_column('directus_privileges', 'to_edit') && !$this->has_column('directus_privileges', 'allow_edit')) {
             $this->add_column('directus_privileges', 'to_edit', 'tinyinteger', array(
                 'limit' => 1,
                 'null' => false,
@@ -29,7 +29,7 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
             ));
         }
 
-        if (!$this->has_column('directus_privileges', 'to_delete')) {
+        if (!$this->has_column('directus_privileges', 'to_delete') && !$this->has_column('directus_privileges', 'allow_delete')) {
             $this->add_column('directus_privileges', 'to_delete', 'tinyinteger', array(
                 'limit' => 1,
                 'null' => false,
@@ -37,7 +37,7 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
             ));
         }
 
-        if (!$this->has_column('directus_privileges', 'to_alter')) {
+        if (!$this->has_column('directus_privileges', 'to_alter') && !$this->has_column('directus_privileges', 'allow_alter')) {
             $this->add_column('directus_privileges', 'to_alter', 'tinyinteger', array(
                 'limit' => 1,
                 'null' => false,
