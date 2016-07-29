@@ -507,6 +507,7 @@ define(function(require, exports, module) {
               "id": "many_to_one",
               "table_related": "directus_groups",
               "visible_column": "name",
+              "allow_null": 0,
               "visible_column_template": "{{name}}"
             },
             "relationship":{

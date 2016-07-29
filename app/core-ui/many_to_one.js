@@ -13,7 +13,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
 
   var template = '<div class="select-container"> \
                     <select {{#unless canEdit}}disabled{{/unless}}> \
-                    <option value="">{{placeholder_text}}</option> \
+                    {{#if allowNull}}<option value="">{{placeholder_text}}</option>{{/if}} \
                     {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>{{/data}} \
                   </select> \
                   <i class="material-icons select-arrow">arrow_drop_down</i> \
@@ -70,6 +70,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
         handleBarString: this.options.settings.get('value_template'),
         comment: this.options.schema.get('comment'),
         use_radio_buttons: (this.options.settings && this.options.settings.has('use_radio_buttons') && this.options.settings.get('use_radio_buttons') == '1') ? true : false,
+        allowNull: (this.options.settings.get('allow_null')) == 1,
         placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
       };
     },
@@ -120,6 +121,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
       {id: 'visible_column_template', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_template_comment')},
       {id: 'visible_status_ids', ui: 'textinput', char_length: 64, required: true, def: 1, comment: __t('m2o_visible_status_ids_comment')},
       {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: __t('m2o_placeholder_text_comment')},
+      {id: 'allow_null', ui: 'checkbox', def: 0},
       {id: 'filter_type', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
       {id: 'filter_column', ui: 'textinput', char_length: 255, comment: __t('m2o_filter_column_comment')}
     ],
