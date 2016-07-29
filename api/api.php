@@ -181,7 +181,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             // Store the session information in a global variable
             // And we retrieve this information back to session at the end of the execution.
             // See slim.after hook.
-            $GLOBALS['_SESSION'] = $_SESSION;
+            $GLOBALS['__SESSION'] = $_SESSION;
             // Reset SESSION values
             $_SESSION = [];
 
@@ -231,8 +231,8 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 $app->hook('slim.after', function() use ($app) {
     // retrieve session from global
     // if the session exists on globals it means this is a request with basic authentication
-    if (array_key_exists('_SESSION', $GLOBALS)) {
-        $_SESSION = $GLOBALS['_SESSION'];
+    if (array_key_exists('__SESSION', $GLOBALS)) {
+        $_SESSION = $GLOBALS['__SESSION'];
     }
 
     // API/Server is about to shutdown
