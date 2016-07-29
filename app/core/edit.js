@@ -83,8 +83,10 @@ define(function(require, exports, module) {
 
         if (app.statusMapping.status_name == column.id) {
           var collection = this.model.collection;
-          if (!collection.canAdd() || !collection.canEdit()) {
-            return false;
+          var canAdd = this.model.isNew() && collection.canAdd();
+          var canEdit = !this.model.isNew() && collection.canEdit();
+          if (!canAdd && !canEdit) {
+            return;
           }
 
           if (this.options.collectionAdd) {

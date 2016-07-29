@@ -90,7 +90,9 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
 
     leftToolbar: function() {
       var collection = this.model.collection;
-      if (!collection.canEdit() || !collection.canAdd()) {
+      var canAdd = this.model.isNew() && collection.canAdd();
+      var canEdit = !this.model.isNew() && collection.canEdit();
+      if (!canAdd && !canEdit) {
         return;
       }
 
