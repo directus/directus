@@ -563,15 +563,13 @@ class AclAwareTableGateway extends TableGateway {
         $insertTable = $this->getRawTableNameFromQueryStateTable($insertState['table']);
         $insertData = $insertState['values'];
 
-        if(!$this->acl->hasTablePrivilege($insertTable, 'add')) {
+        if (!$this->acl->hasTablePrivilege($insertTable, 'add')) {
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
             throw new UnauthorizedTableAddException($aclErrorPrefix . "Table add access forbidden on table $insertTable");
         }
 
-        // Enforce write field blacklist (if user lacks bigedit privileges on this table)
-        if(!$this->acl->hasTablePrivilege($insertTable, 'bigedit')) {
-            $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
-        }
+        // Enforce write field blacklist
+        $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
 
         try {
             // Data to be inserted with the column name as assoc key.
@@ -615,10 +613,11 @@ class AclAwareTableGateway extends TableGateway {
     protected function executeUpdate(Update $update)
     {
         $currentUserId = null;
-        if(Auth::loggedIn()) {
+        if (Auth::loggedIn()) {
             $currentUser = Auth::getUserInfo();
             $currentUserId = intval($currentUser['id']);
         }
+
         $updateState = $update->getRawState();
         $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($updateTable);
@@ -636,12 +635,12 @@ class AclAwareTableGateway extends TableGateway {
             $permissionName = 'delete';
         }
 
-        if(!$this->acl->hasTablePrivilege($updateTable, 'big' . $permissionName)) {
+        if (!$this->acl->hasTablePrivilege($updateTable, 'big' . $permissionName)) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             /**
              * Enforce Privilege: "Big" Edit
              */
-            if(false === $cmsOwnerColumn) {
+            if (false === $cmsOwnerColumn) {
                 // All edits are "big" edits if there is no magic owner column.
                 $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                 throw new UnauthorizedTableBigEditException($aclErrorPrefix . "The table `$updateTable` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)");
@@ -649,7 +648,7 @@ class AclAwareTableGateway extends TableGateway {
                 // Who are the owners of these rows?
                 list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 // Enforce
-                if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
+                if (is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
                     // $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
                     $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
@@ -657,29 +656,28 @@ class AclAwareTableGateway extends TableGateway {
                     throw new UnauthorizedTableBigEditException("[{$group['name']}] permissions only allow you to [$permissionName] your own items.");
                 }
             }
-
-            /**
-             * Enforce write field blacklist (if user lacks bigedit privileges on this table)
-             */
-            $attemptOffsets = array_keys($updateState['set']);
-            $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         }
 
-        if(!$this->acl->hasTablePrivilege($updateTable, $permissionName)) {
+        if (!$this->acl->hasTablePrivilege($updateTable, $permissionName)) {
             /**
              * Enforce Privilege: "Little" Edit (I am the record CMS owner)
              */
-            if(false !== $cmsOwnerColumn) {
-                if(!isset($predicateResultQty)) {
+            if (false !== $cmsOwnerColumn) {
+                if (!isset($predicateResultQty)) {
                     // Who are the owners of these rows?
                     list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 }
-                if(in_array($currentUserId, $predicateOwnerIds)) {
+
+                if (in_array($currentUserId, $predicateOwnerIds)) {
                     $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
                 }
             }
         }
+
+        // Enforce write field blacklist
+        $attemptOffsets = array_keys($updateState['set']);
+        $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
 
         try {
             Hook::run('table.update:before', [$updateTable, $updateData]);
