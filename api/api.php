@@ -531,7 +531,7 @@ $app->post("/$v/hash/?", function() use ($app) {
 
 $app->post("/$v/random/?", function() use ($app) {
     // default random string length
-    $length = 16;
+    $length = 32;
     if (array_key_exists('length', $_POST)) {
         $length = (int)$_POST['length'];
     }
