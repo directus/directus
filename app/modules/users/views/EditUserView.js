@@ -89,6 +89,11 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
     },
 
     leftToolbar: function() {
+      var collection = this.model.collection;
+      if (!collection.canEdit() || !collection.canAdd()) {
+        return;
+      }
+
       this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave}});
       this.saveWidget.setSaved(false);
       return [

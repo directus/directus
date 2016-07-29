@@ -9,13 +9,13 @@
 require(["config", 'polyfills'], function() {
 
   require([
-    "app",
+    'app',
     'core/UIManager',
-    "router",
-    "backbone",
-    "alerts",
-    "core/tabs",
-    "core/bookmarks",
+    'router',
+    'backbone',
+    'alerts',
+    'core/tabs',
+    'core/bookmarks',
     'modules/messages/messages',
     'schema/SchemaManager',
     'modules/settings/SettingsCollection',

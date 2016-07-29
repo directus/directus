@@ -71,13 +71,23 @@ define(function(require, exports, module) {
         if (column.get('column_key') == 'PRI') {
           return;
         }
+
+        if (this.model.isWriteBlacklisted(column.id) || this.model.isReadBlacklisted(column.id)) {
+          return false;
+        }
+
         //Skip magic owner column if we dont have bigedit
         if (this.model.table && this.model.table.get('user_create_column') == column.id && !this.model.collection.hasPermission('bigedit')) {
           return;
         }
 
-        if(app.statusMapping.status_name == column.id) {
-          if(this.options.collectionAdd) {
+        if (app.statusMapping.status_name == column.id) {
+          var collection = this.model.collection;
+          if (!collection.canAdd() || !collection.canEdit()) {
+            return false;
+          }
+
+          if (this.options.collectionAdd) {
             this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
           }
 
@@ -103,10 +113,6 @@ define(function(require, exports, module) {
         var isHidden = _.contains(this.hiddenFields, column.id);
         if (isHidden) {
           view.$el.css({'display':'none'});
-        }
-
-        if (this.model.isWriteBlacklisted(column.id) || this.model.isReadBlacklisted(column.id)) {
-          return false;
         }
 
         if (column.isRequired()) {

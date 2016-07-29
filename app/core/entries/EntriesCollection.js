@@ -290,6 +290,31 @@ define(function(require, exports, module) {
       return fieldBlacklist;
     },
 
+    can: function(permission) {
+      var privileges = this.privileges;
+      if (permission.indexOf('allow_') !== 0) {
+        permission = 'allow_' + permission;
+      }
+
+      return (privileges && this.privileges.get(permission) > 0);
+    },
+
+    canView: function() {
+      return this.can('view');
+    },
+
+    canEdit: function() {
+      return this.can('edit');
+    },
+
+    canAdd: function() {
+      return this.can('add')
+    },
+
+    canDelete: function() {
+      return this.can('delete');
+    },
+
     getWriteFieldBlacklist: function() {
       return this.getFieldBlacklist('write');
     },
