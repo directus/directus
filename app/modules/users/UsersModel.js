@@ -2,16 +2,15 @@ define([
   'app',
   'backbone',
   'core/entries/EntriesModel',
-  'core/t',
   'moment'
 ],
 
-function(app, Backbone, EntriesModel,__t,  moment) {
+function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
     defaults: {
-      first_name: __t('a_missing_or_removed_user'),
+      first_name: '',
       last_name: ''
     },
 
