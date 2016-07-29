@@ -72,7 +72,7 @@ define(function(require, exports, module) {
           return;
         }
 
-        if (this.model.isWriteBlacklisted(column.id) || this.model.isReadBlacklisted(column.id)) {
+        if (this.model.isReadBlacklisted(column.id)) {
           return false;
         }
 
