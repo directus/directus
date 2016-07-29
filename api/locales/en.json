@@ -158,6 +158,7 @@
   "new_message": "New Message",
   "send_message": "Send Message",
   "message_to": "To",
+  "leave_a_comment": "Leave a comment",
   "directus_messages_recipients_placeholder": "Type users or groups here...",
   "tags_placeholder": "Type tag then hit enter...",
   "directus_files_paste_youtube_vimeo_url": "Or paste in a YouTube, Vimeo, or file URL",
