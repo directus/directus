@@ -1184,14 +1184,14 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
     foreach ($data['columns'] as $col) {
       $columnData = array(
         'table_name' => $table,
-        'column_name'=>$col['column_name'],
-        'ui'=>$col['ui'],
-        'hidden_input'=>$col['hidden_input'],
-        'hidden_list' => $col['hidden_list'],
-        'required'=>$col['required'],
-        'master'=>$col['master'],
-        'sort'=> array_key_exists('sort', $col) ? $col['sort'] : 99999,
-        'comment'=> array_key_exists('comment', $col) ? $col['comment'] : ''
+        'column_name' => $col['column_name'],
+        'ui' => $col['ui'],
+        'hidden_input' => $col['hidden_input'] ? 1 : 0,
+        'hidden_list' => $col['hidden_list'] ? 1 : 0,
+        'required' => $col['required'] ? 1 : 0,
+        'master' => $col['master'] ? 1 : 0,
+        'sort' => array_key_exists('sort', $col) ? $col['sort'] : 99999,
+        'comment' => array_key_exists('comment', $col) ? $col['comment'] : ''
       );
 
       // hotfix #1069 single_file UI not saving relational settings
@@ -1203,11 +1203,14 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       }
 
       $existing = $ColumnsTableGateway->select(array('table_name' => $table, 'column_name' => $col['column_name']))->toArray();
-      if(count($existing) > 0) {
+      if (count($existing) > 0) {
         $columnData['id'] = $existing[0]['id'];
       }
+
       array_push($column_settings, $columnData);
     }
+
+
     $ColumnsTableGateway->updateCollection($column_settings);
   }
 
