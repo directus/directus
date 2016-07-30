@@ -48,9 +48,11 @@ class CreateDirectusActivityTable extends Ruckusing_Migration_Base
       $t->column("data", "text");
       $t->column("delta", "text", array("null"=>true));
       $t->column("parent_id", "integer", array("unsigned"=>true, "default"=>NULL));
+      $t->column('parent_table', 'string', array('limit' => 100));
       $t->column("parent_changed", "tinyinteger", array("limit"=>1, "null"=>false, "comment"=>"Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)"));
       $t->column("datetime", "datetime", array("default"=>NULL));
       $t->column("logged_ip", "string", array("limit"=>20, "default"=>NULL));
+      $t->column('user_agent', 'string', array('limit' => 256));
       $t->finish();
 
     }//up()
