@@ -329,6 +329,10 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     $Users = new DirectusUsersTableGateway($acl, $ZendDb);
     $user = $Users->findOneBy('email', $email);
 
+    if (!$user) {
+        return JsonView::render($response);
+    }
+
     // ------------------------------
     // Check if group needs whitelist
     $groupId = $user['group'];
@@ -339,10 +343,6 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
             'success' => false,
             'all_nonces' => $requestNonceProvider->getAllNonces()
         ]);
-    }
-
-    if (!$user) {
-        return JsonView::render($response);
     }
 
     // @todo: Login should fail on correct information when user is not active.
