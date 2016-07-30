@@ -199,11 +199,12 @@ if (!function_exists('load_registered_hooks')) {
                 $handlers = [$handlers];
             }
 
+            $emitter = \Directus\Bootstrap::get('hookEmitter');
             foreach ($handlers as $handler) {
                 if (!$areFilters) {
-                    \Directus\Hook\Hook::addListener($event, $handler);
+                    $emitter->addAction($event, $handler);
                 } else {
-                    \Directus\Hook\Hook::addFilter($event, $handler);
+                    $emitter->addFilter($event, $handler);
                 }
             }
         }

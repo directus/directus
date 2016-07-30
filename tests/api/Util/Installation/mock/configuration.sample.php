@@ -54,10 +54,6 @@ return array(
     // ),
 
     'hooks' => array(
-        'application.error' => function($e) {
-            $log = \Directus\Bootstrap::get('log');
-            $log->error($e);
-        },
         'postInsert' => function ($TableGateway, $record, $db, $acl) {
 
         },

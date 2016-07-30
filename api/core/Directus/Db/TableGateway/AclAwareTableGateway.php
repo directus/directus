@@ -41,6 +41,13 @@ class AclAwareTableGateway extends TableGateway {
     public $memcache;
 
     /**
+     * Hook Emitter Instance
+     *
+     * @var \Directus\Hook\Emitter
+     */
+    protected $emitter;
+
+    /**
      * Constructor
      *
      * @param AclProvider $acl
@@ -85,6 +92,7 @@ class AclAwareTableGateway extends TableGateway {
         $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
         $this->featureSet->addFeature($rowGatewayFeature);
         $this->memcache = new MemcacheProvider();
+        $this->emitter = Bootstrap::get('hookEmitter');
 
         parent::__construct($table, $adapter, $this->featureSet, $resultSetPrototype, $sql);
     }
@@ -213,7 +221,7 @@ class AclAwareTableGateway extends TableGateway {
             $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
             $TableGateway->updateWith($Update);
 
-            Hook::run('postUpdate', [$TableGateway, $recordData, $this->adapter, $this->acl]);
+            $this->emitter->run('postUpdate', [$TableGateway, $recordData, $this->adapter, $this->acl]);
         } else {
             $d = $recordData;
             unset($d['data']);
@@ -247,7 +255,7 @@ class AclAwareTableGateway extends TableGateway {
               }
             }
 
-            Hook::run('postInsert', [$TableGateway, $recordData, $this->adapter, $this->acl]);
+            $this->emitter->run('postInsert', [$TableGateway, $recordData, $this->adapter, $this->acl]);
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
@@ -280,7 +288,7 @@ class AclAwareTableGateway extends TableGateway {
         $drop = new Ddl\DropTable($tableName);
         $query = $sql->getSqlStringForSqlObject($drop);
 
-        Hook::run('table.drop:before', [$tableName]);
+        $this->emitter->run('table.drop:before', [$tableName]);
 
         $dropped = $this->adapter->query(
             $query
@@ -290,8 +298,8 @@ class AclAwareTableGateway extends TableGateway {
             return false;
         }
 
-        Hook::run('table.drop', [$tableName]);
-        Hook::run('table.drop:after', [$tableName]);
+        $this->emitter->run('table.drop', [$tableName]);
+        $this->emitter->run('table.drop:after', [$tableName]);
 
         // remove table privileges
         if ($tableName != 'directus_privileges') {
@@ -575,17 +583,17 @@ class AclAwareTableGateway extends TableGateway {
             // Data to be inserted with the column name as assoc key.
             $insertDataAssoc = array_combine($insertState['columns'], $insertData);
 
-            Hook::run('table.insert:before', [$insertTable, $insertDataAssoc]);
-            Hook::run('table.insert.' . $insertTable . ':before', [$insertDataAssoc]);
+            $this->emitter->run('table.insert:before', [$insertTable, $insertDataAssoc]);
+            $this->emitter->run('table.insert.' . $insertTable . ':before', [$insertDataAssoc]);
 
             $result = parent::executeInsert($insert);
             $insertTableGateway = new self($this->acl, $insertTable, $this->adapter);
             $resultData = $insertTableGateway->find($this->getLastInsertValue());
 
-            Hook::run('table.insert', [$insertTable, $resultData]);
-            Hook::run('table.insert.' . $insertTable, [$resultData]);
-            Hook::run('table.insert:after', [$insertTable, $resultData]);
-            Hook::run('table.insert.' . $insertTable . ':after', [$resultData]);
+            $this->emitter->run('table.insert', [$insertTable, $resultData]);
+            $this->emitter->run('table.insert.' . $insertTable, [$resultData]);
+            $this->emitter->run('table.insert:after', [$insertTable, $resultData]);
+            $this->emitter->run('table.insert.' . $insertTable . ':after', [$resultData]);
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
@@ -680,13 +688,13 @@ class AclAwareTableGateway extends TableGateway {
         $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
 
         try {
-            Hook::run('table.update:before', [$updateTable, $updateData]);
-            Hook::run('table.update.' . $updateTable . ':before', [$updateData]);
+            $this->emitter->run('table.update:before', [$updateTable, $updateData]);
+            $this->emitter->run('table.update.' . $updateTable . ':before', [$updateData]);
             $result = parent::executeUpdate($update);
-            Hook::run('table.update', [$updateTable, $updateData]);
-            Hook::run('table.update:after', [$updateTable, $updateData]);
-            Hook::run('table.update.' . $updateTable, [$updateData]);
-            Hook::run('table.update.' . $updateTable . ':after', [$updateData]);
+            $this->emitter->run('table.update', [$updateTable, $updateData]);
+            $this->emitter->run('table.update:after', [$updateTable, $updateData]);
+            $this->emitter->run('table.update.' . $updateTable, [$updateData]);
+            $this->emitter->run('table.update.' . $updateTable . ':after', [$updateData]);
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
@@ -769,13 +777,13 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         try {
-            Hook::run('table.delete:before', [$deleteTable]);
-            Hook::run('table.delete.' . $deleteTable . ':before');
+            $this->emitter->run('table.delete:before', [$deleteTable]);
+            $this->emitter->run('table.delete.' . $deleteTable . ':before');
             $result = parent::executeDelete($delete);
-            Hook::run('table.delete', [$deleteTable]);
-            Hook::run('table.delete:after', [$deleteTable]);
-            Hook::run('table.delete.' . $deleteTable);
-            Hook::run('table.delete.' . $deleteTable . ':after');
+            $this->emitter->run('table.delete', [$deleteTable]);
+            $this->emitter->run('table.delete:after', [$deleteTable]);
+            $this->emitter->run('table.delete.' . $deleteTable);
+            $this->emitter->run('table.delete.' . $deleteTable . ':after');
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {

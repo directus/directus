@@ -14,6 +14,7 @@ use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTablesTableGateway;
+use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Views\Twig;
@@ -122,6 +123,10 @@ class Bootstrap {
         Twig::$twigExtensions = [
             new DirectusTwigExtension()
         ];
+
+        $app->container->singleton('emitter', function() {
+            return Bootstrap::get('hookEmitter');
+        });
 
         return $app;
     }
@@ -500,5 +505,35 @@ class Bootstrap {
         }
 
         return $embedManager;
+    }
+
+    /**
+     * Get Hook Emitter
+     *
+     * @return Emitter
+     */
+    private static function hookEmitter()
+    {
+        $emitter = new Emitter();
+
+        $emitter->addAction('application.error', function($e) {
+            $log = Bootstrap::get('log');
+            $log->error($e);
+        });
+
+        $emitter->addAction('table.insert.directus_groups', function($data) {
+            $acl = Bootstrap::get('acl');
+            $zendDb = Bootstrap::get('zendDb');
+            $privilegesTable = new DirectusPrivilegesTableGateway($acl, $zendDb);
+
+            $privilegesTable->insertPrivilege([
+                'group_id' => $data['id'],
+                'table_name' => 'directus_users',
+                'read_field_blacklist' => 'token',
+                'write_field_blacklist' => 'token'
+            ]);
+        });
+
+        return $emitter;
     }
 }

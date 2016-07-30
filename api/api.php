@@ -47,7 +47,6 @@ use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGatewa
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Exception\ExceptionHandler;
-use Directus\Hook\Hook;
 // use Directus\Files;
 // use Directus\Files\Upload;
 use Directus\Mail\Mail;
@@ -90,7 +89,7 @@ if (array_key_exists('filters', $config)) {
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    Hook::run('application.error', [$exception]);
+    $app->emitter->run('application.error', [$exception]);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
@@ -125,11 +124,11 @@ $ZendDb = Bootstrap::get('ZendDb');
  */
 $acl = Bootstrap::get('acl');
 
-Hook::run('application.boot', $app);
+$app->emitter->run('application.boot', $app);
 
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl) {
     // API/Server is about to initialize
-    Hook::run('application.init', $app);
+    $app->emitter->run('application.init', $app);
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
@@ -186,8 +185,8 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             $_SESSION = [];
 
             Auth::setLoggedUser($user['id']);
-            Hook::run('directus.authenticated', [$app, $user]);
-            Hook::run('directus.authenticated.token', [$app, $user]);
+            $app->emitter->run('directus.authenticated', [$app, $user]);
+            $app->emitter->run('directus.authenticated.token', [$app, $user]);
 
             // Reload all user permissions
             // At this point ACL has run and loaded all permissions
@@ -218,7 +217,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         // User is authenticated
         // And Directus is about to start
-        Hook::run('directus.start', $app);
+        $app->emitter->run('directus.start', $app);
 
         /** Include new request nonces in the response headers */
         $response = $app->response();
@@ -236,7 +235,7 @@ $app->hook('slim.after', function() use ($app) {
     }
 
     // API/Server is about to shutdown
-    Hook::run('application.shutdown', $app);
+    $app->emitter->run('application.shutdown', $app);
 });
 
 /**
@@ -364,8 +363,8 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     }
 
     if($response['success']) {
-        Hook::run('directus.authenticated', [$app, $user]);
-        Hook::run('directus.authenticated.admin', [$app, $user]);
+        $app->emitter->run('directus.authenticated', [$app, $user]);
+        $app->emitter->run('directus.authenticated.admin', [$app, $user]);
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = Auth::getUserInfo();
@@ -577,12 +576,12 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
         unset($requestPayload['addTable']);
 
         if (!SchemaManager::tableExists($requestPayload['table_name'])) {
-            Hook::run('table.create:before', $requestPayload['table_name']);
+            $app->emitter->run('table.create:before', $requestPayload['table_name']);
             // Through API, table name remove spaces and symbols
             $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
             SchemaManager::createTable($requestPayload['table_name']);
-            Hook::run('table.create', $requestPayload['table_name']);
-            Hook::run('table.create:after', $requestPayload['table_name']);
+            $app->emitter->run('table.create', $requestPayload['table_name']);
+            $app->emitter->run('table.create:after', $requestPayload['table_name']);
         }
     }
 

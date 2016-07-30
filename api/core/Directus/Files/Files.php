@@ -20,6 +20,13 @@ class Files
         'location'  =>  ''
     ];
 
+    /**
+     * Hook Emitter Instance
+     *
+     * @var \Directus\Hook\Emitter
+     */
+    protected $emitter;
+
     public function __construct()
     {
         $acl = Bootstrap::get('acl');
@@ -27,6 +34,7 @@ class Files
         $this->filesystem = Bootstrap::get('filesystem');
         $config = Bootstrap::get('config');
         $this->config = $config['filesystem'] ?: [];
+        $this->emitter = Bootstrap::get('hookEmitter');
 
         // Fetch files settings
         $Settings = new DirectusSettingsTableGateway($acl, $adapter);
@@ -50,18 +58,18 @@ class Files
     public function delete($file)
     {
         if ($this->exists($file['name'])) {
-            Hook::run('files.deleting', array($file));
+            $this->emitter->run('files.deleting', array($file));
             $this->filesystem->getAdapter()->delete($file['name']);
-            Hook::run('files.deleting:after', array($file));
+            $this->emitter->run('files.deleting:after', array($file));
         }
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         if ($ext) {
             $thumbPath = 'thumbs/'.$file['id'].'.'.$ext;
             if ($this->exists($thumbPath)) {
-                Hook::run('files.thumbnail.deleting', array($file));
+                $this->emitter->run('files.thumbnail.deleting', array($file));
                 $this->filesystem->getAdapter()->delete($thumbPath);
-                Hook::run('files.thumbnail.deleting:after', array($file));
+                $this->emitter->run('files.thumbnail.deleting:after', array($file));
             }
         }
     }
@@ -208,9 +216,9 @@ class Files
         $fileName = $this->getFileName($fileName);
         $filePath = $this->getConfig('root') . '/' . $fileName;
 
-        Hook::run('files.saving', ['name' => $fileName, 'size' => strlen($fileData)]);
+        $this->emitter->run('files.saving', ['name' => $fileName, 'size' => strlen($fileData)]);
         $this->filesystem->getAdapter()->write($fileName, $fileData);
-        Hook::run('files.saving:after', ['name' => $fileName, 'size' => strlen($fileData)]);
+        $this->emitter->run('files.saving:after', ['name' => $fileName, 'size' => strlen($fileData)]);
 
         $this->createThumbnails($fileName);
 
@@ -385,9 +393,9 @@ class Files
             if($img) {
                 $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
                 $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
-                Hook::run('files.thumbnail.saving', array('name' => $imageName, 'size' => strlen($thumbImg)));
+                $this->emitter->run('files.thumbnail.saving', array('name' => $imageName, 'size' => strlen($thumbImg)));
                 $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);
-                Hook::run('files.thumbnail.saving:after', array('name' => $imageName, 'size' => strlen($thumbImg)));
+                $this->emitter->run('files.thumbnail.saving:after', array('name' => $imageName, 'size' => strlen($thumbImg)));
             }
         }
     }
@@ -413,9 +421,9 @@ class Files
         $finalPath = rtrim($mediaPath, '/').'/'.$targetName;
         $data = file_get_contents($filePath);
 
-        Hook::run('files.saving', array('name' => $targetName, 'size' => strlen($data)));
+        $this->emitter->run('files.saving', array('name' => $targetName, 'size' => strlen($data)));
         $this->filesystem->getAdapter()->write($targetName, $data);
-        Hook::run('files.saving:after', array('name' => $targetName, 'size' => strlen($data)));
+        $this->emitter->run('files.saving:after', array('name' => $targetName, 'size' => strlen($data)));
 
         $fileData['name'] = basename($finalPath);
         $fileData['date_uploaded'] = DateUtils::now();

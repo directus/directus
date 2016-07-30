@@ -13,7 +13,8 @@ define('API_PATH', BASE_PATH . '/api');
 require "api/config.php";
 require "api/globals.php";
 
-\Directus\Hook\Hook::run('directus.login.start');
+$emitter = \Directus\Bootstrap::get('hookEmitter');
+$emitter->run('directus.login.start');
 
 // Temporary solution for disabling this page for logged in users.
 if(\Directus\Auth\Provider::loggedIn()) {
