@@ -143,11 +143,6 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
           "default"=>NULL
         )
       );
-      $t->column("avatar_is_file", "tinyinteger", array(
-          "limit"=>1,
-          "default"=>0
-        )
-      );
       $t->column("location", "string", array(
           "limit"=>255,
           "default"=>NULL
