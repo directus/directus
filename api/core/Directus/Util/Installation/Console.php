@@ -2,6 +2,10 @@
 
 namespace Directus\Util\Installation;
 
+use Directus\Bootstrap;
+use Directus\Db\TableGateway\DirectusUsersTableGateway;
+use Zend\Db\TableGateway\TableGateway;
+
 class Console
 {
     private $command = '';
@@ -39,6 +43,13 @@ class Console
             case 'install':
                 echo __t('installing_settings').'...';
                 $this->install();
+                echo __t('done').PHP_EOL;
+                break;
+            // this is a quick solution to recover your password
+            // a new improved console application is being under development
+            case 'user:update_password':
+                echo __t('Updating user').'...';
+                $this->updatePassword();
                 echo __t('done').PHP_EOL;
                 break;
         }
@@ -128,6 +139,46 @@ class Console
         InstallerUtils::addDefaultUser($data);
 
         $this->clear();
+    }
+
+    private function updatePassword()
+    {
+        $data = [];
+        $options = $this->options;
+        foreach($options as $key => $value) {
+            switch($key) {
+                case 'uid':
+                case 'u':
+                    $data['id'] = $value;
+                    unset($options[$key]);
+                    break;
+                case 'upass':
+                case 'p':
+                    $data['password'] = $value;
+                    unset($options[$key]);
+                    break;
+            }
+        }
+
+        if (!isset($data['password']) || !isset($data['id'])) {
+            echo PHP_EOL.__t('Missing User ID or Password').PHP_EOL;
+            exit;
+        }
+
+        $zendDb = Bootstrap::get('zendDb');
+        $userTableGateway = new TableGateway('directus_users', $zendDb);
+
+        $result = $userTableGateway->update([
+            'password' => \Directus\Auth\Provider::hashPassword($data['password']),
+            'access_token' => sha1($data['id'].\Directus\Util\StringUtils::random())
+        ], ['id' => $data['id']]);
+
+        $message = 'Error trying to update the password.';
+        if ($result) {
+            $message = 'Password updated successfully';
+        }
+
+        echo PHP_EOL.__t($message).PHP_EOL;
     }
 
     private function clear()
