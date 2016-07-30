@@ -5,7 +5,6 @@ namespace Directus;
 use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\Connection;
-use Directus\Db\SchemaManager;
 use Directus\Db\Schemas\MySQLSchema;
 use Directus\Db\Schemas\SQLiteSchema;
 use Directus\Embed\EmbedManager;
@@ -16,6 +15,8 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTablesTableGateway;
 use Directus\Language\LanguageManager;
+use Directus\View\Twig\DirectusTwigExtension;
+use Slim\Extras\Views\Twig;
 use Slim\Slim;
 use Slim\Extras\Log\DateTimeFileWriter;
 
@@ -104,17 +105,24 @@ class Bootstrap {
      * @return Slim
      */
     private static function app() {
-        self::requireConstants(array('DIRECTUS_ENV','APPLICATION_PATH'), __FUNCTION__);
-        $loggerSettings = array(
+        self::requireConstants(['DIRECTUS_ENV','APPLICATION_PATH'], __FUNCTION__);
+        $loggerSettings = [
             'path' => APPLICATION_PATH . '/api/logs'
-        );
-        $app = new Slim(array(
+        ];
+
+        $app = new Slim([
             'templates.path'=> APPLICATION_PATH.'/api/views/',
             'mode'          => DIRECTUS_ENV,
             'debug'         => false,
             'log.enable'    => true,
-            'log.writer'    => new DateTimeFileWriter($loggerSettings)
-        ));
+            'log.writer'    => new DateTimeFileWriter($loggerSettings),
+            'view'          => new Twig()
+        ]);
+
+        Twig::$twigExtensions = [
+            new DirectusTwigExtension()
+        ];
+
         return $app;
     }
 
@@ -137,7 +145,6 @@ class Bootstrap {
         }
 
         $mailConfig = $config['mail'];
-        // $smtp = $config['SMTP'];
         switch ($mailConfig['transport']) {
             case 'smtp':
                 $transport = \Swift_SmtpTransport::newInstance($mailConfig['host'], $mailConfig['port']);
@@ -156,10 +163,9 @@ class Bootstrap {
                 $transport = \Swift_MailTransport::newInstance();
                 break;
         }
-        // $transport = \Swift_SmtpTransport::newInstance($smtp['host'], $smtp['port'])
-        //     ->setUsername($smtp['username'])
-        //     ->setPassword($smtp['password']);
+
         $mailer = \Swift_Mailer::newInstance($transport);
+
         return $mailer;
     }
 

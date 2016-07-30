@@ -303,6 +303,7 @@
 
   "server_error_occurred": "Server error occurred",
   "enter_your_email_and_password": "Enter your email and password",
+  "your_new_directus_instance_x": "Your New Directus Instance: %{name}",
   "reset_instructions_have_been_sent": "Reset instructions have been sent",
   "oops_an_error_occurred": "Oops, an error occurred",
   "are_you_sure_you_want_to_reset_your_password": "Are you sure you want to reset your password?",

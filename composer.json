@@ -3,6 +3,7 @@
     "php": ">=5.4.0",
     "slim/slim": "2.3.2",
     "slim/extras": "dev-develop",
+    "twig/twig":  "1.*",
     "zendframework/zend-db": "2.2.*@dev",
     "directus/migrations": "dev-master",
     "league/flysystem": "^1.0",
@@ -28,5 +29,11 @@
     "files": [
       "api/core/functions.php"
     ]
-  }
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/wellingguzman/Slim-Extras"
+    }
+  ]
 }

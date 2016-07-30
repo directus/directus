@@ -101,7 +101,7 @@ class InstallerUtils
             'name' => DB_NAME,
             'user' => DB_USER,
             'pass' => DB_PASSWORD,
-            'directory' => 'directus',
+            'directory' => 'schema',
             'prefix' => '',
         ));
 
@@ -141,7 +141,9 @@ class InstallerUtils
 
     /**
      * Add Directus default user
+     *
      * @param array $data
+     * @return array
      */
     public static function addDefaultUser($data)
     {
@@ -150,17 +152,22 @@ class InstallerUtils
 
         $hash = password_hash($data['directus_password'], PASSWORD_DEFAULT, ['cost' => 12]);
 
+        $data['user_salt'] = StringUtils::randomString();
+        $data['user_token'] = StringUtils::randomString(32);
+
         $tableGateway->insert([
             'active' => 1,
             'first_name' => 'Admin',
             'last_name' => 'User',
             'email' => $data['directus_email'],
             'password' => $hash,
-            'salt' => StringUtils::randomString(),
+            'salt' => $data['user_salt'],
             'group' => 1,
-            'token' => StringUtils::randomString(32),
+            'token' => $data['user_token'],
             'language' => $data['default_language']
         ]);
+
+        return $data;
     }
 
     /**
@@ -242,7 +249,7 @@ class InstallerUtils
             [
                 'collection' => 'global',
                 'name' => 'project_url',
-                'value' => 'http://examplesite.dev/'
+                'value' => get_url()
             ],
             [
                 'collection' => 'global',

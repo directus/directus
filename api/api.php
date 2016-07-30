@@ -450,7 +450,7 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
         $app->halt(200, __t('password_reset_error'));
     }
 
-    $data = ['newPassword' => $password];
+    $data = ['new_password' => $password];
     Mail::send('mail/forgot-password.twig.html', $data, function($message) use ($user) {
         $message->setSubject(__t('password_reset_new_password_email_subject'));
         $message->setTo($user['email']);

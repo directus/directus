@@ -49,6 +49,35 @@ if (!function_exists('uc_convert')) {
     }
 }
 
+if (!function_exists('is_ssl')) {
+    /**
+     * Check if ssl is being used
+     *
+     * @return bool
+     */
+    function is_ssl()
+    {
+        return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    }
+}
+
+if (!function_exists('get_url')) {
+    /**
+     * Get Directus URL
+     *
+     * @param $path - Extra path to add to the url
+     * @return string
+     */
+    function get_url($path = '/')
+    {
+        $schema = is_ssl() ? 'https://' : 'http://';
+
+        $path = defined('DIRECTUS_PATH') ? DIRECTUS_PATH : '/';
+
+        return $schema . $_SERVER['HTTP_HOST'] . $path . '/' . ltrim($path, '/');
+    }
+}
+
 if (!function_exists('get_full_url')) {
     /**
      * Returns full URL to system
@@ -57,7 +86,8 @@ if (!function_exists('get_full_url')) {
      */
     function get_full_url()
     {
-        $https = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+        $https = is_ssl();
+
         return
             ($https ? 'https://' : 'http://') .
             (!empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] . '@' : '') .

@@ -12,14 +12,10 @@ class Mail
     protected $mailer = null;
     protected $settings = [];
 
-    public function __construct($mailer)
+    public function __construct($mailer, $settings = [])
     {
         $this->mailer = $mailer;
-        $DirectusSettingsTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_settings', Bootstrap::get('zendDb'));
-        $rowSet = $DirectusSettingsTableGateway->select();
-        foreach ($rowSet as $setting) {
-            $this->settings[$setting['collection']][$setting['name']] = $setting['value'];
-        }
+        $this->settings = $settings;
     }
 
     public function sendMessage($message)
@@ -29,18 +25,13 @@ class Mail
 
     public function getViewContent($viewPath, $data)
     {
-        ob_start();
-
         $app = Bootstrap::get('app');
-        $viewContentPath = $app->container['settings']['templates.path'].$viewPath;
-        $viewFooterPath = $app->container['settings']['templates.path'].'mail/footer.twig.html';
+
+        ob_start();
         $data = array_merge(['settings' => $this->settings], $data);
+        $app->render($viewPath, $data);
 
-        extract($data);
-        include $viewContentPath;
-        include $viewFooterPath;
-
-        return nl2br(ob_get_clean());
+        return ob_get_clean();
     }
 
     public static function send($viewPath, $data, $callback)
@@ -51,7 +42,15 @@ class Mail
             throw new InvalidArgumentException(__t('mail_configuration_no_defined'));
         }
 
-        $instance = new static($mailer);
+        $DirectusSettingsTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_settings', Bootstrap::get('zendDb'));
+        $rowSet = $DirectusSettingsTableGateway->select();
+
+        $settings = [];
+        foreach ($rowSet as $setting) {
+            $settings[$setting['collection']][$setting['name']] = $setting['value'];
+        }
+
+        $instance = new static($mailer, $settings);
 
         $message = Swift_Message::newInstance();
 

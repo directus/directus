@@ -3,6 +3,7 @@
 namespace Directus\Installation\Steps;
 
 use Directus\Db\Connection;
+use Directus\Mail\Mail;
 use Directus\Util\Installation\InstallerUtils;
 
 class ConfirmStep extends AbstractStep
@@ -65,8 +66,36 @@ class ConfirmStep extends AbstractStep
         InstallerUtils::createConfig($stepsData, BASE_PATH . '/api');
         InstallerUtils::createTables(BASE_PATH);
         InstallerUtils::addDefaultSettings($stepsData, BASE_PATH);
-        InstallerUtils::addDefaultUser($stepsData);
+        $stepsData = InstallerUtils::addDefaultUser($stepsData);
         InstallerUtils::installSchema($stepsData['db_schema'], BASE_PATH);
+
+        $data = [
+            'user' => [
+                'email' => $stepsData['directus_email'],
+                'token' => $stepsData['user_token'],
+                'password' => $stepsData['directus_password']
+            ],
+            'project' => [
+                'name' => $stepsData['directus_name'],
+                'version' => DIRECTUS_VERSION,
+                'url' => get_full_url()
+            ],
+            'database' => [
+                'host' => $stepsData['db_host'],
+                'name' => $stepsData['db_name'],
+                'user' => $stepsData['db_user'],
+                'password' => $stepsData['db_password']
+            ]
+        ];
+
+        if ($response->getData('send_config_email')) {
+            Mail::send('mail/new-install.twig.html', $data, function ($message) use ($data) {
+                $message->setSubject(__t('your_new_directus_instance_x', [
+                    'name' => $data['project']['name']
+                ]));
+                $message->setTo($data['user']['email']);
+            });
+        }
 
         return $response;
     }
