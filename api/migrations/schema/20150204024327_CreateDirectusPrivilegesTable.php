@@ -106,10 +106,7 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
             'directus_tables',
             'directus_ui',
             'directus_users',
-            'directus_social_feeds',
             'directus_messages_recipients',
-            'directus_social_posts',
-            'directus_tab_privileges',
             'directus_bookmarks'
         ];
 
