@@ -278,63 +278,81 @@ class Files
     /**
      * Get file info
      *
-     * @param string $path
-     * @param bool if the $path is outside of the adapter root path.
+     * @param string $path - file path
+     * @param bool $outside - if the $path is outside of the adapter root path.
      *
-     * @return Array file info
+     * @throws \RuntimeException
+     *
+     * @return array file information
      */
-    public function getFileInfo($filePath, $outside = false)
+    public function getFileInfo($path, $outside = false)
     {
-        $finfo = new \finfo(FILEINFO_MIME);
-        // $type = explode('; charset=', $finfo->file($filePath));
-        if ($outside === true) {
-            $buffer = file_get_contents($filePath);
-        } else {
-            $buffer = $this->filesystem->getAdapter()->read($filePath);
+        if (!class_exists('\finfo')) {
+            throw new \RuntimeException('PHP File Information extension was not loaded.');
         }
+
+        if ($outside === true) {
+            $buffer = file_get_contents($path);
+        } else {
+            $buffer = $this->filesystem->getAdapter()->read($path);
+        }
+
+        $finfo = new \finfo(FILEINFO_MIME);
         $type = explode('; charset=', $finfo->buffer($buffer));
-        $info = array('type' => $type[0], 'charset' => $type[1]);
-        $typeTokens = explode('/', $info['type']);
-        $info['format'] = $typeTokens[1]; // was: $this->format
-        $info['size'] = strlen($buffer);//filesize($filePath);
-        $info['width'] = null;
-        $info['height'] = null;
 
-        if($typeTokens[0] == 'image') {
-            $meta = array();
-            //$size = getimagesize($filePath, $meta);
-            $size = [];
-            $image = imagecreatefromstring($buffer);
-            $size[] = imagesx($image);
-            $size[] = imagesy($image);
+        $mime = $type[0];
+        $charset = $type[1];
+        $typeTokens = explode('/', $mime);
 
-            $info['width'] = $size[0];
-            $info['height'] = $size[1];
-            if (isset($meta["APP13"])) {
-                $iptc = iptcparse($meta["APP13"]);
+        $info = [
+            'type' => $mime,
+            'format' => $typeTokens[1],
+            'charset' => $charset,
+            'size' => strlen($buffer),
+            'width' => null,
+            'height' => null
+        ];
+
+        if ($typeTokens[0] == 'image') {
+            $meta = [];
+            // @TODO: use this as fallback for finfo?
+            $imageInfo = getimagesizefromstring($buffer, $meta);
+
+            $info['width'] = $imageInfo[0];
+            $info['height'] = $imageInfo[1];
+
+            if (isset($meta['APP13'])) {
+                $iptc = iptcparse($meta['APP13']);
 
                 if (isset($iptc['2#120'])) {
                     $info['caption'] = $iptc['2#120'][0];
                 }
+
                 if (isset($iptc['2#005']) && $iptc['2#005'][0] != '') {
                     $info['title'] = $iptc['2#005'][0];
                 }
+
                 if (isset($iptc['2#025'])) {
                     $info['tags'] = implode(',', $iptc['2#025']);
                 }
-                $location = array();
-                if(isset($iptc['2#090']) && $iptc['2#090'][0] != '') {
+
+                $location = [];
+                if (isset($iptc['2#090']) && $iptc['2#090'][0] != '') {
                   $location[] = $iptc['2#090'][0];
                 }
-                if(isset($iptc["2#095"][0]) && $iptc['2#095'][0] != '') {
+
+                if (isset($iptc["2#095"][0]) && $iptc['2#095'][0] != '') {
                   $location[] = $iptc['2#095'][0];
                 }
-                if(isset($iptc["2#101"]) && $iptc['2#101'][0] != '') {
+
+                if (isset($iptc["2#101"]) && $iptc['2#101'][0] != '') {
                   $location[] = $iptc['2#101'][0];
                 }
+
                 $info['location'] = implode(', ', $location);
             }
         }
+
         return $info;
     }
 
