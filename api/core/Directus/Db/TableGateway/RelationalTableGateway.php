@@ -858,7 +858,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
      * @return array          Revised table rows, now including foreign rows
      */
     public function loadManyToOneRelationships($schemaArray, $table_entries) {
-
         // Identify the ManyToOne columns
         foreach ($schemaArray as $col) {
 
@@ -871,9 +870,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                 $foreign_id_column = $col['id'];
 
-                if(array_key_exists('relationship', $col)) {
+                if (array_key_exists('relationship', $col)) {
                     $foreign_table_name = $col['relationship']['table_related'];
-
                 } else {
                     $message = 'Non single_file Many-to-One relationship lacks `table_related` value.';
                     if(array_key_exists('column_name', $col)) {
@@ -891,12 +889,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         return $row[$foreign_id_column];
                     }
                 };
+
                 $ids = array_map($yield, $table_entries);
                 if (empty($ids)) {
                     continue;
                 }
 
-                if(!TableSchema::canGroupViewTable($foreign_table_name)) {
+                if (!TableSchema::canGroupViewTable($foreign_table_name)) {
                     continue;
                 }
 
@@ -918,19 +917,29 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     $foreign_table[$row['id']] = $row;
                 }
 
+                // Get table column schema
+                $schemaArray = TableSchema::getSchemaArray($foreign_table_name);
+
+                // Eager-load related ManyToOne records
+                $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table);
+
+                // Convert dates into ISO 8601 Format
+                $foreign_table = $this->convertDates($foreign_table, $schemaArray);
+
                 // Replace foreign keys with foreign rows
                 foreach ($table_entries as &$parentRow) {
-                    if(array_key_exists($foreign_id_column, $parentRow)) {
-                        $foreign_id = (int) $parentRow[$foreign_id_column];
+                    if (array_key_exists($foreign_id_column, $parentRow)) {
+                        $foreign_id = (int)$parentRow[$foreign_id_column];
                         $parentRow[$foreign_id_column] = null;
                         // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
-                        if(array_key_exists($foreign_id, $foreign_table)) {
+                        if (array_key_exists($foreign_id, $foreign_table)) {
                             $parentRow[$foreign_id_column] = $foreign_table[$foreign_id];
                         }
                     }
                 }
             }
         }
+
         return $table_entries;
     }
 
@@ -1000,10 +1009,16 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $entry['sort'] = (int)$row[$junction_sort_column_alias];
                 unset($row[$junction_sort_column_alias]);
             }
+
+            $schemaArray = TableSchema::getSchemaArray($foreign_table);
+            $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
+            $row = $this->loadToManyRelationships($row, $alias_fields);
+
             $entry['data'] = $row;
 
-            $foreign_data[] = $entry;
+            $foreign_data[$junction_table_id] = $entry;
         }
+
         return array('rows' => $foreign_data);
     }
 
