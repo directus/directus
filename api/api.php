@@ -51,6 +51,7 @@ use Directus\Exception\ExceptionHandler;
 // use Directus\Files\Upload;
 use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
+use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
 use Directus\Util\SchemaUtils;
 use Directus\Util\DateUtils;
@@ -961,8 +962,8 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
             } else {
                 $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
             }
-            // $requestPayload['file_name'] = $requestPayload['name'];
-            $requestPayload = array_merge($requestPayload, $recordData);
+
+            $requestPayload = array_merge($recordData, ArrayUtils::omit($requestPayload, ['data', 'name']));
         }
         $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
         $params['id'] = $newRecord['id'];
