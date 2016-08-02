@@ -12,6 +12,10 @@ define(function(require, exports, module) {
   // Load layout manager so it can be configured
   require('plugins/backbone.layoutmanager');
 
+  // Load Backbone Model Track it plugin
+  // Track Model changes
+  require('plugins/backbone.trackit');
+
   // Globally load Bootstrap plugins
   require('plugins/bootstrap-dropdown');
   require('plugins/typeahead');

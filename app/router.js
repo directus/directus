@@ -190,11 +190,13 @@ define(function(require, exports, module) {
       this.v.main.getViews('#content').each(function(view) {
         view.$el.hide();
       });
+
+      view.model.startTracking();
       this.v.main.insertView('#content', view).render();
 
       var that=this;
       Backbone.History.prototype.loadUrl = function() {
-        if(that.baseRouteSave == this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?")) {
+        if (!view.model.unsavedAttributes() || (that.baseRouteSave == this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?"))) {
           Backbone.History.prototype.loadUrl = that.oldLoadUrlFunction;
           return that.oldLoadUrlFunction.apply(this, arguments);
         } else {
@@ -206,6 +208,7 @@ define(function(require, exports, module) {
     },
 
     removeOverlayPage: function(view) {
+      view.model.stopTracking();
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last()._wrapped;
       vieww.$el.show();
