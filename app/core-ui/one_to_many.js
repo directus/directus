@@ -53,7 +53,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       var view = new EditView({
         model: model,
         hiddenFields: [columnName],
-        skipFetch: !model.isNew()
+        skipFetch: model.isNew()
       });
 
       view.headerOptions.route.isOverlay = true;
