@@ -208,7 +208,6 @@ define(function(require, exports, module) {
     },
 
     removeOverlayPage: function(view) {
-      view.model.stopTracking();
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last()._wrapped;
       vieww.$el.show();

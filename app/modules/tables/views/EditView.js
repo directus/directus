@@ -22,7 +22,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
         this.insertView("#translateFormEntry", this.translateView);
       }
 
-      if(this.model.isNew()) {
+      if (this.skipFetch || this.model.isNew()) {
         this.editView.render();
       }
     },
@@ -35,6 +35,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       return this.editView.data();
     },
     initialize: function(options) {
+      this.skipFetch = options.skipFetch;
       var uis = options.model.structure.pluck('ui');
       var translationIndex = uis.indexOf('translation');
       if(translationIndex !== -1) {
