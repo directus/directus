@@ -208,7 +208,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       this.setView('#page-content', this.editView);
 
       //Fetch Model if Exists
-      if (this.model.has(this.model.idAttribute)) {
+      if (!this.skipFetch && this.model.has(this.model.idAttribute)) {
         this.model.fetch({
           dontTrackChanges: true,
           error: function(model, XMLHttpRequest) {
@@ -238,13 +238,16 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     },
 
     initialize: function(options) {
+      options = _.defaults({}, options, {skipFetch: false});
       this.headerOptions = this.getHeaderOptions();
       this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');
       this.editView = new EditView(options);
       this.headerOptions.route.isOverlay = false;
       this.headerOptions.basicSave = false;
-      if(this.single) {
+      this.skipFetch = options.skipFetch;
+
+      if (this.single) {
         this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;
         this.headerOptions.route.breadcrumbs = [{ title: __t('tables'), anchor: '#tables'}];
       } else {

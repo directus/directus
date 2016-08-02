@@ -50,7 +50,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
     editModel: function(model) {
       var EditView = require("modules/tables/views/EditView");
       var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({model: model, hiddenFields: [columnName]});
+      var view = new EditView({
+        model: model,
+        hiddenFields: [columnName],
+        skipFetch: !model.isNew()
+      });
 
       view.headerOptions.route.isOverlay = true;
       view.headerOptions.route.breadcrumbs = [];
@@ -85,7 +89,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         parentField: {
           name: columnName,
           value: id
-      }});
+        },
+        skipFetch: true
+      });
 
       view.headerOptions.route.isOverlay = true;
       view.headerOptions.route.breadcrumbs = [];
@@ -192,7 +198,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         relatedCollection.setOrder('sort','ASC',{silent: true});
       }
 
-      this.listenTo(relatedCollection, 'change', function() {
+      this.listenTo(relatedCollection, 'add change', function() {
         //Check if any rendered objects in collection to show or hide header
         if(this.relatedCollection.filter(function(d){return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;}).length > 0) {
           this.nestedTableView.tableHead = true;
