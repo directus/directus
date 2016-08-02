@@ -997,7 +997,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $foreign_data = array();
         $columns = TableSchema::getAllNonAliasTableColumns($foreign_table);
         foreach($results as $row) {
-
             $row = $this->parseRecordValuesByMysqlType($row, $columns);
 
             $junction_table_id = (int) $row[$junction_id_column_alias];
@@ -1016,7 +1015,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
             $entry['data'] = $row;
 
-            $foreign_data[$junction_table_id] = $entry;
+            $foreign_data[] = $entry;
         }
 
         return array('rows' => $foreign_data);
