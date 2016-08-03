@@ -578,8 +578,10 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
 
         if (!SchemaManager::tableExists($requestPayload['table_name'])) {
             $app->emitter->run('table.create:before', $requestPayload['table_name']);
-            // Through API, table name remove spaces and symbols
-            $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
+            // Through API:
+            // Remove spaces and symbols from table name
+            // And in lowercase
+            $requestPayload['table_name'] = strtolower(SchemaUtils::cleanTableName($requestPayload['table_name']));
             SchemaManager::createTable($requestPayload['table_name']);
             $app->emitter->run('table.create', $requestPayload['table_name']);
             $app->emitter->run('table.create:after', $requestPayload['table_name']);
@@ -810,8 +812,10 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
         }
 
         $tableGateway = new TableGateway($acl, $table_name, $ZendDb);
-        // Through API, column name remove spaces and symbols
-        $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
+        // Through API:
+        // Remove spaces and symbols from column name
+        // And in lowercase
+        $requestPayload['column_name'] = strtolower(SchemaUtils::cleanColumnName($requestPayload['column_name']));
         $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
     }
 
