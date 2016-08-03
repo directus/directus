@@ -98,7 +98,7 @@ class DatabaseStep extends AbstractStep
             throw new \InvalidArgumentException(__t('installation_core_table_exists'));
         }
 
-        if (isset($data['db_schema']) && !InstallerUtils::schemaTemplateExists($data['db_schema'], BASE_PATH)) {
+        if (isset($data['db_schema']) && !empty($data['db_schema']) && !InstallerUtils::schemaTemplateExists($data['db_schema'], BASE_PATH)) {
             throw new \InvalidArgumentException(__t('schema_template_x_does_not_exists', [
                 'template' => $data['db_schema']
             ]));
