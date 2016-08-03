@@ -84,6 +84,7 @@ require.config({
     "plugins/jquery.flashrow": ['jquery'],
 
     "plugins/backbone.layoutmanager": ["backbone"],
+    'plugins/backbone.trackit': ['backbone'],
     "plugins/bootstrap-dropdown": ["jquery"],
     "plugins/typeahead": ["jquery"],
     "plugins/bootstrap-tooltip": ["jquery"]
