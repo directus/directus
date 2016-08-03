@@ -176,11 +176,26 @@ class SchemaManager
 
     public static function getTemplates()
     {
-        return [
-            'ui_gallery' => [
-                'id' => 'ui_gallery',
-                'name' => 'UI Gallery'
-            ]
-        ];
+        // @TODO: SchemaManager shouldn't be a class with static methods anymore
+        // the UI templates list will be provided by a container or bootstrap.
+        $path = implode(DIRECTORY_SEPARATOR, [
+            BASE_PATH,
+            'api',
+            'migrations',
+            'templates',
+            '*'
+        ]);
+
+        $templatesDirs = glob($path, GLOB_ONLYDIR);
+        $templatesData = [];
+        foreach($templatesDirs as $dir) {
+            $key = basename($dir);
+            $templatesData[$key] = [
+                'id' => $key,
+                'name' => uc_convert($key)
+            ];
+        }
+
+        return $templatesData;
     }
 }

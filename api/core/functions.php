@@ -5,6 +5,7 @@ if (!function_exists('uc_convert')) {
      * Converts a string to title
      *
      * @param string $text The string to convert.
+     *
      * @return string Formatted string.
      */
     function uc_convert($text)
@@ -23,6 +24,7 @@ if (!function_exists('uc_convert')) {
             "Ipod" => 'iPod',
             "Pdf" => 'PDF',
             "Pdfs" => 'PDFs',
+            'Ui'  => 'UI',
             "Url" => 'URL',
             "Ip" => 'IP',
             "Ftp" => 'FTP',
