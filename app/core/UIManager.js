@@ -345,6 +345,7 @@ define(function(require, exports, module) {
         throw new Error('The UI with id "' + UI.id + '" has no input view');
       }
 
+      options.ui = UI;
       this.triggerBeforeCreateInput(UI, options);
       var view = new UI.Input(options);
       this.triggerAfterCreateInput(UI, options);
