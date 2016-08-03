@@ -200,7 +200,9 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
     },
 
     initialize: function(options) {
-      this.visibleColumn = this.columnSchema.options.get('visible_column');
+      this.visibleColumn = this.columnSchema.options.get('visible_column').split(',').map(function(column) {
+        return column.trim();
+      }).join(',');
       this.includeInactives = this.columnSchema.options.get('include_inactive');
       var value = this.model.get(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
