@@ -3,7 +3,7 @@ define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Ha
   var UIComponent = function(options) {
     _.extend(this, _.pick(UIComponentsOptions, options));
 
-    if (this.supportsNumber()) {
+    if (this.isNumeric() && this.supportsNumber()) {
       this.variables = this.variables || [];
       this.variables.push({
         id: 'footer',
@@ -47,6 +47,9 @@ define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Ha
       data || (data = {});
 
       return template(data);
+    },
+    isNumeric: function() {
+      return this.id == 'numeric';
     },
     supportsNumber: function() {
       return _.some(this.dataTypes, function(type) {
