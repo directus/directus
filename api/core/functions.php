@@ -249,7 +249,7 @@ if (!function_exists('is_locale_available')) {
 
 if (!function_exists('get_default_phrases')) {
     function get_default_phrases() {
-        $phrasesPath = BASE_PATH.'/app/locales/en.json';
+        $phrasesPath = BASE_PATH.'/api/locales/en.json';
 
         return json_decode(file_get_contents($phrasesPath), true);
     }
@@ -258,7 +258,7 @@ if (!function_exists('get_default_phrases')) {
 if (!function_exists('get_phrases')) {
     function get_phrases($locale = 'en') {
         $defaultPhrases = get_default_phrases();
-        $langFile = BASE_PATH.'/customs/locales/'.$locale.'.json';
+        $langFile = BASE_PATH . '/api/locales/'.$locale.'.json';
 
         $phrases = [];
         if (file_exists($langFile)) {
