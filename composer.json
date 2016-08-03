@@ -4,7 +4,7 @@
     "slim/slim": "2.3.2",
     "slim/extras": "dev-develop",
     "twig/twig":  "1.*",
-    "zendframework/zend-db": "2.2.*@dev",
+    "zendframework/zend-db": "dev-directus",
     "directus/migrations": "dev-master",
     "league/flysystem": "^1.0",
     "swiftmailer/swiftmailer": "^5.4"
@@ -34,6 +34,10 @@
     {
       "type": "git",
       "url": "https://github.com/wellingguzman/Slim-Extras"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/wellingguzman/zend-db"
     }
   ]
 }

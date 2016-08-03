@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2249ed5421647024efbb602d74ee2021",
-    "content-hash": "2a4e078394ddd362806ab8c93dcd26c1",
+    "hash": "f3205f6ca0107da21cc2074e1287c4b6",
+    "content-hash": "0946c132c0451fe3e52f1b67cb78a982",
     "packages": [
         {
             "name": "directus/migrations",
@@ -345,21 +345,15 @@
         },
         {
             "name": "zendframework/zend-db",
-            "version": "2.2.10",
+            "version": "dev-directus",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-db.git",
-                "reference": "229dbc409bac376813303d56aec7c6e7da97c480"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-db/zipball/229dbc409bac376813303d56aec7c6e7da97c480",
-                "reference": "229dbc409bac376813303d56aec7c6e7da97c480",
-                "shasum": ""
+                "url": "https://github.com/wellingguzman/zend-db",
+                "reference": "500d52674ff4e92d970015eda74a3d1d3caea71d"
             },
             "require": {
                 "php": ">=5.3.3",
-                "zendframework/zend-stdlib": "self.version"
+                "zendframework/zend-stdlib": "2.2.*@dev"
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "1.7.*",
@@ -372,7 +366,7 @@
             "suggest": {
                 "zendframework/zend-eventmanager": "Zend\\EventManager component",
                 "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
-                "zendframework/zend-stdlib": "2.2.10"
+                "zendframework/zend-stdlib": "dev-directus"
             },
             "type": "library",
             "extra": {
@@ -386,16 +380,21 @@
                     "Zend\\Db\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "ZendTest\\Db\\": "test/"
+                }
+            },
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
             "homepage": "https://github.com/zendframework/zend-db",
             "keywords": [
                 "db",
                 "zf2"
             ],
-            "time": "2015-02-17 19:56:04"
+            "time": "2016-08-03 01:50:57"
         },
         {
             "name": "zendframework/zend-stdlib",
