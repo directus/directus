@@ -191,7 +191,14 @@ define(function(require, exports, module) {
         view.$el.hide();
       });
 
-      view.model.startTracking();
+      // @TODO: move this into a global collection
+      if (view.model) {
+        view.model.startTracking();
+      } else if (view.collection) {
+        view.collection.each(function(model) {
+          model.startTracking();
+        });
+      }
       this.v.main.insertView('#content', view).render();
 
       var that=this;
