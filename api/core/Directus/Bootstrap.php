@@ -421,7 +421,7 @@ class Bootstrap {
      */
     private static function languagesManager()
     {
-        $localesPath = BASE_PATH.'/customs/locales/*.json';
+        $localesPath = BASE_PATH . '/api/locales/*.json';
 
         $languages = [];
         foreach (glob($localesPath) as $filename) {
