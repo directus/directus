@@ -227,7 +227,7 @@ if (!function_exists('get_auth_locale')) {
 
         $userInfo = \Directus\Auth\Provider::getUserRecord();
 
-        return isset($userInfo['locale']) ? $userInfo['locale'] : null;
+        return isset($userInfo['language']) ? $userInfo['language'] : null;
     }
 }
 
