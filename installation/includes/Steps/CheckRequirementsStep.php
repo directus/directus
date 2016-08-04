@@ -36,6 +36,10 @@ class CheckRequirementsStep extends AbstractStep
             $errors[] = 'Composer dependencies must be installed first.';
         }
 
+        if (!ping_server() || !(function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules()))) {
+            $errors[] = 'mod_rewrite does not seem to be installed.';
+        }
+
         $this->response = new StepResponse([]);
         if ($errors) {
             $this->response->addError($errors);

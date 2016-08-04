@@ -1,10 +1,15 @@
 <?php
 
 // Composer Autoloader
-$loader = require __DIR__.'/../vendor/autoload.php';
+$loader = require __DIR__ . '/../vendor/autoload.php';
 
 // Non-autoload components
-require dirname(__FILE__) . '/config.php';
+$configFile = __DIR__ . '/config.php';
+if (!file_exists($configFile)) {
+    return create_ping_server();
+}
+
+require $configFile;
 
 // Define directus environment
 defined('DIRECTUS_ENV')

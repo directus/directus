@@ -51,6 +51,54 @@ if (!function_exists('uc_convert')) {
     }
 }
 
+if (!function_exists('create_ping_server')) {
+    /**
+     * Create a simple Slim app
+     * @return \Slim\Slim
+     */
+    function create_ping_server()
+    {
+        if (!defined('DIRECTUS_ENV')) {
+            define('DIRECTUS_ENV', 'development');
+        }
+
+        if (!defined('APPLICATION_PATH')) {
+            define('APPLICATION_PATH', __DIR__);
+        }
+
+        $app = \Directus\Bootstrap::get('app');
+
+        /**
+         * Ping the server
+         */
+        $app->get("/1/ping/?", function() use ($app) {
+            if ('production' === DIRECTUS_ENV) {
+                return $app->halt('404');
+            }
+
+            return $app->response()->setBody('pong');
+        })->name('ping_Server');
+
+        $app->run();
+
+        return $app;
+    }
+}
+
+if (!function_exists('ping_server')) {
+    /**
+     * Ping the API Server
+     *
+     * @return bool
+     */
+    function ping_server()
+    {
+        $response = @file_get_contents(get_url('/api/1/ping'));
+
+        return $response === 'pong';
+    }
+}
+
 if (!function_exists('is_ssl')) {
     /**
      * Check if ssl is being used
@@ -70,13 +118,13 @@ if (!function_exists('get_url')) {
      * @param $path - Extra path to add to the url
      * @return string
      */
-    function get_url($path = '/')
+    function get_url($path = '')
     {
         $schema = is_ssl() ? 'https://' : 'http://';
+        $directusPath = defined('DIRECTUS_PATH') ? DIRECTUS_PATH : '/';
+        $directusHost = rtrim($_SERVER['HTTP_HOST'] . $directusPath, '/') . '/';
 
-        $path = defined('DIRECTUS_PATH') ? DIRECTUS_PATH : '/';
-
-        return $schema . $_SERVER['HTTP_HOST'] . $path . '/' . ltrim($path, '/');
+        return $schema . $directusHost . ltrim($path, '/');
     }
 }
 

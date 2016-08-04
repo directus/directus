@@ -61,7 +61,7 @@
     <table>
         <tbody>
         <tr>
-            <td class="item"><?=__t('PHP Version');?> >= 5.4.0</td>
+            <td class="item"><?=__t('PHP Version');?> >= 5.5.0</td>
             <td class="result"><span class="label label-success"><?=__t('Yes');?></span></td>
         </tr>
         <tr>
@@ -82,7 +82,7 @@
         </tr>
         <tr>
             <td class="item"><?=__t('mod_rewrite Enabled');?></td>
-            <td class="result"><?php if(function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span><a href="http://getdirectus.com/docs/developer/faq" target="_blank"> ?</a>');}?></td>
+            <td class="result"><?php if(ping_server() && function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span><a href="http://getdirectus.com/docs/developer/faq" target="_blank"> ?</a>');}?></td>
         </tr>
         <tr>
             <td class="item"><?=__t('Config Writable');?> (../api/config.php)</td>
@@ -96,7 +96,7 @@
             <td class="item"><?=__t('Media Directory');?> (/media)</td>
             <td class="result"><?php if(is_writable('../storage/uploads')) { echo '<span class="label label-success">'.__t('Yes').'</span>';} else { echo '<span class="label label-important">'.__t('No').'</span>';}?></td>
         </tr>
-        <?php if(!is_writable('../media')): ?>
+        <?php if(!is_writable('../storage/uploads')): ?>
             <tr>
                 <td><?=__t("The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths.");?></td>
             </tr>
