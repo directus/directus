@@ -24,10 +24,6 @@ define(function(require, exports, module) {
     model: null,
     settings: null,
 
-    isRequired: function() {
-      return this.columnSchema.get('required');
-    },
-
    /**
     * Default constructor
     * @param options
@@ -45,7 +41,6 @@ define(function(require, exports, module) {
       this.name = options.name;
       this.columnSchema = structure.get(this.name);
       this.settings = this.columnSchema.options;
-      this.ui = options.ui;
       this.isRelational = (this.columnSchema.relationship !== undefined);
       this.templateCompileOptions = this.templateCompileOptions || {};
       if (this.templateSource) {

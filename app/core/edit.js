@@ -34,7 +34,7 @@ define(function(require, exports, module) {
         id: this.model.id,
         comment: this.model.get('comment'),
         batchEdit: this.options.batchEdit,
-        required: this.view.isRequired(),
+        required: this.model.get('required'),
         // Let assume for now that all tables that start with directus_ are core tables
         // TODO: we should store all our core tables names
         isCoreTable: tableName ? tableName.indexOf('directus_') === 0 : false,
@@ -43,13 +43,9 @@ define(function(require, exports, module) {
     },
 
     afterRender: function() {
-      if (this.view.isRequired()) {
+      if (this.model.isRequired()) {
         this.$el.addClass('required');
       }
-    },
-
-    initialize: function(options) {
-      this.view = options.view;
     }
 
   });
@@ -121,17 +117,13 @@ define(function(require, exports, module) {
           view.$el.css({'display':'none'});
         }
 
-        if (view.isRequired()) {
+        if (column.isRequired()) {
           view.$el.addClass('required');
           column.set('required', true);
         }
 
         if (!isHidden) {
-          var uiContainer = new UIContainer({
-            model: column,
-            batchEdit: this.options.batchIds !== undefined,
-            view: view
-          });
+          var uiContainer = new UIContainer({model: column, batchEdit: this.options.batchIds !== undefined});
           uiContainer.insertView('.trow', view);
           views[column.id] = uiContainer;
         } else {

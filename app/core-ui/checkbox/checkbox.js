@@ -20,12 +20,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
     },
 
-    isRequired: function() {
-      var settings = this.options.settings;
-
-      return settings.get('mandatory') == 1;
-    },
-
     serialize: function() {
       var value = this.options.value;
 
@@ -61,7 +55,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     validate: function(value, options) {
       // If a checkbox is mandatory, it MUST be checked to save
       // similar to "agree to terms" functionality
-      if (this.Input.isRequired() && value == 0) {
+      if (options.settings.get('mandatory') && value == 0) {
         return __t('this_field_is_required');
       }
     },
