@@ -43,11 +43,15 @@ define(function(require, exports, module) {
     },
 
     afterRender: function() {
-      if (this.view.isRequired()) {
+      var obj = this.view || this.model;
+      if (obj.isRequired()) {
         this.$el.addClass('required');
       }
-    }
+    },
 
+    initialize: function(options) {
+      this.view = options.view;
+    }
   });
 
   var EditView = module.exports = Backbone.Layout.extend({
@@ -110,7 +114,9 @@ define(function(require, exports, module) {
         }
 
         var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
-        this.model.addInput(column.id, view);
+        if (this.model.addInput) {
+          this.model.addInput(column.id, view);
+        }
 
         // Display:none; hidden fields
         var isHidden = _.contains(this.hiddenFields, column.id);
@@ -124,7 +130,11 @@ define(function(require, exports, module) {
         }
 
         if (!isHidden) {
-          var uiContainer = new UIContainer({model: column, batchEdit: this.options.batchIds !== undefined});
+          var uiContainer = new UIContainer({
+            model: column,
+            batchEdit: this.options.batchIds !== undefined,
+            view: view
+          });
           uiContainer.insertView('.trow', view);
           views[column.id] = uiContainer;
         } else {

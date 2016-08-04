@@ -24,6 +24,10 @@ define(function(require, exports, module) {
     model: null,
     settings: null,
 
+    isRequired: function() {
+      return this.columnSchema.get('required');
+    },
+
    /**
     * Default constructor
     * @param options

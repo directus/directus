@@ -362,7 +362,7 @@ define(function(require, exports, module) {
 
       if (UI.validate) {
         return UI.validate(value, {
-          view: model.getInput(attr),
+          view: model.getInput ? model.getInput(attr) : undefined,
           model: model,
           collection: collection,
           settings: schema.options,
