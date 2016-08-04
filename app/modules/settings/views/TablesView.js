@@ -1053,7 +1053,17 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         app.router.removeOverlayPage(view);
       }});
     };
-    model.fetch();
+
+    // hotfix: The server returns 404 not found when the ui settings are not set yet.
+    // this cause the model to get error attributes as ui options
+    model.fetch({
+      // errorPropagation stop the application to catch this error and handle them as actual error
+      errorPropagation: false,
+      // edit module expect a sync event to render the page
+      error: function() {
+        model.trigger('sync', model);
+      }
+    });
   }
 
   return SettingsTables;

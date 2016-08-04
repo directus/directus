@@ -340,7 +340,9 @@ require(["config", 'polyfills'], function() {
           }
         };
 
-        options.error = errorCodeHandler;
+        if (options.errorPropagation !== false) {
+          options.error = errorCodeHandler;
+        }
 
         // Force fix: https://github.com/RNGR/Directus/issues/776
         // when $.ajax global is false there's not global event fired
@@ -424,7 +426,11 @@ require(["config", 'polyfills'], function() {
       });
 
       // Capture sync errors...
-      $(document).ajaxError(function(e, xhr) {
+      $(document).ajaxError(function(e, xhr, settings) {
+        if (settings.errorPropagation === false) {
+          return;
+        }
+
         var type, messageTitle, messageBody, details;
         if(xhr.statusText == "abort") {
           return;

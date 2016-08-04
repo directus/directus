@@ -1560,6 +1560,7 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
     $UiOptions = new DirectusUiTableGateway($acl, $ZendDb);
     $response = $UiOptions->fetchOptions($table, $column, $ui);
     if (!$response) {
+        $app->response()->setStatus(404);
         $response = array(
             'message' => __t('unable_to_find_column_x_options_for_x', ['column' => $column, 'ui' => $ui]),
             'success' => false
