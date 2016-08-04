@@ -360,8 +360,9 @@ define(function(require, exports, module) {
       var schema = structure.get(attr);
       var UI = this._getModelUI(model, attr, schema);
 
-      if (UI.hasOwnProperty('validate')) {
+      if (UI.validate) {
         return UI.validate(value, {
+          view: model.getInput(attr),
           model: model,
           collection: collection,
           settings: schema.options,

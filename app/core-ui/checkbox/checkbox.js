@@ -55,7 +55,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     validate: function(value, options) {
       // If a checkbox is mandatory, it MUST be checked to save
       // similar to "agree to terms" functionality
-      if (options.settings.get('mandatory') && value == 0) {
+      if (options.view.isRequired() && value == 0) {
         return __t('this_field_is_required');
       }
     },

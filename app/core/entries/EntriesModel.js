@@ -13,6 +13,16 @@ define(function(require, exports, module) {
 
   var EntriesModel = module.exports = Backbone.Model.extend({
 
+    inputs: {},
+
+    addInput: function(attr, input) {
+      this.inputs[attr] = input;
+    },
+
+    getInput: function(attr) {
+      return this.inputs[attr];
+    },
+
     parse: function(result) {
 
       this._lastFetchedResult = result;

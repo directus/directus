@@ -43,7 +43,7 @@ define(function(require, exports, module) {
     },
 
     afterRender: function() {
-      if (this.model.isRequired()) {
+      if (this.view.isRequired()) {
         this.$el.addClass('required');
       }
     }
@@ -110,6 +110,7 @@ define(function(require, exports, module) {
         }
 
         var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
+        this.model.addInput(column.id, view);
 
         // Display:none; hidden fields
         var isHidden = _.contains(this.hiddenFields, column.id);
@@ -117,7 +118,7 @@ define(function(require, exports, module) {
           view.$el.css({'display':'none'});
         }
 
-        if (column.isRequired()) {
+        if (view.isRequired()) {
           view.$el.addClass('required');
           column.set('required', true);
         }
