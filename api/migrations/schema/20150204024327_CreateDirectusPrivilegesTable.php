@@ -80,9 +80,10 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
                 'character' => 'latin1',
             )
         );
-        $t->column('listed', 'tinyinteger', array(
+        $t->column('nav_listed', 'tinyinteger', array(
+                'null' => false,
                 'limit' => 1,
-                'default' => NULL
+                'default' => 0
             )
         );
         $t->column('status_id', 'tinyinteger', array(

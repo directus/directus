@@ -33,30 +33,21 @@ function(app, Backbone, EntriesManager, __t, Notification) {
       return 0;
     },
 
-    setActive: function(route, pref) {
+    setActive: function(route) {
       var activeModel;
-      var prefSuffix = _.isString(pref) ? '/pref/' + pref : '';
-      var routeURL = encodeURI(route+prefSuffix);
+      var routeURL = route;
       var found = false;
 
-      // Sort url desc so it match bookmarks first.
-      // This: tables/customers/pref/female
-      // will be selected first
-      // than: tables/customers
-      var models = _.sortBy(this.models, function(model) {
-        return model.get('url');
-      }).reverse();
-
-      _.each(models, function(model) {
+      _.each(this.models, function(model) {
         model.unset('active_bookmark', {silent: true});
-        if((routeURL).indexOf(model.get('url')) === 0 && !found) {
+        if (routeURL == model.get('url') && !found) {
           activeModel = model;
           found = true;
         }
       });
 
-      if(activeModel) {
-        activeModel.set({'active_bookmark':true});
+      if (activeModel) {
+        activeModel.set({'active_bookmark': true});
       }
     },
 
@@ -311,8 +302,8 @@ function(app, Backbone, EntriesManager, __t, Notification) {
       });
     },
 
-    setActive: function(route, pref) {
-      this.collection.setActive(route, pref);
+    setActive: function(route) {
+      this.collection.setActive(route);
       this.render();
     }
 

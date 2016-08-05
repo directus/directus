@@ -148,9 +148,11 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             ->selectWith($select)
             ->current();
 
-        if($preferences) {
+        if ($preferences) {
             $preferences = $preferences->toArray();
-        } else {
+        }
+
+        if ($preferences) {
             $preferences = $this->constructPreferences($user_id, $table, $preferences);
         }
 

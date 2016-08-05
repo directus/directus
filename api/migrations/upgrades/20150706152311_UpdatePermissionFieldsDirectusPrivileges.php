@@ -51,7 +51,8 @@ class UpdatePermissionFieldsDirectusPrivileges extends Ruckusing_Migration_Base
             $this->rename_column('directus_privileges', 'listed', 'nav_listed');
             $this->change_column('directus_privileges', 'nav_listed', 'tinyinteger', array(
                 'null' => false,
-                'default' => 1
+                'limit' => 1,
+                'default' => 0
             ));
         }
     }//up()

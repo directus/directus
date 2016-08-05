@@ -392,7 +392,9 @@ function(app, Backbone, Handlebars) {
 
     initialize: function() {
       this.options.filters = [];
-      this.listenTo(this.collection.preferences, 'sync', function(){this.updateFiltersFromPreference();});
+      this.listenTo(this.collection.preferences, 'change sync', function() {
+        this.updateFiltersFromPreference();
+      });
       this.basePage = this.options.basePage;
       if(app.router.loadedPreference) {
         if(this.basePage) {

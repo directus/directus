@@ -265,8 +265,6 @@ define(function(require, exports, module) {
         collection = EntriesManager.getInstance(tableName);
       }
 
-
-
       if (collection.table.get('single')) {
         if(collection.models.length) {
           this.entry(tableName, collection.models[0].get('id'));
@@ -288,17 +286,11 @@ define(function(require, exports, module) {
       }
 
       //Clear loaded preference if navigating to new entries
-      if(this.lastRoute != 'tables/' + tableName && this.loadedPreference) {
+      if (this.loadedPreference) {
         this.loadedPreference = undefined;
       }
 
-      if(pref) {
-        this.navigate("/tables/" + tableName);
-
-        if(this.lastRoute == 'tables/' + tableName && this.loadedPreference == pref) {
-          return;
-        }
-
+      if (pref) {
         this.loadedPreference = pref;
       }
 
@@ -538,13 +530,11 @@ define(function(require, exports, module) {
       // try to set the current active nav
       var currentPath = Backbone.history.fragment;
       var bookmarksView = this.v.main.getView('#sidebar').getView('#mainSidebar');
-      bookmarksView.setActive(currentPath, this.loadedPreference);
-      // var pref = fragments.slice(1).filter(function(fragment) {
-      //   return fragment;
-      // });
+      bookmarksView.setActive(currentPath);
+
       this.lastRoute = currentPath;
       if ( this.loadedPreference ) {
-        this.lastRoute += '/' + this.loadedPreference; // pref.join('/');
+        this.lastRoute += '/' + this.loadedPreference;
       }
 
       // update user last route

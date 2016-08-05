@@ -1053,10 +1053,18 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($ZendDb, $acl
 
     if(isset($params['newTitle'])) {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
-        // $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
     } else {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table);
     }
+
+    if (!$jsonResponse) {
+        $app->response()->setStatus(404);
+        $jsonResponse = array(
+            'message' => __t('unable_to_find_preferences'),
+            'success' => false
+        );
+    }
+
     JsonView::render($jsonResponse);
 })->via('GET','POST','PUT', 'DELETE');
 
