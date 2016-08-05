@@ -422,10 +422,10 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
         $app->halt(200, __t('password_reset_expired_token'));
     }
 
-    $password = StringUtils::random();
+    $password = StringUtils::randomString();
     $set = [];
     // @NOTE: this is not being used for hashing the password anymore
-    $set['salt'] = StringUtils::random();
+    $set['salt'] = StringUtils::randomString();
     $set['password'] = Auth::hashPassword($password, $set['salt']);
     $set['reset_token'] = '';
 
@@ -470,7 +470,7 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
     $reset_expiration = $date->format('Y-m-d H:i:s');
 
     $set = [];
-    $set['reset_token'] = StringUtils::random(20);
+    $set['reset_token'] = StringUtils::randomString(20);
     $set['reset_expiration'] = $reset_expiration;
 
     // Skip ACL

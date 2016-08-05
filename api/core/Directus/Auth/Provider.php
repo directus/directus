@@ -215,7 +215,7 @@ class Provider {
         if(self::loggedIn()) {
             throw new UserAlreadyLoggedInException(__t('attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'));
         }
-        $user = array( 'id' => $uid, 'access_token' => sha1($uid.StringUtils::random()) );
+        $user = array( 'id' => $uid, 'access_token' => sha1($uid . StringUtils::randomString()) );
         $_SESSION[self::$SESSION_KEY] = $user;
         self::$authenticated = true;
     }

@@ -156,7 +156,7 @@ class InstallerUtils
             'last_name' => 'User',
             'email' => $data['directus_email'],
             'password' => $hash,
-            'salt' => StringUtils::random(),
+            'salt' => StringUtils::randomString(),
             'group' => 1,
             'language' => $data['default_language']
         ]);
