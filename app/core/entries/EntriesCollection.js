@@ -88,7 +88,7 @@ define(function(require, exports, module) {
 
       var visibleStates = this.getFilter('status').split(',');
       totalCount = 0;
-debugger;
+
       var that = this;
       visibleStates.forEach(function(state) {
         if(state in app.statusMapping.mapping && that.table.has(app.statusMapping.mapping[state].name)) {
