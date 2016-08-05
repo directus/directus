@@ -558,6 +558,13 @@ $app->get("/$v/privileges/:groupId(/:tableName)/?", function ($groupId, $tableNa
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);
     $response = $privileges->fetchPerTable($groupId, $tableName);
+    if (!$response) {
+        $app->response()->setStatus(404);
+        $response = array(
+            'message' => __t('unable_to_find_privileges_for_x_in_group_x',['table' => $tableName, 'group_id' => $groupId]),
+            'success' => false
+        );
+    }
 
     return JsonView::render($response);
 });
