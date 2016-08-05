@@ -31,12 +31,6 @@ define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Ha
     list: function(options) {
       return options.value;
     },
-    // Validate gets called when model is attepting to save. It returns an error message if there is a validation issue, none if it is valid
-    // @param value : String : Value for this UI
-    // @param options : Object : Contains Options for this UI (collection [TableCollection], model [EntriesModel], schema, settings)
-    validate: function(value, options) {
-      return true;
-    },
     // Value used to sort the UI
     sort: function(options) {
       return options.value;
