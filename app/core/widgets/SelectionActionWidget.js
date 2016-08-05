@@ -52,7 +52,7 @@ function(app, Backbone, Handlebars) {
     doAction: function(e) {
       var value = $(e.target).closest('li').attr('data-value');
       var collection = this.collection;
-      var active = collection.getFilter('active');
+      var status = collection.getFilter('status');
       var $checked = $('.select-row:checked');
       var models = [];
       var actionCollection = collection.clone();

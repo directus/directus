@@ -44,17 +44,17 @@ function(app, Backbone, Sortable, Notification) {
     },
 
     serialize: function() {
-      var rowIdentifiers, activeState, models, rows;
-      var activeColumns = this.collection.getFilter('active') || "1,2";
+      var rowIdentifiers, statusState, models, rows;
+      var statusColumns = this.collection.getFilter('status') || '1,2';
       var highlightIds = this.options.highlight || [];
 
       rowIdentifiers = this.options.rowIdentifiers;
 
       //Filter active/inactive/deleted items
-      activeState = _.map(activeColumns,Number);
+      statusState = _.map(statusColumns,Number);
       models = this.collection.filter(function(model) {
         if (model.has(app.statusMapping.status_name)) {
-          return (_.indexOf(activeState, Number(model.get(app.statusMapping.status_name))) > -1);
+          return (_.indexOf(statusState, Number(model.get(app.statusMapping.status_name))) > -1);
         } else {
           return true;
         }

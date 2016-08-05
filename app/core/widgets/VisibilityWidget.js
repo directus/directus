@@ -38,14 +38,15 @@ function(app, Backbone, Handlebars, PreferenceModel) {
         if($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
           var value = $(e.target).val();
           var name = {currentPage: 0};
-          name[app.statusMapping.status_name] = value;
+          name['status'] = value;
           this.collection.setFilter(name);
 
           this.listenToOnce(this.collection.preferences, 'sync', function() {
-            if(this.basePage) {
+            if (this.basePage) {
               this.basePage.removeHolding(this.cid);
             }
-            if(this.defaultId) {
+
+            if (this.defaultId) {
               this.collection.preferences.set({title:null, id: this.defaultId});
             }
           });
@@ -56,39 +57,42 @@ function(app, Backbone, Handlebars, PreferenceModel) {
     serialize: function() {
       var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};
       var mapping = app.statusMapping.mapping;
-      var statusSelected = this.collection.getFilter(app.statusMapping.status_name);
+      var statusSelected = this.collection.getFilter('status');
 
       var keys = [];
-      for(var key in mapping) {
+      for (var key in mapping) {
         //Do not show option for deleted status
-        if(key != app.statusMapping.deleted_num) {
+        if (key != app.statusMapping.deleted_num) {
           data.mapping.push({
             id: key,
             name: mapping[key].name,
             sort: mapping[key].sort,
-            isSelected: statusSelected == key ? true : false
+            isSelected: statusSelected == key
           });
           keys.push(key);
         }
       }
 
       data.mapping.sort(function(a, b) {
-        if(a.sort < b.sort) {
+        if (a.sort < b.sort) {
           return -1;
         }
-        if(a.sort > b.sort) {
+
+        if (a.sort > b.sort) {
           return 1;
         }
+
         return 0;
       });
 
       data.allKeys = keys.join(',');
+
       return data;
     },
 
     afterRender: function() {
-      if(this.options.hasActiveColumn) {
-        $('#visibilitySelect').val(this.collection.preferences.get(app.statusMapping.status_name));
+      if (this.options.hasActiveColumn) {
+        $('#visibilitySelect').val(this.collection.preferences.get('status'));
       }
 
       // Adjust dropdown width dynamically
@@ -103,27 +107,28 @@ function(app, Backbone, Handlebars, PreferenceModel) {
 
       this.collection.on('sync', this.render, this);
 
-      if(this.collection.table.columns.get(app.statusMapping.status_name)) {
+      if (this.collection.table.columns.get(app.statusMapping.status_name)) {
         this.options.hasActiveColumn = true;
       }
 
       var options = {};
-      if(app.router.loadedPreference) {
+      if (app.router.loadedPreference) {
         options = {newTitle: app.router.loadedPreference};
       }
 
       this.listenToOnce(this.collection.preferences, 'sync', function() {
-        if(this.basePage) {
+        if (this.basePage) {
           this.basePage.removeHolding(this.cid);
         }
-        if(this.defaultId) {
+
+        if (this.defaultId) {
           this.collection.preferences.set({title:null, id: this.defaultId});
         }
       });
 
       this.defaultId = this.collection.preferences.get('id');
       this.collection.preferences.fetch(options);
-      if(this.basePage) {
+      if (this.basePage) {
         this.basePage.addHolding(this.cid);
       }
     }

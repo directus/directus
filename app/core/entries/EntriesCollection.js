@@ -61,7 +61,7 @@ define(function(require, exports, module) {
         preferences.columns_visible = preferences.columns_visible.split(',');
       }
 
-      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', app.statusMapping.status_name));
+      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'status'));
 
       // preferences normally trump filters, this is an edge case
       // @todo fix the data structure to make this logic less wierd
@@ -86,9 +86,9 @@ define(function(require, exports, module) {
         return Math.max(this.table.get('total'), collectionCount);
       }
 
-      var visibleStates = this.getFilter(app.statusMapping.status_name).split(',');
+      var visibleStates = this.getFilter('status').split(',');
       totalCount = 0;
-
+debugger;
       var that = this;
       visibleStates.forEach(function(state) {
         if(state in app.statusMapping.mapping && that.table.has(app.statusMapping.mapping[state].name)) {
@@ -97,7 +97,6 @@ define(function(require, exports, module) {
       });
 
       return Math.max(totalCount, collectionCount);
-
     },
 
     updateActiveCount: function(diff) {
@@ -105,7 +104,7 @@ define(function(require, exports, module) {
         return;
       }
 
-      switch (this.getFilter('active')) {
+      switch (this.getFilter('status')) {
         case '1':
           this.table.set({'active': this.table.get('active') - diff});
           break;
@@ -358,7 +357,7 @@ define(function(require, exports, module) {
         this.filters['sort'] = 'sort';
       }
 
-      this.filters[app.statusMapping.status_name] = '1,2';
+      this.filters['status'] = '1,2';
 
       if (options.preferences) {
         this.preferences = options.preferences;
