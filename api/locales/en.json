@@ -389,6 +389,11 @@
   "schema_template_x_does_not_exists": "Schema Template '%{template}' does not exists.",
   "mysql_strict_mode_warning": "MySQL Strict mode is enabled, this mode can make Directus throw errors at some point due to a limitations with the PDO and the MySQL Driver",
 
+  "max_file_size_exceeded": "Max file size exceeded.",
+  "max_file_size_exceeded_x_x": "Max file size exceeded. (%{size}%{unit})",
+  "server_error": "Server Error",
+  "restricted_access": "Restricted Access",
+
   "ok": "OK",
   "cancel": "Cancel",
   "yes": "Yes",

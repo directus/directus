@@ -86,16 +86,8 @@ class Files
         $filePath = $file['tmp_name'];
         $fileName = $file['name'];
 
-        try {
-            $fileData = array_merge($this->defaults, $this->processUpload($filePath, $fileName));
-            $this->createThumbnails($fileData['name']);
-        } catch (FileNotFoundException $e) {
-            echo $e->getMessage();
-            exit;
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            exit;
-        }
+        $fileData = array_merge($this->defaults, $this->processUpload($filePath, $fileName));
+        $this->createThumbnails($fileData['name']);
 
         return [
             'type' => $fileData['type'],

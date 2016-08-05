@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/constants.php';
+
 if (!function_exists('uc_convert')) {
     /**
      * Converts a string to title
@@ -538,5 +540,45 @@ if (!function_exists('get_timezones_list')) {
             'Pacific/Auckland' => '(UTC+12:00) Wellington',
             'Pacific/Tongatapu' => '(UTC+13:00) Nuku\'alofa',
         ];
+    }
+}
+
+if (!function_exists('convert_shorthand_size_to_bytes')) {
+    /**
+     * Convert shorthand size into bytes
+     *
+     * @param $size - shorthand size
+     *
+     * @return int
+     */
+    function convert_shorthand_size_to_bytes($size)
+    {
+        $size = strtolower($size);
+        $bytes = (int)$size;
+
+        if (strpos($size, 'k') !== false) {
+            $bytes = intval($size) * KB_IN_BYTES;
+        } elseif (strpos($size, 'm') !== false) {
+            $bytes = intval($size) * MB_IN_BYTES;
+        } elseif (strpos($size, 'g') !== false) {
+            $bytes = intval($size) * GB_IN_BYTES;
+        }
+
+        return $bytes;
+    }
+}
+
+if (!function_exists('get_max_upload_size')) {
+    /**
+     * Get the maximum upload size in bytes
+     *
+     * @return int
+     */
+    function get_max_upload_size()
+    {
+        $maxUploadSize = convert_shorthand_size_to_bytes(ini_get('upload_max_filesize'));
+        $maxPostSize = convert_shorthand_size_to_bytes(ini_get('post_max_size'));
+
+        return min($maxUploadSize, $maxPostSize);
     }
 }

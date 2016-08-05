@@ -4,6 +4,7 @@ define([
   'core/modal',
   'core/edit',
   'core/t',
+  'core/notification',
   'core/BasePageView',
   'core/table/table.view',
   'core/widgets/widgets',
@@ -11,7 +12,7 @@ define([
   'modules/files/views/FilesCardView'
 ],
 
-function(app, Backbone, DirectusModal, DirectusEdit, __t, BasePageView, DirectusTable, Widgets, EditFilesView, FilesCardView) {
+function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePageView, DirectusTable, Widgets, EditFilesView, FilesCardView) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -137,18 +138,34 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, BasePageView, Directus
       }
     },
     uploadNextImage: function() {
-      if(this.uploadFiles.length <= 0) {
+      if (this.uploadFiles.length <= 0) {
         this.uploadInProgress = false;
+
         return;
       }
 
       var that = this;
-      var fileInfo = this.uploadFiles[0];
+      var fileInfo = this.uploadFiles.shift();
+      if (app.settings.isMaxFileSizeExceeded(fileInfo.fileInfo)) {
+        this.uploadInProgress = false;
+        Notification.error(__t('max_file_size_exceeded_x_x', {
+          size: app.settings.getMaxFileSize(),
+          unit: app.settings.getMaxFileSizeUnit()
+        }));
+
+        this.collection.remove(fileInfo.model);
+        this.collection.trigger('sync');
+
+        that.uploadNextImage();
+
+        return false;
+      }
+
 
       $(document).off('ajaxStart.directus');
 
       app.sendFiles([fileInfo.fileInfo], function(data) {
-        if(typeof(data[0]) == 'object') {
+        if (data && typeof(data[0]) == 'object') {
           fileInfo.model.save(data[0], {
             success: function() {
               that.collection.sort();
@@ -169,7 +186,6 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, BasePageView, Directus
             includeRelationships: true
           });
           that.collection.trigger('sync');
-          that.uploadFiles.shift();
           that.uploadNextImage();
         } else {
           $(document).on('ajaxStart.directus', function() {
@@ -177,7 +193,6 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, BasePageView, Directus
           });
           that.collection.remove(fileInfo.model);
           that.collection.trigger('sync');
-          that.uploadFiles.shift();
           that.uploadNextImage();
         }
       }, function(e) {

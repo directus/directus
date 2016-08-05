@@ -2,10 +2,12 @@ define([
   'app',
   'backbone',
   'core/entries/EntriesModel',
+  'core/notification',
+  'core/t',
   'helpers/file'
 ],
 
-function(app, Backbone, EntriesModel, File) {
+function(app, Backbone, EntriesModel, Notification, __t, File) {
   var FilesModel = EntriesModel.extend({
 
     initialize: function() {
@@ -30,7 +32,7 @@ function(app, Backbone, EntriesModel, File) {
         atts = _.clone(this.attributes);
       }
 
-      return _.omit(atts, 'thumbnailData', 'file_url', 'file_thumb_url', 'thumbnail_url', 'html');
+      return _.omit(atts, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'thumbnail_url', 'html');
     },
 
     formatTitle: function(name) {
@@ -44,6 +46,15 @@ function(app, Backbone, EntriesModel, File) {
       var model = this;
 
       if (!app.settings.isFileAllowed(file)) {
+        return false;
+      }
+
+      if (app.settings.isMaxFileSizeExceeded(file)) {
+        Notification.error(__t('max_file_size_exceeded_x_x', {
+          size: app.settings.getMaxFileSize(),
+          unit: app.settings.getMaxFileSizeUnit()
+        }));
+
         return false;
       }
 

@@ -14,6 +14,7 @@ require(["config", 'polyfills'], function() {
     'router',
     'backbone',
     'alerts',
+    'core/t',
     'core/tabs',
     'core/bookmarks',
     'modules/messages/messages',
@@ -28,7 +29,7 @@ require(["config", 'polyfills'], function() {
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
+  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
 
     "use strict";
 
@@ -435,25 +436,47 @@ require(["config", 'polyfills'], function() {
         if(xhr.statusText == "abort") {
           return;
         }
-        switch(xhr.status) {
-          case 403:
-            // var response = $.parseJSON(xhr.responseText);
-            messageTitle = 'Restricted Access';
-            // messageBody = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
-            details = true;
-            break;
-          default:
-            type = 'Server ' + xhr.status;
-            messageTitle = "Server Error";
-            details = encodeURIComponent(xhr.responseText);
-            // app.logErrorToServer(type, messageTitle, details);
-            break;
-        }
 
         if(xhr.responseJSON) {
           messageBody = xhr.responseJSON.message;
         } else {
           messageBody = xhr.responseText;
+        }
+
+        switch(xhr.status) {
+          case 403:
+            // var response = $.parseJSON(xhr.responseText);
+            messageTitle = __t('restricted_access');
+            // messageBody = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
+            details = true;
+            break;
+          case 413:
+            details = false;
+            messageTitle = __t('max_file_size_exceeded_x_x', {
+              size: app.settings.getMaxFileSize(),
+              unit: app.settings.getMaxFileSizeUnit()
+            });
+            break;
+          default:
+            type = 'Server ' + xhr.status;
+            messageTitle = __t('server_error');
+            details = encodeURIComponent(xhr.responseText);
+
+            if (_.isString(messageBody)) {
+              try {
+                messageBody = JSON.parse(messageBody);
+              } catch (e) {
+                // do nothing
+              }
+            }
+
+            if (messageBody.message) {
+              messageBody = messageBody.message;
+              details = false;
+            }
+
+            // app.logErrorToServer(type, messageTitle, details);
+            break;
         }
 
         app.trigger('alert:error', messageTitle, messageBody, details)

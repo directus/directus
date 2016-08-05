@@ -194,6 +194,10 @@ function getSettings() {
     $settings = new DirectusSettingsTableGateway($acl, $ZendDb);
     $items = array();
     foreach ($settings->fetchAll() as $key => $value) {
+        if ($key == 'global') {
+            $value['max_file_size'] = get_max_upload_size();
+        }
+
         $value['id'] = $key;
         $items[] = $value;
     };
