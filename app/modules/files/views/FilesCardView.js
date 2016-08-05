@@ -47,7 +47,7 @@ function(app, Backbone, Widgets, moment) {
         // While loading
         if (!data.id) {
           data.thumbnail = '<div class="default-loading"><span class="icon icon-three-dots"></span></div>';
-        } else if(type == 'image' || type == 'embed' || subtype == "pdf") {
+        } else if ((type == 'image' || type == 'embed' || subtype == 'pdf') && model.makeFileUrl(true)) {
           data.thumbnail = '<img src="'+model.makeFileUrl(true)+'">';
         } else {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';

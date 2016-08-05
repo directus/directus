@@ -156,7 +156,9 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
           data.type = subtype.toUpperCase();
         }
 
-        data.html = $(model.get('html')).css({width: 300, height: 200}).prop('outerHTML');
+        if (model.get('html')) {
+          data.html = $(model.get('html')).css({width: 300, height: 200}).prop('outerHTML');
+        }
       }
 
       return data;

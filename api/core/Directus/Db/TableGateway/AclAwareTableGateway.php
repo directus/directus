@@ -14,6 +14,7 @@ use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
+use Directus\Files\Files;
 use Directus\Hook\Hook;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
@@ -476,8 +477,9 @@ class AclAwareTableGateway extends TableGateway {
     {
         // Add file url and thumb url
         if ($selectState['table'] == 'directus_files') {
-            $files = $result->toArray();
-            foreach ($files as &$row) {
+            $fileRows = $result->toArray();
+            $files = new Files();
+            foreach ($fileRows as &$row) {
                 $config = Bootstrap::get('config');
                 $fileURL = $config['filesystem']['root_url'];
                 $thumbnailURL = $config['filesystem']['root_thumb_url'];
@@ -490,6 +492,10 @@ class AclAwareTableGateway extends TableGateway {
                 }
 
                 $row['thumbnail_url'] = $thumbnailURL . '/' . $row['id'] . '.' . $thumbnailExtension;
+                // hotfix: there's not thumbnail for this file
+                if (!$files->exists($row['thumbnail_url'])) {
+                    $row['thumbnail_url'] = null;
+                }
 
                 $embedManager = Bootstrap::get('embedManager');
                 $provider = $embedManager->getByType($row['type']);
@@ -499,7 +505,7 @@ class AclAwareTableGateway extends TableGateway {
                 }
             }
 
-            $filesArrayObject = new \ArrayObject($files);
+            $filesArrayObject = new \ArrayObject($fileRows);
             $result->initialize($filesArrayObject->getIterator());
         }
 

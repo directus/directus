@@ -126,7 +126,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
         name[app.statusMapping.status_name] = app.statusMapping.active_num;
         // All files should be sort by date
         // Setting a temporary date will make this uploading file first on the list.
-        name['date_uploaded'] = moment().utc().format('YYYY-MM-DD YYYY, hh:mm:ss') + ' UTC';
+        name['date_uploaded'] = (new Date).toISOString();
         var  model = new that.collection.model(name, {collection: that.collection, parse: true});
         that.collection.add(model);
         that.uploadFiles.push({model: model, fileInfo: file});
