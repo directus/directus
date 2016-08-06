@@ -444,6 +444,7 @@ if (!function_exists('get_timezones_list')) {
             'America/Lima' => '(UTC-05:00) Lima',
             'America/Bogota' => '(UTC-05:00) Quito',
             'Canada/Atlantic' => '(UTC-04:00) Atlantic Time (Canada)',
+            'America/New_York' => '(UTC-04:00) New York',
             'America/Caracas' => '(UTC-04:30) Caracas',
             'America/La_Paz' => '(UTC-04:00) La Paz',
             'America/Santiago' => '(UTC-04:00) Santiago',
