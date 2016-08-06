@@ -69,7 +69,7 @@
   "left_column": "Left Column",
   "right_column": "Right Column",
   "relationship_settings": "Relationship Settings",
-  "unregistered_tables": "Unregistered tables",
+  "unregistered_tables": "Unregistered Tables",
   "allow_null": "Allow Null: %{is_nullable}",
   "system_column_details_default": "This is a system field",
   "system_column_details_id": "System Field: (Required) Unique Primary-Key for each item",
