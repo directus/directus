@@ -266,13 +266,13 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      var status = this.collection.preferences.attributes['status'];
+      var status = this.collection.preferences.get('status');
       // Ignore preferences and get all users
       // @todo: make a better solution
       this.collection.preferences.unset('status');
       this.collection.filters['status'] = '0,1,2';
       this.collection.fetch();
-      this.collection.preferences.set('status', active);
+      this.collection.preferences.set('status', status);
     },
 
     initialize: function() {
