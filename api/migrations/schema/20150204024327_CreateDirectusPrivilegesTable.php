@@ -122,7 +122,7 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
                 'group_id' => 1,
                 'read_field_blacklist' => NULL,
                 'write_field_blacklist' => NULL,
-                'listed' => NULL
+                'nav_listed' => 1
             ]);
         }
     }//up()
