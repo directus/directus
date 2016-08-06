@@ -91,7 +91,7 @@ if (!function_exists('create_ping_route')) {
 if (!function_exists('create_ping_server')) {
     /**
      * Create a simple Slim app
-     * 
+     *
      * @return \Slim\Slim
      */
     function create_ping_server()

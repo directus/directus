@@ -66,7 +66,7 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
           "default"=>"ASC"
         )
       );
-      $t->column("active", "string", array(
+      $t->column("status", "string", array(
           "limit"=>5,
           "default"=>3
         )
