@@ -53,9 +53,45 @@ if (!function_exists('uc_convert')) {
     }
 }
 
+if (!function_exists('ping_route')) {
+    function ping_route($app)
+    {
+        return function() use ($app)
+        {
+            if ('production' === DIRECTUS_ENV) {
+                return $app->halt('404');
+            }
+
+            return $app->response()->setBody('pong');
+        };
+    }
+}
+
+if (!function_exists('create_ping_route')) {
+    /**
+     * Create a new ping the server route
+     *
+     * @param $app
+     *
+     * @return \Slim\Slim
+     */
+    function create_ping_route($app)
+    {
+        /**
+         * Ping the server
+         */
+        $apiVersion = defined('API_VERSION') ? API_VERSION : '1';
+
+        $app->get('/' . $apiVersion . '/ping/?', ping_route($app))->name('ping_server');
+
+        return $app;
+    }
+}
+
 if (!function_exists('create_ping_server')) {
     /**
      * Create a simple Slim app
+     * 
      * @return \Slim\Slim
      */
     function create_ping_server()
@@ -70,17 +106,7 @@ if (!function_exists('create_ping_server')) {
 
         $app = \Directus\Bootstrap::get('app');
 
-        /**
-         * Ping the server
-         */
-        $app->get("/1/ping/?", function() use ($app) {
-            if ('production' === DIRECTUS_ENV) {
-                return $app->halt('404');
-            }
-
-            return $app->response()->setBody('pong');
-        })->name('ping_Server');
-
+        create_ping_route($app);
         $app->run();
 
         return $app;

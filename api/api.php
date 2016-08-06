@@ -132,6 +132,11 @@ $acl = Bootstrap::get('acl');
 
 $app->emitter->run('application.boot', $app);
 
+/**
+ * Creates and /<version>/ping endpoint
+ */
+create_ping_route($app);
+
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl) {
     // API/Server is about to initialize
     $app->emitter->run('application.init', $app);
