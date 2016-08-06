@@ -82,7 +82,7 @@
         </tr>
         <tr>
             <td class="item"><?=__t('mod_rewrite Enabled');?></td>
-            <td class="result"><?php if(ping_server() && function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span><a href="http://getdirectus.com/docs/developer/faq" target="_blank"> ?</a>');}?></td>
+            <td class="result"><?php if (ping_server()) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span><a href="http://getdirectus.com/docs/developer/faq" target="_blank"> ?</a>');}?></td>
         </tr>
         <tr>
             <td class="item"><?=__t('Config Writable');?> (../api/config.php)</td>
