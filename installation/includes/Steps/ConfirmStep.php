@@ -78,7 +78,7 @@ class ConfirmStep extends AbstractStep
             'project' => [
                 'name' => $stepsData['directus_name'],
                 'version' => DIRECTUS_VERSION,
-                'url' => get_full_url()
+                'url' => get_url()
             ],
             'database' => [
                 'host' => $stepsData['db_host'],
