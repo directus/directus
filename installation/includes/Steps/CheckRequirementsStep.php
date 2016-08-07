@@ -43,9 +43,4 @@ class CheckRequirementsStep extends AbstractStep
 
         return $this->response;
     }
-
-    public function validate($data)
-    {
-        parent::validate($data);
-    }
 }

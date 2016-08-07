@@ -299,4 +299,7 @@ input[type=number] {
 .error {
   border: 1px solid #c1272d !important; }
 
+.errors {
+  color: #c1272d; }
+
 /*# sourceMappingURL=install.css.map */

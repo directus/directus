@@ -25,6 +25,12 @@
     <hr>
     <table>
         <tbody>
+        <?php if ($data->getSafe('strict_mode_enabled') === true): ?>
+        <tr id="strict_mode_enabled">
+            <td class="item"><?=__t('Strict Mode Disabled');?></td>
+            <td class="result"><span class="label label-important"><?=__t('No');?></span><a href="http://getdirectus.com/docs/developer/installation" target="_blank"> ?</a></td>
+        </tr>
+        <?php endif; ?>
         <tr>
             <td class="item"><?=__t('Database');?></td>
             <td class="result"><?php echo $data->getSafe('db_type');?></td>

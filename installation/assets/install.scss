@@ -332,5 +332,9 @@ input[type=number] {
     font-size: 14px;
 }
 .error{
-    border: 1px solid $bad !important;;
+    border: 1px solid $bad !important;
+}
+
+.errors {
+    color: $bad;
 }
