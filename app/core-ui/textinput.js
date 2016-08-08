@@ -112,8 +112,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     Input: Input,
     validate: function(value, options) {
       var validationMessage = options.settings.get('validation_message') || app.DEFAULT_VALIDATION_MESSAGE;
-      if (options.schema.get('required') && _.isEmpty(value)) {
-        return validationMessage;
+
+      if (_.isEmpty(value)) {
+        if (options.schema.get('required') === true) {
+          return validationMessage;
+        }
+
+        return;
       }
 
       switch(options.settings.get('validation_type')) {
