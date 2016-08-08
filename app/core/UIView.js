@@ -25,7 +25,7 @@ define(function(require, exports, module) {
     settings: null,
 
     isRequired: function() {
-      return this.columnSchema.get('required');
+      return this.columnSchema.get('required') === true;
     },
 
    /**
