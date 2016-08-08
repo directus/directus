@@ -126,23 +126,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
       {id: 'filter_column', ui: 'textinput', char_length: 255, comment: __t('m2o_filter_column_comment')}
     ],
     Input: Input,
-    validate: function(value, options) {
-      if (!options.schema.isNullable() || options.schema.get('required')) {
-        // a numer is ok
-        if (!_.isNaN(parseInt(value,10))) {
-          return;
-        }
-        //empty is not ok
-        if (_.isEmpty(value)) {
-          return __t('this_field_cannot_be_empty');
-        }
-
-        // model value without proper id is not ok
-        if (value instanceof Backbone.Model && (_.isNaN(value.get('id')) || value.get('id') === undefined)) {
-          return __t('this_field_cannot_be_empty');
-        }
-      }
-    },
+    forceUIValidation: true,
     list: function(options) {
       if (options.value === undefined) return '';
 

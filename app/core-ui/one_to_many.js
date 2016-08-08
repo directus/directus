@@ -134,9 +134,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       this.setView('.related-table', this.nestedTableView).render();
     },
 
-    validateRelationship: function() {
-    },
-
     initialize: function (options) {
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
@@ -222,6 +219,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       {id: 'remove_button', ui: 'checkbox'}
     ],
     Input: Input,
+    validate: function(collection, options) {
+      if (options.schema.isRequired() && collection.length === 0) {
+        return __t('this_field_is_required');
+      }
+    },
     list: function() {
       return 'x';
     }

@@ -80,13 +80,15 @@ define(function(require, exports, module) {
         }
 
         var nullDisallowed = column.get('is_nullable') === 'NO';
+        var ui = UIManager._getUI(column.get('ui'));
+        var forceUIValidation = ui.forceUIValidation === true;
         var isNull = isNothing(value);
 
         var uiSettings = UIManager.getSettings(column.get('ui'));
 
         var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
 
-        var mess = (!skipSerializationIfNull && nullDisallowed && isNull) ?
+        var mess = (!forceUIValidation && !skipSerializationIfNull && nullDisallowed && isNull) ?
           'The field cannot be empty'
           : UIManager.validate(this, key, value);
 
