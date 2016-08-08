@@ -12,7 +12,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
   'use strict';
 
   var template = '<div class="select-container"> \
-                    <select {{#unless canEdit}}disabled{{/unless}}> \
+                    <select name="{{name}}" {{#unless canEdit}}disabled{{/unless}}> \
                     {{#if allowNull}}<option value="">{{placeholder_text}}</option>{{/if}} \
                     {{#data}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>{{/data}} \
                   </select> \
