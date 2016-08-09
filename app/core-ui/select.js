@@ -22,6 +22,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
       var selectedValue = this.options.value;
       var options = this.options.settings.get('options');
 
+      if (selectedValue === undefined) {
+        selectedValue = this.options.schema.get('default_value');
+      }
+
       if (_.isString(options)) {
         try {
           options = $.parseJSON(options);
