@@ -71,7 +71,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
     },
     list: function(options) {
-      return _.isNumber(options.value) ? options.value.toLocaleString() : null;
+      var value = Number(options.value);
+
+      return _.isNumber(value) ? value.toLocaleString() : null;
     }
   });
 
