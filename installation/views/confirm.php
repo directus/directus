@@ -111,10 +111,8 @@
     </table>
 
     <?php
-    if($showConfig) {
-        require_once('config_setup.php');
-        // Covering up a logic bug as config_setup.php doesn't impact $showConfig;
-        if(!isset($configText))$configText="";
+    if ($showConfig) {
+        $configText = Directus\Util\Installation\InstallerUtils::createConfigFileContent($data->get());
         echo("<span class='config-paste label label-important'>".__t('Manually copy the code below into')." ../api/config.php</span><br><textarea readonly>$configText</textarea><span id='failSpan'><button id='retryButton' class='button'>".__t('Check Config File')."</button></span>");
     }
     ?>

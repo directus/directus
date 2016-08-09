@@ -29,6 +29,22 @@ class InstallerUtils
         static::createConfigurationFile($data, $path);
     }
 
+    public static function createConfigFileContent($data)
+    {
+        $configStub = file_get_contents(__DIR__.'/stubs/config.stub');
+        $data = ArrayUtils::pick($data, [
+            'db_type',
+            'db_host',
+            'db_port',
+            'db_name',
+            'db_user',
+            'db_password',
+            'directus_path'
+        ]);
+
+        return static::replacePlaceholderValues($configStub, $data);
+    }
+
     /**
      * Create config file into $path
      * @param $data
@@ -36,8 +52,7 @@ class InstallerUtils
      */
     protected static function createConfigFile($data, $path)
     {
-        $configStub = file_get_contents(__DIR__.'/stubs/config.stub');
-        $configStub = static::replacePlaceholderValues($configStub, $data);
+        $configStub = static::createConfigFileContent($data);
 
         $configPath = rtrim($path, '/').'/config.php';
         file_put_contents($configPath, $configStub);
