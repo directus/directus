@@ -441,14 +441,41 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
                     /** One-to-Many */
                     case 'onetomany':
+                        $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
                         foreach ($foreignDataSet as &$foreignRecord) {
-                            if(empty($foreignRecord)) {
+                            if (empty($foreignRecord)) {
                                 continue;
                             }
+
+                            $foreignSchemaArray = TableSchema::getSchemaArray($ForeignTable->table);
+                            $hasActiveColumn = $this->schemaHasActiveColumn($foreignSchemaArray);
+                            $foreignColumn = TableSchema::getColumnSchemaArray($ForeignTable->table, $foreignJoinColumn);
+                            $hasPrimaryKey = isset($foreignRecord[$ForeignTable->primaryKeyFieldName]);
+                            $canBeNull = $foreignColumn['is_nullable'] === 'YES';
+
+                            if ($hasPrimaryKey && isset($foreignRecord[STATUS_COLUMN_NAME]) && $foreignRecord[STATUS_COLUMN_NAME] === STATUS_DELETED_NUM) {
+                                if (!$hasActiveColumn && !$canBeNull) {
+                                    $Where = new Where();
+                                    $Where->equalTo($ForeignTable->primaryKeyFieldName, $foreignRecord[$ForeignTable->primaryKeyFieldName]);
+                                    $ForeignTable->delete($Where);
+
+                                    continue;
+                                }
+
+                                if (!$hasActiveColumn) {
+                                    unset($foreignRecord[STATUS_COLUMN_NAME]);
+                                }
+
+                                if (!$canBeNull) {
+                                    $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
+                                }
+                            }
+
                             // only add parent id's to items that are lacking the parent column
                             if (!array_key_exists($foreignJoinColumn, $foreignRecord)) {
                                 $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
                             }
+
                             $foreignRecord = $this->manageRecordUpdate($foreignTableName, $foreignRecord, self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
                         }
                         break;

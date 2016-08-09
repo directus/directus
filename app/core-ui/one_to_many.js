@@ -39,7 +39,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
 
       if (model.isNew()) return this.relatedCollection.remove(model);
 
-      model.set(relatedColumnName, '');
+      var attributes = {};
+      attributes[app.statusMapping.status_name] = app.statusMapping.deleted_num;
+      attributes[relatedColumnName] = null;
+      model.set(attributes);
     },
 
     addRow: function() {
@@ -178,7 +181,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         sortable: false,
         footer: false,
         saveAfterDrop: true,
-        deleteColumn: (relatedCollection.structure.get(joinColumn).get('is_nullable') === "YES") && this.canEdit && this.showRemoveButton,
+        deleteColumn: this.canEdit && this.showRemoveButton,
         hideColumnPreferences: true,
         hideEmptyMessage: true,
         tableHead: false,
@@ -202,6 +205,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         } else {
           this.nestedTableView.tableHead = false;
         }
+        this.nestedTableView.render();
+      }, this);
+
+      this.listenTo(relatedCollection, 'remove', function() {
         this.nestedTableView.render();
       }, this);
 
