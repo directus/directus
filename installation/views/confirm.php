@@ -117,7 +117,7 @@
     }
     ?>
 
-    <h3><?=__t('Reccommended Optional Features');?></h3>
+    <h3><?=__t('Recommended Optional Features');?></h3>
     <hr>
     <table>
         <tbody>
