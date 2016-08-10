@@ -369,7 +369,8 @@ class TableSchema {
                 $row['is_nullable'] = "YES";
             }
 
-            if ($row['is_nullable'] === 'NO' && !isset($row['default_value'])) {
+            $anAlias = static::isColumnTypeAnAlias($row['type']);
+            if ($row['is_nullable'] === 'NO' && !isset($row['default_value']) && !$anAlias) {
                 $row["required"] = true;
             }
 
@@ -594,7 +595,8 @@ class TableSchema {
             $row['is_nullable'] = "YES";
         }
 
-        if ($row['is_nullable'] === 'NO' && !isset($row['default_value'])) {
+        $anAlias = static::isColumnTypeAnAlias($row['type']);
+        if ($row['is_nullable'] === 'NO' && !isset($row['default_value']) && !$anAlias) {
             $row["required"] = true;
         }
 
@@ -651,6 +653,11 @@ class TableSchema {
         }
 
         return $row;
+    }
+
+    public static function isColumnTypeAnAlias($columnType)
+    {
+        return in_array($columnType, static::$association_types);
     }
 
     public static function columnTypeToUIType($column_type) {
