@@ -195,9 +195,15 @@ define(function(require, exports, module) {
       if (view.model) {
         view.model.startTracking();
       } else if (view.collection) {
-        view.collection.each(function(model) {
-          model.startTracking();
-        });
+        // TODO: make startTtracking part of Collection
+        var cb = function(collection) {
+          collection.each(function(model) {
+            model.startTracking();
+          });
+        };
+
+        cb(view.collection);
+        view.collection.on('sync', cb);
       }
       this.v.main.insertView('#content', view).render();
 
