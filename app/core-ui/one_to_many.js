@@ -7,18 +7,26 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/t'], function(app, UIComponent, UIView, TableView, __t) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/overlays/overlays', 'core/t'], function(app, UIComponent, UIView, TableView, Overlays, __t) {
 
   'use strict';
 
   var template = '<div class="related-table"></div> \
-                  <div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary" data-action="add" type="button">{{tVarCapitalize "add_new_x_item" table=tableTitle}}</button>{{/if}}';
+                  <div class="btn-row">\
+                  {{#if showAddButton}}\
+                    <button class="btn btn-primary" data-action="add" type="button">{{tVarCapitalize "add_new_x_item" table=tableTitle}}</button>\
+                  {{/if}}\
+                  {{#if showChooseButton}}\
+                    <button class="btn btn-primary" data-action="insert" type="button">{{t "choose_existing"}}</button>\
+                  {{/if}}\
+                  </div>';
 
   var Input = UIView.extend({
     templateSource: template,
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click button[data-action=add]': 'addRow',
+      'click button[data-action=insert]': 'insertRow',
       'click td.delete': 'deleteRow'
     },
 
@@ -123,6 +131,40 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       };
     },
 
+    insertRow: function() {
+      var me = this;
+      var columnName = this.columnSchema.relationship.get('junction_key_right');
+      var collection = app.getEntries(this.relatedCollection.table.id);
+      var view = new Overlays.ListSelect({collection: collection});
+
+      app.router.overlayPage(view);
+      view.save = function() {
+        _.each(view.table.selection(), function(id) {
+          var data = collection.get(id).toJSON();
+          if (me.columnSchema.options.get('only_unassigned') == 1) {
+            var orphan = false;
+
+            collection.each(function(model) {
+              if (model.get(columnName) == null) {
+                orphan = true;
+              }
+            });
+
+            if (orphan) {
+              return false;
+            }
+          }
+
+          data[columnName] = me.model.get('id');
+          me.relatedCollection.add(data, {nest: true});
+        }, this);
+
+        app.router.removeOverlayPage(this);
+      };
+
+      collection.fetch();
+    },
+
     serialize: function() {
       return {
         title: this.name,
@@ -175,6 +217,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') == 1;
       this.showAddButton = this.columnSchema.options.get('add_button') == 1;
+      this.showChooseButton = this.columnSchema.options.get('choose_button') == 1;
+
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         selectable: false,
@@ -223,7 +267,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
       {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: __t('o2m_result_limit_comment')},
       {id: 'add_button', ui: 'checkbox'},
-      {id: 'remove_button', ui: 'checkbox'}
+      {id: 'choose_button', ui: 'checkbox', def: 1},
+      {id: 'remove_button', ui: 'checkbox'},
+      {id: 'only_unassigned', ui: 'checkbox', def: 0}
     ],
     Input: Input,
     validate: function(collection, options) {
