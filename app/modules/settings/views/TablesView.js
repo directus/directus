@@ -569,7 +569,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
         if (row.is_nullable === 'NO') {
           row.required = true;
-          row.requiredDisabled = !row.alias;
+          row.requiredDisabled = !row.alias && row.default_value === undefined;
         }
 
         var validation = model.options.validate(model.options.toJSON());
