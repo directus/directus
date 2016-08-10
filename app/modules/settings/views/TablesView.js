@@ -560,24 +560,20 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
 
-        if (row.is_nullable === "NO") {
-          row.required = true;
-          row.requiredDisabled = true;
-        }
-
         row.uiHasVariables = ui.hasOwnProperty(row.ui) && ui[row.ui].hasOwnProperty('variables') && ui[row.ui].variables.length > 0;
 
         row.uiHasRelationship = model.relationship !== undefined;
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
-        row.relationship = "";
+        row.relationship = '';
+
+        if (row.is_nullable === 'NO') {
+          row.required = true;
+          row.requiredDisabled = !row.alias;
+        }
 
         var validation = model.options.validate(model.options.toJSON());
-
-        row.valid = true;
-        if (validation !== undefined) {
-          row.valid = false;
-        }
+        row.valid = validation === undefined;
 
         switch (model.getRelationshipType()) {
           case 'ONETOMANY':
@@ -593,6 +589,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
             row.relationshipTooltip = model.getRelated();
             break;
         }
+
         // Gather a list of UI alternatives
         _.each(ui, function(ui) {
           if (!ui.system && ui.dataTypes.indexOf(row.type) > -1) {
@@ -605,11 +602,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           }
         });
 
-        if(primaryColumn === row.column_name) {
-          row.master = true;
-        } else {
-          row.master = false;
-        }
+        row.master = primaryColumn === row.column_name;
 
         return row;
       });
