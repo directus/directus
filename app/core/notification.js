@@ -19,7 +19,7 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
     options = _.extend(defaultOptions, options || (options = {}));
 
     if (typeof type === 'string') {
-      options.type = type;
+      options.type = type.toLowerCase();
     }
 
     var titleText = '';
@@ -51,22 +51,22 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
   }
 
   function showError(options) {
-    var args = addTypeArgument(arguments, 'error');
+    var args = addTypeArgument(arguments, 'Error');
     return createNotification.apply(this, args);
   }
 
   function showInfo(options) {
-    var args = addTypeArgument(arguments, 'information');
+    var args = addTypeArgument(arguments, 'Information');
     return createNotification.apply(this, args);
   }
 
   function showWarning(options) {
-    var args = addTypeArgument(arguments, 'warning');
+    var args = addTypeArgument(arguments, 'Warning');
     return createNotification.apply(this, args);
   }
 
   function showSuccess(options) {
-    var args = addTypeArgument(arguments, 'success');
+    var args = addTypeArgument(arguments, 'Success');
     return createNotification.apply(this, args);
   }
 
