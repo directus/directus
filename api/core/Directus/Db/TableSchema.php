@@ -78,19 +78,19 @@ class TableSchema {
         return self::$_schemas[$table];
     }
 
-    public static function getColumnSchemaArray($table, $column)
+    public static function getColumnSchemaArray($tableName, $columnName)
     {
-        $tableSchema = static::getSchemaArray($table);
-        $columnSchema = null;
+        $tableColumnsSchema = static::getSchemaArray($tableName);
+        $column = null;
 
-        foreach($tableSchema as $schema) {
-            if ($schema['id'] === $column) {
-                $columnSchema = $schema;
+        foreach($tableColumnsSchema as $columnSchema) {
+            if ($columnName === $columnSchema['id']) {
+                $column = $columnSchema;
                 break;
             }
         }
 
-        return $columnSchema;
+        return $column;
     }
 
     public static function getMasterColumn($schema) {
