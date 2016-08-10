@@ -393,7 +393,7 @@
   "unable_to_find_preferences": "Unable to find preferences",
 
   "max_file_size_exceeded": "This file exceeds the server's max file size.",
-  "max_file_size_exceeded_x_x": "This file exceeds the server's max file size of: %{size}%{unit}",
+  "max_file_size_exceeded_x_x": "This exceeds the max file size of: %{size}%{unit}",
   "server_error": "Server Error",
   "restricted_access": "Restricted Access",
 
