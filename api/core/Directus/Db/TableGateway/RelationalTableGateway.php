@@ -462,7 +462,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                                     continue;
                                 }
 
-                                if (!$hasActiveColumn) {
+                                if (!$hasActiveColumn || $canBeNull) {
                                     unset($foreignRecord[STATUS_COLUMN_NAME]);
                                 }
 
