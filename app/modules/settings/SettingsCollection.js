@@ -34,7 +34,7 @@ define([
 
       getMaxFileSize: function() {
         var maxBytes = this.get('global').get('max_file_size');
-console.log(maxBytes);
+
         return FileHelper.humanBytesInfo(maxBytes).size;
       },
 
@@ -48,7 +48,7 @@ console.log(maxBytes);
         var fileSize = (file && file.size) ? file.size : 0;
         var maxFileSize = this.getMaxFileSize();
         var exceeded = false;
-        return true;
+
         if (fileSize > maxFileSize) {
           exceeded = true;
         }
