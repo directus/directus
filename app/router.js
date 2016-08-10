@@ -205,11 +205,24 @@ define(function(require, exports, module) {
         cb(view.collection);
         view.collection.on('sync', cb);
       }
+
+      function hasUnsavedAttributes() {
+        if (view.model) {
+          return !view.model.unsavedAttributes();
+        } else if (view.collection) {
+          return _.some(view.collection.models, function(model) {
+            return !model.unsavedAttributes();
+          });
+        }
+
+        return false;
+      }
+
       this.v.main.insertView('#content', view).render();
 
       var that=this;
       Backbone.History.prototype.loadUrl = function() {
-        if (!view.model.unsavedAttributes() || (that.baseRouteSave == this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?"))) {
+        if (hasUnsavedAttributes() || (that.baseRouteSave == this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?"))) {
           Backbone.History.prototype.loadUrl = that.oldLoadUrlFunction;
           return that.oldLoadUrlFunction.apply(this, arguments);
         } else {
