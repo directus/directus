@@ -392,8 +392,8 @@
   "unable_to_find_privileges_for_x_in_group_x": "Unable to find privileges for table: %{table} in Group ID: %{group_id}",
   "unable_to_find_preferences": "Unable to find preferences",
 
-  "max_file_size_exceeded": "Max file size exceeded.",
-  "max_file_size_exceeded_x_x": "Max file size exceeded. (%{size}%{unit})",
+  "max_file_size_exceeded": "This file exceeds the server's max file size.",
+  "max_file_size_exceeded_x_x": "This file exceeds the server's max file size of: %{size}%{unit}",
   "server_error": "Server Error",
   "restricted_access": "Restricted Access",
 

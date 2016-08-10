@@ -1,9 +1,10 @@
 define([
     'app',
     'backbone',
+    'helpers/file',
     'core/collection'
   ],
-  function (app, Backbone, Collection) {
+  function (app, Backbone, FileHelper, Collection) {
 
     'use strict';
 
@@ -32,18 +33,22 @@ define([
       },
 
       getMaxFileSize: function() {
-        return this.get('global').get('max_file_size');
+        var maxBytes = this.get('global').get('max_file_size');
+console.log(maxBytes);
+        return FileHelper.humanBytesInfo(maxBytes).size;
       },
 
       getMaxFileSizeUnit: function() {
-        return 'B';
+        var maxBytes = this.get('global').get('max_file_size');
+
+        return FileHelper.humanBytesInfo(maxBytes).unit;
       },
 
       isMaxFileSizeExceeded: function(file) {
         var fileSize = (file && file.size) ? file.size : 0;
         var maxFileSize = this.getMaxFileSize();
         var exceeded = false;
-
+        return true;
         if (fileSize > maxFileSize) {
           exceeded = true;
         }
