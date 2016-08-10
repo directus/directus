@@ -491,9 +491,10 @@ class AclAwareTableGateway extends TableGateway {
                     $thumbnailExtension = 'jpg';
                 }
 
-                $row['thumbnail_url'] = $thumbnailURL . '/' . $row['id'] . '.' . $thumbnailExtension;
+                $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
+                $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
                 // hotfix: there's not thumbnail for this file
-                if (!$files->exists($row['thumbnail_url'])) {
+                if (!$files->exists('thumbs/' . $thumbnailFilename)) {
                     $row['thumbnail_url'] = null;
                 }
 
