@@ -46,10 +46,10 @@ define([
 
       isMaxFileSizeExceeded: function(file) {
         var fileSize = (file && file.size) ? file.size : 0;
-        var maxFileSize = this.getMaxFileSize();
+        var maxFileSizeInBytes = this.get('global').get('max_file_size');
         var exceeded = false;
 
-        if (fileSize > maxFileSize) {
+        if (fileSize > maxFileSizeInBytes) {
           exceeded = true;
         }
 
