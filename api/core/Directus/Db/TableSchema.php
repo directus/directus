@@ -369,7 +369,7 @@ class TableSchema {
                 $row['is_nullable'] = "YES";
             }
 
-            if ($row['is_nullable'] == "NO") {
+            if ($row['is_nullable'] === 'NO' && !isset($row['default_value'])) {
                 $row["required"] = true;
             }
 
@@ -594,7 +594,7 @@ class TableSchema {
             $row['is_nullable'] = "YES";
         }
 
-        if ($row['is_nullable'] == "NO") {
+        if ($row['is_nullable'] === 'NO' && !isset($row['default_value'])) {
             $row["required"] = true;
         }
 
