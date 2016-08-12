@@ -238,7 +238,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         }
       });
 
-      if(this.columnSchema.has('sort')) {
+      if (relatedCollection.structure.get('sort')) {
         relatedCollection.setOrder('sort','ASC',{silent: true});
       }
 
