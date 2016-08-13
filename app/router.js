@@ -343,6 +343,12 @@ define(function(require, exports, module) {
         return this.notFound();
       }
 
+      if (collection.structure.length <= 1) {
+        var message = 'Table only has one or no fields.';
+        this.navigateTo('/tables/' + tableName, message);
+        return;
+      }
+
       if (id === "new" || isBatchEdit) {
         // Passing parse:true will setup relations
         model = new collection.model({}, {collection: collection, parse: true});

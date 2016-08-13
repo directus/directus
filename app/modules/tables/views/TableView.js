@@ -26,8 +26,8 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
         //this.widgets.bookmarkWidget
       ];
 
-      if (this.collection.hasPermission('add')) {
-        if(!this.widgets.addWidget) {
+      if (this.collection.structure.length > 1 && this.collection.hasPermission('add')) {
+        if (!this.widgets.addWidget) {
           this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_item')}});
         }
 
