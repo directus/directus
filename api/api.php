@@ -878,7 +878,32 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
 
     if($app->request()->isPut()) {
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
-        $TableGateway->updateCollection($requestPayload);
+        $columnData = $TableGateway->select([
+            'table_name' => $table,
+            'column_name' => $column
+        ])->current();
+
+        if ($columnData) {
+            $columnData = $columnData->toArray();
+            $requestPayload = ArrayUtils::pick($requestPayload, [
+                'data_type',
+                'ui',
+                'master',
+                'hidden_input',
+                'hidden_list',
+                'required',
+                'relationship_type',
+                'table_related',
+                'junction_table',
+                'junction_table_left',
+                'junction_table_right',
+                'sort',
+                'comment'
+            ]);
+
+            $requestPayload['id'] = $columnData['id'];
+            $TableGateway->updateCollection($requestPayload);
+        }
     }
 
     $response = TableSchema::getSchemaArray($table, $params);

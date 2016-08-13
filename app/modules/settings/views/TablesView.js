@@ -82,7 +82,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     initialize: function(options) {
-      this.contentView = new NewColumn({model: this.model});
+      this.contentView = new NewColumn(options);
     }
   });
 
@@ -133,8 +133,21 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     serialize: function() {
-      var data = {ui_types: [], data_types: [], column_name: this.model.get('column_name')};
-      var uis = UIManager._getAllUIs();
+      var uis = _.clone(UIManager._getAllUIs());
+      var data = {
+        ui_types: [],
+        data_types: [],
+        column_name: this.model.get('column_name'),
+        hideFieldName: this.hideFieldName
+      };
+
+      if (_.isFunction(this.uiFilter)) {
+        _.each(uis, function(value, key) {
+          if (this.uiFilter(value) !== true) {
+            delete uis[key];
+          }
+        }, this);
+      }
 
       for(var key in uis) {
         //If not system column
@@ -293,7 +306,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       });
     },
 
-    initialize: function() {
+    initialize: function(options) {
+      options = options || {};
+      this.uiFilter = options.ui_filter || false;
+      this.selectedUI = _.isString(this.model.get('ui')) ? this.model.get('ui') : undefined;
+      this.selectedDataType = this.model.get('data_type') || undefined;
+      this.columnName = this.model.get('column_name') || undefined;
+      this.hideFieldName = (options.hiddenFields && options.hiddenFields.indexOf('field_name') >= 0);
+
       this.render();
     }
   });
@@ -451,17 +471,56 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       // hotfix #1069 single_file UI not saving relational settings
       // If Single_file UI, force related table to be directus_files
       // and relationship type to manytoone
-      if(value === 'single_file') {
-        data['table_related'] = 'directus_files';
-        data['datatype'] = 'INT';
-        data['relationship_type'] = 'MANYTOONE';
-        data['junction_key_right'] = id;
+      data['table_related'] = null;
+      data['datatype'] = null;
+      data['relationship_type'] = null;
+      data['junction_key_right'] = null;
+      data['junction_key_left'] = null;
+      data['junction_table'] = null;
+
+      switch(value) {
+        case 'single_file':
+          data['table_related'] = 'directus_files';
+          data['datatype'] = 'INT';
+          data['relationship_type'] = 'MANYTOONE';
+          data['junction_key_right'] = id;
+          break;
+        case 'multiple_files':
+          data['table_related'] = 'directus_files';
+        case 'many_to_many':
+          data['junction_key_right'] = id;
+          data['datatype'] = 'MANYTOMANY';
+          data['relationship_type'] = 'MANYTOMANY';
+          break;
+        case 'many_to_one':
+        case 'many_to_one_typeahead':
+          data['relationship_type'] = 'MANYTOONE';
+          data['junction_key_right'] = id;
+          break;
+        case 'one_to_many':
+          data['relationship_type'] = 'ONETOMANY';
+          data['junction_key_right'] = id;
+          break;
+      }
+
+      if (data['relationship_type'] && !model.relationship) {
+        model.relationship = new Backbone.Model({
+          type: data['relationship_type'],
+          table_related: data['related_table'],
+          junction_table: data['junction_table'],
+          junction_key_right: data['junction_key_right'],
+          junction_key_left: data['junction_key_left']
+        });
+      } else if (!data['relationship_type']) {
+        model.relationship = undefined;
       }
 
       this.collection.table.set({'primary_column':$('#table-settings').find('input[type=radio]:checked').attr('data-id')});
 
       data[attr] = value;
       model.set(data);
+
+      this.render();
     },
 
     destroyColumn: function(columnName) {
@@ -532,25 +591,17 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     editRelationship: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
-      var model = new Backbone.Model(_.extend(column.relationship.toJSON(),{
-        data_type: column.get('type'),
-        //ui: column.get('ui'),
-        //type: column.get('type'),
-        relationship_type: column.relationship.get('type')
-        //junction_key_left: column.relationship.get('junction_key_right'),
-        //table_related: column.relationship.get('table_related')
-      }));
+      var view = new NewColumnOverlay({
+        model: column,
+        collection: this.collection,
+        hiddenFields: ['field_name'],
+        // Do not allow to select any other ui.
+        ui_filter: function(ui) {
+          return ui.id === column.get('ui');
+        }
+      });
 
-      column.relationship = model;
-      var that = this;
-      var view = new EditRelationship({model: model});
       app.router.overlayPage(view);
-      view.save = function() {
-        model.url = app.API_URL + 'tables/' + that.collection.table.id + '/columns/' + column.id + '/';
-        model.save({}, {success: function() {
-          app.router.removeOverlayPage(view); //, {title: 'Add new column', stretch: true}
-        }});
-      };
     },
 
     serialize: function() {
