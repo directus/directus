@@ -676,6 +676,12 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Get table column schema
         $schemaArray = TableSchema::getSchemaArray($this->table);
 
+        // table only has one column
+        // return an empty array
+        if (!is_numeric_array($schemaArray)) {
+            return [];
+        }
+
         // Table has `status` column?
         $hasActiveColumn = $this->schemaHasActiveColumn($schemaArray);
 
