@@ -27,6 +27,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
     const ACTIVITY_ENTRY_MODE_PARENT = 1;
     const ACTIVITY_ENTRY_MODE_CHILD = 2;
 
+    protected $toManyCallStack = [];
+
     /**
      * Find the identifying string to effectively represent a record in the activity log.
      * @param  array $schemaArray
@@ -755,6 +757,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Separate alias fields from table schema array
         $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
 
+        $this->toManyCallStack = [];
         $result = $this->loadToManyRelationships($result, $alias_fields);
 
         return $result;
@@ -820,6 +823,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 switch($alias['type']) {
                     case 'MANYTOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
+                        if (in_array($this->table, $this->toManyCallStack)) {
+                            $this->toManyCallStack = [];
+                            return $entry;
+                        }
+                        array_push($this->toManyCallStack, $this->table);
                         $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['table_related'],
                             $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
                             $entry[$this->primaryKeyFieldName]);
@@ -839,6 +847,11 @@ class RelationalTableGateway extends AclAwareTableGateway {
                         break;
                     case 'ONETOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_key_right'), $this->table);
+                        if (in_array($alias['relationship']['table_related'], $this->toManyCallStack)) {
+                            $this->toManyCallStack = [];
+                            return $entry;
+                        }
+                        array_push($this->toManyCallStack, $alias['relationship']['table_related']);
                         $foreign_data = $this->loadOneToManyRelationships($alias['relationship']['table_related'], $alias['relationship']['junction_key_right'], $entry['id']);
                         break;
                 }
