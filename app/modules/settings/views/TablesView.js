@@ -133,6 +133,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     },
 
     serialize: function() {
+      var tables;
+      var tableRelated
       var uis = _.clone(UIManager._getAllUIs());
       var data = {
         ui_types: [],
@@ -204,21 +206,25 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         }
       }
 
-      if(['many_to_one', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
+      if(['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
-        var tableRelated = this.model.get('table_related');
-
-        var tables = app.schemaManager.getTables();
-        tables = tables.map(function(model) {
-          if(!tableRelated) {
-            tableRelated = model.id;
-            this.model.set({table_related: model.id});
-          }
-          return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
-        }, this);
-        data.tables = tables;
-
+        tableRelated = this.model.get('table_related');
         this.model.set({junction_key_right: this.columnName});
+
+        if (this.selectedUI === 'single_file') {
+          tables = [{id: 'directus_files', selected: true}];
+        } else {
+          tables = app.schemaManager.getTables();
+          tables = tables.map(function(model) {
+            if(!tableRelated) {
+              tableRelated = model.id;
+              this.model.set({table_related: model.id});
+            }
+            return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
+          }, this);
+        }
+
+        data.tables = tables;
       }
 
       //If Single_file UI, force related table to be directus_files
@@ -227,22 +233,30 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         data.hideRelatedTable = true;
       }
 
-      if(['ONETOMANY', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
+      if(['ONETOMANY', 'multiple_files', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
         data[this.selectedDataType] = true;
 
-        var tableRelated = this.model.get('table_related');
+        tableRelated = this.model.get('table_related');
         var junctionTable = this.model.get('junction_table');
         var junctionKeyRight = this.model.get('junction_key_right');
 
-        var tables = app.schemaManager.getTables();
-        tables = tables.map(function(model) {
-          if(!tableRelated) {
-            tableRelated = model.id;
-            this.model.set({table_related: model.id});
-          }
-          return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
-        }, this);
+        if (this.selectedUI === 'multiple_files') {
+          tables = [{id: 'directus_files', selected: true}];
+        } else {
+          tables = app.schemaManager.getTables();
+          tables = tables.map(function (model) {
+            if (!tableRelated) {
+              tableRelated = model.id;
+              this.model.set({table_related: model.id});
+            }
+            return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
+          }, this);
+        }
         data.tables = tables;
+
+        if (this.selectedUI === 'single_file') {
+          return [{id: 'directus_files', selected: true}];
+        }
 
         if(this.selectedDataType == 'MANYTOMANY') {
           data.junctionTables = _.chain(tables)
