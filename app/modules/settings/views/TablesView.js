@@ -506,7 +506,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       if (data['relationship_type'] && !model.relationship) {
         model.relationship = new Backbone.Model({
           type: data['relationship_type'],
-          table_related: data['related_table'],
+          table_related: data['table_related'],
           junction_table: data['junction_table'],
           junction_key_right: data['junction_key_right'],
           junction_key_left: data['junction_key_left']
@@ -591,6 +591,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     editRelationship: function(e) {
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
+      // NOTE: This create new attributes for the column attribute hash
+      column.set(column.relationship.toJSON());
       var view = new NewColumnOverlay({
         model: column,
         collection: this.collection,

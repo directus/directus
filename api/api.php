@@ -895,8 +895,8 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
                 'relationship_type',
                 'table_related',
                 'junction_table',
-                'junction_table_left',
-                'junction_table_right',
+                'junction_key_left',
+                'junction_key_right',
                 'sort',
                 'comment'
             ]);
