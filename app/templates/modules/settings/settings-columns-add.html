@@ -97,6 +97,25 @@
                 </div>
             </div>
         </li>
+        <li class="batchcontainer required">
+            <div class="table">
+                <div class="trow">
+                    <div class="label">
+                        <label>
+                            {{t "right_column"}}
+                            <span class="note">{{t "columns_add_right_column_note"}}</span>
+                        </label>
+                    </div>
+                    <div class="field required">
+                        <select id="junction_key_right" name="junction_key_right" {{#if disabledJunctionKeyRight}}disabled{{/if}}>
+                            {{#columns_right}}
+                            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                            {{/columns_right}}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </li>
     {{/if}}
 
     {{#if ONETOMANY}}
@@ -142,7 +161,6 @@
     {{/if}}
 
     {{#if MANYTOMANY}}
-        {{#unless hideRelatedTable}}
         <li class="batchcontainer required">
             <div class="table">
                 <div class="trow">
@@ -162,7 +180,6 @@
                 </div>
             </div>
         </li>
-        {{/unless}}
 
         <li class="batchcontainer required">
             <div class="table">

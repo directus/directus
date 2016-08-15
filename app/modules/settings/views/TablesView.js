@@ -206,7 +206,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         }
       }
 
-      if(['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
+      if (['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
         tableRelated = this.model.get('table_related');
         this.model.set({junction_key_right: this.columnName});
@@ -224,17 +224,19 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           }, this);
         }
 
+        data.columns_right = [{column_name: (this.columnName || __t('this_column')), selected: true}];
+        data.disabledJunctionKeyRight = true;
+
         data.tables = tables;
       }
 
       //If Single_file UI, force related table to be directus_files
       if (['single_file', 'multiple_files'].indexOf(this.selectedUI) > -1) {
         this.model.set({table_related: 'directus_files'});
-        data.hideRelatedTable = true;
         data.disabledTableRelated = true;
       }
 
-      if(['ONETOMANY', 'multiple_files', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
+      if (['ONETOMANY', 'multiple_files', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
         data[this.selectedDataType] = true;
 
         tableRelated = this.model.get('table_related');

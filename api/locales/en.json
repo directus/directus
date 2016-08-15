@@ -68,6 +68,7 @@
   "junction_table": "Junction Table",
   "left_column": "Left Column",
   "right_column": "Right Column",
+  "this_column": "This Column",
   "relationship_settings": "Relationship Settings",
   "unregistered_tables": "Unregistered Tables",
   "allow_null": "Allow Null: %{is_nullable}",
