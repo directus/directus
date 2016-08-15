@@ -194,11 +194,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
 
       var relatedCollection = this.model.get(this.name);
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
-      var ids = [];
+      var ids = relatedCollection.pluck('id');
+      // NOTE: This will a collection method in the next version
+      var hasUnsavedModels = _.some(relatedCollection.models, function(model) {
+        return model.unsavedAttributes();
+      });
 
-      ids = relatedCollection.pluck('id');
-
-      if(ids.length > 0) {
+      if (!hasUnsavedModels && ids.length > 0) {
         //Make sure column we are joining on is respected
         var filters = relatedCollection.filters;
         if (filters.columns_visible.length == 0) {
