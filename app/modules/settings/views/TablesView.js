@@ -231,6 +231,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       if (['single_file', 'multiple_files'].indexOf(this.selectedUI) > -1) {
         this.model.set({table_related: 'directus_files'});
         data.hideRelatedTable = true;
+        data.disabledTableRelated = true;
       }
 
       if(['ONETOMANY', 'multiple_files', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
@@ -253,10 +254,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           }, this);
         }
         data.tables = tables;
-
-        if (this.selectedUI === 'single_file') {
-          return [{id: 'directus_files', selected: true}];
-        }
 
         if(this.selectedDataType == 'MANYTOMANY') {
           data.junctionTables = _.chain(tables)

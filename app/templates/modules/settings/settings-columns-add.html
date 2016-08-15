@@ -88,7 +88,7 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select name="table_related" id="table_related">
+                        <select name="table_related" id="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
                             {{#tables}}
                             <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
                             {{/tables}}
@@ -110,7 +110,7 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select name="table_related" id="table_related">
+                        <select name="table_related" id="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
                             {{#tables}}
                             <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
                             {{/tables}}
@@ -153,7 +153,7 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="table_related" name="table_related">
+                        <select id="table_related" name="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
                             {{#tables}}
                             <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
                             {{/tables}}
