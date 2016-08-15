@@ -603,7 +603,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var id = e.target.getAttribute('data-id');
       var column = this.collection.get(id);
       // NOTE: This create new attributes for the column attribute hash
+      var dataType = column.get('type');
+      var relationshipDataType = column.relationship.get('type');
       column.set(column.relationship.toJSON());
+      // hotfix: type and relationship has to be passed as part of the hash
+      // prevent the field dropdown to be empty
+      // As there's not UI supporting relationship type
+      column.set('relationship_type', relationshipDataType);
+      column.set('type', dataType);
       var view = new NewColumnOverlay({
         model: column,
         collection: this.collection,
