@@ -121,10 +121,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
                  ->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
 
              if (!$newRecordObject) {
-                 return null;
+                 return [];
              }
 
-             if (!is_array($newRecordObject)) {
+             if ($newRecordObject) {
                  $newRecordObject = $newRecordObject->toArray();
              }
          }
