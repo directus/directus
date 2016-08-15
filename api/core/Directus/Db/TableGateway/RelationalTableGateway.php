@@ -115,11 +115,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $newRecordObject = null;
         $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys); // || $recordIsNew;
 
-         if($parentRecordChanged) {
+         if ($parentRecordChanged) {
              // Update the parent row, w/ any new association fields replaced by their IDs
              $newRecordObject = $TableGateway
-                 ->addOrUpdateRecordByArray($parentRecordWithForeignKeys)
-                 ->toArray();
+                 ->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
+
+             if (!$newRecordObject) {
+                 return null;
+             }
+
+             if (!is_array($newRecordObject)) {
+                 $newRecordObject = $newRecordObject->toArray();
+             }
          }
 
         // Do it this way, because & byref for outcome of ternary operator spells trouble
