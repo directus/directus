@@ -173,6 +173,7 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
                 $values[$cIndex] = $exprData->getSql();
                 $parameterContainer->merge($exprData->getParameterContainer());
             } else {
+                $column = self::VALUES_SET . $cIndex;
                 $values[$cIndex] = $driver->formatParameterName($column);
                 if (isset($this->values[$cIndex])) {
                     $parameterContainer->offsetSet($column, $this->values[$cIndex]);

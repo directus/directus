@@ -3,7 +3,7 @@
     "php": ">=5.4.0",
     "slim/slim": "2.3.2",
     "slim/extras": "dev-develop",
-    "zendframework/zend-db": "2.2.*@dev",
+    "zendframework/zend-db": "dev-directus",
     "directus/migrations": "dev-master",
     "league/flysystem": "^1.0",
     "swiftmailer/swiftmailer": "^5.4"
@@ -19,13 +19,19 @@
     "amazonwebservices/aws-sdk-for-php": "1.6.2",
     "aws/aws-sdk-php": "2.6.*@dev"
   },
-    "autoload": {
-        "psr-4": {
-            "Directus\\": "api/core/Directus/",
-            "Directus\\Installation\\": "installation/includes/"
-        },
-        "files": [
-            "api/core/functions.php"
-        ]
+  "autoload": {
+    "psr-4": {
+      "Directus\\": "api/core/Directus/",
+      "Directus\\Installation\\": "installation/includes/"
+    },
+    "files": [
+      "api/core/functions.php"
+    ]
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/wellingguzman/zend-db"
     }
+  ]
 }

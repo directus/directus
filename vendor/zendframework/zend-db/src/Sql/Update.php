@@ -213,6 +213,7 @@ class Update extends AbstractSql implements SqlInterface, PreparableSqlInterface
         }
 
         $set = $this->set;
+        $index = 0;
         if (is_array($set)) {
             $setSql = array();
             foreach ($set as $column => $value) {
@@ -221,8 +222,9 @@ class Update extends AbstractSql implements SqlInterface, PreparableSqlInterface
                     $setSql[] = $platform->quoteIdentifier($column) . ' = ' . $exprData->getSql();
                     $parameterContainer->merge($exprData->getParameterContainer());
                 } else {
-                    $setSql[] = $platform->quoteIdentifier($column) . ' = ' . $driver->formatParameterName($column);
-                    $parameterContainer->offsetSet($column, $value);
+                    $setColumn = self::VALUES_SET . $index++;
+                    $setSql[] = $platform->quoteIdentifier($column) . ' = ' . $driver->formatParameterName($setColumn);
+                    $parameterContainer->offsetSet($setColumn, $value);
                 }
             }
             $set = implode(', ', $setSql);
