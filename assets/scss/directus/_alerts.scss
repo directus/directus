@@ -75,7 +75,10 @@
   }
 }
 
-.noty_box:before {
+.noty_box {
+    position: relative;
+}
+.noty_bar:before {
     content: "×";
     position: absolute;
     top: 10px;

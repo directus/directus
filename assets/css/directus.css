@@ -3761,7 +3761,10 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
         .directus-alert-modal .directus-alert-modal-buttons button.primary:hover {
           background-color: #1f72a5; }
 
-.noty_box:before {
+.noty_box {
+  position: relative; }
+
+.noty_bar:before {
   content: "×";
   position: absolute;
   top: 10px;
