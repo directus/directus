@@ -27,8 +27,8 @@
         <tbody>
         <?php if ($data->getSafe('strict_mode_enabled') === true): ?>
         <tr id="strict_mode_enabled">
-            <td class="item"><?=__t('Strict Mode Disabled');?></td>
-            <td class="result"><span class="label label-important"><?=__t('No');?></span><a href="http://getdirectus.com/docs/developer/installation" target="_blank"> ?</a></td>
+            <td class="item"><?=__t('Strict Mode Disabled');?> (<a href="http://getdirectus.com/docs/developer/installation" target="_blank"><u><?=__t('Learn More');?></u></a>)</td>
+            <td class="result"><span class="label label-important"><?=__t('No');?></span></td>
         </tr>
         <?php endif; ?>
         <tr>
@@ -94,11 +94,8 @@
             <td style="padding-left: 30px;"><?=__t("Adds TIFF/PSD/PDF Thumbnail Support");?></td>
         </tr>
         <tr>
-            <td class="item"><?=__t('Mod_Rewrite Enabled');?></td>
+            <td class="item"><?=__t('Mod_Rewrite Enabled');?> (<a href="http://getdirectus.com/docs/developer/faq" target="_blank"><u><?=__t("Learn More");?></u></a>)</td>
             <td class="result"><?php if (ping_server()) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span>');}?></td>
-        </tr>
-        <tr>
-            <td style="padding-left: 30px;"><a href="http://getdirectus.com/docs/developer/faq" target="_blank"><u><?=__t("Docs: Click here to learn more");?></a></u></td>
         </tr>
         <tr>
             <td class="item"><?=__t('Logs Directory Writable');?> (../api/logs/)</td>
