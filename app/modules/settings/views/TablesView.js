@@ -639,7 +639,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
         row.types = [];
         row.relationship = '';
-        row.requiredDisabled = !row.alias && row.default_value === undefined;
+        row.requiredDisabled = !row.alias && row.is_nullable === 'NO' && row.default_value === undefined;
 
         var validation = model.options.validate(model.options.toJSON());
         row.valid = validation === undefined;
