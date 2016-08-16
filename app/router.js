@@ -167,7 +167,7 @@ define(function(require, exports, module) {
     },
 
     notFound: function() {
-      this.navigateTo('/tables', 'You do not have permission to view that page or it doesn\'t exist');
+      this.navigateTo('/tables', 'You don\'t have permission to view that page or it doesn\'t exist');
     },
 
     openModal: function(options, callback) {
