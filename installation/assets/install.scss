@@ -226,17 +226,20 @@ input[type=number] {
     font-size: 15px;
     outline: none;
     display: block;
-    background-color: $mediumGrey;
+    background-color: #4f4f4f;
     border: none;
     color: #ffffff;
     cursor: pointer;
     padding: 20px 15px 20px 15px;
-    margin: 30px 0 10px 0;
+    margin: 40px 0 10px 0;
     text-transform: uppercase;
     letter-spacing: 0.02em;
     font-weight: 600;
     &:hover {
-        background-color: #4f4f4f;
+        background-color: $mediumGrey;
+    }
+    &.no-t-margin {
+        margin-top: 0;
     }
     &.primary {
         background-color: $primary;
@@ -281,7 +284,7 @@ input[type=number] {
     font-weight: 500;
 }
 .label-success {
-    color: $primary;
+    color: $mediumGrey;
     font-weight: bold;
 }
 .input-left {
@@ -299,8 +302,9 @@ input[type=number] {
     h3 {
         font-size: 16px;
         margin-bottom: 0px;
-        margin-top: 30px;
+        margin-top: 40px;
         font-weight: 400;
+        color: $darkGrey;
     }
     table {
         font-size: 12px;
@@ -320,6 +324,7 @@ input[type=number] {
 }
 .config-paste {
     font-size: 12px;
+    padding-left: 30px;
 }
 .error-container {
     background-color: $bad;

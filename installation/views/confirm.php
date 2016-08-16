@@ -75,58 +75,57 @@
             <td class="result"><span class="label label-success"><?=__t('Yes');?></span></td>
         </tr>
         <tr>
-            <td class="item"><?=__t('GD Support');?></td>
-            <td class="result"><span class="label label-success"><?=__t('Yes');?></span></td>
-        </tr>
-        <tr>
             <td class="item"><?=__t('Composer Dependencies Installed');?> (../api/composer.json)</td>
             <td class="result"><?php if(file_exists('../vendor/autoload.php')) {echo('<span class="label label-success">'.__t('Yes').'</span>');} else {echo('<span class="label label-important">'.__t('No.').'</span><a href="http://getdirectus.com/docs/developer/installation" target="_blank"> ?</a>');} ?></td>
-        </tr>
-        <tr>
-            <td class="item"><?=__t('Logs Writable');?> (../api/logs/)</td>
-            <td class="result"><?php if(is_writable('../api/logs')) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span>');}?></td>
-        </tr>
-        <tr>
-            <td class="item"><?=__t('mod_rewrite Enabled');?></td>
-            <td class="result"><?php if (ping_server()) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span><a href="http://getdirectus.com/docs/developer/faq" target="_blank"> ?</a>');}?></td>
-        </tr>
-        <tr>
-            <td class="item"><?=__t('Config Writable');?> (../api/config.php)</td>
-            <td class="result"><?php if(is_writable('../api')) {$showConfig = false; echo('<span class="label label-success">'.__t('Yes').'</span>');}else{$showConfig = true; echo('<span class="label label-important">'.__t('No').'</span>');}?></td>
         </tr>
         <tr>
             <td class="item"><?=__t('Migration Config');?></td>
             <td class="result"><?php if(file_exists('../api/ruckusing.conf.php') && filesize('../api/ruckusing.conf.php') > 0) {echo('<span class="label label-success">'.__t('Yes').'</span>');} else {echo('<span class="label label-important">'.__t('No').'</span>');} ?></td>
         </tr>
+         <tr>
+            <td class="item"><?=__t('GD Library Support');?></td>
+            <td class="result"><span class="label label-success"><?=__t('Yes');?></span></td>
+        </tr>
         <tr>
-            <td class="item"><?=__t('Media Directory');?> (/media)</td>
+            <td class="item"><?=__t('Imagick PHP Extension (Optional)');?></td>
+            <td class="result"><?php if(extension_loaded('imagick')) {echo('<span class="label label-success">'.__t('Yes').'</span>');} else {echo('<span class="label label-success">'.__t('No').'</span>');}?></td>
+        </tr>
+        <tr>
+            <td style="padding-left: 30px;"><?=__t("Adds TIFF/PSD/PDF Thumbnail Support");?></td>
+        </tr>
+        <tr>
+            <td class="item"><?=__t('Mod_Rewrite Enabled');?></td>
+            <td class="result"><?php if (ping_server()) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span>');}?></td>
+        </tr>
+        <tr>
+            <td style="padding-left: 30px;"><a href="http://getdirectus.com/docs/developer/faq" target="_blank"><u><?=__t("Docs: Click here to learn more");?></a></u></td>
+        </tr>
+        <tr>
+            <td class="item"><?=__t('Logs Directory Writable');?> (../api/logs/)</td>
+            <td class="result"><?php if(is_writable('../api/logs')) {echo('<span class="label label-success">'.__t('Yes').'</span>');}else{echo('<span class="label label-important">'.__t('No').'</span>');}?></td>
+        </tr>
+        <tr>
+            <td class="item"><?=__t('Media Directory Writable');?> (/media)</td>
             <td class="result"><?php if(is_writable('../storage/uploads')) { echo '<span class="label label-success">'.__t('Yes').'</span>';} else { echo '<span class="label label-important">'.__t('No').'</span>';}?></td>
         </tr>
         <?php if(!is_writable('../storage/uploads')): ?>
             <tr>
-                <td><?=__t("The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths.");?></td>
+                <td style="padding-left: 30px;padding-bottom: 10px;"><?=__t("The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths.");?></td>
             </tr>
         <?php endif; ?>
+        <tr>
+            <td class="item"><?=__t('Config File Writable');?> (../api/config.php)</td>
+            <td class="result"><?php if(is_writable('../api')) {$showConfig = false; echo('<span class="label label-success">'.__t('Yes').'</span>');}else{$showConfig = true; echo('<span class="label label-important">'.__t('No').'</span>');}?></td>
+        </tr>
         </tbody>
     </table>
 
     <?php
     if ($showConfig) {
         $configText = Directus\Util\Installation\InstallerUtils::createConfigFileContent($data->get());
-        echo("<span class='config-paste label label-important'>".__t('Manually copy the code below into')." ../api/config.php</span><br><textarea readonly>$configText</textarea><span id='failSpan'><button id='retryButton' class='button'>".__t('Check Config File')."</button></span>");
+        echo("<span class='config-paste label label-important'>".__t('Manually copy the code below into')." ../api/config.php</span><br><textarea readonly>$configText</textarea><span id='failSpan'><button id='retryButton' class='button no-t-margin'>".__t('Check Config File')."</button></span>");
     }
     ?>
-
-    <h3><?=__t('Recommended Optional Features');?></h3>
-    <hr>
-    <table>
-        <tbody>
-        <tr>
-            <td class="item"><?=__t('Imagick PHP Extension');?><br><?=__t('For TIFF, PSD, and PDF thumbnails');?></td>
-            <td class="result"><?php if(extension_loaded('imagick')) {echo('<span class="label label-success">'.__t('Yes').'</span>');} else {echo('<span class="label label-important">'.__t('No').'</span>');}?></td>
-        </tr>
-        </tbody>
-    </table>
 
     <h3><?=__t('Email This Summary?');?></h3>
     <hr>
