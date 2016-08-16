@@ -397,6 +397,8 @@
   "max_file_size_exceeded_x_x": "This exceeds the max file size of: %{size}%{unit}",
   "server_error": "Server Error",
   "restricted_access": "Restricted Access",
+  "not_found": "Not Found",
+  "url_not_found": "The following URL was not found:",
 
   "ok": "OK",
   "cancel": "Cancel",

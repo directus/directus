@@ -444,6 +444,10 @@ require(["config", 'polyfills'], function() {
         }
 
         switch(xhr.status) {
+          case 404:
+            messageTitle = __t('not_found');
+            messageBody = __t('url_not_found') + '<br>' + settings.url;
+            break;
           case 403:
             // var response = $.parseJSON(xhr.responseText);
             messageTitle = __t('restricted_access');
