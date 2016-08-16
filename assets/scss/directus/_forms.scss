@@ -160,9 +160,13 @@ select,
   &:hover {
     // color: darken($darkGrey, 20%);
     border-color: $mediumGrey;
+    &:disabled {
+      border-color: $fieldColor;
+    }
   }
   &:disabled {
     color: $mediumGrey;
+    cursor: not-allowed;
   }
   &:disabled:hover {
     //border: solid 1px $lightGrey;

@@ -2499,11 +2499,17 @@ select,
   select:hover,
   .input:hover {
     border-color: #aaaaaa; }
+    input:hover:disabled,
+    textarea:hover:disabled,
+    select:hover:disabled,
+    .input:hover:disabled {
+      border-color: #dddddd; }
   input:disabled,
   textarea:disabled,
   select:disabled,
   .input:disabled {
-    color: #aaaaaa; }
+    color: #aaaaaa;
+    cursor: not-allowed; }
   input:focus,
   textarea:focus,
   select:focus,
