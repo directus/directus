@@ -388,7 +388,7 @@
 
   "installation_core_table_exists": "Database has existing Directus Core tables.. Perhaps Directus is already installed.",
   "schema_template_x_does_not_exists": "Schema Template '%{template}' does not exists.",
-  "mysql_strict_mode_warning": "MySQL strict mode is enabled, Directus does not fully support strict mode due to a limitations with the PDO and the MySQL Driver. Please disable the MySQL strict mode in order to install Directus.",
+  "mysql_strict_mode_warning": "Please disable MySQL Strict Mode before installation. Directus does not fully support Strict Mode due to limitations with the PDO and MySQL Drivers.",
 
   "unable_to_find_privileges_for_x_in_group_x": "Unable to find privileges for table: %{table} in Group ID: %{group_id}",
   "unable_to_find_preferences": "Unable to find preferences",
