@@ -214,7 +214,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
           filters.perPage = this.columnSchema.options.get('result_limit');
         }
 
-        relatedCollection.fetch({includeFilters: false, data: filters});
+        relatedCollection.fetch({includeFilters: false, data: filters, success: function(collection) {
+          _.each(collection.models, function(model) {
+            return model.startTracking();
+          });
+        }});
       }
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') == 1;

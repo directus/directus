@@ -193,12 +193,16 @@ define(function(require, exports, module) {
 
       // @TODO: move this into a global collection
       if (view.model) {
-        view.model.startTracking();
+        if (!view.model._trackingChanges) {
+          view.model.startTracking();
+        }
       } else if (view.collection) {
         // TODO: make startTtracking part of Collection
         var cb = function(collection) {
           collection.each(function(model) {
-            model.startTracking();
+            if (!model._trackingChanges) {
+              model.startTracking();
+            }
           });
         };
 

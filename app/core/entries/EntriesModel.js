@@ -330,7 +330,7 @@ define(function(require, exports, module) {
       options = options || {};
 
       if (options.changed && !this.isNew()) {
-        attributes = this.changed;
+        attributes = this.unsavedAttributes() || this.changed;
         // always include id
         if (this.id) {
           attributes.id = this.id;
