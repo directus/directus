@@ -30,9 +30,17 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       this.render();
     },
 
+    getDate: function() {
+      return {
+        value: this.$('input[type=date]').val(),
+        format: 'YYYY-MM-DD'
+      }
+    },
+
     updateValue: function() {
-      var val = this.$('input[type=date]').val();
-      var format = 'YYYY-MM-DD';
+      var date = this.getDate();
+      var val = date.value;
+      var format = date.format;
 
       if (moment(val).isValid()) {
         this.$('#'+this.name).val(moment(val).format(format));
