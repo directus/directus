@@ -8,10 +8,11 @@ class DuplicateEntryException extends DbException
     {
         parent::__construct($message, $code, $previous);
 
-        preg_match("/Duplicate entry '([^']+)'/i", $message, $output);
+        preg_match("/Duplicate entry '([^']+)' for key '([^']+)'/i", $message, $output);
 
         if ($output) {
-            $this->message = 'Duplicate value: '.$output[1];
+            $messageFormat = 'Duplicate value: %s<br>(%s)';
+            $this->message = sprintf($messageFormat, $output[1], $output[2]);
         }
     }
 }
