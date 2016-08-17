@@ -831,7 +831,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     case 'MANYTOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_table','junction_key_left','junction_key_right'), $this->table);
                         if (in_array($this->table, $this->toManyCallStack)) {
-                            $this->toManyCallStack = [];
                             return $entry;
                         }
                         array_push($this->toManyCallStack, $this->table);
@@ -855,7 +854,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
                     case 'ONETOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], array('table_related','junction_key_right'), $this->table);
                         if (in_array($alias['relationship']['table_related'], $this->toManyCallStack)) {
-                            $this->toManyCallStack = [];
                             return $entry;
                         }
                         array_push($this->toManyCallStack, $alias['relationship']['table_related']);
