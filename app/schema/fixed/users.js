@@ -126,13 +126,14 @@ define(function(require, exports, module) {
             "type":"VARCHAR",
             "char_length":"50",
             "is_nullable":"NO",
+            "default_value":"",
             "comment":"",
             "sort":3,
             "system":false,
             "master":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
+            "required":true,
             "ui":"textinput",
             "options": {
               "size": "medium"
@@ -151,7 +152,7 @@ define(function(require, exports, module) {
             "master":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
+            "required":true,
             "ui":"textinput",
             "options": {
               "size": "medium"
@@ -171,7 +172,7 @@ define(function(require, exports, module) {
             "master":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
+            "required":true,
             "options": {
               "size": "medium"
             }
