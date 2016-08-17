@@ -31,7 +31,7 @@ define(['app', 'underscore', 'core-ui/datetime/date', 'moment'], function(app, _
   var ParentInput = UIDate.prototype.Input;
   var Input = ParentInput.extend({
     getDate: function() {
-      var date = Input.__super__.getValue.apply(this, arguments);
+      var date = Input.__super__.getDate.apply(this, arguments);
 
       if (this.supportsTime()) {
         date.value += ' ' + this.$('input[type=time]').val();
