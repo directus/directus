@@ -475,6 +475,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var attr = e.target.name;
       var value = e.target.value;
       var model = this.collection.get(id);
+      var relationship = model.relationship;
       var data = {};
 
       if (e.target.type === 'checkbox' || e.target.type === 'radio') {
@@ -490,6 +491,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       data['junction_key_right'] = null;
       data['junction_key_left'] = null;
       data['junction_table'] = null;
+
+      if (relationship) {
+        data['table_related'] = relationship.get('table_related');
+        data['relationship_type'] = relationship.get('type');
+        data['junction_key_right'] = relationship.get('junction_key_right');
+        data['junction_key_left'] = relationship.get('junction_key_left');
+        data['junction_table'] = relationship.get('junction_table');
+      }
 
       switch(value) {
         case 'single_file':
