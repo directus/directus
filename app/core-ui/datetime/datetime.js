@@ -30,6 +30,21 @@ define(['app', 'underscore', 'core-ui/datetime/date', 'moment'], function(app, _
 
   var ParentInput = UIDate.prototype.Input;
   var Input = ParentInput.extend({
+    updateValue: function() {
+      var val = this.$('input[type=date]').val();
+      var format = dateFormat;
+
+      if (this.supportsTime()) {
+        val += ' ' + this.$('input[type=time]').val();
+        format += ' ' + timeFormat;
+      }
+
+      if (moment(val).isValid()) {
+        this.$('#'+this.name).val(moment(val).format(format));
+      } else {
+        this.$('#'+this.name).val('');
+      }
+    },
     serialize: function() {
       var data = ParentInput.prototype.serialize.apply(this, arguments);
       var date = this.value;

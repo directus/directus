@@ -19,6 +19,6 @@
 </style>
 
 <input type="date" {{#if readonly}}disabled{{/if}} class="date" {{#if hasDate}}value="{{dateValue}}"{{/if}}>
-{{#if useTime}}<input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" {{#if hasDate}}value="{{valueTime}}"{{/if}}>{{/if}}
+{{#if useTime}}<input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" {{#if hasDate}}value="{{timeValue}}"{{/if}}>{{/if}}
 {{#unless readonly}}<a class="now secondary-info">{{t "date_now"}}</a>{{/unless}}
 <input class="merged" type="hidden" {{#if hasDate}}value="{{value}}"{{/if}} name="{{name}}" id="{{name}}">
