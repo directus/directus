@@ -365,80 +365,12 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     }
   });
 
-  var EditRelationship = BasePageView.extend({
+  var EditRelationship = NewColumnOverlay.extend({
     headerOptions: {
       route: {
         title: __t('relationship_settings'),
         isOverlay: true
       }
-    },
-
-    leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
-      return [
-        this.saveWidget
-      ];
-    },
-
-    events: {
-      'click .saved-success': function() {
-        this.save();
-      },
-      'click #removeOverlay': function() {
-        app.router.removeOverlayPage(this);
-      }
-    },
-    save: function() {
-      console.log("Save");
-    },
-    afterRender: function() {
-      this.setView('#page-content', this.table);
-    },
-    initialize: function(options) {
-      this.table = new EditRelationshipView({model: this.model});
-    }
-  });
-
-  var EditRelationshipView = Backbone.Layout.extend({
-    tagName: "form",
-
-    attributes: {
-      class: "two-column-form"
-    },
-
-    events: {
-      'change select#table_related': 'changeRelatedTable'
-    },
-
-    changeRelatedTable: function(e) {
-      this.model.set({table_related: $(e.target).val()});
-    },
-
-    template: 'modules/settings/settings-columns-edit-relationship',
-
-    serialize: function() {
-      var data = {};
-
-      var tableRelated = this.model.get('table_related');
-      data.data_types = [{title: this.model.get('relationship_type'), selected: true}];
-
-      var tables = app.schemaManager.getTables();
-      tables = tables.map(function(model) {
-        if(!tableRelated) {
-          tableRelated = model.id;
-          this.model.set({table_related: model.id});
-        }
-        return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
-      }, this);
-      data.tables = tables;
-
-
-      return data;
-    },
-
-    initialize: function() {
-      this.model.on('change', this.render, this);
-      this.render();
     }
   });
 
@@ -622,7 +554,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       // As there's not UI supporting relationship type
       column.set('relationship_type', relationshipDataType);
       column.set('type', dataType);
-      var view = new NewColumnOverlay({
+      var view = new EditRelationship({
         model: column,
         collection: this.collection,
         hiddenFields: ['field_name'],
