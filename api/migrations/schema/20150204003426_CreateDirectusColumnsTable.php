@@ -65,24 +65,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         "default"=>NULL
         )
       );
-      $t->column("hidden_input", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
-      $t->column("hidden_list", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
-      $t->column("required", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
       $t->column("relationship_type", "string", array(
           "limit"=>20,
           "default"=>NULL
@@ -106,6 +88,24 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
       $t->column("junction_key_right", "string", array(
           "limit"=>64,
           "default"=>NULL
+        )
+      );
+      $t->column("hidden_input", "tinyinteger", array(
+          "limit"=>1,
+          "null"=>false,
+          "default"=>0
+        )
+      );
+      $t->column("hidden_list", "tinyinteger", array(
+          "limit"=>1,
+          "null"=>false,
+          "default"=>0
+        )
+      );
+      $t->column("required", "tinyinteger", array(
+          "limit"=>1,
+          "null"=>false,
+          "default"=>0
         )
       );
       $t->column("sort", "integer", array(
