@@ -93,6 +93,20 @@ class TableSchema {
         return $column;
     }
 
+    /**
+     * Whether or not the column name is the name of a system column.
+     *
+     * @param $columnName
+     *
+     * @return bool
+     */
+    public static function isSystemColumn($columnName)
+    {
+        $systemFields = ['id', 'sort', STATUS_COLUMN_NAME];
+
+        return in_array($columnName, $systemFields);
+    }
+
     public static function getFirstNonSystemColumn($schema) {
         foreach ($schema as $column) {
             if(isset($column['system']) && false != $column['system']) {
@@ -367,7 +381,7 @@ class TableSchema {
 
             // Basic type casting. Should eventually be done with the schema
             $row["required"] = (bool) $row['required'];
-            $row["system"] = (bool) $row["system"];
+            $row["system"] = (bool) static::isSystemColumn($row['id']);
             $row["hidden_list"] = (bool) $row["hidden_list"];
             $row["hidden_input"] = (bool) $row["hidden_input"];
             $row["is_writable"] = !in_array($row['id'], $writeFieldBlacklist);
@@ -382,7 +396,7 @@ class TableSchema {
             }
 
             // Defualts as system columns
-            if ($row["id"] == 'id' || $row["id"] == STATUS_COLUMN_NAME || $row["id"] == 'sort') {
+            if (static::isSystemColumn($row['id'])) {
                 $row["system"] = true;
                 $row["hidden"] = true;
             }
@@ -586,7 +600,7 @@ class TableSchema {
 
         // Basic type casting. Should eventually be done with the schema
         $row["required"] = (bool) $row['required'];
-        $row["system"] = (bool) $row["system"];
+        $row["system"] = (bool) static::isSystemColumn($row['id']);
         $row["hidden_list"] = (bool) $row["hidden_list"];
         $row["hidden_input"] = (bool) $row["hidden_input"];
 
@@ -603,7 +617,7 @@ class TableSchema {
         }
 
         // Defualts as system columns
-        if ($row["id"] == 'id' || $row["id"] == STATUS_COLUMN_NAME || $row["id"] == 'sort') {
+        if (static::isSystemColumn($row['id'])) {
             $row["system"] = true;
             $row["hidden"] = true;
         }

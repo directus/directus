@@ -65,12 +65,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         "default"=>NULL
         )
       );
-      $t->column("system", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
       $t->column("hidden_input", "tinyinteger", array(
           "limit"=>1,
           "null"=>false,
