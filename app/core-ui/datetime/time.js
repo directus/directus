@@ -63,6 +63,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
 
     serialize: function() {
       var date = getTimeData(this.value, this.options);
+      var settings = this.options.settings;
       var timeValue;
 
       if (date) {
@@ -82,7 +83,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
         hasValue: true,
         timeValue: timeValue,
         value: timeValue,
-        readonly: !this.options.canWrite
+        readonly: !this.options.canWrite || (settings && settings.has('readonly')) ? settings.get('readonly')!=0 : false
       };
     },
 
