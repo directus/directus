@@ -22,7 +22,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
 
   function getTimeData(value, options) {
     if (!value) {
-      return '-';
+      return;
     }
 
     var date = new Date();
@@ -63,12 +63,16 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
 
     serialize: function() {
       var date = getTimeData(this.value, this.options);
-      var timeValue = [date.hours, date.minutes];
-      if (this.options.settings.get('include_seconds') == 1) {
-        timeValue.push(date.seconds);
-      }
+      var timeValue;
 
-      timeValue = timeValue.join(':');
+      if (date) {
+        timeValue = [date.hours, date.minutes];
+        if (this.options.settings.get('include_seconds') == 1) {
+          timeValue.push(date.seconds);
+        }
+
+        timeValue = timeValue.join(':');
+      }
 
       return {
         name: this.options.name,
@@ -77,6 +81,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
         useTime: true,
         hasValue: true,
         timeValue: timeValue,
+        value: timeValue,
         readonly: !this.options.canWrite
       };
     },
@@ -101,6 +106,10 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     },
     list: function(options) {
       var data = getTimeData(options);
+      if (!data) {
+        return '-';
+      }
+
       var hours = data.hours;
       var minutes = data.minutes;
       var seconds = data.seconds;
