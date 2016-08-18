@@ -93,15 +93,6 @@ class TableSchema {
         return $column;
     }
 
-    public static function getMasterColumn($schema) {
-        foreach ($schema as $column) {
-            if (isset($column['master']) && true == $column['master']) {
-                return $column;
-            }
-        }
-        return false;
-    }
-
     public static function getFirstNonSystemColumn($schema) {
         foreach ($schema as $column) {
             if(isset($column['system']) && false != $column['system']) {
@@ -377,7 +368,6 @@ class TableSchema {
             // Basic type casting. Should eventually be done with the schema
             $row["required"] = (bool) $row['required'];
             $row["system"] = (bool) $row["system"];
-            $row["master"] = (bool) $row["master"];
             $row["hidden_list"] = (bool) $row["hidden_list"];
             $row["hidden_input"] = (bool) $row["hidden_input"];
             $row["is_writable"] = !in_array($row['id'], $writeFieldBlacklist);
@@ -385,8 +375,6 @@ class TableSchema {
             if (array_key_exists('sort', $row)) {
                 $row["sort"] = (int)$row['sort'];
             }
-
-            $hasMaster = $row["master"];
 
             // Default UI types.
             if (!isset($row["ui"])) {
@@ -435,10 +423,6 @@ class TableSchema {
             array_push($return, array_change_key_case($row, CASE_LOWER));
         }
 
-        // Default column 3 as master. Should be refined!
-        //if (!$hasMaster) {
-        //    $return[3]['master'] = true;
-        //}
         if (count($return) == 1) {
             $return = $return[0];
         }
@@ -603,7 +587,6 @@ class TableSchema {
         // Basic type casting. Should eventually be done with the schema
         $row["required"] = (bool) $row['required'];
         $row["system"] = (bool) $row["system"];
-        $row["master"] = (bool) $row["master"];
         $row["hidden_list"] = (bool) $row["hidden_list"];
         $row["hidden_input"] = (bool) $row["hidden_input"];
 
@@ -613,8 +596,6 @@ class TableSchema {
         if (array_key_exists('sort', $row)) {
             $row["sort"] = (int)$row['sort'];
         }
-
-        $hasMaster = $row["master"];
 
         // Default UI types.
         if (!isset($row["ui"])) {

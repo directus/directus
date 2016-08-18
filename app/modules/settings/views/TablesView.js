@@ -612,8 +612,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           }
         });
 
-        row.master = primaryColumn === row.column_name;
-
         return row;
       });
 

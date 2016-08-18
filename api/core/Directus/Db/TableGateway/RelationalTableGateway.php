@@ -37,21 +37,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
      */
     public function findRecordIdentifier($schemaArray, $fullRecordData) {
         // Decide on the correct column name
-        $masterColumn = TableSchema::getMasterColumn($schemaArray);
         $identifierColumnName = null;
-        if($masterColumn)
-            $identifierColumnName = $masterColumn['column_name'];
-        else {
-            $column = TableSchema::getFirstNonSystemColumn($schemaArray);
-            if($column) {
-                $identifierColumnName = $column['column_name'];
-            }
+        $column = TableSchema::getFirstNonSystemColumn($schemaArray);
+        if ($column) {
+            $identifierColumnName = $column['column_name'];
         }
+
         // Yield the column contents
         $identifier = null;
-        if(isset($fullRecordData[$identifierColumnName])) {
+        if (isset($fullRecordData[$identifierColumnName])) {
             $identifier = $fullRecordData[$identifierColumnName];
         }
+
         return $identifier;
     }
 

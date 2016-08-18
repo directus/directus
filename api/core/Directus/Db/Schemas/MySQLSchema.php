@@ -210,7 +210,6 @@ class MySQLSchema extends AbstractSchema
             [
                 'ui',
                 'system' => new Expression('IFNULL(system, 0)'),
-                'master' => new Expression('IFNULL(master, 0)'),
                 'hidden_list' => new Expression('IFNULL(hidden_list, 0)'),
                 'hidden_input' => new Expression('IFNULL(hidden_input, 0)'),
                 'relationship_type',
@@ -252,7 +251,6 @@ class MySQLSchema extends AbstractSchema
             'column_type' => new Expression('NULL'),
             'ui',
             'system',
-            'master',
             'hidden_list',
             'hidden_input',
             'relationship_type',
@@ -312,7 +310,6 @@ class MySQLSchema extends AbstractSchema
             [
                 'ui',
                 'system' => new Expression('IFNULL(system, 0)'),
-                'master' => new Expression('IFNULL(master, 0)'),
                 'hidden_list' => new Expression('IFNULL(hidden_list, 0)'),
                 'hidden_input' => new Expression('IFNULL(hidden_input, 0)'),
                 'relationship_type',
@@ -351,7 +348,6 @@ class MySQLSchema extends AbstractSchema
             'column_key' => new Expression('NULL'),
             'ui',
             'system',
-            'master',
             'hidden_list',
             'hidden_input',
             'relationship_type',

@@ -888,7 +888,6 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
             $requestPayload = ArrayUtils::pick($requestPayload, [
                 'data_type',
                 'ui',
-                'master',
                 'hidden_input',
                 'hidden_list',
                 'required',
@@ -1243,7 +1242,6 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
         'hidden_input' => $col['hidden_input'] ? 1 : 0,
         'hidden_list' => $col['hidden_list'] ? 1 : 0,
         'required' => $col['required'] ? 1 : 0,
-        'master' => $col['master'] ? 1 : 0,
         'sort' => array_key_exists('sort', $col) ? $col['sort'] : 99999,
         'comment' => array_key_exists('comment', $col) ? $col['comment'] : ''
       );

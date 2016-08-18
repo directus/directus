@@ -71,12 +71,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
           "default"=>0
         )
       );
-      $t->column("master", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
       $t->column("hidden_input", "tinyinteger", array(
           "limit"=>1,
           "null"=>false,
@@ -144,7 +138,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
           'data_type' => NULL,
           'ui' => 'many_to_one',
           'system' => 0,
-          'master' => 0,
           'hidden_input' => 0,
           'hidden_list' => 0,
           'required' => 0,
@@ -163,7 +156,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         'data_type' => 'INT',
         'ui' => 'single_file',
         'system' => 0,
-        'master' => 0,
         'hidden_input' => 0,
         'hidden_list' => 0,
         'required' => 0,
