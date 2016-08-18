@@ -29,11 +29,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="uiType" name="ui_type">
-                            {{#ui_types}}
-                            <option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
-                            {{/ui_types}}
-                        </select>
+                        <div class="select-container">
+                            <select id="uiType" name="ui_type">
+                                {{#ui_types}}
+                                <option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
+                                {{/ui_types}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -49,11 +52,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="dataType" name="data_type">
-                            {{#data_types}}
-                            <option {{#if selected}}selected{{/if}}>{{title}}</option>
-                            {{/data_types}}
-                        </select>
+                        <div class="select-container">
+                            <select id="dataType" name="data_type">
+                                {{#data_types}}
+                                <option {{#if selected}}selected{{/if}}>{{title}}</option>
+                                {{/data_types}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -88,11 +94,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select name="table_related" id="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
-                            {{#tables}}
-                            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                            {{/tables}}
-                        </select>
+                        <div class="select-container">
+                            <select name="table_related" id="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
+                                {{#tables}}
+                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                                {{/tables}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -107,11 +116,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="junction_key_right" name="junction_key_right" {{#if disabledJunctionKeyRight}}disabled{{/if}}>
-                            {{#columns_right}}
-                            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                            {{/columns_right}}
-                        </select>
+                        <div class="select-container">
+                            <select id="junction_key_right" name="junction_key_right" {{#if disabledJunctionKeyRight}}disabled{{/if}}>
+                                {{#columns_right}}
+                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                                {{/columns_right}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -129,11 +141,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select name="table_related" id="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
-                            {{#tables}}
-                            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                            {{/tables}}
-                        </select>
+                        <div class="select-container">
+                            <select name="table_related" id="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
+                                {{#tables}}
+                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                                {{/tables}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -149,11 +164,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="junction_key_right" name="junction_key_right">
-                            {{#columns}}
-                            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                            {{/columns}}
-                        </select>
+                        <div class="select-container">
+                            <select id="junction_key_right" name="junction_key_right">
+                                {{#columns}}
+                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                                {{/columns}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -171,11 +189,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="table_related" name="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
-                            {{#tables}}
-                            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                            {{/tables}}
-                        </select>
+                        <div class="select-container">
+                            <select id="table_related" name="table_related" {{#if disabledTableRelated}}disabled{{/if}}>
+                                {{#tables}}
+                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                                {{/tables}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -191,11 +212,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="table_junction" name="table_junction">
-                            {{#junctionTables}}
-                            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                            {{/junctionTables}}
-                        </select>
+                        <div class="select-container">
+                            <select id="table_junction" name="table_junction">
+                                {{#junctionTables}}
+                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                                {{/junctionTables}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -211,11 +235,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="junction_key_left" name="junction_key_left">
-                            {{#columns_left}}
-                            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                            {{/columns_left}}
-                        </select>
+                        <div class="select-container">
+                            <select id="junction_key_left" name="junction_key_left">
+                                {{#columns_left}}
+                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                                {{/columns_left}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -231,11 +258,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="junction_key_right" name="junction_key_right">
-                            {{#columns_right}}
-                            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                            {{/columns_right}}
-                        </select>
+                        <div class="select-container">
+                            <select id="junction_key_right" name="junction_key_right">
+                                {{#columns_right}}
+                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                                {{/columns_right}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
