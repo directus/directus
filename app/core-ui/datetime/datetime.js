@@ -68,13 +68,7 @@ define(['app', 'underscore', 'core-ui/datetime/date', 'moment'], function(app, _
   });
 
   var variables = UIDate.prototype.variables.slice();
-
-  [
-    {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD HH:mm:ss'},
-    {id: 'include_seconds', ui: 'checkbox'}
-  ].forEach(function(variable) {
-    variables.push(variable);
-  });
+  variables.push({id: 'include_seconds', ui: 'checkbox'});
 
   var dataTypes = UIDate.prototype.dataTypes.slice();
   ['DATETIME', 'TIMESTAMP'].forEach(function(type) {
