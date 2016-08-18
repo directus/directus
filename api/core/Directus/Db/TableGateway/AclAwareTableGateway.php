@@ -408,7 +408,7 @@ class AclAwareTableGateway extends TableGateway {
     }
 
     protected function addVirtualColumn($tableName, $columnData) {
-      $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
+      $alias_columns = array('table_name', 'column_name', 'data_type', 'related_table', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
 
       $columnData['table_name'] = $tableName;
       $columnData['sort'] = 9999;

@@ -67,7 +67,7 @@ CREATE TABLE `directus_columns` (
   `data_type` varchar(64) DEFAULT NULL,
   `ui` varchar(64) DEFAULT NULL,
   `relationship_type` varchar(20) DEFAULT NULL,
-  `table_related` varchar(64) DEFAULT NULL,
+  `related_table` varchar(64) DEFAULT NULL,
   `junction_table` varchar(64) DEFAULT NULL,
   `junction_key_left` varchar(64) DEFAULT NULL,
   `junction_key_right` varchar(64) DEFAULT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE `directus_columns` (
 LOCK TABLES `directus_columns` WRITE;
 /*!40000 ALTER TABLE `directus_columns` DISABLE KEYS */;
 
-INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
+INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `related_table`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
 VALUES
   (1,'directus_users','group',NULL,'many_to_one',0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
   (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');

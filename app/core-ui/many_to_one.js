@@ -79,7 +79,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
       var relatedTable;
       // @todo display warning on UI & gracefully fail if the next value is undefined
       if(this.columnSchema.relationship) {
-        relatedTable = this.columnSchema.relationship.get('table_related');
+        relatedTable = this.columnSchema.relationship.get('related_table');
       } else {
         console.error(__t('column_misconfigured_in_directus_columns', {
           column: this.name

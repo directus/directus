@@ -58,7 +58,7 @@ define(function(require, exports, module) {
       },
 
       getRelated: function() {
-        return this.relationship.get('table_related');
+        return this.relationship.get('related_table');
       },
 
       getTable: function() {

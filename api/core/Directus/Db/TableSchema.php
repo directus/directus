@@ -35,11 +35,11 @@ class TableSchema {
     /**
      * TRANSITIONAL MAPPER. PENDING BUGFIX FOR MANY TO ONE UIS.
      * key: column_name
-     * value: table_related
+     * value: related_table
      * @see  https://github.com/RNGR/directus6/issues/188
      * @var array
      */
-    public static $many_to_one_column_name_to_table_related = array(
+    public static $many_to_one_column_name_to_related_table = array(
         'group_id'          => 'directus_groups',
         'group'             => 'directus_groups',
 
@@ -56,12 +56,12 @@ class TableSchema {
      * @return string
      */
     public static function getRelatedTableFromManyToOneColumnName($column_name) {
-        if(!array_key_exists($column_name, self::$many_to_one_column_name_to_table_related)) {
+        if(!array_key_exists($column_name, self::$many_to_one_column_name_to_related_table)) {
             $log = Bootstrap::get('log');
-            $log->warn("TRANSITIONAL MAPPER: Attempting to resolve unknown column name `$column_name` to a table_related value. Ignoring.");
+            $log->warn("TRANSITIONAL MAPPER: Attempting to resolve unknown column name `$column_name` to a related_table value. Ignoring.");
             return;
         }
-        return self::$many_to_one_column_name_to_table_related[$column_name];
+        return self::$many_to_one_column_name_to_related_table[$column_name];
     }
 
     protected static $_schemas = array();
@@ -409,13 +409,13 @@ class TableSchema {
                 $row["options"] = $options;
             }
 
-            if (array_key_exists('table_related', $row)) {
+            if (array_key_exists('related_table', $row)) {
                 $row['relationship'] = array();
                 $row['relationship']['type'] = ArrayUtils::get($row, 'relationship_type');
-                $row['relationship']['table_related'] = $row['table_related'];
+                $row['relationship']['related_table'] = $row['related_table'];
 
                 unset($row['relationship_type']);
-                unset($row['table_related']);
+                unset($row['related_table']);
 
                 if (array_key_exists('junction_key_left', $row)) {
                     $row['relationship']['junction_key_left'] = $row['junction_key_left'];
@@ -622,13 +622,13 @@ class TableSchema {
             $row["hidden"] = true;
         }
 
-        if (array_key_exists('table_related', $row)) {
+        if (array_key_exists('related_table', $row)) {
             $row['relationship'] = array();
             $row['relationship']['type'] = ArrayUtils::get($row, 'relationship_type');
-            $row['relationship']['table_related'] = $row['table_related'];
+            $row['relationship']['related_table'] = $row['related_table'];
 
             unset($row['relationship_type']);
-            unset($row['table_related']);
+            unset($row['related_table']);
 
             if (array_key_exists('junction_key_left', $row)) {
                 $row['relationship']['junction_key_left'] = $row['junction_key_left'];

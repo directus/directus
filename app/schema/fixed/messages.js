@@ -108,7 +108,7 @@ define(function(require, exports, module) {
         "system":false,
         "hidden_list":true,
         "hidden_input":true,
-        "table_related":"directus_messages",
+        "related_table":"directus_messages",
         "junction_key_right":"response_to",
         "required":false,
         "is_writable":true,
@@ -118,7 +118,7 @@ define(function(require, exports, module) {
         },
         "relationship": {
           "type": "ONETOMANY",
-          "table_related": "directus_messages",
+          "related_table": "directus_messages",
           "junction_key_right": "response_to"
         }
       },

@@ -83,7 +83,7 @@ define(function(require, exports, module) {
             },
             "relationship":{
               "type":"MANYTOONE",
-              "table_related":"directus_files",
+              "related_table":"directus_files",
               "junction_key_right":"avatar_file_id"
             }
           },
@@ -479,14 +479,14 @@ define(function(require, exports, module) {
             "ui":"many_to_one",
             "options": {
               "id": "many_to_one",
-              "table_related": "directus_groups",
+              "related_table": "directus_groups",
               "visible_column": "name",
               "allow_null": 0,
               "visible_column_template": "{{name}}"
             },
             "relationship":{
               "type":"MANYTOONE",
-              "table_related":"directus_groups",
+              "related_table":"directus_groups",
               "junction_key_right":"group_id"
             }
           },

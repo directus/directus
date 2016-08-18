@@ -112,7 +112,7 @@ function(app, Backbone, Handlebars) {
         if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
           //Get Related Column Collection
           data.columnModel = columnModel;
-          data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
+          data.relatedCollection = app.getEntries(columnModel.relationship.get('related_table'));
 
           var name = {};
           name[app.statusMapping.status_name] = app.statusMapping.active_num;
@@ -203,7 +203,7 @@ function(app, Backbone, Handlebars) {
         var visibleTemplate = '<div>{{'+columnModel.id+'}}</div>';
 
         if(columnModel.relationship) {
-          table = columnModel.relationship.get('table_related');
+          table = columnModel.relationship.get('related_table');
           columns = columnModel.options.get('visible_columns');
 
           visibleTemplate = '<div>'+columnModel.options.get('visible_column_template')+'</div>';
@@ -355,7 +355,7 @@ function(app, Backbone, Handlebars) {
               if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
                 //Get Related Column Collection
                 data.columnModel = columnModel;
-                data.relatedCollection = app.getEntries(columnModel.relationship.get('table_related'));
+                data.relatedCollection = app.getEntries(columnModel.relationship.get('related_table'));
 
                 var name = {};
                 name[app.statusMapping.status_name] = app.statusMapping.active_num;

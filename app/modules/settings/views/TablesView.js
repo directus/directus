@@ -116,8 +116,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       'change input#charLength': function(e) {
         this.model.set({char_length: $(e.target).val()});
       },
-      'change select#table_related': function(e) {
-        this.model.set({table_related: $(e.target).val()});
+      'change select#related_table': function(e) {
+        this.model.set({related_table: $(e.target).val()});
         this.render();
       },
       'change #junction_key_right': function(e) {
@@ -208,7 +208,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       if (['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
-        tableRelated = this.model.get('table_related');
+        tableRelated = this.model.get('related_table');
         this.model.set({junction_key_right: this.columnName});
 
         if (this.selectedUI === 'single_file') {
@@ -218,9 +218,9 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           tables = tables.map(function(model) {
             if(!tableRelated) {
               tableRelated = model.id;
-              this.model.set({table_related: model.id});
+              this.model.set({related_table: model.id});
             }
-            return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
+            return {id: model.get('table_name'), selected: (model.id === this.model.get('related_table'))};
           }, this);
         }
 
@@ -232,14 +232,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       //If Single_file UI, force related table to be directus_files
       if (['single_file', 'multiple_files'].indexOf(this.selectedUI) > -1) {
-        this.model.set({table_related: 'directus_files'});
+        this.model.set({related_table: 'directus_files'});
         data.disabledTableRelated = true;
       }
 
       if (['ONETOMANY', 'multiple_files', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
         data[this.selectedDataType] = true;
 
-        tableRelated = this.model.get('table_related');
+        tableRelated = this.model.get('related_table');
         var junctionTable = this.model.get('junction_table');
         var junctionKeyRight = this.model.get('junction_key_right');
 
@@ -250,9 +250,9 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           tables = tables.map(function (model) {
             if (!tableRelated) {
               tableRelated = model.id;
-              this.model.set({table_related: model.id});
+              this.model.set({related_table: model.id});
             }
-            return {id: model.get('table_name'), selected: (model.id === this.model.get('table_related'))};
+            return {id: model.get('table_name'), selected: (model.id === this.model.get('related_table'))};
           }, this);
         }
         data.tables = tables;
@@ -417,7 +417,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       // hotfix #1069 single_file UI not saving relational settings
       // If Single_file UI, force related table to be directus_files
       // and relationship type to manytoone
-      data['table_related'] = null;
+      data['related_table'] = null;
       data['datatype'] = null;
       data['relationship_type'] = null;
       data['junction_key_right'] = null;
@@ -425,7 +425,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       data['junction_table'] = null;
 
       if (relationship) {
-        data['table_related'] = relationship.get('table_related');
+        data['related_table'] = relationship.get('related_table');
         data['relationship_type'] = relationship.get('type');
         data['junction_key_right'] = relationship.get('junction_key_right');
         data['junction_key_left'] = relationship.get('junction_key_left');
@@ -434,13 +434,13 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       switch(value) {
         case 'single_file':
-          data['table_related'] = 'directus_files';
+          data['related_table'] = 'directus_files';
           data['datatype'] = 'INT';
           data['relationship_type'] = 'MANYTOONE';
           data['junction_key_right'] = id;
           break;
         case 'multiple_files':
-          data['table_related'] = 'directus_files';
+          data['related_table'] = 'directus_files';
         case 'many_to_many':
           data['junction_key_right'] = id;
           data['datatype'] = 'MANYTOMANY';
@@ -460,7 +460,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       if (data['relationship_type'] && !model.relationship) {
         model.relationship = new Backbone.Model({
           type: data['relationship_type'],
-          table_related: data['table_related'],
+          related_table: data['related_table'],
           junction_table: data['junction_table'],
           junction_key_right: data['junction_key_right'],
           junction_key_left: data['junction_key_left']

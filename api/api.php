@@ -892,7 +892,7 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
                 'hidden_list',
                 'required',
                 'relationship_type',
-                'table_related',
+                'related_table',
                 'junction_table',
                 'junction_key_left',
                 'junction_key_right',
@@ -1247,7 +1247,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       );
 
       // hotfix #1069 single_file UI not saving relational settings
-      $extraFields = ['data_type', 'relationship_type', 'table_related', 'junction_key_right'];
+      $extraFields = ['data_type', 'relationship_type', 'related_table', 'junction_key_right'];
       foreach($extraFields as $field) {
         if (array_key_exists($field, $col)) {
           $columnData[$field] = $col[$field];

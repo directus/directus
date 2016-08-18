@@ -150,7 +150,7 @@ define(function(require, exports, module) {
               parse:true,
               filters: {columns_visible: columns},
               privileges: SchemaManager.getPrivileges(tableRelated)
-              //preferences: app.preferences[column.get('table_related')],
+              //preferences: app.preferences[column.get('related_table')],
             };
 
 

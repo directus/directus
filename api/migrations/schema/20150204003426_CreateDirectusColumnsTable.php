@@ -70,7 +70,7 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
           "default"=>NULL
         )
       );
-      $t->column("table_related", "string", array(
+      $t->column("related_table", "string", array(
           "limit"=>64,
           "default"=>NULL
         )
@@ -136,7 +136,7 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
           'hidden_list' => 0,
           'required' => 0,
           'relationship_type' => 'MANYTOONE',
-          'table_related' => 'directus_groups',
+          'related_table' => 'directus_groups',
           'junction_table' => NULL,
           'junction_key_left' => NULL,
           'junction_key_right' => 'group_id',
@@ -154,7 +154,7 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         'hidden_list' => 0,
         'required' => 0,
         'relationship_type' => 'MANYTOONE',
-        'table_related' => 'directus_files',
+        'related_table' => 'directus_files',
         'junction_table' => NULL,
         'junction_key_left' => NULL,
         'junction_key_right' => 'avatar_file_id',
