@@ -18,7 +18,7 @@ define(function(require, exports, module) {
     require('core-ui/directus_activity'),
     require('core-ui/datetime/datetime'),
     require('core-ui/datetime/date'),
-    require('core-ui/time'),
+    require('core-ui/datetime/time'),
     require('core-ui/directus_user_activity'),
     require('core-ui/directus_user_avatar'),
     require('core-ui/directus_file_size'),
