@@ -157,6 +157,7 @@ class InstallerUtils
             'email' => $data['directus_email'],
             'password' => $hash,
             'salt' => StringUtils::randomString(),
+            'token' => StringUtils::randomString(32),
             'group' => 1,
             'language' => $data['default_language']
         ]);
