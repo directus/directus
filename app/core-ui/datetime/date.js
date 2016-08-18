@@ -81,7 +81,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     variables: [
       {id: 'readonly', ui: 'checkbox'},
       {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD', comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>', options: {placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'}},
-      {id: 'contextual_date_in_listview', ui: 'checkbox'},
+      {id: 'contextual_date_in_listview', ui: 'checkbox', comment: 'Eg: 3 days ago'},
       {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
     ],
     Input: Input,
