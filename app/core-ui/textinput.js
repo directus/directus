@@ -98,7 +98,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       // Adjusts the max width of the input (Small, Medium, Large)
       {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       // Grayed out default placeholder text in the input when it's empty
-      {id: 'placeholder_text', ui: 'textinput', char_length:200, required: true},
+      {id: 'placeholder_text', ui: 'textinput', char_length:200},
       // Chooses the type of validation used on this field
       // * Character Blacklist: Choose the specific characters **not** allowed in the input
       // * Character Whitelist: Choose the specific characters allowed in the input
