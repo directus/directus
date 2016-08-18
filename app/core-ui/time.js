@@ -20,41 +20,63 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
 
   'use strict';
 
-  var template =  '<style type="text/css"> \
-                  input.time { \
-                    display: inline; \
-                    display: -webkit-inline-flex; \
-                    width: 130px; \
-                    padding-right: 4px; \
-                    margin-right: 5px; \
-                  } \
-                  input.seconds { \
-                    width: 100px !important; \
-                  } \
-                  a.now { \
-                    \
-                  } \
-                  </style> \
-                  <input type="time" {{#if readonly}}disabled{{/if}} class="time{{#if includeSeconds}} seconds{{/if}}" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                  <a class="now secondary-info">{{t "date_now"}}</a>';
+  function getTimeData(value, options) {
+    if (!value) {
+      return '-';
+    }
+
+    var date = new Date();
+    var timeParts = value.split(':');
+
+    date.setHours(parseInt(timeParts[0],10));
+    date.setMinutes(parseInt(timeParts[1],10) || 0 );
+    date.setSeconds(parseInt(timeParts[2],10) || 0 );
+
+    var hours = (date.getHours() < 10 ? '0' : '') + date.getHours();
+    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
+
+    return {
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds,
+      meridiem: (hours >= 12)? 'pm' : 'am'
+    };
+  }
 
   var Input = UIView.extend({
-    templateSource: template,
+    template: 'datetime/input',
 
     events: {
       'click .now': 'makeNow'
     },
 
     makeNow: function(e) {
-      this.value = moment().format('HH:mm');
+      var timeFormat = 'HH:mm';
+      if (this.options.settings.get('include_seconds') == 1) {
+        timeFormat += ':ss';
+      }
+
+      this.value = moment().format(timeFormat);
       this.render();
     },
 
     serialize: function() {
+      var date = getTimeData(this.value, this.options);
+      var timeValue = [date.hours, date.minutes];
+      if (this.options.settings.get('include_seconds') == 1) {
+        timeValue.push(date.seconds);
+      }
+
+      timeValue = timeValue.join(':');
+
       return {
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        value: this.value,
+        useDate: false,
+        useTime: true,
+        hasValue: true,
+        timeValue: timeValue,
         readonly: !this.options.canWrite
       };
     },
@@ -78,29 +100,15 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
       }
     },
     list: function(options) {
-      if(!options.value) {
-        return '-';
-      }
-
+      var data = getTimeData(options);
+      var hours = data.hours;
+      var minutes = data.minutes;
+      var seconds = data.seconds;
+      var meridiem = data.meridiem;
       var settings = options.settings;
-      var include_seconds = (settings && settings.has('include_seconds') && settings.get('include_seconds') == 1)? true : false;
-      var date = new Date();
-      var timeParts = options.value.split(":");
+      var includeSeconds = settings.get('include_seconds') == 1;
 
-      date.setHours(parseInt(timeParts[0],10));
-      date.setMinutes(parseInt(timeParts[1],10) || 0 );
-      date.setSeconds(parseInt(timeParts[2],10) || 0 );
-
-      var hours = date.getHours();
-      var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-      var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
-      var secondsFormat = (include_seconds) ? ':'+seconds+' ' : '';
-      var suffix = (hours >= 12)? 'pm' : 'am';
-
-      hours = (hours > 12) ? hours-12 : hours;
-      hours = (hours == '00') ? 12 : hours;
-
-      return (options.value) ? hours+':'+minutes+secondsFormat+' '+suffix : '';
+      return hours + ':' + minutes + (includeSeconds ? ':' + seconds : '') + ' ' + meridiem;
     }
   });
 

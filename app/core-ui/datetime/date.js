@@ -55,7 +55,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       var dateValue = date.format('YYYY-MM-DD');
 
       return {
-        hasDate: this.value.isValid(),
+        hasValue: this.value.isValid(),
+        useDate: true,
         useTime: false,
         dateValue: dateValue,
         value: dateValue,
@@ -76,10 +77,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
   var Component = UIComponent.extend({
     id: 'date',
-    dataTypes: ['DATETIME', 'DATE', 'TIMESTAMP'],
+    dataTypes: ['DATE'],
     variables: [
       {id: 'readonly', ui: 'checkbox'},
       {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD', comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>', options: {placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'}},
+      {id: 'contextual_date_in_listview', ui: 'checkbox'},
+      {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
     ],
     Input: Input,
     validate: function(value, options) {
@@ -96,13 +99,24 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     },
     list: function(options) {
       var value = options.value;
-      var format = options.settings.get('format');
+      var format = this.getFormat(options);
 
-      if (format) {
-        value = moment(value).format(removeTimeFromFormat(format));
+      if (options.settings.get('contextual_date_in_listview') == 1) {
+        var momentDate = moment(options.value);
+        value = '-';
+        if (momentDate.isValid()) {
+          value = momentDate.fromNow();
+        }
+      } else if (format) {
+        value = moment(value).format(format);
       }
 
       return value;
+    },
+    getFormat: function(options) {
+      var format = options.settings.get('format');
+
+      return removeTimeFromFormat(format);
     },
     sort: function(options) {
       return options.value;

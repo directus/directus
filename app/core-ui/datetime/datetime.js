@@ -33,31 +33,33 @@ define(['app', 'underscore', 'core-ui/datetime/date', 'moment'], function(app, _
     getDate: function() {
       var date = Input.__super__.getDate.apply(this, arguments);
 
-      if (this.supportsTime()) {
-        date.value += ' ' + this.$('input[type=time]').val();
-        date.format += ' ' + timeFormat;
-      }
+      date.value += ' ' + this.$('input[type=time]').val();
+      date.timeFormat = this.getTimeFormat();
+      date.dateFormat = date.format;
+      date.format += ' ' + date.timeFormat;
 
       return date;
+    },
+    getDateFormat: function() {
+      return dateFormat;
+    },
+    getTimeFormat: function() {
+      var includeSeconds = this.options.settings.get('include_seconds') == 1
+
+      return includeSeconds ? timeFormat : timeFormat.replace(':ss', '');
     },
     serialize: function() {
       var data = ParentInput.prototype.serialize.apply(this, arguments);
       var date = this.value;
-      var supportsTime = this.supportsTime();
-      var useTime = false;
-      var format = dateFormat;
+      var format = dateFormat + ' ' + timeFormat;
       var settings = this.options.settings;
 
-      if (supportsTime && settings && settings.get('use_time') != 0) {
-        useTime = true;
-        format += ' ' + timeFormat;
-      }
-
       return _.extend(data, {
-        hasDate: this.value.isValid(),
-        useTime: useTime,
-        timeValue: useTime ? date.format(timeFormat) : null,
-        dateValue: date.format(dateFormat),
+        hasValue: this.value.isValid(),
+        useDate: true,
+        useTime: true,
+        timeValue: date.format(this.getTimeFormat()),
+        dateValue: date.format(this.getDateFormat()),
         value: date.format(format),
         name: this.name,
         readonly: !this.options.canWrite || (settings && settings.has('readonly')) ? settings.get('readonly')!=0 : false
@@ -69,33 +71,23 @@ define(['app', 'underscore', 'core-ui/datetime/date', 'moment'], function(app, _
 
   [
     {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD HH:mm:ss'},
-    {id: 'useTime', ui: 'checkbox', def: 0},
-    {id: 'include_seconds', ui: 'checkbox'},
-    {id: 'contextual_date_in_listview', ui: 'checkbox'},
-    {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
+    {id: 'include_seconds', ui: 'checkbox'}
   ].forEach(function(variable) {
     variables.push(variable);
   });
 
+  var dataTypes = UIDate.prototype.dataTypes.slice();
+  ['DATETIME', 'TIMESTAMP'].forEach(function(type) {
+    dataTypes.push(type);
+  });
+
   var Component = UIDate.extend({
     id: 'datetime',
+    dataTypes: dataTypes,
     variables: variables,
     Input: Input,
-    list: function(options) {
-      var value = options.value;
-      var format = options.settings.get('format');
-
-      if (options.settings.get('contextual_date_in_listview') == 1) {
-        var momentDate = moment(options.value);
-        value = '-';
-        if (momentDate.isValid()) {
-          value = momentDate.fromNow();
-        }
-      } else if (format) {
-        value = moment(value).format(format);
-      }
-
-      return value;
+    getFormat: function(options) {
+      return options.settings.get('format');
     }
   });
 
