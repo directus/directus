@@ -79,7 +79,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     dataTypes: ['DATETIME', 'DATE', 'TIMESTAMP'],
     variables: [
       {id: 'readonly', ui: 'checkbox'},
-      {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD'},
+      {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD', comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>', options: {placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'}},
     ],
     Input: Input,
     validate: function(value, options) {
