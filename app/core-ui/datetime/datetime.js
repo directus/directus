@@ -70,14 +70,9 @@ define(['app', 'underscore', 'core-ui/datetime/date', 'moment'], function(app, _
   var variables = UIDate.prototype.variables.slice();
   variables.push({id: 'include_seconds', ui: 'checkbox'});
 
-  var dataTypes = UIDate.prototype.dataTypes.slice();
-  ['DATETIME', 'TIMESTAMP'].forEach(function(type) {
-    dataTypes.push(type);
-  });
-
   var Component = UIDate.extend({
     id: 'datetime',
-    dataTypes: dataTypes,
+    dataTypes: ['DATETIME', 'TIMESTAMP'],
     variables: variables,
     Input: Input,
     getFormat: function(options) {
