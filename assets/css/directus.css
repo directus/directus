@@ -1483,6 +1483,9 @@ input, button {
 .margin-top-standard {
   margin-top: 20px; }
 
+.field-note {
+  max-width: 420px; }
+
 .show-circle:hover {
   position: relative; }
   .show-circle:hover .white-circle {
