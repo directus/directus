@@ -370,7 +370,7 @@ class TableSchema {
 
             // Read method formatColumnRow
             // @TODO: combine this method with AllSchema, kind of doing same thing
-            if (array_key_exists('type', $row) && $row['type'] == 'MANYTOMANY') {
+            if (array_key_exists('type', $row) && $row['type'] == 'ALIAS') {
                 $row['is_nullable'] = "YES";
             }
 
@@ -589,7 +589,7 @@ class TableSchema {
         // Many-to-Many type it actually can be null,
         // it's based on a junction table, not a real column.
         // Issue #612 https://github.com/RNGR/directus6/issues/612
-        if (array_key_exists('type', $row) && $row['type'] == 'MANYTOMANY') {
+        if (array_key_exists('type', $row) && $row['type'] == 'ALIAS') {
             $row['is_nullable'] = "YES";
         }
 
