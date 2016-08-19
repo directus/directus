@@ -1047,6 +1047,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     var model = column.options;
     model.set({id: column.get('ui')});
     var schema = app.schemaManager.getColumns('ui', model.id);
+    model.structure = schema;
     var view = new EditColumn({model: model, schema: schema});
     app.router.overlayPage(view);
     view.save = function() {
