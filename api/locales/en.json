@@ -273,7 +273,7 @@
   "translation_languages_table_comment": "Enter Table that contains all languages supported",
   "translation_languages_name_column_comment": "Language Title Field",
   "translation_default_language_id_comment": "Default language ID in language table",
-  "translation_left_column_name_comment": "Enter Column name pointing to Languages table PK",
+  "translation_left_column_name_comment": "Enter the column name for the column that will store the language ID",
 
   "no_user": "No user",
 
