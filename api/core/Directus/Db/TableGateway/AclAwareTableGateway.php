@@ -16,6 +16,7 @@ use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
 use Directus\Files\Files;
 use Directus\Hook\Hook;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
@@ -372,12 +373,12 @@ class AclAwareTableGateway extends TableGateway {
     */
     public function addColumn($tableName, $tableData) {
       $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
-      $data_type = $tableData['data_type'];
+      $relationshipType = ArrayUtils::get($tableData, 'relationship_type', null);
       // TODO: list all types which need manytoone ui
       // Hard-coded
       $manytoones = array('single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE');
 
-      if (in_array($data_type, $directus_types)) {
+      if (in_array($relationshipType, $directus_types)) {
           //This is a 'virtual column'. Write to directus schema instead of MYSQL
           $this->addVirtualColumn($tableName, $tableData);
       } else {

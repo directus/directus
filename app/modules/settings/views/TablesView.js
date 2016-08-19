@@ -180,11 +180,15 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       uis[this.selectedUI].dataTypes.forEach(function(dataType) {
         var item = {title: dataType};
-        if(!that.selectedDataType) {
+        if (['MANYTOMANY', 'ONETOMANY'].indexOf(dataType) >= 0) {
+          item.value = 'ALIAS';
+        }
+
+        if (!that.selectedDataType) {
           that.selectedDataType = dataType;
         }
 
-        if(dataType == that.selectedDataType) {
+        if (dataType == that.selectedDataType) {
           item.selected = true;
         }
 
@@ -236,8 +240,10 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         data.disabledTableRelated = true;
       }
 
-      if (['ONETOMANY', 'multiple_files', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
+      if (['ONETOMANY', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
         data[this.selectedDataType] = true;
+        this.selectedRelationshipType = this.selectedDataType;
+        this.isAlias = true;
 
         tableRelated = this.model.get('related_table');
         var junctionTable = this.model.get('junction_table');
@@ -290,7 +296,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         this.model.set({relationship_type: this.selectedDataType});
       }
 
-      this.model.set({data_type: this.selectedDataType, ui: this.selectedUI});
+      var dataType = this.selectedDataType;
+      if (this.selectedRelationshipType) {
+        dataType = 'ALIAS';
+      }
+      this.model.set({data_type: dataType, ui: this.selectedUI});
 
       return data;
     },
@@ -323,7 +333,12 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       options = options || {};
       this.uiFilter = options.ui_filter || false;
       this.selectedUI = _.isString(this.model.get('ui')) ? this.model.get('ui') : undefined;
-      this.selectedDataType = this.model.get('data_type') || undefined;
+      this.selectedDataType = this.model.get('type') || undefined;
+      this.selectedRelationshipType = this.model.get('relationship_type') || undefined;
+      this.isAlias = ['ONETOMANY', 'MANYTOMANY'].indexOf(this.selectedRelationshipType) >= 0;
+      if (this.isAlias) {
+        this.selectedDataType = this.selectedRelationshipType;
+      }
       this.columnName = this.model.get('column_name') || undefined;
       this.hideFieldName = (options.hiddenFields && options.hiddenFields.indexOf('field_name') >= 0);
 
@@ -578,6 +593,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
         row.uiHasRelationship = model.relationship !== undefined;
         row.alias = ['ALIAS','ONETOMANY','MANYTOMANY'].indexOf(row.type) > -1;
+        // Existing columns that should be type ALIAS
+        row.type = row.alias ? 'ALIAS' : row.type;
         row.types = [];
         row.relationship = '';
         row.requiredDisabled = !row.alias && row.is_nullable === 'NO' && row.default_value === undefined;
@@ -602,7 +619,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
         // Gather a list of UI alternatives
         _.each(ui, function(ui) {
-          if (!ui.system && ui.dataTypes.indexOf(row.type) > -1) {
+          var dataType = (row.alias) ? model.getRelationshipType() : row.type;
+          if (!ui.system && ui.dataTypes.indexOf(dataType) > -1) {
             row.types.push({id: ui.id, isActive: (ui.id === row.ui)});
           }
 

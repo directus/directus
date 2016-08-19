@@ -55,7 +55,7 @@
                         <div class="select-container">
                             <select id="dataType" name="data_type">
                                 {{#data_types}}
-                                <option {{#if selected}}selected{{/if}}>{{title}}</option>
+                                <option {{#if selected}}selected{{/if}}>{{#if value}}{{value}}{{else}}{{title}}{{/if}}</option>
                                 {{/data_types}}
                             </select>
                             <i class="material-icons select-arrow">arrow_drop_down</i>

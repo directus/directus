@@ -268,7 +268,7 @@ class MySQLSchema extends AbstractSchema
             ->OR
             ->equalTo('column_name', $columnName)
             ->unnest()
-            ->addPredicate(new IsNotNull('data_type'));
+            ->addPredicate(new IsNotNull('relationship_type'));
 
         if (count($blacklist)) {
             $where->addPredicate(new NotIn('COLUMN_NAME', $blacklist));
