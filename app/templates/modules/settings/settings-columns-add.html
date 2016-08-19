@@ -60,6 +60,10 @@
                             </select>
                             <i class="material-icons select-arrow">arrow_drop_down</i>
                         <div>
+                        {{#if isAlias}}
+                        <p><em>{{t "alias_column_description"}}</em></p>
+                        <p><strong>{{t "relationship_type"}}</strong> {{selectedRelationshipType}}</p>
+                        {{/if}}
                     </div>
                 </div>
             </div>

@@ -242,7 +242,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       if (['ONETOMANY', 'MANYTOMANY'].indexOf(this.selectedDataType) > -1) {
         data[this.selectedDataType] = true;
-        this.selectedRelationshipType = this.selectedDataType;
+        data.selectedRelationshipType = this.selectedRelationshipType = this.selectedDataType;
         this.isAlias = true;
 
         tableRelated = this.model.get('related_table');
@@ -301,6 +301,8 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         dataType = 'ALIAS';
       }
       this.model.set({data_type: dataType, ui: this.selectedUI});
+
+      data.isAlias = this.isAlias;
 
       return data;
     },
