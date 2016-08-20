@@ -117,8 +117,44 @@ class TableSchema {
         return false;
     }
 
-    public static function columnIsCollectionAssociation($column) {
-        return in_array($column['type'], self::$association_types);
+    /**
+     * Check whether or not a column is an Alias
+     *
+     * @param $column
+     *
+     * @return bool
+     */
+    public static function isColumnAnAlias($column)
+    {
+        $isLegacyAliasType = static::isColumnTypeAnAlias($column['type']);
+        $isAliasType = false;
+
+        if (isset($column['relationship'])) {
+            $relationship = $column['relationship'];
+            $isAliasType = static::isColumnTypeAnAlias(ArrayUtils::get($relationship, 'type', null));
+        }
+
+        return $isLegacyAliasType || $isAliasType;
+    }
+
+    /**
+     * Check if the given type is an alias
+     *
+     * @param $columnType
+     *
+     * @return bool
+     */
+    public static function isColumnTypeAnAlias($columnType)
+    {
+        return in_array($columnType, static::$association_types);
+    }
+
+    /**
+     * @see isColumnAnAlias
+     */
+    public static function columnIsCollectionAssociation($column)
+    {
+        return static::isColumnAnAlias($column);
     }
 
     public static function getAllNonAliasTableColumnNames($table) {
@@ -648,11 +684,6 @@ class TableSchema {
         }
 
         return $row;
-    }
-
-    public static function isColumnTypeAnAlias($columnType)
-    {
-        return in_array($columnType, static::$association_types);
     }
 
     public static function columnTypeToUIType($column_type) {

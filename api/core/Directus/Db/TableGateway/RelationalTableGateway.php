@@ -9,6 +9,7 @@ use Directus\Db\SchemaManager;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableSchema;
 use Directus\Hook\Hook;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\RowGateway\AbstractRowGateway;
@@ -357,13 +358,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
         foreach($schema as $column) {
             $colName = $column['id'];
 
+            if (!isset($column['relationship']) || !is_array($column['relationship'])) {
+                continue;
+            }
+
             // Ignore absent values & non-arrays
             if(!isset($parentRow[$colName]) || !is_array($parentRow[$colName])) {
                 continue;
             }
 
-            $fieldIsCollectionAssociation = in_array($column['type'], TableSchema::$association_types);
-            $lowercaseColumnType = strtolower($column['type']);
+            $relationship = $column['relationship'];
+            $fieldIsCollectionAssociation = in_array($relationship['type'], TableSchema::$association_types);
+            $lowercaseColumnType = strtolower($relationship['type']);
 
             // Ignore empty OneToMany collections
             $fieldIsOneToMany = ("onetomany" === $lowercaseColumnType);
@@ -417,13 +423,18 @@ class RelationalTableGateway extends AclAwareTableGateway {
         foreach($schema as $column) {
             $colName = $column['id'];
 
+            if (!isset($column['relationship']) || !is_array($column['relationship'])) {
+                continue;
+            }
+
             // Ignore absent values & non-arrays
             if(!isset($parentRow[$colName]) || !is_array($parentRow[$colName])) {
                 continue;
             }
 
-            $fieldIsCollectionAssociation = in_array($column['type'], TableSchema::$association_types);
-            $lowercaseColumnType = strtolower($column['type']);
+            $relationship = $column['relationship'];
+            $fieldIsCollectionAssociation = in_array($relationship['type'], TableSchema::$association_types);
+            $lowercaseColumnType = strtolower($relationship['type']);
 
             // Ignore empty OneToMany collections
             $fieldIsOneToMany = ("onetomany" === $lowercaseColumnType);
@@ -824,7 +835,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
             $foreign_data = null;
 
             if(array_key_exists('relationship', $alias) && $alias['relationship'] && TableSchema::canGroupViewTable($alias['relationship']['related_table'])) {
-                switch($alias['type']) {
+                $relationship = $alias['relationship'];
+                switch($relationship['type']) {
                     case 'MANYTOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], array('related_table','junction_table','junction_key_left','junction_key_right'), $this->table);
                         if (in_array($this->table, $this->toManyCallStack)) {
@@ -1137,12 +1149,13 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $alias_fields = array();
         foreach($schema as $i => $col) {
             // Is it a "virtual"/alias column?
-            if(in_array($col['type'], array('ALIAS','ONETOMANY','MANYTOMANY'))) {
+            if (TableSchema::isColumnAnAlias($col)) {
                 // Remove them from the standard schema
                 unset($schema[$i]);
                 $alias_fields[] = $col;
             }
         }
+
         return $alias_fields;
     }
 
