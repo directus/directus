@@ -64,7 +64,8 @@ class LanguageManager
             'en' => 'English',
             'es' => 'Español',
             'de' => 'Deutsch',
-            'fr' => 'Français'
+            'fr' => 'Français',
+            'zh-hans' => '中文（简体）'
         ];
     }
 }
