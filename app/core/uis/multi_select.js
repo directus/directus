@@ -94,7 +94,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'multi_select',
     dataTypes: ['VARCHAR', 'TEXT'],
     variables: [
-      {id: 'type', type: 'String', def: 'select_list', ui: 'select', options: {options: {'select_list':__t('select_list'),'cb_list':__t('checkbox_list')} }},
+      {id: 'type', def: 'select_list', ui: 'select', options: {options: {'select_list':__t('select_list'),'cb_list':__t('checkbox_list')} }},
       {id: 'delimiter', type: 'String', def: ',', ui: 'textinput', char_length:1, required: true  },
       {id: 'options', type: 'String', def: '', ui: 'textarea', options:{'rows': 25}  }
     ],

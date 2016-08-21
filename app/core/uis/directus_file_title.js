@@ -49,7 +49,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'directus_file_title',
     system: true,
     variables: [
-      {id: 'size', type: 'String', def: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }}
+      {id: 'size', def: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }}
     ],
     Input: Input,
     list: function(options) {
