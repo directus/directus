@@ -58,6 +58,12 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
 
     updateTranslateConnection: function() {
       this.translateCollection = this.model.get(this.translateId);
+      var tracking = function(model) {
+        model.startTracking();
+      };
+
+      this.translateCollection.each(tracking);
+      this.translateCollection.on('add', tracking);
 
       this.languageCollection = EntriesManager.getInstance(this.translateSettings.languages_table);
       this.listenTo(this.languageCollection, 'sync', function() {this.initializeTranslateView();});
