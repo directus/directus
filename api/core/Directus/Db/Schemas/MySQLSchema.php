@@ -450,21 +450,15 @@ class MySQLSchema extends AbstractSchema
     }
 
     /**
- * Cast a php string to the same type as MySQL
- * @param  string $mysql_data MySQL result data
- * @param  string $mysql_type MySQL field type
- * @return mixed              Value cast to PHP type
- */
-
-    /**
      * Cast string values to its database type.
      *
      * @param $data
-     * @param null $type
+     * @param $type
+     * @param $length
      *
      * @return mixed
      */
-    public function parseType($data, $type = null)
+    public function parseType($data, $type = null, $length = false)
     {
         $type = strtolower($type);
 

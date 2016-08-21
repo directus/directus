@@ -93,7 +93,8 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         $select->where->equalTo('id', $privilegeId);
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-        return current($rowset);
+
+        return $this->parseRecord(current($rowset));
     }
 
     // @todo This currently only supports permissions,
@@ -201,7 +202,9 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
             return strcmp($a['table_name'], $b['table_name']);
         });
 
-        return is_null($tableName) ? $privileges : reset($privileges);
+        $records = is_null($tableName) ? $privileges : reset($privileges);
+
+        return $this->parseRecord($records);
     }
 
     public function fetchGroupPrivilegesRaw($group_id) {

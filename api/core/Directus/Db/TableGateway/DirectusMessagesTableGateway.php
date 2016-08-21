@@ -80,7 +80,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
         $result = $this->selectWith($select)->toArray();
 
         foreach($result as &$message) {
-            $message['id'] = (int)$message['id'];
+            $message = $this->parseRecordValuesByType($message, 'directus_messages_recipients');
         }
 
         return $result;
@@ -173,11 +173,15 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway {
             if ($item['response_to'] != NULL) {
                 // Move it to resultLookup
                 unset($resultLookup[$item['id']]);
+                $item = $this->parseRecord($item);
                 $resultLookup[$item['response_to']]['responses']['rows'][] = $item;
             }
         }
 
         $result = array_values($resultLookup);
+        foreach($result as &$row) {
+            $row = $this->parseRecord($row);
+        }
 
         // Add date_updated
         // Update read

@@ -339,7 +339,6 @@ define(function(require, exports, module) {
           }
         }
 
-        console.log(attr, this.attributeTypes);
         return castType(this.attributeTypes[attr], attribute);
       };
     },

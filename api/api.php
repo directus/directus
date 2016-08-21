@@ -968,7 +968,8 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($ZendDb, $acl) {
     // @TODO need POST and PUT
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null;
-    $Groups = new TableGateway($acl, 'directus_groups', $ZendDb);
+    $tableName = 'directus_groups';
+    $Groups = new TableGateway($acl, $tableName, $ZendDb);
     $response = $Groups->find($id);
     if (!$response) {
         $response = array(
@@ -976,6 +977,9 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($ZendDb, $acl) {
             'success' => false
         );
     }
+
+    $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+    $response = SchemaManager::parseRecordValuesByType($response, $columns);
 
     JsonView::render($response);
 });

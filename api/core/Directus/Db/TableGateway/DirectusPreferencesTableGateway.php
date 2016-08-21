@@ -156,7 +156,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             $preferences = $this->constructPreferences($user_id, $table, $preferences);
         }
 
-        return $preferences;
+        return $this->parseRecord($preferences);
     }
 
     /*
@@ -175,15 +175,15 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             ->selectWith($select)
             ->current();
 
-        if(!$preferences) {
+        if (!$preferences) {
           return $this->constructPreferences($user_id, $table);
         }
 
-        if($preferences) {
+        if ($preferences) {
             $preferences = $preferences->toArray();
         }
 
-        return $preferences;
+        return $this->parseRecord($preferences);
     }
 
     public function updateDefaultByName($user_id, $table, $data) {

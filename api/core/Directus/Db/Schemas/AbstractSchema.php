@@ -32,15 +32,20 @@ abstract class AbstractSchema implements SchemaInterface
         return $columnNames;
     }
 
-    public function parseRecordValuesByType($record, $nonAliasSchemaColumns)
+    public function parseRecordValuesByType($records, $nonAliasSchemaColumns)
     {
-        foreach($nonAliasSchemaColumns as $column) {
-            $col = $column['id'];
-            if (array_key_exists($col, $record)) {
-                $record[$col] = $this->parseType($record[$col], $column['type']);
+        // hotfix: records sometimes are no set as an array of rows.
+        $items = !is_numeric_keys_array($records) ? [&$records] : $records;
+
+        foreach ($nonAliasSchemaColumns as $column) {
+            foreach($items as &$record) {
+                $col = $column['id'];
+                if (array_key_exists($col, $record)) {
+                    $record[$col] = $this->parseType($record[$col], $column['type']);
+                }
             }
         }
 
-        return $record;
+        return $records;
     }
 }

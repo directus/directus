@@ -681,6 +681,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         if (!array_key_exists('orderBy',$params) && array_key_exists('sort',$params)) {
             $params['orderBy'] = $params['sort'];
         }
+
         if (!array_key_exists('orderDirection',$params) && array_key_exists('sort_order',$params)) {
             $params['orderDirection'] = $params['sort_order'];
         }
@@ -736,9 +737,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $foundRows = count($results);
 
         // Perform data casting based on the column types in our schema array
-        $columns = TableSchema::getAllNonAliasTableColumns($this->table);
         foreach ($results as &$row) {
-            $row = $recordData = SchemaManager::parseRecordValuesByType($row, $columns);
+            $row = $this->parseRecord($row);
         }
 
         // Eager-load related ManyToOne records
@@ -776,24 +776,6 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $result = $this->loadToManyRelationships($result, $alias_fields);
 
         return $result;
-    }
-
-    public function convertDates(array $records, array $schemaArray)
-    {
-        if (!SchemaManager::isDirectusTable($this->table)) {
-            return $records;
-        }
-
-        foreach($records as &$row) {
-            foreach($schemaArray as $column) {
-                if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
-                    $columnName = $column['id'];
-                    $row[$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
-                }
-            }
-        }
-
-        return $records;
     }
 
     /**
@@ -971,9 +953,8 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $results = $rowset->toArray();
 
                 $foreign_table = array();
-                $columns = TableSchema::getAllNonAliasTableColumns($foreign_table_name);
                 foreach ($results as $row) {
-                    $row = $recordData = SchemaManager::parseRecordValuesByType($row, $columns);
+                    $row = $this->parseRecord($row, $foreign_table_name);
                     $foreign_table[$row['id']] = $row;
                 }
 

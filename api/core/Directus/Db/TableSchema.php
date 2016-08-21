@@ -8,6 +8,7 @@ use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
 use Directus\MemcacheProvider;
+use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Zend\Db\Adapter\ParameterContainer;
 use Directus\Util\ArrayUtils;
@@ -337,10 +338,13 @@ class TableSchema {
         }
 
         if ($info) {
+            $info['count'] = (int) $info['count'];
+            $info['date_created'] = DateUtils::convertToISOFormat($info['date_created'], 'UTC', get_user_timezone());
             $info['hidden'] = (boolean) $info['hidden'];
             $info['single'] = (boolean) $info['single'];
             $info['footer'] = (boolean) $info['footer'];
         }
+
         $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $zendDb);
         $info = array_merge($info, $relationalTableGateway->countActiveOld());
 
@@ -348,6 +352,7 @@ class TableSchema {
         $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $zendDb);
         $currentUser = Auth::getUserInfo();
         $info['preferences'] = $directusPreferencesTableGateway->fetchByUserAndTable($currentUser['id'], $tbl_name);
+
         return $info;
     }
 

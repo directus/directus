@@ -802,4 +802,43 @@ class AclAwareTableGateway extends TableGateway {
             throw $e;
         }
     }
+
+    public function convertDates(array $records, array $schemaArray, $tableName = null)
+    {
+        $tableName = $tableName === null ? $this->table : $tableName;
+        if (!SchemaManager::isDirectusTable($tableName)) {
+            return $records;
+        }
+
+        // hotfix: records sometimes are no set as an array of rows.
+        $items = !is_numeric_keys_array($records) ? [&$records] : $records;
+        foreach($items as &$row) {
+            foreach($schemaArray as $column) {
+                if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
+                    $columnName = $column['id'];
+                    $row[$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
+                }
+            }
+        }
+
+        return $records;
+    }
+
+    protected function parseRecordValuesByType($records, $tableName = null)
+    {
+        $tableName = $tableName === null ? $this->table : $tableName;
+        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+
+        return SchemaManager::parseRecordValuesByType($records, $columns);
+    }
+
+    protected function parseRecord($records, $tableName = null)
+    {
+        $tableName = $tableName === null ? $this->table : $tableName;
+        $records = $this->parseRecordValuesByType($records, $tableName);
+        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+        $records = $this->convertDates($records, $columns, $tableName);
+
+        return $records;
+    }
 }
