@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   module.exports = Backbone.Layout.extend({
     // base template route
-    prefix: 'app/core-ui/',
+    prefix: 'app/core/uis/',
     // Handlebars template source
     templateSource: null,
     templateCompileOptions: {},
