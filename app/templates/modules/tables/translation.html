@@ -1,0 +1,9 @@
+<div class="section-header">
+    <span class="big-label-text">{{t "translations_x" field=translateField}}</span>
+    <select id="activeLanguageSelect" class="section-dropdown">
+        {{#languages}}
+        <option {{#if active}}selected{{/if}} value="{{val}}">{{name}}</option>
+        {{/languages}}
+    </select>
+</div>
+<div id="translateEditFormEntry"></div>

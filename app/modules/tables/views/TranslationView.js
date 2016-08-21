@@ -9,9 +9,7 @@ define([
 function(app, Backbone, Handlebars, Directus, EntriesManager) {
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile('<div class="section-header"><span class="big-label-text">Translations</span> \
-      <select id="activeLanguageSelect" class="section-dropdown">{{#languages}}<option {{#if active}}selected{{/if}} value="{{val}}">{{name}}</option>{{/languages}}</select></div> \
-      <div id="translateEditFormEntry"></div>'),
+    template: 'modules/tables/translation',
     events: {
       'change #activeLanguageSelect': function(e) {
         var that = this;
@@ -103,6 +101,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
     },
     serialize: function() {
       var data = {};
+      data.translateField = this.translateId;
 
       var that = this;
 

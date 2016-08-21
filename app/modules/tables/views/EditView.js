@@ -18,8 +18,10 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       this.insertView("#editFormEntry", this.editView);
       this.insertView("#historyFormEntry", this.historyView);
 
-      if(this.translateView) {
-        this.insertView("#translateFormEntry", this.translateView);
+      if (this.translateViews.length) {
+        _.each(this.translateViews, function(view) {
+          this.insertView("#translateFormEntry", view);
+        }, this);
       }
 
       if (this.skipFetch || this.model.isNew()) {
@@ -27,8 +29,10 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       }
     },
     beforeSaveHook: function() {
-      if(this.translateView) {
-        this.translateView.saveTranslation();
+      if (this.translateViews.length) {
+        _.each(this.translateViews, function(view) {
+          view.saveTranslation();
+        }, this);
       }
     },
     data: function() {
@@ -36,13 +40,23 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     },
     initialize: function(options) {
       this.skipFetch = options.skipFetch;
-      var uis = options.model.structure.pluck('ui');
-      var translationIndex = uis.indexOf('translation');
-      if(translationIndex !== -1) {
-        var translateId = options.model.structure.models[translationIndex].id;
-        options.hiddenFields = [translateId];
-        this.translateView = new TranslationView({model: options.model, translateId: translateId, translateSettings:options.model.structure.models[translationIndex].options.attributes, translateRelationship: options.model.structure.models[translationIndex].relationship.attributes});
-      }
+      this.translateViews = [];
+
+      options.hiddenFields = [];
+      options.model.structure.each(function(model) {
+        if (model.get('ui') === 'translation') {
+          var translateId = model.id;
+          options.hiddenFields.push(translateId);
+          var view = new TranslationView({
+            model: options.model,
+            translateId: translateId,
+            translateSettings: model.options.attributes,
+            translateRelationship: model.relationship.attributes
+          });
+
+          this.translateViews.push(view);
+        }
+      }, this);
 
       this.editView = new Directus.EditView(options);
       this.historyView = new HistoryView(options);
