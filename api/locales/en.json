@@ -272,7 +272,7 @@
   "regex": "Regex",
   "textinput_validation_string_comment": "All characters below will be enforced",
 
-  "translations_x": "Translations - %{field}",
+  "translations_x": "%{field} Translations",
   "translation_languages_table_comment": "Enter Table that contains all languages supported",
   "translation_languages_name_column_comment": "Language Title Field",
   "translation_default_language_id_comment": "Default language ID in language table",

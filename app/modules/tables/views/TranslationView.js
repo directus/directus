@@ -101,7 +101,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
     },
     serialize: function() {
       var data = {};
-      data.translateField = this.translateId;
+      data.translateField = app.capitalize(this.translateId);
 
       var that = this;
 
