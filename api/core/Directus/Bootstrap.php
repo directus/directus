@@ -401,7 +401,7 @@ class Bootstrap {
      */
     private static function uis() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-        $uiDirectory = APPLICATION_PATH . '/customs/ui';
+        $uiDirectory = APPLICATION_PATH . '/customs/uis';
         $uis = array();
 
         if (!file_exists($uiDirectory)) {

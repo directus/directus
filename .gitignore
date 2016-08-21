@@ -20,8 +20,8 @@ vendor
 customs/extensions/*
 !customs/extensions/.gitignore
 !customs/extensions/_example/
-customs/ui/*
-!customs/ui/.gitignore
+customs/uis/*
+!customs/uis/.gitignore
 /customs/listviews/*
 !customs/listviews/.gitignore
 !storage/uploads/.gitignore

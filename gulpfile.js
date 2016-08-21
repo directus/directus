@@ -125,7 +125,7 @@ gulp.task('scripts:app', function() {
       // Extensions
       "extensions": '../customs/extensions',
       "listviews":  '../customs/listviews',
-      "ui":         '../customs/ui'
+      "uis":         '../customs/uis'
     },
 
     shim: {
