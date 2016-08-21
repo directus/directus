@@ -363,6 +363,59 @@ if (!function_exists('get_auth_timezone')) {
     }
 }
 
+if (!function_exists('get_locales_path')) {
+    /**
+     * Get locales file path
+     *
+     * @return array
+     */
+    function get_locales_path()
+    {
+        $localesPath = BASE_PATH . '/api/locales/*.json';
+
+        return glob($localesPath);
+    }
+}
+
+if (!function_exists('get_locales_filename')) {
+    /**
+     * Get locales filename
+     *
+     * @return array
+     */
+    function get_locales_filename()
+    {
+        $languages = [];
+        foreach (get_locales_path() as $filename) {
+            $languages[] = pathinfo($filename, PATHINFO_FILENAME);
+        }
+
+        return $languages;
+    }
+}
+
+if (!function_exists('get_locale_keys')) {
+    /**
+     * Get locale file keys
+     *
+     * @param $locale
+     *
+     * @return array
+     */
+    function get_locale_keys($locale)
+    {
+        $content = file_get_contents(BASE_PATH . '/api/locales/' . $locale . '.json');
+        $json = json_decode($content, true);
+
+        $keys = [];
+        if ($json) {
+            $keys = array_keys($json);
+        }
+
+        return $keys;
+    }
+}
+
 if (!function_exists('get_locales_available')) {
     function get_locales_available() {
         $languagesManager = \Directus\Bootstrap::get('languagesManager');
