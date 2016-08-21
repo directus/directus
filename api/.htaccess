@@ -2,6 +2,8 @@ Options +SymLinksIfOwnerMatch
 
 <ifModule mod_rewrite.c>
     RewriteEngine On
+    # Uncomment this if you are getting routing errors:
+    # RewriteBase /api
 
     RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 

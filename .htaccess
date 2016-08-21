@@ -9,6 +9,8 @@ AddType font/woff .woff
 
 <ifModule mod_rewrite.c>
     RewriteEngine On
+    # Uncomment this if you are getting routing errors:
+    # RewriteBase /
 
     RewriteRule ^assets - [L,NC]
     RewriteRule ^extensions/([^/]+) - [L,NC]
