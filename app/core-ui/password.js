@@ -79,7 +79,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         },
 
         'click .password-toggle' : function(e) {
-          if($(e.target).html() == __t('mask_password')){
+          if($(e.target).html() === __t('mask_password')){
             this.hidePass(e);
           } else {
             this.showPass(e);
@@ -139,15 +139,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         }
 
         var hashParams = {password:primaryPass};
-        var saltField = this.options.settings.has('salt_field') ? this.options.settings.get('salt_field') : false;
-        if(saltField) {
-          var $saltInput = this.$el.closest('form').find('input[name='+saltField+']');
-          if($saltInput.length) {
-            hashParams.salt = $.trim($saltInput.val());
-            if(_.isEmpty(hashParams.salt)) {
-              alert(__t('password_salt_is_not_defined'));
-              return false;
-            }
+        var saltField = this.options.settings.get('salt_field');
+        var $saltInput = this.$el.closest('form').find('input[name='+saltField+']');
+        if($saltInput.length) {
+          hashParams.salt = $.trim($saltInput.val());
+          if(_.isEmpty(hashParams.salt)) {
+            alert(__t('password_salt_is_not_defined'));
+            return false;
           }
         }
 
@@ -192,7 +190,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         name: this.options.name,
         value: this.options.value,
         comment: this.options.schema.get('comment'),
-        require_confirmation: (this.options.settings && this.options.settings.has('require_confirmation') && this.options.settings.get('require_confirmation') == '0') ? false : true
+        require_confirmation: (this.options.settings.get('require_confirmation') === true)
       };
     },
 
@@ -224,9 +222,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     currentPlainPassword: '',
     variables: [
       // Toggles the second input ("Confirm Password"). On by default.
-      {id: 'require_confirmation', ui: 'checkbox', def: '1'},
+      {id: 'require_confirmation', def: true, type: 'Boolean', ui: 'checkbox'},
       // The name of the column to be used as a salt in the password hash
-      {id: 'salt_field', ui: 'textinput', def: 'salt'}
+      {id: 'salt_field', type: 'String', def: 'salt', ui: 'textinput'}
     ],
     Input: Input,
     validate: function(value, options) {

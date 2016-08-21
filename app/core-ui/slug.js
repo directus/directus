@@ -53,12 +53,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       var value = this.options.value || '';
 
       return {
-        size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
+        size: this.options.settings.get('size'),
         value: value,
         name: this.options.name,
         maxLength: length,
         comment: this.options.schema.get('comment'),
-        readonly: (this.options.settings && this.options.settings.has('readonly')) ? this.options.settings.get('readonly') : true
+        readonly: this.options.settings.get('readonly') === true
       };
     }
   });
@@ -68,23 +68,16 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     dataTypes: ['VARCHAR'],
     variables: [
       // Disables editing of the field while still letting users see the value
-      {id: 'readonly', ui: 'checkbox', def: '1'},
+      {id: 'readonly', type: 'Boolean', def: true, ui: 'checkbox'},
       // Adjusts the max width of the input (Small, Medium, Large)
-      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
+      {id: 'size', type: 'String', def:'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       // Enter the column name of the field the slug will pull it's value from
-      {id: 'mirrored_field', ui: 'textinput', char_length:200}
+      {id: 'mirrored_field', type: 'String', def: '', ui: 'textinput', char_length: 200}
     ],
     Input: Input,
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
         return 'This field is required';
-      }
-
-      if (options.settings.has('validation_regex')) {
-        var regex = new RegExp(options.settings.get('validation_regex'));
-        if (!regex.test(value)) {
-          return options.settings.get('validation_message');
-        }
       }
     },
     list: function(options) {

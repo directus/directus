@@ -95,7 +95,7 @@ function(app, Backbone, __t, Directus, moment) {
         if(startString.substring(0,1) === "@") {
           var endText = text.substring(caretPos, text.length);
           var end = caretPos;
-          if(!endText || endText.indexOf(" ") == -1) {
+          if(!endText || endText.indexOf(" ") === -1) {
             end = text.length;
           } else {
             end = endText.indexOf(" ") + start +startString.length;
@@ -148,7 +148,7 @@ function(app, Backbone, __t, Directus, moment) {
       var DIRECTUS_GROUPS = 1;
 
       var users = app.users.filter(function(item) {
-        if(item.get('id') == app.authenticatedUserId.id) {
+        if(item.get('id') === app.authenticatedUserId.id) {
           return false;
         }
         return true;

@@ -177,10 +177,10 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
           var id = $(e.target).closest('tr').attr('data-id');
           model = collection.get(id);
           app.router.removeOverlayPage(this);
-          if(model.get('type') == "embed/youtube" || model.get('type') == "embed/vimeo" ) {
+          if(model.get('type') === "embed/youtube" || model.get('type') === "embed/vimeo" ) {
             var url = model.get('url');
 
-            if(model.get('type') == "embed/vimeo") {
+            if(model.get('type') === "embed/vimeo") {
               self.$el.find('#insertEmbedInputType').val('vimeo');
             } else {
               self.$el.find('#insertEmbedInputType').val('youtube');
@@ -206,7 +206,7 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
         try {
           view.$('.hidden_input').val(view.editor.getValue());
         } catch (err){
-          console.log(err.message);
+          console.error(err.message);
         }
       }
     },
@@ -216,28 +216,28 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
       var value = this.options.value || '';
 
       return {
-        height: (this.options.settings && this.options.settings.has('height')) ? this.options.settings.get('height') : '500',
-        bold: (this.options.settings && this.options.settings.has('bold')) ? this.options.settings.get('bold')!=='0' : true,
-        italic: (this.options.settings && this.options.settings.has('italic')) ? this.options.settings.get('italic')!=='0' : true,
-        underline: (this.options.settings && this.options.settings.has('underline')) ? this.options.settings.get('underline')!=='0' : true,
-        strikethrough: (this.options.settings && this.options.settings.has('strikethrough')) ? this.options.settings.get('strikethrough')!=='0' : false,
-        rule: (this.options.settings && this.options.settings.has('rule')) ? this.options.settings.get('rule')!=='0' : false,
-        h1: (this.options.settings && this.options.settings.has('h1')) ? this.options.settings.get('h1')!=='0' : false,
-        h2: (this.options.settings && this.options.settings.has('h2')) ? this.options.settings.get('h2')!=='0' : false,
-        h3: (this.options.settings && this.options.settings.has('h3')) ? this.options.settings.get('h3')!=='0' : false,
-        h4: (this.options.settings && this.options.settings.has('h4')) ? this.options.settings.get('h4')!=='0' : false,
-        h5: (this.options.settings && this.options.settings.has('h5')) ? this.options.settings.get('h5')!=='0' : false,
-        h6: (this.options.settings && this.options.settings.has('h6')) ? this.options.settings.get('h6')!=='0' : false,
-        blockquote: (this.options.settings && this.options.settings.has('blockquote')) ? this.options.settings.get('blockquote')!=='0' : false,
-        ul: (this.options.settings && this.options.settings.has('ul')) ? this.options.settings.get('ul')!=='0' : false,
-        ol: (this.options.settings && this.options.settings.has('ol')) ? this.options.settings.get('ol')!=='0' : false,
-        orderedList: (this.options.settings && this.options.settings.has('orderedList')) ? this.options.settings.get('orderedList')!=='0' : false,
-        createlink: (this.options.settings && this.options.settings.has('createlink')) ? this.options.settings.get('createlink')!=='0' : false,
-        insertimage: (this.options.settings && this.options.settings.has('insertimage')) ? this.options.settings.get('insertimage')!=='0' : false,
-        embedVideo: (this.options.settings && this.options.settings.has('embedVideo')) ? this.options.settings.get('embedVideo')!=='0' : false,
-        embed_width: (this.options.settings && this.options.settings.has('embed_width')) ? this.options.settings.get('embed_width') : '300',
-        embed_height: (this.options.settings && this.options.settings.has('embed_height')) ? this.options.settings.get('embed_height') : '200',
-        html: (this.options.settings && this.options.settings.has('html')) ? this.options.settings.get('html')!=='0' : false,
+        height: this.options.settings.get('height'),
+        bold: (this.options.settings.get('bold') === true),
+        italic: (this.options.settings.get('italic') === true),
+        underline: (this.options.settings.get('underline') === true),
+        strikethrough: (this.options.settings.get('strikethrough') === true),
+        rule: (this.options.settings.get('rule') === true),
+        h1: (this.options.settings.get('h1') === true),
+        h2: (this.options.settings.get('h2') === true),
+        h3: (this.options.settings.get('h3') === true),
+        h4: (this.options.settings.get('h4') === true),
+        h5: (this.options.settings.get('h5') === true),
+        h6: (this.options.settings.get('h6') === true),
+        blockquote: (this.options.settings.get('blockquote') === true),
+        ul: (this.options.settings.get('ul') === true),
+        ol: (this.options.settings.get('ol') === true),
+        orderedList: (this.options.settings.get('orderedList') === true),
+        createlink: (this.options.settings.get('createlink') === true),
+        insertimage: (this.options.settings.get('insertimage') === true),
+        embedVideo: (this.options.settings.get('embedVideo') === true),
+        embed_width: this.options.settings.get('embed_width'),
+        embed_height: this.options.settings.get('embed_height'),
+        html: (this.options.settings.get('html') === true),
         markupValue: String(value).replace(/"/g, '&quot;'),
         value: new Handlebars.SafeString(value),
         name: this.options.name,
@@ -263,7 +263,7 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
 
     initEditor: function() {
       var that = this;
-      var isReadOnly = this.options.settings.get('readonly') == 1;
+      var isReadOnly = this.options.settings.get('readonly') === true;
       this.editor = new wysihtml5.Editor("wysihtml5-textarea-" + this.options.name, { // id of textarea element
         toolbar:      !isReadOnly ? "wysihtml5-toolbar-" + this.options.name : null, // id of toolbar element
         stylesheets: app.PATH + "assets/css/wysiwyg.css",
@@ -275,7 +275,7 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
         that.textChanged(that);
       });
       this.editor.on('load', function() {
-        if (that.options.settings.get('readonly') == 1) {
+        if (that.options.settings.get('readonly') === 1) {
           that.editor.disable();
         }
       });
@@ -353,8 +353,8 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
           }
 
           for (var i in value) {
-            if(i==="src") {
-              if(type == 'youtube') {
+            if(i === "src") {
+              if(type === 'youtube') {
                 value[i] = "//youtube.com/embed/" + value[i];
               } else {
                 value[i] = "//player.vimeo.com/video/" + value[i] + "?title=0&amp;byline=0&amp;portrait=0&amp;color=c9ff23";
@@ -388,30 +388,30 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
     dataTypes: ['VARCHAR', 'TEXT'],
     variables: [
       // Disables editing of the field while still letting users see the value
-      {id: 'readonly', ui: 'checkbox'},
+      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
       // The input's height in pixels before scrolling. Default: 500px
-      {id: 'height', ui: 'numeric', def: '500'},
-      {id: 'bold', ui: 'checkbox', def: '1'},
-      {id: 'italic', ui: 'checkbox', def: '1'},
-      {id: 'underline', ui: 'checkbox', def: '1'},
-      {id: 'strikethrough', ui: 'checkbox', def: '0'},
-      {id: 'rule', ui: 'checkbox', def: '0'},
-      {id: 'createlink', ui: 'checkbox', def: '0'},
-      {id: 'insertimage', ui: 'checkbox', def: '0'},
-      {id: 'embedVideo', ui: 'checkbox', def: '0'},
-      {id: 'embed_width', ui: 'numeric', def: 300},
-      {id: 'embed_height', ui: 'numeric', def: 200},
-      {id: 'html', ui: 'checkbox', def: '0'},
-      {id: 'orderedList', ui: 'checkbox', def: '0'},
-      {id: 'h1', ui: 'checkbox', def: '0'},
-      {id: 'h2', ui: 'checkbox', def: '0'},
-      {id: 'h3', ui: 'checkbox', def: '0'},
-      {id: 'h4', ui: 'checkbox', def: '0'},
-      {id: 'h5', ui: 'checkbox', def: '0'},
-      {id: 'h6', ui: 'checkbox', def: '0'},
-      {id: 'blockquote', ui: 'checkbox', def: '0'},
-      {id: 'ul', ui: 'checkbox', def: '0'},
-      {id: 'ol', ui: 'checkbox', def: '0'}
+      {id: 'height', type: 'Number', def: 500, ui: 'numeric'},
+      {id: 'bold', type: 'Boolean', def: true, ui: 'checkbox'},
+      {id: 'italic', type: 'Boolean', def: true, ui: 'checkbox'},
+      {id: 'underline', type: 'Boolean', def: true, ui: 'checkbox'},
+      {id: 'strikethrough', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'rule', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'createlink', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'insertimage', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'embedVideo', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'embed_width', type: 'Number', def: 300, ui: 'numeric'},
+      {id: 'embed_height', type: 'Number', def: 200, ui: 'numeric'},
+      {id: 'html', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'orderedList', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'h1', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'h2', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'h3', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'h4', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'h5', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'h6', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'blockquote', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'ul', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'ol', type: 'Boolean', def: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {

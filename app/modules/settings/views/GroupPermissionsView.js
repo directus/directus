@@ -66,7 +66,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
         //Removing so add to blacklist
         if($target.hasClass('on')) {
           $target.removeClass('on').removeClass('has-privilege');
-          if($target.parent().data('value') == "read") {
+          if($target.parent().data('value') === "read") {
             if(readBlacklist.indexOf($tr.data('column-name')) === -1) {
               readBlacklist.push($tr.data('column-name'));
               this.model.set({read_field_blacklist: readBlacklist.join(",")});
@@ -79,7 +79,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
           }
         } else {
           $target.addClass('on').addClass('has-privilege');;
-          if($target.parent().data('value') == "read") {
+          if($target.parent().data('value') === "read") {
             if(readBlacklist.indexOf($tr.data('column-name')) !== -1) {
               readBlacklist.splice(readBlacklist.indexOf($tr.data('column-name')), 1);
               this.model.set({read_field_blacklist: readBlacklist.join(",")});
@@ -104,7 +104,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
       data.columns = app.schemaManager.getColumns('tables', this.model.get('table_name'))
             .filter(function(model) {if(model.id === 'id') {return false;} return true;})
             .map(function(model) {
-              return {column_name: model.id, read: (readBlacklist.indexOf(model.id) == -1), write: (writeBlacklist.indexOf(model.id) == -1)};
+              return {column_name: model.id, read: (readBlacklist.indexOf(model.id) === -1), write: (writeBlacklist.indexOf(model.id) === -1)};
             }, this);
 
       return data;
@@ -139,7 +139,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
         cid = $tr.data('cid');
         model = this.collection.get(cid);
 
-        if(this.selectedState == 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
+        if(this.selectedState === 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
           var permissionName = 'allow_'+$target.parent().data('value');
           var attribute = {};
 
@@ -153,7 +153,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
           }
 
           this.collection.each(function(cmodel) {
-            if(cmodel.get('table_name') == model.get('table_name') && cmodel.get('group_id') == model.get('group_id')) {
+            if(cmodel.get('table_name') === model.get('table_name') && cmodel.get('group_id') === model.get('group_id')) {
               cmodel.set(attribute);
               cmodel.save();
               that.triggerPermissionChanged(model);
@@ -169,7 +169,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
 
         var fancySave = false;
         var oldModel = model;
-        if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
+        if(this.selectedState !== "all" && model.get('status_id') !== this.selectedState) {
           model = model.clone();
           this.model = model;
           model.collection = oldModel.collection;
@@ -213,7 +213,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
             };
 
         _.each(fullPermissions, function(value, key) {
-            if (value != model.get(key)) {
+            if (value !== model.get(key)) {
                 hasFullPermission = false;
             }
         });
@@ -249,7 +249,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
       var hasFullPerms = true;
       ['add','bigedit','bigdelete','bigview'].forEach(function (perm) {
         var permissions = model.get('permissions');
-        if(!permissions || (permissions && permissions.indexOf(perm) == -1)) {
+        if(!permissions || (permissions && permissions.indexOf(perm) === -1)) {
           hasFullPerms = false;
         }
       });
@@ -261,9 +261,9 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
         newPerms = 'add,edit,bigedit,delete,bigdelete,view,bigview';
       }
 
-      if(this.selectedState == 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
+      if(this.selectedState === 'all' && this.collection.where({table_name: model.get('table_name'), group_id: model.get('group_id')}).length > 1) {
         this.collection.each(function(cmodel) {
-          if(cmodel.get('table_name') == model.get('table_name') && cmodel.get('group_id') == model.get('group_id')) {
+          if(cmodel.get('table_name') === model.get('table_name') && cmodel.get('group_id') === model.get('group_id')) {
             cmodel.set({permissions: newPerms});
             cmodel.save();
           }
@@ -273,7 +273,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
 
       var fancySave = false;
       var oldModel = model;
-      if(this.selectedState != "all" && model.get('status_id') != this.selectedState) {
+      if(this.selectedState !== "all" && model.get('status_id') !== this.selectedState) {
         model = model.clone();
         this.model = model;
         model.collection = oldModel.collection;
@@ -361,14 +361,14 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
 
     parsePermissions: function(model) {
       return {
-        'add': (model.has('allow_add') && model.get('allow_add') != 0) ? true : false,
-        'edit': (model.has('allow_edit') && model.get('allow_edit') != 0) ? true : false,
-        'bigedit': (model.has('allow_edit') && model.get('allow_edit') == 2) ? true : false,
-        'delete': (model.has('allow_delete') && model.get('allow_delete') != 0) ? true : false,
-        'bigdelete': (model.has('allow_delete') && model.get('allow_delete') == 2) ? true : false,
-        'alter': (model.has('allow_alter') && model.get('allow_alter') != 0) ? true : false,
-        'view': (model.has('allow_view') && model.get('allow_view') != 0) ? true : false,
-        'bigview': (model.has('allow_view') && model.get('allow_view') == 2) ? true : false
+        'add': (model.has('allow_add') && model.get('allow_add') !== 0) ? true : false,
+        'edit': (model.has('allow_edit') && model.get('allow_edit') !== 0) ? true : false,
+        'bigedit': (model.has('allow_edit') && model.get('allow_edit') === 2) ? true : false,
+        'delete': (model.has('allow_delete') && model.get('allow_delete') !== 0) ? true : false,
+        'bigdelete': (model.has('allow_delete') && model.get('allow_delete') === 2) ? true : false,
+        'alter': (model.has('allow_alter') && model.get('allow_alter') !== 0) ? true : false,
+        'view': (model.has('allow_view') && model.get('allow_view') !== 0) ? true : false,
+        'bigview': (model.has('allow_view') && model.get('allow_view') === 2) ? true : false
       };
     },
 
@@ -382,10 +382,10 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
       var that = this;
 
       collection = collection.filter(function(model) {
-        if(that.selectedState != 'all') {
+        if(that.selectedState !== 'all') {
           var test = app.schemaManager.getColumns('tables', model.get('table_name'));
           if(test) {
-            test = test.find(function(hat){return hat.id == app.statusMapping.status_name;});
+            test = test.find(function(hat){return hat.id === app.statusMapping.status_name;});
             if(test) {
               return true;
             }
@@ -450,7 +450,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
         data.permissions = that.parsePermissions(model);
         data.permissions.user_create_column = userCreateColumnName;
 
-        if(that.selectedState == 'all' && tableStatusMapping[data.table_name].count > 1) {
+        if(that.selectedState === 'all' && tableStatusMapping[data.table_name].count > 1) {
           var viewValConsistent = true;
           var lastView = (!data.permissions.bigview) ? ((!data.permissions.view) ? 0 : 1) : 2;
           var addValConsistent = true;
@@ -460,59 +460,59 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
           var deleteValConsistent = true;
           var lastDelete = (!data.permissions.bigdelete) ? ((!data.permissions.delete) ? 0 : 1) : 2;
           for(var prop in tableStatusMapping[data.table_name]) {
-            if(prop == 'all' || prop == 'count') {
+            if(prop === 'all' || prop === 'count') {
               continue;
             }
             var permissions = that.parsePermissions(tableStatusMapping[data.table_name][prop]);
 
             if(addValConsistent) {
-              addValConsistent = (permissions.add == lastAdd);
+              addValConsistent = (permissions.add === lastAdd);
             }
 
             if(viewValConsistent) {
               if(permissions.bigview) {
-                if(lastView != 2) {
+                if(lastView !== 2) {
                   viewValConsistent = false;
                 }
               }
               else if(permissions.view) {
-                if(lastView != 1) {
+                if(lastView !== 1) {
                   viewValConsistent = false;
                 }
               }
-              else if(lastView != 0) {
+              else if(lastView !== 0) {
                 viewValConsistent = false;
               }
             }
 
             if(editValConsistent) {
               if(permissions.bigedit) {
-                if(lastEdit != 2) {
+                if(lastEdit !== 2) {
                   editValConsistent = false;
                 }
               }
               else if(permissions.edit) {
-                if(lastEdit != 1) {
+                if(lastEdit !== 1) {
                   editValConsistent = false;
                 }
               }
-              else if(lastEdit != 0) {
+              else if(lastEdit !== 0) {
                 editValConsistent = false;
               }
             }
 
             if(deleteValConsistent) {
               if(permissions.bigdelete) {
-                if(lastDelete != 2) {
+                if(lastDelete !== 2) {
                   deleteValConsistent = false;
                 }
               }
               else if(permissions.delete) {
-                if(lastDelete != 1) {
+                if(lastDelete !== 1) {
                   deleteValConsistent = false;
                 }
               }
-              else if(lastDelete != 0) {
+              else if(lastDelete !== 0) {
                 viewValConsistent = false;
               }
             }
@@ -597,7 +597,7 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
 
       for(var key in mapping) {
         //Do not show option for deleted status
-        if(key != app.statusMapping.deleted_num) {
+        if(key !== app.statusMapping.deleted_num) {
           data.mapping.push({id: key, name: mapping[key].name});
         }
       }

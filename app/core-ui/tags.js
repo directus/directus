@@ -37,7 +37,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     insertTag: function() {
       var $input = this.$el.find('#tag-input');
       var data = $input.val();
-      var force_lowercase = (this.options.settings && this.options.settings.has('force_lowercase') && this.options.settings.get('force_lowercase') == '0') ? false : true;
+      var force_lowercase = this.options.settings.get('force_lowercase') === true;
       if(force_lowercase){
         data = data.toLowerCase();
       }
@@ -73,7 +73,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     dataTypes: ['TEXT','VARCHAR','CHAR'],
     variables: [
       // When on, all entered tags are converted to lowercase
-      {id: 'force_lowercase', ui: 'checkbox', def: '1'}
+      {id: 'force_lowercase', type: 'Boolean', def: true, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {

@@ -65,6 +65,19 @@ define(function(require, exports, module) {
   var system_fields = {
   };
 
+  var castType = function(type, value) {
+    if (typeof value === 'undefined') {
+      return value;
+    }
+    switch(type) {
+      // '0', 0 and false should be false
+      case 'Boolean': return false != value;
+      case 'Number': return Number(value);
+      case 'String': return String(value);
+      default: return value;
+    }
+  };
+
   // Attach all methods to the UIManager prototype.
   module.exports = {
 
@@ -256,7 +269,7 @@ define(function(require, exports, module) {
 
       var UIObject = this.getUIByModel(model, attr);
       // If there is no UI, return just text
-      if (UIObject == false) {
+      if (UIObject === false) {
         var attribute = model.get(attr);
         if (!attribute || attribute === "") {
           if (!defaultValue) {
@@ -278,7 +291,7 @@ define(function(require, exports, module) {
 
       // Section is the name of a method that represents an value.
       // list: represents the value that will be shown on a list.
-      var section = UIObject.UI[section] != null ? section : 'list';
+      var section = UIObject.UI[section] !== null ? section : 'list';
       this.triggerBeforeValue(section, UIObject.UI, UIOptions);
       var value = UIObject.UI[section](UIOptions);
       this.triggerAfterValue(section, UIObject.UI, UIOptions);
@@ -307,23 +320,27 @@ define(function(require, exports, module) {
         return;
       }
 
+      if (!settings.defaultAttributes) settings.defaultAttributes = {};
+      if (!settings.attributeTypes) settings.attributeTypes = {};
+
       _.each(UI.variables, function(variable) {
-        if (typeof variable.def != 'undefined') {
-          if (!settings.defaultAttributes) settings.defaultAttributes = {};
+        if (typeof variable.def !== 'undefined') {
           settings.defaultAttributes[variable.id] = variable.def;
         }
+        settings.attributeTypes[variable.id] = variable.type;
       });
 
       settings.get = function(attr) {
         var attribute = this.attributes[attr];
-        if (this.defaultAttributes && attribute == undefined) {
+        if (this.defaultAttributes && attribute === undefined) {
           var defaultAttribute = this.defaultAttributes[attr];
           if (defaultAttribute) {
             attribute = defaultAttribute;
           }
         }
 
-        return attribute;
+        console.log(attr, this.attributeTypes);
+        return castType(this.attributeTypes[attr], attribute);
       };
     },
 

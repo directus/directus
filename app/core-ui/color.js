@@ -95,9 +95,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     dataTypes: ['VARCHAR'],
     variables: [
       // Disables editing of the field while still letting users see the value
-      {id: 'readonly', ui: 'checkbox'},
+      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
       // Shows a color box representation on the Item Listing page
-      {id: 'show_color_on_list', ui: 'checkbox'}
+      {id: 'show_color_on_list', type: 'Boolean', def: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {
@@ -107,9 +107,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
     },
     list: function(options) {
-      var show_color_on_list = (options.settings && options.settings.has('show_color_on_list') && options.settings.get('show_color_on_list') == '1')? true : false;
-
-      return (show_color_on_list) ? '<div style="background-color:'+options.value+'; height:20px; width:40px; border:1px solid #ffffff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">&nbsp;</div>' : options.value;
+      return (options.settings.get('show_color_on_list') === true) ? '<div style="background-color:'+options.value+'; height:20px; width:40px; border:1px solid #ffffff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">&nbsp;</div>' : options.value;
     }
   });
 

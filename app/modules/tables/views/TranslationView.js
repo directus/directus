@@ -79,7 +79,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       this.translateModel = null;
 
       this.translateCollection.forEach(function(model) {
-        if(model.get(that.translateSettings.left_column_name) == that.activeLanguageId) {
+        if(model.get(that.translateSettings.left_column_name) === that.activeLanguageId) {
           that.translateModel = model;
         }
       });
@@ -107,7 +107,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
 
       if(this.languageCollection) {
         data.languages = this.languageCollection.map(function(item) {
-          return {val: item.id, name: item.get(that.translateSettings.languages_name_column), active: (item.id == that.activeLanguageId)};
+          return {val: item.id, name: item.get(that.translateSettings.languages_name_column), active: (item.id === that.activeLanguageId)};
         });
       }
 

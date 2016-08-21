@@ -212,7 +212,7 @@ function(app, Backbone, EntriesManager, __t, Notification) {
 
       var data = {bookmarks: bookmarks, isCustomBookmarks: this.isCustomBookmarks};
 
-      if(Backbone.history.fragment == "tables") {
+      if(Backbone.history.fragment === "tables") {
         data.tablesActive = true;
       }
 
@@ -271,7 +271,7 @@ function(app, Backbone, EntriesManager, __t, Notification) {
       });
 
       app.on('tables:change:attributes:hidden', function(model, attribute) {
-        if (model.get(attribute) == true) {
+        if (model.get(attribute) === true) {
           self.removeBookmark(model);
         } else {
           self.addBookmark(model);

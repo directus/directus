@@ -87,7 +87,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
         // Put non-active users into the Inactive Group.
         var hasStatusColumn = model.has(app.statusMapping.status_name);
         var statusValue = model.get(app.statusMapping.status_name);
-        if (hasStatusColumn && statusValue != app.statusMapping.active_num) {
+        if (hasStatusColumn && statusValue !== app.statusMapping.active_num) {
           data.group_id = 0;
           data.group_name = 'Inactive';
           data.inactive = true;
@@ -116,7 +116,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
       for(var group in groupedData) {
         // skip inactive group
         // and push it at the end
-        if (group != 'group_0') {
+        if (group !== 'group_0') {
           data.push(groupedData[group]);
         }
       }
@@ -216,7 +216,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
       }
     },
     leftToolbar: function() {
-      if(app.users.getCurrentUser().get('group').id == 1) {
+      if(app.users.getCurrentUser().get('group').id === 1) {
         return [
           new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_user')}})
         ];

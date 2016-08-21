@@ -62,12 +62,12 @@ function(app, Backbone, Handlebars, PreferenceModel) {
       var keys = [];
       for (var key in mapping) {
         //Do not show option for deleted status
-        if (key != app.statusMapping.deleted_num) {
+        if (key !== app.statusMapping.deleted_num) {
           data.mapping.push({
             id: key,
             name: mapping[key].name,
             sort: mapping[key].sort,
-            isSelected: statusSelected == key
+            isSelected: statusSelected === key
           });
           keys.push(key);
         }

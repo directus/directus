@@ -47,13 +47,13 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
 
       for(var key in mapping) {
         //If new model, skip delete option
-        if(this.model.isNew() && key == app.statusMapping.deleted_num) {
+        if(this.model.isNew() && key === app.statusMapping.deleted_num) {
           continue;
         }
 
         var entry = mapping[key];
         entry.id = key;
-        if(key == value) {
+        if(key === value) {
           entry.active = true;
         } else {
           entry.active = false;

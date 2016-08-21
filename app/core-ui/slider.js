@@ -53,9 +53,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       return {
         value: this.options.value || '0',
         name: this.options.name,
-        min: (this.options.settings && this.options.settings.has('minimum')) ? this.options.settings.get('minimum') : '0',
-        max: (this.options.settings && this.options.settings.has('maximum')) ? this.options.settings.get('maximum') : '100',
-        step: (this.options.settings && this.options.settings.has('step')) ? this.options.settings.get('step') : '1',
+        min: this.options.settings.get('minimum'),
+        max: this.options.settings.get('maximum'),
+        step: this.options.settings.get('step'),
         comment: this.options.schema.get('comment')
       };
     },
@@ -69,9 +69,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'slider',
     dataTypes: ['INT'],
     variables: [
-      {id: 'minimum', ui: 'numeric'},
-      {id: 'maximum', ui: 'numeric'},
-      {id: 'step', ui: 'numeric', comment: __t('slider_step_comment')}
+      {id: 'minimum', type: 'Number', def: 0, ui: 'numeric'},
+      {id: 'maximum', type: 'Number', def: 100, ui: 'numeric'},
+      {id: 'step', type: 'Number', def: 1, ui: 'numeric', comment: __t('slider_step_comment')}
     ],
     Input: Input,
     validate: function(value, options) {

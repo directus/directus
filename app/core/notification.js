@@ -35,7 +35,7 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
   function addTypeArgument(args, type) {
     args = Utils.argumentsToArray(args);
 
-    if (args.length == 1) {
+    if (args.length === 1) {
       args.unshift(type);
     }
 

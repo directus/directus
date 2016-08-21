@@ -29,7 +29,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
       enumArray = _.map(enumArray, function(value) {
         var item = {};
         item.value = value;
-        item.selected = (item.value == selectedValue);
+        item.selected = (item.value === selectedValue);
         return item;
       });
 

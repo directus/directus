@@ -738,7 +738,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // Perform data casting based on the column types in our schema array
         $columns = TableSchema::getAllNonAliasTableColumns($this->table);
         foreach ($results as &$row) {
-            $row = $this->parseRecordValuesByMysqlType($row, $columns);
+            $row = $recordData = SchemaManager::parseRecordValuesByType($row, $columns);
         }
 
         // Eager-load related ManyToOne records
@@ -973,7 +973,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
                 $foreign_table = array();
                 $columns = TableSchema::getAllNonAliasTableColumns($foreign_table_name);
                 foreach ($results as $row) {
-                    $row = $this->parseRecordValuesByMysqlType($row, $columns);
+                    $row = $recordData = SchemaManager::parseRecordValuesByType($row, $columns);
                     $foreign_table[$row['id']] = $row;
                 }
 
@@ -1057,7 +1057,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         $foreign_data = array();
         $columns = TableSchema::getAllNonAliasTableColumns($foreign_table);
         foreach($results as $row) {
-            $row = $this->parseRecordValuesByMysqlType($row, $columns);
+            $row = $recordData = SchemaManager::parseRecordValuesByType($row, $columns);
 
             $junction_table_id = (int) $row[$junction_id_column_alias];
             unset($row[$junction_id_column_alias]);

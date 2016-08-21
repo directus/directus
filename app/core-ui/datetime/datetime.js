@@ -44,7 +44,7 @@ define(['app', 'underscore', 'core-ui/datetime/date', 'moment'], function(app, _
       return dateFormat;
     },
     getTimeFormat: function() {
-      var includeSeconds = this.options.settings.get('include_seconds') == 1
+      var includeSeconds = this.options.settings.get('include_seconds') === 1;
 
       return includeSeconds ? timeFormat : timeFormat.replace(':ss', '');
     },
@@ -62,13 +62,13 @@ define(['app', 'underscore', 'core-ui/datetime/date', 'moment'], function(app, _
         dateValue: date.format(this.getDateFormat()),
         value: date.format(format),
         name: this.name,
-        readonly: !this.options.canWrite || (settings && settings.has('readonly')) ? settings.get('readonly')!=0 : false
+        readonly: this.options.canWrite === false || (settings && settings.has('readonly')) ? settings.get('readonly') === true : false
       });
     },
   });
 
   var variables = UIDate.prototype.variables.slice();
-  variables.push({id: 'include_seconds', ui: 'checkbox'});
+  variables.push({id: 'include_seconds', type: 'Boolean', def: false, ui: 'checkbox'});
 
   var Component = UIDate.extend({
     id: 'datetime',

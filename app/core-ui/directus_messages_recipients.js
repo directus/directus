@@ -64,7 +64,7 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView'], function(app, H
       var me = this;
 
       var users = app.users.filter(function(item) {
-        if(item.get('id') == app.authenticatedUserId.id) {
+        if(item.get('id') === app.authenticatedUserId.id) {
           return false;
         }
         return true;
@@ -135,7 +135,7 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView'], function(app, H
       this.$('#directus_messages_recipients-input').on('typeahead:selected', function (object, datum) {
         me.recipients[datum.id] = datum;
         me.datums = _.filter(me.datums, function(item) {
-          if(item == datum) {
+          if(item === datum) {
             me.deletedDatums[item.id] = item;
             return false;
           }

@@ -167,7 +167,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
             //Update the value for the specified fields on the editpage form
             for(var key in address) {
-              var field = that.options.settings.has(key + '_field') ? that.options.settings.get(key + '_field') : false;
+              var field = that.options.settings.get(key + '_field') || false;
               if(field) {
                 var $fieldInput = that.$el.closest('form').find('input[name='+field+']');
                 if($fieldInput.length) {
@@ -192,7 +192,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         name: this.options.name
       };
 
-      if(this.options.schema.get('type') == "ALIAS") {
+      if(this.options.schema.get('type') === "ALIAS") {
         data.name = '';
       }
 
@@ -219,19 +219,19 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     dataTypes: ['VARCHAR', 'ALIAS'],
     variables: [
       //Google API Key (Provided by Google)
-      {id: 'apiKey', ui: 'textinput', char_length:200},
+      {id: 'apiKey', type: 'String', def: '', ui: 'textinput', char_length: 200},
       //column names to fill with respective item
-      {id: 'street_number_field', ui: 'textinput', char_length:200},
-      {id: 'street_field', ui: 'textinput', char_length:200},
-      {id: 'city_field', ui: 'textinput', char_length:200},
-      {id: 'postal_code_field', ui: 'textinput', char_length:200},
-      {id: 'state_field', ui: 'textinput', char_length:200},
-      {id: 'stateCode_field', ui: 'textinput', char_length:200},
-      {id: 'country_field', ui: 'textinput', char_length:200},
-      {id: 'countryCode_field', ui: 'textinput', char_length:200},
+      {id: 'street_number_field', type: 'String', def: '', ui: 'textinput', char_length: 200},
+      {id: 'street_field', type: 'String', def: '', ui: 'textinput', char_length: 200},
+      {id: 'city_field', type: 'String', def: '', ui: 'textinput', char_length: 200},
+      {id: 'postal_code_field', type: 'String', def: '', ui: 'textinput', char_length: 200},
+      {id: 'state_field', type: 'String', def: '', ui: 'textinput', char_length: 200},
+      {id: 'stateCode_field', type: 'String', def: '', ui: 'textinput', char_length: 200},
+      {id: 'country_field', type: 'String', def: '', ui: 'textinput', char_length: 200},
+      {id: 'countryCode_field', type: 'String', def: '', ui: 'textinput', char_length: 200},
       //Height of Map Element in Pixels
-      {id: 'mapHeight', ui: 'numeric', char_length: 4, def: '400', comment: __t('map_mapHeight_comment')},
-      {id: 'showLatLng', ui: 'checkbox', comment: __t('map_showLatLng_comment')}
+      {id: 'mapHeight', type: 'Number', def: 400, ui: 'numeric', char_length: 4, comment: __t('map_mapHeight_comment')},
+      {id: 'showLatLng', type: 'Boolean', def: false, ui: 'checkbox', comment: __t('map_showLatLng_comment')}
     ],
     settings: [{
       'collection': 'global',

@@ -31,11 +31,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
   var Component = UIComponent.extend({
     id: 'user',
     dataTypes: ['INT'],
-    variables: [
-      // {id: 'readonly', ui: 'checkbox', def: '1'},
-      // {id: 'size', ui: 'select', options: {options: {'large':'Large','medium':'Medium','small':'Small'} }},
-      // {id: 'mirrored_field', ui: 'textinput', char_length:200}
-    ],
+    variables: [],
     Input: Input,
     list: function(options) {
       var avatar, output, user = app.users.get(options.value);

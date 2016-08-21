@@ -29,7 +29,7 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
     saveConfirm: function(e) {
       var data = this.editView.data();
       var that = this;
-      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
+      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
         app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function() {
           that.save(e);
         }});
@@ -80,7 +80,7 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       model.save(model.diff(data), {
         success: success,
         error: function(model, xhr, options) {
-          console.log('err');
+          console.error('err');
         },
         wait: true,
         patch: true,

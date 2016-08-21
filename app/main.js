@@ -294,7 +294,7 @@ require(["config", 'polyfills'], function() {
           }
         }
       } else {
-        console.log("The nav override JSON for this user group is malformed – the default nav will be used instead");
+        console.error("The nav override JSON for this user group is malformed – the default nav will be used instead");
       }
 
       var isCustomBookmarks = false;
@@ -350,7 +350,7 @@ require(["config", 'polyfills'], function() {
         // the code below wouldn't run on .ajaxSend
         // therefore we run it here
 
-        if(options.global == false) {
+        if(options.global === false) {
           var url = '';
           var collection = {};
 
@@ -367,7 +367,7 @@ require(["config", 'polyfills'], function() {
           }
 
           if (url) {
-            var isApiRequest = url.substr(0, app.API_URL.length) == app.API_URL;
+            var isApiRequest = url.substr(0, app.API_URL.length) === app.API_URL;
             if(isApiRequest) {
               nonce = nonces.pool.unshift();
               options.beforeSend = function(xhr) {
@@ -433,7 +433,7 @@ require(["config", 'polyfills'], function() {
         }
 
         var type, messageTitle, messageBody, details;
-        if(xhr.statusText == "abort") {
+        if(xhr.statusText === "abort") {
           return;
         }
 
@@ -503,7 +503,7 @@ require(["config", 'polyfills'], function() {
           nonce;
 
       $(document).ajaxSend(function(event, jqXHR, settings) {
-        var isApiRequest = settings.url.substr(0, app.API_URL.length) == app.API_URL;
+        var isApiRequest = settings.url.substr(0, app.API_URL.length) === app.API_URL;
         if(isApiRequest) {
           nonce = nonces.pool.unshift();
           jqXHR.setRequestHeader(nonces.nonce_request_header, nonce);
@@ -547,7 +547,7 @@ require(["config", 'polyfills'], function() {
         var root = location.protocol + "//" + location.host + app.root;
 
         // Ensure the root is part of the anchor href, meaning it's relative.
-        if (href.prop.slice(0, root.length) === root && href.target != '_BLANK') {
+        if (href.prop.slice(0, root.length) === root && href.target !== '_BLANK') {
           // Stop the default event to ensure the link will not cause a page
           // refresh.
           evt.preventDefault();

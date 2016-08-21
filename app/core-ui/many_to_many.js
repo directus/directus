@@ -82,10 +82,10 @@ define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view
         _.each(view.table.selection(), function(id) {
           var data = collection.get(id).toJSON();
           // prevent duplicate
-          if (me.columnSchema.options.get('no_duplicates')==1) {
+          if (me.columnSchema.options.get('no_duplicates') === 1) {
             var duplicated = false;
             me.relatedCollection.each(function(model) {
-              if (model.get('data').id == id) {
+              if (model.get('data').id === id) {
                 duplicated = true;
               }
             });
@@ -142,7 +142,7 @@ define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view
       var blacklist = [];
       var that = this;
       relatedCollection.getColumns().forEach(function(column) {
-        if(that.columnSchema.options.get('visible_columns').split(',').indexOf(column) == -1) {
+        if(that.columnSchema.options.get('visible_columns').split(',').indexOf(column) === -1) {
           blacklist.push(column);
         }
       });
@@ -193,15 +193,15 @@ define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view
     id: 'many_to_many',
     dataTypes: ['MANYTOMANY'],
     variables: [
-      {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
-      {id: 'add_button', ui: 'checkbox', def: '1'},
-      {id: 'choose_button', ui: 'checkbox', def: '1'},
-      {id: 'remove_button', ui: 'checkbox', def: '1'},
-      {id: 'filter_type', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
-      {id: 'filter_column', ui: 'textinput', char_length: 255, comment: __t('m2m_filter_column_comment')},
-      {id: 'visible_column_template', ui: 'textinput', char_length: 255, comment: __t('m2m_visible_column_template_comment')},
-      {id: 'min_entries', ui: 'numeric', char_length: 11, default_value:0, comment: __t('m2m_min_entries_comment')},
-      {id: 'no_duplicates', ui: 'checkbox', def: '0', comment: __t('m2m_no_duplicates_comment')}
+      {id: 'visible_columns', type: 'String', def: '', ui: 'textinput', char_length: 255, required: true},
+      {id: 'add_button', type: 'Boolean', def: true, ui: 'checkbox'},
+      {id: 'choose_button', type: 'Boolean', def: true, ui: 'checkbox'},
+      {id: 'remove_button', type: 'Boolean', def: true, ui: 'checkbox'},
+      {id: 'filter_type', type: 'String', def:'', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
+      {id: 'filter_column', type: 'String', def:'', ui: 'textinput', char_length: 255, comment: __t('m2m_filter_column_comment')},
+      {id: 'visible_column_template', type: 'String', def:'', ui: 'textinput', char_length: 255, comment: __t('m2m_visible_column_template_comment')},
+      {id: 'min_entries', type: 'Number', def: 0, ui: 'numeric', char_length: 11, comment: __t('m2m_min_entries_comment')},
+      {id: 'no_duplicates', type: 'Boolean', def: false, ui: 'checkbox', comment: __t('m2m_no_duplicates_comment')}
     ],
     Input: Input,
     validate: function(value, options) {
@@ -214,7 +214,7 @@ define(['app', 'core/UIComponent', 'core-ui/one_to_many', 'core/table/table.view
       }
 
       // @TODO: Does not currently consider newly deleted items
-      if (options.schema.isRequired() && value.length == 0) {
+      if (options.schema.isRequired() && value.length === 0) {
         return __t('this_field_is_required');
       }
     },

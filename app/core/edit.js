@@ -71,8 +71,8 @@ define(function(require, exports, module) {
       this.structure.each(function(column) {
 
         // Skip ID
-        // if('id' == column.id) {
-        if (column.get('column_key') == 'PRI') {
+        // if('id' === column.id) {
+        if (column.get('column_key') === 'PRI') {
           return;
         }
 
@@ -81,11 +81,11 @@ define(function(require, exports, module) {
         }
 
         //Skip magic owner column if we dont have bigedit
-        if (this.model.table && this.model.table.get('user_create_column') == column.id && !this.model.collection.hasPermission('bigedit')) {
+        if (this.model.table && this.model.table.get('user_create_column') === column.id && !this.model.collection.hasPermission('bigedit')) {
           return;
         }
 
-        if (app.statusMapping.status_name == column.id) {
+        if (app.statusMapping.status_name === column.id) {
           var collection = this.model.collection;
           var canAdd = this.model.isNew() && collection.canAdd();
           var canEdit = !this.model.isNew() && collection.canEdit();
@@ -151,7 +151,7 @@ define(function(require, exports, module) {
         var i = 1;
         grouping.split('^').forEach(function(group) {
           var title = "";
-          if(group.indexOf(':') != -1) {
+          if(group.indexOf(':') !== -1) {
             title = group.substring(0, group.indexOf(':'));
             group = group.substring(group.indexOf(':') + 1);
           }

@@ -36,7 +36,7 @@ function(
     }
 
     app.router.openModal({type: 'yesno', text: opts.firstQuestion, callback: function(will) {
-      if (will != 'yes') {
+      if (will !== 'yes') {
         return;
       }
 

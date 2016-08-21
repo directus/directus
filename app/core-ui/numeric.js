@@ -43,7 +43,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       return {
         value: value,
         name: this.options.name,
-        size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
+        size: this.options.settings.get('size'),
         placeholder: (this.options.settings) ? this.options.settings.get('placeholder_text') : '',
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite
@@ -59,9 +59,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'numeric',
     dataTypes: ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR', 'DOUBLE', 'BIGINT'],
     variables: [
-      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
-      {id: 'placeholder_text', ui: 'textinput', char_length:200},
-      {id: 'allow_null', ui: 'checkbox', def: '0'}
+      {id: 'size', type: 'String', def: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
+      {id: 'placeholder_text', type: 'String', def: '', ui: 'textinput', char_length:200},
+      {id: 'allow_null', type: 'Boolean', def: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {

@@ -68,7 +68,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'marked'],function(app, UIComp
         rawValue: this.options.value,
         value: (this.options.value) ? marked(this.options.value):'',
         name: this.options.name,
-        rows: (this.options.settings && this.options.settings.has('rows')) ? this.options.settings.get('rows') : '14',
+        rows: this.options.settings.get('rows'),
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite
       };
@@ -79,11 +79,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'marked'],function(app, UIComp
     id: 'markdown',
     dataTypes: ['TEXT', 'VARCHAR'],
     variables: [
-      {id: 'rows', ui: 'numeric', char_length: 3, def: '14'},
-      {id: 'github_flavored_markdown', ui: 'checkbox'},
-      {id: 'tables', ui: 'checkbox'},
-      {id: 'breaks', ui: 'checkbox'},
-      {id: 'sanitize', ui: 'checkbox'}
+      {id: 'rows', type: 'Number', def: 14, ui: 'numeric', char_length: 3},
+      {id: 'github_flavored_markdown', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'tables', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'breaks', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'sanitize', type: 'Boolean', def: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {

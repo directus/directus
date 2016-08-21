@@ -61,7 +61,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
 
       return {
-        size: (this.options.settings && this.options.settings.has('size')) ? this.options.settings.get('size') : 'large',
+        size: this.options.settings.get('size'),
         value: value,
         name: this.options.name,
         maxLength: length,
@@ -79,10 +79,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       switch(this.options.settings.get('validation_type')) {
         case ('bl') :
           chars = this.options.settings.get('validation_string').split("");
-          return $.inArray(String.fromCharCode(e.which), chars) == -1;
+          return $.inArray(String.fromCharCode(e.which), chars) === -1;
         case ('wl') :
           chars = this.options.settings.get('validation_string').split("");
-          return $.inArray(String.fromCharCode(e.which), chars) != -1;
+          return $.inArray(String.fromCharCode(e.which), chars) !== -1;
       }
 
       return true;
@@ -94,20 +94,20 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     dataTypes: ['VARCHAR', 'DATE', 'TIME', 'ENUM'],
     variables: [
       // Disables editing of the field while still letting users see the value (true = readonly)
-      {id: 'readonly', ui: 'checkbox'},
+      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
       // Adjusts the max width of the input (Small, Medium, Large)
-      {id: 'size', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
+      {id: 'size', type: 'String', def: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       // Grayed out default placeholder text in the input when it's empty
-      {id: 'placeholder_text', ui: 'textinput', char_length:200},
+      {id: 'placeholder_text', type: 'String', def: '', ui: 'textinput', char_length:200},
       // Chooses the type of validation used on this field
       // * Character Blacklist: Choose the specific characters **not** allowed in the input
       // * Character Whitelist: Choose the specific characters allowed in the input
       // * RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything
-      {id: 'validation_type', ui: 'select', options: {options: {'bl':__t('character_blacklist'),'wl':__t('character_whitelist'),'rgx':__t('regex')} }, def:'rgx'},
+      {id: 'validation_type', type: 'String', def: '', ui: 'select', options: {options: {'bl':__t('character_blacklist'),'wl':__t('character_whitelist'),'rgx':__t('regex')} }, def:'rgx'},
       // Holds the CSV list of Whitelist/Blacklist characters or the RegEx value (based on the above option)
-      {id: 'validation_string', ui: 'textinput', char_length:200, comment: __t('textinput_validation_string_comment')},
+      {id: 'validation_string', type: 'String', def: '', ui: 'textinput', char_length:200, comment: __t('textinput_validation_string_comment')},
       // A message that is shown to the user if the validation fails
-      {id: 'validation_message', ui: 'textinput', char_length:200}
+      {id: 'validation_message', type: 'String', def: '', ui: 'textinput', char_length:200}
     ],
     Input: Input,
     validate: function(value, options) {

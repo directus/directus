@@ -20,31 +20,6 @@ abstract class AbstractSchema implements SchemaInterface
         $this->adapter = $adapter;
     }
 
-    /**
-     * @inheritdoc
-     */
-    abstract public function getTables();
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function getTablesName();
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function hasTable($tableName);
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function getTable($tableName);
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function getColumns($tableName, $params = null);
-
     public function getColumnsNames($tableName)
     {
         $columns = $this->getColumns($tableName);
@@ -57,38 +32,15 @@ abstract class AbstractSchema implements SchemaInterface
         return $columnNames;
     }
 
-    /**
-     * @inheritdoc
-     */
-    abstract public function hasColumn($tableName, $columnName);
+    public function parseRecordValuesByType($record, $nonAliasSchemaColumns)
+    {
+        foreach($nonAliasSchemaColumns as $column) {
+            $col = $column['id'];
+            if (array_key_exists($col, $record)) {
+                $record[$col] = $this->parseType($record[$col], $column['type']);
+            }
+        }
 
-    /**
-     * @inheritdoc
-     */
-    abstract public function getColumn($tableName, $columnName);
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function hasPrimaryKey($tableName);
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function getPrimaryKey($tableName);
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function getFullSchema();
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function getUIOptions($tableName, $columnName);
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function getColumnUI($column);
+        return $record;
+    }
 }

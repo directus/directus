@@ -107,13 +107,13 @@ function(app, Backbone, Directus, moment) {
             break;
         }
 
-        if(data.table == "directus_files") {
+        if(data.table === "directus_files") {
           data.category = "file";
         }
-        if(data.table == "directus_ui") {
+        if(data.table === "directus_ui") {
           data.category = "system";
         }
-        if(data.table == "directus_messages") {
+        if(data.table === "directus_messages") {
           data.category = "message";
         }
 
@@ -136,7 +136,7 @@ function(app, Backbone, Directus, moment) {
         var date = moment(group.timestamp).format('YYYY-MM-DD');
         if(!groupedData[date]) {
           //If Today Have it say Today
-          if(date == moment().format('YYYY-MM-DD')) {
+          if(date === moment().format('YYYY-MM-DD')) {
             groupedData[date] = {title: "Today", data: []};
           } else {
             groupedData[date] = {title: moment(group.timestamp).format('M-D'), data: []};
@@ -152,7 +152,7 @@ function(app, Backbone, Directus, moment) {
         if(groupedData[dateTest]){
           thirtyDays[dateTest] = groupedData[dateTest];
         } else {
-          if(dateTest == moment().format('YYYY-MM-DD')) {
+          if(dateTest === moment().format('YYYY-MM-DD')) {
             thirtyDays[dateTest] = {title: "Today", data: []};
           } else {
             thirtyDays[dateTest] = {title: moment(new Date(new Date().setDate(new Date().getDate()-i))).format('M-D'), data: []};
@@ -172,13 +172,13 @@ function(app, Backbone, Directus, moment) {
         thirtyDays[group].system = 0;
         thirtyDays[group].total = 0;
         for(var groupData in thirtyDays[group].data) {
-          if(thirtyDays[group].data[groupData].category == "login"){ thirtyDays[group].logins += 1; }
-          if(thirtyDays[group].data[groupData].category == "edit"){ thirtyDays[group].edits += 1; }
-          if(thirtyDays[group].data[groupData].category == "add"){ thirtyDays[group].adds += 1; }
-          if(thirtyDays[group].data[groupData].category == "delete"){ thirtyDays[group].deletes += 1; }
-          if(thirtyDays[group].data[groupData].category == "message"){ thirtyDays[group].messages += 1; }
-          if(thirtyDays[group].data[groupData].category == "file"){ thirtyDays[group].files += 1; }
-          if(thirtyDays[group].data[groupData].category == "system"){ thirtyDays[group].system += 1; }
+          if(thirtyDays[group].data[groupData].category === "login"){ thirtyDays[group].logins += 1; }
+          if(thirtyDays[group].data[groupData].category === "edit"){ thirtyDays[group].edits += 1; }
+          if(thirtyDays[group].data[groupData].category === "add"){ thirtyDays[group].adds += 1; }
+          if(thirtyDays[group].data[groupData].category === "delete"){ thirtyDays[group].deletes += 1; }
+          if(thirtyDays[group].data[groupData].category === "message"){ thirtyDays[group].messages += 1; }
+          if(thirtyDays[group].data[groupData].category === "file"){ thirtyDays[group].files += 1; }
+          if(thirtyDays[group].data[groupData].category === "system"){ thirtyDays[group].system += 1; }
           thirtyDays[group].total += 1;
         }
         data.push(thirtyDays[group]);

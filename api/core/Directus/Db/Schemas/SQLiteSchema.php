@@ -427,4 +427,9 @@ class SQLiteSchema extends AbstractSchema
     {
         // TODO: Implement getColumnUI() method.
     }
+
+    public function parseType($data, $type = null)
+    {
+        return $data;
+    }
 }

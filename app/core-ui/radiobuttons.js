@@ -54,7 +54,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'radiobuttons',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'options', ui: 'textinput', 'char_length': 100, 'comment': __t('radiobuttons_options_comment')}
+      {id: 'options', type: 'String', def: '', ui: 'textinput', char_length: 100, comment: __t('radiobuttons_options_comment')}
     ],
     Input: Input,
     // @TODO: Not working – not even being called

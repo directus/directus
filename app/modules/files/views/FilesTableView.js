@@ -165,7 +165,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
       $(document).off('ajaxStart.directus');
 
       app.sendFiles([fileInfo.fileInfo], function(data) {
-        if (data && typeof(data[0]) == 'object') {
+        if (data && typeof(data[0]) === 'object') {
           var attributes = data[0];
           attributes['type'] = fileInfo.fileInfo.type;
           fileInfo.model.save(attributes, {

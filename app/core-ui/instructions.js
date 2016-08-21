@@ -54,7 +54,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         value: value,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        instructions: (this.options.settings && this.options.settings.has('instructions')) ? this.options.settings.get('instructions') : __t('instructions_please_have_your_admin_setup_this_field')
+        instructions: this.options.settings.get('instructions') || __t('instructions_please_have_your_admin_setup_this_field')
       };
     },
 
@@ -67,11 +67,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'instructions',
     dataTypes: ['VARCHAR', 'TEXT'],
     variables: [
-      {id: 'instructions', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
+      {id: 'instructions', type: 'String', def: '', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
     ],
     Input: Input,
     list: function(options) {
-      var instructions = (options.settings && options.settings.has('instructions'))? options.settings.get('instructions') : "...";
+      var instructions = options.settings.get('instructions') || '...';
       var regex = /(<([^>]+)>)/ig;
 
       return instructions.replace(regex, "");

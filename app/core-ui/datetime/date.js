@@ -61,7 +61,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
         dateValue: dateValue,
         value: dateValue,
         name: this.name,
-        readonly: !this.options.canWrite || (settings && settings.has('readonly')) ? settings.get('readonly')!=0 : false
+        readonly: this.options.canWrite === false || (settings && settings.has('readonly')) ? settings.get('readonly') === true : false
       };
     },
 
@@ -79,10 +79,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     id: 'date',
     dataTypes: ['DATE'],
     variables: [
-      {id: 'readonly', ui: 'checkbox'},
-      {id: 'format', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD', comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>', options: {placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'}},
-      {id: 'contextual_date_in_listview', ui: 'checkbox', comment: 'Eg: 3 days ago'},
-      {id: 'auto-populate_when_hidden_and_null', ui: 'checkbox', def:'1'}
+      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'format', type: 'String', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD', comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>', options: {placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'}},
+      {id: 'contextual_date_in_listview', type: 'Boolean', ui: 'checkbox', comment: 'Eg: 3 days ago'},
+      {id: 'auto-populate_when_hidden_and_null', type: 'Boolean', ui: 'checkbox', def: true}
     ],
     Input: Input,
     validate: function(value, options) {
@@ -101,7 +101,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       var value = options.value;
       var format = this.getFormat(options);
 
-      if (options.settings.get('contextual_date_in_listview') == 1) {
+      if (options.settings.get('contextual_date_in_listview') === true) {
         var momentDate = moment(options.value);
         value = '-';
         if (momentDate.isValid()) {

@@ -96,8 +96,8 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     id: 'time',
     dataTypes: ['TIME'],
     variables: [
-      {id: 'readonly', ui: 'checkbox'},
-      {id: 'include_seconds', ui: 'checkbox'}
+      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'include_seconds', type: 'Boolean', def: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {
@@ -116,7 +116,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
       var seconds = data.seconds;
       var meridiem = data.meridiem;
       var settings = options.settings;
-      var includeSeconds = settings.get('include_seconds') == 1;
+      var includeSeconds = settings.get('include_seconds') === true;
 
       return hours + ':' + minutes + (includeSeconds ? ':' + seconds : '') + ' ' + meridiem;
     }

@@ -214,7 +214,7 @@ define(function(require, exports, module) {
       }
 
       _.each(attrs, function(val, key) {
-        if (this.get(key) != val) changedAttrs[key] = val;
+        if (this.get(key) !== val) changedAttrs[key] = val;
       },this);
 
       //Always pass id
@@ -259,8 +259,6 @@ define(function(require, exports, module) {
 
       if (options.ignoreWriteFieldBlacklisted) {
         options.attrs = _.omit(options.attrs, this.getWriteFieldBlacklist());
-
-        console.log(options.attrs);
       }
 
       return Backbone.sync.apply(this, [method, model, options]);

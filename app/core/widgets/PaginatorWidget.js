@@ -39,7 +39,7 @@ function(app, Backbone, Handlebars) {
       this.options.widgetOptions.pagePrev = (this.collection.getFilter('currentPage') !== 0);
 
 
-      if(this.collection.length != this.collection.getFilter('perPage')) {
+      if(this.collection.length !== this.collection.getFilter('perPage')) {
         this.options.widgetOptions.pageNext = false;
       }
 

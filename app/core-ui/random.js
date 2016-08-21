@@ -22,9 +22,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
 
     events: {
       'click .string-generate': function(e) {
-        var length = this.options.settings.has('string_length')
-                      ? this.options.settings.get('string_length')
-                      : 16;
+        var length = this.options.settings.get('string_length')
 
         this.generateString(length);
       }
@@ -55,7 +53,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
     },
 
     initialize: function() {
-      if (!this.options.value && this.options.settings.get('auto_generate') == 1) {
+      if (!this.options.value && this.options.settings.get('auto_generate') === true) {
         this.generateString();
       }
     },
@@ -64,9 +62,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
       return {
         name: this.options.name,
         value: this.options.value,
-        readonly: this.options.settings.get('allow_any_value') != 1,
+        readonly: this.options.settings.get('allow_any_value') !== true,
         comment: this.options.schema.get('comment'),
-        placeholder: (this.options.settings && this.options.settings.has('placeholder')) ? this.options.settings.get('require_confirma') : ''
+        placeholder: this.options.settings.get('placeholder_text')
       };
     },
   });
@@ -75,12 +73,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
     id: 'random',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'string_length', ui: 'numeric', char_length: 200, def: 16},
+      {id: 'string_length', type: 'Number', def: 16, ui: 'numeric', char_length: 200},
       // Allow the user to input their own value
-      {id: 'allow_any_value', ui: 'checkbox', def: 1},
-      {id: 'auto_generate', ui: 'checkbox', def: 0},
+      {id: 'allow_any_value', type: 'Boolean', def: true, ui: 'checkbox'},
+      {id: 'auto_generate',  type: 'Boolean', def: false, ui: 'checkbox'},
       // Initial Placeholder text for the UI
-      {id: 'placeholder_text', ui: 'textinput', char_length: 200, def: ''},
+      {id: 'placeholder_text', type: 'String', def: '', ui: 'textinput', char_length: 200},
     ],
     Input: Input,
     validate: function(value, options) {

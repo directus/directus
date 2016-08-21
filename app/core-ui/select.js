@@ -40,7 +40,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
 
         item.value = value;
         item.key = key;
-        item.selected = (item.key == selectedValue);
+        item.selected = (item.key === selectedValue);
 
         return item;
       });
@@ -50,7 +50,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
-        allow_null: this.options.settings.get('allow_null') == 1,
+        allow_null: this.options.settings.get('allow_null') === true,
         placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
       };
     }
@@ -60,9 +60,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
     id: 'select',
     dataTypes: ['VARCHAR', 'INT'],
     variables: [
-      {id: 'options', ui: 'textarea', options:{'rows': 25, 'placeholder_text': "{\n    \"value1\":\"Option One\",\n    \"value2\":\"Option Two\",\n    \"value3\":\"Option Three\"\n}"}, comment: __t('select_options_comment')},
-      {id: 'allow_null', ui: 'checkbox'},
-      {id: 'placeholder_text', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
+      {id: 'options', type: 'String', def: '', ui: 'textarea', options:{'rows': 25, 'placeholder_text': "{\n    \"value1\":\"Option One\",\n    \"value2\":\"Option Two\",\n    \"value3\":\"Option Three\"\n}"}, comment: __t('select_options_comment')},
+      {id: 'allow_null', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'placeholder_text', type: 'String', def: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
     ],
     Input: Input,
     validate: function(value, options) {

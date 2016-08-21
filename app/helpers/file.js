@@ -27,7 +27,7 @@ define(function() {
   };
 
   FileHelper.isFileObject = function(file) {
-    return typeof File != 'undefined' ? file instanceof File : false;
+    return typeof File !== 'undefined' ? file instanceof File : false;
   };
 
   FileHelper.getDataFromInput = function(inputFile, fn) {

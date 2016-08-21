@@ -64,7 +64,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
         try {
           options = $.parseJSON(options);
         } catch (err) {
-          console.log(__t('your_template_chooser_has_a_malformed_json'));
+          console.error(__t('your_template_chooser_has_a_malformed_json'));
         }
       }
 
@@ -74,7 +74,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
         item.thumb_url = value.thumb_url;
         item.column_blacklist = value.column_blacklist;
         item.key = key;
-        item.selected = (item.key == selectedValue);
+        item.selected = (item.key === selectedValue);
         return item;
       });
 
@@ -93,8 +93,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
     id: 'template_chooser',
     dataTypes: ['VARCHAR', 'INT', 'TINYINT'],
     variables: [
-      {id: 'options', ui: 'textarea', options:{'rows': 25}  },
-      {id: 'allow_null', ui: 'checkbox'}
+      {id: 'options', type: 'String', def: '', ui: 'textarea', options:{'rows': 25}  },
+      {id: 'allow_null', type: 'Boolean', def: false, ui: 'checkbox'}
     ],
     Input: Input,
     list: function(options) {

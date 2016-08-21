@@ -73,7 +73,7 @@ require([
       //throw new Error('The date is not in a correct date format');
       return '-';
     }
-    //date = (date.substr(-1).toLowerCase() == 'z') ? date : date + 'z';
+    //date = (date.substr(-1).toLowerCase() === 'z') ? date : date + 'z';
     return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + moment(date).fromNow() + '</div>');
   });
 
@@ -106,11 +106,11 @@ require([
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
     var hit = app.users.find(function(model) {
-      return model.get('first_name').toLowerCase() === firstName && model.id != userId;
+      return model.get('first_name').toLowerCase() === firstName && model.id !== userId;
     });
     if (hit !== undefined) {
       nickName = firstName + ' ' + lastNameFirstCharacter + '.';
-      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id != userId; });
+      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id !== userId; });
       if (hit !== undefined) {
         nickName = firstName + ' ' + user.get('last_name');
       }
@@ -125,11 +125,11 @@ require([
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
     var hit = app.users.find(function(model) {
-      return model.get('first_name').toLowerCase() === firstName && model.id != userId;
+      return model.get('first_name').toLowerCase() === firstName && model.id !== userId;
     });
     if (hit !== undefined) {
       nickName = firstName + ' ' + lastNameFirstCharacter + '.';
-      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id != userId; });
+      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id !== userId; });
       if (hit !== undefined) {
         nickName = firstName + ' ' + user.get('last_name');
       }

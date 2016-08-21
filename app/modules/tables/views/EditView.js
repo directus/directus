@@ -115,7 +115,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     saveConfirm: function(e) {
       var data = this.editView.data();
       var that = this;
-      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
+      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
         app.router.openModal({type: 'confirm', text: 'Are you sure you want to delete this item?', callback: function() {
           that.save(e);
         }});
@@ -133,7 +133,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       }
 
       if(this.single && action !== 'save-form-stay' && action !== 'save-form-leave') {
-        console.log('This shouldn\'t be happening');
+        console.error('This shouldn\'t be happening');
         return;
       }
 
@@ -145,8 +145,8 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       var success;
 
       for(var key in data) {
-        if(model.structure.get(key).options && model.structure.get(key).options.get('allow_null') == '1') {
-          if(data[key] == '') {
+        if(model.structure.get(key).options && model.structure.get(key).options.get('allow_null') === '1') {
+          if(data[key] === '') {
             data[key] = null;
           }
         }
@@ -184,7 +184,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
 
       var changedValues = model.diff(data);
 
-      if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] == app.statusMapping.deleted_num ) {
+      if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
         var value = app.statusMapping.deleted_num;
         var options = {success: success, wait: true, patch: true, includeRelationships: true};
         try {
@@ -199,12 +199,12 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
         model.save(changedValues, {
           success: success,
           error: function(model, xhr, options) {
-            console.log('err');
+            console.error('err');
             //Duplicate entry, forced but works
             //@todo finds a better way to determine whether there's an duplicate error
             // and what's the column's name
             var response = JSON.parse(xhr.responseText);
-            if (response.message.indexOf('Duplicate entry') != -1) {
+            if (response.message.indexOf('Duplicate entry') !== -1) {
               var columnName = response.message.split('for key')[1].trim();
               columnName = columnName.substring(1, columnName.lastIndexOf("'"));
               app.router.openModal({type: 'alert', text: 'This item was not saved because its "' + columnName + '" value is not unique.'});

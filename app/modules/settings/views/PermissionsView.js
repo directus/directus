@@ -69,7 +69,7 @@ function(app, Backbone, Widgets, __t, BasePageView) {
       'click td': function(e) {
         var groupName = e.target.getAttribute('data-id');
         // Don't bypass Admins until their permissions are always guaranteed
-        // if(groupName == 1) {
+        // if(groupName === 1) {
         //   return;
         // }
         app.router.go(['settings' ,'permissions', groupName]);

@@ -160,7 +160,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
           var item = {title: key};
 
-          if(this.selectedUI == key) {
+          if(this.selectedUI === key) {
             item.selected = true;
           }
 
@@ -188,7 +188,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           that.selectedDataType = dataType;
         }
 
-        if (dataType == that.selectedDataType) {
+        if(dataType === that.selectedDataType) {
           item.selected = true;
         }
 
@@ -263,7 +263,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         }
         data.tables = tables;
 
-        if(this.selectedDataType == 'MANYTOMANY') {
+        if(this.selectedDataType === 'MANYTOMANY') {
           data.junctionTables = _.chain(tables)
             .map(function(model) {
               if(!junctionTable){
@@ -323,7 +323,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var cleanColumnName = SchemaHelper.cleanColumnName(rawColumnName);
         var columnNameText = '';
 
-        if (cleanColumnName && rawColumnName != cleanColumnName) {
+        if (cleanColumnName && rawColumnName !== cleanColumnName) {
           columnNameText = __t('this_column_will_be_saved_as_x', {column_name: cleanColumnName});
         }
 
@@ -760,7 +760,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       var model = this.collection.at(tableIndex);
-      if (tableIndex == 0 || tableIndex == this.collection.length) {
+      if (tableIndex === 0 || tableIndex === this.collection.length) {
         return model.id;
       }
 
@@ -852,7 +852,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var self = this;
       this.unregistedCount = 0;
       this.collection.each(function(model) {
-        var inactiveTable = app.schemaManager.getPrivileges(model.id) == null;
+        var inactiveTable = app.schemaManager.getPrivileges(model.id) === null;
         if (!inactiveTable && !this.isValidModel(model)) {
           return false;
         }
@@ -956,7 +956,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       options.wait = true;
       options.success = function(model, response) {
-        if (response.success == true) {
+        if (response.success === true) {
           var tableName = model.get('table_name');
           var bookmarks = app.router.bookmarks;
 
@@ -1055,7 +1055,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
       // @TODO: make this save a table info rather than permissions.
       app.schemaManager.addTable(tableName, function(tableModel) {
-        if (rawTableName != tableName) {
+        if (rawTableName !== tableName) {
           Notification.success(__t('this_table_was_saved_as_x', {table_name: tableName}));
         }
         app.router.bookmarks.addTable(tableModel);

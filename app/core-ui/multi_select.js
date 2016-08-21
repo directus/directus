@@ -59,7 +59,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
     afterRender: function() {
       if(this.options.value) {
-        this.updateValue((this.options.settings.get('type') != "cb_list"));
+        this.updateValue((this.options.settings.get('type') !== "cb_list"));
       }
     },
 
@@ -67,7 +67,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       var value = this.options.value || '';
       var values = value.split(this.options.settings.get('delimiter'));
       var options = this.options.settings.get('options');
-      var cb_list = this.options.settings.get('type') == "cb_list";
+      var cb_list = this.options.settings.get('type') === "cb_list";
 
       if (_.isString(options)) {
         options = $.parseJSON(options);
@@ -77,7 +77,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         var item = {};
         item.value = value;
         item.key = key;
-        item.selected = ($.inArray(item.key, values) != -1);
+        item.selected = ($.inArray(item.key, values) !== -1);
         return item;
       });
 
@@ -94,9 +94,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'multi_select',
     dataTypes: ['VARCHAR', 'TEXT'],
     variables: [
-      {id: 'type', ui: 'select', options: {options: {'select_list':__t('select_list'),'cb_list':__t('checkbox_list')} }},
-      {id: 'delimiter', ui: 'textinput', char_length:1, required: true  },
-      {id: 'options', ui: 'textarea', options:{'rows': 25}  }
+      {id: 'type', type: 'String', def: 'select_list', ui: 'select', options: {options: {'select_list':__t('select_list'),'cb_list':__t('checkbox_list')} }},
+      {id: 'delimiter', type: 'String', def: ',', ui: 'textinput', char_length:1, required: true  },
+      {id: 'options', type: 'String', def: '', ui: 'textarea', options:{'rows': 25}  }
     ],
     Input: Input,
     validate: function(value, options) {

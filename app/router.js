@@ -226,7 +226,7 @@ define(function(require, exports, module) {
 
       var that=this;
       Backbone.History.prototype.loadUrl = function() {
-        if (hasUnsavedAttributes() || (that.baseRouteSave == this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?"))) {
+        if (hasUnsavedAttributes() || (that.baseRouteSave === this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?"))) {
           Backbone.History.prototype.loadUrl = that.oldLoadUrlFunction;
           return that.oldLoadUrlFunction.apply(this, arguments);
         } else {
@@ -269,7 +269,7 @@ define(function(require, exports, module) {
 
     entries: function(tableName, pref) {
       var privileges = SchemaManager.getPrivileges(tableName);
-      if (_.contains(this.navBlacklist,'tables') || (privileges && privileges.get('allow_view') == 0)) {
+      if (_.contains(this.navBlacklist,'tables') || (privileges && privileges.get('allow_view') === 0)) {
         return this.notFound();
       }
 
@@ -282,7 +282,7 @@ define(function(require, exports, module) {
       }
 
       // see if the collection is cached...
-      if (this.currentCollection !== undefined && this.currentCollection.table.id == tableName) {
+      if (this.currentCollection !== undefined && this.currentCollection.table.id === tableName) {
         collection = this.currentCollection;
       } else {
         collection = EntriesManager.getInstance(tableName);
@@ -337,7 +337,7 @@ define(function(require, exports, module) {
           view;
 
       // see if the collection is cached...
-      if (this.currentCollection !== undefined && this.currentCollection.table.id == tableName) {
+      if (this.currentCollection !== undefined && this.currentCollection.table.id === tableName) {
         collection = this.currentCollection;
       } else {
         collection = EntriesManager.getInstance(tableName);
@@ -395,14 +395,14 @@ define(function(require, exports, module) {
       if(pref) {
         this.navigate("/files");
 
-        if(this.lastRoute == "files/" && this.loadedPreference == pref) {
+        if(this.lastRoute === "files/" && this.loadedPreference === pref) {
           return;
         }
 
         this.loadedPreference = pref;
       } else {
         //If no LoadedPref unset
-        if(this.loadedPreference && this.lastRoute.indexOf('files/pref/') == -1)
+        if(this.loadedPreference && this.lastRoute.indexOf('files/pref/') === -1)
         {
           this.loadedPreference = null;
         }
@@ -435,14 +435,14 @@ define(function(require, exports, module) {
       if(pref) {
         this.navigate("/users");
 
-        if(this.lastRoute == "users/" && this.loadedPreference == pref) {
+        if(this.lastRoute === "users/" && this.loadedPreference === pref) {
           return;
         }
 
         this.loadedPreference = pref;
       } else {
         //If no LoadedPref unset
-        if(this.loadedPreference && this.lastRoute.indexOf('users/pref/') == -1)
+        if(this.loadedPreference && this.lastRoute.indexOf('users/pref/') === -1)
         {
           this.loadedPreference = null;
         }
@@ -591,11 +591,11 @@ define(function(require, exports, module) {
 
       _.each(options.extensions, function(item) {
         try {
-          if (typeof item != 'undefined') {
+          if (typeof item !== 'undefined') {
             this.extensions[item] = ExtensionManager.getInstance(item);
           }
         } catch (e) {
-          console.log('failed to load:', e.stack);
+          console.error('failed to load:', e.stack);
           return;
         }
         //this.extensions[item.id].bind('all', logRoute);

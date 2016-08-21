@@ -23,7 +23,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     isRequired: function() {
       var settings = this.options.settings;
 
-      return settings.get('mandatory') == 1;
+      return settings.get('mandatory') === true;
     },
 
     serialize: function() {
@@ -34,7 +34,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         value = this.options.schema.get('def');
       }
 
-      var selected = parseInt(value,10) === 1;
+      var selected = parseInt(value, 10) === 1;
 
       if (
         this.options.model.isNew() &&
@@ -55,13 +55,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'checkbox',
     dataTypes: ['TINYINT'],
     variables: [
-      {id: 'mandatory', ui: 'checkbox', comment: 'if this field should always be checked by the user.'}
+      {id: 'mandatory', type: 'Boolean', def: false, ui: 'checkbox', comment: 'if this field should always be checked by the user.'}
     ],
     Input: Input,
     validate: function(value, options) {
       // If a checkbox is mandatory, it MUST be checked to save
       // similar to "agree to terms" functionality
-      if (options.view.isRequired() && value == 0) {
+      if (options.view.isRequired() && value === 0) {
         return __t('this_field_is_required');
       }
     },

@@ -203,7 +203,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       if (!hasUnsavedModels && ids.length > 0) {
         //Make sure column we are joining on is respected
         var filters = relatedCollection.filters;
-        if (filters.columns_visible.length == 0) {
+        if (filters.columns_visible.length === 0) {
           filters.columns_visible = relatedCollection.structure.at(0).get('id');
         }
 
@@ -221,9 +221,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         }});
       }
 
-      this.showRemoveButton = this.columnSchema.options.get('remove_button') == 1;
-      this.showAddButton = this.columnSchema.options.get('add_button') == 1;
-      this.showChooseButton = this.columnSchema.options.get('choose_button') == 1;
+      this.showRemoveButton = this.columnSchema.options.get('remove_button') === 1;
+      this.showAddButton = this.columnSchema.options.get('add_button') === 1;
+      this.showChooseButton = this.columnSchema.options.get('choose_button') === 1;
 
       this.nestedTableView = new TableView({
         collection: relatedCollection,
@@ -270,12 +270,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
     id: 'one_to_many',
     dataTypes: ['ONETOMANY'],
     variables: [
-      {id: 'visible_columns', ui: 'textinput', char_length: 255, required: true},
-      {id: 'result_limit', ui: 'numeric', char_length: 10, def: '100', comment: __t('o2m_result_limit_comment')},
-      {id: 'add_button', ui: 'checkbox'},
-      {id: 'choose_button', ui: 'checkbox', def: 1},
-      {id: 'remove_button', ui: 'checkbox'},
-      {id: 'only_unassigned', ui: 'checkbox', def: 0}
+      {id: 'visible_columns', type: 'String', ui: 'textinput', char_length: 255, required: true},
+      {id: 'result_limit', type: 'Number', ui: 'numeric', char_length: 10, def: 100, comment: __t('o2m_result_limit_comment')},
+      {id: 'add_button', type: 'Boolean', ui: 'checkbox'},
+      {id: 'choose_button', type: 'Boolean', ui: 'checkbox', def: true},
+      {id: 'remove_button', type: 'Boolean', ui: 'checkbox'},
+      {id: 'only_unassigned', type: 'Boolean', ui: 'checkbox', def: false}
     ],
     Input: Input,
     validate: function(collection, options) {

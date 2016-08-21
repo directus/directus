@@ -32,7 +32,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function(
               break;
             case "entry":
               var detailType = __t('action_edit');
-              if("new" == last_page.path.substr(-3))
+              if("new" === last_page.path.substr(-3))
                 detailType = __t('action_create');
               page_summary += __t('directus_user_activity_table_entry_action', {
                 param: app.capitalize(last_page.param),

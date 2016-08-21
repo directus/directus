@@ -40,7 +40,7 @@ function(app, Backbone, Handlebars) {
       },
       'change .adv-search-col-id': function(e) {
         var selectedVal = $(e.target).val();
-        if(selectedVal != "") {
+        if(selectedVal !== "") {
           this.addNewFilter(selectedVal);
         }
       },
@@ -51,7 +51,7 @@ function(app, Backbone, Handlebars) {
 
     processFilterChange: function(e) {
       var type = 'like';
-      if($(e.target).prop('tagName') == 'SELECT') {
+      if($(e.target).prop('tagName') === 'SELECT') {
         type = '=';
       }
       var data = {
@@ -106,10 +106,10 @@ function(app, Backbone, Handlebars) {
 
       data.columnName = selectedColumn;
 
-      if(this.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') == "one_to_many") {
+      if(this.collection.structure.get(selectedColumn).get('ui') === "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') === "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') === "one_to_many") {
         var columnModel = this.collection.structure.get(selectedColumn);
 
-        if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
+        if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') === "dropdown") {
           //Get Related Column Collection
           data.columnModel = columnModel;
           data.relatedCollection = app.getEntries(columnModel.relationship.get('related_table'));
@@ -121,7 +121,7 @@ function(app, Backbone, Handlebars) {
         } else {
           data.filter_ui = this.getFilterDataType(selectedColumn);
         }
-      } else if(this.collection.structure.get(selectedColumn).get('type') == "ENUM") {
+      } else if(this.collection.structure.get(selectedColumn).get('type') === "ENUM") {
         var columnModel = this.collection.structure.get(selectedColumn);
         var vals = columnModel.get('column_type').substring(5, columnModel.get('column_type').length-1);
         vals = vals.replace(/\'/g, "").split(',');
@@ -177,7 +177,7 @@ function(app, Backbone, Handlebars) {
           var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
           if(item.filterData) {
             //Used for Checkboxes since they return 0 string
-            if(item.filterData.value == "0") {
+            if(item.filterData.value === "0") {
               item.filterData = 0;
             }
             data.filters[i].filter_ui = template({value: item.filterData.value});
@@ -342,7 +342,7 @@ function(app, Backbone, Handlebars) {
           filter = filter.replace('\\:', '%20');
           filter = filter.split(':');
 
-          if(filter.length == 3) {
+          if(filter.length === 3) {
             var data = {};
             var selectedColumn = filter[0].replace('%20',':');
 
@@ -350,9 +350,9 @@ function(app, Backbone, Handlebars) {
             if(!that.collection.structure.get(selectedColumn)) {
               return;
             }
-            if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') == "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') == "one_to_many") {
+            if(that.collection.structure.get(selectedColumn).get('ui') === "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') === "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') === "one_to_many") {
               var columnModel = that.collection.structure.get(selectedColumn);
-              if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') == "dropdown") {
+              if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') === "dropdown") {
                 //Get Related Column Collection
                 data.columnModel = columnModel;
                 data.relatedCollection = app.getEntries(columnModel.relationship.get('related_table'));
@@ -364,12 +364,12 @@ function(app, Backbone, Handlebars) {
               } else{
                 data.filter_ui = that.getFilterDataType(selectedColumn);
               }
-            } else if(that.collection.structure.get(selectedColumn).get('type') == "ENUM") {
+            } else if(that.collection.structure.get(selectedColumn).get('type') === "ENUM") {
               var columnModel = that.collection.structure.get(selectedColumn);
               var vals = columnModel.get('column_type').substring(5, columnModel.get('column_type').length-1);
               vals = vals.replace(/\'/g, "").split(',');
               data.dropdownValues = vals;
-            } else if(that.collection.structure.get(selectedColumn).get('ui') == "many_to_many") {
+            } else if(that.collection.structure.get(selectedColumn).get('ui') === "many_to_many") {
               data.filter_ui = that.getFilterDataType(selectedColumn);
             }else if(that.collection.structure.get(selectedColumn).get('ui') === "multi_select") {
               var columnModel = that.collection.structure.get(selectedColumn);

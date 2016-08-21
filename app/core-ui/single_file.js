@@ -316,9 +316,9 @@ define([
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
       if(data.type) {
-        if(data.type == 'embed/youtube') {
+        if(data.type === 'embed/youtube') {
           data.size = app.seconds_convert(data.size);
-        } else if(data.type == 'embed/vimeo') {
+        } else if(data.type === 'embed/vimeo') {
           data.size = app.seconds_convert(data.size);
         } else {
           data.size = app.bytesToSize(data.size, 0);
@@ -338,7 +338,7 @@ define([
         html: html,
         thumbUrl: thumbUrl,
         comment: this.options.schema.get('comment'),
-        allowed_filetypes: (this.options.settings && this.options.settings.has('allowed_filetypes')) ? this.options.settings.get('allowed_filetypes') : '0',
+        allowed_filetypes: this.options.settings.get('allowed_filetypes'),
         fileModel: data,
         link: link
       };
@@ -362,7 +362,7 @@ define([
     id: 'single_file',
     dataTypes: ['INT'],
     variables: [
-      {id: 'allowed_filetypes', ui: 'textinput', char_length:200}
+      {id: 'allowed_filetypes', type: 'String', def:'', ui: 'textinput', char_length:200}
     ],
     Input: Input,
     validate: function(value, options) {

@@ -151,7 +151,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         var subtype = model.get('type').split('/').pop();
 
         //If we shouldnt show thumbnail, set thumbUrl to null
-        if(type != 'image' && type != 'embed' && subtype != "pdf") {
+        if(type !== 'image' && type !== 'embed' && subtype !== 'pdf') {
           data.thumbUrl = null;
           data.type = subtype.toUpperCase();
         }
@@ -207,7 +207,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         this.$el.find('.swap-container').toggle();
         this.$el.find('.ui-thumbnail.has-file').toggle();
         var swapText = this.$el.find('.ui-text-hover').text();
-        var newSwapText = (swapText == 'Swap file')? 'Cancel' : 'Swap file';
+        var newSwapText = (swapText === 'Swap file')? 'Cancel' : 'Swap file';
         this.$el.find('.ui-text-hover').text(newSwapText);
       }
     },

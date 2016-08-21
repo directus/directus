@@ -124,4 +124,24 @@ interface SchemaInterface
      * @return string
      */
     public function getColumnUI($column);
+
+    /**
+     * Parse record values by the schema type
+     *
+     * @param $record
+     * @param $nonAliasSchemaColumns
+     *
+     * @return array
+     */
+    public function parseRecordValuesByType($record, $nonAliasSchemaColumns);
+
+    /**
+     * Cast string values to its database type.
+     *
+     * @param $data
+     * @param null $type
+     *
+     * @return mixed
+     */
+    public function parseType($data, $type = null);
 }

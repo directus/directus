@@ -449,4 +449,61 @@ class MySQLSchema extends AbstractSchema
         // TODO: Implement getColumnUI() method.
     }
 
+    /**
+ * Cast a php string to the same type as MySQL
+ * @param  string $mysql_data MySQL result data
+ * @param  string $mysql_type MySQL field type
+ * @return mixed              Value cast to PHP type
+ */
+
+    /**
+     * Cast string values to its database type.
+     *
+     * @param $data
+     * @param null $type
+     *
+     * @return mixed
+     */
+    public function parseType($data, $type = null)
+    {
+        $type = strtolower($type);
+
+        switch ($type) {
+            case null:
+                break;
+            case 'blob':
+            case 'mediumblob':
+                return base64_encode($data);
+            case 'year':
+            case 'bigint':
+            case 'smallint':
+            case 'mediumint':
+            case 'int':
+            case 'long':
+            case 'tinyint':
+                return ($data === null) ? null : (int) $data;
+            case 'float':
+                return (float) $data;
+            case 'date':
+            case 'datetime':
+                $nullDate = empty($data) || ("0000-00-00 00:00:00" == $data) || ('0000-00-00' === $data);
+                if ($nullDate) {
+                    return null;
+                }
+                $date = new \DateTime($data);
+                $formatted = $date->format('Y-m-d H:i:s');
+                return $formatted;
+            case 'time':
+                return !empty($data) ? $data : null;
+            case 'char':
+            case 'varchar':
+            case 'text':
+            case 'tinytext':
+            case 'mediumtext':
+            case 'longtext':
+            case 'var_string':
+                return $data;
+        }
+        return $data;
+    }
 }

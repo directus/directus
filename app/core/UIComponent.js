@@ -7,8 +7,9 @@ define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Ha
       this.variables = this.variables || [];
       this.variables.push({
         id: 'footer',
+        type: 'Boolean',
+        def: false,
         ui: 'checkbox',
-        def: 0,
         comment: __t('numeric_footer_comment')
       });
     }
@@ -43,7 +44,7 @@ define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Ha
       return template(data);
     },
     isNumeric: function() {
-      return this.id == 'numeric';
+      return this.id === 'numeric';
     },
     supportsNumber: function() {
       return _.some(this.dataTypes, function(type) {
