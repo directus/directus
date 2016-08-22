@@ -121,10 +121,14 @@ class ArrayUtils
         $results = [];
 
         foreach ($array as $key => $value) {
-            if (is_array($value) && ! empty($value)) {
-                $results = array_merge($results, static::flatKey($separator, $value, $prepend.$key.$separator));
+            if (is_array($value)) {
+                if (empty($value)) {
+                    $results[$prepend . $key] = '';
+                } else {
+                    $results = array_merge($results, static::flatKey($separator, $value, $prepend . $key . $separator));
+                }
             } else {
-                $results[$prepend.$key] = $value;
+                $results[$prepend . $key] = $value;
             }
         }
 

@@ -54,7 +54,8 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
                 'name' => 'John',
                 'country' => [
                     'name' => 'yes'
-                ]
+                ],
+                'email' => []
             ]
         ];
 
@@ -63,6 +64,8 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('user.name', $result);
         $this->assertArrayHasKey('user.country.name', $result);
+        $this->assertArrayHasKey('user.email', $result);
+        $this->assertNotInternalType('array', $result['user.email']);
 
         $result = ArrayUtils::flatKey('_', $array);
 
