@@ -29,9 +29,7 @@ define(function(require, exports, module) {
     },
 
     getInstance: function(id) {
-      var extension = new extensions[id].Router(id);
-
-      return extension;
+      return new extensions[id].Router('ext/' + id);
     },
 
     getIds: function() {
