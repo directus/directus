@@ -33,6 +33,7 @@
 namespace Directus\Console\Common;
 
 
+use Directus\Auth\Provider;
 use Directus\Bootstrap;
 use Directus\Util\StringUtils;
 use Zend\Db\TableGateway\TableGateway;
@@ -81,20 +82,23 @@ class User {
   public function changePassword($email, $password) {
 
     $salt = StringUtils::random();
-    $hash = sha1($salt.$password);
-
-    $update = array(
-      'password' => $hash,
-      'salt' => $salt
-    );
+    $hash = Provider::hashPassword($password, $salt);
 
     try {
+      $user = $this->usersTableGateway->select(array('email' => $email))->current();
+
+      $update = array(
+        'password' => $hash,
+        'salt' => $salt,
+        'access_token' => sha1($user->id . StringUtils::random())
+      );
+
       $changed = $this->usersTableGateway->update($update, array('email' => $email));
       if ($changed == 0) {
         throw new PasswordChangeException(__t('Could not change password for ').$email.': '.__t('e-mail not found.'));
       }
-    } catch (PDOException $ex) {
-      throw new PasswordChangeException(__t('Failed to change password'). ': '. str($ex));
+    } catch (\PDOException $ex) {
+        throw new PasswordChangeException(__t('Failed to change password'). ': '. str($ex));
     }
 
   }
