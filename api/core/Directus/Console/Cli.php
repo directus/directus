@@ -66,7 +66,7 @@ class Cli
 
     private function cmd()
     {
-        list($module, $command) = split(':', $this->command.':');
+        list($module, $command) = explode(':', $this->command.':');
 
         if (empty($command)) {
             echo PHP_EOL.__t('Error: Missing module name or command.').PHP_EOL.PHP_EOL  ;
@@ -87,7 +87,7 @@ class Cli
             echo PHP_EOL.PHP_EOL.__t('Module ').$module.__t(' error: ').$e->getMessage().PHP_EOL.PHP_EOL;
         } catch (UnsupportedCommandException $e) {
             echo PHP_EOL.PHP_EOL.__t('Module ').$module.__t(' error: ').$e->getMessage().PHP_EOL.PHP_EOL;
-        } 
+        }
     }
 
     private function showHelp()
