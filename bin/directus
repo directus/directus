@@ -1,14 +1,12 @@
 #!/usr/bin/env php
 <?php
+define('BASE_PATH', realpath(__DIR__ . '/../'));
 
 // Composer Autoloader
-$loader = require __DIR__ . '/../vendor/autoload.php';
-require __DIR__. '/../api/config.php';
-define('BASE_PATH', __DIR__ . '/../');
+$loader = require BASE_PATH . '/vendor/autoload.php';
+require BASE_PATH . '/api/config.php';
 
 use Directus\Console\Cli;
-
-define('BASE_PATH', dirname(dirname(__FILE__)));
 
 $cli = new Cli();
 
