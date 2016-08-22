@@ -675,3 +675,117 @@ if (!function_exists('get_max_upload_size')) {
         return min($maxUploadSize, $maxPostSize);
     }
 }
+
+if (!function_exists('find_files')) {
+    /**
+     * Find files inside $paths, directories and file name starting with "_" will be ignored.
+     *
+     *
+     * @param $searchPaths
+     * @param int $flags
+     * @param string $pattern
+     * @param bool $includeSubDirectories
+     * @param callable - $ignore filter
+     *
+     * @return array
+     */
+    function find_files($searchPaths, $flags = 0, $pattern = '', $includeSubDirectories = false)
+    {
+        if (!is_array($searchPaths)) {
+            $searchPaths = [$searchPaths];
+        }
+
+        $validPath = function($path) {
+            $filename = pathinfo($path, PATHINFO_FILENAME);
+
+            return $filename[0] !== '_';
+        };
+
+        $filesPath = [];
+        foreach($searchPaths as $searchPath) {
+            $searchPath = rtrim($searchPath, '/');
+            $result = array_filter(glob($searchPath . '/' . rtrim($pattern, '/'), $flags), $validPath);
+            $filesPath = array_merge($filesPath, $result);
+
+            if ($includeSubDirectories === true) {
+                foreach (glob($searchPath . '/*', GLOB_ONLYDIR) as $subDir) {
+                    if ($validPath($subDir)) {
+                        $result = find_files($subDir, $flags, $pattern, $includeSubDirectories);
+                        $filesPath = array_merge($filesPath, $result);
+                    }
+                }
+            }
+        }
+
+        return $filesPath;
+    }
+}
+
+if (!function_exists('find_js_files')) {
+    /**
+     * Find JS files in the given path
+     *
+     * @param $paths
+     * @param bool $includeSubDirectories
+     *
+     * @return array
+     */
+    function find_js_files($paths, $includeSubDirectories = false)
+    {
+        return find_files($paths, 0, '*.js', $includeSubDirectories);
+    }
+}
+
+if (!function_exists('find_php_files')) {
+    /**
+     * Find PHP files in the given path
+     *
+     * @param $paths
+     * @param bool $includeSubDirectories
+     *
+     * @return array
+     */
+    function find_php_files($paths, $includeSubDirectories = false)
+    {
+        return find_files($paths, 0, '*.php', $includeSubDirectories);
+    }
+}
+
+if (!function_exists('find_html_files')) {
+    /**
+     * Find HTML files in the given path
+     *
+     * @param $paths
+     * @param bool $includeSubDirectories
+     *
+     * @return array
+     */
+    function find_html_files($paths, $includeSubDirectories = false)
+    {
+        return find_files($paths, 0, '*.html', $includeSubDirectories);
+    }
+}
+
+if (!function_exists('find_templates')) {
+    /**
+     * Find all application templates key path
+     *
+     * @return array
+     */
+    function find_templates()
+    {
+        if (!defined('BASE_PATH')) {
+            define('BASE_PATH', realpath(__DIR__ . '/../../'));
+        }
+
+        $getTemplateKeyPath = function($suffix) {
+            $basePath = BASE_PATH . '/' . trim($suffix, '/') . '/';
+
+            return array_map(function($path) use ($basePath) {
+                return substr($path, strlen($basePath));
+            }, find_html_files($basePath, true));
+        };
+
+        return array_merge($getTemplateKeyPath('/app/templates/'), $getTemplateKeyPath('/app/core-ui'));
+    }
+}

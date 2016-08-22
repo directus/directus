@@ -69,13 +69,13 @@ class Bootstrap {
     {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
 
-        $customEndpointsPath = APPLICATION_PATH . '/customs/endpoints/*.php';
-        $paths = [];
-        foreach (glob($customEndpointsPath) as $filename) {
-            $paths[] = $filename;
+        $endpointsDirectory = APPLICATION_PATH . '/customs/endpoints';
+
+        if (!file_exists($endpointsDirectory)) {
+            return [];
         }
 
-        return $paths;
+        return find_php_files($endpointsDirectory, true);
     }
 
     /**
@@ -408,13 +408,10 @@ class Bootstrap {
             return $uis;
         }
 
-        $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uiDirectory), \RecursiveIteratorIterator::SELF_FIRST);
-        foreach($objects as $name => $object){
-            if("js" == pathinfo($name, PATHINFO_EXTENSION)) {
-                $uiPath = substr($name, strlen(APPLICATION_PATH) + 1);
-                $uiName = basename($name);
-                $uis[$uiName] = substr($uiPath, 0, -3);
-            }
+        $filePaths = find_js_files($uiDirectory, true);
+        foreach($filePaths as $path) {
+            $uiPath = trim(substr($path, strlen(APPLICATION_PATH)), '/');
+            $uis[] = substr($uiPath, 0, -3);
         }
 
         return $uis;

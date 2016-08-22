@@ -265,13 +265,7 @@ function getPrivileges($groupId) {
 }
 
 function getUI() {
-    $uis = array_values(Bootstrap::get('uis'));
-    // Add full path
-    foreach ($uis as &$ui) {
-        $ui = DIRECTUS_PATH . $ui . '.js';
-    }
-
-    return $uis;
+    return Bootstrap::get('uis');
 }
 
 function getListViews() {
